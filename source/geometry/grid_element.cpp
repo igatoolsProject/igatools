@@ -25,8 +25,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, class ContainerType_>
-GridElement<dim, ContainerType_>::
+template <int dim,bool GridIsConst>
+GridElement<dim,GridIsConst>::
 GridElement(const std::shared_ptr<ContainerType> &grid,
             const ListIt &index,
             const PropId &prop)
@@ -40,9 +40,9 @@ GridElement(const std::shared_ptr<ContainerType> &grid,
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 auto
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 get_grid() const -> const std::shared_ptr<const ContainerType>
 {
   return grid_;
@@ -50,9 +50,9 @@ get_grid() const -> const std::shared_ptr<const ContainerType>
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 auto
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 get_index() const ->  const IndexType &
 {
   return *index_it_;
@@ -62,9 +62,9 @@ get_index() const ->  const IndexType &
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 bool
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 has_property(const PropId &prop) const
 {
   const auto &list = grid_->elem_properties_[prop];
@@ -73,9 +73,9 @@ has_property(const PropId &prop) const
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 bool
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 operator ==(const self_t &elem) const
 {
   Assert(get_grid() == elem.get_grid(),
@@ -85,9 +85,9 @@ operator ==(const self_t &elem) const
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 bool
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 operator !=(const self_t &elem) const
 {
   Assert(get_grid() == elem.get_grid(),
@@ -95,9 +95,9 @@ operator !=(const self_t &elem) const
   return (get_index() != elem.get_index());
 }
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 bool
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 operator <(const self_t &elem) const
 {
   Assert(get_grid() == elem.get_grid(),
@@ -105,9 +105,9 @@ operator <(const self_t &elem) const
   return (get_index() < elem.get_index());
 }
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 bool
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 operator >(const self_t &elem) const
 {
   Assert(get_grid() == elem.get_grid(),
@@ -118,9 +118,9 @@ operator >(const self_t &elem) const
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 auto
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 vertex(const int i) const -> Point
 {
   Assert(i < UnitElement<dim>::sub_elements_size[0],
@@ -141,9 +141,9 @@ vertex(const int i) const -> Point
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 template <int sdim>
-bool GridElement<dim, ContainerType_>::
+bool GridElement<dim,GridIsConst>::
 is_boundary(const Index id) const
 {
   const auto &n_elem = get_grid()->get_num_intervals();
@@ -165,10 +165,10 @@ is_boundary(const Index id) const
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 template <int sdim>
 bool
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 is_boundary() const
 {
   for (auto &id : UnitElement<dim>::template elems_ids<sdim>())
@@ -181,10 +181,10 @@ is_boundary() const
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 template <int sdim>
 Real
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 get_measure(const int s_id) const
 {
   const auto lengths = get_side_lengths<sdim>(s_id);
@@ -201,10 +201,10 @@ get_measure(const int s_id) const
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 template <int sdim>
 ValueVector<Real>
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 get_weights(const int s_id) const
 {
   return this->template get_values_from_cache<_Weight, sdim>(s_id);
@@ -212,10 +212,10 @@ get_weights(const int s_id) const
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 template <int sdim>
 auto
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 get_side_lengths(const int s_id) const -> const Points<sdim>
 {
   Points<sdim> lengths;
@@ -236,10 +236,10 @@ get_side_lengths(const int s_id) const -> const Points<sdim>
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 template <int sdim>
 auto
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 get_points(const int j) const ->ValueVector<Point>
 {
   return this->template get_values_from_cache<_Point,sdim>(j);
@@ -251,18 +251,18 @@ get_points(const int j) const ->ValueVector<Point>
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 auto
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 get_element_points() const -> ValueVector<Point>
 {
   return this->template get_points<dim>(0);
 }
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 void
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 print_info(LogStream &out) const
 {
   out.begin_item("Property: ");
@@ -275,9 +275,9 @@ print_info(LogStream &out) const
 
 
 
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 void
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 print_cache_info(LogStream &out) const
 {
   if (all_sub_elems_cache_)
@@ -289,9 +289,9 @@ print_cache_info(LogStream &out) const
 
 
 #if 0
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 SafeSTLVector<std::string>
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 get_defined_properties() const
 {
   SafeSTLVector<std::string> elem_properties;
@@ -308,10 +308,10 @@ get_defined_properties() const
 #endif
 
 #ifdef SERIALIZATION
-template <int dim, class ContainerType_>
+template <int dim,bool GridIsConst>
 template<class Archive>
 void
-GridElement<dim, ContainerType_>::
+GridElement<dim,GridIsConst>::
 serialize(Archive &ar, const unsigned int version)
 {
   using namespace boost::serialization;

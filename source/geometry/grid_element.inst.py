@@ -34,10 +34,10 @@ sub_dim_members = [
 
 elems = []
 
-els =['const iga::Grid', ' iga::Grid']
+constness =['true', ' false']
 for dim in inst.domain_dims:
-  for el in els:
-    acc = 'GridElement<%d,' %(dim) + el + '<%d>>' %(dim)
+  for c_val in constness:
+    acc = 'GridElement<%d,%s>' %(dim,c_val)
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
@@ -46,8 +46,8 @@ for dim in inst.domain_dims:
           f.write('template ' + s + '\n')
         
 for dim in inst.sub_domain_dims:
-  for el in els:
-    acc = 'GridElement<%d,' %(dim) + el + '< %d>>' %(dim)
+  for c_val in constness:
+    acc = 'GridElement<%d,%s>' %(dim,c_val)
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:

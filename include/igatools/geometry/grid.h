@@ -43,13 +43,13 @@ IGA_NAMESPACE_OPEN
 
 template <int> class Grid;
 
-template <int, class> class GridElement;
+template <int,bool> class GridElement;
 
 template<int dim>
-using ConstGridElement = GridElement<dim, const Grid<dim>>;
+using ConstGridElement = GridElement<dim,true>;
 
 template<int dim>
-using NonConstGridElement = GridElement<dim, Grid<dim>>;
+using NonConstGridElement = GridElement<dim,false>;
 
 
 template <int> class GridHandler;
@@ -773,8 +773,8 @@ private:
    */
   signal_insert_knots_t insert_knots_signals_;
 #endif
-  friend class GridElement<dim_, Grid<dim_>>;
-  friend class GridElement<dim_, const Grid<dim_>>;
+  friend class GridElement<dim_,true>;
+  friend class GridElement<dim_,false>;
 //  friend class NonConstGridElement<dim_>;
 //  friend class ConstGridElement<dim_>;
 

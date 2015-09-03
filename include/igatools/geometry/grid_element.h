@@ -34,18 +34,14 @@ IGA_NAMESPACE_OPEN
 /**
  * @brief Element accessor for the Grid.
  *
- * The element can be queried for informations
- * that can be generated on-the-fly
- * (i.e. without the use of a cache) and for informations
- * that are obtained through a cache mechanism
  *
  *
  * See module (and the submodules) on \ref elements for a general overview.
  * @ingroup elements
  *
  * ### Quantities handled by the cache
- * - _Point i.e. evaluation points mapped in the parametric domain
- * - _W_Measure i.e. quadrature weights associated to each quadrature point,
+ * - _Point i.e. evaluation points mapped in a element of the parametric domain
+ * - _Weight i.e. quadrature weights associated to each evaluation point,
  * multiplied by the element <tt>dim</tt>-dimensional measure.
  *
  * @author pauletti, 2012, 2013, 2014, 2015
@@ -53,15 +49,15 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
-template <int dim, class ContainerType_>
+template <int dim, bool GridIsConst = true>
 class GridElement
 {
 private:
-  using self_t = GridElement<dim, ContainerType_>;
+  using self_t = GridElement<dim, GridIsConst>;
 
 public:
   /** Type required by the GridIterator templated iterator */
-  using ContainerType = ContainerType_;
+  using ContainerType = Conditional<GridIsConst,const Grid<dim>,Grid<dim>>;
   using IndexType = typename ContainerType::IndexType;
   using List = typename ContainerType::List;
   using ListIt = typename ContainerType::ListIt;
