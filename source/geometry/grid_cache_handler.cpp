@@ -113,19 +113,20 @@ init_cache(ElementAccessor &elem,
 {
   Assert(quad != nullptr,ExcNullPtr());
 
-  auto &q = elem.quad_list_.template get_quad<sdim>();
-  q = quad;
+  elem.quad_list_.template get_quad<sdim>() = quad;
 
   auto &cache = elem.all_sub_elems_cache_;
+  /*
   if (cache == nullptr)
   {
     using Cache = typename ElementAccessor::CacheType;
-    cache = std::make_shared<Cache>();
+    cache = std::make_unique<Cache>();
   }
+  //*/
 
   for (auto &s_id: UnitElement<dim>::template elems_ids<sdim>())
   {
-    auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+    auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
     s_cache.resize(flags_[sdim], quad->get_num_points());
 
   }
@@ -162,8 +163,8 @@ fill_cache(ElementAccessor &elem, const int s_id) const
 {
   using _Point = typename ElementAccessor::_Point;
   using _Weight = typename ElementAccessor::_Weight;
-  Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
-  auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<sdim>(s_id);
+//  Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
+  auto &cache = elem.all_sub_elems_cache_.template get_sub_elem_cache<sdim>(s_id);
 
   const auto &s_quad = elem.quad_list_.template get_quad<sdim>();
 

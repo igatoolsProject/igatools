@@ -280,10 +280,13 @@ void
 GridElement<dim>::
 print_cache_info(LogStream &out) const
 {
+  all_sub_elems_cache_.print_info(out);
+  /*
   if (all_sub_elems_cache_)
     all_sub_elems_cache_->print_info(out);
   else
     out << "Cache not allocated." << std::endl;
+    //*/
 }
 
 

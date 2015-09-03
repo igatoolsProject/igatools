@@ -324,15 +324,15 @@ private:
   QuadList<dim> quad_list_;
 
   /** The local cache. */
-  std::shared_ptr<CacheType> all_sub_elems_cache_;
+  CacheType all_sub_elems_cache_;
 
 
   template <class ValueType, int sdim>
   const auto &
   get_values_from_cache(const int s_id) const
   {
-    Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
-    const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<sdim>(s_id);
+//    Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
+    const auto &cache = all_sub_elems_cache_.template get_sub_elem_cache<sdim>(s_id);
     return cache.template get_data<ValueType>();
   }
   ///@}
