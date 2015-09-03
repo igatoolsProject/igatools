@@ -64,7 +64,6 @@ void domain()
 
   for (; elem != domain->cend(); ++elem)
   {
-    out << "dfg" << endl;
     // handler->template fill_cache<dim>(elem, 0);
     //elem->template get_points<dim>(0).print_info(out);
     //  out << endl;

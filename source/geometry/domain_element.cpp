@@ -42,7 +42,7 @@ operator ==(const self_t &elem) const
 {
   Assert(phys_dom_ == elem.phys_dom_,
          ExcMessage("Cannot compare elements on different grid."));
-  return (grid_elem_ == elem.grid_elem_);
+  return (*grid_elem_ == *(elem.grid_elem_));
 }
 
 
@@ -54,7 +54,7 @@ operator !=(const self_t &elem) const
 {
   Assert(phys_dom_ == elem.phys_dom_,
          ExcMessage("Cannot compare elements on different grid."));
-  return (grid_elem_ != elem.grid_elem_);
+  return (*grid_elem_ != *(elem.grid_elem_));
 }
 
 
@@ -66,8 +66,10 @@ operator <(const self_t &elem) const
 {
   Assert(phys_dom_ == elem.phys_dom_,
          ExcMessage("Cannot compare elements on different grid."));
-  return (grid_elem_ < elem.grid_elem_);
+  return (*grid_elem_ < *(elem.grid_elem_));
 }
+
+
 
 template<int dim_, int codim_, class ContainerType_>
 bool
@@ -76,7 +78,7 @@ operator >(const self_t &elem) const
 {
   Assert(phys_dom_ == elem.phys_dom_,
          ExcMessage("Cannot compare elements on different grid."));
-  return (grid_elem_ > elem.grid_elem_);
+  return (*grid_elem_ > *(elem.grid_elem_));
 }
 
 
