@@ -21,7 +21,7 @@
 #ifndef NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 #define NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 
-#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/domain_element.h>
 #include <igatools/basis_functions/physical_space_element.h>
 
 IGA_NAMESPACE_OPEN

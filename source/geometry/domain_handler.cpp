@@ -18,11 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/physical_domain_cache_handler.h>
-#include <igatools/geometry/physical_domain.h>
-#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/domain_handler.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
 #include <igatools/functions/function.h>
-#include <igatools/functions/function_cache_handler.h>
+#include <igatools/functions/function_handler.h>
 
 using std::shared_ptr;
 

@@ -23,8 +23,8 @@
 
 
 #include <igatools/functions/function.h>
-#include <igatools/functions/function_cache_handler.h>
-//#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/functions/function_handler.h>
+//#include <igatools/geometry/domain_element.h>
 
 #include <igatools/base/value_types.h>
 #include <igatools/basis_functions/values_cache.h>

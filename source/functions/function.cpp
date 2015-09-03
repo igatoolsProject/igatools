@@ -22,7 +22,7 @@
 #include <igatools/functions/function_element.h>
 //#include <igatools/utils/unique_id_generator.h>
 #include <igatools/geometry/physical_domain.h>
-#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/domain_element.h>
 
 IGA_NAMESPACE_OPEN
 

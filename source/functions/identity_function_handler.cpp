@@ -19,10 +19,10 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/physical_domain.h>
-#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/domain_element.h>
 #include <igatools/functions/identity_function_handler.h>
 #include <igatools/functions/function_element.h>
-#include <igatools/functions/function_cache_handler.h>
+#include <igatools/functions/function_handler.h>
 
 using std::shared_ptr;
 

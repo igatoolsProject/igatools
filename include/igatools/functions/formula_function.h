@@ -23,7 +23,7 @@
 
 #include <igatools/functions/function.h>
 #include <igatools/geometry/physical_domain.h>
-#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/domain_element.h>
 #include <igatools/base/value_types.h>
 
 #if 0

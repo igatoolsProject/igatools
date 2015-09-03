@@ -22,7 +22,7 @@
 #define __IDENTITY_FUNCTION_HANDLER_H_
 
 #include <igatools/functions/function.h>
-#include <igatools/functions/function_cache_handler.h>
+#include <igatools/functions/function_handler.h>
 #include <igatools/geometry/grid_cache_handler.h>
 
 IGA_NAMESPACE_OPEN

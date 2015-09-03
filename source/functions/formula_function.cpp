@@ -21,7 +21,7 @@
 #if 0
 #include <igatools/functions/formula_function.h>
 #include <igatools/functions/function_element.h>
-#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/domain_element.h>
 #include <igatools/geometry/mapping.h>
 
 using std::shared_ptr;

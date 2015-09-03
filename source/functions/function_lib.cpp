@@ -20,7 +20,7 @@
 #if 0
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/function_element.h>
-#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/domain_element.h>
 IGA_NAMESPACE_OPEN
 
 namespace functions

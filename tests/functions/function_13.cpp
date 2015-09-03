@@ -30,7 +30,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/function_element.h>
-#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/domain_element.h>
 #include <igatools/functions/sub_function.h>
 
 
