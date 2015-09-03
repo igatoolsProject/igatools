@@ -94,8 +94,8 @@ BallDomain<dim>::get_aux_vals(const ValueVector<Point> &points) const
 template<int dim>
 auto
 BallDomain<dim>::
-evaluate_0(const ValueVector<Point> &points,
-           ValueVector<Value> &values) const -> void
+evaluate_0(const ValueVector<GridPoint> &points,
+        ValueVector<Point> &values) const -> void
 {
   const auto val_table = get_aux_vals<1>(points);
   auto &cos_val = val_table[0];

@@ -49,26 +49,23 @@ class BallDomain : public FormulaDomain<dim, 0>
 private:
   using base_t = Domain<dim, 0>;
   using parent_t =  FormulaDomain<dim, 0>;
-  using self_t = BallFunction<dim>;
+  using self_t = BallDomain<dim>;
   using typename base_t::GridType;
 public:
   using typename parent_t::Point;
-  using typename parent_t::Value;
-//  using typename parent_t::ElementIterator;
- // using typename parent_t::ElementAccessor;
+  using typename parent_t::GridPoint;
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
   static std::shared_ptr<base_t>
   create(std::shared_ptr<GridType> grid);
 
-  std::shared_ptr<base_t> clone() const override final;
 
-  BallFunction(const self_t &) = default;
-  virtual ~BallFunction() = default;
+  BallDomain(const self_t &) = default;
+  virtual ~BallDomain() = default;
 
 protected:
-  BallFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
+  BallDomain(std::shared_ptr<GridType> grid);
 
 private:
   template<int order>
@@ -76,8 +73,8 @@ private:
   get_aux_vals(const ValueVector<Point> &points) const;
 
 private:
-  virtual void evaluate_0(const ValueVector<Point> &points,
-                          ValueVector<Value> &values) const override final;
+  virtual void evaluate_0(const ValueVector<GridPoint> &points,
+                          ValueVector<Point> &values) const override final;
 
   virtual void evaluate_1(const ValueVector<Point> &points,
                           ValueVector<Derivative<1>> &values) const override final;
@@ -259,4 +256,4 @@ private:
 IGA_NAMESPACE_CLOSE
 
 #endif
-#endif
+

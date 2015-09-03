@@ -25,7 +25,7 @@ data = Instantiation()
 output = set ()
 
 for dim in inst.domain_dims:
-    output.add ('template class functions::BallFunction<%d>;\n' % (dim) )
+    output.add ('template class domains::BallDomain<%d>;\n' % (dim) )
 
 for s in output:
   f.write(s)
