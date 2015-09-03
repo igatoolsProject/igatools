@@ -42,7 +42,7 @@ void get_subgrid(const TensorSize<dim> &n_knots)
 
   for (auto &i : UnitElement<dim>::template elems_ids<sdim>())
   {
-    typename Grid<dim>::template SubGridMap<sdim> map;
+    typename Grid::template SubGridMap<sdim> map;
     out.begin_item("Sub element: " + to_string(i));
     auto sub_grid = grid->template get_sub_grid<sdim>(i, map);
     sub_grid->print_info(out);
