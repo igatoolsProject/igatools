@@ -47,10 +47,10 @@ IGA_NAMESPACE_OPEN
  * @ingroup serializable
  */
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-class SpaceElement : public SpaceElementBase<dim_>
+class SpaceElement : public SpaceElementBase<dim_,true>
 {
 protected:
-  using base_t =  SpaceElementBase<dim_>;
+  using base_t =  SpaceElementBase<dim_,true>;
 
 
 private:

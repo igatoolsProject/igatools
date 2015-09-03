@@ -40,13 +40,15 @@ template <int> class SpaceBase;
  *
  * @ingroup serializable
  */
-template <int dim>
+template <int dim,bool SpaceIsConst>
 class SpaceElementBase
 {
 private:
-  using self_t = SpaceElementBase<dim>;
+  using self_t = SpaceElementBase<dim,SpaceIsConst>;
 
 public:
+  using Space = Conditional<SpaceIsConst,const SpaceBase<dim>,SpaceBase<dim>>;
+
   using GridType = Grid<dim>;
   using IndexType = typename GridType::IndexType;
   using List = typename GridType::List;
@@ -67,7 +69,7 @@ public:
    * Constructs an accessor to element with index pointed by the iterator <tt>index</tt> of a
    * function space.
    */
-  SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
+  SpaceElementBase(const std::shared_ptr<Space> &space,
                    const ListIt &index,
                    const PropId &prop = ElementProperties::active);
 
@@ -88,6 +90,16 @@ public:
    */
   ~SpaceElementBase() = default;
   ///@}
+
+  /**
+   * Copy assignment operator. Not Allowed to be used.
+   */
+  self_t &operator=(const self_t &elem) = delete;
+
+  /**
+   * Movy assignment operator.
+   */
+  self_t &operator=(self_t &&elem) = default;
 
 
   /**
@@ -237,9 +249,10 @@ public:
 
 
 private:
+  std::shared_ptr<Space> space_;
+
   std::shared_ptr<ConstGridElement<dim>> grid_elem_;
 
-  std::shared_ptr<const SpaceBase<dim>> space_;
 
 
 #ifdef SERIALIZATION

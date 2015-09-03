@@ -49,7 +49,7 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
-template <int dim, bool GridIsConst = true>
+template <int dim, bool GridIsConst>
 class GridElement
 {
 private:
