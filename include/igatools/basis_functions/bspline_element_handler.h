@@ -39,7 +39,6 @@ IGA_NAMESPACE_OPEN
  * computational optimization cache, storing the interval length
  * in each direction
  *
- * @ingroup serializable
  */
 template<int dim_, int range_, int rank_>
 class BSplineElementHandler
@@ -367,7 +366,7 @@ private:
   SafeSTLArray<typename space_element::Flags, dim_ + 1> flags_;
 
 
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -380,6 +379,7 @@ private:
   void
   serialize(Archive &ar, const unsigned int version);
   ///@}
+#endif
 #endif
 };
 

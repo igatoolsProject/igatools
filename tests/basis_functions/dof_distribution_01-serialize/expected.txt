@@ -40,8 +40,7 @@ Original DofDistribution.
    
    Dof properties:
       IDs with property "active":
-         Num.: 4
-         Flat IDs: 0 2 4 6
+      [ 0 2 4 6 ]
    
 
 DofDistribution after serialize-deserialize.
@@ -83,8 +82,7 @@ DofDistribution after serialize-deserialize.
    
    Dof properties:
       IDs with property "active":
-         Num.: 4
-         Flat IDs: 0 2 4 6
+      [ 0 2 4 6 ]
    
 
 ========================================================================
@@ -131,8 +129,7 @@ Original DofDistribution.
    
    Dof properties:
       IDs with property "active":
-         Num.: 8
-         Flat IDs: 0 2 4 6 8 10 12 14
+      [ 0 2 4 6 8 10 12 14 ]
    
 
 DofDistribution after serialize-deserialize.
@@ -174,8 +171,7 @@ DofDistribution after serialize-deserialize.
    
    Dof properties:
       IDs with property "active":
-         Num.: 8
-         Flat IDs: 0 2 4 6 8 10 12 14
+      [ 0 2 4 6 8 10 12 14 ]
    
 
 ========================================================================

@@ -207,6 +207,7 @@ operator>(const self_t &a) const
 
 
 
+#if 0
 
 #ifdef SERIALIZATION
 template <int dim>
@@ -215,6 +216,8 @@ void
 SpaceElementBase<dim>::
 serialize(Archive &ar, const unsigned int version)
 {
+  AssertThrow(false,ExcNotImplemented());
+#if 0
   ar &boost::serialization::make_nvp("grid_elem_",grid_elem_);
 
 
@@ -224,10 +227,11 @@ serialize(Archive &ar, const unsigned int version)
   Assert(space_ != nullptr,ExcNullPtr());
 
   ar &boost::serialization::make_nvp("max_num_basis_",max_num_basis_);
-
+#endif
 }
 ///@}
 #endif // SERIALIZATION
+#endif
 
 IGA_NAMESPACE_CLOSE
 

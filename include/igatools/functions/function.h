@@ -118,13 +118,24 @@ public:
 
   /** @name Constructors and destructor. */
   ///@{
-protected:
+
+#ifdef SERIALIZATION
+public:
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
   Function() = default;
+#else
+protected:
+  /**
+   * Default constructor. Not allowed to be used.
+   */
+  Function() = delete;
+#endif
+
+protected:
 
   /** Constructor */
   Function(std::shared_ptr<const DomainType> phys_dom);

@@ -33,7 +33,6 @@ class PhysicalSpace;
 /**
  * Element handler for an isogeometric space
  *
- * @ingroup serializable
  */
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 class PhysSpaceElementHandler
@@ -65,14 +64,21 @@ public:
    * @name Constructors
    */
   ///@{
+#if 0
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
   PhysSpaceElementHandler() = default;
+#endif
 
 protected:
+
+  /**
+   * Default constructor. Not allowed to be used.
+   */
+  PhysSpaceElementHandler() = delete;
 
   PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space);
   /**
@@ -226,7 +232,7 @@ private:
 
 #endif
 
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -243,7 +249,9 @@ private:
                                        boost::serialization::base_object<base_t>(*this));
 
     ar.template register_type<BSplineElementHandler<dim_,range_,rank_> >();
+#ifdef NURBS
     ar.template register_type<NURBSElementHandler<dim_,range_,rank_> >();
+#endif // NURBS
     ar &boost::serialization::make_nvp("ref_space_handler_",ref_space_handler_);
     ar &boost::serialization::make_nvp("phys_domain_handler_",phys_domain_handler_);
 
@@ -254,6 +262,7 @@ private:
     ar &boost::serialization::make_nvp("flags_",flags_);
   }
   ///@}
+#endif
 #endif
 
 };

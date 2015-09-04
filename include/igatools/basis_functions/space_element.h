@@ -44,7 +44,6 @@ IGA_NAMESPACE_OPEN
 /**
  *
  *
- * @ingroup serializable
  */
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 class SpaceElement : public SpaceElementBase<dim_>
@@ -292,7 +291,7 @@ private:
   std::shared_ptr<Sp> space_;
 
 
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -306,6 +305,7 @@ private:
   serialize(Archive &ar, const unsigned int version);
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 

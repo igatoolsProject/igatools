@@ -166,7 +166,7 @@ print_cache_info(LogStream &out) const
   all_sub_elems_cache_->print_info(out);
 }
 
-
+#if 0
 #ifdef SERIALIZATION
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 template<class Archive>
@@ -174,6 +174,8 @@ void
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 serialize(Archive &ar, const unsigned int version)
 {
+  AssertThrow(false,ExcNotImplemented());
+#if 0
   ar &boost::serialization::make_nvp("FunctionElement_base_t",
                                      boost::serialization::base_object<GridElement<dim>>(*this));
 
@@ -182,9 +184,10 @@ serialize(Archive &ar, const unsigned int version)
   ar &boost::serialization::make_nvp("func_",func_);
   ar &boost::serialization::make_nvp("grid_elem_",grid_elem_);
   ar &boost::serialization::make_nvp("phys_domain_elem_",phys_domain_elem_);
+#endif
 }
 #endif // SERIALIZATION
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

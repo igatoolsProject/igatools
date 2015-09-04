@@ -73,7 +73,6 @@ using DataCacheAllSubElems = decltype(make_fusion_map_cache_all_sub_elems<Values
  *
  * @ingroup cache
  *
- * @ingroup serializable
  */
 template<class ValuesCache, int dim>
 class CacheList :
@@ -81,6 +80,7 @@ class CacheList :
 {
 
 private:
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -106,6 +106,7 @@ private:
   };
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 
@@ -193,7 +194,6 @@ extract_sub_elements_data(FusionContainer &data)
  *
  * @tparam DataType This should be a ValueTable or a ValueVector.
  *
- * @ingroup serializable
  * @ingroup cache
  */
 template < class DataType >
@@ -251,7 +251,7 @@ public:
 private:
   FlagStatus status_;
 
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -270,11 +270,11 @@ private:
   };
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 /**
  *
- * @ingroup serializable
  * @ingroup cache
  */
 template<int dim,class CacheType>
@@ -412,7 +412,7 @@ public:
 
 
 private:
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -443,6 +443,7 @@ private:
   };
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 
@@ -451,7 +452,6 @@ private:
  * @brief This class is used to wrap the cache for values associated basis fucnctions
  * and to evaluation points.
  *
- * @ingroup serializable
  *
  * @ingroup cache
  */
@@ -504,6 +504,7 @@ public:
 
 private:
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -521,12 +522,12 @@ private:
   };
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 /**
  * @brief This class is used to wrap the cache for values associated to evaluation points.
  *
- * @ingroup serializable
  *
  * @ingroup cache
  */
@@ -577,7 +578,7 @@ public:
   }
 
 private:
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -595,6 +596,7 @@ private:
   };
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 
@@ -602,7 +604,6 @@ private:
 
 /**
  *
- * @ingroup serializable
  *
  * @ingroup cache
  *
@@ -701,7 +702,7 @@ public:
 
 
 private:
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -718,6 +719,7 @@ private:
   };
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 

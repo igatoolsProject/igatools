@@ -79,12 +79,19 @@ public:
   /** @name Constructor and destructor. */
   ///@{
 protected:
+#ifdef SERIALIZATION
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
   SpaceBase() = default;
+#else
+  /**
+   * Default constructor. Not allowed to be used.
+   */
+  SpaceBase() = delete;
+#endif
 
   /** Construct the object from the (const) @p grid on which the function space will be built upon. */
   SpaceBase(const std::shared_ptr<const Grid<dim_>> &grid);

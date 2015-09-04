@@ -38,7 +38,6 @@ template <int> class SpaceBase;
 
 /**
  *
- * @ingroup serializable
  */
 template <int dim>
 class SpaceElementBase
@@ -57,6 +56,7 @@ public:
 
   /** @name Constructors */
   ///@{
+#if 0
 protected:
   /**
    * Default constructor. It does nothing but it is needed for the
@@ -64,8 +64,15 @@ protected:
    * mechanism.
    */
   SpaceElementBase() = default;
+#endif
 
 public:
+
+  /**
+   * Default constructor. Not allowed to be used.
+   */
+  SpaceElementBase() = delete;
+
   /**
    * Constructs an accessor to element with index pointed by the iterator <tt>index</tt> of a
    * function space.
@@ -244,7 +251,7 @@ private:
   std::unique_ptr<GridElem> grid_elem_;
 
 
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -258,7 +265,7 @@ private:
   serialize(Archive &ar, const unsigned int version);
   ///@}
 #endif // SERIALIZATION
-
+#endif
 
 
 

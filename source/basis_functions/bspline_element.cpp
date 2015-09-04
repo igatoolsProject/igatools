@@ -327,7 +327,7 @@ print_cache_info(LogStream &out) const
   out.end_item();
 }
 
-
+#if 0
 #ifdef SERIALIZATION
 template <int dim, int range, int rank>
 template<class Archive>
@@ -339,7 +339,7 @@ serialize(Archive &ar, const unsigned int version)
                                      boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
 }
 #endif // SERIALIZATION
-
+#endif
 
 
 IGA_NAMESPACE_CLOSE

@@ -72,12 +72,16 @@ public:
    */
   ///@{
 protected:
+#if 0
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism of the Function class.
    */
   GridHandler() = default;
+#endif
+
+  GridHandler() = delete;
 
 public:
   /**
@@ -273,6 +277,7 @@ private:
 
 private:
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -286,7 +291,7 @@ private:
   serialize(Archive &ar, const unsigned int version);
   ///@}
 #endif // SERIALIZATION
-
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

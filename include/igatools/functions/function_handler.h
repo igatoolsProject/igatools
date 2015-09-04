@@ -40,7 +40,6 @@ template <int, int, int, int> class ConstFunctionElement;
 /**
  * Function Class
  *
- * @ingroup serializable
  */
 template<int dim_, int codim_ = 0, int range_ = 1, int rank_ = 1>
 class FunctionElementHandler :
@@ -118,11 +117,19 @@ protected:
 
   /** @name Constructors and destructor. */
   ///@{
-protected:
+#if 0
+public:
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
+   */
+  FunctionElementHandler() = default;
+#endif
+
+protected:
+  /**
+   * Default constructor. Not allowed to be used.
    */
   FunctionElementHandler() = default;
 
@@ -259,6 +266,7 @@ public:
   }
 #endif // MESH_REFINEMENT
 
+#if 0
 #ifdef SERIALIZATION
 public:
   /**
@@ -307,6 +315,7 @@ public:
   //*/
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

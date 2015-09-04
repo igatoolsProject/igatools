@@ -151,7 +151,7 @@ fill_face_cache(ElementIterator &elem, const int face_id)
 }
 #endif
 
-
+#if 0
 #ifdef SERIALIZATION
 template<int dim,int codim,int range,int rank,Transformation type>
 template<class Archive>
@@ -165,6 +165,7 @@ serialize(Archive &ar, const unsigned int version)
   Assert(space_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
+#endif
 
 IGA_NAMESPACE_CLOSE
 

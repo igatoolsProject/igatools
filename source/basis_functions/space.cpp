@@ -261,6 +261,8 @@ void
 Space<dim_,codim_,range_,rank_,type_>::
 serialize(Archive &ar, const unsigned int version)
 {
+  AssertThrow(false,ExcNotImplemented());
+#if 0
   ar.template register_type<BSplineSpace<dim_,range_,rank_>>();
 
 #ifdef NURBS
@@ -276,7 +278,7 @@ serialize(Archive &ar, const unsigned int version)
   ar.template register_type<IdentityFunction<dim_,dim_> >();
   ar &boost::serialization::make_nvp("map_func_",map_func_);
 //    Assert(map_func_ != nullptr,ExcNullPtr());
-
+#endif
 }
 ///@}
 #endif // SERIALIZATION

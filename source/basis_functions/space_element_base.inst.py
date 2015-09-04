@@ -46,16 +46,16 @@ for element in unique(elements):
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
  
-f.write('#ifdef SERIALIZATION\n')
-id = 0 
-for element in unique(elements):
-    alias = 'SpaceElementBase%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, element))
-    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-    id += 1 
-f.write('#endif // SERIALIZATION\n')
+#f.write('#ifdef SERIALIZATION\n')
+#id = 0 
+#for element in unique(elements):
+#    alias = 'SpaceElementBase%d' %(id)
+#    f.write('using %s = iga::%s; \n' % (alias, element))
+#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+#    id += 1 
+#f.write('#endif // SERIALIZATION\n')
      
 f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------

@@ -80,8 +80,10 @@ f.write('#ifdef SERIALIZATION\n')
 id = 0 
 for space in unique(spaces):
     alias = 'SpaceAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, space))
     
+#    f.write('using %s = iga::%s; \n' % (alias, space))
+    f.write('using %s = iga::%s; \n' % (alias, space.replace('Transformation','iga::Transformation')))
+
     f.write('ALLOW_SHARED_THIS(%s)\n' %alias )
     
     f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)

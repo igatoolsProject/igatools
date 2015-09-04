@@ -40,7 +40,6 @@ class SafeSTLVector :
 public :
   /** Inherit the constructors of the base class. */
   using SafeSTLContainer<std::vector<T>>::SafeSTLContainer;
-
 };
 
 IGA_NAMESPACE_CLOSE

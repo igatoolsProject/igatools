@@ -97,7 +97,7 @@ get_space() const -> std::shared_ptr<Sp>
 
 
 
-
+#if 0
 #ifdef SERIALIZATION
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 template<class Archive>
@@ -116,7 +116,7 @@ serialize(Archive &ar, const unsigned int version)
   Assert(space_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
-
+#endif
 
 
 IGA_NAMESPACE_CLOSE

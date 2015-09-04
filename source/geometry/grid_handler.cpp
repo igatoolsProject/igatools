@@ -214,7 +214,7 @@ print_info(LogStream &out) const
 
 }
 
-
+#if 0
 #ifdef SERIALIZATION
 template <int dim>
 template<class Archive>
@@ -231,7 +231,7 @@ serialize(Archive &ar, const unsigned int version)
   ar &make_nvp("flags_",flags_);
 }
 #endif // SERIALIZATION
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

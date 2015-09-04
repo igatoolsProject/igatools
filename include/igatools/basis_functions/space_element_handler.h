@@ -33,7 +33,6 @@ IGA_NAMESPACE_OPEN
 
 /**
  *
- * @ingroup serializable
  */
 template <int dim,int codim,int range,int rank,Transformation type>
 class SpaceElementHandler
@@ -263,7 +262,7 @@ private:
   }
 
 
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -277,6 +276,7 @@ private:
   serialize(Archive &ar, const unsigned int version);
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

@@ -40,7 +40,6 @@ template <int,int> class ConstDomainElement;
 
 /**
  *
- * @ingroup serializable
  */
 template<int dim, int codim, int range, int rank, class ContainerType_>
 class FunctionElementBase
@@ -65,6 +64,7 @@ private:
   using Derivative = typename ContainerType_::template Derivative<order>;
 
 protected:
+#if 0
   /** @name Constructors */
   ///@{
   /**
@@ -73,6 +73,9 @@ protected:
    * mechanism.
    */
   FunctionElementBase() = default;
+#endif
+
+  FunctionElementBase() = delete;
 
 public:
   /**
@@ -262,6 +265,8 @@ public:
 
 
 private:
+
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -275,7 +280,9 @@ private:
   serialize(Archive &ar, const unsigned int version);
   ///@}
 #endif // SERIALIZATION
+#endif
 };
+
 
 
 template <int dim, int codim, int range, int rank>
