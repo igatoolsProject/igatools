@@ -288,22 +288,17 @@ private:
   ///@{
   friend class boost::serialization::access;
 
-  template<class Archive, int dummy_dim = rank>
+  template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version,EnableIf<(dummy_dim > 0)> * = 0)
+  serialize(Archive &ar, const unsigned int version)
   {
     std::string tag_name = "TensorSizedContainer_" + std::to_string(rank);
     ar &boost::serialization::make_nvp(
       tag_name.c_str(),
       boost::serialization::base_object<TensorSizedContainer<rank>>(*this));
 
-    ar &boost::serialization::make_nvp("Data",data_);
+    ar &boost::serialization::make_nvp("data_of_type_SafeSTLArray",data_);
   }
-
-  template<class Archive, int dummy_dim = rank>
-  void
-  serialize(Archive &ar, const unsigned int version,EnableIf<!(dummy_dim > 0)> * = 0)
-  {}
   ///@}
 
 };

@@ -83,8 +83,10 @@ private:
   template<class Archive, int Size = N>
   void serialize(Archive &ar, const unsigned int version, EnableIf<(Size > 0)> * = 0)
   {
-    ar &boost::serialization::make_nvp("SafeSTLArray_base_t",
-                                       boost::serialization::base_object<base_t>(*this));
+//    ar &boost::serialization::make_nvp("SafeSTLContainer_Array",
+//                                       boost::serialization::base_object<base_t>(*this));
+    ar &boost::serialization::make_nvp("SafeSTLContainer_Array",
+                                       boost::serialization::base_object<std::array<T,N>>(*this));
   }
 
   template<class Archive, int Size = N>
