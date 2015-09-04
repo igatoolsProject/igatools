@@ -26,7 +26,7 @@
 #include <igatools/base/quadrature.h>
 
 #include <igatools/basis_functions/space_element_handler.h>
-#include <igatools/geometry/grid_cache_handler.h>
+#include <igatools/geometry/grid_handler.h>
 #include <igatools/basis_functions/reference_space.h>
 
 

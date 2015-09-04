@@ -25,7 +25,7 @@
 #include <igatools/utils/tensor_range.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/grid.h>
-#include <igatools/geometry/grid_cache_handler.h>
+#include <igatools/geometry/grid_handler.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/basis_functions/values_cache.h>
 

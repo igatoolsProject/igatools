@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/grid.h>
-#include <igatools/geometry/grid_cache_handler.h>
+#include <igatools/geometry/grid_handler.h>
 
 IGA_NAMESPACE_OPEN
 

@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/formula_domain.h>
+#include <igatools/geometry/formula_domain_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -28,6 +29,18 @@ FormulaDomain(std::shared_ptr<GridType> grid)
   :
   parent_t::Domain(grid)
 {}
+
+
+
+template<int dim, int codim>
+auto
+FormulaDomain<dim, codim>::
+create_cache_handler() const
+-> std::shared_ptr<typename parent_t::ElementHandler>
+{
+  return std::make_shared<ElementHandler>(
+    std::dynamic_pointer_cast<const self_t>(this->shared_from_this()));
+}
 
 IGA_NAMESPACE_CLOSE
 

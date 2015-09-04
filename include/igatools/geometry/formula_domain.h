@@ -27,6 +27,7 @@
 
 IGA_NAMESPACE_OPEN
 
+template <int, int> class FormulaDomainHandler;
 /**
  *
  */
@@ -39,6 +40,7 @@ private:
   using self_t = FormulaDomain<dim, codim>;
 protected:
   using typename parent_t::GridType;
+  using ElementHandler = FormulaDomainHandler<dim, codim>;
 public:
   using typename parent_t::Point;
   using typename parent_t::GridPoint;
@@ -49,6 +51,9 @@ public:
   FormulaDomain(std::shared_ptr<GridType> grid);
 
   virtual ~FormulaDomain() = default;
+
+  std::shared_ptr<typename parent_t::ElementHandler>
+  create_cache_handler() const;
 
 public:
 

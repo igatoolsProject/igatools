@@ -35,7 +35,7 @@
 //#include <igatools/basis_functions/nurbs_space.h>
 
 #include <igatools/utils/value_table.h>
-#include <igatools/geometry/grid_cache_handler.h>
+#include <igatools/geometry/grid_handler.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
 

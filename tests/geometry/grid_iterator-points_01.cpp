@@ -29,7 +29,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/grid.h>
-#include <igatools/geometry/grid_cache_handler.h>
+#include <igatools/geometry/grid_handler.h>
 #include <igatools/geometry/grid_element.h>
 
 template <int dim, int sdim = dim>

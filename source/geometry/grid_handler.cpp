@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/grid_cache_handler.h>
+#include <igatools/geometry/grid_handler.h>
 
 using std::shared_ptr;
 
@@ -235,4 +235,4 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/grid_cache_handler.inst>
+#include <igatools/geometry/grid_handler.inst>

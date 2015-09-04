@@ -84,7 +84,6 @@ set_flags(const topology_variant &sdim,
 
 
 
-
 template<int dim_, int codim_>
 void
 DomainHandler<dim_, codim_>::
@@ -114,6 +113,7 @@ fill_cache(const topology_variant &sdim,
            ConstElementAccessor &elem,
            const int s_id) const-> void
 {
+  grid_handler_->fill_cache(sdim, *(elem.grid_elem_), s_id);
 #if 0
   F_->template fill_cache(elem, k, j);
   auto fill_cache_dispatcher =FillCacheDispatcher(*F_, elem, j);

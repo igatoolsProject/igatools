@@ -48,7 +48,7 @@ void domain()
 
   using Flags = typename Domain::ElementAccessor::Flags;
 
-  auto flag = Flags::w_measure ;
+  auto flag = Flags::w_measure | Flags::point;
   //auto s_flag = Flags::point;
   auto handler = domain->create_cache_handler();
 
@@ -64,9 +64,9 @@ void domain()
 
   for (; elem != domain->cend(); ++elem)
   {
-    // handler->template fill_cache<dim>(elem, 0);
-    //elem->template get_points<dim>(0).print_info(out);
-    //  out << endl;
+    handler->template fill_cache<dim>(elem, 0);
+    elem->template get_points<dim>(0).print_info(out);
+    out << endl;
 
 //      for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
 //      {
