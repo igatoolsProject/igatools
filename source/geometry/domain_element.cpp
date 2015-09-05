@@ -97,6 +97,31 @@ get_w_measures(const int s_id) const -> ValueVector<Real>
   return w_meas;
 }
 
+
+template<int dim_, int codim_, class ContainerType_>
+auto
+DomainElementBase<dim_, codim_, ContainerType_>::
+get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
+{
+  const int sdim = dim_;
+  const int s_id = 0;
+  Assert(codim_ == 1, ExcNotImplemented());
+  ValueVector<SafeSTLArray<Point, codim_>> res;
+  const auto &DF = this->template get_values_from_cache<_Gradient, sdim>(s_id);
+  const auto n_points = DF.get_num_points();
+  res.resize(n_points);
+
+  for (int pt = 0; pt < n_points; ++pt)
+  {
+    res[0][pt] = cross_product<dim_, codim_>(DF[pt]);
+    res[0][pt] /= res[0][pt].norm();
+  }
+
+  return res;
+}
+
+
+
 #if 0
 template<int dim_, int codim_, class ContainerType_>
 auto
@@ -187,30 +212,7 @@ get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
 
 
 
-template<int dim_, int codim_, class ContainerType_>
-auto
-DomainElementBase<dim_, codim_, ContainerType_>::
-get_external_normals() const -> const ValueVector<Points<space_dim> > &
-{
-#if 0
-  Assert(codim==1, ExcNotImplemented());
-  ValueVector<Points<space_dim> > res;
-  const auto &DF = this->template get_values<_Gradient, dim>(0);
-  const auto n_points = DF.get_num_points();
 
-  res.resize(n_points);
-  for (int pt = 0; pt < n_points; ++pt)
-  {
-    res[pt] = cross_product<dim, codim>(DF[pt]);
-    res[pt] /= res[pt].norm();
-  }
-
-  return res;
-#endif
-
-  Assert(codim==1, ExcNotImplemented());
-  return get_values_from_cache<_OuterNormal,dim_>(0);
-}
 
 
 

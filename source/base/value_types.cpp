@@ -25,44 +25,52 @@ using std::string;
 IGA_NAMESPACE_OPEN
 
 
-
-//---------------------------------------------------------------------
-const grid_element::Flags grid_element::_Point::flag;
-const string grid_element::_Point::name = "Element Quadrature Points";
-
-const grid_element::Flags grid_element::_Weight::flag;
-const string grid_element::_Weight::name = "Element Quadrature Weights";
-//---------------------------------------------------------------------
-
-
-
-//---------------------------------------------------------------------
-const domain_element::CacheFlags domain_element::_Point::flag;
-const string domain_element::_Point::name = "Element Quadrature Points";
-
-const domain_element::CacheFlags domain_element::_Measure::flag;
-const string domain_element::_Measure::name = "Element measure";
-
-const domain_element::CacheFlags domain_element::_Gradient::flag;
-const string domain_element::_Gradient::name = "domain gradients";
-
-domain_element::activate::FlagsToCache  domain_element::activate::domain =
+namespace grid_element
 {
-  {domain_element::Flags::point, domain_element::CacheFlags::point},
-  {
-    domain_element::Flags::w_measure, domain_element::CacheFlags::gradient|
-    domain_element::CacheFlags::measure
-  },
-  {
-    domain_element::Flags::measure, domain_element::CacheFlags::gradient|
-    domain_element::CacheFlags::measure
-  }
+//---------------------------------------------------------------------
+const CacheFlags _Point::flag;
+const string _Point::name = "Element Quadrature Points";
+
+const CacheFlags _Weight::flag;
+const string _Weight::name = "Element Quadrature Weights";
+
+activate::FlagsToCache  activate::grid =
+{
+  {Flags::point, CacheFlags::point},
+  {Flags::weight, CacheFlags::weight}
 };
-domain_element::activate::FlagsToGrid domain_element::activate::grid =
+//---------------------------------------------------------------------
+};
+
+
+//---------------------------------------------------------------------
+namespace domain_element
 {
-  {domain_element::Flags::point, grid_element::Flags::point},
-  {domain_element::Flags::w_measure, grid_element::Flags::weight},
-  {domain_element::Flags::measure, grid_element::Flags::none}
+const CacheFlags _Point::flag;
+const string _Point::name = "Element Quadrature Points";
+
+const CacheFlags _Measure::flag;
+const string _Measure::name = "Element measure";
+
+const CacheFlags _Gradient::flag;
+const string _Gradient::name = "domain gradients";
+
+activate::FlagsToCache  activate::domain =
+{
+  {Flags::point, CacheFlags::point},
+  {Flags::w_measure, CacheFlags::gradient|CacheFlags::measure},
+  {Flags::measure, CacheFlags::gradient|CacheFlags::measure},
+  {Flags::ext_normal, CacheFlags::gradient}
+};
+
+domain_element::activate::FlagsToGrid activate::grid =
+{
+  {Flags::point, grid_element::Flags::point},
+  {Flags::w_measure, grid_element::Flags::weight},
+  {Flags::measure, grid_element::Flags::none},
+  {Flags::ext_normal, grid_element::Flags::none}
+};
+
 };
 //---------------------------------------------------------------------
 

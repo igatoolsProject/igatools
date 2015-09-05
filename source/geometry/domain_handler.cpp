@@ -52,31 +52,34 @@ set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
   using GridFlags = typename GridType::ElementHandler::Flags;
-  GridFlags grid_flag = GridFlags::none;
+  GridFlags  grid_flag = GridFlags::none;
   CacheFlags dom_flag = CacheFlags::none;
 
-  //point => grid::point
-  if (contains(flag, Flags::point))
-  {
-    grid_flag |= domain_element::activate::grid[Flags::point];
-    dom_flag  |= domain_element::activate::domain[Flags::point];
-  }
+  SafeSTLVector<Flags> all_flags ={Flags::point, Flags::measure, Flags::w_measure};
+  for (auto &fl : all_flags)
+    if (contains(flag, fl))
+    {
+      grid_flag |= domain_element::activate::grid[fl];
+      dom_flag  |= domain_element::activate::domain[fl];
+    }
 
-  //w_measure => grid::weight
-  if (contains(flag, Flags::w_measure))
-  {
-    grid_flag |= domain_element::activate::grid[Flags::w_measure];
-    dom_flag  |= domain_element::activate::domain[Flags::w_measure];
-    //dom_flag  |= Flags::gradient|Flags::measure;
-
-  }
-
-  if (contains(flag, Flags::measure))
-  {
-    grid_flag  |= domain_element::activate::grid[Flags::measure];
-    dom_flag  |= domain_element::activate::domain[Flags::measure];
-    //dom_flag  |= Flags::gradient;
-  }
+//  if (contains(flag, Flags::point))
+//  {
+//    grid_flag |= domain_element::activate::grid[Flags::point];
+//    dom_flag  |= domain_element::activate::domain[Flags::point];
+//  }
+//
+//  if (contains(flag, Flags::w_measure))
+//  {
+//    grid_flag |= domain_element::activate::grid[Flags::w_measure];
+//    dom_flag  |= domain_element::activate::domain[Flags::w_measure];
+//  }
+//
+//  if (contains(flag, Flags::measure))
+//  {
+//    grid_flag  |= domain_element::activate::grid[Flags::measure];
+//    dom_flag  |= domain_element::activate::domain[Flags::measure];
+//  }
 
 
 
@@ -90,7 +93,7 @@ set_flags(const topology_variant &sdim,
   auto m_flags = flags & valid_flags;
 
   if (contains(flags, ValueFlags::boundary_normal) ||
-  contains(flags, ValueFlags::curvature))
+      contains(flags, ValueFlags::curvature))
     m_flags |= ValueFlags::inv_gradient;
 
   if (contains(flags, ValueFlags::curvature))

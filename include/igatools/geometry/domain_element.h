@@ -162,11 +162,11 @@ public:
   }
 
 public:
-//    template<int sdim>
-//    ValueVector<Real> const &get_measures(const int s_id) const
-//    {
-//        return get_values_from_cache<_Measure,sdim>(s_id);
-//    }
+  template<int sdim>
+  ValueVector<Real> const &get_measures(const int s_id) const
+  {
+    return get_values_from_cache<_Measure,sdim>(s_id);
+  }
 
   template<int sdim>
   auto const &get_points(const int s_id) const
@@ -177,9 +177,11 @@ public:
   template<int sdim>
   ValueVector<Real> get_w_measures(const int s_id) const;
 
-#if 0
-  const ValueVector<Points<space_dim> > &get_external_normals() const;
 
+  ValueVector<SafeSTLArray<Point, codim_>>
+                                        get_exterior_normals() const;
+
+#if 0
   using MetricTensor =
     Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
 
@@ -217,12 +219,12 @@ public:
 #endif
 
 private:
-  template <class ValueType, int topology_dim = dim_>
-  auto &get_values_from_cache(const int topology_id = 0) const
+  template <class ValueType, int sdim>
+  auto &get_values_from_cache(const int s_id = 0) const
   {
     Assert(local_cache_ != nullptr,ExcNullPtr());
     const auto &cache = local_cache_->template
-                        get_sub_elem_cache<topology_dim>(topology_id);
+                        get_sub_elem_cache<sdim>(s_id);
     return cache.template get_data<ValueType>();
   }
 

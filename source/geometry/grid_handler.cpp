@@ -47,17 +47,22 @@ create(std::shared_ptr<GridType> grid)
 
 
 template <int dim>
-template<int k>
+template<int sdim>
 void
 GridHandler<dim>::
 set_flags(const Flags &flag)
 {
-  flags_[k] = flag;
-
-#if 0
-  cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_) = quad;
-#endif
+  CacheFlags grid_flag = CacheFlags::none;
+  SafeSTLVector<Flags> all_flags = {Flags::point, Flags::weight};
+  for (auto &fl : all_flags)
+    if (contains(flag, fl))
+    {
+      grid_flag |= grid_element::activate::grid[fl];
+    }
+  flags_[sdim] = grid_flag;
 }
+
+
 
 template <int dim>
 void
@@ -70,39 +75,7 @@ set_flags(const topology_variant &sdim,
 }
 
 
-#if 0
-template <int dim>
-void
-GridHandler<dim>::
-init_all_caches(ElementAccessor &elem)
-{
-  auto &cache = elem.all_sub_elems_cache_;
-  if (cache == nullptr)
-  {
-    using Cache = typename ElementAccessor::CacheType;
-    cache = shared_ptr<Cache>(new Cache);
-  }
 
-  const auto &quad = cacheutils::extract_sub_elements_data<dim>(quad_all_sub_elems_);
-
-  boost::fusion::for_each(cache->cache_all_sub_elems_,
-                          [&](auto & value_dim) -> void
-  {
-    using PairType = typename std::remove_reference<decltype(value_dim)>::type;
-    const int topology_dim = PairType::first_type::value;
-    auto &cache_same_topology_dim = value_dim.second;
-    int topology_id = 0;
-    for (auto &cache_same_topology_id : cache_same_topology_dim)
-    {
-      cache_same_topology_id.resize(
-        flags_[dim],
-        quad.template collapse_to_sub_element<topology_dim>(topology_id));
-      ++topology_id;
-    }
-  }
-                         );
-}
-#endif
 
 template <int dim>
 template <int sdim>
@@ -111,7 +84,7 @@ GridHandler<dim>::
 init_cache(ElementAccessor &elem,
            std::shared_ptr<const Quadrature<sdim>> quad) const
 {
-  Assert(quad != nullptr,ExcNullPtr());
+  Assert(quad != nullptr, ExcNullPtr());
 
   elem.quad_list_.template get_quad<sdim>() = quad;
 

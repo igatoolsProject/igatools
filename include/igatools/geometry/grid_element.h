@@ -64,7 +64,9 @@ public:
 
   using Point = Points<dim>;
 
+  using CacheFlags = grid_element::CacheFlags;
   using Flags = grid_element::Flags;
+
   /** @name Constructors */
   ///@{
 protected:

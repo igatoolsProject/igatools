@@ -46,6 +46,25 @@ enum class Flags
   weight    =    1L << 2
 };
 
+enum class CacheFlags
+{
+  /** Fill nothing */
+  none           =    0,
+
+  //public element information c
+  /** Quadrature points on the element */
+  point          =    1L << 1,
+
+  /** Quadrature weigths on the element */
+  weight         =    1L << 2
+};
+
+struct activate
+{
+  using FlagsToCache = std::map<Flags, CacheFlags>;
+  static FlagsToCache grid;
+};
+
 /**
  * Alias used to define the container for the points in the cache.
  */
@@ -53,7 +72,7 @@ class _Point
 {
 public:
   static const std::string name;
-  static const auto flag = Flags::point;
+  static const auto flag = CacheFlags::point;
 };
 
 /**
@@ -63,7 +82,7 @@ class _Weight
 {
 public:
   static const std::string name;
-  static const auto flag = Flags::weight;
+  static const auto flag = CacheFlags::weight;
 };
 
 } // end namespace grid_element
@@ -73,6 +92,7 @@ public:
 
 namespace domain_element
 {
+/** Quantities that can be requested from a domain element */
 enum class Flags
 {
   /** Fill nothing */
@@ -88,9 +108,12 @@ enum class Flags
   /** Quadrature weigths on the element */
   w_measure      =    1L << 3,
 
+  ext_normal     =    1L << 4
+
 };
 
 
+/** Auxiliary quantities stored in a local cache */
 enum class CacheFlags
 {
   /** Fill nothing */
@@ -116,22 +139,15 @@ struct activate
   using FlagsToGrid = std::map<Flags, grid_element::Flags>;
   static FlagsToGrid grid;
 };
-/**
- * Alias used to define the container for the points in the cache.
- */
-class _Point
+
+struct _Point
 {
-public:
   static const std::string name;
   static const auto flag = CacheFlags::point;
 };
 
-/**
- * Alias used to define the container for the quadrature weights in the cache.
- */
-class _Measure
+struct _Measure
 {
-public:
   static const std::string name;
   static const auto flag = CacheFlags::measure;
 };
