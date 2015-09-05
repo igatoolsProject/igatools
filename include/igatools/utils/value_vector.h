@@ -30,11 +30,12 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Container for objects of type T that refers to different evaluation points.
+ * @brief Container for objects of type T that refers to different evaluation
+ * points.
  *
  * This container class is derived from SafeSTLVector<T> with added a
- * function for printing its elements and a function for the reset of the element entries
- * using the proper default constructor.
+ * function for printing its elements and a function for the reset of the
+ * element entries using the proper default constructor.
  *
  * @tparam T Type of elements stored in the object.
  *

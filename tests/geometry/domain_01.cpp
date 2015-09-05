@@ -31,8 +31,6 @@
 
 #include "../tests.h"
 
-//#include <igatools/functions/identity_function.h>
-
 
 template<int dim, int codim>
 void domain()

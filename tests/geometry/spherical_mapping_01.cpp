@@ -18,68 +18,45 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for the BallFunction class as a mapping
- *
- *  author: pauletti
- *  date: 2014-10-24
- *
+/**
+ *  @file
+ *  @brief Ball Domain
+ *  @author pauletti
+ *  @date 2015-09-02
  */
+
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/geometry/domain_lib.h>
 
 #include "../tests.h"
 
-#include <igatools/functions/function_lib.h>
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
-
-
 template <int dim>
-void mapping_values()
+void ball_domain()
 {
-  using Function = functions::BallFunction<dim>;
+  OUTSTART
 
-  auto flag = ValueFlags::point | ValueFlags::value |
-              ValueFlags::gradient |
-              ValueFlags::hessian |
-              ValueFlags::measure|
-              ValueFlags::w_measure;
+  using Grid = Grid<dim>;
+  using Domain = domains::BallDomain<dim>;
+  auto grid = Grid::const_create();
+  auto domain = Domain::create(grid);
 
-  auto quad = QUniform<dim>(3);
-  auto grid = Grid<dim>::create();
+  using Flags = typename Domain::ElementAccessor::Flags;
 
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
+  auto flag = Flags::measure | Flags::w_measure | Flags::point;
 
+  auto handler = domain->create_cache_handler();
+  handler->template set_flags<dim>(flag);
+  auto quad = QUniform<dim>::create(3);
+  auto elem = domain->cbegin();
+  handler->init_cache(elem, quad);
+  auto  end = domain->cend();
 
-  using Mapping   = Mapping<dim, 0>;
-  using ElementIt = typename Mapping::ElementIterator;
-  auto map = Mapping::create(F);
-  map->reset(flag, quad);
-
-//    ElementIt elem(map, 0);
-//    ElementIt end(map, IteratorState::pass_the_end);
-  ElementIt elem = map->begin();
-  ElementIt end = map->end();
-
-  map->template init_cache<dim>(elem);
   for (; elem != end; ++elem)
   {
-    map->template fill_cache<dim>(elem, 0);
+    handler->template fill_cache<dim>(elem, 0);
 
     out << "Points:" << endl;
-    elem->get_points().print_info(out);
-    out << endl;
-    out << "Values:" << endl;
-    elem->template get_values<_Value, dim>(0).print_info(out);
-    out << endl;
-    out << "Gradients:" << endl;
-    elem->template get_values<_Gradient, dim>(0).print_info(out);
-    out << endl;
-    out << "Hessians:" << endl;
-    elem->template get_values<_Hessian, dim>(0).print_info(out);
+    elem->template get_points<dim>(0).print_info(out);
     out << endl;
     out << "Measure:" << endl;
     elem->template get_measures<dim>(0).print_info(out);
@@ -88,16 +65,16 @@ void mapping_values()
     elem->template get_w_measures<dim>(0).print_info(out);
     out << endl;
   }
+
+  OUTEND
 }
 
 
 int main()
 {
-  out.depth_console(10);
-
-  mapping_values<1>();
-  mapping_values<2>();
-  mapping_values<3>();
+  ball_domain<1>();
+  ball_domain<2>();
+  ball_domain<3>();
 
   return 0;
 }

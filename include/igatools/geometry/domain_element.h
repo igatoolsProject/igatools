@@ -178,8 +178,8 @@ public:
   ValueVector<Real> get_w_measures(const int s_id) const;
 
 
-  ValueVector<SafeSTLArray<Point, codim_>>
-                                        get_exterior_normals() const;
+  ValueVector<SafeSTLArray<Point, codim_> >
+  get_exterior_normals() const;
 
 #if 0
   using MetricTensor =

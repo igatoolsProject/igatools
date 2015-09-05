@@ -19,12 +19,12 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-include_files = ['utils/safe_stl_array.h']
+include_files = ['utils/safe_stl_array.h','/base/tensor.h']
 data = Instantiation(include_files)
 f = data.file_output
 inst = data.inst
 
-normals = ['SafeSTLArray<Points<%d>, %d>' %(x.dim, x.codim) for x in inst.all_mapping_dims]
+normals = ['SafeSTLArray<Points<%d>, %d>' %(x.space_dim, x.codim) for x in inst.sub_mapping_dims + inst.mapping_dims]
 curvatures = ['SafeSTLVector<Real>']    
 value_vectors=['ValueVector<Real>']
 

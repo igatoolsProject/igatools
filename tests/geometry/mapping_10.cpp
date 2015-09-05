@@ -27,8 +27,6 @@
 
 #include "../tests.h"
 
-//#include <igatools/geometry/mapping.h>
-//#include <igatools/geometry/mapping_element.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
