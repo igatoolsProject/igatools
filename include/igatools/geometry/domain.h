@@ -88,7 +88,7 @@ public:
 //  /**
 //   * Type for the gradient of the function.
 //   */
-//  using Gradient = Derivative<1>;
+  using Gradient = Derivative<1>;
 //
 //  /**
 //   * Type for the hessian of the function.

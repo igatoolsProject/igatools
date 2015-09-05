@@ -27,7 +27,7 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = \
-  []
+  ['ValueVector<Real> DomainElementBase<dim, cod, ContainerType<dim,cod>>::get_w_measures<k>(const int s_id) const;']
 #['const ValueVector<Points<dim+cod>> & DomainElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
 
 elements = []
@@ -40,7 +40,7 @@ for x in inst.sub_mapping_dims:
     elements.append(elem)
     for fun in sub_dim_members:
         k = x.dim
-        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
+        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k)).replace('ContainerType', '%s' % (el));
         f.write('template ' + s + '\n')
 
 for x in inst.mapping_dims:
@@ -50,7 +50,7 @@ for x in inst.mapping_dims:
     elements.append(elem)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
-            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
+            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim).replace('ContainerType', '%s' % (el))
             f.write('template ' + s + '\n')
  
 accs1 =  ['DomainElement',       'ConstDomainElement']

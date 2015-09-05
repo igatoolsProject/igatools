@@ -43,6 +43,7 @@ public:
   using ListIt = typename ContainerType_::ListIt;
 
   using Point =  typename ContainerType_::Point;
+  using Gradient =  typename ContainerType_::Gradient;
 
   using Flags = domain_element::Flags;
 
@@ -89,10 +90,11 @@ public:
 
   /**
    * @name Comparison operators
-   * @note In order to be meaningful, the comparison must be performed on elements defined on
+   * @note In order to be meaningful, the comparison must be performed on
+   * elements defined on
    * the <b>same grid</b>
-   * (in the sense that the pointer to the grid held by the element must point to the same
-   * grid object).
+   * (in the sense that the pointer to the grid held by the element must
+   * point to the same grid object).
    */
   ///@{
   /**
@@ -176,10 +178,8 @@ public:
   }
 
   template<int sdim>
-  ValueVector<Real> const &get_w_measures(const int s_id) const
-  {
-    return get_values_from_cache<_W_Measure,sdim>(s_id);
-  }
+  ValueVector<Real> get_w_measures(const int s_id) const;
+
 #if 0
   const ValueVector<Points<space_dim> > &get_external_normals() const;
 
@@ -231,12 +231,14 @@ private:
 
 public:
   using _Point     = domain_element::_Point;
-  using _W_Measure = domain_element::_W_Measure;
+  using _Measure   = domain_element::_Measure;
+  using _Gradient  = domain_element::_Gradient;
 
 private:
   using CType = boost::fusion::map<
-                boost::fusion::pair< _Point,     DataWithFlagStatus<ValueVector<Point>> >,
-                boost::fusion::pair< _W_Measure, DataWithFlagStatus<ValueVector<Real>> >
+                boost::fusion::pair< _Point,    DataWithFlagStatus<ValueVector<Point>> >,
+                boost::fusion::pair< _Measure,  DataWithFlagStatus<ValueVector<Real>> >,
+                boost::fusion::pair< _Gradient, DataWithFlagStatus<ValueVector<Gradient>> >
                 >;
 //                ,
 //                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
@@ -247,8 +249,6 @@ private:
 //                  >;
 
   using Cache = PointValuesCache<dim_,CType>;
-
-//  using Cache = FuncValuesCache<dim_, CType>;
 
 public:
   using CacheType = AllSubElementsCache<Cache>;

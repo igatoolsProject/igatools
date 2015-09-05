@@ -82,6 +82,20 @@ operator >(const self_t &elem) const
 }
 
 
+template<int dim_, int codim_, class ContainerType_>
+template<int sdim>
+auto
+DomainElementBase<dim_, codim_, ContainerType_>::
+get_w_measures(const int s_id) const -> ValueVector<Real>
+{
+  const auto &meas = get_values_from_cache<_Measure, sdim>(s_id);
+  const auto &w = grid_elem_->template get_weights<sdim>(s_id);
+  auto w_meas = meas;
+  auto it_w = w.begin();
+  for (auto &w_m : w_meas)
+    w_m *= *(it_w);
+  return w_meas;
+}
 
 #if 0
 template<int dim_, int codim_, class ContainerType_>

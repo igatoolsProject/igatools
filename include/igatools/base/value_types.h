@@ -78,11 +78,18 @@ enum class Flags
   /** Fill nothing */
   none           =    0,
 
+  //public element information c
   /** Quadrature points on the element */
   point          =    1L << 1,
 
   /** Quadrature weigths on the element */
-  w_measure      =    1L << 2
+  measure        =    1L << 2,
+
+  /** Quadrature weigths on the element */
+  w_measure      =    1L << 3,
+
+  // internal cache flags
+  gradient       =    1L << 4
 };
 
 /**
@@ -98,12 +105,19 @@ public:
 /**
  * Alias used to define the container for the quadrature weights in the cache.
  */
-class _W_Measure
+class _Measure
 {
 public:
   static const std::string name;
-  static const auto flag = Flags::w_measure;
+  static const auto flag = Flags::measure;
 };
+
+struct _Gradient
+{
+  static const std::string name;
+  static const auto flag = Flags::gradient;
+};
+
 
 } // end namespace grid_element
 //------------------------------------------------------------------------------

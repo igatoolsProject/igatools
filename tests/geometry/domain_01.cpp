@@ -53,7 +53,7 @@ void domain()
   auto handler = domain->create_cache_handler();
 
   handler->template set_flags<dim>(flag);
-//    handler->template set_flags<sdim>(s_flag);
+  //handler->template set_flags<sdim>(s_flag);
 
   auto quad   = QGauss<dim>::create(2);
 //    auto s_quad = QGauss<sdim>::create(1);
@@ -66,11 +66,12 @@ void domain()
   {
     handler->template fill_cache<dim>(elem, 0);
     elem->template get_points<dim>(0).print_info(out);
+    elem->template get_w_measures<dim>(0).print_info(out);
     out << endl;
 
 //      for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
 //      {
-//        cache_handler->template fill_cache<sdim>(elem, s_id);
+//       handler->template fill_cache<sdim>(elem, s_id);
 //        elem->template get_points<sdim>(s_id).print_info(out);
 //        out << endl;
 //      }

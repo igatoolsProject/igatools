@@ -53,12 +53,30 @@ set_flags(const topology_variant &sdim,
 {
   using GridFlags = typename GridType::ElementHandler::Flags;
   GridFlags grid_flag = GridFlags::none;
+  Flags dom_flag = flag;
 
   //point => grid::point
-  grid_flag |= GridFlags::point;
+  if (contains(flag, Flags::point))
+    grid_flag |= GridFlags::point;
+
+  //w_measure => grid::weight
+  if (contains(flag, Flags::w_measure))
+  {
+    grid_flag |= GridFlags::weight;
+    dom_flag  |= Flags::gradient|Flags::measure;
+
+  }
+
+  if (contains(flag, Flags::measure))
+  {
+    dom_flag  |= Flags::gradient;
+  }
+
+
+
   grid_handler_->set_flags(sdim, grid_flag);
 
-  auto disp = SetFlagsDispatcher(flag, flags_);
+  auto disp = SetFlagsDispatcher(dom_flag, flags_);
   boost::apply_visitor(disp, sdim);
 
 #if 0
@@ -77,8 +95,6 @@ set_flags(const topology_variant &sdim,
 
   F_->reset(mapping_to_function_flags(m_flags), eval_pts);
 
-  auto reset_dispatcher = ResetDispatcher(m_flags, flags_);
-  boost::apply_visitor(reset_dispatcher, eval_pts);
 #endif
 }
 
@@ -114,11 +130,10 @@ fill_cache(const topology_variant &sdim,
            const int s_id) const-> void
 {
   grid_handler_->fill_cache(sdim, *(elem.grid_elem_), s_id);
-#if 0
-  F_->template fill_cache(elem, k, j);
-  auto fill_cache_dispatcher =FillCacheDispatcher(*F_, elem, j);
-  boost::apply_visitor(fill_cache_dispatcher, k);
-#endif
+
+  auto disp = FillCacheDispatcher(elem, s_id);
+  boost::apply_visitor(disp, sdim);
+
 }
 
 

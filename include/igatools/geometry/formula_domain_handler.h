@@ -86,7 +86,7 @@ public:
     void operator()(const Topology<sdim> &sub_elem)
     {
       using _Point = typename ConstElementAccessor::_Point;
-
+      using _Gradient = typename ConstElementAccessor::_Gradient;
 
       auto &local_cache = domain_handler_.get_element_cache(elem_);
       auto &cache = local_cache->template get_sub_elem_cache<sdim>(s_id_);
@@ -100,11 +100,11 @@ public:
           cache.template set_status_filled<domain_element::_Point>(true);
         }
 
-//        if (cache.template status_fill<_Gradient>())
-//        {
-//          function_.evaluate_1(cache_pts, cache.template get_data<_Gradient>());
-//          cache.template set_status_filled<_Gradient>(true);
-//        }
+        if (cache.template status_fill<_Gradient>())
+        {
+          domain_.evaluate_1(grid_pts, cache.template get_data<_Gradient>());
+          cache.template set_status_filled<_Gradient>(true);
+        }
 //        if (cache.template status_fill<_Hessian>())
 //        {
 //          function_.evaluate_2(cache_pts, cache.template get_data<_Hessian>());

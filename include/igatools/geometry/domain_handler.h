@@ -39,8 +39,8 @@ template <int, int> class ConstDomainElement;
  *
  * Domain is the physical domain, wether of a function or a space.
  *
- * It is a function with special properties: it codim is 0 and the map is always the
- * identity.
+ * It is a function with special properties: it codim is 0 and the map is always
+ * the identity.
  *
  * @todo we should thing about renaming mapping to physical domain
  *
@@ -176,7 +176,8 @@ public:
   }
 
 protected:
-  std::shared_ptr<typename ConstElementAccessor::CacheType> &get_element_cache(ConstElementAccessor &elem) const
+  std::shared_ptr<typename ConstElementAccessor::CacheType>
+  &get_element_cache(ConstElementAccessor &elem) const
   {
     return  elem.local_cache_;
   }
@@ -238,38 +239,33 @@ private:
   };
 
 
-#if 0
 
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
-    FillCacheDispatcher(FuncType &F,
-                        ElementAccessor &domain_elem,
-                        const int sub_elem_id)
+    FillCacheDispatcher(ConstElementAccessor &elem,
+                        const int s_id)
       :
-      F_(F),
-      domain_elem_(domain_elem),
-      s_id_(sub_elem_id)
-
+      elem_(elem),
+      s_id_(s_id)
     {}
 
+
     template<int sdim>
-    void operator()(const Topology<sdim> &sub_elem)
+    void operator()(const Topology<sdim> &)
     {
-      const int s_id=s_id_;
-      auto &elem = domain_elem_;
+      using _Gradient = typename ElementAccessor::_Gradient;
+      using _Measure = typename ElementAccessor::_Measure;
 
-      // TODO (pauletti, Nov 6, 2014): provide a lighter function for this
-      const auto n_points = elem.get_grid_elem()->template get_quad<sdim>()->
-      get_num_points();
+      const auto n_points = elem_.grid_elem_->template get_quad<sdim>()->get_num_points();
 
-      auto &cache = elem.local_cache_->template get_sub_elem_cache<sdim>(s_id);
+      auto &cache = elem_.local_cache_->template get_sub_elem_cache<sdim>(s_id_);
 
       if (cache.template status_fill<_Measure>())
       {
-        auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id);
+        auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id_);
 
-        const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
-        typename MapFunction<sdim, space_dim>::Gradient DF1;
+        const auto &DF = cache.template get_data<_Gradient>();
+        typename Domain<sdim, space_dim-sdim>::Gradient DF1;
 
         auto &measures = cache.template get_data<_Measure>();
         for (int pt = 0 ; pt < n_points; ++pt)
@@ -282,20 +278,8 @@ private:
         cache.template set_status_filled<_Measure>(true);
       }
 
-      if (cache.template status_fill<_W_Measure>())
-      {
-        const auto &w = elem.grid_elem_->template get_weights<sdim>(s_id);
 
-        const auto &measures = cache.template get_data<_Measure>();
-
-        auto &w_measures = cache.template get_data<_W_Measure>();
-
-        for (int pt = 0 ; pt < n_points; ++pt)
-          w_measures[pt] = w[pt] * measures[pt];
-
-        cache.template set_status_filled<_W_Measure>(true);
-      }
-
+#if 0
       if (cache.template status_fill<_InvGradient>())
       {
         // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
@@ -384,17 +368,15 @@ private:
 
         cache.template set_status_filled<_Curvature>(true);
       }
+#endif
       cache.set_filled(true);
     }
 
-    FuncType &F_;
-    ElementAccessor &domain_elem_;
-    int s_id_;
+    ConstElementAccessor &elem_;
+    const int s_id_;
   };
 
 
-
-#endif
 
 private:
   std::shared_ptr<DomainType> domain_;
