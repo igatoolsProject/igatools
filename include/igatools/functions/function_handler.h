@@ -22,17 +22,19 @@
 #define __FUNCTION_HANDLER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/tensor.h>
-#include <igatools/geometry/unit_element.h>
-#include <igatools/utils/value_vector.h>
-#include <igatools/base/quadrature.h>
-#include <igatools/geometry/grid_iterator.h>
-#include <igatools/base/value_types.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/functions/function.h>
+#include <igatools/geometry/domain_handler.h>
+
+//#include <igatools/base/tensor.h>
+//#include <igatools/geometry/unit_element.h>
+//#include <igatools/utils/value_vector.h>
+//#include <igatools/base/quadrature.h>
+//#include <igatools/geometry/grid_iterator.h>
+//#include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN
 
-template <int,int> class Domain;
-template <int,int> class DomainHandler;
 template <int, int, int, int, class> class FunctionElementBase;
 template <int, int, int, int> class FunctionElement;
 template <int, int, int, int> class ConstFunctionElement;
@@ -49,8 +51,7 @@ class FunctionElementHandler :
 private:
   using self_t = FunctionElementHandler<dim_, codim_, range_, rank_>;
 
-public:
-  using FuncType = const Function<dim_, codim_, range_, rank_>;
+
 
 public:
   static const int space_dim = dim_ + codim_;
@@ -59,23 +60,24 @@ public:
   static const int range     = range_;
   static const int rank      = rank_;
 
-  using DomainType = Domain<dim_, codim_>;
-  using DomainHandlerType = DomainHandler<dim_, codim_>;
+  using FuncType = const Function<dim_, codim_, range_, rank_>;
+  using DomainType = const Domain<dim_, codim_>;
+  using DomainHandlerType = typename DomainType::ElementHandler;
+
   using ElementAccessor = typename FuncType::ElementAccessor;
   using ElementIterator = typename FuncType::ElementIterator;
   using ConstElementAccessor = typename FuncType::ConstElementAccessor;
   using ElementConstIterator = typename FuncType::ElementConstIterator;
 
-
-
   using List = typename DomainType::List;
   using ListIt = typename DomainType::ListIt;
   using Flags = function_element::Flags;
-public:
-  //using Flags = typename ElementAccessor::Flags;
-protected:
-  using FlagsArray = SafeSTLArray<Flags, dim+1>;
+  using CacheFlags = function_element::CacheFlags;
 
+protected:
+  using FlagsArray = SafeSTLArray<CacheFlags, dim+1>;
+
+#if 0
   /** Types for the input/output evaluation arguments */
   ///@{
   /**
@@ -109,6 +111,7 @@ protected:
    */
   using Div = Values<space_dim, space_dim, rank_-1>;
   ///@}
+#endif
 
   using topology_variant = TopologyVariants<dim_>;
 
@@ -118,7 +121,7 @@ protected:
 
   /** @name Constructors and destructor. */
   ///@{
-protected:
+private:
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -130,10 +133,10 @@ public:
   /** Constructor */
   FunctionElementHandler(std::shared_ptr<FuncType> func);
 
-  /**
-   * Copy constructor.
-   */
-  FunctionElementHandler(const self_t &func);
+//  /**
+//   * Copy constructor.
+//   */
+//  FunctionElementHandler(const self_t &func);
 
 public:
   /** Destructor */
@@ -141,9 +144,24 @@ public:
   ///@}
 
 
+  static std::shared_ptr<self_t>
+  create(std::shared_ptr<FuncType> func)
+  {
+    return std::shared_ptr<self_t>(new self_t(func));
+  }
 
-  //virtual std::shared_ptr<base_t> clone() const = 0;
 
+  static std::shared_ptr<const self_t>
+  const_create(std::shared_ptr<FuncType> func)
+  {
+    return create(func);
+  }
+
+
+  std::shared_ptr<const FuncType> get_function() const
+  {
+    return func_;
+  }
 
   virtual void set_flags(const topology_variant &sdim,
                          const Flags &flag);
@@ -157,9 +175,6 @@ public:
     this->init_cache(*elem, quad);
   }
 
-//    void init_element_cache(ElementAccessor &elem) const;
-//
-//    void init_element_cache(ElementIterator &elem) const;
 
   virtual void fill_cache(const topology_variant &sdim,
                           ConstElementAccessor &elem,
@@ -172,15 +187,6 @@ public:
     this->fill_cache(sdim, *elem, s_id);
   }
 
-//    void fill_element_cache(ElementAccessor &elem) const;
-//    void fill_element_cache(ElementIterator &elem) const;
-//    std::shared_ptr<typename ElementAccessor::CacheType>
-//    &get_cache(ElementAccessor &elem);
-
-  std::shared_ptr<const FuncType> get_function() const
-  {
-    return func_;
-  }
 
 protected:
   std::shared_ptr<FuncType> func_;

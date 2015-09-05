@@ -64,7 +64,7 @@ public:
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the Function @p func.
    */
-  DomainElementBase(const std::shared_ptr<ContainerType_> phys_dom,
+  DomainElementBase(const std::shared_ptr<ContainerType_> domain,
                     const ListIt &index,
                     const PropId &prop = ElementProperties::active);
 
@@ -253,7 +253,7 @@ public:
   using CacheType = AllSubElementsCache<Cache>;
 
 private:
-  std::shared_ptr<ContainerType_> phys_dom_;
+  std::shared_ptr<ContainerType_> domain_;
 
   std::unique_ptr<GridElem> grid_elem_;
 

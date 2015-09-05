@@ -34,15 +34,9 @@ FunctionElementBase(const std::shared_ptr<ContainerType_> func,
                     const PropId &prop)
   :
   func_(func),
-  phys_domain_elem_(func->get_physical_domain()->create_element(index,prop))
-{
-//    Assert(func_ != nullptr, ExcNullPtr());
-//    Assert(grid_elem_ != nullptr, ExcNullPtr());
-//
-//    auto phys_domain = func->get_phys_domain();
-//    phys_domain_elem_ = phys_domain->create_element(index,prop);
-//    Assert(phys_domain_elem_ != nullptr, ExcNullPtr());
-}
+  domain_elem_(func->get_domain()->create_element(index,prop))
+{}
+
 
 #if 0
 template<int dim, int codim, int range, int rank,  class ContainerType_>
@@ -54,13 +48,13 @@ FunctionElementBase(const self_t &elem,
 {
   if (copy_policy == CopyPolicy::shallow)
   {
-    all_sub_elems_cache_ = elem.all_sub_elems_cache_;
-    phys_domain_elem_ = elem.phys_domain_elem_;
+    local_cache_ = elem.local_cache_;
+    domain_elem_ = elem.domain_elem_;
   }
   else
   {
-    all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
-    phys_domain_elem_ = std::make_shared<DomainElem>(*elem.phys_domain_elem_,CopyPolicy::deep);
+    local_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.local_cache_);
+    domain_elem_ = std::make_shared<DomainElem>(*elem.domain_elem_,CopyPolicy::deep);
   }
 }
 #endif
@@ -71,7 +65,7 @@ auto
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 get_domain_element() const -> const DomainElem &
 {
-  return *phys_domain_elem_;
+  return *domain_elem_;
 }
 
 template<int dim, int codim, int range, int rank,  class ContainerType_>
@@ -79,7 +73,7 @@ auto
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 get_domain_element() -> DomainElem &
 {
-  return *phys_domain_elem_;
+  return *domain_elem_;
 }
 
 
@@ -91,7 +85,7 @@ operator==(const self_t &a) const
 {
   Assert(func_ == a.func_,
          ExcMessage("The elements cannot be compared because defined with different functions."));
-  return (phys_domain_elem_ == a.phys_domain_elem_);
+  return (*domain_elem_ == *(a.domain_elem_));
 }
 
 
@@ -102,7 +96,7 @@ operator!=(const self_t &a) const
 {
   Assert(func_ == a.func_,
          ExcMessage("The elements cannot be compared because defined with different functions."));
-  return (phys_domain_elem_ != a.phys_domain_elem_);
+  return (*domain_elem_ != *(a.domain_elem_));
 }
 
 template<int dim, int codim, int range, int rank,  class ContainerType_>
@@ -112,7 +106,7 @@ operator<(const self_t &a) const
 {
   Assert(func_ == a.func_,
          ExcMessage("The elements cannot be compared because defined with different functions."));
-  return (phys_domain_elem_ < a.phys_domain_elem_);
+  return (*domain_elem_ < *(a.domain_elem_));
 }
 
 
@@ -123,37 +117,17 @@ operator>(const self_t &a) const
 {
   Assert(func_ == a.func_,
          ExcMessage("The elements cannot be compared because defined with different functions."));
-  return (phys_domain_elem_ > a.phys_domain_elem_);
+  return (*domain_elem_ > *(a.domain_elem_));
 }
 
 
-#if 0
-template<int dim, int codim, int range, int rank,  class ContainerType_>
-void
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-move_to(const Index flat_index)
-{
-  grid_elem_->move_to(flat_index);
-  phys_domain_elem_->move_to(flat_index);
-}
-
-
-template<int dim, int codim, int range, int rank,  class ContainerType_>
-auto
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-phys_domain_elem_ const -> IndexType
-{
-  return grid_elem_->phys_domain_elem_;
-}
-
-#endif
 
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 void
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 print_info(LogStream &out) const
 {
-  // grid_elem_->print_info(out);
+  Assert(false, ExcNotImplemented());
 }
 
 
@@ -163,7 +137,7 @@ void
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 print_cache_info(LogStream &out) const
 {
-  all_sub_elems_cache_->print_info(out);
+  local_cache_->print_info(out);
 }
 
 
@@ -177,11 +151,11 @@ serialize(Archive &ar, const unsigned int version)
   ar &boost::serialization::make_nvp("FunctionElement_base_t",
                                      boost::serialization::base_object<GridElement<dim>>(*this));
 
-  ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
+  ar &boost::serialization::make_nvp("all_sub_elems_cache_",local_cache_);
 
   ar &boost::serialization::make_nvp("func_",func_);
   ar &boost::serialization::make_nvp("grid_elem_",grid_elem_);
-  ar &boost::serialization::make_nvp("phys_domain_elem_",phys_domain_elem_);
+  ar &boost::serialization::make_nvp("phys_domain_elem_",domain_elem_);
 }
 #endif // SERIALIZATION
 

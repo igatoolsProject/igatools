@@ -24,19 +24,12 @@
 
 #include <igatools/functions/function.h>
 #include <igatools/functions/function_handler.h>
-//#include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_element.h>
 
-#include <igatools/base/value_types.h>
-#include <igatools/basis_functions/values_cache.h>
+//#include <igatools/base/value_types.h>
+//#include <igatools/basis_functions/values_cache.h>
 
 IGA_NAMESPACE_OPEN
-template<int , int , class> class DomainElementBase;
-template <int,int> class DomainElement;
-template <int,int> class ConstDomainElement;
-//template <int,int> class Domain;
-//template <int,int> class DomainElement;
-
-
 
 /**
  *
@@ -54,15 +47,16 @@ public:
   using DomainElem = typename ContainerType_::DomainType::ConstElementAccessor;
 
   using ListIt = typename ContainerType_::ListIt;
-  using Flags = function_element::Flags;
 
   using Value = typename ContainerType_::Value;
-  using Gradient = typename ContainerType_::Gradient;
-  using Hessian  = typename ContainerType_::Hessian;
-  using Div      = typename ContainerType_::Div;
-private:
+//  using Gradient = typename ContainerType_::Gradient;
+//  using Hessian  = typename ContainerType_::Hessian;
+//  using Div      = typename ContainerType_::Div;
   template <int order>
   using Derivative = typename ContainerType_::template Derivative<order>;
+
+  using Flags = function_element::Flags;
+  using CacheFlags = function_element::CacheFlags;
 
 protected:
   /** @name Constructors */
@@ -114,18 +108,57 @@ public:
   self_t &operator=(self_t &&elem) = default;
   ///@}
 
+  /**
+     * @name Comparison operators.
+     *
+     * @brief The comparison operators compares the <em>position</em> of the element in the grid.
+     *
+     * @warning To be comparable, two Function objects must be defined using the same Function
+     * (and therefore on the same grid),
+     * otherwise an assertion will be raised (in Debug mode).
+     */
+  ///@{
+  /** Returns TRUE if the two elements have the same index on the grid. */
+  bool operator==(const self_t &a) const;
+
+
+  /** Returns TRUE if the two elements have different indices on the grid. */
+  bool operator!=(const self_t &a) const;
+
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is smaller than the the index of the element on the right.
+   * */
+  bool operator<(const self_t &a) const;
+
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is bigger than the the index of the element on the right.
+   * */
+  bool operator>(const self_t &a) const;
+  ///@}
+
+  ListIt &operator++()
+  {
+    return (++(*domain_elem_));
+  }
 
 
   const DomainElem &get_domain_element() const;
+
   DomainElem &get_domain_element();
+
+  void print_info(LogStream &out) const;
+
+  void print_cache_info(LogStream &out) const;
 
   template<class ValueType, int sdim>
   auto
   get_values(const int s_id) const
   {
-    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
+    Assert(local_cache_ != nullptr,ExcNullPtr());
     const auto &cache =
-      all_sub_elems_cache_->template get_sub_elem_cache<sdim>(s_id);
+      local_cache_->template get_sub_elem_cache<sdim>(s_id);
     return cache.template get_data<ValueType>();
   }
 
@@ -159,36 +192,21 @@ public:
 
 #endif
 
-  /**
-   * Returns the <tt>topology_dim</tt> dimensional topology_id-th sub-element measure
-   * multiplied by the weights of the quadrature.
-   */
-  template <int topology_dim>
-  ValueVector<Real> get_w_measures(const int topology_id) const
-  {
-    ValueVector<Real> w_meas;
-    Assert(false,ExcNotImplemented());
-
-    return w_meas;
-  }
 
 
-
-  ListIt &operator++()
-  {
-    return (++(*phys_domain_elem_));
-  }
 
 
   using _Value = function_element::_Value;
   using _Gradient = function_element::_Gradient;
+  using _D2 = function_element::_D2;
 
 private:
 
 
   using CType = boost::fusion::map<
                 boost::fusion::pair<     _Value,DataWithFlagStatus<ValueVector<Value>>>,
-                boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>
+                boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
+                boost::fusion::pair<  _D2,DataWithFlagStatus<ValueVector<Derivative<2>>>>
                 >;
 
 
@@ -199,61 +217,28 @@ public:
   using CacheType = AllSubElementsCache<Cache>;
 
 private:
-
-
-  //TODO (martinelli, Aug 13, 2015): this function should not be public.
   std::shared_ptr<CacheType>
   &get_cache()
   {
-    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
-    return all_sub_elems_cache_;
+    Assert(local_cache_ != nullptr,ExcNullPtr());
+    return local_cache_;
   }
+
 
 private:
   std::shared_ptr<ContainerType_> func_;
 
-  std::unique_ptr<DomainElem> phys_domain_elem_;
+  std::unique_ptr<DomainElem> domain_elem_;
 
-  std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
+  std::shared_ptr<CacheType> local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
   friend class FunctionElementHandler<dim, codim, range, rank>;
 
-public:
-  void print_info(LogStream &out) const;
-
-  void print_cache_info(LogStream &out) const;
 
 
-  /**
-   * @name Comparison operators.
-   *
-   * @brief The comparison operators compares the <em>position</em> of the element in the grid.
-   *
-   * @warning To be comparable, two Function objects must be defined using the same Function
-   * (and therefore on the same grid),
-   * otherwise an assertion will be raised (in Debug mode).
-   */
-  ///@{
-  /** Returns TRUE if the two elements have the same index on the grid. */
-  bool operator==(const self_t &a) const;
 
 
-  /** Returns TRUE if the two elements have different indices on the grid. */
-  bool operator!=(const self_t &a) const;
-
-  /**
-   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-   * is smaller than the the index of the element on the right.
-   * */
-  bool operator<(const self_t &a) const;
-
-  /**
-   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-   * is bigger than the the index of the element on the right.
-   * */
-  bool operator>(const self_t &a) const;
-  ///@}
 
 //
 //    /** Returns the index of the element. */

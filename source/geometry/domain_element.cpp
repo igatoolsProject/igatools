@@ -25,12 +25,12 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_, class ContainerType_>
 DomainElementBase<dim_, codim_, ContainerType_>::
-DomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
+DomainElementBase(std::shared_ptr<ContainerType_> domain,
                   const ListIt &index,
                   const PropId &prop)
   :
-  phys_dom_(phys_dom),
-  grid_elem_(phys_dom_->get_grid()->create_element(index,prop))
+  domain_(domain),
+  grid_elem_(domain_->get_grid()->create_element(index,prop))
 {}
 
 
@@ -40,7 +40,7 @@ bool
 DomainElementBase<dim_, codim_, ContainerType_>::
 operator ==(const self_t &elem) const
 {
-  Assert(phys_dom_ == elem.phys_dom_,
+  Assert(domain_ == elem.domain_,
          ExcMessage("Cannot compare elements on different grid."));
   return (*grid_elem_ == *(elem.grid_elem_));
 }
@@ -52,7 +52,7 @@ bool
 DomainElementBase<dim_, codim_, ContainerType_>::
 operator !=(const self_t &elem) const
 {
-  Assert(phys_dom_ == elem.phys_dom_,
+  Assert(domain_ == elem.domain_,
          ExcMessage("Cannot compare elements on different grid."));
   return (*grid_elem_ != *(elem.grid_elem_));
 }
@@ -64,7 +64,7 @@ bool
 DomainElementBase<dim_, codim_, ContainerType_>::
 operator <(const self_t &elem) const
 {
-  Assert(phys_dom_ == elem.phys_dom_,
+  Assert(domain_ == elem.domain_,
          ExcMessage("Cannot compare elements on different grid."));
   return (*grid_elem_ < *(elem.grid_elem_));
 }
@@ -76,7 +76,7 @@ bool
 DomainElementBase<dim_, codim_, ContainerType_>::
 operator >(const self_t &elem) const
 {
-  Assert(phys_dom_ == elem.phys_dom_,
+  Assert(domain_ == elem.domain_,
          ExcMessage("Cannot compare elements on different grid."));
   return (*grid_elem_ > *(elem.grid_elem_));
 }

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __PHYSICAL_DOMAIN_CACHE_HANDLER_H_
-#define __PHYSICAL_DOMAIN_CACHE_HANDLER_H_
+#ifndef __DOMAIN_HANDLER_H_
+#define __DOMAIN_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/grid.h>
@@ -100,11 +100,13 @@ protected:
   /** Typedef for the mapping hessian. */
   using Hessian = typename FuncType::Hessian;
 
-  using topology_variant = typename FuncType::topology_variant;
-  using eval_pts_variant = typename FuncType::eval_pts_variant;
 #endif
+
   using topology_variant = TopologyVariants<dim_>;
-  using eval_pts_variant = SubElemPtrVariants<Quadrature,dim_>;
+
+  template<int k>
+  using ConstQuad = const Quadrature<k>;
+  using eval_pts_variant = SubElemPtrVariants<ConstQuad,dim_>;
 
 private:
   /**
