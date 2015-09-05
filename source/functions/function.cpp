@@ -21,29 +21,29 @@
 #include <igatools/functions/function.h>
 #include <igatools/functions/function_element.h>
 //#include <igatools/utils/unique_id_generator.h>
-#include <igatools/geometry/domain.h>
-#include <igatools/geometry/domain_element.h>
+//#include <igatools/geometry/domain.h>
+//#include <igatools/geometry/domain_element.h>
 
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
-Function(std::shared_ptr<const DomainType> phys_dom)
+Function(std::shared_ptr<const DomainType> domain)
   :
-  phys_domain_(phys_dom)
+  domain_(domain)
   // object_id_(UniqueIdGenerator::get_unique_id())
 {
-  Assert(phys_dom != nullptr, ExcNullPtr());
+  Assert(domain != nullptr, ExcNullPtr());
 }
 
 
 
-template<int dim_, int codim_, int range_, int rank_>
-Function<dim_, codim_, range_, rank_ >::
-Function(const self_t &func)
-  :
-  phys_domain_(func.phys_domain_)
-{}
+//template<int dim_, int codim_, int range_, int rank_>
+//Function<dim_, codim_, range_, rank_ >::
+//Function(const self_t &func)
+//  :
+//  domain_(func.domain_)
+//{}
 
 
 
@@ -94,7 +94,7 @@ Function<dim_, codim_, range_, rank_ >::
 begin(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
-  phys_domain_->get_grid()->get_elements_with_property(prop).begin(),
+  domain_->get_grid()->get_elements_with_property(prop).begin(),
   prop);
 }
 
@@ -106,7 +106,7 @@ Function<dim_, codim_, range_, rank_ >::
 end(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
-  phys_domain_->get_grid()->get_elements_with_property(prop).end(),
+  domain_->get_grid()->get_elements_with_property(prop).end(),
   prop);
 }
 
@@ -138,7 +138,7 @@ Function<dim_, codim_, range_, rank_ >::
 cbegin(const PropId &prop) const -> ElementConstIterator
 {
   return ElementConstIterator(this->shared_from_this(),
-                              phys_domain_->get_grid()->get_elements_with_property(prop).end(),
+                              domain_->get_grid()->get_elements_with_property(prop).end(),
                               prop);
 }
 
@@ -150,7 +150,7 @@ Function<dim_, codim_, range_, rank_ >::
 cend(const PropId &prop) const -> ElementConstIterator
 {
   return ElementConstIterator(this->shared_from_this(),
-                              phys_domain_->get_grid()->get_elements_with_property(prop).end(),
+                              domain_->get_grid()->get_elements_with_property(prop).end(),
                               prop);
 }
 

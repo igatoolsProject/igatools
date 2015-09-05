@@ -74,14 +74,33 @@ domain_element::activate::FlagsToGrid activate::grid =
 };
 //---------------------------------------------------------------------
 
-
-
 //---------------------------------------------------------------------
-const function_element::Flags function_element::_Value::flag;
-const string function_element::_Value::name = "Function values";
+namespace function_element
+{
+const CacheFlags _Value::flag;
+const string _Value::name = "Funtion Values";
 
-const function_element::Flags function_element::_Gradient::flag;
-const string function_element::_Gradient::name = "Function gradients";
+const CacheFlags _Gradient::flag;
+const string _Gradient::name = "Fuction gradients";
+
+const CacheFlags _D2::flag;
+const string _D2::name = "Function D2";
+
+activate::FlagsToCache  activate::function =
+{
+  {Flags::value, CacheFlags::value},
+  {Flags::gradient, CacheFlags::gradient},
+  {Flags::D2, CacheFlags::D2}
+};
+
+function_element::activate::FlagsToDomain activate::domain =
+{
+  {Flags::value, domain_element::Flags::none},
+  {Flags::gradient, domain_element::Flags::none},
+  {Flags::D2, domain_element::Flags::none}
+};
+
+};
 //---------------------------------------------------------------------
 
 

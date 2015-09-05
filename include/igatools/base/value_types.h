@@ -98,36 +98,28 @@ enum class Flags
   /** Fill nothing */
   none           =    0,
 
-  //public element information c
-  /** Quadrature points on the element */
   point          =    1L << 1,
 
-  /** Quadrature weigths on the element */
   measure        =    1L << 2,
 
-  /** Quadrature weigths on the element */
   w_measure      =    1L << 3,
 
   ext_normal     =    1L << 4
-
 };
 
 
 /** Auxiliary quantities stored in a local cache */
 enum class CacheFlags
 {
-  /** Fill nothing */
   none           =    0,
 
-  //public element information c
-  /** Quadrature points on the element */
-  point          =    1L << 1,
+  measure        =    1L << 1,
 
-  /** Quadrature weigths on the element */
-  measure        =    1L << 2,
+  point          =    1L << 2,
 
-  // internal cache flags
-  gradient       =    1L << 4
+  gradient       =    1L << 3,
+
+  D2             =    1L << 4
 };
 
 
@@ -159,7 +151,7 @@ struct _Gradient
 };
 
 
-} // end namespace grid_element
+}
 //------------------------------------------------------------------------------
 
 
@@ -169,28 +161,59 @@ struct _Gradient
  */
 namespace function_element
 {
+/** Quantities that can be requested from a function element */
 enum class Flags
 {
   /** Fill nothing */
   none           =    0,
 
-  /** Function values */
   value          =    1L << 1,
 
-  /** Function gradients */
-  gradient       =    1L << 2
+  gradient       =    1L << 2,
+
+  D2             =    1L << 3
+
+};
+
+
+/** Auxiliary quantities stored in a local cache */
+enum class CacheFlags
+{
+  none           =    0,
+
+  value          =    1L << 1,
+
+  gradient       =    1L << 2,
+
+  D2             =    1L << 3
+};
+
+
+struct activate
+{
+  using FlagsToCache = std::map<Flags, CacheFlags>;
+  static FlagsToCache function;
+
+  using FlagsToDomain = std::map<Flags, domain_element::Flags>;
+  static FlagsToDomain domain;
 };
 
 struct _Value
 {
   static const std::string name;
-  static const auto flag = Flags::value;
+  static const auto flag = CacheFlags::value;
 };
 
 struct _Gradient
 {
   static const std::string name;
-  static const auto flag = Flags::gradient;
+  static const auto flag = CacheFlags::gradient;
+};
+
+struct _D2
+{
+  static const std::string name;
+  static const auto flag = CacheFlags::D2;
 };
 
 } // end namespace function_element

@@ -22,32 +22,18 @@
 #define __FUNCTION_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/tensor.h>
-#include <igatools/geometry/unit_element.h>
-#include <igatools/utils/value_vector.h>
-#include <igatools/base/quadrature.h>
-#include <igatools/geometry/grid.h>
-#include <igatools/geometry/grid_iterator.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_handler.h>
+
+//#include <igatools/base/tensor.h>
+//#include <igatools/geometry/unit_element.h>
+//#include <igatools/utils/value_vector.h>
+//#include <igatools/base/quadrature.h>
+//#include <igatools/geometry/grid.h>
+//#include <igatools/geometry/grid_iterator.h>
 
 IGA_NAMESPACE_OPEN
 
-
-//namespace function_element
-//{
-//enum class Flags
-//{
-//  /** Fill nothing */
-//  none           =    0,
-//
-//  /** Quadrature points on the element */
-//  value          =    1L << 1,
-//
-//  /** Quadrature weigths on the element */
-//  gradient       =    1L << 2
-//};
-//}
-
-template <int,int> class Domain;
 template <int, int, int, int, class> class FunctionElementBase;
 template <int, int, int, int> class FunctionElement;
 template <int, int, int, int> class ConstFunctionElement;
@@ -71,23 +57,25 @@ public:
   static const int range     = range_;
   static const int rank      = rank_;
 
-  using GridType = Grid<dim_>;
-  using DomainType = Domain<dim_, codim_>;
+  //using DomainType = Grid<dim_>;
+  using DomainType = const Domain<dim_, codim_>;
 
   using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;
   using ConstElementAccessor = ConstFunctionElement<dim_, codim_, range_, rank_>;
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
+
   using ElementHandler = FunctionElementHandler<dim_, codim_, range_, rank_>;
 
-  using List = typename GridType::List;
-  using ListIt = typename GridType::ListIt;
+  using List = typename DomainType::List;
+  using ListIt = typename DomainType::ListIt;
+
   /** Types for the input/output evaluation arguments */
   ///@{
   /**
    * Type for the input argument of the function.
    */
-  using Point = Points<space_dim>;
+//  using Point = Points<space_dim>;
 
   /**
    * Type for the return of the function.
@@ -100,25 +88,25 @@ public:
   template <int order>
   using Derivative = Derivatives<space_dim, range_, rank_, order>;
 
-  /**
-   * Type for the gradient of the function.
-   */
-  using Gradient = Derivative<1>;
-
-  /**
-   * Type for the hessian of the function.
-   */
-  using Hessian = Derivative<2>;
-
-  /**
-   * Type for the divergence of function.
-   */
-  using Div = Values<space_dim, space_dim, rank_-1>;
+//  /**
+//   * Type for the gradient of the function.
+//   */
+//  using Gradient = Derivative<1>;
+//
+//  /**
+//   * Type for the hessian of the function.
+//   */
+//  using Hessian = Derivative<2>;
+//
+//  /**
+//   * Type for the divergence of function.
+//   */
+//  using Div = Values<space_dim, space_dim, rank_-1>;
   ///@}
 
   /** @name Constructors and destructor. */
   ///@{
-protected:
+private:
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -126,22 +114,37 @@ protected:
    */
   Function() = default;
 
+protected:
   /** Constructor */
-  Function(std::shared_ptr<const DomainType> phys_dom);
+  Function(std::shared_ptr<DomainType> domain);
 
-  /**
-   * Copy constructor.
-   */
-  Function(const self_t &func);
+//  /**
+//   * Copy constructor.
+//   */
+//  Function(const self_t &func);
 
 public:
   /** Destructor */
   virtual ~Function() = default;
   ///@}
 
-  std::shared_ptr<const DomainType> get_physical_domain() const
+  static std::shared_ptr<self_t>
+  create(std::shared_ptr<DomainType> grid)
   {
-    return phys_domain_;
+    return std::shared_ptr<self_t>(new self_t(grid));
+  }
+
+
+  static std::shared_ptr<const self_t>
+  const_create(std::shared_ptr<DomainType> grid)
+  {
+    return create(grid);
+  }
+
+
+  std::shared_ptr<const DomainType> get_domain() const
+  {
+    return domain_;
   }
 
 
@@ -196,9 +199,13 @@ public:
   }
 
 
-
 private:
-  std::shared_ptr<const DomainType> phys_domain_;
+  std::shared_ptr<const DomainType> domain_;
+
+  friend class FunctionElementBase<dim_, codim_, range_, rank_, Function<dim_, codim_, range_, rank_>>;
+  friend class FunctionElementBase<dim_, codim_, range_, rank_, const Function<dim_, codim_, range_, rank_>>;
+  friend class FunctionElement<dim_, codim_, range_, rank_>;
+  friend class ConstFunctionElement<dim_, codim_, range_, rank_>;
 
 
 
