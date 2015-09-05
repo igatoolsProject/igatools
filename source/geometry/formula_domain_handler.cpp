@@ -38,8 +38,10 @@ fill_cache(const topology_variant &sdim,
            ConstElementAccessor &elem,
            const int s_id) const  -> void
 {
-// std::dynamic_pointer_cast<DomainType>(this->get_domain());
-  auto disp = FillCacheDispatcher(*std::dynamic_pointer_cast<DomainType>(this->get_domain()), *this, elem, s_id);
+  get_grid_handler()->fill_cache(sdim, elem.get_grid_element(), s_id);
+
+  auto domain = *std::dynamic_pointer_cast<DomainType>(this->get_domain());
+  auto disp = FillCacheDispatcher(domain, *this, elem, s_id);
   boost::apply_visitor(disp, sdim);
 
   parent_t::fill_cache(sdim, elem, s_id);

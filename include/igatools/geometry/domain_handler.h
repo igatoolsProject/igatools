@@ -376,7 +376,12 @@ private:
     const int s_id_;
   };
 
-
+protected:
+  std::shared_ptr<const GridHandler>
+  get_grid_handler() const
+  {
+    return grid_handler_;
+  }
 
 private:
   std::shared_ptr<DomainType> domain_;
