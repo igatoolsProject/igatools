@@ -227,11 +227,12 @@ private:
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     {
       auto &cache = domain_handler_->get_element_cache(elem_);
+
+      const auto n_points = elem_.get_grid_element().template get_quad<sdim>()
+                                   ->get_num_points();
       for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
       {
         auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
-        const auto n_points = elem_.get_grid_element().template get_quad<sdim>()
-                              ->get_num_points();
         s_cache.resize(flags_[sdim], n_points);
       }
     }

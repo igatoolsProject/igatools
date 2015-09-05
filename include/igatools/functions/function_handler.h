@@ -163,8 +163,15 @@ public:
     return func_;
   }
 
+  //Is this really virtual?
   virtual void set_flags(const topology_variant &sdim,
                          const Flags &flag);
+
+  template <int sdim>
+  void set_flags(const Flags &flag)
+  {
+    this->set_flags(Topology<sdim>(), flag);
+  }
 
   virtual void init_cache(ConstElementAccessor &elem,
                           const eval_pts_variant &quad) const;
@@ -187,13 +194,26 @@ public:
     this->fill_cache(sdim, *elem, s_id);
   }
 
+  template <int sdim>
+  void fill_cache(ElementConstIterator &elem,
+      const int s_id)
+  {
+    this->fill_cache(Topology<sdim>(), elem, s_id);
+  }
 
 protected:
+  std::shared_ptr<typename ConstElementAccessor::CacheType>
+  &get_element_cache(ConstElementAccessor &elem) const
+  {
+    return  elem.local_cache_;
+  }
+
+private:
   std::shared_ptr<FuncType> func_;
 
   std::shared_ptr<DomainHandlerType> domain_handler_;
-  FlagsArray flags_;
 
+  FlagsArray flags_;
 
 private:
   /**
@@ -202,7 +222,7 @@ private:
    */
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
+    SetFlagsDispatcher(const CacheFlags flag, FlagsArray &flags)
       :
       flag_(flag),
       flags_(flags)
@@ -214,7 +234,7 @@ private:
       flags_[sdim] = flag_;
     }
 
-    const Flags flag_;
+    const CacheFlags flag_;
     FlagsArray &flags_;
   };
 
@@ -225,24 +245,25 @@ private:
    */
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
-    InitCacheDispatcher(const FlagsArray &flags,
-                        ConstElementAccessor &elem)
+    InitCacheDispatcher(ConstElementAccessor &elem,
+        const FlagsArray &flags)
       :
-      flags_(flags),
-      elem_(elem)
+      elem_(elem),
+      flags_(flags)
     {}
 
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     {
       auto &cache = elem_.all_sub_elems_cache_;
-      if (cache == nullptr)
-      {
-        using Cache = typename ConstElementAccessor::CacheType;
-        cache = std::make_shared<Cache>();
-      }
+//      if (cache == nullptr)
+//      {
+//        using Cache = typename ConstElementAccessor::CacheType;
+//        cache = std::make_shared<Cache>();
+//      }
 
-      const auto n_pts = quad->get_num_points();
+      const auto n_pts = elem_.get_domain_element().get_grid_element().template
+                  get_quad<sdim>()->get_num_points();
       for (const auto s_id: UnitElement<dim_>::template elems_ids<sdim>())
       {
         auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
@@ -250,8 +271,8 @@ private:
       }
     }
 
-    const FlagsArray &flags_;
     ConstElementAccessor &elem_;
+    const FlagsArray &flags_;
   };
 
 
