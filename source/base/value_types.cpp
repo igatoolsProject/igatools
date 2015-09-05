@@ -37,15 +37,33 @@ const string grid_element::_Weight::name = "Element Quadrature Weights";
 
 
 //---------------------------------------------------------------------
-const domain_element::Flags domain_element::_Point::flag;
+const domain_element::CacheFlags domain_element::_Point::flag;
 const string domain_element::_Point::name = "Element Quadrature Points";
 
-const domain_element::Flags domain_element::_Measure::flag;
+const domain_element::CacheFlags domain_element::_Measure::flag;
 const string domain_element::_Measure::name = "Element measure";
 
-const domain_element::Flags domain_element::_Gradient::flag;
+const domain_element::CacheFlags domain_element::_Gradient::flag;
 const string domain_element::_Gradient::name = "domain gradients";
 
+domain_element::activate::FlagsToCache  domain_element::activate::domain =
+{
+  {domain_element::Flags::point, domain_element::CacheFlags::point},
+  {
+    domain_element::Flags::w_measure, domain_element::CacheFlags::gradient|
+    domain_element::CacheFlags::measure
+  },
+  {
+    domain_element::Flags::measure, domain_element::CacheFlags::gradient|
+    domain_element::CacheFlags::measure
+  }
+};
+domain_element::activate::FlagsToGrid domain_element::activate::grid =
+{
+  {domain_element::Flags::point, grid_element::Flags::point},
+  {domain_element::Flags::w_measure, grid_element::Flags::weight},
+  {domain_element::Flags::measure, grid_element::Flags::none}
+};
 //---------------------------------------------------------------------
 
 

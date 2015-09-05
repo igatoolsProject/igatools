@@ -26,7 +26,7 @@
 #include <boost/mpl/map.hpp>
 #include <boost/mpl/int.hpp>
 
-
+#include<map>
 #include <string>
 
 IGA_NAMESPACE_OPEN
@@ -88,10 +88,34 @@ enum class Flags
   /** Quadrature weigths on the element */
   w_measure      =    1L << 3,
 
+};
+
+
+enum class CacheFlags
+{
+  /** Fill nothing */
+  none           =    0,
+
+  //public element information c
+  /** Quadrature points on the element */
+  point          =    1L << 1,
+
+  /** Quadrature weigths on the element */
+  measure        =    1L << 2,
+
   // internal cache flags
   gradient       =    1L << 4
 };
 
+
+struct activate
+{
+  using FlagsToCache = std::map<Flags, CacheFlags>;
+  static FlagsToCache domain;
+
+  using FlagsToGrid = std::map<Flags, grid_element::Flags>;
+  static FlagsToGrid grid;
+};
 /**
  * Alias used to define the container for the points in the cache.
  */
@@ -99,7 +123,7 @@ class _Point
 {
 public:
   static const std::string name;
-  static const auto flag = Flags::point;
+  static const auto flag = CacheFlags::point;
 };
 
 /**
@@ -109,13 +133,13 @@ class _Measure
 {
 public:
   static const std::string name;
-  static const auto flag = Flags::measure;
+  static const auto flag = CacheFlags::measure;
 };
 
 struct _Gradient
 {
   static const std::string name;
-  static const auto flag = Flags::gradient;
+  static const auto flag = CacheFlags::gradient;
 };
 
 

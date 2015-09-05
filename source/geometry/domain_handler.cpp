@@ -53,23 +53,29 @@ set_flags(const topology_variant &sdim,
 {
   using GridFlags = typename GridType::ElementHandler::Flags;
   GridFlags grid_flag = GridFlags::none;
-  Flags dom_flag = flag;
+  CacheFlags dom_flag = CacheFlags::none;
 
   //point => grid::point
   if (contains(flag, Flags::point))
-    grid_flag |= GridFlags::point;
+  {
+    grid_flag |= domain_element::activate::grid[Flags::point];
+    dom_flag  |= domain_element::activate::domain[Flags::point];
+  }
 
   //w_measure => grid::weight
   if (contains(flag, Flags::w_measure))
   {
-    grid_flag |= GridFlags::weight;
-    dom_flag  |= Flags::gradient|Flags::measure;
+    grid_flag |= domain_element::activate::grid[Flags::w_measure];
+    dom_flag  |= domain_element::activate::domain[Flags::w_measure];
+    //dom_flag  |= Flags::gradient|Flags::measure;
 
   }
 
   if (contains(flag, Flags::measure))
   {
-    dom_flag  |= Flags::gradient;
+    grid_flag  |= domain_element::activate::grid[Flags::measure];
+    dom_flag  |= domain_element::activate::domain[Flags::measure];
+    //dom_flag  |= Flags::gradient;
   }
 
 

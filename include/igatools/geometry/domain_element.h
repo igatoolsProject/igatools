@@ -46,11 +46,8 @@ public:
   using Gradient =  typename ContainerType_::Gradient;
 
   using Flags = domain_element::Flags;
+  using CacheFlags = domain_element::CacheFlags;
 
-
-//    static const int dim = dim_;
-//    static const int codim = codim_;
-// static const int space_dim = dim_+codim_;
 
   /** @name Constructors */
   ///@{
