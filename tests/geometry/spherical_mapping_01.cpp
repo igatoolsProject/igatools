@@ -38,7 +38,7 @@ void ball_domain()
   using Grid = Grid<dim>;
   using Domain = domains::BallDomain<dim>;
   auto grid = Grid::const_create();
-  auto domain = Domain::create(grid);
+  auto domain = Domain::const_create(grid);
 
   using Flags = typename Domain::ElementAccessor::Flags;
 

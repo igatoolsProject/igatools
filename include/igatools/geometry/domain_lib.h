@@ -60,6 +60,11 @@ public:
   static std::shared_ptr<base_t>
   create(std::shared_ptr<GridType> grid);
 
+  static std::shared_ptr<base_t>
+  const_create(std::shared_ptr<GridType> grid)
+  {
+    return create(grid);
+  }
 
   BallDomain(const self_t &) = default;
   virtual ~BallDomain() = default;
