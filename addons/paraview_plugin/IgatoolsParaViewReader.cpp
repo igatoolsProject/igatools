@@ -48,7 +48,6 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
     phys_gen_ (PhysGenPtr_()),
     parm_gen_ (ParmGenPtr_())
 {
-    std::cout << "Constructor begin" << std::endl;
 #ifndef NDEBUG
     this->DebugOn();
 #else
@@ -58,7 +57,6 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
     this->SetNumberOfInputPorts(0); // No vtk input, this is not a filter.
     this->SetNumberOfOutputPorts(1); // Just one output.
 
-    std::cout << "Constructor end" << std::endl;
 }
 
 
@@ -68,7 +66,6 @@ int IgatoolsParaViewReader::RequestInformation(
     vtkInformationVector **vtkNotUsed(inputVector),
     vtkInformationVector *outputVector)
 {
-    std::cout << "Request info begin" << std::endl;
     vtkInformation *info = outputVector->GetInformationObject(0);
 
     vtkDataObject *output = info->Get(vtkDataObject::DATA_OBJECT());
@@ -77,7 +74,6 @@ int IgatoolsParaViewReader::RequestInformation(
     if (!mb)
         return 0;
 
-    std::cout << "Request info end" << std::endl;
     if (parse_file_)
         return this->parse_file();
 
@@ -89,10 +85,8 @@ int IgatoolsParaViewReader::RequestInformation(
 
 int IgatoolsParaViewReader::FillOutputPortInformation(int port, vtkInformation *info)
 {
-    std::cout << "Hola " << port << std::endl;
 
     info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkMultiBlockDataSet");
-//    vtkDataObject *output = info->Get(vtkDataObject::DATA_OBJECT());
     return 1;
 }
 
@@ -106,7 +100,6 @@ int IgatoolsParaViewReader::RequestData(
     vtkInformationVector *outputVector)
 {
 
-    std::cout << "request data begin" << std::endl;
 
     vtkInformation *info = outputVector->GetInformationObject(0);
     vtkDataObject *output = info->Get(vtkDataObject::DATA_OBJECT());
@@ -119,7 +112,6 @@ int IgatoolsParaViewReader::RequestData(
     this->update_grid_info ();
     return this->create_grids (mb);
 
-    std::cout << "request data end" << std::endl;
 }
 
 
@@ -161,7 +153,6 @@ int
 IgatoolsParaViewReader::
 parse_file ()
 {
-    std::cout << "parse file begin" << std::endl;
     if (this->CanReadFile(file_name_) == 0)
         return 0;
 
@@ -239,7 +230,6 @@ parse_file ()
 
         return 0;
     }
-    std::cout << "parse file end" << std::endl;
 
     return 1;
 }
