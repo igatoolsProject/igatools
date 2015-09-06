@@ -22,15 +22,11 @@
 #define __FORMULA_FUNCTION_H_
 
 #include <igatools/functions/function.h>
-#include <igatools/geometry/domain.h>
-#include <igatools/geometry/domain_element.h>
-#include <igatools/base/value_types.h>
+#include <igatools/functions/function_element.h>
 
-#if 0
 IGA_NAMESPACE_OPEN
 
-
-template <int,int> class Mapping;
+template <int, int, int, int> class FormulaFunctionHandler;
 
 /**
  *
@@ -43,36 +39,25 @@ private:
   using parent_t = Function<dim, codim, range, rank>;
   using self_t = FormulaFunction<dim, codim, range, rank>;
 protected:
-  using typename parent_t::GridType;
+  using typename parent_t::DomainType;
+  using ElementHandler = FormulaFunctionHandler<dim, codim, range, rank>;
 public:
-  using typename parent_t::topology_variant;
-  using typename parent_t::eval_pts_variant;
-  using typename parent_t::Point;
   using typename parent_t::Value;
-  using typename parent_t::Gradient;
-  using typename parent_t::ElementIterator;
-  using typename parent_t::ElementAccessor;
-  using parent_t::space_dim;
-  using typename parent_t::PhysDomain;
+  using typename parent_t::Point;
 
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
-  FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<PhysDomain> map);
+  FormulaFunction(std::shared_ptr<DomainType> domain);
 
-  FormulaFunction(const self_t &func);
+ // FormulaFunction(const self_t &func);
 
   virtual ~FormulaFunction() = default;
 
-#if 0
-  void reset(const ValueFlags &flag, const eval_pts_variant &quad) override final;
+  std::shared_ptr<typename parent_t::ElementHandler>
+  create_cache_handler() const;
 
-  void init_cache(ElementAccessor &elem, const topology_variant &k) const override final;
-
-  void fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) const override final;
-#endif
-
-private:
+public:
 
   virtual void evaluate_0(const ValueVector<Point> &points,
                           ValueVector<Value> &values) const = 0;
@@ -83,10 +68,7 @@ private:
   virtual void evaluate_2(const ValueVector<Point> &points,
                           ValueVector<Derivative<2>> &values) const = 0;
 
-private:
-  std::shared_ptr<PhysDomain> mapping_;
 
-//    typename PhysDomain::ElementIterator map_elem_;
 
 #if 0
   struct FillCacheDispatcher : boost::static_visitor<void>
@@ -144,4 +126,4 @@ private:
 IGA_NAMESPACE_CLOSE
 
 #endif
-#endif
+

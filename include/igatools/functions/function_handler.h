@@ -26,13 +26,6 @@
 #include <igatools/functions/function.h>
 #include <igatools/geometry/domain_handler.h>
 
-//#include <igatools/base/tensor.h>
-//#include <igatools/geometry/unit_element.h>
-//#include <igatools/utils/value_vector.h>
-//#include <igatools/base/quadrature.h>
-//#include <igatools/geometry/grid_iterator.h>
-//#include <igatools/base/value_types.h>
-
 IGA_NAMESPACE_OPEN
 
 template <int, int, int, int, class> class FunctionElementBase;
@@ -45,13 +38,11 @@ template <int, int, int, int> class ConstFunctionElement;
  * @ingroup serializable
  */
 template<int dim_, int codim_ = 0, int range_ = 1, int rank_ = 1>
-class FunctionElementHandler :
-  public std::enable_shared_from_this<FunctionElementHandler<dim_,codim_,range_,rank_> >
+class FunctionHandler :
+  public std::enable_shared_from_this<FunctionHandler<dim_,codim_,range_,rank_> >
 {
 private:
-  using self_t = FunctionElementHandler<dim_, codim_, range_, rank_>;
-
-
+  using self_t = FunctionHandler<dim_, codim_, range_, rank_>;
 
 public:
   static const int space_dim = dim_ + codim_;
@@ -127,11 +118,11 @@ protected:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  FunctionElementHandler() = default;
+  FunctionHandler() = default;
 
 public:
   /** Constructor */
-  FunctionElementHandler(std::shared_ptr<FuncType> func);
+  FunctionHandler(std::shared_ptr<FuncType> func);
 
 //  /**
 //   * Copy constructor.
@@ -140,7 +131,7 @@ public:
 
 public:
   /** Destructor */
-  virtual ~FunctionElementHandler() = default;
+  virtual ~FunctionHandler() = default;
   ///@}
 
 
@@ -162,7 +153,12 @@ public:
   {
     return func_;
   }
-
+protected:
+  std::shared_ptr<const DomainHandlerType> get_domain_handler() const
+    {
+      return domain_handler_;
+    }
+public:
   //Is this really virtual?
   virtual void set_flags(const topology_variant &sdim,
                          const Flags &flag);

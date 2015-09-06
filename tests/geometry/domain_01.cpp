@@ -28,6 +28,8 @@
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/formula_domain.h>
 #include <igatools/geometry/domain_lib.h>
+#include <igatools/functions/function.h>
+#include <igatools/functions/function_element.h>
 
 #include "../tests.h"
 
@@ -43,12 +45,15 @@ void domain()
   using Domain = domains::BallDomain<dim>;
   auto grid = Grid::const_create();
   auto domain = Domain::create(grid);
+  using Function = Function<dim>;
 
-  using Flags = typename Domain::ElementAccessor::Flags;
+  auto  func = Function::create(domain);
 
-  auto flag = Flags::w_measure | Flags::point;
+  using Flags = typename Function::ElementAccessor::Flags;
+
+  auto flag = Flags::value;
   //auto s_flag = Flags::point;
-  auto handler = domain->create_cache_handler();
+  auto handler = func->create_cache_handler();
 
   handler->template set_flags<dim>(flag);
   //handler->template set_flags<sdim>(s_flag);
@@ -56,15 +61,15 @@ void domain()
   auto quad   = QGauss<dim>::create(2);
 //    auto s_quad = QGauss<sdim>::create(1);
 
-  auto elem = domain->cbegin();
+  auto elem = func->cbegin();
   handler->init_cache(elem, quad);
 //    cache_handler->template init_cache<sdim>(elem, s_quad);
 
-  for (; elem != domain->cend(); ++elem)
+  for (; elem != func->cend(); ++elem)
   {
     handler->template fill_cache<dim>(elem, 0);
-    elem->template get_points<dim>(0).print_info(out);
-    elem->template get_w_measures<dim>(0).print_info(out);
+    elem->template get_values<function_element::_Value, dim>(0).print_info(out);
+   // elem->template get_w_measures<dim>(0).print_info(out);
     out << endl;
 
 //      for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())

@@ -27,8 +27,8 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_, int range_, int rank_ >
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
-FunctionElementHandler(std::shared_ptr<FuncType> func)
+FunctionHandler<dim_, codim_, range_, rank_ >::
+FunctionHandler(std::shared_ptr<FuncType> func)
   :
   func_(func),
   domain_handler_(func_->get_domain()->create_cache_handler())
@@ -39,7 +39,7 @@ FunctionElementHandler(std::shared_ptr<FuncType> func)
 
 template<int dim_, int codim_, int range_, int rank_>
 void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
+FunctionHandler<dim_, codim_, range_, rank_ >::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
@@ -65,7 +65,7 @@ set_flags(const topology_variant &sdim,
 
 template<int dim_, int codim_, int range_, int rank_>
 void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
+FunctionHandler<dim_, codim_, range_, rank_ >::
 init_cache(ConstElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
@@ -87,7 +87,7 @@ init_cache(ConstElementAccessor &elem,
 
 template<int dim_, int codim_, int range_, int rank_>
 void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
+FunctionHandler<dim_, codim_, range_, rank_ >::
 fill_cache(const topology_variant &sdim,
            ConstElementAccessor &elem,
            const int s_id) const
@@ -103,7 +103,7 @@ fill_cache(const topology_variant &sdim,
 #ifdef SERIALIZATION
 template<int dim_, int codim_, int range_, int rank_>
 Index
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
+FunctionHandler<dim_, codim_, range_, rank_ >::
 get_object_id() const
 {
   return object_id_;
@@ -112,7 +112,7 @@ get_object_id() const
 
 template<int dim_, int codim_, int range_, int rank_>
 const std::string &
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
+FunctionHandler<dim_, codim_, range_, rank_ >::
 get_name() const
 {
   return name_;
@@ -120,7 +120,7 @@ get_name() const
 
 template<int dim_, int codim_, int range_, int rank_>
 void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
+FunctionHandler<dim_, codim_, range_, rank_ >::
 set_name(const std::string &name)
 {
   name_ = name;
@@ -129,7 +129,7 @@ set_name(const std::string &name)
 
 template<class Archive>
 void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
+FunctionHandler<dim_, codim_, range_, rank_ >::
 serialize(Archive &ar, const unsigned int version)
 {
   ar &boost::serialization::make_nvp("grid_elem_handler_",

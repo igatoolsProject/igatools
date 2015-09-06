@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
 template <int, int, int, int, class> class FunctionElementBase;
 template <int, int, int, int> class FunctionElement;
 template <int, int, int, int> class ConstFunctionElement;
-template <int, int, int, int> class FunctionElementHandler;
+template <int, int, int, int> class FunctionHandler;
 /**
  * Function Class
  *
@@ -65,7 +65,7 @@ public:
   using ConstElementAccessor = ConstFunctionElement<dim_, codim_, range_, rank_>;
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
-  using ElementHandler = FunctionElementHandler<dim_, codim_, range_, rank_>;
+  using ElementHandler = FunctionHandler<dim_, codim_, range_, rank_>;
 
   using List = typename DomainType::List;
   using ListIt = typename DomainType::ListIt;
@@ -75,7 +75,7 @@ public:
   /**
    * Type for the input argument of the function.
    */
-//  using Point = Points<space_dim>;
+  using Point = Points<space_dim>;
 
   /**
    * Type for the return of the function.

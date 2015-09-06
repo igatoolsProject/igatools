@@ -18,32 +18,37 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
-#include <igatools/functions/formula_function.h>
 #include <igatools/functions/formula_function_handler.h>
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, int codim, int range, int rank>
-FormulaFunction<dim, codim, range, rank>::
-FormulaFunction(std::shared_ptr<DomainType> domain)
+template<int dim_, int codim_, int range_, int rank_ >
+FormulaFunctionHandler<dim_, codim_, range_, rank_ >::
+FormulaFunctionHandler(std::shared_ptr<FuncType> func)
   :
-  parent_t::Function(domain)
+  parent_t::FunctionHandler(func)
 {}
 
 
 
-template<int dim, int codim, int range, int rank>
-auto
-FormulaFunction<dim, codim, range, rank>::
-create_cache_handler() const
--> std::shared_ptr<typename parent_t::ElementHandler>
+template<int dim_, int codim_, int range_, int rank_>
+void
+FormulaFunctionHandler<dim_, codim_, range_, rank_ >::
+fill_cache(const topology_variant &sdim,
+           ConstElementAccessor &elem,
+           const int s_id) const
 {
-  return std::make_shared<ElementHandler>(
-    std::dynamic_pointer_cast<const self_t>(this->shared_from_this()));
+  this->get_domain_handler()->fill_cache(sdim, elem.get_domain_element(), s_id);
+
+  FuncType &func = *std::dynamic_pointer_cast<FuncType>(this->get_function());
+  auto disp = FillCacheDispatcher(func, *this, elem, s_id);
+  boost::apply_visitor(disp, sdim);
+
+  parent_t::fill_cache(sdim, elem, s_id);
+
 }
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/functions/formula_function.inst>
+#include <igatools/functions/formula_function_handler.inst>
 

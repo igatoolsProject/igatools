@@ -18,84 +18,86 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __FORMULA_DOMAIN_HANDLER_H_
-#define __FORMULA_DOMAIN_HANDLER_H_
+#ifndef __FORMULA_FUNCTION_HANDLER_H_
+#define __FORMULA_FUNCTION_HANDLER_H_
 
-#include <igatools/geometry/domain_handler.h>
-#include <igatools/geometry/formula_domain.h>
+#include <igatools/functions/function_handler.h>
+#include <igatools/functions/formula_function.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
  *
  */
-template<int dim, int codim>
-class FormulaDomainHandler :
-  public  DomainHandler<dim, codim>
+template<int dim, int codim=0, int range = 1, int rank = 1>
+class FormulaFunctionHandler :
+  public FunctionHandler<dim, codim, range, rank>
 {
 private:
-  using parent_t = DomainHandler<dim, codim>;
-  using self_t = FormulaDomainHandler<dim, codim>;
+  using parent_t = FunctionHandler<dim, codim, range, rank>;
+  using self_t = FormulaFunctionHandler<dim, codim, range, rank>;
 protected:
-  using typename parent_t::GridType;
+  using typename parent_t::DomainType;
+  ///using typename ElementHandler = FormulaFunctionHandler<dim, codim, range, rank>;
 public:
-  using DomainType =  const FormulaDomain<dim,codim>;
+  using FuncType = const FormulaFunction<dim, codim, range, rank>;
   using typename parent_t::ConstElementAccessor;
 
   using typename parent_t::topology_variant;
   using typename parent_t::eval_pts_variant;
 
-  FormulaDomainHandler(std::shared_ptr<DomainType> domain);
+  FormulaFunctionHandler(std::shared_ptr<FuncType> domain);
 
-
-  virtual ~FormulaDomainHandler() = default;
-
+  virtual ~FormulaFunctionHandler() = default;
 
   void fill_cache(const topology_variant &sdim,
-                  ConstElementAccessor &elem,
-                  const int s_id) const override;
+                    ConstElementAccessor &elem,
+                    const int s_id) const override;
 
 private:
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
-    FillCacheDispatcher(const DomainType &domain,
-                        const self_t &domain_handler,
-                        ConstElementAccessor &elem,
-                        const int s_id)
-      :
-      domain_(domain),
-      domain_handler_(domain_handler),
+    FillCacheDispatcher(const FuncType &func,
+        const self_t &func_handler,
+        ConstElementAccessor &elem,
+        const int s_id)
+    :
+      func_(func),
+      func_handler_(func_handler),
       elem_(elem),
       s_id_(s_id)
-    {}
+      {}
+
 
 
     template<int sdim>
     void operator()(const Topology<sdim> &sub_elem)
     {
-      using _Point = typename ConstElementAccessor::_Point;
+      using _Value = typename ConstElementAccessor::_Value;
       using _Gradient = typename ConstElementAccessor::_Gradient;
 
-      auto &local_cache = domain_handler_.get_element_cache(elem_);
+      auto &local_cache = func_handler_.get_element_cache(elem_);
       auto &cache = local_cache->template get_sub_elem_cache<sdim>(s_id_);
+
+
 
       if (!cache.fill_none())
       {
-        const auto &grid_pts = elem_.get_grid_element().template get_points<sdim>(s_id_);
-        if (cache.template status_fill<domain_element::_Point>())
-        {
-          domain_.evaluate_0(grid_pts, cache.template get_data<_Point>());
-          cache.template set_status_filled<domain_element::_Point>(true);
-        }
+        const auto &points = elem_.get_domain_element().template get_points<sdim>(s_id_);
 
+        if (cache.template status_fill<_Value>())
+        {
+          func_.evaluate_0(points, cache.template get_data<_Value>());
+          cache.template set_status_filled<_Value>(true);
+        }
         if (cache.template status_fill<_Gradient>())
         {
-          domain_.evaluate_1(grid_pts, cache.template get_data<_Gradient>());
+          func_.evaluate_1(points, cache.template get_data<_Gradient>());
           cache.template set_status_filled<_Gradient>(true);
         }
-//        if (cache.template status_fill<_Hessian>())
+//        if (cache.template status_fill<_D2>())
 //        {
-//          function_.evaluate_2(cache_pts, cache.template get_data<_Hessian>());
+//          function_.evaluate_2(points, cache.template get_data<_Hessian>());
 //          cache.template set_status_filled<_Hessian>(true);
 //        }
 //        if (cache.template status_fill<_Divergence>())
@@ -105,15 +107,18 @@ private:
       cache.set_filled(true);
     }
 
-    const DomainType &domain_;
-    const self_t     &domain_handler_;
+    const FuncType &func_;
+    const self_t     &func_handler_;
     ConstElementAccessor &elem_;
     const int s_id_;
+
   };
 
   friend struct FillCacheDispatcher;
+
 };
 
 IGA_NAMESPACE_CLOSE
 
 #endif
+

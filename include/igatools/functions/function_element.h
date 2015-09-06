@@ -233,7 +233,7 @@ private:
   std::shared_ptr<CacheType> local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
-  friend class FunctionElementHandler<dim, codim, range, rank>;
+  friend class FunctionHandler<dim, codim, range, rank>;
 
 
 

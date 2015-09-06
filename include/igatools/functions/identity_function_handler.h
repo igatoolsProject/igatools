@@ -56,10 +56,10 @@ create_id_tensor()
  */
 template<int dim, int space_dim = dim>
 class IdentityFunctionElementHandler :
-  public FunctionElementHandler<dim, 0, space_dim, 1>
+  public FunctionHandler<dim, 0, space_dim, 1>
 {
 private:
-  using parent_t = FunctionElementHandler<dim, 0, space_dim, 1>;
+  using parent_t = FunctionHandler<dim, 0, space_dim, 1>;
   using self_t = IdentityFunctionElementHandler<dim,space_dim>;
 
 protected:
