@@ -52,7 +52,7 @@ void domain()
 
   using Flags = typename Function::ElementAccessor::Flags;
 
-  auto flag = Flags::value;
+  auto flag = Flags::value | Flags::gradient;
   //auto s_flag = Flags::point;
   auto handler = func->create_cache_handler();
 
@@ -70,6 +70,7 @@ void domain()
   {
     handler->template fill_cache<dim>(elem, 0);
     elem->template get_values<function_element::_Value, dim>(0).print_info(out);
+    elem->template get_values<function_element::_Gradient, dim>(0).print_info(out);
     // elem->template get_w_measures<dim>(0).print_info(out);
     out << endl;
 

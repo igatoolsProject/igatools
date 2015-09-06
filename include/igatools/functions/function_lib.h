@@ -52,7 +52,7 @@ public:
   static std::shared_ptr<base_t>
   create(std::shared_ptr<DomainType> domain, const Value &b);
 
-  static std::shared_ptr<base_t>
+  static std::shared_ptr<const base_t>
   const_create(std::shared_ptr<DomainType> domain, const Value &b)
   {
     return create(domain, b);
