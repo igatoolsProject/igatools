@@ -21,8 +21,8 @@
 #include <igatools/geometry/domain_handler.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
-#include <igatools/functions/function.h>
-#include <igatools/functions/function_handler.h>
+//#include <igatools/functions/function.h>
+//#include <igatools/functions/function_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -63,48 +63,10 @@ set_flags(const topology_variant &sdim,
       dom_flag  |= domain_element::activate::domain[fl];
     }
 
-//  if (contains(flag, Flags::point))
-//  {
-//    grid_flag |= domain_element::activate::grid[Flags::point];
-//    dom_flag  |= domain_element::activate::domain[Flags::point];
-//  }
-//
-//  if (contains(flag, Flags::w_measure))
-//  {
-//    grid_flag |= domain_element::activate::grid[Flags::w_measure];
-//    dom_flag  |= domain_element::activate::domain[Flags::w_measure];
-//  }
-//
-//  if (contains(flag, Flags::measure))
-//  {
-//    grid_flag  |= domain_element::activate::grid[Flags::measure];
-//    dom_flag  |= domain_element::activate::domain[Flags::measure];
-//  }
-
-
-
   grid_handler_->set_flags(sdim, grid_flag);
 
   auto disp = SetFlagsDispatcher(dom_flag, flags_);
   boost::apply_visitor(disp, sdim);
-
-#if 0
-  const auto valid_flags = ElementAccessor::get_valid_flags();
-  auto m_flags = flags & valid_flags;
-
-  if (contains(flags, ValueFlags::boundary_normal) ||
-      contains(flags, ValueFlags::curvature))
-    m_flags |= ValueFlags::inv_gradient;
-
-  if (contains(flags, ValueFlags::curvature))
-    m_flags |= ValueFlags::outer_normal;
-
-  if (contains(flags, ValueFlags::w_measure))
-    m_flags |= ValueFlags::measure;
-
-  F_->reset(mapping_to_function_flags(m_flags), eval_pts);
-
-#endif
 }
 
 

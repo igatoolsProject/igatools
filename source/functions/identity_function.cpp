@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
+#if 0
 #include <igatools/geometry/domain.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/functions/function_element.h>
@@ -91,3 +91,4 @@ IGA_NAMESPACE_CLOSE
 
 #include <igatools/functions/identity_function.inst>
 
+#endif

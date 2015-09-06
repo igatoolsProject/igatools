@@ -121,7 +121,7 @@ protected:
 
   /** @name Constructors and destructor. */
   ///@{
-private:
+protected:
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -255,12 +255,7 @@ private:
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     {
-      auto &cache = elem_.all_sub_elems_cache_;
-//      if (cache == nullptr)
-//      {
-//        using Cache = typename ConstElementAccessor::CacheType;
-//        cache = std::make_shared<Cache>();
-//      }
+      auto &cache = elem_.local_cache_;
 
       const auto n_pts = elem_.get_domain_element().get_grid_element().template
                   get_quad<sdim>()->get_num_points();

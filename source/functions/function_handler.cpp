@@ -31,7 +31,7 @@ FunctionElementHandler<dim_, codim_, range_, rank_ >::
 FunctionElementHandler(std::shared_ptr<FuncType> func)
   :
   func_(func),
-  domain_handler_(func_->get_physical_domain()->create_cache_handler())
+  domain_handler_(func_->get_domain()->create_cache_handler())
   // object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
@@ -43,7 +43,21 @@ FunctionElementHandler<dim_, codim_, range_, rank_ >::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
-  auto disp = SetFlagsDispatcher(flag, flags_);
+  using DomainFlags = typename DomainType::ElementHandler::Flags;
+  DomainFlags  dom_flag = DomainFlags::none;
+  CacheFlags func_flag = CacheFlags::none;
+
+  SafeSTLVector<Flags> all_flags ={Flags::value, Flags::gradient, Flags::D2};
+  for (auto &fl : all_flags)
+    if (contains(flag, fl))
+    {
+      dom_flag  |= function_element::activate::domain[fl];
+      func_flag |= function_element::activate::function[fl];
+    }
+
+  domain_handler_->set_flags(sdim, dom_flag);
+
+  auto disp = SetFlagsDispatcher(func_flag, flags_);
   boost::apply_visitor(disp, sdim);
 }
 
@@ -55,7 +69,17 @@ FunctionElementHandler<dim_, codim_, range_, rank_ >::
 init_cache(ConstElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
-  auto disp = InitCacheDispatcher(flags_, elem);
+  domain_handler_->init_cache(*(elem.domain_elem_), quad);
+
+  auto &cache = elem.local_cache_;
+  if (cache == nullptr)
+  {
+    using Cache = typename ElementAccessor::CacheType;
+    cache = std::make_shared<Cache>();
+  }
+
+   // auto disp = InitCacheDispatcher(this, elem, flags_);
+  auto disp = InitCacheDispatcher(elem, flags_);
   boost::apply_visitor(disp, quad);
 }
 
@@ -73,81 +97,6 @@ fill_cache(const topology_variant &sdim,
   boost::apply_visitor(fill_dispatcher, sdim);
 #endif
 }
-
-
-
-#if 0
-template<int dim_, int codim_, int range_, int rank_>
-void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
-init_cache(ElementIterator &elem, const topology_variant &sdim) const
-{
-  init_cache(*elem, k);
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
-init_element_cache(ElementAccessor &elem) const
-{
-  this->init_cache(elem, Topology<dim_>());
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
-init_element_cache(ElementIterator &elem) const
-{
-  this->init_cache(*elem, Topology<dim_>());
-}
-#endif
-
-
-
-#if 0
-template<int dim_, int codim_, int range_, int rank_>
-void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
-fill_cache(ElementIterator &elem, const topology_variant &sdim, const int j) const
-{
-  this->fill_cache(*elem, k, j);
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
-fill_element_cache(ElementAccessor &elem) const
-{
-  this->fill_cache(elem, Topology<dim_>(),0);
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-FunctionElementHandler<dim_, codim_, range_, rank_ >::
-fill_element_cache(ElementIterator &elem) const
-{
-  this->fill_cache(*elem, Topology<dim_>(),0);
-}
-#endif
-
-
-
-//template<int dim_, int codim_, int range_, int rank_>
-//auto
-//FunctionElementHandler<dim_, codim_, range_, rank_ >::
-//get_cache(ElementAccessor &elem)
-//-> std::shared_ptr<typename ElementAccessor::CacheType> &
-//{
-//    Assert(elem.all_sub_elems_cache_ != nullptr,ExcNullPtr());
-//    return elem.all_sub_elems_cache_;
-//}
-
-
-
 
 
 
