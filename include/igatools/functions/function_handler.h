@@ -153,13 +153,19 @@ public:
   {
     return func_;
   }
-protected:
+
+public:
   std::shared_ptr<const DomainHandlerType> get_domain_handler() const
+   {
+     return domain_handler_;
+   }
+
+protected:
+  std::shared_ptr<DomainHandlerType> get_domain_handler()
   {
     return domain_handler_;
   }
 public:
-  //Is this really virtual?
   virtual void set_flags(const topology_variant &sdim,
                          const Flags &flag);
 

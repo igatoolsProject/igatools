@@ -31,6 +31,16 @@ FormulaFunctionHandler(std::shared_ptr<FuncType> func)
 
 
 
+template<int dim_, int codim_, int range_, int rank_ >
+void
+FormulaFunctionHandler<dim_, codim_, range_, rank_ >::
+set_flags(const topology_variant &sdim, const Flags &flag)
+
+{
+  this->get_domain_handler()->set_flags(sdim, DomainHandlerType::Flags::point);
+  parent_t::set_flags(sdim, flag);
+}
+
 template<int dim_, int codim_, int range_, int rank_>
 void
 FormulaFunctionHandler<dim_, codim_, range_, rank_ >::

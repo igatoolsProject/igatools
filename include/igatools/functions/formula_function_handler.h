@@ -42,7 +42,8 @@ protected:
 public:
   using FuncType = const FormulaFunction<dim, codim, range, rank>;
   using typename parent_t::ConstElementAccessor;
-
+  using typename parent_t::Flags;
+  using typename parent_t::DomainHandlerType;
   using typename parent_t::topology_variant;
   using typename parent_t::eval_pts_variant;
 
@@ -50,9 +51,12 @@ public:
 
   virtual ~FormulaFunctionHandler() = default;
 
+  void set_flags(const topology_variant &sdim,
+                           const Flags &flag) override final;
+
   void fill_cache(const topology_variant &sdim,
                   ConstElementAccessor &elem,
-                  const int s_id) const override;
+                  const int s_id) const override final;
 
 private:
   struct FillCacheDispatcher : boost::static_visitor<void>

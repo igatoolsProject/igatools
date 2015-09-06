@@ -202,7 +202,7 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &)
     {
-      flags_[sdim] = flag_;
+      flags_[sdim] |= flag_;
     }
 
     const CacheFlags flag_;

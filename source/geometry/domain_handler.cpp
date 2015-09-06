@@ -31,7 +31,8 @@ DomainHandler<dim_, codim_>::
 DomainHandler(std::shared_ptr<DomainType> domain)
   :
   domain_(domain),
-  grid_handler_(domain->get_grid()->create_cache_handler())
+  grid_handler_(domain->get_grid()->create_cache_handler()),
+  flags_(CacheFlags::none)
 {
   Assert(domain_ != nullptr, ExcNullPtr());
 }

@@ -29,7 +29,8 @@ template <int dim>
 GridHandler<dim>::
 GridHandler(shared_ptr<GridType> grid)
   :
-  grid_(grid)
+  grid_(grid),
+  flags_(CacheFlags::none)
 {}
 
 
@@ -59,7 +60,7 @@ set_flags(const Flags &flag)
     {
       grid_flag |= grid_element::activate::grid[fl];
     }
-  flags_[sdim] = grid_flag;
+  flags_[sdim] |= grid_flag;
 }
 
 
