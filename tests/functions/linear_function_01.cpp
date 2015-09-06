@@ -35,28 +35,34 @@
 
 using namespace functions;
 
-template<int dim, int codim, int range, int rank>
-void constant_func()
+template<int dim, int codim, int range>
+void linear_func()
 {
   using Grid = Grid<dim>;
   using Domain = domains::BallDomain<dim>;
-  using Function = functions::ConstantFunction<dim, codim, range, rank>;
+  using Function = functions::LinearFunction<dim, codim, range>;
 
   auto grid = Grid::const_create(3);
   auto domain = Domain::const_create(grid);
 
+  typename Function::template Derivative<1> A;
   typename Function::Value b;
-  for (int i=0; i<range; ++i)
-    b[i] = i;
 
-  auto func = Function::const_create(domain, b);
+
+  for (int j=0; j<range; ++j)
+  {
+    b[j] = j;
+    for (int i=0; i<dim; ++i)
+      A[i][j] = i+j;
+  }
+  auto func = Function::const_create(domain, A, b);
   function_values<dim, codim, range>(func);
 }
 
 int main()
 {
-  constant_func<1,0,1,1>();
-  constant_func<2,0,2,1>();
+  linear_func<1,0,1>();
+  linear_func<2,0,2>();
 
   return 0;
 }
