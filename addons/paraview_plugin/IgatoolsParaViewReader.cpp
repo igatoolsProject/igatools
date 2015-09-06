@@ -31,6 +31,8 @@
 #include <paraview_plugin/grid_generator_container.h>
 #include <paraview_plugin/grid_information.h>
 
+#include <sys/stat.h>
+
 
 using std::get;
 using std::string;
@@ -130,21 +132,33 @@ int
 IgatoolsParaViewReader::
 CanReadFile(const char *name)
 {
-    // TODO: it should be also determined here it the file is suitable,
-    // and what kind of file it is.
+  // TODO: it should be also determined here it the file is suitable,
+  // and what kind of file it is.
 
-    std::ifstream file (name);
-    const bool is_readable = !file.fail();
-
-    if (is_readable)
-    {
-        return 1;
-    }
+  // Checking if the file exists.
+  errno = 0;
+  struct stat buffer;
+  if (stat(name, &buffer) == -1) // ==0 ok; ==-1 error
+  {
+    string error_msg = string("Parsing file path ") + string(name) + string(" : ");
+    if (errno == ENOENT)       // errno declared by include file errno.h
+      error_msg += string("Path file does not exist, or path is an empty string.");
+    else if (errno == ENOTDIR)
+      error_msg += string("A component of the path is not a directory.");
+    else if (errno == ELOOP)
+      error_msg += string("Too many symbolic links encountered while traversing the path.");
+    else if (errno == EACCES)
+      error_msg += string("Permission denied.");
+    else if (errno == ENAMETOOLONG)
+      error_msg += string("File can not be read");
     else
-    {
-        vtkErrorMacro (<< "File doesn't exist!!!");
-        return 0;
-    }
+      error_msg += string("An unknown problem was encountered.");
+    vtkErrorMacro (<< error_msg);
+
+    return 0;
+  }
+  else
+    return 1;
 }
 
 
