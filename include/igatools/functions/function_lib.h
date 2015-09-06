@@ -80,7 +80,7 @@ private:
 };
 
 
-#if 0
+
 //------------------------------------------------------------------------------
 
 /**
@@ -95,33 +95,33 @@ public:
   using base_t = Function<dim, codim, range, 1>;
   using parent_t = FormulaFunction<dim, codim, range, 1>;
   using self_t = LinearFunction<dim, codim, range>;
-  using typename base_t::GridType;
+  using typename base_t::DomainType;
   using typename parent_t::Point;
   using typename parent_t::Value;
-  using typename parent_t::Gradient;
-  using typename parent_t::ElementIterator;
-  using typename parent_t::ElementAccessor;
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
-  using typename parent_t::Map;
-
-private:
 
 public:
   static std::shared_ptr<base_t>
-  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-         const Gradient &A,
+  create(std::shared_ptr<DomainType> domain,
+         const Derivative<1> &A,
          const Value &b);
 
-  virtual std::shared_ptr<base_t> clone() const override final;
+  static std::shared_ptr<const base_t>
+  const_create(std::shared_ptr<DomainType> domain, const Derivative<1> &A,
+               const Value &b)
+  {
+    return create(domain, A, b);
+  }
 
   LinearFunction(const self_t &) = default;
+
   virtual ~LinearFunction() = default;
 
 
 protected:
-  LinearFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-                 const Gradient &A, const Value &b);
+  LinearFunction(std::shared_ptr<DomainType> domain, const Derivative<1> &A,
+                 const Value &b);
 
 private:
   void evaluate_0(const ValueVector<Point> &points,
@@ -134,13 +134,13 @@ private:
                   ValueVector<Derivative<2>> &values) const override;
 
 private:
-  const Gradient A_;
+  const Derivative<1> A_;
   const Value    b_;
 };
 
 //------------------------------------------------------------------------------
 
-
+#if 0
 
 
 //------------------------------------------------------------------------------

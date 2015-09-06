@@ -156,9 +156,9 @@ public:
 
 public:
   std::shared_ptr<const DomainHandlerType> get_domain_handler() const
-   {
-     return domain_handler_;
-   }
+  {
+    return domain_handler_;
+  }
 
 protected:
   std::shared_ptr<DomainHandlerType> get_domain_handler()

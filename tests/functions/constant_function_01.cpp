@@ -78,7 +78,7 @@ void constant_func()
 
   typename Function::Value b;
   for (int i=0; i<range; ++i)
-      b[i] = i;
+    b[i] = i;
 
   auto func = Function::const_create(domain, b);
   function_values<dim, codim, range>(func);

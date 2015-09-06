@@ -19,8 +19,6 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/functions/function_lib.h>
-//#include <igatools/functions/function_element.h>
-//#include <igatools/geometry/domain_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -82,18 +80,18 @@ evaluate_2(const ValueVector<Point> &points,
   for (auto &val : values)
     val = 0.;
 }
-};
 
-#if 0
+
 
 
 //------------------------------------------------------------------------------
 template<int dim, int codim, int range>
 LinearFunction<dim, codim, range>::
-LinearFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-               const Gradient &A, const Value &b)
+LinearFunction(std::shared_ptr<DomainType> domain,
+               const Derivative<1> &A,
+               const Value &b)
   :
-  parent_t::FormulaFunction(grid, map),
+  parent_t::FormulaFunction(domain),
   A_(A),
   b_(b)
 {}
@@ -103,20 +101,14 @@ LinearFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
 template<int dim, int codim, int range>
 auto
 LinearFunction<dim, codim, range>::
-create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-       const Gradient &A, const Value &b) ->  std::shared_ptr<base_t>
+create(std::shared_ptr<DomainType> domain,
+       const Derivative<1> &A,
+       const Value &b) ->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<base_t>(new self_t(grid, map, A, b));
+  return std::shared_ptr<base_t>(new self_t(domain, A, b));
 }
 
 
-template<int dim, int codim, int range>
-auto
-LinearFunction<dim, codim, range>::
-clone() const -> std::shared_ptr<base_t>
-{
-  return std::make_shared<self_t>(*this);
-}
 
 template<int dim, int codim, int range>
 auto
@@ -156,7 +148,7 @@ evaluate_2(const ValueVector<Point> &points,
 
 
 //------------------------------------------------------------------------------
-
+#if 0
 //------------------------------------------------------------------------------
 
 template<int dim>
@@ -797,9 +789,9 @@ evaluate_2(const ValueVector<Point> &points,
 }
 
 //------------------------------------------------------------------------------
+#endif
 
 } // of namespace functions.
-#endif
 
 IGA_NAMESPACE_CLOSE
 

@@ -23,9 +23,9 @@ data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
 output = set ()
-#for row in inst.all_function_dims:
-    #output.add ('template class functions::LinearFunction<%d, %d, %d>;\n' 
-         #%(row.dim, row.codim, row.range) )
+for row in inst.all_function_dims:
+    output.add ('template class functions::LinearFunction<%d, %d, %d>;\n' 
+         %(row.dim, row.codim, row.range) )
 
 for row in inst.all_function_dims:
     output.add ('template class functions::ConstantFunction<%d, %d, %d, %d>;\n' 
