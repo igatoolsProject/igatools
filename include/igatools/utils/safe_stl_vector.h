@@ -45,23 +45,6 @@ public :
     /** Inherit the constructors of the base class. */
     using SafeSTLContainer<std::vector<T>>::SafeSTLContainer;
 
-#if 0
-private:
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
-
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version)
-    {
-        std::string tag_name = "SafeSTLVector";
-        ar &boost::serialization::make_nvp(tag_name.c_str(),static_cast<std::vector<T>&>(*this));
-    }
-    ///@}
-#endif
 } ;
 
 

@@ -280,7 +280,6 @@ protected:
      */
     SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
-
     std::shared_ptr<CartesianGrid<dim_> > grid_;
 
     std::shared_ptr<self_t> function_previous_refinement_;

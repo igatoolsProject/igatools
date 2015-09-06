@@ -38,10 +38,9 @@ namespace space_tools
 
 
 /**
- * Perform an (L2)-Projection the function @p func
- * onto the space @p space using the quadrature rule @p quad.
- *  The projection is a numerical vector (the coefficients of
- *  the projected function)
+ * Returns the (L2)-Projection of the function @p function
+ * onto the space @p space.
+ * The integrals in the computations are done using the quadrature @p Q.
  */
 template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
 std::shared_ptr<IgFunction<Space::dim,Space::codim,Space::range,Space::rank> >
@@ -325,6 +324,72 @@ get_boundary_dofs(std::shared_ptr<const Space> space,
 static const SafeSTLArray<ValueFlags, 3> order_to_flag =
 {ValueFlags::value,ValueFlags::gradient,ValueFlags::hessian};
 
+/**
+ * Numerically computes the local element contribution
+ * to the integral  \f$\int_\Omega D^kf\f$.
+ * This contributions are written to the vector
+ * @p element_error and the integral value is returned.
+ *
+ * @note It is generally not used directly, but usually called from other
+ * functions
+ */
+template<int order, int dim, int codim = 0, int range = 1, int rank = 1>
+Conditional<order==0,
+            typename Function<dim, codim, range, rank>::Value,
+            typename Function<dim, codim, range, rank>::template Derivative<order>>
+integrate(Function<dim, codim, range, rank> &f,
+          const Quadrature<dim> &quad,
+          SafeSTLVector<Conditional<order==0,
+          typename Function<dim, codim, range, rank>::Value,
+          typename Function<dim, codim, range, rank>::template Derivative<order>>
+          > &element_error)
+{
+    using Value = Conditional<order==0,
+          typename Function<dim, codim, range, rank>::Value,
+          typename Function<dim, codim, range, rank>::template Derivative<order>>;
+
+    auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
+
+    f.reset(flag, quad);
+    const int n_points = quad.get_num_points();
+
+    auto elem_f = f.begin();
+    auto end = f.end();
+
+    const auto topology = Topology<dim>();
+    f.init_cache(elem_f, topology);
+    Value val;
+    for (; elem_f != end; ++elem_f)
+    {
+        f.fill_cache(elem_f, topology, 0);
+
+        const int elem_id = elem_f->get_flat_index();
+
+        auto f_val = elem_f->template get_values<ValueType<order>,dim>(0);
+        auto w_meas = elem_f->template get_w_measures<dim>(0);
+
+        val = 0.0;
+        for (int iPt = 0; iPt < n_points; ++iPt)
+            val += f_val[iPt] * w_meas[iPt];
+
+        element_error[ elem_id ] = val;
+    }
+
+    val = 0.0;
+    for (auto &el_val : element_error)
+        val += el_val;
+    return val;
+}
+
+/**
+ * Numerically computes the local element contribution
+ * to the integral  \f$\int_\Omega |D^p(f-g)|^p\f$.
+ * This contributions are added to the vector
+ * @p element_error.
+ *
+ * @note It is generally not used directly, but usually called from other
+ * functions
+ */
 template<int order, int dim, int codim = 0, int range = 1, int rank = 1>
 void norm_difference(Function<dim, codim, range, rank> &f,
                      Function<dim, codim, range, rank> &g,

@@ -101,7 +101,7 @@ message("******************************************************")
 message("            Test results")
 message("            ------------")
 message("Compiling and linking: ${compile_error}")
-message("Running program:        ${runtime_error}")
+message("Running program:       ${runtime_error}")
 message("Expected output:       ${output_error}\n")
 
 

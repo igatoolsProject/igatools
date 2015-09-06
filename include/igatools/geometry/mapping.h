@@ -36,12 +36,12 @@ template <int,int,int,int> class IgFunction;
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
  * physical domain \f$\Omega \in \mathbb{R}^{dim+codim}\f$.
  *
- * In igatools the mapping is a grid-like container, so that on top
- * of being a deformation is aware of an underlying grid structure.
+ * Mapping is the physical domain, wether of a function or a space.
  *
- * Most of the methods in this class are virtual,
- * because we want to use Mapping as general interface for user-defined Mapping
- * specializations (unknown at compile time).
+ * It is a function with special properties: it codim is 0 and the map is always the
+ * identity.
+ *
+ * @todo we should thing about renaming mapping to physical domain
  *
  * @ingroup containers
  * @ingroup serializable
