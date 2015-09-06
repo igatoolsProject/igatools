@@ -60,7 +60,7 @@ public:
   static std::shared_ptr<base_t>
   create(std::shared_ptr<GridType> grid);
 
-  static std::shared_ptr<base_t>
+  static std::shared_ptr<const base_t>
   const_create(std::shared_ptr<GridType> grid)
   {
     return create(grid);

@@ -17,10 +17,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-#if 0
+
 #include <igatools/functions/function_lib.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/geometry/domain_element.h>
+//#include <igatools/functions/function_element.h>
+//#include <igatools/geometry/domain_element.h>
+
 IGA_NAMESPACE_OPEN
 
 namespace functions
@@ -28,10 +29,9 @@ namespace functions
 
 template<int dim, int codim, int range, int rank>
 ConstantFunction<dim, codim, range, rank>::
-ConstantFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-                 const Value &b)
+ConstantFunction(std::shared_ptr<DomainType> domain, const Value &b)
   :
-  parent_t::FormulaFunction(grid, map),
+  parent_t::FormulaFunction(domain),
   b_(b)
 {}
 
@@ -40,20 +40,13 @@ ConstantFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
 template<int dim, int codim, int range, int rank>
 auto
 ConstantFunction<dim, codim, range, rank>::
-create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-       const Value &b) ->  std::shared_ptr<base_t>
+create(std::shared_ptr<DomainType> domain, const Value &b)
+->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<base_t>(new self_t(grid, map, b));
+  return std::shared_ptr<base_t>(new self_t(domain, b));
 }
 
 
-template<int dim, int codim, int range, int rank>
-auto
-ConstantFunction<dim, codim, range, rank>::
-clone() const -> std::shared_ptr<base_t>
-{
-  return std::make_shared<self_t>(*this);
-}
 
 
 template<int dim, int codim, int range, int rank>
@@ -89,7 +82,9 @@ evaluate_2(const ValueVector<Point> &points,
   for (auto &val : values)
     val = 0.;
 }
+};
 
+#if 0
 
 
 //------------------------------------------------------------------------------
@@ -804,8 +799,9 @@ evaluate_2(const ValueVector<Point> &points,
 //------------------------------------------------------------------------------
 
 } // of namespace functions.
+#endif
 
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/functions/function_lib.inst>
-#endif
+

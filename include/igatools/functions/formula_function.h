@@ -50,7 +50,7 @@ public:
 
   FormulaFunction(std::shared_ptr<DomainType> domain);
 
- // FormulaFunction(const self_t &func);
+// FormulaFunction(const self_t &func);
 
   virtual ~FormulaFunction() = default;
 

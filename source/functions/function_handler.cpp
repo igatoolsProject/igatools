@@ -47,7 +47,7 @@ set_flags(const topology_variant &sdim,
   DomainFlags  dom_flag = DomainFlags::none;
   CacheFlags func_flag = CacheFlags::none;
 
-  SafeSTLVector<Flags> all_flags ={Flags::value, Flags::gradient, Flags::D2};
+  SafeSTLVector<Flags> all_flags = {Flags::value, Flags::gradient, Flags::D2};
   for (auto &fl : all_flags)
     if (contains(flag, fl))
     {
@@ -78,7 +78,7 @@ init_cache(ConstElementAccessor &elem,
     cache = std::make_shared<Cache>();
   }
 
-   // auto disp = InitCacheDispatcher(this, elem, flags_);
+  // auto disp = InitCacheDispatcher(this, elem, flags_);
   auto disp = InitCacheDispatcher(elem, flags_);
   boost::apply_visitor(disp, quad);
 }

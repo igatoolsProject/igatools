@@ -30,7 +30,7 @@
 #include <igatools/geometry/domain_lib.h>
 #include <igatools/functions/function.h>
 #include <igatools/functions/function_element.h>
-
+#include <igatools/functions/function_lib.h>
 #include "../tests.h"
 
 
@@ -44,10 +44,11 @@ void domain()
 
   using Domain = domains::BallDomain<dim>;
   auto grid = Grid::const_create();
-  auto domain = Domain::create(grid);
-  using Function = Function<dim>;
+  auto domain = Domain::const_create(grid);
+  using Function = functions::ConstantFunction<dim,0,1>;//Function<dim>;
 
-  auto  func = Function::create(domain);
+  typename Function::Value b{1.};
+  auto  func = Function::create(domain, b);
 
   using Flags = typename Function::ElementAccessor::Flags;
 
@@ -69,7 +70,7 @@ void domain()
   {
     handler->template fill_cache<dim>(elem, 0);
     elem->template get_values<function_element::_Value, dim>(0).print_info(out);
-   // elem->template get_w_measures<dim>(0).print_info(out);
+    // elem->template get_w_measures<dim>(0).print_info(out);
     out << endl;
 
 //      for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())

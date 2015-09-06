@@ -51,22 +51,22 @@ public:
   virtual ~FormulaFunctionHandler() = default;
 
   void fill_cache(const topology_variant &sdim,
-                    ConstElementAccessor &elem,
-                    const int s_id) const override;
+                  ConstElementAccessor &elem,
+                  const int s_id) const override;
 
 private:
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
     FillCacheDispatcher(const FuncType &func,
-        const self_t &func_handler,
-        ConstElementAccessor &elem,
-        const int s_id)
-    :
+                        const self_t &func_handler,
+                        ConstElementAccessor &elem,
+                        const int s_id)
+      :
       func_(func),
       func_handler_(func_handler),
       elem_(elem),
       s_id_(s_id)
-      {}
+    {}
 
 
 

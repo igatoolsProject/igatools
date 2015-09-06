@@ -155,9 +155,9 @@ public:
   }
 protected:
   std::shared_ptr<const DomainHandlerType> get_domain_handler() const
-    {
-      return domain_handler_;
-    }
+  {
+    return domain_handler_;
+  }
 public:
   //Is this really virtual?
   virtual void set_flags(const topology_variant &sdim,
@@ -192,7 +192,7 @@ public:
 
   template <int sdim>
   void fill_cache(ElementConstIterator &elem,
-      const int s_id)
+                  const int s_id)
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
@@ -242,7 +242,7 @@ private:
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
     InitCacheDispatcher(ConstElementAccessor &elem,
-        const FlagsArray &flags)
+                        const FlagsArray &flags)
       :
       elem_(elem),
       flags_(flags)
@@ -254,7 +254,7 @@ private:
       auto &cache = elem_.local_cache_;
 
       const auto n_pts = elem_.get_domain_element().get_grid_element().template
-                  get_quad<sdim>()->get_num_points();
+                         get_quad<sdim>()->get_num_points();
       for (const auto s_id: UnitElement<dim_>::template elems_ids<sdim>())
       {
         auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);

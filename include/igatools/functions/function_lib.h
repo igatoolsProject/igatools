@@ -17,16 +17,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-#if 0
-#ifndef __IGA_FUNCTION_LIB_H_
-#define __IGA_FUNCTION_LIB_H_
+
+#ifndef __FUNCTION_LIB_H_
+#define __FUNCTION_LIB_H_
 
 #include <igatools/functions/formula_function.h>
 
 IGA_NAMESPACE_OPEN
 
 
-//TODO (martinelli, Jun 12, 2015): fix the refinement for the functions in the function namespace
+//TODO (martinelli, Jun 12, 2015): fix the refinement for the functions in
+// the function namespace
 
 
 /**
@@ -41,30 +42,28 @@ private:
   using base_t = Function<dim, codim, range, rank>;
   using parent_t = FormulaFunction<dim, codim, range, rank>;
   using self_t = ConstantFunction<dim, codim, range, rank>;
-  using typename base_t::GridType;
+  using typename base_t::DomainType;
 public:
   using typename parent_t::Point;
   using typename parent_t::Value;
-  using typename parent_t::Gradient;
-  using typename parent_t::ElementIterator;
-  using typename parent_t::ElementAccessor;
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
-  using typename parent_t::Map;
 
   static std::shared_ptr<base_t>
-  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-         const Value &b);
+  create(std::shared_ptr<DomainType> domain, const Value &b);
 
-  std::shared_ptr<base_t> clone() const override final;
-
+  static std::shared_ptr<base_t>
+  const_create(std::shared_ptr<DomainType> domain, const Value &b)
+  {
+    return create(domain, b);
+  }
 
   ConstantFunction(const self_t &) = default;
+
   virtual ~ConstantFunction() = default;
 
 protected:
-  ConstantFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-                   const Value &b);
+  ConstantFunction(std::shared_ptr<DomainType> domain, const Value &b);
 
 private:
   void evaluate_0(const ValueVector<Point> &points,
@@ -81,7 +80,7 @@ private:
 };
 
 
-
+#if 0
 //------------------------------------------------------------------------------
 
 /**
@@ -367,10 +366,10 @@ private:
   const Real dH_;
 };
 
-
+#endif
 } // of namespace functions.
 
 IGA_NAMESPACE_CLOSE
 
 #endif
-#endif
+
