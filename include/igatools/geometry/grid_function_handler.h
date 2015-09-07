@@ -36,22 +36,22 @@ template <int, int> class ConstGridFunctionElement;
  */
 template<int dim_, int space_dim_>
 class GridFunctionHandler :
-  public std::enable_shared_from_this<GridFunctionHandler<dim_,codim_> >
+  public std::enable_shared_from_this<GridFunctionHandler<dim_,space_dim_> >
 {
 private:
-  using self_t = GridFunctionHandler<dim_, codim_>;
+  using self_t = GridFunctionHandler<dim_, space_dim_>;
 
 public:
   static const int space_dim = dim_ + codim_;
   static const int dim = dim_;
 
-  using GridFunctionType = const GridFunction<dim_, codim_>;
+  using GridFunctionType = const GridFunction<dim_, space_dim_>;
   using GridType = const Grid<dim_>;
   using GridHandler = typename GridType::ElementHandler;
 
-  using ElementAccessor = GridFunctionElement<dim_, codim_>;
+  using ElementAccessor = GridFunctionElement<dim_, space_dim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ConstElementAccessor = ConstGridFunctionElement<dim_, codim_>;
+  using ConstElementAccessor = ConstGridFunctionElement<dim_, space_dim_>;
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
   using List = typename GridType::List;
