@@ -35,14 +35,14 @@ template<int dim_, int space_dim_, class ContainerType_>
 class GridFunctionElementBase
 {
 private:
-  using self_t  = GridFunctionElementBase<dim_, codim_, ContainerType_>;
+  using self_t  = GridFunctionElementBase<dim_, space_dim_, ContainerType_>;
 
 public:
   using ContainerType = ContainerType_;
   using GridElem = typename ContainerType_::GridType::ElementAccessor;
   using ListIt = typename ContainerType_::ListIt;
 
-  using Point =  typename ContainerType_::Point;
+  using Value =  typename ContainerType_::Value;
   using Gradient =  typename ContainerType_::Gradient;
 
   using Flags = grid_function_element::Flags;
@@ -170,9 +170,10 @@ public:
   template<int sdim>
   ValueVector<Real> get_w_measures(const int s_id) const;
 
-  ValueVector<SafeSTLArray<Point, codim_> >
+#if 0
+  ValueVector<SafeSTLArray<Value, space_dim_> >
   get_exterior_normals() const;
-
+#endif
 
 private:
   template <class ValueType, int sdim>
@@ -191,7 +192,7 @@ public:
 
 private:
   using CType = boost::fusion::map<
-                boost::fusion::pair< _Point,    DataWithFlagStatus<ValueVector<Point>> >,
+                boost::fusion::pair< _Point,    DataWithFlagStatus<ValueVector<Value>> >,
                 boost::fusion::pair< _Measure,  DataWithFlagStatus<ValueVector<Real>> >,
                 boost::fusion::pair< _Gradient, DataWithFlagStatus<ValueVector<Gradient>> >
                 >;
@@ -216,7 +217,7 @@ private:
   std::shared_ptr<CacheType> local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
-  friend class GridFunctionHandler<dim_, codim_>;
+  friend class GridFunctionHandler<dim_, space_dim_>;
 };
 
 

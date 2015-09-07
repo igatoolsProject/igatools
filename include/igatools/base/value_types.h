@@ -153,7 +153,68 @@ struct _Gradient
 
 }
 //------------------------------------------------------------------------------
+namespace grid_function_element
+{
+/** Quantities that can be requested from a grid_function element */
+enum class Flags
+{
+  /** Fill nothing */
+  none           =    0,
 
+  point          =    1L << 1,
+
+  measure        =    1L << 2,
+
+  w_measure      =    1L << 3,
+
+  ext_normal     =    1L << 4
+};
+
+
+/** Auxiliary quantities stored in a local cache */
+enum class CacheFlags
+{
+  none           =    0,
+
+  measure        =    1L << 1,
+
+  point          =    1L << 2,
+
+  gradient       =    1L << 3,
+
+  D2             =    1L << 4
+};
+
+
+struct activate
+{
+  using FlagsToCache = std::map<Flags, CacheFlags>;
+  static FlagsToCache grid_function;
+
+  using FlagsToGrid = std::map<Flags, grid_element::Flags>;
+  static FlagsToGrid grid;
+};
+
+struct _Point
+{
+  static const std::string name;
+  static const auto flag = CacheFlags::point;
+};
+
+struct _Measure
+{
+  static const std::string name;
+  static const auto flag = CacheFlags::measure;
+};
+
+struct _Gradient
+{
+  static const std::string name;
+  static const auto flag = CacheFlags::gradient;
+};
+
+
+}
 
 //---------------------------------------------------------------------------------------
 /**

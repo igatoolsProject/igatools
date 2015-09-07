@@ -48,12 +48,12 @@ public:
 
   using GridType = const Grid<dim_>;
 
-  using ElementAccessor = GridFunctionElement<dim_, codim_>;
+  using ElementAccessor = GridFunctionElement<dim_, space_dim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ConstElementAccessor = ConstGridFunctionElement<dim_, codim_>;
+  using ConstElementAccessor = ConstGridFunctionElement<dim_, space_dim_>;
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
-  using ElementHandler = GridFunctionHandler<dim_, codim_>;
+  using ElementHandler = GridFunctionHandler<dim_, space_dim_>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
@@ -148,10 +148,10 @@ public:
 private:
   std::shared_ptr<GridType> grid_;
 
-  friend class GridFunctionElementBase<dim_, codim_, GridFunction<dim_, codim_>>;
-  friend class GridFunctionElementBase<dim_, codim_, const GridFunction<dim_, codim_>>;
-  friend class GridFunctionElement<dim_, codim_>;
-  friend class ConstGridFunctionElement<dim_, codim_>;
+  friend class GridFunctionElementBase<dim_, space_dim_, GridFunction<dim_, space_dim_>>;
+  friend class GridFunctionElementBase<dim_, space_dim_, const GridFunction<dim_, space_dim_>>;
+  friend class GridFunctionElement<dim_, space_dim_>;
+  friend class ConstGridFunctionElement<dim_, space_dim_>;
 
 #ifdef SERIALIZATION
   /**
@@ -165,7 +165,7 @@ private:
   void
   serialize(Archive &ar, const unsigned int version)
   {
-    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
+    ar.template register_type<IgFunction<dim_,0,dim_+space_dim_,1> >();
     ar &boost::serialization::make_nvp("F_",F_);
     ar &boost::serialization::make_nvp("flags_",flags_);
   }

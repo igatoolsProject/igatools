@@ -96,28 +96,29 @@ get_w_measures(const int s_id) const -> ValueVector<Real>
   return w_meas;
 }
 
-
+#if 0
 template<int dim_, int space_dim_, class ContainerType_>
 auto
 GridFunctionElementBase<dim_, space_dim_, ContainerType_>::
-get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
+get_exterior_normals() const -> ValueVector<SafeSTLArray<Value, space_dim_> >
 {
   const int sdim = dim_;
   const int s_id = 0;
-  Assert(codim_ == 1, ExcNotImplemented());
-  ValueVector<SafeSTLArray<Point, codim_>> res;
+  Assert(space_dim_ == 1, ExcNotImplemented());
+  ValueVector<SafeSTLArray<Value, space_dim_>> res;
   const auto &DF = this->template get_values_from_cache<_Gradient, sdim>(s_id);
   const auto n_points = DF.get_num_points();
   res.resize(n_points);
 
   for (int pt = 0; pt < n_points; ++pt)
   {
-    res[0][pt] = cross_product<dim_, codim_>(DF[pt]);
+    res[0][pt] = cross_product<dim_, space_dim_>(DF[pt]);
     res[0][pt] /= res[0][pt].norm();
   }
 
   return res;
 }
+#endif
 
 IGA_NAMESPACE_CLOSE
 

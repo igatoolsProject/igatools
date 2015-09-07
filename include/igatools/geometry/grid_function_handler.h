@@ -42,7 +42,7 @@ private:
   using self_t = GridFunctionHandler<dim_, space_dim_>;
 
 public:
-  static const int space_dim = dim_ + codim_;
+  static const int space_dim = dim_ + space_dim_;
   static const int dim = dim_;
 
   using GridFunctionType = const GridFunction<dim_, space_dim_>;
@@ -275,7 +275,7 @@ private:
   void
   serialize(Archive &ar, const unsigned int version)
   {
-    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
+    ar.template register_type<IgFunction<dim_,0,dim_+space_dim_,1> >();
     ar &boost::serialization::make_nvp("F_",F_);
     ar &boost::serialization::make_nvp("flags_",flags_);
   }

@@ -74,6 +74,41 @@ domain_element::activate::FlagsToGrid activate::grid =
 };
 //---------------------------------------------------------------------
 
+
+
+//---------------------------------------------------------------------
+namespace grid_function_element
+{
+const CacheFlags _Point::flag;
+const string _Point::name = "Element Quadrature Points";
+
+const CacheFlags _Measure::flag;
+const string _Measure::name = "Element measure";
+
+const CacheFlags _Gradient::flag;
+const string _Gradient::name = "grid_function gradients";
+
+activate::FlagsToCache  activate::grid_function =
+{
+  {Flags::point, CacheFlags::point},
+  {Flags::w_measure, CacheFlags::gradient|CacheFlags::measure},
+  {Flags::measure, CacheFlags::gradient|CacheFlags::measure},
+  {Flags::ext_normal, CacheFlags::gradient}
+};
+
+grid_function_element::activate::FlagsToGrid activate::grid =
+{
+  {Flags::point, grid_element::Flags::point},
+  {Flags::w_measure, grid_element::Flags::weight},
+  {Flags::measure, grid_element::Flags::none},
+  {Flags::ext_normal, grid_element::Flags::none}
+};
+
+};
+//---------------------------------------------------------------------
+
+
+
 //---------------------------------------------------------------------
 namespace function_element
 {
@@ -106,6 +141,8 @@ function_element::activate::FlagsToDomain activate::domain =
 
 
 //---------------------------------------------------------------------
+namespace space_element
+{
 const space_element::Flags space_element::_Value::flag;
 const string space_element::_Value::name = "Basis function values";
 
@@ -117,7 +154,7 @@ const string space_element::_Hessian::name = "Basis function hessians";
 
 const space_element::Flags space_element::_Divergence::flag;
 const string space_element::_Divergence::name = "Basis function divergences";
+};
 //---------------------------------------------------------------------
-
 
 IGA_NAMESPACE_CLOSE
