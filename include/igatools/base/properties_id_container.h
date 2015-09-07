@@ -146,7 +146,6 @@ private:
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
   friend class serialization_access;
 
   template<class Archive>

@@ -119,7 +119,6 @@ public:
   /** @name Constructors and destructor. */
   ///@{
 
-#ifdef SERIALIZATION
 public:
   /**
    * Default constructor. It does nothing but it is needed for the
@@ -127,13 +126,6 @@ public:
    * mechanism.
    */
   Function() = default;
-#else
-protected:
-  /**
-   * Default constructor. Not allowed to be used.
-   */
-  Function() = delete;
-#endif
 
 protected:
 
@@ -223,6 +215,7 @@ public:
   }
 #endif // MESH_REFINEMENT
 
+#if 0
 #ifdef SERIALIZATION
 public:
   /**
@@ -271,6 +264,7 @@ public:
   //*/
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

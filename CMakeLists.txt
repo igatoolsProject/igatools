@@ -140,25 +140,22 @@ else(MESH_REFINEMENT)
 endif(MESH_REFINEMENT)
 
 
-option(SERIALIZATION "Enable serialization support" ON)
+option(SERIALIZATION "Enable serialization support" OFF)
+option(USE_CEREAL "Use the Cereal serialization library" ON)
 if (SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) is enabled.")
+    
+    if (USE_CEREAL)
+    	message("----- Serialization with CEREAL library (EXPERIMENTAL) is enabled.")    
+	else (USE_CEREAL)
+    	message("----- Serialization with CEREAL library (EXPERIMENTAL) is not enabled.")    
+	endif (USE_CEREAL)
+    
 else(SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) is not enabled.")    
 endif(SERIALIZATION)
 
 
-option(USE_CEREAL "Use the Cereal serialization library" ON)
-if (USE_CEREAL)
-    if (NOT SERIALIZATION)
-        message (FATAL_ERROR "USE_CEREAL variable set to ON is not "
-        "compatible with SERIALIZATION set to OFF. Serialization must be "
-        "activated.")
-    endif ()
-    message("   -- Serialization with CEREAL library (EXPERIMENTAL) is enabled.")    
-else (USE_CEREAL)
-    message("   -- Serialization with CEREAL library (EXPERIMENTAL) is not enabled.")    
-endif (USE_CEREAL)
 
 
 

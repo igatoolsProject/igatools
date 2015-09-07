@@ -151,10 +151,11 @@ template<int dim_>
 Grid<dim_>::
 Grid(const KnotCoordinates &knot_coordinates)
   :
-  TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
+//  TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
   knot_coordinates_(knot_coordinates),
   boundary_id_(0),
-  object_id_(UniqueIdGenerator::get_unique_id())
+  object_id_(UniqueIdGenerator::get_unique_id()),
+  elems_size_(TensorSize<dim_>(knot_coordinates.tensor_size()-1))
 {
   elem_properties_.add_property(ElementProperties::active);
   elem_properties_[ElementProperties::active] =
@@ -227,11 +228,12 @@ template<int dim_>
 Grid<dim_>::
 Grid(const self_t &grid)
   :
-  TensorSizedContainer<dim_>(grid),
+//  TensorSizedContainer<dim_>(grid),
   knot_coordinates_(grid.knot_coordinates_),
   boundary_id_(grid.boundary_id_),
   elem_properties_(grid.elem_properties_),
-  object_id_(UniqueIdGenerator::get_unique_id())
+  object_id_(UniqueIdGenerator::get_unique_id()),
+  elems_size_(grid.elems_size_)
 {}
 
 
@@ -478,7 +480,7 @@ Size
 Grid<dim_>::
 get_num_all_elems() const
 {
-  return this->flat_size();
+  return elems_size_.flat_size();
 }
 
 
@@ -488,7 +490,7 @@ auto
 Grid<dim_>::
 get_num_intervals() const -> TensorSize<dim_>
 {
-  return this->tensor_size();
+  return elems_size_.tensor_size();
 }
 
 
@@ -720,7 +722,7 @@ void
 Grid<dim_>::
 print_info(LogStream &out) const
 {
-  out << "Number of intervals per direction: " << this->tensor_size() << endl;
+  out << "Number of intervals per direction: " << elems_size_.tensor_size() << endl;
 
   out.begin_item("Knot coordinates:");
   knot_coordinates_.print_info(out);
@@ -929,7 +931,7 @@ SafeSTLVector<Index>
 Grid<dim_>::
 get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const
 {
-  const auto coarse_elem_tensor_id = this->flat_to_tensor(elem_id);
+  const auto coarse_elem_tensor_id = elems_size_.flat_to_tensor(elem_id);
 
   const auto weight_sub_elems = MultiArrayUtils<dim_>::compute_weight(n_sub_elems);
 
@@ -1087,19 +1089,17 @@ test_if_element_has_property(const IndexType elem_flat_id,
 
 #endif
 
-#if 0
 #ifdef SERIALIZATION
 template <int dim_>
 template<class Archive>
 void
 Grid<dim_>::
-serialize(Archive &ar, const unsigned int version)
+serialize(Archive &ar)
 {
-  using namespace boost::serialization;
-  std::string tag_name = "Grid" + std::to_string(dim_) + "base_t";
-  ar &make_nvp(tag_name.c_str(),
-               base_object<TensorSizedContainer<dim_>>(*this));
+  Assert(false,ExcNotImplemented());
 
+//    std::string tag_name = "Grid" + std::to_string(dim_) + "base_t";
+  ar &make_nvp("elems_size_",elems_size_);
   ar &make_nvp("knot_coordinates_",knot_coordinates_);
   ar &make_nvp("boundary_id_",boundary_id_);
   ar &make_nvp("properties_elements_id_",elem_properties_);
@@ -1107,9 +1107,11 @@ serialize(Archive &ar, const unsigned int version)
 #ifdef MESH_REFINEMENT
   ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
 #endif
+//*/
 }
+
 #endif // SERIALIZATION
-#endif
+
 
 IGA_NAMESPACE_CLOSE
 

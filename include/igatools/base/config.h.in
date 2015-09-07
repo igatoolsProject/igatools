@@ -47,17 +47,20 @@
 
 #ifdef USE_CEREAL
 
+#include <cereal/access.hpp>
 #include <cereal/types/vector.hpp>
 #include <cereal/types/array.hpp>
 #include <cereal/types/set.hpp>
 #include <cereal/types/map.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #ifndef NDEBUG
-#include <igatools/contrib/cereal/include/cereal/archives/xml.hpp>
+#include <cereal/archives/xml.hpp>
 using OArchiveCereal = cereal::XMLOutputArchive;
 using IArchiveCereal = cereal::XMLInputArchive;
 #else
-#include <igatools/contrib/cereal/include/cereal/archives/binary.hpp>
+#include <cereal/archives/binary.hpp>
 using OArchiveCereal = cereal::BinaryOutputArchive;
 using IArchiveCereal = cereal::BinaryInputArchive;
 #endif // NDEBUG
@@ -69,7 +72,7 @@ using IArchive = IArchiveCereal;
 
 using serialization_access = cereal::access;
 
-#endif // CEREAL
+#else
 
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/nvp.hpp>
@@ -103,8 +106,7 @@ using IArchiveBoost = boost::archive::binary_iarchive;
 //using OArchive = OArchiveBoost;
 //using IArchive = IArchiveBoost;
 
-
-//#endif // USE_CEREAL
+#endif // USE_CEREAL
 
 #endif // SERIALIZATION
 //--------------------------------------------------------------------

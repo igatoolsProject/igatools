@@ -42,11 +42,7 @@
 IGA_NAMESPACE_OPEN
 
 template <int> class Grid;
-
 template <int> class GridElement;
-
-
-
 template <int> class GridHandler;
 
 /**
@@ -163,7 +159,7 @@ template <int> class GridHandler;
  */
 template<int dim_>
 class Grid :
-  protected TensorSizedContainer<dim_>,
+//  protected TensorSizedContainer<dim_>,
   public std::enable_shared_from_this<Grid<dim_>>
 {
 private:
@@ -636,6 +632,8 @@ private:
    */
   Index object_id_;
 
+  TensorSizedContainer<dim_> elems_size_;
+
 public:
   /**
    * Create an element (defined on this grid) with a given index and the given property
@@ -767,25 +765,12 @@ private:
   friend class serialization_access;
 
   template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-//    using namespace boost::serialization;
-    std::string tag_name = "Grid" + std::to_string(dim_) + "base_t";
-    ar &make_nvp(tag_name.c_str(),
-                 base_class<TensorSizedContainer<dim_>>(this));
-
-    ar &make_nvp("knot_coordinates_",knot_coordinates_);
-    ar &make_nvp("boundary_id_",boundary_id_);
-    ar &make_nvp("properties_elements_id_",elem_properties_);
-    ar &make_nvp("object_id_",object_id_);
-#ifdef MESH_REFINEMENT
-    ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
-#endif
-  }
+  void serialize(Archive &ar);
 
   ///@}
 #endif // SERIALIZATION
+
+
 };
 
 IGA_NAMESPACE_CLOSE
