@@ -48,7 +48,7 @@ create(std::shared_ptr<GridType> grid) ->  std::shared_ptr<base_t>
 template<int dim>
 template<int order>
 auto
-BallGridFunction<dim>::get_aux_vals(const ValueVector<Value> &points) const
+BallGridFunction<dim>::get_aux_vals(const ValueVector<GridPoint> &points) const
 {
   SafeSTLArray<SafeSTLArray<SafeSTLVector<SafeSTLArray<double, dim> >, order>, 2> val_table;
   auto &cos_val = val_table[0];
@@ -97,7 +97,7 @@ template<int dim>
 auto
 BallGridFunction<dim>::
 evaluate_0(const ValueVector<GridPoint> &points,
-           ValueVector<Point> &values) const -> void
+           ValueVector<Value> &values) const -> void
 {
   const auto val_table = get_aux_vals<1>(points);
   auto &cos_val = val_table[0];
@@ -125,7 +125,7 @@ evaluate_0(const ValueVector<GridPoint> &points,
 template<int dim>
 auto
 BallGridFunction<dim>::
-evaluate_1(const ValueVector<Point> &points,
+evaluate_1(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<1>> &values) const -> void
 {
   const auto val_table = get_aux_vals<2>(points);
@@ -170,7 +170,7 @@ evaluate_1(const ValueVector<Point> &points,
 template<int dim>
 auto
 BallGridFunction<dim>::
-evaluate_2(const ValueVector<Point> &points,
+evaluate_2(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<2>> &values) const -> void
 {
   const auto val_table = get_aux_vals<3>(points);

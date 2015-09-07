@@ -24,7 +24,7 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim, int space_dim>
-FormulaGridFunction<dim, codim>::
+FormulaGridFunction<dim, space_dim>::
 FormulaGridFunction(std::shared_ptr<GridType> grid)
   :
   parent_t::GridFunction(grid)
@@ -34,7 +34,7 @@ FormulaGridFunction(std::shared_ptr<GridType> grid)
 
 template<int dim, int space_dim>
 auto
-FormulaGridFunction<dim, codim>::
+FormulaGridFunction<dim, space_dim>::
 create_cache_handler() const
 -> std::shared_ptr<typename parent_t::ElementHandler>
 {

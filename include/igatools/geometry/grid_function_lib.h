@@ -74,16 +74,16 @@ protected:
 private:
   template<int order>
   auto
-  get_aux_vals(const ValueVector<Point> &points) const;
+  get_aux_vals(const ValueVector<GridPoint> &points) const;
 
 private:
   virtual void evaluate_0(const ValueVector<GridPoint> &points,
                           ValueVector<Value> &values) const override final;
 
-  virtual void evaluate_1(const ValueVector<Point> &points,
+  virtual void evaluate_1(const ValueVector<GridPoint> &points,
                           ValueVector<Derivative<1>> &values) const override final;
 
-  virtual void evaluate_2(const ValueVector<Point> &points,
+  virtual void evaluate_2(const ValueVector<GridPoint> &points,
                           ValueVector<Derivative<2>> &values) const override final;
 
 private:

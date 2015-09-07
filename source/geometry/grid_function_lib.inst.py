@@ -25,7 +25,7 @@ data = Instantiation()
 output = set ()
 
 for dim in inst.domain_dims:
-    output.add ('template class domains::BallGridFunction<%d>;\n' % (dim) )
+    output.add ('template class grid_functions::BallGridFunction<%d>;\n' % (dim) )
 
 for s in output:
   f.write(s)

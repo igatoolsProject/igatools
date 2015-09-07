@@ -39,7 +39,7 @@ private:
 protected:
   using typename parent_t::GridType;
 public:
-  using GridFunctionType =  const FormulaGridFunction<dim,codim>;
+  using GridFunctionType =  const FormulaGridFunction<dim,space_dim>;
   using typename parent_t::ConstElementAccessor;
 
   using typename parent_t::topology_variant;

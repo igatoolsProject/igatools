@@ -33,16 +33,16 @@ template <int, int> class FormulaGridFunctionHandler;
  */
 template<int dim, int space_dim>
 class FormulaGridFunction :
-  public GridFunction<dim, codim>
+  public GridFunction<dim, space_dim>
 {
 private:
-  using parent_t =  GridFunction<dim, codim>;
-  using self_t = FormulaGridFunction<dim, codim>;
+  using parent_t =  GridFunction<dim, space_dim>;
+  using self_t = FormulaGridFunction<dim, space_dim>;
 protected:
   using typename parent_t::GridType;
-  using ElementHandler = FormulaGridFunctionHandler<dim, codim>;
+  using ElementHandler = FormulaGridFunctionHandler<dim, space_dim>;
 public:
-  using typename parent_t::Point;
+  using typename parent_t::Value;
   using typename parent_t::GridPoint;
 
   template <int order>
@@ -58,7 +58,7 @@ public:
 public:
 
   virtual void evaluate_0(const ValueVector<GridPoint> &points,
-                          ValueVector<Point> &values) const = 0;
+                          ValueVector<Value> &values) const = 0;
 
   virtual void evaluate_1(const ValueVector<GridPoint> &points,
                           ValueVector<Derivative<1>> &values) const = 0;
