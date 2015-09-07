@@ -25,8 +25,8 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int space_dim_, class ContainerType_>
 GridFunctionElementBase<dim_, space_dim_, ContainerType_>::
 GridFunctionElementBase(std::shared_ptr<ContainerType_> grid_function,
-                  const ListIt &index,
-                  const PropId &prop)
+                        const ListIt &index,
+                        const PropId &prop)
   :
   grid_function_(grid_function),
   grid_elem_(grid_function_->get_grid()->create_element(index,prop))

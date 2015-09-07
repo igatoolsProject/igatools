@@ -28,7 +28,7 @@ data = Instantiation(include_files)
 sub_dim_members = []
 
 for x in inst.sub_mapping_dims:
-    mapping = 'FormulaFunctionGridHandler<%d,%d>' %(x.dim, x.space_dim)
+    mapping = 'FormulaGridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
     f.write('template class %s ;\n' %(mapping))
     for fun in sub_dim_members:
         k = x.dim
@@ -36,7 +36,7 @@ for x in inst.sub_mapping_dims:
         f.write('template ' + s + '\n')
 
 for x in inst.mapping_dims:
-    mapping = 'FormulaFunctionGridHandler<%d,%d>' %(x.dim, x.space_dim)
+    mapping = 'FormulaGridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
     f.write('template class %s ;\n' %(mapping))
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
