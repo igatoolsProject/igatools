@@ -35,7 +35,7 @@ elements = []
 els =['const iga::GridFunction', ' iga::GridFunction']
 for x in inst.sub_mapping_dims:
   for el in els:
-    elem = 'GridFunctionElementBase<%d,%d,' %(x.dim, x.codim) + el + '<%d,%d>' %(x.dim, x.codim) + '>'
+    elem = 'GridFunctionElementBase<%d,%d,' %(x.dim,x.space_dim) + el + '<%d,%d>' %(x.dim,x.space_dim) + '>'
     f.write('template class %s; \n' %(elem))
     elements.append(elem)
     for fun in sub_dim_members:
@@ -45,7 +45,7 @@ for x in inst.sub_mapping_dims:
 
 for x in inst.mapping_dims:
   for el in els:
-    elem = 'GridFunctionElementBase<%d,%d,' %(x.dim, x.codim) + el + '<%d,%d>' %(x.dim, x.codim) + '>'
+    elem = 'GridFunctionElementBase<%d,%d,' %(x.dim,x.space_dim) + el + '<%d,%d>' %(x.dim,x.space_dim) + '>'
     f.write('template class %s; \n' %(elem))
     elements.append(elem)
     for fun in sub_dim_members:
@@ -56,12 +56,12 @@ for x in inst.mapping_dims:
 accs1 =  ['GridFunctionElement',       'ConstGridFunctionElement']
 for x in inst.sub_mapping_dims + inst.mapping_dims: 
   for acc in accs1: 
-      f.write('template class ' + acc + '<%d,%d>' %(x.dim, x.codim) + ';\n')
+      f.write('template class ' + acc + '<%d,%d>' %(x.dim,x.space_dim) + ';\n')
 
 accs=  ['GridFunctionElement',       'ConstGridFunctionElement', 'GridFunctionElement', 'ConstGridFunctionElement']
 iters =  ['GridIteratorBase', 'GridIteratorBase',   'GridIterator', 'GridIterator']
 for x in inst.sub_mapping_dims+inst.mapping_dims:
   for i in range(len(accs)):
-    acc = iters[i] + '<' + accs[i]+ '<%d,%d>' %(x.dim, x.codim) + '>' 
+    acc = iters[i] + '<' + accs[i]+ '<%d,%d>' %(x.dim,x.space_dim) + '>' 
     f.write('template class %s; \n' %(acc))
     
