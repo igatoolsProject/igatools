@@ -84,17 +84,13 @@ private:
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class serialization_access;
 
   template<class Archive>
   void serialize(Archive &ar, const unsigned int version)
   {
-//    ar &boost::serialization::make_nvp("SafeSTLContainer_Map",
-//                                       boost::serialization::base_object<std::map>(*this));
-
-    ar &boost::serialization::make_nvp(
-      "SafeSTLContainer_Map",
-      boost::serialization::base_object<std::map<Key,T>>(*this));
+    ar &make_nvp("SafeSTLContainer_Map",
+                 base_class<std::map<Key,T>>(this));
 
   }
   ///@}

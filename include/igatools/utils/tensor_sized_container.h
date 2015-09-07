@@ -158,7 +158,13 @@ private:
   friend class boost::serialization::access;
 
   template<class Archive>
-  void serialize(Archive &ar, const unsigned int version);
+  void serialize(Archive &ar, const unsigned int version)
+  {
+    ar &make_nvp("size_",size_);
+
+    ar &make_nvp("weight_",weight_);
+  }
+
   ///@}
 #endif // SERIALIZATION
 };

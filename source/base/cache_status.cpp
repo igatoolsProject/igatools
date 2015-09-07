@@ -136,6 +136,7 @@ set_filled(const bool status)
   }
 }
 
+#if 0
 #ifdef SERIALIZATION
 
 template<class Archive>
@@ -147,12 +148,12 @@ serialize(Archive &ar, const unsigned int version)
   ar &boost::serialization::make_nvp("filled_counter_",filled_counter_);
   ar &boost::serialization::make_nvp("copied_",copied_);
 };
-
 #endif // SERIALIZATION
+#endif
 
 IGA_NAMESPACE_CLOSE
 
-
+#if 0
 #ifdef SERIALIZATION
 
 BOOST_CLASS_EXPORT_IMPLEMENT(iga::CacheStatus)
@@ -160,3 +161,4 @@ template void iga::CacheStatus::serialize(OArchive &, const unsigned int);
 template void iga::CacheStatus::serialize(IArchive &, const unsigned int);
 
 #endif // SERIALIZATION
+#endif

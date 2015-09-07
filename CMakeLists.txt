@@ -147,6 +147,21 @@ else(SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) is not enabled.")    
 endif(SERIALIZATION)
 
+
+option(USE_CEREAL "Use the Cereal serialization library" ON)
+if (USE_CEREAL)
+    if (NOT SERIALIZATION)
+        message (FATAL_ERROR "USE_CEREAL variable set to ON is not "
+        "compatible with SERIALIZATION set to OFF. Serialization must be "
+        "activated.")
+    endif ()
+    message("   -- Serialization with CEREAL library (EXPERIMENTAL) is enabled.")    
+else (USE_CEREAL)
+    message("   -- Serialization with CEREAL library (EXPERIMENTAL) is not enabled.")    
+endif (USE_CEREAL)
+
+
+
 option(PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" ON)
 if (PARAVIEW_PLUGIN)
     if (NOT SERIALIZATION)
@@ -206,16 +221,23 @@ set(lib_name igatools)
 
 # igatools source files
 #set (source_dirs base utils geometry basis_functions linear_algebra io contrib functions)
-set (source_dirs base utils geometry basis_functions linear_algebra functions)
-#set (source_dirs base utils geometry linear_algebra functions)
+#set (source_dirs base utils geometry basis_functions linear_algebra functions)
+set (source_dirs base utils geometry linear_algebra functions)
 foreach(dir ${source_dirs})
   file(GLOB source ${PROJECT_SOURCE_DIR}/source/${dir}/*.cpp)
   list(APPEND source_files ${source})
 endforeach()
 
 # igatools include directories
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
-                    ${CMAKE_CURRENT_BINARY_DIR}/include)
+if (USE_CEREAL)
+   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
+                       ${CMAKE_CURRENT_SOURCE_DIR}/include/igatools/contrib/cereal/include 
+                       ${CMAKE_CURRENT_BINARY_DIR}/include)
+else (USE_CEREAL)                    
+   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
+                       ${CMAKE_CURRENT_BINARY_DIR}/include)
+endif(USE_CEREAL)
+
 
 # the igatools library target
 add_library(${lib_name} SHARED  ${source_files})

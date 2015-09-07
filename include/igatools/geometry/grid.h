@@ -764,11 +764,26 @@ private:
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class serialization_access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar, const unsigned int version)
+  {
+//    using namespace boost::serialization;
+    std::string tag_name = "Grid" + std::to_string(dim_) + "base_t";
+    ar &make_nvp(tag_name.c_str(),
+                 base_class<TensorSizedContainer<dim_>>(this));
+
+    ar &make_nvp("knot_coordinates_",knot_coordinates_);
+    ar &make_nvp("boundary_id_",boundary_id_);
+    ar &make_nvp("properties_elements_id_",elem_properties_);
+    ar &make_nvp("object_id_",object_id_);
+#ifdef MESH_REFINEMENT
+    ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
+#endif
+  }
+
   ///@}
 #endif // SERIALIZATION
 };

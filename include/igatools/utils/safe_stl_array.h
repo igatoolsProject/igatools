@@ -78,20 +78,26 @@ private:
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class serialization_access;
 
-  template<class Archive, int Size = N>
-  void serialize(Archive &ar, const unsigned int version, EnableIf<(Size > 0)> * = 0)
+  template<class Archive>
+  void serialize(Archive &ar, const unsigned int version)
   {
-//    ar &boost::serialization::make_nvp("SafeSTLContainer_Array",
-//                                       boost::serialization::base_object<base_t>(*this));
-    ar &boost::serialization::make_nvp("SafeSTLContainer_Array",
-                                       boost::serialization::base_object<std::array<T,N>>(*this));
+    ar &make_nvp("SafeSTLContainer_Array",
+                 base_class<std::array<T,N>>(this));
   }
+  /*
+    template<class Archive, int Size = N>
+    void serialize(Archive &ar, const unsigned int version, EnableIf<(Size > 0)> * = 0)
+    {
+      ar &make_nvp("SafeSTLContainer_Array",
+                   base_class<std::array<T,N>>(this));
+    }
 
-  template<class Archive, int Size = N>
-  void serialize(Archive &ar, const unsigned int version, EnableIf<!(Size > 0)> * = 0)
-  {}
+    template<class Archive, int Size = N>
+    void serialize(Archive &ar, const unsigned int version, EnableIf<!(Size > 0)> * = 0)
+    {}
+    //*/
   ///@}
 #endif // SERIALIZATION
 

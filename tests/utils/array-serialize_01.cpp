@@ -28,29 +28,32 @@
 #include "../tests.h"
 #include <igatools/utils/safe_stl_array.h>
 
-void array_serialization()
+template <int N>
+void array_serialization(const SafeSTLArray<Real,N> &arr)
 {
   OUTSTART
 
-  SafeSTLArray<Real,3> arr = {-1.,-2.,-3.};
+  const std::string filename = "array" + std::to_string(N) + ".xml";
 
   {
-    ofstream xml_ostream("array.xml");
+    ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
+#ifdef USE_CEREAL
+    xml_out << CEREAL_NVP(arr);
+#else
     xml_out << BOOST_SERIALIZATION_NVP(arr);
-    xml_ostream.close();
+#endif
   }
 
-  arr.fill(0);
-
+  SafeSTLArray<Real,N> arr_in;
+  arr_in.fill(0);
   {
-    ifstream xml_istream("array.xml");
+    ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
-    xml_in >> BOOST_SERIALIZATION_NVP(arr);
-    xml_istream.close();
+    xml_in >> arr_in;
   }
 
-  arr.print_info(out);
+  arr_in.print_info(out);
   out << endl;
 
   OUTEND
@@ -59,6 +62,12 @@ void array_serialization()
 
 int main()
 {
-  array_serialization();
+  SafeSTLArray<Real,3> arr_3 = {-1.,-2.,-3.};
+  array_serialization(arr_3);
+
+
+  SafeSTLArray<Real,0> arr_0;
+  array_serialization(arr_0);
+
   return 0;
 }

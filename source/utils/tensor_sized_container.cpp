@@ -93,7 +93,7 @@ print_info(LogStream &out) const
 }
 
 
-
+#if 0
 #ifdef SERIALIZATION
 template<int rank>
 template<class Archive>
@@ -106,7 +106,7 @@ serialize(Archive &ar, const unsigned int version)
   ar &boost::serialization::make_nvp("weight_",weight_);
 }
 #endif // SERIALIZATION
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

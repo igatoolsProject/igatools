@@ -212,7 +212,7 @@ empty() const noexcept
   return properties_id_.empty();
 }
 
-
+#if 0
 #ifdef SERIALIZATION
 
 template <typename IndexType>
@@ -221,11 +221,11 @@ void
 PropertiesIdContainer<IndexType>::
 serialize(Archive &ar, const unsigned int version)
 {
-  ar &boost::serialization::make_nvp("properties_id_",properties_id_);
+  ar &make_nvp("properties_id_",properties_id_);
 }
 
 #endif // SERIALIZATION
-
+#endif
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/base/properties_id_container.inst>

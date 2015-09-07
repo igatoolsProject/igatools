@@ -147,10 +147,15 @@ private:
    */
   ///@{
   friend class boost::serialization::access;
+  friend class serialization_access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar, const unsigned int version)
+  {
+    ar &make_nvp("properties_id_",properties_id_);
+  }
+
   ///@}
 #endif //SERIALIZATION
 
