@@ -228,7 +228,7 @@ private:
         auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id_);
 
         const auto &DF = cache.template get_data<_Gradient>();
-        typename GridFunction<sdim, space_dim-sdim>::Gradient DF1;
+        typename GridFunction<sdim, space_dim>::Gradient DF1;
 
         auto &measures = cache.template get_data<_Measure>();
         for (int pt = 0 ; pt < n_points; ++pt)
