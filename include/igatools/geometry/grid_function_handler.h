@@ -42,7 +42,7 @@ private:
   using self_t = GridFunctionHandler<dim_, space_dim_>;
 
 public:
-  static const int space_dim = dim_ + space_dim_;
+  static const int space_dim = space_dim_;
   static const int dim = dim_;
 
   using GridFunctionType = const GridFunction<dim_, space_dim_>;
