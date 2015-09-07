@@ -1,0 +1,289 @@
+//-+--------------------------------------------------------------------
+// Igatools a general purpose Isogeometric analysis library.
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
+//
+// This file is part of the igatools library.
+//
+// The igatools library is free software: you can use it, redistribute
+// it and/or modify it under the terms of the GNU General Public
+// License as published by the Free Software Foundation, either
+// version 3 of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//-+--------------------------------------------------------------------
+
+#ifndef __GRID_FUNCTION_HANDLER_H_
+#define __GRID_FUNCTION_HANDLER_H_
+
+#include <igatools/base/config.h>
+#include <igatools/geometry/grid.h>
+#include <igatools/geometry/grid_function.h>
+#include <igatools/geometry/grid_handler.h>
+
+IGA_NAMESPACE_OPEN
+
+template <int, int, class> class GridFunctionElementBase;
+template <int, int> class GridFunctionElement;
+template <int, int> class ConstGridFunctionElement;
+
+/**
+ */
+template<int dim_, int space_dim_>
+class GridFunctionHandler :
+  public std::enable_shared_from_this<GridFunctionHandler<dim_,codim_> >
+{
+private:
+  using self_t = GridFunctionHandler<dim_, codim_>;
+
+public:
+  static const int space_dim = dim_ + codim_;
+  static const int dim = dim_;
+
+  using GridFunctionType = const GridFunction<dim_, codim_>;
+  using GridType = const Grid<dim_>;
+  using GridHandler = typename GridType::ElementHandler;
+
+  using ElementAccessor = GridFunctionElement<dim_, codim_>;
+  using ElementIterator = GridIterator<ElementAccessor>;
+  using ConstElementAccessor = ConstGridFunctionElement<dim_, codim_>;
+  using ElementConstIterator = GridIterator<ConstElementAccessor>;
+
+  using List = typename GridType::List;
+  using ListIt = typename GridType::ListIt;
+  using Flags = grid_function_element::Flags;
+  using CacheFlags = grid_function_element::CacheFlags;
+
+protected:
+  using FlagsArray = SafeSTLArray<CacheFlags, dim+1>;
+
+  using topology_variant = TopologyVariants<dim_>;
+
+  template<int k>
+  using ConstQuad = const Quadrature<k>;
+  using eval_pts_variant = SubElemPtrVariants<ConstQuad,dim_>;
+
+private:
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  GridFunctionHandler() = default;
+
+public:
+  GridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function);
+
+
+  virtual ~GridFunctionHandler();
+
+  static std::shared_ptr<self_t>
+  create(std::shared_ptr<GridFunctionType> grid_function)
+  {
+    return std::shared_ptr<self_t>(new self_t(grid_function));
+  }
+
+
+  static std::shared_ptr<const self_t>
+  const_create(std::shared_ptr<GridFunctionType> grid_function)
+  {
+    return create(grid_function);
+  }
+
+  std::shared_ptr<GridFunctionType> get_grid_function() const
+  {
+    return grid_function_;
+  }
+
+
+public:
+  virtual void set_flags(const topology_variant &sdim,
+                         const Flags &flag);
+  template <int sdim>
+  void set_flags(const Flags &flag)
+  {
+    this->set_flags(Topology<sdim>(), flag);
+  }
+
+  virtual void init_cache(ConstElementAccessor &elem,
+                          const eval_pts_variant &quad) const;
+
+  void init_cache(ElementConstIterator &elem,
+                  const eval_pts_variant &quad) const
+  {
+    this->init_cache(*elem, quad);
+  }
+
+  virtual void fill_cache(const topology_variant &sdim,
+                          ConstElementAccessor &elem,
+                          const int s_id) const;
+
+  void fill_cache(const topology_variant &sdim,
+                  ElementConstIterator &elem,
+                  const int s_id) const
+  {
+    this->fill_cache(sdim, *elem, s_id);
+  }
+
+  template <int sdim>
+  void fill_cache(ElementConstIterator &elem,
+                  const int s_id)
+  {
+    this->fill_cache(Topology<sdim>(), elem, s_id);
+  }
+
+protected:
+  std::shared_ptr<typename ConstElementAccessor::CacheType>
+  &get_element_cache(ConstElementAccessor &elem) const
+  {
+    return  elem.local_cache_;
+  }
+
+
+private:
+  /**
+   * Alternative to
+   * template <int sdim> set_flags()
+   */
+  struct SetFlagsDispatcher : boost::static_visitor<void>
+  {
+    SetFlagsDispatcher(const CacheFlags flag, FlagsArray &flags)
+      :
+      flag_(flag),
+      flags_(flags)
+    {}
+
+    template<int sdim>
+    void operator()(const Topology<sdim> &)
+    {
+      flags_[sdim] |= flag_;
+    }
+
+    const CacheFlags flag_;
+    FlagsArray &flags_;
+  };
+
+
+
+  struct InitCacheDispatcher : boost::static_visitor<void>
+  {
+    InitCacheDispatcher(self_t const *grid_function_handler,
+                        ConstElementAccessor &elem,
+                        const FlagsArray &flags)
+      :
+      grid_function_handler_(grid_function_handler),
+      elem_(elem),
+      flags_(flags)
+    {}
+
+
+    template<int sdim>
+    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
+    {
+      auto &cache = grid_function_handler_->get_element_cache(elem_);
+
+      const auto n_points = elem_.get_grid_element().template get_quad<sdim>()
+                            ->get_num_points();
+      for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
+      {
+        auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+        s_cache.resize(flags_[sdim], n_points);
+      }
+    }
+
+    self_t const *grid_function_handler_;
+    ConstElementAccessor &elem_;
+    const FlagsArray &flags_;
+  };
+
+
+
+  struct FillCacheDispatcher : boost::static_visitor<void>
+  {
+    FillCacheDispatcher(ConstElementAccessor &elem,
+                        const int s_id)
+      :
+      elem_(elem),
+      s_id_(s_id)
+    {}
+
+
+    template<int sdim>
+    void operator()(const Topology<sdim> &)
+    {
+      using _Gradient = typename ElementAccessor::_Gradient;
+      using _Measure = typename ElementAccessor::_Measure;
+
+      const auto n_points = elem_.grid_elem_->template get_quad<sdim>()->get_num_points();
+
+      auto &cache = elem_.local_cache_->template get_sub_elem_cache<sdim>(s_id_);
+
+      if (cache.template status_fill<_Measure>())
+      {
+        auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id_);
+
+        const auto &DF = cache.template get_data<_Gradient>();
+        typename GridFunction<sdim, space_dim-sdim>::Gradient DF1;
+
+        auto &measures = cache.template get_data<_Measure>();
+        for (int pt = 0 ; pt < n_points; ++pt)
+        {
+          for (int l=0; l<sdim; ++l)
+            DF1[l] = DF[pt][s_elem.active_directions[l]];
+
+          measures[pt] = fabs(determinant<sdim,space_dim>(DF1));
+        }
+        cache.template set_status_filled<_Measure>(true);
+      }
+      cache.set_filled(true);
+    }
+
+    ConstElementAccessor &elem_;
+    const int s_id_;
+  };
+
+protected:
+  std::shared_ptr<const GridHandler>
+  get_grid_handler() const
+  {
+    return grid_handler_;
+  }
+
+private:
+  std::shared_ptr<GridFunctionType> grid_function_;
+
+  std::shared_ptr<GridHandler> grid_handler_;
+
+  FlagsArray flags_;
+
+  friend ElementAccessor;
+
+#ifdef SERIALIZATION
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
+
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version)
+  {
+    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
+    ar &boost::serialization::make_nvp("F_",F_);
+    ar &boost::serialization::make_nvp("flags_",flags_);
+  }
+  ///@}
+#endif
+};
+
+IGA_NAMESPACE_CLOSE
+
+#endif
+
