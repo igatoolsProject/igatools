@@ -741,7 +741,7 @@ get_dofs_tensor_id_elem_table() const
   return dofs_tensor_id_elem_table_;
 }
 
-
+#if 0
 #ifdef SERIALIZATION
 template<int dim, int range, int rank>
 template<class Archive>
@@ -768,7 +768,7 @@ serialize(Archive &ar, const unsigned int version)
   spline_space_previous_refinement_ = tmp;
 }
 #endif // SERIALIZATION
-
+#endif
 
 template<int dim, int range, int rank>
 Size

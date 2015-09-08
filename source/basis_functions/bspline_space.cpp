@@ -700,7 +700,7 @@ get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 }
 
 
-
+#if 0
 #ifdef SERIALIZATION
 
 template<int dim_, int range_, int rank_>
@@ -725,6 +725,7 @@ serialize(Archive &ar, const unsigned int version)
 
 //    ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 }
+#endif
 
 #endif // SERIALIZATION
 

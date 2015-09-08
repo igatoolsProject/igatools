@@ -103,6 +103,7 @@ refine_h(const Size n_subdivisions)
 
 #endif // MESH_REFINEMENT
 
+#if 0
 #ifdef SERIALIZATION
 template <int dim_>
 template<class Archive>
@@ -119,7 +120,7 @@ serialize(Archive &ar, const unsigned int version)
 }
 ///@}
 #endif // SERIALIZATION
-
+#endif
 
 
 
@@ -253,7 +254,7 @@ get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std
   return this->get_ptr_const_dof_distribution()->get_boundary_dofs(s_id,topology);
 }
 
-
+#if 0
 #ifdef SERIALIZATION
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 template<class Archive>
@@ -282,6 +283,7 @@ serialize(Archive &ar, const unsigned int version)
 }
 ///@}
 #endif // SERIALIZATION
+#endif
 
 IGA_NAMESPACE_CLOSE
 

@@ -71,6 +71,9 @@ IGA_NAMESPACE_CLOSE
 
 
 #ifdef SERIALIZATION
+using SafeSTLSetIntAlias = iga::SafeSTLSet<int>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetIntAlias,cereal::specialization::member_serialize);
+
 using SafeSTLSetTensorIndexAlias0 = iga::SafeSTLSet<iga::TensorIndex<0>>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetTensorIndexAlias0,cereal::specialization::member_serialize);
 using SafeSTLSetTensorIndexAlias1 = iga::SafeSTLSet<iga::TensorIndex<1>>;

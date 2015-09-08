@@ -224,7 +224,17 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar)
+  {
+    ar &make_nvp("ReferenceSpace_base_t",
+                 base_class<base_t>(*this));
+#ifdef MESH_REFINEMENT
+    auto tmp = const_pointer_cast<RefSpace>(ref_space_previous_refinement_);
+    ar &make_nvp("ref_space_previous_refinement_",tmp);
+    ref_space_previous_refinement_ = const_pointer_cast<const RefSpace>(tmp);
+#endif
+  }
+
   ///@}
 #endif // SERIALIZATION
 };

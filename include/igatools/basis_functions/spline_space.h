@@ -80,8 +80,6 @@ enum class InteriorReg
  */
 template<int dim, int range = 1, int rank = 1>
 class SplineSpace
-//      :
-//    public GridWrapper<dim>
 {
 
 private:
@@ -463,25 +461,22 @@ public:
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
      */
     ///@{
-    friend class boost::serialization::access;
+    friend class cereal::access;
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
+    serialize(Archive &ar)
     {
+      ar &make_nvp("ComponentContainer_base_t",base_class<base_t>(this));
 
-      ar &boost::serialization::make_nvp(
-        "ComponentContainer_base_t",
-        boost::serialization::base_object<base_t>(*this));
+      ar &make_nvp("comp_map_",comp_map_);
 
-      ar &boost::serialization::make_nvp("comp_map_",comp_map_);
+      ar &make_nvp("active_components_id_", active_components_id_);
 
-      ar &boost::serialization::make_nvp("active_components_id_", active_components_id_);
-
-      ar &boost::serialization::make_nvp("inactive_components_id_", inactive_components_id_);
+      ar &make_nvp("inactive_components_id_", inactive_components_id_);
     }
     ///@}
 #endif // SERIALIZATION
@@ -529,19 +524,42 @@ private:
    */
   SplineSpace() = default;
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar)
+  {
+    ar &make_nvp("grid_",grid_);
+
+    ar &make_nvp("interior_mult_",interior_mult_);
+
+    ar &make_nvp("deg_", deg_);
+
+    ar &make_nvp("space_dim_", space_dim_);
+
+    ar &make_nvp("periodic_", periodic_);
+
+    ar &make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
+
+#ifdef MESH_REFINEMENT
+    using self_t = SplineSpace<dim,range,rank>;
+    auto tmp = std::const_pointer_cast<self_t>(spline_space_previous_refinement_);
+    ar &make_nvp("spline_space_previous_refinement_",tmp);
+    spline_space_previous_refinement_ = tmp;
+#endif
+  }
+
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 

@@ -68,8 +68,7 @@ void serialize_deserialize(std::shared_ptr<SplineSpace<dim,range>> sp_spec)
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 
-    xml_out << boost::serialization::make_nvp(tag_name.c_str(),*sp_spec);
-    xml_ostream.close();
+    xml_out << *sp_spec;
   }
 
   auto grid = Grid<dim>::create();
@@ -80,8 +79,7 @@ void serialize_deserialize(std::shared_ptr<SplineSpace<dim,range>> sp_spec)
     // de-serialize the SplineSpace object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
-    xml_in >> BOOST_SERIALIZATION_NVP(*sp_spec_new);
-    xml_istream.close();
+    xml_in >> *sp_spec_new;
   }
   out.begin_item("Space after serialize-deserialize.");
   sp_spec_new->print_info(out);

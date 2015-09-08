@@ -280,17 +280,16 @@ private:
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
   serialize(Archive &ar, const unsigned int version)
   {
-    ar &boost::serialization::make_nvp("data_is_const_",data_is_const_);
-
+    ar &make_nvp("data_is_const_",data_is_const_);
 
     // In order to serialize the data, we need to cast it to non-const
     Ptr tmp;
@@ -299,7 +298,7 @@ private:
     else
       tmp = ptr_;
 
-    ar &boost::serialization::make_nvp("tmp_ptr_to_data_",tmp);
+    ar &make_nvp("tmp_ptr_to_data_",tmp);
     Assert(tmp != nullptr,ExcNullPtr());
 
     // After deserialization we need to cast the data to the correct constness
@@ -307,7 +306,6 @@ private:
       ptr_to_const_ = std::const_pointer_cast<const T>(tmp);
     else
       ptr_ = tmp;
-
   }
   ///@}
 #endif // SERIALIZATION

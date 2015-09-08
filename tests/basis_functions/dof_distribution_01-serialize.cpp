@@ -45,8 +45,7 @@ void serialize_deserialize(const DofDistribution<dim> &dof_admin)
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 
-    xml_out << boost::serialization::make_nvp(tag_name.c_str(),dof_admin);
-    xml_ostream.close();
+    xml_out << dof_admin;
   }
 
   DofDistribution<dim> dof_admin_new;
@@ -54,8 +53,7 @@ void serialize_deserialize(const DofDistribution<dim> &dof_admin)
     // de-serialize the DofDistribution object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
-    xml_in >> BOOST_SERIALIZATION_NVP(dof_admin_new);
-    xml_istream.close();
+    xml_in >> dof_admin_new;
   }
   out.begin_item("DofDistribution after serialize-deserialize.");
   dof_admin_new.print_info(out);
@@ -65,66 +63,17 @@ void serialize_deserialize(const DofDistribution<dim> &dof_admin)
 
 
 template <int dim>
-void test1()
+void dof_distribution_serialization()
 {
   OUTSTART
   using SplineSpace = SplineSpace<dim>;
-  using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
-  typename SplineSpace::DegreeTable deg {{2}};
+  typename SplineSpace::DegreeTable deg(TensorIndex<dim>(2));
 
   auto grid = Grid<dim>::create(4);
-
-  auto int_mult = MultiplicityTable({ {{1,3}} });
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
-
-  CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-  typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-  typename SplineSpace::EndBehaviourTable end_b((typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots))));
-
-  auto rep_knots = sp_spec->compute_knots_with_repetition(end_b,bdry_knots);
-
-  auto n_basis = sp_spec->get_num_basis_table();
-  auto degree = sp_spec->get_degree_table();
-
-  DofDistribution<dim> dof_admin(n_basis, degree, sp_spec->get_periodic_table());
-
-  //-----------------------------------------------------------------
-  const auto &dofs_view = dof_admin.get_dofs_view();
-  const std::string property_active = "active";
-  //dof_admin.add_dofs_property(property_active);
-
-  for (const auto &dof : dofs_view)
-  {
-    if (dof % 2 == 0)
-      dof_admin.set_dof_property_status(property_active, dof, true);
-    else
-      dof_admin.set_dof_property_status(property_active, dof, false);
-  }
-  //-----------------------------------------------------------------
-
-
-  serialize_deserialize(dof_admin);
-
-  OUTEND
-}
-
-template <int dim>
-void test2()
-{
-  OUTSTART
-  using SplineSpace = SplineSpace<dim>;
-
-  typename SplineSpace::DegreeTable deg {{1,2}};
-
-  auto grid = Grid<dim>::create({4,3});
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
-
-  typename SplineSpace::EndBehaviourTable end_b((typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory))));
-
-  auto rep_knots = sp_spec->compute_knots_with_repetition(end_b);
+  auto sp_spec = SplineSpace::create(deg, grid,int_mult);
 
 
   auto n_basis = sp_spec->get_num_basis_table();
@@ -154,8 +103,11 @@ void test2()
 int main()
 {
   out.depth_console(10);
-  test1<1>();
-  test2<2>();
+
+//  dof_distribution_serialization<0>();
+  dof_distribution_serialization<1>();
+  dof_distribution_serialization<2>();
+  dof_distribution_serialization<3>();
 
   return 0;
 }

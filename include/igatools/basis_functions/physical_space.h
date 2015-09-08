@@ -265,18 +265,36 @@ public:
 
 private:
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar)
+  {
+    ar &boost::serialization::make_nvp("PhysicalSpace_base_t",
+                                       boost::serialization::base_object<base_t>(*this));
+
+    ar.template register_type<BSplineSpace<dim_,range_,rank_> >();
+#ifdef NURBS
+    ar.template register_type<NURBSSpace<dim_,range_,rank_> >();
+#endif // NURBS
+
+    ar &boost::serialization::make_nvp("ref_space_",ref_space_);
+
+    auto tmp = const_pointer_cast<self_t>(phys_space_previous_refinement_);
+    ar &boost::serialization::make_nvp("phys_space_previous_refinement_",tmp);
+    phys_space_previous_refinement_ = tmp;
+  }
+
   ///@}
+#endif // SERIALIZATION
 #endif
 };
 

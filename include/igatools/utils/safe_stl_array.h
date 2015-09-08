@@ -31,6 +31,8 @@
 IGA_NAMESPACE_OPEN
 
 template <class> class SafeSTLVector;
+template <class,int> class DynamicMultiArray;
+template <int> class TensorSize;
 
 
 /**
@@ -123,6 +125,26 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasVec2,cereal::specialization:
 using SafeSTLArrayAliasVec3 = iga::SafeSTLArray<Vec,3>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasVec3,cereal::specialization::member_serialize);
 
+
+// The next ones are used by DofDistribution
+using SafeSTLArrayDMArrayAliasVec0 = iga::SafeSTLArray<iga::DynamicMultiArray<int,0>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayDMArrayAliasVec0,cereal::specialization::member_serialize);
+using SafeSTLArrayDMArrayAliasVec1 = iga::SafeSTLArray<iga::DynamicMultiArray<int,1>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayDMArrayAliasVec1,cereal::specialization::member_serialize);
+using SafeSTLArrayDMArrayAliasVec2 = iga::SafeSTLArray<iga::DynamicMultiArray<int,2>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayDMArrayAliasVec2,cereal::specialization::member_serialize);
+using SafeSTLArrayDMArrayAliasVec3 = iga::SafeSTLArray<iga::DynamicMultiArray<int,3>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayDMArrayAliasVec3,cereal::specialization::member_serialize);
+
+// The next ones are used by SplineSpace::ComponentContainer
+using SafeSTLArrayTSizeAlias0 = iga::SafeSTLArray<iga::TensorSize<0>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayTSizeAlias0,cereal::specialization::member_serialize);
+using SafeSTLArrayTSizeAlias1 = iga::SafeSTLArray<iga::TensorSize<1>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayTSizeAlias1,cereal::specialization::member_serialize);
+using SafeSTLArrayTSizeAlias2 = iga::SafeSTLArray<iga::TensorSize<2>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayTSizeAlias2,cereal::specialization::member_serialize);
+using SafeSTLArrayTSizeAlias3 = iga::SafeSTLArray<iga::TensorSize<3>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayTSizeAlias3,cereal::specialization::member_serialize);
 
 
 //#include <igatools/utils/safe_stl_array.serialization>

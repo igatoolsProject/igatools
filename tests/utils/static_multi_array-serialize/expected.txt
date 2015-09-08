@@ -1,0 +1,22 @@
+========================================================================
+static_multiarray_serialization
+========================================================================
+StaticMultiArray<int,1,2> before serialization
+   Size: [ 1 1 ]  Weights: [1,1]
+[ 0 ]
+StaticMultiArray<int,1,2> after serialization
+   Size: [ 1 1 ]  Weights: [1,1]
+[ 0 ]
+========================================================================
+
+========================================================================
+static_multiarray_serialization
+========================================================================
+StaticMultiArray<int,2,2> before serialization
+   Size: [ 2 2 ]  Weights: [2,4]
+[ 0 1 2 3 ]
+StaticMultiArray<int,2,2> after serialization
+   Size: [ 2 2 ]  Weights: [2,4]
+[ 0 1 2 3 ]
+========================================================================
+

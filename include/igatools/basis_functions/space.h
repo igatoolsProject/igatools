@@ -79,19 +79,13 @@ public:
   /** @name Constructor and destructor. */
   ///@{
 protected:
-#ifdef SERIALIZATION
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
   SpaceBase() = default;
-#else
-  /**
-   * Default constructor. Not allowed to be used.
-   */
-  SpaceBase() = delete;
-#endif
+
 
   /** Construct the object from the (const) @p grid on which the function space will be built upon. */
   SpaceBase(const std::shared_ptr<const Grid<dim_>> &grid);
@@ -180,11 +174,18 @@ private:
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar)
+  {
+    ar &make_nvp("grid_",grid_);
+
+    ar &make_nvp("object_id_",object_id_);
+
+    ar &make_nvp("name_",name_);
+  }
   ///@}
 #endif // SERIALIZATION
 };
@@ -402,21 +403,41 @@ protected:
   std::shared_ptr<const PhysDomain> phys_domain_;
 
 private:
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar)
+  {
+    AssertThrow(false,ExcNotImplemented());
+#if 0
+    ar.template register_type<BSplineSpace<dim_,range_,rank_>>();
+
+#ifdef NURBS
+    ar.template register_type<NURBSSpace<dim_,range_,rank_>>();
+#endif
+
+    ar.template register_type<PhysicalSpace<dim_,range_,rank_,codim_,Transformation::h_grad>>();
+
+    ar &boost::serialization::make_nvp("Space_base_t",
+                                       boost::serialization::base_object<base_t>(*this));
+
+    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
+    ar.template register_type<IdentityFunction<dim_,dim_> >();
+    ar &boost::serialization::make_nvp("map_func_",map_func_);
+    //    Assert(map_func_ != nullptr,ExcNullPtr());
+#endif
+  }
   ///@}
 #endif // SERIALIZATION
-
+#endif
 };
 
 
