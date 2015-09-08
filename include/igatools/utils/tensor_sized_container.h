@@ -159,9 +159,9 @@ private:
   template<class Archive>
   void serialize(Archive &ar)
   {
-    ar &make_nvp("size_",base_class<SafeSTLArray<int,rank>>(&size_));
+    ar &make_nvp("size_",size_);
 
-//    ar &make_nvp("weight_",base_class<SafeSTLArray<int,rank>>(&weight_));
+    ar &make_nvp("weight_",weight_);
   }
   ///@}
 #endif // SERIALIZATION

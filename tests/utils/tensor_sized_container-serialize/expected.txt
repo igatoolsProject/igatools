@@ -1,0 +1,36 @@
+========================================================================
+tsc_serialization
+========================================================================
+TensorSizedContainer<0> before serialization
+Size: [ ]  Weights: []
+TensorSizedContainer<0> after serialization
+Size: [ ]  Weights: []
+========================================================================
+
+========================================================================
+tsc_serialization
+========================================================================
+TensorSizedContainer<1> before serialization
+Size: [ 3 ]  Weights: [3]
+TensorSizedContainer<1> after serialization
+Size: [ 3 ]  Weights: [3]
+========================================================================
+
+========================================================================
+tsc_serialization
+========================================================================
+TensorSizedContainer<2> before serialization
+Size: [ 3 3 ]  Weights: [3,9]
+TensorSizedContainer<2> after serialization
+Size: [ 3 3 ]  Weights: [3,9]
+========================================================================
+
+========================================================================
+tsc_serialization
+========================================================================
+TensorSizedContainer<3> before serialization
+Size: [ 3 3 3 ]  Weights: [3,9,27]
+TensorSizedContainer<3> after serialization
+Size: [ 3 3 3 ]  Weights: [3,9,27]
+========================================================================
+
