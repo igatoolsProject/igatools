@@ -524,10 +524,9 @@ private:
    */
   SplineSpace() = default;
 
-#if 0
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
+   * @name Functions needed for the serialization
    * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
    */
   ///@{
@@ -559,7 +558,6 @@ private:
 
   ///@}
 #endif // SERIALIZATION
-#endif
 };
 
 
