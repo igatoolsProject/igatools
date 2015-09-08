@@ -26,8 +26,11 @@
 
 #include <array>
 
+
+
 IGA_NAMESPACE_OPEN
 
+template <class> class SafeSTLVector;
 
 
 /**
@@ -104,6 +107,23 @@ using SafeSTLArrayAliasInt2 = iga::SafeSTLArray<int,2>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt2,cereal::specialization::member_serialize);
 using SafeSTLArrayAliasInt3 = iga::SafeSTLArray<int,3>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt3,cereal::specialization::member_serialize);
+using SafeSTLArrayAliasInt4 = iga::SafeSTLArray<int,4>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt4,cereal::specialization::member_serialize);
+using SafeSTLArrayAliasInt6 = iga::SafeSTLArray<int,6>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt6,cereal::specialization::member_serialize);
+
+
+using Vec = iga::SafeSTLVector<iga::Real>;
+using SafeSTLArrayAliasVec0 = iga::SafeSTLArray<Vec,0>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasVec0,cereal::specialization::member_serialize);
+using SafeSTLArrayAliasVec1 = iga::SafeSTLArray<Vec,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasVec1,cereal::specialization::member_serialize);
+using SafeSTLArrayAliasVec2 = iga::SafeSTLArray<Vec,2>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasVec2,cereal::specialization::member_serialize);
+using SafeSTLArrayAliasVec3 = iga::SafeSTLArray<Vec,3>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasVec3,cereal::specialization::member_serialize);
+
+
 
 //#include <igatools/utils/safe_stl_array.serialization>
 #endif // SERIALIZATION

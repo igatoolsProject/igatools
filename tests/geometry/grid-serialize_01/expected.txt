@@ -1,7 +1,7 @@
 ========================================================================
 serialize_grid
 ========================================================================
-Original grid.
+Grid<0> before serialize-deserialize.
    Number of intervals per direction: [ ]
    Knot coordinates:
       Size: [ ]  Weights: []
@@ -11,7 +11,7 @@ Original grid.
       
    
 
-Grid after serialize-deserialize.
+Grid<0> after serialize-deserialize.
    Number of intervals per direction: [ ]
    Knot coordinates:
       Size: [ ]  Weights: []
@@ -26,7 +26,7 @@ Grid after serialize-deserialize.
 ========================================================================
 serialize_grid
 ========================================================================
-Original grid.
+Grid<1> before serialize-deserialize.
    Number of intervals per direction: [ 3 ]
    Knot coordinates:
       Size: [ 4 ]  Weights: [4]
@@ -44,7 +44,7 @@ Original grid.
       
    
 
-Grid after serialize-deserialize.
+Grid<1> after serialize-deserialize.
    Number of intervals per direction: [ 3 ]
    Knot coordinates:
       Size: [ 4 ]  Weights: [4]
@@ -67,7 +67,7 @@ Grid after serialize-deserialize.
 ========================================================================
 serialize_grid
 ========================================================================
-Original grid.
+Grid<2> before serialize-deserialize.
    Number of intervals per direction: [ 3 3 ]
    Knot coordinates:
       Size: [ 4 4 ]  Weights: [4,16]
@@ -99,7 +99,7 @@ Original grid.
       
    
 
-Grid after serialize-deserialize.
+Grid<2> after serialize-deserialize.
    Number of intervals per direction: [ 3 3 ]
    Knot coordinates:
       Size: [ 4 4 ]  Weights: [4,16]
@@ -136,7 +136,7 @@ Grid after serialize-deserialize.
 ========================================================================
 serialize_grid
 ========================================================================
-Original grid.
+Grid<3> before serialize-deserialize.
    Number of intervals per direction: [ 3 3 3 ]
    Knot coordinates:
       Size: [ 4 4 4 ]  Weights: [4,16,64]
@@ -206,7 +206,7 @@ Original grid.
       
    
 
-Grid after serialize-deserialize.
+Grid<3> after serialize-deserialize.
    Number of intervals per direction: [ 3 3 3 ]
    Knot coordinates:
       Size: [ 4 4 4 ]  Weights: [4,16,64]

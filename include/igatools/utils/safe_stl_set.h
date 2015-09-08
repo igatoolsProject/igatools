@@ -23,9 +23,14 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/safe_stl_container.h>
+#include <igatools/utils/tensor_index.h>
+
 #include <set>
 
 IGA_NAMESPACE_OPEN
+
+
+
 
 /**
  * @brief iga version of std::set.
@@ -63,5 +68,20 @@ private:
 };
 
 IGA_NAMESPACE_CLOSE
+
+
+#ifdef SERIALIZATION
+using SafeSTLSetTensorIndexAlias0 = iga::SafeSTLSet<iga::TensorIndex<0>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetTensorIndexAlias0,cereal::specialization::member_serialize);
+using SafeSTLSetTensorIndexAlias1 = iga::SafeSTLSet<iga::TensorIndex<1>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetTensorIndexAlias1,cereal::specialization::member_serialize);
+using SafeSTLSetTensorIndexAlias2 = iga::SafeSTLSet<iga::TensorIndex<2>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetTensorIndexAlias2,cereal::specialization::member_serialize);
+using SafeSTLSetTensorIndexAlias3 = iga::SafeSTLSet<iga::TensorIndex<3>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetTensorIndexAlias3,cereal::specialization::member_serialize);
+
+//#include <igatools/utils/safe_stl_set.serialization>
+#endif // SERIALIZATION
+
 
 #endif // SAFE_STL_SET_H_

@@ -1089,6 +1089,7 @@ test_if_element_has_property(const IndexType elem_flat_id,
 
 #endif
 
+#if 0
 #ifdef SERIALIZATION
 template <int dim_>
 template<class Archive>
@@ -1111,7 +1112,7 @@ serialize(Archive &ar)
 }
 
 #endif // SERIALIZATION
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

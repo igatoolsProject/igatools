@@ -32,34 +32,28 @@ template <int dim>
 void serialize_deserialize(std::shared_ptr<const Grid<dim>> grid,
                            const std::string &filename)
 {
-  out.begin_item("Original grid.");
-  grid->print_info(out);
-  out.end_item();
-
-  Grid<dim> tmp;
-//#if 0
-  string tag_name = "Grid_" + std::to_string(dim) + "d";
+//  string tag_name = "Grid_" + std::to_string(dim) + "d";
   {
     std::ofstream xml_ostream(filename);
     OArchive archive(xml_ostream);
 
-//    xml_out << make_nvp(tag_name.c_str(),const_cast<Grid<dim> &>(*grid));
-//    xml_out(const_cast<Grid<dim> &>(*grid));
-    archive(tmp);
+    archive << grid;
   }
-//#endif
-#if 0
-  auto grid_new = Grid<dim>::create(4);
+  out.begin_item("Grid<" + std::to_string(dim) + "> before serialize-deserialize.");
+  grid->print_info(out);
+  out.end_item();
+
+  grid.reset();
+  auto grid_new = Grid<dim>::create();
   {
     ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
-    xml_in >> *grid_new;
+    xml_in >> grid_new;
   }
 
-  out.begin_item("Grid after serialize-deserialize.");
+  out.begin_item("Grid<" + std::to_string(dim) + "> after serialize-deserialize.");
   grid_new->print_info(out);
   out.end_item();
-#endif
 }
 
 template<int dim>
@@ -78,10 +72,10 @@ void serialize_grid(const int n_knots = 4)
 
 int main()
 {
-//  serialize_grid<0>();
+  serialize_grid<0>();
   serialize_grid<1>();
-//  serialize_grid<2>();
-//  serialize_grid<3>();
+  serialize_grid<2>();
+  serialize_grid<3>();
 
   return 0;
 }

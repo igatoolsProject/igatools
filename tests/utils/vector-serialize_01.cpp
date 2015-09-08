@@ -38,25 +38,23 @@ void vector_serialization()
   {
     ofstream os("vector.xml");
     OArchive archive(os);
-#ifdef USE_CEREAL
-    archive << CEREAL_NVP(vec);
-#else
-    archive >> BOOST_SERIALIZATION_NVP(vec);
-#endif
+    archive << vec;
   }
+  out.begin_item("SafeSTLVector<Real> before serialization");
+  vec.print_info(out);
+  out.end_item();
+
 
   vec.clear();
   {
     ifstream is("vector.xml");
     IArchive archive(is);
-#ifdef USE_CEREAL
-    archive >> CEREAL_NVP(vec);
-#else
-    archive >> BOOST_SERIALIZATION_NVP(vec);
-#endif
+    archive >> vec;
   }
+  out.begin_item("SafeSTLVector<Real> after serialization");
   vec.print_info(out);
-  out << endl;
+  out.end_item();
+
   OUTEND
 }
 

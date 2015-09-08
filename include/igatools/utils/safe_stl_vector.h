@@ -64,4 +64,13 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+
+#ifdef SERIALIZATION
+using SafeSTLVectorAliasReal = iga::SafeSTLVector<iga::Real>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorAliasReal,cereal::specialization::member_serialize);
+
+//#include <igatools/utils/safe_stl_vector.serialization>
+#endif // SERIALIZATION
+
+
 #endif // SAFE_STL_VECTOR_H_

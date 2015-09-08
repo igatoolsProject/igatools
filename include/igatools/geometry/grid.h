@@ -761,10 +761,24 @@ private:
    * @name Functions needed for serialization
    * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
    */
+  ///@{
   friend class cereal::access;
 
   template<class Archive>
-  void serialize(Archive &ar);
+  void serialize(Archive &ar)
+  {
+    //Assert(false,ExcNotImplemented());
+
+    ar &make_nvp("knot_coordinates_",knot_coordinates_);
+    ar &make_nvp("boundary_id_",boundary_id_);
+    ar &make_nvp("properties_elements_id_",elem_properties_);
+    ar &make_nvp("object_id_",object_id_);
+    ar &make_nvp("elems_size_",elems_size_);
+#ifdef MESH_REFINEMENT
+    ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
+#endif
+    //*/
+  }
 
   ///@}
 #endif // SERIALIZATION
