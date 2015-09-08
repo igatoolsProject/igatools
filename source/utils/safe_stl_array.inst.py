@@ -23,12 +23,20 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-index_list = ['TensorIndex<%d>' %dim for dim in inst.all_domain_dims]
-for row in index_list:
-    f.write('template class %s; \n' % (row))
-    f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
-    f.write('template %s operator+(const %s &, const %s &); \n' % (row,row,row))
-    f.write('template %s operator+(const %s &, const Index); \n' % (row,row))
-    f.write('template %s operator-(const %s &, const Index); \n' % (row,row))
+array_list = []
+
+types = ['int']
+for dim in inst.all_domain_dims:
+    for type in types:
+        array = 'SafeSTLArray<%s,%d>' %(type,dim)
+        array_list.append(array)
+
+
+#for array in unique(array_list):
+#    f.write('template class %s; \n' % (row))
+#    f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
+#    f.write('template %s operator+(const %s &, const %s &); \n' % (row,row,row))
+#    f.write('template %s operator+(const %s &, const Index); \n' % (row,row))
+#    f.write('template %s operator-(const %s &, const Index); \n' % (row,row))
 
 

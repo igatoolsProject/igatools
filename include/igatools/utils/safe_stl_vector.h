@@ -45,14 +45,14 @@ public :
 private:
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
+   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
    */
   ///@{
-  friend class serialization_access;
+  friend class cereal::access;
 
   template<class Archive>
-  void serialize(Archive &ar, const unsigned int version)
+  void serialize(Archive &ar)
   {
     ar &make_nvp("SafeSTLContainer_Vector",
                  base_class<std::vector<T>>(this));

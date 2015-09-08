@@ -36,6 +36,8 @@ IGA_NAMESPACE_OPEN
  * This class makes possible the
  * rank independent treatment of tensor type containers.
  *
+ * @ingroup serializable
+ *
  * @author martinelli 2014
  * @author pauletti 2015
  */
@@ -120,6 +122,23 @@ public:
    */
   std::size_t memory_consumption() const;
 
+private:
+#ifdef SERIALIZATION
+  /**
+   * @name Functions needed for serialization
+   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
+   */
+  ///@{
+  friend class cereal::access;
+
+  template<class Archive>
+  void serialize(Archive &ar)
+  {
+    ar &make_nvp("SafeSTLArray",
+                 base_class<SafeSTLArray<Index,rank>>(this));
+  }
+  ///@}
+#endif // SERIALIZATION
 };
 
 
@@ -237,9 +256,27 @@ SafeSTLVector<TensorIndex<0>> tensor_range(TensorIndex<0> first, TensorIndex<0> 
 
 IGA_NAMESPACE_CLOSE
 
+
 #ifdef NDEBUG
 #include <igatools/utils/tensor_index-inline.h>
 #endif
+
+
+
+#ifdef SERIALIZATION
+using TensorIndexAlias0 = iga::TensorIndex<0>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias0,cereal::specialization::member_serialize);
+using TensorIndexAlias1 = iga::TensorIndex<1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias1,cereal::specialization::member_serialize);
+using TensorIndexAlias2 = iga::TensorIndex<2>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias2,cereal::specialization::member_serialize);
+using TensorIndexAlias3 = iga::TensorIndex<3>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias3,cereal::specialization::member_serialize);
+
+//#include <igatools/utils/tensor_index.serialization>
+#endif // SERIALIZATION
+
+
 
 #endif // TENSOR_INDEX_H_
 

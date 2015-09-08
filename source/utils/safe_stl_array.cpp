@@ -18,56 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/**
- *  @file
- *  @brief  SafeSTLArray serialization
- *  @author  martinelli
- *  @date 2015-05-05
- */
 
-#include "../tests.h"
 #include <igatools/utils/safe_stl_array.h>
 
-template <int N>
-void array_serialization(const SafeSTLArray<int,N> &arr)
-{
-  OUTSTART
 
-  const std::string filename = "array" + std::to_string(N) + ".xml";
-
-  {
-    ofstream xml_ostream(filename);
-    OArchive xml_out(xml_ostream);
-    xml_out << arr;
-  }
-  out.begin_item("SafeSTLArray<int," + std::to_string(N) + "> before serialization");
-  arr.print_info(out);
-  out.end_item();
-
-  SafeSTLArray<int,N> arr_in;
-  arr_in.fill(0);
-  {
-    ifstream xml_istream(filename);
-    IArchive xml_in(xml_istream);
-    xml_in >> arr_in;
-  }
-  out.begin_item("SafeSTLArray<int," + std::to_string(N) + "> after serialization");
-  arr_in.print_info(out);
-  out.end_item();
+IGA_NAMESPACE_OPEN
 
 
-  OUTEND
-}
 
+IGA_NAMESPACE_CLOSE
 
-int main()
-{
-  SafeSTLArray<int,3> arr_3 = {-1,-2,-3};
-  array_serialization(arr_3);
-
-
-  SafeSTLArray<int,0> arr_0;
-  array_serialization(arr_0);
-
-  return 0;
-}
+//#include <igatools/utils/safe_stl_array.inst>

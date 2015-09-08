@@ -74,36 +74,39 @@ private:
 
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
+   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
    */
   ///@{
-  friend class serialization_access;
+  friend class cereal::access;
 
   template<class Archive>
-  void serialize(Archive &ar, const unsigned int version)
+  void serialize(Archive &ar)
   {
     ar &make_nvp("SafeSTLContainer_Array",
                  base_class<std::array<T,N>>(this));
   }
-  /*
-    template<class Archive, int Size = N>
-    void serialize(Archive &ar, const unsigned int version, EnableIf<(Size > 0)> * = 0)
-    {
-      ar &make_nvp("SafeSTLContainer_Array",
-                   base_class<std::array<T,N>>(this));
-    }
-
-    template<class Archive, int Size = N>
-    void serialize(Archive &ar, const unsigned int version, EnableIf<!(Size > 0)> * = 0)
-    {}
-    //*/
   ///@}
 #endif // SERIALIZATION
 
 };
 
 IGA_NAMESPACE_CLOSE
+
+
+
+#ifdef SERIALIZATION
+using SafeSTLArrayAliasInt0 = iga::SafeSTLArray<int,0>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt0,cereal::specialization::member_serialize);
+using SafeSTLArrayAliasInt1 = iga::SafeSTLArray<int,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt1,cereal::specialization::member_serialize);
+using SafeSTLArrayAliasInt2 = iga::SafeSTLArray<int,2>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt2,cereal::specialization::member_serialize);
+using SafeSTLArrayAliasInt3 = iga::SafeSTLArray<int,3>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt3,cereal::specialization::member_serialize);
+
+//#include <igatools/utils/safe_stl_array.serialization>
+#endif // SERIALIZATION
 
 
 #endif // SAFE_STL_ARRAY_H_

@@ -34,6 +34,8 @@ IGA_NAMESPACE_OPEN
  * has the method flat_size() that returns the multiplication of the sizes
  * along each direction.
  *
+ * @ingroup serializable
+ *
  * @author M. Martinelli
  * @date 21 Jan 2014
  */
@@ -84,6 +86,26 @@ public:
    * each direction.
    */
   Size flat_size() const noexcept ;
+
+#if 0
+private:
+#ifdef SERIALIZATION
+  /**
+   * @name Functions needed for serialization
+   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
+   */
+  ///@{
+  friend class cereal::access;
+
+  template<class Archive>
+  void serialize(Archive &ar)
+  {
+    ar &make_nvp("TensorIndex<rank>",
+                 base_class<TensorIndex<rank>>(this));
+  }
+  ///@}
+#endif // SERIALIZATION
+#endif
 };
 
 

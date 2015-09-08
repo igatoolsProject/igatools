@@ -1097,17 +1097,17 @@ Grid<dim_>::
 serialize(Archive &ar)
 {
   Assert(false,ExcNotImplemented());
-
-//    std::string tag_name = "Grid" + std::to_string(dim_) + "base_t";
-  ar &make_nvp("elems_size_",elems_size_);
-  ar &make_nvp("knot_coordinates_",knot_coordinates_);
-  ar &make_nvp("boundary_id_",boundary_id_);
-  ar &make_nvp("properties_elements_id_",elem_properties_);
-  ar &make_nvp("object_id_",object_id_);
-#ifdef MESH_REFINEMENT
-  ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
-#endif
-//*/
+  /*
+  //    std::string tag_name = "Grid" + std::to_string(dim_) + "base_t";
+    ar &make_nvp("elems_size_",elems_size_);
+    ar &make_nvp("knot_coordinates_",knot_coordinates_);
+    ar &make_nvp("boundary_id_",boundary_id_);
+    ar &make_nvp("properties_elements_id_",elem_properties_);
+    ar &make_nvp("object_id_",object_id_);
+  #ifdef MESH_REFINEMENT
+    ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
+  #endif
+  //*/
 }
 
 #endif // SERIALIZATION

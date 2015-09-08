@@ -92,22 +92,20 @@ print_info(LogStream &out) const
   out << "  Weights: "<< weight_;
 }
 
-
 #if 0
 #ifdef SERIALIZATION
 template<int rank>
 template<class Archive>
 void
 TensorSizedContainer<rank>::
-serialize(Archive &ar, const unsigned int version)
+serialize(Archive &ar)
 {
-  ar &boost::serialization::make_nvp("size_",size_);
+  ar &make_nvp("size_",size_);
 
-  ar &boost::serialization::make_nvp("weight_",weight_);
+  ar &make_nvp("weight_",weight_);
 }
 #endif // SERIALIZATION
 #endif
-
 IGA_NAMESPACE_CLOSE
 
 

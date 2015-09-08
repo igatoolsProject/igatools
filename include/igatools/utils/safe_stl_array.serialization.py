@@ -23,12 +23,31 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-index_list = ['TensorIndex<%d>' %dim for dim in inst.all_domain_dims]
-for row in index_list:
-    f.write('template class %s; \n' % (row))
-    f.write('template LogStream &operator<<(LogStream &, const %s &); \n' % (row))
-    f.write('template %s operator+(const %s &, const %s &); \n' % (row,row,row))
-    f.write('template %s operator+(const %s &, const Index); \n' % (row,row))
-    f.write('template %s operator-(const %s &, const Index); \n' % (row,row))
+class_list = []
+
+class_name = 'SafeSTLArray'
+
+types = ['int']
+for dim in inst.all_domain_dims:
+    for type in types:
+        c = '%s<%s,%d>' %(class_name,type,dim)
+        class_list.append(c)
 
 
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+f.write('#ifdef SERIALIZATION\n')
+
+id = 0 
+for cls in unique(class_list):
+    alias = '%sAlias%d' %(class_name,id)
+    f.write('using %s = iga::%s; \n' % (alias, cls))
+    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %(alias))
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

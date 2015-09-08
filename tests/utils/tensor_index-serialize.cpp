@@ -20,54 +20,83 @@
 
 /**
  *  @file
- *  @brief  SafeSTLArray serialization
+ *  @brief  TensorIndex serialization
  *  @author  martinelli
- *  @date 2015-05-05
+ *  @date 2015-09-08
  */
 
 #include "../tests.h"
-#include <igatools/utils/safe_stl_array.h>
+#include <igatools/utils/tensor_index.h>
+
+/*
+template <int M>
+class Test
+{
+public:
+  Test() = default;
+  Test(const int N)
+  :
+    N_(N)
+  {
+    array_.fill(N);
+  }
+
+private:
+  int N_;
+
+  SafeSTLArray<int,M> array_;
+
+  friend class cereal::access;
+
+  template<class Archive>
+  void serialize(Archive &ar)
+  {
+    ar & make_nvp("N_",N_);
+    ar & make_nvp("array_",array_);
+  }
+};
+//*/
 
 template <int N>
-void array_serialization(const SafeSTLArray<int,N> &arr)
+void ti_serialization()
 {
   OUTSTART
 
-  const std::string filename = "array" + std::to_string(N) + ".xml";
+  using T = TensorIndex<N>;
+
+  T index(3);
+
+  const std::string filename = "ti.xml";
 
   {
-    ofstream xml_ostream(filename);
-    OArchive xml_out(xml_ostream);
-    xml_out << arr;
+    ofstream os(filename);
+    OArchive archive(os);
+    archive << index;
   }
-  out.begin_item("SafeSTLArray<int," + std::to_string(N) + "> before serialization");
-  arr.print_info(out);
+  out.begin_item("TensorIndex<" + std::to_string(N) + "> before serialization");
+  index.print_info(out);
   out.end_item();
 
-  SafeSTLArray<int,N> arr_in;
-  arr_in.fill(0);
+  T index_tmp;
   {
-    ifstream xml_istream(filename);
-    IArchive xml_in(xml_istream);
-    xml_in >> arr_in;
+    ifstream is(filename);
+    IArchive archive(is);
+    archive >> index_tmp;
   }
-  out.begin_item("SafeSTLArray<int," + std::to_string(N) + "> after serialization");
-  arr_in.print_info(out);
+  out.begin_item("TensorIndex<" + std::to_string(N) + "> after serialization");
+  index_tmp.print_info(out);
   out.end_item();
-
 
   OUTEND
 }
 
 
+
 int main()
 {
-  SafeSTLArray<int,3> arr_3 = {-1,-2,-3};
-  array_serialization(arr_3);
-
-
-  SafeSTLArray<int,0> arr_0;
-  array_serialization(arr_0);
-
+  ti_serialization<0>();
+  ti_serialization<1>();
+  ti_serialization<2>();
+  ti_serialization<3>();
   return 0;
 }
