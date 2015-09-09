@@ -27,11 +27,11 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
 Domain<dim_, codim_>::
-Domain(std::shared_ptr<GridType> grid)
+Domain(std::shared_ptr<GridFuncType> func)
   :
-  grid_(grid)
+  grid_func_(func)
 {
-  Assert(grid_ != nullptr, ExcNullPtr());
+  Assert(grid_func_ != nullptr, ExcNullPtr());
 }
 
 
@@ -46,9 +46,9 @@ Domain<dim_, codim_>::
 template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
-get_grid() const -> std::shared_ptr<GridType>
+get_grid_function() const -> std::shared_ptr<GridFuncType>
 {
-  return grid_;
+  return grid_func_;
 }
 
 
@@ -100,7 +100,7 @@ Domain<dim_, codim_>::
 begin(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
-  grid_->get_elements_with_property(prop).begin(), prop);
+  grid_func_->get_elements_with_property(prop).begin(), prop);
 }
 
 
@@ -111,7 +111,7 @@ Domain<dim_, codim_>::
 end(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
-  grid_->get_elements_with_property(prop).end(),
+  grid_func_->get_elements_with_property(prop).end(),
   prop);
 }
 
@@ -143,7 +143,7 @@ Domain<dim_, codim_>::
 cbegin(const PropId &prop) const -> ElementConstIterator
 {
   return ElementConstIterator(this->shared_from_this(),
-                              grid_->get_elements_with_property(prop).begin(),
+                              grid_func_->get_elements_with_property(prop).begin(),
                               prop);
 }
 
@@ -155,7 +155,7 @@ Domain<dim_, codim_>::
 cend(const PropId &prop) const -> ElementConstIterator
 {
   return ElementConstIterator(this->shared_from_this(),
-                              grid_->get_elements_with_property(prop).end(),
+                              grid_func_->get_elements_with_property(prop).end(),
                               prop);
 }
 

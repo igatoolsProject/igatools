@@ -22,6 +22,7 @@
 #define VALUE_TYPES_H_
 
 #include <igatools/base/config.h>
+#include <igatools/utils/safe_stl_array.h>
 
 #include <boost/mpl/map.hpp>
 #include <boost/mpl/int.hpp>
@@ -89,6 +90,61 @@ public:
 //---------------------------------------------------------------------------------------
 
 
+//------------------------------------------------------------------------------
+namespace grid_function_element
+{
+/** Quantities that can be requested from a grid_function element */
+enum class Flags
+{
+  none           =    0,
+
+  D0       =    1L << 1,
+
+  D1       =    1L << 3,
+
+  D2       =    1L << 4,
+
+  D3       =    1L << 5
+};
+
+
+static const SafeSTLArray<Flags, 4> all_flags = {Flags::D0, Flags::D1, Flags::D2};
+
+/** Auxiliary quantities stored in a local cache */
+enum class CacheFlags
+{
+  none           =    0,
+
+  D0       =    1L << 1,
+
+  D1       =    1L << 3,
+
+  D2       =    1L << 4,
+
+  D3       =    1L << 5
+};
+
+
+struct activate
+{
+  using FlagsToCache = std::map<Flags, CacheFlags>;
+  static FlagsToCache grid_function;
+
+  using FlagsToGrid = std::map<Flags, grid_element::Flags>;
+  static FlagsToGrid grid;
+};
+
+template <int order>
+struct _D
+{
+  static const std::string name;
+  static const CacheFlags flag;
+};
+
+}
+
+
+
 
 namespace domain_element
 {
@@ -128,70 +184,7 @@ struct activate
   using FlagsToCache = std::map<Flags, CacheFlags>;
   static FlagsToCache domain;
 
-  using FlagsToGrid = std::map<Flags, grid_element::Flags>;
-  static FlagsToGrid grid;
-};
-
-struct _Point
-{
-  static const std::string name;
-  static const auto flag = CacheFlags::point;
-};
-
-struct _Measure
-{
-  static const std::string name;
-  static const auto flag = CacheFlags::measure;
-};
-
-struct _Gradient
-{
-  static const std::string name;
-  static const auto flag = CacheFlags::gradient;
-};
-
-
-}
-//------------------------------------------------------------------------------
-namespace grid_function_element
-{
-/** Quantities that can be requested from a grid_function element */
-enum class Flags
-{
-  /** Fill nothing */
-  none           =    0,
-
-  point          =    1L << 1,
-
-  measure        =    1L << 2,
-
-  w_measure      =    1L << 3,
-
-  ext_normal     =    1L << 4
-};
-
-
-/** Auxiliary quantities stored in a local cache */
-enum class CacheFlags
-{
-  none           =    0,
-
-  measure        =    1L << 1,
-
-  point          =    1L << 2,
-
-  gradient       =    1L << 3,
-
-  D2             =    1L << 4
-};
-
-
-struct activate
-{
-  using FlagsToCache = std::map<Flags, CacheFlags>;
-  static FlagsToCache grid_function;
-
-  using FlagsToGrid = std::map<Flags, grid_element::Flags>;
+  using FlagsToGrid = std::map<Flags, grid_function_element::Flags>;
   static FlagsToGrid grid;
 };
 

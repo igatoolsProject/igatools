@@ -202,51 +202,6 @@ private:
   };
 
 
-
-  struct FillCacheDispatcher : boost::static_visitor<void>
-  {
-    FillCacheDispatcher(ConstElementAccessor &elem,
-                        const int s_id)
-      :
-      elem_(elem),
-      s_id_(s_id)
-    {}
-
-
-    template<int sdim>
-    void operator()(const Topology<sdim> &)
-    {
-      using _Gradient = typename ElementAccessor::_Gradient;
-      using _Measure = typename ElementAccessor::_Measure;
-
-      const auto n_points = elem_.grid_elem_->template get_quad<sdim>()->get_num_points();
-
-      auto &cache = elem_.local_cache_->template get_sub_elem_cache<sdim>(s_id_);
-
-      if (cache.template status_fill<_Measure>())
-      {
-        auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id_);
-
-        const auto &DF = cache.template get_data<_Gradient>();
-        typename GridFunction<sdim, space_dim>::Gradient DF1;
-
-        auto &measures = cache.template get_data<_Measure>();
-        for (int pt = 0 ; pt < n_points; ++pt)
-        {
-          for (int l=0; l<sdim; ++l)
-            DF1[l] = DF[pt][s_elem.active_directions[l]];
-
-          measures[pt] = fabs(determinant<sdim,space_dim>(DF1));
-        }
-        cache.template set_status_filled<_Measure>(true);
-      }
-      cache.set_filled(true);
-    }
-
-    ConstElementAccessor &elem_;
-    const int s_id_;
-  };
-
 protected:
   std::shared_ptr<const GridHandler>
   get_grid_handler() const

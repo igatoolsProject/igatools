@@ -26,8 +26,8 @@ data = Instantiation(include_files)
 
 
 
-sub_dim_members = \
-  ['ValueVector<Real> GridFunctionElementBase<dim, cod, ContainerType<dim,cod>>::get_w_measures<k>(const int s_id) const;']
+sub_dim_members = []
+ # ['ValueVector<Real> GridFunctionElementBase<dim, cod, ContainerType<dim,cod>>::get_w_measures<k>(const int s_id) const;']
 #['const ValueVector<Points<dim+cod>> & GridFunctionElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
 
 elements = []

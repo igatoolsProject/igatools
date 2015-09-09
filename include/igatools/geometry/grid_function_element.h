@@ -43,7 +43,11 @@ public:
   using ListIt = typename ContainerType_::ListIt;
 
   using Value =  typename ContainerType_::Value;
-  using Gradient =  typename ContainerType_::Gradient;
+  template <int order>
+  using Derivative = typename ContainerType_::template Derivative<order>;
+
+
+// using Gradient =  typename ContainerType_::Gradient;
 
   using Flags = grid_function_element::Flags;
   using CacheFlags = grid_function_element::CacheFlags;
@@ -155,25 +159,15 @@ public:
   }
 
 public:
-  template<int sdim>
-  ValueVector<Real> const &get_measures(const int s_id) const
+  template<class ValueType, int sdim>
+  auto
+  get_values(const int s_id) const
   {
-    return get_values_from_cache<_Measure,sdim>(s_id);
+    Assert(local_cache_ != nullptr,ExcNullPtr());
+    const auto &cache =
+      local_cache_->template get_sub_elem_cache<sdim>(s_id);
+    return cache.template get_data<ValueType>();
   }
-
-  template<int sdim>
-  auto const &get_points(const int s_id) const
-  {
-    return get_values_from_cache<_Point,sdim>(s_id);
-  }
-
-  template<int sdim>
-  ValueVector<Real> get_w_measures(const int s_id) const;
-
-#if 0
-  ValueVector<SafeSTLArray<Value, space_dim_> >
-  get_exterior_normals() const;
-#endif
 
 private:
   template <class ValueType, int sdim>
@@ -186,23 +180,16 @@ private:
   }
 
 public:
-  using _Point     = grid_function_element::_Point;
-  using _Measure   = grid_function_element::_Measure;
-  using _Gradient  = grid_function_element::_Gradient;
+  template <int order>
+  using _D = grid_function_element::_D<order>;
 
 private:
   using CType = boost::fusion::map<
-                boost::fusion::pair< _Point,    DataWithFlagStatus<ValueVector<Value>> >,
-                boost::fusion::pair< _Measure,  DataWithFlagStatus<ValueVector<Real>> >,
-                boost::fusion::pair< _Gradient, DataWithFlagStatus<ValueVector<Gradient>> >
+                boost::fusion::pair<_D<0>, DataWithFlagStatus<ValueVector<Value>>>,
+                boost::fusion::pair<_D<1>,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
+                boost::fusion::pair<_D<2>,DataWithFlagStatus<ValueVector<Derivative<2>>>>
                 >;
-//                ,
-//                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
-//                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
-//                  boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
-//                  boost::fusion::pair<   _OuterNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
-//                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
-//                  >;
+
 
   using Cache = PointValuesCache<dim_,CType>;
 

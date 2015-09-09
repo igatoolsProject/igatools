@@ -62,7 +62,7 @@ public:
   static const int dim = dim_;
 
   using DomainType = const Domain<dim_, codim_>;
-  using GridType = const Grid<dim_>;
+  using GridType =  typename DomainType::GridFuncType;
   using GridHandler = typename GridType::ElementHandler;
 
   using ElementAccessor = DomainElement<dim_, codim_>;
@@ -228,7 +228,7 @@ private:
     {
       auto &cache = domain_handler_->get_element_cache(elem_);
 
-      const auto n_points = elem_.get_grid_element().template get_quad<sdim>()
+      const auto n_points = elem_.get_grid_function_element().get_grid_element().template get_quad<sdim>()
                             ->get_num_points();
       for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
       {
@@ -260,7 +260,7 @@ private:
       using _Gradient = typename ElementAccessor::_Gradient;
       using _Measure = typename ElementAccessor::_Measure;
 
-      const auto n_points = elem_.grid_elem_->template get_quad<sdim>()->get_num_points();
+      //const auto n_points = elem_.grid_elem_->template get_quad<sdim>()->get_num_points();
 
       auto &cache = elem_.local_cache_->template get_sub_elem_cache<sdim>(s_id_);
 
@@ -269,6 +269,9 @@ private:
         auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id_);
 
         const auto &DF = cache.template get_data<_Gradient>();
+
+        const auto n_points = DF.get_num_points();
+
         typename Domain<sdim, space_dim-sdim>::Gradient DF1;
 
         auto &measures = cache.template get_data<_Measure>();

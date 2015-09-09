@@ -79,29 +79,34 @@ domain_element::activate::FlagsToGrid activate::grid =
 //---------------------------------------------------------------------
 namespace grid_function_element
 {
-const CacheFlags _Point::flag;
-const string _Point::name = "Element Quadrature Points";
+//TODO: to be generated with mpl? or cog?
+template<> const CacheFlags _D<0>::flag = CacheFlags::D0;
+template<> const string _D<0>::name = "Grid Function D0";
 
-const CacheFlags _Measure::flag;
-const string _Measure::name = "Element measure";
+template<> const CacheFlags _D<1>::flag = CacheFlags::D1;
+template<> const string _D<1>::name = "Grid Function D1";
 
-const CacheFlags _Gradient::flag;
-const string _Gradient::name = "grid_function gradients";
+template<> const CacheFlags _D<2>::flag = CacheFlags::D2;
+template<> const string _D<2>::name = "Grid Function D2";
+
+template<> const CacheFlags _D<3>::flag = CacheFlags::D3;
+template<> const string _D<3>::name = "Grid Function D3";
+
 
 activate::FlagsToCache  activate::grid_function =
 {
-  {Flags::point, CacheFlags::point},
-  {Flags::w_measure, CacheFlags::gradient|CacheFlags::measure},
-  {Flags::measure, CacheFlags::gradient|CacheFlags::measure},
-  {Flags::ext_normal, CacheFlags::gradient}
+  {Flags::D0, CacheFlags::D0},
+  {Flags::D1, CacheFlags::D1},
+  {Flags::D2, CacheFlags::D2},
+  {Flags::D3, CacheFlags::D3}
 };
 
-grid_function_element::activate::FlagsToGrid activate::grid =
+activate::FlagsToGrid activate::grid =
 {
-  {Flags::point, grid_element::Flags::point},
-  {Flags::w_measure, grid_element::Flags::weight},
-  {Flags::measure, grid_element::Flags::none},
-  {Flags::ext_normal, grid_element::Flags::none}
+  {Flags::D0, grid_element::Flags::none},
+  {Flags::D1, grid_element::Flags::none},
+  {Flags::D2, grid_element::Flags::none},
+  {Flags::D3, grid_element::Flags::none}
 };
 
 };

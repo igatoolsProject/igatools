@@ -54,8 +54,7 @@ set_flags(const topology_variant &sdim,
   GridFlags  grid_flag = GridFlags::none;
   CacheFlags dom_flag = CacheFlags::none;
 
-  SafeSTLVector<Flags> all_flags ={Flags::point, Flags::measure, Flags::w_measure};
-  for (auto &fl : all_flags)
+  for (auto &fl :  grid_function_element::all_flags)
     if (contains(flag, fl))
     {
       grid_flag |= grid_function_element::activate::grid[fl];
@@ -100,15 +99,8 @@ fill_cache(const topology_variant &sdim,
            const int s_id) const-> void
 {
   grid_handler_->fill_cache(sdim, *(elem.grid_elem_), s_id);
-
-  auto disp = FillCacheDispatcher(elem, s_id);
-  boost::apply_visitor(disp, sdim);
-
 }
-
-
 
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/grid_function_handler.inst>
-

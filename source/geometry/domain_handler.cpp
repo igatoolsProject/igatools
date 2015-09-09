@@ -21,8 +21,6 @@
 #include <igatools/geometry/domain_handler.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
-//#include <igatools/functions/function.h>
-//#include <igatools/functions/function_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -31,7 +29,7 @@ DomainHandler<dim_, codim_>::
 DomainHandler(std::shared_ptr<DomainType> domain)
   :
   domain_(domain),
-  grid_handler_(domain->get_grid()->create_cache_handler()),
+  grid_handler_(domain->get_grid_function()->create_cache_handler()),
   flags_(CacheFlags::none)
 {
   Assert(domain_ != nullptr, ExcNullPtr());

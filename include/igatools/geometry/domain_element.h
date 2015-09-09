@@ -23,7 +23,7 @@
 
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_handler.h>
-#include <igatools/geometry/grid_element.h>
+#include <igatools/geometry/grid_function_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -39,7 +39,7 @@ private:
 
 public:
   using ContainerType = ContainerType_;
-  using GridElem = typename ContainerType_::GridType::ElementAccessor;
+  using GridElem = typename ContainerType_::GridFuncType::ConstElementAccessor;
   using ListIt = typename ContainerType_::ListIt;
 
   using Point =  typename ContainerType_::Point;
@@ -140,12 +140,12 @@ public:
   }
 
 
-  const GridElem &get_grid_element() const
+  const GridElem &get_grid_function_element() const
   {
     return *grid_elem_;
   }
 
-  GridElem &get_grid_element()
+  GridElem &get_grid_function_element()
   {
     return *grid_elem_;
   }

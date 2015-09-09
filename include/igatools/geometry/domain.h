@@ -22,8 +22,8 @@
 #define __DOMAIN_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/grid.h>
-#include <igatools/geometry/grid_handler.h>
+#include <igatools/geometry/grid_function.h>
+#include <igatools/geometry/grid_function_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -58,7 +58,7 @@ public:
   static const int space_dim = dim_ + codim_;
   static const int dim = dim_;
 
-  using GridType = const Grid<dim_>;
+  using GridFuncType = const GridFunction<dim, space_dim>;
 
   using ElementAccessor = DomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
@@ -67,11 +67,11 @@ public:
 
   using ElementHandler = DomainHandler<dim_, codim_>;
 
-  using List = typename GridType::List;
-  using ListIt = typename GridType::ListIt;
+  using List = typename GridFuncType::List;
+  using ListIt = typename GridFuncType::ListIt;
 
 public:
-  using GridPoint = typename GridType::Point;
+  //using GridPoint = typename GridFuncType::Point;
   using Point =  Points<space_dim>;
   template <int order>
   using Derivative = Derivatives<dim, space_dim, 1, order>;
@@ -105,25 +105,25 @@ private:
   Domain() = default;
 
 protected:
-  Domain(std::shared_ptr<GridType> grid);
+  Domain(std::shared_ptr<GridFuncType> func);
 
 public:
   ~Domain();
 
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<GridType> grid)
+  create(std::shared_ptr<GridFuncType> func)
   {
-    return std::shared_ptr<self_t>(new self_t(grid));
+    return std::shared_ptr<self_t>(new self_t(func));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<GridType> grid)
+  const_create(std::shared_ptr<GridFuncType> func)
   {
-    return create(grid);
+    return create(func);
   }
 
-  std::shared_ptr<GridType> get_grid() const;
+  std::shared_ptr<GridFuncType> get_grid_function() const;
 
 public:
   virtual std::shared_ptr<ElementHandler>
@@ -175,7 +175,7 @@ public:
   }
 
 private:
-  std::shared_ptr<GridType> grid_;
+  std::shared_ptr<GridFuncType> grid_func_;
 
   friend class DomainElementBase<dim_, codim_, Domain<dim_, codim_>>;
   friend class DomainElementBase<dim_, codim_, const Domain<dim_, codim_>>;

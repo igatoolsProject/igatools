@@ -58,6 +58,9 @@ public:
 private:
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
+    template <int order>
+    using _D = typename ConstElementAccessor::template _D<order>;
+
     FillCacheDispatcher(const GridFunctionType &grid_function,
                         const self_t &grid_function_handler,
                         ConstElementAccessor &elem,
@@ -73,8 +76,7 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &sub_elem)
     {
-      using _Point = typename ConstElementAccessor::_Point;
-      using _Gradient = typename ConstElementAccessor::_Gradient;
+
 
       auto &local_cache = grid_function_handler_.get_element_cache(elem_);
       auto &cache = local_cache->template get_sub_elem_cache<sdim>(s_id_);
@@ -82,16 +84,16 @@ private:
       if (!cache.fill_none())
       {
         const auto &grid_pts = elem_.get_grid_element().template get_points<sdim>(s_id_);
-        if (cache.template status_fill<grid_function_element::_Point>())
+        if (cache.template status_fill<_D<0>>())
         {
-          grid_function_.evaluate_0(grid_pts, cache.template get_data<_Point>());
-          cache.template set_status_filled<grid_function_element::_Point>(true);
+          grid_function_.evaluate_0(grid_pts, cache.template get_data<_D<0>>());
+          cache.template set_status_filled<_D<0>>(true);
         }
 
-        if (cache.template status_fill<_Gradient>())
+        if (cache.template status_fill<_D<1>>())
         {
-          grid_function_.evaluate_1(grid_pts, cache.template get_data<_Gradient>());
-          cache.template set_status_filled<_Gradient>(true);
+          grid_function_.evaluate_1(grid_pts, cache.template get_data<_D<1>>());
+          cache.template set_status_filled<_D<1>>(true);
         }
 //        if (cache.template status_fill<_Hessian>())
 //        {

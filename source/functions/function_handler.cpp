@@ -92,10 +92,7 @@ fill_cache(const topology_variant &sdim,
            ConstElementAccessor &elem,
            const int s_id) const
 {
-#if 0
-  auto fill_dispatcher = FillCacheDispatcher(s_id, *this, elem);
-  boost::apply_visitor(fill_dispatcher, sdim);
-#endif
+  domain_handler_->fill_cache(sdim, *(elem.domain_elem_), s_id);
 }
 
 
