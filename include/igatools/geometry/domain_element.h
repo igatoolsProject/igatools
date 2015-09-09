@@ -169,9 +169,8 @@ public:
   }
 
   template<int sdim>
-  auto const &get_points(const int s_id) const
+  auto const get_points(const int s_id) const
   {
-    //typename GridFunctionElement::template _D<0>
     return grid_func_elem_->template get_values<grid_function_element::_D<0>, sdim>(s_id);
   }
 

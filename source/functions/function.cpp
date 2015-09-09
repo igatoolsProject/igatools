@@ -94,7 +94,7 @@ Function<dim_, codim_, range_, rank_ >::
 begin(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
-  domain_->get_grid()->get_elements_with_property(prop).begin(),
+  domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).begin(),
   prop);
 }
 
@@ -106,7 +106,7 @@ Function<dim_, codim_, range_, rank_ >::
 end(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
-  domain_->get_grid()->get_elements_with_property(prop).end(),
+  domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).end(),
   prop);
 }
 
@@ -138,7 +138,7 @@ Function<dim_, codim_, range_, rank_ >::
 cbegin(const PropId &prop) const -> ElementConstIterator
 {
   return ElementConstIterator(this->shared_from_this(),
-                              domain_->get_grid()->get_elements_with_property(prop).begin(),
+                              domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).begin(),
                               prop);
 }
 
@@ -150,7 +150,7 @@ Function<dim_, codim_, range_, rank_ >::
 cend(const PropId &prop) const -> ElementConstIterator
 {
   return ElementConstIterator(this->shared_from_this(),
-                              domain_->get_grid()->get_elements_with_property(prop).end(),
+                              domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).end(),
                               prop);
 }
 

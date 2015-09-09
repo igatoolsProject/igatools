@@ -259,7 +259,7 @@ private:
     {
       auto &cache = elem_.local_cache_;
 
-      const auto n_pts = elem_.get_domain_element().get_grid_element().template
+      const auto n_pts = elem_.get_domain_element().get_grid_function_element().get_grid_element().template
                          get_quad<sdim>()->get_num_points();
       for (const auto s_id: UnitElement<dim_>::template elems_ids<sdim>())
       {
