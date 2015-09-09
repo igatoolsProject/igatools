@@ -39,7 +39,7 @@ private:
 
 public:
   using ContainerType = ContainerType_;
-  using GridElem = typename ContainerType_::GridFuncType::ConstElementAccessor;
+  using GridFuncElem = typename ContainerType_::GridFuncType::ConstElementAccessor;
   using ListIt = typename ContainerType_::ListIt;
 
   using Point =  typename ContainerType_::Point;
@@ -136,18 +136,18 @@ public:
 public:
   ListIt &operator++()
   {
-    return (++(*grid_elem_));
+    return (++(*grid_func_elem_));
   }
 
 
-  const GridElem &get_grid_function_element() const
+  const GridFuncElem &get_grid_function_element() const
   {
-    return *grid_elem_;
+    return *grid_func_elem_;
   }
 
-  GridElem &get_grid_function_element()
+  GridFuncElem &get_grid_function_element()
   {
-    return *grid_elem_;
+    return *grid_func_elem_;
   }
 
 
@@ -171,7 +171,8 @@ public:
   template<int sdim>
   auto const &get_points(const int s_id) const
   {
-    return get_values_from_cache<_Point,sdim>(s_id);
+    //typename GridFunctionElement::template _D<0>
+    return grid_func_elem_->template get_values<grid_function_element::_D<0>, sdim>(s_id);
   }
 
   template<int sdim>
@@ -229,15 +230,11 @@ private:
   }
 
 public:
-  using _Point     = domain_element::_Point;
   using _Measure   = domain_element::_Measure;
-  using _Gradient  = domain_element::_Gradient;
 
 private:
   using CType = boost::fusion::map<
-                boost::fusion::pair< _Point,    DataWithFlagStatus<ValueVector<Point>> >,
-                boost::fusion::pair< _Measure,  DataWithFlagStatus<ValueVector<Real>> >,
-                boost::fusion::pair< _Gradient, DataWithFlagStatus<ValueVector<Gradient>> >
+                boost::fusion::pair< _Measure,  DataWithFlagStatus<ValueVector<Real>> >
                 >;
 //                ,
 //                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
@@ -255,7 +252,7 @@ public:
 private:
   std::shared_ptr<ContainerType_> domain_;
 
-  std::unique_ptr<GridElem> grid_elem_;
+  std::unique_ptr<GridFuncElem> grid_func_elem_;
 
   std::shared_ptr<CacheType> local_cache_;
 

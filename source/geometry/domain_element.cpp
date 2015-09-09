@@ -30,7 +30,7 @@ DomainElementBase(std::shared_ptr<ContainerType_> domain,
                   const PropId &prop)
   :
   domain_(domain),
-  grid_elem_(domain_->get_grid_function()->create_element(index,prop))
+  grid_func_elem_(domain_->get_grid_function()->create_element(index,prop))
 {}
 
 
@@ -42,7 +42,7 @@ operator ==(const self_t &elem) const
 {
   Assert(domain_ == elem.domain_,
          ExcMessage("Cannot compare elements on different grid."));
-  return (*grid_elem_ == *(elem.grid_elem_));
+  return (*grid_func_elem_ == *(elem.grid_func_elem_));
 }
 
 
@@ -54,7 +54,7 @@ operator !=(const self_t &elem) const
 {
   Assert(domain_ == elem.domain_,
          ExcMessage("Cannot compare elements on different grid."));
-  return (*grid_elem_ != *(elem.grid_elem_));
+  return (*grid_func_elem_ != *(elem.grid_func_elem_));
 }
 
 
@@ -66,7 +66,7 @@ operator <(const self_t &elem) const
 {
   Assert(domain_ == elem.domain_,
          ExcMessage("Cannot compare elements on different grid."));
-  return (*grid_elem_ < *(elem.grid_elem_));
+  return (*grid_func_elem_ < *(elem.grid_func_elem_));
 }
 
 
@@ -78,7 +78,7 @@ operator >(const self_t &elem) const
 {
   Assert(domain_ == elem.domain_,
          ExcMessage("Cannot compare elements on different grid."));
-  return (*grid_elem_ > *(elem.grid_elem_));
+  return (*grid_func_elem_ > *(elem.grid_func_elem_));
 }
 
 
@@ -90,7 +90,7 @@ DomainElementBase<dim_, codim_, ContainerType_>::
 get_w_measures(const int s_id) const -> ValueVector<Real>
 {
   const auto &meas = get_values_from_cache<_Measure, sdim>(s_id);
-  const auto &w = grid_elem_->get_grid_element().template get_weights<sdim>(s_id);
+  const auto &w = grid_func_elem_->get_grid_element().template get_weights<sdim>(s_id);
   auto w_meas = meas;
   auto it_w = w.begin();
   for (auto &w_m : w_meas)
@@ -109,7 +109,8 @@ get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
   const int s_id = 0;
   Assert(codim_ == 1, ExcNotImplemented());
   ValueVector<SafeSTLArray<Point, codim_>> res;
-  const auto &DF = this->template get_values_from_cache<_Gradient, sdim>(s_id);
+
+  const auto &DF = grid_func_elem_->template get_values<grid_function_element::_D<1>, sdim>(s_id);
   const auto n_points = DF.get_num_points();
   res.resize(n_points);
 

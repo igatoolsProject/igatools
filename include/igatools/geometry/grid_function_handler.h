@@ -137,6 +137,19 @@ public:
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
 
+  //protected:
+public:
+  std::shared_ptr<const GridHandler>
+  get_grid_handler() const
+  {
+    return grid_handler_;
+  }
+
+  std::shared_ptr<GridHandler>
+  get_grid_handler()
+  {
+    return grid_handler_;
+  }
 protected:
   std::shared_ptr<typename ConstElementAccessor::CacheType>
   &get_element_cache(ConstElementAccessor &elem) const
@@ -202,12 +215,7 @@ private:
   };
 
 
-protected:
-  std::shared_ptr<const GridHandler>
-  get_grid_handler() const
-  {
-    return grid_handler_;
-  }
+
 
 private:
   std::shared_ptr<GridFunctionType> grid_function_;

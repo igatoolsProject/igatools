@@ -163,19 +163,15 @@ enum class Flags
   ext_normal     =    1L << 4
 };
 
+static const SafeSTLArray<Flags, 4> all_flags =
+{Flags::point, Flags:: measure, Flags::w_measure, Flags::ext_normal};
 
 /** Auxiliary quantities stored in a local cache */
 enum class CacheFlags
 {
   none           =    0,
 
-  measure        =    1L << 1,
-
-  point          =    1L << 2,
-
-  gradient       =    1L << 3,
-
-  D2             =    1L << 4
+  measure        =    1L << 1
 };
 
 
@@ -184,26 +180,19 @@ struct activate
   using FlagsToCache = std::map<Flags, CacheFlags>;
   static FlagsToCache domain;
 
-  using FlagsToGrid = std::map<Flags, grid_function_element::Flags>;
+  using FlagsToGridFunc = std::map<Flags, grid_function_element::Flags>;
+  static FlagsToGridFunc grid_func;
+
+  using FlagsToGrid = std::map<Flags, grid_element::Flags>;
   static FlagsToGrid grid;
 };
 
-struct _Point
-{
-  static const std::string name;
-  static const auto flag = CacheFlags::point;
-};
+
 
 struct _Measure
 {
   static const std::string name;
   static const auto flag = CacheFlags::measure;
-};
-
-struct _Gradient
-{
-  static const std::string name;
-  static const auto flag = CacheFlags::gradient;
 };
 
 

@@ -20,7 +20,7 @@
 
 #ifndef __FORMULA_DOMAIN_HANDLER_H_
 #define __FORMULA_DOMAIN_HANDLER_H_
-
+#if 0
 #include <igatools/geometry/domain_handler.h>
 #include <igatools/geometry/formula_domain.h>
 
@@ -116,4 +116,5 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+#endif
 #endif

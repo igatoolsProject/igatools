@@ -62,16 +62,16 @@ public:
   static const int dim = dim_;
 
   using DomainType = const Domain<dim_, codim_>;
-  using GridType =  typename DomainType::GridFuncType;
-  using GridHandler = typename GridType::ElementHandler;
+  using GridFuncType =  typename DomainType::GridFuncType;
+  using GridFuncHandler = typename GridFuncType::ElementHandler;
 
   using ElementAccessor = DomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
   using ConstElementAccessor = ConstDomainElement<dim_, codim_>;
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
-  using List = typename GridType::List;
-  using ListIt = typename GridType::ListIt;
+  using List = typename GridFuncType::List;
+  using ListIt = typename GridFuncType::ListIt;
   using Flags = domain_element::Flags;
   using CacheFlags = domain_element::CacheFlags;
 protected:
@@ -257,10 +257,7 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &)
     {
-      using _Gradient = typename ElementAccessor::_Gradient;
       using _Measure = typename ElementAccessor::_Measure;
-
-      //const auto n_points = elem_.grid_elem_->template get_quad<sdim>()->get_num_points();
 
       auto &cache = elem_.local_cache_->template get_sub_elem_cache<sdim>(s_id_);
 
@@ -268,11 +265,12 @@ private:
       {
         auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id_);
 
-        const auto &DF = cache.template get_data<_Gradient>();
+        const auto &DF = elem_.grid_func_elem_->template get_values<grid_function_element::_D<1>, sdim>(s_id_);
+        // const auto &DF = cache.template get_data<_Gradient>();
 
         const auto n_points = DF.get_num_points();
 
-        typename Domain<sdim, space_dim-sdim>::Gradient DF1;
+        typename GridFunction<sdim, space_dim>::Gradient DF1;
 
         auto &measures = cache.template get_data<_Measure>();
         for (int pt = 0 ; pt < n_points; ++pt)
@@ -384,16 +382,16 @@ private:
   };
 
 protected:
-  std::shared_ptr<const GridHandler>
+  std::shared_ptr<const GridFuncHandler>
   get_grid_handler() const
   {
-    return grid_handler_;
+    return grid_func_handler_;
   }
 
 private:
   std::shared_ptr<DomainType> domain_;
 
-  std::shared_ptr<GridHandler> grid_handler_;
+  std::shared_ptr<GridFuncHandler> grid_func_handler_;
 
   FlagsArray flags_;
 

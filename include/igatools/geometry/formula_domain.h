@@ -20,7 +20,7 @@
 
 #ifndef __FORMULA_DOMAIN_H_
 #define __FORMULA_DOMAIN_H_
-
+#if 0
 #include <igatools/base/value_types.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
@@ -71,3 +71,5 @@ public:
 IGA_NAMESPACE_CLOSE
 
 #endif
+#endif
+

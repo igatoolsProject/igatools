@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/geometry/domain_lib.h>
 IGA_NAMESPACE_OPEN
 
@@ -662,3 +663,4 @@ IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/domain_lib.inst>
 
+#endif

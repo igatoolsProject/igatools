@@ -46,26 +46,30 @@ activate::FlagsToCache  activate::grid =
 //---------------------------------------------------------------------
 namespace domain_element
 {
-const CacheFlags _Point::flag;
-const string _Point::name = "Element Quadrature Points";
 
 const CacheFlags _Measure::flag;
 const string _Measure::name = "Element measure";
 
-const CacheFlags _Gradient::flag;
-const string _Gradient::name = "domain gradients";
 
 activate::FlagsToCache  activate::domain =
 {
-  {Flags::point, CacheFlags::point},
-  {Flags::w_measure, CacheFlags::gradient|CacheFlags::measure},
-  {Flags::measure, CacheFlags::gradient|CacheFlags::measure},
-  {Flags::ext_normal, CacheFlags::gradient}
+  {Flags::point, CacheFlags::none},
+  {Flags::w_measure, CacheFlags::measure},
+  {Flags::measure,   CacheFlags::measure},
+  {Flags::ext_normal, CacheFlags::none}
 };
 
-domain_element::activate::FlagsToGrid activate::grid =
+activate::FlagsToGridFunc activate::grid_func =
 {
-  {Flags::point, grid_element::Flags::point},
+  {Flags::point, grid_function_element::Flags::none},
+  {Flags::w_measure, grid_function_element::Flags::D1},
+  {Flags::measure, grid_function_element::Flags::D1},
+  {Flags::ext_normal, grid_function_element::Flags::D1}
+};
+
+activate::FlagsToGrid activate::grid =
+{
+  {Flags::point, grid_element::Flags::none},
   {Flags::w_measure, grid_element::Flags::weight},
   {Flags::measure, grid_element::Flags::none},
   {Flags::ext_normal, grid_element::Flags::none}

@@ -29,7 +29,7 @@ DomainHandler<dim_, codim_>::
 DomainHandler(std::shared_ptr<DomainType> domain)
   :
   domain_(domain),
-  grid_handler_(domain->get_grid_function()->create_cache_handler()),
+  grid_func_handler_(domain->get_grid_function()->create_cache_handler()),
   flags_(CacheFlags::none)
 {
   Assert(domain_ != nullptr, ExcNullPtr());
@@ -50,20 +50,23 @@ DomainHandler<dim_, codim_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
-  using GridFlags = typename GridType::ElementHandler::Flags;
+  using GridFuncFlags = typename GridFuncType::ElementHandler::Flags;
+  using GridFlags = typename GridFuncType::GridType::ElementHandler::Flags;
+
   GridFlags  grid_flag = GridFlags::none;
+  GridFuncFlags  grid_func_flag = GridFuncFlags::none;
   CacheFlags dom_flag = CacheFlags::none;
 
-  SafeSTLVector<Flags> all_flags ={Flags::point, Flags::measure, Flags::w_measure};
-  for (auto &fl : all_flags)
+  for (auto &fl : domain_element::all_flags)
     if (contains(flag, fl))
     {
+      grid_func_flag |= domain_element::activate::grid_func[fl];
       grid_flag |= domain_element::activate::grid[fl];
       dom_flag  |= domain_element::activate::domain[fl];
     }
 
-  grid_handler_->set_flags(sdim, grid_flag);
-
+  grid_func_handler_->set_flags(sdim, grid_func_flag);
+  grid_func_handler_->get_grid_handler()->set_flags(sdim, grid_flag);
   auto disp = SetFlagsDispatcher(dom_flag, flags_);
   boost::apply_visitor(disp, sdim);
 }
@@ -76,7 +79,7 @@ DomainHandler<dim_, codim_>::
 init_cache(ConstElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
-  grid_handler_->init_cache(*(elem.grid_elem_), quad);
+  grid_func_handler_->init_cache(*(elem.grid_func_elem_), quad);
 
   auto &cache = elem.local_cache_;
   if (cache == nullptr)
@@ -99,7 +102,7 @@ fill_cache(const topology_variant &sdim,
            ConstElementAccessor &elem,
            const int s_id) const-> void
 {
-  grid_handler_->fill_cache(sdim, *(elem.grid_elem_), s_id);
+  grid_func_handler_->fill_cache(sdim, *(elem.grid_func_elem_), s_id);
 
   auto disp = FillCacheDispatcher(elem, s_id);
   boost::apply_visitor(disp, sdim);

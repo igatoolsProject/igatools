@@ -21,6 +21,7 @@
 #ifndef __DOMAIN_LIB_H_
 #define __DOMAIN_LIB_H_
 
+#if 0
 #include <igatools/geometry/formula_domain.h>
 
 IGA_NAMESPACE_OPEN
@@ -261,4 +262,4 @@ private:
 IGA_NAMESPACE_CLOSE
 
 #endif
-
+#endif
