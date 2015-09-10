@@ -33,7 +33,6 @@ IGA_NAMESPACE_OPEN
 
 /**
  *
- * @ingroup serializable
  */
 template<int dim, int codim, int range, int rank, class ContainerType_>
 class FunctionElementBase
@@ -59,6 +58,7 @@ public:
   using CacheFlags = function_element::CacheFlags;
 
 protected:
+#if 0
   /** @name Constructors */
   ///@{
   /**
@@ -67,6 +67,9 @@ protected:
    * mechanism.
    */
   FunctionElementBase() = default;
+#endif
+
+  FunctionElementBase() = delete;
 
 public:
   /**
@@ -247,6 +250,8 @@ private:
 
 
 private:
+
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -260,7 +265,9 @@ private:
   serialize(Archive &ar, const unsigned int version);
   ///@}
 #endif // SERIALIZATION
+#endif
 };
+
 
 
 template <int dim, int codim, int range, int rank>

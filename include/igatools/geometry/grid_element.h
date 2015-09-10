@@ -70,12 +70,19 @@ public:
   /** @name Constructors */
   ///@{
 protected:
+#if 0
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
   GridElement() = default;
+#endif
+
+  /**
+   * Default constructor. Not allowed to be used.
+   */
+  GridElement() = delete;
 
 public:
   /**
@@ -352,6 +359,7 @@ protected:
                  << "The global cache is being used by " << arg1
                  << " iterator. Changing its value not allowed.");
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -365,6 +373,7 @@ protected:
   serialize(Archive &ar, const unsigned int version);
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 

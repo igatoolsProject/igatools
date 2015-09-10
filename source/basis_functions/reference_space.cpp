@@ -146,7 +146,7 @@ get_max_degree() const
 
 
 
-
+#if 0
 #ifdef SERIALIZATION
 template<int dim, int range, int rank>
 template<class Archive>
@@ -162,7 +162,7 @@ serialize(Archive &ar, const unsigned int version)
   ref_space_previous_refinement_ = const_pointer_cast<const RefSpace>(tmp);
 }
 #endif // SERIALIZATION
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

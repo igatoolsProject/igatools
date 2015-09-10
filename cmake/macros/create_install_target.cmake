@@ -32,7 +32,8 @@ macro(create_install_target use_other_templates)
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/
       DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
       PATTERN ".*" EXCLUDE
-      PATTERN "*.inst" EXCLUDE)
+      PATTERN "*.inst" EXCLUDE
+      PATTERN "*.serialization" EXCLUDE)
   endif(${use_other_templates})
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h 
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${lib_name}/base)

@@ -30,55 +30,53 @@ BSplineElement<1,1,1> cache:
       
    
    SpaceElement's cache:
-      SpaceElementBase<1> cache:
-         GridElement<1> cache:
-            Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
-               Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
+      GridElement<1> cache:
+         Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
+            Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=2) :
+                        [ [ 0.211325 ]  [ 0.788675 ]  ]
                      
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=2) :
-                           [ [ 0.211325 ]  [ 0.788675 ]  ]
-                        
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=2) :
-                           [ 0.500000 0.500000 ]
-                        
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=2) :
+                        [ 0.500000 0.500000 ]
                      
                   
                
-               Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+            
+            Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
                   
-                  Sub-element id: 1
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+               
+               Sub-element id: 1
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
                
             
@@ -194,55 +192,53 @@ BSplineElement<1,1,1> cache:
       
    
    SpaceElement's cache:
-      SpaceElementBase<1> cache:
-         GridElement<1> cache:
-            Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
-               Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
+      GridElement<1> cache:
+         Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
+            Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=2) :
+                        [ [ 0.105662 ]  [ 0.394338 ]  ]
                      
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=2) :
-                           [ [ 0.105662 ]  [ 0.394338 ]  ]
-                        
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=2) :
-                           [ 0.250000 0.250000 ]
-                        
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=2) :
+                        [ 0.250000 0.250000 ]
                      
                   
                
-               Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+            
+            Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
                   
-                  Sub-element id: 1
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+               
+               Sub-element id: 1
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
                
             
@@ -358,55 +354,53 @@ BSplineElement<1,1,1> cache:
       
    
    SpaceElement's cache:
-      SpaceElementBase<1> cache:
-         GridElement<1> cache:
-            Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
-               Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
+      GridElement<1> cache:
+         Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
+            Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=2) :
+                        [ [ 0.105662 ]  [ 0.394338 ]  ]
                      
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=2) :
-                           [ [ 0.105662 ]  [ 0.394338 ]  ]
-                        
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=2) :
-                           [ 0.250000 0.250000 ]
-                        
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=2) :
+                        [ 0.250000 0.250000 ]
                      
                   
                
-               Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+            
+            Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
                   
-                  Sub-element id: 1
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+               
+               Sub-element id: 1
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
                
             
@@ -532,79 +526,77 @@ BSplineElement<2,1,1> cache:
       
    
    SpaceElement's cache:
-      SpaceElementBase<2> cache:
-         GridElement<2> cache:
-            Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
-               Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
+      GridElement<2> cache:
+         Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
+            Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=4) :
+                        [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
                      
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=4) :
-                           [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
-                        
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=4) :
-                           [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-                        
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=4) :
+                        [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
                      
                   
                
-               Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+            
+            Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
                   
-                  Sub-element id: 1
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
-                  Sub-element id: 2
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
-                  Sub-element id: 3
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+               
+               Sub-element id: 1
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+               
+               Sub-element id: 2
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+               
+               Sub-element id: 3
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
                
             
@@ -774,79 +766,77 @@ BSplineElement<2,1,1> cache:
       
    
    SpaceElement's cache:
-      SpaceElementBase<2> cache:
-         GridElement<2> cache:
-            Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
-               Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
+      GridElement<2> cache:
+         Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
+            Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=4) :
+                        [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
                      
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=4) :
-                           [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
-                        
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=4) :
-                           [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-                        
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=4) :
+                        [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
                      
                   
                
-               Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+            
+            Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
                   
-                  Sub-element id: 1
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
-                  Sub-element id: 2
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
-                  Sub-element id: 3
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+               
+               Sub-element id: 1
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+               
+               Sub-element id: 2
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+               
+               Sub-element id: 3
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
                
             
@@ -1016,79 +1006,77 @@ BSplineElement<2,1,1> cache:
       
    
    SpaceElement's cache:
-      SpaceElementBase<2> cache:
-         GridElement<2> cache:
-            Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
-               Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
+      GridElement<2> cache:
+         Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
+            Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=4) :
+                        [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
                      
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=4) :
-                           [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
-                        
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 1    filled = 1
-                        Data:
-                           ValueVector (num_points=4) :
-                           [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-                        
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 1    filled = 1
+                     Data:
+                        ValueVector (num_points=4) :
+                        [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
                      
                   
                
-               Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
-                  Sub-element id: 0
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+            
+            Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
+               Sub-element id: 0
+                  Memory consumption: 84 bytes
                   
-                  Sub-element id: 1
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
-                  Sub-element id: 2
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
-                  Sub-element id: 3
-                     Memory consumption: 84 bytes
-                     
-                     Element Quadrature Points: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
-                     Element Quadrature Weights: (memory consumption: 42 bytes)
-                        Fill flags:
-                           fill = 0    filled = 0
-                     
+               
+               Sub-element id: 1
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+               
+               Sub-element id: 2
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+               
+               Sub-element id: 3
+                  Memory consumption: 84 bytes
+                  
+                  Element Quadrature Points: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
+                  
+                  Element Quadrature Weights: (memory consumption: 42 bytes)
+                     Fill flags:
+                        fill = 0    filled = 0
                   
                
             

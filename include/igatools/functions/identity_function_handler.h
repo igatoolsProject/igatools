@@ -49,7 +49,6 @@ create_id_tensor()
  * we want to optimize its computation
  *
  *
- * @ingroup serializable
  *
  * @author martinelli 2015
  * @author pauletti 2015
@@ -93,7 +92,10 @@ public:
   // IdentityFunctionElementHandler(std::shared_ptr<GridType> grid);
 
 private:
-  IdentityFunctionElementHandler();
+  /**
+   * Default constructor. Not allowed to be used.
+   */
+  IdentityFunctionElementHandler() = delete;
 
 public:
   IdentityFunctionElementHandler(std::shared_ptr<const GridType> grid);
@@ -191,6 +193,7 @@ private:
 
 #endif // MESH_REFINEMENT
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name FunctionElementHandlers needed for boost::serialization
@@ -208,7 +211,7 @@ private:
   }
   ///@}
 #endif // SERIALIZATION
-
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

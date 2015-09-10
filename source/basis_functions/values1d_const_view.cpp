@@ -137,10 +137,3 @@ operator()(const Index point_id) const
 
 IGA_NAMESPACE_CLOSE
 
-#ifdef SERIALIZATION
-
-BOOST_CLASS_EXPORT_IMPLEMENT(iga::BasisValues1d)
-template void iga::BasisValues1d::serialize(OArchive &, const unsigned int);
-template void iga::BasisValues1d::serialize(IArchive &, const unsigned int);
-
-#endif // SERIALIZATION

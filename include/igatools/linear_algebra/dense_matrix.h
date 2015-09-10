@@ -155,15 +155,40 @@ private:
 
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive>
+  template <class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  save(Archive &ar) const
+  {
+    auto rows = this->get_num_rows();
+    auto cols = this->get_num_cols();
+    ar(make_nvp("n_rows",rows));
+    ar(make_nvp("n_cols",cols));
+
+    const auto &data = this->data();
+    for (const Real &v : data)
+      ar(v);
+  }
+
+  template <class Archive>
+  void
+  load(Archive &ar)
+  {
+    int rows;
+    int cols;
+    ar(rows);
+    ar(cols);
+
+    this->resize(rows, cols);
+
+    auto &data = this->data();
+    for (Real &v : data)
+      ar(v);
+  }
   ///@}
 #endif // SERIALIZATION
 };
@@ -199,5 +224,12 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
 
 
 IGA_NAMESPACE_CLOSE
+
+
+#ifdef SERIALIZATION
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(iga::DenseMatrix,cereal::specialization::member_load_save);
+
+#endif // SERIALIZATION
 
 #endif /* DENSE_MATRIX_H_ */

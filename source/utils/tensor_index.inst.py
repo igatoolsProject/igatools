@@ -30,3 +30,5 @@ for row in index_list:
     f.write('template %s operator+(const %s &, const %s &); \n' % (row,row,row))
     f.write('template %s operator+(const %s &, const Index); \n' % (row,row))
     f.write('template %s operator-(const %s &, const Index); \n' % (row,row))
+
+

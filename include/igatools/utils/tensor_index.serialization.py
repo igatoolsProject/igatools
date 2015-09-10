@@ -18,44 +18,34 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-
-include_files = ['basis_functions/space_element_base.h']
-data = Instantiation(include_files)
+data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
+class_list = []
 
+class_name = 'TensorIndex'
 
-sub_dim_members = []
+for dim in inst.all_domain_dims:
+    c = '%s<%d>' %(class_name,dim)
+    class_list.append(c)
 
-elements = []
-
-
-
-for dim in inst.sub_domain_dims + inst.domain_dims:
-    element = 'SpaceElementBase<%d>' %(dim)
-    elements.append(element)
-
-
-
-for element in unique(elements):
-    f.write('template class %s ;\n' %element)
 
 
 
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
- 
+
 f.write('#ifdef SERIALIZATION\n')
+
 id = 0 
-for element in unique(elements):
-    alias = 'SpaceElementBase%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, element))
-    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+for cls in unique(class_list):
+    alias = '%sAlias%d' %(class_name,id)
+    f.write('using %s = iga::%s; \n' % (alias, cls))
+    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %(alias))
     id += 1 
 f.write('#endif // SERIALIZATION\n')
-     
+
 f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------

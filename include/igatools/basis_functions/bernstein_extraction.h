@@ -35,6 +35,27 @@ public:
   using DenseMatrix::DenseMatrix;
 
   Values scale_action(const Real scale, const Values &b_values) const;
+
+
+private:
+
+#ifdef SERIALIZATION
+  /**
+   * @name Functions needed for serialization
+   */
+  ///@{
+  friend class cereal::access;
+  template<class Archive>
+  void
+  serialize(Archive &ar)
+  {
+//    Assert(false,ExcNotImplemented());
+    ar &make_nvp("DenseMatrix",base_class<DenseMatrix>(this));
+  }
+
+  ///@}
+#endif // SERIALIZATION
+
 };
 
 /**
@@ -123,19 +144,29 @@ private:
 
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar)
+  {
+    ar &make_nvp("ext_operators_",ext_operators_);
+  }
+
   ///@}
 #endif // SERIALIZATION
 };
 
 
 IGA_NAMESPACE_CLOSE
+
+
+#ifdef SERIALIZATION
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(iga::BernsteinOperator,cereal::specialization::member_serialize);
+
+#endif // SERIALIZATION
 
 #endif

@@ -310,6 +310,7 @@ get_defined_properties() const
 
 #endif
 
+#if 0
 #ifdef SERIALIZATION
 template <int dim>
 template<class Archive>
@@ -330,6 +331,7 @@ serialize(Archive &ar, const unsigned int version)
   ar &make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
 }
 #endif // SERIALIZATION
+#endif
 
 IGA_NAMESPACE_CLOSE
 

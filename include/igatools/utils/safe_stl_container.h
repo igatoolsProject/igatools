@@ -102,6 +102,7 @@ private:
     out << "]";
   }
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -113,11 +114,12 @@ private:
   template<class Archive>
   void serialize(Archive &ar, const unsigned int version)
   {
-    ar &boost::serialization::make_nvp("SafeSTLContainer_base_t",
+    ar &boost::serialization::make_nvp("STLContainer",
                                        boost::serialization::base_object<STLContainer>(*this));
   }
   ///@}
 #endif // SERIALIZATION
+#endif
 
 public:
 

@@ -106,7 +106,8 @@ public:
 
   /** @name Constructors and destructor. */
   ///@{
-private:
+
+public:
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -219,6 +220,7 @@ public:
   }
 #endif // MESH_REFINEMENT
 
+#if 0
 #ifdef SERIALIZATION
 public:
   /**
@@ -267,6 +269,7 @@ public:
   //*/
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

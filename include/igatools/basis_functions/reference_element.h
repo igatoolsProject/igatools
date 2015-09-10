@@ -32,7 +32,6 @@ template <int, int, int> class ReferenceSpace;
 /**
  *
  * @ingroup elements
- * @ingroup serializable
  */
 template <int dim, int range, int rank>
 class ReferenceElement : public SpaceElement<dim,0,range,rank,Transformation::h_grad>
@@ -63,14 +62,18 @@ public:
   using ListIt = typename GridType::ListIt;
 
 protected:
+#if 0
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
   ReferenceElement() = default;
+#endif
 
 public:
+  ReferenceElement() = delete;
+
   /**
    * Copy constructor. Not allowed to be used.
    */
@@ -149,7 +152,7 @@ public:
 
   virtual void print_info(LogStream &out) const override final;
 
-
+#if 0
 #ifdef SERIALIZATION
 private:
   /**
@@ -164,6 +167,7 @@ private:
   serialize(Archive &ar, const unsigned int version);
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

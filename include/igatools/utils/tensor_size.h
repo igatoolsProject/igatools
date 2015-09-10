@@ -34,6 +34,8 @@ IGA_NAMESPACE_OPEN
  * has the method flat_size() that returns the multiplication of the sizes
  * along each direction.
  *
+ * @ingroup serializable
+ *
  * @author M. Martinelli
  * @date 21 Jan 2014
  */
@@ -84,6 +86,24 @@ public:
    * each direction.
    */
   Size flat_size() const noexcept ;
+
+private:
+#ifdef SERIALIZATION
+  /**
+   * @name Functions needed for serialization
+   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
+   */
+  ///@{
+  friend class cereal::access;
+
+  template<class Archive>
+  void serialize(Archive &ar)
+  {
+    ar &make_nvp("TensorIndex",
+                 base_class<TensorIndex<rank>>(this));
+  }
+  ///@}
+#endif // SERIALIZATION
 };
 
 
@@ -110,5 +130,20 @@ LogStream &
 operator<<(LogStream &out, const TensorSize<rank> &tensor_size);
 
 IGA_NAMESPACE_CLOSE
+
+
+#ifdef SERIALIZATION
+using TensorSizeAlias0 = iga::TensorSize<0>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias0,cereal::specialization::member_serialize);
+using TensorSizeAlias1 = iga::TensorSize<1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias1,cereal::specialization::member_serialize);
+using TensorSizeAlias2 = iga::TensorSize<2>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias2,cereal::specialization::member_serialize);
+using TensorSizeAlias3 = iga::TensorSize<3>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias3,cereal::specialization::member_serialize);
+
+//#include <igatools/utils/tensor_size.serialization>
+#endif // SERIALIZATION
+
 
 #endif // #ifndef TENSOR_SIZE_H_

@@ -24,7 +24,7 @@ from init_instantiation_data import *
 include_files = ['basis_functions/bspline_space.h',
                  'basis_functions/nurbs_space.h',
                  'geometry/grid_element.h',
-                 'geometry/mapping_element.h',
+#                 'geometry/mapping_element.h',
                  'geometry/push_forward.h',
                  'basis_functions/bspline_element.h',
                  'basis_functions/physical_space_element.h']
@@ -69,19 +69,19 @@ for space in unique(spaces):
 
 
 #---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
+#f.write('IGA_NAMESPACE_CLOSE\n')
  
-f.write('#ifdef SERIALIZATION\n')
-id = 0 
-for space in unique(spaces):
-    alias = 'PhysicalSpaceAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, space.replace('Transformation','iga::Transformation')))
-    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-    id += 1 
-f.write('#endif // SERIALIZATION\n')
+#f.write('#ifdef SERIALIZATION\n')
+#id = 0 
+#for space in unique(spaces):
+#    alias = 'PhysicalSpaceAlias%d' %(id)
+#    f.write('using %s = iga::%s; \n' % (alias, space.replace('Transformation','iga::Transformation')))
+#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+#    id += 1 
+#f.write('#endif // SERIALIZATION\n')
      
-f.write('IGA_NAMESPACE_OPEN\n')
+#f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
 

@@ -34,24 +34,27 @@ void vector_serialization()
 
   SafeSTLVector<Real> vec = {1.,2.,3.,4.,5.};
 
+
   {
-    ofstream xml_ostream("vector.xml");
-    OArchive xml_out(xml_ostream);
-    xml_out << BOOST_SERIALIZATION_NVP(vec);
-    xml_ostream.close();
+    ofstream os("vector.xml");
+    OArchive archive(os);
+    archive << vec;
   }
+  out.begin_item("SafeSTLVector<Real> before serialization");
+  vec.print_info(out);
+  out.end_item();
+
 
   vec.clear();
-
   {
-    ifstream xml_istream("vector.xml");
-    IArchive xml_in(xml_istream);
-    xml_in >> BOOST_SERIALIZATION_NVP(vec);
-    xml_istream.close();
+    ifstream is("vector.xml");
+    IArchive archive(is);
+    archive >> vec;
   }
-
+  out.begin_item("SafeSTLVector<Real> after serialization");
   vec.print_info(out);
-  out << endl;
+  out.end_item();
+
   OUTEND
 }
 

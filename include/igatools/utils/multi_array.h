@@ -323,17 +323,16 @@ private:
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version)
+  serialize(Archive &ar)
   {
-    ar &boost::serialization::make_nvp(
-      "MultiArray_base_t",
-      boost::serialization::base_object<TensorSizedContainer<rank>>(*this));
+    ar &make_nvp("MultiArray_base_t",
+                 base_class<TensorSizedContainer<rank>>(this));
 
-    ar &boost::serialization::make_nvp("data_",data_);
+    ar &make_nvp("data_",data_);
   }
   ///@}
 #endif // SERIALIZATION

@@ -389,18 +389,42 @@ private:
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar)
+  {
+    ar &make_nvp("index_table_",index_table_);
+
+    ar &make_nvp("num_dofs_table_",num_dofs_table_);
+
+    ar &make_nvp("index_table_size_",index_table_size_);
+
+    ar &make_nvp("properties_dofs_",properties_dofs_);
+  }
   ///@}
 #endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE
+
+
+#ifdef SERIALIZATION
+
+template <int dim,int range,int rank>
+using T = typename iga::DofDistribution<dim,range,rank>::IndexDistributionTable;
+
+using Alias0 = T<1,1,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Alias0,cereal::specialization::member_serialize);
+
+
+//iga::SafeSTLArray<iga::DynamicMultiArray<int,1>,1>
+
+#endif // SERIALIZATION
+
 
 #endif

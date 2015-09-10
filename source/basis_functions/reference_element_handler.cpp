@@ -113,6 +113,7 @@ reset_one_element(
 }
 #endif
 
+#if 0
 #ifdef SERIALIZATION
 template<int dim, int range , int rank>
 template<class Archive>
@@ -131,6 +132,7 @@ serialize(Archive &ar, const unsigned int version)
 //    Assert(space_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
+#endif
 
 IGA_NAMESPACE_CLOSE
 

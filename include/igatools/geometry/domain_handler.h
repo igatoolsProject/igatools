@@ -45,7 +45,6 @@ template <int, int> class ConstDomainElement;
  * @todo we should thing about renaming mapping to physical domain
  *
  * @ingroup containers
- * @ingroup serializable
  *
  * @author pauletti 2014, 2015
  * @author M. Martinelli, 2015
@@ -109,12 +108,17 @@ protected:
   using eval_pts_variant = SubElemPtrVariants<ConstQuad,dim_>;
 
 private:
+#if 0
   /**
+   *
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
   DomainHandler() = default;
+#endif
+
+  DomainHandler() = delete;
 
 public:
   DomainHandler(std::shared_ptr<DomainType> domain);
@@ -397,6 +401,7 @@ private:
 
   friend ElementAccessor;
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -409,11 +414,13 @@ private:
   void
   serialize(Archive &ar, const unsigned int version)
   {
-    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
-    ar &boost::serialization::make_nvp("F_",F_);
-    ar &boost::serialization::make_nvp("flags_",flags_);
+    AssertThrow(false,ExcNotImplemented());
+//    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
+//    ar &boost::serialization::make_nvp("F_",F_);
+//    ar &boost::serialization::make_nvp("flags_",flags_);
   }
   ///@}
+#endif
 #endif
 };
 

@@ -34,35 +34,184 @@ SpaceElement(const std::shared_ptr<Sp> space,
              const ListIt &index,
              const PropId &prop)
   :
-  base_t(space,index,prop),
   space_(space)
-{}
+{
+  grid_elem_ = space_->get_grid()->create_element(index,prop);
+}
 
 
 
 
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+auto
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+get_grid_element() -> GridElem &
+{
+  return *grid_elem_;
+}
 
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+auto
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+get_grid_element() const -> const  GridElem &
+{
+  return *grid_elem_;
+}
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_info(LogStream &out) const
 {
-  base_t::print_info(out);
+  grid_elem_->print_info(out);
+
+  out.begin_item("Element global connectivity (property=\"" + DofProperties::active + "\"):");
+  const auto glob_dofs = this->get_local_to_global(DofProperties::active);
+  glob_dofs.print_info(out);
+  out.end_item();
 }
+
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_cache_info(LogStream &out) const
 {
-  out.begin_item("SpaceElementBase<" + std::to_string(dim_) + "> cache:");
-  base_t::print_cache_info(out);
+  out.begin_item("GridElement<" + std::to_string(dim) + "> cache:");
+  grid_elem_->print_cache_info(out);
   out.end_item();
 
-//    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
+  //    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
   all_sub_elems_cache_.print_info(out);
 }
+
+
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+auto
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+get_index() const -> IndexType
+{
+  return grid_elem_->get_index();
+}
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+std::shared_ptr<const Grid<dim_> >
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+get_grid() const
+{
+  return grid_elem_->get_grid();
+}
+
+
+
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+SafeSTLVector<Index>
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+get_local_to_global(const std::string &dofs_property) const
+{
+  SafeSTLVector<Index> dofs_global;
+  SafeSTLVector<Index> dofs_loc_to_patch;
+  SafeSTLVector<Index> dofs_loc_to_elem;
+  this->space_->get_element_dofs(
+    this->get_index(),
+    dofs_global,
+    dofs_loc_to_patch,
+    dofs_loc_to_elem,
+    dofs_property);
+
+  return dofs_global;
+}
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+SafeSTLVector<Index>
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+get_local_to_patch(const std::string &dofs_property) const
+{
+  SafeSTLVector<Index> dofs_global;
+  SafeSTLVector<Index> dofs_loc_to_patch;
+  SafeSTLVector<Index> dofs_loc_to_elem;
+  this->space_->get_element_dofs(
+    this->get_index(),
+    dofs_global,
+    dofs_loc_to_patch,
+    dofs_loc_to_elem,
+    dofs_property);
+
+  return dofs_loc_to_patch;
+}
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+SafeSTLVector<Index>
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+get_local_dofs(const std::string &dofs_property) const
+{
+  SafeSTLVector<Index> dofs_global;
+  SafeSTLVector<Index> dofs_loc_to_patch;
+  SafeSTLVector<Index> dofs_loc_to_elem;
+  this->space_->get_element_dofs(
+    this->get_index(),
+    dofs_global,
+    dofs_loc_to_patch,
+    dofs_loc_to_elem,
+    dofs_property);
+
+  return dofs_loc_to_elem;
+}
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+Size
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+get_num_basis(const std::string &dofs_property) const
+{
+  const auto dofs_global = this->get_local_to_global(dofs_property);
+  return dofs_global.size();
+}
+
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+bool
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+operator==(const self_t &a) const
+{
+  Assert(space_ == a.space_,
+         ExcMessage("Comparison between elements defined on different spaces"));
+  return *grid_elem_ == *a.grid_elem_;
+}
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+bool
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+operator!=(const self_t &a) const
+{
+  Assert(space_ == a.space_,
+         ExcMessage("Comparison between elements defined on different spaces"));
+  return *grid_elem_ != *a.grid_elem_;
+}
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+bool
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+operator<(const self_t &a) const
+{
+  Assert(space_ == a.space_,
+         ExcMessage("Comparison between elements defined on different spaces"));
+  return *grid_elem_ < *a.grid_elem_;
+}
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+bool
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+operator>(const self_t &a) const
+{
+  Assert(space_ == a.space_,
+         ExcMessage("Comparison between elements defined on different spaces"));
+  return *grid_elem_ > *a.grid_elem_;
+}
+
+
+
 
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -97,7 +246,7 @@ get_space() const -> std::shared_ptr<Sp>
 
 
 
-
+#if 0
 #ifdef SERIALIZATION
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 template<class Archive>
@@ -116,7 +265,7 @@ serialize(Archive &ar, const unsigned int version)
   Assert(space_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
-
+#endif
 
 
 IGA_NAMESPACE_CLOSE

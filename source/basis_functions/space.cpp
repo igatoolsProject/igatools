@@ -33,92 +33,6 @@ using std::unique_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template <int dim_>
-SpaceBase<dim_>::
-SpaceBase(const shared_ptr<const Grid<dim_>> &grid)
-  :
-  object_id_(UniqueIdGenerator::get_unique_id()),
-  grid_(grid)
-{};
-
-template <int dim_>
-SpaceBase<dim_>::
-SpaceBase(const shared_ptr<Grid<dim_>> &grid)
-  :
-  object_id_(UniqueIdGenerator::get_unique_id()),
-  grid_(grid)
-{};
-
-template <int dim_>
-Index
-SpaceBase<dim_>::
-get_object_id() const
-{
-  return object_id_;
-}
-
-template <int dim_>
-std::shared_ptr<Grid<dim_> >
-SpaceBase<dim_>::
-get_grid()
-{
-  return grid_.get_ptr_data();
-}
-
-template <int dim_>
-std::shared_ptr<const Grid<dim_> >
-SpaceBase<dim_>::
-get_grid() const
-{
-  return grid_.get_ptr_const_data();
-}
-
-
-template <int dim_>
-const std::string &
-SpaceBase<dim_>::
-get_name() const
-{
-  return name_;
-}
-
-template <int dim_>
-void
-SpaceBase<dim_>::
-set_name(const std::string &name)
-{
-  name_ = name;
-}
-
-
-#ifdef MESH_REFINEMENT
-
-template <int dim_>
-void
-SpaceBase<dim_>::
-refine_h(const Size n_subdivisions)
-{
-  this->get_ptr_grid()->refine(n_subdivisions);
-}
-
-#endif // MESH_REFINEMENT
-
-#ifdef SERIALIZATION
-template <int dim_>
-template<class Archive>
-void
-SpaceBase<dim_>::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("grid_",grid_);
-
-  ar &boost::serialization::make_nvp("object_id_",object_id_);
-
-  ar &boost::serialization::make_nvp("name_",name_);
-
-}
-///@}
-#endif // SERIALIZATION
 
 
 
@@ -130,7 +44,8 @@ Space<dim_,codim_,range_,rank_,type_>::
 Space(const shared_ptr<Grid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
   :
-  base_t(grid),
+  object_id_(UniqueIdGenerator::get_unique_id()),
+  grid_(grid),
   phys_domain_(PhysDomain::create(grid))
 //  phys_domain_(PhysDomain::create(grid,map_func))
 {
@@ -144,7 +59,8 @@ Space<dim_,codim_,range_,rank_,type_>::
 Space(const shared_ptr<const Grid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
   :
-  base_t(grid),
+  object_id_(UniqueIdGenerator::get_unique_id()),
+  grid_(grid),
   phys_domain_(PhysDomain::create(grid))
 //  phys_domain_(PhysDomain::create(grid,map_func))
 {
@@ -152,6 +68,47 @@ Space(const shared_ptr<const Grid<dim_>> &grid,
          ExcMessage("The space and the physical domain must have the same grid!"));
 }
 
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+Index
+Space<dim_,codim_,range_,rank_,type_>::
+get_object_id() const
+{
+  return object_id_;
+}
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+std::shared_ptr<Grid<dim_> >
+Space<dim_,codim_,range_,rank_,type_>::
+get_grid()
+{
+  return grid_.get_ptr_data();
+}
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+std::shared_ptr<const Grid<dim_> >
+Space<dim_,codim_,range_,rank_,type_>::
+get_grid() const
+{
+  return grid_.get_ptr_const_data();
+}
+
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+const std::string &
+Space<dim_,codim_,range_,rank_,type_>::
+get_name() const
+{
+  return name_;
+}
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+void
+Space<dim_,codim_,range_,rank_,type_>::
+set_name(const std::string &name)
+{
+  name_ = name;
+}
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
@@ -253,7 +210,20 @@ get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std
   return this->get_ptr_const_dof_distribution()->get_boundary_dofs(s_id,topology);
 }
 
+#ifdef MESH_REFINEMENT
 
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+void
+Space<dim_,codim_,range_,rank_,type_>::
+refine_h(const Size n_subdivisions)
+{
+  this->get_ptr_grid()->refine(n_subdivisions);
+}
+
+#endif // MESH_REFINEMENT
+
+
+#if 0
 #ifdef SERIALIZATION
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 template<class Archive>
@@ -261,6 +231,8 @@ void
 Space<dim_,codim_,range_,rank_,type_>::
 serialize(Archive &ar, const unsigned int version)
 {
+  AssertThrow(false,ExcNotImplemented());
+#if 0
   ar.template register_type<BSplineSpace<dim_,range_,rank_>>();
 
 #ifdef NURBS
@@ -276,11 +248,13 @@ serialize(Archive &ar, const unsigned int version)
   ar.template register_type<IdentityFunction<dim_,dim_> >();
   ar &boost::serialization::make_nvp("map_func_",map_func_);
 //    Assert(map_func_ != nullptr,ExcNullPtr());
-
+#endif
 }
 ///@}
 #endif // SERIALIZATION
+#endif
 
 IGA_NAMESPACE_CLOSE
+
 
 #include <igatools/basis_functions/space.inst>

@@ -282,28 +282,23 @@ protected:
 
 private:
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
+   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
-  template<class Archive, int dummy_dim = rank>
+  template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version,EnableIf<(dummy_dim > 0)> * = 0)
+  serialize(Archive &ar, const unsigned int version)
   {
     std::string tag_name = "TensorSizedContainer_" + std::to_string(rank);
-    ar &boost::serialization::make_nvp(
+    ar &make_nvp(
       tag_name.c_str(),
-      boost::serialization::base_object<TensorSizedContainer<rank>>(*this));
+      base_class<TensorSizedContainer<rank>>(this));
 
-    ar &boost::serialization::make_nvp("Data",data_);
+    ar &make_nvp("data_of_type_SafeSTLArray",data_);
   }
-
-  template<class Archive, int dummy_dim = rank>
-  void
-  serialize(Archive &ar, const unsigned int version,EnableIf<!(dummy_dim > 0)> * = 0)
-  {}
   ///@}
 
 };

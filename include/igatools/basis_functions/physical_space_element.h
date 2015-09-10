@@ -39,7 +39,6 @@ template <class Accessor> class GridIterator;
 /**
  *
  * @ingroup elements
- * @ingroup serializable
  */
 template<int dim_,int range_,int rank_,int codim_,Transformation type_ = Transformation::h_grad>
 class PhysicalSpaceElement
@@ -81,12 +80,19 @@ public :
    */
   ///@{
 public:
+#if 0
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
   PhysicalSpaceElement() = default;
+#endif
+
+  /**
+   * Default constructor. Not allowed to be used.
+   */
+  PhysicalSpaceElement() = delete;
 
   PhysicalSpaceElement(const std::shared_ptr<ContainerType> space,
                        const ListIt &index,
@@ -317,7 +323,7 @@ private:
 
   std::unique_ptr<PhysDomainElem> phys_domain_element_;
 
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -334,7 +340,9 @@ private:
                                        boost::serialization::base_object<parent_t>(*this));
 
     ar.template register_type<BSplineElement<dim_,range_,rank_> >();
+#ifdef NURBS
     ar.template register_type<NURBSElement<dim_,range_,rank_> >();
+#endif // NURBS
     ar &boost::serialization::make_nvp("ref_space_element_",ref_space_element_);
 
 
@@ -342,7 +350,7 @@ private:
   }
   ///@}
 #endif
-
+#endif
 };
 
 

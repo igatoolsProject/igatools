@@ -29,6 +29,7 @@
 #cmakedefine SERIALIZATION
 #cmakedefine PARAVIEW_PLUGIN
 #cmakedefine MESH_REFINEMENT
+#cmakedefine USE_CEREAL
 
 #define MAX_NUM_DERIVATIVES @max_der_order@ + 1
 #define num_sub_elem @num_sub_elem@
@@ -43,6 +44,40 @@
 
 //--------------------------------------------------------------------
 #ifdef SERIALIZATION
+
+#ifdef USE_CEREAL
+
+#include <cereal/cereal.hpp>
+#include <cereal/access.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/vector.hpp>
+#include <cereal/types/array.hpp>
+#include <cereal/types/set.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/tuple.hpp>
+#include <cereal/types/utility.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/polymorphic.hpp>
+
+#ifndef NDEBUG
+#include <cereal/archives/xml.hpp>
+using OArchiveCereal = cereal::XMLOutputArchive;
+using IArchiveCereal = cereal::XMLInputArchive;
+#else
+#include <cereal/archives/binary.hpp>
+using OArchiveCereal = cereal::BinaryOutputArchive;
+using IArchiveCereal = cereal::BinaryInputArchive;
+#endif // NDEBUG
+
+using namespace cereal;
+
+using OArchive = OArchiveCereal;
+using IArchive = IArchiveCereal;
+
+using serialization_access = cereal::access;
+
+#else
+
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/utility.hpp>
@@ -60,20 +95,22 @@
 #ifndef NDEBUG
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
-using OArchive = boost::archive::xml_oarchive;
-using IArchive = boost::archive::xml_iarchive;
+using OArchiveBoost = boost::archive::xml_oarchive;
+using IArchiveBoost = boost::archive::xml_iarchive;
 #else
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
-using OArchive = boost::archive::binary_oarchive;
-using IArchive = boost::archive::binary_iarchive;
-#endif
+using OArchiveBoost = boost::archive::binary_oarchive;
+using IArchiveBoost = boost::archive::binary_iarchive;
+#endif // NDEBUG
 
-/*
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-//*/
 
+//using serialization_lib = boost::serialization;
+
+//using OArchive = OArchiveBoost;
+//using IArchive = IArchiveBoost;
+
+#endif // USE_CEREAL
 
 #endif // SERIALIZATION
 //--------------------------------------------------------------------

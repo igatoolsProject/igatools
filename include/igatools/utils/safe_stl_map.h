@@ -80,17 +80,18 @@ private:
 
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
+   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
-  void serialize(Archive &ar, const unsigned int version)
+  void serialize(Archive &ar)
   {
-    ar &boost::serialization::make_nvp("SafeSTLContainer_base_t",
-                                       boost::serialization::base_object<std::map>(*this));
+    ar &make_nvp("SafeSTLContainer_Map",
+                 base_class<std::map<Key,T>>(this));
+
   }
   ///@}
 #endif // SERIALIZATION

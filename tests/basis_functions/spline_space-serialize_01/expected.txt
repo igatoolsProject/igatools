@@ -1,13 +1,23 @@
 ========================================================================
 test_1d
 ========================================================================
-Original space.
+Original SplineSpace<1,1,1>
    Knots without repetition:
       Number of intervals per direction: [ 3 ]
       Knot coordinates:
          Size: [ 4 ]  Weights: [4]
          Direction: 0
          [ 0 0.333333 0.666667 1.00000 ]
+      
+      Element properties:
+         IDs with property "active":
+            Entry id: 0
+            [ 0 ]
+            Entry id: 1
+            [ 1 ]
+            Entry id: 2
+            [ 2 ]
+         
       
    
    Degrees:
@@ -45,13 +55,23 @@ Original space.
       Total Dimension: 7
    
 
-Space after serialize-deserialize.
+SplineSpace<1,1,1> after serialize-deserialize.
    Knots without repetition:
       Number of intervals per direction: [ 3 ]
       Knot coordinates:
          Size: [ 4 ]  Weights: [4]
          Direction: 0
          [ 0 0.333333 0.666667 1.00000 ]
+      
+      Element properties:
+         IDs with property "active":
+            Entry id: 0
+            [ 0 ]
+            Entry id: 1
+            [ 1 ]
+            Entry id: 2
+            [ 2 ]
+         
       
    
    Degrees:
@@ -104,7 +124,7 @@ Direction: 0
 ========================================================================
 test_2d
 ========================================================================
-Original space.
+Original SplineSpace<2,1,1>
    Knots without repetition:
       Number of intervals per direction: [ 2 4 ]
       Knot coordinates:
@@ -113,6 +133,26 @@ Original space.
          [ 0 0.500000 1.00000 ]
          Direction: 1
          [ 0 0.250000 0.500000 0.750000 1.00000 ]
+      
+      Element properties:
+         IDs with property "active":
+            Entry id: 0
+            [ 0 0 ]
+            Entry id: 1
+            [ 0 1 ]
+            Entry id: 2
+            [ 0 2 ]
+            Entry id: 3
+            [ 0 3 ]
+            Entry id: 4
+            [ 1 0 ]
+            Entry id: 5
+            [ 1 1 ]
+            Entry id: 6
+            [ 1 2 ]
+            Entry id: 7
+            [ 1 3 ]
+         
       
    
    Degrees:
@@ -152,7 +192,7 @@ Original space.
       Total Dimension: 27
    
 
-Space after serialize-deserialize.
+SplineSpace<2,1,1> after serialize-deserialize.
    Knots without repetition:
       Number of intervals per direction: [ 2 4 ]
       Knot coordinates:
@@ -161,6 +201,26 @@ Space after serialize-deserialize.
          [ 0 0.500000 1.00000 ]
          Direction: 1
          [ 0 0.250000 0.500000 0.750000 1.00000 ]
+      
+      Element properties:
+         IDs with property "active":
+            Entry id: 0
+            [ 0 0 ]
+            Entry id: 1
+            [ 0 1 ]
+            Entry id: 2
+            [ 0 2 ]
+            Entry id: 3
+            [ 0 3 ]
+            Entry id: 4
+            [ 1 0 ]
+            Entry id: 5
+            [ 1 1 ]
+            Entry id: 6
+            [ 1 2 ]
+            Entry id: 7
+            [ 1 3 ]
+         
       
    
    Degrees:
@@ -222,7 +282,7 @@ Direction: 1
 ========================================================================
 test_3d
 ========================================================================
-Original space.
+Original SplineSpace<3,1,1>
    Knots without repetition:
       Number of intervals per direction: [ 2 3 4 ]
       Knot coordinates:
@@ -233,6 +293,58 @@ Original space.
          [ 0 0.333333 0.666667 1.00000 ]
          Direction: 2
          [ 0 0.250000 0.500000 0.750000 1.00000 ]
+      
+      Element properties:
+         IDs with property "active":
+            Entry id: 0
+            [ 0 0 0 ]
+            Entry id: 1
+            [ 0 0 1 ]
+            Entry id: 2
+            [ 0 0 2 ]
+            Entry id: 3
+            [ 0 0 3 ]
+            Entry id: 4
+            [ 0 1 0 ]
+            Entry id: 5
+            [ 0 1 1 ]
+            Entry id: 6
+            [ 0 1 2 ]
+            Entry id: 7
+            [ 0 1 3 ]
+            Entry id: 8
+            [ 0 2 0 ]
+            Entry id: 9
+            [ 0 2 1 ]
+            Entry id: 10
+            [ 0 2 2 ]
+            Entry id: 11
+            [ 0 2 3 ]
+            Entry id: 12
+            [ 1 0 0 ]
+            Entry id: 13
+            [ 1 0 1 ]
+            Entry id: 14
+            [ 1 0 2 ]
+            Entry id: 15
+            [ 1 0 3 ]
+            Entry id: 16
+            [ 1 1 0 ]
+            Entry id: 17
+            [ 1 1 1 ]
+            Entry id: 18
+            [ 1 1 2 ]
+            Entry id: 19
+            [ 1 1 3 ]
+            Entry id: 20
+            [ 1 2 0 ]
+            Entry id: 21
+            [ 1 2 1 ]
+            Entry id: 22
+            [ 1 2 2 ]
+            Entry id: 23
+            [ 1 2 3 ]
+         
       
    
    Degrees:
@@ -274,7 +386,7 @@ Original space.
       Total Dimension: 96
    
 
-Space after serialize-deserialize.
+SplineSpace<3,1,1> after serialize-deserialize.
    Knots without repetition:
       Number of intervals per direction: [ 2 3 4 ]
       Knot coordinates:
@@ -285,6 +397,58 @@ Space after serialize-deserialize.
          [ 0 0.333333 0.666667 1.00000 ]
          Direction: 2
          [ 0 0.250000 0.500000 0.750000 1.00000 ]
+      
+      Element properties:
+         IDs with property "active":
+            Entry id: 0
+            [ 0 0 0 ]
+            Entry id: 1
+            [ 0 0 1 ]
+            Entry id: 2
+            [ 0 0 2 ]
+            Entry id: 3
+            [ 0 0 3 ]
+            Entry id: 4
+            [ 0 1 0 ]
+            Entry id: 5
+            [ 0 1 1 ]
+            Entry id: 6
+            [ 0 1 2 ]
+            Entry id: 7
+            [ 0 1 3 ]
+            Entry id: 8
+            [ 0 2 0 ]
+            Entry id: 9
+            [ 0 2 1 ]
+            Entry id: 10
+            [ 0 2 2 ]
+            Entry id: 11
+            [ 0 2 3 ]
+            Entry id: 12
+            [ 1 0 0 ]
+            Entry id: 13
+            [ 1 0 1 ]
+            Entry id: 14
+            [ 1 0 2 ]
+            Entry id: 15
+            [ 1 0 3 ]
+            Entry id: 16
+            [ 1 1 0 ]
+            Entry id: 17
+            [ 1 1 1 ]
+            Entry id: 18
+            [ 1 1 2 ]
+            Entry id: 19
+            [ 1 1 3 ]
+            Entry id: 20
+            [ 1 2 0 ]
+            Entry id: 21
+            [ 1 2 1 ]
+            Entry id: 22
+            [ 1 2 2 ]
+            Entry id: 23
+            [ 1 2 3 ]
+         
       
    
    Degrees:
@@ -355,7 +519,7 @@ Direction: 2
 ========================================================================
 test_2d_2
 ========================================================================
-Original space.
+Original SplineSpace<2,2,1>
    Knots without repetition:
       Number of intervals per direction: [ 2 3 ]
       Knot coordinates:
@@ -364,6 +528,22 @@ Original space.
          [ 0 0.500000 1.00000 ]
          Direction: 1
          [ 0 0.333333 0.666667 1.00000 ]
+      
+      Element properties:
+         IDs with property "active":
+            Entry id: 0
+            [ 0 0 ]
+            Entry id: 1
+            [ 0 1 ]
+            Entry id: 2
+            [ 0 2 ]
+            Entry id: 3
+            [ 1 0 ]
+            Entry id: 4
+            [ 1 1 ]
+            Entry id: 5
+            [ 1 2 ]
+         
       
    
    Degrees:
@@ -412,7 +592,7 @@ Original space.
       Total Dimension: 44
    
 
-Space after serialize-deserialize.
+SplineSpace<2,2,1> after serialize-deserialize.
    Knots without repetition:
       Number of intervals per direction: [ 2 3 ]
       Knot coordinates:
@@ -421,6 +601,22 @@ Space after serialize-deserialize.
          [ 0 0.500000 1.00000 ]
          Direction: 1
          [ 0 0.333333 0.666667 1.00000 ]
+      
+      Element properties:
+         IDs with property "active":
+            Entry id: 0
+            [ 0 0 ]
+            Entry id: 1
+            [ 0 1 ]
+            Entry id: 2
+            [ 0 2 ]
+            Entry id: 3
+            [ 1 0 ]
+            Entry id: 4
+            [ 1 1 ]
+            Entry id: 5
+            [ 1 2 ]
+         
       
    
    Degrees:

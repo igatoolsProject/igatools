@@ -700,7 +700,7 @@ get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 }
 
 
-
+#if 0
 #ifdef SERIALIZATION
 
 template<int dim_, int range_, int rank_>
@@ -725,9 +725,19 @@ serialize(Archive &ar, const unsigned int version)
 
 //    ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 }
+#endif
 
 #endif // SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 
+
 #include <igatools/basis_functions/bspline_space.inst>
+
+
+#ifdef SERIALIZATION
+
+//using BSpSpaceAlias0_1_1 = iga::BSplineSpace<0,1,1>;
+//CEREAL_REGISTER_DYNAMIC_INIT(BSpSpaceAlias0_1_1);
+
+#endif // SERIALIZATION

@@ -96,7 +96,7 @@ fill_cache(const topology_variant &sdim,
 }
 
 
-
+#if 0
 #ifdef SERIALIZATION
 template<int dim_, int codim_, int range_, int rank_>
 Index
@@ -124,11 +124,14 @@ set_name(const std::string &name)
 }
 
 
+template<int dim_, int codim_, int range_, int rank_>
 template<class Archive>
 void
 FunctionHandler<dim_, codim_, range_, rank_ >::
 serialize(Archive &ar, const unsigned int version)
 {
+  AssertThrow(false,ExcNotImplemented());
+#if 0
   ar &boost::serialization::make_nvp("grid_elem_handler_",
                                      boost::serialization::base_object<GridHandler<dim_>>(*this));
 
@@ -142,8 +145,10 @@ serialize(Archive &ar, const unsigned int version)
 #ifdef MESH_REFINEMENT
   ar &boost::serialization::make_nvp("function_previous_refinement_",function_previous_refinement_);
 #endif // MESH_REFINEMENT
+#endif
 }
 #endif // SERIALIZATION
+#endif
 
 
 IGA_NAMESPACE_CLOSE

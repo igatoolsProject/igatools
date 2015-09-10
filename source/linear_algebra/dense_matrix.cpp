@@ -498,27 +498,6 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
   }
 }
 
-
-#ifdef SERIALIZATION
-
-template<class Archive>
-void
-DenseMatrix::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("DenseMatrix_base_t",
-                                     boost::serialization::base_object<BoostMatrix>(*this));
-}
-#endif //SERIALIZATION
-
 IGA_NAMESPACE_CLOSE
 
 
-
-#ifdef SERIALIZATION
-
-BOOST_CLASS_EXPORT_IMPLEMENT(iga::DenseMatrix)
-template void iga::DenseMatrix::serialize(OArchive &, const unsigned int);
-template void iga::DenseMatrix::serialize(IArchive &, const unsigned int);
-
-#endif // SERIALIZATION

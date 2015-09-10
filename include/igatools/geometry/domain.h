@@ -182,6 +182,7 @@ private:
   friend class DomainElement<dim_, codim_>;
   friend class ConstDomainElement<dim_, codim_>;
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -194,11 +195,13 @@ private:
   void
   serialize(Archive &ar, const unsigned int version)
   {
-    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
-    ar &boost::serialization::make_nvp("F_",F_);
-    ar &boost::serialization::make_nvp("flags_",flags_);
+    AssertThrow(false,ExcNotImplemented());
+//    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
+//    ar &boost::serialization::make_nvp("F_",F_);
+//    ar &boost::serialization::make_nvp("flags_",flags_);
   }
   ///@}
+#endif
 #endif
 };
 

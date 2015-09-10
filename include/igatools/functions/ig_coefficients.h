@@ -77,11 +77,16 @@ private:
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+//  friend class boost::serialization::access;
+  friend class serialization_access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar, const unsigned int version)
+  {
+    ar &make_nvp("IgCoeff_base_t",
+                 base_class<std::map<Index,Real>>(this));
+  }
   ///@}
 #endif // SERIALIZATION
 

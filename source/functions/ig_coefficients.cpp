@@ -60,6 +60,7 @@ print_info(LogStream &out) const
   }
 }
 
+#if 0
 #ifdef SERIALIZATION
 
 template<class Archive>
@@ -72,10 +73,11 @@ serialize(Archive &ar, const unsigned int version)
 }
 
 #endif // SERIALIZATION
+#endif
 
 IGA_NAMESPACE_CLOSE
 
-
+#if 0
 #ifdef SERIALIZATION
 
 BOOST_CLASS_EXPORT_IMPLEMENT(iga::IgCoefficients)
@@ -83,4 +85,4 @@ template void iga::IgCoefficients::serialize(OArchive &, const unsigned int);
 template void iga::IgCoefficients::serialize(IArchive &, const unsigned int);
 
 #endif //SERIALIZATION
-
+#endif

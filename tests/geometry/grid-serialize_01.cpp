@@ -32,32 +32,29 @@ template <int dim>
 void serialize_deserialize(std::shared_ptr<const Grid<dim>> grid,
                            const std::string &filename)
 {
-  out.begin_item("Original grid.");
+//  string tag_name = "Grid_" + std::to_string(dim) + "d";
+  {
+    std::ofstream xml_ostream(filename);
+    OArchive archive(xml_ostream);
+
+    archive << grid;
+  }
+  out.begin_item("Grid<" + std::to_string(dim) + "> before serialize-deserialize.");
   grid->print_info(out);
   out.end_item();
 
-  string tag_name = "Grid_" + std::to_string(dim) + "d";
-  {
-    std::ofstream xml_ostream(filename);
-    OArchive xml_out(xml_ostream);
-
-    xml_out << boost::serialization::make_nvp(tag_name.c_str(),*grid);
-    xml_ostream.close();
-  }
-
-  auto grid_new = Grid<dim>::create(4);
+  grid.reset();
+  auto grid_new = Grid<dim>::create();
   {
     ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
-    xml_in >> BOOST_SERIALIZATION_NVP(*grid_new);
-    xml_istream.close();
+    xml_in >> grid_new;
   }
 
-  out.begin_item("Grid after serialize-deserialize.");
+  out.begin_item("Grid<" + std::to_string(dim) + "> after serialize-deserialize.");
   grid_new->print_info(out);
   out.end_item();
 }
-
 
 template<int dim>
 void serialize_grid(const int n_knots = 4)

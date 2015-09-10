@@ -37,7 +37,6 @@ template <class Accessor> class GridIterator;
 /**
  * See module on \ref accessors_iterators for a general overview.
  * @ingroup elements
- * @ingroup serializable
  */
 template <int dim, int range, int rank>
 class BSplineElement :
@@ -70,13 +69,19 @@ public:
   /** @name Constructors */
   ///@{
 public:
+#if 0
   /**
    * Default constructor. It does nothing but it is needed for the
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
   BSplineElement() = default;
+#endif
 
+  /**
+   * Default constructor.
+   */
+  BSplineElement() = delete;
 
 
   /**
@@ -142,6 +147,7 @@ private:
   AllSplines1DTable all_splines_1D_table_;
 
 public:
+#if 0
   ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
   evaluate_univariate_derivatives_at_points(const int deriv_order,
                                             const Quadrature<dim> &pts) const
@@ -152,14 +158,14 @@ public:
 
     return values;
   }
-
+#endif
 
   virtual void print_cache_info(LogStream &out) const;
 
 private:
 
 
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -173,6 +179,7 @@ private:
   serialize(Archive &ar, const unsigned int version);
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 IGA_NAMESPACE_CLOSE
