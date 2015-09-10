@@ -108,7 +108,7 @@ enum class Flags
 };
 
 
-static const SafeSTLArray<Flags, 4> all_flags = {Flags::D0, Flags::D1, Flags::D2};
+static const SafeSTLArray<Flags, 3> all_flags = {Flags::D0, Flags::D1, Flags::D2};
 
 /** Auxiliary quantities stored in a local cache */
 enum class CacheFlags

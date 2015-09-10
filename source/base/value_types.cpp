@@ -61,7 +61,7 @@ activate::FlagsToCache  activate::domain =
 
 activate::FlagsToGridFunc activate::grid_func =
 {
-  {Flags::point, grid_function_element::Flags::none},
+  {Flags::point, grid_function_element::Flags::D0},
   {Flags::w_measure, grid_function_element::Flags::D1},
   {Flags::measure, grid_function_element::Flags::D1},
   {Flags::ext_normal, grid_function_element::Flags::D1}

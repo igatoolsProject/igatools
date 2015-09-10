@@ -26,7 +26,9 @@
  */
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/domain_lib.h>
+#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
 
 #include "../tests.h"
 
@@ -35,10 +37,14 @@ void ball_domain()
 {
   OUTSTART
 
+ // const int space_dim = dim;
   using Grid = Grid<dim>;
-  using Domain = domains::BallDomain<dim>;
+  using Domain = Domain<dim, 0>;
+  using GridFunc = grid_functions::BallGridFunction<dim>;
+
   auto grid = Grid::const_create();
-  auto domain = Domain::const_create(grid);
+  auto grid_func = GridFunc::const_create(grid);
+  auto domain = Domain::const_create(grid_func);
 
   using Flags = typename Domain::ElementAccessor::Flags;
 

@@ -39,9 +39,9 @@ private:
 protected:
   using typename parent_t::GridType;
 public:
-  using GridFunctionType =  const FormulaGridFunction<dim,space_dim>;
+  using GridFunctionType =  const FormulaGridFunction<dim, space_dim>;
   using typename parent_t::ConstElementAccessor;
-
+  using typename parent_t::Flags;
   using typename parent_t::topology_variant;
   using typename parent_t::eval_pts_variant;
 
@@ -50,6 +50,8 @@ public:
 
   virtual ~FormulaGridFunctionHandler() = default;
 
+  void set_flags(const topology_variant &sdim,
+                           const Flags &flag) override final;
 
   void fill_cache(const topology_variant &sdim,
                   ConstElementAccessor &elem,
