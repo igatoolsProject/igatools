@@ -149,7 +149,7 @@ FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 serialize(Archive &ar, const unsigned int version)
 {
   AssertThrow(false,ExcNotImplemented());
-#if 0
+
   ar &boost::serialization::make_nvp("FunctionElement_base_t",
                                      boost::serialization::base_object<GridElement<dim>>(*this));
 

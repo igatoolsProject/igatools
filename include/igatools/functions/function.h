@@ -88,20 +88,20 @@ public:
   template <int order>
   using Derivative = Derivatives<space_dim, range_, rank_, order>;
 
-//  /**
-//   * Type for the gradient of the function.
-//   */
-//  using Gradient = Derivative<1>;
-//
-//  /**
-//   * Type for the hessian of the function.
-//   */
-//  using Hessian = Derivative<2>;
-//
-//  /**
-//   * Type for the divergence of function.
-//   */
-//  using Div = Values<space_dim, space_dim, rank_-1>;
+  /**
+   * Type for the gradient of the function.
+   */
+  using Gradient = Derivative<1>;
+
+  /**
+   * Type for the hessian of the function.
+   */
+  using Hessian = Derivative<2>;
+
+  /**
+   * Type for the divergence of function.
+   */
+  using Div = Values<space_dim, space_dim, rank_-1>;
   ///@}
 
   /** @name Constructors and destructor. */

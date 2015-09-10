@@ -152,7 +152,7 @@ private:
   friend class GridFunctionElementBase<dim_, space_dim_, const GridFunction<dim_, space_dim_>>;
   friend class GridFunctionElement<dim_, space_dim_>;
   friend class ConstGridFunctionElement<dim_, space_dim_>;
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -170,6 +170,7 @@ private:
     ar &boost::serialization::make_nvp("flags_",flags_);
   }
   ///@}
+#endif
 #endif
 };
 
