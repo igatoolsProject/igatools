@@ -166,8 +166,8 @@ private:
   {
     auto rows = this->get_num_rows();
     auto cols = this->get_num_cols();
-    ar(rows);
-    ar(cols);
+    ar(make_nvp("n_rows",rows));
+    ar(make_nvp("n_cols",cols));
 
     const auto &data = this->data();
     for (const Real &v : data)

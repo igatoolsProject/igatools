@@ -531,8 +531,7 @@ private:
 
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
    */
   ///@{
   friend class cereal::access;
@@ -552,9 +551,7 @@ private:
     ar &make_nvp("space_data_",space_data_);
 //    Assert(space_data_ != nullptr,ExcNullPtr());
 
-#if 0
     ar &make_nvp("end_b_",end_b_);
-#endif
 
     ar &make_nvp("operators_",operators_);
 
@@ -612,6 +609,29 @@ using ArrArrPairDD_2_1 = Arr<ArrPairDD<2>,1>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrPairDD_2_1,cereal::specialization::member_serialize);
 using ArrArrPairDD_3_1 = Arr<ArrPairDD<3>,1>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrPairDD_3_1,cereal::specialization::member_serialize);
+
+
+template <int N>
+using ArrBEB = iga::SafeSTLArray<iga::BasisEndBehaviour,N>;
+
+using ArrBEB_0 = ArrBEB<0>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrBEB_0,cereal::specialization::member_serialize);
+using ArrBEB_1 = ArrBEB<1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrBEB_1,cereal::specialization::member_serialize);
+using ArrBEB_2 = ArrBEB<2>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrBEB_2,cereal::specialization::member_serialize);
+using ArrBEB_3 = ArrBEB<3>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrBEB_3,cereal::specialization::member_serialize);
+
+
+using ArrArrBEB_0_1 = Arr<ArrBEB<0>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrBEB_0_1,cereal::specialization::member_serialize);
+using ArrArrBEB_1_1 = Arr<ArrBEB<1>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrBEB_1_1,cereal::specialization::member_serialize);
+using ArrArrBEB_2_1 = Arr<ArrBEB<2>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrBEB_2_1,cereal::specialization::member_serialize);
+using ArrArrBEB_3_1 = Arr<ArrBEB<3>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrBEB_3_1,cereal::specialization::member_serialize);
 
 
 using BernstOp = iga::BernsteinOperator;

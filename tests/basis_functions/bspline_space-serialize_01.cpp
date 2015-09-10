@@ -39,7 +39,7 @@ void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
 //  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> space = space_in;
 //  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> space = std::make_shared<TTT<dim>>();
   out.begin_item("Original BSplineSpace:");
-//  space->print_info(out);
+  space->print_info(out);
   out.end_item();
 
 
@@ -62,7 +62,7 @@ void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
     xml_in >> space;
   }
   out.begin_item("BSplineSpace after serialize-deserialize:");
-//  space->print_info(out);
+  space->print_info(out);
   out.end_item();
 
 }
