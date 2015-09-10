@@ -469,7 +469,7 @@ private:
 
   /** If end knots are not in the repeated knot vector */
   using EndIntervalTable = typename BaseSpace::template
-                           ComponentContainer<SafeSTLArray<std::tuple<Real, Real>, dim>>;
+                           ComponentContainer<SafeSTLArray<std::pair<Real,Real>, dim>>;
   EndIntervalTable end_interval_;
 
   /**
@@ -588,7 +588,7 @@ using Arr = iga::SafeSTLArray<T,N>;
 
 
 template <int N>
-using ArrPairDD = iga::SafeSTLArray<std::tuple<double,double>,N>;
+using ArrPairDD = iga::SafeSTLArray<std::pair<double,double>,N>;
 
 
 using ArrPairDD_0 = ArrPairDD<0>;
