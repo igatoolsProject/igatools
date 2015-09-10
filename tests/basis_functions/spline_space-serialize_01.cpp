@@ -55,7 +55,9 @@ void print_boundary_and_repeated_knots(
 template <int dim,int range>
 void serialize_deserialize(std::shared_ptr<SplineSpace<dim,range>> sp_spec)
 {
-  out.begin_item("Original space.");
+  using std::to_string;
+  const std::string class_name = "SplineSpace<" + to_string(dim) + "," + to_string(range) + ",1>";
+  out.begin_item("Original " + class_name);
   sp_spec->print_info(out);
   out.end_item();
 
@@ -68,7 +70,7 @@ void serialize_deserialize(std::shared_ptr<SplineSpace<dim,range>> sp_spec)
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 
-    xml_out << *sp_spec;
+    xml_out << sp_spec;
   }
 
   auto grid = Grid<dim>::create();
@@ -79,9 +81,9 @@ void serialize_deserialize(std::shared_ptr<SplineSpace<dim,range>> sp_spec)
     // de-serialize the SplineSpace object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
-    xml_in >> *sp_spec_new;
+    xml_in >> sp_spec_new;
   }
-  out.begin_item("Space after serialize-deserialize.");
+  out.begin_item(class_name + " after serialize-deserialize.");
   sp_spec_new->print_info(out);
   out.end_item();
   //*/
