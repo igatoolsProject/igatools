@@ -554,9 +554,9 @@ private:
 
 #if 0
     ar &make_nvp("end_b_",end_b_);
+#endif
 
     ar &make_nvp("operators_",operators_);
-#endif
 
     ar &make_nvp("end_interval_",end_interval_);
 
@@ -589,13 +589,9 @@ CEREAL_REGISTER_TYPE(BSpSpaceAlias3_1_1);
 template<class T,int N>
 using Arr = iga::SafeSTLArray<T,N>;
 
-using PairDD = std::tuple<double,double>;
-//CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(PairDD,cereal::specialization::member_serialize);
-
 
 template <int N>
-using ArrPairDD = iga::SafeSTLArray<PairDD,N>;
-
+using ArrPairDD = iga::SafeSTLArray<std::tuple<double,double>,N>;
 
 
 using ArrPairDD_0 = ArrPairDD<0>;
@@ -617,6 +613,30 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrPairDD_2_1,cereal::specialization::memb
 using ArrArrPairDD_3_1 = Arr<ArrPairDD<3>,1>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrPairDD_3_1,cereal::specialization::member_serialize);
 
+
+using BernstOp = iga::BernsteinOperator;
+
+using VecBernstOp = iga::SafeSTLVector<BernstOp>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(VecBernstOp,cereal::specialization::member_serialize);
+
+using ArrVecBernstOp_0 = Arr<VecBernstOp,0>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrVecBernstOp_0,cereal::specialization::member_serialize);
+using ArrVecBernstOp_1 = Arr<VecBernstOp,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrVecBernstOp_1,cereal::specialization::member_serialize);
+using ArrVecBernstOp_2 = Arr<VecBernstOp,2>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrVecBernstOp_2,cereal::specialization::member_serialize);
+using ArrVecBernstOp_3 = Arr<VecBernstOp,3>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrVecBernstOp_3,cereal::specialization::member_serialize);
+
+
+using ArrCPArrBernst_0_1 = Arr<iga::CartesianProductArray<BernstOp,0>, 1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrCPArrBernst_0_1,cereal::specialization::member_serialize);
+using ArrCPArrBernst_1_1 = Arr<iga::CartesianProductArray<BernstOp,1>, 1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrCPArrBernst_1_1,cereal::specialization::member_serialize);
+using ArrCPArrBernst_2_1 = Arr<iga::CartesianProductArray<BernstOp,2>, 1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrCPArrBernst_2_1,cereal::specialization::member_serialize);
+using ArrCPArrBernst_3_1 = Arr<iga::CartesianProductArray<BernstOp,3>, 1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrCPArrBernst_3_1,cereal::specialization::member_serialize);
 
 #endif // SERIALIZATION
 
