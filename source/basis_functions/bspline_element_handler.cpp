@@ -558,7 +558,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
       {
         // first interval (i.e. left-most interval)
 
-        alpha = end_interval[comp][dir].first;
+        alpha = std::get<0>(end_interval[comp][dir]);
         const Real one_minus_alpha = 1. - alpha;
 
         for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
@@ -571,7 +571,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
       {
         // last interval (i.e. right-most interval)
 
-        alpha = end_interval[comp][dir].second;
+        alpha = std::get<1>(end_interval[comp][dir]);
 
         for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
           pt_coords_boundary[ipt] = pt_coords_internal[ipt] *

@@ -199,12 +199,12 @@ BSplineSpace(const std::shared_ptr<SpaceData> &space_data,
       const auto x1 = knots_coord_dir[1];
       const auto a = knots_coord_dir[0];
       const auto x0 = rep_knots[i].get_data_direction(dir)[p];
-      end_interval_[i][dir].first = (x1-a) / (x1-x0);
+      std::get<0>(end_interval_[i][dir]) = (x1-a) / (x1-x0);
 
       const auto xk= *(knots_coord_dir.end()-2);
       const auto b = *(knots_coord_dir.end()-1);
       const auto xk1 = *(rep_knots[i].get_data_direction(dir).end() - (p+1));
-      end_interval_[i][dir].second = (b-xk) / (xk1-xk);
+      std::get<1>(end_interval_[i][dir]) = (b-xk) / (xk1-xk);
     } // end loop dir
   } // end loop i
   //------------------------------------------------------------------------------
@@ -256,12 +256,12 @@ BSplineSpace(const std::shared_ptr<const SpaceData> &space_data,
       const auto x1 = knots_coord_dir[1];
       const auto a = knots_coord_dir[0];
       const auto x0 = rep_knots[i].get_data_direction(dir)[p];
-      end_interval_[i][dir].first = (x1-a) / (x1-x0);
+      std::get<0>(end_interval_[i][dir]) = (x1-a) / (x1-x0);
 
       const auto xk= *(knots_coord_dir.end()-2);
       const auto b = *(knots_coord_dir.end()-1);
       const auto xk1 = *(rep_knots[i].get_data_direction(dir).end() - (p+1));
-      end_interval_[i][dir].second = (b-xk) / (xk1-xk);
+      std::get<1>(end_interval_[i][dir]) = (b-xk) / (xk1-xk);
     } // end loop dir
   } // end loop i
   //------------------------------------------------------------------------------

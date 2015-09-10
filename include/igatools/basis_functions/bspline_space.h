@@ -469,7 +469,7 @@ private:
 
   /** If end knots are not in the repeated knot vector */
   using EndIntervalTable = typename BaseSpace::template
-                           ComponentContainer<SafeSTLArray<std::pair<Real, Real>, dim>>;
+                           ComponentContainer<SafeSTLArray<std::tuple<Real, Real>, dim>>;
   EndIntervalTable end_interval_;
 
   /**
@@ -556,9 +556,9 @@ private:
     ar &make_nvp("end_b_",end_b_);
 
     ar &make_nvp("operators_",operators_);
+#endif
 
     ar &make_nvp("end_interval_",end_interval_);
-#endif
 
     ar &make_nvp("dof_distribution_",dof_distribution_);
 
@@ -584,6 +584,39 @@ using BSpSpaceAlias2_1_1 = iga::BSplineSpace<2,1,1>;
 CEREAL_REGISTER_TYPE(BSpSpaceAlias2_1_1);
 using BSpSpaceAlias3_1_1 = iga::BSplineSpace<3,1,1>;
 CEREAL_REGISTER_TYPE(BSpSpaceAlias3_1_1);
+
+
+template<class T,int N>
+using Arr = iga::SafeSTLArray<T,N>;
+
+using PairDD = std::tuple<double,double>;
+//CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(PairDD,cereal::specialization::member_serialize);
+
+
+template <int N>
+using ArrPairDD = iga::SafeSTLArray<PairDD,N>;
+
+
+
+using ArrPairDD_0 = ArrPairDD<0>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrPairDD_0,cereal::specialization::member_serialize);
+using ArrPairDD_1 = ArrPairDD<1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrPairDD_1,cereal::specialization::member_serialize);
+using ArrPairDD_2 = ArrPairDD<2>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrPairDD_2,cereal::specialization::member_serialize);
+using ArrPairDD_3 = ArrPairDD<3>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrPairDD_3,cereal::specialization::member_serialize);
+
+
+using ArrArrPairDD_0_1 = Arr<ArrPairDD<0>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrPairDD_0_1,cereal::specialization::member_serialize);
+using ArrArrPairDD_1_1 = Arr<ArrPairDD<1>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrPairDD_1_1,cereal::specialization::member_serialize);
+using ArrArrPairDD_2_1 = Arr<ArrPairDD<2>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrPairDD_2_1,cereal::specialization::member_serialize);
+using ArrArrPairDD_3_1 = Arr<ArrPairDD<3>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrArrPairDD_3_1,cereal::specialization::member_serialize);
+
 
 #endif // SERIALIZATION
 
