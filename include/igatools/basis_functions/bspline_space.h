@@ -529,7 +529,6 @@ private:
   dofs_tensor_id_elem_table_;
 #endif
 
-#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -542,30 +541,38 @@ private:
   void
   serialize(Archive &ar, const unsigned int version)
   {
-    ar &boost::serialization::make_nvp("ReferenceSpace",
-                                       boost::serialization::base_object<BaseSpace>(*this));
+    ar &make_nvp("ReferenceSpace",base_class<BaseSpace>(this));
 
-    ar &boost::serialization::make_nvp("space_data_",space_data_);
+    ar &make_nvp("space_data_",space_data_);
 //    Assert(space_data_ != nullptr,ExcNullPtr());
 
-    ar &boost::serialization::make_nvp("end_b_",end_b_);
+    ar &make_nvp("end_b_",end_b_);
 
-    ar &boost::serialization::make_nvp("operators_",operators_);
+    ar &make_nvp("operators_",operators_);
 
-    ar &boost::serialization::make_nvp("end_interval_",end_interval_);
+    ar &make_nvp("end_interval_",end_interval_);
 
-    ar &boost::serialization::make_nvp("dof_distribution_",dof_distribution_);
+    ar &make_nvp("dof_distribution_",dof_distribution_);
 
-//    ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
+//    ar &make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
   }
   ///@}
 #endif // SERIALIZATION
-#endif
 
 };
 
 
 IGA_NAMESPACE_CLOSE
+
+
+
+#ifdef SERIALIZATION
+
+using BSpSpaceAlias0_1_1 = iga::BSplineSpace<0,1,1>;
+CEREAL_REGISTER_TYPE(BSpSpaceAlias0_1_1);
+
+#endif // SERIALIZATION
+
 
 
 #endif /* __BSPLINE_SPACE_H_ */

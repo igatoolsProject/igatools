@@ -46,10 +46,9 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-class SpaceElement : public SpaceElementBase<dim_>
+class SpaceElement
 {
 protected:
-  using base_t =  SpaceElementBase<dim_>;
 
   using Sp = const Space<dim_,codim_,range_,rank_,type_>;
 //  using GridElem = Conditional<SpaceIsConst,ConstGridElement<dim>,NonConstGridElement<dim>>;
@@ -63,6 +62,9 @@ public:
   using IndexType = typename GridType::IndexType;
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
+
+  using GridElem = GridElement<dim_>;
+
 
   using Func = Function<dim_,codim_,range_,rank_>;
 
@@ -136,7 +138,130 @@ public:
 
 
 
+  /**
+   * @name Comparison operators.
+   *
+   * @brief The comparison operators compares the <em>position</em> of the element in the grid.
+   *
+   * @warning To be comparable, two SpaceElementBase objects must be defined on the same space
+   * (and therefore on the same grid),
+   * otherwise an assertion will be raised (in Debug mode).
+   */
+  ///@{
+  /** Returns TRUE if the two elements have the same index on the grid. */
+  bool operator==(const self_t &a) const;
 
+
+  /** Returns TRUE if the two elements have different indices on the grid. */
+  bool operator!=(const self_t &a) const;
+
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is smaller than the the index of the element on the right.
+   * */
+  bool operator<(const self_t &a) const;
+
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is bigger than the the index of the element on the right.
+   * */
+  bool operator>(const self_t &a) const;
+  ///@}
+
+  virtual typename List::iterator &operator++()
+  {
+    return ++(*grid_elem_);
+  }
+
+
+
+
+  /**
+   * @name Functions for getting information about the element connectivity.
+   */
+  ///@{
+  /**
+   * Returns the global dofs of the local (non zero) basis functions
+   * on the element.
+   *
+   * @note The dofs can be filtered invoking the function with the argument @p dof_property.
+   * If @p dof_property is equal to DofProperties::active, then no filter is applied.
+   *
+   * For example:
+   * \code
+     auto loc_to_glob_all = elem->get_local_to_global(DofProperties::active);
+     // loc_to_glob_all[0] is the global id of the first basis function on the element
+     // loc_to_glob_all[1] is the global id of the second basis function on the element
+     // ...
+     auto loc_to_glob_active = elem->get_local_to_global(DofProperties::active);
+     // loc_to_glob_active[0] is the global id of the first active basis function on the element
+     // loc_to_glob_active[1] is the global id of the second active basis function on the element
+     // ...
+    \endcode
+   *
+   */
+  SafeSTLVector<Index>
+  get_local_to_global(const std::string &dofs_property) const;
+
+  /**
+   * Returns the patch dofs of the local (non zero) basis functions
+   * on the element.
+   *
+   * @note The dofs can be filtered invoking the function with the argument @p dof_property.
+   * If @p dof_property is equal to DofProperties::active, then no filter is applied.
+   *
+   */
+  SafeSTLVector<Index>
+  get_local_to_patch(const std::string &dofs_property) const;
+
+
+  SafeSTLVector<Index>
+  get_local_dofs(const std::string &dofs_property) const;
+
+
+  /**
+   *  Number of non zero basis functions with the given @p dofs_property,
+   *  over the current element.
+   */
+  Size get_num_basis(const std::string &dofs_property) const;
+  ///@}
+
+
+  /**
+   * Test if the element has a boundary face.
+    */
+  template<int k = (dim_ > 0) ? (dim_-1) : 0 >
+  bool is_boundary() const
+  {
+    return grid_elem_->is_boundary();
+  }
+
+  /**
+   * Test if the face identified by @p face_id on the current element is on the
+   * boundary of the cartesian grid.
+   */
+  template<int k = (dim_ > 0) ? (dim_-1) : 0>
+  bool is_boundary(const Index sub_elem_id) const
+  {
+    return grid_elem_->is_boundary(sub_elem_id);
+  }
+
+
+  /**
+   * Return a reference to the GridElement.
+   */
+  GridElem &get_grid_element();
+
+  /**
+   * Return a const-reference to the GridElement.
+   */
+  const GridElem &get_grid_element() const;
+
+  /** Returns the index of the element. */
+  IndexType get_index() const;
+
+  /** Return the cartesian grid from which the element belongs.*/
+  std::shared_ptr<const Grid<dim_> > get_grid() const;
 
 
 
@@ -249,12 +374,19 @@ public:
 
   virtual void print_cache_info(LogStream &out) const;
 
+private:
+  std::unique_ptr<GridElem> grid_elem_;
 
+
+  std::shared_ptr<Sp> space_;
+
+public:
   using _Value =  space_element::_Value;
   using _Gradient = space_element::_Gradient;
   using _Hessian = space_element::_Hessian;
   using _Divergence = space_element::_Divergence;
 
+protected:
 
   using CType = boost::fusion::map<
                 boost::fusion::pair<     _Value,DataWithFlagStatus<ValueTable<Value>>>,
@@ -265,7 +397,6 @@ public:
 
   using Cache = BasisValuesCache<dim_,CType>;
 
-protected:
 
 
 
@@ -286,9 +417,6 @@ private:
     template get_data<ValueType>();
   }
 
-
-
-  std::shared_ptr<Sp> space_;
 
 
 #if 0

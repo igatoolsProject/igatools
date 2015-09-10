@@ -33,62 +33,7 @@ using std::unique_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template <int dim_>
-SpaceBase<dim_>::
-SpaceBase(const shared_ptr<const Grid<dim_>> &grid)
-  :
-  object_id_(UniqueIdGenerator::get_unique_id()),
-  grid_(grid)
-{};
 
-template <int dim_>
-SpaceBase<dim_>::
-SpaceBase(const shared_ptr<Grid<dim_>> &grid)
-  :
-  object_id_(UniqueIdGenerator::get_unique_id()),
-  grid_(grid)
-{};
-
-template <int dim_>
-Index
-SpaceBase<dim_>::
-get_object_id() const
-{
-  return object_id_;
-}
-
-template <int dim_>
-std::shared_ptr<Grid<dim_> >
-SpaceBase<dim_>::
-get_grid()
-{
-  return grid_.get_ptr_data();
-}
-
-template <int dim_>
-std::shared_ptr<const Grid<dim_> >
-SpaceBase<dim_>::
-get_grid() const
-{
-  return grid_.get_ptr_const_data();
-}
-
-
-template <int dim_>
-const std::string &
-SpaceBase<dim_>::
-get_name() const
-{
-  return name_;
-}
-
-template <int dim_>
-void
-SpaceBase<dim_>::
-set_name(const std::string &name)
-{
-  name_ = name;
-}
 
 
 #ifdef MESH_REFINEMENT
@@ -131,7 +76,8 @@ Space<dim_,codim_,range_,rank_,type_>::
 Space(const shared_ptr<Grid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
   :
-  base_t(grid),
+  object_id_(UniqueIdGenerator::get_unique_id()),
+  grid_(grid),
   phys_domain_(PhysDomain::create(grid))
 //  phys_domain_(PhysDomain::create(grid,map_func))
 {
@@ -145,7 +91,8 @@ Space<dim_,codim_,range_,rank_,type_>::
 Space(const shared_ptr<const Grid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
   :
-  base_t(grid),
+  object_id_(UniqueIdGenerator::get_unique_id()),
+  grid_(grid),
   phys_domain_(PhysDomain::create(grid))
 //  phys_domain_(PhysDomain::create(grid,map_func))
 {
@@ -153,6 +100,47 @@ Space(const shared_ptr<const Grid<dim_>> &grid,
          ExcMessage("The space and the physical domain must have the same grid!"));
 }
 
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+Index
+Space<dim_,codim_,range_,rank_,type_>::
+get_object_id() const
+{
+  return object_id_;
+}
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+std::shared_ptr<Grid<dim_> >
+Space<dim_,codim_,range_,rank_,type_>::
+get_grid()
+{
+  return grid_.get_ptr_data();
+}
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+std::shared_ptr<const Grid<dim_> >
+Space<dim_,codim_,range_,rank_,type_>::
+get_grid() const
+{
+  return grid_.get_ptr_const_data();
+}
+
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+const std::string &
+Space<dim_,codim_,range_,rank_,type_>::
+get_name() const
+{
+  return name_;
+}
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+void
+Space<dim_,codim_,range_,rank_,type_>::
+set_name(const std::string &name)
+{
+  name_ = name;
+}
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto

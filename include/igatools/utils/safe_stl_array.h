@@ -183,13 +183,6 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayBoolArrayAlias2_2,cereal::special
 
 
 
-// The next ones are used by SplineSpace
-using SafeSTLVecTIAlias1 = iga::SafeSTLVector<iga::TensorIndex<1>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias1,cereal::specialization::member_serialize);
-using SafeSTLVecTIAlias2 = iga::SafeSTLVector<iga::TensorIndex<2>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias2,cereal::specialization::member_serialize);
-using SafeSTLVecTIAlias3 = iga::SafeSTLVector<iga::TensorIndex<3>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias3,cereal::specialization::member_serialize);
 
 
 // The next ones are used by SplineSpace

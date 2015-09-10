@@ -25,6 +25,7 @@
 
 IGA_NAMESPACE_OPEN
 
+#if 0
 template <int dim>
 SpaceElementBase<dim>::
 SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
@@ -37,9 +38,9 @@ SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
 
   grid_elem_ = space_->get_grid()->create_element(index,prop);
 }
+#endif
 
-
-
+#if 0
 template <int dim>
 auto
 SpaceElementBase<dim>::
@@ -204,7 +205,7 @@ operator>(const self_t &a) const
          ExcMessage("Comparison between elements defined on different spaces"));
   return *grid_elem_ > *a.grid_elem_;
 }
-
+#endif
 
 
 #if 0
@@ -236,5 +237,5 @@ serialize(Archive &ar, const unsigned int version)
 IGA_NAMESPACE_CLOSE
 
 
-#include <igatools/basis_functions/space_element_base.inst>
+//#include <igatools/basis_functions/space_element_base.inst>
 

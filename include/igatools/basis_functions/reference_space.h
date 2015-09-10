@@ -214,6 +214,7 @@ public:
 
 private:
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -237,6 +238,7 @@ private:
 
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

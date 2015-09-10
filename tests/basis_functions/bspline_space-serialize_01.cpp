@@ -34,9 +34,11 @@
 template <int dim>
 void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
 {
-  std::shared_ptr<ReferenceSpace<dim>> space = space_in;
+//  std::shared_ptr<ReferenceSpace<dim>> space = space_in;
+//  auto space = std::make_shared<SpaceBase<dim>>(space_in->get_grid());
+  std::shared_ptr<SpaceBase<0>> space = std::make_shared<TTT>();
   out.begin_item("Original BSplineSpace:");
-  space->print_info(out);
+//  space->print_info(out);
   out.end_item();
 
 
@@ -46,10 +48,8 @@ void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
     // serialize the BSplineSpace object to an xml file
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
-    xml_out.template register_type<BSplineSpace<dim>>();
 
-    xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
-    xml_ostream.close();
+    xml_out << space;
   }
 
   space.reset();
@@ -57,13 +57,11 @@ void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
     // de-serialize the BSplineSpace object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
-    xml_in.template register_type<BSplineSpace<dim>>();
 
-    xml_in >> BOOST_SERIALIZATION_NVP(space);
-    xml_istream.close();
+    xml_in >> space;
   }
   out.begin_item("BSplineSpace after serialize-deserialize:");
-  space->print_info(out);
+//  space->print_info(out);
   out.end_item();
 
 }
@@ -73,8 +71,8 @@ void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
 namespace grid
 {
 template<int dim>
-shared_ptr<Grid<dim>>
-                   uniform(const int n_knots)
+shared_ptr<Grid<dim> >
+uniform(const int n_knots)
 {
   return Grid<dim>::create(n_knots);
 }

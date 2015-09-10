@@ -109,7 +109,7 @@ public:
    */
   self_t &operator=(self_t &&elem) = default;
 
-
+#if 0
   /**
    * Return a reference to the GridElement.
    */
@@ -119,7 +119,7 @@ public:
    * Return a const-reference to the GridElement.
    */
   const GridElem &get_grid_element() const;
-
+#endif
 
 
   void print_info(LogStream &out) const;
@@ -127,7 +127,7 @@ public:
   void print_cache_info(LogStream &out) const;
 
 
-
+#if 0
   /**
    * @name Functions for getting information about the element connectivity.
    */
@@ -177,11 +177,12 @@ public:
    */
   Size get_num_basis(const std::string &dofs_property) const;
   ///@}
-
+#endif
 
 
 public:
 
+#if 0
   /**
    * @name Comparison operators.
    *
@@ -211,20 +212,24 @@ public:
    * */
   bool operator>(const self_t &a) const;
   ///@}
+#endif
 
+#if 0
   virtual typename List::iterator &operator++()
   {
     return ++(*grid_elem_);
   }
+#endif
 
-
-
+#if 0
   /** Returns the index of the element. */
   IndexType get_index() const;
 
   /** Return the cartesian grid from which the element belongs.*/
   std::shared_ptr<const Grid<dim> > get_grid() const;
+#endif
 
+#if 0
   /**
    * Test if the element has a boundary face.
     */
@@ -243,13 +248,14 @@ public:
   {
     return grid_elem_->is_boundary(sub_elem_id);
   }
+#endif
 
-
+#if 0
 private:
   std::shared_ptr<const SpaceBase<dim>> space_;
 
   std::unique_ptr<GridElem> grid_elem_;
-
+#endif
 
 #if 0
 #ifdef SERIALIZATION

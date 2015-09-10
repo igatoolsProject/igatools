@@ -731,4 +731,13 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
+
 #include <igatools/basis_functions/bspline_space.inst>
+
+
+#ifdef SERIALIZATION
+
+using BSpSpaceAlias0_1_1 = iga::BSplineSpace<0,1,1>;
+CEREAL_REGISTER_DYNAMIC_INIT(BSpSpaceAlias0_1_1);
+
+#endif // SERIALIZATION

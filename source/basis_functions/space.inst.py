@@ -26,10 +26,10 @@ data = Instantiation(include_files)
 
 spaces = []
 
-for dim in inst.all_domain_dims:
-    space = 'SpaceBase<%d>' %(dim)
-    spaces. append(space)
-    f.write("template class %s ;\n" %(space))
+#for dim in inst.all_domain_dims:
+#    space = 'SpaceBase<%d>' %(dim)
+#    spaces. append(space)
+#    f.write("template class %s ;\n" %(space))
 
 
 #---------------------------------------------------
