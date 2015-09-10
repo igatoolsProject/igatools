@@ -39,167 +39,6 @@ template <int,int,int,int> class Function;
 template <int,int,int,int,Transformation> class SpaceElement;
 template <int,int,int,int,Transformation> class SpaceElementHandler;
 
-#if 0
-/**
- * @brief This is an auxiliary class used represent the "concept" of isogeometric function space, defined
- * over <tt>dim</tt>-dimensional parametric domain.
- * It is used as base class of Space and its purpose it is isolate the methods that depends only
- * on the topological informations (in order to do not perform unnecessary instantiations).
- *
- * The main feature of this class is that contains a space identifier that is unique to the object,
- * i.e. two different objects will have two different space id.
- *
- * @author martinelli, 2013, 2014, 2015.
- *
- * @ingroup serializable
- */
-template<int dim_>
-class SpaceBase
-  :
-  public std::enable_shared_from_this<SpaceBase<dim_>>
-{
-private:
-//    using base_t = GridWrapper<dim_>;
-  using self_t = SpaceBase<dim_>;
-
-
-public:
-
-#if 0
-  using IndexType = TensorIndex<dim_>;
-
-
-
-  virtual void get_element_dofs(
-    const IndexType element_id,
-    SafeSTLVector<Index> &dofs_global,
-    SafeSTLVector<Index> &dofs_local_to_patch,
-    SafeSTLVector<Index> &dofs_local_to_elem,
-    const std::string &dofs_property = DofProperties::active) const // = 0
-  {
-    Assert(false,ExcNotImplemented());
-  }
-#endif
-
-
-  /** @name Constructor and destructor. */
-  ///@{
-protected:
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  SpaceBase() = default;
-
-public:
-  /** Construct the object from the (const) @p grid on which the function space will be built upon. */
-  SpaceBase(const std::shared_ptr<const Grid<dim_>> &grid);
-
-  /** Construct the object from the (non-const) @p grid on which the function space will be built upon. */
-  SpaceBase(const std::shared_ptr<Grid<dim_>> &grid);
-
-protected:
-  /** Copy constructor. */
-  SpaceBase(const self_t &) = delete;
-
-  /** Move constructor. */
-  SpaceBase(self_t &&) = default;
-
-public:
-  /** Destructor. */
-  virtual ~SpaceBase() = default;
-  ///@}
-
-  /** @name Assignment operator. */
-  ///@{
-  /** Copy assignment operator. Not allowed to be used. */
-  self_t &operator=(const self_t &) = delete;
-
-  /** Move assignment operator. Not allowed to be used. */
-  self_t &operator=(self_t &&) = delete;
-  ///@}
-
-public:
-#if 0
-  /**
-   * Returns the unique identifier associated to each object instance.
-   */
-  Index get_object_id() const;
-
-
-  std::shared_ptr<Grid<dim_>> get_grid();
-
-  std::shared_ptr<const Grid<dim_>> get_grid() const;
-
-  /**
-   * Get the name associated to the object instance.
-   */
-  const std::string &get_name() const;
-
-  /**
-   * Set the name associated to the object instance.
-   */
-  void set_name(const std::string &name);
-#endif
-
-
-#ifdef MESH_REFINEMENT
-
-  /**
-   * Perform the h-refinement of the space in all the directions.
-   *
-   * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions
-   * sub-intervals.
-   *
-   * @ingroup h_refinement
-   */
-  void refine_h(const Size n_subdivisions = 2);
-
-#endif // MESH_REFINEMENT
-
-#if 0
-protected:
-
-  /**
-   * Unique identifier associated to each object instance.
-   */
-  Index object_id_ = 0;
-
-  /**
-   * Name associated to the object instance.
-   */
-  std::string name_;
-
-private:
-
-//    std::shared_ptr<Grid<dim_> > grid_;
-
-  SharedPtrConstnessHandler<Grid<dim_> > grid_;
-
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class cereal::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("grid_",grid_);
-
-    ar &make_nvp("object_id_",object_id_);
-
-    ar &make_nvp("name_",name_);
-  }
-  ///@}
-#endif // SERIALIZATION
-#endif
-};
-#endif
 
 
 
@@ -432,6 +271,18 @@ public:
 
 #ifdef MESH_REFINEMENT
 
+  /**
+   * Perform the h-refinement of the space in all the directions.
+   *
+   * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions
+   * sub-intervals.
+   *
+   * @ingroup h_refinement
+   */
+  void refine_h(const Size n_subdivisions = 2);
+
+
+
   virtual std::shared_ptr<const self_t> get_space_previous_refinement() const = 0;
 
 #endif
@@ -465,10 +316,9 @@ protected:
 
 
 private:
-#if 0
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
+   * @name Functions needed for serialization
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
@@ -478,61 +328,21 @@ private:
   void
   serialize(Archive &ar)
   {
-    AssertThrow(false,ExcNotImplemented());
-
     ar &make_nvp("object_id_",object_id_);
 
     ar &make_nvp("name_",name_);
 
     ar &make_nvp("grid_",grid_);
 
-
-
-#if 0
-    ar.template register_type<BSplineSpace<dim_,range_,rank_>>();
-
-#ifdef NURBS
-    ar.template register_type<NURBSSpace<dim_,range_,rank_>>();
-#endif
-
-    ar.template register_type<PhysicalSpace<dim_,range_,rank_,codim_,Transformation::h_grad>>();
-
-    ar &boost::serialization::make_nvp("Space_base_t",
-                                       boost::serialization::base_object<base_t>(*this));
-
-    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
-    ar.template register_type<IdentityFunction<dim_,dim_> >();
-    ar &boost::serialization::make_nvp("map_func_",map_func_);
-    //    Assert(map_func_ != nullptr,ExcNullPtr());
-#endif
+//    ar &make_nvp("phys_domain_",phys_domain_);
+    //TODO (martinelli, Sep 10, 2015): serialize the phys_domain_ variable!!!
   }
   ///@}
 #endif // SERIALIZATION
-#endif
 };
 
-
-class TTT : public Space<1,0,1,1,Transformation::h_grad>
-{
-public:
-  virtual void get_element_dofs(
-    const IndexType element_id,
-    SafeSTLVector<Index> &dofs_global,
-    SafeSTLVector<Index> &dofs_local_to_patch,
-    SafeSTLVector<Index> &dofs_local_to_elem,
-    const std::string &dofs_property = DofProperties::active) const override final
-  {
-    Assert(false,ExcNotImplemented());
-  }
-
-};
 
 IGA_NAMESPACE_CLOSE
 
-#ifdef SERIALIZATION
-
-CEREAL_REGISTER_TYPE(iga::TTT);
-
-#endif // SERIALIZATION
 
 #endif // __SPACE_H_

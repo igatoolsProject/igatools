@@ -36,38 +36,6 @@ IGA_NAMESPACE_OPEN
 
 
 
-#ifdef MESH_REFINEMENT
-
-template <int dim_>
-void
-SpaceBase<dim_>::
-refine_h(const Size n_subdivisions)
-{
-  this->get_ptr_grid()->refine(n_subdivisions);
-}
-
-#endif // MESH_REFINEMENT
-
-#if 0
-#ifdef SERIALIZATION
-template <int dim_>
-template<class Archive>
-void
-SpaceBase<dim_>::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("grid_",grid_);
-
-  ar &boost::serialization::make_nvp("object_id_",object_id_);
-
-  ar &boost::serialization::make_nvp("name_",name_);
-
-}
-///@}
-#endif // SERIALIZATION
-#endif
-
-
 
 
 
@@ -242,6 +210,19 @@ get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std
   return this->get_ptr_const_dof_distribution()->get_boundary_dofs(s_id,topology);
 }
 
+#ifdef MESH_REFINEMENT
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+void
+Space<dim_,codim_,range_,rank_,type_>::
+refine_h(const Size n_subdivisions)
+{
+  this->get_ptr_grid()->refine(n_subdivisions);
+}
+
+#endif // MESH_REFINEMENT
+
+
 #if 0
 #ifdef SERIALIZATION
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -274,5 +255,6 @@ serialize(Archive &ar, const unsigned int version)
 #endif
 
 IGA_NAMESPACE_CLOSE
+
 
 #include <igatools/basis_functions/space.inst>

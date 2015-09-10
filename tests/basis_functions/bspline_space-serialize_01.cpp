@@ -34,9 +34,10 @@
 template <int dim>
 void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
 {
-//  std::shared_ptr<ReferenceSpace<dim>> space = space_in;
+  std::shared_ptr<ReferenceSpace<dim>> space = space_in;
 //  auto space = std::make_shared<SpaceBase<dim>>(space_in->get_grid());
-  std::shared_ptr<SpaceBase<0>> space = std::make_shared<TTT>();
+//  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> space = space_in;
+//  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> space = std::make_shared<TTT<dim>>();
   out.begin_item("Original BSplineSpace:");
 //  space->print_info(out);
   out.end_item();

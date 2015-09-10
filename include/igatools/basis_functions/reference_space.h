@@ -214,21 +214,26 @@ public:
 
 private:
 
-#if 0
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
   serialize(Archive &ar)
   {
-    ar &make_nvp("ReferenceSpace_base_t",
-                 base_class<base_t>(*this));
+    using std::to_string;
+    const std::string base_name = "Space_" +
+                                  to_string(dim_) + "_" +
+                                  to_string(0) + "_" +
+                                  to_string(range_) + "_" +
+                                  to_string(rank_) + "_hgrad";
+
+    ar &make_nvp(base_name,base_class<base_t>(this));
+
 #ifdef MESH_REFINEMENT
     auto tmp = const_pointer_cast<RefSpace>(ref_space_previous_refinement_);
     ar &make_nvp("ref_space_previous_refinement_",tmp);
@@ -238,7 +243,6 @@ private:
 
   ///@}
 #endif // SERIALIZATION
-#endif
 };
 
 IGA_NAMESPACE_CLOSE

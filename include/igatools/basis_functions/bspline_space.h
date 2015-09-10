@@ -535,22 +535,30 @@ private:
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
   serialize(Archive &ar, const unsigned int version)
   {
-    ar &make_nvp("ReferenceSpace",base_class<BaseSpace>(this));
+    using std::to_string;
+    const std::string base_name = "ReferenceSpace_" +
+                                  to_string(dim_) + "_" +
+                                  to_string(0) + "_" +
+                                  to_string(range_) + "_" +
+                                  to_string(rank_) + "_hgrad";
 
+    ar &make_nvp(base_name,base_class<BaseSpace>(this));
     ar &make_nvp("space_data_",space_data_);
 //    Assert(space_data_ != nullptr,ExcNullPtr());
 
+#if 0
     ar &make_nvp("end_b_",end_b_);
 
     ar &make_nvp("operators_",operators_);
 
     ar &make_nvp("end_interval_",end_interval_);
+#endif
 
     ar &make_nvp("dof_distribution_",dof_distribution_);
 
@@ -570,6 +578,12 @@ IGA_NAMESPACE_CLOSE
 
 using BSpSpaceAlias0_1_1 = iga::BSplineSpace<0,1,1>;
 CEREAL_REGISTER_TYPE(BSpSpaceAlias0_1_1);
+using BSpSpaceAlias1_1_1 = iga::BSplineSpace<1,1,1>;
+CEREAL_REGISTER_TYPE(BSpSpaceAlias1_1_1);
+using BSpSpaceAlias2_1_1 = iga::BSplineSpace<2,1,1>;
+CEREAL_REGISTER_TYPE(BSpSpaceAlias2_1_1);
+using BSpSpaceAlias3_1_1 = iga::BSplineSpace<3,1,1>;
+CEREAL_REGISTER_TYPE(BSpSpaceAlias3_1_1);
 
 #endif // SERIALIZATION
 

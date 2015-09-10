@@ -737,7 +737,7 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-using BSpSpaceAlias0_1_1 = iga::BSplineSpace<0,1,1>;
-CEREAL_REGISTER_DYNAMIC_INIT(BSpSpaceAlias0_1_1);
+//using BSpSpaceAlias0_1_1 = iga::BSplineSpace<0,1,1>;
+//CEREAL_REGISTER_DYNAMIC_INIT(BSpSpaceAlias0_1_1);
 
 #endif // SERIALIZATION

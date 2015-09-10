@@ -33,7 +33,7 @@
 #include <igatools/basis_functions/spline_space.h>
 
 #include <igatools/basis_functions/space.h>
-#include <igatools/basis_functions/space_element_base.h>
+#include <igatools/geometry/grid_element.h>
 
 
 

@@ -97,6 +97,7 @@ private:
 
 };
 
+
 IGA_NAMESPACE_CLOSE
 
 
@@ -126,10 +127,18 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecRealAlias2,cereal::specializat
 using SafeSTLArrayVecRealAlias3 = iga::SafeSTLArray<VecReal,3>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecRealAlias3,cereal::specialization::member_serialize);
 
+
+// The next ones are used by BSplineSpace
+template <int N>
+using TI= iga::TensorIndex<N>;
+using SafeSTLArrayTIAlias0_1 =  iga::SafeSTLArray<TI<0>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayTIAlias0_1,cereal::specialization::member_serialize);
+
+
 // The next ones are used by SplineSpace
 using VecInt = iga::SafeSTLVector<int>;
-//using SafeSTLArrayVecIntAlias0 = iga::SafeSTLArray<VecInt,0>;
-//CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecIntAlias0,cereal::specialization::member_serialize);
+using SafeSTLArrayVecIntAlias0 = iga::SafeSTLArray<VecInt,0>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecIntAlias0,cereal::specialization::member_serialize);
 using SafeSTLArrayVecIntAlias1 = iga::SafeSTLArray<VecInt,1>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecIntAlias1,cereal::specialization::member_serialize);
 using SafeSTLArrayVecIntAlias2 = iga::SafeSTLArray<VecInt,2>;
@@ -163,6 +172,8 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayTSizeAlias2_2,cereal::specializat
 
 
 // The next ones are used by SplineSpace
+using SafeSTLArrayBoolAlias0 = iga::SafeSTLArray<bool,0>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayBoolAlias0,cereal::specialization::member_serialize);
 using SafeSTLArrayBoolAlias1 = iga::SafeSTLArray<bool,1>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayBoolAlias1,cereal::specialization::member_serialize);
 using SafeSTLArrayBoolAlias2 = iga::SafeSTLArray<bool,2>;
@@ -172,6 +183,8 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayBoolAlias3,cereal::specialization
 
 
 // The next ones are used by SplineSpace
+using SafeSTLArrayBoolArrayAlias0_1 = iga::SafeSTLArray<iga::SafeSTLArray<bool,0>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayBoolArrayAlias0_1,cereal::specialization::member_serialize);
 using SafeSTLArrayBoolArrayAlias1_1 = iga::SafeSTLArray<iga::SafeSTLArray<bool,1>,1>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayBoolArrayAlias1_1,cereal::specialization::member_serialize);
 using SafeSTLArrayBoolArrayAlias2_1 = iga::SafeSTLArray<iga::SafeSTLArray<bool,2>,1>;
@@ -189,6 +202,8 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayBoolArrayAlias2_2,cereal::special
 template <int N>
 using VecTI = iga::SafeSTLVector<iga::TensorIndex<N>>;
 
+using SafeSTLArrayVecTIAlias0_1 = iga::SafeSTLArray<VecTI<0>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecTIAlias0_1,cereal::specialization::member_serialize);
 using SafeSTLArrayVecTIAlias1_1 = iga::SafeSTLArray<VecTI<1>,1>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecTIAlias1_1,cereal::specialization::member_serialize);
 using SafeSTLArrayVecTIAlias2_1 = iga::SafeSTLArray<VecTI<2>,1>;
@@ -212,8 +227,8 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayTIndexAlias2_2,cereal::specializa
 
 
 // The next ones are used by SplineSpace
-//using SafeSTLArrayCPArrayIntAlias0 = iga::SafeSTLArray<iga::CartesianProductArray<int,0>,1>;
-//CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayCPArrayIntAlias0,cereal::specialization::member_serialize);
+using SafeSTLArrayCPArrayIntAlias0 = iga::SafeSTLArray<iga::CartesianProductArray<int,0>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayCPArrayIntAlias0,cereal::specialization::member_serialize);
 using SafeSTLArrayCPArrayIntAlias1_1 = iga::SafeSTLArray<iga::CartesianProductArray<int,1>,1>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayCPArrayIntAlias1_1,cereal::specialization::member_serialize);
 using SafeSTLArrayCPArrayIntAlias2_1 = iga::SafeSTLArray<iga::CartesianProductArray<int,2>,1>;

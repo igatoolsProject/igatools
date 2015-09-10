@@ -31,6 +31,8 @@ IGA_NAMESPACE_OPEN
  * @brief iga version of std::vector.
  * It can be used as a std::vector but in Debug mode
  * it provides bounds checking.
+ *
+ * @ingroup serializable
  */
 template<class T>
 class SafeSTLVector :
@@ -76,6 +78,8 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorInt,cereal::specialization::memb
 
 
 // The next ones are used by SplineSpace
+using SafeSTLVecTIAlias0 = iga::SafeSTLVector<iga::TensorIndex<0>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias0,cereal::specialization::member_serialize);
 using SafeSTLVecTIAlias1 = iga::SafeSTLVector<iga::TensorIndex<1>>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias1,cereal::specialization::member_serialize);
 using SafeSTLVecTIAlias2 = iga::SafeSTLVector<iga::TensorIndex<2>>;
