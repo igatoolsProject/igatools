@@ -134,11 +134,11 @@ public:
 
   static std::shared_ptr<self_t>
   create_nonconst(const std::shared_ptr<RefSpace> &ref_space,
-                  const std::shared_ptr<MapFunc> &map_func);
+                  const std::shared_ptr<PhysDomain> &phys_domain);
 
   static std::shared_ptr<const self_t>
   create(const std::shared_ptr<const RefSpace> &ref_space,
-         const std::shared_ptr<MapFunc> &map_func);
+         const std::shared_ptr<const PhysDomain> &phys_domain);
 
   /**
    * Create an element (defined on this grid) with a given index.
@@ -215,10 +215,10 @@ private:
   PhysicalSpace() = default;
 
   PhysicalSpace(const std::shared_ptr<RefSpace> &ref_space,
-                const std::shared_ptr<MapFunc> &map_func);
+                const std::shared_ptr<PhysDomain> &phys_domain);
 
   PhysicalSpace(const std::shared_ptr<const RefSpace> &ref_space,
-                const std::shared_ptr<MapFunc> &map_func);
+                const std::shared_ptr<const PhysDomain> &phys_domain);
 
 
   SharedPtrConstnessHandler<RefSpace> ref_space_;

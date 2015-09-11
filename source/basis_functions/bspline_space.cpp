@@ -482,14 +482,18 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
-  using SubMap = SubMapFunction<k, dim, space_dim>;
-  auto grid = const_pointer_cast<Grid<dim_> >(this->get_grid());
+  AssertThrow(false,ExcNotImplemented());
+  return nullptr;
+  /*
+    using SubMap = SubMapFunction<k, dim, space_dim>;
+    auto grid = const_pointer_cast<Grid<dim_> >(this->get_grid());
 
-  auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
-  auto F = IdentityFunction<dim>::const_create(grid);
-  auto sub_map_func = SubMap::create(sub_grid, F, s_id, elem_map);
-  auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
-  return sub_space;
+    auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
+    auto F = IdentityFunction<dim>::const_create(grid);
+    auto sub_map_func = SubMap::create(sub_grid, F, s_id, elem_map);
+    auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
+    return sub_space;
+    //*/
 }
 
 

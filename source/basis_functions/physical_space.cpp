@@ -43,9 +43,9 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::components =
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(const shared_ptr<RefSpace> &ref_space,
-              const shared_ptr<MapFunc> &map_func)
+              const shared_ptr<PhysDomain> &phys_domain)
   :
-  base_t(ref_space->get_grid(),map_func),
+  base_t(ref_space->get_grid(),phys_domain),
   ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
@@ -54,9 +54,9 @@ PhysicalSpace(const shared_ptr<RefSpace> &ref_space,
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(const shared_ptr<const RefSpace> &ref_space,
-              const shared_ptr<MapFunc> &map_func)
+              const shared_ptr<const PhysDomain> &phys_domain)
   :
-  base_t(ref_space->get_grid(),map_func),
+  base_t(ref_space->get_grid(),phys_domain),
   ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
@@ -67,11 +67,11 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create_nonconst(const shared_ptr<RefSpace> &ref_space,
-                const shared_ptr<MapFunc> &map_func) -> shared_ptr<self_t>
+                const shared_ptr<PhysDomain> &phys_domain) -> shared_ptr<self_t>
 {
-  Assert(map_func != nullptr, ExcNullPtr());
-  Assert(map_func.unique(), ExcNotUnique());
-  auto sp = shared_ptr<self_t>(new self_t(ref_space, map_func));
+//  Assert(map_func != nullptr, ExcNullPtr());
+//  Assert(map_func.unique(), ExcNotUnique());
+  auto sp = shared_ptr<self_t>(new self_t(ref_space, phys_domain));
 
 #ifdef MESH_REFINEMENT
   sp->create_connection_for_insert_knots(sp);
@@ -84,12 +84,12 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create(const shared_ptr<const RefSpace> &ref_space,
-       const shared_ptr<MapFunc> &map_func) -> shared_ptr<const self_t>
+       const shared_ptr<const PhysDomain> &phys_domain) -> shared_ptr<const self_t>
 {
-  Assert(ref_space != nullptr, ExcNullPtr());
-  Assert(map_func != nullptr, ExcNullPtr());
-  Assert(map_func.unique(), ExcNotUnique());
-  auto sp = shared_ptr<self_t>(new self_t(ref_space, map_func));
+//  Assert(ref_space != nullptr, ExcNullPtr());
+//  Assert(map_func != nullptr, ExcNullPtr());
+//  Assert(map_func.unique(), ExcNotUnique());
+  auto sp = shared_ptr<self_t>(new self_t(ref_space, phys_domain));
   Assert(sp != nullptr,ExcNullPtr());
 
   return sp;
@@ -151,16 +151,20 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
+  AssertThrow(false,ExcNotImplemented());
+  return nullptr;
+  /*
   using SubMap = SubMapFunction<k, dim, space_dim>;
   auto grid =  this->get_grid();
 
   auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
   shared_ptr<const typename SubMap::SupFunc> F;
-//  auto F = this->phys_domain_->get_function();
+  //  auto F = this->phys_domain_->get_function();
   AssertThrow(false,ExcNotImplemented());
   auto sub_map_func = SubMap::create(sub_grid, F, s_id, elem_map);
   auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
   return sub_space;
+  //*/
 }
 
 

@@ -62,7 +62,7 @@ class Space
 {
 public:
 
-  using PhysDomain = Domain<dim_,codim_>;
+//  using PhysDomain = Domain<dim_,codim_>;
 
 private:
 //  using base_t = SpaceBase<dim_>;
@@ -85,23 +85,17 @@ protected:
 
   /**
    * Construct the object from the (non-const) @p grid on which the function space will be built upon
-   * and the function representing the mapping.
-   *
-   * @pre The shared_pointer <tt>map_func</tt> must be unique.
-   *
-   * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
+   * and the Domain over which the Space. is defined
    */
-  Space(const std::shared_ptr<Grid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
+  Space(const std::shared_ptr<Grid<dim_>> &grid,
+        const std::shared_ptr<Domain<dim_,codim_>> &domain);
 
   /**
    * Construct the object from the (const) @p grid on which the function space will be built upon
-   * and the function representing the mapping.
-   *
-   * @pre The shared_pointer <tt>map_func</tt> must be unique.
-   *
-   * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
+   * and the Domain over which the Space. is defined
    */
-  Space(const std::shared_ptr<const Grid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
+  Space(const std::shared_ptr<const Grid<dim_>> &grid,
+        const std::shared_ptr<const Domain<dim_,codim_>> &domain);
 
   /** Copy constructor. */
   Space(const self_t &) = delete;
@@ -287,7 +281,7 @@ public:
 
 #endif
 
-  std::shared_ptr<const PhysDomain> get_physical_domain() const
+  std::shared_ptr<const Domain<dim_,codim_>> get_physical_domain() const
   {
     return phys_domain_;
   }
@@ -312,7 +306,7 @@ private:
   SharedPtrConstnessHandler<Grid<dim_> > grid_;
 
 protected:
-  std::shared_ptr<const PhysDomain> phys_domain_;
+  std::shared_ptr<const Domain<dim_,codim_>> phys_domain_;
 
 
 private:

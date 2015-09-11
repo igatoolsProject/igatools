@@ -47,12 +47,12 @@ public:
   using SupFunc = Function<dim, codim, range, rank>;
 
   using GridType = Grid<sub_dim>;
+  using SuperGrid = Grid<dim>;
 
 //  using typename base_t::topology_variant;
 //  using typename base_t::eval_pts_variant;
   using typename base_t::ElementAccessor;
 
-  using SuperGrid = Grid<dim>;
 
 //    template <int j>
 //    using SubGridMap = typename SuperGrid::template SubGridMap<j>;
@@ -189,14 +189,14 @@ public:
   using base_t  = Function<sub_dim, 0, space_dim, 1>;
   using SupFunc = Function<dim, 0, space_dim, 1>;
 
-  using typename base_t::GridType;
 
 //  using typename base_t::topology_variant;
 //  using typename base_t::eval_pts_variant;
   using typename base_t::ElementAccessor;
 
-  using SuperGrid = typename SupFunc::GridType;
-//    template <int j>
+  using GridType = Grid<sub_dim>;
+  using SuperGrid = Grid<dim>;
+
   using InterGridMap = typename SuperGrid::template SubGridMap<sub_dim>;
 //    using InterGridMap = std::map<Index,Index>;
 
