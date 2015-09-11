@@ -86,6 +86,15 @@ create(const Size n) -> shared_ptr<self_t>
   return shared_ptr<self_t>(new self_t(n));
 }
 
+template<int dim_>
+auto
+Grid<dim_>::
+const_create(const Index n_knots) -> shared_ptr<const self_t>
+{
+  return create(n_knots);
+}
+
+
 
 
 template<int dim_>
@@ -103,6 +112,14 @@ Grid<dim_>::
 create(const TensorSize<dim_> &n) -> shared_ptr<self_t>
 {
   return shared_ptr<self_t>(new self_t(n));
+}
+
+template<int dim_>
+auto
+Grid<dim_>::
+const_create(const TensorSize<dim_> &n_knots) -> shared_ptr<const self_t>
+{
+  return create(n_knots);
 }
 
 
@@ -124,6 +141,13 @@ create(const BBox<dim_> &end_points, const Size n_knots) -> shared_ptr<self_t>
   return shared_ptr<self_t>(new self_t(end_points, n_knots));
 }
 
+template<int dim_>
+auto
+Grid<dim_>::
+const_create(const BBox<dim_> &bbox, const Size n_knots) -> shared_ptr<const self_t>
+{
+  return create(bbox, n_knots);
+}
 
 
 template<int dim_>
@@ -145,6 +169,14 @@ create(const BBox<dim_> &end_points,
   return shared_ptr<self_t>(new self_t(end_points, n));
 }
 
+template<int dim_>
+auto
+Grid<dim_>::
+const_create(const BBox<dim_> &bbox,
+             const TensorSize<dim_> &n_knots) -> shared_ptr<const self_t>
+{
+  return create(bbox, n_knots);
+}
 
 
 template<int dim_>
@@ -192,6 +224,13 @@ create(const KnotCoordinates &knot_coordinates) -> shared_ptr<self_t>
   return shared_ptr<self_t>(new self_t(knot_coordinates));
 }
 
+template<int dim_>
+auto
+Grid<dim_>::
+const_create(const KnotCoordinates &knots) -> shared_ptr<const self_t>
+{
+  return create(knots);
+}
 
 
 template<int dim_>
@@ -212,6 +251,15 @@ create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates)
   return shared_ptr<self_t>(new self_t(knot_coordinates));
 }
 
+template<int dim_>
+auto
+Grid<dim_>::
+const_create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots)
+-> shared_ptr<const self_t>
+{
+  return create(knots);
+}
+
 
 
 template<int dim_>
@@ -222,6 +270,13 @@ create(const self_t &grid) -> std::shared_ptr<self_t>
   return shared_ptr<self_t>(new self_t(grid));
 }
 
+template<int dim_>
+auto
+Grid<dim_>::
+const_create(const self_t &grid) -> shared_ptr<const self_t>
+{
+  return create(grid);
+}
 
 
 template<int dim_>
@@ -969,100 +1024,20 @@ get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) co
 
 
 
-#if 0
-template<int dim_>
-auto
-Grid<dim_>::
-get_elements_id() const -> List
-{
-  const auto n_elems = this->get_num_all_elems();
-  List elems_id;
-  Assert(false, ExcNotImplemented());
-//    for (int id = 0 ; id < n_elems ; ++id)
-//        elems_id.emplace(id);
-
-  return elems_id;
-}
-
-
-
-template<int dim_>
-auto
-Grid<dim_>::
-get_elements_id_same_property(const PropId &property)
--> List &
-{
-  return elem_properties_.get_ids_same_property(property);
-}
-
-
-
-template<int dim_>
-auto
-Grid<dim_>::
-get_elements_id_same_property(const PropId &property) const
--> const List &
-{
-  return elem_properties_.get_ids_same_property(property);
-}
-
-
-
-template<int dim_>
-Index
-Grid<dim_>::
-get_first_element_id_same_property(const PropId &property) const
-{
-  Index first_id;
-  if (property == ElementProperties::active)
-    first_id = 0;
-  else
-    first_id = *(this->get_elements_id_same_property(property).cbegin());
-
-  return first_id;
-}
-
-
-
-template<int dim_>
-Index
-Grid<dim_>::
-get_last_element_id_same_property(const PropId &property) const
-{
-  Index last_id;
-  if (property == ElementProperties::active)
-    last_id = this->get_num_all_elems()-1;
-  else
-    last_id = *(this->get_elements_id_same_property(property).crbegin());
-
-  return last_id;
-}
-
-
-
 template <int dim_>
 void
 Grid<dim_>::
-set_element_property_status(const PropId &property,
-                            const IndexType &elem_flat_id,
-                            const bool property_status)
+set_property_status_elem(const PropId &property,
+                         const IndexType &elem_id,
+                         const bool property_status)
 {
   Assert(dim_ > 0,ExcMessage("Setting a property for Grid<dim_> with dim_==0 has no meaning."));
-
-  auto &elems_same_property = get_elements_id_same_property(property);
-  if (property_status)
-  {
-    elems_same_property.insert(elem_flat_id);
-  }
-  else
-  {
-    Assert(!elems_same_property.empty(),ExcEmptyObject());
-    elems_same_property.erase(elem_flat_id);
-  }
-
+  elem_properties_.set_property_status_for_id(property,elem_id,property_status);
 }
 
 
+
+#if 0
 
 template <int dim_>
 void
@@ -1073,46 +1048,23 @@ set_all_elements_property_status(const PropId &property,
   for (const auto &elem : (*this))
     this->set_element_property_status(property,elem.get_flat_index(),status);
 }
+#endif
 
 
 
 template <int dim_>
 bool
 Grid<dim_>::
-test_if_element_has_property(const IndexType elem_flat_id,
-                             const PropId &property) const
+element_has_property(const IndexType elem_id,
+                     const PropId &prop) const
 {
-  const auto &elem_list = this->get_elements_id_same_property(property);
+  const auto &elem_list = this->get_elements_with_property(prop);
   return std::binary_search(elem_list.begin(),
-                            elem_list.end(),elem_flat_id);
+                            elem_list.end(),
+                            elem_id);
 }
 
-#endif
 
-#if 0
-#ifdef SERIALIZATION
-template <int dim_>
-template<class Archive>
-void
-Grid<dim_>::
-serialize(Archive &ar)
-{
-  Assert(false,ExcNotImplemented());
-  /*
-  //    std::string tag_name = "Grid" + std::to_string(dim_) + "base_t";
-    ar &make_nvp("elems_size_",elems_size_);
-    ar &make_nvp("knot_coordinates_",knot_coordinates_);
-    ar &make_nvp("boundary_id_",boundary_id_);
-    ar &make_nvp("properties_elements_id_",elem_properties_);
-    ar &make_nvp("object_id_",object_id_);
-  #ifdef MESH_REFINEMENT
-    ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
-  #endif
-  //*/
-}
-
-#endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 

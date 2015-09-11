@@ -83,9 +83,9 @@ operator[](const PropId &property) const
 template <typename IndexType>
 void
 PropertiesIdContainer<IndexType>::
-set_id_property_status(const PropId &property,
-                       const IndexType id,
-                       const bool status)
+set_property_status_for_id(const PropId &property,
+                           const IndexType id,
+                           const bool status)
 {
   auto &list = (*this)[property];
   if (status)
@@ -104,12 +104,12 @@ set_id_property_status(const PropId &property,
 template <typename IndexType>
 void
 PropertiesIdContainer<IndexType>::
-set_ids_property_status(const PropId &property,
-                        const List ids,
-                        const bool status)
+set_property_status_for_ids(const PropId &property,
+                            const List ids,
+                            const bool status)
 {
-  for (const auto id : ids)
-    set_id_property_status(property,id,status);
+  for (const auto &id : ids)
+    set_property_status_for_id(property,id,status);
 }
 
 

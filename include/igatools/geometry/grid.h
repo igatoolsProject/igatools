@@ -76,8 +76,7 @@ template <int> class GridHandler;
  * For example, let suppose we want to build a bi-dimensional grid (over the
  * unit square \f$ [0,1]\times[0,1] \f$) made of 4 equally-sized intervals in
  * each coordinate direction, and then assign the property <tt>"active"</tt> to
- *  the elements with even flat-index and the <tt>"marked"</tt> to the elements
- *  with odd flat-index
+ * and the <tt>"marked"</tt> in an alternated (i.e. checkerboard) manner.
  * @code{.cpp}
    auto grid = Grid<2>::create(5); // here we create a 4x4 grid
 
@@ -88,21 +87,24 @@ template <int> class GridHandler;
    grid->add_elements_property(property_marked); // here we add the second property to the elements property database managed by the grid
 
    //the next loop set the elements with the right property
+   int flat_id = 0;
    for (const auto elem : *grid)
    {
-       const auto flat_id = elem.get_flat_index();
+       const auto elem_id = elem.get_index();
        if (flat_id % 2 == 0)
-           grid->set_element_property_status(property_active,flat_id,true);
+           grid->set_property_status_elem(property_active,elem_id,true);
        else
-           grid->set_element_property_status(property_marked,flat_id,true);
+           grid->set_property_status_elem(property_marked,elem_id,true);
+
+       ++flat_id;
    }
    @endcode
  *
  * The list of elements with a given property can be obtained from the Grid
- * using the function get_elements_id_same_property(const PropId &property).
+ * using the function get_elements_with_property(const PropId &property).
  * For example if we want the IDs of the elements having the property <tt>"marked"</tt> we can write
  * @code{.cpp}
-   const auto & elems_id_marked = grid->get_elements_id_same_property("marked");
+   const auto & elems_id_marked = grid->get_elements_with_property("marked");
    // now elems_id_marked is a const reference to a std::set<Index> containing the values [1 3 5 7 9 11 13 15]
    @endcode
  *
@@ -159,7 +161,6 @@ template <int> class GridHandler;
  */
 template<int dim_>
 class Grid :
-//  protected TensorSizedContainer<dim_>,
   public std::enable_shared_from_this<Grid<dim_>>
 {
 private:
@@ -261,102 +262,136 @@ public:
 
   /**
    * @name Creators
-   * @note The functions here return a Grid<dim_> object wrapped by
-   * a std::shared_ptr
+   * @note The functions here return:
+   * - a <b>non-const</b> Grid object wrapped by a std::shared_ptr
+   * in the case of <b>create()</b> functions;
+   * - a <b>const</b> Grid object wrapped by a std::shared_ptr
+   * in the case of <b>const_create()</b> functions.
    */
   ///@{
   /**
-   * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
+   * Creates a uniform (non-const) cartesian grid of the unit <tt>dim</tt>-dimensional
    * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each
    * dimension.
    */
   static std::shared_ptr<self_t> create(const Index n_knots = 2);
-  static std::shared_ptr<const self_t> const_create(const Index n_knots = 2)
-  {
-    return create(n_knots);
-  }
 
   /**
-   * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
+   * Creates a uniform (const) cartesian grid of the unit <tt>dim</tt>-dimensional
+   * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each
+   * dimension.
+   */
+  static std::shared_ptr<const self_t> const_create(const Index n_knots = 2);
+
+  /**
+   * Creates a uniform (non-const) cartesian grid of the unit <tt>dim</tt>-dimensional
    * hypercube \f$[0,1]^{dim}\f$,
    * with <tt>n_knots[0],..,n_knots[dim-1</tt>] knots in each dimension
    * respectively.
    */
   static std::shared_ptr<self_t>
   create(const TensorSize<dim_> &n_knots);
+
+  /**
+   * Creates a uniform (const) cartesian grid of the unit <tt>dim</tt>-dimensional
+   * hypercube \f$[0,1]^{dim}\f$,
+   * with <tt>n_knots[0],..,n_knots[dim-1</tt>] knots in each dimension
+   * respectively.
+   */
   static std::shared_ptr<const self_t>
-  const_create(const TensorSize<dim_> &n_knots)
-  {
-    return create(n_knots);
-  }
+  const_create(const TensorSize<dim_> &n_knots);
 
   static std::shared_ptr<self_t>
   create(const BBox<dim_> &bbox, const Size n_knots);
+
   static std::shared_ptr<const self_t>
-  const_create(const BBox<dim_> &bbox, const Size n_knots)
-  {
-    return create(bbox, n_knots);
-  }
+  const_create(const BBox<dim_> &bbox, const Size n_knots);
 
   /**
-   * Construct a cartesian grid where the knot coordinate in each
+   * Construct a (non-const) cartesian grid where the knot coordinate in each
    * direction is provided as CartesianProductArray object.
    *
-   * The knot coordinate in each direction must be sorted and without
+   * @pre The knot coordinate in each direction must be sorted and without
    * repetition.
+   *
    * @note In Debug mode, a check for this precondition
    * (up to machine precision)
    * is perform and if not satisfied an exception is raised.
    */
   static std::shared_ptr<self_t>
   create(const KnotCoordinates &knots);
-  static std::shared_ptr<const self_t>
-  const_create(const KnotCoordinates &knots)
-  {
-    return create(knots);
-  }
 
   /**
-   * Construct a cartesian grid where the knot coordinate in each
+   * Construct a (const) cartesian grid where the knot coordinate in each
+   * direction is provided as CartesianProductArray object.
+   *
+   * @pre The knot coordinate in each direction must be sorted and without
+   * repetition.
+   *
+   * @note In Debug mode, a check for this precondition
+   * (up to machine precision)
+   * is perform and if not satisfied an exception is raised.
+   */
+  static std::shared_ptr<const self_t>
+  const_create(const KnotCoordinates &knots);
+
+  /**
+   * Construct a (non-const) cartesian grid where the knot coordinate in each
    * direction is provided as SafeSTLArray of SafeSTLVector<Real>.
    *
-   * The knot coordinate in each direction must be sorted and without
+   * @pre The knot coordinate in each direction must be sorted and without
    * repetition.
+   *
    * @note In Debug mode, a check for this precondition
    * (up to machine precision)
    * is perform and if not satisfied an exception is raised.
    */
   static std::shared_ptr<self_t>
   create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots);
+
+  /**
+   * Construct a (const) cartesian grid where the knot coordinate in each
+   * direction is provided as SafeSTLArray of SafeSTLVector<Real>.
+   *
+   * @pre The knot coordinate in each direction must be sorted and without
+   * repetition.
+   *
+   * @note In Debug mode, a check for this precondition
+   * (up to machine precision)
+   * is perform and if not satisfied an exception is raised.
+   */
   static std::shared_ptr<const self_t>
-  const_create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots)
-  {
-    return create(knots);
-  }
+  const_create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots);
 
   /**
    * @todo document me
    */
   static std::shared_ptr<self_t>
   create(const BBox<dim_> &bbox, const TensorSize<dim_> &n_knots);
-  static std::shared_ptr<const self_t>
-  const_create(const BBox<dim_> &bbox, const TensorSize<dim_> &n_knots)
-  {
-    return create(bbox, n_knots);
-  }
 
   /**
-   * Creates a CastesianGrid object (wrapped by a shared_ptr) using
+   * @todo document me
+   */
+  static std::shared_ptr<const self_t>
+  const_create(const BBox<dim_> &bbox, const TensorSize<dim_> &n_knots);
+
+  /**
+   * Creates a (non-const) cartesian grid object (wrapped by a shared_ptr) using
    * the copy constructor.
    *
    * @note A grid built in this way is totally uncoupled from the grid used as argument
    * of this function. For example, a refinement of a grid does not affect the other gird.
    */
   static std::shared_ptr<self_t> create(const self_t &grid);
-  static std::shared_ptr<const self_t> const_create(const self_t &grid)
-  {
-    return create(grid);
-  }
+
+  /**
+   * Creates a (const) cartesian grid object (wrapped by a shared_ptr) using
+   * the copy constructor.
+   *
+   * @note A grid built in this way is totally uncoupled from the grid used as argument
+   * of this function. For example, a refinement of a grid does not affect the other gird.
+   */
+  static std::shared_ptr<const self_t> const_create(const self_t &grid);
   ///@}
 
   /**
@@ -419,6 +454,7 @@ public:
    */
   BBox<dim_> get_bounding_box() const;
   ///@}
+
 
   std::unique_ptr<ElementHandler> create_cache_handler() const;
 
@@ -507,11 +543,11 @@ public:
 #endif
 
   /**
-   * Returns TRUE if the point is exactly on an internal knots line.
+   * Returns TRUE if the point is exactly on an internal knots line (at least).
    */
   bool test_if_point_on_internal_knots_line(const Points<dim_> &point) const;
 
-public:
+
   /**
    * Prints debug information of the Grid to a LogStream.
    */
@@ -671,45 +707,21 @@ public:
   List &get_elements_with_property(const PropId &prop);
 
 
+  /**
+   * Sets the @p status of the given @p property for the element with id @p elem_id.
+   */
+  void set_property_status_elem(const PropId &property,
+                                const IndexType &elem_id,
+                                const bool status);
+
+  /**
+   * Returns true if the element identified by <tt>elem_id</tt> has
+   * the property <tt>prop</tt>.
+   */
+  bool element_has_property(const IndexType elem_id,
+                            const PropId &prop) const;
+
 #if 0
-  /**
-       * Returns true if the element identified with <tt>elem_flat_id</tt> has
-       * the ElementProperty <tt>property</tt>.
-       */
-  bool test_if_element_has_property(const IndexType elem_flat_id,
-                                    const PropId &property) const;
-
-  /**
-   * Returns the id of the first element with a given @p property.
-   * @note If the @p property is equal to ElementProperties::active, then the
-   * first element index is 0 (zero).
-   */
-  Index get_first_element_id_same_property(const PropId &property) const;
-
-  /**
-   * Returns the id of the last element with a given @p property.
-   * @note If the @p property is equal to ElementProperties::active, then the
-   * last element index is equal to the number of elements in the grid minus 1.
-   */
-  Index get_last_element_id_same_property(const PropId &property) const;
-
-  /**
-   * Returns the flat id of the elements having a certain @p property (non-const version).
-   */
-  List &get_elements_id_same_property(const PropId &property);
-
-  /**
-   * Returns the flat id of the elements having a certain @p property (const version).
-   */
-  const List &get_elements_id_same_property(const PropId &property) const;
-
-  /**
-   * Sets the @p status of the given @p property for the element with flat id @p elem_flat_id.
-   */
-  void set_element_property_status(const PropId &property,
-                                   const IndexType &elem_index,
-                                   const bool status);
-
   /**
    * Sets the @p status of the given @p property for the entire set of elements in the grid.
    */
@@ -717,16 +729,6 @@ public:
                                         const bool status);
   ///@}
 
-  /**
-   * @name Functions that are not very portable as they rely to much on
-   * the internal data representation
-   */
-  ///@{
-  /**
-   * Returns the flat-id of the elements in the Grid.
-   */
-  List get_elements_id() const;
-  ///@}
 #endif
 
 private:
@@ -759,7 +761,7 @@ private:
 private:
   /**
    * @name Functions needed for serialization
-   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
+   * @see <a href=http://uscilab.github.io/cereal/index.html">Cereal serialization</a>
    */
   ///@{
   friend class cereal::access;

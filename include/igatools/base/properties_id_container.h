@@ -82,21 +82,19 @@ public:
    */
   const List &operator[](const PropId &property) const;
 
-private:
   /**
    * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
    */
-  void set_id_property_status(const PropId &property,
-                              const IndexType id,
-                              const bool status);
+  void set_property_status_for_id(const PropId &property,
+                                  const IndexType id,
+                                  const bool status);
 
   /**
    * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
    */
-  void set_ids_property_status(const PropId &property,
-                               const List ids,
-                               const bool status);
-public:
+  void set_property_status_for_ids(const PropId &property,
+                                   const List ids,
+                                   const bool status);
 
   /**
    * Prints the contents of the class. Its use is intended for testing and debugging purposes.
