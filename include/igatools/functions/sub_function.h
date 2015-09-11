@@ -46,13 +46,13 @@ public:
   using base_t  = Function<sub_dim, codim + (dim-sub_dim), range, rank>;
   using SupFunc = Function<dim, codim, range, rank>;
 
-  using typename base_t::GridType;
+  using GridType = Grid<sub_dim>;
 
 //  using typename base_t::topology_variant;
 //  using typename base_t::eval_pts_variant;
   using typename base_t::ElementAccessor;
 
-  using SuperGrid = typename SupFunc::GridType;
+  using SuperGrid = Grid<dim>;
 
 //    template <int j>
 //    using SubGridMap = typename SuperGrid::template SubGridMap<j>;
