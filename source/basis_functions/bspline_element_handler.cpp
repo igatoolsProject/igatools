@@ -817,24 +817,6 @@ get_element_values(const TensorIndex<dim> &elem_tensor_id) const
 }
 #endif
 
-#if 0
-#ifdef SERIALIZATION
-template<int dim_, int range_ , int rank_>
-template<class Archive>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("BSplineElementHandler_base_t",
-                                     boost::serialization::base_object<base_t>(*this));
-
-  ar &boost::serialization::make_nvp("flags_",flags_);
-#if 0
-  ar &boost::serialization::make_nvp("splines1d_",splines1d_);
-#endif
-}
-#endif
-#endif
 
 IGA_NAMESPACE_CLOSE
 

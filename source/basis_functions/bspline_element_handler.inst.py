@@ -26,11 +26,19 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-sub_dim_members = []
+sub_dim_members = ['void elhandler::SetFlagDispatcher::operator()(const Topology<k> &)',
+                   'void elhandler::InitCacheDispatcher::operator()(const shared_ptr<const Quadrature<k>> &)',
+                   'void elhandler::FillCacheDispatcherNoGlobalCache::operator()(const Topology<k> &)']
 
-
-handlers = ['BSplineElementHandler<0,0,1>']
+handlers = []
 handler_templated_funcs = []
+
+
+handler = 'BSplineElementHandler<0,0,1>'
+handlers.append(handler)
+for fun in sub_dim_members:
+    s = fun.replace('elhandler', handler).replace('k','0');
+    handler_templated_funcs.append(s)
 
 
 for x in inst.sub_ref_sp_dims:
@@ -59,22 +67,4 @@ for func in unique(handler_templated_funcs):
     f.write('template %s; \n' %func)
         
         
-#---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
- 
-#f.write('#ifdef SERIALIZATION\n')
-#    
-#id = 0 
-#for handler in unique(handlers):
-#    alias = 'BSplineElementHandlerAlias%d' %(id)
-#    f.write('using %s = iga::%s; \n' % (alias, handler))
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-#    id += 1 
-#    
-#f.write('#endif // SERIALIZATION\n')
-     
-f.write('IGA_NAMESPACE_OPEN\n')
-#---------------------------------------------------
    
