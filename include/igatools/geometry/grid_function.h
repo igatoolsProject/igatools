@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/geometry/grid.h>
 #include <igatools/geometry/grid_handler.h>
+#include <igatools/utils/shared_ptr_constness_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -79,7 +80,7 @@ protected:
   GridFunction(std::shared_ptr<GridType> grid);
 
 public:
-  ~GridFunction();
+  virtual ~GridFunction() = default;
 
   static std::shared_ptr<self_t>
   create(std::shared_ptr<GridType> grid)
@@ -146,32 +147,28 @@ public:
   }
 
 private:
-  std::shared_ptr<GridType> grid_;
+  SharedPtrConstnessHandler<Grid<dim_>> grid_;
 
   friend class GridFunctionElementBase<dim_, space_dim_, GridFunction<dim_, space_dim_>>;
   friend class GridFunctionElementBase<dim_, space_dim_, const GridFunction<dim_, space_dim_>>;
   friend class GridFunctionElement<dim_, space_dim_>;
   friend class ConstGridFunctionElement<dim_, space_dim_>;
-#if 0
+
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version)
+  serialize(Archive &ar)
   {
-    ar.template register_type<IgFunction<dim_,0,dim_+space_dim_,1> >();
-    ar &boost::serialization::make_nvp("F_",F_);
-    ar &boost::serialization::make_nvp("flags_",flags_);
+    ar &grid_;
   }
   ///@}
-#endif
-#endif
+#endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

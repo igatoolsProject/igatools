@@ -98,9 +98,7 @@ public:
 
 private:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. It does nothing but it is needed for the serialization mechanism.
    */
   Domain() = default;
 
@@ -108,7 +106,7 @@ protected:
   Domain(std::shared_ptr<GridFuncType> func);
 
 public:
-  ~Domain();
+  virtual ~Domain() = default;
 
   static std::shared_ptr<self_t>
   create(std::shared_ptr<GridFuncType> func)
@@ -175,34 +173,32 @@ public:
   }
 
 private:
-  std::shared_ptr<GridFuncType> grid_func_;
+  SharedPtrConstnessHandler<GridFunction<dim, space_dim>> grid_func_;
 
   friend class DomainElementBase<dim_, codim_, Domain<dim_, codim_>>;
   friend class DomainElementBase<dim_, codim_, const Domain<dim_, codim_>>;
   friend class DomainElement<dim_, codim_>;
   friend class ConstDomainElement<dim_, codim_>;
 
-#if 0
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version)
+  serialize(Archive &ar)
   {
-    AssertThrow(false,ExcNotImplemented());
+    ar &grid_func_;
+//    AssertThrow(false,ExcNotImplemented());
 //    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
 //    ar &boost::serialization::make_nvp("F_",F_);
 //    ar &boost::serialization::make_nvp("flags_",flags_);
   }
   ///@}
-#endif
-#endif
+#endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

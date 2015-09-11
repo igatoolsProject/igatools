@@ -31,15 +31,11 @@ GridFunction(std::shared_ptr<GridType> grid)
   :
   grid_(grid)
 {
-  Assert(grid_ != nullptr, ExcNullPtr());
+//  Assert(grid_ != nullptr, ExcNullPtr());
 }
 
 
 
-template<int dim_, int space_dim_>
-GridFunction<dim_, space_dim_>::
-~GridFunction()
-{}
 
 
 
@@ -48,7 +44,7 @@ auto
 GridFunction<dim_, space_dim_>::
 get_grid() const -> std::shared_ptr<GridType>
 {
-  return grid_;
+  return grid_.get_ptr_const_data();
 }
 
 

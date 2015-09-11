@@ -283,7 +283,7 @@ public:
 
   std::shared_ptr<const Domain<dim_,codim_>> get_physical_domain() const
   {
-    return phys_domain_;
+    return phys_domain_.get_ptr_const_data();
   }
 
 
@@ -306,14 +306,13 @@ private:
   SharedPtrConstnessHandler<Grid<dim_> > grid_;
 
 protected:
-  std::shared_ptr<const Domain<dim_,codim_>> phys_domain_;
+  SharedPtrConstnessHandler<Domain<dim_,codim_>> phys_domain_;
 
 
 private:
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
   friend class cereal::access;
@@ -328,8 +327,7 @@ private:
 
     ar &make_nvp("grid_",grid_);
 
-//    ar &make_nvp("phys_domain_",phys_domain_);
-    //TODO (martinelli, Sep 10, 2015): serialize the phys_domain_ variable!!!
+    ar &make_nvp("phys_domain_",phys_domain_);
   }
   ///@}
 #endif // SERIALIZATION

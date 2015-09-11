@@ -81,7 +81,7 @@ template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 template <int sdim>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_points(const int s_id) const -> const ValueVector<PhysPoint> &
+get_points(const int s_id) const -> const ValueVector<PhysPoint>
 {
 //  using _Point = typename PhysDomainElem::_Point;
   return phys_domain_element_->template get_points<sdim>(s_id);
@@ -90,7 +90,7 @@ get_points(const int s_id) const -> const ValueVector<PhysPoint> &
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_element_points() const -> const ValueVector<PhysPoint> &
+get_element_points() const -> const ValueVector<PhysPoint>
 {
   return this->template get_points<dim>(0);
 }
@@ -99,7 +99,7 @@ get_element_points() const -> const ValueVector<PhysPoint> &
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_element_w_measures() const -> const ValueVector<Real> &
+get_element_w_measures() const -> const ValueVector<Real>
 {
   return this->template get_w_measures<dim>(0);
 }

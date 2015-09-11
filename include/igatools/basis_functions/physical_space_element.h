@@ -146,7 +146,7 @@ public:
    * multiplied by the weights of the quadrature.
    */
   template <int k>
-  const ValueVector<Real> &get_w_measures(const int j) const
+  const ValueVector<Real> get_w_measures(const int j) const
   {
     return phys_domain_element_->template get_w_measures<k>(j);
   }
@@ -160,12 +160,12 @@ public:
     return phys_domain_element_->template get_measures<k>(j);
   }
 
-  const ValueVector<Real> &get_element_w_measures() const;
+  const ValueVector<Real> get_element_w_measures() const;
 
   template <int k = dim>
-  const ValueVector<PhysPoint> &get_points(const int j = 0) const;
+  const ValueVector<PhysPoint> get_points(const int j = 0) const;
 
-  const ValueVector<PhysPoint> &get_element_points() const;
+  const ValueVector<PhysPoint> get_element_points() const;
 
   template<int sub_dim>
   const ValueVector<Points<space_dim> > &

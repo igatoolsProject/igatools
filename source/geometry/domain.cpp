@@ -31,15 +31,11 @@ Domain(std::shared_ptr<GridFuncType> func)
   :
   grid_func_(func)
 {
-  Assert(grid_func_ != nullptr, ExcNullPtr());
+//  Assert(grid_func_ != nullptr, ExcNullPtr());
 }
 
 
 
-template<int dim_, int codim_>
-Domain<dim_, codim_>::
-~Domain()
-{}
 
 
 
@@ -48,7 +44,7 @@ auto
 Domain<dim_, codim_>::
 get_grid_function() const -> std::shared_ptr<GridFuncType>
 {
-  return grid_func_;
+  return grid_func_.get_ptr_const_data();
 }
 
 
