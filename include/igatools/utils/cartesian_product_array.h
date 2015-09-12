@@ -279,7 +279,7 @@ protected:
    */
   SafeSTLArray<SafeSTLVector<T>,rank> data_ ;
 
-
+#ifdef SERIALIZATION
 private:
   /**
    * @name Functions needed for serialization
@@ -300,9 +300,8 @@ private:
     ar &make_nvp("data_of_type_SafeSTLArray",data_);
   }
   ///@}
-
+#endif
 };
-
 
 /**
  * Returns a CartesianProductArray of one higher rank built from the insertion
