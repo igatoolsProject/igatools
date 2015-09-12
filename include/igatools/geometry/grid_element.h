@@ -159,6 +159,17 @@ public:
   {
     return (++index_it_);
   }
+
+  /**
+   * Move the element to the one specified by <tt>elem_id</tt>.
+   *
+   * In Debug mode an assertion will be raised
+   * if the GridElement specified by <tt>elem_id</tt> has not the same property of the
+   * calling GridElement.
+   *
+   * @warning Use this function only if you know what you are doing
+   */
+  void move_to(const IndexType & elem_id);
   ///@}
 
   /**
@@ -267,15 +278,14 @@ public:
    * Tests if a certain element @p property is TRUE.
    */
   bool has_property(const PropId &property) const;
+
+  /**
+   * Returns the property of the element.
+   */
+  const PropId & get_property() const;
   ///@}
 
 
-#if 0
-  /**
-   * Return the properties defined for the element.
-   */
-  SafeSTLVector<std::string> get_defined_properties() const;
-#endif
 
 private:
   ValueVector<Point> get_element_points() const;
@@ -359,21 +369,6 @@ protected:
                  << "The global cache is being used by " << arg1
                  << " iterator. Changing its value not allowed.");
 
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version);
-  ///@}
-#endif // SERIALIZATION
-#endif
 };
 
 

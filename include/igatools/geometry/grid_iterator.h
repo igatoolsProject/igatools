@@ -128,7 +128,7 @@ IGA_NAMESPACE_OPEN
  * <tt>ContainerType</tt> object presently pointed to. These data have to be
  * accessible by all grid iterator.
  *
- * <li> It must have a constructor which takes a <tt>const AccessorOfType*</tt> argument
+ * <li> It must have a constructor which takes a <tt>std::unique_ptr<Element></tt> argument
  * representing the accessed container and
  * an <tt>Index</tt> argument, denoting the index within the "grid-like container".
  *
