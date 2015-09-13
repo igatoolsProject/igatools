@@ -245,44 +245,33 @@ evaluate_2(const ValueVector<GridPoint> &points,
         }
   }
 }
-
-#if 0
-
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
 template<int dim>
-SphereFunction<dim>::
-SphereFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
+SphereGridFunction<dim>::
+SphereGridFunction(std::shared_ptr<GridType> grid)
   :
-  parent_t::FormulaFunction(grid, map)
+  parent_t::FormulaGridFunction(grid)
 {}
 
 
 
 template<int dim>
 auto
-SphereFunction<dim>::
-create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map) ->  std::shared_ptr<base_t>
+SphereGridFunction<dim>::
+create(std::shared_ptr<GridType> grid) ->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<self_t>(new self_t(grid, map));
+  return std::shared_ptr<self_t>(new self_t(grid));
 }
 
-
-template<int dim>
-auto
-SphereFunction<dim>::
-clone() const -> std::shared_ptr<base_t>
-{
-  return std::make_shared<self_t>(*this);
-}
 
 
 template<int dim>
 template<int order>
 auto
-SphereFunction<dim>::get_aux_vals(const ValueVector<Point> &points) const
+SphereGridFunction<dim>::get_aux_vals(const ValueVector<GridPoint> &points) const
 {
   SafeSTLArray<SafeSTLArray<SafeSTLVector<SafeSTLArray<double, space_dim> >, order>, 2> val_table;
   auto &cos_val = val_table[0];
@@ -324,10 +313,11 @@ SphereFunction<dim>::get_aux_vals(const ValueVector<Point> &points) const
 }
 
 
+
 template<int dim>
 auto
-SphereFunction<dim>::
-evaluate_0(const ValueVector<Point> &points,
+SphereGridFunction<dim>::
+evaluate_0(const ValueVector<GridPoint> &points,
            ValueVector<Value> &values) const -> void
 {
   const auto val_table = get_aux_vals<1>(points);
@@ -355,8 +345,8 @@ evaluate_0(const ValueVector<Point> &points,
 
 template<int dim>
 auto
-SphereFunction<dim>::
-evaluate_1(const ValueVector<Point> &points,
+SphereGridFunction<dim>::
+evaluate_1(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<1>> &values) const -> void
 {
   const auto val_table = get_aux_vals<2>(points);
@@ -400,8 +390,8 @@ evaluate_1(const ValueVector<Point> &points,
 
 template<int dim>
 auto
-SphereFunction<dim>::
-evaluate_2(const ValueVector<Point> &points,
+SphereGridFunction<dim>::
+evaluate_2(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<2>> &values) const -> void
 {
   const auto val_table = get_aux_vals<3>(points);
@@ -476,10 +466,9 @@ evaluate_2(const ValueVector<Point> &points,
         }
   }
 }
-
-
-
 //------------------------------------------------------------------------------
+
+#if 0
 
 //------------------------------------------------------------------------------
 
@@ -494,7 +483,7 @@ CylindricalAnnulus(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
                    const Real theta0,
                    const Real theta1)
   :
-  parent_t::FormulaFunction(grid, map),
+  parent_t::FormulaGridFunction(grid, map),
   r0_(r0),
   r1_(r1),
   h0_(h0),
@@ -536,7 +525,7 @@ clone() const -> std::shared_ptr<base_t>
 template<int dim>
 auto
 CylindricalAnnulus<dim>::
-evaluate_0(const ValueVector<Point> &points,
+evaluate_0(const ValueVector<GridPoint> &points,
            ValueVector<Value> &values) const -> void
 {
 
@@ -563,7 +552,7 @@ evaluate_0(const ValueVector<Point> &points,
 template<int dim>
 auto
 CylindricalAnnulus<dim>::
-evaluate_1(const ValueVector<Point> &points,
+evaluate_1(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<1>> &values) const -> void
 {
 
@@ -600,7 +589,7 @@ evaluate_1(const ValueVector<Point> &points,
 template<int dim>
 auto
 CylindricalAnnulus<dim>::
-evaluate_2(const ValueVector<Point> &points,
+evaluate_2(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<2>> &values) const -> void
 {
   const int n_points = points.size();

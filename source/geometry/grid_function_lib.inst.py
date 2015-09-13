@@ -31,10 +31,10 @@ for s in output:
   f.write(s)
 
 
-#s = ('template class functions::SphereFunction<%d>;\n' %1 )
-#f.write(s)
-#s = ('template class functions::SphereFunction<%d>;\n' %2 )
-#f.write(s)
+s = ('template class grid_functions::SphereGridFunction<%d>;\n' %1 )
+f.write(s)
+s = ('template class grid_functions::SphereGridFunction<%d>;\n' %2 )
+f.write(s)
 
 #s = ('template class functions::CylindricalAnnulus<%d>;\n' %3)
 #f.write(s)

@@ -48,7 +48,8 @@ void ball_domain()
 
   using Flags = typename Domain::ElementAccessor::Flags;
 
-  auto flag = Flags::measure | Flags::w_measure | Flags::point;
+  auto flag = Flags::measure | Flags::w_measure | Flags::point |
+              Flags::ext_normal;
 
   auto handler = domain->create_cache_handler();
   handler->template set_flags<dim>(flag);
@@ -69,6 +70,9 @@ void ball_domain()
     out << endl;
     out << "weight * measure:" << endl;
     elem->template get_w_measures<dim>(0).print_info(out);
+    out << endl;
+    out << "weight * measure:" << endl;
+    elem->template get_exterior_normals().print_info(out);
     out << endl;
   }
 

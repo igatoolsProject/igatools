@@ -110,7 +110,8 @@ get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
   Assert(codim_ == 1, ExcNotImplemented());
   ValueVector<SafeSTLArray<Point, codim_>> res;
 
-  const auto &DF = grid_func_elem_->template get_values<grid_function_element::_D<1>, sdim>(s_id);
+  const auto &DF = grid_func_elem_->template
+      get_values<grid_function_element::_D<1>, sdim>(s_id);
   const auto n_points = DF.get_num_points();
   res.resize(n_points);
 

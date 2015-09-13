@@ -77,19 +77,18 @@ private:
   get_aux_vals(const ValueVector<GridPoint> &points) const;
 
 private:
-  virtual void evaluate_0(const ValueVector<GridPoint> &points,
-                          ValueVector<Value> &values) const override final;
+  void evaluate_0(const ValueVector<GridPoint> &points,
+      ValueVector<Value> &values) const override final;
 
-  virtual void evaluate_1(const ValueVector<GridPoint> &points,
-                          ValueVector<Derivative<1>> &values) const override final;
+  void evaluate_1(const ValueVector<GridPoint> &points,
+      ValueVector<Derivative<1>> &values) const override final;
 
-  virtual void evaluate_2(const ValueVector<GridPoint> &points,
-                          ValueVector<Derivative<2>> &values) const override final;
+  void evaluate_2(const ValueVector<GridPoint> &points,
+      ValueVector<Derivative<2>> &values) const override final;
 
-private:
 };
 //------------------------------------------------------------------------------
-#if 0
+
 
 
 //------------------------------------------------------------------------------
@@ -105,49 +104,49 @@ private:
  *
  */
 template<int dim>
-class SphereFunction : public FormulaGridFunction<dim, 0, dim+1, 1>
+class SphereGridFunction : public FormulaGridFunction<dim, dim+1>
 {
 private:
   static const int space_dim = dim + 1;
-  using base_t = Function<dim, 0, dim+1, 1>;
-  using parent_t = FormulaGridFunction<dim, 0, dim+1, 1>;
-  using self_t = SphereFunction<dim>;
+  using base_t = GridFunction<dim, dim+1>;
+  using parent_t = FormulaGridFunction<dim, dim+1>;
+  using self_t = SphereGridFunction<dim>;
   using typename base_t::GridType;
 public:
-  using typename parent_t::Point;
+  using typename parent_t::GridPoint;
   using typename parent_t::Value;
-  using typename parent_t::Gradient;
-  using typename parent_t::ElementIterator;
-  using typename parent_t::ElementAccessor;
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
-  using typename parent_t::Map;
 
   static std::shared_ptr<base_t>
-  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
+  create(std::shared_ptr<GridType> grid);
 
-  std::shared_ptr<base_t> clone() const override final;
+  static std::shared_ptr<const base_t>
+  const_create(std::shared_ptr<GridType> grid)
+  {
+    return create(grid);
+  }
 
-  SphereFunction(const self_t &) = default;
-  virtual ~SphereFunction() = default;
+  SphereGridFunction(const self_t &) = default;
+  virtual ~SphereGridFunction() = default;
 
 protected:
-  SphereFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
+  SphereGridFunction(std::shared_ptr<GridType> grid);
 
 private:
   template<int order>
   auto
-  get_aux_vals(const ValueVector<Point> &points) const;
+  get_aux_vals(const ValueVector<GridPoint> &points) const;
 
 private:
-  void evaluate_0(const ValueVector<Point> &points,
-                  ValueVector<Value> &values) const override final;
+  void evaluate_0(const ValueVector<GridPoint> &points,
+      ValueVector<Value> &values) const override final;
 
-  void evaluate_1(const ValueVector<Point> &points,
-                  ValueVector<Derivative<1>> &values) const override final;
+  void evaluate_1(const ValueVector<GridPoint> &points,
+      ValueVector<Derivative<1>> &values) const override final;
 
-  void evaluate_2(const ValueVector<Point> &points,
-                  ValueVector<Derivative<2>> &values) const override final;
+  void evaluate_2(const ValueVector<GridPoint> &points,
+      ValueVector<Derivative<2>> &values) const override final;
 
   static const int R = 1.;
 
@@ -155,7 +154,7 @@ private:
 //------------------------------------------------------------------------------
 
 
-
+#if 0
 
 
 //------------------------------------------------------------------------------
