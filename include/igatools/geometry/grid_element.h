@@ -169,7 +169,7 @@ public:
    *
    * @warning Use this function only if you know what you are doing
    */
-  void move_to(const IndexType & elem_id);
+  void move_to(const IndexType &elem_id);
   ///@}
 
   /**
@@ -282,7 +282,7 @@ public:
   /**
    * Returns the property of the element.
    */
-  const PropId & get_property() const;
+  const PropId &get_property() const;
   ///@}
 
 

@@ -111,14 +111,14 @@ get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
   ValueVector<SafeSTLArray<Point, codim_>> res;
 
   const auto &DF = grid_func_elem_->template
-      get_values<grid_function_element::_D<1>, sdim>(s_id);
+  get_values<grid_function_element::_D<1>, sdim>(s_id);
   const auto n_points = DF.get_num_points();
   res.resize(n_points);
 
   for (int pt = 0; pt < n_points; ++pt)
   {
-    res[0][pt] = cross_product<dim_, codim_>(DF[pt]);
-    res[0][pt] /= res[0][pt].norm();
+    res[pt][0] = cross_product<dim_, codim_>(DF[pt]);
+    res[pt][0] /= res[pt][0].norm();
   }
 
   return res;

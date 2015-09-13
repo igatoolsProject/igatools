@@ -172,7 +172,7 @@ public:
   auto const get_points(const int s_id) const
   {
     return grid_func_elem_->template
-        get_values<grid_function_element::_D<0>, sdim>(s_id);
+           get_values<grid_function_element::_D<0>, sdim>(s_id);
   }
 
   template<int sdim>

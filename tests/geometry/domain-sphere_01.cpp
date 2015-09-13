@@ -20,7 +20,7 @@
 
 /**
  *  @file
- *  @brief Ball Domain
+ *  @brief Sphere Domain
  *  @author pauletti
  *  @date 2015-09-02
  */
@@ -33,22 +33,26 @@
 #include "../tests.h"
 
 template <int dim>
-void ball_domain()
+void sphere_domain()
 {
   OUTSTART
 
-// const int space_dim = dim;
+  const int codim = 1;
   using Grid = Grid<dim>;
-  using Domain = Domain<dim, 0>;
-  using GridFunc = grid_functions::BallGridFunction<dim>;
+  using Domain = Domain<dim, codim>;
+  using GridFunc = grid_functions::SphereGridFunction<dim>;
 
-  auto grid = Grid::const_create();
+  BBox<dim> bbox;
+  for (int i=0; i<dim; ++i)
+    bbox[i]= {M_PI/6, M_PI/2};
+  auto grid = Grid::const_create(bbox, 2);
   auto grid_func = GridFunc::const_create(grid);
   auto domain = Domain::const_create(grid_func);
 
   using Flags = typename Domain::ElementAccessor::Flags;
 
-  auto flag = Flags::measure | Flags::w_measure | Flags::point;
+  auto flag = Flags::measure | Flags::w_measure | Flags::point |
+              Flags::ext_normal;
 
   auto handler = domain->create_cache_handler();
   handler->template set_flags<dim>(flag);
@@ -70,6 +74,9 @@ void ball_domain()
     out << "weight * measure:" << endl;
     elem->template get_w_measures<dim>(0).print_info(out);
     out << endl;
+    out << "Exterior normal:" << endl;
+    elem->template get_exterior_normals().print_info(out);
+    out << endl;
   }
 
   OUTEND
@@ -78,9 +85,8 @@ void ball_domain()
 
 int main()
 {
-  ball_domain<1>();
-  ball_domain<2>();
-  ball_domain<3>();
+  sphere_domain<1>();
+  sphere_domain<2>();
 
   return 0;
 }

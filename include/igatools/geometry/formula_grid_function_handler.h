@@ -51,7 +51,7 @@ public:
   virtual ~FormulaGridFunctionHandler() = default;
 
   void set_flags(const topology_variant &sdim,
-                           const Flags &flag) override final;
+                 const Flags &flag) override final;
 
   void fill_cache(const topology_variant &sdim,
                   ConstElementAccessor &elem,

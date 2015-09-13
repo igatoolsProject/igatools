@@ -78,13 +78,13 @@ private:
 
 private:
   void evaluate_0(const ValueVector<GridPoint> &points,
-      ValueVector<Value> &values) const override final;
+                  ValueVector<Value> &values) const override final;
 
   void evaluate_1(const ValueVector<GridPoint> &points,
-      ValueVector<Derivative<1>> &values) const override final;
+                  ValueVector<Derivative<1>> &values) const override final;
 
   void evaluate_2(const ValueVector<GridPoint> &points,
-      ValueVector<Derivative<2>> &values) const override final;
+                  ValueVector<Derivative<2>> &values) const override final;
 
 };
 //------------------------------------------------------------------------------
@@ -140,13 +140,13 @@ private:
 
 private:
   void evaluate_0(const ValueVector<GridPoint> &points,
-      ValueVector<Value> &values) const override final;
+                  ValueVector<Value> &values) const override final;
 
   void evaluate_1(const ValueVector<GridPoint> &points,
-      ValueVector<Derivative<1>> &values) const override final;
+                  ValueVector<Derivative<1>> &values) const override final;
 
   void evaluate_2(const ValueVector<GridPoint> &points,
-      ValueVector<Derivative<2>> &values) const override final;
+                  ValueVector<Derivative<2>> &values) const override final;
 
   static const int R = 1.;
 

@@ -76,20 +76,20 @@ const PropId &
 GridElement<dim>::
 get_property() const
 {
-	return property_;
+  return property_;
 }
 
 
 template <int dim>
 void
 GridElement<dim>::
-move_to(const IndexType & elem_id)
+move_to(const IndexType &elem_id)
 {
-	Assert(grid_->element_has_property(elem_id, property_),
-			ExcMessage("The destination element has not the property \"" + property_ + "\""));
+  Assert(grid_->element_has_property(elem_id, property_),
+         ExcMessage("The destination element has not the property \"" + property_ + "\""));
 
-	const auto &list = grid_->elem_properties_[property_];
-	index_it_ = std::find(list.begin(),list.end(),elem_id);
+  const auto &list = grid_->elem_properties_[property_];
+  index_it_ = std::find(list.begin(),list.end(),elem_id);
 }
 
 
