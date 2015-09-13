@@ -1069,3 +1069,4 @@ element_has_property(const IndexType elem_id,
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/grid.inst>
+

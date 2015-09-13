@@ -790,4 +790,6 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+#include <igatools/geometry/grid.serial>
+
 #endif /* CARTESIAN_GRID_H_ */

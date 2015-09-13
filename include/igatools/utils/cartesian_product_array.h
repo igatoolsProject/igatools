@@ -303,9 +303,12 @@ private:
 #endif
 };
 
+
+
 /**
  * Returns a CartesianProductArray of one higher rank built from the insertion
- * of a given @p new_vector at in the CartesianProductArray @p orig at the given direction @p index.
+ * of a given @p new_vector at in the CartesianProductArray @p orig at the given
+ *  direction @p index.
  */
 template <class T, int rank>
 CartesianProductArray<T, rank+1>
@@ -313,14 +316,6 @@ insert(const CartesianProductArray<T, rank> &orig,
        const int index,
        const SafeSTLVector<T> &new_vector);
 
-
 IGA_NAMESPACE_CLOSE
-
-// If we are in debug mode we do not inline to gain some compilation speed,
-// but we do in Release mode
-//#ifdef NDEBUG
-//#include <igatools/utils/cartesian_product_array-inline.h>
-//#endif
-
 
 #endif // #ifndef CARTESIAN_PRODUCT_ARRAY_H_
