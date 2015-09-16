@@ -192,10 +192,6 @@ private:
   serialize(Archive &ar)
   {
     ar &grid_func_;
-//    AssertThrow(false,ExcNotImplemented());
-//    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
-//    ar &boost::serialization::make_nvp("F_",F_);
-//    ar &boost::serialization::make_nvp("flags_",flags_);
   }
   ///@}
 #endif // SERIALIZATION

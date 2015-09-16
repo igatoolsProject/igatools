@@ -31,6 +31,7 @@ for dim in inst.sub_domain_dims:
 for dim in inst.domain_dims:
     grid = 'Grid<%d>' %(dim)   
     grids.append(grid)
+
          
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')

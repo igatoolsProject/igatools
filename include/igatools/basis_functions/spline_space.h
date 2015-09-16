@@ -696,4 +696,10 @@ operator[](const Index i) const
 
 IGA_NAMESPACE_CLOSE
 
+#ifdef SERIALIZATION
+
+#include <igatools/basis_functions/spline_space.serial>
+
+#endif // SERIALIZATION
+
 #endif

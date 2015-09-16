@@ -421,7 +421,7 @@ using T = typename iga::DofDistribution<dim,range,rank>::IndexDistributionTable;
 using Alias0 = T<1,1,1>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Alias0,cereal::specialization::member_serialize);
 
-
+#include <igatools/basis_functions/dof_distribution.serial>
 //iga::SafeSTLArray<iga::DynamicMultiArray<int,1>,1>
 
 #endif // SERIALIZATION
