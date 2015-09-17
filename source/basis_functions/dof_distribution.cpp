@@ -422,24 +422,25 @@ get_interior_dofs() const -> std::set<Index>
   return dofs;
 }
 
-#if 0
+
+
 #ifdef SERIALIZATION
 template<int dim, int range, int rank>
 template<class Archive>
 void
 DofDistribution<dim, range, rank>::
-serialize(Archive &ar, const unsigned int version)
+serialize(Archive &ar)
 {
-  ar &boost::serialization::make_nvp("index_table_",index_table_);
+  ar &make_nvp("index_table_",index_table_);
 
-  ar &boost::serialization::make_nvp("num_dofs_table_",num_dofs_table_);
+  ar &make_nvp("num_dofs_table_",num_dofs_table_);
 
-  ar &boost::serialization::make_nvp("index_table_size_",index_table_size_);
+  ar &make_nvp("index_table_size_",index_table_size_);
 
-  ar &boost::serialization::make_nvp("properties_dofs_",properties_dofs_);
+  ar &make_nvp("properties_dofs_",properties_dofs_);
 }
 #endif // SERIALIZATION
-#endif
+
 
 IGA_NAMESPACE_CLOSE
 

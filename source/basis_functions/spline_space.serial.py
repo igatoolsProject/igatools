@@ -26,40 +26,34 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-types = ['TensorIndex','TensorSize']
 arrays = []
 
 dim = 0
 range = 0
 rank = 1
 n_components = range ** rank
-for t in types:
-    arrays.append('SafeSTLArray<%s<%d>,%d>' %(t,dim,n_components))
-    arr_bool = 'SafeSTLArray<bool,%d>' %(dim)
-    arrays.append(arr_bool)
-    arr_arr_bool = 'SafeSTLArray<%s,%d>' %(arr_bool,n_components)
-    arrays.append(arr_arr_bool)
-    arrays.append('SafeSTLArray<SafeSTLVector<TensorIndex<%d>>,%d>' %(dim,n_components))
+arrays.append('SafeSTLArray<TensorIndex<%d>,%d>' %(dim,n_components))
+arrays.append('SafeSTLArray<TensorSize<%d>,%d>' %(dim,n_components))
+arr_bool = 'SafeSTLArray<bool,%d>' %(dim)
+arrays.append(arr_bool)
+arr_arr_bool = 'SafeSTLArray<%s,%d>' %(arr_bool,n_components)
+arrays.append(arr_arr_bool)
+arrays.append('SafeSTLArray<SafeSTLVector<TensorIndex<%d>>,%d>' %(dim,n_components))
+arrays.append('SafeSTLArray<CartesianProductArray<int,%d>,%d>' %(dim,n_components))
+arrays.append('SafeSTLArray<SafeSTLVector<int>,%s>' %(dim))
 
-for x in inst.sub_ref_sp_dims:
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     n_components = x.range ** x.rank
-    for t in types:
-        arrays.append('SafeSTLArray<%s<%d>,%d>' %(t,x.dim,n_components))
+    arrays.append('SafeSTLArray<TensorIndex<%d>,%d>' %(x.dim,n_components))
+    arrays.append('SafeSTLArray<TensorSize<%d>,%d>' %(x.dim,n_components))
     arr_bool = 'SafeSTLArray<bool,%d>' %(x.dim)
     arrays.append(arr_bool)
     arr_arr_bool = 'SafeSTLArray<%s,%d>' %(arr_bool,n_components)
     arrays.append(arr_arr_bool)
     arrays.append('SafeSTLArray<SafeSTLVector<TensorIndex<%d>>,%d>' %(x.dim,n_components))
+    arrays.append('SafeSTLArray<CartesianProductArray<int,%d>,%d>' %(x.dim,n_components))
+    arrays.append('SafeSTLArray<SafeSTLVector<int>,%s>' %(x.dim))
 
-for x in inst.ref_sp_dims:
-    n_components = x.range ** x.rank
-    for t in types:
-        arrays.append('SafeSTLArray<%s<%d>,%d>' %(t,x.dim,n_components))
-    arr_bool = 'SafeSTLArray<bool,%d>' %(x.dim)
-    arrays.append(arr_bool)
-    arr_arr_bool = 'SafeSTLArray<%s,%d>' %(arr_bool,n_components)
-    arrays.append(arr_arr_bool)
-    arrays.append('SafeSTLArray<SafeSTLVector<TensorIndex<%d>>,%d>' %(x.dim,n_components))
             
 
 
@@ -69,7 +63,6 @@ f.write('IGA_NAMESPACE_CLOSE\n')
 
 
 f.write('#ifdef SERIALIZATION\n')
-archives = ['OArchive','IArchive']
 
 
 id = 0 
@@ -77,6 +70,7 @@ for arr_t_id in unique(arrays):
     alias = 'Array_T_%d' %(id)
     f.write('using %s = %s;\n' % (alias, arr_t_id.replace('TensorIndex','iga::TensorIndex')
                                                  .replace('TensorSize','iga::TensorSize')
+                                                 .replace('CartesianProductArray','iga::CartesianProductArray')
                                                  .replace('SafeSTLArray','iga::SafeSTLArray')
                                                  .replace('SafeSTLVector','iga::SafeSTLVector')));
     f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %alias);

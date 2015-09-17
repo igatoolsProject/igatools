@@ -26,30 +26,19 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-#types = ['BasisEndBehaviour','std::pair<Real,Real>']
 
-#arr_t_ids = []
-arr_dmas = []
+arrays = []
 
 dim = 0
 range = 0
 rank = 1
 n_components = range ** rank
-#arr_t_ids.append('SafeSTLArray<TensorIndex<%d>,%d>' %(dim,n_components))
-arr_dmas.append('SafeSTLArray<DynamicMultiArray<int,%d>,%d>' %(dim,n_components))
-arr_dmas.append('SafeSTLArray<CartesianProductArray<int,%d>,%d>' %(dim,n_components))
+arrays.append('SafeSTLArray<DynamicMultiArray<int,%d>,%d>' %(dim,n_components))
 
-for x in inst.sub_ref_sp_dims:
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     n_components = x.range ** x.rank
-#    arr_t_ids.append('SafeSTLArray<TensorIndex<%d>,%d>' %(x.dim,n_components))
-    arr_dmas.append('SafeSTLArray<DynamicMultiArray<int,%d>,%d>' %(x.dim,n_components))
-    arr_dmas.append('SafeSTLArray<CartesianProductArray<int,%d>,%d>' %(x.dim,n_components))
+    arrays.append('SafeSTLArray<DynamicMultiArray<int,%d>,%d>' %(x.dim,n_components))
 
-for x in inst.ref_sp_dims:
-    n_components = x.range ** x.rank
-#    arr_t_ids.append('SafeSTLArray<TensorIndex<%d>,%d>' %(x.dim,n_components))
-    arr_dmas.append('SafeSTLArray<DynamicMultiArray<int,%d>,%d>' %(x.dim,n_components))
-    arr_dmas.append('SafeSTLArray<CartesianProductArray<int,%d>,%d>' %(x.dim,n_components))
             
 
 
@@ -59,25 +48,14 @@ f.write('IGA_NAMESPACE_CLOSE\n')
 
 
 f.write('#ifdef SERIALIZATION\n')
-archives = ['OArchive','IArchive']
 
 id = 0 
-for arr_dma in unique(arr_dmas):
+for arr in unique(arrays):
     alias = 'Array_DMA_int_Alias%d' %(id)
-    f.write('using %s = %s;\n' % (alias, arr_dma.replace('DynamicMultiArray','iga::DynamicMultiArray')
-                                                .replace('CartesianProductArray','iga::CartesianProductArray')
-                                                .replace('SafeSTLArray','iga::SafeSTLArray')));
+    f.write('using %s = %s;\n' % (alias, arr.replace('DynamicMultiArray','iga::DynamicMultiArray')
+                                            .replace('SafeSTLArray','iga::SafeSTLArray')));
     f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %alias);
     id += 1 
-
-
-#id = 0 
-#for arr_t_id in unique(arr_t_ids):
-#    alias = 'Array_TIndex%d' %(id)
-#    f.write('using %s = iga::%s;\n' % (alias, arr_t_id.replace('TensorIndex','iga::TensorIndex')
-#                                                      .replace('SafeSTLArray','iga::SafeSTLArray')));
-#    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %alias);
-#    id += 1 
 
 
 f.write('#endif // SERIALIZATION\n')

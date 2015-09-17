@@ -30,8 +30,6 @@ types = ['BasisEndBehaviour','std::pair<Real,Real>']
 
 spaces = []
 arrays = [] 
-arr_arrays = []
-arr_vectors = []
 operators = []
 
 dim = 0
@@ -44,12 +42,12 @@ for t in types:
     arr = 'SafeSTLArray<%s,%d>' %(t,dim)
     arrays.append(arr)
     arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
-    arr_arrays.append(arr_arr)
-arr_vectors.append('SafeSTLArray<VecBernstOp,%d>' %(dim))
-operators.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(dim,n_components))
+    arrays.append(arr_arr)
+arrays.append('SafeSTLArray<VecBernstOp,%d>' %(dim))
+arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(dim,n_components))
 
 
-for x in inst.sub_ref_sp_dims:
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     space = 'BSplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     n_components = x.range ** x.rank
@@ -57,22 +55,9 @@ for x in inst.sub_ref_sp_dims:
         arr = 'SafeSTLArray<%s,%d>' %(t,x.dim)
         arrays.append(arr)
         arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
-        arr_arrays.append(arr_arr)
-    arr_vectors.append('SafeSTLArray<VecBernstOp,%d>' %(x.dim))
-    operators.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(x.dim,n_components))
-
-for x in inst.ref_sp_dims:
-    space = 'BSplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    spaces.append(space)
-    n_components = x.range ** x.rank
-    for t in types:
-        arr = 'SafeSTLArray<%s,%d>' %(t,x.dim)
-        arrays.append(arr)
-        arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
-        arr_arrays.append(arr_arr)
-    arr_vectors.append('SafeSTLArray<VecBernstOp,%d>' %(x.dim))
-    operators.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(x.dim,n_components))
-            
+        arrays.append(arr_arr)
+    arrays.append('SafeSTLArray<VecBernstOp,%d>' %(x.dim))
+    arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(x.dim,n_components))
 
 
          
@@ -81,7 +66,11 @@ f.write('IGA_NAMESPACE_CLOSE\n')
 
 
 f.write('#ifdef SERIALIZATION\n')
-archives = ['OArchive','IArchive']
+#archives = ['OArchive','IArchive']
+
+
+f.write('using VecBernstOp = iga::SafeSTLVector<iga::BernsteinOperator>;\n');
+f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(VecBernstOp,cereal::specialization::member_serialize);\n');
 
 id = 0 
 for space in unique(spaces):
@@ -97,46 +86,11 @@ for arr in unique(arrays):
     f.write('using %s = %s;\n' % (alias, 
                                   arr.replace('BasisEndBehaviour','iga::BasisEndBehaviour')
                                      .replace('SafeSTLArray','iga::SafeSTLArray')
+                                     .replace('CartesianProductArray','iga::CartesianProductArray')
+                                     .replace('BernsteinOperator','iga::BernsteinOperator')
                                      .replace('Real','iga::Real')));
     f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %(alias));
-    id += 1 
-
-
-id = 0 
-for arr_arr in unique(arr_arrays):
-    alias = 'ArrayArray_Alias%d' %(id)
-    f.write('using %s = %s;\n' % (alias, 
-                                  arr_arr.replace('BasisEndBehaviour','iga::BasisEndBehaviour')
-                                         .replace('SafeSTLArray','iga::SafeSTLArray')
-                                         .replace('Real','iga::Real')));
-    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %(alias));
-    id += 1 
-
-
-
-f.write('using VecBernstOp = iga::SafeSTLVector<iga::BernsteinOperator>;\n');
-f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(VecBernstOp,cereal::specialization::member_serialize);\n');
-
-id = 0 
-for arr_vec in unique(arr_vectors):
-    alias = 'ArrayVector_Alias%d' %(id)
-    f.write('using %s = %s;\n' % (alias, 
-                                  arr_vec.replace('SafeSTLArray','iga::SafeSTLArray')));
-    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %(alias));
-    id += 1 
-
-id = 0 
-for operator in unique(operators):
-    alias = 'Operator_Alias%d' %(id)
-    f.write('using %s = %s;\n' % (alias, 
-                                  operator.replace('SafeSTLArray','iga::SafeSTLArray')
-                                          .replace('CartesianProductArray','iga::CartesianProductArray')
-                                          .replace('BernsteinOperator','iga::BernsteinOperator')));
-    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %(alias));
-    id += 1 
-
-
-
+    id += 1
 
 f.write('#endif // SERIALIZATION\n')
 

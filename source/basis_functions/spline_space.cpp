@@ -741,34 +741,33 @@ get_dofs_tensor_id_elem_table() const
   return dofs_tensor_id_elem_table_;
 }
 
-#if 0
 #ifdef SERIALIZATION
 template<int dim, int range, int rank>
 template<class Archive>
 void
 SplineSpace<dim, range, rank>::
-serialize(Archive &ar, const unsigned int version)
+serialize(Archive &ar)
 {
-  ar &boost::serialization::make_nvp("grid_",grid_);
+  ar &make_nvp("grid_",grid_);
 
-  ar &boost::serialization::make_nvp("interior_mult_",interior_mult_);
+  ar &make_nvp("interior_mult_",interior_mult_);
 
-  ar &boost::serialization::make_nvp("deg_", deg_);
+  ar &make_nvp("deg_", deg_);
 
-  ar &boost::serialization::make_nvp("space_dim_", space_dim_);
+  ar &make_nvp("space_dim_", space_dim_);
 
-  ar &boost::serialization::make_nvp("periodic_", periodic_);
+  ar &make_nvp("periodic_", periodic_);
 
+  ar &make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 
-  ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
-
+#ifdef MESH_REFINEMENT
   using self_t = SplineSpace<dim,range,rank>;
   auto tmp = std::const_pointer_cast<self_t>(spline_space_previous_refinement_);
-  ar &boost::serialization::make_nvp("spline_space_previous_refinement_",tmp);
+  ar &make_nvp("spline_space_previous_refinement_",tmp);
   spline_space_previous_refinement_ = tmp;
+#endif
 }
 #endif // SERIALIZATION
-#endif
 
 template<int dim, int range, int rank>
 Size

@@ -761,7 +761,7 @@ private:
 private:
   /**
    * @name Functions needed for serialization
-   * @see <a href=http://uscilab.github.io/cereal/index.html">Cereal serialization</a>
+   * @see <a href="http://uscilab.github.io/cereal/index.html">Cereal serialization library</a>
    */
   ///@{
   friend class cereal::access;
