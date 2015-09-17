@@ -198,10 +198,14 @@ public:
   /**
    * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
    * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
+   *
+   * @note This constructor is public because it can be used as default constructor and
+   * for the serialization mechanism, the defult constructor must be public.
    */
   explicit Grid(const Size n = 2);
 
 protected:
+
   /**
    * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
    * hypercube \f$[0,1]^{dim}\f$,
@@ -410,7 +414,9 @@ public:
   self_t &operator=(self_t &&grid) = default;
   ///@}
 
-  ///@name Getting grid information
+  /**
+   * @name Getting grid information
+   */
   ///@{
   /**
    * Returns the number of elements with the <tt>property</tt> specified
@@ -458,8 +464,9 @@ public:
 
   std::unique_ptr<ElementHandler> create_cache_handler() const;
 
-
-  ///@name Iterating of grid elements
+  /**
+   * @name Iterating of grid elements
+   */
   ///@{
   /**
    * This function returns a element (const) iterator to the first element of the patch.
@@ -482,7 +489,9 @@ public:
   ElementIterator cend(const PropId &prop = ElementProperties::active) const;
   ///@}
 
-  ///@name Dealing with boundary information
+  /**
+   * @name Dealing with boundary information
+   */
   ///@{
   /**
    * Get the patch @p face boundary id.
@@ -682,6 +691,7 @@ public:
    * Returns the unique identifier associated to each object instance.
    */
   Index get_object_id() const;
+
   /**
    * @name Functions related to the management/query of the element properties.
    */
@@ -727,9 +737,10 @@ public:
    */
   void set_all_elements_property_status(const PropId &property,
                                         const bool status);
+#endif
+
   ///@}
 
-#endif
 
 private:
   /**

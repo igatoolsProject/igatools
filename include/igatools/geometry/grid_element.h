@@ -175,9 +175,9 @@ public:
   /**
    * @name Comparison operators
    * @note In order to be meaningful, the comparison must be performed on elements defined on
-   * the <b>same grid</b>
-   * (in the sense that the pointer to the grid held by the element must point to the same
-   * grid object).
+   * the <b>same Grid</b>
+   * (in the sense that the pointer to the grid held by the elements involved in the comparison
+   * must point to the same Grid object).
    */
   ///@{
   /**
