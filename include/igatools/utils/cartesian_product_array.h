@@ -290,7 +290,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version)
+  serialize(Archive &ar)
   {
     std::string tag_name = "TensorSizedContainer_" + std::to_string(rank);
     ar &make_nvp(

@@ -87,21 +87,23 @@ for func in unique(templated_funcs):
     f.write('template %s ;\n' %func)
 
 
-#---------------------------------------------------
-#f.write('IGA_NAMESPACE_CLOSE\n')
 
-#f.write('#ifdef SERIALIZATION\n')
-#id = 0 
-#for space in unique(spaces):
-#    alias = 'BSplineSpaceAlias%d' %(id)
-#    f.write('using %s = iga::%s; \n' % (alias, space))
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-#    id += 1 
-#f.write('#endif // SERIALIZATION\n')
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+archives = ['OArchive','IArchive']
+
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for space in unique(spaces):
+    alias = 'BSplineSpaceAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, space))
+    for ar in archives:
+        f.write('template void %s::serialize(%s&);\n' %(alias,ar))
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
     
-#f.write('IGA_NAMESPACE_OPEN\n')
+f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
 
 

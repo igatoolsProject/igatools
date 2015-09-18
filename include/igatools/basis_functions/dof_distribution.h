@@ -25,7 +25,12 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/utils/concatenated_iterator.h>
 
+
+
 IGA_NAMESPACE_OPEN
+
+
+
 
 /**
  *
@@ -396,16 +401,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("index_table_",index_table_);
-
-    ar &make_nvp("num_dofs_table_",num_dofs_table_);
-
-    ar &make_nvp("index_table_size_",index_table_size_);
-
-    ar &make_nvp("properties_dofs_",properties_dofs_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };
@@ -415,14 +411,7 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-template <int dim,int range,int rank>
-using T = typename iga::DofDistribution<dim,range,rank>::IndexDistributionTable;
-
-using Alias0 = T<1,1,1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Alias0,cereal::specialization::member_serialize);
-
-
-//iga::SafeSTLArray<iga::DynamicMultiArray<int,1>,1>
+#include <igatools/basis_functions/dof_distribution.serial>
 
 #endif // SERIALIZATION
 

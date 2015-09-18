@@ -18,44 +18,48 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+
+
 from init_instantiation_data import *
 
-data = Instantiation()
+include_files = []
+data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
-grids = [] 
-for dim in inst.sub_domain_dims:
-    grid = 'Grid<%d>' %(dim)
-    grids.append(grid)
-   
-    
-for dim in inst.domain_dims:
-    grid = 'Grid<%d>' %(dim)   
-    grids.append(grid)
+
+
+arrays = []
+
+dim = 0
+range = 0
+rank = 1
+n_components = range ** rank
+arrays.append('SafeSTLArray<DynamicMultiArray<int,%d>,%d>' %(dim,n_components))
+
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
+    n_components = x.range ** x.rank
+    arrays.append('SafeSTLArray<DynamicMultiArray<int,%d>,%d>' %(x.dim,n_components))
+
+            
+
 
          
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
 
 
-
 f.write('#ifdef SERIALIZATION\n')
-archives = ['OArchive','IArchive']
 
 id = 0 
-for grid in unique(grids):
-    alias = 'GridAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, grid))
-#    f.write('CEREAL_REGISTER_TYPE(%s);\n' %(alias))
-    for ar in archives:
-        f.write('template void %s::serialize(%s&);\n' %(alias,ar))
-#    
-#    f.write('ALLOW_SHARED_THIS(%s)\n' %alias )
-#    
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+for arr in unique(arrays):
+    alias = 'Array_DMA_int_Alias%d' %(id)
+    f.write('using %s = %s;\n' % (alias, arr.replace('DynamicMultiArray','iga::DynamicMultiArray')
+                                            .replace('SafeSTLArray','iga::SafeSTLArray')));
+    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %alias);
     id += 1 
+
+
 f.write('#endif // SERIALIZATION\n')
+
 #   
 f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------

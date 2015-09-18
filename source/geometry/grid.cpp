@@ -1065,6 +1065,26 @@ element_has_property(const IndexType elem_id,
 }
 
 
+#ifdef SERIALIZATION
+
+template <int dim_>
+template<class Archive>
+void
+Grid<dim_>::
+serialize(Archive &ar)
+  {
+    ar &make_nvp("knot_coordinates_",knot_coordinates_);
+    ar &make_nvp("boundary_id_",boundary_id_);
+    ar &make_nvp("properties_elements_id_",elem_properties_);
+    ar &make_nvp("object_id_",object_id_);
+    ar &make_nvp("elems_size_",elems_size_);
+#ifdef MESH_REFINEMENT
+    ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
+#endif
+  }
+#endif // SERIALIZATION
+
+
 
 IGA_NAMESPACE_CLOSE
 

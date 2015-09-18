@@ -253,6 +253,25 @@ serialize(Archive &ar, const unsigned int version)
 #endif // SERIALIZATION
 #endif
 
+
+#ifdef SERIALIZATION
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+  template<class Archive>
+void
+Space<dim_,codim_,range_,rank_,type_>::
+  serialize(Archive &ar)
+  {
+    ar &make_nvp("object_id_",object_id_);
+
+    ar &make_nvp("name_",name_);
+
+    ar &make_nvp("grid_",grid_);
+
+    ar &make_nvp("phys_domain_",phys_domain_);
+  }
+#endif // SERIALIZATION
+
 IGA_NAMESPACE_CLOSE
 
 

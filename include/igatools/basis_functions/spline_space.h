@@ -534,28 +534,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("grid_",grid_);
-
-    ar &make_nvp("interior_mult_",interior_mult_);
-
-    ar &make_nvp("deg_", deg_);
-
-    ar &make_nvp("space_dim_", space_dim_);
-
-    ar &make_nvp("periodic_", periodic_);
-
-    ar &make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
-
-#ifdef MESH_REFINEMENT
-    using self_t = SplineSpace<dim,range,rank>;
-    auto tmp = std::const_pointer_cast<self_t>(spline_space_previous_refinement_);
-    ar &make_nvp("spline_space_previous_refinement_",tmp);
-    spline_space_previous_refinement_ = tmp;
-#endif
-  }
-
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };
@@ -695,5 +674,11 @@ operator[](const Index i) const
 }
 
 IGA_NAMESPACE_CLOSE
+
+#ifdef SERIALIZATION
+
+#include <igatools/basis_functions/spline_space.serial>
+
+#endif // SERIALIZATION
 
 #endif
