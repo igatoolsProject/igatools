@@ -25,5 +25,5 @@ f = data.file_output
 inst = data.inst
 
 for dim in inst.all_domain_dims:
-    f.write('template struct BBox<%d> ;\n' % (dim))
+    f.write('template class BBox<%d> ;\n' % (dim))
  
