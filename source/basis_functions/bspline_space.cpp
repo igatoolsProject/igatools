@@ -387,7 +387,8 @@ create_element(const ListIt &index, const PropId &property) const
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
-  auto elem = std::make_unique<Elem>(this->get_this_space(),index,property);
+  std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>>
+      elem = std::make_unique<Elem>(this->get_this_space(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;

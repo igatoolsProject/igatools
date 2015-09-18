@@ -181,7 +181,7 @@ public:
    */
   void print_info(LogStream &out) const override final;
 
-  void print_cache_info(LogStream &out) const;
+  virtual void print_cache_info(LogStream &out) const override final;
 
 #if 0
   /**
