@@ -39,7 +39,7 @@ count_and_remove_duplicates(
   SafeSTLVector<T> &vec_without_duplicates,
   SafeSTLVector<int> &multiplicities)
 {
-  Assert(vec_with_duplicates.empty()==false,ExcEmptyObject());
+//  Assert(vec_with_duplicates.empty()==false,ExcEmptyObject());
 
   //------------------------------------------------------------------------------------------
   const auto vec_with_duplicates_begin = vec_with_duplicates.cbegin() ;
@@ -64,20 +64,23 @@ count_and_remove_duplicates(
   multiplicities.clear() ;
 
   const int size_vec_with_duplicates = vec_with_duplicates.size();
-  int id = 0;
-  multiplicities.push_back(1);
-  int mult_id = 0;
-  for (id = 1 ; id < size_vec_with_duplicates ; ++id)
+  if (size_vec_with_duplicates > 0)
   {
-    if (vec_with_duplicates[id] == vec_with_duplicates[id-1])
-    {
-      multiplicities[mult_id]++;
-    }
-    else
-    {
-      multiplicities.push_back(1);
-      mult_id++;
-    }
+	  int id = 0;
+	  multiplicities.push_back(1);
+	  int mult_id = 0;
+	  for (id = 1 ; id < size_vec_with_duplicates ; ++id)
+	  {
+		  if (vec_with_duplicates[id] == vec_with_duplicates[id-1])
+		  {
+			  multiplicities[mult_id]++;
+		  }
+		  else
+		  {
+			  multiplicities.push_back(1);
+			  mult_id++;
+		  }
+	  }
   }
 
   Assert(multiplicities.size() == int(vec_without_duplicates.size()),
