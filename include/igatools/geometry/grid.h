@@ -728,7 +728,7 @@ public:
    * Returns true if the element identified by <tt>elem_id</tt> has
    * the property <tt>prop</tt>.
    */
-  bool element_has_property(const IndexType elem_id,
+  bool element_has_property(const IndexType &elem_id,
                             const PropId &prop) const;
 
 #if 0

@@ -1055,7 +1055,7 @@ set_all_elements_property_status(const PropId &property,
 template <int dim_>
 bool
 Grid<dim_>::
-element_has_property(const IndexType elem_id,
+element_has_property(const IndexType &elem_id,
                      const PropId &prop) const
 {
   const auto &elem_list = this->get_elements_with_property(prop);
