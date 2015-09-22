@@ -235,9 +235,9 @@ private:
     ar &make_nvp(base_name,base_class<base_t>(this));
 
 #ifdef MESH_REFINEMENT
-    auto tmp = const_pointer_cast<RefSpace>(ref_space_previous_refinement_);
+    auto tmp = std::const_pointer_cast<RefSpace>(ref_space_previous_refinement_);
     ar &make_nvp("ref_space_previous_refinement_",tmp);
-    ref_space_previous_refinement_ = const_pointer_cast<const RefSpace>(tmp);
+    ref_space_previous_refinement_ = std::const_pointer_cast<const RefSpace>(tmp);
 #endif
   }
 

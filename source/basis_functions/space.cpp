@@ -216,7 +216,7 @@ void
 Space<dim_,codim_,range_,rank_,type_>::
 refine_h(const Size n_subdivisions)
 {
-  this->get_ptr_grid()->refine(n_subdivisions);
+  grid_.get_ptr_data()->refine(n_subdivisions);
 }
 
 #endif // MESH_REFINEMENT
@@ -257,19 +257,19 @@ serialize(Archive &ar, const unsigned int version)
 #ifdef SERIALIZATION
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
-  template<class Archive>
+template<class Archive>
 void
 Space<dim_,codim_,range_,rank_,type_>::
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("object_id_",object_id_);
+serialize(Archive &ar)
+{
+  ar &make_nvp("object_id_",object_id_);
 
-    ar &make_nvp("name_",name_);
+  ar &make_nvp("name_",name_);
 
-    ar &make_nvp("grid_",grid_);
+  ar &make_nvp("grid_",grid_);
 
-    ar &make_nvp("phys_domain_",phys_domain_);
-  }
+  ar &make_nvp("phys_domain_",phys_domain_);
+}
 #endif // SERIALIZATION
 
 IGA_NAMESPACE_CLOSE

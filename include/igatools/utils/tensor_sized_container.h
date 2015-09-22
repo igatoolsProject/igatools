@@ -129,12 +129,9 @@ public:
     return size_.memory_consumption() + weight_.memory_consumption();
   }
 
-protected:
   /**
-   * Reset the size_ member in order to be equal to the input argument @p size.
-   *
-   * @note This function is protected because it should be used in the resize() functions
-   * of a derived class.
+   * Reset the <tt>size_</tt> member in order to be equal to the input argument @p size.
+   * The member <tt>weight_</tt> will be changed accordingly.
    */
   void reset_size(const TensorSize<rank> &size);
 

@@ -294,7 +294,8 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
               std::placeholders::_2);
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  std::const_pointer_cast<Grid<dim_>>(this->get_ptr_grid())->connect_insert_knots(
+  std::const_pointer_cast<Grid<dim_>>(
+                                     this->get_grid())->connect_insert_knots(
                                      SlotType(func_to_connect).track_foreign(space));
 }
 
@@ -312,14 +313,16 @@ rebuild_after_insert_knots(
       std::dynamic_pointer_cast<const RefSpace>(ref_space_->get_space_previous_refinement()));
   Assert(prev_ref_space != nullptr, ExcNullPtr());
 
-//    const auto &prev_map_func = std::const_pointer_cast<MapFunc>(this->map_func_->get_function_previous_refinement());
+  AssertThrow(false,ExcNotImplemented());
+  //TODO (martinelli, 25 Sep 2015): fix the refinement for the domain
+#if 0
   Assert(this->get_ptr_map_func()->get_function_previous_refinement() != nullptr, ExcNullPtr());
-//    std::cout << "Counter = " << prev_map_func.use_count() << std::endl;
   Assert(this->get_ptr_map_func()->get_function_previous_refinement().unique(), ExcNotUnique());
 
   this->phys_space_previous_refinement_ =
     PhysicalSpace<dim_,range_,rank_,codim_,type_>::create(
       prev_ref_space,this->get_ptr_map_func()->get_function_previous_refinement());
+#endif
 }
 
 #endif

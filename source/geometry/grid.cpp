@@ -671,7 +671,7 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
       SafeSTLVector<Real>(new_coords_no_duplicates.begin(),
                           new_coords_no_duplicates.end()));
   }
-  TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
+  elems_size_.reset_size(knot_coordinates_.tensor_size()-1);
   // inserts the knots into the current grid --- end
   //----------------------------------------------------------------------------------
 
@@ -703,7 +703,7 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
       elems_id_fine_with_property.clear();
 
       const auto &elems_id_coarse_with_property =
-        grid_pre_refinement_->get_element_property(property_name);
+        grid_pre_refinement_->get_elements_with_property(property_name);
 
       for (const auto &elem_id_coarse : elems_id_coarse_with_property)
       {
@@ -1072,16 +1072,16 @@ template<class Archive>
 void
 Grid<dim_>::
 serialize(Archive &ar)
-  {
-    ar &make_nvp("knot_coordinates_",knot_coordinates_);
-    ar &make_nvp("boundary_id_",boundary_id_);
-    ar &make_nvp("properties_elements_id_",elem_properties_);
-    ar &make_nvp("object_id_",object_id_);
-    ar &make_nvp("elems_size_",elems_size_);
+{
+  ar &make_nvp("knot_coordinates_",knot_coordinates_);
+  ar &make_nvp("boundary_id_",boundary_id_);
+  ar &make_nvp("properties_elements_id_",elem_properties_);
+  ar &make_nvp("object_id_",object_id_);
+  ar &make_nvp("elems_size_",elems_size_);
 #ifdef MESH_REFINEMENT
-    ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
+  ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
 #endif
-  }
+}
 #endif // SERIALIZATION
 
 
