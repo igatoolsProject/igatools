@@ -114,7 +114,8 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create_element(const ListIt &index, const PropId &property) const
 -> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
 {
-  auto elem = std::make_unique<ElementAccessor>(this->get_this_space(),index,property);
+  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
+      elem = std::make_unique<ElementAccessor>(this->get_this_space(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
