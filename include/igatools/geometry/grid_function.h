@@ -82,6 +82,7 @@ protected:
 public:
   virtual ~GridFunction() = default;
 
+  /*
   static std::shared_ptr<self_t>
   create(std::shared_ptr<GridType> grid)
   {
@@ -94,6 +95,7 @@ public:
   {
     return create(grid);
   }
+//*/
 
   std::shared_ptr<GridType> get_grid() const;
 
@@ -141,10 +143,7 @@ public:
   ///@}
 
 
-  virtual void print_info(LogStream &out) const
-  {
-    AssertThrow(false,ExcNotImplemented());
-  }
+  virtual void print_info(LogStream &out) const = 0;
 
 private:
   SharedPtrConstnessHandler<Grid<dim_>> grid_;

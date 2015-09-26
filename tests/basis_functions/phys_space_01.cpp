@@ -38,6 +38,7 @@
 //#include <igatools/geometry/push_forward_element.h>
 
 #include <igatools/basis_functions/bspline_space.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/basis_functions/physical_space.h>
 
 #if 0
@@ -216,7 +217,8 @@ create_phys_space()
 	const int deg = 2;
 	auto ref_space = BSplineSpace<dim,range,rank>::create(deg,grid);
 
-	auto grid_func = GridFunction<dim,dim+codim>::create(grid);
+	using GridFunc = grid_functions::BallGridFunction<dim>;
+	auto grid_func = GridFunc::create(grid);
 
 	using Domain = Domain<dim,codim>;
 	auto domain = Domain::create(grid_func);
