@@ -48,8 +48,8 @@ void do_test(const int p, const int num_knots = 10)
   using Space = BSplineSpace<dim, range, rank>;
 
 
-  auto grid = Grid<dim>::const_create(num_knots);
-  auto space = Space::const_create(p, grid) ;
+  auto grid = Grid<dim>::create(num_knots);
+  auto space = Space::create(p, grid) ;
   auto f = BoundaryFunction<dim>::const_create(grid);
 
 

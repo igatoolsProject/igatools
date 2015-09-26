@@ -96,8 +96,8 @@ void do_test(const int p, TensorSize<dim> n_knots)
   using Space = BSplineSpace<dim, range, rank>;
 
 
-  auto grid = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(p, grid) ;
+  auto grid = Grid<dim>::create(n_knots);
+  auto space = Space::create(p, grid) ;
   auto f = XProject<dim>::const_create(grid);
 
   const int n_qpoints = 4;
