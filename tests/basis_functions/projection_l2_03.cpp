@@ -45,15 +45,15 @@ void test_proj(const int deg, const int n_knots = 4)
   using RefSpace = ReferenceSpace<dim,range,rank> ;
   using Func = typename functions::ConstantFunction<dim, 0, range, rank>;
 
-  auto grid = Grid<dim>::create(n_knots);
-  auto space = Space::create(deg, grid);
+  auto grid = Grid<dim>::const_create(n_knots);
+  auto space = Space::const_create(deg, grid);
 
 
   typename Func::Value val;
   for (int i=0; i<range; ++i)
     val[i] = i+3;
 
-  auto f = Func::create(grid, IdentityFunction<dim>::create(grid), val);
+  auto f = Func::const_create(grid, IdentityFunction<dim>::const_create(grid), val);
 
   const int n_qp = 4;
   QGauss<dim> quad(n_qp);

@@ -41,13 +41,13 @@ void test()
   const int r = 2;
 
   using Space = NURBSSpace< dim, range, rank >;
-  auto  knots = Grid<dim>::create(3);
+  auto  knots = Grid<dim>::const_create(3);
 
   auto degree = TensorIndex<dim>(r);
-  auto bsp_space = BSplineSpace<dim,range,rank>::create(degree, knots);
+  auto bsp_space = BSplineSpace<dim,range,rank>::const_create(degree, knots);
 
   using ScalarSpSpace = BSplineSpace<dim,1,1>;
-  auto scalar_bsp_space = ScalarSpSpace::create(degree, knots);
+  auto scalar_bsp_space = ScalarSpSpace::const_create(degree, knots);
 
   const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
 
@@ -59,10 +59,10 @@ void test()
   Epetra_SerialComm comm;
   auto map = create_map(*scalar_bsp_space, "active", comm);
 
-  auto w_func = WeightFunc::create(scalar_bsp_space,
+  auto w_func = WeightFunc::const_create(scalar_bsp_space,
                                    std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights_coef.data()));
 
-  auto nrb_space = Space::create(bsp_space,w_func);
+  auto nrb_space = Space::const_create(bsp_space,w_func);
 
   const int n_points = 3;
 //    QGauss<dim> quad(n_points);

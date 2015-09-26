@@ -92,7 +92,7 @@ create(const DegreeTable &deg,
 template<int dim, int range, int rank>
 std::shared_ptr<const SplineSpace<dim,range,rank> >
 SplineSpace<dim, range, rank>::
-create(const DegreeTable &deg,
+const_create(const DegreeTable &deg,
        const std::shared_ptr<const GridType> &grid,
        const MultiplicityTable &interior_mult,
        const PeriodicityTable &periodic)

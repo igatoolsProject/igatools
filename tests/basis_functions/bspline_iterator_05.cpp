@@ -35,9 +35,9 @@ void sub_elem_values(const int n_knots, const int deg)
 {
   OUTSTART
 
-  auto grid = Grid<dim>::create(n_knots);
+  auto grid = Grid<dim>::const_create(n_knots);
   using Space = BSplineSpace<dim>;
-  auto space = Space::create_nonconst(deg, grid);
+  auto space = Space::const_create(deg, grid);
 
   const int n_qp = 2;
   auto k_quad = QGauss<k>::create(n_qp);

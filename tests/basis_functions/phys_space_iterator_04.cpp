@@ -43,7 +43,7 @@ auto
 create_function(shared_ptr<Grid<dim>> grid)
 {
   using Function = functions::CylindricalAnnulus<dim>;
-  auto map = Function::create(grid, IdentityFunction<dim>::create(grid),
+  auto map = Function::const_create(grid, IdentityFunction<dim>::const_create(grid),
                               1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
   return map;
 }
@@ -56,12 +56,12 @@ void elem_values(const int n_knots = 2, const int deg=1)
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  auto grid  = Grid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::const_create(n_knots);
 
-  auto ref_space = BspSpace::create(deg, grid);
+  auto ref_space = BspSpace::const_create(deg, grid);
   auto map_func = create_function(grid);
 
-  auto space = Space::create(ref_space, map_func);
+  auto space = Space::const_create(ref_space, map_func);
 
   const int n_qp = 2;
   auto quad = QGauss<k>(n_qp);

@@ -32,7 +32,7 @@
 
 template <int dim,int range>
 void print_boundary_and_repeated_knots(
-  std::shared_ptr<SplineSpace<dim,range>> sp_spec,
+  std::shared_ptr<const SplineSpace<dim,range>> sp_spec,
   typename SplineSpace<dim,range>::BoundaryKnotsTable bdry_knots)
 {
   using SplineSpace = SplineSpace<dim,range>;
@@ -60,10 +60,10 @@ void test_1d()
   using SplineSpace = SplineSpace<dim>;
   using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
-  auto grid = Grid<dim>::create(4);
+  auto grid = Grid<dim>::const_create(4);
   typename SplineSpace::DegreeTable deg {{2}};
   auto int_mult = MultiplicityTable({ {{1,3}} });
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
   CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
@@ -82,12 +82,12 @@ void test_2d()
   const int dim=2;
   using SplineSpace = SplineSpace<dim>;
   using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-  auto grid = Grid<dim>::create({3,5});
+  auto grid = Grid<dim>::const_create({3,5});
   typename SplineSpace::DegreeTable deg {{1,3}};
 
   auto int_mult = MultiplicityTable({ {{1}, {1,3,1}} });
 
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
   iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
   iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
@@ -106,11 +106,11 @@ void test_3d()
   const int dim=3;
   using SplineSpace = SplineSpace<dim>;
   using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-  auto grid = Grid<dim>::create({3,4,5});
+  auto grid = Grid<dim>::const_create({3,4,5});
   typename SplineSpace::DegreeTable deg {{1,3,0}};
   auto int_mult = MultiplicityTable({ {{1}, {1,3}, {1,1,1}} });
 
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
   iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
   iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
@@ -131,12 +131,12 @@ void test_2d_2()
   const int range=2;
   using SplineSpace = SplineSpace<dim, range, 1>;
   using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-  auto grid = Grid<dim>::create({3,4});
+  auto grid = Grid<dim>::const_create({3,4});
   typename SplineSpace::DegreeTable deg {{1,3},{3,1}};
 
   auto int_mult = MultiplicityTable({ {{1}, {1,3}},{{1}, {1,1}}});
 
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
   iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
   iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};

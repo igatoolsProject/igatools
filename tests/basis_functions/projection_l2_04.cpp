@@ -56,11 +56,11 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 
   TestFunc(std::shared_ptr<GridType> grid)
-    : parent_t(grid, IdentityFunction<dim>::create(grid))
+    : parent_t(grid, IdentityFunction<dim>::const_create(grid))
   {}
 
   static std::shared_ptr<base_t>
-  create(std::shared_ptr<GridType> grid)
+  const_create(std::shared_ptr<GridType> grid)
   {
     return std::shared_ptr<base_t>(new self_t(grid));
   }
@@ -103,13 +103,13 @@ void test_proj(const int p, const int n_knots = 4)
   using RefSpace = ReferenceSpace<dim,range,rank> ;
   using Func = TestFunc<dim,range, rank>;
 
-  auto grid = Grid<dim>::create(n_knots);
-  auto space = Space::create(p, grid);
+  auto grid = Grid<dim>::const_create(n_knots);
+  auto space = Space::const_create(p, grid);
 
   const int n_qp = 4;
   QGauss<dim> quad(n_qp);
 
-  auto f = Func::create(grid);
+  auto f = Func::const_create(grid);
   auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
   proj_func->print_info(out);
 

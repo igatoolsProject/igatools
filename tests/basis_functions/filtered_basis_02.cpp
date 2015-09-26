@@ -60,7 +60,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   using Space = BSplineSpace<dim, range, rank>;
 
   auto grid = Grid<dim>::create(n_knots);
-  auto space = Space::create_nonconst(deg, grid);
+  auto space = Space::create(deg, grid);
   auto dof_dist = space->get_ptr_dof_distribution();
   dof_dist->add_dofs_property(DofProp::interior);
   dof_dist->add_dofs_property(DofProp::dirichlet);
@@ -136,10 +136,10 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   solution->print_info(out);
 
   const int n_plot_points = 4;
-  auto map1 = IdentityFunction<dim>::create(space->get_ptr_const_grid());
+  auto map1 = IdentityFunction<dim>::const_create(space->get_ptr_const_grid());
   Writer<dim> writer(map1, n_plot_points);
   using IgFunc = IgFunction<dim,0,range,rank>;
-  auto solution_function = IgFunc::create(space, solution, DofProp::interior);
+  auto solution_function = IgFunc::const_create(space, solution, DofProp::interior);
   writer.template add_field<1,1>(solution_function, "solution");
   string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
   writer.save(filename);

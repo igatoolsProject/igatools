@@ -111,23 +111,23 @@ void do_test()
 
 
   using Space = NURBSSpace< dim, range, rank >;
-  auto grid = Grid<dim>::create(coord);
+  auto grid = Grid<dim>::const_create(coord);
 
-  auto  bsp = BSplineSpace<dim, range, rank >::create_nonconst(degree, grid);
+  auto  bsp = BSplineSpace<dim, range, rank >::create(degree, grid);
 
   using ScalarBSplineSpace = BSplineSpace<dim>;
   using WeightFunc = IgFunction<dim,0,1,1>;
-  auto scalar_space = ScalarBSplineSpace::create(degree,grid);
+  auto scalar_space = ScalarBSplineSpace::const_create(degree,grid);
   const auto n_scalar_basis = scalar_space->get_num_basis();
 
   SafeSTLVector<Real> weights(n_scalar_basis,1.0);
 
   Epetra_SerialComm comm;
   auto map = create_map(*scalar_space, "active", comm);
-  auto w_func = WeightFunc::create(scalar_space,
+  auto w_func = WeightFunc::const_create(scalar_space,
                                    std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights.data()));
 
-  auto nurbs_space = Space::create_nonconst(bsp, w_func);
+  auto nurbs_space = Space::create(bsp, w_func);
 //    nurbs_space->print_info(out);
 
 

@@ -44,8 +44,8 @@ void plot_basis(const int n_knots, const int deg)
   TensorIndex<dim> deg1(deg);
   typename Space::DegreeTable degt(deg1);
 
-  auto grid  = Grid<dim>::create(n_knots);
-  auto space = Space::create(deg, grid, InteriorReg::maximum, true,
+  auto grid  = Grid<dim>::const_create(n_knots);
+  auto space = Space::const_create(deg, grid, InteriorReg::maximum, true,
                              BasisEndBehaviour::periodic);
 
 
@@ -63,11 +63,11 @@ void plot_basis(const int n_knots, const int deg)
     coeffs[basis_index] = 1.;
 
     const int n_plot_points = 10;
-    Writer<dim> output(IdentityFunction<dim>::create(grid), n_plot_points);
+    Writer<dim> output(IdentityFunction<dim>::const_create(grid), n_plot_points);
 
     string field_name = "basis " + to_string(basis_index);
 
-    auto basis = IgFunction<RefSpace>::create(space, coeffs);
+    auto basis = IgFunction<RefSpace>::const_create(space, coeffs);
     output.template add_field<1,1>(basis, field_name);
 
     string file_name = "bspline_basis-" + to_string(basis_index);

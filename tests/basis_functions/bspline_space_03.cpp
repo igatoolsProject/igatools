@@ -56,7 +56,7 @@ void using_const_function(shared_ptr<const Function<dim>> fun)
   using Func =  functions::ConstantFunction<dim, codim, 1>;
   typename Func::Value val {0.};
   auto grid = fun->get_grid();
-  auto zero = Func::create(grid, IdentityFunction<dim>::create(grid), val);
+  auto zero = Func::const_create(grid, IdentityFunction<dim>::const_create(grid), val);
   OUTEND
 }
 
@@ -65,13 +65,13 @@ int main()
   const int dim = 2;
   using Space = BSplineSpace<dim>;
 
-  auto grid = Grid<dim>::create(5);
-  auto space = Space::create(1, grid);
+  auto grid = Grid<dim>::const_create(5);
+  auto space = Space::const_create(1, grid);
 
   Epetra_SerialComm comm;
   auto coeff = EpetraTools::create_vector(*space, DofProperties::active,comm);
 
-  auto fun = IgFunction<dim,0,1,1>::create(space, coeff);
+  auto fun = IgFunction<dim,0,1,1>::const_create(space, coeff);
 
   using_const_space<2>(fun);
   using_const_function<2>(fun);

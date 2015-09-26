@@ -42,12 +42,12 @@ using namespace EpetraTools;
 template< int dim, int range >
 void do_test()
 {
-  auto grid = Grid<dim>::create();
+  auto grid = Grid<dim>::const_create();
 
   const int degree = 1;
   const int rank =  1 ;
   using Space = BSplineSpace< dim, range, rank >;
-  auto space = Space::create_nonconst(degree, grid);
+  auto space = Space::const_create(degree, grid);
 
   const auto  num = space->get_num_basis();
   Epetra_SerialComm comm;

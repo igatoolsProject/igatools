@@ -294,7 +294,7 @@ BSplineSpace(const DegreeTable &deg,
              const PeriodicityTable &periodic,
              const EndBehaviourTable &end_b)
   :
-  BSplineSpace(SpaceData::create(deg, grid, interior_mult, periodic),end_b)
+  BSplineSpace(SpaceData::const_create(deg, grid, interior_mult, periodic),end_b)
 {}
 
 

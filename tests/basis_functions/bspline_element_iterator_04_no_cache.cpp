@@ -55,7 +55,7 @@ create_space<2>(const int num_knots)
   using PeriodicityTable = typename Space::PeriodicityTable;
   using EndBehaviourTable = typename Space::EndBehaviourTable;
 
-  return Space::create_nonconst(degree_table, knots,
+  return Space::create(degree_table, knots,
                                 SpaceData::get_multiplicity_from_regularity(
                                   InteriorReg::maximum,
                                   degree_table,
@@ -77,7 +77,7 @@ create_space<3>(const int num_knots)
   using PeriodicityTable = typename Space::PeriodicityTable;
   using EndBehaviourTable = typename Space::EndBehaviourTable;
 
-  return Space::create_nonconst(degree_table, knots,
+  return Space::create(degree_table, knots,
                                 SpaceData::get_multiplicity_from_regularity(
                                   InteriorReg::maximum,
                                   degree_table,

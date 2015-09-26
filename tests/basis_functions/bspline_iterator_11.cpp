@@ -38,15 +38,15 @@ void uniform_space_cache(const space_element::Flags flag,
   OUTSTART
 
   using Space = BSplineSpace<dim, range, rank>;
-  auto grid  = Grid<dim>::create(n_knots);
-  auto space = Space::create_nonconst(deg, grid);
+  auto grid  = Grid<dim>::const_create(n_knots);
+  auto space = Space::const_create(deg, grid);
 
   auto elem = space->begin();
 
   auto quad = QGauss<dim>::create(2);
   /*
   using ElemHandler = typename Space::ElementHandler;
-  auto value_handler = ElemHandler::create(space);
+  auto value_handler = ElemHandler::const_create(space);
   value_handler->reset(flag, quad);
   value_handler->print_info(out);
   //*/

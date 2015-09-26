@@ -52,7 +52,7 @@ void elem_derivatives(const int n_knots,
   typename Space::EndBehaviourTable ebt((typename Space::EndBehaviour(SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory))));
   auto int_mult = SplineSpace<dim,range,rank>::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto space = Space::create_nonconst(deg, grid, int_mult, periodic, ebt);
+  auto space = Space::create(deg, grid, int_mult, periodic, ebt);
 
   auto flag = der_flag[der];
   auto quad = QGauss<dim>::create(2);

@@ -161,7 +161,7 @@ public:
     const MultiplicityTable &interior_mult,
     const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
 
-  static std::shared_ptr<const SplineSpace<dim,range,rank> > create(
+  static std::shared_ptr<const SplineSpace<dim,range,rank> > const_create(
     const DegreeTable &deg,
     const std::shared_ptr<const GridType> &grid,
     const MultiplicityTable &interior_mult,

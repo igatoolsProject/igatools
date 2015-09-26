@@ -52,11 +52,11 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
 public:
     BoundaryFunction(std::shared_ptr<GridType> grid)
-        : FormulaFunction<dim>(grid, IdentityFunction<dim>::create(grid))
+        : FormulaFunction<dim>(grid, IdentityFunction<dim>::const_create(grid))
     {}
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid)
+    const_create(std::shared_ptr<GridType> grid)
     {
         return std::shared_ptr<base_t>(new self_t(grid));
     }
@@ -171,7 +171,7 @@ public:
     using typename parent_t::Map;
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+    const_create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
            const Real p=2.)
     {
         return std::shared_ptr<base_t>(new self_t(grid, map, p));

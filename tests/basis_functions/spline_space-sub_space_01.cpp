@@ -35,11 +35,11 @@ void sub_space(const TensorSize<dim> &n_knots, const TensorIndex<dim> &degree)
 {
   OUTSTART
   using SplineSpace = SplineSpace<dim, range, rank>;
-  auto grid = Grid<dim>::create(n_knots);
+  auto grid = Grid<dim>::const_create(n_knots);
   typename SplineSpace::DegreeTable deg {degree};
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto space = SplineSpace::create(deg, grid, int_mult);
+  auto space = SplineSpace::const_create(deg, grid, int_mult);
 
   for (auto  s_id : UnitElement<dim>::template elems_ids<k>())
   {

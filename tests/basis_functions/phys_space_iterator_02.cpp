@@ -155,7 +155,7 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
   }
 
   using Function = IgFunction<dim,0,dim+codim,1>;
-  return Function::create(space, control_pts);
+  return Function::const_create(space, control_pts);
 }
 
 
@@ -165,7 +165,7 @@ create_phys_space(shared_ptr<BSplineSpace<dim,range,rank>> ref_space)
 {
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  return Space::create_nonconst(ref_space,
+  return Space::create(ref_space,
                                 create_function(ref_space));
 }
 
@@ -179,9 +179,9 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
 //    using ElementHandler = typename Space::ElementHandler;
 
-  auto grid  = Grid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::const_create(n_knots);
 
-  auto ref_space = BspSpace::create_nonconst(deg, grid);
+  auto ref_space = BspSpace::create(deg, grid);
 
 
   auto space = create_phys_space(ref_space);

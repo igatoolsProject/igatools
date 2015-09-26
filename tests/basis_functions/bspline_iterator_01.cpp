@@ -41,7 +41,7 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 
   auto grid = Grid<dim>::create();
   using Space = BSplineSpace<dim, range, rank>;
-  auto space = Space::create_nonconst(deg, grid);
+  auto space = Space::create(deg, grid);
 
 
   auto quad = QGauss<k>::create(n_qp);
@@ -92,7 +92,7 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
 
   auto grid = Grid<dim>::create();
   using Space = BSplineSpace<dim, range, rank>;
-  auto space = Space::create_nonconst(deg, grid);
+  auto space = Space::create(deg, grid);
 
   auto dof_distribution = space->get_ptr_dof_distribution();
   //dof_distribution->add_dofs_property(DofProperties::active);

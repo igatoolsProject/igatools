@@ -59,7 +59,7 @@ create_function(shared_ptr<Grid<dim>> grid)
     b[i] = i;
   }
 
-  return Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  return Function::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
 }
 
 
@@ -73,12 +73,12 @@ void elem_values(const int n_knots = 5, const int deg=1)
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 //    using ElementHandler = typename Space::ElementHandler;
 
-  auto grid  = Grid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::const_create(n_knots);
 
-  auto ref_space = BspSpace::create(deg, grid);
+  auto ref_space = BspSpace::const_create(deg, grid);
   auto map_func = create_function(grid);
 
-  auto space = Space::create(ref_space, map_func);
+  auto space = Space::const_create(ref_space, map_func);
 
   auto flag = ValueFlags::none;
   switch (order)

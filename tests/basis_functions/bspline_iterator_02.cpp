@@ -39,8 +39,8 @@ void elem_dofs(const int n_knots = 4, const int deg=1)
   OUTSTART
 
   using Space = BSplineSpace<dim, range, rank>;
-  auto grid  = Grid<dim>::create(n_knots);
-  auto space = Space::create_nonconst(deg, grid);
+  auto grid  = Grid<dim>::const_create(n_knots);
+  auto space = Space::const_create(deg, grid);
 
   auto elem = space->begin();
   auto end = space->end();

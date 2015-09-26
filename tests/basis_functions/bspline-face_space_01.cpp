@@ -37,8 +37,8 @@ void sub_ref_space(TensorSize<dim> n, const int degree = 1)
 
   using Space = BSplineSpace<dim, range, rank>;
 
-  auto grid = Grid<dim>::create(n);
-  auto space = Space::create(degree, grid);
+  auto grid = Grid<dim>::const_create(n);
+  auto space = Space::const_create(degree, grid);
 
   typename Space::template InterSpaceMap<sub_dim> dof_map;
   std::map<Index,Index> elem_map;

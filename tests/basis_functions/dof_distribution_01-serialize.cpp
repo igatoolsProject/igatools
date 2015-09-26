@@ -70,10 +70,10 @@ void dof_distribution_serialization()
 
   typename SplineSpace::DegreeTable deg(TensorIndex<dim>(2));
 
-  auto grid = Grid<dim>::create(4);
+  auto grid = Grid<dim>::const_create(4);
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto sp_spec = SplineSpace::create(deg, grid,int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid,int_mult);
 
 
   auto n_basis = sp_spec->get_num_basis_table();

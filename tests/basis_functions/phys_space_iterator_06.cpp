@@ -50,7 +50,7 @@ create_function(shared_ptr<Grid<dim>> grid)
   for (int j=0; j<dim; j++)
     A[j][j] = 1.;
 
-  return Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  return Function::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
 }
 
 
@@ -62,12 +62,12 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 //    using RefSpace = ReferenceSpace<dim, range,rank>;
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  auto grid  = Grid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::const_create(n_knots);
 
-  auto ref_space = BspSpace::create(deg, grid);
+  auto ref_space = BspSpace::const_create(deg, grid);
   auto map_func = create_function(grid);
 
-  auto space = Space::create(ref_space, map_func);
+  auto space = Space::const_create(ref_space, map_func);
 
 
   auto quad = QGauss<k>(n_qp);

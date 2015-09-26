@@ -53,11 +53,11 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 public:
   XProject(std::shared_ptr<GridType> grid)
-    : FormulaFunction<dim>(grid, IdentityFunction<dim>::create(grid))
+    : FormulaFunction<dim>(grid, IdentityFunction<dim>::const_create(grid))
   {}
 
   static std::shared_ptr<base_t>
-  create(std::shared_ptr<GridType> grid)
+  const_create(std::shared_ptr<GridType> grid)
   {
     return std::shared_ptr<base_t>(new self_t(grid));
   }
@@ -96,9 +96,9 @@ void do_test(const int p, TensorSize<dim> n_knots)
   using Space = BSplineSpace<dim, range, rank>;
 
 
-  auto grid = Grid<dim>::create(n_knots);
-  auto space = Space::create(p, grid) ;
-  auto f = XProject<dim>::create(grid);
+  auto grid = Grid<dim>::const_create(n_knots);
+  auto space = Space::const_create(p, grid) ;
+  auto f = XProject<dim>::const_create(grid);
 
   const int n_qpoints = 4;
   QGauss<sub_dim> quad(n_qpoints);

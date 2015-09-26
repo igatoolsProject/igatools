@@ -39,10 +39,10 @@ void test1()
 
   typename SplineSpace::DegreeTable deg {{2}};
 
-  auto grid = Grid<dim>::create(4);
+  auto grid = Grid<dim>::const_create(4);
 
   auto int_mult = MultiplicityTable({ {{1,3}} });
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
   CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
@@ -81,10 +81,10 @@ void test2()
 
   typename SplineSpace::DegreeTable deg {{1,2}};
 
-  auto grid = Grid<dim>::create({4,3});
+  auto grid = Grid<dim>::const_create({4,3});
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
   typename SplineSpace::EndBehaviourTable end_b((typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory))));
 

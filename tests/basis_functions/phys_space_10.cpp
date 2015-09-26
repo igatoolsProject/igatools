@@ -46,8 +46,8 @@ void cache_init(const ValueFlags flag,
 
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-  auto grid      = Grid<dim>::create(n_knots);
-  auto ref_space = BspSpace::create(deg, grid);
+  auto grid      = Grid<dim>::const_create(n_knots);
+  auto ref_space = BspSpace::const_create(deg, grid);
 
   using Function = functions::LinearFunction<dim, 0, dim+codim>;
   typename Function::Value    b;
@@ -61,8 +61,8 @@ void cache_init(const ValueFlags flag,
   }
 
   auto quad = QGauss<dim>(2);
-  auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
-  auto space = Space::create(ref_space, map_func);
+  auto map_func = Function::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
+  auto space = Space::const_create(ref_space, map_func);
 
 
   auto elem_handler = space->create_cache_handler();
@@ -84,8 +84,8 @@ void cache_init_elem(const ValueFlags flag,
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  auto grid  = Grid<dim>::create(n_knots);
-  auto ref_space = BspSpace::create(deg, grid);
+  auto grid  = Grid<dim>::const_create(n_knots);
+  auto ref_space = BspSpace::const_create(deg, grid);
 
   using Function = functions::LinearFunction<dim, 0, dim+codim>;
   typename Function::Value    b;
@@ -99,8 +99,8 @@ void cache_init_elem(const ValueFlags flag,
   }
 
   auto quad = QGauss<dim>(2);
-  auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
-  auto space = Space::create(ref_space, map_func);
+  auto map_func = Function::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
+  auto space = Space::const_create(ref_space, map_func);
 
   auto elem_handler = space->create_cache_handler();
   elem_handler->reset(flag, quad);
@@ -123,8 +123,8 @@ void cache_fill_elem(const ValueFlags flag,
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  auto grid  = Grid<dim>::create(n_knots);
-  auto ref_space = BspSpace::create(deg, grid);
+  auto grid  = Grid<dim>::const_create(n_knots);
+  auto ref_space = BspSpace::const_create(deg, grid);
 
   using Function = functions::LinearFunction<dim, 0, dim+codim>;
   typename Function::Value    b;
@@ -138,8 +138,8 @@ void cache_fill_elem(const ValueFlags flag,
   }
 
   auto quad = QGauss<dim>(2);
-  auto map_func = Function::create(grid,IdentityFunction<dim>::create(grid), A, b);
-  auto space = Space::create(ref_space, map_func);
+  auto map_func = Function::const_create(grid,IdentityFunction<dim>::const_create(grid), A, b);
+  auto space = Space::const_create(ref_space, map_func);
 
   auto elem_handler = space->create_cache_handler();
   elem_handler->reset(flag, quad);
@@ -167,8 +167,8 @@ void cache_get_elem_values(const ValueFlags flag,
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  auto grid  = Grid<dim>::create(n_knots);
-  auto ref_space = BspSpace::create(deg, grid);
+  auto grid  = Grid<dim>::const_create(n_knots);
+  auto ref_space = BspSpace::const_create(deg, grid);
 
   using Function = functions::LinearFunction<dim, 0, dim+codim>;
   typename Function::Value    b;
@@ -182,8 +182,8 @@ void cache_get_elem_values(const ValueFlags flag,
   }
 
   auto quad = QGauss<dim>(2);
-  auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
-  auto space = Space::create(ref_space, map_func);
+  auto map_func = Function::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
+  auto space = Space::const_create(ref_space, map_func);
 
   auto elem_handler = space->create_cache_handler();
   elem_handler->reset(flag, quad);

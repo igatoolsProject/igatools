@@ -37,17 +37,17 @@ void integrate(const int deg,  const int n_knots)
 {
   using Space = BSplineSpace<dim, range, rank>;
 
-  auto grid = Grid<dim>::create(n_knots);
-  auto space = Space::create(deg, grid);
+  auto grid = Grid<dim>::const_create(n_knots);
+  auto space = Space::const_create(deg, grid);
 
   const int n_qpoints = ceil((2*dim + 1)/2.);
   QGauss<dim> quad(n_qpoints);
 
 
-  auto f = NormFunction<dim>::create(grid, IdentityFunction<dim>::create(grid));
+  auto f = NormFunction<dim>::const_create(grid, IdentityFunction<dim>::const_create(grid));
 
   typename functions::ConstantFunction<dim,0,1>::Value val {0.};
-  auto g = functions::ConstantFunction<dim,0,1>::create(grid, IdentityFunction<dim>::create(grid), val);
+  auto g = functions::ConstantFunction<dim,0,1>::const_create(grid, IdentityFunction<dim>::const_create(grid), val);
 
 
   SafeSTLVector<Real> elem_err(grid->get_num_all_elems());

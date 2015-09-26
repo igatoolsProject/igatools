@@ -64,7 +64,7 @@ public:
   {}
 
   static std::shared_ptr<base_t>
-  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
+  const_create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
   {
     return std::shared_ptr<base_t>(new self_t(grid, map));
   }
@@ -109,8 +109,8 @@ void do_test(const int p, const int num_knots = 10)
   using BspSpace = BSplineSpace<dim,range,rank>;
   using Space = PhysicalSpace<dim,range,rank,codim>;
 
-  auto knots = Grid<dim>::create(num_knots);
-  auto ref_space = BspSpace::create_nonconst(p, knots);
+  auto knots = Grid<dim>::const_create(num_knots);
+  auto ref_space = BspSpace::create(p, knots);
 
   using Function = functions::LinearFunction<dim, 0, dim + codim>;
   typename Function::Value    b;
@@ -119,16 +119,16 @@ void do_test(const int p, const int num_knots = 10)
   {
     A[i][i] = 1+i;
   }
-//    auto map_func = Function::create(knots, IdentityFunction<dim>::create(knots), A, b);
+//    auto map_func = Function::const_create(knots, IdentityFunction<dim>::const_create(knots), A, b);
 
-  auto space = Space::create_nonconst(
+  auto space = Space::create(
                  ref_space,
-                 Function::create(knots, IdentityFunction<dim>::create(knots), A, b));
+                 Function::const_create(knots, IdentityFunction<dim>::const_create(knots), A, b));
 
   const int n_qpoints = 4;
   QGauss<dim> quad(n_qpoints);
 
-  auto f = BoundaryFunction<dim>::create(knots, space->get_ptr_map_func());
+  auto f = BoundaryFunction<dim>::const_create(knots, space->get_ptr_map_func());
   auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
   proj_func->print_info(out);
 

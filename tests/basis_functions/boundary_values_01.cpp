@@ -51,12 +51,12 @@ void do_test(const int p, const int num_knots = 10)
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
 
-  auto grid = Grid<dim>::create(num_knots);
-  auto ref_space = BspSpace::create(p, grid) ;
-  auto map = IdentityFunction<dim>::create(grid);
-  auto space = Space::create(ref_space, map);
+  auto grid = Grid<dim>::const_create(num_knots);
+  auto ref_space = BspSpace::const_create(p, grid) ;
+  auto map = IdentityFunction<dim>::const_create(grid);
+  auto space = Space::const_create(ref_space, map);
 
-  auto f = BoundaryFunction<dim>::create(grid);
+  auto f = BoundaryFunction<dim>::const_create(grid);
 
 
   const int n_qpoints = 4;

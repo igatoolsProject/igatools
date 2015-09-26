@@ -60,8 +60,8 @@ void assemble_matrix(const int n_knots, const int deg)
 
   end_b[0] = BasisEndBehaviour::periodic;
 
-  auto grid  = Grid<dim>::create(n_knots);
-  auto space = Space::create(degt, grid, InteriorReg::maximum, periodic, end_b);
+  auto grid  = Grid<dim>::const_create(n_knots);
+  auto space = Space::const_create(degt, grid, InteriorReg::maximum, periodic, end_b);
 
   space->print_info(out);
 
@@ -73,7 +73,7 @@ void assemble_matrix(const int n_knots, const int deg)
     A[i]=10*(i+1);
   }
 
-  auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  auto f = ConstFunction::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
 
   auto matrix = create_matrix(*space,DofProperties::active,Epetra_SerialComm());
   auto rhs = create_vector(matrix->RangeMap());
@@ -145,11 +145,11 @@ void assemble_matrix(const int n_knots, const int deg)
   solver->solve();
 
   const int n_plot_points = deg+1;
-  auto map1 = IdentityFunction<dim>::create(space->get_ptr_const_grid());
+  auto map1 = IdentityFunction<dim>::const_create(space->get_ptr_const_grid());
   Writer<dim> writer(map1, n_plot_points);
 
   using IgFunc = IgFunction<dim,0,1,1>;
-  auto solution_function = IgFunc::create(space, solution);
+  auto solution_function = IgFunc::const_create(space, solution);
 
   writer.template add_field<1,1>(solution_function, "solution");
   string filename = "poisson_problem-" + to_string(deg) + "-" +

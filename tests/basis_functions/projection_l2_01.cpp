@@ -46,13 +46,13 @@ void project_l2(const int p, const int num_knots = 10)
   using Space =  BSplineSpace<dim,range,rank>;
   using RefSpace =  ReferenceSpace<dim,range,rank>;
 
-  auto knots = Grid<dim>::create(num_knots);
-  auto space = Space::create(p, knots) ;
+  auto knots = Grid<dim>::const_create(num_knots);
+  auto space = Space::const_create(p, knots) ;
 
   const int n_qpoints = 4;
   QGauss<dim> quad(n_qpoints);
 
-  auto f = BoundaryFunction<dim>::create(knots);
+  auto f = BoundaryFunction<dim>::const_create(knots);
   auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
   proj_func->print_info(out);
 

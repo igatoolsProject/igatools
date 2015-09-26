@@ -49,8 +49,8 @@ shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
 {
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-  auto ref_space = BspSpace::create_nonconst(deg, grid);
-  return Space::create_nonconst(ref_space, map_func);
+  auto ref_space = BspSpace::create(deg, grid);
+  return Space::create(ref_space, map_func);
 }
 
 
@@ -81,8 +81,8 @@ shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
 
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-  auto ref_space = BspSpace::create_nonconst(deg, grid);
-  auto space = Space::create_nonconst(ref_space, map_func);
+  auto ref_space = BspSpace::create(deg, grid);
+  auto space = Space::create(ref_space, map_func);
 
   std::set<boundary_id>  dir_ids = {bc::dir};
   auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);

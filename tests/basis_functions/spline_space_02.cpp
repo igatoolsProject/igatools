@@ -32,11 +32,11 @@ void test_1d()
   const int dim=1;
   using SplineSpace = SplineSpace<dim>;
 
-  auto grid = Grid<dim>::create(4);
+  auto grid = Grid<dim>::const_create(4);
   typename SplineSpace::DegreeTable deg {{2}};
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
   sp_spec->print_info(out);
 
   CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
@@ -68,13 +68,13 @@ void test_2d()
   const int dim=2;
   using SplineSpace = SplineSpace<dim>;
 
-  auto grid = Grid<dim>::create({3,5});
+  auto grid = Grid<dim>::const_create({3,5});
   typename SplineSpace::DegreeTable deg {{1,3}};
 
 
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
   sp_spec->print_info(out);
 
   iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
@@ -98,11 +98,11 @@ void test_3d()
   const int dim=3;
   using SplineSpace = SplineSpace<dim>;
 
-  auto grid = Grid<dim>::create({3,4,5});
+  auto grid = Grid<dim>::const_create({3,4,5});
   typename SplineSpace::DegreeTable deg {{1,3,0}};
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
   sp_spec->print_info(out);
 
 
@@ -130,11 +130,11 @@ void test_2d_2()
   const int range=2;
   using SplineSpace = SplineSpace<dim, range, 1>;
 
-  auto grid = Grid<dim>::create({3,4});
+  auto grid = Grid<dim>::const_create({3,4});
   typename SplineSpace::DegreeTable deg {{1,3},{3,1}};
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
   sp_spec->print_info(out);
 
   iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};

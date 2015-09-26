@@ -43,7 +43,7 @@ void evaluate_field(const int deg = 1)
 
   using Space = BSplineSpace<dim,range,rank>;
 
-  auto space = Space::create_nonconst(deg, grid);
+  auto space = Space::create(deg, grid);
   const auto  num = space->get_num_basis();
   Epetra_SerialComm comm;
   Epetra_Map map(num, num, 0, comm);

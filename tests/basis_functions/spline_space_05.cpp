@@ -32,7 +32,7 @@ void test(const int deg1)
 {
   using SplineSpace = SplineSpace<dim, range, rank>;
 
-  auto grid = Grid<dim>::create(4);
+  auto grid = Grid<dim>::const_create(4);
   typename SplineSpace::Degrees deg2(deg1);
   typename SplineSpace::DegreeTable deg(deg2);
 
@@ -43,7 +43,7 @@ void test(const int deg1)
 
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
   sp_spec->print_info(out);
 }
 
