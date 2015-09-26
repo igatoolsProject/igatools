@@ -133,11 +133,11 @@ public:
   virtual ~PhysicalSpace() = default;
 
   static std::shared_ptr<self_t>
-  create_nonconst(const std::shared_ptr<RefSpace> &ref_space,
+  create(const std::shared_ptr<RefSpace> &ref_space,
                   const std::shared_ptr<PhysDomain> &phys_domain);
 
   static std::shared_ptr<const self_t>
-  create(const std::shared_ptr<const RefSpace> &ref_space,
+  const_create(const std::shared_ptr<const RefSpace> &ref_space,
          const std::shared_ptr<const PhysDomain> &phys_domain);
 
   /**
@@ -205,6 +205,11 @@ public:
    */
   virtual int get_max_degree() const override final;
 
+  std::shared_ptr<const Domain<dim_,codim_>> get_physical_domain() const
+  {
+    return phys_domain_.get_ptr_const_data();
+  }
+
 private:
 
   /**
@@ -222,6 +227,9 @@ private:
 
 
   SharedPtrConstnessHandler<RefSpace> ref_space_;
+
+  SharedPtrConstnessHandler<PhysDomain> phys_domain_;
+
 
   std::shared_ptr<const self_t> phys_space_previous_refinement_ = nullptr;
 

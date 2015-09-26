@@ -84,18 +84,14 @@ protected:
   Space() = default;
 
   /**
-   * Construct the object from the (non-const) @p grid on which the function space will be built upon
-   * and the Domain over which the Space. is defined
+   * Construct the object from the (non-const) @p grid on which the function space will be built upon.
    */
-  Space(const std::shared_ptr<Grid<dim_>> &grid,
-        const std::shared_ptr<Domain<dim_,codim_>> &domain);
+  Space(const std::shared_ptr<Grid<dim_>> &grid);
 
   /**
-   * Construct the object from the (const) @p grid on which the function space will be built upon
-   * and the Domain over which the Space. is defined
+   * Construct the object from the (const) @p grid on which the function space will be built upon.
    */
-  Space(const std::shared_ptr<const Grid<dim_>> &grid,
-        const std::shared_ptr<const Domain<dim_,codim_>> &domain);
+  Space(const std::shared_ptr<const Grid<dim_>> &grid);
 
   /** Copy constructor. */
   Space(const self_t &) = delete;
@@ -281,12 +277,12 @@ public:
 
 #endif
 
+#if 0
   std::shared_ptr<const Domain<dim_,codim_>> get_physical_domain() const
   {
     return phys_domain_.get_ptr_const_data();
   }
-
-
+#endif
 
 private:
 
@@ -305,8 +301,8 @@ private:
    */
   SharedPtrConstnessHandler<Grid<dim_> > grid_;
 
-protected:
-  SharedPtrConstnessHandler<Domain<dim_,codim_>> phys_domain_;
+//protected:
+//  SharedPtrConstnessHandler<Domain<dim_,codim_>> phys_domain_;
 
 
 private:

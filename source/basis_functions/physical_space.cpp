@@ -45,9 +45,13 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(const shared_ptr<RefSpace> &ref_space,
               const shared_ptr<PhysDomain> &phys_domain)
   :
-  base_t(ref_space->get_grid(),phys_domain),
-  ref_space_(ref_space)
+  base_t(ref_space->get_grid()),
+  ref_space_(ref_space),
+  phys_domain_(phys_domain)
 {
+	  Assert(this->get_grid() == phys_domain_->get_grid_function()->get_grid(),
+	         ExcMessage("The space and the physical domain must have the same grid!"));
+
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
 }
 
@@ -56,9 +60,13 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(const shared_ptr<const RefSpace> &ref_space,
               const shared_ptr<const PhysDomain> &phys_domain)
   :
-  base_t(ref_space->get_grid(),phys_domain),
-  ref_space_(ref_space)
+  base_t(ref_space->get_grid()),
+  ref_space_(ref_space),
+  phys_domain_(phys_domain)
 {
+	  Assert(this->get_grid() == phys_domain_->get_grid_function()->get_grid(),
+	         ExcMessage("The space and the physical domain must have the same grid!"));
+
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
 }
 
@@ -66,7 +74,7 @@ PhysicalSpace(const shared_ptr<const RefSpace> &ref_space,
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-create_nonconst(const shared_ptr<RefSpace> &ref_space,
+create(const shared_ptr<RefSpace> &ref_space,
                 const shared_ptr<PhysDomain> &phys_domain) -> shared_ptr<self_t>
 {
 //  Assert(map_func != nullptr, ExcNullPtr());
@@ -83,7 +91,7 @@ create_nonconst(const shared_ptr<RefSpace> &ref_space,
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-create(const shared_ptr<const RefSpace> &ref_space,
+const_create(const shared_ptr<const RefSpace> &ref_space,
        const shared_ptr<const PhysDomain> &phys_domain) -> shared_ptr<const self_t>
 {
 //  Assert(ref_space != nullptr, ExcNullPtr());
@@ -251,7 +259,7 @@ print_info(LogStream &out) const
   out.end_item();
 
   out.begin_item("Physical domain:");
-  this->phys_domain_->print_info(out);
+  phys_domain_->print_info(out);
   out.end_item();
 }
 

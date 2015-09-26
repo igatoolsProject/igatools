@@ -41,31 +41,19 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 Space<dim_,codim_,range_,rank_,type_>::
-Space(const shared_ptr<Grid<dim_>> &grid,
-      const std::shared_ptr<Domain<dim_,codim_>> &domain)
+Space(const shared_ptr<Grid<dim_>> &grid)
   :
   object_id_(UniqueIdGenerator::get_unique_id()),
-  grid_(grid),
-  phys_domain_(domain)
-//  phys_domain_(PhysDomain::create(grid,map_func))
-{
-  Assert(this->get_grid() == phys_domain_->get_grid_function()->get_grid(),
-         ExcMessage("The space and the physical domain must have the same grid!"));
-
-}
+  grid_(grid)
+{}
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 Space<dim_,codim_,range_,rank_,type_>::
-Space(const shared_ptr<const Grid<dim_>> &grid,
-      const std::shared_ptr<const Domain<dim_,codim_>> &domain)
+Space(const shared_ptr<const Grid<dim_>> &grid)
   :
   object_id_(UniqueIdGenerator::get_unique_id()),
-  grid_(grid),
-  phys_domain_(domain)
-{
-  Assert(const_cast<const self_t &>(*this).get_grid() == phys_domain_->get_grid_function()->get_grid(),
-         ExcMessage("The space and the physical domain must have the same grid!"));
-}
+  grid_(grid)
+{}
 
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -268,7 +256,7 @@ serialize(Archive &ar)
 
   ar &make_nvp("grid_",grid_);
 
-  ar &make_nvp("phys_domain_",phys_domain_);
+//  ar &make_nvp("phys_domain_",phys_domain_);
 }
 #endif // SERIALIZATION
 

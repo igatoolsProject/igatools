@@ -61,7 +61,7 @@ BSplineSpace(const int degree,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create_nonconst(const int degree,
+create(const int degree,
                 const std::shared_ptr<GridType> &grid,
                 const InteriorReg interior_reg,
                 const bool periodic,
@@ -80,7 +80,7 @@ create_nonconst(const int degree,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(const int degree,
+const_create(const int degree,
        const std::shared_ptr<const GridType> &grid,
        const InteriorReg interior_reg,
        const bool periodic,
@@ -129,7 +129,7 @@ BSplineSpace(const Degrees &deg,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create_nonconst(const Degrees &deg,
+create(const Degrees &deg,
                 const std::shared_ptr<GridType> &grid,
                 const InteriorReg interior_reg,
                 const Periodicity &periodic,
@@ -149,7 +149,7 @@ create_nonconst(const Degrees &deg,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(const Degrees &deg,
+const_create(const Degrees &deg,
        const std::shared_ptr<const GridType> &grid,
        const InteriorReg interior_reg,
        const Periodicity &periodic,
@@ -302,7 +302,7 @@ BSplineSpace(const DegreeTable &deg,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create_nonconst(const DegreeTable &deg,
+create(const DegreeTable &deg,
                 const std::shared_ptr<GridType> &grid,
                 const MultiplicityTable &interior_mult,
                 const PeriodicityTable &periodic,
@@ -322,7 +322,7 @@ create_nonconst(const DegreeTable &deg,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(const DegreeTable &deg,
+const_create(const DegreeTable &deg,
        const std::shared_ptr<const GridType> &grid,
        const MultiplicityTable &interior_mult,
        const PeriodicityTable &periodic,
@@ -339,7 +339,7 @@ create(const DegreeTable &deg,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create_nonconst(const std::shared_ptr<SpaceData> &space_data,
+create(const std::shared_ptr<SpaceData> &space_data,
                 const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
@@ -356,7 +356,7 @@ create_nonconst(const std::shared_ptr<SpaceData> &space_data,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(const std::shared_ptr<const SpaceData> &space_data,
+const_create(const std::shared_ptr<const SpaceData> &space_data,
        const EndBehaviourTable &end_b)
 -> shared_ptr<const self_t>
 {
@@ -424,7 +424,7 @@ get_ref_sub_space(const int s_id,
     for (int j=0; j<k; ++j)
       sub_end_b[comp][j] = end_b_[comp][active_dirs[j]];
   auto sub_space =
-  SubRefSp::create_nonconst(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
+  SubRefSp::create(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
 
   // Creating the mapping between the space degrees of freedom
   const int n_dir = k_elem.constant_directions.size();

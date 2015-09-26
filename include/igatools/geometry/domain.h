@@ -167,10 +167,7 @@ public:
   ///@}
 
 
-  void print_info(LogStream &out) const
-  {
-    AssertThrow(false,ExcNotImplemented());
-  }
+  void print_info(LogStream &out) const;
 
 private:
   SharedPtrConstnessHandler<GridFunction<dim, space_dim>> grid_func_;

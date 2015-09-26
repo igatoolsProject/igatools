@@ -68,6 +68,13 @@ public:
   BallGridFunction(const self_t &) = default;
   virtual ~BallGridFunction() = default;
 
+  virtual void print_info(LogStream &out) const override final
+  {
+	out.begin_item("BallGridFunction<" + std::to_string(dim) +">");
+	out.end_item();
+  }
+
+
 protected:
   BallGridFunction(std::shared_ptr<GridType> grid);
 
@@ -129,6 +136,12 @@ public:
 
   SphereGridFunction(const self_t &) = default;
   virtual ~SphereGridFunction() = default;
+
+  virtual void print_info(LogStream &out) const override final
+  {
+	out.begin_item("SphereGridFunction<" + std::to_string(dim) +">");
+	out.end_item();
+  }
 
 protected:
   SphereGridFunction(std::shared_ptr<GridType> grid);

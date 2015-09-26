@@ -19,25 +19,28 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for physical space
+ *  Test for physical space using a BSplineSpace as reference space.
  *
- *  author: pauletti
- *  date: Oct 08, 2014
+ *  author: martinelli
+ *  date: Sep 24, 2015
  *
  */
 
 #include "../tests.h"
 
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
+//#include <igatools/base/quadrature_lib.h>
+//#include <igatools/functions/function_lib.h>
+//#include <igatools/functions/identity_function.h>
 
-#include <igatools/basis_functions/phys_space_element_handler.h>
-#include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/physical_space_element.h>
+//#include <igatools/basis_functions/phys_space_element_handler.h>
+//#include <igatools/basis_functions/bspline_element.h>
+//#include <igatools/basis_functions/physical_space_element.h>
 //#include <igatools/geometry/push_forward_element.h>
 
+#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/physical_space.h>
 
+#if 0
 template <int dim, int range=1, int rank=1, int codim = 0>
 void cache_init(const ValueFlags flag,
                 const int n_knots = 5, const int deg=1)
@@ -200,16 +203,58 @@ void cache_get_elem_values(const ValueFlags flag,
   OUTEND
 }
 
+#endif
+
+
+
+template <int dim, int range=1, int rank=1, int codim = 0>
+std::shared_ptr<const PhysicalSpace<dim,range,rank,codim,Transformation::h_grad>>
+create_phys_space()
+{
+	OUTSTART
+	auto grid = Grid<dim>::create();
+	const int deg = 2;
+	auto ref_space = BSplineSpace<dim,range,rank>::create(deg,grid);
+
+	auto grid_func = GridFunction<dim,dim+codim>::create(grid);
+
+	using Domain = Domain<dim,codim>;
+	auto domain = Domain::create(grid_func);
+
+	using PhysSpace = PhysicalSpace<dim,range,rank,codim,Transformation::h_grad>;
+	auto phys_space = PhysSpace::create(ref_space,domain);
+
+
+	using std::to_string;
+	out.begin_item("PhysicalSpace<"
+			+ to_string(dim) + ","
+			+ to_string(range) + ","
+			+ to_string(rank) + ","
+			+ to_string(codim) + ",Transformation::h_grad>");
+	phys_space->print_info(out);
+	out.end_item();
+
+	OUTEND
+
+	return phys_space;
+}
+
+template <int dim, int range=1, int rank=1, int codim = 0>
+void
+test_phys_space_accessor()
+{
+	auto phys_space = create_phys_space<dim,range,rank,codim>();
+
+}
 
 
 int main()
 {
   out.depth_console(10);
 
-  cache_init<1>(ValueFlags::value);
-  cache_init_elem<1>(ValueFlags::value);
-  cache_fill_elem<1>(ValueFlags::value);
-  cache_get_elem_values<1>(ValueFlags::value);
+  test_phys_space_accessor<1>();
+//  create_space<2>();
+//  create_space<3>();
 
   return  0;
 }

@@ -177,7 +177,7 @@ public:
    * in all components.
    */
   static std::shared_ptr<self_t>
-  create_nonconst(const int degree,
+  create(const int degree,
                   const std::shared_ptr<GridType> &grid,
                   const InteriorReg interior_reg = InteriorReg::maximum,
                   const bool periodic = false,
@@ -190,7 +190,7 @@ public:
    * in all components.
    */
   static std::shared_ptr<const self_t>
-  create(const int degree,
+  const_create(const int degree,
          const std::shared_ptr<const GridType> &grid,
          const InteriorReg interior_reg = InteriorReg::maximum,
          const bool periodic = false,
@@ -203,7 +203,7 @@ public:
    * in all components.
    */
   static std::shared_ptr<self_t>
-  create_nonconst(const Degrees &degree,
+  create(const Degrees &degree,
                   const std::shared_ptr<GridType> &grid,
                   const InteriorReg interior_reg = InteriorReg::maximum,
                   const Periodicity &periodic = Periodicity(false),
@@ -216,7 +216,7 @@ public:
    * in all components.
    */
   static std::shared_ptr<const self_t>
-  create(const Degrees &degree,
+  const_create(const Degrees &degree,
          const std::shared_ptr<const GridType> &grid,
          const InteriorReg interior_reg = InteriorReg::maximum,
          const Periodicity &periodic = Periodicity(false),
@@ -231,7 +231,7 @@ public:
    * component.
    */
   static std::shared_ptr<self_t>
-  create_nonconst(const DegreeTable &deg,
+  create(const DegreeTable &deg,
                   const std::shared_ptr<GridType> &grid,
                   const MultiplicityTable &interior_mult,
                   const PeriodicityTable &periodic,
@@ -246,18 +246,18 @@ public:
    * component.
    */
   static std::shared_ptr<const self_t>
-  create(const DegreeTable &deg,
+  const_create(const DegreeTable &deg,
          const std::shared_ptr<const GridType> &grid,
          const MultiplicityTable &interior_mult,
          const PeriodicityTable &periodic,
          const EndBehaviourTable &end_b);
 
   static std::shared_ptr<self_t>
-  create_nonconst(const std::shared_ptr<SpaceData> &space_data,
+  create(const std::shared_ptr<SpaceData> &space_data,
                   const EndBehaviourTable &end_b);
 
   static std::shared_ptr<const self_t>
-  create(const std::shared_ptr<const SpaceData> &space_data,
+  const_create(const std::shared_ptr<const SpaceData> &space_data,
          const EndBehaviourTable &end_b);
   ///@}
 

@@ -155,6 +155,24 @@ cend(const PropId &prop) const -> ElementConstIterator
                               prop);
 }
 
+
+template<int dim_, int codim_>
+void
+Domain<dim_, codim_>::
+print_info(LogStream &out) const
+{
+	using std::to_string;
+	out.begin_item("GridFunction<"
+			+ to_string(dim)
+			+ ","
+			+ to_string(space_dim)
+			+">");
+	grid_func_->print_info(out);
+	out.end_item();
+//    AssertThrow(false,ExcNotImplemented());
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/domain.inst>
