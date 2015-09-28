@@ -56,10 +56,10 @@ void test_evaluate()
   grid->refine();
 
   const int deg = 2;
-  auto bsp_space = BSplineSpace<dim,dim>::create_nonconst(deg, grid);
+  auto bsp_space = BSplineSpace<dim,dim>::create(deg, grid);
 
   using ScalarSpSpace = BSplineSpace<dim,1,1>;
-  auto scalar_bsp_space = ScalarSpSpace::create_nonconst(deg, grid);
+  auto scalar_bsp_space = ScalarSpSpace::create(deg, grid);
 
   const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
 
@@ -77,7 +77,7 @@ void test_evaluate()
 
   using RefSpace = ReferenceSpace<dim,dim>;
   using RefSpacePtr = std::shared_ptr<RefSpace>;
-  RefSpacePtr ref_space = NURBSSpace<dim,dim>::create_nonconst(bsp_space,w_func);
+  RefSpacePtr ref_space = NURBSSpace<dim,dim>::create(bsp_space,w_func);
 
   IgCoefficients control_pts;
   if (dim == 1)
@@ -147,7 +147,7 @@ void test_evaluate()
                                         IgFunction<dim,0,dim,1>::create(ref_space,control_pts);
 
   auto phys_space =
-    PhysicalSpace<dim,dim,1,0,Transformation::h_grad>::create_nonconst(ref_space,func_mapping);
+    PhysicalSpace<dim,dim,1,0,Transformation::h_grad>::create(ref_space,func_mapping);
 
 
 

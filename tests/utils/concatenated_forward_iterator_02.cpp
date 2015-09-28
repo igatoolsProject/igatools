@@ -63,7 +63,7 @@ do_test_1()
 
     int degree = i_sp + 2;
 
-    ref_spaces[i_sp] = RefSpace::create_nonconst(degree,grid);
+    ref_spaces[i_sp] = RefSpace::create(degree,grid);
 
     auto dof_distribution = ref_spaces[i_sp]->get_ptr_dof_distribution();
 
@@ -126,7 +126,7 @@ do_test_2()
 
     int degree = i_sp + 2;
 
-    ref_spaces[i_sp] = RefSpace::create_nonconst(degree,grid);
+    ref_spaces[i_sp] = RefSpace::create(degree,grid);
 
     auto dof_distribution = ref_spaces[i_sp]->get_ptr_dof_distribution();
 

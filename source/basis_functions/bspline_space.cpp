@@ -62,10 +62,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(const int degree,
-                const std::shared_ptr<GridType> &grid,
-                const InteriorReg interior_reg,
-                const bool periodic,
-                const BasisEndBehaviour end_b) -> shared_ptr<self_t>
+       const std::shared_ptr<GridType> &grid,
+       const InteriorReg interior_reg,
+       const bool periodic,
+       const BasisEndBehaviour end_b) -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(new self_t(degree,grid,interior_reg,periodic,end_b));
   Assert(sp != nullptr, ExcNullPtr());
@@ -81,10 +81,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 const_create(const int degree,
-       const std::shared_ptr<const GridType> &grid,
-       const InteriorReg interior_reg,
-       const bool periodic,
-       const BasisEndBehaviour end_b) -> shared_ptr<const self_t>
+             const std::shared_ptr<const GridType> &grid,
+             const InteriorReg interior_reg,
+             const bool periodic,
+             const BasisEndBehaviour end_b) -> shared_ptr<const self_t>
 {
   shared_ptr<self_t> sp(new self_t(degree,grid,interior_reg,periodic,end_b));
   Assert(sp != nullptr, ExcNullPtr());
@@ -130,10 +130,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(const Degrees &deg,
-                const std::shared_ptr<GridType> &grid,
-                const InteriorReg interior_reg,
-                const Periodicity &periodic,
-                const EndBehaviour &end_b)
+       const std::shared_ptr<GridType> &grid,
+       const InteriorReg interior_reg,
+       const Periodicity &periodic,
+       const EndBehaviour &end_b)
 -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_reg, periodic, end_b));
@@ -150,10 +150,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 const_create(const Degrees &deg,
-       const std::shared_ptr<const GridType> &grid,
-       const InteriorReg interior_reg,
-       const Periodicity &periodic,
-       const EndBehaviour &end_b)
+             const std::shared_ptr<const GridType> &grid,
+             const InteriorReg interior_reg,
+             const Periodicity &periodic,
+             const EndBehaviour &end_b)
 -> shared_ptr<const self_t>
 {
   auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_reg, periodic, end_b));
@@ -303,10 +303,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
-                const std::shared_ptr<GridType> &grid,
-                const MultiplicityTable &interior_mult,
-                const PeriodicityTable &periodic,
-                const EndBehaviourTable &end_b)
+       const std::shared_ptr<GridType> &grid,
+       const MultiplicityTable &interior_mult,
+       const PeriodicityTable &periodic,
+       const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_mult, periodic, end_b));
@@ -323,10 +323,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 const_create(const DegreeTable &deg,
-       const std::shared_ptr<const GridType> &grid,
-       const MultiplicityTable &interior_mult,
-       const PeriodicityTable &periodic,
-       const EndBehaviourTable &end_b)
+             const std::shared_ptr<const GridType> &grid,
+             const MultiplicityTable &interior_mult,
+             const PeriodicityTable &periodic,
+             const EndBehaviourTable &end_b)
 -> shared_ptr<const self_t>
 {
   auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_mult, periodic, end_b));
@@ -340,7 +340,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(const std::shared_ptr<SpaceData> &space_data,
-                const EndBehaviourTable &end_b)
+       const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(new self_t(space_data, end_b));
@@ -357,7 +357,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 const_create(const std::shared_ptr<const SpaceData> &space_data,
-       const EndBehaviourTable &end_b)
+             const EndBehaviourTable &end_b)
 -> shared_ptr<const self_t>
 {
   auto sp = shared_ptr<self_t>(new self_t(space_data, end_b));
@@ -388,7 +388,7 @@ create_element(const ListIt &index, const PropId &property) const
   using Elem = BSplineElement<dim_,range_,rank_>;
 
   std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>>
-      elem = std::make_unique<Elem>(this->get_this_space(),index,property);
+  elem = std::make_unique<Elem>(this->get_this_space(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -603,7 +603,7 @@ rebuild_after_insert_knots(
   const Grid<dim> &old_grid)
 {
   this->ref_space_previous_refinement_ =
-    BSplineSpace<dim_,range_,rank_>::create(
+    BSplineSpace<dim_,range_,rank_>::const_create(
       this->space_data_->get_spline_space_previous_refinement(),
       this->end_b_);
 

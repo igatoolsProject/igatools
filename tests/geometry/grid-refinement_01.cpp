@@ -45,7 +45,7 @@ void test_evaluate()
 
   typename Grid::IndexType elem_id;
 //    grid->get_element_property(active_property).insert(elem_id);
-  grid->get_element_property(influence_property).insert(elem_id);
+  grid->get_elements_with_property(influence_property).insert(elem_id);
 
 
   out << "===============================================================" << endl;
