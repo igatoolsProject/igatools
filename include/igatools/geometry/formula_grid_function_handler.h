@@ -78,8 +78,6 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &sub_elem)
     {
-
-
       auto &local_cache = grid_function_handler_.get_element_cache(elem_);
       auto &cache = local_cache->template get_sub_elem_cache<sdim>(s_id_);
 
@@ -97,11 +95,12 @@ private:
           grid_function_.evaluate_1(grid_pts, cache.template get_data<_D<1>>());
           cache.template set_status_filled<_D<1>>(true);
         }
-//        if (cache.template status_fill<_Hessian>())
-//        {
-//          function_.evaluate_2(cache_pts, cache.template get_data<_Hessian>());
-//          cache.template set_status_filled<_Hessian>(true);
-//        }
+
+        if (cache.template status_fill<_D<2>>())
+        {
+          grid_function_.evaluate_2(grid_pts, cache.template get_data<_D<2>>());
+          cache.template set_status_filled<_D<2>>(true);
+        }
 //        if (cache.template status_fill<_Divergence>())
 //          Assert(false,ExcNotImplemented());
       }

@@ -142,12 +142,10 @@ public:
               typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache,
               EnableIf<ttype == Transformation::h_grad> * = 0)
   {
-    AssertThrow(false,ExcNotTested());
-#if 0
     using PhysElem = PhysSpaceElem<range,rank>;
     using _Gradient = typename PhysElem::_Gradient;
     using _Hessian = typename PhysElem::_Hessian;
-    using _InvGradient = typename PhysElem::_InvGradient;
+    using _InvJacobian = typename PhysDomainElem::_InvJacobian;
 
     const auto &D2v_hat  = ref_elem.template get_basis< _Hessian,sdim>(s_id,DofProperties::active);
 
@@ -160,8 +158,10 @@ public:
     auto D2v_it     = D2v.begin();
     auto D1v_it     = D1v.cbegin();
     auto D2v_hat_it = D2v_hat.cbegin();
-    const auto D2F     =  phys_domain_elem.get_physical_domain_element().template get_values<_Hessian,sdim>(s_id);
-    const auto &DF_inv =  phys_domain_elem.template get_values_from_cache<_InvGradient,sdim>(s_id);
+    const auto D2F = phys_domain_elem.get_grid_function_element().
+                     template get_values<grid_function_element::_D<2>,sdim>(s_id);
+    const auto &DF_inv =
+      phys_domain_elem.template get_values_from_cache<_InvJacobian,sdim>(s_id);
 
     for (int fn = 0; fn < n_func; ++fn)
       for (Index pt = 0; pt < n_points; ++pt)
@@ -179,44 +179,9 @@ public:
         ++D1v_it;
         ++D2v_it;
       }
-#endif
   }
 
 
-#if 0
-  template <int order, int range, int rank, Transformation ttype=type >
-  void
-  transform_0(const ValueContainer<RefValue<range, rank>> &D0v_hat,
-              ValueContainer< PhysValue<range, rank> > &D0v,
-              EnableIf<ttype == Transformation::h_grad> *= 0) const;
-
-
-
-  template < int range, int rank, Transformation ttype=type >
-  void
-  transform_values(
-    const ValueContainer< RefValue<range, rank> > &D0v_hat,
-    ValueContainer< PhysValue<range, rank> > &D0v,
-    EnableIf<ttype == Transformation::h_div> *= 0) const;
-#endif
-
-#if 0
-private:
-  template <class Accessor> friend class GridIteratorBase;
-  friend class PushForward<type_, dim_, codim_>;
-
-  /**
-   * Creates a new object performing a deep copy of the current object using the PushForward
-   * copy constructor.
-   */
-  std::shared_ptr<PushForward<type_,dim_,codim_> > clone() const
-  {
-    auto elem = std::shared_ptr<PushForward<type_,dim_,codim_> >(
-                  new PushForward(*this,CopyPolicy::deep));
-    Assert(elem != nullptr, ExcNullPtr());
-    return elem;
-  }
-#endif
 };
 
 IGA_NAMESPACE_CLOSE

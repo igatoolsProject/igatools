@@ -164,17 +164,23 @@ enum class Flags
 
   jacobian       =    1L << 5,
 
-  inv_jacobian   =    1L << 6
+  inv_jacobian   =    1L << 6,
+
+  hessian        =    1L << 7,
+
+  inv_hessian    =    1L << 8
 };
 
-static const SafeSTLArray<Flags, 6> all_flags =
+static const SafeSTLArray<Flags, 8> all_flags =
 {
   Flags::point,
   Flags::measure,
   Flags::w_measure,
   Flags::ext_normal,
   Flags::jacobian,
-  Flags::inv_jacobian
+  Flags::inv_jacobian,
+  Flags::hessian,
+  Flags::inv_hessian
 };
 
 /** Auxiliary quantities stored in a local cache */
@@ -184,7 +190,9 @@ enum class CacheFlags
 
   measure        =    1L << 1,
 
-  inv_jacobian   =    1L << 10
+  inv_jacobian   =    1L << 2,
+
+  inv_hessian    =    1L << 3
 };
 
 
@@ -212,6 +220,12 @@ struct _InvJacobian
 {
   static const std::string name;
   static const auto flag = CacheFlags::inv_jacobian;
+};
+
+struct _InvHessian
+{
+  static const std::string name;
+  static const auto flag = CacheFlags::inv_hessian;
 };
 
 

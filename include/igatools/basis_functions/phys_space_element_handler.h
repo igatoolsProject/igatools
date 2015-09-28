@@ -112,25 +112,21 @@ phys_space_to_domain_flag(
   if (transformation_type == Transformation::h_grad)
   {
     if (contains(phys_space_flag, SpaceFlags::value))
-    {
-//        AssertThrow(false,ExcNotImplemented())
-    }
+    {}
 
     if (contains(phys_space_flag, SpaceFlags::gradient))
     {
-//        AssertThrow(false,ExcNotImplemented());
       domain_flag |= (DomainFlags::inv_jacobian);
     }
 
     if (contains(phys_space_flag, SpaceFlags::hessian))
     {
-//        AssertThrow(false,ExcNotImplemented());
-//  domain_flag |= (DomainFlags::hessian | DomainFlags::inv_gradient);
+      domain_flag |= (DomainFlags::hessian | DomainFlags::inv_jacobian);
     }
 
     if (contains(phys_space_flag, SpaceFlags::divergence))
     {
-//        AssertThrow(false,ExcNotImplemented());
+      AssertThrow(false,ExcNotImplemented());
 //      domain_flag |= (DomainFlags::inv_gradient);
     }
   }

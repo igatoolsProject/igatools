@@ -53,6 +53,8 @@ const string _Measure::name = "Element measure";
 const CacheFlags _InvJacobian::flag;
 const string _InvJacobian::name = "Element inverse jacobian";
 
+const CacheFlags _InvHessian::flag;
+const string _InvHessian::name = "Element inverse hessian";
 
 activate::FlagsToCache  activate::domain =
 {
@@ -61,7 +63,9 @@ activate::FlagsToCache  activate::domain =
   {Flags::measure,   CacheFlags::measure},
   {Flags::ext_normal, CacheFlags::none},
   {Flags::jacobian, CacheFlags::none},
-  {Flags::inv_jacobian, CacheFlags::inv_jacobian}
+  {Flags::inv_jacobian, CacheFlags::inv_jacobian},
+  {Flags::hessian, CacheFlags::none},
+  {Flags::inv_hessian, CacheFlags::inv_hessian}
 };
 
 activate::FlagsToGridFunc activate::grid_func =
@@ -71,7 +75,9 @@ activate::FlagsToGridFunc activate::grid_func =
   {Flags::measure, grid_function_element::Flags::D1},
   {Flags::ext_normal, grid_function_element::Flags::D1},
   {Flags::jacobian, grid_function_element::Flags::D1},
-  {Flags::inv_jacobian, grid_function_element::Flags::D1}
+  {Flags::inv_jacobian, grid_function_element::Flags::D1},
+  {Flags::hessian, grid_function_element::Flags::D2},
+  {Flags::inv_hessian, grid_function_element::Flags::D2}
 };
 
 activate::FlagsToGrid activate::grid =
@@ -81,7 +87,9 @@ activate::FlagsToGrid activate::grid =
   {Flags::measure, grid_element::Flags::none},
   {Flags::ext_normal, grid_element::Flags::none},
   {Flags::jacobian, grid_element::Flags::none},
-  {Flags::inv_jacobian, grid_element::Flags::none}
+  {Flags::inv_jacobian, grid_element::Flags::none},
+  {Flags::hessian, grid_element::Flags::none},
+  {Flags::inv_hessian, grid_element::Flags::none}
 };
 
 };
