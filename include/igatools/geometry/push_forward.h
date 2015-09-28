@@ -92,7 +92,6 @@ public:
   transform_0(const int s_id,
               const RefSpaceElem<range,rank> &ref_elem,
               const PhysDomainElem &phys_domain_elem,
-              PhysSpaceElem<range,rank> &phys_elem,
               typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache,
               EnableIf<ttype == Transformation::h_grad> * = 0)
   {
@@ -110,15 +109,13 @@ public:
   transform_1(const int s_id,
               const RefSpaceElem<range,rank> &ref_elem,
               const PhysDomainElem &phys_domain_elem,
-              PhysSpaceElem<range,rank> &phys_elem,
               typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache,
               EnableIf<ttype == Transformation::h_grad> * = 0)
   {
-    AssertThrow(false,ExcNotTested());
-#if 0
     using PhysElem = PhysSpaceElem<range,rank>;
     using _Gradient = typename PhysElem::_Gradient;
-    using _InvGradient = typename PhysElem::_InvGradient;
+
+    using _InvJacobian = typename PhysDomainElem::_InvJacobian;
 
 
     const auto &Dv_hat  = ref_elem.template get_basis<_Gradient,sdim>(s_id,DofProperties::active);
@@ -130,11 +127,10 @@ public:
     auto Dv_it     = Dv.begin();
     auto Dv_hat_it = Dv_hat.cbegin();
 
-    const auto &DF_inv = phys_domain_elem.template get_values_from_cache<_InvGradient,sdim>(s_id);
+    const auto &DF_inv = phys_domain_elem.template get_values_from_cache<_InvJacobian,sdim>(s_id);
     for (int fn = 0; fn < n_func; ++fn)
       for (int pt = 0; pt < n_points; ++pt, ++Dv_hat_it, ++Dv_it)
         (*Dv_it) = compose((*Dv_hat_it), DF_inv[pt]);
-#endif
   }
 
 
@@ -143,7 +139,6 @@ public:
   transform_2(const int s_id,
               const RefSpaceElem<range,rank> &ref_elem,
               const PhysDomainElem &phys_domain_elem,
-              PhysSpaceElem<range,rank> &phys_elem,
               typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache,
               EnableIf<ttype == Transformation::h_grad> * = 0)
   {

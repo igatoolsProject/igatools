@@ -50,13 +50,18 @@ namespace domain_element
 const CacheFlags _Measure::flag;
 const string _Measure::name = "Element measure";
 
+const CacheFlags _InvJacobian::flag;
+const string _InvJacobian::name = "Element inverse jacobian";
+
 
 activate::FlagsToCache  activate::domain =
 {
   {Flags::point, CacheFlags::none},
   {Flags::w_measure, CacheFlags::measure},
   {Flags::measure,   CacheFlags::measure},
-  {Flags::ext_normal, CacheFlags::none}
+  {Flags::ext_normal, CacheFlags::none},
+  {Flags::jacobian, CacheFlags::none},
+  {Flags::inv_jacobian, CacheFlags::inv_jacobian}
 };
 
 activate::FlagsToGridFunc activate::grid_func =
@@ -64,7 +69,9 @@ activate::FlagsToGridFunc activate::grid_func =
   {Flags::point, grid_function_element::Flags::D0},
   {Flags::w_measure, grid_function_element::Flags::D1},
   {Flags::measure, grid_function_element::Flags::D1},
-  {Flags::ext_normal, grid_function_element::Flags::D1}
+  {Flags::ext_normal, grid_function_element::Flags::D1},
+  {Flags::jacobian, grid_function_element::Flags::D1},
+  {Flags::inv_jacobian, grid_function_element::Flags::D1}
 };
 
 activate::FlagsToGrid activate::grid =
@@ -72,7 +79,9 @@ activate::FlagsToGrid activate::grid =
   {Flags::point, grid_element::Flags::none},
   {Flags::w_measure, grid_element::Flags::weight},
   {Flags::measure, grid_element::Flags::none},
-  {Flags::ext_normal, grid_element::Flags::none}
+  {Flags::ext_normal, grid_element::Flags::none},
+  {Flags::jacobian, grid_element::Flags::none},
+  {Flags::inv_jacobian, grid_element::Flags::none}
 };
 
 };
@@ -122,10 +131,10 @@ activate::FlagsToGrid activate::grid =
 namespace function_element
 {
 const CacheFlags _Value::flag;
-const string _Value::name = "Funtion Values";
+const string _Value::name = "Function Values";
 
 const CacheFlags _Gradient::flag;
-const string _Gradient::name = "Fuction gradients";
+const string _Gradient::name = "Function gradients";
 
 const CacheFlags _D2::flag;
 const string _D2::name = "Function D2";

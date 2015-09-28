@@ -160,18 +160,31 @@ enum class Flags
 
   w_measure      =    1L << 3,
 
-  ext_normal     =    1L << 4
+  ext_normal     =    1L << 4,
+
+  jacobian       =    1L << 5,
+
+  inv_jacobian   =    1L << 6
 };
 
-static const SafeSTLArray<Flags, 4> all_flags =
-{Flags::point, Flags:: measure, Flags::w_measure, Flags::ext_normal};
+static const SafeSTLArray<Flags, 6> all_flags =
+{
+  Flags::point,
+  Flags::measure,
+  Flags::w_measure,
+  Flags::ext_normal,
+  Flags::jacobian,
+  Flags::inv_jacobian
+};
 
 /** Auxiliary quantities stored in a local cache */
 enum class CacheFlags
 {
   none           =    0,
 
-  measure        =    1L << 1
+  measure        =    1L << 1,
+
+  inv_jacobian   =    1L << 10
 };
 
 
@@ -193,6 +206,12 @@ struct _Measure
 {
   static const std::string name;
   static const auto flag = CacheFlags::measure;
+};
+
+struct _InvJacobian
+{
+  static const std::string name;
+  static const auto flag = CacheFlags::inv_jacobian;
 };
 
 

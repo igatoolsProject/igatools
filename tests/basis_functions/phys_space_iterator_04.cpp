@@ -77,8 +77,8 @@ void elem_values(const int n_knots = 2, const int deg=1)
   const int n_qp = 2;
   auto quad = QGauss<k>::create(n_qp);
   using Flags = space_element::Flags;
-  auto flag = Flags::value;// |
-//              Flags::gradient |
+  auto flag = Flags::value |
+              Flags::gradient;// |
 //              Flags::hessian;
 //  |
 //              Flags::point;
@@ -103,7 +103,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
     out << endl;
 
     out << "Basis gradients: " << endl;
-//    elem->template get_basis<_Gradient, k>(0,DofProperties::active).print_info(out);
+    elem->template get_basis<_Gradient, k>(0,DofProperties::active).print_info(out);
     out << endl;
 
     out << "Basis hessians: " << endl;

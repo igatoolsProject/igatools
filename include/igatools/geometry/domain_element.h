@@ -126,8 +126,6 @@ public:
   ///@}
 
 #if 0
-  template<int order>
-  using InvDerivative = typename FuncType::template InvDerivative<order>;
 
   template <int order>
   using Derivative = typename FuncType::template Derivative<order>;
@@ -218,7 +216,7 @@ public:
   }
 #endif
 
-private:
+public:
   template <class ValueType, int sdim>
   auto &get_values_from_cache(const int s_id = 0) const
   {
@@ -228,12 +226,19 @@ private:
     return cache.template get_data<ValueType>();
   }
 
-public:
-  using _Measure   = domain_element::_Measure;
+  using _Measure = domain_element::_Measure;
+
+  using _InvJacobian = domain_element::_InvJacobian;
+
 
 private:
+  template<int order>
+  using InvDerivative = Derivatives<dim_+codim_,dim_,1,order>;
+
+
   using CType = boost::fusion::map<
-                boost::fusion::pair< _Measure,  DataWithFlagStatus<ValueVector<Real>> >
+                boost::fusion::pair< _Measure, DataWithFlagStatus<ValueVector<Real>> >,
+                boost::fusion::pair< _InvJacobian, DataWithFlagStatus<ValueVector<InvDerivative<1>>> >
                 >;
 //                ,
 //                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
@@ -244,6 +249,8 @@ private:
 //                  >;
 
   using Cache = PointValuesCache<dim_,CType>;
+
+
 
 public:
   using CacheType = AllSubElementsCache<Cache>;

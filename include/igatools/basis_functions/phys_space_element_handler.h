@@ -119,7 +119,7 @@ phys_space_to_domain_flag(
     if (contains(phys_space_flag, SpaceFlags::gradient))
     {
 //        AssertThrow(false,ExcNotImplemented());
-//      domain_flag |= (DomainFlags::inv_gradient);
+      domain_flag |= (DomainFlags::inv_jacobian);
     }
 
     if (contains(phys_space_flag, SpaceFlags::hessian))
@@ -430,7 +430,7 @@ private:
       {
         PushFwd::template
         transform_0<RefSpace::range,RefSpace::rank,sdim>(
-          s_id_,ref_space_elem,phys_domain_elem,phys_space_elem,sub_elem_cache);
+          s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
 
         sub_elem_cache.template set_status_filled<_Value>(true);
       }
@@ -438,7 +438,7 @@ private:
       {
         PushFwd::template
         transform_1<RefSpace::range,RefSpace::rank,sdim>(
-          s_id_,ref_space_elem,phys_domain_elem,phys_space_elem,sub_elem_cache);
+          s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
 
         sub_elem_cache.template set_status_filled<_Gradient>(true);
       }
@@ -446,7 +446,7 @@ private:
       {
         PushFwd::template
         transform_2<RefSpace::range,RefSpace::rank,sdim>(
-          s_id_,ref_space_elem,phys_domain_elem,phys_space_elem,sub_elem_cache);
+          s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
 
         sub_elem_cache.template set_status_filled<_Hessian>(true);
       }

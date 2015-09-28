@@ -149,6 +149,7 @@ public:
 //Is this really virtual?
   virtual void set_flags(const topology_variant &sdim,
                          const Flags &flag);
+
   template <int sdim>
   void set_flags(const Flags &flag)
   {
@@ -268,10 +269,10 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &)
     {
-      using _Measure = typename ElementAccessor::_Measure;
 
       auto &cache = elem_.local_cache_->template get_sub_elem_cache<sdim>(s_id_);
 
+      using _Measure = typename ElementAccessor::_Measure;
       if (cache.template status_fill<_Measure>())
       {
         auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id_);
@@ -295,19 +296,23 @@ private:
       }
 
 
-#if 0
-      if (cache.template status_fill<_InvGradient>())
+      using _InvJacobian = typename ElementAccessor::_InvJacobian;
+      if (cache.template status_fill<_InvJacobian>())
       {
-        // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
-        const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
-        auto &D_invF = cache.template get_data<_InvGradient>();
+        const auto &DF = elem_.grid_func_elem_->template get_values<grid_function_element::_D<1>, sdim>(s_id_);
+//        const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
+
+        const auto n_points = DF.get_num_points();
+
+        auto &D_invF = cache.template get_data<_InvJacobian>();
         Real det;
         for (int pt = 0 ; pt < n_points; ++pt)
           D_invF[pt] = inverse(DF[pt], det);
 
-        cache.template set_status_filled<_InvGradient>(true);
+        cache.template set_status_filled<_InvJacobian>(true);
       }
 
+#if 0
       if (cache.template status_fill<_InvHessian>())
       {
         //        const auto &D1_F = elem.template get_values<_Gradient, sdim>(j);
