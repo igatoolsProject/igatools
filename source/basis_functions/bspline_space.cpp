@@ -394,6 +394,21 @@ create_element(const ListIt &index, const PropId &property) const
   return elem;
 }
 
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+create_ref_element(const ListIt &index, const PropId &property) const
+-> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+{
+  using Elem = BSplineElement<dim_,range_,rank_>;
+
+  std::unique_ptr<ReferenceElement<dim_,range_,rank_>>
+  elem = std::make_unique<Elem>(this->get_this_space(),index,property);
+  Assert(elem != nullptr, ExcNullPtr());
+
+  return elem;
+}
+
 
 template<int dim_, int range_, int rank_>
 template<int k>
@@ -407,7 +422,7 @@ get_ref_sub_space(const int s_id,
   if (!(sub_grid))
   {
     SubGridMap<k> elem_map;
-    sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
+    sub_grid   = this->get_ptr_const_grid()->template get_sub_grid<k>(s_id, elem_map);
   }
   auto sub_mult   = this->space_data_->template get_sub_space_mult<k>(s_id);
   auto sub_degree = this->space_data_->template get_sub_space_degree<k>(s_id);
@@ -591,7 +606,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
               std::placeholders::_2);
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  this->get_grid()->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
+  this->get_ptr_grid()->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
 }
 
 

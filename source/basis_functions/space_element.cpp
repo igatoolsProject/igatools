@@ -36,7 +36,7 @@ SpaceElement(const std::shared_ptr<Sp> space,
   :
   space_(space)
 {
-  grid_elem_ = space_->get_grid()->create_element(index,prop);
+  grid_elem_ = space_->get_ptr_const_grid()->create_element(index,prop);
 }
 
 
@@ -242,30 +242,6 @@ get_space() const -> std::shared_ptr<Sp>
 {
   return space_;
 }
-
-
-
-
-#if 0
-#ifdef SERIALIZATION
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-template<class Archive>
-void
-SpaceElement<dim_,codim_,range_,rank_,type_>::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("SpaceElement_base_t",
-                                     boost::serialization::base_object<SpaceElementBase<dim_>>(*this));
-
-  ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
-
-  auto non_const_space = std::const_pointer_cast<Space<dim_,codim_,range_,rank_,type_>>(space_);
-  ar &boost::serialization::make_nvp("space_",non_const_space);
-  space_ = non_const_space;
-  Assert(space_ != nullptr,ExcNullPtr());
-}
-#endif // SERIALIZATION
-#endif
 
 
 IGA_NAMESPACE_CLOSE

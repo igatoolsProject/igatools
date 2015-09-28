@@ -122,7 +122,7 @@ pushforward_to_mapping_flag(
   return map_flag;
 }
 
-
+/*
 auto
 space_to_ref_flag(const Transformation type, const ValueFlags flags)
 -> ValueFlags
@@ -168,8 +168,9 @@ space_to_ref_flag(const Transformation type, const ValueFlags flags)
 
   return ref_flag;
 }
+//*/
 
-
+/*
 void
 space_to_pf_flag(const ValueFlags flags, ValueFlags &map_flags, TransformationFlags &transf_flags)
 {
@@ -195,6 +196,7 @@ space_to_pf_flag(const ValueFlags flags, ValueFlags &map_flags, TransformationFl
   if (contains(flags , ValueFlags::hessian))
     transf_flags |= TransformationFlags::tran_hessian;
 }
+//*/
 
 };
 

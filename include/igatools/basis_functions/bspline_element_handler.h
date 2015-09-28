@@ -145,7 +145,7 @@ private:
       elem_flags |= space_element::Flags::gradient;
 
 
-    auto set_flag_dispatcher = SetFlagDispatcher(elem_flags,this->grid_handler_,flags_);
+    auto set_flag_dispatcher = SetFlagDispatcher(elem_flags,this->grid_handler_,this->flags_);
     boost::apply_visitor(set_flag_dispatcher,topology);
   }
 
@@ -176,7 +176,7 @@ private:
   virtual void init_cache_impl(BaseElem &elem,
                                const eval_pts_variant &quad) const override final
   {
-    auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,flags_,elem);
+    auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,this->flags_,elem);
     boost::apply_visitor(init_cache_dispatcher,quad);
   }
 
@@ -363,7 +363,6 @@ private:
   std::shared_ptr<const Space> get_bspline_space() const;
 
 
-  SafeSTLArray<typename space_element::Flags, dim_ + 1> flags_;
 
 };
 

@@ -35,7 +35,7 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const PropId &prop)
   :
   parent_t(phys_space,index,prop),
-  ref_space_element_(phys_space->get_reference_space()->create_element(index,prop)),
+  ref_space_element_(phys_space->get_reference_space()->create_ref_element(index,prop)),
   phys_domain_element_(make_unique<PhysDomainElem>(
                         std::const_pointer_cast<PhysDomain>(phys_space->get_physical_domain()),
                         index, prop))

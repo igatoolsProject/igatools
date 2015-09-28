@@ -30,8 +30,9 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
+//#include <igatools/functions/function_lib.h>
+//#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
@@ -40,12 +41,22 @@
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<Grid<dim>> grid)
+create_domain(const shared_ptr<const Grid<dim>> &grid)
 {
+  /*
   using Function = functions::CylindricalAnnulus<dim>;
   auto map = Function::const_create(grid, IdentityFunction<dim>::const_create(grid),
                               1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
   return map;
+  //*/
+
+  using GridFunc = grid_functions::BallGridFunction<dim>;
+  auto grid_func = GridFunc::const_create(grid);
+
+  using Domain = Domain<dim,codim>;
+  auto domain = Domain::const_create(grid_func);
+
+  return domain;
 }
 
 template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
@@ -59,38 +70,44 @@ void elem_values(const int n_knots = 2, const int deg=1)
   auto grid  = Grid<dim>::const_create(n_knots);
 
   auto ref_space = BspSpace::const_create(deg, grid);
-  auto map_func = create_function(grid);
+  auto phys_domain = create_domain(grid);
 
-  auto space = Space::const_create(ref_space, map_func);
+  auto space = Space::const_create(ref_space, phys_domain);
 
   const int n_qp = 2;
-  auto quad = QGauss<k>(n_qp);
-  auto flag = ValueFlags::value |
-              ValueFlags::gradient |
-              ValueFlags::hessian |
-              ValueFlags::point;
+  auto quad = QGauss<k>::create(n_qp);
+  using Flags = space_element::Flags;
+  auto flag = Flags::value;// |
+//              Flags::gradient |
+//              Flags::hessian;
+//  |
+//              Flags::point;
 
-  auto elem_filler = space->create_cache_handler();
-  elem_filler->reset(flag, quad);
+  auto elem_cache_handler = space->create_cache_handler();
+  elem_cache_handler->template set_flags<dim>(flag);
 
   auto elem = space->begin();
   auto end = space->end();
-  elem_filler->init_element_cache(elem);
+  elem_cache_handler->init_element_cache(elem,quad);
 
+  using Elem = typename Space::ElementAccessor;
+  using _Value = typename Elem::_Value;
+  using _Gradient = typename Elem::_Gradient;
+  using _Hessian = typename Elem::_Hessian;
   for (; elem != end; ++elem)
   {
-    elem_filler->fill_element_cache(elem);
+    elem_cache_handler->fill_element_cache(elem);
 
     out << "Basis values: " << endl;
     elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
     out << endl;
 
     out << "Basis gradients: " << endl;
-    elem->template get_basis<_Gradient, k>(0,DofProperties::active).print_info(out);
+//    elem->template get_basis<_Gradient, k>(0,DofProperties::active).print_info(out);
     out << endl;
 
     out << "Basis hessians: " << endl;
-    elem->template get_basis<_Hessian, k>(0,DofProperties::active).print_info(out);
+//    elem->template get_basis<_Hessian, k>(0,DofProperties::active).print_info(out);
   }
 
   out << endl << endl;

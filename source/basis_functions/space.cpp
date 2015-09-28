@@ -67,7 +67,7 @@ get_object_id() const
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 std::shared_ptr<Grid<dim_> >
 Space<dim_,codim_,range_,rank_,type_>::
-get_grid()
+get_ptr_grid()
 {
   return grid_.get_ptr_data();
 }
@@ -75,7 +75,7 @@ get_grid()
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 std::shared_ptr<const Grid<dim_> >
 Space<dim_,codim_,range_,rank_,type_>::
-get_grid() const
+get_ptr_const_grid() const
 {
   return grid_.get_ptr_const_data();
 }
@@ -122,7 +122,7 @@ cbegin(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
            this->create_element(
-             this->get_grid()->get_elements_with_property(prop).begin(),prop));
+             this->get_ptr_const_grid()->get_elements_with_property(prop).begin(),prop));
 }
 
 
@@ -134,7 +134,7 @@ cend(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
            this->create_element(
-             this->get_grid()->get_elements_with_property(prop).end(),prop));
+             this->get_ptr_const_grid()->get_elements_with_property(prop).end(),prop));
 }
 
 

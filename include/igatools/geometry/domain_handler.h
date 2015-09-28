@@ -168,6 +168,13 @@ public:
                           ConstElementAccessor &elem,
                           const int s_id) const;
 
+  template <int sdim>
+  void fill_cache(ConstElementAccessor &elem,
+                  const int s_id) const
+  {
+    this->fill_cache(Topology<sdim>(), elem, s_id);
+  }
+
   void fill_cache(const topology_variant &sdim,
                   ElementConstIterator &elem,
                   const int s_id) const
@@ -177,7 +184,7 @@ public:
 
   template <int sdim>
   void fill_cache(ElementConstIterator &elem,
-                  const int s_id)
+                  const int s_id) const
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }

@@ -60,7 +60,7 @@ public :
   using RefElemAccessor = ReferenceElement<RefSpace::dim,RefSpace::range,RefSpace::rank>;
 
   using PhysDomain = Domain<dim_, codim_>;
-  using PhysDomainElem = DomainElement<dim_, codim_>;
+  using PhysDomainElem = ConstDomainElement<dim_, codim_>;
 
   static const auto dim = PushFwd::dim;
   static const auto space_dim = PushFwd::space_dim;
@@ -252,9 +252,11 @@ public:
 
   virtual typename List::iterator &operator++() override final
   {
+    parent_t::operator++();
+
     ++(*phys_domain_element_);
+
     return ++(*ref_space_element_);
-    Assert(false,ExcNotImplemented());
   }
 
 
@@ -319,38 +321,10 @@ private:
   template <class Accessor> friend class GridIteratorBase;
   template <int,int,int,int,Transformation> friend class PhysSpaceElementHandler;
 
-  std::unique_ptr<typename RefElemAccessor::parent_t> ref_space_element_;
+  std::unique_ptr<RefElemAccessor> ref_space_element_;
 
   std::unique_ptr<PhysDomainElem> phys_domain_element_;
 
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    ar &boost::serialization::make_nvp("PhysicalSpaceElement_base_t",
-                                       boost::serialization::base_object<parent_t>(*this));
-
-    ar.template register_type<BSplineElement<dim_,range_,rank_> >();
-#ifdef NURBS
-    ar.template register_type<NURBSElement<dim_,range_,rank_> >();
-#endif // NURBS
-    ar &boost::serialization::make_nvp("ref_space_element_",ref_space_element_);
-
-
-    ar &boost::serialization::make_nvp("phys_domain_element_",phys_domain_element_);
-  }
-  ///@}
-#endif
-#endif
 };
 
 

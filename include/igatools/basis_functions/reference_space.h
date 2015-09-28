@@ -197,6 +197,9 @@ public:
                 SubGridMap<k> &elem_map) const;
 
 
+  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  create_ref_element(const typename base_t::ListIt &index, const PropId &property) const = 0;
+
 protected:
 
   std::shared_ptr<const RefSpace> ref_space_previous_refinement_ = nullptr;

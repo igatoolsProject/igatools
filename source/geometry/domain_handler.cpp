@@ -100,7 +100,7 @@ auto
 DomainHandler<dim_, codim_>::
 fill_cache(const topology_variant &sdim,
            ConstElementAccessor &elem,
-           const int s_id) const-> void
+           const int s_id) const -> void
 {
   grid_func_handler_->fill_cache(sdim, *(elem.grid_func_elem_), s_id);
 

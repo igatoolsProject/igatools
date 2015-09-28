@@ -277,6 +277,11 @@ private:
   ///@}
 #endif // SERIALIZATION
 #endif
+
+
+protected:
+  SafeSTLArray<typename space_element::Flags, dim + 1> flags_;
+
 };
 
 IGA_NAMESPACE_CLOSE

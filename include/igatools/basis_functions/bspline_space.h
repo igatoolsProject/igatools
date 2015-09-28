@@ -178,10 +178,10 @@ public:
    */
   static std::shared_ptr<self_t>
   create(const int degree,
-                  const std::shared_ptr<GridType> &grid,
-                  const InteriorReg interior_reg = InteriorReg::maximum,
-                  const bool periodic = false,
-                  const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
+         const std::shared_ptr<GridType> &grid,
+         const InteriorReg interior_reg = InteriorReg::maximum,
+         const bool periodic = false,
+         const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
 
   /**
    * Builds and returns a maximum regularity (const) BSpline space
@@ -191,10 +191,10 @@ public:
    */
   static std::shared_ptr<const self_t>
   const_create(const int degree,
-         const std::shared_ptr<const GridType> &grid,
-         const InteriorReg interior_reg = InteriorReg::maximum,
-         const bool periodic = false,
-         const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
+               const std::shared_ptr<const GridType> &grid,
+               const InteriorReg interior_reg = InteriorReg::maximum,
+               const bool periodic = false,
+               const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
 
   /**
    * Builds and returns a maximum regularity (non-const) BSpline space
@@ -204,10 +204,10 @@ public:
    */
   static std::shared_ptr<self_t>
   create(const Degrees &degree,
-                  const std::shared_ptr<GridType> &grid,
-                  const InteriorReg interior_reg = InteriorReg::maximum,
-                  const Periodicity &periodic = Periodicity(false),
-                  const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
+         const std::shared_ptr<GridType> &grid,
+         const InteriorReg interior_reg = InteriorReg::maximum,
+         const Periodicity &periodic = Periodicity(false),
+         const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
 
   /**
    * Builds and returns a maximum regularity (const) BSpline space
@@ -217,10 +217,10 @@ public:
    */
   static std::shared_ptr<const self_t>
   const_create(const Degrees &degree,
-         const std::shared_ptr<const GridType> &grid,
-         const InteriorReg interior_reg = InteriorReg::maximum,
-         const Periodicity &periodic = Periodicity(false),
-         const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
+               const std::shared_ptr<const GridType> &grid,
+               const InteriorReg interior_reg = InteriorReg::maximum,
+               const Periodicity &periodic = Periodicity(false),
+               const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
 
   /**
    * Builds and returns a (non-const) BSpline space
@@ -232,10 +232,10 @@ public:
    */
   static std::shared_ptr<self_t>
   create(const DegreeTable &deg,
-                  const std::shared_ptr<GridType> &grid,
-                  const MultiplicityTable &interior_mult,
-                  const PeriodicityTable &periodic,
-                  const EndBehaviourTable &end_b);
+         const std::shared_ptr<GridType> &grid,
+         const MultiplicityTable &interior_mult,
+         const PeriodicityTable &periodic,
+         const EndBehaviourTable &end_b);
 
   /**
    * Builds and returns a (const) BSpline space
@@ -247,25 +247,31 @@ public:
    */
   static std::shared_ptr<const self_t>
   const_create(const DegreeTable &deg,
-         const std::shared_ptr<const GridType> &grid,
-         const MultiplicityTable &interior_mult,
-         const PeriodicityTable &periodic,
-         const EndBehaviourTable &end_b);
+               const std::shared_ptr<const GridType> &grid,
+               const MultiplicityTable &interior_mult,
+               const PeriodicityTable &periodic,
+               const EndBehaviourTable &end_b);
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<SpaceData> &space_data,
-                  const EndBehaviourTable &end_b);
+         const EndBehaviourTable &end_b);
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const SpaceData> &space_data,
-         const EndBehaviourTable &end_b);
+               const EndBehaviourTable &end_b);
   ///@}
 
   /**
-   * Create an element (defined on this space) with a given flat_index.
+   * Create an element (defined on this space) with a given @p index.
    */
   virtual std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
   create_element(const ListIt &index, const PropId &property) const override final;
+
+  /**
+   * Create an element (defined on this space) with a given @p index.
+   */
+  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  create_ref_element(const ListIt &index, const PropId &property) const override final;
 
 
   /** Destructor. */

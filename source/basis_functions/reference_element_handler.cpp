@@ -36,7 +36,7 @@ ReferenceElementHandler<dim, range, rank>::
 ReferenceElementHandler(const shared_ptr<const Space> &space)
   :
   base_t(space),
-  grid_handler_(space->get_grid())
+  grid_handler_(space->get_ptr_const_grid())
 {};
 
 

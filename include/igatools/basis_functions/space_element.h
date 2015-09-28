@@ -395,11 +395,12 @@ protected:
                 boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueTable<Div>>>
                 >;
 
+public:
   using Cache = BasisValuesCache<dim_,CType>;
 
 
 
-
+protected:
   /** The local (element and face) cache. */
   AllSubElementsCache<Cache> all_sub_elems_cache_;
 
@@ -416,24 +417,6 @@ private:
            template get_sub_elem_cache<sdim>(s_id).
     template get_data<ValueType>();
   }
-
-
-
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version);
-  ///@}
-#endif // SERIALIZATION
-#endif
 };
 
 

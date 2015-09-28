@@ -47,7 +47,7 @@ class PushForward
 {
 private:
   using self_t  = PushForward<type_, dim_, codim_>;
-  using PhysDomainElem = DomainElement<dim_, codim_>;
+  using PhysDomainElem = ConstDomainElement<dim_, codim_>;
 
 
 
@@ -87,93 +87,77 @@ public:
 
 public:
 
-  template <int range, int rank, int sub_elem_dim, Transformation ttype=type_>
+  template <int range, int rank, int sdim, Transformation ttype=type_>
   static void
-  transform_0(const int sub_elem_id,
+  transform_0(const int s_id,
               const RefSpaceElem<range,rank> &ref_elem,
               const PhysDomainElem &phys_domain_elem,
               PhysSpaceElem<range,rank> &phys_elem,
+              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache,
               EnableIf<ttype == Transformation::h_grad> * = 0)
   {
-    //---------------------------------------------------------------------
-    //TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
-    auto &all_sub_elems_cache = phys_elem.get_all_sub_elems_cache();
-    Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
-    auto &sub_elem_cache =
-      all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
-    //---------------------------------------------------------------------
-
     using PhysElem = PhysSpaceElem<range,rank>;
     using _Value = typename PhysElem::_Value;
-    auto &v = sub_elem_cache.template get_data<_Value>();
-    const auto &v_hat = ref_elem.template get_basis<_Value,sub_elem_dim>(sub_elem_id,DofProperties::active);
+    auto &v = phys_sub_elem_cache.template get_data<_Value>();
+    const auto &v_hat = ref_elem.template get_basis<_Value,sdim>(s_id,DofProperties::active);
 
     v = v_hat;
   }
 
 
-  template <int range, int rank, int sub_elem_dim, Transformation ttype=type_>
+  template <int range, int rank, int sdim, Transformation ttype=type_>
   static void
-  transform_1(const int sub_elem_id,
+  transform_1(const int s_id,
               const RefSpaceElem<range,rank> &ref_elem,
               const PhysDomainElem &phys_domain_elem,
               PhysSpaceElem<range,rank> &phys_elem,
+              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache,
               EnableIf<ttype == Transformation::h_grad> * = 0)
   {
-    //---------------------------------------------------------------------
-    //TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
-    auto &all_sub_elems_cache = phys_elem.get_all_sub_elems_cache();
-    Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
-    auto &sub_elem_cache =
-      all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
-    //---------------------------------------------------------------------
-
+    AssertThrow(false,ExcNotTested());
+#if 0
     using PhysElem = PhysSpaceElem<range,rank>;
     using _Gradient = typename PhysElem::_Gradient;
     using _InvGradient = typename PhysElem::_InvGradient;
 
 
-    const auto &Dv_hat  = ref_elem.template get_basis<_Gradient,sub_elem_dim>(sub_elem_id,DofProperties::active);
+    const auto &Dv_hat  = ref_elem.template get_basis<_Gradient,sdim>(s_id,DofProperties::active);
 
-    auto &Dv = sub_elem_cache.template get_data<_Gradient>();
+    auto &Dv = phys_sub_elem_cache.template get_data<_Gradient>();
 
     const int n_func   = Dv_hat.get_num_functions();
     const int n_points = Dv_hat.get_num_points();
     auto Dv_it     = Dv.begin();
     auto Dv_hat_it = Dv_hat.cbegin();
 
-    const auto &DF_inv = phys_domain_elem.template get_values_from_cache<_InvGradient,sub_elem_dim>(sub_elem_id);
+    const auto &DF_inv = phys_domain_elem.template get_values_from_cache<_InvGradient,sdim>(s_id);
     for (int fn = 0; fn < n_func; ++fn)
       for (int pt = 0; pt < n_points; ++pt, ++Dv_hat_it, ++Dv_it)
         (*Dv_it) = compose((*Dv_hat_it), DF_inv[pt]);
+#endif
   }
 
 
-  template <int range, int rank, int sub_elem_dim, Transformation ttype=type_>
+  template <int range, int rank, int sdim, Transformation ttype=type_>
   static void
-  transform_2(const int sub_elem_id,
+  transform_2(const int s_id,
               const RefSpaceElem<range,rank> &ref_elem,
               const PhysDomainElem &phys_domain_elem,
               PhysSpaceElem<range,rank> &phys_elem,
+              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache,
               EnableIf<ttype == Transformation::h_grad> * = 0)
   {
-    //---------------------------------------------------------------------
-    //TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
-    auto &all_sub_elems_cache = phys_elem.get_all_sub_elems_cache();
-    Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
-    auto &sub_elem_cache =
-      all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
-    //---------------------------------------------------------------------
-
+    AssertThrow(false,ExcNotTested());
+#if 0
     using PhysElem = PhysSpaceElem<range,rank>;
     using _Gradient = typename PhysElem::_Gradient;
     using _Hessian = typename PhysElem::_Hessian;
     using _InvGradient = typename PhysElem::_InvGradient;
 
-    const auto &D2v_hat  = ref_elem.template get_basis< _Hessian,sub_elem_dim>(sub_elem_id,DofProperties::active);
+    const auto &D2v_hat  = ref_elem.template get_basis< _Hessian,sdim>(s_id,DofProperties::active);
 
-    const auto &D1v  = sub_elem_cache.template get_data<_Gradient>();
-    auto &D2v  = sub_elem_cache.template get_data<_Hessian>();
+    const auto &D1v  = phys_sub_elem_cache.template get_data<_Gradient>();
+    auto &D2v  = phys_sub_elem_cache.template get_data<_Hessian>();
 
 
     const int n_func   = D2v_hat.get_num_functions();
@@ -181,8 +165,8 @@ public:
     auto D2v_it     = D2v.begin();
     auto D1v_it     = D1v.cbegin();
     auto D2v_hat_it = D2v_hat.cbegin();
-    const auto D2F     =  phys_domain_elem.get_func_element().template get_values<_Hessian,sub_elem_dim>(sub_elem_id);
-    const auto &DF_inv =  phys_domain_elem.template get_values_from_cache<_InvGradient,sub_elem_dim>(sub_elem_id);
+    const auto D2F     =  phys_domain_elem.get_physical_domain_element().template get_values<_Hessian,sdim>(s_id);
+    const auto &DF_inv =  phys_domain_elem.template get_values_from_cache<_InvGradient,sdim>(s_id);
 
     for (int fn = 0; fn < n_func; ++fn)
       for (Index pt = 0; pt < n_points; ++pt)
@@ -200,6 +184,7 @@ public:
         ++D1v_it;
         ++D2v_it;
       }
+#endif
   }
 
 

@@ -45,12 +45,12 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(const shared_ptr<RefSpace> &ref_space,
               const shared_ptr<PhysDomain> &phys_domain)
   :
-  base_t(ref_space->get_grid()),
+  base_t(ref_space->get_ptr_grid()),
   ref_space_(ref_space),
   phys_domain_(phys_domain)
 {
-	  Assert(this->get_grid() == phys_domain_->get_grid_function()->get_grid(),
-	         ExcMessage("The space and the physical domain must have the same grid!"));
+  Assert(this->get_ptr_grid() == phys_domain_->get_grid_function()->get_grid(),
+         ExcMessage("The space and the physical domain must have the same grid!"));
 
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
 }
@@ -60,13 +60,12 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(const shared_ptr<const RefSpace> &ref_space,
               const shared_ptr<const PhysDomain> &phys_domain)
   :
-  base_t(ref_space->get_grid()),
+  base_t(ref_space->get_ptr_const_grid()),
   ref_space_(ref_space),
   phys_domain_(phys_domain)
 {
-	  Assert(this->get_grid() == phys_domain_->get_grid_function()->get_grid(),
-	         ExcMessage("The space and the physical domain must have the same grid!"));
-
+  Assert(this->get_ptr_const_grid() == phys_domain_->get_grid_function()->get_grid(),
+         ExcMessage("The space and the physical domain must have the same grid!"));
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
 }
 
@@ -75,7 +74,7 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create(const shared_ptr<RefSpace> &ref_space,
-                const shared_ptr<PhysDomain> &phys_domain) -> shared_ptr<self_t>
+       const shared_ptr<PhysDomain> &phys_domain) -> shared_ptr<self_t>
 {
 //  Assert(map_func != nullptr, ExcNullPtr());
 //  Assert(map_func.unique(), ExcNotUnique());
@@ -92,7 +91,7 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 const_create(const shared_ptr<const RefSpace> &ref_space,
-       const shared_ptr<const PhysDomain> &phys_domain) -> shared_ptr<const self_t>
+             const shared_ptr<const PhysDomain> &phys_domain) -> shared_ptr<const self_t>
 {
 //  Assert(ref_space != nullptr, ExcNullPtr());
 //  Assert(map_func != nullptr, ExcNullPtr());
@@ -123,7 +122,7 @@ create_element(const ListIt &index, const PropId &property) const
 -> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
 {
   std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
-      elem = std::make_unique<ElementAccessor>(this->get_this_space(),index,property);
+  elem = std::make_unique<ElementAccessor>(this->get_this_space(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -303,9 +302,8 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
               std::placeholders::_2);
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  std::const_pointer_cast<Grid<dim_>>(
-                                     this->get_grid())->connect_insert_knots(
-                                     SlotType(func_to_connect).track_foreign(space));
+  this->get_ptr_grid()->connect_insert_knots(
+    SlotType(func_to_connect).track_foreign(space));
 }
 
 
