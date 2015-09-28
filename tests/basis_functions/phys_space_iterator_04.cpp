@@ -50,8 +50,9 @@ create_domain(const shared_ptr<const Grid<dim>> &grid)
   return map;
   //*/
 
-  using GridFunc = grid_functions::BallGridFunction<dim>;
-  auto grid_func = GridFunc::const_create(grid);
+  using GridFunc = grid_functions::CylindricalAnnulusGridFunction;
+  auto grid_func = GridFunc::const_create(grid,
+                                          1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
 
   using Domain = Domain<dim,codim>;
   auto domain = Domain::const_create(grid_func);

@@ -70,8 +70,8 @@ public:
 
   virtual void print_info(LogStream &out) const override final
   {
-	out.begin_item("BallGridFunction<" + std::to_string(dim) +">");
-	out.end_item();
+    out.begin_item("BallGridFunction<" + std::to_string(dim) +">");
+    out.end_item();
   }
 
 
@@ -139,8 +139,8 @@ public:
 
   virtual void print_info(LogStream &out) const override final
   {
-	out.begin_item("SphereGridFunction<" + std::to_string(dim) +">");
-	out.end_item();
+    out.begin_item("SphereGridFunction<" + std::to_string(dim) +">");
+    out.end_item();
   }
 
 protected:
@@ -167,7 +167,6 @@ private:
 //------------------------------------------------------------------------------
 
 
-#if 0
 
 
 //------------------------------------------------------------------------------
@@ -195,26 +194,22 @@ private:
  * \author martinelli
  * \date 31 Jan 2013
  */
-template<int dim>
-class CylindricalAnnulus : public FormulaGridFunction<dim, 0, dim, 1>
+class CylindricalAnnulusGridFunction : public FormulaGridFunction<3,3>
 {
 private:
-  using base_t = Function<dim, 0, dim, 1>;
-  using parent_t = FormulaGridFunction<dim, 0, dim, 1>;
-  using self_t = CylindricalAnnulus;
+  using base_t = GridFunction<3,3>;
+  using parent_t = FormulaGridFunction<3,3>;
+  using self_t = CylindricalAnnulusGridFunction;
   using typename base_t::GridType;
 public:
-  using typename parent_t::Point;
+  using typename parent_t::GridPoint;
   using typename parent_t::Value;
-  using typename parent_t::Gradient;
-  using typename parent_t::ElementIterator;
-  using typename parent_t::ElementAccessor;
+
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
-  using typename parent_t::Map;
 
   static std::shared_ptr<base_t>
-  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+  create(std::shared_ptr<GridType> grid,
          const Real r0,
          const Real r1,
          const Real h0,
@@ -222,37 +217,45 @@ public:
          const Real theta0,
          const Real theta1);
 
-  std::shared_ptr<base_t> clone() const override final;
+  static std::shared_ptr<const base_t>
+  const_create(std::shared_ptr<GridType> grid,
+               const Real r0,
+               const Real r1,
+               const Real h0,
+               const Real h1,
+               const Real theta0,
+               const Real theta1)
+  {
+    return create(grid,r0,r1,h0,h1,theta0,theta1);
+  }
 
-  CylindricalAnnulus(const self_t &) = default;
-  virtual ~CylindricalAnnulus() = default;
+
+  CylindricalAnnulusGridFunction(const self_t &) = default;
+  virtual ~CylindricalAnnulusGridFunction() = default;
+
+
+  virtual void print_info(LogStream &out) const override final;
 
 protected:
-  CylindricalAnnulus(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-                     const Real r0,
-                     const Real r1,
-                     const Real h0,
-                     const Real h1,
-                     const Real theta0,
-                     const Real theta1);
+  CylindricalAnnulusGridFunction(std::shared_ptr<GridType> grid,
+                                 const Real r0,
+                                 const Real r1,
+                                 const Real h0,
+                                 const Real h1,
+                                 const Real theta0,
+                                 const Real theta1);
 
 private:
-  template<int order>
-  auto
-  get_aux_vals(const ValueVector<Point> &points) const;
-
-private:
-  void evaluate_0(const ValueVector<Point> &points,
+  void evaluate_0(const ValueVector<GridPoint> &points,
                   ValueVector<Value> &values) const override final;
 
-  void evaluate_1(const ValueVector<Point> &points,
+  void evaluate_1(const ValueVector<GridPoint> &points,
                   ValueVector<Derivative<1>> &values) const override final;
 
-  void evaluate_2(const ValueVector<Point> &points,
+  void evaluate_2(const ValueVector<GridPoint> &points,
                   ValueVector<Derivative<2>> &values) const override final;
 
-private:
-private:
+
   const Real r0_;
   const Real r1_;
   const Real h0_;
@@ -270,5 +273,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif
 

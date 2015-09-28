@@ -468,22 +468,21 @@ evaluate_2(const ValueVector<GridPoint> &points,
 }
 //------------------------------------------------------------------------------
 
-#if 0
 
 //------------------------------------------------------------------------------
 
 
-template<int dim>
-CylindricalAnnulus<dim>::
-CylindricalAnnulus(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-                   const Real r0,
-                   const Real r1,
-                   const Real h0,
-                   const Real h1,
-                   const Real theta0,
-                   const Real theta1)
+CylindricalAnnulusGridFunction::
+CylindricalAnnulusGridFunction(
+  std::shared_ptr<GridType> grid,
+  const Real r0,
+  const Real r1,
+  const Real h0,
+  const Real h1,
+  const Real theta0,
+  const Real theta1)
   :
-  parent_t::FormulaGridFunction(grid, map),
+  parent_t::FormulaGridFunction(grid),
   r0_(r0),
   r1_(r1),
   h0_(h0),
@@ -497,10 +496,9 @@ CylindricalAnnulus(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
 
 
 
-template<int dim>
 auto
-CylindricalAnnulus<dim>::
-create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+CylindricalAnnulusGridFunction::
+create(std::shared_ptr<GridType> grid,
        const Real r0,
        const Real r1,
        const Real h0,
@@ -508,23 +506,14 @@ create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
        const Real theta0,
        const Real theta1) ->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<base_t>(new self_t(grid, map, r0, r1, h0, h1, theta0, theta1));
-}
-
-
-template<int dim>
-auto
-CylindricalAnnulus<dim>::
-clone() const -> std::shared_ptr<base_t>
-{
-  return std::make_shared<self_t>(*this);
+  return std::shared_ptr<base_t>(new self_t(grid,r0,r1,h0,h1,theta0,theta1));
 }
 
 
 
-template<int dim>
+
 auto
-CylindricalAnnulus<dim>::
+CylindricalAnnulusGridFunction::
 evaluate_0(const ValueVector<GridPoint> &points,
            ValueVector<Value> &values) const -> void
 {
@@ -549,9 +538,8 @@ evaluate_0(const ValueVector<GridPoint> &points,
 
 
 
-template<int dim>
 auto
-CylindricalAnnulus<dim>::
+CylindricalAnnulusGridFunction::
 evaluate_1(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<1>> &values) const -> void
 {
@@ -586,9 +574,8 @@ evaluate_1(const ValueVector<GridPoint> &points,
 
 
 
-template<int dim>
 auto
-CylindricalAnnulus<dim>::
+CylindricalAnnulusGridFunction::
 evaluate_2(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<2>> &values) const -> void
 {
@@ -645,8 +632,23 @@ evaluate_2(const ValueVector<GridPoint> &points,
   }
 }
 
+
+void
+CylindricalAnnulusGridFunction::
+print_info(LogStream &out) const
+{
+  using std::endl;
+  out.begin_item("CylindricalAnnulusGridFunction");
+  out << "r0 = " << r0_ << endl;
+  out << "r1 = " << r1_ << endl;
+  out << "h0 = " << h0_ << endl;
+  out << "h1 = " << h1_ << endl;
+  out << "theta0 = " << theta0_ << endl;
+  out << "theta1 = " << theta1_ << endl;
+  out.end_item();
+}
+
 //------------------------------------------------------------------------------
-#endif
 } // of namespace functions.
 
 IGA_NAMESPACE_CLOSE
