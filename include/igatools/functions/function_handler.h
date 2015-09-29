@@ -201,8 +201,9 @@ public:
   }
 
 protected:
-  std::shared_ptr<typename ConstElementAccessor::CacheType>
-  &get_element_cache(ConstElementAccessor &elem) const
+//  std::shared_ptr<typename ConstElementAccessor::CacheType>
+  typename ConstElementAccessor::CacheType &
+  get_element_cache(ConstElementAccessor &elem) const
   {
     return  elem.local_cache_;
   }
@@ -256,11 +257,14 @@ private:
     {
       auto &cache = elem_.local_cache_;
 
-      const auto n_pts = elem_.get_domain_element().get_grid_function_element().get_grid_element().template
-                         get_quad<sdim>()->get_num_points();
+      const auto n_pts = elem_.
+                         get_domain_element().
+                         get_grid_function_element().
+                         get_grid_element().
+                         template get_quad<sdim>()->get_num_points();
       for (const auto s_id: UnitElement<dim_>::template elems_ids<sdim>())
       {
-        auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+        auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
         s_cache.resize(flags_[sdim],n_pts);
       }
     }
@@ -270,66 +274,6 @@ private:
   };
 
 
-#ifdef MESH_REFINEMENT
-private:
-  std::shared_ptr<self_t> function_previous_refinement_;
-public:
-  const std::shared_ptr<self_t> &get_function_previous_refinement() const
-  {
-    return function_previous_refinement_;
-  }
-#endif // MESH_REFINEMENT
-
-#if 0
-#ifdef SERIALIZATION
-public:
-  /**
-   * Returns the unique identifier associated to each object instance.
-   */
-  Index get_object_id() const;
-
-  /**
-   * Get the name associated to the object instance.
-   */
-  const std::string &get_name() const;
-
-  /**
-   * Set the name associated to the object instance.
-   */
-  void set_name(const std::string &name);
-
-private:
-  /**
-   * Unique identifier associated to each object instance.
-   */
-  Index object_id_;
-
-  /**
-   * Name associated to the object instance.
-   */
-  std::string name_;
-public:
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version);
-  /*
-  {
-      ar &boost::serialization::make_nvp("grid_elem_handler_",
-                                         boost::serialization::base_object<Domain>(*this));
-
-      ar &boost::serialization::make_nvp("flags_",flags_);
-  }
-  //*/
-  ///@}
-#endif // SERIALIZATION
-#endif
 };
 
 IGA_NAMESPACE_CLOSE

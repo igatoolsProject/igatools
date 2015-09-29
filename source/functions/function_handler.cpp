@@ -32,7 +32,6 @@ FunctionHandler(std::shared_ptr<FuncType> func)
   :
   func_(func),
   domain_handler_(func_->get_domain()->create_cache_handler())
-  // object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
 
@@ -71,14 +70,6 @@ init_cache(ConstElementAccessor &elem,
 {
   domain_handler_->init_cache(*(elem.domain_elem_), quad);
 
-  auto &cache = elem.local_cache_;
-  if (cache == nullptr)
-  {
-    using Cache = typename ElementAccessor::CacheType;
-    cache = std::make_shared<Cache>();
-  }
-
-  // auto disp = InitCacheDispatcher(this, elem, flags_);
   auto disp = InitCacheDispatcher(elem, flags_);
   boost::apply_visitor(disp, quad);
 }
@@ -95,60 +86,6 @@ fill_cache(const topology_variant &sdim,
   domain_handler_->fill_cache(sdim, *(elem.domain_elem_), s_id);
 }
 
-
-#if 0
-#ifdef SERIALIZATION
-template<int dim_, int codim_, int range_, int rank_>
-Index
-FunctionHandler<dim_, codim_, range_, rank_ >::
-get_object_id() const
-{
-  return object_id_;
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
-const std::string &
-FunctionHandler<dim_, codim_, range_, rank_ >::
-get_name() const
-{
-  return name_;
-}
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-FunctionHandler<dim_, codim_, range_, rank_ >::
-set_name(const std::string &name)
-{
-  name_ = name;
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
-template<class Archive>
-void
-FunctionHandler<dim_, codim_, range_, rank_ >::
-serialize(Archive &ar, const unsigned int version)
-{
-  AssertThrow(false,ExcNotImplemented());
-#if 0
-  ar &boost::serialization::make_nvp("grid_elem_handler_",
-                                     boost::serialization::base_object<GridHandler<dim_>>(*this));
-
-  ar &boost::serialization::make_nvp("object_id_",object_id_);
-  ar &boost::serialization::make_nvp("name_",name_);
-
-  ar &boost::serialization::make_nvp("flags_",flags_);
-
-  ar &boost::serialization::make_nvp("grid_",grid_);
-
-#ifdef MESH_REFINEMENT
-  ar &boost::serialization::make_nvp("function_previous_refinement_",function_previous_refinement_);
-#endif // MESH_REFINEMENT
-#endif
-}
-#endif // SERIALIZATION
-#endif
 
 
 IGA_NAMESPACE_CLOSE

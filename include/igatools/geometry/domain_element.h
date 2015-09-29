@@ -220,8 +220,7 @@ public:
   template <class ValueType, int sdim>
   auto &get_values_from_cache(const int s_id = 0) const
   {
-    Assert(local_cache_ != nullptr,ExcNullPtr());
-    const auto &cache = local_cache_->template
+    const auto &cache = local_cache_.template
                         get_sub_elem_cache<sdim>(s_id);
     return cache.template get_data<ValueType>();
   }
@@ -263,7 +262,7 @@ private:
 
   std::unique_ptr<GridFuncElem> grid_func_elem_;
 
-  std::shared_ptr<CacheType> local_cache_;
+  CacheType local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
   friend class DomainHandler<dim_, codim_>;

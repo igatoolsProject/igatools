@@ -31,6 +31,81 @@ IGA_NAMESPACE_OPEN
 namespace grid_functions
 {
 
+/**
+ * y = A * x + b
+ */
+template<int dim, int space_dim>
+class LinearGridFunction :
+  public FormulaGridFunction<dim,space_dim>
+{
+  using base_t = GridFunction<dim,space_dim>;
+  using parent_t = FormulaGridFunction<dim,space_dim>;
+  using self_t = LinearGridFunction<dim,space_dim>;
+  using typename base_t::GridType;
+public:
+  using typename parent_t::Value;
+  using typename parent_t::GridPoint;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+
+public:
+  static std::shared_ptr<base_t>
+  create(const std::shared_ptr<GridType> &domain,
+         const Derivative<1> &A,
+         const Value &b);
+
+  static std::shared_ptr<const base_t>
+  const_create(const std::shared_ptr<GridType> &domain,
+               const Derivative<1> &A,
+               const Value &b)
+  {
+    return create(domain, A, b);
+  }
+
+  LinearGridFunction(const self_t &) = default;
+
+  virtual ~LinearGridFunction() = default;
+
+  virtual void print_info(LogStream &out) const override final
+  {
+    out.begin_item("LinearGridFunction<"
+                   + std::to_string(dim) + ","
+                   + std::to_string(space_dim) + ">");
+
+    out.begin_item("A:");
+    out << A_ ;
+    out.end_item();
+
+    out.begin_item("b:");
+    out << b_ ;
+    out.end_item();
+
+    out.end_item();
+  }
+
+protected:
+  LinearGridFunction(
+    const std::shared_ptr<GridType> &domain,
+    const Derivative<1> &A,
+    const Value &b);
+
+private:
+  void evaluate_0(const ValueVector<GridPoint> &points,
+                  ValueVector<Value> &values) const override;
+
+  void evaluate_1(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<1>> &values) const override;
+
+  void evaluate_2(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<2>> &values) const override;
+
+private:
+  const Derivative<1> A_;
+  const Value    b_;
+};
+
+
+
 //------------------------------------------------------------------------------
 /**
  * Maps a hyper rectangle into a spherical ball sector using the

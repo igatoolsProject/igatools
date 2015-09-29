@@ -191,7 +191,8 @@ public:
   }
 
 protected:
-  std::shared_ptr<typename ConstElementAccessor::CacheType>
+//  std::shared_ptr<typename ConstElementAccessor::CacheType>
+  typename ConstElementAccessor::CacheType
   &get_element_cache(ConstElementAccessor &elem) const
   {
     return  elem.local_cache_;
@@ -244,7 +245,7 @@ private:
                             ->get_num_points();
       for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
       {
-        auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+        auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
         s_cache.resize(flags_[sdim], n_points);
       }
     }
@@ -270,7 +271,7 @@ private:
     void operator()(const Topology<sdim> &)
     {
 
-      auto &cache = elem_.local_cache_->template get_sub_elem_cache<sdim>(s_id_);
+      auto &cache = elem_.local_cache_.template get_sub_elem_cache<sdim>(s_id_);
 
       using _Measure = typename ElementAccessor::_Measure;
       if (cache.template status_fill<_Measure>())
@@ -278,7 +279,6 @@ private:
         auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id_);
 
         const auto &DF = elem_.grid_func_elem_->template get_values<grid_function_element::_D<1>, sdim>(s_id_);
-        // const auto &DF = cache.template get_data<_Gradient>();
 
         const auto n_points = DF.get_num_points();
 

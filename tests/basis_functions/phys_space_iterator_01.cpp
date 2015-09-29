@@ -31,6 +31,21 @@
 
 #include "phys_space_iterator.h"
 
+template <int dim>
+std::shared_ptr<GridFunction<dim,dim>>
+                                    create_identity_function(std::shared_ptr<Grid<dim>> &grid)
+{
+  using Function = grid_functions::LinearGridFunction<dim,dim>;
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i=0; i<dim; i++)
+  {
+    A[i][i] = 1.;
+    b[i] = 0.0;
+  }
+
+  return Function::create(grid,A,b);
+}
 
 template<int dim, int sub_dim = dim>
 void
@@ -39,9 +54,10 @@ identity_map(const int n_knots, const int deg, const string prop=DofProperties::
 {
   OUTSTART
 
-  auto grid  = Grid<dim>::const_create(n_knots);
-  auto map = IdentityFunction<dim>::const_create(grid);
-  auto space = create_space<dim>(grid, map, deg);
+  auto grid  = Grid<dim>::create(n_knots);
+  auto grid_func = create_identity_function(grid);
+
+  auto space = create_space<dim>(grid, grid_func, deg);
   const int n_qp = 1;
   elem_values<dim, sub_dim>(space, n_qp, prop, use_bdry);
 
@@ -68,9 +84,9 @@ identity_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
 {
   OUTSTART
 
-  auto grid  = Grid<dim>::const_create(n_knots);
-  auto map = IdentityFunction<dim>::const_create(grid);
-  auto space = create_space_prop<dim>(grid, map, deg);
+  auto grid  = Grid<dim>::create(n_knots);
+  auto grid_func = create_identity_function(grid);
+  auto space = create_space_prop<dim>(grid, grid_func, deg);
   const int n_qp = 1;
   elem_values<dim, sub_dim>(space, n_qp, DofProp::interior, use_bdry);
   elem_values<dim, sub_dim>(space, n_qp, DofProp::dirichlet, use_bdry);

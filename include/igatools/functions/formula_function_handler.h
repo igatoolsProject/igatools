@@ -79,11 +79,10 @@ private:
     {
       using _Value = typename ConstElementAccessor::_Value;
       using _Gradient = typename ConstElementAccessor::_Gradient;
+      using _D2 = typename ConstElementAccessor::_D2;
 
       auto &local_cache = func_handler_.get_element_cache(elem_);
-      auto &cache = local_cache->template get_sub_elem_cache<sdim>(s_id_);
-
-
+      auto &cache = local_cache.template get_sub_elem_cache<sdim>(s_id_);
 
       if (!cache.fill_none())
       {
@@ -99,11 +98,11 @@ private:
           func_.evaluate_1(points, cache.template get_data<_Gradient>());
           cache.template set_status_filled<_Gradient>(true);
         }
-//        if (cache.template status_fill<_D2>())
-//        {
-//          function_.evaluate_2(points, cache.template get_data<_Hessian>());
-//          cache.template set_status_filled<_Hessian>(true);
-//        }
+        if (cache.template status_fill<_D2>())
+        {
+          func_.evaluate_2(points, cache.template get_data<_D2>());
+          cache.template set_status_filled<_D2>(true);
+        }
 //        if (cache.template status_fill<_Divergence>())
 //          Assert(false,ExcNotImplemented());
       }

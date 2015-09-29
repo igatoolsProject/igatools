@@ -192,6 +192,25 @@ const string space_element::_Hessian::name = "Basis function hessians";
 
 const space_element::Flags space_element::_Divergence::flag;
 const string space_element::_Divergence::name = "Basis function divergences";
+
+
+activate::FlagsToCache activate::space =
+{
+  {Flags::value, CacheFlags::value},
+  {Flags::gradient, CacheFlags::gradient},
+  {Flags::hessian, CacheFlags::hessian},
+  {Flags::divergence, CacheFlags::divergence}
+};
+
+activate::FlagsToDomain activate::domain =
+{
+  {Flags::value,      domain_element::Flags::none},
+  {Flags::gradient,   domain_element::Flags::none},
+  {Flags::hessian,    domain_element::Flags::none},
+  {Flags::divergence, domain_element::Flags::none}
+};
+
+
 };
 //---------------------------------------------------------------------
 

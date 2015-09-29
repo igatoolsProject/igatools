@@ -26,6 +26,73 @@ namespace grid_functions
 {
 
 //------------------------------------------------------------------------------
+template<int dim, int space_dim>
+LinearGridFunction<dim,space_dim>::
+LinearGridFunction(const std::shared_ptr<GridType> &domain,
+                   const Derivative<1> &A,
+                   const Value &b)
+  :
+  parent_t(domain),
+  A_(A),
+  b_(b)
+{}
+
+
+
+template<int dim, int space_dim>
+auto
+LinearGridFunction<dim,space_dim>::
+create(const std::shared_ptr<GridType> &domain,
+       const Derivative<1> &A,
+       const Value &b) ->  std::shared_ptr<base_t>
+{
+  return std::shared_ptr<base_t>(new self_t(domain, A, b));
+}
+
+
+
+template<int dim, int space_dim>
+auto
+LinearGridFunction<dim,space_dim>::
+evaluate_0(const ValueVector<GridPoint> &points,
+           ValueVector<Value> &values) const -> void
+{
+  auto point = points.begin();
+  for (auto &val : values)
+  {
+    val = action(A_, *point) + b_;
+    ++point;
+  }
+}
+
+
+
+template<int dim, int space_dim>
+auto
+LinearGridFunction<dim,space_dim>::
+evaluate_1(const ValueVector<GridPoint> &points,
+           ValueVector<Derivative<1>> &values) const -> void
+{
+  for (auto &val : values)
+    val = A_;
+}
+
+template<int dim, int space_dim>
+auto
+LinearGridFunction<dim,space_dim>::
+evaluate_2(const ValueVector<GridPoint> &points,
+           ValueVector<Derivative<2>> &values) const -> void
+{
+  for (auto &val : values)
+    val = 0.;
+}
+
+
+//------------------------------------------------------------------------------
+
+
+
+//------------------------------------------------------------------------------
 template<int dim>
 BallGridFunction<dim>::
 BallGridFunction(std::shared_ptr<GridType> grid)

@@ -29,7 +29,8 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function.h>
+//#include <igatools/functions/function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 #include <igatools/basis_functions/bspline_space.h>
 
@@ -44,13 +45,13 @@ using space_tools::get_boundary_dofs;
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
     create_space(const shared_ptr<Grid<dim>> &grid,
-                 const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
+                 const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
                  const int deg=1)
 {
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
   auto ref_space = BspSpace::create(deg, grid);
-  return Space::create(ref_space, map_func);
+  return Space::create(ref_space, Domain<dim,codim>::create(grid_func));
 }
 
 
@@ -73,7 +74,7 @@ enum  bc : boundary_id
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
     create_space_prop(const shared_ptr<Grid<dim>> &grid,
-                      const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
+                      const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
                       const int deg=1)
 {
   const int neu_face = 0;
@@ -82,7 +83,7 @@ shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
   auto ref_space = BspSpace::create(deg, grid);
-  auto space = Space::create(ref_space, map_func);
+  auto space = Space::create(ref_space, Domain<dim,codim>::create(grid_func));
 
   std::set<boundary_id>  dir_ids = {bc::dir};
   auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
@@ -125,22 +126,33 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::
 //    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 //    using ElementHandler = typename Space::ElementHandler;
 
-  auto quad = QGauss<k>(n_qp);
-  auto flag = ValueFlags::value|ValueFlags::gradient |
-              ValueFlags::hessian | ValueFlags::point |
-              ValueFlags::w_measure;
+  auto quad = QGauss<k>::create(n_qp);
+  using space_element::Flags;
+  auto flag = Flags::value|
+              Flags::gradient |
+              Flags::hessian;
+  //|
+  //      Flags::point |
+  //    ValueFlags::w_measure;
 
   auto elem_filler = space->create_cache_handler();
-  elem_filler->reset(flag, quad);
+  elem_filler->template set_flags<k>(flag);
 
   auto elem = space->begin();
   auto end  = space->end();
-  elem_filler->template init_cache<k>(*elem);
+  elem_filler->template init_cache<k>(elem,quad);
+
+  using space_element::_Value;
+  using space_element::_Gradient;
+  using space_element::_Hessian;
+
+  int elem_id = 0;
   for (; elem != end; ++elem)
   {
     if ((no_boundary) || (elem->is_boundary()))
     {
-      out.begin_item("Element " + std::to_string(elem->get_flat_index()));
+      out.begin_item("Element " + std::to_string(elem_id));
+      out << "Element index: " << elem->get_index() << endl;
       for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
       {
         if ((no_boundary) || (elem->is_boundary(s_id)))
@@ -168,6 +180,7 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::
       }
       out.end_item();
     }
+    ++elem_id;
   }
 
 

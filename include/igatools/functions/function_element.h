@@ -220,10 +220,11 @@ public:
   using CacheType = AllSubElementsCache<Cache>;
 
 private:
-  std::shared_ptr<CacheType>
-  &get_cache()
+//  std::shared_ptr<CacheType>
+  CacheType &
+  get_cache()
   {
-    Assert(local_cache_ != nullptr,ExcNullPtr());
+//    Assert(local_cache_ != nullptr,ExcNullPtr());
     return local_cache_;
   }
 
@@ -233,7 +234,7 @@ private:
 
   std::unique_ptr<DomainElem> domain_elem_;
 
-  std::shared_ptr<CacheType> local_cache_;
+  CacheType local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
   friend class FunctionHandler<dim, codim, range, rank>;

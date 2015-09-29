@@ -137,7 +137,7 @@ void
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 print_cache_info(LogStream &out) const
 {
-  local_cache_->print_info(out);
+  local_cache_.print_info(out);
 }
 
 #if 0

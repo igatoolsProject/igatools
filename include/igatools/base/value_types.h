@@ -343,6 +343,44 @@ enum class Flags
   divergence          =    1L << 4//!< divergence
 };
 
+
+static const SafeSTLArray<Flags,9> all_flags =
+{
+  Flags::value,
+  Flags::gradient,
+  Flags::hessian,
+  Flags::divergence
+};
+
+
+enum class CacheFlags
+{
+  /** Fill nothing */
+  none           =    0,          //!< none
+
+  /** Basis functions value */
+  value          =    1L << 1,    //!< value
+
+  /** Basis functions gradient */
+  gradient          =    1L << 2, //!< gradient
+
+  /** Basis functions hessian */
+  hessian          =    1L << 3,  //!< hessian
+
+  /** Basis functions divergence */
+  divergence          =    1L << 4//!< divergence
+};
+
+
+struct activate
+{
+  using FlagsToCache = std::map<Flags, CacheFlags>;
+  static FlagsToCache space;
+
+  using FlagsToDomain = std::map<Flags,domain_element::Flags>;
+  static FlagsToDomain domain;
+};
+
 /**
  * Alias used to define/select the container for the basis function values in the cache.
  */

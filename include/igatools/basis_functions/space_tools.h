@@ -88,6 +88,8 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
 
   const int n_qp = quad.get_num_points();
 
+  using space_element::_Value;
+
   if (space_grid == func_grid)
   {
     for (; elem != end; ++elem, ++f_elem)
@@ -348,6 +350,15 @@ integrate(Function<dim, codim, range, rank> &f,
         typename Function<dim, codim, range, rank>::Value,
         typename Function<dim, codim, range, rank>::template Derivative<order>>;
 
+  using _Val =
+    Conditional<order==0,
+    typename function_element::_Value,
+    Conditional<order==1,
+    typename function_element::_Gradient,
+    typename function_element::_D2
+    >
+    >;
+
   auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
   f.reset(flag, quad);
@@ -365,7 +376,7 @@ integrate(Function<dim, codim, range, rank> &f,
 
     const int elem_id = elem_f->get_flat_index();
 
-    auto f_val = elem_f->template get_values<ValueType<order>,dim>(0);
+    auto f_val = elem_f->template get_values<_Val,dim>(0);
     auto w_meas = elem_f->template get_w_measures<dim>(0);
 
     val = 0.0;
@@ -400,6 +411,15 @@ void norm_difference(Function<dim, codim, range, rank> &f,
   const bool is_inf = p==std::numeric_limits<Real>::infinity()? true : false;
   auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
+  using _Val =
+    Conditional<order==0,
+    typename function_element::_Value,
+    Conditional<order==1,
+    typename function_element::_Gradient,
+    typename function_element::_D2
+    >
+    >;
+
   f.reset(flag, quad);
   g.reset(flag, quad);
   const int n_points = quad.get_num_points();
@@ -420,8 +440,8 @@ void norm_difference(Function<dim, codim, range, rank> &f,
 
     const int elem_id = elem_f->get_flat_index();
 
-    auto f_val = elem_f->template get_values<ValueType<order>,dim>(0);
-    auto g_val = elem_g->template get_values<ValueType<order>,dim>(0);
+    auto f_val = elem_f->template get_values<_Val,dim>(0);
+    auto g_val = elem_g->template get_values<_Val,dim>(0);
     auto w_meas = elem_f->template get_w_measures<dim>(0);
 
     Real elem_diff_pow_p = 0.0;

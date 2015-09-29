@@ -26,6 +26,7 @@ output = set ()
 
 for dim in inst.domain_dims:
     output.add ('template class grid_functions::BallGridFunction<%d>;\n' % (dim) )
+    output.add ('template class grid_functions::LinearGridFunction<%d,%d>;\n' % (dim,dim) )
 
 for s in output:
   f.write(s)
@@ -35,7 +36,4 @@ s = ('template class grid_functions::SphereGridFunction<%d>;\n' %1 )
 f.write(s)
 s = ('template class grid_functions::SphereGridFunction<%d>;\n' %2 )
 f.write(s)
-
-#s = ('template class functions::CylindricalAnnulus<%d>;\n' %3)
-#f.write(s)
 
