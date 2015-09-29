@@ -193,7 +193,7 @@ const string space_element::_Hessian::name = "Basis function hessians";
 const space_element::Flags space_element::_Divergence::flag;
 const string space_element::_Divergence::name = "Basis function divergences";
 
-
+#if 0
 activate::SpaceFlagsToSpaceCache activate::phys_space_flags_to_phys_space_cache =
 {
   {Flags::value, CacheFlags::value},
@@ -221,7 +221,7 @@ activate::SpaceCacheToDomainFlags activate::phys_space_cache_to_domain_flags =
   {CacheFlags::hessian,    domain_element::Flags::none},
   {CacheFlags::divergence, domain_element::Flags::none}
 };
-
+#endif
 
 };
 //---------------------------------------------------------------------

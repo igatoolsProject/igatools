@@ -347,7 +347,7 @@ enum class Flags
   w_measure         = 1L << 6 //!< quad. weight * domain measure element
 };
 
-
+#if 0
 static const SafeSTLArray<Flags,6> all_flags =
 {
   Flags::value,
@@ -389,6 +389,7 @@ struct activate
   using SpaceCacheToDomainFlags = std::map<CacheFlags,domain_element::Flags>;
   static SpaceCacheToDomainFlags phys_space_cache_to_domain_flags;
 };
+#endif
 
 /**
  * Alias used to define/select the container for the basis function values in the cache.
