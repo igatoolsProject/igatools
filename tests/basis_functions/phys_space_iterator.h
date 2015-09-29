@@ -130,7 +130,8 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::
   using space_element::Flags;
   auto flag = Flags::value|
               Flags::gradient |
-              Flags::hessian;
+              Flags::hessian |
+              Flags::w_measure;
   //|
   //      Flags::point |
   //    ValueFlags::w_measure;

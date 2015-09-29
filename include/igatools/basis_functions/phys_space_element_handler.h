@@ -109,26 +109,27 @@ phys_space_to_domain_flag(
   using DomainFlags = domain_element::Flags;
   DomainFlags domain_flag = DomainFlags::none;
 
+  if (contains(phys_space_flag, SpaceFlags::point))
+    domain_flag |= DomainFlags::point;
+  if (contains(phys_space_flag, SpaceFlags::w_measure))
+    domain_flag |= DomainFlags::w_measure;
+
+
   if (transformation_type == Transformation::h_grad)
   {
     if (contains(phys_space_flag, SpaceFlags::value))
     {}
 
     if (contains(phys_space_flag, SpaceFlags::gradient))
-    {
       domain_flag |= (DomainFlags::inv_jacobian);
-    }
 
     if (contains(phys_space_flag, SpaceFlags::hessian))
-    {
       domain_flag |= (DomainFlags::hessian | DomainFlags::inv_jacobian);
-    }
 
     if (contains(phys_space_flag, SpaceFlags::divergence))
-    {
       AssertThrow(false,ExcNotImplemented());
 //      domain_flag |= (DomainFlags::inv_gradient);
-    }
+
   }
   else
   {

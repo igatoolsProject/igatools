@@ -194,20 +194,32 @@ const space_element::Flags space_element::_Divergence::flag;
 const string space_element::_Divergence::name = "Basis function divergences";
 
 
-activate::FlagsToCache activate::space =
+activate::SpaceFlagsToSpaceCache activate::phys_space_flags_to_phys_space_cache =
 {
   {Flags::value, CacheFlags::value},
   {Flags::gradient, CacheFlags::gradient},
   {Flags::hessian, CacheFlags::hessian},
-  {Flags::divergence, CacheFlags::divergence}
+  {Flags::divergence, CacheFlags::divergence},
+  {Flags::point, CacheFlags::none},
+  {Flags::w_measure, CacheFlags::none}
 };
 
-activate::FlagsToDomain activate::domain =
+activate::SpaceFlagsToDomainFlags activate::phys_space_flags_to_domain_flags =
 {
   {Flags::value,      domain_element::Flags::none},
   {Flags::gradient,   domain_element::Flags::none},
   {Flags::hessian,    domain_element::Flags::none},
-  {Flags::divergence, domain_element::Flags::none}
+  {Flags::divergence, domain_element::Flags::none},
+  {Flags::point,      domain_element::Flags::point},
+  {Flags::w_measure,  domain_element::Flags::w_measure},
+};
+
+activate::SpaceCacheToDomainFlags activate::phys_space_cache_to_domain_flags =
+{
+  {CacheFlags::value,      domain_element::Flags::none},
+  {CacheFlags::gradient,   domain_element::Flags::none},
+  {CacheFlags::hessian,    domain_element::Flags::none},
+  {CacheFlags::divergence, domain_element::Flags::none}
 };
 
 

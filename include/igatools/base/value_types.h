@@ -340,16 +340,22 @@ enum class Flags
   hessian          =    1L << 3,  //!< hessian
 
   /** Basis functions divergence */
-  divergence          =    1L << 4//!< divergence
+  divergence          =    1L << 4, //!< divergence
+
+  point             = 1L << 5, //!< point in the domain
+
+  w_measure         = 1L << 6 //!< quad. weight * domain measure element
 };
 
 
-static const SafeSTLArray<Flags,9> all_flags =
+static const SafeSTLArray<Flags,6> all_flags =
 {
   Flags::value,
   Flags::gradient,
   Flags::hessian,
-  Flags::divergence
+  Flags::divergence,
+  Flags::point,
+  Flags::w_measure
 };
 
 
@@ -374,11 +380,14 @@ enum class CacheFlags
 
 struct activate
 {
-  using FlagsToCache = std::map<Flags, CacheFlags>;
-  static FlagsToCache space;
+  using SpaceFlagsToSpaceCache = std::map<Flags, CacheFlags>;
+  static SpaceFlagsToSpaceCache phys_space_flags_to_phys_space_cache;
 
-  using FlagsToDomain = std::map<Flags,domain_element::Flags>;
-  static FlagsToDomain domain;
+  using SpaceFlagsToDomainFlags = std::map<Flags,domain_element::Flags>;
+  static SpaceFlagsToDomainFlags phys_space_flags_to_domain_flags;
+
+  using SpaceCacheToDomainFlags = std::map<CacheFlags,domain_element::Flags>;
+  static SpaceCacheToDomainFlags phys_space_cache_to_domain_flags;
 };
 
 /**
