@@ -226,9 +226,12 @@ public:
     return cache.template get_data<ValueType>();
   }
 
+
   using _Measure = domain_element::_Measure;
 
   using _InvJacobian = domain_element::_InvJacobian;
+
+  using _BoundaryNormal = domain_element::_BoundaryNormal;
 
 
 private:
@@ -237,12 +240,12 @@ private:
 
 
   using CType = boost::fusion::map<
-                boost::fusion::pair< _Measure, DataWithFlagStatus<ValueVector<Real>> >,
-                boost::fusion::pair< _InvJacobian, DataWithFlagStatus<ValueVector<InvDerivative<1>>> >
+                boost::fusion::pair<_Measure       ,DataWithFlagStatus<ValueVector<Real>> >,
+                boost::fusion::pair<_InvJacobian   ,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
+                boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<dim_+codim_>>>>
                 >;
 //                ,
 //                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
-//                  boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
 //                  boost::fusion::pair<   _OuterNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
 //                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
 //                  >;

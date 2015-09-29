@@ -299,8 +299,8 @@ private:
       using _InvJacobian = typename ElementAccessor::_InvJacobian;
       if (cache.template status_fill<_InvJacobian>())
       {
-        const auto &DF = elem_.grid_func_elem_->template get_values<grid_function_element::_D<1>, sdim>(s_id_);
-//        const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
+        const auto &DF = elem_.grid_func_elem_->
+                         template get_values<grid_function_element::_D<1>,sdim>(s_id_);
 
         const auto n_points = DF.get_num_points();
 
@@ -333,24 +333,31 @@ private:
 
         cache.template set_status_filled<_InvHessian>(true);
       }
+#endif
 
+      using _BoundaryNormal = typename ElementAccessor::_BoundaryNormal;
       if (cache.template status_fill<_BoundaryNormal>())
       {
-        Assert(dim_ == sdim+1, ExcNotImplemented());
-        const auto &D1_invF = cache.template get_data<_InvGradient>();
-        const auto n_hat  = F_.get_grid()->template get_boundary_normals<sdim>(s_id)[0];
-        auto &bndry_normal = cache.template get_data<_BoundaryNormal>();
+        Assert(dim_ == sdim+1, ExcMessage("The boundary normal is defined only if sdim == dim-1"));
 
-        for (int pt = 0; pt < n_points; ++pt)
+        const auto n_hat  = UnitElement<dim_>::template get_elem<sdim>(s_id_).get_boundary_normal(0);
+
+        const auto &D1_invF = cache.template get_data<_InvJacobian>();
+        auto &bndry_normals = cache.template get_data<_BoundaryNormal>();
+
+        int pt = 0;
+        for (auto &bndry_normal_pt : bndry_normals)
         {
           const auto D1_invF_t = co_tensor(transpose(D1_invF[pt]));
-          bndry_normal[pt] = action(D1_invF_t, n_hat);
-          bndry_normal[pt] /= bndry_normal[pt].norm();
+          bndry_normal_pt = action(D1_invF_t, n_hat);
+          bndry_normal_pt /= bndry_normal_pt.norm();
+          ++pt;
         }
 
         cache.template set_status_filled<_BoundaryNormal>(true);
       }
 
+#if 0
       if (cache.template status_fill<_OuterNormal>())
       {
         Assert(sdim == dim_, ExcNotImplemented());

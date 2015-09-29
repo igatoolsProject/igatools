@@ -168,10 +168,12 @@ enum class Flags
 
   hessian        =    1L << 7,
 
-  inv_hessian    =    1L << 8
+  inv_hessian    =    1L << 8,
+
+  boundary_normal =   1L << 9
 };
 
-static const SafeSTLArray<Flags, 8> all_flags =
+static const SafeSTLArray<Flags,9> all_flags =
 {
   Flags::point,
   Flags::measure,
@@ -180,7 +182,8 @@ static const SafeSTLArray<Flags, 8> all_flags =
   Flags::jacobian,
   Flags::inv_jacobian,
   Flags::hessian,
-  Flags::inv_hessian
+  Flags::inv_hessian,
+  Flags::boundary_normal
 };
 
 /** Auxiliary quantities stored in a local cache */
@@ -192,7 +195,9 @@ enum class CacheFlags
 
   inv_jacobian   =    1L << 2,
 
-  inv_hessian    =    1L << 3
+  inv_hessian    =    1L << 3,
+
+  boundary_normal =   1L << 4
 };
 
 
@@ -226,6 +231,12 @@ struct _InvHessian
 {
   static const std::string name;
   static const auto flag = CacheFlags::inv_hessian;
+};
+
+struct _BoundaryNormal
+{
+  static const std::string name;
+  static const auto flag = CacheFlags::boundary_normal;
 };
 
 

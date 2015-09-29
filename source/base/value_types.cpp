@@ -65,7 +65,8 @@ activate::FlagsToCache  activate::domain =
   {Flags::jacobian, CacheFlags::none},
   {Flags::inv_jacobian, CacheFlags::inv_jacobian},
   {Flags::hessian, CacheFlags::none},
-  {Flags::inv_hessian, CacheFlags::inv_hessian}
+  {Flags::inv_hessian, CacheFlags::inv_hessian},
+  {Flags::boundary_normal, CacheFlags::boundary_normal | CacheFlags::inv_jacobian},
 };
 
 activate::FlagsToGridFunc activate::grid_func =
@@ -77,7 +78,8 @@ activate::FlagsToGridFunc activate::grid_func =
   {Flags::jacobian, grid_function_element::Flags::D1},
   {Flags::inv_jacobian, grid_function_element::Flags::D1},
   {Flags::hessian, grid_function_element::Flags::D2},
-  {Flags::inv_hessian, grid_function_element::Flags::D2}
+  {Flags::inv_hessian, grid_function_element::Flags::D2},
+  {Flags::boundary_normal, grid_function_element::Flags::none}
 };
 
 activate::FlagsToGrid activate::grid =
@@ -89,7 +91,8 @@ activate::FlagsToGrid activate::grid =
   {Flags::jacobian, grid_element::Flags::none},
   {Flags::inv_jacobian, grid_element::Flags::none},
   {Flags::hessian, grid_element::Flags::none},
-  {Flags::inv_hessian, grid_element::Flags::none}
+  {Flags::inv_hessian, grid_element::Flags::none},
+  {Flags::boundary_normal, grid_element::Flags::none}
 };
 
 };

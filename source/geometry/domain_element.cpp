@@ -107,7 +107,7 @@ get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
 {
   const int sdim = dim_;
   const int s_id = 0;
-  Assert(codim_ == 1, ExcNotImplemented());
+  AssertThrow(codim_ == 1, ExcNotImplemented());
   ValueVector<SafeSTLArray<Point, codim_>> res;
 
   const auto &DF = grid_func_elem_->template

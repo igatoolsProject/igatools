@@ -30,19 +30,19 @@ IGA_NAMESPACE_OPEN
 
 template <int> struct UnitElement;
 
-constexpr int skel_size(int dim, int sub_elem_dim)
+constexpr int skel_size(int dim, int sdim)
 {
-//  Assert(sub_elem_dim <= dim && sub_elem_dim >= 0,ExcIndexRange(sub_elem_dim,0,dim+1));
+//  Assert(sdim <= dim && sdim >= 0,ExcIndexRange(sdim,0,dim+1));
   int res = 0;
-  if (dim == sub_elem_dim)
+  if (dim == sdim)
   {
     res = 1;
   }
-  else if ((sub_elem_dim < dim) && (sub_elem_dim >= 0))
+  else if ((sdim < dim) && (sdim >= 0))
   {
-    if (sub_elem_dim > 0)
+    if (sdim > 0)
     {
-      res = 2*skel_size(dim-1, sub_elem_dim) + skel_size(dim-1, sub_elem_dim-1);
+      res = 2*skel_size(dim-1, sdim) + skel_size(dim-1, sdim-1);
     }
     else
     {
@@ -52,47 +52,47 @@ constexpr int skel_size(int dim, int sub_elem_dim)
 
   return res;
   /*
-  return dim == sub_elem_dim ? 1 :
+  return dim == sdim ? 1 :
          (
-                 ((sub_elem_dim==-1)||(sub_elem_dim>dim)) ?
+                 ((sdim==-1)||(sdim>dim)) ?
                          0 :
-                         (2*skel_size(dim-1, sub_elem_dim) + skel_size(dim-1, sub_elem_dim-1))
+                         (2*skel_size(dim-1, sdim) + skel_size(dim-1, sdim-1))
          );
          //*/
 }
 
 
-template <int dim, int sub_elem_dim>
-EnableIf< (dim==0) || (sub_elem_dim<0),
-          SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)>>
+template <int dim, int sdim>
+EnableIf< (dim==0) || (sdim<0),
+          SafeSTLArray<typename UnitElement<dim>::template SubElement<sdim>, skel_size(dim, sdim)>>
               fill_cube_elements()
 {
-  SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)> res;
+  SafeSTLArray<typename UnitElement<dim>::template SubElement<sdim>, skel_size(dim, sdim)> res;
   return res;
 }
 
 
 
-template <int dim, int sub_elem_dim>
-EnableIf< (dim==sub_elem_dim) &&(sub_elem_dim>0),
-          SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)>>
+template <int dim, int sdim>
+EnableIf< (dim==sdim) &&(sdim>0),
+          SafeSTLArray<typename UnitElement<dim>::template SubElement<sdim>, skel_size(dim, sdim)>>
               fill_cube_elements()
 {
-  SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)> res;
-  res[0].active_directions = sequence<sub_elem_dim>();
+  SafeSTLArray<typename UnitElement<dim>::template SubElement<sdim>, skel_size(dim, sdim)> res;
+  res[0].active_directions = sequence<sdim>();
   return res;
 }
 
 
-template <int dim, int sub_elem_dim>
-EnableIf< (dim>sub_elem_dim)  &&(sub_elem_dim>=0),
-          SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)>>
+template <int dim, int sdim>
+EnableIf< (dim>sdim)  &&(sdim>=0),
+          SafeSTLArray<typename UnitElement<dim>::template SubElement<sdim>, skel_size(dim, sdim)>>
               fill_cube_elements()
 {
-  SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)> elements;
+  SafeSTLArray<typename UnitElement<dim>::template SubElement<sdim>, skel_size(dim, sdim)> elements;
 
-  auto sub_elems_1 = fill_cube_elements<dim-1, sub_elem_dim>();
-  auto sub_elems_0 = fill_cube_elements<dim-1, sub_elem_dim-1>();
+  auto sub_elems_1 = fill_cube_elements<dim-1,sdim>();
+  auto sub_elems_0 = fill_cube_elements<dim-1,sdim-1>();
 
   auto elem = elements.begin();
 
@@ -100,8 +100,11 @@ EnableIf< (dim>sub_elem_dim)  &&(sub_elem_dim>=0),
   {
     auto &sub_dirs_0 = sub_elem_0.constant_directions;
     auto &dirs       = elem->constant_directions;
+
     std::copy(sub_dirs_0.begin(), sub_dirs_0.end(), dirs.begin());
+
     elem->constant_values = sub_elem_0.constant_values;
+
     ++elem;
   }
 
@@ -113,10 +116,13 @@ EnableIf< (dim>sub_elem_dim)  &&(sub_elem_dim>=0),
       {
         auto &dirs       = elem->constant_directions;
         auto &values       = elem->constant_values;
+
         std::copy(sub_dirs_1.begin(), sub_dirs_1.end(), dirs.begin());
-        dirs[dim - sub_elem_dim -1] = dim-1;
+        dirs[dim - sdim -1] = dim-1;
+
         std::copy(sub_values_1.begin(), sub_values_1.end(), values.begin());
-        values[dim - sub_elem_dim -1] = j;
+        values[dim - sdim -1] = j;
+
         ++elem;
       }
     }
@@ -207,6 +213,15 @@ struct UnitElement
     SafeSTLArray<Size, dim_ - k> constant_directions;
     SafeSTLArray<Size, dim_ - k> constant_values;
     SafeSTLArray<Size, (k >= 0) ? k : 0> active_directions;
+
+    Points<dim_> get_boundary_normal(const int i) const
+    {
+      Assert(i >= 0 && i < dim_-k,ExcIndexRange(i,0,dim_-k));
+      Points<dim_> bndry_normal;
+      bndry_normal[constant_directions[i]] = (constant_values[i] == 0) ? -1.0 : 1.0;
+
+      return bndry_normal;
+    }
   };
 
   /**
