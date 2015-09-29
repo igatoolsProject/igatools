@@ -197,7 +197,9 @@ enum class CacheFlags
 
   inv_hessian    =    1L << 3,
 
-  boundary_normal =   1L << 4
+  boundary_normal =   1L << 4,
+
+  ext_normal     =    1L << 5
 };
 
 
@@ -237,6 +239,13 @@ struct _BoundaryNormal
 {
   static const std::string name;
   static const auto flag = CacheFlags::boundary_normal;
+};
+
+
+struct _ExtNormal
+{
+  static const std::string name;
+  static const auto flag = CacheFlags::ext_normal;
 };
 
 

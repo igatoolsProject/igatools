@@ -357,25 +357,31 @@ private:
         cache.template set_status_filled<_BoundaryNormal>(true);
       }
 
-#if 0
-      if (cache.template status_fill<_OuterNormal>())
+      using _ExtNormal = typename ElementAccessor::_ExtNormal;
+      if (cache.template status_fill<_ExtNormal>())
       {
-        Assert(sdim == dim_, ExcNotImplemented());
+        Assert(sdim == dim_,  ExcMessage("The boundary normal is defined only if sdim == dim"));
         Assert(codim_ == 1, ExcNotImplemented());
+        Assert(s_id_ == 0,ExcDimensionMismatch(s_id_,0));
 
-        const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
-        auto &outer_normal = cache.template get_data<_OuterNormal>();
+        const auto &DF = elem_.grid_func_elem_->
+                         template get_values<grid_function_element::_D<1>,sdim>(s_id_);
 
-        for (int pt = 0; pt < n_points; ++pt)
+        auto &ext_normals = cache.template get_data<_ExtNormal>();
+
+        int pt = 0;
+        for (auto &ext_normal_pt : ext_normals)
         {
-          outer_normal[pt] = cross_product<dim_, codim_>(DF[pt]);
-          outer_normal[pt] /= outer_normal[pt].norm();
+          ext_normal_pt[0] = cross_product<dim_,codim_>(DF[pt]);
+          ext_normal_pt[0] /= ext_normal_pt[0].norm();
+          ++pt;
         }
 
-        cache.template set_status_filled<_OuterNormal>(true);
+        cache.template set_status_filled<_ExtNormal>(true);
       }
 
 
+#if 0
       if (cache.template status_fill<_Curvature>())
       {
         Assert(sdim == dim_, ExcNotImplemented());

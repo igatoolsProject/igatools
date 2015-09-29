@@ -56,12 +56,21 @@ const string _InvJacobian::name = "Element inverse jacobian";
 const CacheFlags _InvHessian::flag;
 const string _InvHessian::name = "Element inverse hessian";
 
+
+const CacheFlags _BoundaryNormal::flag;
+const string _BoundaryNormal::name = "Element boundary normal";
+
+
+const CacheFlags _ExtNormal::flag;
+const string _ExtNormal::name = "Element exterior normal";
+
+
 activate::FlagsToCache  activate::domain =
 {
   {Flags::point, CacheFlags::none},
   {Flags::w_measure, CacheFlags::measure},
   {Flags::measure,   CacheFlags::measure},
-  {Flags::ext_normal, CacheFlags::none},
+  {Flags::ext_normal, CacheFlags::ext_normal},
   {Flags::jacobian, CacheFlags::none},
   {Flags::inv_jacobian, CacheFlags::inv_jacobian},
   {Flags::hessian, CacheFlags::none},

@@ -108,6 +108,7 @@ get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
   const int sdim = dim_;
   const int s_id = 0;
   AssertThrow(codim_ == 1, ExcNotImplemented());
+#if 0
   ValueVector<SafeSTLArray<Point, codim_>> res;
 
   const auto &DF = grid_func_elem_->template
@@ -122,6 +123,8 @@ get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
   }
 
   return res;
+#endif
+  return get_values_from_cache<domain_element::_ExtNormal,sdim>(s_id);
 }
 
 

@@ -233,6 +233,7 @@ public:
 
   using _BoundaryNormal = domain_element::_BoundaryNormal;
 
+  using _ExtNormal = domain_element::_ExtNormal;
 
 private:
   template<int order>
@@ -242,11 +243,11 @@ private:
   using CType = boost::fusion::map<
                 boost::fusion::pair<_Measure       ,DataWithFlagStatus<ValueVector<Real>> >,
                 boost::fusion::pair<_InvJacobian   ,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
-                boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<dim_+codim_>>>>
+                boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<dim_+codim_>>>>,
+                boost::fusion::pair<_ExtNormal     ,DataWithFlagStatus<ValueVector<SafeSTLArray<Point,codim_>>>>
                 >;
 //                ,
 //                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
-//                  boost::fusion::pair<   _OuterNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
 //                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
 //                  >;
 
