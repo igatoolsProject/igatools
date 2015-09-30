@@ -39,13 +39,8 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
   phys_domain_element_(make_unique<PhysDomainElem>(
                         std::const_pointer_cast<PhysDomain>(phys_space->get_physical_domain()),
                         index, prop))
-//                            ,
-//    push_fwd_element_(make_shared<PfElemAccessor>(
-//                          std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(
-//                              phys_space->get_ptr_const_map_func()), index))
 {
 //    push_fwd_element_ = std::make_shared<PfElemAccessor>(phys_space->get_map_func(), index);
-  Assert(ref_space_element_ != nullptr, ExcNullPtr());
   Assert(phys_domain_element_ != nullptr, ExcNullPtr());
 }
 

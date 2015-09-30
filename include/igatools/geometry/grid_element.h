@@ -70,14 +70,6 @@ public:
   /** @name Constructors */
   ///@{
 protected:
-#if 0
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  GridElement() = default;
-#endif
 
   /**
    * Default constructor. Not allowed to be used.
@@ -146,19 +138,18 @@ public:
    * @note They should be called only by the GridIterator.
    */
   ///@{
-  /**
-   * Sets the index of the element using the flatten representation.
-   * @note This function also updates the index for the tensor representation.
-   * @warning This may be a dangerous function, be careful when using it
-   * as it is easy to use incorrectly. Only use it if you know what you
-   * are doing.
-   */
-  // void move_to(const IndexType&);
 
   typename List::iterator &operator++()
   {
     return (++index_it_);
   }
+//*/
+  /*
+    void operator++()
+    {
+      ++index_it_;
+    }
+  //*/
 
   /**
    * Move the element to the one specified by <tt>elem_id</tt>.
@@ -350,7 +341,6 @@ private:
   const auto &
   get_values_from_cache(const int s_id) const
   {
-//    Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
     const auto &cache = all_sub_elems_cache_.template get_sub_elem_cache<sdim>(s_id);
     return cache.template get_data<ValueType>();
   }

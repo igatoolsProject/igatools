@@ -166,22 +166,6 @@ class DataWithFlagStatus : public DataType
 public:
   using DataType::DataType;
 
-  /*
-    DataWithFlagStatus &operator=(DataWithFlagStatus &&data) = default;
-    DataWithFlagStatus &operator=(const DataWithFlagStatus &data) = delete;
-  //*/
-  /*
-    DataWithFlagStatus &operator=(const DataType &data)
-    {
-      if (this != &data)
-      {
-        DataType::operator=(data);
-        status_.fill_   = true;
-        status_.filled_ = true;
-      }
-      return (*this);
-    }
-  //*/
 
   /**
    * Fills the internal values with @p data and
@@ -195,6 +179,17 @@ public:
       DataType::operator=(data);
       status_.filled_ = true;
     }
+  }
+
+  /**
+   * Fills the internal values with @p data and
+   * sets the associated <b>filled</b> status to <b>true</b>.
+   */
+  void fill(DataType &&data)
+  {
+    Assert(status_.fill_,ExcMessage("The data is not intended to be filled."));
+    DataType::operator=(std::move(data));
+    status_.filled_ = true;
   }
 
   bool status_fill() const

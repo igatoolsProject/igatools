@@ -330,28 +330,6 @@ get_defined_properties() const
 
 #endif
 
-#if 0
-#ifdef SERIALIZATION
-template <int dim>
-template<class Archive>
-void
-GridElement<dim>::
-serialize(Archive &ar, const unsigned int version)
-{
-  using namespace boost::serialization;
-  auto non_const_grid = std::const_pointer_cast<Grid<dim>>(grid_);
-  ar &make_nvp("grid_",non_const_grid);
-  grid_ = non_const_grid;
-  Assert(grid_ != nullptr, ExcNullPtr());
-
-  ar &make_nvp("property_", property_);
-  Assert(false, ExcNotImplemented());
-  //ar &make_nvp("index_it_", index_it_);
-  ar &make_nvp("quad_list_", quad_list_);
-  ar &make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
-}
-#endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 
