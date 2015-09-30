@@ -249,16 +249,25 @@ public:
   /** Return the cartesian grid from which the element belongs.*/
   const std::shared_ptr<const Grid<dim>> get_grid() const;
 
+  /*
+    virtual typename List::iterator &operator++() override final
+    {
+      parent_t::operator++();
 
-  virtual typename List::iterator &operator++() override final
+      ++(*phys_domain_element_);
+
+      return ++(*ref_space_element_);
+    }
+  //*/
+
+  virtual void operator++() override final
   {
     parent_t::operator++();
 
     ++(*phys_domain_element_);
 
-    return ++(*ref_space_element_);
+    ++(*ref_space_element_);
   }
-
 
 #if 0
   /**

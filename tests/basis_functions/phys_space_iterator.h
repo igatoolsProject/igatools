@@ -156,13 +156,14 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::
   int elem_id = 0;
   for (; elem != end; ++elem)
   {
-    if ((no_boundary) || (elem->is_boundary()))
+    const auto &grid_elem = elem->get_grid_element();
+    if ((no_boundary) || (grid_elem.is_boundary()))
     {
       out.begin_item("Element " + std::to_string(elem_id));
-      out << "Element index: " << elem->get_index() << endl;
+      out << "Element index: " << grid_elem.get_index() << endl;
       for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
       {
-        if ((no_boundary) || (elem->is_boundary(s_id)))
+        if ((no_boundary) || (grid_elem.is_boundary(s_id)))
         {
           out.begin_item("Sub element id:  " + std::to_string(s_id));
           elem_filler->template fill_cache<k>(*elem, s_id);

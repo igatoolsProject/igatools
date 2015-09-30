@@ -51,7 +51,6 @@ class SpaceElement
 protected:
 
   using Sp = const Space<dim_,codim_,range_,rank_,type_>;
-//  using GridElem = Conditional<SpaceIsConst,ConstGridElement<dim>,NonConstGridElement<dim>>;
 
 private:
   using self_t = SpaceElement<dim_,codim_,range_,rank_,type_>;
@@ -168,11 +167,17 @@ public:
   bool operator>(const self_t &a) const;
   ///@}
 
+  /*
   virtual typename List::iterator &operator++()
   {
     return ++(*grid_elem_);
   }
+  //*/
 
+  virtual void operator++()
+  {
+    ++(*grid_elem_);
+  }
 
 
 
@@ -226,26 +231,26 @@ public:
   Size get_num_basis(const std::string &dofs_property) const;
   ///@}
 
-
+#if 0
   /**
    * Test if the element has a boundary face.
     */
-  template<int k = (dim_ > 0) ? (dim_-1) : 0 >
+  template<int sdim = (dim_ > 0) ? (dim_-1) : 0 >
   bool is_boundary() const
   {
-    return grid_elem_->is_boundary();
+    return grid_elem_->is_boundary<sdim>();
   }
 
   /**
-   * Test if the face identified by @p face_id on the current element is on the
+   * Test if the face identified by @p s_id on the current element is on the
    * boundary of the cartesian grid.
    */
-  template<int k = (dim_ > 0) ? (dim_-1) : 0>
-  bool is_boundary(const Index sub_elem_id) const
+  template<int sdim = (dim_ > 0) ? (dim_-1) : 0>
+  bool is_boundary(const Index s_id) const
   {
-    return grid_elem_->is_boundary(sub_elem_id);
+    return grid_elem_->is_boundary<sdim>(s_id);
   }
-
+#endif
 
   /**
    * Return a reference to the GridElement.

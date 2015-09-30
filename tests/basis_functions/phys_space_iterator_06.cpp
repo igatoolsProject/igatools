@@ -91,13 +91,14 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
   int elem_id = 0;
   for (; elem != end; ++elem)
   {
-    if (elem->is_boundary())
+    const auto &grid_elem = elem->get_grid_element();
+    if (grid_elem.is_boundary())
     {
       out.begin_item("Element " + std::to_string(elem_id));
-      out << "Element index: " << elem->get_index() << endl;
+      out << "Element index: " << grid_elem.get_index() << endl;
       for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
       {
-        if (elem->is_boundary(s_id))
+        if (grid_elem.is_boundary(s_id))
         {
           out.begin_item("Face " + std::to_string(s_id));
           elem_filler->fill_face_cache(elem,s_id);

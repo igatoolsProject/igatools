@@ -138,17 +138,17 @@ public:
    * @note They should be called only by the GridIterator.
    */
   ///@{
-
-  typename List::iterator &operator++()
-  {
-    return (++index_it_);
-  }
-//*/
   /*
-    void operator++()
+    typename List::iterator &operator++()
     {
-      ++index_it_;
+      return (++index_it_);
     }
+  //*/
+
+  void operator++()
+  {
+    ++index_it_;
+  }
   //*/
 
   /**

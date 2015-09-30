@@ -120,6 +120,9 @@ get_exterior_normals() const -> ValueVector<SafeSTLArray<Value, space_dim_> >
 }
 #endif
 
+
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/grid_function_element.inst>

@@ -132,11 +132,16 @@ public:
 #endif
 
 public:
+  /*
   ListIt &operator++()
   {
     return (++(*grid_func_elem_));
   }
-
+  //*/
+  void operator++()
+  {
+    ++(*grid_func_elem_);
+  }
 
   const GridFuncElem &get_grid_function_element() const
   {
@@ -156,7 +161,12 @@ public:
 
   void print_cache_info(LogStream &out) const
   {
-    AssertThrow(false,ExcNotImplemented());
+    out.begin_item("GridFunctionElement's cache");
+    grid_func_elem_->print_cache_info(out);
+    out.end_item();
+
+
+    local_cache_.print_info(out);
   }
 
 public:

@@ -33,6 +33,7 @@ IGA_NAMESPACE_OPEN
 
 /**
  *
+ * @ingroup elements
  */
 template<int dim, int codim, int range, int rank, class ContainerType_>
 class FunctionElementBase
@@ -141,11 +142,17 @@ public:
   bool operator>(const self_t &a) const;
   ///@}
 
+  /*
   ListIt &operator++()
   {
     return (++(*domain_elem_));
   }
+  //*/
 
+  void operator++()
+  {
+    ++(*domain_elem_);
+  }
 
   const DomainElem &get_domain_element() const;
 

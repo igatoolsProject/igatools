@@ -29,8 +29,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 #include <igatools/basis_functions/phys_space_element_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
@@ -39,7 +38,7 @@
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_init(const ValueFlags flag,
+void cache_init(const space_element::Flags flag,
                 const int n_knots = 5, const int deg=1)
 {
   OUTSTART
@@ -49,7 +48,7 @@ void cache_init(const ValueFlags flag,
   auto grid      = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(deg, grid);
 
-  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
   typename Function::Gradient A;
   for (int i=0; i<Space::space_dim; i++)
@@ -60,13 +59,13 @@ void cache_init(const ValueFlags flag,
     b[i] = i;
   }
 
-  auto quad = QGauss<dim>(2);
-  auto map_func = Function::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
-  auto space = Space::const_create(ref_space, map_func);
+//  auto quad = QGauss<dim>::create(2);
+  auto map_func = Function::const_create(grid,A, b);
+  auto space = Space::const_create(ref_space, Domain<dim,codim>::const_create(map_func));
 
 
   auto elem_handler = space->create_cache_handler();
-  elem_handler->reset(flag, quad);
+  elem_handler->template set_flags<dim>(flag);
   elem_handler->print_info(out);
 
   OUTEND
@@ -75,7 +74,7 @@ void cache_init(const ValueFlags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_init_elem(const ValueFlags flag,
+void cache_init_elem(const space_element::Flags flag,
                      const int n_knots = 5, const int deg=1)
 {
 //    const int k = dim;
@@ -87,7 +86,7 @@ void cache_init_elem(const ValueFlags flag,
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(deg, grid);
 
-  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
   typename Function::Gradient A;
   for (int i=0; i<Space::space_dim; i++)
@@ -98,15 +97,15 @@ void cache_init_elem(const ValueFlags flag,
     b[i] = i;
   }
 
-  auto quad = QGauss<dim>(2);
-  auto map_func = Function::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
-  auto space = Space::const_create(ref_space, map_func);
+  auto quad = QGauss<dim>::create(2);
+  auto map_func = Function::const_create(grid, A, b);
+  auto space = Space::const_create(ref_space,  Domain<dim,codim>::const_create(map_func));
 
   auto elem_handler = space->create_cache_handler();
-  elem_handler->reset(flag, quad);
+  elem_handler->template set_flags<dim>(flag);
 
   auto elem = space->begin();
-  elem_handler->init_element_cache(elem);
+  elem_handler->init_element_cache(elem,quad);
   elem->print_cache_info(out);
 
   OUTEND
@@ -114,7 +113,7 @@ void cache_init_elem(const ValueFlags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_fill_elem(const ValueFlags flag,
+void cache_fill_elem(const space_element::Flags flag,
                      const int n_knots = 5, const int deg=1)
 {
   OUTSTART
@@ -126,7 +125,7 @@ void cache_fill_elem(const ValueFlags flag,
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(deg, grid);
 
-  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
   typename Function::Gradient A;
   for (int i=0; i<Space::space_dim; i++)
@@ -137,16 +136,16 @@ void cache_fill_elem(const ValueFlags flag,
     b[i] = i;
   }
 
-  auto quad = QGauss<dim>(2);
-  auto map_func = Function::const_create(grid,IdentityFunction<dim>::const_create(grid), A, b);
-  auto space = Space::const_create(ref_space, map_func);
+  auto quad = QGauss<dim>::create(2);
+  auto map_func = Function::const_create(grid,A, b);
+  auto space = Space::const_create(ref_space, Domain<dim,codim>::const_create(map_func));
 
   auto elem_handler = space->create_cache_handler();
-  elem_handler->reset(flag, quad);
+  elem_handler->template set_flags<dim>(flag);
 
   auto elem = space->begin();
   auto end = space->end();
-  elem_handler->init_element_cache(elem);
+  elem_handler->init_element_cache(elem,quad);
   for (; elem != end; ++elem)
   {
     elem_handler->fill_element_cache(elem);
@@ -159,7 +158,7 @@ void cache_fill_elem(const ValueFlags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_get_elem_values(const ValueFlags flag,
+void cache_get_elem_values(const space_element::Flags flag,
                            const int n_knots = 5, const int deg=1)
 {
   OUTSTART
@@ -170,7 +169,7 @@ void cache_get_elem_values(const ValueFlags flag,
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(deg, grid);
 
-  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
   typename Function::Gradient A;
   for (int i=0; i<Space::space_dim; i++)
@@ -181,16 +180,18 @@ void cache_get_elem_values(const ValueFlags flag,
     b[i] = i;
   }
 
-  auto quad = QGauss<dim>(2);
-  auto map_func = Function::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
-  auto space = Space::const_create(ref_space, map_func);
+  auto quad = QGauss<dim>::create(2);
+  auto map_func = Function::const_create(grid,  A, b);
+  auto space = Space::const_create(ref_space, Domain<dim,codim>::const_create(map_func));
 
   auto elem_handler = space->create_cache_handler();
-  elem_handler->reset(flag, quad);
+  elem_handler->template set_flags<dim>(flag);
+
+  using space_element::_Value;
 
   auto elem = space->begin();
   auto end = space->end();
-  elem_handler->init_element_cache(elem);
+  elem_handler->init_element_cache(elem,quad);
   for (; elem != end; ++elem)
   {
     elem_handler->fill_element_cache(elem);
@@ -206,10 +207,10 @@ int main()
 {
   out.depth_console(10);
 
-  cache_init<1>(ValueFlags::value);
-  cache_init_elem<1>(ValueFlags::value);
-  cache_fill_elem<1>(ValueFlags::value);
-  cache_get_elem_values<1>(ValueFlags::value);
+  cache_init<1>(space_element::Flags::value);
+  cache_init_elem<1>(space_element::Flags::value);
+  cache_fill_elem<1>(space_element::Flags::value);
+  cache_get_elem_values<1>(space_element::Flags::value);
 
   return  0;
 }

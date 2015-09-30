@@ -62,10 +62,11 @@ void sub_elem_values(const int n_knots, const int deg)
   elem_handler->template init_cache<k>(*elem,k_quad);
   for (; elem != end; ++elem)
   {
-    if (elem->is_boundary())
+    const auto &grid_elem = elem->get_grid_element();
+    if (grid_elem.is_boundary())
     {
       elem_handler->template fill_cache<dim>(*elem,0);
-      out << "Element" << elem->get_index() << endl;
+      out << "Element" << grid_elem.get_index() << endl;
 
       out.begin_item("Basis functions values:");
       elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
@@ -81,7 +82,7 @@ void sub_elem_values(const int n_knots, const int deg)
 
       for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
       {
-        if (elem->is_boundary(s_id))
+        if (grid_elem.is_boundary(s_id))
         {
           elem_handler->template fill_cache<k>(*elem,s_id);
           out.begin_item("Sub Element: " + std::to_string(s_id));

@@ -131,9 +131,15 @@ public:
 
 
 public:
+  /*
   ListIt &operator++()
   {
     return (++(*grid_elem_));
+  }
+  //*/
+  void operator++()
+  {
+    ++(*grid_elem_);
   }
 
 
@@ -155,7 +161,11 @@ public:
 
   void print_cache_info(LogStream &out) const
   {
-    AssertThrow(false,ExcNotImplemented());
+    out.begin_item("GridElement's cache");
+    grid_elem_->print_cache_info(out);
+    out.end_item();
+
+    local_cache_.print_info(out);
   }
 
 public:

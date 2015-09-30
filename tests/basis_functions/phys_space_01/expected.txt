@@ -1,0 +1,112 @@
+========================================================================
+create_phys_space
+========================================================================
+PhysicalSpace<1,1,1,0,Transformation::h_grad>
+   Reference space:
+      Spline Space:
+         Knots without repetition:
+            Number of intervals per direction: [ 1 ]
+            Knot coordinates:
+               Size: [ 2 ]  Weights: [2]
+               Direction: 0
+               [ 0 1.00000 ]
+            
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 ]
+               
+            
+         
+         Degrees:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 2 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+         
+         Interior multiplicities:
+            Size: [ 0 ]  Weights: [0]
+            Direction: 0
+            [ ]
+         
+         Dimensionality Table:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 3 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 3 ]
+            Total Dimension: 3
+         
+      
+      DoFs Distribution:
+         Num dofs table:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 3 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 3 ]
+            Total Dimension: 3
+         
+         Index table size:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 3 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 3 ]
+            Total Dimension: 3
+         
+         Dof indices:
+            Size: [ 3 ]  Weights: [3]
+            [ 0 1 2 ]
+         
+         Dof properties:
+            IDs with property "active":
+            [ 0 1 2 ]
+         
+      
+      Bernstein Extraction:
+         Component[0]: 
+         Direction[0]:
+         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+      
+   
+   Physical domain:
+      GridFunction<1,1>
+         BallGridFunction<1>
+         
+      
+   
+
+========================================================================
+
