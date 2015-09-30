@@ -381,16 +381,20 @@ BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcherNoGlobalCache::
 evaluate_bspline_values(
   const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
-  ValueTable<Value> &D_phi) const
+  ValueTable<Value> &phi) const
 {
   const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
   const auto &comp_offset = bsp_elem.get_basis_offset();
 
-  Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
-         ExcDimensionMismatch(D_phi.get_num_functions(),
+  Assert(phi.get_num_functions() == comp_offset[BaseSpace::n_components],
+         ExcDimensionMismatch(phi.get_num_functions(),
                               comp_offset[BaseSpace::n_components]));
 
-  const Size n_points = D_phi.get_num_points();
+  LogStream myout;
+
+  myout << "elem index: " << bsp_elem.get_index() << std::endl;
+
+  const Size n_points = phi.get_num_points();
   const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
   for (int comp : elem_values.get_active_components_id())
   {
@@ -400,16 +404,23 @@ evaluate_bspline_values(
 
     for (int func_id = 0; func_id < n_basis_comp; ++func_id)
     {
-      auto D_phi_i = D_phi.get_function_view(offset + func_id);
+      auto phi_i = phi.get_function_view(offset + func_id);
       auto const &func_tensor_id = values.func_flat_to_tensor(func_id);
 
       for (int pt = 0; pt < n_points; ++pt)
-        D_phi_i[pt](comp) = values.evaluate(der_tensor_id, func_tensor_id, pt);
+        phi_i[pt](comp) = values.evaluate(der_tensor_id, func_tensor_id, pt);
     } // end func_id loop
   } // end comp loop
 
+
   copy_to_inactive_components_values(elem_values.get_inactive_components_id(),
-                                     elem_values.get_comp_map(), D_phi);
+                                     elem_values.get_comp_map(),
+                                     phi);
+
+  myout.begin_item("values:");
+  phi.print_info(myout);
+  myout.end_item();
+
 }
 
 
@@ -599,13 +610,22 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
 
       auto &splines_1D_comp = splines_1D_table[comp];
       auto &splines_1D = splines_1D_comp[dir];
-
+      LogStream myout;
       for (int order = 0; order < MAX_NUM_DERIVATIVES; ++order)
       {
+        const Real scaling_factor = std::pow(alpha_div_interval_length, order);
+        const auto &bernstein_values = BernsteinBasis::derivative(order, deg,*pt_coords_ptr);
+        myout.begin_item("bernstein order " +std::to_string(order));
+        bernstein_values.print_info(myout);
+        myout.end_item();
+
         auto &splines = splines_1D.get_derivative(order);
-        splines = oper.scale_action(
-                    std::pow(alpha_div_interval_length, order),
-                    BernsteinBasis::derivative(order, deg,*pt_coords_ptr));
+        splines = oper.scale_action(scaling_factor,bernstein_values);
+
+        myout.begin_item("splines");
+        splines.print_info(myout);
+        myout.end_item();
+
       } // end loop order
       //------------------------------------------------------------
 
@@ -661,26 +681,26 @@ fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
   {
     auto &values = sub_elem_cache.template get_data<_Value>();
     evaluate_bspline_values(val_1d, values);
-    sub_elem_cache.template set_status_filled<_Value>(true);
+    values.set_status_filled(true);
   }
   if (sub_elem_cache.template status_fill<_Gradient>())
   {
-    auto &values = sub_elem_cache.template get_data<_Gradient>();
-    evaluate_bspline_derivatives<1>(val_1d, values);
-    sub_elem_cache.template set_status_filled<_Gradient>(true);
+    auto &gradients = sub_elem_cache.template get_data<_Gradient>();
+    evaluate_bspline_derivatives<1>(val_1d, gradients);
+    gradients.set_status_filled(true);
   }
   if (sub_elem_cache.template status_fill<_Hessian>())
   {
-    auto &values = sub_elem_cache.template get_data<_Hessian>();
-    evaluate_bspline_derivatives<2>(val_1d, values);
-    sub_elem_cache.template set_status_filled<_Hessian>(true);
+    auto &hessians = sub_elem_cache.template get_data<_Hessian>();
+    evaluate_bspline_derivatives<2>(val_1d, hessians);
+    hessians.set_status_filled(true);
   }
   if (sub_elem_cache.template status_fill<_Divergence>())
   {
+    auto &divergences = sub_elem_cache.template get_data<_Divergence>();
     eval_divergences_from_gradients(
-      sub_elem_cache.template get_data<_Gradient>(),
-      sub_elem_cache.template get_data<_Divergence>());
-    sub_elem_cache.template set_status_filled<_Divergence>(true);
+      sub_elem_cache.template get_data<_Gradient>(),divergences);
+    divergences.set_status_filled(true);
   }
 
   sub_elem_cache.set_filled(true);

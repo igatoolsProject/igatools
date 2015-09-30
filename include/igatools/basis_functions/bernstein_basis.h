@@ -23,7 +23,8 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/safe_stl_vector.h>
-#include <boost/numeric/ublas/matrix.hpp>
+#include <igatools/linear_algebra/dense_matrix.h>
+#include <igatools/linear_algebra/dense_vector.h>
 
 //TODO: document the implementation and expand introduction
 
@@ -53,7 +54,7 @@ IGA_NAMESPACE_OPEN
 namespace BernsteinBasis
 {
 /**
- * Compute the values of all the p+1 Bernstein basis
+ * Compute the values of all the p+1 Bernstein's basis
  * of degree @p p at the given point \f$ x \f$.
  *
  * The values are returned in a vector B, where
@@ -62,11 +63,11 @@ namespace BernsteinBasis
  * @warning The point \f$ x \f$ must belong to the unit interval [0,1], otherwise an
  * assertion will be raised in Debug mode.
  */
-boost::numeric::ublas::vector<Real>
+DenseVector
 evaluate(const int p, const Real x) ;
 
 /**
- * Compute the values of all the p+1 Bernstein basis
+ * Compute the values of all the p+1 Bernstein's basis
  * of degree @p p at the given points \f$ x \f$.
  *
  * The values are returned in a matrix B, where
@@ -76,12 +77,12 @@ evaluate(const int p, const Real x) ;
  * assertion will be raised in Debug mode.
  *
  */
-boost::numeric::ublas::matrix<Real>
+DenseMatrix
 evaluate(const int p, const SafeSTLVector<Real> &x) ;
 
 
 /**
- * Computes the derivatives of order k of the Berstein basis
+ * Computes the derivatives of order k of the Bernstein's basis
  * at the given point \f$ x \f$.
  * The values are returned in a vector DkB, where
  *  DkB[i] is \f$ \frac{d^k B^p_i(x)}{dx^k} \f$.
@@ -89,11 +90,11 @@ evaluate(const int p, const SafeSTLVector<Real> &x) ;
  * @warning The point \f$ x \f$ must belong to the unit interval [0,1], otherwise an
  * assertion will be raised in Debug mode.
  */
-boost::numeric::ublas::vector<Real>
+DenseVector
 derivative(int k, const int p, const Real x) ;
 
 /**
- * Computes the derivatives of order k of the Berstein basis
+ * Computes the derivatives of order k of the Bernstein's basis
  * at the given points \f$ x \f$.
  * The values are returned in a matrix DkB, where
  *  DkB[i][j] is \f$ \frac{d^k B^p_i(x_j)}{dx^k} \f$.
@@ -102,7 +103,7 @@ derivative(int k, const int p, const Real x) ;
  * assertion will be raised in Debug mode.
  *
  */
-boost::numeric::ublas::matrix<Real>
+DenseMatrix
 derivative(int k, const int p, const SafeSTLVector<Real> &x) ;
 
 

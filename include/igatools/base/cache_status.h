@@ -133,26 +133,6 @@ private:
 
   /** True if the cache is copied from another object. */
   bool copied_ = false;
-
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class serialization_access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    ar &make_nvp("initialized_counter_",initialized_counter_);
-    ar &make_nvp("filled_counter_",filled_counter_);
-    ar &make_nvp("copied_",copied_);
-  };
-  ///@}
-#endif // SERIALIZATION
-
 };
 
 

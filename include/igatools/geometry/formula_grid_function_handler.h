@@ -86,20 +86,23 @@ private:
         const auto &grid_pts = elem_.get_grid_element().template get_points<sdim>(s_id_);
         if (cache.template status_fill<_D<0>>())
         {
-          grid_function_.evaluate_0(grid_pts, cache.template get_data<_D<0>>());
-          cache.template set_status_filled<_D<0>>(true);
+          auto &F = cache.template get_data<_D<0>>();
+          grid_function_.evaluate_0(grid_pts, F);
+          F.set_status_filled(true);
         }
 
         if (cache.template status_fill<_D<1>>())
         {
-          grid_function_.evaluate_1(grid_pts, cache.template get_data<_D<1>>());
-          cache.template set_status_filled<_D<1>>(true);
+          auto &DF = cache.template get_data<_D<1>>();
+          grid_function_.evaluate_1(grid_pts, DF);
+          DF.set_status_filled(true);
         }
 
         if (cache.template status_fill<_D<2>>())
         {
-          grid_function_.evaluate_2(grid_pts, cache.template get_data<_D<2>>());
-          cache.template set_status_filled<_D<2>>(true);
+          auto &D2F = cache.template get_data<_D<2>>();
+          grid_function_.evaluate_2(grid_pts, D2F);
+          D2F.set_status_filled(true);
         }
 //        if (cache.template status_fill<_Divergence>())
 //          Assert(false,ExcNotImplemented());

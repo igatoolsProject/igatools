@@ -423,37 +423,53 @@ private:
       using _Gradient = typename BaseElem::_Gradient;
       using _Hessian = typename BaseElem::_Hessian;
       using _Divergence = typename BaseElem::_Divergence;
+      LogStream myout;
+      myout.begin_item("asub_elem_cache");
+      sub_elem_cache.print_info(myout);
+      myout.end_item();
+
+
       if (sub_elem_cache.template status_fill<_Value>())
       {
+        myout.begin_item("ref_space_elm value:");
+        ref_space_elem.template get_basis<_Value,sdim>(s_id_).print_info(myout);
+        myout.end_item();
+
         PushFwd::template
         transform_0<RefSpace::range,RefSpace::rank,sdim>(
-          s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
-
-        sub_elem_cache.template set_status_filled<_Value>(true);
+          s_id_,
+          ref_space_elem,
+          phys_domain_elem,
+          sub_elem_cache);
       }
       if (sub_elem_cache.template status_fill<_Gradient>())
       {
+        myout.begin_item("ref_space_elm grad:");
+        ref_space_elem.template get_basis<_Gradient,sdim>(s_id_).print_info(myout);
+        myout.end_item();
+
         PushFwd::template
         transform_1<RefSpace::range,RefSpace::rank,sdim>(
           s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
-
-        sub_elem_cache.template set_status_filled<_Gradient>(true);
       }
       if (sub_elem_cache.template status_fill<_Hessian>())
       {
+        myout.begin_item("ref_space_elm hess:");
+        ref_space_elem.template get_basis<_Hessian,sdim>(s_id_).print_info(myout);
+        myout.end_item();
+
         PushFwd::template
         transform_2<RefSpace::range,RefSpace::rank,sdim>(
           s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
-
-        sub_elem_cache.template set_status_filled<_Hessian>(true);
       }
       if (sub_elem_cache.template status_fill<_Divergence>())
       {
+        auto &divergences = sub_elem_cache.template get_data<_Divergence>();
         eval_divergences_from_gradients(
           sub_elem_cache.template get_data<_Gradient>(),
-          sub_elem_cache.template get_data<_Divergence>());
+          divergences);
 
-        sub_elem_cache.template set_status_filled<_Divergence>(true);
+        divergences.set_status_filled(true);
       }
 
       sub_elem_cache.set_filled(true);

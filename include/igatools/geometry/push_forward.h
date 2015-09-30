@@ -100,7 +100,9 @@ public:
     auto &v = phys_sub_elem_cache.template get_data<_Value>();
     const auto &v_hat = ref_elem.template get_basis<_Value,sdim>(s_id,DofProperties::active);
 
-    v = v_hat;
+    v.fill(v_hat);
+
+//    v.set_status_filled(true);
   }
 
 
@@ -131,6 +133,8 @@ public:
     for (int fn = 0; fn < n_func; ++fn)
       for (int pt = 0; pt < n_points; ++pt, ++Dv_hat_it, ++Dv_it)
         (*Dv_it) = compose((*Dv_hat_it), DF_inv[pt]);
+
+    Dv.set_status_filled(true);
   }
 
 
@@ -179,6 +183,8 @@ public:
         ++D1v_it;
         ++D2v_it;
       }
+
+    D2v.set_status_filled(true);
   }
 
 

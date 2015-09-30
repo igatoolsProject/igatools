@@ -123,6 +123,12 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::
                  const string &prop = DofProperties::active,
                  const bool no_boundary=true)
 {
+
+  using std::to_string;
+  out << "elem_values<" << dim << "," << k << "," << range << "," << rank << "," << codim << ">("
+      << n_qp << "," << prop <<  "," << no_boundary << ")" << std::endl;
+
+
 //    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 //    using ElementHandler = typename Space::ElementHandler;
 

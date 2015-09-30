@@ -90,18 +90,21 @@ private:
 
         if (cache.template status_fill<_Value>())
         {
-          func_.evaluate_0(points, cache.template get_data<_Value>());
-          cache.template set_status_filled<_Value>(true);
+          auto &F = cache.template get_data<_Value>();
+          func_.evaluate_0(points, F);
+          F.set_status_filled(true);
         }
         if (cache.template status_fill<_Gradient>())
         {
-          func_.evaluate_1(points, cache.template get_data<_Gradient>());
-          cache.template set_status_filled<_Gradient>(true);
+          auto &DF = cache.template get_data<_Gradient>();
+          func_.evaluate_1(points, DF);
+          DF.set_status_filled(true);
         }
         if (cache.template status_fill<_D2>())
         {
-          func_.evaluate_2(points, cache.template get_data<_D2>());
-          cache.template set_status_filled<_D2>(true);
+          auto &D2F = cache.template get_data<_D2>();
+          func_.evaluate_2(points, D2F);
+          D2F.set_status_filled(true);
         }
 //        if (cache.template status_fill<_Divergence>())
 //          Assert(false,ExcNotImplemented());

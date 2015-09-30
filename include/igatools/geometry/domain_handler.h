@@ -292,7 +292,7 @@ private:
 
           measures[pt] = fabs(determinant<sdim,space_dim>(DF1));
         }
-        cache.template set_status_filled<_Measure>(true);
+        measures.set_status_filled(true);
       }
 
 
@@ -309,7 +309,7 @@ private:
         for (int pt = 0 ; pt < n_points; ++pt)
           D_invF[pt] = inverse(DF[pt], det);
 
-        cache.template set_status_filled<_InvJacobian>(true);
+        D_invF.set_status_filled(true);
       }
 
 #if 0
@@ -354,7 +354,7 @@ private:
           ++pt;
         }
 
-        cache.template set_status_filled<_BoundaryNormal>(true);
+        bndry_normals.set_status_filled(true);
       }
 
       using _ExtNormal = typename ElementAccessor::_ExtNormal;
@@ -377,7 +377,7 @@ private:
           ++pt;
         }
 
-        cache.template set_status_filled<_ExtNormal>(true);
+        ext_normals.set_status_filled(true);
       }
 
 

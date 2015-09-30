@@ -334,17 +334,17 @@ enum class Flags
   value          =    1L << 1,    //!< value
 
   /** Basis functions gradient */
-  gradient          =    1L << 2, //!< gradient
+  gradient       =    1L << 2, //!< gradient
 
   /** Basis functions hessian */
-  hessian          =    1L << 3,  //!< hessian
+  hessian        =    1L << 3,  //!< hessian
 
   /** Basis functions divergence */
-  divergence          =    1L << 4, //!< divergence
+  divergence     =    1L << 4, //!< divergence
 
-  point             = 1L << 5, //!< point in the domain
+  point          = 1L << 5, //!< point in the domain
 
-  w_measure         = 1L << 6 //!< quad. weight * domain measure element
+  w_measure      = 1L << 6 //!< quad. weight * domain measure element
 };
 
 #if 0

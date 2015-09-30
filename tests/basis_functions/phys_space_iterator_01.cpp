@@ -54,10 +54,20 @@ identity_map(const int n_knots, const int deg, const string prop=DofProperties::
 {
   OUTSTART
 
+  using std::to_string;
+  out << "identity_map<" << to_string(dim) << "," << to_string(sub_dim)
+      << ">(" << to_string(n_knots) << "," << to_string(deg)
+      << "," <<  prop << "," << use_bdry << ")" << std::endl;
+
   auto grid  = Grid<dim>::create(n_knots);
   auto grid_func = create_identity_function(grid);
 
   auto space = create_space<dim>(grid, grid_func, deg);
+  /*
+  out.begin_item("Space");
+  space->print_info(out);
+  out.end_item();
+  //*/
   const int n_qp = 1;
   elem_values<dim, sub_dim>(space, n_qp, prop, use_bdry);
 
@@ -69,12 +79,16 @@ template <int dim>
 void
 dim_test()
 {
+  out << "dim_test<" << std::to_string(dim) << ">()" << std::endl;
+//  identity_map<dim,dim>(3,2);
+
   for (int n_knots=2; n_knots<4; ++n_knots)
     for (int deg=1; deg<3; ++deg)
     {
       identity_map<dim,dim>(n_knots, deg);
       identity_map<dim, dim-1>(n_knots, deg);
     }
+  //*/
 }
 
 
@@ -83,6 +97,11 @@ void
 identity_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
 {
   OUTSTART
+
+  using std::to_string;
+  out << "identity_map_prop<" << to_string(dim) << "," << to_string(sub_dim)
+      << ">(" << to_string(n_knots) << "," << to_string(deg)
+      << "," <<  use_bdry << ")" << std::endl;
 
   auto grid  = Grid<dim>::create(n_knots);
   auto grid_func = create_identity_function(grid);
@@ -104,6 +123,6 @@ int main()
   identity_map_prop<1,1>(2,1,true);
   identity_map_prop<1,0>(3,1,false);
   identity_map_prop<2,1>(3,2,false);
-
+//*/
   return 0;
 }

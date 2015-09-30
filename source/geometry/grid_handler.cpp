@@ -150,16 +150,15 @@ fill_cache(ElementAccessor &elem, const int s_id) const
     const auto dilate    = elem.template get_side_lengths<dim>(0);
     quad.dilate(dilate);
     quad.translate(translate);
-    auto &ref_pts = cache.template get_data<_Point>();
-    ref_pts = quad.get_points();
-    cache.template set_status_filled<_Point>(true);
+    cache.template get_data<_Point>().fill(quad.get_points());
+//    cache.template set_status_filled<_Point>(true);
   }
 
   if (cache.template status_fill<_Weight>())
   {
-    cache.template get_data<_Weight>() =
-      elem.template get_measure<sdim>(s_id) * s_quad->get_weights();
-    cache.template set_status_filled<_Weight>(true);
+    cache.template get_data<_Weight>().fill(
+      elem.template get_measure<sdim>(s_id) * s_quad->get_weights());
+//    cache.template set_status_filled<_Weight>(true);
   }
 
   cache.set_filled(true);

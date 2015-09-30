@@ -32,7 +32,7 @@ IGA_NAMESPACE_OPEN
 
 
 
-boost::numeric::ublas::vector<Real>
+DenseVector
 BernsteinBasis::evaluate(const int p, const Real x)
 {
   Assert(x >= 0.0 && x <= 1.0,
@@ -41,7 +41,7 @@ BernsteinBasis::evaluate(const int p, const Real x)
 
   const int n_basis = p + 1 ;
 
-  boost::numeric::ublas::vector<Real> B(n_basis);
+  DenseVector B(n_basis);
 
   boost::numeric::ublas::scalar_vector<Real> ones(n_basis,1.0);
   boost::numeric::ublas::vector<Real> t(ones);
@@ -60,7 +60,7 @@ BernsteinBasis::evaluate(const int p, const Real x)
   return B;
 }
 
-boost::numeric::ublas::vector<Real>
+DenseVector
 BernsteinBasis::derivative(
   const int order,
   const int p,
@@ -87,8 +87,8 @@ BernsteinBasis::derivative(
     if (p==0)
       return boost::numeric::ublas::zero_vector<Real>(n_basis);
 
-    boost::numeric::ublas::vector<Real> dB(n_basis);
-    boost::numeric::ublas::vector<Real> B = BernsteinBasis::derivative(order-1,p-1,x);
+    DenseVector dB(n_basis);
+    DenseVector B = BernsteinBasis::derivative(order-1,p-1,x);
 
     dB(0) = - B(0);
     dB(p) =   B(p-1);
@@ -106,8 +106,7 @@ BernsteinBasis::derivative(
 }
 
 
-
-matrix<Real>
+DenseMatrix
 BernsteinBasis::evaluate(const int p,  const SafeSTLVector<Real> &points)
 {
   /*
@@ -125,7 +124,7 @@ BernsteinBasis::evaluate(const int p,  const SafeSTLVector<Real> &points)
            ExcMessage("Point " + std::to_string(i) + "not in the unit interval [0,1]"));
 #endif
 
-  matrix<Real> B(n_basis, n_points);
+  DenseMatrix B(n_basis, n_points);
 
   boost::numeric::ublas::scalar_matrix<Real> ones(n_basis,n_points,1.);
   matrix<Real> t(ones);
@@ -151,7 +150,7 @@ BernsteinBasis::evaluate(const int p,  const SafeSTLVector<Real> &points)
   return (B);
 }
 
-matrix<Real>
+DenseMatrix
 BernsteinBasis::derivative(
   const int order,
   const int p,
@@ -176,7 +175,7 @@ BernsteinBasis::derivative(
     if (p==0)
       return (boost::numeric::ublas::zero_matrix<Real>(p+1,n_points));
 
-    matrix<Real> dB(p+1, n_points);
+    DenseMatrix dB(p+1, n_points);
 //        matrix<Real> B(p, n_points);
     const auto B = derivative(order-1,p-1,points);
 
