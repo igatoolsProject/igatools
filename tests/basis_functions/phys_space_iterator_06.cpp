@@ -30,8 +30,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
@@ -40,17 +39,17 @@
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<Grid<dim>> grid)
+create_function(shared_ptr<const Grid<dim>> grid)
 {
 
-  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
   typename Function::Gradient A;
 
   for (int j=0; j<dim; j++)
     A[j][j] = 1.;
 
-  return Function::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
+  return Function::const_create(grid,A, b);
 }
 
 
@@ -67,24 +66,35 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
   auto ref_space = BspSpace::const_create(deg, grid);
   auto map_func = create_function(grid);
 
-  auto space = Space::const_create(ref_space, map_func);
+  auto space = Space::const_create(ref_space, Domain<dim,0>::const_create(map_func));
 
 
-  auto quad = QGauss<k>(n_qp);
-  auto flag = ValueFlags::value|ValueFlags::gradient|
-              ValueFlags::hessian | ValueFlags::point;
+  auto quad = QGauss<k>::create(n_qp);
+
+  using space_element::Flags;
+  auto flag = Flags::value|
+              Flags::gradient|
+              Flags::hessian |
+              Flags::point;
 
   auto elem_filler = space->create_cache_handler();
-  elem_filler->reset(flag, quad);
+  elem_filler->template set_flags<k>(flag);
 
   auto elem = space->begin();
   auto end = space->end();
-  elem_filler->init_face_cache(elem);
+  elem_filler->init_face_cache(elem,quad);
+
+
+  using space_element::_Value;
+  using space_element::_Gradient;
+  using space_element::_Hessian;
+  int elem_id = 0;
   for (; elem != end; ++elem)
   {
     if (elem->is_boundary())
     {
-      out.begin_item("Element " + std::to_string(elem->get_flat_index()));
+      out.begin_item("Element " + std::to_string(elem_id));
+      out << "Element index: " << elem->get_index() << endl;
       for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
       {
         if (elem->is_boundary(s_id))
@@ -109,6 +119,7 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
       }
       out.end_item();
     }
+    ++elem_id;
   }
   OUTEND
 

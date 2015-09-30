@@ -423,18 +423,10 @@ private:
       using _Gradient = typename BaseElem::_Gradient;
       using _Hessian = typename BaseElem::_Hessian;
       using _Divergence = typename BaseElem::_Divergence;
-      LogStream myout;
-      myout.begin_item("asub_elem_cache");
-      sub_elem_cache.print_info(myout);
-      myout.end_item();
 
 
       if (sub_elem_cache.template status_fill<_Value>())
       {
-        myout.begin_item("ref_space_elm value:");
-        ref_space_elem.template get_basis<_Value,sdim>(s_id_).print_info(myout);
-        myout.end_item();
-
         PushFwd::template
         transform_0<RefSpace::range,RefSpace::rank,sdim>(
           s_id_,
@@ -444,20 +436,12 @@ private:
       }
       if (sub_elem_cache.template status_fill<_Gradient>())
       {
-        myout.begin_item("ref_space_elm grad:");
-        ref_space_elem.template get_basis<_Gradient,sdim>(s_id_).print_info(myout);
-        myout.end_item();
-
         PushFwd::template
         transform_1<RefSpace::range,RefSpace::rank,sdim>(
           s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
       }
       if (sub_elem_cache.template status_fill<_Hessian>())
       {
-        myout.begin_item("ref_space_elm hess:");
-        ref_space_elem.template get_basis<_Hessian,sdim>(s_id_).print_info(myout);
-        myout.end_item();
-
         PushFwd::template
         transform_2<RefSpace::range,RefSpace::rank,sdim>(
           s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);

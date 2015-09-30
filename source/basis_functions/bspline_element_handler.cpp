@@ -390,10 +390,6 @@ evaluate_bspline_values(
          ExcDimensionMismatch(phi.get_num_functions(),
                               comp_offset[BaseSpace::n_components]));
 
-  LogStream myout;
-
-  myout << "elem index: " << bsp_elem.get_index() << std::endl;
-
   const Size n_points = phi.get_num_points();
   const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
   for (int comp : elem_values.get_active_components_id())
@@ -416,11 +412,6 @@ evaluate_bspline_values(
   copy_to_inactive_components_values(elem_values.get_inactive_components_id(),
                                      elem_values.get_comp_map(),
                                      phi);
-
-  myout.begin_item("values:");
-  phi.print_info(myout);
-  myout.end_item();
-
 }
 
 
@@ -610,22 +601,13 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
 
       auto &splines_1D_comp = splines_1D_table[comp];
       auto &splines_1D = splines_1D_comp[dir];
-      LogStream myout;
       for (int order = 0; order < MAX_NUM_DERIVATIVES; ++order)
       {
         const Real scaling_factor = std::pow(alpha_div_interval_length, order);
         const auto &bernstein_values = BernsteinBasis::derivative(order, deg,*pt_coords_ptr);
-        myout.begin_item("bernstein order " +std::to_string(order));
-        bernstein_values.print_info(myout);
-        myout.end_item();
 
         auto &splines = splines_1D.get_derivative(order);
         splines = oper.scale_action(scaling_factor,bernstein_values);
-
-        myout.begin_item("splines");
-        splines.print_info(myout);
-        myout.end_item();
-
       } // end loop order
       //------------------------------------------------------------
 

@@ -45,8 +45,8 @@ ball_map(const int n_knots, const int deg, const string prop=DofProperties::acti
   for (int i=1; i<dim; ++i)
     box[i] = {0., M_PI/4.};
 
-  auto grid  = Grid<dim>::const_create(box, n_knots);
-  auto map = functions::BallFunction<dim>::const_create(grid,IdentityFunction<dim>::const_create(grid));
+  auto grid  = Grid<dim>::create(box, n_knots);
+  auto map = grid_functions::BallGridFunction<dim>::create(grid);
   auto space = create_space<dim>(grid, map, deg);
   const int n_qp = 2;
   elem_values<dim, sub_dim>(space, n_qp, prop, use_bdry);
@@ -67,8 +67,8 @@ ball_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
 
   auto grid  = Grid<dim>::const_create(box, n_knots);
 
-  auto map = functions::BallFunction<dim>::const_create(grid,IdentityFunction<dim>::const_create(grid));
-  auto space = create_space_prop<dim>(grid, map, deg);
+  auto map = grid_functions::BallGridFunction<dim>::const_create(grid);
+  auto space = create_space<dim>(grid, map, deg);
   const int n_qp = 1;
   elem_values<dim, sub_dim>(space, n_qp, DofProp::interior, use_bdry);
   elem_values<dim, sub_dim>(space, n_qp, DofProp::dirichlet, use_bdry);
