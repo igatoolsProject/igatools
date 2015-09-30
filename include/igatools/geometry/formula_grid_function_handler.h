@@ -79,7 +79,7 @@ private:
     void operator()(const Topology<sdim> &sub_elem)
     {
       auto &local_cache = grid_function_handler_.get_element_cache(elem_);
-      auto &cache = local_cache->template get_sub_elem_cache<sdim>(s_id_);
+      auto &cache = local_cache.template get_sub_elem_cache<sdim>(s_id_);
 
       if (!cache.fill_none())
       {

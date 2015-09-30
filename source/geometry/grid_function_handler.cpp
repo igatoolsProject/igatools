@@ -77,16 +77,8 @@ init_cache(ConstElementAccessor &elem,
 {
   grid_handler_->init_cache(*(elem.grid_elem_), quad);
 
-  auto &cache = elem.local_cache_;
-  if (cache == nullptr)
-  {
-    using Cache = typename ElementAccessor::CacheType;
-    cache = std::make_shared<Cache>();
-  }
-
   auto disp = InitCacheDispatcher(this, elem, flags_);
   boost::apply_visitor(disp, quad);
-
 }
 
 

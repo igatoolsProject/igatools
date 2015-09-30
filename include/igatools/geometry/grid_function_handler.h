@@ -151,8 +151,9 @@ public:
     return grid_handler_;
   }
 protected:
-  std::shared_ptr<typename ConstElementAccessor::CacheType>
-  &get_element_cache(ConstElementAccessor &elem) const
+//  std::shared_ptr<typename ConstElementAccessor::CacheType>
+  typename ConstElementAccessor::CacheType &
+  get_element_cache(ConstElementAccessor &elem) const
   {
     return  elem.local_cache_;
   }
@@ -204,7 +205,7 @@ private:
                             ->get_num_points();
       for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
       {
-        auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+        auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
         s_cache.resize(flags_[sdim], n_points);
       }
     }

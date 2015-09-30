@@ -119,8 +119,7 @@ public:
 
     using _InvJacobian = typename PhysDomainElem::_InvJacobian;
 
-
-    const auto &Dv_hat  = ref_elem.template get_basis<_Gradient,sdim>(s_id,DofProperties::active);
+    const auto &Dv_hat = ref_elem.template get_basis<_Gradient,sdim>(s_id,DofProperties::active);
 
     auto &Dv = phys_sub_elem_cache.template get_data<_Gradient>();
 
@@ -149,6 +148,7 @@ public:
     using PhysElem = PhysSpaceElem<range,rank>;
     using _Gradient = typename PhysElem::_Gradient;
     using _Hessian = typename PhysElem::_Hessian;
+
     using _InvJacobian = typename PhysDomainElem::_InvJacobian;
 
     const auto &D2v_hat  = ref_elem.template get_basis< _Hessian,sdim>(s_id,DofProperties::active);
@@ -163,7 +163,7 @@ public:
     auto D1v_it     = D1v.cbegin();
     auto D2v_hat_it = D2v_hat.cbegin();
     const auto D2F = phys_domain_elem.get_grid_function_element().
-                     template get_values<grid_function_element::_D<2>,sdim>(s_id);
+                     template get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id);
     const auto &DF_inv =
       phys_domain_elem.template get_values_from_cache<_InvJacobian,sdim>(s_id);
 

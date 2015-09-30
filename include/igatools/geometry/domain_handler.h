@@ -278,7 +278,7 @@ private:
       {
         auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id_);
 
-        const auto &DF = elem_.grid_func_elem_->template get_values<grid_function_element::_D<1>, sdim>(s_id_);
+        const auto &DF = elem_.grid_func_elem_->template get_values_from_cache<grid_function_element::_D<1>, sdim>(s_id_);
 
         const auto n_points = DF.get_num_points();
 
@@ -300,7 +300,7 @@ private:
       if (cache.template status_fill<_InvJacobian>())
       {
         const auto &DF = elem_.grid_func_elem_->
-                         template get_values<grid_function_element::_D<1>,sdim>(s_id_);
+                         template get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id_);
 
         const auto n_points = DF.get_num_points();
 
@@ -365,7 +365,7 @@ private:
         Assert(s_id_ == 0,ExcDimensionMismatch(s_id_,0));
 
         const auto &DF = elem_.grid_func_elem_->
-                         template get_values<grid_function_element::_D<1>,sdim>(s_id_);
+                         template get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id_);
 
         auto &ext_normals = cache.template get_data<_ExtNormal>();
 
