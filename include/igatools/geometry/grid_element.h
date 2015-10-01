@@ -31,6 +31,38 @@
 
 IGA_NAMESPACE_OPEN
 
+class Element
+{
+public:
+	Element(const PropId &property);
+
+	virtual ~Element() = default;
+
+	virtual void operator++() = 0;
+
+
+	  /**
+	   * @name Functions for managing/querying the element properties.
+	   */
+	  ///@{
+	  /**
+	   * Tests if a certain element @p property is TRUE.
+	   */
+	  bool has_property(const PropId &property) const;
+
+	  /**
+	   * Returns the property of the element.
+	   */
+	  const PropId &get_property() const;
+	  ///@}
+
+private:
+
+	PropId property_;
+
+};
+
+
 /**
  * @brief Element accessor for the Grid.
  *
@@ -50,7 +82,7 @@ IGA_NAMESPACE_OPEN
  * @ingroup serializable
  */
 template <int dim>
-class GridElement
+class GridElement : public Element
 {
 private:
   using self_t = GridElement<dim>;
@@ -145,7 +177,7 @@ public:
     }
   //*/
 
-  void operator++()
+  void operator++() override
   {
     ++index_it_;
   }
@@ -261,20 +293,6 @@ public:
   ValueVector<Point> get_points(const int s_id = 0) const;
 
 
-  /**
-   * @name Functions for managing/querying the element properties.
-   */
-  ///@{
-  /**
-   * Tests if a certain element @p property is TRUE.
-   */
-  bool has_property(const PropId &property) const;
-
-  /**
-   * Returns the property of the element.
-   */
-  const PropId &get_property() const;
-  ///@}
 
 
 
@@ -303,7 +321,6 @@ protected:
   std::shared_ptr<const Grid<dim>> grid_;
 
 private:
-  PropId property_;
 
   /** Index in the property list of the current element */
   typename List::iterator index_it_;
@@ -348,16 +365,24 @@ private:
 
 protected:
 
+#if 0
   /**
    * ExceptionUnsupported Value Flag.
    */
   DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
                  << "The passed ValueFlag " << arg2
                  << " contains a non admissible flag " << (arg1 ^arg2));
-
   DeclException1(ExcCacheInUse, int,
                  << "The global cache is being used by " << arg1
                  << " iterator. Changing its value not allowed.");
+#endif
+
+private:
+
+  /**
+   * Returns true if two elements belongs from the same Grid.
+   */
+  bool is_comparable_with(const self_t &elem) const;
 
 };
 

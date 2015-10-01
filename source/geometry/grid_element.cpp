@@ -25,14 +25,37 @@
 
 IGA_NAMESPACE_OPEN
 
+Element::
+Element(const PropId &property)
+:
+property_(property)
+{}
+
+
+bool
+Element::
+has_property(const PropId &prop) const
+{
+	return prop == property_;
+}
+
+const PropId &
+Element::
+get_property() const
+{
+  return property_;
+}
+
+
+
 template <int dim>
 GridElement<dim>::
 GridElement(const std::shared_ptr<const Grid<dim>> &grid,
             const ListIt &index,
             const PropId &prop)
   :
+  Element(prop),
   grid_(grid),
-  property_(prop),
   index_it_(index)
 {}
 
@@ -62,22 +85,6 @@ get_index() const ->  const IndexType &
 
 
 
-template <int dim>
-bool
-GridElement<dim>::
-has_property(const PropId &prop) const
-{
-  const auto &list = grid_->elem_properties_[prop];
-  return std::binary_search(list.begin(), list.end(), get_index());
-}
-
-template <int dim>
-const PropId &
-GridElement<dim>::
-get_property() const
-{
-  return property_;
-}
 
 
 template <int dim>
@@ -85,11 +92,21 @@ void
 GridElement<dim>::
 move_to(const IndexType &elem_id)
 {
-  Assert(grid_->element_has_property(elem_id, property_),
-         ExcMessage("The destination element has not the property \"" + property_ + "\""));
+  const auto &property = this->get_property();
+  Assert(grid_->element_has_property(elem_id, property),
+         ExcMessage("The destination element has not the property \"" + property + "\""));
 
-  const auto &list = grid_->elem_properties_[property_];
+  const auto &list = grid_->elem_properties_[property];
   index_it_ = std::find(list.begin(),list.end(),elem_id);
+}
+
+
+template <int dim>
+bool
+GridElement<dim>::
+is_comparable_with(const self_t &elem) const
+{
+	return (get_grid() == elem.get_grid());
 }
 
 
@@ -98,7 +115,7 @@ bool
 GridElement<dim>::
 operator ==(const self_t &elem) const
 {
-  Assert(get_grid() == elem.get_grid(),
+  Assert(this->is_comparable_with(elem),
          ExcMessage("Cannot compare elements on different grid."));
   return (get_index() == elem.get_index());
 }
@@ -110,7 +127,7 @@ bool
 GridElement<dim>::
 operator !=(const self_t &elem) const
 {
-  Assert(get_grid() == elem.get_grid(),
+  Assert(this->is_comparable_with(elem),
          ExcMessage("Cannot compare elements on different grid."));
   return (get_index() != elem.get_index());
 }
@@ -120,7 +137,7 @@ bool
 GridElement<dim>::
 operator <(const self_t &elem) const
 {
-  Assert(get_grid() == elem.get_grid(),
+  Assert(this->is_comparable_with(elem),
          ExcMessage("Cannot compare elements on different grid."));
   return (get_index() < elem.get_index());
 }
@@ -130,7 +147,7 @@ bool
 GridElement<dim>::
 operator >(const self_t &elem) const
 {
-  Assert(get_grid() == elem.get_grid(),
+  Assert(this->is_comparable_with(elem),
          ExcMessage("Cannot compare elements on different grid."));
   return (get_index() > elem.get_index());
 }
@@ -286,7 +303,7 @@ GridElement<dim>::
 print_info(LogStream &out) const
 {
   out.begin_item("Property: ");
-  out << property_ << std::endl;
+  out << this->get_property() << std::endl;
   out.end_item();
   out.begin_item("Index:");
   index_it_->print_info(out);

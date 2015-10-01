@@ -50,7 +50,7 @@ void project_l2(const int p, const int num_knots = 10)
   auto space = Space::const_create(p, knots) ;
 
   const int n_qpoints = 4;
-  QGauss<dim> quad(n_qpoints);
+  auto quad = QGauss<dim>::create(n_qpoints);
 
   auto f = BoundaryFunction<dim>::const_create(knots);
   auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
