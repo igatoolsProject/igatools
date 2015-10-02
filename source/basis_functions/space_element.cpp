@@ -34,6 +34,7 @@ SpaceElement(const std::shared_ptr<Sp> space,
              const ListIt &index,
              const PropId &prop)
   :
+  Element(prop),
   space_(space)
 {
   grid_elem_ = space_->get_ptr_const_grid()->create_element(index,prop);
@@ -41,7 +42,7 @@ SpaceElement(const std::shared_ptr<Sp> space,
 
 
 
-
+#if 0
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
 SpaceElement<dim_,codim_,range_,rank_,type_>::
@@ -57,6 +58,7 @@ get_grid_element() const -> const  GridElem &
 {
   return *grid_elem_;
 }
+#endif
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 void
@@ -175,7 +177,7 @@ bool
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 operator==(const self_t &a) const
 {
-  Assert(space_ == a.space_,
+  Assert(this->is_comparable_with(a),
          ExcMessage("Comparison between elements defined on different spaces"));
   return *grid_elem_ == *a.grid_elem_;
 }
@@ -185,7 +187,7 @@ bool
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 operator!=(const self_t &a) const
 {
-  Assert(space_ == a.space_,
+  Assert(this->is_comparable_with(a),
          ExcMessage("Comparison between elements defined on different spaces"));
   return *grid_elem_ != *a.grid_elem_;
 }
@@ -195,7 +197,7 @@ bool
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 operator<(const self_t &a) const
 {
-  Assert(space_ == a.space_,
+  Assert(this->is_comparable_with(a),
          ExcMessage("Comparison between elements defined on different spaces"));
   return *grid_elem_ < *a.grid_elem_;
 }
@@ -205,7 +207,7 @@ bool
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 operator>(const self_t &a) const
 {
-  Assert(space_ == a.space_,
+  Assert(this->is_comparable_with(a),
          ExcMessage("Comparison between elements defined on different spaces"));
   return *grid_elem_ > *a.grid_elem_;
 }
@@ -243,6 +245,14 @@ get_space() const -> std::shared_ptr<Sp>
   return space_;
 }
 
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+bool
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+is_comparable_with(const self_t &elem) const
+{
+	return (space_ == elem.space_);
+}
 
 IGA_NAMESPACE_CLOSE
 

@@ -46,7 +46,7 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-class SpaceElement
+class SpaceElement : public Element
 {
 protected:
 
@@ -142,7 +142,7 @@ public:
    *
    * @brief The comparison operators compares the <em>position</em> of the element in the grid.
    *
-   * @warning To be comparable, two SpaceElementBase objects must be defined on the same space
+   * @warning To be comparable, two SpaceElement objects must be defined on the same space
    * (and therefore on the same grid),
    * otherwise an assertion will be raised (in Debug mode).
    */
@@ -252,6 +252,7 @@ public:
   }
 #endif
 
+#if 0
   /**
    * Return a reference to the GridElement.
    */
@@ -261,6 +262,7 @@ public:
    * Return a const-reference to the GridElement.
    */
   const GridElem &get_grid_element() const;
+#endif
 
   /** Returns the index of the element. */
   IndexType get_index() const;
@@ -422,6 +424,13 @@ private:
            template get_sub_elem_cache<sdim>(s_id).
     template get_data<ValueType>();
   }
+
+
+  /**
+   * Returns true if two elements belongs from the same Space.
+   */
+  bool is_comparable_with(const self_t &elem) const;
+
 };
 
 

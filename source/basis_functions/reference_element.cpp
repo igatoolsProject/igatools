@@ -35,7 +35,8 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
                  const PropId &prop)
   :
   parent_t(space,index,prop),
-  space_(space)
+  space_(space),
+  grid_elem_(space_->get_ptr_const_grid()->create_element(index,prop))
 {
 //    Assert(this->get_space() != nullptr,ExcNullPtr());
 
@@ -116,30 +117,6 @@ get_element_w_measures() const -> ValueVector<Real>
 }
 
 
-
-#if 0
-#ifdef SERIALIZATION
-template <int dim, int range, int rank>
-template<class Archive>
-void
-ReferenceElement<dim, range, rank>::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("ReferenceElement_base_t_",
-                                     boost::serialization::base_object<SpaceElement<dim,0,range,rank,Transformation::h_grad>>(*this));
-
-
-  ar &boost::serialization::make_nvp("n_basis_direction_",n_basis_direction_);
-  ar &boost::serialization::make_nvp("comp_offset_",comp_offset_);
-  ar &boost::serialization::make_nvp("basis_functions_indexer_",basis_functions_indexer_);
-
-  auto non_const_space = std::const_pointer_cast<Space>(space_);
-  ar &boost::serialization::make_nvp("space_",non_const_space);
-  space_ = non_const_space;
-  Assert(space_ != nullptr,ExcNullPtr());
-}
-#endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 

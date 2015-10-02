@@ -178,16 +178,6 @@ public:
     return cache.template get_data<ValueType>();
   }
 
-private:
-#if 0
-  template <class ValueType, int sdim>
-  auto &get_values_from_cache(const int s_id = 0) const
-  {
-    const auto &cache = local_cache_.template
-                        get_sub_elem_cache<sdim>(s_id);
-    return cache.template get_data<ValueType>();
-  }
-#endif
 
 public:
   template <int order>

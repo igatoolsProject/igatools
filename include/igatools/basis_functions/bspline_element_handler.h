@@ -172,11 +172,16 @@ private:
 
 
   using BaseElem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
+  using BSplineElem = BSplineElement<dim_,range_,rank_>;
 
   virtual void init_cache_impl(BaseElem &elem,
                                const eval_pts_variant &quad) const override final
   {
-    auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,this->flags_,elem);
+    auto init_cache_dispatcher =
+    		InitCacheDispatcher(
+    				this->grid_handler_,
+					this->flags_,
+					dynamic_cast<BSplineElem &>(elem));
     boost::apply_visitor(init_cache_dispatcher,quad);
   }
 
@@ -184,11 +189,11 @@ private:
   {
     InitCacheDispatcher(const GridHandler<dim_> &grid_handler,
                         const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
-                        BaseElem &elem)
+						BSplineElem &elem)
       :
       grid_handler_(grid_handler),
       flags_(flags),
-      elem_(elem)
+      bsp_elem_(elem)
     {}
 
 
@@ -198,7 +203,7 @@ private:
   private:
     const GridHandler<dim_> &grid_handler_;
     const SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
-    BaseElem &elem_;
+    BSplineElem &bsp_elem_;
 
     template<int sdim>
     void init_cache_1D();
@@ -211,7 +216,11 @@ private:
                                const topology_variant &topology,
                                const int s_id) const override final
   {
-    auto fill_cache_dispatcher = FillCacheDispatcherNoGlobalCache(s_id,this->grid_handler_,elem);
+    auto fill_cache_dispatcher =
+    		FillCacheDispatcherNoGlobalCache(
+    				s_id,
+					this->grid_handler_,
+					dynamic_cast<BSplineElem &>(elem));
     boost::apply_visitor(fill_cache_dispatcher,topology);
   }
 
@@ -220,11 +229,11 @@ private:
   {
     FillCacheDispatcherNoGlobalCache(const int s_id,
                                      const GridHandler<dim_> &grid_handler,
-                                     BaseElem &elem)
+                                     BSplineElem &elem)
       :
       s_id_(s_id),
       grid_handler_(grid_handler),
-      elem_(elem)
+      bsp_elem_(elem)
     {}
 
     template<int sdim>
@@ -280,7 +289,7 @@ private:
 
     const int s_id_;
     const GridHandler<dim_> &grid_handler_;
-    BaseElem &elem_;
+    BSplineElem &bsp_elem_;
   };
 
 

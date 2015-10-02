@@ -61,15 +61,7 @@ public:
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
 
-protected:
-#if 0
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  ReferenceElement() = default;
-#endif
+  using GridElem = GridElement<dim>;
 
 public:
   ReferenceElement() = delete;
@@ -152,22 +144,28 @@ public:
 
   virtual void print_info(LogStream &out) const override final;
 
-#if 0
-#ifdef SERIALIZATION
-private:
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
 
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version);
-  ///@}
-#endif // SERIALIZATION
-#endif
+private:
+  std::unique_ptr<GridElem> grid_elem_;
+
+
+public:
+  /**
+   * Return a reference to the GridElement.
+   */
+  GridElem &get_grid_element()
+  {
+	  return *grid_elem_;
+  }
+
+  /**
+   * Return a const-reference to the GridElement.
+   */
+  const GridElem &get_grid_element() const
+  {
+	  return *grid_elem_;
+  }
+
 };
 
 IGA_NAMESPACE_CLOSE

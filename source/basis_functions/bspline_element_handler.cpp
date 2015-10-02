@@ -203,11 +203,8 @@ BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 init_cache_1D()
 {
-  const auto &quad = *elem_.get_grid_element().template get_quad<sdim>();
-
-  using BSpElem = BSplineElement<dim_,range_,rank_>;
-  auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
-  const auto &bsp_space = dynamic_cast<const Space &>(*bsp_elem.get_space());
+  const auto &quad = *bsp_elem_.get_grid_element().template get_quad<sdim>();
+  const auto &bsp_space = dynamic_cast<const Space &>(*bsp_elem_.get_space());
 
   const auto &space_data = *bsp_space.space_data_;
 
@@ -216,7 +213,7 @@ init_cache_1D()
 
   const auto n_pts = quad.get_num_coords_direction();
 
-  auto &splines_1D_table = bsp_elem.all_splines_1D_table_[sdim];
+  auto &splines_1D_table = bsp_elem_.all_splines_1D_table_[sdim];
 
   const int n_sub_elems = UnitElement<dim>::template num_elem<sdim>();
   splines_1D_table.resize(n_sub_elems);
@@ -224,7 +221,7 @@ init_cache_1D()
   for (auto s_id = 0 ; s_id < n_sub_elems ; ++s_id)
   {
     auto &splines_1D_table_sub_elem = splines_1D_table[s_id];
-    splines_1D_table_sub_elem = typename BSpElem::Splines1DTable(space_data.get_components_map());
+    splines_1D_table_sub_elem = typename BSplineElem::Splines1DTable(space_data.get_components_map());
 
     const auto &sub_elem = UnitElement<dim>::template get_elem<sdim>(s_id);
     TensorSize<dim> n_coords(1);
@@ -252,16 +249,11 @@ BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 init_cache_multiD()
 {
+  auto &cache = bsp_elem_.all_sub_elems_cache_;
 
-  using BSpElem = BSplineElement<dim_,range_,rank_>;
-  auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
+  const auto n_basis = bsp_elem_.get_basis_offset()[BaseSpace::n_components];
 
-  auto &cache = bsp_elem.all_sub_elems_cache_;
-//      elem_.get_all_sub_elems_cache();
-
-  const auto n_basis = bsp_elem.get_basis_offset()[BaseSpace::n_components];
-
-  const auto n_pts = elem_.get_grid_element().template get_quad<sdim>()->get_num_points();
+  const auto n_pts = bsp_elem_.get_grid_element().template get_quad<sdim>()->get_num_points();
 
   const auto flag = flags_[sdim];
 
@@ -279,7 +271,7 @@ BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 {
-  grid_handler_.template init_cache<sdim>(elem_.get_grid_element(),quad);
+  grid_handler_.template init_cache<sdim>(bsp_elem_.get_grid_element(),quad);
 
   init_cache_1D<sdim>();
 
@@ -298,8 +290,7 @@ copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
                                    const SafeSTLArray<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
 {
-  const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
-  const auto &comp_offset = bsp_elem.get_basis_offset();
+  const auto &comp_offset = bsp_elem_.get_basis_offset();
 
   Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
          ExcDimensionMismatch(D_phi.get_num_functions(),
@@ -310,7 +301,7 @@ copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
   for (int comp : inactive_comp)
   {
     const auto act_comp = active_map[comp];
-    const auto n_basis_comp = bsp_elem.get_num_basis_comp(comp);
+    const auto n_basis_comp = bsp_elem_.get_num_basis_comp(comp);
     const Size act_offset = comp_offset[act_comp];
     const Size offset     = comp_offset[comp];
     for (Size basis_i = 0; basis_i < n_basis_comp;  ++basis_i)
@@ -337,8 +328,7 @@ copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
                             const SafeSTLArray<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
 {
-  const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
-  const auto &comp_offset = bsp_elem.get_basis_offset();
+  const auto &comp_offset = bsp_elem_.get_basis_offset();
 
   Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
          ExcDimensionMismatch(D_phi.get_num_functions(),
@@ -349,7 +339,7 @@ copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
   for (int comp : inactive_comp)
   {
     const auto act_comp = active_map[comp];
-    const auto n_basis_comp = bsp_elem.get_num_basis_comp(comp);
+    const auto n_basis_comp = bsp_elem_.get_num_basis_comp(comp);
     const Size act_offset = comp_offset[act_comp];
     const Size offset     = comp_offset[comp];
     for (Size basis_i = 0; basis_i < n_basis_comp;  ++basis_i)
@@ -383,8 +373,7 @@ evaluate_bspline_values(
   const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
   ValueTable<Value> &phi) const
 {
-  const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
-  const auto &comp_offset = bsp_elem.get_basis_offset();
+  const auto &comp_offset = bsp_elem_.get_basis_offset();
 
   Assert(phi.get_num_functions() == comp_offset[BaseSpace::n_components],
          ExcDimensionMismatch(phi.get_num_functions(),
@@ -395,7 +384,7 @@ evaluate_bspline_values(
   for (int comp : elem_values.get_active_components_id())
   {
     const auto &values = *elem_values[comp];
-    const int n_basis_comp = bsp_elem.get_num_basis_comp(comp);
+    const int n_basis_comp = bsp_elem_.get_num_basis_comp(comp);
     const Size offset = comp_offset[comp];
 
     for (int func_id = 0; func_id < n_basis_comp; ++func_id)
@@ -437,8 +426,7 @@ evaluate_bspline_derivatives(
   const int n_points = D_phi.get_num_points();
 
 
-  const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
-  const auto &comp_offset = bsp_elem.get_basis_offset();
+  const auto &comp_offset = bsp_elem_.get_basis_offset();
 
   Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
          ExcDimensionMismatch(D_phi.get_num_functions(),
@@ -453,7 +441,7 @@ evaluate_bspline_derivatives(
   for (int comp : elem_values.get_active_components_id())
   {
     const auto &values = *elem_values[comp];
-    const int n_basis_comp = bsp_elem.get_num_basis_comp(comp);
+    const int n_basis_comp = bsp_elem_.get_num_basis_comp(comp);
     const int offset = comp_offset[comp];
 
     for (int func_id = 0 ; func_id < n_basis_comp; ++func_id)
@@ -507,7 +495,7 @@ BSplineElementHandler<dim_, range_, rank_>::
 FillCacheDispatcherNoGlobalCache::
 fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
 {
-  auto &grid_elem = elem_.get_grid_element();
+  auto &grid_elem = bsp_elem_.get_grid_element();
 
 
 
@@ -520,9 +508,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
   const auto elem_size = grid_elem.template get_side_lengths<dim>(0);
   const auto elem_tensor_id = grid_elem.get_index();
 
-  using BSpElem = BSplineElement<dim_,range_,rank_>;
-  auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
-  const auto &bsp_space = dynamic_cast<const Space &>(*bsp_elem.get_space());
+  const auto &bsp_space = dynamic_cast<const Space &>(*bsp_elem_.get_space());
 
   const auto &space_data = *bsp_space.space_data_;
 
@@ -535,7 +521,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
   const auto &bezier_op   = bsp_space.operators_;
   const auto &end_interval = bsp_space.end_interval_;
 
-  auto &splines_1D_table_subelems = bsp_elem.all_splines_1D_table_[sdim];
+  auto &splines_1D_table_subelems = bsp_elem_.all_splines_1D_table_[sdim];
   auto &splines_1D_table = splines_1D_table_subelems[s_id_];
 
   for (const int dir : UnitElement<dim>::active_directions)
@@ -628,11 +614,7 @@ fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
 {
   //-------------------------------------------------------------------------------
   // Multi-variate spline evaluation from 1D values --- begin
-
-  using BSpElem = BSplineElement<dim_,range_,rank_>;
-  auto &bsp_elem = dynamic_cast<BSpElem &>(elem_);
-
-  const auto &splines_1D_table_subelems = bsp_elem.all_splines_1D_table_[sdim];
+  const auto &splines_1D_table_subelems = bsp_elem_.all_splines_1D_table_[sdim];
   const auto &splines_1D_table = splines_1D_table_subelems[s_id_];
 
   using TPFE = const TensorProductFunctionEvaluator<dim>;
@@ -649,8 +631,7 @@ fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
 
   //-------------------------------------------------------------------------------
   auto &sub_elem_cache =
-    bsp_elem.all_sub_elems_cache_.template get_sub_elem_cache<sdim>(s_id_);
-//      elem_.get_all_sub_elems_cache().template get_sub_elem_cache<sdim>(s_id_);
+    bsp_elem_.all_sub_elems_cache_.template get_sub_elem_cache<sdim>(s_id_);
 
 
   using Elem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
@@ -696,12 +677,12 @@ BSplineElementHandler<dim_, range_, rank_>::
 FillCacheDispatcherNoGlobalCache::
 operator()(const Topology<sdim> &topology)
 {
-  auto &grid_elem = elem_.get_grid_element();
+  auto &grid_elem = bsp_elem_.get_grid_element();
   grid_handler_.template fill_cache<sdim>(grid_elem,s_id_);
 
   const auto extended_sub_elem_quad =
     extend_sub_elem_quad<sdim,dim>(
-      *elem_.get_grid_element().template get_quad<sdim>(),
+      *grid_elem.template get_quad<sdim>(),
       s_id_);
 
   fill_cache_1D<sdim>(extended_sub_elem_quad);
