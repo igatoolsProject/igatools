@@ -148,23 +148,23 @@ public:
    */
   ///@{
   /** Returns TRUE if the two elements have the same index on the grid. */
-  bool operator==(const self_t &a) const;
+  virtual bool operator==(const self_t &a) const;
 
 
   /** Returns TRUE if the two elements have different indices on the grid. */
-  bool operator!=(const self_t &a) const;
+  virtual bool operator!=(const self_t &a) const;
 
   /**
    * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
    * is smaller than the the index of the element on the right.
    * */
-  bool operator<(const self_t &a) const;
+  virtual bool operator<(const self_t &a) const;
 
   /**
    * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
    * is bigger than the the index of the element on the right.
    * */
-  bool operator>(const self_t &a) const;
+  virtual bool operator>(const self_t &a) const;
   ///@}
 
   /*
@@ -174,10 +174,7 @@ public:
   }
   //*/
 
-  virtual void operator++()
-  {
-    ++(*grid_elem_);
-  }
+  virtual void operator++() = 0;
 
 
 
@@ -252,17 +249,17 @@ public:
   }
 #endif
 
-#if 0
+//#if 0
   /**
    * Return a reference to the GridElement.
    */
-  GridElem &get_grid_element();
+  virtual GridElem &get_grid_element() = 0;
 
   /**
    * Return a const-reference to the GridElement.
    */
-  const GridElem &get_grid_element() const;
-#endif
+  virtual const GridElem &get_grid_element() const = 0;
+//#endif
 
   /** Returns the index of the element. */
   IndexType get_index() const;
@@ -382,7 +379,7 @@ public:
   virtual void print_cache_info(LogStream &out) const;
 
 private:
-  std::unique_ptr<GridElem> grid_elem_;
+//  std::unique_ptr<GridElem> grid_elem_;
 
 
   std::shared_ptr<Sp> space_;

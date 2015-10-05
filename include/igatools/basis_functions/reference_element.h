@@ -166,6 +166,11 @@ public:
 	  return *grid_elem_;
   }
 
+  virtual void operator++()
+  {
+    ++(*grid_elem_);
+  }
+
 };
 
 IGA_NAMESPACE_CLOSE

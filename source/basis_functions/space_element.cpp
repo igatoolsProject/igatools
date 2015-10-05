@@ -37,7 +37,7 @@ SpaceElement(const std::shared_ptr<Sp> space,
   Element(prop),
   space_(space)
 {
-  grid_elem_ = space_->get_ptr_const_grid()->create_element(index,prop);
+//  grid_elem_ = space_->get_ptr_const_grid()->create_element(index,prop);
 }
 
 
@@ -65,7 +65,7 @@ void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_info(LogStream &out) const
 {
-  grid_elem_->print_info(out);
+  this->get_grid_element().print_info(out);
 
   out.begin_item("Element global connectivity (property=\"" + DofProperties::active + "\"):");
   const auto glob_dofs = this->get_local_to_global(DofProperties::active);
@@ -80,7 +80,8 @@ SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_cache_info(LogStream &out) const
 {
   out.begin_item("GridElement<" + std::to_string(dim) + "> cache:");
-  grid_elem_->print_cache_info(out);
+  this->get_grid_element().print_cache_info(out);
+//  grid_elem_->print_cache_info(out);
   out.end_item();
 
   //    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
@@ -94,7 +95,7 @@ auto
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 get_index() const -> IndexType
 {
-  return grid_elem_->get_index();
+  return this->get_grid_element().get_index();
 }
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -102,7 +103,7 @@ std::shared_ptr<const Grid<dim_> >
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 get_grid() const
 {
-  return grid_elem_->get_grid();
+  return this->get_grid_element().get_grid();
 }
 
 
@@ -179,7 +180,7 @@ operator==(const self_t &a) const
 {
   Assert(this->is_comparable_with(a),
          ExcMessage("Comparison between elements defined on different spaces"));
-  return *grid_elem_ == *a.grid_elem_;
+  return this->get_grid_element() == a.get_grid_element();
 }
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -189,7 +190,7 @@ operator!=(const self_t &a) const
 {
   Assert(this->is_comparable_with(a),
          ExcMessage("Comparison between elements defined on different spaces"));
-  return *grid_elem_ != *a.grid_elem_;
+  return this->get_grid_element() != a.get_grid_element();
 }
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -199,7 +200,8 @@ operator<(const self_t &a) const
 {
   Assert(this->is_comparable_with(a),
          ExcMessage("Comparison between elements defined on different spaces"));
-  return *grid_elem_ < *a.grid_elem_;
+//  return *grid_elem_ < *a.grid_elem_;
+  return this->get_grid_element() < a.get_grid_element();
 }
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -209,7 +211,8 @@ operator>(const self_t &a) const
 {
   Assert(this->is_comparable_with(a),
          ExcMessage("Comparison between elements defined on different spaces"));
-  return *grid_elem_ > *a.grid_elem_;
+//  return *grid_elem_ > *a.grid_elem_;
+  return this->get_grid_element() > a.get_grid_element();
 }
 
 

@@ -38,19 +38,11 @@ BSplineElement<1,1,1> cache:
                   
                   Element Quadrature Points: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=2) :
-                        [ [ 0.211325 ]  [ 0.788675 ]  ]
-                     
+                        fill = 0    filled = 0
                   
                   Element Quadrature Weights: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=2) :
-                        [ 0.500000 0.500000 ]
-                     
+                        fill = 0    filled = 0
                   
                
             
@@ -200,19 +192,11 @@ BSplineElement<1,1,1> cache:
                   
                   Element Quadrature Points: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=2) :
-                        [ [ 0.105662 ]  [ 0.394338 ]  ]
-                     
+                        fill = 0    filled = 0
                   
                   Element Quadrature Weights: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=2) :
-                        [ 0.250000 0.250000 ]
-                     
+                        fill = 0    filled = 0
                   
                
             
@@ -362,19 +346,11 @@ BSplineElement<1,1,1> cache:
                   
                   Element Quadrature Points: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=2) :
-                        [ [ 0.105662 ]  [ 0.394338 ]  ]
-                     
+                        fill = 0    filled = 0
                   
                   Element Quadrature Weights: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=2) :
-                        [ 0.250000 0.250000 ]
-                     
+                        fill = 0    filled = 0
                   
                
             
@@ -534,19 +510,11 @@ BSplineElement<2,1,1> cache:
                   
                   Element Quadrature Points: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=4) :
-                        [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
-                     
+                        fill = 0    filled = 0
                   
                   Element Quadrature Weights: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=4) :
-                        [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-                     
+                        fill = 0    filled = 0
                   
                
             
@@ -774,19 +742,11 @@ BSplineElement<2,1,1> cache:
                   
                   Element Quadrature Points: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=4) :
-                        [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
-                     
+                        fill = 0    filled = 0
                   
                   Element Quadrature Weights: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=4) :
-                        [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-                     
+                        fill = 0    filled = 0
                   
                
             
@@ -1014,19 +974,11 @@ BSplineElement<2,1,1> cache:
                   
                   Element Quadrature Points: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=4) :
-                        [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
-                     
+                        fill = 0    filled = 0
                   
                   Element Quadrature Weights: (memory consumption: 42 bytes)
                      Fill flags:
-                        fill = 1    filled = 1
-                     Data:
-                        ValueVector (num_points=4) :
-                        [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-                     
+                        fill = 0    filled = 0
                   
                
             

@@ -217,6 +217,22 @@ public:
 public:
 
   /**
+   * Return a reference to the GridElement.
+   */
+  virtual GridElement<dim_> &get_grid_element() override final
+  {
+	return get_physical_domain_element().get_grid_element();
+  }
+
+  /**
+   * Return a const-reference to the GridElement.
+   */
+  virtual const GridElement<dim_> &get_grid_element() const override final
+  {
+	return get_physical_domain_element().get_grid_element();
+  }
+
+  /**
    * Return a const reference of the reference space element.
    */
   const RefElemAccessor &get_ref_space_element() const;
@@ -249,25 +265,8 @@ public:
   /** Return the cartesian grid from which the element belongs.*/
   const std::shared_ptr<const Grid<dim>> get_grid() const;
 
-  /*
-    virtual typename List::iterator &operator++() override final
-    {
-      parent_t::operator++();
 
-      ++(*phys_domain_element_);
-
-      return ++(*ref_space_element_);
-    }
-  //*/
-
-  virtual void operator++() override final
-  {
-    parent_t::operator++();
-
-    ++(*phys_domain_element_);
-
-    ++(*ref_space_element_);
-  }
+  virtual void operator++() override final;
 
 #if 0
   /**
@@ -293,31 +292,39 @@ public:
   ///@}
 #endif
 
+
+  /**
+   * @name Comparison operators.
+   *
+   * @brief The comparison operators compares the <em>position</em> of the element in the grid.
+   *
+   * @warning To be comparable, two SpaceElement objects must be defined on the same space
+   * (and therefore on the same grid),
+   * otherwise an assertion will be raised (in Debug mode).
+   */
+  ///@{
+  /** Returns TRUE if the two elements have the same index on the grid. */
+  virtual bool operator==(const parent_t &a) const override final;
+
+
+  /** Returns TRUE if the two elements have different indices on the grid. */
+  virtual bool operator!=(const parent_t &a) const override final;
+
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is smaller than the the index of the element on the right.
+   */
+  virtual bool operator<(const parent_t &a) const override final;
+
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is bigger than the the index of the element on the right.
+   */
+  virtual bool operator>(const parent_t &a) const override final;
+  ///@}
+
 protected:
 
-  /*
-      bool operator==(const PhysicalSpaceElement<PhysSpace> &a) const;
-      bool operator!=(const PhysicalSpaceElement<PhysSpace> &a) const;
-      bool operator<(const PhysicalSpaceElement<PhysSpace> &a) const;
-      bool operator>(const PhysicalSpaceElement<PhysSpace> &a) const;
-  //*/
-
-#if 0
-  /**
-   * This function returns the ValueFlags needed to be passed to the ReferenceSpacePhysicalAccessor
-   * in order to compute the quantities specified by the input argument
-   * @p fill_flag (i.e. the ValueFlags that refers to the PhysicalSpaceElement).
-   */
-  ValueFlags get_reference_space_accessor_fill_flags(const ValueFlags fill_flag) const;
-
-  /**
-   * This function returns the ValueFlags needed to be passed to the PushForwardAccessor
-   * in order to compute the quantities specified by the input argument
-   * @p fill_flag (i.e. the ValueFlags that refers to the PhysicalSpaceElement).
-   */
-  ValueFlags get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const;
-
-#endif
   /**
    * Performs a copy of the input @p element.
    * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
@@ -333,6 +340,12 @@ private:
   std::unique_ptr<RefElemAccessor> ref_space_element_;
 
   std::unique_ptr<PhysDomainElem> phys_domain_element_;
+
+
+  /**
+   * Returns true if two elements belongs from the same Space.
+   */
+  bool is_comparable_with(const self_t &elem) const;
 
 };
 

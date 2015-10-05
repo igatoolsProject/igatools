@@ -62,7 +62,8 @@ void sub_elem_values(const int n_knots, const int deg)
   elem_handler->template init_cache<k>(*elem,k_quad);
   for (; elem != end; ++elem)
   {
-    const auto &grid_elem = elem->get_grid_element();
+    const auto &grid_elem =
+    		std::dynamic_pointer_cast<ReferenceElement<dim>>(elem)->get_grid_element();
     if (grid_elem.is_boundary())
     {
       elem_handler->template fill_cache<dim>(*elem,0);
