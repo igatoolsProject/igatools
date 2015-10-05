@@ -221,7 +221,7 @@ public:
    */
   virtual GridElement<dim_> &get_grid_element() override final
   {
-	return get_physical_domain_element().get_grid_element();
+    return get_physical_domain_element().get_grid_function_element().get_grid_element();
   }
 
   /**
@@ -229,7 +229,7 @@ public:
    */
   virtual const GridElement<dim_> &get_grid_element() const override final
   {
-	return get_physical_domain_element().get_grid_element();
+    return get_physical_domain_element().get_grid_function_element().get_grid_element();
   }
 
   /**

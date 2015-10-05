@@ -27,8 +27,8 @@ IGA_NAMESPACE_OPEN
 
 Element::
 Element(const PropId &property)
-:
-property_(property)
+  :
+  property_(property)
 {}
 
 
@@ -36,7 +36,7 @@ bool
 Element::
 has_property(const PropId &prop) const
 {
-	return prop == property_;
+  return prop == property_;
 }
 
 const PropId &
@@ -106,7 +106,7 @@ bool
 GridElement<dim>::
 is_comparable_with(const self_t &elem) const
 {
-	return (get_grid() == elem.get_grid());
+  return (get_grid() == elem.get_grid());
 }
 
 

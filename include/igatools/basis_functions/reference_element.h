@@ -155,7 +155,7 @@ public:
    */
   GridElem &get_grid_element()
   {
-	  return *grid_elem_;
+    return *grid_elem_;
   }
 
   /**
@@ -163,10 +163,10 @@ public:
    */
   const GridElem &get_grid_element() const
   {
-	  return *grid_elem_;
+    return *grid_elem_;
   }
 
-  virtual void operator++()
+  virtual void operator++() override
   {
     ++(*grid_elem_);
   }

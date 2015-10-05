@@ -34,31 +34,32 @@ IGA_NAMESPACE_OPEN
 class Element
 {
 public:
-	Element(const PropId &property);
 
-	virtual ~Element() = default;
+  Element(const PropId &property);
 
-	virtual void operator++() = 0;
+//  virtual ~Element() = default;
+
+  virtual void operator++() = 0;
 
 
-	  /**
-	   * @name Functions for managing/querying the element properties.
-	   */
-	  ///@{
-	  /**
-	   * Tests if a certain element @p property is TRUE.
-	   */
-	  bool has_property(const PropId &property) const;
+  /**
+   * @name Functions for managing/querying the element properties.
+   */
+  ///@{
+  /**
+   * Tests if a certain element @p property is TRUE.
+   */
+  bool has_property(const PropId &property) const;
 
-	  /**
-	   * Returns the property of the element.
-	   */
-	  const PropId &get_property() const;
-	  ///@}
+  /**
+   * Returns the property of the element.
+   */
+  const PropId &get_property() const;
+  ///@}
 
 private:
 
-	PropId property_;
+  PropId property_;
 
 };
 

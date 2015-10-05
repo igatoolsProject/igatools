@@ -29,13 +29,11 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 #include <igatools/basis_functions/phys_space_element_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/geometry/push_forward_element.h>
 
 
 
@@ -45,10 +43,10 @@ using MapFunc = Function<dim, 0, dim+codim>;
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<Grid<dim>> grid)
+create_function(shared_ptr<const Grid<dim>> grid)
 {
 
-  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
   typename Function::Gradient A;
   for (int i=0; i<dim+codim; i++)
@@ -59,7 +57,7 @@ create_function(shared_ptr<Grid<dim>> grid)
     b[i] = i;
   }
 
-  return Function::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
+  return Function::const_create(grid,A, b);
 }
 
 
@@ -78,30 +76,33 @@ void elem_values(const int n_knots = 5, const int deg=1)
   auto ref_space = BspSpace::const_create(deg, grid);
   auto map_func = create_function(grid);
 
-  auto space = Space::const_create(ref_space, map_func);
+  auto space = Space::const_create(ref_space, Domain<dim,codim>::const_create(map_func));
 
-  auto flag = ValueFlags::none;
+  using space_element::Flags;
+
+  auto flag = Flags::none;
   switch (order)
   {
     case 0:
-      flag |= ValueFlags::value;
+      flag |= Flags::value;
       break;
     case 1:
-      flag |= ValueFlags::gradient;
+      flag |= Flags::gradient;
       break;
     case 2:
-      flag |= ValueFlags::hessian;
+      flag |= Flags::hessian;
       break;
   }
 
-  auto quad = QGauss<k>(2);
+  auto quad = QGauss<k>::create(2);
 
   auto elem_filler = space->create_cache_handler();
-  elem_filler->reset(flag, quad);
+  elem_filler->template set_flags<dim>(flag);
 
   auto elem = space->begin();
   auto end = space->end();
-  elem_filler->init_element_cache(elem);
+  using space_element::_Value;
+  elem_filler->init_element_cache(elem,quad);
   for (; elem != end; ++elem)
   {
     elem_filler->fill_element_cache(elem);

@@ -75,7 +75,7 @@ void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 operator++()
 {
-  parent_t::operator++();
+//  parent_t::operator++();
 
   ++(*phys_domain_element_);
 
@@ -213,7 +213,7 @@ bool
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 operator==(const parent_t &a) const
 {
-   return !((*this) != a);
+  return !((*this) != a);
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -221,11 +221,11 @@ bool
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 operator!=(const parent_t &a) const
 {
-   const self_t & elem = dynamic_cast<const self_t &>(a);
-   Assert(this->is_comparable_with(elem),
-	      ExcMessage("The elements are not comparable"));
-   return (*ref_space_element_ != *elem.ref_space_element_) ||
-		  (*phys_domain_element_ != *elem.phys_domain_element_);
+  const self_t &elem = dynamic_cast<const self_t &>(a);
+  Assert(this->is_comparable_with(elem),
+         ExcMessage("The elements are not comparable"));
+  return (*ref_space_element_ != *elem.ref_space_element_) ||
+         (*phys_domain_element_ != *elem.phys_domain_element_);
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -233,10 +233,10 @@ bool
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 operator<(const parent_t &a) const
 {
-   const self_t & elem = dynamic_cast<const self_t &>(a);
-   Assert(this->is_comparable_with(elem),
-	      ExcMessage("The elements are not comparable"));
-   return (*ref_space_element_ < *elem.ref_space_element_);
+  const self_t &elem = dynamic_cast<const self_t &>(a);
+  Assert(this->is_comparable_with(elem),
+         ExcMessage("The elements are not comparable"));
+  return (*ref_space_element_ < *elem.ref_space_element_);
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -244,10 +244,10 @@ bool
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 operator>(const parent_t &a) const
 {
-   const self_t & elem = dynamic_cast<const self_t &>(a);
-   Assert(this->is_comparable_with(elem),
-	      ExcMessage("The elements are not comparable"));
-   return (*ref_space_element_ > *elem.ref_space_element_);
+  const self_t &elem = dynamic_cast<const self_t &>(a);
+  Assert(this->is_comparable_with(elem),
+         ExcMessage("The elements are not comparable"));
+  return (*ref_space_element_ > *elem.ref_space_element_);
 }
 
 
@@ -257,10 +257,10 @@ PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 is_comparable_with(const self_t &elem) const
 {
 //   bool same_ref_space =
-//		   (ref_space_element_->get_space() == elem.ref_space_element_->get_space());
-   const bool same_phys_space =
-		   (this->get_space() == elem.get_space());
-   return (same_phys_space);
+//       (ref_space_element_->get_space() == elem.ref_space_element_->get_space());
+  const bool same_phys_space =
+    (this->get_space() == elem.get_space());
+  return (same_phys_space);
 }
 
 IGA_NAMESPACE_CLOSE
