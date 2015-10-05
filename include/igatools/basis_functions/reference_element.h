@@ -145,31 +145,6 @@ public:
   virtual void print_info(LogStream &out) const override final;
 
 
-private:
-  std::unique_ptr<GridElem> grid_elem_;
-
-
-public:
-  /**
-   * Return a reference to the GridElement.
-   */
-  GridElem &get_grid_element()
-  {
-    return *grid_elem_;
-  }
-
-  /**
-   * Return a const-reference to the GridElement.
-   */
-  const GridElem &get_grid_element() const
-  {
-    return *grid_elem_;
-  }
-
-  virtual void operator++() override
-  {
-    ++(*grid_elem_);
-  }
 
 };
 

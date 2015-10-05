@@ -65,7 +65,9 @@ void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_info(LogStream &out) const
 {
+  out.begin_item("GridElement<" + std::to_string(dim) + ">");
   this->get_grid_element().print_info(out);
+  out.end_item();
 
   out.begin_item("Element global connectivity (property=\"" + DofProperties::active + "\"):");
   const auto glob_dofs = this->get_local_to_global(DofProperties::active);
@@ -81,7 +83,6 @@ print_cache_info(LogStream &out) const
 {
   out.begin_item("GridElement<" + std::to_string(dim) + "> cache:");
   this->get_grid_element().print_cache_info(out);
-//  grid_elem_->print_cache_info(out);
   out.end_item();
 
   //    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
@@ -254,7 +255,7 @@ bool
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 is_comparable_with(const self_t &elem) const
 {
-	return (space_ == elem.space_);
+  return (space_ == elem.space_);
 }
 
 IGA_NAMESPACE_CLOSE

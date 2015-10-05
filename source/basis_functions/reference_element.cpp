@@ -35,8 +35,7 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
                  const PropId &prop)
   :
   parent_t(space,index,prop),
-  space_(space),
-  grid_elem_(space_->get_ptr_const_grid()->create_element(index,prop))
+  space_(space)
 {
 //    Assert(this->get_space() != nullptr,ExcNullPtr());
 
