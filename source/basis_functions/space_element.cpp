@@ -65,7 +65,6 @@ void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_info(LogStream &out) const
 {
-
   out.begin_item("Element global connectivity (property=\"" + DofProperties::active + "\"):");
   const auto glob_dofs = this->get_local_to_global(DofProperties::active);
   glob_dofs.print_info(out);
