@@ -77,7 +77,7 @@ init_cache(ConstElementAccessor &elem,
 {
   grid_handler_->init_cache(*(elem.grid_elem_), quad);
 
-  auto disp = InitCacheDispatcher(this, elem, flags_);
+  auto disp = InitCacheDispatcher(*this, elem, flags_);
   boost::apply_visitor(disp, quad);
 }
 

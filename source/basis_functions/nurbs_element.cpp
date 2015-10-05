@@ -44,28 +44,6 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
 
 
 
-template <int dim, int range, int rank>
-NURBSElement<dim, range, rank>::
-NURBSElement(const self_t &elem,
-             const CopyPolicy &copy_policy)
-  :
-  parent_t(elem,copy_policy),
-  bspline_elem_(elem.bspline_elem_,copy_policy),
-  weight_elem_(elem.weight_elem_,copy_policy)
-{
-  /*
-  if (copy_policy == CopyPolicy::shallow)
-  {
-      weight_elem_ = elem.weight_elem_;
-  }
-  else
-  {
-      weight_elem_ = std::shared_ptr<WeightElem>(new WeightElem(*elem.weight_elem_));
-  }
-  //*/
-  Assert(false,ExcNotTested());
-}
-
 
 #if 0
 template <int dim, int range, int rank>
@@ -108,36 +86,10 @@ get_nurbs_space() const -> std::shared_ptr<const Space>
 }
 
 
-template <int dim, int range, int rank>
-std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
-NURBSElement<dim, range, rank>::
-clone() const
-{
-  auto elem = std::make_shared<NURBSElement<dim,range,rank> >(*this,CopyPolicy::deep);
-  Assert(elem != nullptr, ExcNullPtr());
-  return elem;
-}
 
 
 
 
-
-#ifdef SERIALIZATION
-template <int dim, int range, int rank>
-template<class Archive>
-void
-NURBSElement<dim, range, rank>::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("NURBSElement_base_t",
-                                     boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
-
-  ar &boost::serialization::make_nvp("bspline_elem_",bspline_elem_);
-
-  ar &boost::serialization::make_nvp("weight_elem_",weight_elem_);
-}
-///@}
-#endif // SERIALIZATION
 
 
 

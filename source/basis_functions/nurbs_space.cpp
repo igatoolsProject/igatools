@@ -169,13 +169,27 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 create_element(const ListIt &index, const PropId &property) const
--> std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
+-> std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
 {
   using Elem = NURBSElement<dim_,range_,rank_>;
 
-  const auto nrb_space = this->get_this_space();
+  std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>>
+  elem = std::make_unique<Elem>(this->get_this_space(),index,property);
+  Assert(elem != nullptr, ExcNullPtr());
 
-  auto elem = make_shared<Elem>(nrb_space,index,property);
+  return elem;
+}
+
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+create_ref_element(const ListIt &index, const PropId &property) const
+-> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+{
+  using Elem = NURBSElement<dim_,range_,rank_>;
+
+  std::unique_ptr<ReferenceElement<dim_,range_,rank_>>
+  elem = std::make_unique<Elem>(this->get_this_space(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -587,7 +601,7 @@ get_end_behaviour_table() const -> const EndBehaviourTable &
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create_cache_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
+create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
 {
   return ElementHandler::create(this->get_this_space());
 }

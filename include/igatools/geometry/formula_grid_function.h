@@ -28,6 +28,7 @@
 IGA_NAMESPACE_OPEN
 
 template <int, int> class FormulaGridFunctionHandler;
+
 /**
  *
  */

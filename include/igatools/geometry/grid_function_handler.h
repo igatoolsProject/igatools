@@ -186,7 +186,7 @@ private:
 
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
-    InitCacheDispatcher(self_t const *grid_function_handler,
+    InitCacheDispatcher(const self_t &grid_function_handler,
                         ConstElementAccessor &elem,
                         const FlagsArray &flags)
       :
@@ -199,7 +199,7 @@ private:
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     {
-      auto &cache = grid_function_handler_->get_element_cache(elem_);
+      auto &cache = grid_function_handler_.get_element_cache(elem_);
 
       const auto n_points = elem_.get_grid_element().template get_quad<sdim>()
                             ->get_num_points();
@@ -210,7 +210,7 @@ private:
       }
     }
 
-    self_t const *grid_function_handler_;
+    const self_t & grid_function_handler_;
     ConstElementAccessor &elem_;
     const FlagsArray &flags_;
   };
@@ -226,27 +226,6 @@ private:
   FlagsArray flags_;
 
   friend ElementAccessor;
-
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    ar.template register_type<IgFunction<dim_,0,dim_+space_dim_,1> >();
-    ar &boost::serialization::make_nvp("F_",F_);
-    ar &boost::serialization::make_nvp("flags_",flags_);
-  }
-  ///@}
-#endif
-#endif
 };
 
 IGA_NAMESPACE_CLOSE

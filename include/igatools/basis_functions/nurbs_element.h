@@ -60,8 +60,6 @@ private:
   using parent_t = ReferenceElement<dim,range,rank>;
 
 public:
-  /** Type for the grid accessor. */
-  using GridAccessor = NonConstGridElement<dim>;
 
   /** Type required by the GridIterator templated iterator */
   using ContainerType = const NURBSSpace<dim, range, rank> ;
@@ -70,10 +68,18 @@ public:
   using Space = NURBSSpace<dim, range, rank> ;
 
 
-  using Grid = Grid<dim>;
-  using IndexType = typename Grid::IndexType;
-  using List = typename Grid::List;
-  using ListIt = typename Grid::ListIt;
+  using GridType = Grid<dim>;
+  using IndexType = typename GridType::IndexType;
+  using List = typename GridType::List;
+  using ListIt = typename GridType::ListIt;
+
+  using GridElem = GridElement<dim>;
+
+public:
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+  using typename parent_t::Point;
+  using typename parent_t::Value;
 
   /** @name Constructors */
   ///@{
@@ -94,7 +100,7 @@ public:
                const ListIt &index,
                const PropId &prop = ElementProperties::active);
 
-
+#if 0
   /**
    * Copy constructor.
    * It can be used with different copy policies (i.e. deep copy or shallow copy).
@@ -104,6 +110,7 @@ public:
   NURBSElement(const self_t &elem,
                const CopyPolicy &copy_policy = CopyPolicy::deep);
 //*/
+#endif
 
   /**
    * Move constructor.
@@ -165,30 +172,13 @@ public:
   friend class NURBSElementHandler<dim, range, rank>;
 
 
-  virtual std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
-  clone() const override final;
 
-
-  virtual typename List::iterator &operator++() override final
+  virtual void operator++() override final
   {
     ++weight_elem_;
-    return ++bspline_elem_;
+    ++bspline_elem_;
     Assert(false,ExcNotImplemented());
   }
-
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version);
-  ///@}
-#endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

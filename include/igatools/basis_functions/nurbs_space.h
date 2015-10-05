@@ -25,7 +25,7 @@
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 
 #ifdef NURBS
 
@@ -155,7 +155,7 @@ public:
 
 
   using WeightSpace = BSplineSpace<dim_,1,1>;
-  using WeightFunction = IgFunction<dim_,0,1,1>;
+  using WeightFunction = IgGridFunction<dim_,1>;
   using WeightFunctionPtr = std::shared_ptr<WeightFunction>;
   using Weights = DynamicMultiArray<Real,dim>;
   using WeightsTable = ComponentContainer<Weights>;
@@ -180,10 +180,16 @@ public:
   ///@}
 
   /**
-   * Create an element (defined on this space) with a given flat_index.
+   * Create an element (defined on this space) with a given @p index.
    */
-  virtual std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
+  virtual std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
   create_element(const ListIt &index, const PropId &property) const override final;
+
+  /**
+   * Create an element (defined on this space) with a given @p index.
+   */
+  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  create_ref_element(const ListIt &index, const PropId &property) const override final;
 
   /** Destructor */
   virtual ~NURBSSpace() = default;
@@ -291,7 +297,7 @@ private:
 
 
 public:
-  virtual std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
+  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
       create_cache_handler() const override final;
 
 
