@@ -192,6 +192,10 @@ public:
     ++(*grid_elem_);
   }
 
+
+
+  virtual void print_info(LogStream &out) const override final;
+
 };
 
 IGA_NAMESPACE_CLOSE

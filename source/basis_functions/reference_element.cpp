@@ -98,6 +98,8 @@ ReferenceElement<dim, range, rank>::
 print_info(LogStream &out) const
 {
   parent_t::print_info(out);
+
+
   out.begin_item("Number of element basis: ");
   n_basis_direction_.print_info(out);
   out.end_item();

@@ -142,7 +142,7 @@ public:
    */
   int get_num_basis_comp(const int i) const;
 
-  virtual void print_info(LogStream &out) const override final;
+  virtual void print_info(LogStream &out) const override;
 
 
 

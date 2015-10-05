@@ -65,9 +65,6 @@ void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_info(LogStream &out) const
 {
-  out.begin_item("GridElement<" + std::to_string(dim) + ">");
-  this->get_grid_element().print_info(out);
-  out.end_item();
 
   out.begin_item("Element global connectivity (property=\"" + DofProperties::active + "\"):");
   const auto glob_dofs = this->get_local_to_global(DofProperties::active);

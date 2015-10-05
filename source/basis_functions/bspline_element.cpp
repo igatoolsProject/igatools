@@ -299,6 +299,24 @@ get_bspline_space() const -> std::shared_ptr<const Space>
 
 
 
+template <int dim, int range, int rank>
+void
+BSplineElement<dim, range, rank>::
+print_info(LogStream &out) const
+{
+  using std::to_string;
+
+  out.begin_item("ReferenceElement<" +
+                 to_string(dim) + "," +
+                 to_string(range) + "," +
+                 to_string(rank) + ">");
+  parent_t::print_info(out);
+  out.end_item();
+
+  out.begin_item("GridElement<" + to_string(dim) + ">");
+  grid_elem_->print_info(out);
+  out.end_item();
+}
 
 
 template <int dim, int range, int rank>

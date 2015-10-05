@@ -379,7 +379,6 @@ public:
   virtual void print_cache_info(LogStream &out) const;
 
 private:
-//  std::unique_ptr<GridElem> grid_elem_;
 
 
   std::shared_ptr<Sp> space_;
