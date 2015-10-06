@@ -356,20 +356,6 @@ private:
   }
   ///@}
 
-protected:
-
-#if 0
-  /**
-   * ExceptionUnsupported Value Flag.
-   */
-  DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
-                 << "The passed ValueFlag " << arg2
-                 << " contains a non admissible flag " << (arg1 ^arg2));
-  DeclException1(ExcCacheInUse, int,
-                 << "The global cache is being used by " << arg1
-                 << " iterator. Changing its value not allowed.");
-#endif
-
 private:
 
   /**

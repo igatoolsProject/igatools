@@ -66,7 +66,7 @@ set_flags(const topology_variant &sdim,
     }
 
   grid_func_handler_->set_flags(sdim, grid_func_flag);
-  grid_func_handler_->get_grid_handler()->set_flags(sdim, grid_flag);
+  grid_func_handler_->get_grid_handler().set_flags(sdim, grid_flag);
   auto disp = SetFlagsDispatcher(dom_flag, flags_);
   boost::apply_visitor(disp, sdim);
 }
@@ -81,18 +81,8 @@ init_cache(ConstElementAccessor &elem,
 {
   grid_func_handler_->init_cache(*(elem.grid_func_elem_), quad);
 
-  /*
-  auto &cache = elem.local_cache_;
-  if (cache == nullptr)
-  {
-    using Cache = typename ElementAccessor::CacheType;
-    cache = std::make_shared<Cache>();
-  }
-  //*/
-
   auto disp = InitCacheDispatcher(this, elem, flags_);
   boost::apply_visitor(disp, quad);
-
 }
 
 
@@ -108,7 +98,6 @@ fill_cache(const topology_variant &sdim,
 
   auto disp = FillCacheDispatcher(elem, s_id);
   boost::apply_visitor(disp, sdim);
-
 }
 
 

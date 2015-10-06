@@ -37,7 +37,7 @@ FormulaGridFunctionHandler<dim_, space_dim_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
-  this->get_grid_handler()->set_flags(sdim, grid_element::Flags::point);
+  this->get_grid_handler().set_flags(sdim, grid_element::Flags::point);
   parent_t::set_flags(sdim, flag);
 }
 

@@ -270,7 +270,6 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &)
     {
-
       auto &cache = elem_.local_cache_.template get_sub_elem_cache<sdim>(s_id_);
 
       using _Measure = typename ElementAccessor::_Measure;
@@ -425,28 +424,6 @@ private:
   FlagsArray flags_;
 
   friend ElementAccessor;
-
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    AssertThrow(false,ExcNotImplemented());
-//    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
-//    ar &boost::serialization::make_nvp("F_",F_);
-//    ar &boost::serialization::make_nvp("flags_",flags_);
-  }
-  ///@}
-#endif
-#endif
 };
 
 IGA_NAMESPACE_CLOSE

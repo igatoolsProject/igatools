@@ -183,11 +183,17 @@ void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 print_info(LogStream &out) const
 {
-  out.begin_item("Reference space:");
+  using std::to_string;
+  out.begin_item("ReferenceElement<" +
+                 to_string(RefSpace::dim) + "," +
+                 to_string(RefSpace::range) + "," +
+                 to_string(RefSpace::rank) + ">");
   ref_space_element_->print_info(out);
   out.end_item();
 
-  out.begin_item("Pushforward:");
+  out.begin_item("DomainElement<" +
+                 to_string(dim_) + "," +
+                 to_string(codim_) + ">");
   phys_domain_element_->print_info(out);
   out.end_item();
 }
@@ -197,11 +203,17 @@ void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 print_cache_info(LogStream &out) const
 {
-  out.begin_item("Reference space:");
+  using std::to_string;
+  out.begin_item("ReferenceElement<" +
+                 to_string(RefSpace::dim) + "," +
+                 to_string(RefSpace::range) + "," +
+                 to_string(RefSpace::rank) + "> cache:");
   ref_space_element_->print_cache_info(out);
   out.end_item();
 
-  out.begin_item("Pushforward:");
+  out.begin_item("DomainElement<" +
+                 to_string(dim_) + "," +
+                 to_string(codim_) + "> cache:");
   phys_domain_element_->print_cache_info(out);
   out.end_item();
 }

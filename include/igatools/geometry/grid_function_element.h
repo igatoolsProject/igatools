@@ -156,7 +156,10 @@ public:
 
   void print_info(LogStream &out) const
   {
-    AssertThrow(false,ExcNotImplemented());
+    using std::to_string;
+    out.begin_item("GridElement<" + to_string(dim_) + "," + to_string(space_dim_) +">");
+    grid_elem_->print_info(out);
+    out.end_item();
   }
 
   void print_cache_info(LogStream &out) const

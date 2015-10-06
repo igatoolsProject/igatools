@@ -139,16 +139,16 @@ public:
 
   //protected:
 public:
-  std::shared_ptr<const GridHandler>
+  const GridHandler &
   get_grid_handler() const
   {
-    return grid_handler_;
+    return *grid_handler_;
   }
 
-  std::shared_ptr<GridHandler>
+  GridHandler &
   get_grid_handler()
   {
-    return grid_handler_;
+    return *grid_handler_;
   }
 protected:
 //  std::shared_ptr<typename ConstElementAccessor::CacheType>
@@ -210,7 +210,7 @@ private:
       }
     }
 
-    const self_t & grid_function_handler_;
+    const self_t &grid_function_handler_;
     ConstElementAccessor &elem_;
     const FlagsArray &flags_;
   };

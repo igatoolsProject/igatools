@@ -307,8 +307,6 @@ private:
         phys_space_to_domain_flag(type_,phys_elem_flag_));
 
       flags_[sdim] = phys_elem_flag_;
-
-//      Assert(false,ExcNotImplemented());
     }
 
 
@@ -423,8 +421,6 @@ private:
       using _Gradient = typename BaseElem::_Gradient;
       using _Hessian = typename BaseElem::_Hessian;
       using _Divergence = typename BaseElem::_Divergence;
-
-
       if (sub_elem_cache.template status_fill<_Value>())
       {
         PushFwd::template

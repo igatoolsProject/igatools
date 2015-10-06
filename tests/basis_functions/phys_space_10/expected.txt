@@ -6,7 +6,7 @@ cache_init
 ========================================================================
 cache_init_elem
 ========================================================================
-Reference space:
+ReferenceElement<1,1,1> cache:
    BSplineElement<1,1,1> cache:
       Splines 1D table:
          Sub-element dimension: 0
@@ -149,7 +149,7 @@ Reference space:
       
    
 
-Pushforward:
+DomainElement<1,0> cache:
    GridFunctionElement's cache
       GridElement's cache
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
@@ -322,7 +322,7 @@ Pushforward:
 ========================================================================
 cache_fill_elem
 ========================================================================
-Reference space:
+ReferenceElement<1,1,1> cache:
    BSplineElement<1,1,1> cache:
       Splines 1D table:
          Sub-element dimension: 0
@@ -481,7 +481,7 @@ Reference space:
       
    
 
-Pushforward:
+DomainElement<1,0> cache:
    GridFunctionElement's cache
       GridElement's cache
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
@@ -653,7 +653,7 @@ Pushforward:
       
    
 
-Reference space:
+ReferenceElement<1,1,1> cache:
    BSplineElement<1,1,1> cache:
       Splines 1D table:
          Sub-element dimension: 0
@@ -812,7 +812,7 @@ Reference space:
       
    
 
-Pushforward:
+DomainElement<1,0> cache:
    GridFunctionElement's cache
       GridElement's cache
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
@@ -984,7 +984,7 @@ Pushforward:
       
    
 
-Reference space:
+ReferenceElement<1,1,1> cache:
    BSplineElement<1,1,1> cache:
       Splines 1D table:
          Sub-element dimension: 0
@@ -1143,7 +1143,7 @@ Reference space:
       
    
 
-Pushforward:
+DomainElement<1,0> cache:
    GridFunctionElement's cache
       GridElement's cache
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
@@ -1315,7 +1315,7 @@ Pushforward:
       
    
 
-Reference space:
+ReferenceElement<1,1,1> cache:
    BSplineElement<1,1,1> cache:
       Splines 1D table:
          Sub-element dimension: 0
@@ -1474,7 +1474,7 @@ Reference space:
       
    
 
-Pushforward:
+DomainElement<1,0> cache:
    GridFunctionElement's cache
       GridElement's cache
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)

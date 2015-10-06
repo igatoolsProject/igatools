@@ -156,7 +156,11 @@ public:
 
   void print_info(LogStream &out) const
   {
-    AssertThrow(false,ExcNotImplemented());
+    out.begin_item("GridFunctionElement:");
+    grid_func_elem_->print_info(out);
+    out.end_item();
+
+//    AssertThrow(false,ExcNotImplemented());
   }
 
   void print_cache_info(LogStream &out) const

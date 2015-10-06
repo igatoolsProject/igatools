@@ -94,7 +94,10 @@ get_w_measures(const int s_id) const -> ValueVector<Real>
   auto w_meas = meas;
   auto it_w = w.begin();
   for (auto &w_m : w_meas)
+  {
     w_m *= *(it_w);
+    ++it_w;
+  }
   return w_meas;
 }
 

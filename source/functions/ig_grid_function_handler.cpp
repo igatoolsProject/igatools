@@ -41,33 +41,16 @@ IgGridFunctionHandler(const std::shared_ptr<GridFunctionType> &ig_grid_function)
 
 
 
-#if 0
 template<int dim_, int space_dim_>
 auto
 IgGridFunctionHandler<dim_, space_dim_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
-  AssertThrow(false,ExcNotImplemented());
-#if 0
-  using GridFlags = typename GridType::ElementHandler::Flags;
-  GridFlags  grid_flag = GridFlags::none;
-  CacheFlags dom_flag = CacheFlags::none;
+//  this->get_grid_handler().set_flags(sdim,flag);
 
-  for (auto &fl :  grid_function_element::all_flags)
-    if (contains(flag, fl))
-    {
-      grid_flag |= grid_function_element::activate::grid[fl];
-      dom_flag  |= grid_function_element::activate::grid_function[fl];
-    }
-
-  grid_handler_->set_flags(sdim, grid_flag);
-
-  auto disp = SetFlagsDispatcher(dom_flag, flags_);
-  boost::apply_visitor(disp, sdim);
-#endif
+  parent_t::set_flags(sdim,flag);
 }
-#endif
 
 
 #if 0
@@ -102,9 +85,8 @@ fill_cache(const topology_variant &sdim,
       elem,s_id);
 
   boost::apply_visitor(fill_cache_dispatcher, sdim);
-#if 0
-  grid_handler_->fill_cache(sdim, *(elem.grid_elem_), s_id);
-#endif
+
+  this->get_grid_handler().fill_cache(sdim, elem.get_grid_element(), s_id);
 }
 
 

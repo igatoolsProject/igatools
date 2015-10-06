@@ -49,10 +49,10 @@ public:
 
 
   virtual ~IgGridFunctionHandler() = default;
-#if 0
+
   void set_flags(const topology_variant &sdim,
                  const Flags &flag) override final;
-#endif
+
   void fill_cache(const topology_variant &sdim,
                   ConstElementAccessor &elem,
                   const int s_id) const override final;
@@ -77,7 +77,6 @@ private:
 
     template<int sdim>
     void operator()(const Topology<sdim> &sub_elem);
-
 
 
     const GridFunctionType &grid_function_;

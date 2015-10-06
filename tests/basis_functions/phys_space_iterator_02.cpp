@@ -178,7 +178,6 @@ void elem_values(const int n_knots = 2, const int deg=1)
   const int k = dim;
   using BspSpace = BSplineSpace<dim, range, rank>;
 
-//    using ElementHandler = typename Space::ElementHandler;
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
@@ -217,6 +216,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
     elem_handler->fill_element_cache(elem);
     out.begin_item("Element " + std::to_string(elem_id));
     elem->print_info(out);
+//    elem->print_cache_info(out);
 
     out.begin_item("Values: ");
     elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
