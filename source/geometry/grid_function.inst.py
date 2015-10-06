@@ -27,19 +27,36 @@ data = Instantiation(include_files)
 
 sub_dim_members = []
 
+classes = []
+
+templated_functions = []
+
 for x in inst.sub_mapping_dims:
-    mapping = 'GridFunction<%d,%d>' %(x.dim,x.space_dim)
-    f.write('template class %s ;\n' %(mapping))
+    cl = 'GridFunction<%d,%d>' %(x.dim,x.space_dim)
+    classes.append(cl)
     for fun in sub_dim_members:
         k = x.dim
         s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+        templated_functions.append(s)
 
 for x in inst.mapping_dims:
-    mapping = 'GridFunction<%d,%d>' %(x.dim,x.space_dim)
-    f.write('template class %s ;\n' %(mapping))
+    cl = 'GridFunction<%d,%d>' %(x.dim,x.space_dim)
+    classes.append(cl)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-            f.write('template ' + s + '\n')
+            templated_functions.append(s)
+
+    #the next classes are needed by NURBS
+    cl = 'GridFunction<%d,1>' %(x.dim)
+    classes.append(cl)
+
  
+
+
+for cl in unique(classes):
+    f.write('template class %s ;\n' %(cl))
+
+
+for func in unique(templated_functions):
+    f.write('template ' + func + '\n')

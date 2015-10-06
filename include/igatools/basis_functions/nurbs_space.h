@@ -199,8 +199,7 @@ protected:
   ///@{
   /**
    * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * serialization mechanism.
    */
   NURBSSpace() = default;
 
@@ -324,15 +323,17 @@ private:
 
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for serialization
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar)
+  {
+    AssertThrow(false,ExcNotImplemented());
+  }
   ///@}
 #endif // SERIALIZATION
 };

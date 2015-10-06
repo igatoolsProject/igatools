@@ -31,37 +31,63 @@ sub_dim_members = []
 #['const ValueVector<Points<dim+cod>> & GridFunctionElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
 
 elements = []
+templated_functions = []
+
 
 els =['const iga::GridFunction', ' iga::GridFunction']
 for x in inst.sub_mapping_dims:
   for el in els:
     elem = 'GridFunctionElementBase<%d,%d,' %(x.dim,x.space_dim) + el + '<%d,%d>' %(x.dim,x.space_dim) + '>'
-    f.write('template class %s; \n' %(elem))
     elements.append(elem)
     for fun in sub_dim_members:
         k = x.dim
         s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k)).replace('ContainerType', '%s' % (el));
-        f.write('template ' + s + '\n')
+        templated_functions.append(s)
 
 for x in inst.mapping_dims:
   for el in els:
     elem = 'GridFunctionElementBase<%d,%d,' %(x.dim,x.space_dim) + el + '<%d,%d>' %(x.dim,x.space_dim) + '>'
-    f.write('template class %s; \n' %(elem))
     elements.append(elem)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim).replace('ContainerType', '%s' % (el))
-            f.write('template ' + s + '\n')
+            templated_functions.append(s)
+
+    #the next classes are needed by NURBS
+    elem = 'GridFunctionElementBase<%d,1,' %(x.dim) + el + '<%d,1>' %(x.dim) + '>'
+    elements.append(elem)
+
+
  
-accs1 =  ['GridFunctionElement',       'ConstGridFunctionElement']
+ 
+accs1 =  ['GridFunctionElement','ConstGridFunctionElement']
 for x in inst.sub_mapping_dims + inst.mapping_dims: 
   for acc in accs1: 
-      f.write('template class ' + acc + '<%d,%d>' %(x.dim,x.space_dim) + ';\n')
+      elem = acc + '<%d,%d>' %(x.dim,x.space_dim)
+      elements.append(elem)
+      
+      #the next classes are needed by NURBS
+      elem = acc + '<%d,1>' %(x.dim)
+      elements.append(elem)
 
-accs=  ['GridFunctionElement',       'ConstGridFunctionElement', 'GridFunctionElement', 'ConstGridFunctionElement']
-iters =  ['GridIteratorBase', 'GridIteratorBase',   'GridIterator', 'GridIterator']
+
+
+accs=  ['GridFunctionElement','ConstGridFunctionElement','GridFunctionElement','ConstGridFunctionElement']
+iters =  ['GridIteratorBase', 'GridIteratorBase','GridIterator','GridIterator']
 for x in inst.sub_mapping_dims+inst.mapping_dims:
   for i in range(len(accs)):
     acc = iters[i] + '<' + accs[i]+ '<%d,%d>' %(x.dim,x.space_dim) + '>' 
-    f.write('template class %s; \n' %(acc))
+    elements.append(acc)
     
+    #the next classes are needed by NURBS
+    acc = iters[i] + '<' + accs[i]+ '<%d,1>' %(x.dim) + '>' 
+    elements.append(acc)
+    
+
+
+for elem in unique(elements):
+    f.write('template class %s; \n' %(elem))
+    
+
+for func in unique(templated_functions):
+    f.write('template ' + func + '\n')

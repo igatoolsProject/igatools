@@ -672,7 +672,7 @@ rebuild_after_insert_knots(
 #endif // MESH_REFINEMENT
 
 
-
+#if 0
 #ifdef SERIALIZATION
 template <int dim_, int range_, int rank_>
 template<class Archive>
@@ -690,7 +690,7 @@ serialize(Archive &ar, const unsigned int version)
 }
 ///@}
 #endif // SERIALIZATION
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 
