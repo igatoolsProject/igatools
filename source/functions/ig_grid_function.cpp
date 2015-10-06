@@ -52,6 +52,23 @@ get_coefficients() const
   return coeffs_;
 }
 
+template<int dim,int space_dim>
+void
+IgGridFunction<dim,space_dim>::
+print_info(LogStream &out) const
+{
+	using std::to_string;
+	out.begin_item("ReferenceSpace<" +
+			to_string(dim) + ",1," +
+			to_string(space_dim) + ">:");
+	ig_space_->print_info(out);
+	out.end_item();
+
+	out.begin_item("IgCoefficients:");
+	coeffs_.print_info(out);
+	out.end_item();
+}
+
 
 IGA_NAMESPACE_CLOSE
 

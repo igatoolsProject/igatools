@@ -86,10 +86,7 @@ public:
   }
 
 
-  virtual void print_info(LogStream &out) const override final
-  {
-    AssertThrow(false,ExcNotImplemented());
-  }
+  virtual void print_info(LogStream &out) const override final;
 
 
 
