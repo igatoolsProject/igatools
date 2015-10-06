@@ -145,7 +145,9 @@ public:
   virtual void print_info(LogStream &out) const override;
 
 
-
+#if 0
+  std::shared_ptr<const Space> get_ig_space() const;
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

@@ -174,7 +174,7 @@ public:
   /**
    * Return a reference to the GridElement.
    */
-  GridElem &get_grid_element()
+  GridElem &get_grid_element() override final
   {
     return *grid_elem_;
   }
@@ -182,7 +182,7 @@ public:
   /**
    * Return a const-reference to the GridElement.
    */
-  const GridElem &get_grid_element() const
+  const GridElem &get_grid_element() const override final
   {
     return *grid_elem_;
   }

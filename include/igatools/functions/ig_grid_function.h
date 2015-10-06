@@ -57,6 +57,17 @@ public:
 
 public:
 
+private:
+  using IgSpace = const ReferenceSpace<dim,space_dim,1>;
+  std::shared_ptr<IgSpace> ig_space_;
+
+
+public:
+  std::shared_ptr<IgSpace> get_ig_space() const
+  {
+    return ig_space_;
+  }
+
 };
 
 IGA_NAMESPACE_CLOSE

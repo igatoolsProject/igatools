@@ -301,7 +301,6 @@ public:
       create_cache_handler() const override final;
 
 
-
 private:
 
 #ifdef MESH_REFINEMENT

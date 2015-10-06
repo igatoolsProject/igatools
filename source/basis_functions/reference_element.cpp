@@ -116,8 +116,15 @@ get_element_w_measures() const -> ValueVector<Real>
 {
   return this->template get_w_measures<dim>(0);
 }
-
-
+#if 0
+template <int dim, int range, int rank>
+auto
+ReferenceElement<dim, range, rank>::
+get_ig_space() const -> std::shared_ptr<const Space>
+{
+  return space_;
+}
+#endif
 
 IGA_NAMESPACE_CLOSE
 

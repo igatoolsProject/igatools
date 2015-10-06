@@ -172,6 +172,22 @@ public:
   friend class NURBSElementHandler<dim, range, rank>;
 
 
+  /**
+   * Return a reference to the GridElement.
+   */
+  GridElem &get_grid_element() override final
+  {
+    return bspline_elem_.get_grid_element();
+  }
+
+  /**
+   * Return a const-reference to the GridElement.
+   */
+  const GridElem &get_grid_element() const override final
+  {
+    return bspline_elem_.get_grid_element();
+  }
+
 
   virtual void operator++() override final
   {
