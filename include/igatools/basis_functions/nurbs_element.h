@@ -195,6 +195,17 @@ public:
     ++bspline_elem_;
     Assert(false,ExcNotImplemented());
   }
+
+  /**
+   * Move the element to the one specified by <tt>elem_id</tt>.
+   *
+   * @warning Use this function only if you know what you are doing
+   */
+  virtual void move_to(const IndexType &elem_id) override final
+  {
+    AssertThrow(false,ExcNotImplemented());
+  }
+
 };
 
 IGA_NAMESPACE_CLOSE

@@ -31,7 +31,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Coefficients for the IgFunction.
+ * @brief Coefficients for the IgFunction and IgGridFunction classes.
  *
  * Basically it is a <tt>std::map<Index,Real></tt> in which its <tt>key</tt> is the global dof
  * and the associated <tt>value</tt> is the coefficient associated to the dof.

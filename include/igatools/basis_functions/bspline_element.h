@@ -192,6 +192,15 @@ public:
     ++(*grid_elem_);
   }
 
+  /**
+   * Move the element to the one specified by <tt>elem_id</tt>.
+   *
+   * @warning Use this function only if you know what you are doing
+   */
+  virtual void move_to(const IndexType &elem_id) override final
+  {
+    grid_elem_->move_to(elem_id);
+  }
 
 
   virtual void print_info(LogStream &out) const override final;

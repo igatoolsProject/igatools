@@ -167,15 +167,13 @@ public:
   virtual bool operator>(const self_t &a) const;
   ///@}
 
-  /*
-  virtual typename List::iterator &operator++()
-  {
-    return ++(*grid_elem_);
-  }
-  //*/
 
-//  virtual void operator++() = 0;
-
+  /**
+   * Move the element to the one specified by <tt>elem_id</tt>.
+   *
+   * @warning Use this function only if you know what you are doing
+   */
+  virtual void move_to(const IndexType &elem_id) = 0;
 
 
   /**

@@ -29,7 +29,7 @@
 
 #include "../tests.h"
 
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
@@ -37,7 +37,7 @@
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
-using namespace EpetraTools;
+//using namespace EpetraTools;
 
 
 
@@ -88,7 +88,7 @@ void serialize_deserialize(std::shared_ptr<Space> space)
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
+create_function(shared_ptr<const BSplineSpace<dim, dim + codim>> space)
 {
   IgCoefficients control_pts;
 
@@ -154,19 +154,20 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 
   }
 
-  using Function = IgFunction<dim,0,dim+codim,1>;
+  using Function = IgGridFunction<dim,dim+codim>;
   return Function::const_create(space, control_pts);
 }
 
 
 template<int dim,int range=dim,int rank=1,int codim=0>
 auto
-create_phys_space(shared_ptr<BSplineSpace<dim,range,rank>> ref_space)
+create_phys_space(shared_ptr<const BSplineSpace<dim,range,rank>> ref_space)
 {
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  return Space::create(ref_space,
-                                create_function(ref_space));
+  return Space::const_create(
+           ref_space,
+           Domain<dim,codim>::const_create(create_function(ref_space)));
 }
 
 
@@ -181,33 +182,40 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
-  auto ref_space = BspSpace::create(deg, grid);
+  auto ref_space = BspSpace::const_create(deg, grid);
 
 
   auto space = create_phys_space(ref_space);
 
-  serialize_deserialize(space);
+//  serialize_deserialize(space);
 
 
   const int n_qp = 3;
-  auto quad = QGauss<k>(n_qp);
+  auto quad = QGauss<k>::create(n_qp);
 
-  auto flag = ValueFlags::value |
-              ValueFlags::gradient |
-              ValueFlags::hessian |
-              ValueFlags::divergence |
-              ValueFlags::w_measure;
+  using space_element::Flags;
+  auto flag = Flags::value |
+              Flags::gradient |
+              Flags::hessian |
+              Flags::divergence |
+              Flags::w_measure;
 
   auto elem_handler = space->create_cache_handler();
-  elem_handler->reset(flag, quad);
+  elem_handler->template set_flags<k>(flag);
+
+  using space_element::_Value;
+  using space_element::_Gradient;
+  using space_element::_Hessian;
+  using space_element::_Divergence;
 
   auto elem = space->begin();
   auto end = space->end();
-  elem_handler->init_element_cache(elem);
+  elem_handler->init_element_cache(elem,quad);
+  int elem_id = 0;
   for (; elem != end; ++elem)
   {
     elem_handler->fill_element_cache(elem);
-    out.begin_item("Element " + std::to_string(elem->get_flat_index()));
+    out.begin_item("Element " + std::to_string(elem_id));
     elem->print_info(out);
 
     out.begin_item("Values: ");
@@ -231,6 +239,8 @@ void elem_values(const int n_knots = 2, const int deg=1)
     out.end_item();
 
     out.end_item();
+
+    ++elem_id;
   }
 
 

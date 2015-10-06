@@ -266,7 +266,6 @@ public:
   const std::shared_ptr<const Grid<dim>> get_grid() const;
 
 
-  virtual void operator++() override final;
 
 #if 0
   /**
@@ -278,19 +277,20 @@ public:
 
 #endif
 
-#if 0
   /** @name Functions/operators for moving the element in the Grid.*/
   ///@{
+  virtual void operator++() override final;
+
   /**
-   * Sets the index of the element using the flatten representation.
-   * @note This function also updates the index for the tensor representation.
-   * @warning This may be a dangerous function, be careful when using it
-   * as it is easy to use incorrectly. Only use it if you know what you
-   * are doing.
+   * Move the element to the one specified by <tt>elem_id</tt>.
+   *
+   * @warning Use this function only if you know what you are doing
    */
-  void move_to(const Index flat_index) override final;
+  virtual void move_to(const IndexType &elem_id) override final
+  {
+    AssertThrow(false,ExcNotImplemented());
+  }
   ///@}
-#endif
 
 
   /**

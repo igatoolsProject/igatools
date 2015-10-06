@@ -126,8 +126,8 @@ phys_space_to_domain_flag(
     if (contains(phys_space_flag, SpaceFlags::hessian))
       domain_flag |= (DomainFlags::hessian | DomainFlags::inv_jacobian);
 
-    if (contains(phys_space_flag, SpaceFlags::divergence))
-      AssertThrow(false,ExcNotImplemented());
+//    if (contains(phys_space_flag, SpaceFlags::divergence))
+//      AssertThrow(false,ExcNotImplemented());
 //      domain_flag |= (DomainFlags::inv_gradient);
 
   }

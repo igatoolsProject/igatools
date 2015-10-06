@@ -171,18 +171,10 @@ public:
    * @note They should be called only by the GridIterator.
    */
   ///@{
-  /*
-    typename List::iterator &operator++()
-    {
-      return (++index_it_);
-    }
-  //*/
-
   void operator++() override
   {
     ++index_it_;
   }
-  //*/
 
   /**
    * Move the element to the one specified by <tt>elem_id</tt>.

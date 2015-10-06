@@ -18,11 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __FORMULA_GRID_FUNCTION_HANDLER_H_
-#define __FORMULA_GRID_FUNCTION_HANDLER_H_
+#ifndef __IG_GRID_FUNCTION_HANDLER_H_
+#define __IG_GRID_FUNCTION_HANDLER_H_
 
 #include <igatools/geometry/grid_function_handler.h>
-#include <igatools/geometry/formula_grid_function.h>
+#include <igatools/functions/ig_grid_function.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -30,32 +30,32 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim, int space_dim>
-class FormulaGridFunctionHandler :
+class IgGridFunctionHandler :
   public GridFunctionHandler<dim, space_dim>
 {
 private:
   using parent_t = GridFunctionHandler<dim, space_dim>;
-  using self_t = FormulaGridFunctionHandler<dim, space_dim>;
+  using self_t = IgGridFunctionHandler<dim, space_dim>;
 protected:
   using typename parent_t::GridType;
 public:
-  using GridFunctionType =  const FormulaGridFunction<dim, space_dim>;
+  using GridFunctionType =  const IgGridFunction<dim, space_dim>;
   using typename parent_t::ConstElementAccessor;
   using typename parent_t::Flags;
   using typename parent_t::topology_variant;
   using typename parent_t::eval_pts_variant;
 
-  FormulaGridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function);
+  IgGridFunctionHandler(const std::shared_ptr<GridFunctionType> &ig_grid_function);
 
 
-  virtual ~FormulaGridFunctionHandler() = default;
-
+  virtual ~IgGridFunctionHandler() = default;
+#if 0
   void set_flags(const topology_variant &sdim,
                  const Flags &flag) override final;
-
+#endif
   void fill_cache(const topology_variant &sdim,
                   ConstElementAccessor &elem,
-                  const int s_id) const override;
+                  const int s_id) const override final;
 
 private:
   struct FillCacheDispatcher : boost::static_visitor<void>
@@ -76,40 +76,9 @@ private:
 
 
     template<int sdim>
-    void operator()(const Topology<sdim> &sub_elem)
-    {
-      auto &local_cache = grid_function_handler_.get_element_cache(elem_);
-      auto &cache = local_cache.template get_sub_elem_cache<sdim>(s_id_);
+    void operator()(const Topology<sdim> &sub_elem);
 
-      if (!cache.fill_none())
-      {
-        const auto &grid_pts = elem_.get_grid_element().template get_points<sdim>(s_id_);
-        if (cache.template status_fill<_D<0>>())
-        {
-          auto &F = cache.template get_data<_D<0>>();
-          grid_function_.evaluate_0(grid_pts, F);
-          F.set_status_filled(true);
-        }
 
-        if (cache.template status_fill<_D<1>>())
-        {
-          auto &DF = cache.template get_data<_D<1>>();
-          grid_function_.evaluate_1(grid_pts, DF);
-          DF.set_status_filled(true);
-        }
-
-        if (cache.template status_fill<_D<2>>())
-        {
-          auto &D2F = cache.template get_data<_D<2>>();
-          grid_function_.evaluate_2(grid_pts, D2F);
-          D2F.set_status_filled(true);
-        }
-//        if (cache.template status_fill<_Divergence>())
-//          Assert(false,ExcNotImplemented());
-      }
-
-      cache.set_filled(true);
-    }
 
     const GridFunctionType &grid_function_;
     const self_t     &grid_function_handler_;
