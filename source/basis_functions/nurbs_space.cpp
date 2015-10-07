@@ -42,11 +42,11 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(const std::shared_ptr<SpSpace> &bs_space,
+NURBSSpace(const std::shared_ptr<BSpSpace> &bs_space,
            const std::shared_ptr<WeightFunction> &weight_func)
   :
   BaseSpace(bs_space->get_ptr_grid()),
-  sp_space_(bs_space),
+  bsp_space_(bs_space),
   weight_func_(weight_func)
 {
 #ifndef NDEBUG
@@ -73,11 +73,11 @@ NURBSSpace(const std::shared_ptr<SpSpace> &bs_space,
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(const std::shared_ptr<const SpSpace> &bs_space,
+NURBSSpace(const std::shared_ptr<const BSpSpace> &bs_space,
            const std::shared_ptr<const WeightFunction> &weight_func)
   :
   BaseSpace(bs_space->get_ptr_const_grid()),
-  sp_space_(bs_space),
+  bsp_space_(bs_space),
   weight_func_(weight_func)
 {
 #ifndef NDEBUG
@@ -104,7 +104,7 @@ NURBSSpace(const std::shared_ptr<const SpSpace> &bs_space,
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(const std::shared_ptr<SpSpace> &bs_space,
+create(const std::shared_ptr<BSpSpace> &bs_space,
        const std::shared_ptr<WeightFunction> &weight_func) -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(new self_t(bs_space,weight_func));
@@ -120,7 +120,7 @@ create(const std::shared_ptr<SpSpace> &bs_space,
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-const_create(const std::shared_ptr<const SpSpace> &bs_space,
+const_create(const std::shared_ptr<const BSpSpace> &bs_space,
              const std::shared_ptr<const WeightFunction> &weight_func) -> shared_ptr<const self_t>
 {
   auto sp = shared_ptr<const self_t>(new self_t(bs_space,weight_func));
@@ -202,7 +202,7 @@ get_ref_face_space(const Index face_id,
                    typename GridType::FaceGridMap &elem_map) const
 -> std::shared_ptr<RefFaceSpace>
 {
-  auto f_space = sp_space_->get_ref_face_space(face_id, face_to_element_dofs, elem_map);
+  auto f_space = bsp_space_->get_ref_face_space(face_id, face_to_element_dofs, elem_map);
 
   // TODO (pauletti, Jun 11, 2014): this should be put and completed in
   // get_face_weigjts()
@@ -253,11 +253,11 @@ refine_h_weights(
   auto grid = this->get_grid();
   auto grid_old = this->get_grid()->get_grid_pre_refinement();
 
-  auto knots_with_repetitions_pre_refinement = sp_space_->get_spline_space_previous_refinement()
+  auto knots_with_repetitions_pre_refinement = bsp_space_->get_spline_space_previous_refinement()
                                                ->compute_knots_with_repetition(
-                                                 sp_space_->get_end_behaviour());
-  auto knots_with_repetitions = sp_space_->compute_knots_with_repetition(
-                                  sp_space_->get_end_behaviour());
+                                                 bsp_space_->get_end_behaviour());
+  auto knots_with_repetitions = bsp_space_->compute_knots_with_repetition(
+                                  bsp_space_->get_end_behaviour());
 
   for (int direction_id = 0; direction_id < dim; ++direction_id)
   {
@@ -265,7 +265,7 @@ refine_h_weights(
     {
       for (const int comp_id : weights_.get_active_components_id())
       {
-        const int p = sp_space_->get_degree_table()[comp_id][direction_id];
+        const int p = bsp_space_->get_degree_table()[comp_id][direction_id];
         const auto &U = knots_with_repetitions_pre_refinement[comp_id].get_data_direction(direction_id);
         const auto &Ubar = knots_with_repetitions[comp_id].get_data_direction(direction_id);
 
@@ -297,9 +297,9 @@ refine_h_weights(
         auto new_sizes = old_sizes;
         new_sizes[direction_id] += r+1; // r+1 new weights in the refinement direction
         Assert(new_sizes[direction_id] ==
-               sp_space_->get_num_basis(comp_id,direction_id),
+               bsp_space_->get_num_basis(comp_id,direction_id),
                ExcDimensionMismatch(new_sizes[direction_id],
-                                    sp_space_->get_num_basis(comp_id,direction_id)));
+                                    bsp_space_->get_num_basis(comp_id,direction_id)));
 
         DynamicMultiArray<Real,dim> Qw(new_sizes);
 
@@ -363,7 +363,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_interior_mult() const -> std::shared_ptr<const MultiplicityTable>
 {
-  return sp_space_->get_interior_mult();
+  return bsp_space_->get_interior_mult();
 }
 #endif
 
@@ -371,9 +371,9 @@ get_interior_mult() const -> std::shared_ptr<const MultiplicityTable>
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_spline_space() const -> const std::shared_ptr<const SpSpace>
+get_spline_space() const -> const std::shared_ptr<const BSpSpace>
 {
-  return sp_space_.get_ptr_const_data();
+  return bsp_space_.get_ptr_const_data();
 }
 
 
@@ -384,7 +384,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_push_forward() -> std::shared_ptr<PushForwardType>
 {
-  return sp_space_->get_push_forward();
+  return bsp_space_->get_push_forward();
 }
 
 template <int dim_, int range_, int rank_>
@@ -392,7 +392,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_push_forward() const -> std::shared_ptr<const PushForwardType>
 {
-  return sp_space_->get_push_forward();
+  return bsp_space_->get_push_forward();
 }
 
 #endif
@@ -497,7 +497,7 @@ NURBSSpace<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
   out.begin_item("BSpline Space:");
-  sp_space_->print_info(out);
+  bsp_space_->print_info(out);
   out.end_item();
 
   out.begin_item("Weight function :");
@@ -532,7 +532,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_degree_table() const -> const DegreeTable &
 {
-  return this->sp_space_->get_degree_table();
+  return this->bsp_space_->get_degree_table();
 }
 
 template <int dim_, int range_, int rank_>
@@ -545,7 +545,7 @@ get_element_dofs(
   SafeSTLVector<Index> &dofs_local_to_elem,
   const std::string &dofs_property) const
 {
-  this->sp_space_->get_element_dofs(
+  this->bsp_space_->get_element_dofs(
     element_id,
     dofs_global,
     dofs_local_to_patch,
@@ -562,7 +562,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_periodicity() const -> const PeriodicityTable &
 {
-  return sp_space_->get_periodicity();
+  return bsp_space_->get_periodicity();
 }
 
 
@@ -571,7 +571,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_end_behaviour_table() const -> const EndBehaviourTable &
 {
-  return sp_space_->get_end_behaviour_table();
+  return bsp_space_->get_end_behaviour_table();
 };
 
 
@@ -589,7 +589,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_ptr_const_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
 {
-  return sp_space_.get_ptr_const_data()->get_ptr_const_dof_distribution();
+  return bsp_space_.get_ptr_const_data()->get_ptr_const_dof_distribution();
 }
 
 template<int dim_, int range_, int rank_>
@@ -597,7 +597,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 {
-  return sp_space_.get_ptr_data()->get_ptr_dof_distribution();
+  return bsp_space_.get_ptr_data()->get_ptr_dof_distribution();
 }
 
 
@@ -631,8 +631,8 @@ rebuild_after_insert_knots(
   const Grid<dim_> &old_grid)
 {
   auto bsp_space_previous_refinement =
-    std::const_pointer_cast<SpSpace>(
-      std::dynamic_pointer_cast<const SpSpace>(sp_space_->get_space_previous_refinement()));
+    std::const_pointer_cast<BSpSpace>(
+      std::dynamic_pointer_cast<const BSpSpace>(bsp_space_->get_space_previous_refinement()));
   Assert(bsp_space_previous_refinement != nullptr,ExcNullPtr());
 
   auto weight_func_previous_refinement_ =
@@ -660,8 +660,8 @@ serialize(Archive &ar, const unsigned int version)
   ar &boost::serialization::make_nvp("ReferenceSpace",
                                      boost::serialization::base_object<BaseSpace>(*this));
 
-  ar.template register_type<SpSpace>();
-  ar &boost::serialization::make_nvp("sp_space_",sp_space_);
+  ar.template register_type<BSpSpace>();
+  ar &boost::serialization::make_nvp("bsp_space_",bsp_space_);
 
   ar &boost::serialization::make_nvp("weight_func_",weight_func_);
 }

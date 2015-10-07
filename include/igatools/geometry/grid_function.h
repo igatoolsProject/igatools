@@ -68,18 +68,14 @@ public:
   using Gradient = Derivative<1>;
   ///@}
 
-private:
   /**
    * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * serialization mechanism.
    */
   GridFunction() = default;
 
-protected:
   GridFunction(std::shared_ptr<GridType> grid);
 
-public:
   virtual ~GridFunction() = default;
 
   /*
@@ -99,7 +95,6 @@ public:
 
   std::shared_ptr<GridType> get_grid() const;
 
-public:
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
 
@@ -164,7 +159,7 @@ private:
   void
   serialize(Archive &ar)
   {
-    ar &grid_;
+    ar &make_nvp("grid_",grid_);
   }
   ///@}
 #endif // SERIALIZATION

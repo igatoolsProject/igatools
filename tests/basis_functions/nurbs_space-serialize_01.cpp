@@ -25,7 +25,6 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
-using namespace EpetraTools;
 
 
 template < int dim, int range, int rank>
@@ -47,10 +46,10 @@ void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
     // serialize the NURBSSpace object to an xml file
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
-    xml_out.template register_type<NRBSpace>();
+//    xml_out.template register_type<NRBSpace>();
 
-    xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
-    xml_ostream.close();
+    xml_out << space;
+//    xml_ostream.close();
   }
 
   space.reset();
@@ -58,10 +57,10 @@ void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
     // de-serialize the NURBSSpace object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
-    xml_in.template register_type<NRBSpace>();
+//    xml_in.template register_type<NRBSpace>();
 
-    xml_in >> BOOST_SERIALIZATION_NVP(space);
-    xml_istream.close();
+    xml_in >> space;
+//    xml_istream.close();
   }
   out.begin_item("NURBSSpace after serialize-deserialize:");
   space->print_info(out);
@@ -111,21 +110,20 @@ void do_test()
 
 
   using Space = NURBSSpace< dim, range, rank >;
-  auto grid = Grid<dim>::const_create(coord);
+  auto grid = Grid<dim>::create(coord);
 
   auto  bsp = BSplineSpace<dim, range, rank >::create(degree, grid);
 
   using ScalarBSplineSpace = BSplineSpace<dim>;
-  using WeightFunc = IgFunction<dim,0,1,1>;
-  auto scalar_space = ScalarBSplineSpace::const_create(degree,grid);
+  using WeightFunc = IgGridFunction<dim,1>;
+  auto scalar_space = ScalarBSplineSpace::create(degree,grid);
   const auto n_scalar_basis = scalar_space->get_num_basis();
 
-  SafeSTLVector<Real> weights(n_scalar_basis,1.0);
+  IgCoefficients weights;
+  for (int dof = 0 ; dof < n_scalar_basis ; ++dof)
+    weights[dof] = 1.0;
 
-  Epetra_SerialComm comm;
-  auto map = create_map(*scalar_space, "active", comm);
-  auto w_func = WeightFunc::const_create(scalar_space,
-                                   std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights.data()));
+  auto w_func = std::make_shared<WeightFunc>(scalar_space,weights);
 
   auto nurbs_space = Space::create(bsp, w_func);
 //    nurbs_space->print_info(out);

@@ -51,7 +51,12 @@ public:
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
-  IgGridFunction(std::shared_ptr<GridType> grid);
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * serialization mechanism.
+   */
+  IgGridFunction() = default;
+
 
   IgGridFunction(const std::shared_ptr<IgSpace> &space,
                  const IgCoefficients &coeffs)
@@ -99,6 +104,31 @@ public:
   std::shared_ptr<IgSpace> get_ig_space() const;
 
   const IgCoefficients &get_coefficients() const;
+
+private:
+#ifdef SERIALIZATION
+  /**
+   * @name Functions needed for serialization
+   */
+  ///@{
+  friend class cereal::access;
+
+  template<class Archive>
+  void
+  serialize(Archive &ar)
+  {
+    using std::to_string;
+    const std::string base_name = "GridFunction_" +
+                                  to_string(dim) + "_" +
+                                  to_string(space_dim);
+
+    ar &make_nvp(base_name,base_class<parent_t>(this));
+    ar &make_nvp("ig_space_",ig_space_);
+
+    ar &make_nvp("coeffs_",coeffs_);
+  }
+  ///@}
+#endif // SERIALIZATION
 
 };
 

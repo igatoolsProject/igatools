@@ -159,9 +159,9 @@ public:
 
 private:
 
-  using SpSpace = typename Space::SpSpace;
+  using BSpSpace = typename Space::BSpSpace;
 
-  typename SpSpace::ElementAccessor bspline_elem_;
+  typename BSpSpace::ElementAccessor bspline_elem_;
 
   using WeightFunction = typename Space::WeightFunction;
   using WeightElem = typename WeightFunction::ConstElementAccessor;

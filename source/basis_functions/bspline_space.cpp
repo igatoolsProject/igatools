@@ -720,34 +720,6 @@ get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 }
 
 
-#if 0
-#ifdef SERIALIZATION
-
-template<int dim_, int range_, int rank_>
-template<class Archive>
-void
-BSplineSpace<dim_, range_, rank_>::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("ReferenceSpace",
-                                     boost::serialization::base_object<BaseSpace>(*this));
-
-  ar &boost::serialization::make_nvp("space_data_",space_data_);
-//    Assert(space_data_ != nullptr,ExcNullPtr());
-
-  ar &boost::serialization::make_nvp("end_b_",end_b_);
-
-  ar &boost::serialization::make_nvp("operators_",operators_);
-
-  ar &boost::serialization::make_nvp("end_interval_",end_interval_);
-
-  ar &boost::serialization::make_nvp("dof_distribution_",dof_distribution_);
-
-//    ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
-}
-#endif
-
-#endif // SERIALIZATION
 
 
 #ifdef SERIALIZATION

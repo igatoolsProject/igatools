@@ -50,7 +50,7 @@ private:
   using self_t = NURBSSpace<dim_, range_, rank_>;
 
 public:
-  using SpSpace = BSplineSpace<dim_, range_, rank_>;
+  using BSpSpace = BSplineSpace<dim_, range_, rank_>;
 
 
   /** see documentation in \ref Space */
@@ -83,14 +83,14 @@ public:
 
 
 public:
-  using Func = typename SpSpace::Func;
+  using Func = typename BSpSpace::Func;
   template <int order>
-  using Derivative = typename SpSpace::template Derivative<order>;
-  using Point = typename SpSpace::Point;
-  using Value = typename SpSpace::Value;
-  using Div   = typename SpSpace::Div;
+  using Derivative = typename BSpSpace::template Derivative<order>;
+  using Point = typename BSpSpace::Point;
+  using Value = typename BSpSpace::Value;
+  using Div   = typename BSpSpace::Div;
 
-  using RefPoint = typename SpSpace::RefPoint;
+  using RefPoint = typename BSpSpace::RefPoint;
 
 public:
 
@@ -139,19 +139,19 @@ public:
 public:
 //    /** Container indexed by the components of the space */
   template< class T>
-  using ComponentContainer = typename SpSpace::template ComponentContainer<T>;
+  using ComponentContainer = typename BSpSpace::template ComponentContainer<T>;
 
-  using Degrees = typename SpSpace::Degrees;
-  using Multiplicity = typename SpSpace::Multiplicity;
-  using EndBehaviour = typename SpSpace::EndBehaviour;
-  using Periodicity = typename SpSpace::Periodicity;
+  using Degrees = typename BSpSpace::Degrees;
+  using Multiplicity = typename BSpSpace::Multiplicity;
+  using EndBehaviour = typename BSpSpace::EndBehaviour;
+  using Periodicity = typename BSpSpace::Periodicity;
 
-  using KnotsTable = typename SpSpace::KnotsTable;
-  using DegreeTable = typename SpSpace::DegreeTable;
-  using MultiplicityTable = typename SpSpace::MultiplicityTable;
-  using TensorSizeTable = typename SpSpace::TensorSizeTable;
-  using PeriodicityTable = typename SpSpace::PeriodicityTable;
-  using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
+  using KnotsTable = typename BSpSpace::KnotsTable;
+  using DegreeTable = typename BSpSpace::DegreeTable;
+  using MultiplicityTable = typename BSpSpace::MultiplicityTable;
+  using TensorSizeTable = typename BSpSpace::TensorSizeTable;
+  using PeriodicityTable = typename BSpSpace::PeriodicityTable;
+  using EndBehaviourTable = typename BSpSpace::EndBehaviourTable;
 
 
   using WeightSpace = BSplineSpace<dim_,1,1>;
@@ -166,7 +166,7 @@ public:
    * (non-const) BSplineSpace and a scalar weight function.
    */
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<SpSpace> &bs_space,
+  create(const std::shared_ptr<BSpSpace> &bs_space,
          const std::shared_ptr<WeightFunction> &weight_func);
 
   /**
@@ -174,7 +174,7 @@ public:
    * (const) BSplineSpace and a scalar weight function.
    */
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const SpSpace> &bs_space,
+  const_create(const std::shared_ptr<const BSpSpace> &bs_space,
                const std::shared_ptr<const WeightFunction> &weight_func);
 
   ///@}
@@ -206,13 +206,13 @@ protected:
   /**
    * Construct a NURBSSpace from a (non-const) BSplineSpace and a (non-const) scalar weight function.
    */
-  explicit NURBSSpace(const std::shared_ptr<SpSpace> &bs_space,
+  explicit NURBSSpace(const std::shared_ptr<BSpSpace> &bs_space,
                       const std::shared_ptr<WeightFunction> &weight_func);
 
   /**
    * Construct a NURBSSpace from a (const) BSplineSpace and a (const) scalar weight function.
    */
-  explicit NURBSSpace(const std::shared_ptr<const SpSpace> &bs_space,
+  explicit NURBSSpace(const std::shared_ptr<const BSpSpace> &bs_space,
                       const std::shared_ptr<const WeightFunction> &weight_func);
 
   /**
@@ -239,7 +239,7 @@ public:
 
   ///@}
 
-  const std::shared_ptr<const SpSpace> get_spline_space() const;
+  const std::shared_ptr<const BSpSpace> get_spline_space() const;
 
 
 
@@ -275,7 +275,7 @@ private:
   /**
    * B-spline space
    */
-  SharedPtrConstnessHandler<SpSpace> sp_space_;
+  SharedPtrConstnessHandler<BSpSpace> bsp_space_;
 
   /**
    * Weight function.
@@ -332,14 +332,36 @@ private:
   void
   serialize(Archive &ar)
   {
-    AssertThrow(false,ExcNotImplemented());
+    using std::to_string;
+    const std::string base_name = "ReferenceSpace_" +
+                                  to_string(dim_) + "_" +
+                                  to_string(0) + "_" +
+                                  to_string(range_) + "_" +
+                                  to_string(rank_) + "_hgrad";
+
+    ar &make_nvp(base_name,base_class<BaseSpace>(this));
+    ar &make_nvp("bsp_space_",bsp_space_);
+
+    ar &make_nvp("weight_func_",weight_func_);
   }
   ///@}
 #endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE
+
+
+
+
+#ifdef SERIALIZATION
+
+#include <igatools/basis_functions/nurbs_space.serial>
+
+#endif // SERIALIZATION
+
+
 #endif /* #ifdef NURBS */
+
 
 #endif /* NURBS_SPACE_H_ */
 
