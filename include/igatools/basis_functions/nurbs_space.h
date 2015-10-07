@@ -166,16 +166,16 @@ public:
    * (non-const) BSplineSpace and a scalar weight function.
    */
   static std::shared_ptr<self_t>
-  create_nonconst(const std::shared_ptr<SpSpace> &bs_space,
-                  const WeightFunctionPtr &weight_func);
+  create(const std::shared_ptr<SpSpace> &bs_space,
+         const std::shared_ptr<WeightFunction> &weight_func);
 
   /**
    * Returns a shared_ptr wrapping a (const) NURBSSpace from a
    * (const) BSplineSpace and a scalar weight function.
    */
   static std::shared_ptr<const self_t>
-  create(const std::shared_ptr<const SpSpace> &bs_space,
-         const WeightFunctionPtr &weight_func);
+  const_create(const std::shared_ptr<const SpSpace> &bs_space,
+               const std::shared_ptr<const WeightFunction> &weight_func);
 
   ///@}
 
@@ -204,16 +204,16 @@ protected:
   NURBSSpace() = default;
 
   /**
-   * Construct a NURBSSpace from a (non-const) BSplineSpace and a scalar weight function.
+   * Construct a NURBSSpace from a (non-const) BSplineSpace and a (non-const) scalar weight function.
    */
   explicit NURBSSpace(const std::shared_ptr<SpSpace> &bs_space,
-                      const WeightFunctionPtr &weight_func);
+                      const std::shared_ptr<WeightFunction> &weight_func);
 
   /**
-   * Construct a NURBSSpace from a (const) BSplineSpace and a scalar weight function.
+   * Construct a NURBSSpace from a (const) BSplineSpace and a (const) scalar weight function.
    */
   explicit NURBSSpace(const std::shared_ptr<const SpSpace> &bs_space,
-                      const WeightFunctionPtr &weight_func);
+                      const std::shared_ptr<const WeightFunction> &weight_func);
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -244,9 +244,9 @@ public:
 
 
   /**
-   * Get the weights of the NURBSSpace.
+   * Get the weights function of the NURBSSpace.
    */
-  const WeightFunctionPtr &get_weight_func() const;
+  std::shared_ptr<const WeightFunction> get_weight_func() const;
 
   const PeriodicityTable &get_periodicity() const override final;
 
@@ -280,7 +280,7 @@ private:
   /**
    * Weight function.
    */
-  WeightFunctionPtr weight_func_;
+  SharedPtrConstnessHandler<WeightFunction> weight_func_;
 
 
   friend ElementAccessor;

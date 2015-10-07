@@ -164,8 +164,8 @@ private:
   typename SpSpace::ElementAccessor bspline_elem_;
 
   using WeightFunction = typename Space::WeightFunction;
-  using WeightElem = typename WeightFunction::ElementAccessor;
-  WeightElem weight_elem_;
+  using WeightElem = typename WeightFunction::ConstElementAccessor;
+  std::unique_ptr<WeightElem> weight_elem_;
 
 public:
 
@@ -191,7 +191,7 @@ public:
 
   virtual void operator++() override final
   {
-    ++weight_elem_;
+    ++(*weight_elem_);
     ++bspline_elem_;
     Assert(false,ExcNotImplemented());
   }

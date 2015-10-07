@@ -43,37 +43,24 @@ IGA_NAMESPACE_OPEN
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(const std::shared_ptr<SpSpace> &bs_space,
-           const WeightFunctionPtr &weight_func)
+           const std::shared_ptr<WeightFunction> &weight_func)
   :
   BaseSpace(bs_space->get_ptr_grid()),
   sp_space_(bs_space),
   weight_func_(weight_func)
 {
 #ifndef NDEBUG
-//    int comp_id = 0;
-//    for (const auto &w_func : weight_func_table_)
-//    {
-  Assert(weight_func_ != nullptr, ExcNullPtr());
+  Assert(this->get_ptr_const_grid() == weight_func_->get_grid(),ExcMessage("Mismatching grids."));
 
-  Assert(*this->get_ptr_grid() == *weight_func_->get_grid(),ExcMessage("Mismatching grids."));
-
-  using WeightRefSpace = ReferenceSpace<dim_,1,1>;
-  auto w_func_as_ref_space = std::dynamic_pointer_cast<const WeightRefSpace>(weight_func_->get_ig_space());
-  Assert(w_func_as_ref_space != nullptr,
-         ExcMessage("The space for the weight function is not of type ReferenceSpace<" +
-                    std::to_string(WeightRefSpace::dim) + "," +
-                    std::to_string(WeightRefSpace::range) + "," +
-                    std::to_string(WeightRefSpace::rank) + ">."));
-
-
-  Assert(w_func_as_ref_space->is_bspline(),
+  const auto w_func_space = weight_func_->get_ig_space();
+  Assert(w_func_space->is_bspline(),
          ExcMessage("The space for the weight function is not BSplineSpace."));
 
   const auto &n_basis_table = this->get_ptr_const_dof_distribution()->get_num_dofs_table();
   int comp_id = 0;
   for (const auto &n_basis_comp : n_basis_table)
   {
-    Assert(n_basis_comp == w_func_as_ref_space->get_ptr_const_dof_distribution()->get_num_dofs_table()[0],
+    Assert(n_basis_comp == w_func_space->get_ptr_const_dof_distribution()->get_num_dofs_table()[0],
            ExcMessage("Mismatching number of basis functions and weight "
                       "coefficients for scalar component " + to_string(comp_id)));
 
@@ -87,34 +74,24 @@ NURBSSpace(const std::shared_ptr<SpSpace> &bs_space,
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(const std::shared_ptr<const SpSpace> &bs_space,
-           const WeightFunctionPtr &weight_func)
+           const std::shared_ptr<const WeightFunction> &weight_func)
   :
   BaseSpace(bs_space->get_ptr_const_grid()),
   sp_space_(bs_space),
   weight_func_(weight_func)
 {
 #ifndef NDEBUG
-  Assert(weight_func_ != nullptr, ExcNullPtr());
+  Assert(this->get_ptr_const_grid() == weight_func_->get_grid(),ExcMessage("Mismatching grids."));
 
-  Assert(*this->get_ptr_const_grid() == *weight_func_->get_grid(),ExcMessage("Mismatching grids."));
-
-  using WeightRefSpace = ReferenceSpace<dim_,1,1>;
-  auto w_func_as_ref_space = std::dynamic_pointer_cast<const WeightRefSpace>(weight_func_->get_ig_space());
-  Assert(w_func_as_ref_space != nullptr,
-         ExcMessage("The space for the weight function is not of type ReferenceSpace<" +
-                    std::to_string(WeightRefSpace::dim) + "," +
-                    std::to_string(WeightRefSpace::range) + "," +
-                    std::to_string(WeightRefSpace::rank) + ">."));
-
-
-  Assert(w_func_as_ref_space->is_bspline(),
+  const auto w_func_space = weight_func_->get_ig_space();
+  Assert(w_func_space->is_bspline(),
          ExcMessage("The space for the weight function is not BSplineSpace."));
 
   const auto &n_basis_table = this->get_ptr_const_dof_distribution()->get_num_dofs_table();
   int comp_id = 0;
   for (const auto &n_basis_comp : n_basis_table)
   {
-    Assert(n_basis_comp == w_func_as_ref_space->get_ptr_const_dof_distribution()->get_num_dofs_table()[0],
+    Assert(n_basis_comp == w_func_space->get_ptr_const_dof_distribution()->get_num_dofs_table()[0],
            ExcMessage("Mismatching number of basis functions and weight "
                       "coefficients for scalar component " + to_string(comp_id)));
 
@@ -127,8 +104,8 @@ NURBSSpace(const std::shared_ptr<const SpSpace> &bs_space,
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create_nonconst(const std::shared_ptr<SpSpace> &bs_space,
-                const WeightFunctionPtr &weight_func) -> shared_ptr<self_t>
+create(const std::shared_ptr<SpSpace> &bs_space,
+       const std::shared_ptr<WeightFunction> &weight_func) -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(new self_t(bs_space,weight_func));
   Assert(sp != nullptr, ExcNullPtr());
@@ -143,10 +120,10 @@ create_nonconst(const std::shared_ptr<SpSpace> &bs_space,
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(const std::shared_ptr<const SpSpace> &bs_space,
-       const WeightFunctionPtr &weight_func) -> shared_ptr<const self_t>
+const_create(const std::shared_ptr<const SpSpace> &bs_space,
+             const std::shared_ptr<const WeightFunction> &weight_func) -> shared_ptr<const self_t>
 {
-  auto sp = shared_ptr<self_t>(new self_t(bs_space,weight_func));
+  auto sp = shared_ptr<const self_t>(new self_t(bs_space,weight_func));
   Assert(sp != nullptr, ExcNullPtr());
 
   return sp;
@@ -199,9 +176,9 @@ create_ref_element(const ListIt &index, const PropId &property) const
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_weight_func() const -> const WeightFunctionPtr &
+get_weight_func() const -> std::shared_ptr<const WeightFunction>
 {
-  return weight_func_;
+  return weight_func_.get_ptr_const_data();
 }
 
 

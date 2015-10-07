@@ -36,7 +36,7 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
   :
   parent_t(space,index,prop),
   bspline_elem_(space->get_spline_space(),index,prop),
-  weight_elem_(space->weight_func_,index,prop)
+  weight_elem_(space->weight_func_->create_element(index,prop))
 {
 //    weight_elem_ =
 //        std::shared_ptr<WeightElem>(new WeightElem(space->weight_func_,index));
