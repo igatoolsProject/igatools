@@ -53,7 +53,7 @@ public:
 
   virtual ~FormulaGridFunction() = default;
 
-  std::shared_ptr<typename parent_t::ElementHandler>
+  std::unique_ptr<typename parent_t::ElementHandler>
   create_cache_handler() const;
 
 public:

@@ -33,10 +33,13 @@ template <int, int> class GridFunctionElement;
 template <int, int> class ConstGridFunctionElement;
 
 /**
+ *
+ * @ingroup handlers
  */
 template<int dim_, int space_dim_>
-class GridFunctionHandler :
-  public std::enable_shared_from_this<GridFunctionHandler<dim_,space_dim_> >
+class GridFunctionHandler
+//    :
+//  public std::enable_shared_from_this<GridFunctionHandler<dim_,space_dim_> >
 {
 private:
   using self_t = GridFunctionHandler<dim_, space_dim_>;
@@ -69,12 +72,7 @@ protected:
   using eval_pts_variant = SubElemPtrVariants<ConstQuad,dim_>;
 
 private:
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  GridFunctionHandler() = default;
+  GridFunctionHandler() = delete;
 
 public:
   GridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function);
@@ -82,6 +80,7 @@ public:
 
   virtual ~GridFunctionHandler();
 
+#if 0
   static std::shared_ptr<self_t>
   create(std::shared_ptr<GridFunctionType> grid_function)
   {
@@ -94,6 +93,7 @@ public:
   {
     return create(grid_function);
   }
+#endif
 
   std::shared_ptr<GridFunctionType> get_grid_function() const
   {
@@ -151,14 +151,14 @@ public:
   {
     return *grid_handler_;
   }
+
 protected:
-//  std::shared_ptr<typename ConstElementAccessor::CacheType>
   typename ConstElementAccessor::CacheType &
   get_element_cache(ConstElementAccessor &elem) const
   {
     return  elem.local_cache_;
   }
-
+//*/
 
 private:
   /**
@@ -222,11 +222,11 @@ private:
 private:
   std::shared_ptr<GridFunctionType> grid_function_;
 
-  std::shared_ptr<GridHandler> grid_handler_;
+  std::unique_ptr<GridHandler> grid_handler_;
 
   FlagsArray flags_;
 
-  friend ElementAccessor;
+//  friend ElementAccessor;
 };
 
 IGA_NAMESPACE_CLOSE

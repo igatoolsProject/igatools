@@ -31,7 +31,7 @@ IGA_NAMESPACE_OPEN
 
 
 /**
- *
+ * @ingroup handlers
  */
 template<int dim, int space_dim>
 class IgGridFunctionHandler :
@@ -67,14 +67,16 @@ private:
     template <int order>
     using _D = typename ConstElementAccessor::template _D<order>;
 
-    FillCacheDispatcher(const GridFunctionType &grid_function,
-                        const self_t &grid_function_handler,
-                        ConstElementAccessor &elem,
+    FillCacheDispatcher(const GridFunctionType &ig_grid_function,
+                        const self_t &ig_grid_function_handler,
+                        const GridHandler<dim> &grid_handler,
+                        ConstElementAccessor &ig_grid_function_elem,
                         const int s_id)
       :
-      grid_function_(grid_function),
-      grid_function_handler_(grid_function_handler),
-      elem_(elem),
+      ig_grid_function_(ig_grid_function),
+      ig_grid_function_handler_(ig_grid_function_handler),
+      grid_handler_(grid_handler),
+      ig_grid_function_elem_(ig_grid_function_elem),
       s_id_(s_id)
     {}
 
@@ -83,13 +85,14 @@ private:
     void operator()(const Topology<sdim> &sub_elem);
 
 
-    const GridFunctionType &grid_function_;
-    const self_t     &grid_function_handler_;
-    ConstElementAccessor &elem_;
+    const GridFunctionType &ig_grid_function_;
+    const self_t &ig_grid_function_handler_;
+    const GridHandler<dim> &grid_handler_;
+    ConstElementAccessor &ig_grid_function_elem_;
     const int s_id_;
   };
 
-  friend struct FillCacheDispatcher;
+//  friend struct FillCacheDispatcher;
 
   using IgSpaceHandler = SpaceElementHandler<dim,0,space_dim,1,Transformation::h_grad>;
   std::unique_ptr<IgSpaceHandler> ig_space_handler_;

@@ -34,7 +34,7 @@ IGA_NAMESPACE_OPEN
 /**
  * @brief Grid caches manager
  *
- * @ingroup serializable
+ * @ingroup handlers
  */
 template <int dim>
 class GridHandler
@@ -61,26 +61,20 @@ protected:
   using eval_pts_variant = SubElemPtrVariants<ConstQuad,dim>;
 
 public:
+#if 0
   /**
    * @name Creators.
    */
   ///@{
-  static std::shared_ptr<self_t> create(std::shared_ptr<GridType> grid);
+  static std::unique_ptr<self_t> create(std::shared_ptr<GridType> grid);
   ///@}
+#endif
 
   /**
    * @name Constructors
    */
   ///@{
 protected:
-#if 0
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism of the Function class.
-   */
-  GridHandler() = default;
-#endif
 
   GridHandler() = delete;
 
@@ -210,10 +204,9 @@ private:
   FlagsArray flags_;
 
 
-private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const Flags flag, self_t *grid_handler)
+    SetFlagsDispatcher(const Flags flag, self_t &grid_handler)
       :
       flag_(flag),
       grid_handler_(grid_handler)
@@ -222,17 +215,17 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &s_el)
     {
-      grid_handler_->template set_flags<sdim>(flag_);
+      grid_handler_.template set_flags<sdim>(flag_);
     }
 
     const Flags flag_;
-    self_t *grid_handler_;
+    self_t &grid_handler_;
   };
 
 
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
-    InitCacheDispatcher(self_t const *grid_handler,
+    InitCacheDispatcher(const self_t &grid_handler,
                         ElementAccessor &elem)
       :
       grid_handler_(grid_handler),
@@ -242,10 +235,10 @@ private:
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     {
-      grid_handler_->template init_cache<sdim>(elem_, quad);
+      grid_handler_.template init_cache<sdim>(elem_, quad);
     }
 
-    self_t const *grid_handler_;
+    const self_t &grid_handler_;
     ElementAccessor &elem_;
 
   };
@@ -255,7 +248,7 @@ private:
 
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
-    FillCacheDispatcher(self_t const *grid_handler,
+    FillCacheDispatcher(const self_t &grid_handler,
                         ElementAccessor &elem,
                         const int s_id)
       :
@@ -267,34 +260,17 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &)
     {
-      grid_handler_->template fill_cache<sdim>(elem_, s_id_);
+      grid_handler_.template fill_cache<sdim>(elem_, s_id_);
     }
 
-    self_t const *grid_handler_;
+    const self_t &grid_handler_;
     ElementAccessor &elem_;
     int s_id_;
 
   };
 
-private:
-
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version);
-  ///@}
-#endif // SERIALIZATION
-#endif
 };
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* GRID_ELEMENT_HANDLER_H_ */
+#endif /* GRID_HANDLER_H_ */

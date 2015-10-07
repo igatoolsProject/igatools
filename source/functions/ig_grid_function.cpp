@@ -28,9 +28,9 @@ IGA_NAMESPACE_OPEN
 template<int dim,int space_dim>
 auto
 IgGridFunction<dim,space_dim>::
-create_cache_handler() const -> std::shared_ptr<typename parent_t::ElementHandler>
+create_cache_handler() const -> std::unique_ptr<typename parent_t::ElementHandler>
 {
-  return std::make_shared<IgGridFunctionHandler<dim,space_dim>>(
+  return std::make_unique<IgGridFunctionHandler<dim,space_dim>>(
     std::dynamic_pointer_cast<const self_t>(this->shared_from_this()));
 }
 
@@ -57,16 +57,16 @@ void
 IgGridFunction<dim,space_dim>::
 print_info(LogStream &out) const
 {
-	using std::to_string;
-	out.begin_item("ReferenceSpace<" +
-			to_string(dim) + ",1," +
-			to_string(space_dim) + ">:");
-	ig_space_->print_info(out);
-	out.end_item();
+  using std::to_string;
+  out.begin_item("ReferenceSpace<" +
+                 to_string(dim) + ",1," +
+                 to_string(space_dim) + ">:");
+  ig_space_->print_info(out);
+  out.end_item();
 
-	out.begin_item("IgCoefficients:");
-	coeffs_.print_info(out);
-	out.end_item();
+  out.begin_item("IgCoefficients:");
+  coeffs_.print_info(out);
+  out.end_item();
 }
 
 

@@ -29,15 +29,15 @@ and usually have a big memory footprint. They are not intended to be used to per
   In addition to this, element classes of course have to provide values and gradients of 
   individual shape functions at points on the unit cell;
 
-   - the @subpage fillers i.e. the classes that performs heavy computations and fills the local <em>cache</em> of the elements
+   - the @subpage handlers i.e. the classes that performs heavy computations and fills the local <em>cache</em> of the elements
 
 
    For each class in a given module, there could be an associated class in each of the other two modules,
 as described by the following table:
 <center>
-Element Containers   | Elements              | Element Fillers
+Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
-CartesianGrid        | CartesianGridElement  | GridElementHandler
+Grid                 | GridElement           | GridHandler
 ReferenceSpace       | ReferenceElement      | ReferenceElementHandler
 BSplineSpace         | BSplineElement        | BSplineElementHandler 
 NURBSSpace           | NURBSElement          | NURBSElementHandler
@@ -94,7 +94,7 @@ there is an associated accessor, as shown in the following table:
 <center>
 Elements             | Element Containers    
 -------------------- | ----------------------
-CartesianGridElement | CartesianGrid  
+GridElement          | Grid  
 ReferenceElement     | ReferenceSpace      
 BSplineElement       | BSplineSpace         
 NURBSElement         | NURBSSpace          
@@ -111,12 +111,12 @@ element);
 /** @}*/ //end of group elements
 
 /**
-@defgroup fillers Element fillers 
+@defgroup handlers Element's cache fillers/handlers 
 @ingroup infrastructure
 @{
 */
 
-/** @}*/ //end of group fillers
+/** @}*/ //end of group handlers
 
 
 

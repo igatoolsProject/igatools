@@ -28,6 +28,7 @@ IGA_NAMESPACE_OPEN
 
 /**
  *
+ * @ingroup handlers
  */
 template<int dim, int space_dim>
 class FormulaGridFunctionHandler :
@@ -117,7 +118,7 @@ private:
     const int s_id_;
   };
 
-  friend struct FillCacheDispatcher;
+//  friend struct FillCacheDispatcher;
 };
 
 IGA_NAMESPACE_CLOSE

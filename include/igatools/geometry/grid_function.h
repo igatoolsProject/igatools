@@ -95,12 +95,12 @@ public:
   {
     return create(grid);
   }
-//*/
+  //*/
 
   std::shared_ptr<GridType> get_grid() const;
 
 public:
-  virtual std::shared_ptr<ElementHandler>
+  virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
 
   std::unique_ptr<ConstElementAccessor>

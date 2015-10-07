@@ -124,7 +124,7 @@ public:
   std::shared_ptr<GridFuncType> get_grid_function() const;
 
 public:
-  virtual std::shared_ptr<ElementHandler>
+  virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
 
   std::unique_ptr<ConstElementAccessor>

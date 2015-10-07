@@ -75,7 +75,7 @@ public:
 
   virtual ~IgGridFunction() = default;
 
-  std::shared_ptr<typename parent_t::ElementHandler>
+  std::unique_ptr<typename parent_t::ElementHandler>
   create_cache_handler() const;
 
   static std::shared_ptr<const parent_t>

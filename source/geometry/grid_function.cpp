@@ -53,9 +53,9 @@ template<int dim_, int space_dim_>
 auto
 GridFunction<dim_, space_dim_>::
 create_cache_handler() const
--> std::shared_ptr<ElementHandler>
+-> std::unique_ptr<ElementHandler>
 {
-  return std::make_shared<ElementHandler>(this->shared_from_this());
+  return std::make_unique<ElementHandler>(this->shared_from_this());
 }
 
 

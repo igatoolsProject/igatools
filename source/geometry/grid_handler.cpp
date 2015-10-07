@@ -34,18 +34,17 @@ GridHandler(shared_ptr<GridType> grid)
 {}
 
 
-
+#if 0
 template <int dim>
-std::shared_ptr<GridHandler<dim> >
+std::unique_ptr<GridHandler<dim> >
 GridHandler<dim>::
 create(std::shared_ptr<GridType> grid)
 {
-  using ElemHandler = GridHandler<dim>;
-  auto elem_handler = std::make_shared<ElemHandler>(grid);
+  auto elem_handler = std::unique_shared<self_t>(grid);
   Assert(elem_handler != nullptr,ExcNullPtr());
   return elem_handler;
 }
-
+#endif
 
 template <int dim>
 template<int sdim>
@@ -71,7 +70,7 @@ GridHandler<dim>::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
-  auto disp = SetFlagsDispatcher(flag, this);
+  auto disp = SetFlagsDispatcher(flag, *this);
   boost::apply_visitor(disp, sdim);
 }
 
@@ -112,7 +111,7 @@ GridHandler<dim>::
 init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
-  auto disp = InitCacheDispatcher(this, elem);
+  auto disp = InitCacheDispatcher(*this, elem);
   boost::apply_visitor(disp, quad);
 }
 
@@ -124,7 +123,7 @@ fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
            const int s_id) const
 {
-  auto disp = FillCacheDispatcher(this, elem, s_id);
+  auto disp = FillCacheDispatcher(*this, elem, s_id);
   boost::apply_visitor(disp, sdim);
 }
 
@@ -187,24 +186,6 @@ print_info(LogStream &out) const
 
 }
 
-#if 0
-#ifdef SERIALIZATION
-template <int dim>
-template<class Archive>
-void
-GridHandler<dim>::
-serialize(Archive &ar, const unsigned int version)
-{
-  using namespace boost::serialization;
-  auto non_const_grid = std::const_pointer_cast<Grid<dim>>(grid_);
-  ar &boost::serialization::make_nvp("grid_",non_const_grid);
-  grid_ = non_const_grid;
-  Assert(grid_ != nullptr,ExcNullPtr());
-
-  ar &make_nvp("flags_",flags_);
-}
-#endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 

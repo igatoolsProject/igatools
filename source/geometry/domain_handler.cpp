@@ -37,10 +37,6 @@ DomainHandler(std::shared_ptr<DomainType> domain)
 
 
 
-template<int dim_, int codim_>
-DomainHandler<dim_, codim_>::
-~DomainHandler()
-{}
 
 
 
@@ -81,7 +77,7 @@ init_cache(ConstElementAccessor &elem,
 {
   grid_func_handler_->init_cache(*(elem.grid_func_elem_), quad);
 
-  auto disp = InitCacheDispatcher(this, elem, flags_);
+  auto disp = InitCacheDispatcher(*this, elem, flags_);
   boost::apply_visitor(disp, quad);
 }
 

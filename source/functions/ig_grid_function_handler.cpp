@@ -91,11 +91,13 @@ fill_cache(const topology_variant &sdim,
     FillCacheDispatcher(
       *(std::dynamic_pointer_cast<const IgGridFunction<dim_,space_dim_>>(this->get_grid_function())),
       (*this),
-      elem,s_id);
+      this->get_grid_handler(),
+      elem,
+      s_id);
 
   boost::apply_visitor(fill_cache_dispatcher, sdim);
 
-  this->get_grid_handler().fill_cache(sdim, elem.get_grid_element(), s_id);
+//  this->get_grid_handler().fill_cache(sdim, elem.get_grid_element(), s_id);
 }
 
 
@@ -106,32 +108,23 @@ IgGridFunctionHandler<dim_, space_dim_>::
 FillCacheDispatcher::
 operator()(const Topology<sdim> &sub_elem)
 {
-  auto &local_cache = grid_function_handler_.get_element_cache(elem_);
+  auto &grid_elem = ig_grid_function_elem_.get_grid_element();
+  this->grid_handler_.template fill_cache<sdim>(grid_elem,s_id_);
+
+
+
+  auto &local_cache = ig_grid_function_handler_.get_element_cache(ig_grid_function_elem_);
   auto &cache = local_cache.template get_sub_elem_cache<sdim>(s_id_);
 
   if (!cache.fill_none())
   {
-    const auto &grid_elem = elem_.get_grid_element();
     const auto &grid_elem_id = grid_elem.get_index();
 
-    auto ig_space = grid_function_.get_ig_space();
-//    auto ig_space_handler = ig_space->create_cache_handler();
-    auto &ig_space_handler = *grid_function_handler_.ig_space_handler_;
+    const auto ig_space = ig_grid_function_.get_ig_space();
+    const auto &ig_space_handler = *ig_grid_function_handler_.ig_space_handler_;
     auto ig_space_elem = ig_space->begin();
     ig_space_elem->move_to(grid_elem_id);
 
-    /*
-    using Flags = space_element::Flags;
-    Flags ig_space_elem_flags = Flags::none;
-    if (cache.template status_fill<_D<0>>())
-      ig_space_elem_flags |= Flags::value;
-    if (cache.template status_fill<_D<1>>())
-      ig_space_elem_flags |= Flags::gradient;
-    if (cache.template status_fill<_D<2>>())
-      ig_space_elem_flags |= Flags::hessian;
-
-    ig_space_handler.set_flags_impl(sub_elem,ig_space_elem_flags);
-    //*/
     ig_space_handler.template init_cache<sdim>(*ig_space_elem,grid_elem.template get_quad<sdim>());
     ig_space_handler.template fill_cache<sdim>(*ig_space_elem,s_id_);
 
@@ -139,7 +132,7 @@ operator()(const Topology<sdim> &sub_elem)
     const auto &dofs_property = DofProperties::active;
 
     const auto &ig_space_elem_global_dofs = ig_space_elem->get_local_to_global(dofs_property);
-    const auto &ig_func_coeffs = grid_function_.get_coefficients();
+    const auto &ig_func_coeffs = ig_grid_function_.get_coefficients();
     SafeSTLVector<Real> ig_func_elem_coeffs; // coefficients of the IgGridFunction restricted to the element
     for (const auto &global_dof : ig_space_elem_global_dofs)
       ig_func_elem_coeffs.emplace_back(ig_func_coeffs[global_dof]);
@@ -164,6 +157,9 @@ operator()(const Topology<sdim> &sub_elem)
       auto &D2F = cache.template get_data<_D<2>>();
       D2F.fill(ig_space_elem->template linear_combination<_Hessian,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
     }
+
+//    Assert(cache.template status_fill<_D<3>>(),ExcNotImplemented());
+
   }
 
   cache.set_filled(true);

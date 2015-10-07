@@ -44,7 +44,7 @@ template <int, int> class ConstDomainElement;
  *
  * @todo we should thing about renaming mapping to physical domain
  *
- * @ingroup containers
+ * @ingroup handlers
  *
  * @author pauletti 2014, 2015
  * @author M. Martinelli, 2015
@@ -108,15 +108,6 @@ protected:
   using eval_pts_variant = SubElemPtrVariants<ConstQuad,dim_>;
 
 private:
-#if 0
-  /**
-   *
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  DomainHandler() = default;
-#endif
 
   DomainHandler() = delete;
 
@@ -124,8 +115,9 @@ public:
   DomainHandler(std::shared_ptr<DomainType> domain);
 
 
-  ~DomainHandler();
+  ~DomainHandler() = default;
 
+#if 0
   static std::shared_ptr<self_t>
   create(std::shared_ptr<DomainType> domain)
   {
@@ -138,6 +130,7 @@ public:
   {
     return create(domain);
   }
+#endif
 
   std::shared_ptr<DomainType> get_domain() const
   {
@@ -146,9 +139,8 @@ public:
 
 
 public:
-//Is this really virtual?
-  virtual void set_flags(const topology_variant &sdim,
-                         const Flags &flag);
+  void set_flags(const topology_variant &sdim,
+                 const Flags &flag);
 
   template <int sdim>
   void set_flags(const Flags &flag)
@@ -156,8 +148,8 @@ public:
     this->set_flags(Topology<sdim>(), flag);
   }
 
-  virtual void init_cache(ConstElementAccessor &elem,
-                          const eval_pts_variant &quad) const;
+  void init_cache(ConstElementAccessor &elem,
+                  const eval_pts_variant &quad) const;
 
   void init_cache(ElementConstIterator &elem,
                   const eval_pts_variant &quad) const
@@ -165,9 +157,9 @@ public:
     this->init_cache(*elem, quad);
   }
 
-  virtual void fill_cache(const topology_variant &sdim,
-                          ConstElementAccessor &elem,
-                          const int s_id) const;
+  void fill_cache(const topology_variant &sdim,
+                  ConstElementAccessor &elem,
+                  const int s_id) const;
 
   template <int sdim>
   void fill_cache(ConstElementAccessor &elem,
@@ -206,19 +198,19 @@ private:
    */
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const CacheFlags flag, FlagsArray &flags)
+    SetFlagsDispatcher(const CacheFlags cache_flag, FlagsArray &flags)
       :
-      flag_(flag),
+      cache_flag_(cache_flag),
       flags_(flags)
     {}
 
     template<int sdim>
     void operator()(const Topology<sdim> &)
     {
-      flags_[sdim] |= flag_;
+      flags_[sdim] |= cache_flag_;
     }
 
-    const CacheFlags flag_;
+    const CacheFlags cache_flag_;
     FlagsArray &flags_;
   };
 
@@ -226,7 +218,7 @@ private:
 
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
-    InitCacheDispatcher(self_t const *domain_handler,
+    InitCacheDispatcher(const self_t &domain_handler,
                         ConstElementAccessor &elem,
                         const FlagsArray &flags)
       :
@@ -239,7 +231,7 @@ private:
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     {
-      auto &cache = domain_handler_->get_element_cache(elem_);
+      auto &cache = domain_handler_.get_element_cache(elem_);
 
       const auto n_points = elem_.get_grid_function_element().get_grid_element().template get_quad<sdim>()
                             ->get_num_points();
@@ -250,7 +242,7 @@ private:
       }
     }
 
-    self_t const *domain_handler_;
+    const self_t &domain_handler_;
     ConstElementAccessor &elem_;
     const FlagsArray &flags_;
   };
@@ -409,21 +401,15 @@ private:
     const int s_id_;
   };
 
-protected:
-  std::shared_ptr<const GridFuncHandler>
-  get_grid_handler() const
-  {
-    return grid_func_handler_;
-  }
 
 private:
   std::shared_ptr<DomainType> domain_;
 
-  std::shared_ptr<GridFuncHandler> grid_func_handler_;
+  std::unique_ptr<GridFuncHandler> grid_func_handler_;
 
   FlagsArray flags_;
 
-  friend ElementAccessor;
+//  friend ElementAccessor;
 };
 
 IGA_NAMESPACE_CLOSE
