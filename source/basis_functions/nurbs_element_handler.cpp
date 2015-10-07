@@ -33,11 +33,10 @@ NURBSElementHandler(shared_ptr<const Space> space)
   :
   base_t(space)
 {
-  const auto bsp_space = space->get_spline_space();
-  bspline_handler_ = BSplineElementHandler<dim_,range_,rank_>::create(bsp_space);
+  bspline_handler_ = std::make_unique<BSplineElementHandler<dim_,range_,rank_>>(space->get_spline_space());
 }
 
-
+#if 0
 template<int dim_, int range_ , int rank_>
 auto
 NURBSElementHandler<dim_, range_, rank_>::
@@ -45,7 +44,7 @@ create(std::shared_ptr<const Space> space) -> std::unique_ptr<base_t>
 {
   return std::unique_ptr<self_t>(new self_t(space));
 }
-
+#endif
 
 #if 0
 template<int dim_, int range_ , int rank_>

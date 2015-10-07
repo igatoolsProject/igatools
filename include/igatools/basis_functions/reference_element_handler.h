@@ -34,6 +34,7 @@ IGA_NAMESPACE_OPEN
 
 /**
  *
+ * @ingroup handlers
  */
 template<int dim, int range = 1, int rank = 1>
 class ReferenceElementHandler
@@ -53,8 +54,10 @@ public:
 
   using Flags = space_element::Flags;
 
+#if 0
   static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
   create(const std::shared_ptr<const Space> &space);
+#endif
 
 protected:
   /** @name Constructors */
@@ -131,23 +134,6 @@ public:
 //    const GridHandler<dim> &get_grid_handler() const;
 
 
-private:
-
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version);
-  ///@}
-#endif // SERIALIZATION
-#endif
 };
 
 

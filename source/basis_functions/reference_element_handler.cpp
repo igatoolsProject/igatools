@@ -40,6 +40,7 @@ ReferenceElementHandler(const shared_ptr<const Space> &space)
 {};
 
 
+#if 0
 template<int dim, int range , int rank>
 shared_ptr<ReferenceElementHandler<dim,range,rank> >
 ReferenceElementHandler<dim, range, rank>::
@@ -66,6 +67,7 @@ create(const shared_ptr<const Space> &space)
 
   return elem_handler;
 }
+#endif
 
 #if 0
 template<int dim, int range , int rank>
@@ -113,26 +115,6 @@ reset_one_element(
 }
 #endif
 
-#if 0
-#ifdef SERIALIZATION
-template<int dim, int range , int rank>
-template<class Archive>
-void
-ReferenceElementHandler<dim, range, rank>::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("ReferenceHandler_base_t",
-                                     boost::serialization::base_object<base_t>(*this));
-
-  ar &boost::serialization::make_nvp("grid_handler_",grid_handler_);
-
-//    auto non_const_space = std::const_pointer_cast<Space>(space_);
-//    ar &boost::serialization::make_nvp("space_", non_const_space);
-//    space_ = non_const_space;
-//    Assert(space_ != nullptr,ExcNullPtr());
-}
-#endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 

@@ -35,10 +35,8 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * Global BSplineSpace uniform quadrature
- * computational optimization cache, storing the interval length
- * in each direction
  *
+ * @ingroup handlers
  */
 template<int dim_, int range_, int rank_>
 class BSplineElementHandler
@@ -75,7 +73,7 @@ protected:
   using RefElementAccessor = typename BaseSpace::ElementAccessor;
 
 
-private:
+public:
   /**
    * Assignment operators.
    */
@@ -96,12 +94,7 @@ private:
    */
   ///@{
 
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  BSplineElementHandler() = default;
+  BSplineElementHandler() = delete;
 
   BSplineElementHandler(std::shared_ptr<const Space> space);
 
@@ -124,7 +117,7 @@ public:
    */
   virtual ~BSplineElementHandler() = default;
 
-  static std::unique_ptr<self_t> create(std::shared_ptr<const Space> space);
+//  static std::unique_ptr<self_t> create(std::shared_ptr<const Space> space);
 
   using topology_variant = typename base_t::topology_variant;
   using eval_pts_variant = typename base_t::eval_pts_variant;
@@ -371,9 +364,6 @@ private:
    * Returns the BSplineSpace used to define the BSplineElementHandler object.
    */
   std::shared_ptr<const Space> get_bspline_space() const;
-
-
-
 };
 
 IGA_NAMESPACE_CLOSE

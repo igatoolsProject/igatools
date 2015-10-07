@@ -86,15 +86,13 @@ public:
 
 
 
-private:
+public:
   /** @name Constructors.*/
   ///@{
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. Not allowed to be used.
    */
-  NURBSElementHandler() = default;
+  NURBSElementHandler() = delete;
 
   NURBSElementHandler(std::shared_ptr<const Space> space);
 
@@ -124,14 +122,14 @@ private:
   self_t &operator=(self_t &&) = delete;
   ///@}
 
-public:
   /**
    * Destructor.
    */
   virtual ~NURBSElementHandler() = default;
 
-
+#if 0
   static std::unique_ptr<base_t> create(std::shared_ptr<const Space> space);
+#endif
 
   using topology_variant = typename base_t::topology_variant;
   using eval_pts_variant = typename base_t::eval_pts_variant;
@@ -156,7 +154,7 @@ private:
                                    const topology_variant &topology, const int j) override final;
 #endif
 
-  std::shared_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
+  std::unique_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
 
   SafeSTLArray<ValueFlags, dim+1> flags_;
 

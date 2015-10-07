@@ -167,6 +167,7 @@ BSplineElementHandler(shared_ptr<const Space> space)
 {}
 
 
+#if 0
 template<int dim_, int range_ , int rank_>
 auto
 BSplineElementHandler<dim_, range_, rank_>::
@@ -176,7 +177,7 @@ create(std::shared_ptr<const Space> space) -> std::unique_ptr<self_t>
   Assert(handler != nullptr, ExcNullPtr());
   return handler;
 }
-
+#endif
 
 
 template<int dim_, int range_ , int rank_>

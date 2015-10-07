@@ -33,6 +33,7 @@ IGA_NAMESPACE_OPEN
 
 /**
  *
+ * @ingroup handlers
  */
 template <int dim,int codim,int range,int rank,Transformation type>
 class SpaceElementHandler
@@ -58,11 +59,9 @@ protected:
   /** @name Constructors */
   ///@{
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. Not allowed to be used
    */
-  SpaceElementHandler() = default;
+  SpaceElementHandler() = delete;
 
 
   SpaceElementHandler(std::shared_ptr<const Sp> space);
