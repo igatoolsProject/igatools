@@ -24,6 +24,25 @@
 
 IGA_NAMESPACE_OPEN
 
+template<int dim,int space_dim>
+IgGridFunction<dim,space_dim>::
+IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
+               const IgCoefficients &coeffs)
+  :
+  parent_t(space->get_ptr_const_grid()),
+  ig_space_(space)
+{
+#ifndef NDEBUG
+  const auto &dof_distribution = *(ig_space_->get_ptr_const_dof_distribution());
+  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(DofProperties::active);
+
+  for (const auto glob_dof : active_dofs)
+    coeffs_[glob_dof] = coeffs.at(glob_dof);
+#else
+  coeffs_ = coeff;
+#endif
+}
+
 
 template<int dim,int space_dim>
 auto
@@ -35,13 +54,32 @@ create_cache_handler() const -> std::unique_ptr<typename parent_t::ElementHandle
 }
 
 
+template<int dim,int space_dim>
+auto
+IgGridFunction<dim,space_dim>::
+const_create(const std::shared_ptr<const IgSpace> &space,
+             const IgCoefficients &coeffs) -> std::shared_ptr<const parent_t>
+{
+  return std::shared_ptr<const parent_t>(new IgGridFunction(space,coeffs));
+}
 
 template<int dim,int space_dim>
 auto
 IgGridFunction<dim,space_dim>::
-get_ig_space() const -> std::shared_ptr<IgSpace>
+create(const std::shared_ptr<IgSpace> &space,
+       const IgCoefficients &coeffs) -> std::shared_ptr<parent_t>
 {
-  return ig_space_;
+  return std::shared_ptr<parent_t>(new IgGridFunction(space,coeffs));
+}
+
+
+
+template<int dim,int space_dim>
+auto
+IgGridFunction<dim,space_dim>::
+get_ig_space() const -> std::shared_ptr<const IgSpace>
+{
+  return ig_space_.get_ptr_const_data();
 }
 
 template<int dim,int space_dim>

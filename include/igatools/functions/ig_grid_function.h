@@ -46,7 +46,7 @@ protected:
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
-  using IgSpace = const ReferenceSpace<dim,space_dim,1>;
+  using IgSpace = ReferenceSpace<dim,space_dim,1>;
 
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
@@ -58,37 +58,24 @@ public:
   IgGridFunction() = default;
 
 
-  IgGridFunction(const std::shared_ptr<IgSpace> &space,
-                 const IgCoefficients &coeffs)
-    :
-    parent_t(space->get_ptr_const_grid()),
-    ig_space_(space)
-  {
-    Assert(ig_space_ != nullptr,ExcNullPtr());
-
-#ifndef NDEBUG
-    const auto &dof_distribution = *(ig_space_->get_ptr_const_dof_distribution());
-    const auto &active_dofs = dof_distribution.get_dofs_id_same_property(DofProperties::active);
-
-    for (const auto glob_dof : active_dofs)
-      coeffs_[glob_dof] = coeffs.at(glob_dof);
-#else
-    coeffs_ = coeff;
-#endif
-  }
-
-
   virtual ~IgGridFunction() = default;
 
+protected:
+  IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
+                 const IgCoefficients &coeffs);
+
+
+public:
   std::unique_ptr<typename parent_t::ElementHandler>
   create_cache_handler() const;
 
   static std::shared_ptr<const parent_t>
-  const_create(const std::shared_ptr<IgSpace> &space,
-               const IgCoefficients &coeffs)
-  {
-    return std::shared_ptr<const parent_t>(new IgGridFunction(space,coeffs));
-  }
+  const_create(const std::shared_ptr<const IgSpace> &space,
+               const IgCoefficients &coeffs);
+
+  static std::shared_ptr<parent_t>
+  create(const std::shared_ptr<IgSpace> &space,
+         const IgCoefficients &coeffs);
 
 
   virtual void print_info(LogStream &out) const override final;
@@ -96,12 +83,12 @@ public:
 
 
 private:
-  std::shared_ptr<IgSpace> ig_space_;
+  SharedPtrConstnessHandler<IgSpace> ig_space_;
 
   IgCoefficients coeffs_;
 
 public:
-  std::shared_ptr<IgSpace> get_ig_space() const;
+  std::shared_ptr<const IgSpace> get_ig_space() const;
 
   const IgCoefficients &get_coefficients() const;
 
@@ -133,6 +120,14 @@ private:
 };
 
 IGA_NAMESPACE_CLOSE
+
+
+#ifdef SERIALIZATION
+
+#include <igatools/functions/ig_grid_function.serial>
+
+#endif // SERIALIZATION
+
 
 #endif // __IG_GRID_FUNCTION_H
 

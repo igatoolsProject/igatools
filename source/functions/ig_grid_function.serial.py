@@ -25,38 +25,34 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = []
-
 classes = []
 
-templated_functions = []
 
-for x in inst.sub_mapping_dims:
+for x in inst.mapping_dims + inst.sub_mapping_dims:
     cl = 'IgGridFunction<%d,%d>' %(x.dim,x.space_dim)
     classes.append(cl)
-#    for fun in sub_dim_members:
-#        k = x.dim
-#        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-#        templated_functions.append(s)
-
-for x in inst.mapping_dims:
-    cl = 'IgGridFunction<%d,%d>' %(x.dim,x.space_dim)
-    classes.append(cl)
-#    for fun in sub_dim_members:
-#        for k in inst.sub_dims(x.dim):
-#            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-#            templated_functions.append(s)
-
     #the next classes are needed by NURBS
     cl = 'IgGridFunction<%d,1>' %(x.dim)
     classes.append(cl)
 
  
 
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
 
+
+f.write('#ifdef SERIALIZATION\n')
+
+id = 0 
 for cl in unique(classes):
-    f.write('template class %s ;\n' %(cl))
+    alias = 'IgGridFunctionAlias%d' %(id)
+    f.write('using %s = iga::%s;\n' % (alias, cl));
+    f.write('CEREAL_REGISTER_TYPE(%s);\n' %alias);
+    id += 1 
 
 
-for func in unique(templated_functions):
-    f.write('template ' + func + '\n')
+f.write('#endif // SERIALIZATION\n')
+
+#   
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

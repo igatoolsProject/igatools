@@ -123,7 +123,7 @@ void do_test()
   for (int dof = 0 ; dof < n_scalar_basis ; ++dof)
     weights[dof] = 1.0;
 
-  auto w_func = std::make_shared<WeightFunc>(scalar_space,weights);
+  auto w_func = WeightFunc::create(scalar_space,weights);
 
   auto nurbs_space = Space::create(bsp, w_func);
 //    nurbs_space->print_info(out);

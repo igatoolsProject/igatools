@@ -155,7 +155,7 @@ public:
 
 
   using WeightSpace = BSplineSpace<dim_,1,1>;
-  using WeightFunction = IgGridFunction<dim_,1>;
+  using WeightFunction = GridFunction<dim_,1>;
   using WeightFunctionPtr = std::shared_ptr<WeightFunction>;
   using Weights = DynamicMultiArray<Real,dim>;
   using WeightsTable = ComponentContainer<Weights>;
@@ -204,16 +204,10 @@ protected:
   NURBSSpace() = default;
 
   /**
-   * Construct a NURBSSpace from a (non-const) BSplineSpace and a (non-const) scalar weight function.
+   * Construct a NURBSSpace from a BSplineSpace and a scalar weight function.
    */
-  explicit NURBSSpace(const std::shared_ptr<BSpSpace> &bs_space,
-                      const std::shared_ptr<WeightFunction> &weight_func);
-
-  /**
-   * Construct a NURBSSpace from a (const) BSplineSpace and a (const) scalar weight function.
-   */
-  explicit NURBSSpace(const std::shared_ptr<const BSpSpace> &bs_space,
-                      const std::shared_ptr<const WeightFunction> &weight_func);
+  explicit NURBSSpace(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
+                      const SharedPtrConstnessHandler<WeightFunction> &weight_func);
 
   /**
    * Copy constructor. Not allowed to be used.

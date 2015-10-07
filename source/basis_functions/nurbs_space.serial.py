@@ -18,45 +18,52 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+
+
 from init_instantiation_data import *
 
 include_files = []
-
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = []
 
-classes = []
-
-templated_functions = []
-
-for x in inst.sub_mapping_dims:
-    cl = 'IgGridFunction<%d,%d>' %(x.dim,x.space_dim)
-    classes.append(cl)
-#    for fun in sub_dim_members:
-#        k = x.dim
-#        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-#        templated_functions.append(s)
-
-for x in inst.mapping_dims:
-    cl = 'IgGridFunction<%d,%d>' %(x.dim,x.space_dim)
-    classes.append(cl)
-#    for fun in sub_dim_members:
-#        for k in inst.sub_dims(x.dim):
-#            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-#            templated_functions.append(s)
-
-    #the next classes are needed by NURBS
-    cl = 'IgGridFunction<%d,1>' %(x.dim)
-    classes.append(cl)
-
- 
+spaces = []
 
 
-for cl in unique(classes):
-    f.write('template class %s ;\n' %(cl))
+dim = 0
+range = 0
+rank = 1
+space = 'NURBSSpace<%d,%d,%d>' %(dim,range,rank)
+spaces.append(space)
 
 
-for func in unique(templated_functions):
-    f.write('template ' + func + '\n')
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
+    space = 'NURBSSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    spaces.append(space)
+
+
+         
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+
+f.write('#ifdef SERIALIZATION\n')
+#archives = ['OArchive','IArchive']
+
+
+#f.write('using VecBernstOp = iga::SafeSTLVector<iga::BernsteinOperator>;\n');
+#f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(VecBernstOp,cereal::specialization::member_serialize);\n');
+
+id = 0 
+for space in unique(spaces):
+    sp_alias = 'NURBSSpaceAlias%d' %(id)
+    f.write('using %s = iga::%s;\n' % (sp_alias, space));
+    f.write('CEREAL_REGISTER_TYPE(%s);\n' %sp_alias);
+    id += 1 
+
+
+f.write('#endif // SERIALIZATION\n')
+
+#   
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

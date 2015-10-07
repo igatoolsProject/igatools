@@ -78,8 +78,7 @@ public:
 
   /**
    * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * serialization mechanism.
    */
   SharedPtrConstnessHandler() = default;
 
@@ -89,7 +88,8 @@ public:
    * @note In DEBUG mode is performed a check about the nullity of the input data:
    * an assertion will be raised if the input data is a nullptr.
    */
-  SharedPtrConstnessHandler(const Ptr &data)
+  template <class U>
+  SharedPtrConstnessHandler(const std::shared_ptr<U> &data)
     :
     data_is_const_(false)
   {
@@ -100,7 +100,8 @@ public:
   /**
    * Constructs the object using a shared pointer to const data.
    */
-  SharedPtrConstnessHandler(const PtrToConst &data)
+  template <class U>
+  SharedPtrConstnessHandler(const std::shared_ptr<const U> &data)
     :
     data_is_const_(true)
   {

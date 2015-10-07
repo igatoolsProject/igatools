@@ -42,17 +42,21 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(const std::shared_ptr<BSpSpace> &bs_space,
-           const std::shared_ptr<WeightFunction> &weight_func)
+NURBSSpace(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
+           const SharedPtrConstnessHandler<WeightFunction> &weight_func)
   :
-  BaseSpace(bs_space->get_ptr_grid()),
-  bsp_space_(bs_space),
+  BaseSpace(bsp_space->get_ptr_const_grid()),
+  bsp_space_(bsp_space),
   weight_func_(weight_func)
 {
 #ifndef NDEBUG
   Assert(this->get_ptr_const_grid() == weight_func_->get_grid(),ExcMessage("Mismatching grids."));
 
-  const auto w_func_space = weight_func_->get_ig_space();
+  const auto w_as_ig_func =
+    std::dynamic_pointer_cast<const IgGridFunction<dim,1>>(weight_func_.get_ptr_const_data());
+  Assert(w_as_ig_func != nullptr,ExcNullPtr());
+
+  const auto w_func_space = w_as_ig_func->get_ig_space();
   Assert(w_func_space->is_bspline(),
          ExcMessage("The space for the weight function is not BSplineSpace."));
 
@@ -70,36 +74,6 @@ NURBSSpace(const std::shared_ptr<BSpSpace> &bs_space,
 }
 
 
-
-template <int dim_, int range_, int rank_>
-NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(const std::shared_ptr<const BSpSpace> &bs_space,
-           const std::shared_ptr<const WeightFunction> &weight_func)
-  :
-  BaseSpace(bs_space->get_ptr_const_grid()),
-  bsp_space_(bs_space),
-  weight_func_(weight_func)
-{
-#ifndef NDEBUG
-  Assert(this->get_ptr_const_grid() == weight_func_->get_grid(),ExcMessage("Mismatching grids."));
-
-  const auto w_func_space = weight_func_->get_ig_space();
-  Assert(w_func_space->is_bspline(),
-         ExcMessage("The space for the weight function is not BSplineSpace."));
-
-  const auto &n_basis_table = this->get_ptr_const_dof_distribution()->get_num_dofs_table();
-  int comp_id = 0;
-  for (const auto &n_basis_comp : n_basis_table)
-  {
-    Assert(n_basis_comp == w_func_space->get_ptr_const_dof_distribution()->get_num_dofs_table()[0],
-           ExcMessage("Mismatching number of basis functions and weight "
-                      "coefficients for scalar component " + to_string(comp_id)));
-
-    ++comp_id;
-  }
-#endif
-
-}
 
 template <int dim_, int range_, int rank_>
 auto
@@ -503,18 +477,6 @@ print_info(LogStream &out) const
   out.begin_item("Weight function :");
   weight_func_->print_info(out);
   out.end_item();
-  /*
-      int comp_id = 0;
-      for (const auto &w_func :weight_func_table_)
-      {
-
-          out.begin_item("Weight function[" + to_string(comp_id) +"] :");
-          w_func->print_info(out);
-          out.end_item();
-
-          ++comp_id;
-      }
-      //*/
 }
 
 
