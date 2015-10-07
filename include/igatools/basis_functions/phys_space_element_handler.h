@@ -271,9 +271,8 @@ private:
 
 
 
-  virtual void set_flags_impl(
-    const typename space_element::Flags &flag,
-    const topology_variant &topology) override final
+  virtual void set_flags_impl(const topology_variant &topology,
+                              const typename space_element::Flags &flag) override final
   {
     auto set_flag_dispatcher = SetFlagDispatcher(
                                  flag,

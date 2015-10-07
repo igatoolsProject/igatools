@@ -138,7 +138,8 @@ public:
 
 private:
 
-  virtual void set_flags_impl(const typename space_element::Flags &flag, const topology_variant &topology) override final
+  virtual void set_flags_impl(const topology_variant &topology,
+                              const typename space_element::Flags &flag) override final
   {
     auto elem_flags = flag;
     if (contains(flag,space_element::Flags::divergence))
@@ -178,10 +179,10 @@ private:
                                const eval_pts_variant &quad) const override final
   {
     auto init_cache_dispatcher =
-    		InitCacheDispatcher(
-    				this->grid_handler_,
-					this->flags_,
-					dynamic_cast<BSplineElem &>(elem));
+      InitCacheDispatcher(
+        this->grid_handler_,
+        this->flags_,
+        dynamic_cast<BSplineElem &>(elem));
     boost::apply_visitor(init_cache_dispatcher,quad);
   }
 
@@ -189,7 +190,7 @@ private:
   {
     InitCacheDispatcher(const GridHandler<dim_> &grid_handler,
                         const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
-						BSplineElem &elem)
+                        BSplineElem &elem)
       :
       grid_handler_(grid_handler),
       flags_(flags),
@@ -217,10 +218,10 @@ private:
                                const int s_id) const override final
   {
     auto fill_cache_dispatcher =
-    		FillCacheDispatcherNoGlobalCache(
-    				s_id,
-					this->grid_handler_,
-					dynamic_cast<BSplineElem &>(elem));
+      FillCacheDispatcherNoGlobalCache(
+        s_id,
+        this->grid_handler_,
+        dynamic_cast<BSplineElem &>(elem));
     boost::apply_visitor(fill_cache_dispatcher,topology);
   }
 

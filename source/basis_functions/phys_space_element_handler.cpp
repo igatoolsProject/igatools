@@ -32,6 +32,7 @@ IGA_NAMESPACE_OPEN
 
 namespace
 {
+#if 0
 auto
 pushforward_to_mapping_flag(
   const Transformation type,
@@ -121,82 +122,7 @@ pushforward_to_mapping_flag(
 
   return map_flag;
 }
-
-/*
-auto
-space_to_ref_flag(const Transformation type, const ValueFlags flags)
--> ValueFlags
-{
-  ValueFlags ref_flag = ValueFlags::none;
-
-  bool fill_values = false;
-  bool fill_gradients = false;
-  bool fill_hessians = false;
-
-  if (contains(flags , ValueFlags::value))
-    fill_values = true;
-  if (contains(flags , ValueFlags::gradient))
-    fill_gradients = true;
-  if (contains(flags , ValueFlags::hessian))
-    fill_hessians = true;
-
-  bool fill_D0_phi_hat = false;
-  bool fill_D1_phi_hat = false;
-  bool fill_D2_phi_hat = false;
-
-  if (type == Transformation::h_grad)
-  {
-    fill_D0_phi_hat = fill_values;
-    fill_D1_phi_hat = fill_gradients || fill_hessians;
-    fill_D2_phi_hat = fill_hessians;
-  }
-  else if (type == Transformation::h_div  ||
-  type == Transformation::h_curl ||
-  type == Transformation::l_2)
-  {
-    fill_D0_phi_hat = fill_values || fill_gradients || fill_hessians;
-    fill_D1_phi_hat = fill_gradients || fill_hessians;
-    fill_D2_phi_hat = fill_hessians;
-  }
-
-  if (fill_D0_phi_hat)
-    ref_flag |= ValueFlags::value;
-  if (fill_D1_phi_hat)
-    ref_flag |= ValueFlags::gradient;
-  if (fill_D2_phi_hat)
-    ref_flag |= ValueFlags::hessian;
-
-  return ref_flag;
-}
-//*/
-
-/*
-void
-space_to_pf_flag(const ValueFlags flags, ValueFlags &map_flags, TransformationFlags &transf_flags)
-{
-  ValueFlags transfer_flag =
-    ValueFlags::measure |
-    ValueFlags::w_measure |
-    ValueFlags::outer_normal |
-    ValueFlags::boundary_normal |
-    ValueFlags::point;
-
-  map_flags = ValueFlags::none;
-  map_flags = flags & transfer_flag;
-
-
-
-  transf_flags = TransformationFlags::tran_none;
-  if (contains(flags , ValueFlags::value))
-    transf_flags |= TransformationFlags::tran_value;
-
-  if (contains(flags , ValueFlags::gradient))
-    transf_flags |= TransformationFlags::tran_gradient;
-
-  if (contains(flags , ValueFlags::hessian))
-    transf_flags |= TransformationFlags::tran_hessian;
-}
-//*/
+#endif
 
 };
 

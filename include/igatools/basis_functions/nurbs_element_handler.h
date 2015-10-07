@@ -294,6 +294,30 @@ private:
 
 
 
+private:
+
+  using BaseElem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
+
+  virtual void set_flags_impl(const topology_variant &topology,
+                              const typename space_element::Flags &flag) override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  virtual void init_cache_impl(BaseElem &elem,
+                               const eval_pts_variant &quad) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  virtual void fill_cache_impl(BaseElem &elem,
+                               const topology_variant &topology,
+                               const int s_id) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+
 };
 
 

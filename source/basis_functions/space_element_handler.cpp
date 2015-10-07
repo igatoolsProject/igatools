@@ -151,22 +151,6 @@ fill_face_cache(ElementIterator &elem, const int face_id)
 }
 #endif
 
-#if 0
-#ifdef SERIALIZATION
-template<int dim,int codim,int range,int rank,Transformation type>
-template<class Archive>
-void
-SpaceElementHandler<dim,codim,range,rank,type>::
-serialize(Archive &ar, const unsigned int version)
-{
-  auto non_const_space = std::const_pointer_cast<Sp>(space_);
-  ar &boost::serialization::make_nvp("space_", non_const_space);
-  space_ = non_const_space;
-  Assert(space_ != nullptr,ExcNullPtr());
-}
-#endif // SERIALIZATION
-#endif
-
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/space_element_handler.inst>

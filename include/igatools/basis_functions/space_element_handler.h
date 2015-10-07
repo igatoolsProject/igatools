@@ -86,10 +86,14 @@ public:
 
   ///@}
 
+
+  virtual void set_flags_impl(const topology_variant &topology,
+                              const typename space_element::Flags &flag) = 0;
+
   template<int sdim>
   void set_flags(const typename space_element::Flags &flag)
   {
-    this->set_flags_impl(flag,Topology<sdim>());
+    this->set_flags_impl(Topology<sdim>(),flag);
   }
 
 
@@ -243,40 +247,13 @@ private:
   std::shared_ptr<const Sp> space_;
 
 
-  virtual void set_flags_impl(const typename space_element::Flags &flag, const topology_variant &topology)
-  {
-    Assert(false,ExcNotImplemented());
-  }
 
   virtual void init_cache_impl(ElementAccessor &elem,
-                               const eval_pts_variant &quad) const
-  {
-    Assert(false,ExcNotImplemented());
-  }
+                               const eval_pts_variant &quad) const = 0;
 
   virtual void fill_cache_impl(ElementAccessor &elem,
                                const topology_variant &topology,
-                               const int s_id) const
-  {
-    Assert(false,ExcNotImplemented());
-  }
-
-
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version);
-  ///@}
-#endif // SERIALIZATION
-#endif
+                               const int s_id) const = 0;
 
 
 protected:

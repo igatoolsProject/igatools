@@ -104,6 +104,7 @@ public:
 public:
   virtual void set_flags(const topology_variant &sdim,
                          const Flags &flag);
+
   template <int sdim>
   void set_flags(const Flags &flag)
   {

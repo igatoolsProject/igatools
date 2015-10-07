@@ -31,11 +31,6 @@ IgGridFunctionHandler(const std::shared_ptr<GridFunctionType> &ig_grid_function)
   :
   parent_t(ig_grid_function),
   ig_space_handler_(ig_grid_function->get_ig_space()->create_cache_handler())
-  /*
-    grid_function_(grid_function),
-    grid_handler_(grid_function->get_grid()->create_cache_handler()),
-    flags_(CacheFlags::none)
-    //*/
 {}
 
 
@@ -52,7 +47,7 @@ set_flags(const topology_variant &sdim,
 
   parent_t::set_flags(sdim,flag);
 
-  /*
+
   using SpFlags = space_element::Flags;
   SpFlags ig_space_elem_flags = SpFlags::none;
   if (contains(flag,Flags::D0))
@@ -62,7 +57,7 @@ set_flags(const topology_variant &sdim,
   if (contains(flag,Flags::D2))
     ig_space_elem_flags |= SpFlags::hessian;
 
-  ig_space_handler_->template set_flags<sdim>(ig_space_elem_flags);
+  ig_space_handler_->set_flags_impl(sdim,ig_space_elem_flags);
   //*/
 }
 
@@ -125,6 +120,7 @@ operator()(const Topology<sdim> &sub_elem)
     auto ig_space_elem = ig_space->begin();
     ig_space_elem->move_to(grid_elem_id);
 
+    /*
     using Flags = space_element::Flags;
     Flags ig_space_elem_flags = Flags::none;
     if (cache.template status_fill<_D<0>>())
@@ -134,7 +130,8 @@ operator()(const Topology<sdim> &sub_elem)
     if (cache.template status_fill<_D<2>>())
       ig_space_elem_flags |= Flags::hessian;
 
-    ig_space_handler.template set_flags<sdim>(ig_space_elem_flags);
+    ig_space_handler.set_flags_impl(sub_elem,ig_space_elem_flags);
+    //*/
     ig_space_handler.template init_cache<sdim>(*ig_space_elem,grid_elem.template get_quad<sdim>());
     ig_space_handler.template fill_cache<sdim>(*ig_space_elem,s_id_);
 
