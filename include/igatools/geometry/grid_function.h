@@ -47,7 +47,7 @@ public:
   static const int space_dim = space_dim_;
   static const int dim = dim_;
 
-  using GridType = const Grid<dim_>;
+  using GridType = Grid<dim_>;
 
   using ElementAccessor = GridFunctionElement<dim_, space_dim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
@@ -74,9 +74,12 @@ public:
    */
   GridFunction() = default;
 
-  GridFunction(std::shared_ptr<GridType> grid);
+  GridFunction(const SharedPtrConstnessHandler<GridType> &grid);
+
 
   virtual ~GridFunction() = default;
+
+
 
   /*
   static std::shared_ptr<self_t>
@@ -93,7 +96,7 @@ public:
   }
   //*/
 
-  std::shared_ptr<GridType> get_grid() const;
+  std::shared_ptr<const GridType> get_grid() const;
 
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;

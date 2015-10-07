@@ -167,26 +167,17 @@ public:
     const MultiplicityTable &interior_mult,
     const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
 
-protected:
+private:
   /**
-   * Construct a spline space with the knots (inferred from the non-const @p grid
+   * Construct a spline space with the knots (inferred from the (cons or non-const) @p grid
    * and @p interior_multiplicity), degree and as periodicity conditions
    */
   explicit SplineSpace(const DegreeTable &deg,
-                       const std::shared_ptr<GridType> &grid,
+                       SharedPtrConstnessHandler<GridType> grid,
                        const MultiplicityTable &interior_multiplicity,
                        const PeriodicityTable &periodic =
                          PeriodicityTable(SafeSTLArray<bool,dim>(false)));
 
-  /**
-   * Construct a spline space with the knots (inferred from the const @p grid
-   * and @p interior_multiplicity), degree and as periodicity conditions
-   */
-  explicit SplineSpace(const DegreeTable &deg,
-                       const std::shared_ptr<const GridType> &grid,
-                       const MultiplicityTable &interior_multiplicity,
-                       const PeriodicityTable &periodic =
-                         PeriodicityTable(SafeSTLArray<bool,dim>(false)));
 
 public:
   const DegreeTable &get_degree_table() const;

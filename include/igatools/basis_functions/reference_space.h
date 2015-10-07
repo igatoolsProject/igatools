@@ -129,11 +129,7 @@ protected:
    */
   ReferenceSpace() = default;
 
-  explicit ReferenceSpace(
-    const std::shared_ptr<Grid<dim_>> &grid);
-
-  explicit ReferenceSpace(
-    const std::shared_ptr<const Grid<dim_>> &grid);
+  explicit ReferenceSpace(SharedPtrConstnessHandler<Grid<dim_>> grid);
 
 public:
   virtual ~ReferenceSpace() = default;

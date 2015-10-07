@@ -34,7 +34,7 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const int degree,
-             const std::shared_ptr<GridType> &grid,
+             SharedPtrConstnessHandler<GridType> grid,
              const InteriorReg interior_reg,
              const bool periodic,
              const BasisEndBehaviour end_b)
@@ -44,18 +44,6 @@ BSplineSpace(const int degree,
               EndBehaviour(end_b))
 {}
 
-template<int dim_, int range_, int rank_>
-BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const int degree,
-             const std::shared_ptr<const GridType> &grid,
-             const InteriorReg interior_reg,
-             const bool periodic,
-             const BasisEndBehaviour end_b)
-  :
-  BSplineSpace(Degrees(degree), grid, interior_reg,
-              Periodicity(periodic),
-              EndBehaviour(end_b))
-{}
 
 
 template<int dim_, int range_, int rank_>
@@ -96,7 +84,7 @@ const_create(const int degree,
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const Degrees &deg,
-             const std::shared_ptr<GridType> &grid,
+             SharedPtrConstnessHandler<GridType> grid,
              const InteriorReg interior_reg,
              const Periodicity &periodic,
              const EndBehaviour &end_b)
@@ -109,21 +97,6 @@ BSplineSpace(const Degrees &deg,
               EndBehaviourTable(true,end_b))
 {}
 
-template<int dim_, int range_, int rank_>
-BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const Degrees &deg,
-             const std::shared_ptr<const GridType> &grid,
-             const InteriorReg interior_reg,
-             const Periodicity &periodic,
-             const EndBehaviour &end_b)
-  :
-  BSplineSpace(DegreeTable(true,deg),
-              grid,
-              SpaceData::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
-                                                          grid->get_num_intervals()),
-              PeriodicityTable(true,periodic),
-              EndBehaviourTable(true,end_b))
-{}
 
 
 template<int dim_, int range_, int rank_>
@@ -136,7 +109,7 @@ create(const Degrees &deg,
        const EndBehaviour &end_b)
 -> shared_ptr<self_t>
 {
-  auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_reg, periodic, end_b));
+  auto sp = shared_ptr<self_t>(new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_reg, periodic, end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -164,10 +137,12 @@ const_create(const Degrees &deg,
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const std::shared_ptr<SpaceData> &space_data,
+BSplineSpace(SharedPtrConstnessHandler<SpaceData> space_data,
              const EndBehaviourTable &end_b)
   :
-  BaseSpace(space_data->get_ptr_grid()),
+  BaseSpace(space_data.data_is_const() ?
+           space_data.get_ptr_const_data()->get_ptr_const_grid() :
+           space_data.get_ptr_data()->get_ptr_grid()),
   space_data_(space_data),
   end_b_(end_b),
   operators_(*space_data_,end_b),
@@ -219,83 +194,21 @@ BSplineSpace(const std::shared_ptr<SpaceData> &space_data,
 #endif
 }
 
-template<int dim_, int range_, int rank_>
-BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const std::shared_ptr<const SpaceData> &space_data,
-             const EndBehaviourTable &end_b)
-  :
-  BaseSpace(space_data->get_ptr_const_grid()),
-  space_data_(space_data),
-  end_b_(end_b),
-  operators_(*space_data_,end_b),
-  end_interval_(end_b.get_comp_map()),
-  dof_distribution_(std::make_shared<DofDistribution<dim_,range_,rank_>>(
-                     space_data->get_num_basis_table(),
-                     space_data->get_degree_table(),
-                     space_data->get_periodic_table()))
-{
-//    Assert(space_data_ != nullptr,ExcNullPtr());
-  Assert(dof_distribution_ != nullptr,ExcNullPtr());
-
-  //------------------------------------------------------------------------------
-// TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
-
-  const auto &sp_data = *this->space_data_;
-  const auto &grid = *sp_data.get_ptr_const_grid();
-  const auto &degree_table = sp_data.get_degree_table();
-  const auto rep_knots = sp_data.compute_knots_with_repetition(end_b_);
-
-  for (auto i : end_interval_.get_active_components_id())
-  {
-    for (int dir=0; dir<dim; ++dir)
-    {
-      const auto p = degree_table[i][dir];
-
-      const auto &knots_coord_dir = grid.get_knot_coordinates().get_data_direction(dir);
-
-      const auto x1 = knots_coord_dir[1];
-      const auto a = knots_coord_dir[0];
-      const auto x0 = rep_knots[i].get_data_direction(dir)[p];
-      end_interval_[i][dir].first = (x1-a) / (x1-x0);
-
-      const auto xk= *(knots_coord_dir.end()-2);
-      const auto b = *(knots_coord_dir.end()-1);
-      const auto xk1 = *(rep_knots[i].get_data_direction(dir).end() - (p+1));
-      end_interval_[i][dir].second = (b-xk) / (xk1-xk);
-    } // end loop dir
-  } // end loop i
-  //------------------------------------------------------------------------------
-
-
-#if 0
-  //------------------------------------------------------------------------------
-  this->dof_distribution_->add_dofs_property(this->dofs_property_active_);
-  this->dof_distribution_->set_all_dofs_property_status(this->dofs_property_active_,true);
-  //------------------------------------------------------------------------------
-#endif
-}
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
-             const std::shared_ptr<GridType> &grid,
+             SharedPtrConstnessHandler<GridType> grid,
              const MultiplicityTable &interior_mult,
              const PeriodicityTable &periodic,
              const EndBehaviourTable &end_b)
   :
-  BSplineSpace(SpaceData::create(deg, grid, interior_mult, periodic),end_b)
+  BSplineSpace(
+   grid.data_is_const() ?
+   SpaceData::const_create(deg, grid.get_ptr_const_data(), interior_mult, periodic) :
+   SpaceData::create(deg, grid.get_ptr_data(), interior_mult, periodic),end_b)
 {}
 
-template<int dim_, int range_, int rank_>
-BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const DegreeTable &deg,
-             const std::shared_ptr<const GridType> &grid,
-             const MultiplicityTable &interior_mult,
-             const PeriodicityTable &periodic,
-             const EndBehaviourTable &end_b)
-  :
-  BSplineSpace(SpaceData::const_create(deg, grid, interior_mult, periodic),end_b)
-{}
 
 
 

@@ -27,7 +27,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int space_dim_>
 GridFunction<dim_, space_dim_>::
-GridFunction(std::shared_ptr<GridType> grid)
+GridFunction(const SharedPtrConstnessHandler<GridType> &grid)
   :
   grid_(grid)
 {
@@ -42,7 +42,7 @@ GridFunction(std::shared_ptr<GridType> grid)
 template<int dim_, int space_dim_>
 auto
 GridFunction<dim_, space_dim_>::
-get_grid() const -> std::shared_ptr<GridType>
+get_grid() const -> std::shared_ptr<const GridType>
 {
   return grid_.get_ptr_const_data();
 }

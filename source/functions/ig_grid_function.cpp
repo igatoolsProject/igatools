@@ -26,10 +26,13 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int space_dim>
 IgGridFunction<dim,space_dim>::
-IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
+IgGridFunction(SharedPtrConstnessHandler<IgSpace> space,
                const IgCoefficients &coeffs)
   :
-  parent_t(space->get_ptr_const_grid()),
+  parent_t(
+   space.data_is_const() ?
+   space.get_ptr_const_data()->get_ptr_const_grid() :
+   space.get_ptr_data()->get_ptr_grid()),
   ig_space_(space)
 {
 #ifndef NDEBUG

@@ -84,14 +84,10 @@ protected:
   Space() = default;
 
   /**
-   * Construct the object from the (non-const) @p grid on which the function space will be built upon.
+   * Construct the object from the (const or non-const) @p grid on which the function space will be built upon.
    */
-  Space(const std::shared_ptr<Grid<dim_>> &grid);
+  Space(SharedPtrConstnessHandler<Grid<dim_>> grid);
 
-  /**
-   * Construct the object from the (const) @p grid on which the function space will be built upon.
-   */
-  Space(const std::shared_ptr<const Grid<dim_>> &grid);
 
   /** Copy constructor. */
   Space(const self_t &) = delete;
@@ -132,6 +128,11 @@ public:
    */
   Index get_object_id() const;
 
+  SharedPtrConstnessHandler<Grid<dim_>>
+                                     get_grid() const
+  {
+    return grid_;
+  }
 
   std::shared_ptr<Grid<dim_>> get_ptr_grid();
 

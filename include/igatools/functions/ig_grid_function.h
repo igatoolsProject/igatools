@@ -61,7 +61,7 @@ public:
   virtual ~IgGridFunction() = default;
 
 protected:
-  IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
+  IgGridFunction(SharedPtrConstnessHandler<IgSpace> space,
                  const IgCoefficients &coeffs);
 
 

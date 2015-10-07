@@ -41,7 +41,7 @@ SplineSpace<dim, range, rank>::components =
 template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
-            const std::shared_ptr<GridType> &grid,
+            SharedPtrConstnessHandler<GridType> grid,
             const MultiplicityTable &interior_mult,
             const PeriodicityTable &periodic)
   :
@@ -54,20 +54,6 @@ SplineSpace(const DegreeTable &deg,
 }
 
 
-template<int dim, int range, int rank>
-SplineSpace<dim, range, rank>::
-SplineSpace(const DegreeTable &deg,
-            const std::shared_ptr<const GridType> &grid,
-            const MultiplicityTable &interior_mult,
-            const PeriodicityTable &periodic)
-  :
-  grid_(grid),
-  interior_mult_(interior_mult),
-  deg_(deg),
-  periodic_(periodic)
-{
-  this->init();
-}
 
 
 template<int dim, int range, int rank>
@@ -93,9 +79,9 @@ template<int dim, int range, int rank>
 std::shared_ptr<const SplineSpace<dim,range,rank> >
 SplineSpace<dim, range, rank>::
 const_create(const DegreeTable &deg,
-       const std::shared_ptr<const GridType> &grid,
-       const MultiplicityTable &interior_mult,
-       const PeriodicityTable &periodic)
+             const std::shared_ptr<const GridType> &grid,
+             const MultiplicityTable &interior_mult,
+             const PeriodicityTable &periodic)
 {
   using SpSpace = SplineSpace<dim,range,rank>;
   auto sp = std::shared_ptr<const SpSpace>(new SpSpace(deg,grid,interior_mult,periodic));

@@ -291,86 +291,49 @@ protected:
 
   /**
    * Constructs a maximum regularity BSpline space
-   * over a (non-const) Grid
+   * over a (const or non-const) Grid
    * @p grid for the given @p degree in all directions and homogeneous
    * in all components.
    */
   explicit BSplineSpace(const int degree,
-                        const std::shared_ptr<GridType> &grid,
+                        SharedPtrConstnessHandler<GridType> grid,
                         const InteriorReg interior_reg,
                         const bool periodic,
                         const BasisEndBehaviour end_b);
 
-  /**
-   * Constructs a maximum regularity BSpline space
-   * over a (const) Grid
-   * @p grid for the given @p degree in all directions and homogeneous
-   * in all components.
-   */
-  explicit BSplineSpace(const int degree,
-                        const std::shared_ptr<const GridType> &grid,
-                        const InteriorReg interior_reg,
-                        const bool periodic,
-                        const BasisEndBehaviour end_b);
 
   /**
    * Constructs a maximum regularity BSpline space over
-   * over a (non-const) Grid
+   * over a (const or non-const) Grid
    * @p grid for the given @p degree[i] in the i-th direction and homogeneous
    * in all components.
    */
   explicit BSplineSpace(const Degrees &degree,
-                        const std::shared_ptr<GridType> &grid,
+                        SharedPtrConstnessHandler<GridType> grid,
                         const InteriorReg interior_reg,
                         const Periodicity &periodic,
                         const EndBehaviour &end_b);
 
-  /**
-   * Constructs a maximum regularity BSpline space over
-   * over a (const) Grid
-   * @p grid for the given @p degree[i] in the i-th direction and homogeneous
-   * in all components.
-   */
-  explicit BSplineSpace(const Degrees &degree,
-                        const std::shared_ptr<const GridType> &grid,
-                        const InteriorReg interior_reg,
-                        const Periodicity &periodic,
-                        const EndBehaviour &end_b);
 
   /**
    * Constructs a BSpline space over
-   * over a (non-const) Grid
+   * over a (const or non-const) Grid
    * @p grid with the given multiplicity vector @p mult_vectors
    * for each component
    * and the given @p degree for each direction and for each
    * component.
    */
   explicit BSplineSpace(const DegreeTable &deg,
-                        const std::shared_ptr<GridType> &grid,
-                        const MultiplicityTable &interior_mult,
-                        const PeriodicityTable &periodic,
-                        const EndBehaviourTable &end_b);
-
-  /**
-   * Constructs a BSpline space over
-   * over a (const) Grid
-   * @p grid with the given multiplicity vector @p mult_vectors
-   * for each component
-   * and the given @p degree for each direction and for each
-   * component.
-   */
-  explicit BSplineSpace(const DegreeTable &deg,
-                        const std::shared_ptr<const GridType> &grid,
+                        SharedPtrConstnessHandler<GridType> grid,
                         const MultiplicityTable &interior_mult,
                         const PeriodicityTable &periodic,
                         const EndBehaviourTable &end_b);
 
 
-  explicit BSplineSpace(const std::shared_ptr<SpaceData> &space_data,
+
+  explicit BSplineSpace(SharedPtrConstnessHandler<SpaceData> space_data,
                         const EndBehaviourTable &end_b);
 
-  explicit BSplineSpace(const std::shared_ptr<const SpaceData> &space_data,
-                        const EndBehaviourTable &end_b);
 
   /**
    * Copy constructor. Not allowed to be used.

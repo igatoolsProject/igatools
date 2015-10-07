@@ -37,19 +37,11 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_, int rank_>
 ReferenceSpace<dim_, range_, rank_>::
-ReferenceSpace(
-  const std::shared_ptr<Grid<dim_>> &grid)
+ReferenceSpace(SharedPtrConstnessHandler<Grid<dim_>> grid)
   :
   base_t(grid)
 {}
 
-template<int dim_, int range_, int rank_>
-ReferenceSpace<dim_, range_, rank_>::
-ReferenceSpace(
-  const std::shared_ptr<const Grid<dim_>> &grid)
-  :
-  base_t(grid)
-{}
 
 
 template<int dim, int range, int rank>

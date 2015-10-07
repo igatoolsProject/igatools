@@ -30,21 +30,6 @@
 
 IGA_NAMESPACE_OPEN
 
-/*
-namespace { // detail
-    template <typename T>
-    struct implicit_convert : boost::static_visitor<T> {
-        template <typename U> T operator()(U&& u) const { return std::forward<U>(u); }
-    };
-}
-//*/
-
-
-/*
-Ref getVal(std::string& name) {
-    return boost::apply_visitor(implicit_convert<Ref>(), map[name]);
-}
-//*/
 
 /**
  * @brief Class to automatically manage the constness property of an object wrapped by a shared_ptr,
@@ -89,26 +74,29 @@ public:
    * an assertion will be raised if the input data is a nullptr.
    */
   template <class U>
-  SharedPtrConstnessHandler(const std::shared_ptr<U> &data)
+  SharedPtrConstnessHandler(const std::shared_ptr<U> &data,
+                            EnableIf<!(std::is_const<U>::value)> * = nullptr)
     :
-    data_is_const_(false)
+    ptr_(data),
+    ptr_to_const_(nullptr)
   {
-    Assert(data != nullptr, ExcNullPtr());
-    ptr_ = data;
+    Assert(ptr_ != nullptr, ExcNullPtr());
   };
 
   /**
    * Constructs the object using a shared pointer to const data.
    */
   template <class U>
-  SharedPtrConstnessHandler(const std::shared_ptr<const U> &data)
+  SharedPtrConstnessHandler(const std::shared_ptr<U> &data,
+                            EnableIf<(std::is_const<U>::value)> * = nullptr)
     :
-    data_is_const_(true)
+    ptr_(nullptr),
+    ptr_to_const_(data)
   {
-    Assert(data != nullptr, ExcNullPtr());
-    ptr_to_const_ = data;
+    Assert(ptr_to_const_ != nullptr, ExcNullPtr());
   };
 
+#if 0
   SharedPtrConstnessHandler(Ptr &&data)
     :
     data_is_const_(false)
@@ -124,7 +112,7 @@ public:
     ptr_to_const_ = data;
     Assert(ptr_to_const_ != nullptr, ExcNullPtr());
   };
-
+#endif
   /**
    * Copy constructor;
    */
@@ -170,7 +158,7 @@ public:
    */
   std::shared_ptr<T> get_ptr_data()
   {
-    Assert(!data_is_const_,ExcMessage("Data is built as const."));
+    Assert(!data_is_const(),ExcMessage("Data is built as const."));
     return ptr_;
   }
 
@@ -179,7 +167,7 @@ public:
    */
   std::shared_ptr<T> &get_ref_ptr_data()
   {
-    Assert(!data_is_const_,ExcMessage("Data is built as const."));
+    Assert(!data_is_const(),ExcMessage("Data is built as const."));
     return ptr_;
   }
 
@@ -197,7 +185,7 @@ public:
    */
   std::shared_ptr<const T> get_ptr_const_data() const
   {
-    if (data_is_const_)
+    if (data_is_const())
       return ptr_to_const_;
     else
       return ptr_;
@@ -208,7 +196,7 @@ public:
    */
   std::shared_ptr<const T> &get_ref_ptr_const_data() const
   {
-    if (data_is_const_)
+    if (data_is_const())
       return ptr_to_const_;
     else
       return ptr_;
@@ -216,7 +204,7 @@ public:
 
   void print_info(LogStream &out) const
   {
-    if (data_is_const_)
+    if (data_is_const())
     {
       out.begin_item("Pointer to const data");
       ptr_to_const_->print_info(out);
@@ -253,7 +241,7 @@ public:
    */
   bool unique() const
   {
-    if (data_is_const_)
+    if (data_is_const())
       return ptr_to_const_.unique();
     else
       return ptr_.unique();
@@ -264,17 +252,16 @@ public:
    */
   bool data_is_const() const
   {
-    return data_is_const_;
+    return (ptr_to_const_ ? true : false);
   }
 
 
 private:
 
-  Ptr ptr_;
+  Ptr ptr_ = nullptr;
 
-  PtrToConst ptr_to_const_;
+  PtrToConst ptr_to_const_ = nullptr;
 
-  bool data_is_const_ = false;
 
 
 
@@ -290,11 +277,11 @@ private:
   void
   serialize(Archive &ar, const unsigned int version)
   {
-    ar &make_nvp("data_is_const_",data_is_const_);
+//    ar &make_nvp("data_is_const_",data_is_const_);
 
     // In order to serialize the data, we need to cast it to non-const
     Ptr tmp;
-    if (data_is_const_)
+    if (ptr_to_const_)
       tmp = std::const_pointer_cast<T>(ptr_to_const_);
     else
       tmp = ptr_;
@@ -303,7 +290,7 @@ private:
     Assert(tmp != nullptr,ExcNullPtr());
 
     // After deserialization we need to cast the data to the correct constness
-    if (data_is_const_)
+    if (ptr_to_const_)
       ptr_to_const_ = std::const_pointer_cast<const T>(tmp);
     else
       ptr_ = tmp;
