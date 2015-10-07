@@ -29,7 +29,8 @@ template<int dim_, int space_dim_>
 IgGridFunctionHandler<dim_, space_dim_>::
 IgGridFunctionHandler(const std::shared_ptr<GridFunctionType> &ig_grid_function)
   :
-  parent_t(ig_grid_function)
+  parent_t(ig_grid_function),
+  ig_space_handler_(ig_grid_function->get_ig_space()->create_cache_handler())
   /*
     grid_function_(grid_function),
     grid_handler_(grid_function->get_grid()->create_cache_handler()),
@@ -50,6 +51,19 @@ set_flags(const topology_variant &sdim,
 //  this->get_grid_handler().set_flags(sdim,flag);
 
   parent_t::set_flags(sdim,flag);
+
+  /*
+  using SpFlags = space_element::Flags;
+  SpFlags ig_space_elem_flags = SpFlags::none;
+  if (contains(flag,Flags::D0))
+    ig_space_elem_flags |= SpFlags::value;
+  if (contains(flag,Flags::D1))
+    ig_space_elem_flags |= SpFlags::gradient;
+  if (contains(flag,Flags::D2))
+    ig_space_elem_flags |= SpFlags::hessian;
+
+  ig_space_handler_->template set_flags<sdim>(ig_space_elem_flags);
+  //*/
 }
 
 
@@ -103,10 +117,11 @@ operator()(const Topology<sdim> &sub_elem)
   if (!cache.fill_none())
   {
     const auto &grid_elem = elem_.get_grid_element();
-    auto grid_elem_id = grid_elem.get_index();
+    const auto &grid_elem_id = grid_elem.get_index();
 
     auto ig_space = grid_function_.get_ig_space();
-    auto ig_space_handler = ig_space->create_cache_handler();
+//    auto ig_space_handler = ig_space->create_cache_handler();
+    auto &ig_space_handler = *grid_function_handler_.ig_space_handler_;
     auto ig_space_elem = ig_space->begin();
     ig_space_elem->move_to(grid_elem_id);
 
@@ -119,9 +134,9 @@ operator()(const Topology<sdim> &sub_elem)
     if (cache.template status_fill<_D<2>>())
       ig_space_elem_flags |= Flags::hessian;
 
-    ig_space_handler->template set_flags<sdim>(ig_space_elem_flags);
-    ig_space_handler->template init_cache<sdim>(*ig_space_elem,grid_elem.template get_quad<sdim>());
-    ig_space_handler->template fill_cache<sdim>(*ig_space_elem,s_id_);
+    ig_space_handler.template set_flags<sdim>(ig_space_elem_flags);
+    ig_space_handler.template init_cache<sdim>(*ig_space_elem,grid_elem.template get_quad<sdim>());
+    ig_space_handler.template fill_cache<sdim>(*ig_space_elem,s_id_);
 
 
     const auto &dofs_property = DofProperties::active;
@@ -152,33 +167,6 @@ operator()(const Topology<sdim> &sub_elem)
       auto &D2F = cache.template get_data<_D<2>>();
       D2F.fill(ig_space_elem->template linear_combination<_Hessian,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
     }
-
-
-#if 0
-    const auto &grid_pts = grid_elem.template get_points<sdim>(s_id_);
-    if (cache.template status_fill<_D<0>>())
-    {
-      auto &F = cache.template get_data<_D<0>>();
-      grid_function_.evaluate_0(grid_pts, F);
-      F.set_status_filled(true);
-    }
-
-    if (cache.template status_fill<_D<1>>())
-    {
-      auto &DF = cache.template get_data<_D<1>>();
-      grid_function_.evaluate_1(grid_pts, DF);
-      DF.set_status_filled(true);
-    }
-
-    if (cache.template status_fill<_D<2>>())
-    {
-      auto &D2F = cache.template get_data<_D<2>>();
-      grid_function_.evaluate_2(grid_pts, D2F);
-      D2F.set_status_filled(true);
-    }
-//        if (cache.template status_fill<_Divergence>())
-//          Assert(false,ExcNotImplemented());
-#endif
   }
 
   cache.set_filled(true);

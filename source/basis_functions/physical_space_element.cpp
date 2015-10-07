@@ -184,6 +184,12 @@ PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 print_info(LogStream &out) const
 {
   using std::to_string;
+  out.begin_item("PhysicalSpaceElement<" +
+                 to_string(dim_) + "," +
+                 to_string(range_) + "," +
+                 to_string(rank_) + "," +
+                 to_string(codim_) + ">:");
+
   out.begin_item("ReferenceElement<" +
                  to_string(RefSpace::dim) + "," +
                  to_string(RefSpace::range) + "," +
@@ -195,6 +201,19 @@ print_info(LogStream &out) const
                  to_string(dim_) + "," +
                  to_string(codim_) + ">");
   phys_domain_element_->print_info(out);
+  out.end_item();
+
+  std::string transf_type;
+  if (type_ == Transformation::h_grad)
+    transf_type = "h_grad";
+  else if (type_ == Transformation::h_div)
+    transf_type = "h_div";
+  else if (type_ == Transformation::h_curl)
+    transf_type = "h_curl";
+  else if (type_ == Transformation::l_2)
+    transf_type = "l_2";
+  out << "Transformation: " << transf_type << std::endl;
+
   out.end_item();
 }
 
