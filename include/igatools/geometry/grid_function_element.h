@@ -42,6 +42,8 @@ public:
   using GridElem = typename ContainerType_::GridType::ElementAccessor;
   using ListIt = typename ContainerType_::ListIt;
 
+  using IndexType = typename Grid<dim_>::IndexType;
+
   using Value =  typename ContainerType_::Value;
   template <int order>
   using Derivative = typename ContainerType_::template Derivative<order>;
@@ -93,9 +95,9 @@ public:
    * @name Comparison operators
    * @note In order to be meaningful, the comparison must be performed on
    * elements defined on
-   * the <b>same grid</b>
-   * (in the sense that the pointer to the grid held by the element must
-   * point to the same grid object).
+   * the <b>same</b> GridFunction
+   * (in the sense that the pointer to the GridFunction held by the elements must
+   * point to the same GridFunction object).
    */
   ///@{
   /**
@@ -131,17 +133,17 @@ public:
 
 
 public:
-  /*
-  ListIt &operator++()
-  {
-    return (++(*grid_elem_));
-  }
-  //*/
+
   void operator++()
   {
     ++(*grid_elem_);
   }
 
+
+  void move_to(const IndexType &elem_id)
+  {
+    grid_elem_->move_to(elem_id);
+  }
 
   const GridElem &get_grid_element() const
   {

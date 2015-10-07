@@ -52,8 +52,10 @@ fill_cache(const topology_variant &sdim,
 {
   parent_t::fill_cache(sdim, elem, s_id);
 
-  GridFunctionType &grid_function = *std::dynamic_pointer_cast<GridFunctionType>(this->get_grid_function());
-  auto disp = FillCacheDispatcher(grid_function, *this, elem, s_id);
+//  GridFunctionType &grid_function = *std::dynamic_pointer_cast<GridFunctionType>(this->get_grid_function());
+//  auto disp = FillCacheDispatcher(grid_function, *this, elem, s_id);
+
+  auto disp = FillCacheDispatcher(*this, elem, s_id);
   boost::apply_visitor(disp, sdim);
 
 }

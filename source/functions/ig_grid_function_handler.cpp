@@ -89,9 +89,7 @@ fill_cache(const topology_variant &sdim,
 {
   auto fill_cache_dispatcher =
     FillCacheDispatcher(
-      *(std::dynamic_pointer_cast<const IgGridFunction<dim_,space_dim_>>(this->get_grid_function())),
       (*this),
-      this->get_grid_handler(),
       elem,
       s_id);
 
@@ -109,9 +107,11 @@ FillCacheDispatcher::
 operator()(const Topology<sdim> &sub_elem)
 {
   auto &grid_elem = ig_grid_function_elem_.get_grid_element();
-  this->grid_handler_.template fill_cache<sdim>(grid_elem,s_id_);
+  ig_grid_function_handler_.get_grid_handler().template fill_cache<sdim>(grid_elem,s_id_);
 
 
+  const auto &ig_grid_function =
+    *(std::dynamic_pointer_cast<const IgGridFunction<dim_,space_dim_>>(ig_grid_function_handler_.get_grid_function()));
 
   auto &local_cache = ig_grid_function_handler_.get_element_cache(ig_grid_function_elem_);
   auto &cache = local_cache.template get_sub_elem_cache<sdim>(s_id_);
@@ -120,7 +120,7 @@ operator()(const Topology<sdim> &sub_elem)
   {
     const auto &grid_elem_id = grid_elem.get_index();
 
-    const auto ig_space = ig_grid_function_.get_ig_space();
+    const auto ig_space = ig_grid_function.get_ig_space();
     const auto &ig_space_handler = *ig_grid_function_handler_.ig_space_handler_;
     auto ig_space_elem = ig_space->begin();
     ig_space_elem->move_to(grid_elem_id);
@@ -132,7 +132,7 @@ operator()(const Topology<sdim> &sub_elem)
     const auto &dofs_property = DofProperties::active;
 
     const auto &ig_space_elem_global_dofs = ig_space_elem->get_local_to_global(dofs_property);
-    const auto &ig_func_coeffs = ig_grid_function_.get_coefficients();
+    const auto &ig_func_coeffs = ig_grid_function.get_coefficients();
     SafeSTLVector<Real> ig_func_elem_coeffs; // coefficients of the IgGridFunction restricted to the element
     for (const auto &global_dof : ig_space_elem_global_dofs)
       ig_func_elem_coeffs.emplace_back(ig_func_coeffs[global_dof]);

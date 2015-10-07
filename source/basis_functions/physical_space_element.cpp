@@ -75,13 +75,19 @@ void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 operator++()
 {
-//  parent_t::operator++();
-
   ++(*phys_domain_element_);
 
   ++(*ref_space_element_);
 }
 
+template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+void
+PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+move_to(const IndexType &elem_id)
+{
+  ref_space_element_->move_to(elem_id);
+  phys_domain_element_->move_to(elem_id);
+}
 
 
 

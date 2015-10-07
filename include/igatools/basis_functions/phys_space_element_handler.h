@@ -149,6 +149,7 @@ class PhysicalSpace;
 /**
  * Element handler for an isogeometric space
  *
+ * @ingroup handlers
  */
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 class PhysSpaceElementHandler
@@ -180,16 +181,8 @@ public:
    * @name Constructors
    */
   ///@{
-#if 0
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  PhysSpaceElementHandler() = default;
-#endif
 
-protected:
+public:
 
   /**
    * Default constructor. Not allowed to be used.
@@ -229,12 +222,6 @@ public:
   self_t &operator=(self_t &&) = delete;
   ///@}
 
-  /**
-   * @name Creators.
-   */
-  ///@{
-  static std::unique_ptr<self_t> create(std::shared_ptr<const PhysSpace> space);
-  ///@}
 
 #if 0
   /**
@@ -262,11 +249,11 @@ public:
 private:
 
   using RefElemHandler = SpaceElementHandler<RefSpace::dim,0,RefSpace::range,RefSpace::rank,Transformation::h_grad>;
-  std::shared_ptr<RefElemHandler> ref_space_handler_;
+  std::unique_ptr<RefElemHandler> ref_space_handler_;
 
 
   using PhysDomainHandler = typename PhysSpace::PhysDomain::ElementHandler;
-  std::shared_ptr<PhysDomainHandler> phys_domain_handler_;
+  std::unique_ptr<PhysDomainHandler> phys_domain_handler_;
 
 
 
@@ -462,117 +449,6 @@ private:
     const PhysDomainHandler &phys_domain_handler_;
     BaseElem &elem_;
   };
-
-#if 0
-  struct ResetDispatcher : boost::static_visitor<void>
-  {
-    ResetDispatcher(
-      const ValueFlags flag_in,
-      const SafeSTLVector<Index> &elements_flat_id,
-      RefElemHandler &ref_space_handler,
-      Map &mapping,
-      SafeSTLArray<ValueFlags, dim+1> &flags)
-      :
-      flag_in_(flag_in),
-      elements_flat_id_(elements_flat_id),
-      ref_space_handler_(ref_space_handler),
-      phys_domain_handler_(mapping),
-      flags_(flags)
-    {};
-
-    template<int sub_elem_dim>
-    void operator()(const Quadrature<sub_elem_dim> &quad);
-
-    const ValueFlags flag_in_;
-    const SafeSTLVector<Index> &elements_flat_id_;
-    RefElemHandler &ref_space_handler_;
-    Map &phys_domain_handler_;
-    SafeSTLArray<ValueFlags, dim+1> &flags_;
-  };
-
-
-  struct InitCacheDispatcher : boost::static_visitor<void>
-  {
-    InitCacheDispatcher(
-      const SafeSTLArray<ValueFlags, dim+1> &flags,
-      RefElemHandler &ref_space_handler,
-      Map &mapping,
-      PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem)
-      :
-      flags_(flags),
-      ref_space_handler_(ref_space_handler),
-      phys_domain_handler_(mapping),
-      phys_elem_(phys_elem)
-    {};
-
-    template<int sub_elem_dim>
-    void operator()(const Topology<sub_elem_dim> &topology);
-
-    const SafeSTLArray<ValueFlags, dim+1> &flags_;
-    RefElemHandler &ref_space_handler_;
-    Map &phys_domain_handler_;
-    PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem_;
-  };
-
-
-
-  struct FillCacheDispatcher : boost::static_visitor<void>
-  {
-    FillCacheDispatcher(
-      const int sub_elem_id,
-      RefElemHandler &ref_space_handler,
-      Map &mapping,
-      PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem)
-      :
-      sub_elem_id_(sub_elem_id),
-      ref_space_handler_(ref_space_handler),
-      phys_domain_handler_(mapping),
-      phys_elem_(phys_elem)
-    {};
-
-    template<int sub_elem_dim>
-    void operator()(const Topology<sub_elem_dim> &topology);
-
-    const int sub_elem_id_;
-    RefElemHandler &ref_space_handler_;
-    Map &phys_domain_handler_;
-    PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem_;
-  };
-
-#endif
-
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    ar &boost::serialization::make_nvp("PhysSpaceElementHandler_base_t",
-                                       boost::serialization::base_object<base_t>(*this));
-
-    ar.template register_type<BSplineElementHandler<dim_,range_,rank_> >();
-#ifdef NURBS
-    ar.template register_type<NURBSElementHandler<dim_,range_,rank_> >();
-#endif // NURBS
-    ar &boost::serialization::make_nvp("ref_space_handler_",ref_space_handler_);
-    ar &boost::serialization::make_nvp("phys_domain_handler_",phys_domain_handler_);
-
-
-//        ar &boost::serialization::make_nvp("push_fwd_",push_fwd_);
-
-
-    ar &boost::serialization::make_nvp("flags_",flags_);
-  }
-  ///@}
-#endif
-#endif
 
 };
 

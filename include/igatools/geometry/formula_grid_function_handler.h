@@ -64,12 +64,10 @@ private:
     template <int order>
     using _D = typename ConstElementAccessor::template _D<order>;
 
-    FillCacheDispatcher(const GridFunctionType &grid_function,
-                        const self_t &grid_function_handler,
+    FillCacheDispatcher(const self_t &grid_function_handler,
                         ConstElementAccessor &elem,
                         const int s_id)
       :
-      grid_function_(grid_function),
       grid_function_handler_(grid_function_handler),
       elem_(elem),
       s_id_(s_id)
@@ -79,6 +77,10 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &sub_elem)
     {
+      const auto &formula_grid_function =
+        *std::dynamic_pointer_cast<GridFunctionType>(grid_function_handler_.get_grid_function());
+
+
       auto &local_cache = grid_function_handler_.get_element_cache(elem_);
       auto &cache = local_cache.template get_sub_elem_cache<sdim>(s_id_);
 
@@ -88,21 +90,21 @@ private:
         if (cache.template status_fill<_D<0>>())
         {
           auto &F = cache.template get_data<_D<0>>();
-          grid_function_.evaluate_0(grid_pts, F);
+          formula_grid_function.evaluate_0(grid_pts, F);
           F.set_status_filled(true);
         }
 
         if (cache.template status_fill<_D<1>>())
         {
           auto &DF = cache.template get_data<_D<1>>();
-          grid_function_.evaluate_1(grid_pts, DF);
+          formula_grid_function.evaluate_1(grid_pts, DF);
           DF.set_status_filled(true);
         }
 
         if (cache.template status_fill<_D<2>>())
         {
           auto &D2F = cache.template get_data<_D<2>>();
-          grid_function_.evaluate_2(grid_pts, D2F);
+          formula_grid_function.evaluate_2(grid_pts, D2F);
           D2F.set_status_filled(true);
         }
 //        if (cache.template status_fill<_Divergence>())
@@ -112,7 +114,6 @@ private:
       cache.set_filled(true);
     }
 
-    const GridFunctionType &grid_function_;
     const self_t     &grid_function_handler_;
     ConstElementAccessor &elem_;
     const int s_id_;

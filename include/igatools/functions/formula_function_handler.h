@@ -27,7 +27,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- *
+ * @ingroup handlers
  */
 template<int dim, int codim=0, int range = 1, int rank = 1>
 class FormulaFunctionHandler :
@@ -86,6 +86,7 @@ private:
 
       if (!cache.fill_none())
       {
+
         const auto &points = elem_.get_domain_element().template get_points<sdim>(s_id_);
 
         if (cache.template status_fill<_Value>())

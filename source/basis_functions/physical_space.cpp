@@ -269,7 +269,7 @@ auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
 {
-  return ElementHandler::create(this->get_this_space());
+  return std::make_unique<ElementHandler>(this->get_this_space());
 }
 
 

@@ -70,6 +70,7 @@ public:
   using List = typename GridFuncType::List;
   using ListIt = typename GridFuncType::ListIt;
 
+
 public:
   //using GridPoint = typename GridFuncType::Point;
   using Point =  Points<space_dim>;

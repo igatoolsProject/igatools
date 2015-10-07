@@ -42,6 +42,8 @@ public:
   using GridFuncElem = typename ContainerType_::GridFuncType::ConstElementAccessor;
   using ListIt = typename ContainerType_::ListIt;
 
+  using IndexType = typename Grid<dim_>::IndexType;
+
   using Point =  typename ContainerType_::Point;
   using Gradient =  typename ContainerType_::Gradient;
 
@@ -132,15 +134,15 @@ public:
 #endif
 
 public:
-  /*
-  ListIt &operator++()
-  {
-    return (++(*grid_func_elem_));
-  }
-  //*/
+
   void operator++()
   {
     ++(*grid_func_elem_);
+  }
+
+  void move_to(const IndexType &elem_id)
+  {
+    grid_func_elem_->move_to(elem_id);
   }
 
   const GridFuncElem &get_grid_function_element() const

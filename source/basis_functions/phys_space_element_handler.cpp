@@ -140,6 +140,7 @@ PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
   phys_domain_handler_(space->get_physical_domain()->create_cache_handler())
 {}
 
+#if 0
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 auto
 PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
@@ -149,7 +150,7 @@ create(std::shared_ptr<const PhysSpace> space) -> std::unique_ptr<self_t>
   Assert(handler != nullptr,ExcNullPtr());
   return handler;
 }
-
+#endif
 
 
 #if 0

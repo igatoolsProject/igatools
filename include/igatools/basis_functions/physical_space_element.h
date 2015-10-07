@@ -80,14 +80,6 @@ public :
    */
   ///@{
 public:
-#if 0
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  PhysicalSpaceElement() = default;
-#endif
 
   /**
    * Default constructor. Not allowed to be used.
@@ -286,10 +278,7 @@ public:
    *
    * @warning Use this function only if you know what you are doing
    */
-  virtual void move_to(const IndexType &elem_id) override final
-  {
-    AssertThrow(false,ExcNotImplemented());
-  }
+  virtual void move_to(const IndexType &elem_id) override final;
   ///@}
 
 

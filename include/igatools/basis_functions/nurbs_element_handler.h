@@ -51,7 +51,7 @@ template<int,int,int> class NURBSElement;
  * Global NURBSSpace uniform quadrature
  * computational optimization cache.
  *
- * @ingroup serializable
+ * @ingroup handlers
  */
 template<int dim_, int range_, int rank_>
 class NURBSElementHandler
