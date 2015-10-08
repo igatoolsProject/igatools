@@ -214,24 +214,24 @@ private:
 
 
 
-template <int dim, int codim>
+template <int dim, int space_dim>
 class ConstGridFunctionElement
-  : public GridFunctionElementBase<dim, codim,
-    const GridFunction<dim,codim>>
+  : public GridFunctionElementBase<dim, space_dim,
+    const GridFunction<dim,space_dim>>
 {
-  using GridFunctionElementBase<dim, codim,
-        const GridFunction<dim,codim>>::GridFunctionElementBase;
+  using GridFunctionElementBase<dim, space_dim,
+        const GridFunction<dim,space_dim>>::GridFunctionElementBase;
 };
 
 
 
-template <int dim, int codim>
+template <int dim, int space_dim>
 class GridFunctionElement
-  : public GridFunctionElementBase<dim, codim,
-    GridFunction<dim,codim>>
+  : public GridFunctionElementBase<dim, space_dim,
+    GridFunction<dim,space_dim>>
 {
-  using GridFunctionElementBase<dim, codim,
-        GridFunction<dim,codim>>::GridFunctionElementBase;
+  using GridFunctionElementBase<dim, space_dim,
+        GridFunction<dim,space_dim>>::GridFunctionElementBase;
 };
 
 IGA_NAMESPACE_CLOSE

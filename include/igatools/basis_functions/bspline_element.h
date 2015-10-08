@@ -127,12 +127,12 @@ public:
 
 
 
-private:
   /**
    * Returns the BSplineSpace upon which the element is defined.
    */
   std::shared_ptr<const Space> get_bspline_space() const;
 
+private:
 
   template <class Accessor> friend class GridIterator;
   friend class BSplineElementHandler<dim, range, rank>;

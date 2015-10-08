@@ -138,19 +138,25 @@ public:
   self_t &operator=(self_t &&elem) = default;
   ///@}
 
-#if 0
   /** @name Functions/operators for moving the element in the NURBSSpace.*/
   ///@{
+  virtual void operator++() override final
+  {
+    ++bspline_elem_;
+    ++(*weight_elem_);
+  }
+
   /**
-   * Sets the index of the element using the flatten representation.
-   * @note This function also updates the index for the tensor representation.
-   * @warning This may be a dangerous function, be careful when using it
-   * as it is easy to use incorrectly. Only use it if you know what you
-   * are doing.
+   * Move the element to the one specified by <tt>elem_id</tt>.
+   *
+   * @warning Use this function only if you know what you are doing
    */
-  virtual void move_to(const Index flat_index) override final;
+  virtual void move_to(const IndexType &elem_id) override final
+  {
+    bspline_elem_.move_to(elem_id);
+    weight_elem_->move_to(elem_id);;
+  }
   ///@}
-#endif
 
   /**
    * Returns the NURBSSpace in which the NURBSElement is defined.
@@ -189,22 +195,8 @@ public:
   }
 
 
-  virtual void operator++() override final
-  {
-    ++(*weight_elem_);
-    ++bspline_elem_;
-    Assert(false,ExcNotImplemented());
-  }
 
-  /**
-   * Move the element to the one specified by <tt>elem_id</tt>.
-   *
-   * @warning Use this function only if you know what you are doing
-   */
-  virtual void move_to(const IndexType &elem_id) override final
-  {
-    AssertThrow(false,ExcNotImplemented());
-  }
+  friend class NURBSElementHandler<dim,range,rank>;
 
 };
 

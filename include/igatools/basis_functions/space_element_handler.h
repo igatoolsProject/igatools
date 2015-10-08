@@ -95,6 +95,9 @@ public:
     this->set_flags_impl(Topology<sdim>(),flag);
   }
 
+  virtual void init_cache_impl(ElementAccessor &elem,
+                               const eval_pts_variant &quad) const = 0;
+
 
   template <int sdim>
   void init_cache(ElementAccessor &elem,
@@ -135,13 +138,16 @@ public:
     init_face_cache(*elem, quad);
   }
 
+  virtual void fill_cache_impl(const topology_variant &topology,
+                               ElementAccessor &elem,
+                               const int s_id) const = 0;
 
   template <int sdim>
   void fill_cache(ElementAccessor &elem, const int s_id) const
   {
     Assert(s_id >= 0 && s_id < UnitElement<dim>::template num_elem<sdim>(),
            ExcIndexRange(s_id,0,UnitElement<dim>::template num_elem<sdim>()));
-    this->fill_cache_impl(elem,Topology<sdim>(),s_id);
+    this->fill_cache_impl(Topology<sdim>(),elem,s_id);
   }
 
 
@@ -173,6 +179,12 @@ public:
     fill_face_cache(*elem,s_id);
   }
 
+
+  typename ElementAccessor::CacheType &
+  get_element_cache(ElementAccessor &elem) const
+  {
+    return elem.all_sub_elems_cache_;
+  }
 
 public:
 
@@ -247,16 +259,12 @@ private:
 
 
 
-  virtual void init_cache_impl(ElementAccessor &elem,
-                               const eval_pts_variant &quad) const = 0;
-
-  virtual void fill_cache_impl(ElementAccessor &elem,
-                               const topology_variant &topology,
-                               const int s_id) const = 0;
 
 
 protected:
   SafeSTLArray<typename space_element::Flags, dim + 1> flags_;
+
+
 
 };
 

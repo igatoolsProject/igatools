@@ -43,7 +43,7 @@ private:
 protected:
   using typename parent_t::GridType;
 public:
-  using GridFunctionType =  const IgGridFunction<dim, space_dim>;
+  using GridFunctionType = const IgGridFunction<dim, space_dim>;
   using typename parent_t::ConstElementAccessor;
   using typename parent_t::Flags;
   using typename parent_t::topology_variant;
@@ -60,6 +60,10 @@ public:
   void fill_cache(const topology_variant &sdim,
                   ConstElementAccessor &elem,
                   const int s_id) const override final;
+
+
+  std::shared_ptr<GridFunctionType>
+  get_ig_grid_function() const;
 
 private:
   struct FillCacheDispatcher : boost::static_visitor<void>
@@ -90,6 +94,8 @@ private:
 
   using IgSpaceHandler = SpaceElementHandler<dim,0,space_dim,1,Transformation::h_grad>;
   std::unique_ptr<IgSpaceHandler> ig_space_handler_;
+
+  std::shared_ptr<GridFunctionType> ig_grid_function_;
 
 };
 

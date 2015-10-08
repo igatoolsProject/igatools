@@ -500,6 +500,8 @@ public:
 
   AllSubElementsCache &operator=(AllSubElementsCache &&in) = delete;
 
+
+
   void print_info(LogStream &out) const
   {
     out.begin_item("Cache for all sub-elements in all dimensions: (memory consumption: " + std::to_string(this->memory_consumption()) + " bytes)");

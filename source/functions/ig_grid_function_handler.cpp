@@ -30,10 +30,18 @@ IgGridFunctionHandler<dim_, space_dim_>::
 IgGridFunctionHandler(const std::shared_ptr<GridFunctionType> &ig_grid_function)
   :
   parent_t(ig_grid_function),
-  ig_space_handler_(ig_grid_function->get_ig_space()->create_cache_handler())
+  ig_space_handler_(ig_grid_function->get_ig_space()->create_cache_handler()),
+  ig_grid_function_(ig_grid_function)
 {}
 
 
+template<int dim_, int space_dim_>
+auto
+IgGridFunctionHandler<dim_, space_dim_>::
+get_ig_grid_function() const -> std::shared_ptr<GridFunctionType>
+{
+  return ig_grid_function_;
+}
 
 
 

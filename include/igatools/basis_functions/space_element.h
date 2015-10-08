@@ -399,11 +399,11 @@ protected:
 public:
   using Cache = BasisValuesCache<dim_,CType>;
 
-
+  using CacheType = AllSubElementsCache<Cache>;
 
 protected:
   /** The local (element and face) cache. */
-  AllSubElementsCache<Cache> all_sub_elems_cache_;
+  CacheType all_sub_elems_cache_;
 
 public:
 
@@ -425,6 +425,8 @@ private:
    */
   bool is_comparable_with(const self_t &elem) const;
 
+
+  friend class SpaceElementHandler<dim_,codim_,range_,rank_,type_>;
 };
 
 

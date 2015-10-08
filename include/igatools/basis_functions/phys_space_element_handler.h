@@ -364,8 +364,8 @@ private:
   };
 
 
-  virtual void fill_cache_impl(BaseElem &elem,
-                               const topology_variant &topology,
+  virtual void fill_cache_impl(const topology_variant &topology,
+                               BaseElem &elem,
                                const int s_id) const override final
   {
     auto fill_cache_dispatcher =

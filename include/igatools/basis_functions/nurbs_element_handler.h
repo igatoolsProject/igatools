@@ -30,13 +30,11 @@
 #include <igatools/base/flags_handler.h>
 #include <igatools/base/quadrature.h>
 
-//TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
-//#include <igatools/utils/cartesian_product_array-template.h>
-//#include <igatools/basis_functions/nurbs_space.h>
 
 #include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_handler.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/functions/ig_grid_function_handler.h>
 
 
 
@@ -156,11 +154,11 @@ private:
 
   std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>> bsp_elem_handler_;
 
-  std::unique_ptr<GridFunctionHandler<dim_,1>> w_func_elem_handler_;
+  std::unique_ptr<IgGridFunctionHandler<dim_,1>> w_func_elem_handler_;
 
 
   using WeightElem = typename Space::WeightFunction::ElementAccessor;
-  using WeightElemTable = typename Space::template ComponentContainer<std::shared_ptr<WeightElem>>;
+//  using WeightElemTable = typename Space::template ComponentContainer<std::shared_ptr<WeightElem>>;
 
 
 
@@ -300,17 +298,11 @@ private:
                               const typename space_element::Flags &flag) override final;
 
   virtual void init_cache_impl(BaseElem &elem,
-                               const eval_pts_variant &quad) const override final
-  {
-    Assert(false,ExcNotImplemented());
-  }
+                               const eval_pts_variant &quad) const override final;
 
-  virtual void fill_cache_impl(BaseElem &elem,
-                               const topology_variant &topology,
-                               const int s_id) const override final
-  {
-    Assert(false,ExcNotImplemented());
-  }
+  virtual void fill_cache_impl(const topology_variant &topology,
+                               BaseElem &elem,
+                               const int s_id) const override final;
 
 
 
@@ -333,6 +325,164 @@ private:
   private:
     const typename space_element::Flags nrb_flag_;
     self_t &nrb_handler_;
+  };
+
+
+  struct InitCacheDispatcher : boost::static_visitor<void>
+  {
+    InitCacheDispatcher(const self_t &nrb_handler,
+                        SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> &elem)
+      :
+      nrb_handler_(nrb_handler),
+      elem_(elem)
+    {}
+
+    template<int sdim>
+    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
+    {
+      using NURBSElem = NURBSElement<dim_,range_,rank_>;
+      auto &nrb_elem = dynamic_cast<NURBSElem &>(elem_);
+
+      auto &bsp_elem = nrb_elem.bspline_elem_;
+      nrb_handler_.bsp_elem_handler_->template init_cache<sdim>(bsp_elem,quad);
+
+      auto &w_func_elem = *(nrb_elem.weight_elem_);
+      nrb_handler_.w_func_elem_handler_->init_cache(w_func_elem,quad);
+
+
+
+      auto &cache = nrb_handler_.get_element_cache(elem_);
+
+      const auto n_basis = elem_.get_num_basis(DofProperties::active);
+
+      Assert(quad == elem_.get_grid_element().template get_quad<sdim>(),
+             ExcMessage("Different quadratures."));
+      const auto n_pts = quad->get_num_points();
+
+      const auto flag = nrb_handler_.flags_[sdim];
+
+      for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
+      {
+        auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
+        s_cache.resize(flag, n_pts, n_basis);
+      }
+    }
+
+
+  private:
+    const self_t &nrb_handler_;
+    SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> &elem_;
+  };
+
+
+  struct FillCacheDispatcher : boost::static_visitor<void>
+  {
+    FillCacheDispatcher(const self_t &nrb_handler,
+                        SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> &elem,
+                        const int s_id)
+      :
+      nrb_handler_(nrb_handler),
+      elem_(elem),
+      s_id_(s_id)
+    {}
+
+    template<int sdim>
+    void operator()(const Topology<sdim> &topology)
+    {
+      Assert(sdim == dim,ExcNotImplemented());
+
+      using NURBSElem = NURBSElement<dim_,range_,rank_>;
+      auto &nrb_elem = dynamic_cast<NURBSElem &>(elem_);
+
+      auto &bsp_elem = nrb_elem.bspline_elem_;
+      nrb_handler_.bsp_elem_handler_->template fill_cache<sdim>(bsp_elem,s_id_);
+
+      auto &w_func_elem = *(nrb_elem.weight_elem_);
+      nrb_handler_.w_func_elem_handler_->fill_cache(topology,w_func_elem,s_id_);
+
+
+      auto &cache =
+        nrb_handler_.get_element_cache(nrb_elem).template get_sub_elem_cache<sdim>(s_id_);
+
+      using space_element::_Value;
+      if (cache.template status_fill<_Value>())
+      {
+        auto &values = cache.template get_data<_Value>();
+        evaluate_nurbs_values_from_bspline(bsp_elem, w_func_elem, values);
+      }
+
+      using space_element::_Gradient;
+      if (cache.template status_fill<_Gradient>())
+      {
+        auto &gradients = cache.template get_data<_Gradient>();
+        evaluate_nurbs_gradients_from_bspline(bsp_elem, w_func_elem, gradients);
+      }
+
+      using space_element::_Hessian;
+      if (cache.template status_fill<_Hessian>())
+      {
+        auto &hessians = cache.template get_data<_Hessian>();
+        evaluate_nurbs_hessians_from_bspline(bsp_elem, w_func_elem, hessians);
+      }
+
+      using space_element::_Divergence;
+      if (cache.template status_fill<_Divergence>())
+      {
+        const auto &gradient = cache.template get_data<_Gradient>();
+        auto &divergence = cache.template get_data<_Divergence>();
+        eval_divergences_from_gradients(gradient,divergence);
+        divergence.set_status_filled(true);
+      }
+      cache.set_filled(true);
+    }
+
+  private:
+    const self_t &nrb_handler_;
+    SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> &elem_;
+    const int s_id_;
+
+
+    using BSplineElem = BSplineElement<dim_,range_,rank_>;
+    using WeightFuncElem = ConstGridFunctionElement<dim_,1>;
+
+    /**
+     * Computes the value of the non-zero NURBS basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void evaluate_nurbs_values_from_bspline(
+      const BSplineElem &bspline_elem,
+      const WeightFuncElem &weight_elem,
+      DataWithFlagStatus<ValueTable<Value>> &phi) const;
+
+    /**
+     * Computes the 1st order derivative of the non-zero NURBS basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void evaluate_nurbs_gradients_from_bspline(
+      const BSplineElem &bspline_elem,
+      const WeightFuncElem &weight_elem,
+      DataWithFlagStatus<ValueTable<Derivative<1>>> &D1_phi) const;
+
+    /**
+     * Computes the 2nd order derivative of the non-zero NURBS basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void evaluate_nurbs_hessians_from_bspline(
+      const BSplineElem &bspline_elem,
+      const WeightFuncElem &weight_elem,
+      DataWithFlagStatus<ValueTable<Derivative<2>>> &D2_phi) const;
   };
 
 };

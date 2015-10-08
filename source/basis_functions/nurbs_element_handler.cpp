@@ -33,8 +33,12 @@ NURBSElementHandler(shared_ptr<const Space> space)
   :
   base_t(space),
   bsp_elem_handler_(space->get_spline_space()->create_cache_handler()),
-  w_func_elem_handler_(space->get_weight_func()->create_cache_handler())
-{}
+  w_func_elem_handler_(
+   dynamic_cast<IgGridFunctionHandler<dim_,1> *>(
+     space->get_weight_func()->create_cache_handler().release()))
+{
+  Assert(w_func_elem_handler_ != nullptr, ExcNullPtr());
+}
 
 template<int dim_, int range_ , int rank_>
 void
@@ -74,9 +78,33 @@ set_flags_impl(const topology_variant &sdim,
   w_func_elem_handler_->set_flags(sdim,w_func_elem_flags);
 
   auto set_flag_dispatcher = SetFlagDispatcher(nrb_elem_flags,*this);
-
   boost::apply_visitor(set_flag_dispatcher,sdim);
 }
+
+
+template<int dim_, int range_ , int rank_>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+init_cache_impl(BaseElem &elem,
+                const eval_pts_variant &quad) const
+{
+  auto init_cache_dispatcher = InitCacheDispatcher(*this,elem);
+  boost::apply_visitor(init_cache_dispatcher,quad);
+}
+
+
+template<int dim_, int range_ , int rank_>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+fill_cache_impl(const topology_variant &sdim,
+                BaseElem &elem,
+                const int s_id) const
+{
+  auto fill_cache_dispatcher = FillCacheDispatcher(*this,elem,s_id);
+  boost::apply_visitor(fill_cache_dispatcher,sdim);
+}
+
+
 
 #if 0
 template<int dim_, int range_ , int rank_>
@@ -337,52 +365,55 @@ print_info(LogStream &out) const
 #endif
 }
 
-#if 0
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 evaluate_nurbs_values_from_bspline(
-  const typename Space::SpSpace::ElementAccessor &bspline_elem,
-  const WeightElem &weight_elem,
-  ValueTable<Value> &phi) const
+  const BSplineElem &bspline_elem,
+  const WeightFuncElem &weight_elem,
+  DataWithFlagStatus<ValueTable<Value>> &phi) const
 {
   /*
    * This function evaluates the values of the n+1 NURBS basis function R_0,...,R_n
-   * from the set of BSpline basis function N_0,...,N_n
+   * from the set of BSpline basis function P_0,...,P_n
    * where the i-th NURBS basis function is defined as
    *
-   *         P_i
-   * R_i = -------
-   *          Q
+   *         w_i P_i
+   * R_i = -----------
+   *            Q
    *
    * with P_i a basis function of a BSplineSpace
-   * and Q an IgFunction built over a scalar BSpline space
+   * and Q an IgGridFunction built over a scalar BSpline space
    *
    */
 
+  using _Value = space_element::_Value;
+  using _D0 = grid_function_element::template _D<0>;
+
   Assert(!phi.empty(), ExcEmptyObject());
 
-  const auto &P = bspline_elem.template get_basis<_Value,dim>(0,DofProperties::active);
+  const auto &P = bspline_elem.template get_basis<_Value,dim>(s_id_,DofProperties::active);
   const auto n_pts = P.get_num_points();
 
   const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
 
-  const auto nrb_space = nrb_elem_.get_nurbs_space();
-  const auto comp_offset = nrb_space->get_ptr_const_dof_distribution()->get_dofs_offset();
+  const auto bsp_space = bspline_elem.get_bspline_space();
+  const auto comp_offset = bsp_space->get_ptr_const_dof_distribution()->get_dofs_offset();
 
-  const auto &w_coefs = nrb_space->weight_func_->get_coefficients();
+  const auto &w_coefs =
+    nrb_handler_.w_func_elem_handler_->get_ig_grid_function()->get_coefficients();
+
+  const auto &Q = weight_elem.template get_values_from_cache<_D0,dim>(s_id_);
+  Assert(n_pts == Q.get_num_points(),
+         ExcDimensionMismatch(n_pts,Q.get_num_points()));
 
   int bsp_fn_id = 0;
   for (int comp = 0 ; comp < n_components ; ++comp)
   {
-    Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
-           ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
+//    Assert(bsp_space->get_num_basis(comp) == w_coefs.size(),
+//           ExcDimensionMismatch(bsp_space->get_num_basis(comp),w_coefs.size()));
 
-    const auto &Q = weight_elem.template get_values<_Value,dim>(0);
-
-    Assert(n_pts == Q.get_num_points(),
-           ExcDimensionMismatch(n_pts,Q.get_num_points()));
 
     SafeSTLVector<Real> invQ(n_pts);
     for (int pt = 0 ; pt < n_pts ; ++pt)
@@ -398,15 +429,16 @@ evaluate_nurbs_values_from_bspline(
 
       auto R_fn = phi.get_function_view(bsp_fn_id);
 
-      //TODO (pauletti, Mar 22, 2015): study the following line, why is it like this?
+      //TODO (martinelli, Oct 8, 2015): the next line is valid only if sdim == dim
       const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
 
       for (int pt = 0 ; pt < n_pts ; ++pt)
         R_fn[pt](comp) = P_fn[pt](comp) * invQ[pt] * w ;
     } // end loop w_fn_id
   } // end loop comp
-}
 
+  phi.set_status_filled(true);
+}
 
 
 template<int dim_, int range_ , int rank_>
@@ -414,54 +446,61 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 evaluate_nurbs_gradients_from_bspline(
-  const typename Space::SpSpace::ElementAccessor &bspline_elem,
-  const WeightElem &weight_elem,
-  ValueTable<Derivative<1>> &D1_phi) const
+  const BSplineElem &bspline_elem,
+  const WeightFuncElem &weight_elem,
+  DataWithFlagStatus<ValueTable<Derivative<1>>> &D1_phi) const
 {
   /*
    * This function evaluates the gradients of the n+1 NURBS basis function R_0,...,R_n
-   * from the set of BSpline basis function N_0,...,N_n
+   * from the set of BSpline basis function P_0,...,P_n
    * where the i-th NURBS basis function is defined as
    *
-   *         P_i
-   * R_i = -------
-   *          Q
+   *         w_i P_i
+   * R_i = ----------
+   *            Q
    *
    * with P_i a basis function of a BSplineSpace
    * and Q an IgFunction built over a scalar space.
    *
    * Then the gradient dR_i is:
-   *
-   *         dP_i       P_i * dQ
-   * dR_i = ------- -  ----------
-   *           Q           Q^2
-   *
+   *               _                     _
+   *              |  dP_i       P_i * dQ  |
+   * dR_i = w_i * | ------- -  ---------- |
+   *              |    Q           Q^2    |
+   *              |_                     _|
    */
+
+  using _Value = space_element::_Value;
+  using _Gradient = space_element::_Gradient;
+  using _D0 = grid_function_element::template _D<0>;
+  using _D1 = grid_function_element::template _D<1>;
 
   Assert(!D1_phi.empty(), ExcEmptyObject());
 
-  const auto &P  = bspline_elem.template get_basis<   _Value,dim>(0,DofProperties::active);
-  const auto &dP = bspline_elem.template get_basis<_Gradient,dim>(0,DofProperties::active);
+  const auto &P  = bspline_elem.template get_basis<   _Value,dim>(s_id_,DofProperties::active);
+  const auto &dP = bspline_elem.template get_basis<_Gradient,dim>(s_id_,DofProperties::active);
 
   const auto n_pts = P.get_num_points();
 
-  const auto nrb_space = nrb_elem_.get_nurbs_space();
-  const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
-  const auto comp_offset = nrb_space->get_ptr_const_dof_distribution()->get_dofs_offset();
+  const auto bsp_space = bspline_elem.get_bspline_space();
+  const auto comp_offset = bsp_space->get_ptr_const_dof_distribution()->get_dofs_offset();
 
-  const auto &w_coefs = nrb_space->weight_func_->get_coefficients();
+  const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
+
+  const auto &w_coefs =
+    nrb_handler_.w_func_elem_handler_->get_ig_grid_function()->get_coefficients();
+
+  const auto &Q  = weight_elem.template get_values_from_cache<_D0,dim>(s_id_);
+  const auto &dQ = weight_elem.template get_values_from_cache<_D1,dim>(s_id_);
+  Assert(n_pts == Q.get_num_points(),
+         ExcDimensionMismatch(n_pts,Q.get_num_points()));
+
 
   int bsp_fn_id = 0;
   for (int comp = 0 ; comp < n_components ; ++comp)
   {
-    Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
-           ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
-
-    const auto &Q  = weight_elem.template get_values<_Value,dim>(0);
-    const auto &dQ = weight_elem.template get_values<_Gradient,dim>(0);
-
-    Assert(n_pts == Q.get_num_points(),
-           ExcDimensionMismatch(n_pts,Q.get_num_points()));
+//    Assert(bsp_space->get_num_basis(comp) == w_coefs.size(),
+//           ExcDimensionMismatch(bsp_space->get_num_basis(comp),w_coefs.size()));
 
 
     SafeSTLVector<Real> invQ(n_pts);
@@ -487,6 +526,7 @@ evaluate_nurbs_gradients_from_bspline(
 
       auto dR_fn = D1_phi.get_function_view(bsp_fn_id);
 
+      //TODO (martinelli, Oct 8, 2015): the next line is valid only if sdim == dim
       const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
 
       for (int pt = 0 ; pt < n_pts ; ++pt)
@@ -504,6 +544,8 @@ evaluate_nurbs_gradients_from_bspline(
       } // end loop pt
     } // end loop w_fn_id
   } // end loop comp
+
+  D1_phi.set_status_filled(true);
 }
 
 template<int dim_, int range_ , int rank_>
@@ -511,9 +553,9 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 evaluate_nurbs_hessians_from_bspline(
-  const typename Space::SpSpace::ElementAccessor &bspline_elem,
-  const WeightElem &weight_elem,
-  ValueTable<Derivative<2>> &D2_phi) const
+  const BSplineElem &bspline_elem,
+  const WeightFuncElem &weight_elem,
+  DataWithFlagStatus<ValueTable<Derivative<2>>> &D2_phi) const
 {
   /*
    * This function evaluates the gradients of the n+1 NURBS basis function R_0,...,R_n
@@ -540,34 +582,41 @@ evaluate_nurbs_hessians_from_bspline(
    *               Q        Q^2    |_                                         _|      Q^3
    *
    */
+
+  using _Value = space_element::_Value;
+  using _Gradient = space_element::_Gradient;
+  using _Hessian = space_element::_Hessian;
+  using _D0 = grid_function_element::template _D<0>;
+  using _D1 = grid_function_element::template _D<1>;
+  using _D2 = grid_function_element::template _D<2>;
+
   Assert(!D2_phi.empty(), ExcEmptyObject());
 
-  const auto &P   = bspline_elem.template get_basis<   _Value,dim>(0,DofProperties::active);
-  const auto &dP  = bspline_elem.template get_basis<_Gradient,dim>(0,DofProperties::active);
-  const auto &d2P = bspline_elem.template get_basis< _Hessian,dim>(0,DofProperties::active);
+  const auto &P   = bspline_elem.template get_basis<   _Value,dim>(s_id_,DofProperties::active);
+  const auto &dP  = bspline_elem.template get_basis<_Gradient,dim>(s_id_,DofProperties::active);
+  const auto &d2P = bspline_elem.template get_basis< _Hessian,dim>(s_id_,DofProperties::active);
 
   const auto n_pts = P.get_num_points();
 
-  const auto nrb_space = nrb_elem_.get_nurbs_space();
-  const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
-  const auto comp_offset = nrb_space->get_ptr_const_dof_distribution()->get_dofs_offset();
+  const auto bsp_space = bspline_elem.get_bspline_space();
+  const auto comp_offset = bsp_space->get_ptr_const_dof_distribution()->get_dofs_offset();
 
-  const auto &w_coefs = nrb_space->weight_func_->get_coefficients();
+  const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
+
+  const auto &w_coefs =
+    nrb_handler_.w_func_elem_handler_->get_ig_grid_function()->get_coefficients();
+
+  const auto &Q   = weight_elem.template get_values_from_cache<_D0,dim>(s_id_);
+  const auto &dQ  = weight_elem.template get_values_from_cache<_D1,dim>(s_id_);
+  const auto &d2Q = weight_elem.template get_values_from_cache<_D2,dim>(s_id_);
+  Assert(n_pts == Q.get_num_points(),
+         ExcDimensionMismatch(n_pts,Q.get_num_points()));
 
   int bsp_fn_id = 0;
   for (int comp = 0 ; comp < n_components ; ++comp)
   {
-    Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
-           ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
-
-
-    const auto &Q   = weight_elem.template get_values<_Value,dim>(0);
-    const auto &dQ  = weight_elem.template get_values<_Gradient,dim>(0);
-    const auto &d2Q = weight_elem.template get_values<_Hessian,dim>(0);
-
-    Assert(n_pts == Q.get_num_points(),
-           ExcDimensionMismatch(n_pts,Q.get_num_points()));
-
+//    Assert(bsp_space->get_num_basis(comp) == bsp_space.size(),
+//           ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
     SafeSTLVector<Real> invQ(n_pts);
     SafeSTLVector<Real> invQ2(n_pts);
@@ -613,6 +662,7 @@ evaluate_nurbs_hessians_from_bspline(
 
       auto d2R_fn = D2_phi.get_function_view(bsp_fn_id);
 
+      //TODO (martinelli, Oct 8, 2015): the next line is valid only if sdim == dim
       const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
 
       for (int pt = 0 ; pt < n_pts ; ++pt)
@@ -652,8 +702,8 @@ evaluate_nurbs_hessians_from_bspline(
       } // end loop pt
     } // end loop w_fn_id
   } // end loop comp
+  D2_phi.set_status_filled(true);
 }
-#endif
 
 
 IGA_NAMESPACE_CLOSE
