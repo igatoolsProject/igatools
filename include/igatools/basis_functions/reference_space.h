@@ -123,13 +123,11 @@ public:
 
 protected:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * Default constructor. It does nothing but it is needed for the serialization
    * mechanism.
    */
   ReferenceSpace() = default;
 
-  explicit ReferenceSpace(SharedPtrConstnessHandler<Grid<dim_>> grid);
 
 public:
   virtual ~ReferenceSpace() = default;

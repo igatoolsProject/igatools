@@ -35,14 +35,6 @@ using std::const_pointer_cast;
 IGA_NAMESPACE_OPEN
 
 
-template<int dim_, int range_, int rank_>
-ReferenceSpace<dim_, range_, rank_>::
-ReferenceSpace(SharedPtrConstnessHandler<Grid<dim_>> grid)
-  :
-  base_t(grid)
-{}
-
-
 
 template<int dim, int range, int rank>
 template<int k>

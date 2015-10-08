@@ -55,37 +55,19 @@ public:
          const Value &b);
 
   static std::shared_ptr<const base_t>
-  const_create(const std::shared_ptr<GridType> &domain,
+  const_create(const std::shared_ptr<const GridType> &domain,
                const Derivative<1> &A,
-               const Value &b)
-  {
-    return create(domain, A, b);
-  }
+               const Value &b);
 
   LinearGridFunction(const self_t &) = default;
 
   virtual ~LinearGridFunction() = default;
 
-  virtual void print_info(LogStream &out) const override final
-  {
-    out.begin_item("LinearGridFunction<"
-                   + std::to_string(dim) + ","
-                   + std::to_string(space_dim) + ">");
-
-    out.begin_item("A:");
-    out << A_ ;
-    out.end_item();
-
-    out.begin_item("b:");
-    out << b_ ;
-    out.end_item();
-
-    out.end_item();
-  }
+  virtual void print_info(LogStream &out) const override final;
 
 protected:
   LinearGridFunction(
-    const std::shared_ptr<GridType> &domain,
+    const SharedPtrConstnessHandler<GridType> &domain,
     const Derivative<1> &A,
     const Value &b);
 
@@ -135,23 +117,16 @@ public:
   create(std::shared_ptr<GridType> grid);
 
   static std::shared_ptr<const base_t>
-  const_create(std::shared_ptr<GridType> grid)
-  {
-    return create(grid);
-  }
+  const_create(std::shared_ptr<const GridType> grid);
 
   BallGridFunction(const self_t &) = default;
   virtual ~BallGridFunction() = default;
 
-  virtual void print_info(LogStream &out) const override final
-  {
-    out.begin_item("BallGridFunction<" + std::to_string(dim) +">");
-    out.end_item();
-  }
+  virtual void print_info(LogStream &out) const override final;
 
 
 protected:
-  BallGridFunction(std::shared_ptr<GridType> grid);
+  BallGridFunction(const SharedPtrConstnessHandler<GridType> &grid);
 
 private:
   template<int order>
@@ -204,22 +179,15 @@ public:
   create(std::shared_ptr<GridType> grid);
 
   static std::shared_ptr<const base_t>
-  const_create(std::shared_ptr<GridType> grid)
-  {
-    return create(grid);
-  }
+  const_create(std::shared_ptr<const GridType> grid);
 
   SphereGridFunction(const self_t &) = default;
   virtual ~SphereGridFunction() = default;
 
-  virtual void print_info(LogStream &out) const override final
-  {
-    out.begin_item("SphereGridFunction<" + std::to_string(dim) +">");
-    out.end_item();
-  }
+  virtual void print_info(LogStream &out) const override final;
 
 protected:
-  SphereGridFunction(std::shared_ptr<GridType> grid);
+  SphereGridFunction(const SharedPtrConstnessHandler<GridType> &grid);
 
 private:
   template<int order>
@@ -293,16 +261,13 @@ public:
          const Real theta1);
 
   static std::shared_ptr<const base_t>
-  const_create(std::shared_ptr<GridType> grid,
+  const_create(std::shared_ptr<const GridType> grid,
                const Real r0,
                const Real r1,
                const Real h0,
                const Real h1,
                const Real theta0,
-               const Real theta1)
-  {
-    return create(grid,r0,r1,h0,h1,theta0,theta1);
-  }
+               const Real theta1);
 
 
   CylindricalAnnulusGridFunction(const self_t &) = default;
@@ -312,7 +277,7 @@ public:
   virtual void print_info(LogStream &out) const override final;
 
 protected:
-  CylindricalAnnulusGridFunction(std::shared_ptr<GridType> grid,
+  CylindricalAnnulusGridFunction(const SharedPtrConstnessHandler<GridType> &grid,
                                  const Real r0,
                                  const Real r1,
                                  const Real h0,

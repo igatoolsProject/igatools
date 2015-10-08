@@ -41,7 +41,7 @@ SplineSpace<dim, range, rank>::components =
 template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
-            SharedPtrConstnessHandler<GridType> grid,
+            const SharedPtrConstnessHandler<GridType> &grid,
             const MultiplicityTable &interior_mult,
             const PeriodicityTable &periodic)
   :
@@ -65,7 +65,10 @@ create(const DegreeTable &deg,
        const PeriodicityTable &periodic)
 {
   using SpSpace = SplineSpace<dim,range,rank>;
-  auto sp = std::shared_ptr<SpSpace>(new SpSpace(deg,grid,interior_mult,periodic));
+  auto sp = std::shared_ptr<SpSpace>(new SpSpace(
+                                       deg,
+                                       SharedPtrConstnessHandler<Grid<dim>>(grid),
+                                       interior_mult,periodic));
   Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -84,7 +87,10 @@ const_create(const DegreeTable &deg,
              const PeriodicityTable &periodic)
 {
   using SpSpace = SplineSpace<dim,range,rank>;
-  auto sp = std::shared_ptr<const SpSpace>(new SpSpace(deg,grid,interior_mult,periodic));
+  auto sp = std::shared_ptr<const SpSpace>(new SpSpace(
+                                             deg,
+                                             SharedPtrConstnessHandler<Grid<dim>>(grid),
+                                             interior_mult,periodic));
   Assert(sp != nullptr, ExcNullPtr());
 
   return sp;

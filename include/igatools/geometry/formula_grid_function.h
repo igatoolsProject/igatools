@@ -49,7 +49,7 @@ public:
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
-  FormulaGridFunction(std::shared_ptr<GridType> grid);
+  FormulaGridFunction(const SharedPtrConstnessHandler<GridType> &grid);
 
   virtual ~FormulaGridFunction() = default;
 

@@ -45,7 +45,6 @@ NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
            const SharedPtrConstnessHandler<WeightFunction> &weight_func)
   :
-  BaseSpace(bsp_space->get_ptr_const_grid()),
   bsp_space_(bsp_space),
   weight_func_(weight_func)
 {
@@ -81,7 +80,9 @@ NURBSSpace<dim_, range_, rank_>::
 create(const std::shared_ptr<BSpSpace> &bs_space,
        const std::shared_ptr<WeightFunction> &weight_func) -> shared_ptr<self_t>
 {
-  auto sp = shared_ptr<self_t>(new self_t(bs_space,weight_func));
+  auto sp = shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<BSpSpace>(bs_space),
+  SharedPtrConstnessHandler<WeightFunction>(weight_func)));
   Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -97,7 +98,9 @@ NURBSSpace<dim_, range_, rank_>::
 const_create(const std::shared_ptr<const BSpSpace> &bs_space,
              const std::shared_ptr<const WeightFunction> &weight_func) -> shared_ptr<const self_t>
 {
-  auto sp = shared_ptr<const self_t>(new self_t(bs_space,weight_func));
+  auto sp = shared_ptr<const self_t>(
+    new self_t(SharedPtrConstnessHandler<BSpSpace>(bs_space),
+  SharedPtrConstnessHandler<WeightFunction>(weight_func)));
   Assert(sp != nullptr, ExcNullPtr());
 
   return sp;

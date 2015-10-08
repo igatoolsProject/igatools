@@ -25,7 +25,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int space_dim>
 FormulaGridFunction<dim, space_dim>::
-FormulaGridFunction(std::shared_ptr<GridType> grid)
+FormulaGridFunction(const SharedPtrConstnessHandler<GridType> &grid)
   :
   parent_t::GridFunction(grid)
 {}

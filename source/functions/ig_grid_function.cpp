@@ -26,13 +26,13 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int space_dim>
 IgGridFunction<dim,space_dim>::
-IgGridFunction(SharedPtrConstnessHandler<IgSpace> space,
+IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
                const IgCoefficients &coeffs)
   :
   parent_t(
    space.data_is_const() ?
-   space.get_ptr_const_data()->get_ptr_const_grid() :
-   space.get_ptr_data()->get_ptr_grid()),
+   SharedPtrConstnessHandler<GridType>(space.get_ptr_const_data()->get_ptr_const_grid()) :
+   SharedPtrConstnessHandler<GridType>(space.get_ptr_data()->get_ptr_grid())),
   ig_space_(space)
 {
 #ifndef NDEBUG
@@ -63,7 +63,8 @@ IgGridFunction<dim,space_dim>::
 const_create(const std::shared_ptr<const IgSpace> &space,
              const IgCoefficients &coeffs) -> std::shared_ptr<const parent_t>
 {
-  return std::shared_ptr<const parent_t>(new IgGridFunction(space,coeffs));
+  return std::shared_ptr<const parent_t>(new IgGridFunction(
+    SharedPtrConstnessHandler<IgSpace>(space),coeffs));
 }
 
 template<int dim,int space_dim>
@@ -72,7 +73,8 @@ IgGridFunction<dim,space_dim>::
 create(const std::shared_ptr<IgSpace> &space,
        const IgCoefficients &coeffs) -> std::shared_ptr<parent_t>
 {
-  return std::shared_ptr<parent_t>(new IgGridFunction(space,coeffs));
+  return std::shared_ptr<parent_t>(new IgGridFunction(
+    SharedPtrConstnessHandler<IgSpace>(space),coeffs));
 }
 
 

@@ -34,7 +34,7 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const int degree,
-             SharedPtrConstnessHandler<GridType> grid,
+             const SharedPtrConstnessHandler<GridType> &grid,
              const InteriorReg interior_reg,
              const bool periodic,
              const BasisEndBehaviour end_b)
@@ -55,7 +55,8 @@ create(const int degree,
        const bool periodic,
        const BasisEndBehaviour end_b) -> shared_ptr<self_t>
 {
-  auto sp = shared_ptr<self_t>(new self_t(degree,grid,interior_reg,periodic,end_b));
+  auto sp = shared_ptr<self_t>(
+    new self_t(degree,SharedPtrConstnessHandler<GridType>(grid),interior_reg,periodic,end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -74,7 +75,8 @@ const_create(const int degree,
              const bool periodic,
              const BasisEndBehaviour end_b) -> shared_ptr<const self_t>
 {
-  shared_ptr<self_t> sp(new self_t(degree,grid,interior_reg,periodic,end_b));
+  auto sp = shared_ptr<const self_t>(
+    new self_t(degree,SharedPtrConstnessHandler<GridType>(grid),interior_reg,periodic,end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
   return sp;
@@ -84,7 +86,7 @@ const_create(const int degree,
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const Degrees &deg,
-             SharedPtrConstnessHandler<GridType> grid,
+             const SharedPtrConstnessHandler<GridType> &grid,
              const InteriorReg interior_reg,
              const Periodicity &periodic,
              const EndBehaviour &end_b)
@@ -109,7 +111,8 @@ create(const Degrees &deg,
        const EndBehaviour &end_b)
 -> shared_ptr<self_t>
 {
-  auto sp = shared_ptr<self_t>(new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_reg, periodic, end_b));
+  auto sp = shared_ptr<self_t>(
+    new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_reg, periodic, end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -129,7 +132,8 @@ const_create(const Degrees &deg,
              const EndBehaviour &end_b)
 -> shared_ptr<const self_t>
 {
-  auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_reg, periodic, end_b));
+  auto sp = shared_ptr<const self_t>(
+    new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_reg, periodic, end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
   return sp;
@@ -137,12 +141,9 @@ const_create(const Degrees &deg,
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(SharedPtrConstnessHandler<SpaceData> space_data,
+BSplineSpace(const SharedPtrConstnessHandler<SpaceData> &space_data,
              const EndBehaviourTable &end_b)
   :
-  BaseSpace(space_data.data_is_const() ?
-           space_data.get_ptr_const_data()->get_ptr_const_grid() :
-           space_data.get_ptr_data()->get_ptr_grid()),
   space_data_(space_data),
   end_b_(end_b),
   operators_(*space_data_,end_b),
@@ -198,15 +199,16 @@ BSplineSpace(SharedPtrConstnessHandler<SpaceData> space_data,
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
-             SharedPtrConstnessHandler<GridType> grid,
+             const SharedPtrConstnessHandler<GridType> &grid,
              const MultiplicityTable &interior_mult,
              const PeriodicityTable &periodic,
              const EndBehaviourTable &end_b)
   :
   BSplineSpace(
    grid.data_is_const() ?
-   SpaceData::const_create(deg, grid.get_ptr_const_data(), interior_mult, periodic) :
-   SpaceData::create(deg, grid.get_ptr_data(), interior_mult, periodic),end_b)
+   SharedPtrConstnessHandler<SpaceData>(SpaceData::const_create(deg, grid.get_ptr_const_data(), interior_mult, periodic)) :
+   SharedPtrConstnessHandler<SpaceData>(SpaceData::create(deg, grid.get_ptr_data(), interior_mult, periodic)),
+   end_b)
 {}
 
 
@@ -222,7 +224,8 @@ create(const DegreeTable &deg,
        const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
-  auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_mult, periodic, end_b));
+  auto sp = shared_ptr<self_t>(
+    new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_mult, periodic, end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -242,7 +245,8 @@ const_create(const DegreeTable &deg,
              const EndBehaviourTable &end_b)
 -> shared_ptr<const self_t>
 {
-  auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_mult, periodic, end_b));
+  auto sp = shared_ptr<const self_t>(
+    new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_mult, periodic, end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
   return sp;
@@ -256,7 +260,8 @@ create(const std::shared_ptr<SpaceData> &space_data,
        const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
-  auto sp = shared_ptr<self_t>(new self_t(space_data, end_b));
+  auto sp = shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<SpaceData>(space_data), end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -273,7 +278,8 @@ const_create(const std::shared_ptr<const SpaceData> &space_data,
              const EndBehaviourTable &end_b)
 -> shared_ptr<const self_t>
 {
-  auto sp = shared_ptr<self_t>(new self_t(space_data, end_b));
+  auto sp = shared_ptr<const self_t>(
+    new self_t(SharedPtrConstnessHandler<SpaceData>(space_data), end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
   return sp;

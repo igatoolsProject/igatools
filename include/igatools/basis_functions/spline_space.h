@@ -173,7 +173,7 @@ private:
    * and @p interior_multiplicity), degree and as periodicity conditions
    */
   explicit SplineSpace(const DegreeTable &deg,
-                       SharedPtrConstnessHandler<GridType> grid,
+                       const SharedPtrConstnessHandler<GridType> &grid,
                        const MultiplicityTable &interior_multiplicity,
                        const PeriodicityTable &periodic =
                          PeriodicityTable(SafeSTLArray<bool,dim>(false)));

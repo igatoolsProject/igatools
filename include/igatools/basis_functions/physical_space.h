@@ -34,10 +34,6 @@ IGA_NAMESPACE_OPEN
 
 class SpaceManager;
 
-//template <int,int,int> class BSplineSpace;
-//template <int,int,int> class NURBSSpace;
-template <int,int,int,int> class IgFunction;
-
 
 template <int,int,int,int,Transformation> class PhysicalSpaceElement;
 
@@ -89,8 +85,6 @@ public:
 
   static const bool is_physical_space = true;
 
-  using MapFunc = typename base_t::MapFunc;
-
   static constexpr int n_components = constexpr_pow(range, rank);
 
   static const SafeSTLArray<int, n_components> components;
@@ -134,11 +128,11 @@ public:
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<RefSpace> &ref_space,
-                  const std::shared_ptr<PhysDomain> &phys_domain);
+         const std::shared_ptr<PhysDomain> &phys_domain);
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const RefSpace> &ref_space,
-         const std::shared_ptr<const PhysDomain> &phys_domain);
+               const std::shared_ptr<const PhysDomain> &phys_domain);
 
   /**
    * Create an element (defined on this grid) with a given index.
@@ -210,6 +204,17 @@ public:
     return phys_domain_.get_ptr_const_data();
   }
 
+
+  virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const override final
+  {
+    return ref_space_.get_ptr_data()->get_ptr_grid();
+  }
+
+  virtual std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const override final
+  {
+    return ref_space_.get_ptr_const_data()->get_ptr_const_grid();
+  }
+
 private:
 
   /**
@@ -219,11 +224,9 @@ private:
    */
   PhysicalSpace() = default;
 
-  PhysicalSpace(const std::shared_ptr<RefSpace> &ref_space,
-                const std::shared_ptr<PhysDomain> &phys_domain);
+  PhysicalSpace(const SharedPtrConstnessHandler<RefSpace> &ref_space,
+                const SharedPtrConstnessHandler<PhysDomain> &phys_domain);
 
-  PhysicalSpace(const std::shared_ptr<const RefSpace> &ref_space,
-                const std::shared_ptr<const PhysDomain> &phys_domain);
 
 
   SharedPtrConstnessHandler<RefSpace> ref_space_;

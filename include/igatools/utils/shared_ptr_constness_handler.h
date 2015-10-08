@@ -65,7 +65,7 @@ public:
    * Default constructor. It does nothing but it is needed for the
    * serialization mechanism.
    */
-  SharedPtrConstnessHandler() = default;
+  explicit SharedPtrConstnessHandler() = default;
 
   /**
    * Constructs the object using a shared pointer to non-const data.
@@ -73,9 +73,7 @@ public:
    * @note In DEBUG mode is performed a check about the nullity of the input data:
    * an assertion will be raised if the input data is a nullptr.
    */
-  template <class U>
-  SharedPtrConstnessHandler(const std::shared_ptr<U> &data,
-                            EnableIf<!(std::is_const<U>::value)> * = nullptr)
+  explicit SharedPtrConstnessHandler(const std::shared_ptr<T> &data)
     :
     ptr_(data),
     ptr_to_const_(nullptr)
@@ -86,9 +84,7 @@ public:
   /**
    * Constructs the object using a shared pointer to const data.
    */
-  template <class U>
-  SharedPtrConstnessHandler(const std::shared_ptr<U> &data,
-                            EnableIf<(std::is_const<U>::value)> * = nullptr)
+  explicit SharedPtrConstnessHandler(const std::shared_ptr<const T> &data)
     :
     ptr_(nullptr),
     ptr_to_const_(data)
@@ -156,7 +152,7 @@ public:
   /**
    * Return a copy of the shared pointer that is pointing to the non-const data.
    */
-  std::shared_ptr<T> get_ptr_data()
+  std::shared_ptr<T> get_ptr_data() const
   {
     Assert(!data_is_const(),ExcMessage("Data is built as const."));
     return ptr_;

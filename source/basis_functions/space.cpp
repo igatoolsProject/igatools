@@ -41,10 +41,9 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 Space<dim_,codim_,range_,rank_,type_>::
-Space(SharedPtrConstnessHandler<Grid<dim_>> grid)
+Space()
   :
-  object_id_(UniqueIdGenerator::get_unique_id()),
-  grid_(grid)
+  object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
 
@@ -56,7 +55,7 @@ get_object_id() const
 {
   return object_id_;
 }
-
+/*
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 std::shared_ptr<Grid<dim_> >
 Space<dim_,codim_,range_,rank_,type_>::
@@ -72,7 +71,7 @@ get_ptr_const_grid() const
 {
   return grid_.get_ptr_const_data();
 }
-
+//*/
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 const std::string &
@@ -197,42 +196,13 @@ void
 Space<dim_,codim_,range_,rank_,type_>::
 refine_h(const Size n_subdivisions)
 {
-  grid_.get_ptr_data()->refine(n_subdivisions);
+  this->get_ptr_grid()->refine(n_subdivisions);
 }
 
 #endif // MESH_REFINEMENT
 
 
-#if 0
-#ifdef SERIALIZATION
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
-template<class Archive>
-void
-Space<dim_,codim_,range_,rank_,type_>::
-serialize(Archive &ar, const unsigned int version)
-{
-  AssertThrow(false,ExcNotImplemented());
-#if 0
-  ar.template register_type<BSplineSpace<dim_,range_,rank_>>();
 
-#ifdef NURBS
-  ar.template register_type<NURBSSpace<dim_,range_,rank_>>();
-#endif
-
-  ar.template register_type<PhysicalSpace<dim_,range_,rank_,codim_,Transformation::h_grad>>();
-
-  ar &boost::serialization::make_nvp("Space_base_t",
-                                     boost::serialization::base_object<base_t>(*this));
-
-  ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
-  ar.template register_type<IdentityFunction<dim_,dim_> >();
-  ar &boost::serialization::make_nvp("map_func_",map_func_);
-//    Assert(map_func_ != nullptr,ExcNullPtr());
-#endif
-}
-///@}
-#endif // SERIALIZATION
-#endif
 
 
 #ifdef SERIALIZATION
@@ -247,7 +217,7 @@ serialize(Archive &ar)
 
   ar &make_nvp("name_",name_);
 
-  ar &make_nvp("grid_",grid_);
+//  ar &make_nvp("grid_",grid_);
 
 //  ar &make_nvp("phys_domain_",phys_domain_);
 }

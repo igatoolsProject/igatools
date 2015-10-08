@@ -42,32 +42,18 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::components =
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-PhysicalSpace(const shared_ptr<RefSpace> &ref_space,
-              const shared_ptr<PhysDomain> &phys_domain)
+PhysicalSpace(const SharedPtrConstnessHandler<RefSpace> &ref_space,
+              const SharedPtrConstnessHandler<PhysDomain> &phys_domain)
   :
-  base_t(ref_space->get_ptr_grid()),
-  ref_space_(ref_space),
-  phys_domain_(phys_domain)
-{
-  Assert(this->get_ptr_grid() == phys_domain_->get_grid_function()->get_grid(),
-         ExcMessage("The space and the physical domain must have the same grid!"));
-
-//TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
-}
-
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-PhysicalSpace(const shared_ptr<const RefSpace> &ref_space,
-              const shared_ptr<const PhysDomain> &phys_domain)
-  :
-  base_t(ref_space->get_ptr_const_grid()),
   ref_space_(ref_space),
   phys_domain_(phys_domain)
 {
   Assert(this->get_ptr_const_grid() == phys_domain_->get_grid_function()->get_grid(),
          ExcMessage("The space and the physical domain must have the same grid!"));
+
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
 }
+
 
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
@@ -76,9 +62,10 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create(const shared_ptr<RefSpace> &ref_space,
        const shared_ptr<PhysDomain> &phys_domain) -> shared_ptr<self_t>
 {
-//  Assert(map_func != nullptr, ExcNullPtr());
-//  Assert(map_func.unique(), ExcNotUnique());
-  auto sp = shared_ptr<self_t>(new self_t(ref_space, phys_domain));
+  auto sp = shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<RefSpace>(ref_space),
+  SharedPtrConstnessHandler<PhysDomain>(phys_domain)));
+  Assert(sp != nullptr,ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
   sp->create_connection_for_insert_knots(sp);
@@ -93,10 +80,9 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 const_create(const shared_ptr<const RefSpace> &ref_space,
              const shared_ptr<const PhysDomain> &phys_domain) -> shared_ptr<const self_t>
 {
-//  Assert(ref_space != nullptr, ExcNullPtr());
-//  Assert(map_func != nullptr, ExcNullPtr());
-//  Assert(map_func.unique(), ExcNotUnique());
-  auto sp = shared_ptr<self_t>(new self_t(ref_space, phys_domain));
+  auto sp = shared_ptr<const self_t>(
+    new self_t(SharedPtrConstnessHandler<RefSpace>(ref_space),
+  SharedPtrConstnessHandler<PhysDomain>(phys_domain)));
   Assert(sp != nullptr,ExcNullPtr());
 
   return sp;

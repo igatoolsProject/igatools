@@ -60,33 +60,19 @@ class Space
   :
   public std::enable_shared_from_this<Space<dim_,codim_,range_,rank_,type_> >
 {
-public:
-
-//  using PhysDomain = Domain<dim_,codim_>;
-
 private:
-//  using base_t = SpaceBase<dim_>;
   using self_t = Space<dim_,codim_,range_,rank_,type_>;
 
-
-protected:
-  using MapFunc = Function<dim_,0,dim_+codim_,1>;
 
 
   /** @name Constructor and destructor. */
   ///@{
 protected:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. It does nothing, apart assigning a unique id to the object.
    */
-  Space() = default;
+  Space();
 
-  /**
-   * Construct the object from the (const or non-const) @p grid on which the function space will be built upon.
-   */
-  Space(SharedPtrConstnessHandler<Grid<dim_>> grid);
 
 
   /** Copy constructor. */
@@ -128,15 +114,10 @@ public:
    */
   Index get_object_id() const;
 
-  SharedPtrConstnessHandler<Grid<dim_>>
-                                     get_grid() const
-  {
-    return grid_;
-  }
 
-  std::shared_ptr<Grid<dim_>> get_ptr_grid();
+  virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const = 0;
 
-  std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const;
+  virtual std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const = 0;
 
   /**
    * Get the name associated to the object instance.
@@ -199,10 +180,10 @@ public:
     SafeSTLVector<Index> &dofs_global,
     SafeSTLVector<Index> &dofs_local_to_patch,
     SafeSTLVector<Index> &dofs_local_to_elem,
-    const std::string &dofs_property = DofProperties::active) const // = 0
-  {
-    Assert(false,ExcMessage("This function must be pure abstract!"));
-  }
+    const std::string &dofs_property = DofProperties::active) const  = 0;
+//  {
+//    Assert(false,ExcMessage("This function must be pure abstract!"));
+//  }
 
 
   /**
@@ -297,13 +278,6 @@ private:
    */
   std::string name_;
 
-  /**
-   * Grid associated to the space.
-   */
-  SharedPtrConstnessHandler<Grid<dim_> > grid_;
-
-//protected:
-//  SharedPtrConstnessHandler<Domain<dim_,codim_>> phys_domain_;
 
 
 private:

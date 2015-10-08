@@ -296,7 +296,7 @@ protected:
    * in all components.
    */
   explicit BSplineSpace(const int degree,
-                        SharedPtrConstnessHandler<GridType> grid,
+                        const SharedPtrConstnessHandler<GridType> &grid,
                         const InteriorReg interior_reg,
                         const bool periodic,
                         const BasisEndBehaviour end_b);
@@ -309,7 +309,7 @@ protected:
    * in all components.
    */
   explicit BSplineSpace(const Degrees &degree,
-                        SharedPtrConstnessHandler<GridType> grid,
+                        const SharedPtrConstnessHandler<GridType> &grid,
                         const InteriorReg interior_reg,
                         const Periodicity &periodic,
                         const EndBehaviour &end_b);
@@ -324,14 +324,14 @@ protected:
    * component.
    */
   explicit BSplineSpace(const DegreeTable &deg,
-                        SharedPtrConstnessHandler<GridType> grid,
+                        const SharedPtrConstnessHandler<GridType> &grid,
                         const MultiplicityTable &interior_mult,
                         const PeriodicityTable &periodic,
                         const EndBehaviourTable &end_b);
 
 
 
-  explicit BSplineSpace(SharedPtrConstnessHandler<SpaceData> space_data,
+  explicit BSplineSpace(const SharedPtrConstnessHandler<SpaceData> &space_data,
                         const EndBehaviourTable &end_b);
 
 
@@ -350,6 +350,15 @@ protected:
 
 public:
 
+  virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const override final
+  {
+    return space_data_.get_ptr_data()->get_ptr_grid();
+  }
+
+  virtual std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const override final
+  {
+    return space_data_.get_ptr_const_data()->get_ptr_const_grid();
+  }
 
 
   virtual const DegreeTable &get_degree_table() const override final;
