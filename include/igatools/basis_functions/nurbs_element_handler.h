@@ -400,29 +400,51 @@ private:
       auto &w_func_elem = *(nrb_elem.weight_elem_);
       nrb_handler_.w_func_elem_handler_->fill_cache(topology,w_func_elem,s_id_);
 
-
       auto &cache =
         nrb_handler_.get_element_cache(nrb_elem).template get_sub_elem_cache<sdim>(s_id_);
 
       using space_element::_Value;
+      using space_element::_Gradient;
+      using space_element::_Hessian;
+	  using _D0 = grid_function_element::template _D<0>;
+	  using _D1 = grid_function_element::template _D<1>;
+	  using _D2 = grid_function_element::template _D<2>;
+
+	  const auto bsp_local_to_patch = bsp_elem.get_local_to_patch(DofProperties::active);
+
+	  const auto &w_coefs =
+	    nrb_handler_.w_func_elem_handler_->get_ig_grid_function()->get_coefficients();
+
       if (cache.template status_fill<_Value>())
       {
+    	const auto &P = bsp_elem.template get_basis<_Value,sdim>(s_id_,DofProperties::active);
+    	const auto &Q = w_func_elem.template get_values_from_cache<_D0,sdim>(s_id_);
+
         auto &values = cache.template get_data<_Value>();
-        evaluate_nurbs_values_from_bspline(bsp_elem, w_func_elem, values);
+        evaluate_nurbs_values_from_bspline(bsp_elem,bsp_local_to_patch,P,w_coefs,Q,values);
       }
 
-      using space_element::_Gradient;
       if (cache.template status_fill<_Gradient>())
       {
+      	const auto &P = bsp_elem.template get_basis<_Value,sdim>(s_id_,DofProperties::active);
+      	const auto &dP = bsp_elem.template get_basis<_Gradient,sdim>(s_id_,DofProperties::active);
+      	const auto &Q = w_func_elem.template get_values_from_cache<_D0,sdim>(s_id_);
+      	const auto &dQ = w_func_elem.template get_values_from_cache<_D1,sdim>(s_id_);
+
         auto &gradients = cache.template get_data<_Gradient>();
-        evaluate_nurbs_gradients_from_bspline(bsp_elem, w_func_elem, gradients);
+        evaluate_nurbs_gradients_from_bspline(bsp_elem,bsp_local_to_patch,P,dP,w_coefs,Q,dQ,gradients);
       }
 
-      using space_element::_Hessian;
       if (cache.template status_fill<_Hessian>())
       {
+        const auto &P = bsp_elem.template get_basis<_Value,sdim>(s_id_,DofProperties::active);
+       	const auto &dP = bsp_elem.template get_basis<_Gradient,sdim>(s_id_,DofProperties::active);
+       	const auto &d2P = bsp_elem.template get_basis<_Hessian,sdim>(s_id_,DofProperties::active);
+       	const auto &Q = w_func_elem.template get_values_from_cache<_D0,sdim>(s_id_);
+       	const auto &dQ = w_func_elem.template get_values_from_cache<_D1,sdim>(s_id_);
+       	const auto &d2Q = w_func_elem.template get_values_from_cache<_D2,sdim>(s_id_);
         auto &hessians = cache.template get_data<_Hessian>();
-        evaluate_nurbs_hessians_from_bspline(bsp_elem, w_func_elem, hessians);
+        evaluate_nurbs_hessians_from_bspline(bsp_elem,bsp_local_to_patch,P,dP,d2P,w_coefs,Q,dQ,d2Q, hessians);
       }
 
       using space_element::_Divergence;
@@ -455,7 +477,10 @@ private:
      */
     void evaluate_nurbs_values_from_bspline(
       const BSplineElem &bspline_elem,
-      const WeightFuncElem &weight_elem,
+	  const SafeSTLVector<Index> &bsp_local_to_patch,
+	  const ValueTable<typename BSplineElem::Value> &N,
+	  const IgCoefficients &w_coeffs,
+	  const ValueVector<typename WeightFuncElem::Value> &Q,
       DataWithFlagStatus<ValueTable<Value>> &phi) const;
 
     /**
@@ -468,7 +493,12 @@ private:
      */
     void evaluate_nurbs_gradients_from_bspline(
       const BSplineElem &bspline_elem,
-      const WeightFuncElem &weight_elem,
+	  const SafeSTLVector<Index> &bsp_local_to_patch,
+	  const ValueTable<typename BSplineElem::Value> &N,
+	  const ValueTable<typename BSplineElem::template Derivative<1>> &dN,
+	  const IgCoefficients &w_coeffs,
+	  const ValueVector<typename WeightFuncElem::Value> &Q,
+	  const ValueVector<typename WeightFuncElem::template Derivative<1>> &dQ,
       DataWithFlagStatus<ValueTable<Derivative<1>>> &D1_phi) const;
 
     /**
@@ -481,7 +511,14 @@ private:
      */
     void evaluate_nurbs_hessians_from_bspline(
       const BSplineElem &bspline_elem,
-      const WeightFuncElem &weight_elem,
+	  const SafeSTLVector<Index> &bsp_local_to_patch,
+	  const ValueTable<typename BSplineElem::Value> &N,
+	  const ValueTable<typename BSplineElem::template Derivative<1>> &dN,
+	  const ValueTable<typename BSplineElem::template Derivative<2>> &d2N,
+	  const IgCoefficients &w_coeffs,
+	  const ValueVector<typename WeightFuncElem::Value> &Q,
+	  const ValueVector<typename WeightFuncElem::template Derivative<1>> &dQ,
+	  const ValueVector<typename WeightFuncElem::template Derivative<2>> &d2Q,
       DataWithFlagStatus<ValueTable<Derivative<2>>> &D2_phi) const;
   };
 

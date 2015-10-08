@@ -195,10 +195,10 @@ private:
                 boost::fusion::pair<_D<2>,DataWithFlagStatus<ValueVector<Derivative<2>>>>
                 >;
 
+public:
 
   using Cache = PointValuesCache<dim_,CType>;
 
-public:
   using CacheType = AllSubElementsCache<Cache>;
 
 private:
