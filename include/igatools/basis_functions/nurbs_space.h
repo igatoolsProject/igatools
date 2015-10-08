@@ -286,8 +286,9 @@ private:
   SharedPtrConstnessHandler<WeightFunction> weight_func_;
 
 
-  friend ElementAccessor;
-  friend ElementHandler;
+
+  friend class NURBSElement<dim, range, rank>;
+  friend class NURBSElementHandler<dim, range, rank>;
 
 
   /**

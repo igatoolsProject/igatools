@@ -154,9 +154,9 @@ private:
                                    const topology_variant &topology, const int j) override final;
 #endif
 
-  std::unique_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
+  std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>> bsp_elem_handler_;
 
-  SafeSTLArray<ValueFlags, dim+1> flags_;
+  std::unique_ptr<GridFunctionHandler<dim_,1>> w_func_elem_handler_;
 
 
   using WeightElem = typename Space::WeightFunction::ElementAccessor;
@@ -297,10 +297,7 @@ private:
   using BaseElem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
 
   virtual void set_flags_impl(const topology_variant &topology,
-                              const typename space_element::Flags &flag) override final
-  {
-    Assert(false,ExcNotImplemented());
-  }
+                              const typename space_element::Flags &flag) override final;
 
   virtual void init_cache_impl(BaseElem &elem,
                                const eval_pts_variant &quad) const override final
@@ -315,6 +312,28 @@ private:
     Assert(false,ExcNotImplemented());
   }
 
+
+
+  struct SetFlagDispatcher : boost::static_visitor<void>
+  {
+    SetFlagDispatcher(const typename space_element::Flags nrb_flag,
+                      self_t &nrb_handler)
+      :
+      nrb_flag_(nrb_flag),
+      nrb_handler_(nrb_handler)
+    {}
+
+    template<int sdim>
+    void operator()(const Topology<sdim> &topology)
+    {
+      nrb_handler_.flags_[sdim] = nrb_flag_;
+    }
+
+
+  private:
+    const typename space_element::Flags nrb_flag_;
+    self_t &nrb_handler_;
+  };
 
 };
 

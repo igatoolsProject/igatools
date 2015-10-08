@@ -31,20 +31,52 @@ template<int dim_, int range_ , int rank_>
 NURBSElementHandler<dim_, range_, rank_>::
 NURBSElementHandler(shared_ptr<const Space> space)
   :
-  base_t(space)
-{
-  bspline_handler_ = std::make_unique<BSplineElementHandler<dim_,range_,rank_>>(space->get_spline_space());
-}
+  base_t(space),
+  bsp_elem_handler_(space->get_spline_space()->create_cache_handler()),
+  w_func_elem_handler_(space->get_weight_func()->create_cache_handler())
+{}
 
-#if 0
 template<int dim_, int range_ , int rank_>
-auto
+void
 NURBSElementHandler<dim_, range_, rank_>::
-create(std::shared_ptr<const Space> space) -> std::unique_ptr<base_t>
+set_flags_impl(const topology_variant &sdim,
+               const typename space_element::Flags &flag)
 {
-  return std::unique_ptr<self_t>(new self_t(space));
+  using BasisFlags = space_element::Flags;
+  auto nrb_elem_flags = flag;
+  if (contains(flag,space_element::Flags::divergence))
+    nrb_elem_flags |= space_element::Flags::gradient;
+
+
+  auto bsp_elem_flags = BasisFlags::none;
+
+  using WFuncFlags = grid_function_element::Flags;
+  auto w_func_elem_flags = WFuncFlags::none;
+
+  if (contains(nrb_elem_flags, BasisFlags::value))
+  {
+    bsp_elem_flags |= BasisFlags::value;
+    w_func_elem_flags |= WFuncFlags::D0;
+  }
+  if (contains(nrb_elem_flags, BasisFlags::gradient))
+  {
+    bsp_elem_flags |= BasisFlags::value | BasisFlags::gradient ;
+    w_func_elem_flags |= WFuncFlags::D0 | WFuncFlags::D1;
+  }
+  if (contains(nrb_elem_flags, BasisFlags::hessian))
+  {
+    bsp_elem_flags |= BasisFlags::value | BasisFlags::gradient | BasisFlags::hessian;
+    w_func_elem_flags |= WFuncFlags::D0 | WFuncFlags::D1 | WFuncFlags::D2;
+  }
+
+
+  bsp_elem_handler_->set_flags_impl(sdim,bsp_elem_flags);
+  w_func_elem_handler_->set_flags(sdim,w_func_elem_flags);
+
+  auto set_flag_dispatcher = SetFlagDispatcher(nrb_elem_flags,*this);
+
+  boost::apply_visitor(set_flag_dispatcher,sdim);
 }
-#endif
 
 #if 0
 template<int dim_, int range_ , int rank_>
