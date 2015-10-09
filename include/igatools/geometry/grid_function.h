@@ -143,6 +143,15 @@ public:
 
   virtual void print_info(LogStream &out) const = 0;
 
+#ifdef MESH_REFINEMENT
+  std::shared_ptr<const self_t>
+  get_grid_function_previous_refinement() const
+  {
+    AssertThrow(false,ExcNotImplemented());
+    return nullptr;
+  }
+#endif // MESH_REFINEMENT
+
 private:
   SharedPtrConstnessHandler<Grid<dim_>> grid_;
 

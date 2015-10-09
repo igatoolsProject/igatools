@@ -220,7 +220,10 @@ rebuild_after_insert_knots(
 
   spline_space_previous_refinement_ =
     std::shared_ptr<SplineSpace<dim,range,rank> >(
-      new SplineSpace<dim,range,rank>(deg_,grid_pre_refinement,interior_mult_));
+      new SplineSpace<dim,range,rank>(
+        deg_,
+        SharedPtrConstnessHandler<Grid<dim>>(grid_pre_refinement),
+        interior_mult_));
 
 
   const auto &old_unique_knots = old_grid.get_knot_coordinates();

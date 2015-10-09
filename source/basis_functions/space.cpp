@@ -55,23 +55,7 @@ get_object_id() const
 {
   return object_id_;
 }
-/*
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
-std::shared_ptr<Grid<dim_> >
-Space<dim_,codim_,range_,rank_,type_>::
-get_ptr_grid()
-{
-  return grid_.get_ptr_data();
-}
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
-std::shared_ptr<const Grid<dim_> >
-Space<dim_,codim_,range_,rank_,type_>::
-get_ptr_const_grid() const
-{
-  return grid_.get_ptr_const_data();
-}
-//*/
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 const std::string &
@@ -216,10 +200,6 @@ serialize(Archive &ar)
   ar &make_nvp("object_id_",object_id_);
 
   ar &make_nvp("name_",name_);
-
-//  ar &make_nvp("grid_",grid_);
-
-//  ar &make_nvp("phys_domain_",phys_domain_);
 }
 #endif // SERIALIZATION
 

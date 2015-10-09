@@ -259,12 +259,6 @@ public:
 
 #endif
 
-#if 0
-  std::shared_ptr<const Domain<dim_,codim_>> get_physical_domain() const
-  {
-    return phys_domain_.get_ptr_const_data();
-  }
-#endif
 
 private:
 

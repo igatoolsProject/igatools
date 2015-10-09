@@ -355,26 +355,6 @@ get_spline_space() const -> const std::shared_ptr<const BSpSpace>
 
 
 
-#if 0
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_push_forward() -> std::shared_ptr<PushForwardType>
-{
-  return bsp_space_->get_push_forward();
-}
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_push_forward() const -> std::shared_ptr<const PushForwardType>
-{
-  return bsp_space_->get_push_forward();
-}
-
-#endif
-
-
 
 
 template<int dim_, int range_, int rank_>
@@ -596,43 +576,23 @@ rebuild_after_insert_knots(
   const Grid<dim_> &old_grid)
 {
   auto bsp_space_previous_refinement =
-    std::const_pointer_cast<BSpSpace>(
-      std::dynamic_pointer_cast<const BSpSpace>(bsp_space_->get_space_previous_refinement()));
+    std::dynamic_pointer_cast<const BSpSpace>(bsp_space_->get_space_previous_refinement());
   Assert(bsp_space_previous_refinement != nullptr,ExcNullPtr());
 
   auto weight_func_previous_refinement_ =
-    std::dynamic_pointer_cast<WeightFunction>(
-      weight_func_->get_function_previous_refinement());
+    weight_func_->get_grid_function_previous_refinement();
   Assert(weight_func_previous_refinement_ != nullptr,ExcNullPtr());
 
 
   this->ref_space_previous_refinement_ =
-    NURBSSpace<dim_,range_,rank_>::create(
-      bsp_space_previous_refinement,weight_func_previous_refinement_);
+    NURBSSpace<dim_,range_,rank_>::const_create(
+      bsp_space_previous_refinement,
+      weight_func_previous_refinement_);
 }
 
 #endif // MESH_REFINEMENT
 
 
-#if 0
-#ifdef SERIALIZATION
-template <int dim_, int range_, int rank_>
-template<class Archive>
-void
-NURBSSpace<dim_, range_, rank_>::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("ReferenceSpace",
-                                     boost::serialization::base_object<BaseSpace>(*this));
-
-  ar.template register_type<BSpSpace>();
-  ar &boost::serialization::make_nvp("bsp_space_",bsp_space_);
-
-  ar &boost::serialization::make_nvp("weight_func_",weight_func_);
-}
-///@}
-#endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 

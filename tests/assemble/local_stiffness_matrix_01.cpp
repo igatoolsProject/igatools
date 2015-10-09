@@ -34,7 +34,7 @@
 #include <igatools/basis_functions/physical_space_element.h>
 //#include <igatools/basis_functions/space_uniform_quad_cache.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/identity_function.h>
+//#include <igatools/functions/identity_function.h>
 
 #include <igatools/linear_algebra/dense_matrix.h>
 
@@ -48,25 +48,31 @@ void loc_stiff_matrix(const int n_knots, const int deg)
   using Space = BSplineSpace<dim>;
   auto ref_space = Space::create(deg, grid) ;
 
-  using PhysSpace = PhysicalSpace<dim,1,1,0,Transformation::h_grad>;
-  auto identity_mapping = IdentityFunction<dim>::create(grid);
-  auto phys_space = PhysSpace::create(ref_space, identity_mapping) ;
+//  using PhysSpace = PhysicalSpace<dim,1,1,0,Transformation::h_grad>;
+//  auto identity_mapping = IdentityFunction<dim>::create(grid);
+// auto phys_space = PhysSpace::create(ref_space, identity_mapping) ;
 
-  auto elem_handler = phys_space->create_cache_handler();
+  auto space = ref_space;
 
-  auto quad = QGauss<dim>(deg+1);
-  auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
-  elem_handler->reset(flag,quad);
 
-  const int n_qpoints =  quad.get_num_points();
+  auto elem_handler = space->create_cache_handler();
 
-  auto elem           = phys_space->begin();
-  const auto elem_end = phys_space->end();
+  auto quad = QGauss<dim>::create(deg+1);
+
+  using Flags = space_element::Flags;
+  auto flag = Flags::value | Flags::gradient | Flags::w_measure;
+  elem_handler->template set_flags<dim>(flag);
+
+  const int n_qpoints =  quad->get_num_points();
+
+  auto elem           = space->begin();
+  const auto elem_end = space->end();
 
   const int n_basis = elem->get_num_basis(DofProperties::active);
   DenseMatrix loc_mat(n_basis,n_basis);
 
-  elem_handler->init_element_cache(elem);
+  using _Gradient = space_element::_Gradient;
+  elem_handler->init_element_cache(elem,quad);
   for (; elem != elem_end; ++elem)
   {
     elem_handler->fill_element_cache(elem);
