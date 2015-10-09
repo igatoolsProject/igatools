@@ -40,16 +40,16 @@ template <class Accessor> class GridIterator;
  *
  * @ingroup elements
  */
-template<int dim_,int range_,int rank_,int codim_,Transformation type_ = Transformation::h_grad>
+template<int dim_,int range_,int rank_,int codim_>
 class PhysicalSpaceElement
   :
   public SpaceElement<dim_,codim_,range_,rank_>
 {
-  using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
+  using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
   using parent_t = SpaceElement<dim_,codim_,range_,rank_>;
 
 public :
-  using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
+  using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
   /** Type required by the GridIterator templated iterator */
   using ContainerType = const PhysSpace;
 
@@ -326,7 +326,7 @@ protected:
 
 private:
   template <class Accessor> friend class GridIteratorBase;
-  template <int,int,int,int,Transformation> friend class PhysSpaceElementHandler;
+  template <int,int,int,int> friend class PhysSpaceElementHandler;
 
   std::unique_ptr<RefElemAccessor> ref_space_element_;
 

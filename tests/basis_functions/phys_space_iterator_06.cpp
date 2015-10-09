@@ -59,14 +59,16 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
   OUTSTART
   using BspSpace = BSplineSpace<dim, range, rank>;
 //    using RefSpace = ReferenceSpace<dim, range,rank>;
-  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  using Space = PhysicalSpace<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
   auto ref_space = BspSpace::const_create(deg, grid);
   auto map_func = create_function(grid);
 
-  auto space = Space::const_create(ref_space, Domain<dim,0>::const_create(map_func));
+  auto space = Space::const_create(
+                 ref_space,
+                 Domain<dim,0>::const_create(map_func), Transformation::h_grad);
 
 
   auto quad = QGauss<k>::create(n_qp);

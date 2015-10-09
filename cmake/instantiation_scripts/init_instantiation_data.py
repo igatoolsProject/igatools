@@ -101,8 +101,7 @@ class PhysSpace:
        self.spec   = specs
        self.name   = ( '%s <' %name + 
                        '%d,%d,%d,' % (specs.dim, specs.range, specs.rank) +
-                       '%d, Transformation::%s>' 
-                       %(specs.codim, specs.trans_type) )
+                       '%d>' %(specs.codim) )
 
 class RefSpace:
     def __init__(self, specs, ref_space):

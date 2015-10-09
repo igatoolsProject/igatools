@@ -27,7 +27,7 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int,int,int,int,Transformation>
+template <int,int,int,int>
 class PhysicalSpaceElement;
 
 constexpr
@@ -88,7 +88,7 @@ public:
 
 
   template <int range,int rank>
-  using PhysSpaceElem = PhysicalSpaceElement<dim_,range,rank,codim,Transformation::h_grad>;
+  using PhysSpaceElem = PhysicalSpaceElement<dim_,range,rank,codim>;
 
 public:
 

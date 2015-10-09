@@ -35,9 +35,9 @@ IGA_NAMESPACE_OPEN
 class SpaceManager;
 
 
-template <int,int,int,int,Transformation> class PhysicalSpaceElement;
+template <int,int,int,int> class PhysicalSpaceElement;
 
-template <int,int,int,int,Transformation> class PhysSpaceElementHandler;
+template <int,int,int,int> class PhysSpaceElementHandler;
 
 /**
  *
@@ -47,14 +47,13 @@ template <int,int,int,int,Transformation> class PhysSpaceElementHandler;
  * @ingroup serializable
  *
  */
-template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0,
-          Transformation type_= Transformation::h_grad>
+template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0>
 class PhysicalSpace :
   public Space<dim_,codim_,range_,rank_>
 {
 private:
   using base_t = Space<dim_,codim_,range_,rank_>;
-  using self_t = PhysicalSpace<dim_, range_, rank_, codim_, type_>;
+  using self_t = PhysicalSpace<dim_, range_, rank_, codim_>;
 
 public:
   ///@{
@@ -71,7 +70,7 @@ public:
 
   using GridType = Grid<dim_>;
   ///@}
-  using ElementHandler = PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>;
+  using ElementHandler = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
 
   static const int dim = dim_;
 
@@ -119,7 +118,7 @@ public:
 public:
 
 
-  using ElementAccessor = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
+  using ElementAccessor = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
 
@@ -155,7 +154,7 @@ public:
 
 
   template <int k>
-  using SubSpace = PhysicalSpace<k, range, rank, codim + dim-k, type_>;
+  using SubSpace = PhysicalSpace<k, range, rank, codim + dim-k>;
 
   template <int sdim>
   using SubGridMap = typename RefSpace::GridType::template SubGridMap<sdim>;

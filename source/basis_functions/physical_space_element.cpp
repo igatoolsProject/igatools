@@ -28,8 +28,8 @@ using std::make_unique;
 
 IGA_NAMESPACE_OPEN
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+template<int dim_,int range_,int rank_,int codim_>
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const ListIt &index,
                      const PropId &prop)
@@ -45,9 +45,9 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
   Assert(phys_domain_element_ != nullptr, ExcNullPtr());
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_physical_space() const -> std::shared_ptr<const PhysSpace>
 {
   return phys_space_;
@@ -55,9 +55,9 @@ get_physical_space() const -> std::shared_ptr<const PhysSpace>
 
 
 #if 0
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &in,
+template<int dim_,int range_,int rank_,int codim_>
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &in,
                      const CopyPolicy &copy_policy)
   :
   parent_t(in,copy_policy)
@@ -79,9 +79,9 @@ PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> 
 
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 operator++()
 {
   ++(*phys_domain_element_);
@@ -89,9 +89,9 @@ operator++()
   ++(*ref_space_element_);
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 move_to(const IndexType &elem_id)
 {
   ref_space_element_->move_to(elem_id);
@@ -100,46 +100,46 @@ move_to(const IndexType &elem_id)
 
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 template <int sdim>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_points(const int s_id) const -> const ValueVector<PhysPoint>
 {
 //  using _Point = typename PhysDomainElem::_Point;
   return phys_domain_element_->template get_points<sdim>(s_id);
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_element_points() const -> const ValueVector<PhysPoint>
 {
   return this->template get_points<dim>(0);
 }
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_element_w_measures() const -> const ValueVector<Real>
 {
   return this->template get_w_measures<dim>(0);
 }
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_index() const -> IndexType
 {
   return parent_t::get_index();
 }
 
 #if 0
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 move_to(const Index flat_index)
 {
   this->get_grid_element().move_to(flat_index);
@@ -150,42 +150,42 @@ move_to(const Index flat_index)
 
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_ref_space_element() const -> const RefElemAccessor &
 {
   return dynamic_cast<const RefElemAccessor &>(*ref_space_element_);
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_ref_space_element() -> RefElemAccessor &
 {
   return dynamic_cast<RefElemAccessor &>(*ref_space_element_);
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_grid() const -> const std::shared_ptr<const Grid<dim> >
 {
   return this->get_ref_space_element().get_grid();
 }
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_physical_domain_element() const -> const PhysDomainElem &
 {
   return *phys_domain_element_;
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_physical_domain_element() -> PhysDomainElem &
 {
   return *phys_domain_element_;
@@ -193,9 +193,9 @@ get_physical_domain_element() -> PhysDomainElem &
 //*/
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 print_info(LogStream &out) const
 {
   using std::to_string;
@@ -219,22 +219,23 @@ print_info(LogStream &out) const
   out.end_item();
 
   std::string transf_type;
-  if (type_ == Transformation::h_grad)
+  auto type = phys_space_->get_transformation_type();
+  if (type == Transformation::h_grad)
     transf_type = "h_grad";
-  else if (type_ == Transformation::h_div)
+  else if (type == Transformation::h_div)
     transf_type = "h_div";
-  else if (type_ == Transformation::h_curl)
+  else if (type == Transformation::h_curl)
     transf_type = "h_curl";
-  else if (type_ == Transformation::l_2)
+  else if (type == Transformation::l_2)
     transf_type = "l_2";
   out << "Transformation: " << transf_type << std::endl;
 
   out.end_item();
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 print_cache_info(LogStream &out) const
 {
   using std::to_string;
@@ -254,17 +255,17 @@ print_cache_info(LogStream &out) const
 
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 operator==(const parent_t &a) const
 {
   return !((*this) != a);
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 operator!=(const parent_t &a) const
 {
   const self_t &elem = dynamic_cast<const self_t &>(a);
@@ -274,9 +275,9 @@ operator!=(const parent_t &a) const
          (*phys_domain_element_ != *elem.phys_domain_element_);
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 operator<(const parent_t &a) const
 {
   const self_t &elem = dynamic_cast<const self_t &>(a);
@@ -285,9 +286,9 @@ operator<(const parent_t &a) const
   return (*ref_space_element_ < *elem.ref_space_element_);
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 operator>(const parent_t &a) const
 {
   const self_t &elem = dynamic_cast<const self_t &>(a);
@@ -297,9 +298,9 @@ operator>(const parent_t &a) const
 }
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 is_comparable_with(const self_t &elem) const
 {
 //   bool same_ref_space =

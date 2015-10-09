@@ -163,11 +163,12 @@ template<int dim,int range=dim,int rank=1,int codim=0>
 auto
 create_phys_space(shared_ptr<const BSplineSpace<dim,range,rank>> ref_space)
 {
-  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  using Space = PhysicalSpace<dim,range,rank,codim>;
 
   return Space::const_create(
            ref_space,
-           Domain<dim,codim>::const_create(create_function(ref_space)));
+           Domain<dim,codim>::const_create(create_function(ref_space)),
+           Transformation::h_grad);
 }
 
 

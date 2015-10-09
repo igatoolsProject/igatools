@@ -43,15 +43,15 @@
 using space_tools::get_boundary_dofs;
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
-    create_space(const shared_ptr<Grid<dim>> &grid,
-                 const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
-                 const int deg=1)
+shared_ptr<PhysicalSpace<dim,range,rank,codim>>
+                                             create_space(const shared_ptr<Grid<dim>> &grid,
+                                                          const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
+                                                          const int deg=1)
 {
   using BspSpace = BSplineSpace<dim, range, rank>;
-  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  using Space = PhysicalSpace<dim,range,rank,codim>;
   auto ref_space = BspSpace::create(deg, grid);
-  return Space::create(ref_space, Domain<dim,codim>::create(grid_func));
+  return Space::create(ref_space, Domain<dim,codim>::create(grid_func), Transformation::h_grad);
 }
 
 
@@ -72,16 +72,16 @@ enum  bc : boundary_id
 };
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
-    create_space_prop(const shared_ptr<Grid<dim>> &grid,
-                      const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
-                      const int deg=1)
+shared_ptr<PhysicalSpace<dim,range,rank,codim>>
+                                             create_space_prop(const shared_ptr<Grid<dim>> &grid,
+                                                 const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
+                                                 const int deg=1)
 {
   const int neu_face = 0;
   grid->set_boundary_id(neu_face, bc::neu);
 
   using BspSpace = BSplineSpace<dim, range, rank>;
-  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  using Space = PhysicalSpace<dim,range,rank,codim>;
   auto ref_space = BspSpace::create(deg, grid);
   auto space = Space::create(ref_space, Domain<dim,codim>::create(grid_func));
 
@@ -118,7 +118,7 @@ shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
 
 
 template <int dim, int k, int range=1, int rank=1, int codim = 0>
-void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>> space,
+void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim>> space,
                  const int n_qp = 1,
                  const string &prop = DofProperties::active,
                  const bool no_boundary=true)
@@ -129,7 +129,7 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::
       << n_qp << "," << prop <<  "," << no_boundary << ")" << std::endl;
 
 
-//    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+//    using Space = PhysicalSpace<dim,range,rank,codim>;
 //    using ElementHandler = typename Space::ElementHandler;
 
   auto quad = QGauss<k>::create(n_qp);

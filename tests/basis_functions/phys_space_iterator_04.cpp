@@ -66,14 +66,14 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
   const int k = dim;
   using BspSpace = BSplineSpace<dim, range, rank>;
-  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  using Space = PhysicalSpace<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
   auto ref_space = BspSpace::const_create(deg, grid);
   auto phys_domain = create_domain(grid);
 
-  auto space = Space::const_create(ref_space, phys_domain);
+  auto space = Space::const_create(ref_space, phys_domain, Transformation::h_grad);
 
   const int n_qp = 2;
   auto quad = QGauss<k>::create(n_qp);

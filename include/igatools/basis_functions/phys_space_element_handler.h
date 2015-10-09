@@ -143,7 +143,7 @@ phys_space_to_domain_flag(
 
 
 
-template<int dim, int range, int rank, int codim,Transformation type_>
+template<int dim, int range, int rank, int codim>
 class PhysicalSpace;
 
 /**
@@ -151,13 +151,13 @@ class PhysicalSpace;
  *
  * @ingroup handlers
  */
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 class PhysSpaceElementHandler
   :
   public SpaceElementHandler<dim_,codim_,range_,rank_>
 {
 
-  using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
+  using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
   using RefSpace =  typename PhysSpace::RefSpace;
   using RefPhysSpaceElementHandler = typename PhysSpace::RefSpace::ElementHandler;
 //    using PFCache = typename PhysSpace::PushForwardType;
@@ -166,7 +166,7 @@ class PhysSpaceElementHandler
   using ElementAccessor = typename PhysSpace::ElementAccessor;
 
   using base_t = SpaceElementHandler<dim_,codim_,range_,rank_>;
-  using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>;
+  using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
 
   using eval_pts_variant = QuadVariants<dim_>;
   using topology_variant = TopologyVariants<dim_>;
@@ -262,6 +262,7 @@ private:
   {
     auto set_flag_dispatcher = SetFlagDispatcher(
                                  flag,
+                                 phys_space_->get_transformation_type(),
                                  *ref_space_handler_,
                                  *phys_domain_handler_,
                                  this->flags_);
@@ -271,11 +272,13 @@ private:
   struct SetFlagDispatcher : boost::static_visitor<void>
   {
     SetFlagDispatcher(const typename space_element::Flags phys_elem_flag,
+                      const Transformation &transformation_type,
                       RefElemHandler &ref_space_handler,
                       PhysDomainHandler &phys_domain_handler,
                       SafeSTLArray<typename space_element::Flags, dim+1> &flags)
       :
       phys_elem_flag_(phys_elem_flag),
+      transformation_type_(transformation_type),
       ref_space_handler_(ref_space_handler),
       phys_domain_handler_(phys_domain_handler),
       flags_(flags)
@@ -286,10 +289,10 @@ private:
     void operator()(const Topology<sdim> &topology)
     {
       ref_space_handler_.template set_flags<sdim>(
-        phys_space_to_reference_space_flag(type_,phys_elem_flag_));
+        phys_space_to_reference_space_flag(transformation_type_,phys_elem_flag_));
 
       phys_domain_handler_.template set_flags<sdim>(
-        phys_space_to_domain_flag(type_,phys_elem_flag_));
+        phys_space_to_domain_flag(transformation_type_,phys_elem_flag_));
 
       flags_[sdim] = phys_elem_flag_;
     }
@@ -297,6 +300,7 @@ private:
 
   private:
     const typename  space_element::Flags   phys_elem_flag_;
+    const Transformation transformation_type_;
     RefElemHandler &ref_space_handler_;
     PhysDomainHandler &phys_domain_handler_;
     SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
@@ -330,7 +334,7 @@ private:
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     {
-      using PhysSpaceElem = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
+      using PhysSpaceElem = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
       auto &phys_space_elem  = dynamic_cast<PhysSpaceElem &>(elem_);
 
       ref_space_handler_.template init_cache<sdim>(
@@ -391,7 +395,7 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &topology)
     {
-      using PhysSpaceElem = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
+      using PhysSpaceElem = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
       auto &phys_space_elem  = dynamic_cast<PhysSpaceElem &>(elem_);
 
       auto &ref_space_elem = *phys_space_elem.ref_space_element_;
@@ -455,6 +459,8 @@ private:
     BaseElem &elem_;
   };
 
+
+  std::shared_ptr<const PhysSpace> phys_space_;
 };
 
 

@@ -212,8 +212,8 @@ void cache_get_elem_values(const ValueFlags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-std::shared_ptr<const PhysicalSpace<dim,range,rank,codim,Transformation::h_grad>>
-    create_phys_space()
+std::shared_ptr<const PhysicalSpace<dim,range,rank,codim>>
+                                                        create_phys_space()
 {
   OUTSTART
   auto grid = Grid<dim>::const_create();
@@ -226,8 +226,8 @@ std::shared_ptr<const PhysicalSpace<dim,range,rank,codim,Transformation::h_grad>
   using Domain = Domain<dim,codim>;
   auto domain = Domain::const_create(grid_func);
 
-  using PhysSpace = PhysicalSpace<dim,range,rank,codim,Transformation::h_grad>;
-  auto phys_space = PhysSpace::const_create(ref_space,domain);
+  using PhysSpace = PhysicalSpace<dim,range,rank,codim>;
+  auto phys_space = PhysSpace::const_create(ref_space,domain,Transformation::h_grad);
 
 
   using std::to_string;

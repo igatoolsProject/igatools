@@ -131,19 +131,20 @@ template<int dim, int codim>
 using MapFunc= Function<dim, 0, dim + codim, 1>;
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
+template<int dim_,int range_,int rank_,int codim_>
+PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
 PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
   :
   base_t(space),
   ref_space_handler_(space->get_reference_space()->create_cache_handler()),
-  phys_domain_handler_(space->get_physical_domain()->create_cache_handler())
+  phys_domain_handler_(space->get_physical_domain()->create_cache_handler()),
+  phys_space_(space)
 {}
 
 #if 0
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
+PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
 create(std::shared_ptr<const PhysSpace> space) -> std::unique_ptr<self_t>
 {
   auto handler = std::unique_ptr<self_t>(new self_t(space));
@@ -154,10 +155,10 @@ create(std::shared_ptr<const PhysSpace> space) -> std::unique_ptr<self_t>
 
 
 #if 0
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 template<int sub_elem_dim>
 void
-PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
+PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
 ResetDispatcher::
 operator()(const Quadrature<sub_elem_dim> &quad)
 {
@@ -179,9 +180,9 @@ operator()(const Quadrature<sub_elem_dim> &quad)
   phys_domain_handler_.template reset<sub_elem_dim>(mapping_flags,quad);
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
+PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
 reset_selected_elements(
   const ValueFlags &flag,
   const eval_pts_variant &eval_points,
@@ -196,10 +197,10 @@ reset_selected_elements(
 
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 template<int sub_elem_dim>
 void
-PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
+PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
 InitCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &topology)
 {
@@ -233,10 +234,10 @@ operator()(const Topology<sub_elem_dim> &topology)
   }
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
-init_cache(SpaceElement<dim_,codim_,range_,rank_,type_> &sp_elem,
+PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
+init_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
            const topology_variant &topology)
 {
   using PhysElem = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
@@ -251,10 +252,10 @@ init_cache(SpaceElement<dim_,codim_,range_,rank_,type_> &sp_elem,
 
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 template<int sub_elem_dim>
 void
-PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
+PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
 FillCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &topology)
 {
@@ -303,10 +304,10 @@ operator()(const Topology<sub_elem_dim> &topology)
   sub_elem_cache.set_filled(true);
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
-fill_cache(SpaceElement<dim_,codim_,range_,rank_,type_> &sp_elem,
+PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
+fill_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
            const topology_variant &topology,
            const int sub_elem_id)
 {
@@ -323,9 +324,9 @@ fill_cache(SpaceElement<dim_,codim_,range_,rank_,type_> &sp_elem,
 
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
+PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
 print_info(LogStream &out) const -> void
 {
   ref_space_handler_->print_info(out);
