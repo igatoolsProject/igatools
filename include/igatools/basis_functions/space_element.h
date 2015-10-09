@@ -45,15 +45,15 @@ IGA_NAMESPACE_OPEN
  *
  *
  */
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 class SpaceElement : public Element
 {
 protected:
 
-  using Sp = const Space<dim_,codim_,range_,rank_,type_>;
+  using Sp = const Space<dim_,codim_,range_,rank_>;
 
 private:
-  using self_t = SpaceElement<dim_,codim_,range_,rank_,type_>;
+  using self_t = SpaceElement<dim_,codim_,range_,rank_>;
 
 public:
 
@@ -426,7 +426,7 @@ private:
   bool is_comparable_with(const self_t &elem) const;
 
 
-  friend class SpaceElementHandler<dim_,codim_,range_,rank_,type_>;
+  friend class SpaceElementHandler<dim_,codim_,range_,rank_>;
 };
 
 

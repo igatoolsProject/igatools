@@ -43,10 +43,12 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::components =
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(const SharedPtrConstnessHandler<RefSpace> &ref_space,
-              const SharedPtrConstnessHandler<PhysDomain> &phys_domain)
+              const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
+              const Transformation &transformation_type)
   :
   ref_space_(ref_space),
-  phys_domain_(phys_domain)
+  phys_domain_(phys_domain),
+  transformation_type_(transformation_type)
 {
   Assert(this->get_ptr_const_grid() == phys_domain_->get_grid_function()->get_grid(),
          ExcMessage("The space and the physical domain must have the same grid!"));
@@ -60,11 +62,13 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create(const shared_ptr<RefSpace> &ref_space,
-       const shared_ptr<PhysDomain> &phys_domain) -> shared_ptr<self_t>
+       const shared_ptr<PhysDomain> &phys_domain,
+       const Transformation &transformation_type) -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<RefSpace>(ref_space),
-  SharedPtrConstnessHandler<PhysDomain>(phys_domain)));
+  SharedPtrConstnessHandler<PhysDomain>(phys_domain),
+  transformation_type));
   Assert(sp != nullptr,ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -78,11 +82,12 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 const_create(const shared_ptr<const RefSpace> &ref_space,
-             const shared_ptr<const PhysDomain> &phys_domain) -> shared_ptr<const self_t>
+             const shared_ptr<const PhysDomain> &phys_domain,
+             const Transformation &transformation_type) -> shared_ptr<const self_t>
 {
   auto sp = shared_ptr<const self_t>(
     new self_t(SharedPtrConstnessHandler<RefSpace>(ref_space),
-  SharedPtrConstnessHandler<PhysDomain>(phys_domain)));
+  SharedPtrConstnessHandler<PhysDomain>(phys_domain),transformation_type));
   Assert(sp != nullptr,ExcNullPtr());
 
   return sp;
@@ -105,9 +110,9 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create_element(const ListIt &index, const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
+-> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
 {
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
+  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
   elem = std::make_unique<ElementAccessor>(this->get_this_space(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
@@ -253,7 +258,8 @@ print_info(LogStream &out) const
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
+create_cache_handler() const
+-> std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>>
 {
   return std::make_unique<ElementHandler>(this->get_this_space());
 }
@@ -270,6 +276,13 @@ get_max_degree() const
   return ref_space_->get_max_degree();
 }
 
+template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+Transformation
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+get_transformation_type() const
+{
+  return transformation_type_;
+}
 
 #ifdef MESH_REFINEMENT
 

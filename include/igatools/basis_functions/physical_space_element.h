@@ -43,10 +43,10 @@ template <class Accessor> class GridIterator;
 template<int dim_,int range_,int rank_,int codim_,Transformation type_ = Transformation::h_grad>
 class PhysicalSpaceElement
   :
-  public SpaceElement<dim_,codim_,range_,rank_,type_>
+  public SpaceElement<dim_,codim_,range_,rank_>
 {
   using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
-  using parent_t = SpaceElement<dim_,codim_,range_,rank_,type_>;
+  using parent_t = SpaceElement<dim_,codim_,range_,rank_>;
 
 public :
   using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
@@ -65,7 +65,6 @@ public :
   static const auto dim = PushFwd::dim;
   static const auto space_dim = PushFwd::space_dim;
   static const auto codim = PushFwd::codim;
-  static const auto type = PushFwd::type;
 
   using PhysPoint = typename Space::Point;
 
@@ -312,6 +311,9 @@ public:
   virtual bool operator>(const parent_t &a) const override final;
   ///@}
 
+
+  std::shared_ptr<const PhysSpace> get_physical_space() const;
+
 protected:
 
   /**
@@ -330,6 +332,7 @@ private:
 
   std::unique_ptr<PhysDomainElem> phys_domain_element_;
 
+  std::shared_ptr<const PhysSpace> phys_space_;
 
   /**
    * Returns true if two elements belongs from the same Space.

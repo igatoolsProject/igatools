@@ -123,11 +123,11 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 create_element(const ListIt &index, const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
+-> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
 {
   using Elem = NURBSElement<dim_,range_,rank_>;
 
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>>
+  std::unique_ptr<SpaceElement<dim_,0,range_,rank_>>
   elem = std::make_unique<Elem>(this->get_this_space(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
@@ -523,7 +523,7 @@ get_end_behaviour_table() const -> const EndBehaviourTable &
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
+create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
   return std::make_unique<ElementHandler>(this->get_this_space());
 }

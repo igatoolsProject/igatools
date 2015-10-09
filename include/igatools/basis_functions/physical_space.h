@@ -50,10 +50,10 @@ template <int,int,int,int,Transformation> class PhysSpaceElementHandler;
 template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0,
           Transformation type_= Transformation::h_grad>
 class PhysicalSpace :
-  public Space<dim_,codim_,range_,rank_,type_>
+  public Space<dim_,codim_,range_,rank_>
 {
 private:
-  using base_t = Space<dim_,codim_,range_,rank_,type_>;
+  using base_t = Space<dim_,codim_,range_,rank_>;
   using self_t = PhysicalSpace<dim_, range_, rank_, codim_, type_>;
 
 public:
@@ -63,7 +63,7 @@ public:
    *
    * @see Space
    */
-  using PushFwd = PushForward<type_, dim_, codim_>;
+  using PushFwd = PushForward<dim_, codim_>;
 
   using PhysDomain = Domain<dim_, codim_>;
 
@@ -79,7 +79,8 @@ public:
 
   static const int space_dim = dim+codim;
 
-  static const int range = PushFwd::template PhysRange<range_>::value;
+//  static const int range = PushFwd::template PhysRange<range_>::value;
+  static const int range = range_;
 
   static const int rank = rank_;
 
@@ -128,16 +129,18 @@ public:
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<RefSpace> &ref_space,
-         const std::shared_ptr<PhysDomain> &phys_domain);
+         const std::shared_ptr<PhysDomain> &phys_domain,
+         const Transformation &transformation_type = Transformation::h_grad);
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const RefSpace> &ref_space,
-               const std::shared_ptr<const PhysDomain> &phys_domain);
+               const std::shared_ptr<const PhysDomain> &phys_domain,
+               const Transformation &transformation_type = Transformation::h_grad);
 
   /**
    * Create an element (defined on this grid) with a given index.
    */
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
+  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
   create_element(const ListIt &index, const PropId &property) const override final;
 
 
@@ -189,8 +192,8 @@ public:
 
   void print_info(LogStream &out) const override final;
 
-  std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
-      create_cache_handler() const override final;
+  std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>>
+                                                              create_cache_handler() const override final;
 
 
 
@@ -215,6 +218,8 @@ public:
     return ref_space_.get_ptr_const_data()->get_ptr_const_grid();
   }
 
+  Transformation get_transformation_type() const;
+
 private:
 
   /**
@@ -225,7 +230,8 @@ private:
   PhysicalSpace() = default;
 
   PhysicalSpace(const SharedPtrConstnessHandler<RefSpace> &ref_space,
-                const SharedPtrConstnessHandler<PhysDomain> &phys_domain);
+                const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
+                const Transformation &transformation_type);
 
 
 
@@ -307,6 +313,9 @@ private:
   ///@}
 #endif // SERIALIZATION
 #endif
+
+
+  const Transformation transformation_type_;
 };
 
 IGA_NAMESPACE_CLOSE

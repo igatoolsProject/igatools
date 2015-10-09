@@ -154,7 +154,7 @@ class PhysicalSpace;
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 class PhysSpaceElementHandler
   :
-  public SpaceElementHandler<dim_,codim_,range_,rank_,type_>
+  public SpaceElementHandler<dim_,codim_,range_,rank_>
 {
 
   using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
@@ -164,9 +164,8 @@ class PhysSpaceElementHandler
 
   using ElementIterator = typename PhysSpace::ElementIterator;
   using ElementAccessor = typename PhysSpace::ElementAccessor;
-  using PushFwd = typename PhysSpace::PushFwd;
 
-  using base_t = SpaceElementHandler<dim_,codim_,range_,rank_,type_>;
+  using base_t = SpaceElementHandler<dim_,codim_,range_,rank_>;
   using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>;
 
   using eval_pts_variant = QuadVariants<dim_>;
@@ -248,7 +247,7 @@ public:
 
 private:
 
-  using RefElemHandler = SpaceElementHandler<RefSpace::dim,0,RefSpace::range,RefSpace::rank,Transformation::h_grad>;
+  using RefElemHandler = SpaceElementHandler<RefSpace::dim,0,RefSpace::range,RefSpace::rank>;
   std::unique_ptr<RefElemHandler> ref_space_handler_;
 
 
@@ -304,7 +303,7 @@ private:
   };
 
 
-  using BaseElem = SpaceElement<dim_,codim_,range_,rank_,type_>;
+  using BaseElem = SpaceElement<dim_,codim_,range_,rank_>;
 
   virtual void init_cache_impl(BaseElem &elem,
                                const eval_pts_variant &quad) const override final
@@ -369,7 +368,7 @@ private:
                                const int s_id) const override final
   {
     auto fill_cache_dispatcher =
-      FillCacheDispatcher(s_id,*ref_space_handler_,*phys_domain_handler_,elem);
+      FillCacheDispatcher(s_id,*ref_space_handler_,*phys_domain_handler_,*this,elem);
     boost::apply_visitor(fill_cache_dispatcher,topology);
   }
 
@@ -379,11 +378,13 @@ private:
     FillCacheDispatcher(const int s_id,
                         const RefElemHandler &ref_space_handler,
                         const PhysDomainHandler &phys_domain_handler,
+                        const self_t &phys_space_handler,
                         BaseElem &elem)
       :
       s_id_(s_id),
       ref_space_handler_(ref_space_handler),
       phys_domain_handler_(phys_domain_handler),
+      phys_space_handler_(phys_space_handler),
       elem_(elem)
     {}
 
@@ -407,9 +408,12 @@ private:
       using _Gradient = typename BaseElem::_Gradient;
       using _Hessian = typename BaseElem::_Hessian;
       using _Divergence = typename BaseElem::_Divergence;
+
+      const auto phys_space = phys_space_elem.get_physical_space();
+      const typename PhysSpace::PushFwd push_fwd(phys_space->get_transformation_type());
       if (sub_elem_cache.template status_fill<_Value>())
       {
-        PushFwd::template
+        push_fwd.template
         transform_0<RefSpace::range,RefSpace::rank,sdim>(
           s_id_,
           ref_space_elem,
@@ -418,13 +422,13 @@ private:
       }
       if (sub_elem_cache.template status_fill<_Gradient>())
       {
-        PushFwd::template
+        push_fwd.template
         transform_1<RefSpace::range,RefSpace::rank,sdim>(
           s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
       }
       if (sub_elem_cache.template status_fill<_Hessian>())
       {
-        PushFwd::template
+        push_fwd.template
         transform_2<RefSpace::range,RefSpace::rank,sdim>(
           s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
       }
@@ -447,6 +451,7 @@ private:
     const int s_id_;
     const RefElemHandler &ref_space_handler_;
     const PhysDomainHandler &phys_domain_handler_;
+    const self_t &phys_space_handler_;
     BaseElem &elem_;
   };
 

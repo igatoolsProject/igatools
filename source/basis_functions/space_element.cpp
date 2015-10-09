@@ -28,8 +28,8 @@
 IGA_NAMESPACE_OPEN
 
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+template<int dim_,int codim_,int range_,int rank_>
+SpaceElement<dim_,codim_,range_,rank_>::
 SpaceElement(const std::shared_ptr<Sp> space,
              const ListIt &index,
              const PropId &prop)
@@ -43,26 +43,26 @@ SpaceElement(const std::shared_ptr<Sp> space,
 
 
 #if 0
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 get_grid_element() -> GridElem &
 {
   return *grid_elem_;
 }
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 get_grid_element() const -> const  GridElem &
 {
   return *grid_elem_;
 }
 #endif
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 void
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 print_info(LogStream &out) const
 {
   out.begin_item("Element global connectivity (property=\"" + DofProperties::active + "\"):");
@@ -72,9 +72,9 @@ print_info(LogStream &out) const
 }
 
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 void
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 print_cache_info(LogStream &out) const
 {
   out.begin_item("GridElement<" + std::to_string(dim) + "> cache:");
@@ -87,17 +87,17 @@ print_cache_info(LogStream &out) const
 
 
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 get_index() const -> IndexType
 {
   return this->get_grid_element().get_index();
 }
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 std::shared_ptr<const Grid<dim_> >
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 get_grid() const
 {
   return this->get_grid_element().get_grid();
@@ -106,9 +106,9 @@ get_grid() const
 
 
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 SafeSTLVector<Index>
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 get_local_to_global(const std::string &dofs_property) const
 {
   SafeSTLVector<Index> dofs_global;
@@ -124,9 +124,9 @@ get_local_to_global(const std::string &dofs_property) const
   return dofs_global;
 }
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 SafeSTLVector<Index>
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 get_local_to_patch(const std::string &dofs_property) const
 {
   SafeSTLVector<Index> dofs_global;
@@ -142,9 +142,9 @@ get_local_to_patch(const std::string &dofs_property) const
   return dofs_loc_to_patch;
 }
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 SafeSTLVector<Index>
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 get_local_dofs(const std::string &dofs_property) const
 {
   SafeSTLVector<Index> dofs_global;
@@ -160,9 +160,9 @@ get_local_dofs(const std::string &dofs_property) const
   return dofs_loc_to_elem;
 }
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 Size
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 get_num_basis(const std::string &dofs_property) const
 {
   const auto dofs_global = this->get_local_to_global(dofs_property);
@@ -170,9 +170,9 @@ get_num_basis(const std::string &dofs_property) const
 }
 
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 bool
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 operator==(const self_t &a) const
 {
   Assert(this->is_comparable_with(a),
@@ -180,9 +180,9 @@ operator==(const self_t &a) const
   return this->get_grid_element() == a.get_grid_element();
 }
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 bool
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 operator!=(const self_t &a) const
 {
   Assert(this->is_comparable_with(a),
@@ -190,9 +190,9 @@ operator!=(const self_t &a) const
   return this->get_grid_element() != a.get_grid_element();
 }
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 bool
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 operator<(const self_t &a) const
 {
   Assert(this->is_comparable_with(a),
@@ -201,9 +201,9 @@ operator<(const self_t &a) const
   return this->get_grid_element() < a.get_grid_element();
 }
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 bool
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 operator>(const self_t &a) const
 {
   Assert(this->is_comparable_with(a),
@@ -216,10 +216,10 @@ operator>(const self_t &a) const
 
 
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 template <int k>
 ValueVector<Real>
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 get_w_measures(const int j) const
 {
   ValueVector<Real> w_measures;
@@ -237,18 +237,18 @@ get_w_measures(const int j) const
   return w_measures;
 }
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 get_space() const -> std::shared_ptr<Sp>
 {
   return space_;
 }
 
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+template<int dim_,int codim_,int range_,int rank_>
 bool
-SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement<dim_,codim_,range_,rank_>::
 is_comparable_with(const self_t &elem) const
 {
   return (space_ == elem.space_);

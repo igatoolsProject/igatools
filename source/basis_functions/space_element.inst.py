@@ -32,33 +32,30 @@ sub_dim_members = \
  ['ValueVector<Real> elem::get_w_measures<k>(const int) const;']
 
 
-elements = ['SpaceElement<0,0,0,1,Transformation::h_grad>']
-templated_funcs = ['ValueVector<Real> SpaceElement<0,0,0,1,Transformation::h_grad>::get_w_measures<0>(const int) const;']
+elements = ['SpaceElement<0,0,0,1>']
+templated_funcs = ['ValueVector<Real> SpaceElement<0,0,0,1>::get_w_measures<0>(const int) const;']
 
 
-transformations = ['Transformation::h_grad']
 
 
 #--------------------------------------------------------------------------------------
 # SpaceElement used by ReferenceSpaceElement 
 for x in inst.sub_ref_sp_dims:
-    for t in transformations:
-        elem = 'SpaceElement<%d,0,%d,%d,%s>' %(x.dim, x.range, x.rank,t)
-        elements.append(elem)
-        for func in sub_dim_members:
-            k = x.dim
-            s = func.replace('elem', elem).replace('k', '%d' % (k));
-            templated_funcs.append(s)
+    elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
+    for func in sub_dim_members:
+        k = x.dim
+        s = func.replace('elem', elem).replace('k', '%d' % (k));
+        templated_funcs.append(s)
             
             
 for x in inst.ref_sp_dims:
-    for t in transformations:
-        elem = 'SpaceElement<%d,0,%d,%d,%s>' %(x.dim, x.range, x.rank,t)
-        elements.append(elem)
-        for func in sub_dim_members:
-            for k in inst.sub_dims(x.dim):
-                s = func.replace('elem', elem).replace('k', '%d' % (k));
-                templated_funcs.append(s)
+    elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
+    for func in sub_dim_members:
+        for k in inst.sub_dims(x.dim):
+            s = func.replace('elem', elem).replace('k', '%d' % (k));
+            templated_funcs.append(s)
 #--------------------------------------------------------------------------------------
 
 
@@ -66,24 +63,22 @@ for x in inst.ref_sp_dims:
 # SpaceElement used by PhysicalSpaceElement 
 for space in inst.SubPhysSpaces:
     x = space.spec
-    for t in transformations:
-        elem = 'SpaceElement<%d,%d,%d,%d,%s>' %(x.dim,x.codim,x.range, x.rank,t)
-        elements.append(elem)
-        for func in sub_dim_members:
-            k = x.dim
-            s = func.replace('elem', elem).replace('k', '%d' % (k));
-            templated_funcs.append(s)
+    elem = 'SpaceElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
+    elements.append(elem)
+    for func in sub_dim_members:
+        k = x.dim
+        s = func.replace('elem', elem).replace('k', '%d' % (k));
+        templated_funcs.append(s)
 
 
 for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
-    for t in transformations:
-        elem = 'SpaceElement<%d,%d,%d,%d,%s>' %(x.dim,x.codim,x.range, x.rank,t)
-        elements.append(elem)
-        for func in sub_dim_members:
-            for k in inst.sub_dims(x.dim):
-                s = func.replace('elem', elem).replace('k', '%d' % (k));
-                templated_funcs.append(s)
+    elem = 'SpaceElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
+    elements.append(elem)
+    for func in sub_dim_members:
+        for k in inst.sub_dims(x.dim):
+            s = func.replace('elem', elem).replace('k', '%d' % (k));
+            templated_funcs.append(s)
 #--------------------------------------------------------------------------------------
 
 
@@ -100,23 +95,4 @@ for elem in unique(elements):
 for func in unique(templated_funcs):
     f.write('template %s ;\n' %func)
 #---------------------------------------------------
-
-
-#---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
-
-#f.write('#ifdef SERIALIZATION\n')
-#id = 0 
-#for elem in unique(elements):
-#    alias = 'SpaceElementAlias%d' %(id)
-#    f.write('using %s = iga::%s; \n' % (alias, elem))
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-#    id += 1 
-#f.write('#endif // SERIALIZATION\n')
-    
-f.write('IGA_NAMESPACE_OPEN\n')
-#---------------------------------------------------
-
 

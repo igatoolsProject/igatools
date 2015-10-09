@@ -42,23 +42,28 @@ int physical_range(const int ref_range, const int space_dim, const Transformatio
  *
  * @ingroup elements
  */
-template<Transformation type_, int dim_, int codim_ = 0>
+template<int dim_, int codim_ = 0>
 class PushForward
 {
 private:
-  using self_t  = PushForward<type_, dim_, codim_>;
+  using self_t  = PushForward<dim_, codim_>;
   using PhysDomainElem = ConstDomainElement<dim_, codim_>;
 
 
 
 public:
 
+  PushForward(const Transformation &transformation_type)
+    :
+    transformation_type_(transformation_type)
+  {};
+
+
   static const int dim = dim_;
   static const int codim = codim_;
   static const int space_dim = dim + codim;
 
-  static const Transformation type = type_;
-
+#if 0
   template<int ref_range>
   struct PhysRange
   {
@@ -76,24 +81,114 @@ public:
 
   template <int range, int rank, int order>
   using PhysDerivative = Derivatives<space_dim, PhysRange<range>::value, rank, order>;
-
+#endif
 
   template <int range,int rank>
   using RefSpaceElem = ReferenceElement<dim_,range,rank>;
 
 
   template <int range,int rank>
-  using PhysSpaceElem = PhysicalSpaceElement<dim_,PhysRange<range>::value,rank,codim,type_>;
+  using PhysSpaceElem = PhysicalSpaceElement<dim_,range,rank,codim,Transformation::h_grad>;
 
 public:
 
-  template <int range, int rank, int sdim, Transformation ttype=type_>
-  static void
+  template <int range, int rank, int sdim>
+  void
   transform_0(const int s_id,
               const RefSpaceElem<range,rank> &ref_elem,
               const PhysDomainElem &phys_domain_elem,
-              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache,
-              EnableIf<ttype == Transformation::h_grad> * = 0)
+              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
+  {
+    if (transformation_type_ == Transformation::h_grad)
+    {
+      this->template hgrad_transform_0<range,rank,sdim>(
+        s_id,ref_elem,phys_domain_elem,phys_sub_elem_cache);
+    }
+    else if (transformation_type_ == Transformation::h_div)
+    {
+      Assert(false,ExcNotImplemented());
+    }
+    else if (transformation_type_ == Transformation::h_curl)
+    {
+      Assert(false,ExcNotImplemented());
+    }
+    else if (transformation_type_ == Transformation::l_2)
+    {
+      Assert(false,ExcNotImplemented());
+    }
+    else
+    {
+      Assert(false,ExcMessage("InvalidTransformationType"));
+    }
+  }
+
+  template <int range, int rank, int sdim>
+  void
+  transform_1(const int s_id,
+              const RefSpaceElem<range,rank> &ref_elem,
+              const PhysDomainElem &phys_domain_elem,
+              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
+  {
+    if (transformation_type_ == Transformation::h_grad)
+    {
+      this->template hgrad_transform_1<range,rank,sdim>(
+        s_id,ref_elem,phys_domain_elem,phys_sub_elem_cache);
+    }
+    else if (transformation_type_ == Transformation::h_div)
+    {
+      Assert(false,ExcNotImplemented());
+    }
+    else if (transformation_type_ == Transformation::h_curl)
+    {
+      Assert(false,ExcNotImplemented());
+    }
+    else if (transformation_type_ == Transformation::l_2)
+    {
+      Assert(false,ExcNotImplemented());
+    }
+    else
+    {
+      Assert(false,ExcMessage("InvalidTransformationType"));
+    }
+  }
+
+  template <int range, int rank, int sdim>
+  void
+  transform_2(const int s_id,
+              const RefSpaceElem<range,rank> &ref_elem,
+              const PhysDomainElem &phys_domain_elem,
+              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
+  {
+    if (transformation_type_ == Transformation::h_grad)
+    {
+      this->template hgrad_transform_2<range,rank,sdim>(
+        s_id,ref_elem,phys_domain_elem,phys_sub_elem_cache);
+    }
+    else if (transformation_type_ == Transformation::h_div)
+    {
+      Assert(false,ExcNotImplemented());
+    }
+    else if (transformation_type_ == Transformation::h_curl)
+    {
+      Assert(false,ExcNotImplemented());
+    }
+    else if (transformation_type_ == Transformation::l_2)
+    {
+      Assert(false,ExcNotImplemented());
+    }
+    else
+    {
+      Assert(false,ExcMessage("InvalidTransformationType"));
+    }
+  }
+
+private:
+  template <int range, int rank, int sdim>
+  void
+  hgrad_transform_0(const int s_id,
+                    const RefSpaceElem<range,rank> &ref_elem,
+                    const PhysDomainElem &phys_domain_elem,
+                    typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
   {
     using PhysElem = PhysSpaceElem<range,rank>;
     using _Value = typename PhysElem::_Value;
@@ -101,18 +196,15 @@ public:
     const auto &v_hat = ref_elem.template get_basis<_Value,sdim>(s_id,DofProperties::active);
 
     v.fill(v_hat);
-
-//    v.set_status_filled(true);
   }
 
 
-  template <int range, int rank, int sdim, Transformation ttype=type_>
-  static void
-  transform_1(const int s_id,
-              const RefSpaceElem<range,rank> &ref_elem,
-              const PhysDomainElem &phys_domain_elem,
-              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache,
-              EnableIf<ttype == Transformation::h_grad> * = 0)
+  template <int range, int rank, int sdim>
+  void
+  hgrad_transform_1(const int s_id,
+                    const RefSpaceElem<range,rank> &ref_elem,
+                    const PhysDomainElem &phys_domain_elem,
+                    typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
   {
     using PhysElem = PhysSpaceElem<range,rank>;
     using _Gradient = typename PhysElem::_Gradient;
@@ -137,13 +229,12 @@ public:
   }
 
 
-  template <int range, int rank, int sdim, Transformation ttype=type_>
-  static void
-  transform_2(const int s_id,
-              const RefSpaceElem<range,rank> &ref_elem,
-              const PhysDomainElem &phys_domain_elem,
-              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache,
-              EnableIf<ttype == Transformation::h_grad> * = 0)
+  template <int range, int rank, int sdim>
+  void
+  hgrad_transform_2(const int s_id,
+                    const RefSpaceElem<range,rank> &ref_elem,
+                    const PhysDomainElem &phys_domain_elem,
+                    typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
   {
     using PhysElem = PhysSpaceElem<range,rank>;
     using _Gradient = typename PhysElem::_Gradient;
@@ -187,7 +278,9 @@ public:
     D2v.set_status_filled(true);
   }
 
-
+private:
+  const Transformation transformation_type_;
+//  const int phys_range_;
 };
 
 IGA_NAMESPACE_CLOSE

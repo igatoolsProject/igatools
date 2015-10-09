@@ -35,14 +35,14 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup handlers
  */
-template <int dim,int codim,int range,int rank,Transformation type>
+template <int dim,int codim,int range,int rank>
 class SpaceElementHandler
 {
 private:
-  using self_t = SpaceElementHandler<dim,codim,range,rank,type>;
+  using self_t = SpaceElementHandler<dim,codim,range,rank>;
 
 public:
-  using Sp = Space<dim,codim,range,rank,type>;
+  using Sp = Space<dim,codim,range,rank>;
   using ElementAccessor = typename Sp::ElementAccessor;
   using ElementIterator = typename Sp::ElementIterator;
 

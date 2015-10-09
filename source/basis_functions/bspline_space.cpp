@@ -302,11 +302,11 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create_element(const ListIt &index, const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
+-> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>>
+  std::unique_ptr<SpaceElement<dim_,0,range_,rank_>>
   elem = std::make_unique<Elem>(this->get_this_space(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
@@ -616,9 +616,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create_cache_handler() const
--> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
+-> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
-  return std::make_unique<BSplineElementHandler<dim_,range_,rank_>>(this->get_this_space());
+  return std::make_unique<BSplineElementHandler<dim_,range_,rank_>>(
+    this->get_this_space());
 }
 
 

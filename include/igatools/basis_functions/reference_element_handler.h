@@ -39,10 +39,10 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range = 1, int rank = 1>
 class ReferenceElementHandler
   :
-  public SpaceElementHandler<dim,0,range,rank,Transformation::h_grad>
+  public SpaceElementHandler<dim,0,range,rank>
 {
 private:
-  using base_t = SpaceElementHandler<dim,0,range,rank,Transformation::h_grad>;
+  using base_t = SpaceElementHandler<dim,0,range,rank>;
 public:
   using Space = ReferenceSpace<dim,range,rank>;
   using ElementIterator = typename Space::ElementIterator;

@@ -34,8 +34,6 @@
 
 IGA_NAMESPACE_OPEN
 
-template<Transformation,int, int> class PushForward;
-
 template <int, int, int ,int,Transformation> class PhysicalSpace;
 
 template <int, int, int> class ReferenceElement;
@@ -56,10 +54,10 @@ template <int,int,int> class DofDistribution;
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace :
-  public Space<dim_,0,range_,rank_,Transformation::h_grad>
+  public Space<dim_,0,range_,rank_>
 {
 public:
-  using base_t = Space<dim_,0,range_,rank_,Transformation::h_grad>;
+  using base_t = Space<dim_,0,range_,rank_>;
   using self_t = ReferenceSpace<dim_,range_,rank_>;
 
   static const int dim       = dim_;
@@ -74,7 +72,6 @@ public:
    *
    * @see Space
    */
-  using PushForwardType = PushForward<Transformation::h_grad, dim, codim>;
 
   using RefSpace = ReferenceSpace<dim_,range_,rank_>;
 

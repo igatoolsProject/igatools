@@ -71,7 +71,6 @@ public:
    *
    * @see Space
    */
-  using PushForwardType = typename BaseSpace::PushForwardType;
 
   using RefSpace = typename BaseSpace::RefSpace;
 
@@ -182,7 +181,7 @@ public:
   /**
    * Create an element (defined on this space) with a given @p index.
    */
-  virtual std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
+  virtual std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
   create_element(const ListIt &index, const PropId &property) const override final;
 
   /**
@@ -300,7 +299,7 @@ private:
 
 
 public:
-  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
+  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
       create_cache_handler() const override final;
 
 

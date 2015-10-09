@@ -36,8 +36,8 @@ template <int,int> class Domain;
 
 template <int,int,int,int> class Function;
 //template <int> class NonConstGridElement;
-template <int,int,int,int,Transformation> class SpaceElement;
-template <int,int,int,int,Transformation> class SpaceElementHandler;
+template <int,int,int,int> class SpaceElement;
+template <int,int,int,int> class SpaceElementHandler;
 
 
 
@@ -55,13 +55,13 @@ template <int,int,int> class DofDistribution;
  *
  * @ingroup serializable
  */
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 class Space
   :
-  public std::enable_shared_from_this<Space<dim_,codim_,range_,rank_,type_> >
+  public std::enable_shared_from_this<Space<dim_,codim_,range_,rank_> >
 {
 private:
-  using self_t = Space<dim_,codim_,range_,rank_,type_>;
+  using self_t = Space<dim_,codim_,range_,rank_>;
 
 
 
@@ -195,12 +195,12 @@ public:
   /**
    * Create and element (defined on this space) with a given flat_index
    */
-  virtual std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
+  virtual std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
       create_element(const ListIt &index, const PropId &property) const = 0;
 
 
 
-  virtual std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_> >
+  virtual std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_> >
   create_cache_handler() const = 0;
 
 
@@ -208,7 +208,7 @@ public:
 
 
 
-  using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_,type_>;
+  using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
   /** @name Functions involving the element iterator */

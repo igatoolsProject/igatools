@@ -39,8 +39,8 @@ IGA_NAMESPACE_OPEN
 
 
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
-Space<dim_,codim_,range_,rank_,type_>::
+template <int dim_,int codim_,int range_,int rank_>
+Space<dim_,codim_,range_,rank_>::
 Space()
   :
   object_id_(UniqueIdGenerator::get_unique_id())
@@ -48,34 +48,34 @@ Space()
 
 
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 Index
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 get_object_id() const
 {
   return object_id_;
 }
 
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 const std::string &
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 get_name() const
 {
   return name_;
 }
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 void
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 set_name(const std::string &name)
 {
   name_ = name;
 }
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 begin(const PropId &prop) const -> ElementIterator
 {
   return this->cbegin(prop);
@@ -83,17 +83,17 @@ begin(const PropId &prop) const -> ElementIterator
 
 
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 end(const PropId &prop) const -> ElementIterator
 {
   return this->cend(prop);
 }
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
@@ -103,9 +103,9 @@ cbegin(const PropId &prop) const -> ElementIterator
 
 
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 cend(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
@@ -114,60 +114,60 @@ cend(const PropId &prop) const -> ElementIterator
 }
 
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 get_num_basis() const -> Size
 {
   return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 get_num_basis(const int comp) const -> Size
 {
   return this->get_ptr_const_dof_distribution()->get_num_dofs_table().get_component_size(comp);
 }
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 get_num_basis(const int comp, const int dir) const -> Size
 {
   return this->get_ptr_const_dof_distribution()->get_num_dofs_table()[comp][dir];
 }
 
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 get_elem_num_basis() const -> Size
 {
   return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 get_global_dof_id(const TensorIndex<dim> &tensor_index,
                   const Index comp) const -> Index
 {
   return this->get_ptr_const_dof_distribution()->get_index_table()[comp](tensor_index);
 }
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 get_interior_dofs() const -> std::set<Index>
 {
   return this->get_ptr_const_dof_distribution()->get_interior_dofs();
 }
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std::set<Index>
 {
   return this->get_ptr_const_dof_distribution()->get_boundary_dofs(s_id,topology);
@@ -175,9 +175,9 @@ get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std
 
 #ifdef MESH_REFINEMENT
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 void
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 refine_h(const Size n_subdivisions)
 {
   this->get_ptr_grid()->refine(n_subdivisions);
@@ -191,10 +191,10 @@ refine_h(const Size n_subdivisions)
 
 #ifdef SERIALIZATION
 
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+template <int dim_,int codim_,int range_,int rank_>
 template<class Archive>
 void
-Space<dim_,codim_,range_,rank_,type_>::
+Space<dim_,codim_,range_,rank_>::
 serialize(Archive &ar)
 {
   ar &make_nvp("object_id_",object_id_);

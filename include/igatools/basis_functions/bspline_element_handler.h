@@ -165,7 +165,7 @@ private:
   };
 
 public:
-  using BaseElem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
+  using BaseElem = SpaceElement<dim_,0,range_,rank_>;
   using BSplineElem = BSplineElement<dim_,range_,rank_>;
 
   virtual void init_cache_impl(BaseElem &elem,

@@ -328,7 +328,7 @@ print_cache_info(LogStream &out) const
   out.begin_item("BSplineElement<" +
                  to_string(dim) + "," +
                  to_string(range) + "," +
-                 to_string(range) + "> cache:");
+                 to_string(rank) + "> cache:");
 
   out.begin_item("Splines 1D table:");
   for (int sdim = 0 ; sdim <= dim ; ++sdim)
@@ -340,7 +340,7 @@ print_cache_info(LogStream &out) const
   out.end_item();
 
   out.begin_item("SpaceElement's cache:");
-  SpaceElement<dim,0,range,rank,Transformation::h_grad>::print_cache_info(out);
+  SpaceElement<dim,0,range,rank>::print_cache_info(out);
   out.end_item();
 
   out.end_item();

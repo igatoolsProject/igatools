@@ -92,7 +92,7 @@ private:
 
 //  friend struct FillCacheDispatcher;
 
-  using IgSpaceHandler = SpaceElementHandler<dim,0,space_dim,1,Transformation::h_grad>;
+  using IgSpaceHandler = SpaceElementHandler<dim,0,space_dim,1>;
   std::unique_ptr<IgSpaceHandler> ig_space_handler_;
 
   std::shared_ptr<GridFunctionType> ig_grid_function_;

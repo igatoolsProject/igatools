@@ -130,7 +130,6 @@ public:
    *
    * @see Space
    */
-  using PushForwardType = typename BaseSpace::PushForwardType;
 
   using RefSpace = typename BaseSpace::RefSpace;
 
@@ -141,7 +140,7 @@ public:
   using ElementAccessor = BSplineElement<dim,range,rank>;
 
   /** Type for iterator over the elements.  */
-  using ElementIterator = GridIterator<SpaceElement<dim,0,range,rank,Transformation::h_grad>>;
+  using ElementIterator = GridIterator<SpaceElement<dim,0,range,rank>>;
 
 
   using SpaceData = SplineSpace<dim_,range_,rank_>;
@@ -264,7 +263,7 @@ public:
   /**
    * Create an element (defined on this space) with a given @p index.
    */
-  virtual std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
+  virtual std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
   create_element(const ListIt &index, const PropId &property) const override final;
 
   /**
@@ -494,7 +493,7 @@ public:
 
   virtual bool is_bspline() const override final;
 
-  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
+  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
       create_cache_handler() const override final;
 
 
