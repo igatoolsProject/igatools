@@ -9,6 +9,10 @@ sub_ref_space
             Knot coordinates:
                Size: [ ]  Weights: []
             
+            Element properties:
+               IDs with property "active":
+               
+            
          
          Degrees:
             Raw components: 
@@ -82,8 +86,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 1
-               Flat IDs: 0
+            [ 0 ]
          
       
       Bernstein Extraction:
@@ -101,6 +104,10 @@ sub_ref_space
             Knot coordinates:
                Size: [ ]  Weights: []
             
+            Element properties:
+               IDs with property "active":
+               
+            
          
          Degrees:
             Raw components: 
@@ -174,8 +181,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 1
-               Flat IDs: 0
+            [ 0 ]
          
       
       Bernstein Extraction:
@@ -200,6 +206,14 @@ sub_ref_space
                Direction: 0
                [ 0 0.500000 1.00000 ]
             
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 ]
+                  Entry id: 1
+                  [ 1 ]
+               
+            
          
          Degrees:
             Raw components: 
@@ -275,8 +289,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 3
-               Flat IDs: 0 1 2
+            [ 0 1 2 ]
          
       
       Bernstein Extraction:
@@ -299,6 +312,14 @@ sub_ref_space
                Direction: 0
                [ 0 0.500000 1.00000 ]
             
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 ]
+                  Entry id: 1
+                  [ 1 ]
+               
+            
          
          Degrees:
             Raw components: 
@@ -374,8 +395,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 3
-               Flat IDs: 0 1 2
+            [ 0 1 2 ]
          
       
       Bernstein Extraction:
@@ -398,6 +418,12 @@ sub_ref_space
                Direction: 0
                [ 0 1.00000 ]
             
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 ]
+               
+            
          
          Degrees:
             Raw components: 
@@ -473,8 +499,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 2
-               Flat IDs: 0 1
+            [ 0 1 ]
          
       
       Bernstein Extraction:
@@ -496,6 +521,12 @@ sub_ref_space
                Direction: 0
                [ 0 1.00000 ]
             
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 ]
+               
+            
          
          Degrees:
             Raw components: 
@@ -571,8 +602,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 2
-               Flat IDs: 0 1
+            [ 0 1 ]
          
       
       Bernstein Extraction:
@@ -601,6 +631,22 @@ sub_ref_space
                Direction: 1
                [ 0 0.333333 0.666667 1.00000 ]
             
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 0 ]
+                  Entry id: 1
+                  [ 0 1 ]
+                  Entry id: 2
+                  [ 0 2 ]
+                  Entry id: 3
+                  [ 1 0 ]
+                  Entry id: 4
+                  [ 1 1 ]
+                  Entry id: 5
+                  [ 1 2 ]
+               
+            
          
          Degrees:
             Raw components: 
@@ -678,8 +724,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
+            [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
          
       
       Bernstein Extraction:
@@ -708,6 +753,22 @@ sub_ref_space
                Direction: 1
                [ 0 0.333333 0.666667 1.00000 ]
             
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 0 ]
+                  Entry id: 1
+                  [ 0 1 ]
+                  Entry id: 2
+                  [ 0 2 ]
+                  Entry id: 3
+                  [ 1 0 ]
+                  Entry id: 4
+                  [ 1 1 ]
+                  Entry id: 5
+                  [ 1 2 ]
+               
+            
          
          Degrees:
             Raw components: 
@@ -785,8 +846,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
+            [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
          
       
       Bernstein Extraction:
@@ -815,6 +875,16 @@ sub_ref_space
                Direction: 1
                [ 0 0.333333 0.666667 1.00000 ]
             
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 0 ]
+                  Entry id: 1
+                  [ 0 1 ]
+                  Entry id: 2
+                  [ 0 2 ]
+               
+            
          
          Degrees:
             Raw components: 
@@ -892,8 +962,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 8
-               Flat IDs: 0 1 2 3 4 5 6 7
+            [ 0 1 2 3 4 5 6 7 ]
          
       
       Bernstein Extraction:
@@ -921,6 +990,16 @@ sub_ref_space
                Direction: 1
                [ 0 0.333333 0.666667 1.00000 ]
             
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 0 ]
+                  Entry id: 1
+                  [ 0 1 ]
+                  Entry id: 2
+                  [ 0 2 ]
+               
+            
          
          Degrees:
             Raw components: 
@@ -998,8 +1077,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 8
-               Flat IDs: 0 1 2 3 4 5 6 7
+            [ 0 1 2 3 4 5 6 7 ]
          
       
       Bernstein Extraction:
@@ -1027,6 +1105,14 @@ sub_ref_space
                Direction: 1
                [ 0 0.500000 1.00000 ]
             
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 0 ]
+                  Entry id: 1
+                  [ 0 1 ]
+               
+            
          
          Degrees:
             Raw components: 
@@ -1104,8 +1190,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 6
-               Flat IDs: 0 1 2 3 4 5
+            [ 0 1 2 3 4 5 ]
          
       
       Bernstein Extraction:
@@ -1132,6 +1217,14 @@ sub_ref_space
                Direction: 1
                [ 0 0.500000 1.00000 ]
             
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 0 ]
+                  Entry id: 1
+                  [ 0 1 ]
+               
+            
          
          Degrees:
             Raw components: 
@@ -1209,8 +1302,7 @@ sub_ref_space
          
          Dof properties:
             IDs with property "active":
-               Num.: 6
-               Flat IDs: 0 1 2 3 4 5
+            [ 0 1 2 3 4 5 ]
          
       
       Bernstein Extraction:

@@ -37,7 +37,6 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
-using namespace EpetraTools;
 
 template< int dim, int range, int rank = 1>
 void test()
@@ -56,40 +55,44 @@ void test()
 
   const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
 
-  using WeightFunc = IgFunction<dim,0,1,1>;
-  SafeSTLVector<Real> weights_coef(n_scalar_basis);
-  const int n_entries = weights_coef.size();
-  for (int i = 0 ; i < n_entries ; ++i)
-    weights_coef[i] = (i+1) * (1.0 / n_entries) ;
 
-  Epetra_SerialComm comm;
-  auto map = create_map(*scalar_bsp_space, "active", comm);
+  IgCoefficients weights;
+  for (int dof = 0 ; dof < n_scalar_basis ; ++dof)
+    weights[dof] = (n_scalar_basis + 1) * (1.0 / n_scalar_basis) ;
 
-  auto w_func = WeightFunc::const_create(scalar_bsp_space,
-                                   std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights_coef.data()));
+  using WeightFunc = IgGridFunction<dim,1>;
+  const auto w_func = WeightFunc::const_create(scalar_bsp_space,weights);
 
-  auto nrb_space = Space::const_create(bsp_space,w_func);
+  auto space = Space::const_create(bsp_space,w_func);
 
   const int n_points = 3;
-  QGauss<dim> quad(n_points);
+  auto quad = QGauss<dim>::create(n_points);
 
-  auto elem     = nrb_space->begin();
-  auto end_element = nrb_space->end();
+  auto elem     = space->begin();
+  auto end_element = space->end();
 
-  const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
+  using Flags = space_element::Flags;
+  const auto flag = Flags::value|
+                    Flags::gradient|
+                    Flags::hessian;
 
-  using ElemHandler = typename Space::ElementHandler;
-  auto elem_handler = ElemHandler::const_create(nrb_space);
-  elem_handler->reset(flag,quad);
 
 
-  elem_handler->init_element_cache(elem);
+  auto elem_handler = space->create_cache_handler();
+  elem_handler->template set_flags<dim>(flag);
 
+  using _Value = space_element::_Value;
+  using _Gradient = space_element::_Gradient;
+  using _Hessian = space_element::_Hessian;
+
+  elem_handler->template init_cache<dim>(*elem,quad);
+
+  int elem_id = 0;
   for (; elem != end_element; ++elem)
   {
     elem_handler->fill_element_cache(elem);
-    std::cout << "Element flat id: " << elem->get_flat_index() << endl << endl;
-    out << "Element flat id: " << elem->get_flat_index() << endl << endl;
+    std::cout << "Element flat id: " << elem_id << endl << endl;
+    out << "Element flat id: " << elem_id << endl << endl;
 
     out.begin_item("Values basis functions:");
     auto values = elem->template get_basis<_Value,dim>(0,DofProperties::active);
@@ -105,6 +108,8 @@ void test()
     auto hessians = elem->template get_basis<_Hessian,dim>(0,DofProperties::active);
     hessians.print_info(out);
     out.end_item();
+
+    ++elem_id;
   }
   OUTEND
 }
