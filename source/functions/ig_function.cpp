@@ -18,11 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#if 0
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/space_tools.h>
+
 
 using std::shared_ptr;
 
@@ -30,17 +31,19 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
-IgFunction(std::shared_ptr<const Sp> space,
+IgFunction(const SharedPtrConstnessHandler<Sp> &space,
            std::shared_ptr<const EpetraTools::Vector> coeff,
            const std::string &property)
   :
-  parent_t::Function(space->get_ptr_const_grid()),
+  parent_t::Function(
+		  space.data_is_const() ?
+		  SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
+		  SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain())),
   space_(space),
-  property_(property),
-  space_elem_(std::const_pointer_cast<Sp>(space)->begin()),
-  space_elem_handler_(space->create_cache_handler())
+  property_(property)//,
+//  space_elem_(std::const_pointer_cast<Sp>(space)->begin()),
+//  space_elem_handler_(space->create_cache_handler())
 {
-  Assert(space_ != nullptr, ExcNullPtr());
   Assert(coeff != nullptr,ExcNullPtr());
 
   const auto &dof_distribution = *(space_->get_ptr_const_dof_distribution());
@@ -62,17 +65,20 @@ IgFunction(std::shared_ptr<const Sp> space,
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
-IgFunction(std::shared_ptr<const Sp> space,
+IgFunction(const SharedPtrConstnessHandler<Sp> &space,
            const IgCoefficients &coeff,
            const std::string &property)
   :
-  parent_t::Function(space->get_ptr_const_grid()),
+  parent_t::Function(
+			  space.data_is_const() ?
+			  SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
+			  SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain())),
   space_(space),
-  property_(property),
-  space_elem_(std::const_pointer_cast<Sp>(space)->begin()),
-  space_elem_handler_(space->create_cache_handler())
+  property_(property)//,
+//  space_elem_(std::const_pointer_cast<Sp>(space)->begin()),
+//  space_elem_handler_(space->create_cache_handler())
 {
-  Assert(space_ != nullptr, ExcNullPtr());
+//  Assert(space_ != nullptr, ExcNullPtr());
 
 #ifndef NDEBUG
   const auto &dof_distribution = *(space_->get_ptr_const_dof_distribution());
@@ -86,7 +92,7 @@ IgFunction(std::shared_ptr<const Sp> space,
 }
 
 
-
+/*
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
 IgFunction(const self_t &fun)
@@ -98,17 +104,18 @@ IgFunction(const self_t &fun)
   space_elem_(std::const_pointer_cast<Sp>(fun.space_)->begin()),
   space_elem_handler_(fun.space_->create_cache_handler())
 {}
-
+//*/
 
 
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(std::shared_ptr<const Sp> space,
+const_create(std::shared_ptr<const Sp> space,
        std::shared_ptr<const EpetraTools::Vector> coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
-  auto ig_func = std::make_shared<self_t>(space, coeff, property);
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
+		  coeff, property);
 
   Assert(ig_func != nullptr, ExcNullPtr());
 #ifdef MESH_REFINEMENT
@@ -121,11 +128,12 @@ create(std::shared_ptr<const Sp> space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(std::shared_ptr<const Sp> space,
+const_create(std::shared_ptr<const Sp> space,
        const IgCoefficients &coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
-  auto ig_func = std::make_shared<self_t>(space, coeff, property);
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
+		  coeff, property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -340,6 +348,7 @@ get_property() const
   return property_;
 }
 
+#if 0
 #ifdef SERIALIZATION
 template<int dim,int codim,int range,int rank>
 template<class Archive>
@@ -356,7 +365,7 @@ serialize(Archive &ar, const unsigned int version)
   ar.template register_type<NURBSSpace<dim,range,rank>>();
 #endif // NURBS
 
-  ar.template register_type<PhysicalSpace<dim,range,rank,codim,Transformation::h_grad>>();
+  ar.template register_type<PhysicalSpace<dim,range,rank,codim>>();
   auto non_nonst_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
   ar &boost::serialization::make_nvp("space_",non_nonst_space);
   space_ = non_nonst_space;
@@ -379,10 +388,9 @@ serialize(Archive &ar, const unsigned int version)
   Assert(space_elem_handler_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/functions/ig_function.inst>
 
-#endif

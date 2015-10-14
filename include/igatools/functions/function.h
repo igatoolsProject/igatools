@@ -130,22 +130,22 @@ public:
   ///@}
 
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<DomainType> grid)
+  create(std::shared_ptr<DomainType> domain)
   {
-    return std::shared_ptr<self_t>(new self_t(grid));
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<DomainType>(domain)));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<DomainType> grid)
+  const_create(std::shared_ptr<DomainType> domain)
   {
-    return create(grid);
+	return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<DomainType>(domain)));
   }
 
 
   std::shared_ptr<const DomainType> get_domain() const
   {
-    return domain_;
+    return domain_.get_ptr_const_data();
   }
 
 
@@ -201,7 +201,7 @@ public:
 
 
 private:
-  std::shared_ptr<const DomainType> domain_;
+  SharedPtrConstnessHandler<DomainType> domain_;
 
   friend class FunctionElementBase<dim_, codim_, range_, rank_, Function<dim_, codim_, range_, rank_>>;
   friend class FunctionElementBase<dim_, codim_, range_, rank_, const Function<dim_, codim_, range_, rank_>>;

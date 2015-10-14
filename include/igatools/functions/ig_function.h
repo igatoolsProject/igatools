@@ -21,7 +21,6 @@
 #ifndef __IG_FUNCTION_H
 #define __IG_FUNCTION_H
 
-#if 0
 #include <igatools/base/value_types.h>
 #include <igatools/functions/function.h>
 #include <igatools/functions/ig_coefficients.h>
@@ -41,22 +40,12 @@
 IGA_NAMESPACE_OPEN
 
 
-//template <int,int,int>
-//class ReferenceSpace;
-template <int,int,int,int,Transformation>
-class Space;
 
-template <int,int,int>
-class BSplineSpace;
-
-template <int,int,int>
-class NURBSSpace;
-
-//template <int,int,int,int,class>
-//class PhysicalSpace;
+template <int,int,int,int>
+class PhysicalSpace;
 
 
-template <int,int,int,int,Transformation>
+template <int,int,int,int>
 class SpaceElementHandler;
 
 template <int,int,int>
@@ -65,10 +54,10 @@ class BSplineElementHandler;
 template <int,int,int>
 class NURBSElementHandler;
 
-template <int,int,int,int,Transformation>
+template <int,int,int,int>
 class PhysSpaceElementHandler;
 
-template <int,int,int,int,Transformation>
+template <int,int,int,int>
 class SpaceElement;
 
 template <int,int,int>
@@ -77,7 +66,7 @@ class BSplineElement;
 template <int,int,int>
 class NURBSElement;
 
-template <int,int,int,int,Transformation>
+template <int,int,int,int>
 class PhysicalSpaceElement;
 
 
@@ -98,25 +87,24 @@ private:
   using base_t = Function<dim,codim,range,rank>;
   using parent_t = Function<dim,codim,range,rank>;
   using self_t = IgFunction<dim,codim,range,rank>;
-  using Sp = Space<dim,codim,range,rank,Transformation::h_grad>;
+  using Sp = PhysicalSpace<dim,range,rank,codim>;
 
 public:
   //TODO (pauletti, Mar 23, 2015): should we make this private?
-  IgFunction(std::shared_ptr<const Sp> space,
+  IgFunction(const SharedPtrConstnessHandler<Sp> &space,
              std::shared_ptr<const EpetraTools::Vector> coeff,
              const std::string &property = DofProperties::active);
 
-  IgFunction(std::shared_ptr<const Sp> space,
+  IgFunction(const SharedPtrConstnessHandler<Sp> &space,
              const IgCoefficients &coeff,
              const std::string &property = DofProperties::active);
 
 
-  IgFunction(const self_t &);
 
   virtual ~IgFunction() = default;
 
-  using typename parent_t::topology_variant;
-  using typename parent_t::eval_pts_variant;
+//  using typename parent_t::topology_variant;
+//  using typename parent_t::eval_pts_variant;
   using typename parent_t::Point;
   using typename parent_t::Value;
   using typename parent_t::Gradient;
@@ -125,24 +113,20 @@ public:
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
-
+  using typename parent_t::DomainType;
 
 public:
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<const Sp> space,
+  const_create(std::shared_ptr<const Sp> space,
          std::shared_ptr<const EpetraTools::Vector> coeff,
          const std::string &property = DofProperties::active);
 
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<const Sp> space,
+  const_create(std::shared_ptr<const Sp> space,
          const IgCoefficients &coeff,
          const std::string &property = DofProperties::active);
 
 
-  std::shared_ptr<base_t> clone() const override final
-  {
-    return std::make_shared<self_t>(self_t(*this));
-  }
 
 #if 0
   void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override;
@@ -169,25 +153,24 @@ public:
 protected:
   /**
    * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * serialization mechanism.
    */
   IgFunction() = default;
 
 private:
 
-  std::shared_ptr<const Sp> space_;
+  SharedPtrConstnessHandler<Sp> space_;
 
   CoeffType coeff_;
 
   const std::string property_;
-
-  using SpaceElem = SpaceElement<dim,codim,range,rank,Transformation::h_grad>;
+/*
+  using SpaceElem = SpaceElement<dim,codim,range,rank>;
   GridIterator<SpaceElem> space_elem_;
 
-  using SpaceElemHandler = SpaceElementHandler<dim,codim,range,rank,Transformation::h_grad>;
+  using SpaceElemHandler = SpaceElementHandler<dim,codim,range,rank>;
   std::shared_ptr<SpaceElemHandler> space_elem_handler_;
-
+//*/
 private:
 #if 0
   struct ResetDispatcher : boost::static_visitor<void>
@@ -338,7 +321,7 @@ private:
 
 #endif // MESH_REFINEMENT
 
-
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -352,9 +335,9 @@ private:
   serialize(Archive &ar, const unsigned int version);
   ///@}
 #endif // SERIALIZATION
+#endif
 };
 
 IGA_NAMESPACE_CLOSE
 
-#endif
 #endif
