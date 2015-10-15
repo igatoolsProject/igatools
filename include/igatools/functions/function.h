@@ -57,8 +57,7 @@ public:
   static const int range     = range_;
   static const int rank      = rank_;
 
-  //using DomainType = Grid<dim_>;
-  using DomainType = const Domain<dim_, codim_>;
+  using DomainType = Domain<dim_, codim_>;
 
   using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;
@@ -109,20 +108,15 @@ public:
 
 public:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * Default constructor. It does nothing but it is needed for the serialization
    * mechanism.
    */
   Function() = default;
 
 protected:
   /** Constructor */
-  Function(std::shared_ptr<DomainType> domain);
+  Function(const SharedPtrConstnessHandler<DomainType> &domain);
 
-//  /**
-//   * Copy constructor.
-//   */
-//  Function(const self_t &func);
 
 public:
   /** Destructor */
@@ -132,14 +126,16 @@ public:
   static std::shared_ptr<self_t>
   create(std::shared_ptr<DomainType> domain)
   {
-    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<DomainType>(domain)));
+    return std::shared_ptr<self_t>(new
+    		self_t(SharedPtrConstnessHandler<DomainType>(domain)));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<DomainType> domain)
+  const_create(std::shared_ptr<const DomainType> domain)
   {
-	return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<DomainType>(domain)));
+	return std::shared_ptr<self_t>(new self_t(
+			SharedPtrConstnessHandler<DomainType>(domain)));
   }
 
 
@@ -211,7 +207,7 @@ private:
 
 
 #ifdef MESH_REFINEMENT
-private:
+protected:
   std::shared_ptr<self_t> function_previous_refinement_;
 public:
   const std::shared_ptr<self_t> &get_function_previous_refinement() const

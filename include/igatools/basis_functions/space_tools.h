@@ -68,22 +68,21 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
   Assert(space_grid->same_knots_or_refinement_of(*func_grid),
          ExcMessage("The space grid is not a refinement of the function grid."));
 
-  auto func = function->clone();
   const int dim = Space::dim;
 
   auto func_flag = ValueFlags::point | ValueFlags::value;
-  func->reset(func_flag, quad);
+  function->reset(func_flag, quad);
 
   auto sp_filler = space->create_cache_handler();
   auto sp_flag = ValueFlags::point | ValueFlags::value |
                  ValueFlags::w_measure;
   sp_filler->reset(sp_flag, quad);
 
-  auto f_elem = func->begin();
+  auto f_elem = function->begin();
   auto elem = space->begin();
   auto end  = space->end();
 
-  func->init_element_cache(f_elem);
+  function->init_element_cache(f_elem);
   sp_filler->init_element_cache(elem);
 
   const int n_qp = quad.get_num_points();
@@ -98,7 +97,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
       DenseVector loc_rhs(n_basis);
       DenseMatrix loc_mat(n_basis, n_basis);
 
-      func->fill_element_cache(f_elem);
+      function->fill_element_cache(f_elem);
       sp_filler->fill_element_cache(elem);
 
       loc_mat = 0.;

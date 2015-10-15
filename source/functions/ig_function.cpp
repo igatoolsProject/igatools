@@ -112,6 +112,36 @@ auto
 IgFunction<dim,codim,range,rank>::
 const_create(std::shared_ptr<const Sp> space,
        std::shared_ptr<const EpetraTools::Vector> coeff,
+       const std::string &property) ->  std::shared_ptr<const self_t>
+{
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
+		  coeff, property);
+  Assert(ig_func != nullptr, ExcNullPtr());
+
+  return ig_func;
+}
+
+
+template<int dim,int codim,int range,int rank>
+auto
+IgFunction<dim,codim,range,rank>::
+const_create(std::shared_ptr<const Sp> space,
+       const IgCoefficients &coeff,
+       const std::string &property) ->  std::shared_ptr<const self_t>
+{
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
+		  coeff, property);
+  Assert(ig_func != nullptr, ExcNullPtr());
+
+  return ig_func;
+}
+
+
+template<int dim,int codim,int range,int rank>
+auto
+IgFunction<dim,codim,range,rank>::
+create(std::shared_ptr<Sp> space,
+       std::shared_ptr<const EpetraTools::Vector> coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
@@ -128,7 +158,7 @@ const_create(std::shared_ptr<const Sp> space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-const_create(std::shared_ptr<const Sp> space,
+create(std::shared_ptr<Sp> space,
        const IgCoefficients &coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
@@ -142,7 +172,6 @@ const_create(std::shared_ptr<const Sp> space,
 
   return ig_func;
 }
-
 
 #if 0
 
@@ -222,7 +251,7 @@ auto
 IgFunction<dim,codim,range,rank>::
 get_ig_space() const -> std::shared_ptr<const Sp>
 {
-  return space_;
+  return space_.get_ptr_const_data();
 }
 
 
@@ -242,7 +271,7 @@ auto
 IgFunction<dim,codim,range,rank>::
 operator +=(const self_t &fun) -> self_t &
 {
-  Assert(space_ == fun.space_,
+  Assert(space_.get_ptr_const_data() == fun.space_.get_ptr_const_data(),
   ExcMessage("Functions defined on different spaces."));
 
   for (const auto &f_dof_value : fun.coeff_)
@@ -263,8 +292,8 @@ rebuild_after_insert_knots(
 {
   using std::const_pointer_cast;
   this->function_previous_refinement_ =
-    IgFunction<dim,codim,range,rank>::create(
-      const_pointer_cast<Sp>(space_->get_space_previous_refinement()),
+    IgFunction<dim,codim,range,rank>::const_create(
+      std::dynamic_pointer_cast<const Sp>(space_->get_space_previous_refinement()),
       coeff_,
       property_);
   /*
@@ -279,7 +308,7 @@ rebuild_after_insert_knots(
   QGauss<dim> quad(max_degree+1);
   auto function_refined = space_tools::projection_l2(
                             this->function_previous_refinement_,
-                            const_pointer_cast<const Sp>(space_),
+                            space_.get_ptr_const_data(),
                             quad);
   /*
       out.begin_item("function_refined");
@@ -297,6 +326,8 @@ void
 IgFunction<dim,codim,range,rank>::
 create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
 {
+	AssertThrow(false,ExcNotImplemented());
+	/*
   Assert(ig_function != nullptr, ExcNullPtr());
   Assert(&(*ig_function) == &(*this), ExcMessage("Different objects."));
 
@@ -309,6 +340,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
               std::placeholders::_2);
   this->grid_->connect_insert_knots(
     SlotType(func_to_connect).track_foreign(ig_function));
+    //*/
 }
 
 #endif // MESH_REFINEMENT

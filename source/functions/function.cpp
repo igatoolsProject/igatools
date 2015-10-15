@@ -28,13 +28,11 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
-Function(std::shared_ptr<const DomainType> domain)
+Function(const SharedPtrConstnessHandler<DomainType> &domain)
   :
   domain_(domain)
   // object_id_(UniqueIdGenerator::get_unique_id())
-{
-  Assert(domain != nullptr, ExcNullPtr());
-}
+{}
 
 
 

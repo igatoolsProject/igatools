@@ -27,7 +27,7 @@ namespace functions
 
 template<int dim, int codim, int range, int rank>
 ConstantFunction<dim, codim, range, rank>::
-ConstantFunction(std::shared_ptr<DomainType> domain, const Value &b)
+ConstantFunction(const SharedPtrConstnessHandler<DomainType> &domain, const Value &b)
   :
   parent_t::FormulaFunction(domain),
   b_(b)
@@ -41,9 +41,19 @@ ConstantFunction<dim, codim, range, rank>::
 create(std::shared_ptr<DomainType> domain, const Value &b)
 ->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<base_t>(new self_t(domain, b));
+  return std::shared_ptr<base_t>(new
+		  self_t(SharedPtrConstnessHandler<DomainType>(domain), b));
 }
 
+template<int dim, int codim, int range, int rank>
+auto
+ConstantFunction<dim, codim, range, rank>::
+const_create(std::shared_ptr<const DomainType> domain, const Value &b)
+->  std::shared_ptr<const base_t>
+{
+  return std::shared_ptr<const base_t>(new
+	      self_t(SharedPtrConstnessHandler<DomainType>(domain), b));
+}
 
 
 
@@ -87,7 +97,7 @@ evaluate_2(const ValueVector<Point> &points,
 //------------------------------------------------------------------------------
 template<int dim, int codim, int range>
 LinearFunction<dim, codim, range>::
-LinearFunction(std::shared_ptr<DomainType> domain,
+LinearFunction(const SharedPtrConstnessHandler<DomainType> &domain,
                const Derivative<1> &A,
                const Value &b)
   :
@@ -105,7 +115,19 @@ create(std::shared_ptr<DomainType> domain,
        const Derivative<1> &A,
        const Value &b) ->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<base_t>(new self_t(domain, A, b));
+  return std::shared_ptr<base_t>(new
+		  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b));
+}
+
+
+template<int dim, int codim, int range>
+auto
+LinearFunction<dim, codim, range>::
+const_create(std::shared_ptr<const DomainType> domain, const Derivative<1> &A,
+             const Value &b) -> std::shared_ptr<const base_t>
+{
+  return std::shared_ptr<const base_t>(new
+		  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b));
 }
 
 

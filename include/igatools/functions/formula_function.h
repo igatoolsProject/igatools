@@ -48,7 +48,7 @@ public:
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
-  FormulaFunction(std::shared_ptr<DomainType> domain);
+  FormulaFunction(const SharedPtrConstnessHandler<DomainType> &domain);
 
 // FormulaFunction(const self_t &func);
 

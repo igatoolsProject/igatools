@@ -116,16 +116,25 @@ public:
   using typename parent_t::DomainType;
 
 public:
-  static std::shared_ptr<self_t>
+  static std::shared_ptr<const self_t>
   const_create(std::shared_ptr<const Sp> space,
          std::shared_ptr<const EpetraTools::Vector> coeff,
          const std::string &property = DofProperties::active);
 
-  static std::shared_ptr<self_t>
+  static std::shared_ptr<const self_t>
   const_create(std::shared_ptr<const Sp> space,
          const IgCoefficients &coeff,
          const std::string &property = DofProperties::active);
 
+  static std::shared_ptr<self_t>
+  create(std::shared_ptr<Sp> space,
+         std::shared_ptr<const EpetraTools::Vector> coeff,
+         const std::string &property = DofProperties::active);
+
+  static std::shared_ptr<self_t>
+  create(std::shared_ptr<Sp> space,
+         const IgCoefficients &coeff,
+         const std::string &property = DofProperties::active);
 
 
 #if 0
