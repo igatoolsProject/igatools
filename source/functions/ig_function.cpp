@@ -305,7 +305,7 @@ rebuild_after_insert_knots(
 
   const int max_degree = space_->get_max_degree();
 //    const int max_degree = 10;
-  QGauss<dim> quad(max_degree+1);
+  const auto quad = QGauss<dim>::create(max_degree+1);
   auto function_refined = space_tools::projection_l2(
                             this->function_previous_refinement_,
                             space_.get_ptr_const_data(),

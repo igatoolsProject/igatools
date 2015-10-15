@@ -200,6 +200,13 @@ public:
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
 
+  template <int sdim>
+  void fill_cache(ConstElementAccessor &elem,
+                  const int s_id)
+  {
+    this->fill_cache(Topology<sdim>(), elem, s_id);
+  }
+
 protected:
 //  std::shared_ptr<typename ConstElementAccessor::CacheType>
   typename ConstElementAccessor::CacheType &

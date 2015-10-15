@@ -45,8 +45,8 @@ namespace space_tools
 template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
 std::shared_ptr<IgFunction<Space::dim,Space::codim,Space::range,Space::rank> >
 projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space::range,Space::rank>> function,
-              std::shared_ptr<const Space> space,
-              const Quadrature<Space::dim> &quad,
+              const std::shared_ptr<const Space> &space,
+              const std::shared_ptr<const Quadrature<Space::dim>> &quad,
               const std::string &dofs_property = DofProperties::active)
 {
   using ProjFunc = IgFunction<Space::dim,Space::codim,Space::range,Space::rank>;
@@ -62,7 +62,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
   auto sol = EpetraTools::create_vector(matrix->DomainMap());
 
   const auto space_grid = space->get_ptr_const_grid();
-  const auto func_grid = function->get_grid();
+  const auto func_grid = function->get_domain()->get_grid_function()->get_grid();
 
 
   Assert(space_grid->same_knots_or_refinement_of(*func_grid),
@@ -70,22 +70,25 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
 
   const int dim = Space::dim;
 
-  auto func_flag = ValueFlags::point | ValueFlags::value;
-  function->reset(func_flag, quad);
+  using FuncFlags = function_element::Flags;
+  auto func_flag = FuncFlags::value;
+  auto func_elem_handler = function->create_cache_handler();
+  func_elem_handler->template set_flags<dim>(func_flag);
 
-  auto sp_filler = space->create_cache_handler();
-  auto sp_flag = ValueFlags::point | ValueFlags::value |
-                 ValueFlags::w_measure;
-  sp_filler->reset(sp_flag, quad);
+  using SpFlags = space_element::Flags;
+  auto sp_flag = SpFlags::value |
+                 SpFlags::w_measure;
+  auto space_elem_handler = space->create_cache_handler();
+  space_elem_handler->template set_flags<dim>(sp_flag);
 
   auto f_elem = function->begin();
   auto elem = space->begin();
   auto end  = space->end();
 
-  function->init_element_cache(f_elem);
-  sp_filler->init_element_cache(elem);
+  func_elem_handler->init_cache(*f_elem,quad);
+  space_elem_handler->init_element_cache(*elem,quad);
 
-  const int n_qp = quad.get_num_points();
+  const int n_qp = quad->get_num_points();
 
   using space_element::_Value;
 
@@ -97,14 +100,14 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
       DenseVector loc_rhs(n_basis);
       DenseMatrix loc_mat(n_basis, n_basis);
 
-      function->fill_element_cache(f_elem);
-      sp_filler->fill_element_cache(elem);
+      func_elem_handler->template fill_cache<dim>(*f_elem,0);
+      space_elem_handler->fill_element_cache(*elem);
 
       loc_mat = 0.;
       loc_rhs = 0.;
 
-      auto f_at_qp = f_elem->template get_values<_Value,dim>(0);
-      auto phi = elem->template get_basis_element<_Value>(dofs_property);
+      auto f_at_qp = f_elem->template get_values<function_element::_Value,dim>(0);
+      auto phi = elem->template get_basis_element<space_element::_Value>(dofs_property);
 
       // computing the upper triangular part of the local matrix
       auto w_meas = elem->template get_w_measures<dim>(0);
@@ -147,8 +150,8 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
       DenseVector loc_rhs(n_basis);
       DenseMatrix loc_mat(n_basis, n_basis);
 
-      func->fill_element_cache(f_elem);
-      sp_filler->fill_element_cache(elem);
+      func_elem_handler->template fill_cache<dim>(*f_elem,0);
+      space_elem_handler->fill_element_cache(*elem);
 
       loc_mat = 0.;
       loc_rhs = 0.;
@@ -172,11 +175,12 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
       quad_in_func_elem.dilate(one_div_f_elem_size);
 
 
-      auto f_at_qp = f_elem->template evaluate_at_points<_Value>(quad_in_func_elem);
+      auto f_at_qp =
+    		  f_elem->template evaluate_at_points<function_element::_Value>(quad_in_func_elem);
       //---------------------------------------------------------------------------
 
 
-      auto phi = elem->template get_basis_element<_Value>(dofs_property);
+      auto phi = elem->template get_basis_element<space_element::_Value>(dofs_property);
 
       // computing the upper triangular part of the local matrix
       auto w_meas = elem->template get_w_measures<dim>(0);

@@ -166,9 +166,8 @@ public:
   auto
   get_values(const int s_id) const
   {
-    Assert(local_cache_ != nullptr,ExcNullPtr());
     const auto &cache =
-      local_cache_->template get_sub_elem_cache<sdim>(s_id);
+      local_cache_.template get_sub_elem_cache<sdim>(s_id);
     return cache.template get_data<ValueType>();
   }
 
