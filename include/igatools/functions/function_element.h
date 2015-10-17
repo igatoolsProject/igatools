@@ -48,6 +48,8 @@ public:
 
   using ListIt = typename ContainerType_::ListIt;
 
+  using IndexType = typename Grid<dim>::IndexType;
+
   using Value = typename ContainerType_::Value;
 //  using Gradient = typename ContainerType_::Gradient;
 //  using Hessian  = typename ContainerType_::Hessian;
@@ -59,16 +61,6 @@ public:
   using CacheFlags = function_element::CacheFlags;
 
 protected:
-#if 0
-  /** @name Constructors */
-  ///@{
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  FunctionElementBase() = default;
-#endif
 
   FunctionElementBase() = delete;
 
@@ -154,6 +146,11 @@ public:
     ++(*domain_elem_);
   }
 
+  void move_to(const IndexType &elem_id)
+  {
+	  domain_elem_->move_to(elem_id);
+  }
+
   const DomainElem &get_domain_element() const;
 
   DomainElem &get_domain_element();
@@ -172,34 +169,6 @@ public:
   }
 
 
-#if 0
-  /**
-   * @name Methods for the for the evaluations of Functions's derivatives
-   *  without the use of the cache.
-   */
-  ///@{
-  /**
-   * Returns a ValueTable with the values specified by the template parameter
-   * <tt>ValueType</tt>
-   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-   * @note This function does not use the cache and therefore can be called any time without
-   * needing to pre-call init_cache()/fill_cache().
-   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-   */
-  template <class ValueType>
-  decltype(auto) evaluate_at_points(const Quadrature<dim> &points)
-  {
-    func_->reset(ValueType::flag,points);
-    const auto topology = Topology<dim>();
-    func_->init_cache(*this,topology);
-    func_->fill_cache(*this,topology,0);
-
-    return this->template get_values<ValueType,dim>(0);
-  }
-  ///@}
-
-#endif
 
 
 
@@ -235,44 +204,16 @@ private:
   }
 
 
-private:
+protected:
   std::shared_ptr<ContainerType_> func_;
 
+private:
   std::unique_ptr<DomainElem> domain_elem_;
 
   CacheType local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
   friend class FunctionHandler<dim, codim, range, rank>;
-
-
-
-
-
-
-//
-//    /** Returns the index of the element. */
-//    IndexType get_index() const;
-
-
-
-private:
-
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version);
-  ///@}
-#endif // SERIALIZATION
-#endif
 };
 
 
@@ -284,6 +225,35 @@ class ConstFunctionElement
 {
   using FunctionElementBase<dim, codim, range, rank,
         const Function<dim,codim,range,rank>>::FunctionElementBase;
+
+
+public:
+  /**
+   * @name Methods for the for the evaluations of Functions's derivatives
+   *  without the use of the cache.
+   */
+  ///@{
+  /**
+   * Returns a ValueTable with the values specified by the template parameter
+   * <tt>ValueType</tt>
+   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+   * @note This function does not use the cache and therefore can be called any time without
+   * needing to pre-call init_cache()/fill_cache().
+   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+   */
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim>> &points)
+  {
+	auto func_elem_handler = this->func_->create_cache_handler();
+	func_elem_handler->template set_flags<dim>(ValueType::flag);
+    func_elem_handler->init_cache(*this,points);
+    func_elem_handler->template fill_cache<dim>(*this,0);
+
+    return this->template get_values<ValueType,dim>(0);
+  }
+  ///@}
+
 };
 
 

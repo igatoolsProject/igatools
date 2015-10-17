@@ -73,7 +73,8 @@ class _Point
 {
 public:
   static const std::string name;
-  static const auto flag = CacheFlags::point;
+  static const auto flag = Flags::point;
+  static const auto cache_flag = CacheFlags::point;
 };
 
 /**
@@ -83,7 +84,8 @@ class _Weight
 {
 public:
   static const std::string name;
-  static const auto flag = CacheFlags::weight;
+  static const auto flag = Flags::weight;
+  static const auto cache_flag = CacheFlags::weight;
 };
 
 } // end namespace grid_element
@@ -138,7 +140,8 @@ template <int order>
 struct _D
 {
   static const std::string name;
-  static const CacheFlags flag;
+  static const Flags flag;
+  static const CacheFlags cache_flag;
 };
 
 }
@@ -220,32 +223,32 @@ struct activate
 struct _Measure
 {
   static const std::string name;
-  static const auto flag = CacheFlags::measure;
+  static const auto cache_flag = CacheFlags::measure;
 };
 
 struct _InvJacobian
 {
   static const std::string name;
-  static const auto flag = CacheFlags::inv_jacobian;
+  static const auto cache_flag = CacheFlags::inv_jacobian;
 };
 
 struct _InvHessian
 {
   static const std::string name;
-  static const auto flag = CacheFlags::inv_hessian;
+  static const auto cache_flag = CacheFlags::inv_hessian;
 };
 
 struct _BoundaryNormal
 {
   static const std::string name;
-  static const auto flag = CacheFlags::boundary_normal;
+  static const auto cache_flag = CacheFlags::boundary_normal;
 };
 
 
 struct _ExtNormal
 {
   static const std::string name;
-  static const auto flag = CacheFlags::ext_normal;
+  static const auto cache_flag = CacheFlags::ext_normal;
 };
 
 
@@ -297,19 +300,22 @@ struct activate
 struct _Value
 {
   static const std::string name;
-  static const auto flag = CacheFlags::value;
+  static const auto flag = Flags::value;
+  static const auto cache_flag = CacheFlags::value;
 };
 
 struct _Gradient
 {
   static const std::string name;
-  static const auto flag = CacheFlags::gradient;
+  static const auto flag = Flags::gradient;
+  static const auto cache_flag = CacheFlags::gradient;
 };
 
 struct _D2
 {
   static const std::string name;
-  static const auto flag = CacheFlags::D2;
+  static const auto flag = Flags::D2;
+  static const auto cache_flag = CacheFlags::D2;
 };
 
 } // end namespace function_element

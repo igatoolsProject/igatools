@@ -451,7 +451,7 @@ public:
       using ValueType = typename ValueType_ValueContainer::first_type;
       auto &value = type_and_value.second;
 
-      if (contains(flags, ValueType::flag))
+      if (contains(flags, ValueType::cache_flag))
       {
         value.set_status_fill(true);
 

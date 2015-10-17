@@ -28,13 +28,15 @@ IGA_NAMESPACE_OPEN
 namespace grid_element
 {
 //---------------------------------------------------------------------
-const CacheFlags _Point::flag;
+const Flags _Point::flag;
+const CacheFlags _Point::cache_flag;
 const string _Point::name = "Element Quadrature Points";
 
-const CacheFlags _Weight::flag;
+const Flags _Weight::flag;
+const CacheFlags _Weight::cache_flag;
 const string _Weight::name = "Element Quadrature Weights";
 
-activate::FlagsToCache  activate::grid =
+activate::FlagsToCache activate::grid =
 {
   {Flags::point, CacheFlags::point},
   {Flags::weight, CacheFlags::weight}
@@ -47,21 +49,21 @@ activate::FlagsToCache  activate::grid =
 namespace domain_element
 {
 
-const CacheFlags _Measure::flag;
+const CacheFlags _Measure::cache_flag;
 const string _Measure::name = "Element measure";
 
-const CacheFlags _InvJacobian::flag;
+const CacheFlags _InvJacobian::cache_flag;
 const string _InvJacobian::name = "Element inverse jacobian";
 
-const CacheFlags _InvHessian::flag;
+const CacheFlags _InvHessian::cache_flag;
 const string _InvHessian::name = "Element inverse hessian";
 
 
-const CacheFlags _BoundaryNormal::flag;
+const CacheFlags _BoundaryNormal::cache_flag;
 const string _BoundaryNormal::name = "Element boundary normal";
 
 
-const CacheFlags _ExtNormal::flag;
+const CacheFlags _ExtNormal::cache_flag;
 const string _ExtNormal::name = "Element exterior normal";
 
 
@@ -113,16 +115,20 @@ activate::FlagsToGrid activate::grid =
 namespace grid_function_element
 {
 //TODO: to be generated with mpl? or cog?
-template<> const CacheFlags _D<0>::flag = CacheFlags::D0;
+template<> const Flags _D<0>::flag = Flags::D0;
+template<> const CacheFlags _D<0>::cache_flag = CacheFlags::D0;
 template<> const string _D<0>::name = "Grid Function D0";
 
-template<> const CacheFlags _D<1>::flag = CacheFlags::D1;
+template<> const Flags _D<1>::flag = Flags::D1;
+template<> const CacheFlags _D<1>::cache_flag = CacheFlags::D1;
 template<> const string _D<1>::name = "Grid Function D1";
 
-template<> const CacheFlags _D<2>::flag = CacheFlags::D2;
+template<> const Flags _D<2>::flag = Flags::D2;
+template<> const CacheFlags _D<2>::cache_flag = CacheFlags::D2;
 template<> const string _D<2>::name = "Grid Function D2";
 
-template<> const CacheFlags _D<3>::flag = CacheFlags::D3;
+template<> const Flags _D<3>::flag = Flags::D3;
+template<> const CacheFlags _D<3>::cache_flag = CacheFlags::D3;
 template<> const string _D<3>::name = "Grid Function D3";
 
 
@@ -150,13 +156,16 @@ activate::FlagsToGrid activate::grid =
 //---------------------------------------------------------------------
 namespace function_element
 {
-const CacheFlags _Value::flag;
+const Flags _Value::flag;
+const CacheFlags _Value::cache_flag;
 const string _Value::name = "Function Values";
 
-const CacheFlags _Gradient::flag;
+const Flags _Gradient::flag;
+const CacheFlags _Gradient::cache_flag;
 const string _Gradient::name = "Function gradients";
 
-const CacheFlags _D2::flag;
+const Flags _D2::flag;
+const CacheFlags _D2::cache_flag;
 const string _D2::name = "Function D2";
 
 activate::FlagsToCache  activate::function =

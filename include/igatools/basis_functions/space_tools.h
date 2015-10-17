@@ -138,6 +138,8 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
   }
   else
   {
+//	  AssertThrow(false,ExcNotImplemented());
+
     auto map_elems_id_fine_coarse =
       grid_tools::build_map_elements_id_between_grids(*space_grid,*func_grid);
 
@@ -160,19 +162,21 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
       //---------------------------------------------------------------------------
       // the function is supposed to be defined on the same grid of the space or coarser
       const auto &elem_grid_accessor = elem->get_grid_element();
-      auto quad_in_func_elem = quad;
-      quad_in_func_elem.dilate_translate(
+      auto quad_in_func_elem = std::make_shared<Quadrature<dim>>(*quad);
+      quad_in_func_elem->dilate_translate(
         elem_grid_accessor.
-        template get_coordinate_lengths<dim>(0),
+        template get_side_lengths<dim>(0),
         elem_grid_accessor.vertex(0));
 
-      auto one_div_f_elem_size = f_elem->template get_coordinate_lengths<dim>(0);
+      const auto &func_grid_elem =
+    		  f_elem->get_domain_element().get_grid_function_element().get_grid_element();
+      auto one_div_f_elem_size = func_grid_elem.template get_side_lengths<dim>(0);
       for (int dir : UnitElement<dim>::active_directions)
         one_div_f_elem_size[dir] = 1.0/one_div_f_elem_size[dir];
 
-      auto f_elem_vertex = -f_elem->vertex(0);
-      quad_in_func_elem.translate(f_elem_vertex);
-      quad_in_func_elem.dilate(one_div_f_elem_size);
+      auto f_elem_vertex = -func_grid_elem.vertex(0);
+      quad_in_func_elem->translate(f_elem_vertex);
+      quad_in_func_elem->dilate(one_div_f_elem_size);
 
 
       auto f_at_qp =
@@ -208,6 +212,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
       rhs->add_block(elem_dofs,loc_rhs);
     }
     matrix->FillComplete();
+//#endif
   }
 
   auto solver = EpetraTools::create_solver(*matrix, *sol, *rhs);
