@@ -29,7 +29,7 @@
 
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/identity_function.h>
+//#include <igatools/functions/identity_function.h>
 #include <igatools/functions/formula_function.h>
 #include <igatools/functions/function_lib.h>
 
@@ -41,55 +41,52 @@ template<int dim>
 class BoundaryFunction : public FormulaFunction<dim>
 {
 private:
-    using base_t = Function<dim>;
-    using parent_t = FormulaFunction<dim>;
-    using self_t = BoundaryFunction<dim>;
-    using typename base_t::GridType;
+  using base_t = Function<dim>;
+  using parent_t = FormulaFunction<dim>;
+  using self_t = BoundaryFunction<dim>;
+  using typename parent_t::DomainType;
+
 public:
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
+  using typename parent_t::Point;
+  using typename parent_t::Value;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
 public:
-    BoundaryFunction(std::shared_ptr<GridType> grid)
-        : FormulaFunction<dim>(grid, IdentityFunction<dim>::const_create(grid))
-    {}
+  BoundaryFunction(SharedPtrConstnessHandler<DomainType> domain)
+    : FormulaFunction<dim>(domain)
+  {}
 
-    static std::shared_ptr<base_t>
-    const_create(std::shared_ptr<GridType> grid)
+  static std::shared_ptr<const base_t>
+  const_create(std::shared_ptr<const DomainType> domain)
+  {
+    return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<DomainType>(domain)));
+  }
+
+
+  Real value(Points<dim> x) const
+  {
+    Real f = 1;
+    for (int i = 0; i<dim; ++i)
+      f = f * cos(2*PI*x[i]);
+    return f;
+  }
+
+  void evaluate_0(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const override
+  {
+    for (int i = 0; i<points.size(); ++i)
     {
-        return std::shared_ptr<base_t>(new self_t(grid));
+      Points<dim> p = points[i];
+      values[i][0] = this->value(p);
     }
+  }
+  void evaluate_1(const ValueVector<Point> &points,
+                  ValueVector<Derivative<1>> &values) const override
+  {}
 
-    std::shared_ptr<base_t> clone() const override
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
-
-    Real value(Points<dim> x) const
-    {
-        Real f = 1;
-        for (int i = 0; i<dim; ++i)
-            f = f * cos(2*PI*x[i]);
-        return f;
-    }
-
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const override
-    {
-        for (int i = 0; i<points.size(); ++i)
-        {
-            Points<dim> p = points[i];
-            values[i][0] = this->value(p);
-        }
-    }
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const override
-    {}
-
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const override
-    {}
+  void evaluate_2(const ValueVector<Point> &points,
+                  ValueVector<Derivative<2>> &values) const override
+  {}
 };
 
 
@@ -102,48 +99,44 @@ template<int dim, int codim=0, int range = 1, int rank = 1>
 class ProductFunction : public FormulaFunction<dim>
 {
 private:
-    using base_t = Function<dim, codim, range, rank>;
-    using parent_t = FormulaFunction<dim, codim, range, rank>;
-    using self_t = ProductFunction<dim, codim, range, rank>;
+  using base_t = Function<dim, codim, range, rank>;
+  using parent_t = FormulaFunction<dim, codim, range, rank>;
+  using self_t = ProductFunction<dim, codim, range, rank>;
 public:
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    using typename parent_t::Gradient;
-    using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
+  using typename parent_t::Point;
+  using typename parent_t::Value;
+  using typename parent_t::Gradient;
+  using typename parent_t::ElementIterator;
+  using typename parent_t::ElementAccessor;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
 
-    using parent_t::FormulaFunction;
+  using parent_t::FormulaFunction;
 
-    virtual std::shared_ptr<base_t> clone() const override final
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
 
 
 private:
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const
+  void evaluate_0(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const
+  {
+    auto pt = points.begin();
+    auto val = values.begin();
+
+    for (; pt != points.end(); ++pt, ++val)
     {
-        auto pt = points.begin();
-        auto val = values.begin();
-
-        for (; pt != points.end(); ++pt, ++val)
-        {
-            *val = 1.;
-            for (int i=0; i<dim; ++i)
-                (*val) *= (*pt)[i];
-        }
+      *val = 1.;
+      for (int i=0; i<dim; ++i)
+        (*val) *= (*pt)[i];
     }
+  }
 
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const
-    {}
+  void evaluate_1(const ValueVector<Point> &points,
+                  ValueVector<Derivative<1>> &values) const
+  {}
 
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const
-    {}
+  void evaluate_2(const ValueVector<Point> &points,
+                  ValueVector<Derivative<2>> &values) const
+  {}
 
 };
 
@@ -157,67 +150,61 @@ class NormFunction : public FormulaFunction<dim, 0, 1, 1>
 {
 
 public:
-    using base_t = Function<dim, 0, 1, 1>;
-    using parent_t = FormulaFunction<dim, 0, 1, 1>;
-    using self_t = NormFunction<dim>;
-    using typename base_t::GridType;
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    using typename parent_t::Gradient;
-    using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
-    using typename parent_t::Map;
+  using base_t = Function<dim, 0, 1, 1>;
+  using parent_t = FormulaFunction<dim, 0, 1, 1>;
+  using self_t = NormFunction<dim>;
+  using GridType = Grid<dim>;
+  using typename parent_t::DomainType;
 
-    static std::shared_ptr<base_t>
-    const_create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-           const Real p=2.)
-    {
-        return std::shared_ptr<base_t>(new self_t(grid, map, p));
+  using typename parent_t::Point;
+  using typename parent_t::Value;
+  using typename parent_t::Gradient;
+  using typename parent_t::ElementIterator;
+  using typename parent_t::ElementAccessor;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
 
-    }
+  static std::shared_ptr<const base_t>
+  const_create(std::shared_ptr<const DomainType> &domain,
+               const Real p=2.)
+  {
+    return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<DomainType>(domain), p));
+  }
 
-
-    std::shared_ptr<base_t> clone() const override
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
-
-    NormFunction(const self_t &) = default;
+  NormFunction(const self_t &) = default;
 
 protected:
-    NormFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-                 const Real p)
-        :
-        parent_t(grid, map),
-        p_(p)
-    {}
+  NormFunction(SharedPtrConstnessHandler<DomainType> domain,
+               const Real p)
+    :
+    parent_t(domain),
+    p_(p)
+  {}
 
 
 
 private:
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const override
+  void evaluate_0(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const override
+  {
+    auto pt = points.begin();
+    for (auto &val : values)
     {
-        auto pt = points.begin();
-        for (auto &val : values)
-        {
-            val = std::pow(pt->norm_square(), p_/2.);
-            ++pt;
-        }
+      val = std::pow(pt->norm_square(), p_/2.);
+      ++pt;
     }
+  }
 
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const override
-    {}
+  void evaluate_1(const ValueVector<Point> &points,
+                  ValueVector<Derivative<1>> &values) const override
+  {}
 
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const override
-    {}
+  void evaluate_2(const ValueVector<Point> &points,
+                  ValueVector<Derivative<2>> &values) const override
+  {}
 
 private:
-    const Real p_;
+  const Real p_;
 };
 
 

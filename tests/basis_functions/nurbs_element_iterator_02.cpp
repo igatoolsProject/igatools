@@ -58,7 +58,7 @@ void test()
 
   IgCoefficients weights;
   for (int dof = 0 ; dof < n_scalar_basis ; ++dof)
-    weights[dof] = (n_scalar_basis + 1) * (1.0 / n_scalar_basis) ;
+    weights[dof] = (dof + 1) * (1.0 / n_scalar_basis) ;
 
   using WeightFunc = IgGridFunction<dim,1>;
   const auto w_func = WeightFunc::const_create(scalar_bsp_space,weights);

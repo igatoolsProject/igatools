@@ -123,215 +123,7 @@ NURBSElementHandler(shared_ptr<const Space> space)
 }
 #endif
 
-#if 0
-template<int dim_, int range_ , int rank_>
-template<int sub_elem_dim>
-void
-NURBSElementHandler<dim_, range_, rank_>::
-ResetDispatcher::
-operator()(const Quadrature<sub_elem_dim> &quad)
-{
-  flags_[sub_elem_dim] = flag_;
-}
 
-
-template<int dim_, int range_ , int rank_>
-void
-NURBSElementHandler<dim_, range_, rank_>::
-reset_selected_elements(
-  const ValueFlags &flag,
-  const eval_pts_variant &quad,
-  const SafeSTLVector<IndexType> &elements_id)
-{
-  //--------------------------------------------------
-  // resetting the Function for the bspline (numerator and weight function at the denominator)
-  int max_deriv_order = -1;
-  if (contains(flag, ValueFlags::point) ||
-      contains(flag, ValueFlags::value))
-    max_deriv_order = 0;
-
-  if (contains(flag, ValueFlags::measure) ||
-      contains(flag, ValueFlags::w_measure) ||
-      contains(flag, ValueFlags::boundary_normal) ||
-      contains(flag, ValueFlags::outer_normal) ||
-      contains(flag, ValueFlags::gradient) ||
-      contains(flag, ValueFlags::inv_gradient))
-    max_deriv_order = 1;
-
-
-  if (contains(flag, ValueFlags::curvature) ||
-      contains(flag, ValueFlags::hessian) ||
-      contains(flag, ValueFlags::inv_hessian))
-    max_deriv_order = 2;
-
-
-  ValueFlags bspline_flag;
-  if (max_deriv_order == 0)
-    bspline_flag = ValueFlags::value;
-  else if (max_deriv_order == 1)
-    bspline_flag = ValueFlags::value | ValueFlags::gradient;
-  else if (max_deriv_order == 2)
-    bspline_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
-  else
-    Assert(false,ExcMessage("Not a right value flag."));
-
-
-  if (contains(flag, ValueFlags::point))
-    bspline_flag |= ValueFlags::point;
-  if (contains(flag, ValueFlags::w_measure))
-    bspline_flag |= ValueFlags::w_measure;
-  //--------------------------------------------------
-
-
-
-  //--------------------------------------
-  // resetting the BSplineElementHandler (for the numerator)
-  Assert(bspline_handler_ != nullptr, ExcNullPtr());
-  bspline_handler_->reset_selected_elements(bspline_flag, quad, elements_id);
-  //--------------------------------------
-
-
-  //--------------------------------------------------
-  const auto nrb_space = this->get_nurbs_space();
-  nrb_space->weight_func_->reset_selected_elements(bspline_flag,quad,elements_id);
-  //--------------------------------------------------
-
-
-  //--------------------------------------------------
-  auto reset_dispatcher = ResetDispatcher(flag,flags_);
-  boost::apply_visitor(reset_dispatcher, quad);
-  //--------------------------------------------------
-}
-
-
-template<int dim_, int range_ , int rank_>
-template<int sub_elem_dim>
-void
-NURBSElementHandler<dim_, range_, rank_>::
-InitCacheDispatcher::
-operator()(const Topology<sub_elem_dim> &sub_elem)
-{
-  grid_handler_.template init_cache<sub_elem_dim>(elem_.get_grid_element());
-
-  auto &cache = elem_.get_all_sub_elems_cache();
-  if (cache == nullptr)
-  {
-    using VCache = typename NURBSElement<dim_,range_,rank_>::parent_t::Cache;
-
-    using Cache = AllSubElementsCache<VCache>;
-
-    cache = shared_ptr<Cache>(new Cache);
-  }
-
-//  const auto n_basis = elem_.get_max_num_basis();//elem_.get_num_basis(DofProperties::active);
-  const auto n_basis = elem.get_basis_offset()[BaseSpace::n_components];
-
-  const auto n_points = grid_handler_.template get_num_points<sub_elem_dim>();
-  const auto flag = flags_[sub_elem_dim];
-
-  for (auto &s_id: UnitElement<dim>::template elems_ids<sub_elem_dim>())
-  {
-    auto &s_cache = cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
-    s_cache.resize(flag, n_points, n_basis);
-  }
-}
-
-template<int dim_, int range_ , int rank_>
-void
-NURBSElementHandler<dim_, range_, rank_>::
-init_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology)
-{
-  Assert(!elem.get_space()->is_bspline(),ExcMessage("Not a NURBSElement."));
-
-  auto &nrb_elem = dynamic_cast<NURBSElement<dim_,range_,rank_>&>(elem);
-  auto &bsp_elem = nrb_elem.bspline_elem_;
-  bspline_handler_->init_cache(bsp_elem,topology);
-
-  const auto nrb_space = this->get_nurbs_space();
-  nrb_space->weight_func_->init_cache(nrb_elem.weight_elem_,topology);
-
-
-  //-------------------------------------
-  auto init_cache_dispatcher = InitCacheDispatcher(
-                                 const_cast<GridHandler<dim_> &>(bspline_handler_->get_grid_handler()),
-                                 nrb_elem,flags_);
-  boost::apply_visitor(init_cache_dispatcher,topology);
-  //-------------------------------------
-}
-
-
-
-template<int dim_, int range_ , int rank_>
-template<int sub_elem_dim>
-void
-NURBSElementHandler<dim_, range_, rank_>::
-FillCacheDispatcher::
-operator()(const Topology<sub_elem_dim> &sub_elem)
-{
-  grid_handler_.template fill_cache<sub_elem_dim>(
-    nrb_elem_.get_grid_element(),sub_elem_id_);
-
-  Assert(nrb_elem_.all_sub_elems_cache_ != nullptr, ExcNullPtr());
-  auto &sub_elem_cache = nrb_elem_.all_sub_elems_cache_->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
-
-  const auto &bsp_elem = nrb_elem_.bspline_elem_;
-  const auto &weight_elem = nrb_elem_.weight_elem_;
-
-  if (sub_elem_cache.template status_fill<_Value>())
-  {
-    auto &values = sub_elem_cache.template get_data<_Value>();
-    evaluate_nurbs_values_from_bspline(bsp_elem, weight_elem, values);
-    sub_elem_cache.template set_status_filled<_Value>(true);
-  }
-  if (sub_elem_cache.template status_fill<_Gradient>())
-  {
-    auto &gradients = sub_elem_cache.template get_data<_Gradient>();
-    evaluate_nurbs_gradients_from_bspline(bsp_elem, weight_elem, gradients);
-    sub_elem_cache.template set_status_filled<_Gradient>(true);
-  }
-  if (sub_elem_cache.template status_fill<_Hessian>())
-  {
-    auto &hessians = sub_elem_cache.template get_data<_Hessian>();
-    evaluate_nurbs_hessians_from_bspline(bsp_elem, weight_elem, hessians);
-    sub_elem_cache.template set_status_filled<_Hessian>(true);
-  }
-  if (sub_elem_cache.template status_fill<_Divergence>())
-  {
-    eval_divergences_from_gradients(
-      sub_elem_cache.template get_data<_Gradient>(),
-      sub_elem_cache.template get_data<_Divergence>());
-    sub_elem_cache.template set_status_filled<_Divergence>(true);
-  }
-
-  sub_elem_cache.set_filled(true);
-}
-
-
-template<int dim_, int range_ , int rank_>
-void
-NURBSElementHandler<dim_, range_, rank_>::
-fill_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology, const int sub_elem_id)
-{
-  using Elem = NURBSElement<dim_,range_,rank_>;
-  auto &nrb_elem = dynamic_cast<Elem &>(elem);
-  auto &bsp_elem = nrb_elem.bspline_elem_;
-
-  const auto nrb_space = this->get_nurbs_space();
-  Assert(nrb_space == nrb_elem.get_nurbs_space(),
-         ExcMessage("The element accessor and the element handler cannot have different spaces."));
-
-  bspline_handler_->fill_cache(bsp_elem,topology,sub_elem_id);
-
-  nrb_space->weight_func_->fill_cache(nrb_elem.weight_elem_,topology,sub_elem_id);
-
-
-  //-----------------------------------------
-  auto fill_cache_dispatcher =
-    FillCacheDispatcher(bspline_handler_->get_grid_handler(),sub_elem_id,nrb_elem);
-  boost::apply_visitor(fill_cache_dispatcher,topology);
-  //-----------------------------------------
-}
-#endif
 
 
 
@@ -394,9 +186,7 @@ evaluate_nurbs_values_from_bspline(
 
   const auto n_pts = P.get_num_points();
 
-//  Assert(n_pts == Q.get_num_points(),
-//         ExcDimensionMismatch(n_pts,Q.get_num_points()));
-
+  const auto &bsp_space = *bspline_elem.get_bspline_space();
 
   SafeSTLVector<Real> invQ(n_pts);
 
@@ -422,7 +212,7 @@ evaluate_nurbs_values_from_bspline(
       for (int pt = 0 ; pt < n_pts ; ++pt)
         R_fn[pt](comp) = P_fn[pt](comp) * invQ[pt] * w ;
     } // end loop w_fn_id
-    offset += n_funcs_comp;
+    offset += bsp_space.get_num_basis(comp);
   } // end loop comp
 
   phi.set_status_filled(true);
@@ -467,8 +257,7 @@ evaluate_nurbs_gradients_from_bspline(
 
   const auto n_pts = P.get_num_points();
 
-//  Assert(n_pts == Q.get_num_points(),
-//         ExcDimensionMismatch(n_pts,Q.get_num_points()));
+  const auto &bsp_space = *bspline_elem.get_bspline_space();
 
   SafeSTLVector<Real> invQ(n_pts);
   SafeSTLVector<SafeSTLArray<Real,dim>> dQ_invQ2(n_pts);
@@ -516,7 +305,7 @@ evaluate_nurbs_gradients_from_bspline(
           dR_fn_pt(i)(comp) = (dP_fn_pt(i)(comp)*invQ_pt - P_fn_pt_comp*dQ_invQ2_pt[i]) * w;
       } // end loop pt
     } // end loop w_fn_id
-    offset += n_funcs_comp;
+    offset += bsp_space.get_num_basis(comp);
   } // end loop comp
 
   D1_phi.set_status_filled(true);
@@ -566,8 +355,7 @@ evaluate_nurbs_hessians_from_bspline(
   Assert(!D2_phi.empty(), ExcEmptyObject());
   const auto n_pts = P.get_num_points();
 
-//  Assert(n_pts == Q.get_num_points(),
-//         ExcDimensionMismatch(n_pts,Q.get_num_points()));
+  const auto &bsp_space = *bspline_elem.get_bspline_space();
 
   SafeSTLVector<Real> invQ(n_pts);
   SafeSTLVector<Real> invQ2(n_pts);
@@ -657,7 +445,7 @@ evaluate_nurbs_hessians_from_bspline(
         } // end loop i
       } // end loop pt
     } // end loop w_fn_id
-    offset += n_funcs_comp;
+    offset += bsp_space.get_num_basis(comp);
   } // end loop comp
   D2_phi.set_status_filled(true);
 }

@@ -38,6 +38,7 @@ template <int, int, int, int, class> class FunctionElementBase;
 template <int, int, int, int> class FunctionElement;
 template <int, int, int, int> class ConstFunctionElement;
 template <int, int, int, int> class FunctionHandler;
+
 /**
  * Function Class
  *
@@ -127,15 +128,15 @@ public:
   create(std::shared_ptr<DomainType> domain)
   {
     return std::shared_ptr<self_t>(new
-    		self_t(SharedPtrConstnessHandler<DomainType>(domain)));
+                                   self_t(SharedPtrConstnessHandler<DomainType>(domain)));
   }
 
 
   static std::shared_ptr<const self_t>
   const_create(std::shared_ptr<const DomainType> domain)
   {
-	return std::shared_ptr<self_t>(new self_t(
-			SharedPtrConstnessHandler<DomainType>(domain)));
+    return std::shared_ptr<self_t>(new self_t(
+                                     SharedPtrConstnessHandler<DomainType>(domain)));
   }
 
 
