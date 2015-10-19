@@ -42,12 +42,10 @@ data = Instantiation(include_files)
 sub_dim_members = \
  ['std::shared_ptr<typename class::template SubRefSpace<k>> ' + 
   'class::get_ref_sub_space<k>(const int sub_elem_id, ' + 
-  'InterSpaceMap<k> &dof_map, ' + 
-  'std::shared_ptr<Grid<k>> sub_grid) const;',
+  'InterSpaceMap<k> &dof_map) const;',
   'std::shared_ptr<typename class::template SubSpace<k>> ' + 
   'class::get_sub_space<k>(const int sub_elem_id, ' + 
-  'InterSpaceMap<k> &dof_map, std::shared_ptr<Grid<k>> sub_grid,' + 
-  'SubGridMap<k> &elem_map) const;']
+  'InterSpaceMap<k> &dof_map, SubGridMap<k> &elem_map) const;']
 
 
 spaces = ['NURBSSpace<0,0,1>']
@@ -57,7 +55,7 @@ for x in inst.sub_ref_sp_dims:
     space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
-        k = x.dim
+        k = max(x.dim-1,0)
         s = fun.replace('class', space).replace('k', '%d' % (k));
         templated_funcs.append(s)
 
@@ -67,8 +65,9 @@ for x in inst.ref_sp_dims:
     spaces.append(space)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
-            s = fun.replace('class', space).replace('k', '%d' % (k));
-            templated_funcs.append(s)
+            if (k < x.dim):
+                s = fun.replace('class', space).replace('k', '%d' % (k));
+                templated_funcs.append(s)
             
             
             

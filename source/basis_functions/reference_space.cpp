@@ -41,16 +41,18 @@ template<int k>
 auto
 ReferenceSpace<dim, range, rank>::
 get_ref_sub_space(const int sub_elem_id,
-                  InterSpaceMap<k> &dof_map,
-                  std::shared_ptr<Grid<k>> sub_grid) const
+                  InterSpaceMap<k> &dof_map) const
 -> std::shared_ptr< SubRefSpace<k> >
 {
+  static_assert(k == 0 || (k > 0 && k < dim),
+  "The dimensionality of the sub_grid is not valid.");
+
   std::shared_ptr< SubRefSpace<k> > sub_ref_space;
   if (this->is_bspline())
   {
     const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
     Assert(bsp_space != nullptr,ExcNullPtr());
-    sub_ref_space = bsp_space->get_ref_sub_space(sub_elem_id,dof_map,sub_grid);
+    sub_ref_space = bsp_space->template get_ref_sub_space<k>(sub_elem_id,dof_map);
   }
   else
   {
@@ -78,17 +80,19 @@ template<int k>
 auto
 ReferenceSpace<dim, range, rank>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-              std::shared_ptr<Grid<k>> sub_grid,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
+  static_assert(k == 0 || (k > 0 && k < dim),
+  "The dimensionality of the sub_grid is not valid.");
+
   std::shared_ptr<SubSpace<k> > sub_space;
   if (this->is_bspline())
   {
     const auto bsp_space =
     dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
     Assert(bsp_space != nullptr, ExcNullPtr());
-    sub_space = bsp_space->get_sub_space(s_id,dof_map,sub_grid, elem_map);
+    sub_space = bsp_space->template get_sub_space<k>(s_id,dof_map,elem_map);
   }
   else
   {
@@ -96,7 +100,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
     const auto nrb_space =
     dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
     Assert(nrb_space != nullptr, ExcNullPtr());
-    sub_space = nrb_space->get_sub_space(s_id,dof_map,sub_grid, elem_map);
+    sub_space = nrb_space->template get_sub_space<k>(s_id,dof_map,elem_map);
 #else
     Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
     AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));

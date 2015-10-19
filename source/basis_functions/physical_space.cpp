@@ -150,6 +150,9 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
+  static_assert(k == 0 || (k > 0 && k < dim_),
+  "The dimensionality of the sub_grid is not valid.");
+
   AssertThrow(false,ExcNotImplemented());
   return nullptr;
   /*

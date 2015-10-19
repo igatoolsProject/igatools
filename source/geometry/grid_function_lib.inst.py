@@ -25,10 +25,17 @@ data = Instantiation()
 output = set ()
 
 for dim in inst.domain_dims:
-    output.add ('template class grid_functions::BallGridFunction<%d>;\n' % (dim) )
-    output.add ('template class grid_functions::LinearGridFunction<%d,%d>;\n' % (dim,dim) )
+    output.add ('template class grid_functions::BallGridFunction<%d>;\n' % (dim) )    
     output.add ('template class grid_functions::ConstantGridFunction<%d,%d>;\n' % (dim,dim) )
     output.add ('template class grid_functions::ConstantGridFunction<%d,1>;\n' % (dim) )
+
+
+output.add ('template class grid_functions::LinearGridFunction<0,0>;\n')
+for dim in inst.domain_dims:
+    for sub_dim in range(dim-1,dim+1):
+        output.add ('template class grid_functions::LinearGridFunction<%d,%d>;\n' % (sub_dim,dim) )
+
+
 
 for s in output:
   f.write(s)

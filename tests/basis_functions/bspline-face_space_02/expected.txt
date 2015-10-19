@@ -10,6 +10,10 @@ sub_space
                Knot coordinates:
                   Size: [ ]  Weights: []
                
+               Element properties:
+                  IDs with property "active":
+                  
+               
             
             Degrees:
                Raw components: 
@@ -83,36 +87,20 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 1
-                  Flat IDs: 0
+               [ 0 ]
             
          
          Bernstein Extraction:
             Component[0]: 
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 0
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-               
+      Physical domain:
+         GridFunction<0,1>
+            LinearGridFunction<0,1>
+               A:
+               [ ] 
+               b:
+               [ 0 ] 
             
          
       
@@ -129,6 +117,10 @@ sub_space
                Knot coordinates:
                   Size: [ ]  Weights: []
                
+               Element properties:
+                  IDs with property "active":
+                  
+               
             
             Degrees:
                Raw components: 
@@ -202,36 +194,20 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 1
-                  Flat IDs: 0
+               [ 0 ]
             
          
          Bernstein Extraction:
             Component[0]: 
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 0
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-               
+      Physical domain:
+         GridFunction<0,1>
+            LinearGridFunction<0,1>
+               A:
+               [ ] 
+               b:
+               [ 1.00000 ] 
             
          
       
@@ -255,6 +231,14 @@ sub_space
                   Direction: 0
                   [ 0 0.500000 1.00000 ]
                
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 ]
+                     Entry id: 1
+                     [ 1 ]
+                  
+               
             
             Degrees:
                Raw components: 
@@ -330,8 +314,7 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 3
-                  Flat IDs: 0 1 2
+               [ 0 1 2 ]
             
          
          Bernstein Extraction:
@@ -341,53 +324,13 @@ sub_space
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 0
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-               
-            
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-               
+      Physical domain:
+         GridFunction<1,2>
+            LinearGridFunction<1,2>
+               A:
+               [ [ 0 1.00000 ]  ] 
+               b:
+               [ 0 0 ] 
             
          
       
@@ -406,6 +349,14 @@ sub_space
                   Direction: 0
                   [ 0 0.500000 1.00000 ]
                
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 ]
+                     Entry id: 1
+                     [ 1 ]
+                  
+               
             
             Degrees:
                Raw components: 
@@ -481,8 +432,7 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 3
-                  Flat IDs: 0 1 2
+               [ 0 1 2 ]
             
          
          Bernstein Extraction:
@@ -492,53 +442,13 @@ sub_space
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 0
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-               
-            
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-               
+      Physical domain:
+         GridFunction<1,2>
+            LinearGridFunction<1,2>
+               A:
+               [ [ 0 1.00000 ]  ] 
+               b:
+               [ 1.00000 0 ] 
             
          
       
@@ -557,6 +467,12 @@ sub_space
                   Direction: 0
                   [ 0 1.00000 ]
                
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 ]
+                  
+               
             
             Degrees:
                Raw components: 
@@ -632,8 +548,7 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 2
-                  Flat IDs: 0 1
+               [ 0 1 ]
             
          
          Bernstein Extraction:
@@ -642,53 +557,13 @@ sub_space
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 0
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-               
-            
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-               
+      Physical domain:
+         GridFunction<1,2>
+            LinearGridFunction<1,2>
+               A:
+               [ [ 1.00000 0 ]  ] 
+               b:
+               [ 0 0 ] 
             
          
       
@@ -707,6 +582,12 @@ sub_space
                   Direction: 0
                   [ 0 1.00000 ]
                
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 ]
+                  
+               
             
             Degrees:
                Raw components: 
@@ -782,8 +663,7 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 2
-                  Flat IDs: 0 1
+               [ 0 1 ]
             
          
          Bernstein Extraction:
@@ -792,53 +672,13 @@ sub_space
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 0
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-               
-            
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-               
+      Physical domain:
+         GridFunction<1,2>
+            LinearGridFunction<1,2>
+               A:
+               [ [ 1.00000 0 ]  ] 
+               b:
+               [ 0 1.00000 ] 
             
          
       
@@ -864,6 +704,22 @@ sub_space
                   Direction: 1
                   [ 0 0.333333 0.666667 1.00000 ]
                
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 0 1 ]
+                     Entry id: 2
+                     [ 0 2 ]
+                     Entry id: 3
+                     [ 1 0 ]
+                     Entry id: 4
+                     [ 1 1 ]
+                     Entry id: 5
+                     [ 1 2 ]
+                  
+               
             
             Degrees:
                Raw components: 
@@ -941,8 +797,7 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 12
-                  Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
+               [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
             
          
          Bernstein Extraction:
@@ -956,61 +811,13 @@ sub_space
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-               
-            
-            Quadrature cache for dimension: 2
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-                  Direction: 1
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-                  Entry id: 1
-                  [ 0 1.00000 ]
-               
+      Physical domain:
+         GridFunction<2,3>
+            LinearGridFunction<2,3>
+               A:
+               [ [ 0 1.00000 0 ]  [ 0 0 1.00000 ]  ] 
+               b:
+               [ 0 0 0 ] 
             
          
       
@@ -1031,6 +838,22 @@ sub_space
                   Direction: 1
                   [ 0 0.333333 0.666667 1.00000 ]
                
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 0 1 ]
+                     Entry id: 2
+                     [ 0 2 ]
+                     Entry id: 3
+                     [ 1 0 ]
+                     Entry id: 4
+                     [ 1 1 ]
+                     Entry id: 5
+                     [ 1 2 ]
+                  
+               
             
             Degrees:
                Raw components: 
@@ -1108,8 +931,7 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 12
-                  Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
+               [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
             
          
          Bernstein Extraction:
@@ -1123,61 +945,13 @@ sub_space
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-               
-            
-            Quadrature cache for dimension: 2
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-                  Direction: 1
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-                  Entry id: 1
-                  [ 0 1.00000 ]
-               
+      Physical domain:
+         GridFunction<2,3>
+            LinearGridFunction<2,3>
+               A:
+               [ [ 0 1.00000 0 ]  [ 0 0 1.00000 ]  ] 
+               b:
+               [ 1.00000 0 0 ] 
             
          
       
@@ -1198,6 +972,16 @@ sub_space
                   Direction: 1
                   [ 0 0.333333 0.666667 1.00000 ]
                
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 0 1 ]
+                     Entry id: 2
+                     [ 0 2 ]
+                  
+               
             
             Degrees:
                Raw components: 
@@ -1275,8 +1059,7 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 8
-                  Flat IDs: 0 1 2 3 4 5 6 7
+               [ 0 1 2 3 4 5 6 7 ]
             
          
          Bernstein Extraction:
@@ -1289,61 +1072,13 @@ sub_space
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-               
-            
-            Quadrature cache for dimension: 2
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-                  Direction: 1
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-                  Entry id: 1
-                  [ 0 1.00000 ]
-               
+      Physical domain:
+         GridFunction<2,3>
+            LinearGridFunction<2,3>
+               A:
+               [ [ 1.00000 0 0 ]  [ 0 0 1.00000 ]  ] 
+               b:
+               [ 0 0 0 ] 
             
          
       
@@ -1364,6 +1099,16 @@ sub_space
                   Direction: 1
                   [ 0 0.333333 0.666667 1.00000 ]
                
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 0 1 ]
+                     Entry id: 2
+                     [ 0 2 ]
+                  
+               
             
             Degrees:
                Raw components: 
@@ -1441,8 +1186,7 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 8
-                  Flat IDs: 0 1 2 3 4 5 6 7
+               [ 0 1 2 3 4 5 6 7 ]
             
          
          Bernstein Extraction:
@@ -1455,61 +1199,13 @@ sub_space
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-               
-            
-            Quadrature cache for dimension: 2
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-                  Direction: 1
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-                  Entry id: 1
-                  [ 0 1.00000 ]
-               
+      Physical domain:
+         GridFunction<2,3>
+            LinearGridFunction<2,3>
+               A:
+               [ [ 1.00000 0 0 ]  [ 0 0 1.00000 ]  ] 
+               b:
+               [ 0 1.00000 0 ] 
             
          
       
@@ -1530,6 +1226,14 @@ sub_space
                   Direction: 1
                   [ 0 0.500000 1.00000 ]
                
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 0 1 ]
+                  
+               
             
             Degrees:
                Raw components: 
@@ -1607,8 +1311,7 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 6
-                  Flat IDs: 0 1 2 3 4 5
+               [ 0 1 2 3 4 5 ]
             
          
          Bernstein Extraction:
@@ -1620,61 +1323,13 @@ sub_space
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-               
-            
-            Quadrature cache for dimension: 2
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-                  Direction: 1
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-                  Entry id: 1
-                  [ 0 1.00000 ]
-               
+      Physical domain:
+         GridFunction<2,3>
+            LinearGridFunction<2,3>
+               A:
+               [ [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  ] 
+               b:
+               [ 0 0 0 ] 
             
          
       
@@ -1695,6 +1350,14 @@ sub_space
                   Direction: 1
                   [ 0 0.500000 1.00000 ]
                
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 0 1 ]
+                  
+               
             
             Degrees:
                Raw components: 
@@ -1772,8 +1435,7 @@ sub_space
             
             Dof properties:
                IDs with property "active":
-                  Num.: 6
-                  Flat IDs: 0 1 2 3 4 5
+               [ 0 1 2 3 4 5 ]
             
          
          Bernstein Extraction:
@@ -1785,61 +1447,13 @@ sub_space
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
-      Map function:
-         Quadrature cache for all dimensions:
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-               
-            
-            Quadrature cache for dimension: 2
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-                  Direction: 1
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Is tensor product: FALSE
-               
-               Map points id --- coordinates id:
-               
-               Bounding box:
-                  Entry id: 0
-                  [ 0 1.00000 ]
-                  Entry id: 1
-                  [ 0 1.00000 ]
-               
+      Physical domain:
+         GridFunction<2,3>
+            LinearGridFunction<2,3>
+               A:
+               [ [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  ] 
+               b:
+               [ 0 0 1.00000 ] 
             
          
       

@@ -42,15 +42,17 @@ sub_dim_members = \
 
 spaces = ['PhysicalSpace<0,0,1,0>']
 
+templated_funcs = []
 
 for sp in inst.SubPhysSpaces:
     x = sp.spec
 #    f.write( 'template class %s;\n' %sp.name)
     spaces.append(sp.name)
     for fun in sub_dim_members:
-        k = x.dim
+        k = max(x.dim-1,0)
         s = fun.replace('class', sp.name).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+        templated_funcs.append(s)
+#        f.write('template ' + s + '\n')
 
 
 for sp in inst.PhysSpaces:
@@ -59,12 +61,17 @@ for sp in inst.PhysSpaces:
     spaces.append(sp.name)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
-            s = fun.replace('class', sp.name).replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')
+            if (k < x.dim):
+                s = fun.replace('class', sp.name).replace('k', '%d' % (k));
+                templated_funcs.append(s)
+#            f.write('template ' + s + '\n')
 
 
 
 for space in unique(spaces):
     f.write( 'template class %s;\n' %space)
+
+for func in unique(templated_funcs):
+    f.write('template ' + func + '\n')
 
 

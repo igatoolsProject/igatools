@@ -362,11 +362,13 @@ template<int k>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_ref_sub_space(const int s_id,
-                  InterSpaceMap<k> &dof_map,
-                  std::shared_ptr<Grid<k>> sub_grid) const
+                  InterSpaceMap<k> &dof_map) const
 -> std::shared_ptr<SubRefSpace<k> >
 {
   //TODO (martinelli Nov 27,2014): implement this function
+  static_assert(k == 0 || (k > 0 && k < dim_),
+  "The dimensionality of the sub_grid is not valid.");
+
 #if 0
   if (!(sub_grid))
   {
@@ -426,11 +428,13 @@ template<int k>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-              std::shared_ptr<Grid<k>> sub_grid,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
   //TODO (martinelli Nov 27,2014): implement this function
+  static_assert(k == 0 || (k > 0 && k < dim_),
+  "The dimensionality of the sub_grid is not valid.");
+
 #if 0
   using SubMap = SubMapFunction<k, dim, space_dim>;
   auto grid =  this->get_grid();

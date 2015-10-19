@@ -126,13 +126,11 @@ public:
   template<int k>
   std::shared_ptr<SubRefSpace<k> >
   get_ref_sub_space(const int sub_elem_id,
-                    InterSpaceMap<k> &dof_map,
-                    std::shared_ptr<Grid<k>> sub_grid = nullptr) const;
+                    InterSpaceMap<k> &dof_map) const;
 
   template<int k>
   std::shared_ptr<SubSpace<k> >
   get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-                std::shared_ptr<Grid<k>> sub_grid,
                 SubGridMap<k> &elem_map) const;
 
 public:

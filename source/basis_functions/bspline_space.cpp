@@ -21,7 +21,9 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/functions/sub_function.h>
-#include <igatools/functions/identity_function.h>
+//#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
+
 
 using std::endl;
 
@@ -334,15 +336,20 @@ template<int k>
 auto
 BSplineSpace<dim_, range_, rank_>::
 get_ref_sub_space(const int s_id,
-                  InterSpaceMap<k> &dof_map,
-                  std::shared_ptr<Grid<k>> sub_grid) const
+                  InterSpaceMap<k> &dof_map
+//          ,
+//                  std::shared_ptr<Grid<k>> sub_grid
+                 ) const
 -> std::shared_ptr<SubRefSpace<k> >
 {
-  if (!(sub_grid))
-  {
-    SubGridMap<k> elem_map;
-    sub_grid   = this->get_ptr_const_grid()->template get_sub_grid<k>(s_id, elem_map);
-  }
+  static_assert(k == 0 || (k > 0 && k < dim_),
+  "The dimensionality of the sub_grid is not valid.");
+
+//  if (!(sub_grid))
+//  {
+  SubGridMap<k> elem_map;
+  const auto sub_grid = this->get_ptr_const_grid()->template get_sub_grid<k>(s_id, elem_map);
+//  }
   auto sub_mult   = this->space_data_->template get_sub_space_mult<k>(s_id);
   auto sub_degree = this->space_data_->template get_sub_space_degree<k>(s_id);
   auto sub_periodic = this->space_data_->template get_sub_space_periodicity<k>(s_id);
@@ -413,22 +420,55 @@ template<int k>
 auto
 BSplineSpace<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-              std::shared_ptr<Grid<k>> sub_grid,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
-  AssertThrow(false,ExcNotImplemented());
-  return nullptr;
-  /*
-    using SubMap = SubMapFunction<k, dim, space_dim>;
-    auto grid = const_pointer_cast<Grid<dim_> >(this->get_grid());
+  static_assert(k == 0 || (k > 0 && k < dim_),
+  "The dimensionality of the sub_grid is not valid.");
 
-    auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
-    auto F = IdentityFunction<dim>::const_create(grid);
-    auto sub_map_func = SubMap::create(sub_grid, F, s_id, elem_map);
-    auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
-    return sub_space;
-    //*/
+
+  using SubGridFunc = grid_functions::LinearGridFunction<k,dim_>;
+  using Grad  = typename SubGridFunc::template Derivative<1>;
+  using Value = typename SubGridFunc::Value;
+  Grad A;
+  Value b;
+
+  const auto &sub_elem = UnitElement<dim_>::template get_elem<k>(s_id);
+  const auto &active_dirs = sub_elem.active_directions;
+  const auto &constant_dirs = sub_elem.constant_directions;
+  const auto &constant_vals = sub_elem.constant_values;
+
+  int i = 0;
+  for (const int active_dir : active_dirs)
+    A[i++][active_dir] = 1.0;
+
+
+  const auto grid = this->get_ptr_const_grid();
+
+  i = 0;
+  for (const int constant_dir : constant_dirs)
+  {
+    const int constant_val = constant_vals[i++];
+
+    const auto &knots_const_direction = grid->get_knot_coordinates(constant_dir);
+
+    b[constant_dir] = (constant_val == 0) ?
+    knots_const_direction.front() :
+    knots_const_direction.back();
+  }
+
+  auto sub_ref_space = this->template get_ref_sub_space<k>(s_id, dof_map);
+
+  auto sub_grid = sub_ref_space->get_ptr_grid();
+
+  auto sub_grid_func = SubGridFunc::create(sub_grid,A,b);
+
+  using SubDomain = Domain<k,dim_-k>;
+  auto sub_domain = SubDomain::create(sub_grid_func);
+
+
+  auto sub_space = SubSpace<k>::create(sub_ref_space, sub_domain);
+  return sub_space;
 }
 
 

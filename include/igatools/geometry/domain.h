@@ -58,7 +58,7 @@ public:
   static const int space_dim = dim_ + codim_;
   static const int dim = dim_;
 
-  using GridFuncType = const GridFunction<dim, space_dim>;
+  using GridFuncType = GridFunction<dim, space_dim>;
 
   using ElementAccessor = DomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
@@ -104,7 +104,7 @@ private:
   Domain() = default;
 
 protected:
-  Domain(std::shared_ptr<GridFuncType> func);
+  Domain(const SharedPtrConstnessHandler<GridFuncType> &func);
 
 public:
   virtual ~Domain() = default;
@@ -112,17 +112,19 @@ public:
   static std::shared_ptr<self_t>
   create(std::shared_ptr<GridFuncType> func)
   {
-    return std::shared_ptr<self_t>(new self_t(func));
+    return std::shared_ptr<self_t>(
+             new self_t(SharedPtrConstnessHandler<GridFuncType>(func)));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<GridFuncType> func)
+  const_create(std::shared_ptr<const GridFuncType> func)
   {
-    return create(func);
+    return std::shared_ptr<const self_t>(
+             new self_t(SharedPtrConstnessHandler<GridFuncType>(func)));
   }
 
-  std::shared_ptr<GridFuncType> get_grid_function() const;
+  std::shared_ptr<const GridFuncType> get_grid_function() const;
 
 public:
   virtual std::unique_ptr<ElementHandler>

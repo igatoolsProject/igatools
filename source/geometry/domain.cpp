@@ -27,12 +27,10 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
 Domain<dim_, codim_>::
-Domain(std::shared_ptr<GridFuncType> func)
+Domain(const SharedPtrConstnessHandler<GridFuncType> &func)
   :
   grid_func_(func)
-{
-//  Assert(grid_func_ != nullptr, ExcNullPtr());
-}
+{}
 
 
 
@@ -42,7 +40,7 @@ Domain(std::shared_ptr<GridFuncType> func)
 template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
-get_grid_function() const -> std::shared_ptr<GridFuncType>
+get_grid_function() const -> std::shared_ptr<const GridFuncType>
 {
   return grid_func_.get_ptr_const_data();
 }
