@@ -24,6 +24,95 @@ IGA_NAMESPACE_OPEN
 
 namespace grid_functions
 {
+//------------------------------------------------------------------------------
+template<int dim, int space_dim>
+ConstantGridFunction<dim,space_dim>::
+ConstantGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
+                     const Value &b)
+  :
+  parent_t(domain),
+  b_(b)
+{}
+
+
+
+template<int dim, int space_dim>
+auto
+ConstantGridFunction<dim,space_dim>::
+create(const std::shared_ptr<GridType> &domain,
+       const Value &b) ->  std::shared_ptr<base_t>
+{
+  return std::shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<GridType>(domain), b));
+}
+
+template<int dim, int space_dim>
+auto
+ConstantGridFunction<dim,space_dim>::
+const_create(const std::shared_ptr<const GridType> &domain,
+             const Value &b) ->  std::shared_ptr<const base_t>
+{
+  return std::shared_ptr<const self_t>(
+    new self_t(SharedPtrConstnessHandler<GridType>(domain), b));
+}
+
+
+template<int dim, int space_dim>
+auto
+ConstantGridFunction<dim,space_dim>::
+evaluate_0(const ValueVector<GridPoint> &points,
+           ValueVector<Value> &values) const -> void
+{
+  auto point = points.begin();
+  for (auto &val : values)
+  {
+    val = b_;
+    ++point;
+  }
+}
+
+
+
+template<int dim, int space_dim>
+auto
+ConstantGridFunction<dim,space_dim>::
+evaluate_1(const ValueVector<GridPoint> &points,
+           ValueVector<Derivative<1>> &values) const -> void
+{
+  for (auto &val : values)
+    val = 0.0;
+}
+
+template<int dim, int space_dim>
+auto
+ConstantGridFunction<dim,space_dim>::
+evaluate_2(const ValueVector<GridPoint> &points,
+           ValueVector<Derivative<2>> &values) const -> void
+{
+  for (auto &val : values)
+    val = 0.0;
+}
+
+template<int dim, int space_dim>
+void
+ConstantGridFunction<dim,space_dim>::
+print_info(LogStream &out) const
+{
+  out.begin_item("ConstantGridFunction<"
+                 + std::to_string(dim) + ","
+                 + std::to_string(space_dim) + ">");
+
+  out.begin_item("b:");
+  out << b_ ;
+  out.end_item();
+
+  out.end_item();
+}
+
+
+//------------------------------------------------------------------------------
+
+
 
 //------------------------------------------------------------------------------
 template<int dim, int space_dim>

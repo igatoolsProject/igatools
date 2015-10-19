@@ -32,33 +32,28 @@ IGA_NAMESPACE_OPEN
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
 IgFunction(const SharedPtrConstnessHandler<Sp> &space,
-           std::shared_ptr<const EpetraTools::Vector> coeff,
+           const EpetraTools::Vector &coeff,
            const std::string &property)
   :
   parent_t::Function(
-		  space.data_is_const() ?
-		  SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
-		  SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain())),
+   space.data_is_const() ?
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain())),
   space_(space),
-  property_(property)//,
-//  space_elem_(std::const_pointer_cast<Sp>(space)->begin()),
-//  space_elem_handler_(space->create_cache_handler())
+  property_(property)
 {
-  Assert(coeff != nullptr,ExcNullPtr());
-
   const auto &dof_distribution = *(space_->get_ptr_const_dof_distribution());
   const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
 
-  const auto &c = *coeff;
 
-  const auto &epetra_map = c.Map();
+  const auto &epetra_map = coeff.Map();
 
   for (const auto glob_dof : active_dofs)
   {
     auto loc_id = epetra_map.LID(glob_dof);
     Assert(loc_id >= 0,
            ExcMessage("Global dof " + std::to_string(glob_dof) + " not present in the input EpetraTools::Vector."));
-    coeff_[glob_dof] = c[loc_id];
+    coeff_[glob_dof] = coeff[loc_id];
   }
 }
 
@@ -70,15 +65,12 @@ IgFunction(const SharedPtrConstnessHandler<Sp> &space,
            const std::string &property)
   :
   parent_t::Function(
-			  space.data_is_const() ?
-			  SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
-			  SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain())),
+   space.data_is_const() ?
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain())),
   space_(space),
-  property_(property)//,
-//  space_elem_(std::const_pointer_cast<Sp>(space)->begin()),
-//  space_elem_handler_(space->create_cache_handler())
+  property_(property)
 {
-//  Assert(space_ != nullptr, ExcNullPtr());
 
 #ifndef NDEBUG
   const auto &dof_distribution = *(space_->get_ptr_const_dof_distribution());
@@ -92,30 +84,16 @@ IgFunction(const SharedPtrConstnessHandler<Sp> &space,
 }
 
 
-/*
-template<int dim,int codim,int range,int rank>
-IgFunction<dim,codim,range,rank>::
-IgFunction(const self_t &fun)
-  :
-  parent_t::Function(fun.space_->get_ptr_const_grid()),
-  space_(fun.space_),
-  coeff_(fun.coeff_),
-  property_(fun.property_),
-  space_elem_(std::const_pointer_cast<Sp>(fun.space_)->begin()),
-  space_elem_handler_(fun.space_->create_cache_handler())
-{}
-//*/
-
 
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-const_create(std::shared_ptr<const Sp> space,
-       std::shared_ptr<const EpetraTools::Vector> coeff,
-       const std::string &property) ->  std::shared_ptr<const self_t>
+const_create(const std::shared_ptr<const Sp> &space,
+             const EpetraTools::Vector &coeff,
+             const std::string &property) ->  std::shared_ptr<const self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-		  coeff, property);
+  coeff, property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
   return ig_func;
@@ -125,12 +103,12 @@ const_create(std::shared_ptr<const Sp> space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-const_create(std::shared_ptr<const Sp> space,
-       const IgCoefficients &coeff,
-       const std::string &property) ->  std::shared_ptr<const self_t>
+const_create(const std::shared_ptr<const Sp> &space,
+             const IgCoefficients &coeff,
+             const std::string &property) ->  std::shared_ptr<const self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-		  coeff, property);
+  coeff, property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
   return ig_func;
@@ -140,12 +118,12 @@ const_create(std::shared_ptr<const Sp> space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(std::shared_ptr<Sp> space,
-       std::shared_ptr<const EpetraTools::Vector> coeff,
+create(const std::shared_ptr<Sp> &space,
+       const EpetraTools::Vector &coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-		  coeff, property);
+  coeff, property);
 
   Assert(ig_func != nullptr, ExcNullPtr());
 #ifdef MESH_REFINEMENT
@@ -158,12 +136,12 @@ create(std::shared_ptr<Sp> space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(std::shared_ptr<Sp> space,
+create(const std::shared_ptr<Sp> &space,
        const IgCoefficients &coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-		  coeff, property);
+  coeff, property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -172,78 +150,6 @@ create(std::shared_ptr<Sp> space,
 
   return ig_func;
 }
-
-#if 0
-
-template<int dim,int codim,int range,int rank>
-void
-IgFunction<dim,codim,range,rank>::
-reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
-{
-  const std::set<int> elems_id =
-    this->get_ig_space()->get_ptr_const_grid()->get_elements_id();
-
-  this->reset_selected_elements(
-    flag,
-    eval_pts,
-    SafeSTLVector<Index>(elems_id.begin(),elems_id.end()));
-}
-
-
-
-template<int dim,int codim,int range,int rank>
-void
-IgFunction<dim,codim,range,rank>::
-reset_selected_elements(
-  const ValueFlags &flag_in,
-  const eval_pts_variant &eval_pts,
-  const SafeSTLVector<Index> &elements_flat_id)
-{
-  parent_t::reset(flag_in, eval_pts);
-
-  auto reset_dispatcher = ResetDispatcher(
-                            flag_in,elements_flat_id,*space_elem_handler_,this->flags_);
-  boost::apply_visitor(reset_dispatcher, eval_pts);
-}
-
-
-
-template<int dim,int codim,int range,int rank>
-auto
-IgFunction<dim,codim,range,rank>::
-init_cache(ElementAccessor &elem, const topology_variant &k) const -> void
-{
-  parent_t::init_cache(elem, k);
-
-  auto init_cache_dispatcher = InitCacheDispatcher(*space_elem_handler_,*space_elem_);
-  boost::apply_visitor(init_cache_dispatcher, k);
-}
-
-
-template<int dim,int codim,int range,int rank>
-auto
-IgFunction<dim,codim,range,rank>::
-fill_cache(ElementAccessor &func_elem,
-           const topology_variant &k,
-           const int sub_elem_id) const -> void
-{
-  parent_t::fill_cache(func_elem,k,sub_elem_id);
-
-  space_elem_.move_to(func_elem.get_flat_index());
-
-  const auto elem_dofs = space_elem_->get_local_to_global(property_);
-  SafeSTLVector<Real> loc_coeff;
-  for (auto elem_dof : elem_dofs)
-    loc_coeff.push_back(coeff_[elem_dof]);
-
-
-  auto fill_cache_dispatcher = FillCacheDispatcher(
-                                 sub_elem_id,*this,*space_elem_handler_,func_elem,*space_elem_,loc_coeff,property_);
-
-  boost::apply_visitor(fill_cache_dispatcher, k);
-
-}
-#endif
 
 
 template<int dim,int codim,int range,int rank>
@@ -326,8 +232,8 @@ void
 IgFunction<dim,codim,range,rank>::
 create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
 {
-	AssertThrow(false,ExcNotImplemented());
-	/*
+  AssertThrow(false,ExcNotImplemented());
+  /*
   Assert(ig_function != nullptr, ExcNullPtr());
   Assert(&(*ig_function) == &(*this), ExcMessage("Different objects."));
 

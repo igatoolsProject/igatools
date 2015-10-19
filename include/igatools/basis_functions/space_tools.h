@@ -138,7 +138,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
   }
   else
   {
-//	  AssertThrow(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
 
     auto map_elems_id_fine_coarse =
       grid_tools::build_map_elements_id_between_grids(*space_grid,*func_grid);
@@ -169,7 +169,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
         elem_grid_accessor.vertex(0));
 
       const auto &func_grid_elem =
-    		  f_elem->get_domain_element().get_grid_function_element().get_grid_element();
+        f_elem->get_domain_element().get_grid_function_element().get_grid_element();
       auto one_div_f_elem_size = func_grid_elem.template get_side_lengths<dim>(0);
       for (int dir : UnitElement<dim>::active_directions)
         one_div_f_elem_size[dir] = 1.0/one_div_f_elem_size[dir];
@@ -180,7 +180,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
 
 
       auto f_at_qp =
-    		  f_elem->template evaluate_at_points<function_element::_Value>(quad_in_func_elem);
+        f_elem->template evaluate_at_points<function_element::_Value>(quad_in_func_elem);
       //---------------------------------------------------------------------------
 
 
@@ -221,7 +221,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
               ExcMessage("No convergence."));
 
   return ProjFunc::create(std::const_pointer_cast<Space>(space),
-                          sol, dofs_property);
+                          *sol, dofs_property);
 }
 
 

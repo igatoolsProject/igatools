@@ -39,10 +39,10 @@ void get_bdry_dof(const int deg = 1, const int n_knots = 3)
   OUTSTART
   using RefSpace = ReferenceSpace<dim, range, rank>;
   using Space = BSplineSpace<dim, range, rank>;
-  auto grid = Grid<dim>::const_create(n_knots);
-  grid->set_boundary_id(0, 1);
+  auto grid = Grid<dim>::create(n_knots);
+  grid->set_boundary_id(0,1);
 
-  auto space = Space::const_create(deg, grid);
+  auto space = Space::create(deg, grid);
 
   std::set<boundary_id>  piece_one  = {1};
   std::set<boundary_id>  piece_zero = {0};

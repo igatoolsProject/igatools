@@ -106,23 +106,6 @@ fill_cache_impl(const topology_variant &sdim,
 
 
 
-#if 0
-template<int dim_, int range_ , int rank_>
-NURBSElementHandler<dim_, range_, rank_>::
-NURBSElementHandler(shared_ptr<const Space> space)
-  :
-  base_t(space->get_grid()),
-  space_(space),
-  n_basis_(space_->get_num_all_element_basis())
-{
-
-  // Compute the component offsets
-  comp_offset_[0] = 0;
-  for (int j = 1; j < Space::n_components; ++j)
-    comp_offset_[j] = comp_offset_[j-1] + n_basis_.comp_dimension[j-1];
-}
-#endif
-
 
 
 
@@ -156,6 +139,41 @@ print_info(LogStream &out) const
   //out.end_item();
 #endif
 }
+
+
+template<int dim_, int range_ , int rank_>
+NURBSElementHandler<dim_, range_, rank_>::
+SetFlagDispatcher::
+SetFlagDispatcher(const typename space_element::Flags nrb_flag,
+                  self_t &nrb_handler)
+  :
+  nrb_flag_(nrb_flag),
+  nrb_handler_(nrb_handler)
+{}
+
+
+template<int dim_, int range_ , int rank_>
+NURBSElementHandler<dim_, range_, rank_>::
+InitCacheDispatcher::
+InitCacheDispatcher(const self_t &nrb_handler,
+                    SpaceElement<dim_,0,range_,rank_> &elem)
+  :
+  nrb_handler_(nrb_handler),
+  elem_(elem)
+{}
+
+
+template<int dim_, int range_ , int rank_>
+NURBSElementHandler<dim_, range_, rank_>::
+FillCacheDispatcher::
+FillCacheDispatcher(const self_t &nrb_handler,
+                    SpaceElement<dim_,0,range_,rank_> &elem,
+                    const int s_id)
+  :
+  nrb_handler_(nrb_handler),
+  elem_(elem),
+  s_id_(s_id)
+{}
 
 template<int dim_, int range_ , int rank_>
 void

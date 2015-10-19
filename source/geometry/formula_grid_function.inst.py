@@ -25,21 +25,17 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = [] 
+mappings = []
 
-for x in inst.sub_mapping_dims:
+for x in inst.sub_mapping_dims + inst.mapping_dims:
     mapping = 'FormulaGridFunction<%d,%d>' %(x.dim,x.space_dim)
-    f.write('template class %s ;\n' %(mapping))
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+    mappings.append(mapping)
+    mapping = 'FormulaGridFunction<%d,1>' %(x.dim)
+    mappings.append(mapping)
 
-for x in inst.mapping_dims:
-    mapping = 'FormulaGridFunction<%d,%d>' %(x.dim,x.space_dim)
-    f.write('template class %s ;\n' %(mapping))
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-            f.write('template ' + s + '\n')
+
+
  
+for map in unique(mappings):
+    f.write('template class %s ;\n' %(map))
+

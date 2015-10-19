@@ -27,6 +27,8 @@ output = set ()
 for dim in inst.domain_dims:
     output.add ('template class grid_functions::BallGridFunction<%d>;\n' % (dim) )
     output.add ('template class grid_functions::LinearGridFunction<%d,%d>;\n' % (dim,dim) )
+    output.add ('template class grid_functions::ConstantGridFunction<%d,%d>;\n' % (dim,dim) )
+    output.add ('template class grid_functions::ConstantGridFunction<%d,1>;\n' % (dim) )
 
 for s in output:
   f.write(s)

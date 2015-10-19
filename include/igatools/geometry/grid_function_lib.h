@@ -32,6 +32,59 @@ namespace grid_functions
 {
 
 /**
+ * y = b
+ */
+template<int dim, int space_dim>
+class ConstantGridFunction :
+  public FormulaGridFunction<dim,space_dim>
+{
+  using base_t = GridFunction<dim,space_dim>;
+  using parent_t = FormulaGridFunction<dim,space_dim>;
+  using self_t = ConstantGridFunction<dim,space_dim>;
+  using typename base_t::GridType;
+public:
+  using typename parent_t::Value;
+  using typename parent_t::GridPoint;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+
+public:
+  static std::shared_ptr<base_t>
+  create(const std::shared_ptr<GridType> &domain,
+         const Value &b);
+
+  static std::shared_ptr<const base_t>
+  const_create(const std::shared_ptr<const GridType> &domain,
+               const Value &b);
+
+  ConstantGridFunction(const self_t &) = default;
+
+  virtual ~ConstantGridFunction() = default;
+
+  virtual void print_info(LogStream &out) const override final;
+
+protected:
+  ConstantGridFunction(
+    const SharedPtrConstnessHandler<GridType> &domain,
+    const Value &b);
+
+private:
+  void evaluate_0(const ValueVector<GridPoint> &points,
+                  ValueVector<Value> &values) const override;
+
+  void evaluate_1(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<1>> &values) const override;
+
+  void evaluate_2(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<2>> &values) const override;
+
+private:
+  const Value    b_;
+};
+
+
+//------------------------------------------------------------------------------
+/**
  * y = A * x + b
  */
 template<int dim, int space_dim>

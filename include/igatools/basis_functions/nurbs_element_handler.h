@@ -125,32 +125,16 @@ public:
    */
   virtual ~NURBSElementHandler() = default;
 
-#if 0
-  static std::unique_ptr<base_t> create(std::shared_ptr<const Space> space);
-#endif
 
   using topology_variant = typename base_t::topology_variant;
   using eval_pts_variant = typename base_t::eval_pts_variant;
 
-#if 0
-  virtual void reset_selected_elements(
-    const ValueFlags &flag,
-    const eval_pts_variant &eval_points,
-    const SafeSTLVector<IndexType> &elements_id) override final;
-#endif
 
 
   virtual void print_info(LogStream &out) const override final;
 
 private:
 
-#if 0
-  virtual void init_ref_elem_cache(RefElementAccessor &elem,
-                                   const topology_variant &topology) override final;
-
-  virtual void fill_ref_elem_cache(RefElementAccessor &elem,
-                                   const topology_variant &topology, const int j) override final;
-#endif
 
   std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>> bsp_elem_handler_;
 
@@ -160,127 +144,6 @@ private:
   using WeightElem = typename Space::WeightFunction::ElementAccessor;
 //  using WeightElemTable = typename Space::template ComponentContainer<std::shared_ptr<WeightElem>>;
 
-
-
-#if 0
-  /**
-   * Returns the active components id for the NURBS values and derivatives.
-   *
-   * @note The active components id is the union of the active components for the numerator
-   * (basis function belonging to a BSplineSpace) and the active components for the denominator
-   * (a ComponentTable of scalar IgFunction(s)).
-   */
-  SafeSTLVector<int> get_active_components_id() const;
-
-
-  /**
-   * Returns the active components id for the NURBS values and derivatives.
-   *
-   * @note The incative components id are the complement of the active components id with respect
-   * to the sequence 0,1,...,n_components-1
-   *
-   * @see get_active_components_id()
-   */
-  SafeSTLVector<int> get_inactive_components_id() const;
-#endif
-
-
-#if 0
-  struct ResetDispatcher : boost::static_visitor<void>
-  {
-    ResetDispatcher(const ValueFlags flag_in,
-                    SafeSTLArray<ValueFlags, dim+1> &flags)
-      :
-      flag_(flag_in),
-      flags_(flags)
-    {}
-
-    template<int sub_elem_dim>
-    void operator()(const Quadrature<sub_elem_dim> &quad);
-
-    const ValueFlags flag_;
-    SafeSTLArray<ValueFlags, dim+1> &flags_;
-  };
-
-
-  struct InitCacheDispatcher : boost::static_visitor<void>
-  {
-    InitCacheDispatcher(GridHandler<dim_> &grid_handler,
-                        ReferenceElement<dim_,range_,rank_> &elem,
-                        SafeSTLArray<ValueFlags, dim+1> &flags)
-      :
-      grid_handler_(grid_handler),
-      elem_(elem),
-      flags_(flags)
-    {}
-
-    template<int sub_elem_dim>
-    void operator()(const Topology<sub_elem_dim> &sub_elem);
-
-    GridHandler<dim_> &grid_handler_;
-    ReferenceElement<dim_,range_,rank_> &elem_;
-    SafeSTLArray<ValueFlags, dim+1> &flags_;
-
-  };
-
-  struct FillCacheDispatcher : boost::static_visitor<void>
-  {
-    FillCacheDispatcher(const GridHandler<dim_> &grid_handler,
-                        const int sub_elem_id,
-                        NURBSElement<dim_,range_,rank_> &nrb_elem)
-      :
-      grid_handler_(grid_handler),
-      sub_elem_id_(sub_elem_id),
-      nrb_elem_(nrb_elem)
-    {}
-
-    template<int sub_elem_dim>
-    void operator()(const Topology<sub_elem_dim> &sub_elem);
-
-    /**
-     * Computes the value of the non-zero NURBS basis
-     * functions over the current element,
-     *   at the evaluation points pre-allocated in the cache.
-     *
-     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void evaluate_nurbs_values_from_bspline(
-      const typename Space::SpSpace::ElementAccessor &bspline_elem,
-      const WeightElem &weight_elem,
-      ValueTable<Value> &phi) const;
-
-    /**
-     * Computes the 1st order derivative of the non-zero NURBS basis
-     * functions over the current element,
-     *   at the evaluation points pre-allocated in the cache.
-     *
-     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void evaluate_nurbs_gradients_from_bspline(
-      const typename Space::SpSpace::ElementAccessor &bspline_elem,
-      const WeightElem &weight_elem,
-      ValueTable<Derivative<1>> &D1_phi) const;
-
-    /**
-     * Computes the 2nd order derivative of the non-zero NURBS basis
-     * functions over the current element,
-     *   at the evaluation points pre-allocated in the cache.
-     *
-     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void evaluate_nurbs_hessians_from_bspline(
-      const typename Space::SpSpace::ElementAccessor &bspline_elem,
-      const WeightElem &weight_elem,
-      ValueTable<Derivative<2>> &D2_phi) const;
-
-    const GridHandler<dim_> &grid_handler_;
-    const int sub_elem_id_;
-    NURBSElement<dim_,range_,rank_> &nrb_elem_;
-  };
-#endif
 
 
   /**
@@ -309,11 +172,7 @@ private:
   struct SetFlagDispatcher : boost::static_visitor<void>
   {
     SetFlagDispatcher(const typename space_element::Flags nrb_flag,
-                      self_t &nrb_handler)
-      :
-      nrb_flag_(nrb_flag),
-      nrb_handler_(nrb_handler)
-    {}
+                      self_t &nrb_handler);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology)
@@ -331,11 +190,7 @@ private:
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
     InitCacheDispatcher(const self_t &nrb_handler,
-                        SpaceElement<dim_,0,range_,rank_> &elem)
-      :
-      nrb_handler_(nrb_handler),
-      elem_(elem)
-    {}
+                        SpaceElement<dim_,0,range_,rank_> &elem);
 
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
@@ -379,12 +234,7 @@ private:
   {
     FillCacheDispatcher(const self_t &nrb_handler,
                         SpaceElement<dim_,0,range_,rank_> &elem,
-                        const int s_id)
-      :
-      nrb_handler_(nrb_handler),
-      elem_(elem),
-      s_id_(s_id)
-    {}
+                        const int s_id);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology)

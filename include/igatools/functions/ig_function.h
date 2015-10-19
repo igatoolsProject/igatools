@@ -92,7 +92,7 @@ private:
 public:
   //TODO (pauletti, Mar 23, 2015): should we make this private?
   IgFunction(const SharedPtrConstnessHandler<Sp> &space,
-             std::shared_ptr<const EpetraTools::Vector> coeff,
+             const EpetraTools::Vector &coeff,
              const std::string &property = DofProperties::active);
 
   IgFunction(const SharedPtrConstnessHandler<Sp> &space,
@@ -117,37 +117,26 @@ public:
 
 public:
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<const Sp> space,
-         std::shared_ptr<const EpetraTools::Vector> coeff,
-         const std::string &property = DofProperties::active);
+  const_create(const std::shared_ptr<const Sp> &space,
+               const EpetraTools::Vector &coeff,
+               const std::string &property = DofProperties::active);
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<const Sp> space,
-         const IgCoefficients &coeff,
+  const_create(const std::shared_ptr<const Sp> &space,
+               const IgCoefficients &coeff,
+               const std::string &property = DofProperties::active);
+
+  static std::shared_ptr<self_t>
+  create(const std::shared_ptr<Sp> &space,
+         const EpetraTools::Vector &coeff,
          const std::string &property = DofProperties::active);
 
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<Sp> space,
-         std::shared_ptr<const EpetraTools::Vector> coeff,
-         const std::string &property = DofProperties::active);
-
-  static std::shared_ptr<self_t>
-  create(std::shared_ptr<Sp> space,
+  create(const std::shared_ptr<Sp> &space,
          const IgCoefficients &coeff,
          const std::string &property = DofProperties::active);
 
 
-#if 0
-  void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override;
-
-  void reset_selected_elements(const ValueFlags &flag,
-                               const eval_pts_variant &eval_pts,
-                               const SafeSTLVector<Index> &elements_flat_id);
-
-  void init_cache(ElementAccessor &elem, const topology_variant &k) const override;
-
-  void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) const override;
-#endif
 
   std::shared_ptr<const Sp> get_ig_space() const;
 
@@ -173,152 +162,8 @@ private:
   CoeffType coeff_;
 
   const std::string property_;
-/*
-  using SpaceElem = SpaceElement<dim,codim,range,rank>;
-  GridIterator<SpaceElem> space_elem_;
 
-  using SpaceElemHandler = SpaceElementHandler<dim,codim,range,rank>;
-  std::shared_ptr<SpaceElemHandler> space_elem_handler_;
-//*/
 private:
-#if 0
-  struct ResetDispatcher : boost::static_visitor<void>
-  {
-    ResetDispatcher(const ValueFlags flag_in,
-                    const SafeSTLVector<Index> &elements_flat_id,
-                    SpaceElemHandler &space_elem_handler,
-                    SafeSTLArray<ValueFlags, dim+1> &flags)
-      :
-      flag_in_(flag_in),
-      elements_flat_id_(elements_flat_id),
-      space_elem_handler_(space_elem_handler),
-      flags_(flags)
-    {}
-
-    template<int sub_elem_dim>
-    void operator()(const Quadrature<sub_elem_dim> &quad)
-    {
-      flags_[sub_elem_dim] = flag_in_;
-      space_elem_handler_.reset_selected_elements(flag_in_,quad,elements_flat_id_);
-    }
-
-    const ValueFlags flag_in_;
-
-    /**
-     * Elements to reset.
-     */
-    const SafeSTLVector<Index> &elements_flat_id_;
-
-    SpaceElemHandler &space_elem_handler_;
-
-    SafeSTLArray<ValueFlags, dim+1> &flags_;
-
-  };
-
-
-  struct InitCacheDispatcher : boost::static_visitor<void>
-  {
-    InitCacheDispatcher(
-      SpaceElemHandler &space_elem_handler,
-      SpaceElem &space_elem)
-      :
-      space_elem_handler_(space_elem_handler),
-      space_elem_(space_elem)
-    {}
-
-    template<int sub_elem_dim>
-    void operator()(const Topology<sub_elem_dim> &sub_elem)
-    {
-      space_elem_handler_.template init_cache<sub_elem_dim>(space_elem_);
-    }
-
-    SpaceElemHandler &space_elem_handler_;
-    SpaceElem &space_elem_;
-  };
-
-  struct FillCacheDispatcher : boost::static_visitor<void>
-  {
-    FillCacheDispatcher(const int sub_elem_id,
-                        self_t &function,
-                        SpaceElemHandler &space_elem_handler,
-                        ElementAccessor &func_elem,
-                        SpaceElem &space_elem,
-                        SafeSTLVector<Real> &loc_coeff,
-                        const std::string  &property)
-      :
-      sub_elem_id_(sub_elem_id),
-      function_(function),
-      space_elem_handler_(space_elem_handler),
-      func_elem_(func_elem),
-      space_elem_(space_elem),
-      loc_coeff_(loc_coeff),
-      property_(property)
-    {}
-
-
-    template<int sub_elem_dim>
-    void operator()(const Topology<sub_elem_dim> &sub_elem)
-    {
-      space_elem_handler_.template fill_cache<sub_elem_dim>(space_elem_,sub_elem_id_);
-
-      auto &local_cache = function_.get_cache(func_elem_);
-      auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
-
-#if 0
-      boost::fusion::for_each(cache.get_values(),
-                              [&](auto & type_and_value) -> void
-      {
-        using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
-        using ValueType = typename ValueType_ValueContainer::first_type;
-        auto &value = type_and_value.second;
-
-        if (value.status_fill())
-        {
-          value = space_elem_->template linear_combination<ValueType,sub_elem_dim>(*loc_coeff_,j, *property_);
-          value.set_status_filled(true);
-        }
-      } // end lambda function
-                                                      );
-#endif
-//#if 0
-      //TODO (martinelli Mar 27,2015): bad style. Use the ValueType mechanism in order to avoid the if-switch
-      if (cache.template status_fill<_Value>())
-      {
-        cache.template get_data<_Value>() =
-          space_elem_.template linear_combination<_Value,sub_elem_dim>(loc_coeff_,sub_elem_id_,property_);
-        cache.template set_status_filled<_Value>(true);
-      }
-      if (cache.template status_fill<_Gradient>())
-      {
-        cache.template get_data<_Gradient>() =
-          space_elem_.template linear_combination<_Gradient,sub_elem_dim>(loc_coeff_,sub_elem_id_, property_);
-        cache.template set_status_filled<_Gradient>(true);
-      }
-      if (cache.template status_fill<_Hessian>())
-      {
-        cache.template get_data<_Hessian>() =
-          space_elem_.template linear_combination<_Hessian,sub_elem_dim>(loc_coeff_,sub_elem_id_, property_);
-        cache.template set_status_filled<_Hessian>(true);
-      }
-      if (cache.template status_fill<_Divergence>())
-      {
-        cache.template get_data<_Divergence>() =
-          space_elem_.template linear_combination<_Divergence,sub_elem_dim>(loc_coeff_,sub_elem_id_, property_);
-        cache.template set_status_filled<_Divergence>(true);
-      }
-//#endif
-      cache.set_filled(true);
-    }
-
-    const int sub_elem_id_;
-    self_t &function_;
-    SpaceElemHandler &space_elem_handler_;
-    ElementAccessor &func_elem_;
-    SpaceElem &space_elem_;
-    SafeSTLVector<Real> &loc_coeff_;
-    const std::string  &property_;
-  };
-#endif
 
 #ifdef MESH_REFINEMENT
 

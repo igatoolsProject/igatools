@@ -27,19 +27,33 @@ data = Instantiation(include_files)
 
 sub_dim_members = []
 
+mappings = []
+
+
 for x in inst.sub_mapping_dims:
     mapping = 'FormulaGridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
-    f.write('template class %s ;\n' %(mapping))
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+    mappings.append(mapping)
+#    for fun in sub_dim_members:
+#        k = x.dim
+#        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
+#        f.write('template ' + s + '\n')
+    mapping = 'FormulaGridFunctionHandler<%d,1>' %(x.dim)
+    mappings.append(mapping)
+
 
 for x in inst.mapping_dims:
     mapping = 'FormulaGridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
-    f.write('template class %s ;\n' %(mapping))
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-            f.write('template ' + s + '\n')
+    mappings.append(mapping)
+#    for fun in sub_dim_members:
+#        for k in inst.sub_dims(x.dim):
+#            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
+#            f.write('template ' + s + '\n')
+    mapping = 'FormulaGridFunctionHandler<%d,1>' %(x.dim)
+    mappings.append(mapping)
  
+ 
+ 
+ 
+
+for mapping in unique(mappings):
+    f.write('template class %s ;\n' %(mapping))

@@ -26,19 +26,19 @@
  *
  */
 
-//TODO (pauletti, Apr 11, 2015): rename this test to sthing more meaningful
+//TODO (pauletti, Apr 11, 2015): rename this test to something more meaningful
 #include "../tests.h"
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/functions/ig_function.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/functions/ig_grid_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/linear_algebra/epetra_matrix.h>
+#include <igatools/linear_algebra/epetra_vector.h>
 
 
-template<int dim, int codim=0>
-void using_const_space(shared_ptr<const IgFunction<dim,0,1,1>> fun)
+template<int dim, int sp_dim>
+void using_const_space(shared_ptr<const IgGridFunction<dim,sp_dim>> fun)
 {
   OUTSTART
 
@@ -49,14 +49,14 @@ void using_const_space(shared_ptr<const IgFunction<dim,0,1,1>> fun)
   OUTEND
 }
 
-template<int dim, int codim=0>
-void using_const_function(shared_ptr<const Function<dim>> fun)
+template<int dim, int sp_dim>
+void using_const_function(shared_ptr<const GridFunction<dim,sp_dim>> fun)
 {
   OUTSTART
-  using Func =  functions::ConstantFunction<dim, codim, 1>;
+  using Func =  grid_functions::ConstantGridFunction<dim, sp_dim>;
   typename Func::Value val {0.};
   auto grid = fun->get_grid();
-  auto zero = Func::const_create(grid, IdentityFunction<dim>::const_create(grid), val);
+  auto zero = Func::const_create(grid,val);
   OUTEND
 }
 
@@ -68,13 +68,18 @@ int main()
   auto grid = Grid<dim>::const_create(5);
   auto space = Space::const_create(1, grid);
 
-  Epetra_SerialComm comm;
-  auto coeff = EpetraTools::create_vector(*space, DofProperties::active,comm);
+  const auto n_basis = space->get_num_basis();
 
-  auto fun = IgFunction<dim,0,1,1>::const_create(space, coeff);
+  IgCoefficients coeffs;
+  for (int dof = 0 ; dof < n_basis ; ++dof)
+    coeffs[dof] = 1.0;
 
-  using_const_space<2>(fun);
-  using_const_function<2>(fun);
+
+  using IgGridFunc = IgGridFunction<dim,1>;
+  auto fun = dynamic_pointer_cast<const IgGridFunc>(IgGridFunc::const_create(space,coeffs));
+
+  using_const_space<2,1>(fun);
+  using_const_function<2,1>(fun);
 
   return 0;
 }
