@@ -24,7 +24,6 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
-using namespace EpetraTools;
 /*
  *  Test for the NURBS space iterator using the no cache evaluations
  *
@@ -51,32 +50,33 @@ void test()
   using ScalarSpSpace = BSplineSpace<dim,1,1>;
   auto scalar_bsp_space = ScalarSpSpace::const_create(degree, knots);
 
+
   const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
 
-  using WeightFunc = IgFunction<dim,0,1,1>;
-  SafeSTLVector<Real> weights_coef(n_scalar_basis,1.0);
+  using WeightFunc = IgGridFunction<dim,1>;
 
-  Epetra_SerialComm comm;
-  auto map = create_map(*scalar_bsp_space, "active", comm);
+  IgCoefficients weights;
+  for (int dof = 0 ; dof < n_scalar_basis ; ++dof)
+    weights[dof] = 1.0;
 
-  auto w_func = WeightFunc::const_create(scalar_bsp_space,
-                                   std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights_coef.data()));
+  const auto w_func = WeightFunc::const_create(scalar_bsp_space,weights);
 
   auto space = Space::const_create(bsp_space,w_func);
 
-  //----------------------------------------------------------------------------------------------
-  // for the basis functions evaluation we need a set of points (with tensor product structure)
-  // to do so, we get the points from a Gauss quadrature scheme with 3 points
-
   const int n_points = 3;
-  Quadrature<dim> quad(QGauss<dim>(n_points).get_points());
+  auto quad = QGauss<dim>::create(n_points);
 
   auto elem     = space->begin();
   auto end = space->end();
 
+  using _Value = space_element::_Value;
+  using _Gradient = space_element::_Gradient;
+  using _Hessian = space_element::_Hessian;
+
+  int elem_id = 0;
   for (; elem != end; ++elem)
   {
-    out << "Element: " << elem->get_flat_index()<< endl;
+    out << "Element: " << elem_id<< endl;
 
     out << "Values basis functions:" << endl ;
     const auto values = elem->template evaluate_basis_at_points<_Value>(quad,DofProperties::active);
@@ -89,6 +89,8 @@ void test()
     out << "Hessians basis functions:" << endl ;
     const auto hessians = elem->template evaluate_basis_at_points<_Hessian>(quad,DofProperties::active);
     hessians.print_info(out) ;
+
+    ++elem_id;
   }
 
   OUTEND
