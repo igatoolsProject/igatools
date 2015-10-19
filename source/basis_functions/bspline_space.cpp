@@ -22,7 +22,7 @@
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/functions/sub_function.h>
 //#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/grid_function_lib.h>
+//#include <igatools/geometry/grid_function_lib.h>
 
 
 using std::endl;
@@ -336,20 +336,15 @@ template<int k>
 auto
 BSplineSpace<dim_, range_, rank_>::
 get_ref_sub_space(const int s_id,
-                  InterSpaceMap<k> &dof_map
-//          ,
-//                  std::shared_ptr<Grid<k>> sub_grid
-                 ) const
+                  InterSpaceMap<k> &dof_map) const
 -> std::shared_ptr<SubRefSpace<k> >
 {
   static_assert(k == 0 || (k > 0 && k < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
-//  if (!(sub_grid))
-//  {
   SubGridMap<k> elem_map;
   const auto sub_grid = this->get_ptr_const_grid()->template get_sub_grid<k>(s_id, elem_map);
-//  }
+
   auto sub_mult   = this->space_data_->template get_sub_space_mult<k>(s_id);
   auto sub_degree = this->space_data_->template get_sub_space_degree<k>(s_id);
   auto sub_periodic = this->space_data_->template get_sub_space_periodicity<k>(s_id);
@@ -414,15 +409,17 @@ get_ref_sub_space(const int s_id,
 
 
 
-
+#if 0
 template<int dim_, int range_, int rank_>
 template<int k>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+get_sub_space(const int s_id,
+              InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
+#if 0
   static_assert(k == 0 || (k > 0 && k < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
@@ -469,8 +466,12 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 
   auto sub_space = SubSpace<k>::create(sub_ref_space, sub_domain);
   return sub_space;
-}
+#endif
 
+  AssertThrow(false,ExcNotImplemented());
+  return nullptr;
+}
+#endif
 
 
 

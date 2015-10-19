@@ -80,6 +80,19 @@ public:
 
   virtual void print_info(LogStream &out) const override final;
 
+  template <int sdim>
+  std::shared_ptr<IgGridFunction<sdim,space_dim>>
+                                               get_sub_function(const int s_id) const
+  {
+    //TODO (martinelli Nov 27,2014): implement this function
+    static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
+                  "The dimensionality of the sub_grid is not valid.");
+    AssertThrow(false,ExcNotImplemented());
+
+    return nullptr;
+
+  }
+
 
 
 private:

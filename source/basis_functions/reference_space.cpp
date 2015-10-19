@@ -25,7 +25,7 @@
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
-//#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 
 using std::shared_ptr;
@@ -57,12 +57,9 @@ get_ref_sub_space(const int sub_elem_id,
   else
   {
 #ifdef NURBS
-    //TODO (MM, Dec 22, 2014): implement NURBSSpace::get_ref_sub_space()
-#ifndef NDEBUG
     const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
-#endif
     Assert(nrb_space != nullptr,ExcNullPtr());
-    Assert(false,ExcNotImplemented());
+    sub_ref_space = nrb_space->template get_ref_sub_space<k>(sub_elem_id,dof_map);
 #else
     Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
     AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
@@ -79,33 +76,55 @@ template<int dim, int range, int rank>
 template<int k>
 auto
 ReferenceSpace<dim, range, rank>::
-get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+get_sub_space(const int s_id,
+              InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
   static_assert(k == 0 || (k > 0 && k < dim),
   "The dimensionality of the sub_grid is not valid.");
 
-  std::shared_ptr<SubSpace<k> > sub_space;
-  if (this->is_bspline())
+  using SubGridFunc = grid_functions::LinearGridFunction<k,dim>;
+  using Grad  = typename SubGridFunc::template Derivative<1>;
+  using Value = typename SubGridFunc::Value;
+  Grad A;
+  Value b;
+
+  const auto &sub_elem = UnitElement<dim>::template get_elem<k>(s_id);
+  const auto &active_dirs = sub_elem.active_directions;
+  const auto &constant_dirs = sub_elem.constant_directions;
+  const auto &constant_vals = sub_elem.constant_values;
+
+  int i = 0;
+  for (const int active_dir : active_dirs)
+    A[i++][active_dir] = 1.0;
+
+
+  const auto grid = this->get_ptr_const_grid();
+
+  i = 0;
+  for (const int constant_dir : constant_dirs)
   {
-    const auto bsp_space =
-    dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
-    Assert(bsp_space != nullptr, ExcNullPtr());
-    sub_space = bsp_space->template get_sub_space<k>(s_id,dof_map,elem_map);
+    const int constant_val = constant_vals[i++];
+
+    const auto &knots_const_direction = grid->get_knot_coordinates(constant_dir);
+
+    b[constant_dir] = (constant_val == 0) ?
+    knots_const_direction.front() :
+    knots_const_direction.back();
   }
-  else
-  {
-#ifdef NURBS
-    const auto nrb_space =
-    dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
-    Assert(nrb_space != nullptr, ExcNullPtr());
-    sub_space = nrb_space->template get_sub_space<k>(s_id,dof_map,elem_map);
-#else
-    Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
-    AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
-#endif
-  }
+
+  auto sub_ref_space = this->template get_ref_sub_space<k>(s_id, dof_map);
+
+  auto sub_grid = sub_ref_space->get_ptr_grid();
+
+  auto sub_grid_func = SubGridFunc::create(sub_grid,A,b);
+
+  using SubDomain = Domain<k,dim-k>;
+  auto sub_domain = SubDomain::create(sub_grid_func);
+
+
+  auto sub_space = SubSpace<k>::create(sub_ref_space, sub_domain);
 
   Assert(sub_space != nullptr, ExcNullPtr());
   return sub_space;

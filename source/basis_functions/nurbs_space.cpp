@@ -365,64 +365,28 @@ get_ref_sub_space(const int s_id,
                   InterSpaceMap<k> &dof_map) const
 -> std::shared_ptr<SubRefSpace<k> >
 {
-  //TODO (martinelli Nov 27,2014): implement this function
   static_assert(k == 0 || (k > 0 && k < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
-#if 0
-  if (!(sub_grid))
-  {
-    typename GridType::template InterGridMap<k>  elem_map;
-    sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
-  }
-  auto sub_mult   = this->template get_sub_space_mult<k>(s_id);
-  auto sub_degree = this->template get_sub_space_degree<k>(s_id);
+  using SubBSpSpace = BSplineSpace<k,range_,rank_>;
+  auto sub_bsp_space =
+  std::dynamic_pointer_cast<SubBSpSpace>(bsp_space_->template get_ref_sub_space<k>(s_id,dof_map));
+  Assert(sub_bsp_space != nullptr,ExcNullPtr());
 
-  auto sub_space = SubRefSpace<k>::create(sub_degree, sub_grid, sub_mult);
+  auto w_func = std::dynamic_pointer_cast<const IgGridFunction<dim_,1>>(weight_func_.get_ptr_const_data());
+  Assert(w_func != nullptr,ExcNullPtr());
 
-  auto &k_elem = UnitElement<dim>::template get_elem<k>(s_id);
+  auto sub_w_func = w_func->template get_sub_function<k>(s_id);
+  Assert(sub_w_func != nullptr,ExcNullPtr());
 
-  // Crating the mapping between the space degrees of freedom
-  const auto &active_dirs = k_elem.active_directions;
-  const int n_dir = k_elem.constant_directions.size();
+  auto sub_nrb_space = SubRefSpace<k>::create(sub_bsp_space,sub_w_func);
+  Assert(sub_nrb_space != nullptr,ExcNullPtr());
 
-  TensorIndex<dim> tensor_index;
-  int comp_i = 0;
-  dof_map.resize(sub_space->get_num_basis());
-  for (auto comp : components)
-  {
-    const int n_basis = sub_space->get_num_basis(comp);
-    const auto &sub_local_indices = sub_space->get_ptr_const_dof_distribution_patch().get_index_table()[comp];
-    const auto &elem_global_indices = dof_distribution_global_.get_index_table()[comp];
-
-    for (Index sub_i = 0; sub_i < n_basis; ++sub_i, ++comp_i)
-    {
-      const auto sub_base_id = sub_local_indices.flat_to_tensor(sub_i);
-
-      for (int j=0; j<k; ++j)
-        tensor_index[active_dirs[j]] =  sub_base_id[j];
-      for (int j=0; j<n_dir; ++j)
-      {
-        auto dir = k_elem.constant_directions[j];
-        auto val = k_elem.constant_values[j];
-        const int fixed_id = val * (this->get_num_basis(comp, dir) - 1);
-        tensor_index[dir] = fixed_id;
-
-      }
-      dof_map[comp_i] = elem_global_indices(tensor_index);
-    }
-
-  }
-
-  return sub_space;
-#endif
-  Assert(false,ExcNotImplemented());
-  AssertThrow(false,ExcNotImplemented());
-  return nullptr;
+  return sub_nrb_space;
 }
 
 
-
+#if 0
 template<int dim_, int range_, int rank_>
 template<int k>
 auto
@@ -451,6 +415,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
   AssertThrow(false,ExcNotImplemented());
   return nullptr;
 }
+#endif
 
 template <int dim_, int range_, int rank_>
 void
@@ -584,7 +549,7 @@ rebuild_after_insert_knots(
   Assert(bsp_space_previous_refinement != nullptr,ExcNullPtr());
 
   auto weight_func_previous_refinement_ =
-    weight_func_->get_grid_function_previous_refinement();
+    std::dynamic_pointer_cast<const WeightFunction>(weight_func_->get_grid_function_previous_refinement());
   Assert(weight_func_previous_refinement_ != nullptr,ExcNullPtr());
 
 
