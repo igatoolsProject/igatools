@@ -336,14 +336,28 @@ template<int sdim>
 auto
 BSplineSpace<dim_, range_, rank_>::
 get_sub_bspline_space(const int s_id,
-                      InterSpaceMap<sdim> &dof_map) const
+                      InterSpaceMap<sdim> &dof_map,
+                      const std::shared_ptr<Grid<sdim>> &sub_grid_in) const
 -> std::shared_ptr<BSplineSpace<sdim, range_, rank_> >
 {
   static_assert(sdim == 0 || (sdim > 0 && sdim < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
-  typename Grid<dim_>::template SubGridMap<sdim> elem_map;
-  const auto sub_grid = this->get_ptr_const_grid()->template get_sub_grid<sdim>(s_id, elem_map);
+  std::shared_ptr<Grid<sdim>> sub_grid;
+  if (sub_grid_in != nullptr)
+  {
+#ifndef NDEBUG
+    typename Grid<dim_>::template SubGridMap<sdim> elem_map;
+    sub_grid = this->get_ptr_const_grid()->template get_sub_grid<sdim>(s_id, elem_map);
+    Assert(*sub_grid_in == *sub_grid,ExcMessage("Invalid input grid."));
+#endif
+    sub_grid = sub_grid_in;
+  }
+  else
+  {
+    typename Grid<dim_>::template SubGridMap<sdim> elem_map;
+    sub_grid = this->get_ptr_const_grid()->template get_sub_grid<sdim>(s_id, elem_map);
+  }
 
   auto sub_mult   = this->space_data_->template get_sub_space_mult<sdim>(s_id);
   auto sub_degree = this->space_data_->template get_sub_space_degree<sdim>(s_id);

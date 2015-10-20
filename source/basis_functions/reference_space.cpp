@@ -37,29 +37,30 @@ IGA_NAMESPACE_OPEN
 
 
 template<int dim, int range, int rank>
-template<int k>
+template<int sdim>
 auto
 ReferenceSpace<dim, range, rank>::
 get_ref_sub_space(const int sub_elem_id,
-                  InterSpaceMap<k> &dof_map) const
--> std::shared_ptr< SubRefSpace<k> >
+                  InterSpaceMap<sdim> &dof_map,
+                  const std::shared_ptr<Grid<sdim>> &sub_grid) const
+-> std::shared_ptr< SubRefSpace<sdim> >
 {
-  static_assert(k == 0 || (k > 0 && k < dim),
+  static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
   "The dimensionality of the sub_grid is not valid.");
 
-  std::shared_ptr< SubRefSpace<k> > sub_ref_space;
+  std::shared_ptr< SubRefSpace<sdim> > sub_ref_space;
   if (this->is_bspline())
   {
     const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
     Assert(bsp_space != nullptr,ExcNullPtr());
-    sub_ref_space = bsp_space->template get_sub_bspline_space<k>(sub_elem_id,dof_map);
+    sub_ref_space = bsp_space->template get_sub_bspline_space<sdim>(sub_elem_id,dof_map,sub_grid);
   }
   else
   {
 #ifdef NURBS
     const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
     Assert(nrb_space != nullptr,ExcNullPtr());
-    sub_ref_space = nrb_space->template get_sub_nurbs_space<k>(sub_elem_id,dof_map);
+    sub_ref_space = nrb_space->template get_sub_nurbs_space<sdim>(sub_elem_id,dof_map,sub_grid);
 #else
     Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
     AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
@@ -114,7 +115,7 @@ get_sub_space(const int s_id,
     knots_const_direction.back();
   }
 
-  auto sub_ref_space = this->template get_ref_sub_space<k>(s_id, dof_map);
+  auto sub_ref_space = this->template get_ref_sub_space<k>(s_id,dof_map,nullptr);
 
   auto sub_grid = sub_ref_space->get_ptr_grid();
 

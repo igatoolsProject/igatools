@@ -175,15 +175,16 @@ public:
 
 
 
-  template<int k>
-  std::shared_ptr< SubRefSpace<k> >
+  template<int sdim>
+  std::shared_ptr< SubRefSpace<sdim> >
   get_ref_sub_space(const int s_id,
-                    InterSpaceMap<k> &dof_map) const;
+                    InterSpaceMap<sdim> &dof_map,
+                    const std::shared_ptr<Grid<sdim>> &sub_grid = nullptr) const;
 
-  template<int k>
-  std::shared_ptr<SubSpace<k> >
-  get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-                SubGridMap<k> &elem_map) const;
+  template<int sdim>
+  std::shared_ptr<SubSpace<sdim> >
+  get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
+                SubGridMap<sdim> &elem_map) const;
 
 
   virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >

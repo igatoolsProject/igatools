@@ -383,10 +383,11 @@ public:
    * the sub_element grid to the corresponding element of the current
    * grid.
    */
-  template<int k>
-  std::shared_ptr<BSplineSpace<k,range_,rank_> >
+  template<int sdim>
+  std::shared_ptr<BSplineSpace<sdim,range_,rank_> >
   get_sub_bspline_space(const int sub_elem_id,
-                        InterSpaceMap<k> &dof_map) const;
+                        InterSpaceMap<sdim> &dof_map,
+                        const std::shared_ptr<Grid<sdim>> &sub_grid) const;
 
 #if 0
   template<int k>

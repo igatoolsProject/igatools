@@ -82,14 +82,15 @@ public:
 
   template <int sdim>
   std::shared_ptr<IgGridFunction<sdim,space_dim> >
-  get_sub_function(const int s_id) const
+  get_sub_function(const int s_id,
+                   const std::shared_ptr<Grid<sdim>> &sub_grid) const
   {
     static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
                   "The dimensionality of the sub_grid is not valid.");
 
 
     typename IgSpace::template InterSpaceMap<sdim> dof_map;
-    auto sub_ref_space = ig_space_->template get_ref_sub_space<sdim>(s_id,dof_map);
+    auto sub_ref_space = ig_space_->template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
 
     IgCoefficients sub_coeffs;
     const int n_sub_dofs = dof_map.size();

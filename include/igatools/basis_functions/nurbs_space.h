@@ -109,15 +109,16 @@ public:
 
 
   /**
-   * Construct a sub space of dimension k conforming to
+   * Construct a sub space of dimension <tt>sdim</tt> conforming to
    * the subspace sub element sub_elem_id and a map from the elements of
    * the sub_element grid to the corresponding element of the current
    * grid.
    */
-  template<int k>
-  std::shared_ptr<NURBSSpace<k,range_,rank_> >
+  template<int sdim>
+  std::shared_ptr<NURBSSpace<sdim,range_,rank_> >
   get_sub_nurbs_space(const int sub_elem_id,
-                      InterSpaceMap<k> &dof_map) const;
+                      InterSpaceMap<sdim> &dof_map,
+                      const std::shared_ptr<Grid<sdim>> &sub_grid) const;
 #if 0
   template<int k>
   std::shared_ptr<SubSpace<k> >
