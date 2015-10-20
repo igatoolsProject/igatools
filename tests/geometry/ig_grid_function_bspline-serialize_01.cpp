@@ -34,9 +34,9 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/function_element.h>
-#include <igatools/linear_algebra/epetra_vector.h>
+//#include <igatools/linear_algebra/epetra_vector.h>
 
-using namespace EpetraTools;
+//using namespace EpetraTools;
 
 
 template <int dim,int codim>
@@ -55,7 +55,6 @@ void serialize_deserialize(std::shared_ptr< IgGridFunction<dim,dim+codim> > F)
     OArchive xml_out(xml_ostream);
 
     xml_out << F;
-    xml_ostream.close();
   }
 
   F.reset();
@@ -65,7 +64,6 @@ void serialize_deserialize(std::shared_ptr< IgGridFunction<dim,dim+codim> > F)
     IArchive xml_in(xml_istream);
 
     xml_in >> F;
-    xml_istream.close();
   }
   out.begin_item("IgGridFunction after serialize-deserialize:");
   F->print_info(out);
@@ -76,15 +74,13 @@ void serialize_deserialize(std::shared_ptr< IgGridFunction<dim,dim+codim> > F)
 
 
 template <int dim, int codim=0>
-void bspline_map(const int deg = 1)
+void ig_grid_function_bspline(const int deg = 1)
 {
   OUTSTART
 
   const int sub_dim = dim;
   using Space = BSplineSpace<dim, dim+codim>;
-  using RefSpace = ReferenceSpace<dim, dim+codim>;
   using Function = IgGridFunction<dim,dim+codim>;
-  using Mapping = Domain<dim, codim>;
 
   auto grid = Grid<dim>::create(2);
   auto space = Space::create(deg, grid);
@@ -159,36 +155,51 @@ void bspline_map(const int deg = 1)
   serialize_deserialize<dim,codim>(F);
 
 
-  auto map = Mapping::create(F);
+//  auto domain = Mapping::create(F);
 
-  auto quad = QGauss<dim>(3);
+  auto quad = QGauss<sub_dim>::create(3);
   using Flags = grid_function_element::Flags;
   auto flag =  Flags::D0|
 		       Flags::D1|
 			   Flags::D2;
 
-  map->template reset<sub_dim>(flag, quad);
+  auto cache_handler = F->create_cache_handler();
+  cache_handler->template set_flags<sub_dim>(flag);
 
-  auto elem = map->begin();
-  auto end  = map->end();
+  auto elem = F->cbegin();
+  auto end  = F->cend();
   const int s_id = 0;
 
-  map->template init_cache<sub_dim>(elem);
+  cache_handler->init_cache(*elem,quad);
   using D0 = grid_function_element::template _D<0>;
   using D1 = grid_function_element::template _D<1>;
   using D2 = grid_function_element::template _D<2>;
-  for (; elem != end; ++elem)
+
+
+  out.begin_item("ig_grid_function_bspline<" + std::to_string(dim) + ">");
+
+  int elem_id = 0;
+  for (; elem != end; ++elem, ++elem_id)
   {
-    map->template fill_cache<sub_dim>(elem, s_id);
-    out << "Values (x1,x2,...):" << endl;
-    elem->template get_values<D0,sub_dim>(s_id).print_info(out);
-    out << endl;
-    out << "Gradients:" << endl;
-    elem->template get_values<D1,sub_dim>(s_id).print_info(out);
-    out << endl;
-//        elem->template get_values<2,sub_dim>(s_id).print_info(out);
-//        out << endl;
+	out.begin_item("Element: " + std::to_string(elem_id));
+
+	cache_handler->template fill_cache<sub_dim>(elem, s_id);
+
+    out.begin_item("Values:");
+    elem->template get_values_from_cache<D0,sub_dim>(s_id).print_info(out);
+    out.end_item();
+
+    out.begin_item("Gradients:");
+    elem->template get_values_from_cache<D1,sub_dim>(s_id).print_info(out);
+    out.end_item();
+
+    out.begin_item("Hessians:");
+    elem->template get_values_from_cache<D2,sub_dim>(s_id).print_info(out);
+    out.end_item();
+
+    out.end_item();
   }
+  out.end_item();
 
   OUTEND
 }
@@ -197,8 +208,8 @@ int main()
 {
   out.depth_console(10);
 
-  bspline_map<1>();
-  bspline_map<2>();
-  bspline_map<3>();
+  ig_grid_function_bspline<1>();
+  ig_grid_function_bspline<2>();
+  ig_grid_function_bspline<3>();
 
 }
