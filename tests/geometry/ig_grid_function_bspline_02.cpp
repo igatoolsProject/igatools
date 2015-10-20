@@ -17,41 +17,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+
 /*
- *  Test the IgMapping class on Bspline space
- *  The map is of degree two.
- *  author: pauletti
- *  date: 2013-10-04
+ *  @brief  Test for IgGridFunction class on BSplineSpace of degree 2
+ *  author: martinelli
+ *  date: 20 Oct 2015
  *
  */
 
 #include "../tests.h"
 
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/function_element.h>
 
-using namespace EpetraTools;
 
 
 template <int dim, int codim=0>
-void bspline_map(const int deg = 2)
+void ig_grid_function_bspline(const int deg = 2)
 {
   const int sub_dim = dim;
   using Space = BSplineSpace<dim, dim+codim>;
-  using RefSpace = ReferenceSpace<dim, dim+codim>;
-  using Function = IgFunction<dim,0,dim+codim,1>;
-  using Mapping   = Mapping<dim, codim>;
+  using Function = IgGridFunction<dim,dim+codim>;
 
   auto grid = Grid<dim>::create(2);
   auto space = Space::create(deg, grid);
 
-  auto c_p = EpetraTools::create_vector(*space, "active",Epetra_SerialComm());
-  auto &control_pts = *c_p;
+  IgCoefficients control_pts;
 
   if (dim == 1)
   {
@@ -176,33 +169,51 @@ void bspline_map(const int deg = 2)
 
   }
 
-  auto F = Function::create(space, c_p);
-  auto map = Mapping::create(F);
+  auto F = Function::create(space, control_pts);
 
-  auto quad = QGauss<dim>(3);
-  auto flag =  ValueFlags::value| ValueFlags::gradient
-               | ValueFlags::hessian;
 
-  map->template reset<sub_dim>(flag, quad);
+  auto quad = QGauss<sub_dim>::create(3);
+  using Flags = grid_function_element::Flags;
+  auto flag =  Flags::D0|
+		       Flags::D1|
+			   Flags::D2;
 
-  auto elem = map->begin();
-  auto end  = map->end();
+  auto cache_handler = F->create_cache_handler();
+  cache_handler->template set_flags<sub_dim>(flag);
+
+  auto elem = F->cbegin();
+  auto end  = F->cend();
   const int s_id = 0;
 
-  map->template init_cache<sub_dim>(elem);
-  for (; elem != end; ++elem)
+  cache_handler->init_cache(*elem,quad);
+  using D0 = grid_function_element::template _D<0>;
+  using D1 = grid_function_element::template _D<1>;
+  using D2 = grid_function_element::template _D<2>;
+
+  out.begin_item("ig_grid_function_bspline<" + std::to_string(dim) + ">");
+
+  int elem_id = 0;
+  for (; elem != end; ++elem, ++elem_id)
   {
-    map->template fill_cache<sub_dim>(elem, s_id);
-    out << "Values (x1,x2,...):" << endl;
-    elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
-    out << endl;
-    out << "Gradients:" << endl;
-    elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
-    out << endl;
-    out << "Hessians:" << endl;
-    elem->template get_values<_Hessian,sub_dim>(s_id).print_info(out);
-    out << endl;
+	out.begin_item("Element: " + std::to_string(elem_id));
+
+    cache_handler->template fill_cache<sub_dim>(elem, s_id);
+
+    out.begin_item("Values:");
+    elem->template get_values_from_cache<D0,sub_dim>(s_id).print_info(out);
+    out.end_item();
+
+    out.begin_item("Gradients:");
+    elem->template get_values_from_cache<D1,sub_dim>(s_id).print_info(out);
+    out.end_item();
+
+    out.begin_item("Hessians:");
+    elem->template get_values_from_cache<D2,sub_dim>(s_id).print_info(out);
+    out.end_item();
+
+    out.end_item();
   }
+  out.end_item();
 
 }
 
@@ -210,8 +221,8 @@ int main()
 {
   out.depth_console(10);
 
-  bspline_map<1>();
-  bspline_map<2>();
-  bspline_map<3>();
+  ig_grid_function_bspline<1>();
+  ig_grid_function_bspline<2>();
+  ig_grid_function_bspline<3>();
 
 }

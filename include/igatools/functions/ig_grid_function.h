@@ -31,7 +31,9 @@ IGA_NAMESPACE_OPEN
 template <int, int> class FormulaGridFunctionHandler;
 
 /**
+ * @brief GridFunction built as linear combination of basis functions from ReferenceSpace
  *
+ * @ingroup serializable
  */
 template<int dim, int space_dim>
 class IgGridFunction :

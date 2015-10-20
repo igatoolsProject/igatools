@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test the IgMapping class on Bspline space
+ *  Test the serialization IgGridFunction class on Bspline space
  *  The map is the identity of degree one.
  *
  *  author: pauletti
@@ -34,9 +34,6 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/function_element.h>
-//#include <igatools/linear_algebra/epetra_vector.h>
-
-//using namespace EpetraTools;
 
 
 template <int dim,int codim>
@@ -160,8 +157,8 @@ void ig_grid_function_bspline(const int deg = 1)
   auto quad = QGauss<sub_dim>::create(3);
   using Flags = grid_function_element::Flags;
   auto flag =  Flags::D0|
-		       Flags::D1|
-			   Flags::D2;
+               Flags::D1|
+               Flags::D2;
 
   auto cache_handler = F->create_cache_handler();
   cache_handler->template set_flags<sub_dim>(flag);
@@ -181,9 +178,9 @@ void ig_grid_function_bspline(const int deg = 1)
   int elem_id = 0;
   for (; elem != end; ++elem, ++elem_id)
   {
-	out.begin_item("Element: " + std::to_string(elem_id));
+    out.begin_item("Element: " + std::to_string(elem_id));
 
-	cache_handler->template fill_cache<sub_dim>(elem, s_id);
+    cache_handler->template fill_cache<sub_dim>(elem, s_id);
 
     out.begin_item("Values:");
     elem->template get_values_from_cache<D0,sub_dim>(s_id).print_info(out);
