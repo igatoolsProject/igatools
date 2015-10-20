@@ -52,14 +52,14 @@ get_ref_sub_space(const int sub_elem_id,
   {
     const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
     Assert(bsp_space != nullptr,ExcNullPtr());
-    sub_ref_space = bsp_space->template get_ref_sub_space<k>(sub_elem_id,dof_map);
+    sub_ref_space = bsp_space->template get_sub_bspline_space<k>(sub_elem_id,dof_map);
   }
   else
   {
 #ifdef NURBS
     const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
     Assert(nrb_space != nullptr,ExcNullPtr());
-    sub_ref_space = nrb_space->template get_ref_sub_space<k>(sub_elem_id,dof_map);
+    sub_ref_space = nrb_space->template get_sub_nurbs_space<k>(sub_elem_id,dof_map);
 #else
     Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
     AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));

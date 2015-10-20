@@ -103,19 +103,10 @@ public:
 
 
 
-  template <int sdim>
-  using SubGridMap = typename GridType::template SubGridMap<sdim>;
-
-//    using InterGridMap = std::map<Index,Index>;
 
   template <int k>
-  using InterSpaceMap = SafeSTLVector<Index>;
+  using InterSpaceMap = typename BaseSpace::template InterSpaceMap<k>;
 
-  template <int k>
-  using SubRefSpace = NURBSSpace<k, range, rank>;
-
-  template <int k>
-  using SubSpace = PhysicalSpace<k,range,rank, dim-k>;
 
   /**
    * Construct a sub space of dimension k conforming to
@@ -124,9 +115,9 @@ public:
    * grid.
    */
   template<int k>
-  std::shared_ptr<SubRefSpace<k> >
-  get_ref_sub_space(const int sub_elem_id,
-                    InterSpaceMap<k> &dof_map) const;
+  std::shared_ptr<NURBSSpace<k,range_,rank_> >
+  get_sub_nurbs_space(const int sub_elem_id,
+                      InterSpaceMap<k> &dof_map) const;
 #if 0
   template<int k>
   std::shared_ptr<SubSpace<k> >
@@ -153,7 +144,7 @@ public:
 
 
   using WeightSpace = BSplineSpace<dim_,1,1>;
-  using WeightFunction = GridFunction<dim_,1>;
+  using WeightFunction = IgGridFunction<dim_,1>;
   using WeightFunctionPtr = std::shared_ptr<WeightFunction>;
   using Weights = DynamicMultiArray<Real,dim>;
   using WeightsTable = ComponentContainer<Weights>;

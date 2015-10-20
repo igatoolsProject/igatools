@@ -61,9 +61,9 @@ template<int dim,int space_dim>
 auto
 IgGridFunction<dim,space_dim>::
 const_create(const std::shared_ptr<const IgSpace> &space,
-             const IgCoefficients &coeffs) -> std::shared_ptr<const parent_t>
+             const IgCoefficients &coeffs) -> std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const parent_t>(new IgGridFunction(
+  return std::shared_ptr<const self_t>(new IgGridFunction(
     SharedPtrConstnessHandler<IgSpace>(space),coeffs));
 }
 
@@ -71,9 +71,9 @@ template<int dim,int space_dim>
 auto
 IgGridFunction<dim,space_dim>::
 create(const std::shared_ptr<IgSpace> &space,
-       const IgCoefficients &coeffs) -> std::shared_ptr<parent_t>
+       const IgCoefficients &coeffs) -> std::shared_ptr<self_t>
 {
-  return std::shared_ptr<parent_t>(new IgGridFunction(
+  return std::shared_ptr<self_t>(new IgGridFunction(
     SharedPtrConstnessHandler<IgSpace>(space),coeffs));
 }
 

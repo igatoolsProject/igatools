@@ -69,11 +69,11 @@ public:
   std::unique_ptr<typename parent_t::ElementHandler>
   create_cache_handler() const;
 
-  static std::shared_ptr<const parent_t>
+  static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const IgSpace> &space,
                const IgCoefficients &coeffs);
 
-  static std::shared_ptr<parent_t>
+  static std::shared_ptr<self_t>
   create(const std::shared_ptr<IgSpace> &space,
          const IgCoefficients &coeffs);
 
@@ -81,16 +81,24 @@ public:
   virtual void print_info(LogStream &out) const override final;
 
   template <int sdim>
-  std::shared_ptr<IgGridFunction<sdim,space_dim>>
-                                               get_sub_function(const int s_id) const
+  std::shared_ptr<IgGridFunction<sdim,space_dim> >
+  get_sub_function(const int s_id) const
   {
-    //TODO (martinelli Nov 27,2014): implement this function
     static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
                   "The dimensionality of the sub_grid is not valid.");
-    AssertThrow(false,ExcNotImplemented());
 
-    return nullptr;
 
+    typename IgSpace::template InterSpaceMap<sdim> dof_map;
+    auto sub_ref_space = ig_space_->template get_ref_sub_space<sdim>(s_id,dof_map);
+
+    IgCoefficients sub_coeffs;
+    const int n_sub_dofs = dof_map.size();
+    for (int sub_dof = 0 ; sub_dof < n_sub_dofs ; ++ sub_dof)
+      sub_coeffs[sub_dof] = coeffs_[dof_map[sub_dof]];
+
+    auto sub_func = IgGridFunction<sdim,space_dim>::create(sub_ref_space,sub_coeffs);
+
+    return sub_func;
   }
 
 
@@ -118,9 +126,9 @@ private:
   serialize(Archive &ar)
   {
     using std::to_string;
-    const std::string base_name = "GridFunction_" +
-                                  to_string(dim) + "_" +
-                                  to_string(space_dim);
+    const std::string base_name =
+      "IgGridFunction_" + to_string(dim) + "_" +
+      to_string(space_dim);
 
     ar &make_nvp(base_name,base_class<parent_t>(this));
     ar &make_nvp("ig_space_",ig_space_);

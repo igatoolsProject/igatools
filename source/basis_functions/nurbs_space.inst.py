@@ -40,9 +40,9 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 sub_dim_members = \
- ['std::shared_ptr<typename class::template SubRefSpace<k>> ' + 
-  'class::get_ref_sub_space<k>(const int sub_elem_id, ' + 
-  'InterSpaceMap<k> &dof_map) const;'
+ ['std::shared_ptr<typename class::template NURBSSpace<sdim,range,rank>> ' + 
+  'class::get_sub_nurbs_space<sdim>(const int s_id, ' + 
+  'InterSpaceMap<sdim> &dof_map) const;'
 #  ,
 #  'std::shared_ptr<typename class::template SubSpace<k>> ' + 
 #  'class::get_sub_space<k>(const int sub_elem_id, ' + 
@@ -58,7 +58,7 @@ for x in inst.sub_ref_sp_dims:
     spaces.append(space)
     for fun in sub_dim_members:
         k = max(x.dim-1,0)
-        s = fun.replace('class', space).replace('k', '%d' % (k));
+        s = fun.replace('class', space).replace('sdim','%d' % (k)).replace('range','%d' % (x.range)).replace('rank','%d' % (x.rank));
         templated_funcs.append(s)
 
 
@@ -68,7 +68,7 @@ for x in inst.ref_sp_dims:
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             if (k < x.dim):
-                s = fun.replace('class', space).replace('k', '%d' % (k));
+                s = fun.replace('class', space).replace('sdim', '%d' % (k)).replace('range','%d' % (x.range)).replace('rank','%d' % (x.rank));
                 templated_funcs.append(s)
             
             

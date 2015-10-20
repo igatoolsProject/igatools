@@ -332,32 +332,32 @@ create_ref_element(const ListIt &index, const PropId &property) const
 
 
 template<int dim_, int range_, int rank_>
-template<int k>
+template<int sdim>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_ref_sub_space(const int s_id,
-                  InterSpaceMap<k> &dof_map) const
--> std::shared_ptr<SubRefSpace<k> >
+get_sub_bspline_space(const int s_id,
+                      InterSpaceMap<sdim> &dof_map) const
+-> std::shared_ptr<BSplineSpace<sdim, range_, rank_> >
 {
-  static_assert(k == 0 || (k > 0 && k < dim_),
+  static_assert(sdim == 0 || (sdim > 0 && sdim < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
-  SubGridMap<k> elem_map;
-  const auto sub_grid = this->get_ptr_const_grid()->template get_sub_grid<k>(s_id, elem_map);
+  typename Grid<dim_>::template SubGridMap<sdim> elem_map;
+  const auto sub_grid = this->get_ptr_const_grid()->template get_sub_grid<sdim>(s_id, elem_map);
 
-  auto sub_mult   = this->space_data_->template get_sub_space_mult<k>(s_id);
-  auto sub_degree = this->space_data_->template get_sub_space_degree<k>(s_id);
-  auto sub_periodic = this->space_data_->template get_sub_space_periodicity<k>(s_id);
+  auto sub_mult   = this->space_data_->template get_sub_space_mult<sdim>(s_id);
+  auto sub_degree = this->space_data_->template get_sub_space_degree<sdim>(s_id);
+  auto sub_periodic = this->space_data_->template get_sub_space_periodicity<sdim>(s_id);
 
-  using SubRefSp = BSplineSpace<k,range,rank>;
+  using SubRefSp = BSplineSpace<sdim,range,rank>;
 
   using SubEndBT = typename SubRefSp::EndBehaviourTable;
-  auto &k_elem = UnitElement<dim>::template get_elem<k>(s_id);
+  auto &k_elem = UnitElement<dim>::template get_elem<sdim>(s_id);
   const auto &active_dirs = k_elem.active_directions;
 
   SubEndBT sub_end_b(end_b_.get_comp_map());
   for (int comp : end_b_.get_active_components_id())
-    for (int j=0; j<k; ++j)
+    for (int j=0; j<sdim; ++j)
       sub_end_b[comp][j] = end_b_[comp][active_dirs[j]];
   auto sub_space =
   SubRefSp::create(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
@@ -388,7 +388,7 @@ get_ref_sub_space(const int s_id,
     {
       const auto sub_base_id = sub_local_indices.flat_to_tensor(sub_i);
 
-      for (int j=0; j<k; ++j)
+      for (int j=0; j<sdim; ++j)
         tensor_index[active_dirs[j]] = sub_base_id[j];
       for (int j=0; j<n_dir; ++j)
       {
@@ -408,70 +408,6 @@ get_ref_sub_space(const int s_id,
 
 
 
-
-#if 0
-template<int dim_, int range_, int rank_>
-template<int k>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_sub_space(const int s_id,
-              InterSpaceMap<k> &dof_map,
-              SubGridMap<k> &elem_map) const
--> std::shared_ptr<SubSpace<k> >
-{
-#if 0
-  static_assert(k == 0 || (k > 0 && k < dim_),
-  "The dimensionality of the sub_grid is not valid.");
-
-
-  using SubGridFunc = grid_functions::LinearGridFunction<k,dim_>;
-  using Grad  = typename SubGridFunc::template Derivative<1>;
-  using Value = typename SubGridFunc::Value;
-  Grad A;
-  Value b;
-
-  const auto &sub_elem = UnitElement<dim_>::template get_elem<k>(s_id);
-  const auto &active_dirs = sub_elem.active_directions;
-  const auto &constant_dirs = sub_elem.constant_directions;
-  const auto &constant_vals = sub_elem.constant_values;
-
-  int i = 0;
-  for (const int active_dir : active_dirs)
-    A[i++][active_dir] = 1.0;
-
-
-  const auto grid = this->get_ptr_const_grid();
-
-  i = 0;
-  for (const int constant_dir : constant_dirs)
-  {
-    const int constant_val = constant_vals[i++];
-
-    const auto &knots_const_direction = grid->get_knot_coordinates(constant_dir);
-
-    b[constant_dir] = (constant_val == 0) ?
-    knots_const_direction.front() :
-    knots_const_direction.back();
-  }
-
-  auto sub_ref_space = this->template get_ref_sub_space<k>(s_id, dof_map);
-
-  auto sub_grid = sub_ref_space->get_ptr_grid();
-
-  auto sub_grid_func = SubGridFunc::create(sub_grid,A,b);
-
-  using SubDomain = Domain<k,dim_-k>;
-  auto sub_domain = SubDomain::create(sub_grid_func);
-
-
-  auto sub_space = SubSpace<k>::create(sub_ref_space, sub_domain);
-  return sub_space;
-#endif
-
-  AssertThrow(false,ExcNotImplemented());
-  return nullptr;
-}
-#endif
 
 
 

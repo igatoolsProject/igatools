@@ -361,25 +361,20 @@ template<int dim_, int range_, int rank_>
 template<int k>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_ref_sub_space(const int s_id,
-                  InterSpaceMap<k> &dof_map) const
--> std::shared_ptr<SubRefSpace<k> >
+get_sub_nurbs_space(const int s_id,
+                    InterSpaceMap<k> &dof_map) const
+-> std::shared_ptr<NURBSSpace<k,range_,rank_> >
 {
   static_assert(k == 0 || (k > 0 && k < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
-  using SubBSpSpace = BSplineSpace<k,range_,rank_>;
-  auto sub_bsp_space =
-  std::dynamic_pointer_cast<SubBSpSpace>(bsp_space_->template get_ref_sub_space<k>(s_id,dof_map));
+  auto sub_bsp_space = bsp_space_->template get_sub_bspline_space<k>(s_id,dof_map);
   Assert(sub_bsp_space != nullptr,ExcNullPtr());
 
-  auto w_func = std::dynamic_pointer_cast<const IgGridFunction<dim_,1>>(weight_func_.get_ptr_const_data());
-  Assert(w_func != nullptr,ExcNullPtr());
-
-  auto sub_w_func = w_func->template get_sub_function<k>(s_id);
+  auto sub_w_func = weight_func_->template get_sub_function<k>(s_id);
   Assert(sub_w_func != nullptr,ExcNullPtr());
 
-  auto sub_nrb_space = SubRefSpace<k>::create(sub_bsp_space,sub_w_func);
+  auto sub_nrb_space = NURBSSpace<k,range_,rank_>::create(sub_bsp_space,sub_w_func);
   Assert(sub_nrb_space != nullptr,ExcNullPtr());
 
   return sub_nrb_space;
