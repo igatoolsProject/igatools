@@ -35,7 +35,7 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int dim_, int range_, int rank_ , int codim_, Transformation type_>
+template <int dim_, int range_, int rank_ , int codim_>
 class PhysicalSpace;
 
 
@@ -55,10 +55,9 @@ public:
   Writer(const Writer<dim,codim,T> &writer) = delete;
 
 
-  Writer(const std::shared_ptr<Grid<dim> > grid);
+  Writer(const std::shared_ptr<const Grid<dim> > &grid);
 
-
-  Writer(const std::shared_ptr<const MapFunction_new<dim,codim>> map,
+  Writer(const std::shared_ptr<const Domain<dim,codim>> &domain,
          const Index num_points_direction);
 
   /**
@@ -70,9 +69,8 @@ public:
    * otherwise an exception will be raised.
    * \see add_field
    */
-  Writer(const std::shared_ptr<const MapFunction_new<dim,codim> > map,
-         const std::shared_ptr<const Quadrature<dim>> quadrature);
-
+  Writer(const std::shared_ptr<const Domain<dim,codim>> &domain,
+         const std::shared_ptr<const Quadrature<dim>> &quadrature);
 
   /*
    * Destructor.
@@ -165,7 +163,8 @@ public:
 
 private:
 
-  std::shared_ptr<MapFunction_new<dim,codim> > map_;
+
+  std::shared_ptr<const Domain<dim,codim> > domain_;
 
   /**
    * Unit element quadrature rule used for the plot.
@@ -313,7 +312,8 @@ private:
     &vtk_elements_connectivity) const;
 
   void get_subelements(
-    const typename MapFunction_new<dim,codim>::ElementAccessor &elem,
+    const typename Domain<dim,codim>::ConstElementAccessor &elem,
+    const int elem_flat_id,
     SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
     SafeSTLVector< SafeSTLArray<T,3> > &points_phys_iga_element) const;
 
@@ -347,6 +347,8 @@ Writer<dim, codim, T>::
 add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
           const string &name)
 {
+  AssertThrow(false,ExcNotImplemented())
+#if 0
   Assert(function != nullptr, ExcNullPtr());
 
   auto func = function->clone();
@@ -445,6 +447,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
   }
 
   //--------------------------------------------------------------------------
+#endif
 }
 
 

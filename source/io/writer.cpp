@@ -21,8 +21,10 @@
 #include <igatools/io/writer.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/utils/multi_array_utils.h>
-#include <igatools/functions/identity_function.h>
+//#include <igatools/functions/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/geometry/grid_function_lib.h>
+
 
 #include <fstream>
 
@@ -38,31 +40,60 @@ using std::to_string;
 
 IGA_NAMESPACE_OPEN
 
+namespace
+{
+
+template<int dim,int codim>
+inline
+std::shared_ptr<const Domain<dim,codim>>
+                                      create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
+{
+  const int space_dim = dim+codim;
+  using F = grid_functions::LinearGridFunction<dim,space_dim>;
+
+  using Grad = typename F::Gradient;
+  using Val = typename F::Value;
+
+  Grad A;
+  for (int i = 0 ; i < dim ; ++i)
+    A[i][i] = Tdouble(1.0);
+
+  Val b;
+
+  auto domain = Domain<dim,codim>::const_create(F::const_create(grid,A,b));
+  return domain;
+}
+
+};
+
+
+
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<Grid<dim>> grid)
+Writer(const shared_ptr<const Grid<dim>> &grid)
   :
-  Writer(IdentityFunction<dim,dim+codim>::create(grid),
-        shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
+  Writer(create_domain_from_grid<dim,codim>(grid),
+        QUniform<dim>::create(2))
 {}
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const std::shared_ptr<const MapFunction_new<dim,codim>> map,
+Writer(const std::shared_ptr<const Domain<dim,codim>> &domain,
        const Index num_points_direction)
   :
-  Writer(map,shared_ptr<QUniform<dim> >(new QUniform<dim>(num_points_direction)))
+  Writer(domain,QUniform<dim>::create(num_points_direction))
 {}
+
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<const MapFunction_new<dim,codim> > map,
-       const shared_ptr<const Quadrature<dim> > quadrature)
+Writer(const shared_ptr<const Domain<dim,codim> > &domain,
+       const shared_ptr<const Quadrature<dim> > &quadrature)
   :
-  map_(map->clone()),
+  domain_(domain),
   quad_plot_(quadrature),
   num_points_direction_(quad_plot_->get_num_coords_direction()),
-  n_iga_elements_(map->get_grid()->get_num_all_elems()),
+  n_iga_elements_(domain->get_grid_function()->get_grid()->get_num_all_elems()),
   n_points_per_iga_element_(quad_plot_->get_num_points()),
   n_vtk_points_(n_iga_elements_*n_points_per_iga_element_),
   sizeof_Real_(sizeof(T)),
@@ -70,7 +101,7 @@ Writer(const shared_ptr<const MapFunction_new<dim,codim> > map,
   sizeof_uchar_(sizeof(unsigned char)),
   offset_(0)
 {
-  Assert(map_ != nullptr, ExcNullPtr());
+  Assert(domain_ != nullptr, ExcNullPtr());
   Assert(quad_plot_ != nullptr, ExcNullPtr());
 
 #if defined( BOOST_LITTLE_ENDIAN )
@@ -151,7 +182,6 @@ Writer(const shared_ptr<const MapFunction_new<dim,codim> > map,
 
 
 
-
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 fill_points_and_connectivity(
@@ -159,23 +189,23 @@ fill_points_and_connectivity(
   SafeSTLVector<SafeSTLVector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
   &vtk_elements_connectivity) const
 {
-  map_->reset(ValueFlags::value | ValueFlags::point, *quad_plot_);
+  auto domain_cache_handler = domain_->create_cache_handler();
+  domain_cache_handler->template set_flags<dim>(domain_element::Flags::point);
 
-  auto m_elem = map_->begin();
-  auto m_end  = map_->end();
 
-  const auto topology = Topology<dim>();
+  auto elem = domain_->cbegin();
+  auto end  = domain_->cend();
 
-  map_->init_cache(m_elem,topology);
+  domain_cache_handler->init_cache(*elem,quad_plot_);
 
-  for (; m_elem != m_end; ++m_elem)
+  int elem_id = 0;
+  for (; elem != end; ++elem, ++elem_id)
   {
-    map_->fill_cache(m_elem,topology,0);
-
-    const auto elem_id = m_elem->get_flat_index();
+    domain_cache_handler->template fill_cache<dim>(*elem,0);
 
     this->get_subelements(
-      *m_elem,
+      *elem,
+      elem_id,
       vtk_elements_connectivity[elem_id],
       points_in_iga_elements[elem_id]);
   }
@@ -186,7 +216,8 @@ fill_points_and_connectivity(
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 get_subelements(
-  const typename MapFunction_new<dim,codim>::ElementAccessor &elem,
+  const typename Domain<dim,codim>::ConstElementAccessor &elem,
+  const int elem_flat_id,
   SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
   SafeSTLVector< SafeSTLArray<T,3> > &points_phys_iga_element) const
 {
@@ -197,22 +228,24 @@ get_subelements(
          ExcDimensionMismatch(vtk_elements_connectivity.size(), n_vtk_elements_per_iga_element_));
 
 
-  auto element_vertices_tmp = elem.template get_values<_Value,dim>(0);
+  auto element_vertices_tmp = elem.template get_points<dim>(0);
 
   const T zero = T(0.0);
+
+  const int space_dim = dim + codim;
 
   // here we evaluate the position of the evaluation points in the physical domain
   for (int ipt = 0; ipt < n_points_per_iga_element_; ++ipt)
   {
-    for (int i = 0; i < Mapping<dim,codim>::space_dim; ++i)
+    for (int i = 0; i < space_dim; ++i)
       points_phys_iga_element[ipt][i] = element_vertices_tmp[ipt][i];
 
-    for (int i = Mapping<dim,codim>::space_dim; i < 3; ++i)
+    for (int i = space_dim; i < 3; ++i)
       points_phys_iga_element[ipt][i] = zero;
   }
 
 
-  const int iga_element_id = elem.get_flat_index();
+  const int iga_element_id = elem_flat_id;
 
   SafeSTLVector< SafeSTLArray<int,dim> > delta_idx(n_vertices_per_vtk_element_);
 
@@ -286,10 +319,10 @@ get_subelements(
   const auto vtk_elem_end = vtk_elements_grid->end();
 
   int vtk_vertex_id_offset = n_points_per_iga_element_ * iga_element_id;
-  for (; vtk_elem != vtk_elem_end; ++vtk_elem)
+  int vtk_elem_flat_id = 0;
+  for (; vtk_elem != vtk_elem_end; ++vtk_elem, ++vtk_elem_flat_id)
   {
-    int vtk_elem_flat_id = vtk_elem->get_flat_index();
-    auto vtk_elem_tensor_idx = vtk_elem.get_tensor_index();
+    auto vtk_elem_tensor_idx = vtk_elem->get_index();
 
     for (int iVertex = 0; iVertex < n_vertices_per_vtk_element_; ++iVertex)
     {

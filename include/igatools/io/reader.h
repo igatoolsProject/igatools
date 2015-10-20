@@ -127,30 +127,30 @@ std::string
 get_xml_input_file_format(const std::string &filename);
 
 /**
- * Reads an MapFunction from an xml file.
+ * Reads an Domain from an xml file.
  *
- * @note Due to the virtual nature of the class MapFunction, this function can allocate
+ * @note Due to the virtual nature of the class Domain, this function can allocate
  * different kind of functions:
- *    - FormulaFunction and its specializations (not implemented)
- *    - IgFunction (implemented)
+ *    - FormulaGridFunction and its specializations (not implemented)
+ *    - IgGridFunction (implemented)
  *
- * @todo document the XML file formats (version 1.0 and 2.0) for IgMapping
+ * @todo write the updated doumentation
  *
  * @ingroup input
  * @author M. Martinelli
  * @date 04 Mar 2014
  */
 template <int dim, int codim = 0>
-std::shared_ptr< MapFunction_new<dim,codim> >
+std::shared_ptr< Domain<dim,codim> >
 get_mapping_from_file(const std::string &filename);
 
 
 /**
- * Returns a MapFunction object (wrapped by a std::shared_ptr) from a Boost XML tree
+ * Returns a Domain object (wrapped by a std::shared_ptr) from a Boost XML tree
  * containing exactly one node with the a tag describing a supported mapping.
  * @warning The kind of instantiated MapFunction object depends
  * on the XML tag describing the mapping class.
- * Currently, only the IgFunction is supported (for which the specifying tag is "IgMapping").
+ * Currently, only the IgGridFunction is supported (for which the specifying tag is "IgMapping").
  * @note An assertion will be raised (in Debug and Release mode)
  * if no node or more than one node with a tag with a supported mapping are present in XML tree.
  * @ingroup input_v2
@@ -158,7 +158,7 @@ get_mapping_from_file(const std::string &filename);
  * @date 04 Mar 2014
  */
 template <int dim, int codim = 0>
-std::shared_ptr< MapFunction_new<dim,codim> >
+std::shared_ptr< Domain<dim,codim> >
 get_mapping_from_xml(const boost::property_tree::ptree &tree);
 
 

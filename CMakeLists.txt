@@ -218,7 +218,7 @@ set(lib_name igatools)
 
 # igatools source files
 #set (source_dirs base utils geometry basis_functions linear_algebra io contrib functions)
-set (source_dirs base utils geometry basis_functions linear_algebra functions)
+set (source_dirs base utils geometry basis_functions linear_algebra functions io)
 #set (source_dirs base utils geometry linear_algebra functions)
 foreach(dir ${source_dirs})
   file(GLOB source ${PROJECT_SOURCE_DIR}/source/${dir}/*.cpp)

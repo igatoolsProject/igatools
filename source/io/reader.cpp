@@ -217,9 +217,11 @@ get_xml_input_file_format(const std::string &filename)
 
 
 template <int dim, int codim>
-std::shared_ptr< MapFunction_new<dim,codim> >
+std::shared_ptr< Domain<dim,codim> >
 get_mapping_from_file(const std::string &filename)
 {
+  AssertThrow(false,ExcNotImplemented());
+#if 0
   const string file_format_version = get_xml_input_file_format(filename) ;
 
   shared_ptr< MapFunction_new<dim,codim> > map;
@@ -247,6 +249,8 @@ get_mapping_from_file(const std::string &filename)
   AssertThrow(map != nullptr,ExcNullPtr());
 
   return map;
+#endif
+  return nullptr;
 }
 
 
@@ -256,7 +260,7 @@ get_mapping_from_file(const std::string &filename)
 
 
 template <int dim, int codim>
-std::shared_ptr< MapFunction_new<dim,codim> >
+std::shared_ptr< Domain<dim,codim> >
 get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 {
   AssertThrow(xml_element_is_unique(igatools_tree,"IgMapping"),
@@ -304,7 +308,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 
   //-------------------------------------------------------------------------
   // reading the reference space
-  shared_ptr< MapFunction_new<dim,codim> > map;
+  shared_ptr< Domain<dim,codim> > map;
 
   const int dim_phys = dim + codim;
   using ref_space_t = ReferenceSpace<dim,dim_phys,1>;
@@ -326,7 +330,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
   auto emap = EpetraTools::create_map(*ref_space, "active", comm);
   auto vec = cntrl_pts;
   auto w = std::make_shared<EpetraTools::Vector>(Copy, *emap, vec.data());
-  map = IgFunction<dim,0,dim_phys,1>::create(ref_space, w);
+  map = Domain<dim,codim>::create(IgGridFunction<dim,dim_phys>::create(ref_space, *w));
   //-------------------------------------------------------------------------
   AssertThrow(map != nullptr,ExcNullPtr());
 
@@ -335,10 +339,10 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 
 
 template <int dim, int codim>
-std::shared_ptr< MapFunction_new<dim,codim> >
+std::shared_ptr< Domain<dim,codim> >
 get_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 {
-  shared_ptr< MapFunction_new<dim,codim> > map;
+  shared_ptr< Domain<dim,codim> > map;
 
   if (xml_element_is_unique(igatools_tree,"IgMapping"))
   {
@@ -531,7 +535,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
   end_behaviour(components_map, SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory));
   typename space_t::PeriodicityTable periodic(components_map, SafeSTLArray<bool,dim>(false));
 
-  auto ref_space = space_t::create_nonconst(degrees, grid, multiplicities, periodic, end_behaviour);
+  auto ref_space = space_t::create(degrees, grid, multiplicities, periodic, end_behaviour);
   //-------------------------------------------------------------------------
 
   return ref_space;
@@ -686,11 +690,12 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
 
   // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
-  typename space_t::SpSpace::EndBehaviourTable
+  using SpSpace = BSplineSpace<dim,range,rank>;
+  typename SpSpace::EndBehaviourTable
   end_behaviour(components_map, SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
-  typename space_t::SpSpace::PeriodicityTable periodic(components_map, SafeSTLArray<bool, dim>(false));
+  typename SpSpace::PeriodicityTable periodic(components_map, SafeSTLArray<bool, dim>(false));
 
-  auto spline_space = space_t::SpSpace::create_nonconst(degrees, grid, multiplicities, periodic, end_behaviour);
+  auto spline_space = SpSpace::create(degrees, grid, multiplicities, periodic, end_behaviour);
 
   //---------------------------------------------------------------------------------
 
@@ -714,26 +719,31 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
 
   auto scalar_spline_space =
-    ScalarBSplineSpace::create_nonconst(scalar_degree_table, new_grid,
-                                        scalar_mult_table, scalar_periodic, scalar_end_behaviour);
+    ScalarBSplineSpace::create(scalar_degree_table, new_grid,
+                               scalar_mult_table, scalar_periodic, scalar_end_behaviour);
 
 //    using WeightFuncPtr = shared_ptr<WeightFunc>;
   using WeightFunction = typename space_t::WeightFunction;
+  /*
   const auto &w_coefs = weights[0];
 
   Epetra_SerialComm comm;
   auto map = EpetraTools::create_map(*scalar_spline_space, "active", comm);
   auto vec = w_coefs.get_data();
   auto w = std::make_shared<EpetraTools::Vector>(Copy, *map, vec.data());
-  auto w_func = std::make_shared<WeightFunction>(scalar_spline_space, w);
+  //*/
+  IgCoefficients w_coeffs;
+  int i = 0;
+  for (const auto &w : weights[0])
+    w_coeffs[i++] = w;
 
+  auto w_func = WeightFunction::create(scalar_spline_space, w_coeffs);
 
   //*/
   // building the weight function table --- end
   //----------------------------------------
 
-
-  auto ref_space = space_t::create_nonconst(spline_space,w_func);
+  auto ref_space = space_t::create(spline_space,w_func);
 
   return ref_space;
 }

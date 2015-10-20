@@ -214,6 +214,87 @@ print_info(LogStream &out) const
 
 //------------------------------------------------------------------------------
 template<int dim>
+IdentityGridFunction<dim>::
+IdentityGridFunction(const SharedPtrConstnessHandler<GridType> &domain)
+  :
+  parent_t(domain)
+{}
+
+
+
+template<int dim>
+auto
+IdentityGridFunction<dim>::
+create(const std::shared_ptr<GridType> &domain)
+->  std::shared_ptr<base_t>
+{
+  return std::shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<GridType>(domain)));
+}
+
+template<int dim>
+auto
+IdentityGridFunction<dim>::
+const_create(const std::shared_ptr<const GridType> &domain)
+->  std::shared_ptr<const base_t>
+{
+  return std::shared_ptr<const self_t>(
+    new self_t(SharedPtrConstnessHandler<GridType>(domain)));
+}
+
+
+template<int dim>
+auto
+IdentityGridFunction<dim>::
+evaluate_0(const ValueVector<GridPoint> &points,
+           ValueVector<Value> &values) const -> void
+{
+  auto point = points.begin();
+  for (auto &val : values)
+  {
+    val = *point;
+    ++point;
+  }
+}
+
+
+
+template<int dim>
+auto
+IdentityGridFunction<dim>::
+evaluate_1(const ValueVector<GridPoint> &points,
+           ValueVector<Derivative<1>> &values) const -> void
+{
+  for (auto &val : values)
+    val = 0.0;
+}
+
+template<int dim>
+auto
+IdentityGridFunction<dim>::
+evaluate_2(const ValueVector<GridPoint> &points,
+           ValueVector<Derivative<2>> &values) const -> void
+{
+  for (auto &val : values)
+    val = 0.0;
+}
+
+template<int dim>
+void
+IdentityGridFunction<dim>::
+print_info(LogStream &out) const
+{
+  out.begin_item("IdentityGridFunction<"
+                 + std::to_string(dim) + ">");
+  out.end_item();
+}
+
+
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+template<int dim>
 BallGridFunction<dim>::
 BallGridFunction(const SharedPtrConstnessHandler<GridType> &grid)
   :

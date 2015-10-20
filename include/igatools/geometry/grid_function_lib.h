@@ -85,7 +85,7 @@ private:
 
 //------------------------------------------------------------------------------
 /**
- * y = A * x + b
+ * F(x) = A * x + b
  */
 template<int dim, int space_dim>
 class LinearGridFunction :
@@ -137,6 +137,54 @@ private:
 private:
   const Derivative<1> A_;
   const Value    b_;
+};
+
+
+//------------------------------------------------------------------------------
+/**
+ * F(x) = x
+ */
+template<int dim>
+class IdentityGridFunction :
+  public FormulaGridFunction<dim,dim>
+{
+  using base_t = GridFunction<dim,dim>;
+  using parent_t = FormulaGridFunction<dim,dim>;
+  using self_t = IdentityGridFunction<dim>;
+  using typename base_t::GridType;
+public:
+  using typename parent_t::Value;
+  using typename parent_t::GridPoint;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+
+public:
+  static std::shared_ptr<base_t>
+  create(const std::shared_ptr<GridType> &domain);
+
+  static std::shared_ptr<const base_t>
+  const_create(const std::shared_ptr<const GridType> &domain);
+
+
+  IdentityGridFunction(const self_t &) = default;
+
+  virtual ~IdentityGridFunction() = default;
+
+  virtual void print_info(LogStream &out) const override final;
+
+protected:
+  IdentityGridFunction(
+    const SharedPtrConstnessHandler<GridType> &domain);
+
+private:
+  void evaluate_0(const ValueVector<GridPoint> &points,
+                  ValueVector<Value> &values) const override;
+
+  void evaluate_1(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<1>> &values) const override;
+
+  void evaluate_2(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<2>> &values) const override;
 };
 
 
