@@ -27,6 +27,32 @@ IGA_NAMESPACE_OPEN
 template<int dim,int space_dim>
 IgGridFunction<dim,space_dim>::
 IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
+               const EpetraTools::Vector &coeff)
+  :
+  parent_t(
+   space.data_is_const() ?
+   SharedPtrConstnessHandler<GridType>(space.get_ptr_const_data()->get_ptr_const_grid()) :
+   SharedPtrConstnessHandler<GridType>(space.get_ptr_data()->get_ptr_grid())),
+  ig_space_(space)
+{
+  const auto &dof_distribution = *(ig_space_->get_ptr_const_dof_distribution());
+  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(DofProperties::active);
+
+  const auto &epetra_map = coeff.Map();
+
+  for (const auto glob_dof : active_dofs)
+  {
+    auto loc_id = epetra_map.LID(glob_dof);
+    Assert(loc_id >= 0,
+           ExcMessage("Global dof " + std::to_string(glob_dof) + " not present in the input EpetraTools::Vector."));
+    coeffs_[glob_dof] = coeff[loc_id];
+  }
+}
+
+
+template<int dim,int space_dim>
+IgGridFunction<dim,space_dim>::
+IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
                const IgCoefficients &coeffs)
   :
   parent_t(
@@ -73,6 +99,27 @@ auto
 IgGridFunction<dim,space_dim>::
 create(const std::shared_ptr<IgSpace> &space,
        const IgCoefficients &coeffs) -> std::shared_ptr<self_t>
+{
+  return std::shared_ptr<self_t>(new IgGridFunction(
+    SharedPtrConstnessHandler<IgSpace>(space),coeffs));
+}
+
+
+template<int dim,int space_dim>
+auto
+IgGridFunction<dim,space_dim>::
+const_create(const std::shared_ptr<const IgSpace> &space,
+             const EpetraTools::Vector &coeffs) -> std::shared_ptr<const self_t>
+{
+  return std::shared_ptr<const self_t>(new IgGridFunction(
+    SharedPtrConstnessHandler<IgSpace>(space),coeffs));
+}
+
+template<int dim,int space_dim>
+auto
+IgGridFunction<dim,space_dim>::
+create(const std::shared_ptr<IgSpace> &space,
+       const EpetraTools::Vector &coeffs) -> std::shared_ptr<self_t>
 {
   return std::shared_ptr<self_t>(new IgGridFunction(
     SharedPtrConstnessHandler<IgSpace>(space),coeffs));

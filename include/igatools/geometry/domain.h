@@ -126,6 +126,7 @@ public:
 
   std::shared_ptr<const GridFuncType> get_grid_function() const;
 
+
 public:
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
@@ -172,8 +173,32 @@ public:
 
   void print_info(LogStream &out) const;
 
+
+  /**
+   * Get the name associated to the object instance.
+   */
+  const std::string &get_name() const;
+
+  /**
+   * Set the name associated to the object instance.
+   */
+  void set_name(const std::string &name);
+
+  /**
+   * Returns the unique identifier associated to each object instance.
+   */
+  int get_object_id() const;
+
+
 private:
   SharedPtrConstnessHandler<GridFunction<dim, space_dim>> grid_func_;
+
+  std::string name_;
+
+  /**
+   * Unique identifier associated to each object instance.
+   */
+  int object_id_;
 
   friend class DomainElementBase<dim_, codim_, Domain<dim_, codim_>>;
   friend class DomainElementBase<dim_, codim_, const Domain<dim_, codim_>>;
@@ -192,6 +217,8 @@ private:
   serialize(Archive &ar)
   {
     ar &grid_func_;
+    ar &name_;
+    ar &object_id_;
   }
   ///@}
 #endif // SERIALIZATION

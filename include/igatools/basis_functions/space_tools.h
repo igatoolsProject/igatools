@@ -220,8 +220,9 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
   AssertThrow(result == Belos::ReturnType::Converged,
               ExcMessage("No convergence."));
 
-  return ProjFunc::create(std::const_pointer_cast<Space>(space),
-                          *sol, dofs_property);
+  return std::dynamic_pointer_cast<IgFunction<Space::dim,Space::codim,Space::range,Space::rank>>(
+           ProjFunc::create(std::const_pointer_cast<Space>(space),
+                            *sol, dofs_property));
 }
 
 

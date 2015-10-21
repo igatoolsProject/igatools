@@ -33,7 +33,6 @@
 using std::shared_ptr;
 using std::static_pointer_cast;
 
-
 void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
 {
   OUTSTART
@@ -49,8 +48,7 @@ void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 
-    xml_out << boost::serialization::make_nvp(tag_name.c_str(),funcs_container);
-    xml_ostream.close();
+    xml_out << funcs_container;
   }
 
   funcs_container.reset();
@@ -59,8 +57,7 @@ void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
 
-    xml_in >> BOOST_SERIALIZATION_NVP(funcs_container);
-    xml_istream.close();
+    xml_in >> funcs_container;
   }
   out.begin_item("FunctionsContainer after serialize-deserialize:");
   funcs_container->print_info(out);
@@ -69,7 +66,6 @@ void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
 
   OUTEND
 }
-
 
 
 template <int dim,int codim,int range>
@@ -136,6 +132,7 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
   }
 }
 
+
 void deserialize_only()
 {
   std::string filename = "functions_container.xml";
@@ -144,8 +141,7 @@ void deserialize_only()
   IArchive xml_in(xml_istream);
 
   auto funcs_container = std::make_shared<FunctionsContainer>();
-  xml_in >> BOOST_SERIALIZATION_NVP(funcs_container);
-  xml_istream.close();
+  xml_in >> funcs_container;
 
   out.begin_item("Inside deserialize_only()");
   print_container(funcs_container);
@@ -156,24 +152,25 @@ void deserialize_only()
 void do_test()
 {
   int n_elem_per_side = 2;
-  auto grid_1 = Grid<1>::create(n_elem_per_side+1);
-  auto grid_2 = Grid<2>::create(n_elem_per_side+1);
-  auto grid_3 = Grid<3>::create(n_elem_per_side+1);
+  auto grid_1 = Grid<1>::const_create(n_elem_per_side+1);
+  auto grid_2 = Grid<2>::const_create(n_elem_per_side+1);
+  auto grid_3 = Grid<3>::const_create(n_elem_per_side+1);
 //    create_fun<2, 0, 2>();
 
-  auto func_identity_1_1 = IdentityFunction<1,1>::create(grid_1);
-  auto func_identity_2_2 = IdentityFunction<2,2>::create(grid_2);
-  auto func_identity_3_3 = IdentityFunction<3,3>::create(grid_3);
-
+#if 0
+  auto func_identity_1_1 = IdentityFunction<1,1>::const_create(grid_1);
+  auto func_identity_2_2 = IdentityFunction<2,2>::const_create(grid_2);
+  auto func_identity_3_3 = IdentityFunction<3,3>::const_create(grid_3);
+#endif
 
 
   const int deg = 3;
-  auto bsp_space_1_1 = BSplineSpace<1,1,1>::create(deg, grid_1);
-  auto bsp_space_2_1 = BSplineSpace<2,1,1>::create(deg, grid_2);
-  auto bsp_space_3_1 = BSplineSpace<3,1,1>::create(deg, grid_3);
-  auto bsp_space_2_2 = BSplineSpace<2,2,1>::create(deg, grid_2);
-  auto bsp_space_3_3 = BSplineSpace<3,3,1>::create(deg, grid_3);
-  auto bsp_space_2_3 = BSplineSpace<2,3,1>::create(deg, grid_2);
+  auto bsp_space_1_1 = BSplineSpace<1,1,1>::const_create(deg, grid_1);
+  auto bsp_space_2_1 = BSplineSpace<2,1,1>::const_create(deg, grid_2);
+  auto bsp_space_3_1 = BSplineSpace<3,1,1>::const_create(deg, grid_3);
+  auto bsp_space_2_2 = BSplineSpace<2,2,1>::const_create(deg, grid_2);
+  auto bsp_space_3_3 = BSplineSpace<3,3,1>::const_create(deg, grid_3);
+  auto bsp_space_2_3 = BSplineSpace<2,3,1>::const_create(deg, grid_2);
 
   Epetra_SerialComm comm;
   auto bsp_coeff_1_1 = EpetraTools::create_vector(*bsp_space_1_1,DofProperties::active,comm);
@@ -200,49 +197,49 @@ void do_test()
   (*bsp_coeff_2_3)[0] = 1.;
 
 
-  auto bsp_func_1_1 = IgFunction<1,0,1,1>::create(bsp_space_1_1, bsp_coeff_1_1);
-  auto bsp_func_2_1 = IgFunction<2,0,1,1>::create(bsp_space_2_1, bsp_coeff_2_1);
-  auto bsp_func_3_1 = IgFunction<3,0,1,1>::create(bsp_space_3_1, bsp_coeff_3_1);
-  auto bsp_func_2_2 = IgFunction<2,0,2,1>::create(bsp_space_2_2, bsp_coeff_2_2);
-  auto bsp_func_3_3 = IgFunction<3,0,3,1>::create(bsp_space_3_3, bsp_coeff_3_3);
-  auto bsp_func_2_3 = IgFunction<2,0,3,1>::create(bsp_space_2_3, bsp_coeff_2_3);
+  auto bsp_func_1_1 = IgGridFunction<1,1>::const_create(bsp_space_1_1, *bsp_coeff_1_1);
+  auto bsp_func_2_1 = IgGridFunction<2,1>::const_create(bsp_space_2_1, *bsp_coeff_2_1);
+  auto bsp_func_3_1 = IgGridFunction<3,1>::const_create(bsp_space_3_1, *bsp_coeff_3_1);
+  auto bsp_func_2_2 = IgGridFunction<2,2>::const_create(bsp_space_2_2, *bsp_coeff_2_2);
+  auto bsp_func_3_3 = IgGridFunction<3,3>::const_create(bsp_space_3_3, *bsp_coeff_3_3);
+  auto bsp_func_2_3 = IgGridFunction<2,3>::const_create(bsp_space_2_3, *bsp_coeff_2_3);
 
 
 
   auto phys_space_1_1_1_0 =
-    PhysicalSpace<1,1,1,0,Transformation::h_grad>::create(
+    PhysicalSpace<1,1,1,0>::const_create(
       bsp_space_1_1,
-      bsp_func_1_1->clone());
+      Domain<1,0>::const_create(bsp_func_1_1));
 
   auto phys_space_2_1_1_0 =
-    PhysicalSpace<2,1,1,0,Transformation::h_grad>::create(
+    PhysicalSpace<2,1,1,0>::const_create(
       bsp_space_2_1,
-      bsp_func_2_2->clone());
+      Domain<2,0>::const_create(bsp_func_2_2));
 
   auto phys_space_3_1_1_0 =
-    PhysicalSpace<3,1,1,0,Transformation::h_grad>::create(
+    PhysicalSpace<3,1,1,0>::const_create(
       bsp_space_3_1,
-      bsp_func_3_3->clone());
+      Domain<3,0>::const_create(bsp_func_3_3));
 
   auto phys_space_2_2_1_0 =
-    PhysicalSpace<2,2,1,0,Transformation::h_grad>::create(
+    PhysicalSpace<2,2,1,0>::const_create(
       bsp_space_2_2,
-      bsp_func_2_2->clone());
+      Domain<2,0>::const_create(bsp_func_2_2));
 
   auto phys_space_3_3_1_0 =
-    PhysicalSpace<3,3,1,0,Transformation::h_grad>::create(
+    PhysicalSpace<3,3,1,0>::const_create(
       bsp_space_3_3,
-      bsp_func_3_3->clone());
+      Domain<3,0>::const_create(bsp_func_3_3));
 
   auto phys_space_2_1_1_1 =
-    PhysicalSpace<2,1,1,1,Transformation::h_grad>::create(
+    PhysicalSpace<2,1,1,1>::const_create(
       bsp_space_2_1,
-      bsp_func_2_3->clone());
+      Domain<2,1>::const_create(bsp_func_2_3));
 
   auto phys_space_2_3_1_1 =
-    PhysicalSpace<2,3,1,1,Transformation::h_grad>::create(
+    PhysicalSpace<2,3,1,1>::const_create(
       bsp_space_2_3,
-      bsp_func_2_3->clone());
+      Domain<2,1>::const_create(bsp_func_2_3));
 
   auto phys_coeff_1_1_1_0 = EpetraTools::create_vector(*phys_space_1_1_1_0,DofProperties::active,comm);
   (*phys_coeff_1_1_1_0)[0] = 1.;
@@ -271,96 +268,77 @@ void do_test()
   auto phys_coeff_2_3_1_1 = EpetraTools::create_vector(*phys_space_2_3_1_1,DofProperties::active,comm);
   (*phys_coeff_2_3_1_1)[0] = 1.;
 
-  auto phys_func_1_1_1_0 = IgFunction<1,0,1,1>::create(phys_space_1_1_1_0,phys_coeff_1_1_1_0);
-  auto phys_func_2_1_1_0 = IgFunction<2,0,1,1>::create(phys_space_2_1_1_0,phys_coeff_2_1_1_0);
-  auto phys_func_3_1_1_0 = IgFunction<3,0,1,1>::create(phys_space_3_1_1_0,phys_coeff_3_1_1_0);
-  auto phys_func_2_2_1_0 = IgFunction<2,0,2,1>::create(phys_space_2_2_1_0,phys_coeff_2_2_1_0);
-  auto phys_func_3_3_1_0 = IgFunction<3,0,3,1>::create(phys_space_3_3_1_0,phys_coeff_3_3_1_0);
-  auto phys_func_2_1_1_1 = IgFunction<2,1,1,1>::create(phys_space_2_1_1_1,phys_coeff_2_1_1_1);
-  auto phys_func_2_3_1_1 = IgFunction<2,1,3,1>::create(phys_space_2_3_1_1,phys_coeff_2_3_1_1);
+  auto phys_func_1_1_1_0 = IgFunction<1,0,1,1>::const_create(phys_space_1_1_1_0,*phys_coeff_1_1_1_0);
+  auto phys_func_2_1_1_0 = IgFunction<2,0,1,1>::const_create(phys_space_2_1_1_0,*phys_coeff_2_1_1_0);
+  auto phys_func_3_1_1_0 = IgFunction<3,0,1,1>::const_create(phys_space_3_1_1_0,*phys_coeff_3_1_1_0);
+  auto phys_func_2_2_1_0 = IgFunction<2,0,2,1>::const_create(phys_space_2_2_1_0,*phys_coeff_2_2_1_0);
+  auto phys_func_3_3_1_0 = IgFunction<3,0,3,1>::const_create(phys_space_3_3_1_0,*phys_coeff_3_3_1_0);
+  auto phys_func_2_1_1_1 = IgFunction<2,1,1,1>::const_create(phys_space_2_1_1_1,*phys_coeff_2_1_1_1);
+  auto phys_func_2_3_1_1 = IgFunction<2,1,3,1>::const_create(phys_space_2_3_1_1,*phys_coeff_2_3_1_1);
 
 
   auto funcs_container = std::make_shared<FunctionsContainer>();
 
   funcs_container->insert_mapping(
-    std::const_pointer_cast<MapFunction<1,1>>(
-      phys_func_1_1_1_0->get_ig_space()->get_ptr_const_map_func()),
+    phys_func_1_1_1_0->get_domain(),
     "map_1_1_1_0");
 
   funcs_container->insert_mapping(
-    std::const_pointer_cast<MapFunction<2,2>>(
-      phys_func_2_1_1_0->get_ig_space()->get_ptr_const_map_func()),
+    phys_func_2_1_1_0->get_domain(),
     "map_2_1_1_0");
 
   funcs_container->insert_mapping(
-    std::const_pointer_cast<MapFunction<3,3>>(
-      phys_func_3_1_1_0->get_ig_space()->get_ptr_const_map_func()),
+    phys_func_3_1_1_0->get_domain(),
     "map_3_1_1_0");
 
   funcs_container->insert_mapping(
-    std::const_pointer_cast<MapFunction<2,2>>(
-      phys_func_2_2_1_0->get_ig_space()->get_ptr_const_map_func()),
+    phys_func_2_2_1_0->get_domain(),
     "map_2_2_1_0");
 
   funcs_container->insert_mapping(
-    std::const_pointer_cast<MapFunction<3,3>>(
-      phys_func_3_3_1_0->get_ig_space()->get_ptr_const_map_func()),
+    phys_func_3_3_1_0->get_domain(),
     "map_3_3_1_0");
 
   funcs_container->insert_mapping(
-    std::const_pointer_cast<MapFunction<2,3>>(
-      phys_func_2_1_1_1->get_ig_space()->get_ptr_const_map_func()),
+    phys_func_2_1_1_1->get_domain(),
     "map_2_1_1_1");
 
   funcs_container->insert_mapping(
-    std::const_pointer_cast<MapFunction<2,3>>(
-      phys_func_2_3_1_1->get_ig_space()->get_ptr_const_map_func()),
+    phys_func_2_3_1_1->get_domain(),
     "map_2_3_1_1");
 
+#if 0
   funcs_container->insert_mapping(func_identity_1_1,"map_identity_1_1");
   funcs_container->insert_mapping(func_identity_2_2,"map_identity_2_2");
   funcs_container->insert_mapping(func_identity_3_3,"map_identity_3_3");
+#endif
 
   funcs_container->insert_function(
-    std::const_pointer_cast<MapFunction<1,1>>(
-      phys_func_1_1_1_0->get_ig_space()->get_ptr_const_map_func()),
-    static_pointer_cast<Func<1,0,1>>(phys_func_1_1_1_0),
+    phys_func_1_1_1_0,
     "phys_func_1_1_1_0");
 
   funcs_container->insert_function(
-    std::const_pointer_cast<MapFunction<2,2>>(
-      phys_func_2_1_1_0->get_ig_space()->get_ptr_const_map_func()),
-    static_pointer_cast<Func<2,0,1>>(phys_func_2_1_1_0),
+    phys_func_2_1_1_0,
     "phys_func_2_1_1_0");
 
   funcs_container->insert_function(
-    std::const_pointer_cast<MapFunction<3,3>>(
-      phys_func_3_1_1_0->get_ig_space()->get_ptr_const_map_func()),
-    static_pointer_cast<Func<3,0,1>>(phys_func_3_1_1_0),
+    phys_func_3_1_1_0,
     "phys_func_3_1_1_0");
 
   funcs_container->insert_function(
-    std::const_pointer_cast<MapFunction<2,2>>(
-      phys_func_2_2_1_0->get_ig_space()->get_ptr_const_map_func()),
-    static_pointer_cast<Func<2,0,2>>(phys_func_2_2_1_0),
+    phys_func_2_2_1_0,
     "phys_func_2_2_1_0");
 
   funcs_container->insert_function(
-    std::const_pointer_cast<MapFunction<3,3>>(
-      phys_func_3_3_1_0->get_ig_space()->get_ptr_const_map_func()),
-    static_pointer_cast<Func<3,0,3>>(phys_func_3_3_1_0),
+    phys_func_3_3_1_0,
     "phys_func_3_3_1_0");
 
   funcs_container->insert_function(
-    std::const_pointer_cast<MapFunction<2,3>>(
-      phys_func_2_1_1_1->get_ig_space()->get_ptr_const_map_func()),
-    static_pointer_cast<Func<2,1,1>>(phys_func_2_1_1_1),
+    phys_func_2_1_1_1,
     "phys_func_2_1_1_1");
 
   funcs_container->insert_function(
-    std::const_pointer_cast<MapFunction<2,3>>(
-      phys_func_2_3_1_1->get_ig_space()->get_ptr_const_map_func()),
-    static_pointer_cast<Func<2,1,3>>(phys_func_2_3_1_1),
+    phys_func_2_3_1_1,
     "phys_func_2_3_1_1");
 
   serialize_deserialize(funcs_container);

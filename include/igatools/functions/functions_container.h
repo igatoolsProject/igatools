@@ -21,17 +21,16 @@
 #ifndef __FUNCTIONS_CONTAINER_H
 #define __FUNCTIONS_CONTAINER_H
 
-#if 0
 #include <igatools/base/config.h>
 
 
 
 #include <igatools/base/tuple_utils.h>
-#include <igatools/functions/identity_function.h>
+//#include <igatools/functions/identity_function.h>
 //#include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/function_element.h>
-#include <igatools/functions/sub_function.h>
+//#include <igatools/functions/sub_function.h>
 #include <igatools/functions/ig_function.h>
 
 #include <igatools/basis_functions/bspline_space.h>
@@ -48,7 +47,7 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim, int codim>
-using MappingPtr = std::shared_ptr<MapFunction_new<dim,codim>>;
+using MappingPtr = std::shared_ptr<const Domain<dim,codim>>;
 
 #if 0
 template <int dim,int codim,int range,int rank>
@@ -79,6 +78,9 @@ struct PairFuncPtrName
 };
 #endif
 
+template <int dim,int codim,int range,int rank>
+using FuncPtr = std::shared_ptr<const Function<dim,codim,range,rank> >;
+
 /**
  * Type alias for the associative container (a std::map) between an object_id and
  * the a shared pointer pointer to a
@@ -86,7 +88,7 @@ struct PairFuncPtrName
  */
 template <int dim,int codim,int range,int rank>
 using DictionaryFuncPtr =
-  std::map<Index,std::shared_ptr<Function<dim,codim,range,rank>> >;
+  std::map<Index,FuncPtr<dim,codim,range,rank> >;
 
 
 
@@ -100,11 +102,11 @@ using DictionaryFuncPtr =
 
 
 /**
- * @brief Heterogeneous associative container between geometry parametrizations
+ * @brief Heterogeneous associative container between domain
  * (the container's "key") and functions (the "value" associated to the "key").
  *
  * The association is of the type <em>one-to-many</em> in the sense that
- * for each geometry parametrization (i.e. for each "key") there can be associated any number of
+ * for each domain (i.e. for each "key") there can be associated any number of
  * functions (including zero, meaning no-function associated to the geometry).
  *
  * The container is heterogeneous in the sense that can hold data referred to different combinations
@@ -228,6 +230,35 @@ class FunctionsContainer
 
 #ifdef SERIALIZATION
         /**
+         * @name Functions needed for the serialization
+         */
+        ///@{
+        friend class cereal::access;
+
+        template<class Archive>
+        void
+        serialize(Archive &ar)
+        {
+          boost::fusion::for_each(data_varying_rank_,
+                                  [&](auto & type_and_data_same_rank)
+          {
+            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_rank)>::type;
+            using Type = typename Type_Value::first_type;
+
+//            ar.template register_type<IgFunction<dim,codim,range,Type::value>>();
+
+            const std::string tag_name = "funcs_rank_" + std::to_string(Type::value);
+            ar &make_nvp(tag_name.c_str(),type_and_data_same_rank.second);
+          } // end lambda function
+                                 );
+
+        }
+        ///@}
+#endif // SERIALIZATION
+
+#if 0
+#ifdef SERIALIZATION
+        /**
          * @name Functions needed for boost::serialization
          * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
          */
@@ -254,7 +285,7 @@ class FunctionsContainer
         }
         ///@}
 #endif // SERIALIZATION
-
+#endif
       }; // class FunctionsContainerDataSameDimAndCodimAndRange
 
     public:
@@ -264,12 +295,12 @@ class FunctionsContainer
         boost::fusion::pair<Topology<dim+codim>,FunctionsContainerDataSameDimAndCodimAndRange<dim+codim> >
         >;
 
-      bool is_mapping_present(const MappingPtr<dim,codim> mapping) const
+      bool is_mapping_present(const MappingPtr<dim,codim> &mapping) const
       {
         return (maps_and_data_varying_range_.count(mapping->get_object_id()) == 1)?true:false;
       }
 
-      const auto &get_mapping_data(const MappingPtr<dim,codim> mapping) const
+      const auto &get_mapping_data(const MappingPtr<dim,codim> &mapping) const
       {
         Assert(this->is_mapping_present(mapping),
                ExcMessage("Map not present in the container."));
@@ -287,8 +318,8 @@ class FunctionsContainer
        * Returns SafeSTLVector containing the shared pointers to the geometry parametrizations
        * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
        */
-      SafeSTLVector<MappingPtr<dim,codim>>
-                                        get_all_mappings() const
+      SafeSTLVector<MappingPtr<dim,codim> >
+      get_all_mappings() const
       {
         SafeSTLVector<MappingPtr<dim,codim>> mappings;
         for (const auto &m : maps_and_data_varying_range_)
@@ -322,12 +353,12 @@ class FunctionsContainer
         {
           return mapping_;
         }
-
-        void set_mapping_name(const std::string map_name)
-        {
-          mapping_->set_name(map_name);
-        }
-
+        /*
+                void set_mapping_name(const std::string map_name)
+                {
+                  mapping_->set_name(map_name);
+                }
+        //*/
         const std::string &get_mapping_name() const
         {
           return mapping_->get_name();
@@ -372,6 +403,34 @@ class FunctionsContainer
 
 #ifdef SERIALIZATION
         /**
+         * @name Functions needed for the serialization
+         */
+        ///@{
+        friend class cereal::access;
+
+        template<class Archive>
+        void
+        serialize(Archive &ar)
+        {
+          ar &make_nvp("mapping_",mapping_);
+
+          boost::fusion::for_each(funcs_,
+                                  [&](auto & func)
+          {
+            using Type_Value = typename std::remove_reference<decltype(func)>::type;
+            using Type = typename Type_Value::first_type;
+
+            const std::string tag_name = "funcs_range_" + std::to_string(Type::value);
+            ar &make_nvp(tag_name.c_str(),func.second);
+          } // end lambda function
+                                 );
+        }
+        ///@}
+#endif // SERIALIZATION
+
+#if 0
+#ifdef SERIALIZATION
+        /**
          * @name Functions needed for boost::serialization
          * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
          */
@@ -397,6 +456,7 @@ class FunctionsContainer
         }
         ///@}
 #endif // SERIALIZATION
+#endif
 
       };
 
@@ -434,6 +494,24 @@ class FunctionsContainer
 
 #ifdef SERIALIZATION
       /**
+       * @name Functions needed for the serialization
+       */
+      ///@{
+      friend class cereal::access;
+
+      template<class Archive>
+      void
+      serialize(Archive &ar)
+      {
+        ar &make_nvp("maps_and_data_varying_range_",
+                     maps_and_data_varying_range_);
+      }
+      ///@}
+#endif // SERIALIZATION
+
+#if 0
+#ifdef SERIALIZATION
+      /**
        * @name Functions needed for boost::serialization
        * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
        */
@@ -452,6 +530,7 @@ class FunctionsContainer
       }
       ///@}
 #endif // SERIALIZATION
+#endif
 
     }; // end class FunctionsContainerDataSameDimAndCodim
 
@@ -527,6 +606,33 @@ class FunctionsContainer
      */
     DataVaryingId<FunctionsContainerDataSameDimAndCodim,0,4-dim> data_varying_codim_;
 
+
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for the serialization
+     */
+    ///@{
+    friend class cereal::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar)
+    {
+      boost::fusion::for_each(data_varying_codim_,
+                              [&](auto & type_and_data_same_codim)
+      {
+        using Type_Value = typename std::remove_reference<decltype(type_and_data_same_codim)>::type;
+        using Type = typename Type_Value::first_type;
+
+        const std::string tag_name = "data_codim_" + std::to_string(Type::value);
+        ar &make_nvp(tag_name.c_str(),type_and_data_same_codim.second);
+      } // end lambda function
+                             );
+    }
+    ///@}
+#endif // SERIALIZATION
+
+#if 0
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
@@ -552,7 +658,7 @@ class FunctionsContainer
     }
     ///@}
 #endif // SERIALIZATION
-
+#endif
   }; // end FunctionsContainerDataSameDim
 
 
@@ -621,24 +727,26 @@ public:
    * @note In Debug mode, an assertion will be raised if
    * the @p map is already present in the container,
    */
-  template<int dim, int space_dim>
-  void insert_mapping(std::shared_ptr<MapFunction_new<dim,space_dim-dim>> mapping, const std::string &map_name)
+  template<int dim, int codim>
+  void insert_mapping(
+    const MappingPtr<dim,codim> &mapping,
+    const std::string &map_name)
   {
     Assert(mapping != nullptr, ExcNullPtr());
 
-    auto &data_same_dim_codim = this->template get_data_dim_codim<dim,space_dim-dim>();
+    auto &data_same_dim_codim = this->template get_data_dim_codim<dim,codim>();
 
     Assert(!data_same_dim_codim.is_mapping_present(mapping),
            ExcMessage("Map already present in the container."));
 
     auto &data_same_map = data_same_dim_codim.get_mapping_data(mapping);
     data_same_map.set_ptr_mapping(mapping);
-    data_same_map.set_mapping_name(map_name);
+//    data_same_map.set_mapping_name(map_name);
   };
 
   /**
-   * Adds the Function @p function to the container and creates an association with the
-   * MapFunction @p map. At the end, the @p function is tagged with the string @p func_name.
+   * Adds the Function @p function to the container and creates an association with its
+   * Domain. At the end, the @p function is tagged with the string @p func_name.
    *
    * @pre 1) The @p map should be present in the container (i.e. should be inserted with insert_mapping()).
    * @pre 2) The association <tt>map-function</tt> must not be already established.
@@ -648,8 +756,8 @@ public:
    */
   template<int dim, int codim,int range,int rank>
   void insert_function(
-    MappingPtr<dim,codim> map,
-    std::shared_ptr<Function<dim,codim,range,rank>> function,
+//    MappingPtr<dim,codim> map,
+    const FuncPtr<dim,codim,range,rank> &function,
     const std::string &func_name)
   {
     Assert(function != nullptr, ExcNullPtr());
@@ -658,6 +766,7 @@ public:
 
     auto &data_same_dim_codim = this->template get_data_dim_codim<dim,codim>();
 
+    auto map = function->get_domain();
     Assert(data_same_dim_codim.is_mapping_present(map),
            ExcMessage("Map not present in the container."));
 
@@ -672,7 +781,7 @@ public:
            ExcMessage("Function already added to the container."));
     auto &fn = data_same_dim_codim_range_rank[function->get_object_id()];
     fn = function;
-    fn->set_name(func_name);
+//    fn->set_name(func_name);
   }
 
   /**
@@ -702,7 +811,7 @@ public:
    */
   template <int dim,int codim>
   const auto &
-  get_mapping_data(const MappingPtr<dim,codim> mapping) const
+  get_mapping_data(const MappingPtr<dim,codim> &mapping) const
   {
     return this->template get_data_dim_codim<dim,codim>().get_mapping_data(mapping);
   }
@@ -714,7 +823,7 @@ public:
    */
   template <int dim,int codim,int range,int rank>
   const DictionaryFuncPtr<dim,codim,range,rank> &
-  get_functions_associated_to_mapping(const MappingPtr<dim,codim> mapping) const
+  get_functions_associated_to_mapping(const MappingPtr<dim,codim> &mapping) const
   {
     return this->template get_mapping_data<dim,codim>(mapping).
     template get_funcs_range<range>().
@@ -737,20 +846,30 @@ private:
   DataVaryingId<FunctionsContainerDataSameDim,1,3> data_varying_dim_;
 
 
-
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for the serialization
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar)
+  {
+    boost::fusion::for_each(data_varying_dim_,
+                            [&](auto & type_and_data_same_dim)
+    {
+      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+      using Type = typename Type_Value::first_type;
+
+      const std::string tag_name = "data_dim_" + std::to_string(Type::value);
+      ar &make_nvp(tag_name.c_str(),type_and_data_same_dim.second);
+    } // end lambda function
+                           );
+  }
   ///@}
-#endif // SERIALIZATION
+#endif
 
 };
 
@@ -762,4 +881,3 @@ IGA_NAMESPACE_CLOSE
 
 
 #endif // __FUNCTIONS_CONTAINER_H
-#endif

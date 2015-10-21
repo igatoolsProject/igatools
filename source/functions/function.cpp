@@ -20,18 +20,25 @@
 
 #include <igatools/functions/function.h>
 #include <igatools/functions/function_element.h>
-//#include <igatools/utils/unique_id_generator.h>
+#include <igatools/utils/unique_id_generator.h>
 //#include <igatools/geometry/domain.h>
 //#include <igatools/geometry/domain_element.h>
 
 IGA_NAMESPACE_OPEN
 
+using std::to_string;
+
 template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
 Function(const SharedPtrConstnessHandler<DomainType> &domain)
   :
-  domain_(domain)
-  // object_id_(UniqueIdGenerator::get_unique_id())
+  domain_(domain),
+  name_("Function<" +
+       to_string(dim_) + "," +
+       to_string(codim_) + "," +
+       to_string(range_) + "," +
+       to_string(rank_)+ ">"),
+  object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
 
@@ -153,17 +160,6 @@ cend(const PropId &prop) const -> ElementConstIterator
 }
 
 
-#if 0
-#ifdef SERIALIZATION
-template<int dim_, int codim_, int range_, int rank_>
-Index
-Function<dim_, codim_, range_, rank_ >::
-get_object_id() const
-{
-  return object_id_;
-}
-
-
 template<int dim_, int codim_, int range_, int rank_>
 const std::string &
 Function<dim_, codim_, range_, rank_ >::
@@ -180,6 +176,18 @@ set_name(const std::string &name)
   name_ = name;
 }
 
+
+template<int dim_, int codim_, int range_, int rank_>
+Index
+Function<dim_, codim_, range_, rank_ >::
+get_object_id() const
+{
+  return object_id_;
+}
+
+
+#if 0
+#ifdef SERIALIZATION
 
 template<int dim_, int codim_, int range_, int rank_>
 template<class Archive>

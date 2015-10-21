@@ -20,8 +20,10 @@
 
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
+#include <igatools/utils/unique_id_generator.h>
 
 using std::shared_ptr;
+using std::to_string;
 
 IGA_NAMESPACE_OPEN
 
@@ -29,7 +31,9 @@ template<int dim_, int codim_>
 Domain<dim_, codim_>::
 Domain(const SharedPtrConstnessHandler<GridFuncType> &func)
   :
-  grid_func_(func)
+  grid_func_(func),
+  name_("Domain<" + to_string(dim_) + "," + to_string(codim_) + ">"),
+  object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
 
@@ -45,6 +49,30 @@ get_grid_function() const -> std::shared_ptr<const GridFuncType>
   return grid_func_.get_ptr_const_data();
 }
 
+template<int dim_, int codim_>
+const std::string &
+Domain<dim_, codim_>::
+get_name() const
+{
+  return name_;
+}
+
+
+template<int dim_, int codim_>
+void
+Domain<dim_, codim_>::
+set_name(const std::string &name)
+{
+  name_ = name;
+}
+
+template<int dim_, int codim_>
+int
+Domain<dim_, codim_>::
+get_object_id() const
+{
+  return object_id_;
+}
 
 
 template<int dim_, int codim_>

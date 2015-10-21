@@ -121,22 +121,22 @@ public:
   create_cache_handler() const override final;
 
 
-  static std::shared_ptr<const self_t>
+  static std::shared_ptr<const parent_t>
   const_create(const std::shared_ptr<const Sp> &space,
                const EpetraTools::Vector &coeff,
                const std::string &property = DofProperties::active);
 
-  static std::shared_ptr<const self_t>
+  static std::shared_ptr<const parent_t>
   const_create(const std::shared_ptr<const Sp> &space,
                const IgCoefficients &coeff,
                const std::string &property = DofProperties::active);
 
-  static std::shared_ptr<self_t>
+  static std::shared_ptr<parent_t>
   create(const std::shared_ptr<Sp> &space,
          const EpetraTools::Vector &coeff,
          const std::string &property = DofProperties::active);
 
-  static std::shared_ptr<self_t>
+  static std::shared_ptr<parent_t>
   create(const std::shared_ptr<Sp> &space,
          const IgCoefficients &coeff,
          const std::string &property = DofProperties::active);

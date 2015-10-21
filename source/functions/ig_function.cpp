@@ -91,7 +91,7 @@ auto
 IgFunction<dim,codim,range,rank>::
 const_create(const std::shared_ptr<const Sp> &space,
              const EpetraTools::Vector &coeff,
-             const std::string &property) ->  std::shared_ptr<const self_t>
+             const std::string &property) ->  std::shared_ptr<const parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
   coeff, property);
@@ -106,7 +106,7 @@ auto
 IgFunction<dim,codim,range,rank>::
 const_create(const std::shared_ptr<const Sp> &space,
              const IgCoefficients &coeff,
-             const std::string &property) ->  std::shared_ptr<const self_t>
+             const std::string &property) ->  std::shared_ptr<const parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
   coeff, property);
@@ -121,7 +121,7 @@ auto
 IgFunction<dim,codim,range,rank>::
 create(const std::shared_ptr<Sp> &space,
        const EpetraTools::Vector &coeff,
-       const std::string &property) ->  std::shared_ptr<self_t>
+       const std::string &property) ->  std::shared_ptr<parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
   coeff, property);
@@ -139,7 +139,7 @@ auto
 IgFunction<dim,codim,range,rank>::
 create(const std::shared_ptr<Sp> &space,
        const IgCoefficients &coeff,
-       const std::string &property) ->  std::shared_ptr<self_t>
+       const std::string &property) ->  std::shared_ptr<parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
   coeff, property);

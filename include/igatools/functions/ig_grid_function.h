@@ -25,6 +25,7 @@
 #include <igatools/geometry/grid_function.h>
 #include <igatools/functions/ig_coefficients.h>
 #include <igatools/basis_functions/reference_space.h>
+#include <igatools/linear_algebra/epetra_vector.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -66,6 +67,8 @@ protected:
   IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
                  const IgCoefficients &coeffs);
 
+  IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
+                 const EpetraTools::Vector &coeff);
 
 public:
   std::unique_ptr<typename parent_t::ElementHandler>
@@ -78,6 +81,14 @@ public:
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<IgSpace> &space,
          const IgCoefficients &coeffs);
+
+  static std::shared_ptr<const self_t>
+  const_create(const std::shared_ptr<const IgSpace> &space,
+               const EpetraTools::Vector &coeffs);
+
+  static std::shared_ptr<self_t>
+  create(const std::shared_ptr<IgSpace> &space,
+         const EpetraTools::Vector &coeffs);
 
 
   virtual void print_info(LogStream &out) const override final;

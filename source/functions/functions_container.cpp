@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#if 0
 #include <igatools/functions/functions_container.h>
 
 IGA_NAMESPACE_OPEN
@@ -42,6 +41,7 @@ print_info(LogStream &out) const
                          );
 }
 
+#if 0
 #ifdef SERIALIZATION
 template<class Archive>
 void
@@ -60,14 +60,15 @@ serialize(Archive &ar, const unsigned int version)
                          );
 }
 #endif // SERIALIZATION
+#endif
 
 IGA_NAMESPACE_CLOSE
 
+#if 0
 #ifdef SERIALIZATION
 BOOST_CLASS_EXPORT_IMPLEMENT(iga::FunctionsContainer)
 
 template void iga::FunctionsContainer::serialize(OArchive &, const unsigned int);
 template void iga::FunctionsContainer::serialize(IArchive &, const unsigned int);
 #endif // SERIALIZATION
-
 #endif

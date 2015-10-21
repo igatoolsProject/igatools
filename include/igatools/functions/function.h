@@ -197,8 +197,34 @@ public:
   }
 
 
+  /**
+   * Get the name associated to the object instance.
+   */
+  const std::string &get_name() const;
+
+  /**
+   * Set the name associated to the object instance.
+   */
+  void set_name(const std::string &name);
+
+  /**
+   * Returns the unique identifier associated to each object instance.
+   */
+  Index get_object_id() const;
+
 private:
   SharedPtrConstnessHandler<DomainType> domain_;
+
+  /**
+   * Name associated to the object instance.
+   */
+  std::string name_;
+
+  /**
+   * Unique identifier associated to each object instance.
+   */
+  Index object_id_;
+
 
   friend class FunctionElementBase<dim_, codim_, range_, rank_, Function<dim_, codim_, range_, rank_>>;
   friend class FunctionElementBase<dim_, codim_, range_, rank_, const Function<dim_, codim_, range_, rank_>>;
@@ -220,31 +246,11 @@ public:
 #if 0
 #ifdef SERIALIZATION
 public:
-  /**
-   * Returns the unique identifier associated to each object instance.
-   */
-  Index get_object_id() const;
 
-  /**
-   * Get the name associated to the object instance.
-   */
-  const std::string &get_name() const;
 
-  /**
-   * Set the name associated to the object instance.
-   */
-  void set_name(const std::string &name);
 
 private:
-  /**
-   * Unique identifier associated to each object instance.
-   */
-  Index object_id_;
 
-  /**
-   * Name associated to the object instance.
-   */
-  std::string name_;
 public:
   /**
    * @name Functions needed for boost::serialization
