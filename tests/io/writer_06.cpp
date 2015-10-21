@@ -28,11 +28,8 @@
 
 #include "../tests.h"
 
-#include <igatools/functions/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 #include <igatools/io/writer.h>
 
@@ -42,15 +39,15 @@ void write_sphere()
 {
   OUTSTART
 
-  using Function = functions::SphereFunction<dim>;
+  using Function = grid_functions::SphereGridFunction<dim>;
 
-  auto grid = Grid<dim>::create();
+  auto grid = Grid<dim>::const_create();
 
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
+  auto F = Function::const_create(grid);
 
   const int codim = 1;
   Writer<dim, codim> writer(F, 4);
-  writer.save("output");
+  writer.save("sphere_dim" + std::to_string(dim));
   writer.print_info(out);
 
   OUTEND
