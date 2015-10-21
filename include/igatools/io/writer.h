@@ -136,12 +136,11 @@ public:
                       const std::string &name);
 
 
-  // TODO (pauletti, Nov 26, 2014): templetize with function
   /**
    * \brief Add a field to the output file.
    */
   template<int range, int rank>
-  void add_field(std::shared_ptr<const Function<dim, codim, range, rank>> func,
+  void add_field(const Function<dim,codim,range,rank> &func,
                  const std::string &name);
 
 
@@ -247,7 +246,7 @@ private:
       const Size num_elements,
       const Size num_points_per_element,
       const Size num_components,
-      std::shared_ptr< SafeSTLVector<T> > values)
+      const std::shared_ptr< const SafeSTLVector<T> > &values)
       :
       name_(name),
       type_(type),
@@ -268,7 +267,7 @@ private:
     Size num_components_;
 
 
-    std::shared_ptr< SafeSTLVector<T> > values_;
+    std::shared_ptr< const SafeSTLVector<T> > values_;
   };
 
   SafeSTLVector< PointData > fields_;
@@ -348,17 +347,11 @@ template<int range, int rank>
 inline
 void
 Writer<dim, codim, T>::
-add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
+add_field(const Function<dim,codim,range,rank> &func,
           const string &name)
 {
-  AssertThrow(false,ExcNotImplemented())
-#if 0
-  Assert(function != nullptr, ExcNullPtr());
-
-  auto func = function->clone();
-
-  Assert(map_->get_grid() == func->get_grid(),
-         ExcMessage("Different grids between the function and the Writer."));
+  Assert(domain_ == func.get_domain(),
+         ExcMessage("Different domains between the function and the Writer."));
 
   //--------------------------------------------------------------------------
   Assert(range <= 3,
@@ -368,29 +361,32 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
 
   //--------------------------------------------------------------------------
   // get the fields to write and assign them to the vtkUnstructuredGrid object
-  func->reset(ValueFlags::value, *quad_plot_);
+  using function_element::Flags;
+  using function_element::_Value;
 
-  auto f_elem = func->begin();
-  auto f_end  = func->end();
+  auto func_cache_handler = func.create_cache_handler();
+  func_cache_handler->template set_flags<dim>(Flags::value);
 
-  const auto topology = Topology<dim>();
+  auto f_elem = func.cbegin();
+  const auto f_end  = func.cend();
 
-  func->init_cache(f_elem,topology);
 
 
-  const auto n_elements = map_->get_grid()->get_num_all_elems();
+  func_cache_handler->init_cache(*f_elem,quad_plot_);
+
+
+  const auto n_elements = domain_->get_grid_function()->get_grid()->get_num_all_elems();
   const auto n_pts_per_elem = quad_plot_->get_num_points();
 
   const int n_values_per_pt = (range == 1 ? 1 : std::pow(range, rank)) ;
-  shared_ptr<SafeSTLVector<T> >
-  data_ptr(new SafeSTLVector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
+  auto data_ptr = std::make_shared<SafeSTLVector<T>>(n_elements * n_pts_per_elem * n_values_per_pt);
   auto &data = *data_ptr;
   if (rank == 0 || (rank == 1 && range == 1))
   {
     int pos = 0;
     for (; f_elem != f_end; ++f_elem)
     {
-      func->fill_cache(f_elem,topology,0);
+      func_cache_handler->template fill_cache<dim>(*f_elem,0);
 
       const auto &field_values = f_elem->template get_values<_Value,dim>(0);
 
@@ -406,7 +402,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
     int pos = 0;
     for (; f_elem != f_end; ++f_elem)
     {
-      func->fill_cache(f_elem,topology,0);
+      func_cache_handler->template fill_cache<dim>(*f_elem,0);
 
       const auto &field_values = f_elem->template get_values<_Value,dim>(0);
 
@@ -429,7 +425,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
     {
       // TODO (pauletti, Sep 12, 2014): fix next line
       Assert(true, ExcMessage(" fix next line "));
-      func->fill_cache(f_elem,topology,0);
+      func_cache_handler->template fill_cache<dim>(*f_elem,0);
 
       const auto &field_values = f_elem->template get_values<_Value,dim>(0);
 
@@ -451,7 +447,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
   }
 
   //--------------------------------------------------------------------------
-#endif
+//#endif
 }
 
 

@@ -45,8 +45,8 @@ namespace
 
 template<int dim,int codim>
 inline
-std::shared_ptr<const Domain<dim,codim>>
-                                      create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
+std::shared_ptr<const Domain<dim,codim> >
+create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
 {
   const int space_dim = dim+codim;
   using F = grid_functions::LinearGridFunction<dim,space_dim>;

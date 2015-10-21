@@ -27,8 +27,32 @@
 
 #include "../tests.h"
 #include "igatools/io/writer.h"
-//#include "igatools/functions/identity_function.h"
 #include "igatools/geometry/grid_function_lib.h"
+#include "igatools/functions/function_lib.h"
+
+
+
+template<int dim,int codim>
+inline
+std::shared_ptr<const Domain<dim,codim> >
+create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
+{
+  const int space_dim = dim+codim;
+  using F = grid_functions::LinearGridFunction<dim,space_dim>;
+
+  using Grad = typename F::Gradient;
+  using Val = typename F::Value;
+
+  Grad A;
+  for (int i = 0 ; i < dim ; ++i)
+    A[i][i] = Tdouble(1.0);
+
+  Val b;
+
+  auto domain = Domain<dim,codim>::const_create(F::const_create(grid,A,b));
+  return domain;
+}
+
 
 template<int dim>
 void
@@ -37,22 +61,25 @@ test()
   OUTSTART
 
   const int n_knots = 4;
-  auto grid = Grid<dim>::create(n_knots);
-  Writer<dim> writer(grid);
+  auto grid = Grid<dim>::const_create(n_knots);
+
+  auto domain = create_domain_from_grid<dim,0>(grid);
+
+  Writer<dim> writer(domain,2);
 
 //  auto identity_function = IdentityFunction<dim>::create(grid);
 
   using ScalarFunc = functions::ConstantFunction<dim,0,1,1>;
   using ScalarValue = typename ScalarFunc::Value;
   ScalarValue scalar_value({1.0});
-  shared_ptr<const Function<dim,0,1,1>> scalar_function = ScalarFunc::create(grid,identity_function,scalar_value);
+  auto scalar_function = ScalarFunc::const_create(domain,scalar_value);
 
   using VectorFunc = functions::ConstantFunction<dim,0,dim,1>;
   using VectorValue = typename VectorFunc::Value;
   VectorValue vector_value;
   for (int i = 0 ; i < dim ; ++i)
     vector_value[i] = i;
-  shared_ptr<const Function<dim,0,dim,1>> vector_function = VectorFunc::create(grid,identity_function,vector_value);
+  auto vector_function = VectorFunc::const_create(domain,vector_value);
 
 #if 0
   using TensorFunc = functions::ConstantFunction<dim,0,dim,2>;
@@ -65,16 +92,17 @@ test()
 #endif
 
   SafeSTLVector<Real> cell_data(grid->get_num_all_elems());
+  int elem_id = 0;
   int n=1;
-  for (auto elem : *grid)
+  for (const auto &elem : *grid)
   {
-    cell_data[elem.get_flat_index()] = n;
+    cell_data[elem_id++] = n;
     n *= -1;
   }
   writer.add_element_data(cell_data, "chess board");
 
-  writer.add_field(scalar_function,"scalar_function");
-  writer.add_field(vector_function,"vector_function");
+  writer.add_field(*scalar_function,"scalar_function");
+  writer.add_field(*vector_function,"vector_function");
 //    writer.add_field(tensor_function,"tensor_function");
 
   string filename = "grid" + to_string(dim);
