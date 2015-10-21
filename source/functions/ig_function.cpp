@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_function_handler.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/physical_space.h>
@@ -149,6 +150,18 @@ create(const std::shared_ptr<Sp> &space,
 #endif // MESH_REFINEMENT
 
   return ig_func;
+}
+
+
+
+template<int dim,int codim,int range,int rank>
+auto
+IgFunction<dim,codim,range,rank>::
+create_cache_handler() const
+-> std::unique_ptr<typename parent_t::ElementHandler>
+{
+  return std::make_unique<IgFunctionHandler<dim,codim,range,rank>>(
+    std::dynamic_pointer_cast<const self_t>(this->shared_from_this()));
 }
 
 

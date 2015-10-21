@@ -69,7 +69,7 @@ protected:
 
 public:
   std::unique_ptr<typename parent_t::ElementHandler>
-  create_cache_handler() const;
+  create_cache_handler() const override final;
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const IgSpace> &space,

@@ -26,7 +26,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * Collection of useful functions derived from the Function class.
+ * Collection of useful functions derived from the GridFunction class.
  */
 namespace grid_functions
 {

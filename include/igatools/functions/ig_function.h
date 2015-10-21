@@ -116,6 +116,11 @@ public:
   using typename parent_t::DomainType;
 
 public:
+
+  std::unique_ptr<typename parent_t::ElementHandler>
+  create_cache_handler() const override final;
+
+
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const Sp> &space,
                const EpetraTools::Vector &coeff,

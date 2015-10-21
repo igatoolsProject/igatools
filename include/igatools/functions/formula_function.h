@@ -54,8 +54,8 @@ public:
 
   virtual ~FormulaFunction() = default;
 
-  std::shared_ptr<typename parent_t::ElementHandler>
-  create_cache_handler() const;
+  std::unique_ptr<typename parent_t::ElementHandler>
+  create_cache_handler() const override final;
 
 public:
 

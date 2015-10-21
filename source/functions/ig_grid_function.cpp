@@ -50,7 +50,8 @@ IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
 template<int dim,int space_dim>
 auto
 IgGridFunction<dim,space_dim>::
-create_cache_handler() const -> std::unique_ptr<typename parent_t::ElementHandler>
+create_cache_handler() const
+-> std::unique_ptr<typename parent_t::ElementHandler>
 {
   return std::make_unique<IgGridFunctionHandler<dim,space_dim>>(
     std::dynamic_pointer_cast<const self_t>(this->shared_from_this()));
