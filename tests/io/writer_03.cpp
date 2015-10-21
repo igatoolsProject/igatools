@@ -37,15 +37,16 @@ test()
   Writer<dim> writer(grid);
 
   SafeSTLVector<Real> cell_data(grid->get_num_all_elems());
+  int elem_id = 0;
   int n=1;
-  for (auto elem : *grid)
+  for (auto &elem : *grid)
   {
-    cell_data[elem.get_flat_index()] = n;
+    cell_data[elem_id++] = n;
     n *= -1;
   }
   writer.add_element_data(cell_data, "chess board");
 
-  string filename = "grid" + to_string(dim);
+  string filename = "grid_dim" + to_string(dim);
   writer.save(filename);
   writer.save(filename,"appended");
   writer.print_info(out);

@@ -76,6 +76,15 @@ Writer(const shared_ptr<const Grid<dim>> &grid)
         QUniform<dim>::create(2))
 {}
 
+
+template<int dim, int codim, class T>
+Writer<dim, codim, T>::
+Writer(const std::shared_ptr<const GridFunction<dim,dim+codim>> &grid_function,
+       const Index num_points_direction)
+  :
+  Writer(Domain<dim,codim>::const_create(grid_function),num_points_direction)
+{}
+
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
 Writer(const std::shared_ptr<const Domain<dim,codim>> &domain,

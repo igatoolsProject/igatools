@@ -27,8 +27,8 @@
 
 #include "../tests.h"
 #include "igatools/io/writer.h"
-#include "igatools/functions/identity_function.h"
-#include "igatools/functions/function_lib.h"
+//#include "igatools/functions/identity_function.h"
+#include "igatools/geometry/grid_function_lib.h"
 
 template<int dim>
 void
@@ -40,7 +40,7 @@ test()
   auto grid = Grid<dim>::create(n_knots);
   Writer<dim> writer(grid);
 
-  auto identity_function = IdentityFunction<dim>::create(grid);
+//  auto identity_function = IdentityFunction<dim>::create(grid);
 
   using ScalarFunc = functions::ConstantFunction<dim,0,1,1>;
   using ScalarValue = typename ScalarFunc::Value;

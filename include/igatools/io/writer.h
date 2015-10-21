@@ -57,6 +57,10 @@ public:
 
   Writer(const std::shared_ptr<const Grid<dim> > &grid);
 
+
+  Writer(const std::shared_ptr<const GridFunction<dim,dim+codim>> &grid_function,
+         const Index num_points_direction);
+
   Writer(const std::shared_ptr<const Domain<dim,codim>> &domain,
          const Index num_points_direction);
 

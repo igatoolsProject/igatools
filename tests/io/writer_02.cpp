@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- * Testing the writer, this test the mapping
+ * Testing the writer, this test the BallGridFunction
  * author: pauletti
  * date: Jun 21, 2014
  *
@@ -27,9 +27,7 @@
 
 #include "../tests.h"
 #include "igatools/io/writer.h"
-#include "igatools/functions/identity_function.h"
-#include "igatools/functions/function_lib.h"
-//#include "igatools/geometry/mapping_element.h"
+#include "igatools/geometry/grid_function_lib.h"
 
 template<int dim>
 void
@@ -37,11 +35,10 @@ test()
 {
   const int n_knots = 4;
   auto grid = Grid<dim>::create(n_knots);
-  auto identity_function = IdentityFunction<dim>::create(grid);
-  auto ball_function = functions::BallFunction<dim>::create(grid,identity_function);
+  auto ball_function = grid_functions::BallGridFunction<dim>::create(grid);
   Writer<dim> writer(ball_function, 4);
 
-  string filename = "map" + to_string(dim);
+  string filename = "ball_dim" + to_string(dim);
   writer.save(filename);
   writer.save(filename,"appended");
   writer.print_info(out);
