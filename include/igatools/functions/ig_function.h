@@ -199,6 +199,16 @@ private:
 #endif
 };
 
+
+
 IGA_NAMESPACE_CLOSE
 
+#ifdef SERIALIZATION
+
+#include <igatools/functions/ig_function.serial>
+
+#endif // SERIALIZATION
+
 #endif
+
+

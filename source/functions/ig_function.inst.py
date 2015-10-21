@@ -19,17 +19,7 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-include_files = [
-                 'basis_functions/reference_element.h',
-                 'basis_functions/bspline_space.h',
-                 'basis_functions/bspline_element.h',
-                 'basis_functions/bspline_element_handler.h',
-                 'basis_functions/nurbs_space.h',
-                 'basis_functions/nurbs_element.h',
-                 'basis_functions/nurbs_element_handler.h',
-                 'basis_functions/physical_space.h',
-                 'basis_functions/physical_space_element.h',
-                 'basis_functions/phys_space_element_handler.h']
+include_files = []
 
 data = Instantiation(include_files)
 

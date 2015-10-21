@@ -256,36 +256,6 @@ class FunctionsContainer
         ///@}
 #endif // SERIALIZATION
 
-#if 0
-#ifdef SERIALIZATION
-        /**
-         * @name Functions needed for boost::serialization
-         * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-         */
-        ///@{
-        friend class boost::serialization::access;
-
-        template<class Archive>
-        void
-        serialize(Archive &ar, const unsigned int version)
-        {
-          boost::fusion::for_each(data_varying_rank_,
-                                  [&](auto & type_and_data_same_rank)
-          {
-            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_rank)>::type;
-            using Type = typename Type_Value::first_type;
-
-            ar.template register_type<IgFunction<dim,codim,range,Type::value>>();
-
-            const std::string tag_name = "funcs_rank_" + std::to_string(Type::value);
-            ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_rank.second);
-          } // end lambda function
-                                 );
-
-        }
-        ///@}
-#endif // SERIALIZATION
-#endif
       }; // class FunctionsContainerDataSameDimAndCodimAndRange
 
     public:
@@ -427,37 +397,6 @@ class FunctionsContainer
         }
         ///@}
 #endif // SERIALIZATION
-
-#if 0
-#ifdef SERIALIZATION
-        /**
-         * @name Functions needed for boost::serialization
-         * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-         */
-        ///@{
-        friend class boost::serialization::access;
-
-        template<class Archive>
-        void
-        serialize(Archive &ar, const unsigned int version)
-        {
-          ar &boost::serialization::make_nvp("mapping_",mapping_);
-
-          boost::fusion::for_each(funcs_,
-                                  [&](auto & func)
-          {
-            using Type_Value = typename std::remove_reference<decltype(func)>::type;
-            using Type = typename Type_Value::first_type;
-
-            const std::string tag_name = "funcs_range_" + std::to_string(Type::value);
-            ar &boost::serialization::make_nvp(tag_name.c_str(),func.second);
-          } // end lambda function
-                                 );
-        }
-        ///@}
-#endif // SERIALIZATION
-#endif
-
       };
 
 
@@ -508,29 +447,6 @@ class FunctionsContainer
       }
       ///@}
 #endif // SERIALIZATION
-
-#if 0
-#ifdef SERIALIZATION
-      /**
-       * @name Functions needed for boost::serialization
-       * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-       */
-      ///@{
-      friend class boost::serialization::access;
-
-      template<class Archive>
-      void
-      serialize(Archive &ar, const unsigned int version)
-      {
-        ar.template register_type<IdentityFunction<dim,dim+codim>>();
-        ar.template register_type<IgFunction<dim,0,dim+codim,1>>();
-        //        ar.template register_type<IgFunction<dim,0,dim+codim,1>>();
-        ar &boost::serialization::make_nvp("maps_and_data_varying_range_",
-                                           maps_and_data_varying_range_);
-      }
-      ///@}
-#endif // SERIALIZATION
-#endif
 
     }; // end class FunctionsContainerDataSameDimAndCodim
 
@@ -631,34 +547,6 @@ class FunctionsContainer
     }
     ///@}
 #endif // SERIALIZATION
-
-#if 0
-#ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
-
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-      boost::fusion::for_each(data_varying_codim_,
-                              [&](auto & type_and_data_same_codim)
-      {
-        using Type_Value = typename std::remove_reference<decltype(type_and_data_same_codim)>::type;
-        using Type = typename Type_Value::first_type;
-
-        const std::string tag_name = "data_codim_" + std::to_string(Type::value);
-        ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_codim.second);
-      } // end lambda function
-                             );
-    }
-    ///@}
-#endif // SERIALIZATION
-#endif
   }; // end FunctionsContainerDataSameDim
 
 
