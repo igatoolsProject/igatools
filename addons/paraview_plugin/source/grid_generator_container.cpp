@@ -37,17 +37,17 @@ IGA_NAMESPACE_OPEN
 
 
 VtkIgaGridGeneratorContBase::
-VtkIgaGridGeneratorContBase (const FunContPtr_ funcs_container,
-                          const GridInfoPtr_ solid_info,
-                          const GridInfoPtr_ knot_info)
-    :
-            funcs_container_ (funcs_container),
-            solid_info_ (solid_info),
-            knot_info_ (knot_info)
+VtkIgaGridGeneratorContBase(const FunContPtr_ funcs_container,
+                            const GridInfoPtr_ solid_info,
+                            const GridInfoPtr_ knot_info)
+  :
+  funcs_container_(funcs_container),
+  solid_info_(solid_info),
+  knot_info_(knot_info)
 {
-    Assert (funcs_container_ != nullptr, ExcNullPtr());
-    Assert (solid_info_ != nullptr, ExcNullPtr());
-    Assert (knot_info_ != nullptr, ExcNullPtr());
+  Assert(funcs_container_ != nullptr, ExcNullPtr());
+  Assert(solid_info_ != nullptr, ExcNullPtr());
+  Assert(knot_info_ != nullptr, ExcNullPtr());
 }
 
 
@@ -61,7 +61,7 @@ VtkIgaGridGeneratorContBase::
 get_data_dim_codim() const ->
 const VtkGridGenContSameCodim_<dim, codim> &
 {
-    return this->template get_data_dim<dim>().template get_data_codim<codim>();
+  return this->template get_data_dim<dim>().template get_data_codim<codim>();
 }
 
 
@@ -72,7 +72,7 @@ VtkIgaGridGeneratorContBase::
 get_data_dim_codim() ->
 VtkGridGenContSameCodim_<dim, codim> &
 {
-    return this->template get_data_dim<dim>().template get_data_codim<codim>();
+  return this->template get_data_dim<dim>().template get_data_codim<codim>();
 }
 
 
@@ -85,7 +85,7 @@ VtkGridGeneratorContBaseSameDim<dim>::
 VtkGridGeneratorContBaseSameDimCodim<codim>::
 get_generators() const -> const GenMap_<dim, codim> &
 {
-    return grid_generators_;
+  return grid_generators_;
 }
 
 
@@ -98,234 +98,233 @@ VtkGridGeneratorContBaseSameDim<dim>::
 VtkGridGeneratorContBaseSameDimCodim<codim>::
 get_generators() -> GenMap_<dim, codim> &
 {
-    return grid_generators_;
+  return grid_generators_;
 }
 
 
 
 Size
 VtkIgaGridGeneratorContBase::
-get_number_grids () const
+get_number_grids() const
 {
-    return generators_numbering_.size();
+  return generators_numbering_.size();
 }
 
 
 
 Size
 VtkIgaGridGeneratorContBase::
-get_number_active_grids () const
+get_number_active_grids() const
 {
-    Size count = 0;
-    for (const auto &it : generators_numbering_)
-        if (std::get<2>(it))
-            ++count;
+  Size count = 0;
+  for (const auto &it : generators_numbering_)
+    if (std::get<2>(it))
+      ++count;
 
-    return count;
+  return count;
 }
 
 
 
 const string &
 VtkIgaGridGeneratorContBase::
-get_grid_name (const Index &id) const
+get_grid_name(const Index &id) const
 {
-    Assert (id >= 0 && id < generators_numbering_.size(),
-            ExcIndexRange(id, 0, generators_numbering_.size()));
+  Assert(id >= 0 && id < generators_numbering_.size(),
+         ExcIndexRange(id, 0, generators_numbering_.size()));
 
-    return std::get<1>(generators_numbering_[id]);
+  return std::get<1>(generators_numbering_[id]);
 }
 
 
 
 bool
 VtkIgaGridGeneratorContBase::
-get_grid_status (const std::string & name) const
+get_grid_status(const std::string &name) const
 {
-    for (const auto &it : generators_numbering_)
-    {
-        if (std::get<1>(it) == name)
-            return std::get<2>(it);
-    }
+  for (const auto &it : generators_numbering_)
+  {
+    if (std::get<1>(it) == name)
+      return std::get<2>(it);
+  }
 
-    Assert (false, ExcMessage ("Name not present."));
-    return false; // Just for avoiding the compiler warning.
+  Assert(false, ExcMessage("Name not present."));
+  return false; // Just for avoiding the compiler warning.
 }
 
 
 
 void
 VtkIgaGridGeneratorContBase::
-set_grid_status (const std::string & name, const bool status)
+set_grid_status(const std::string &name, const bool status)
 {
-    for (auto &it : generators_numbering_)
+  for (auto &it : generators_numbering_)
+  {
+    if (std::get<1>(it) == name)
     {
-        if (std::get<1>(it) == name)
+      std::get<2>(it) = status;
+      return;
+    }
+  }
+
+  Assert(false, ExcMessage("Name not present."));
+}
+
+
+
+void
+VtkIgaGridGeneratorContBase::
+set_solid_grids(vtkMultiBlockDataSet *const mb)
+{
+  Assert(this->get_number_active_grids() > 0, ExcEmptyObject());
+
+  mb->SetNumberOfBlocks(this->get_number_active_grids());
+
+  unsigned int block_index = 0;
+  boost::fusion::for_each(data_varying_dim_,
+                          [&](const auto & type_and_data_same_dim)
+  {
+    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+    using Type = typename Type_Value::first_type;
+
+    boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
+                            [&](const auto & type_and_data_same_dim_codim)
+    {
+      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+      using Type = typename Type_Value::first_type;
+
+      auto &generators = type_and_data_same_dim_codim.second.get_generators();
+
+      for (auto &g : generators)
+      {
+        const auto &grid_id = g.first;
+
+        Assert(grid_id >= 0 && grid_id < generators_numbering_.size(),
+               ExcIndexRange(grid_id, 0, generators_numbering_.size()));
+        const auto &g_num = generators_numbering_[grid_id];
+
+        // Is the grid active?
+        if (std::get<2>(g_num))
         {
-            std::get<2>(it) = status;
-            return;
+          const auto &name = std::get<1>(g_num);
+          mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+          mb->SetBlock(block_index, g.second->get_solid_grid());
+          ++block_index;
         }
-    }
+      }
 
-    Assert (false, ExcMessage ("Name not present."));
+    } // end lambda function on codim
+                           ); // for_each (data_varying_codim_
+
+  } // end lambda function on dim
+                         ); // for_each (data_varying_dim_
 }
 
 
 
 void
 VtkIgaGridGeneratorContBase::
-set_solid_grids (vtkMultiBlockDataSet * const mb)
+set_knot_grids(vtkMultiBlockDataSet *const mb)
 {
-    Assert (this->get_number_active_grids() > 0, ExcEmptyObject());
+  Assert(this->get_number_active_grids() > 0, ExcEmptyObject());
 
-    mb->SetNumberOfBlocks (this->get_number_active_grids());
+  mb->SetNumberOfBlocks(this->get_number_active_grids());
 
-    unsigned int block_index = 0;
-    boost::fusion::for_each (data_varying_dim_,
-            [&](const auto & type_and_data_same_dim)
-            {
-                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-                using Type = typename Type_Value::first_type;
+  Index block_index = 0;
+  boost::fusion::for_each(data_varying_dim_,
+                          [&](const auto & type_and_data_same_dim)
+  {
+    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+    using Type = typename Type_Value::first_type;
 
-                boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
-                        [&](const auto & type_and_data_same_dim_codim)
-                        {
-                            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-                            using Type = typename Type_Value::first_type;
+    boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
+                            [&](const auto & type_and_data_same_dim_codim)
+    {
+      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+      using Type = typename Type_Value::first_type;
 
-                            auto &generators = type_and_data_same_dim_codim.second.get_generators();
+      auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
-                            for (auto &g : generators)
-                            {
-                                const auto &grid_id = g.first;
+      for (auto &g : generators)
+      {
+        const auto &grid_id = g.first;
 
-                                Assert (grid_id >= 0 && grid_id < generators_numbering_.size(),
-                                        ExcIndexRange(grid_id, 0, generators_numbering_.size()));
-                                const auto &g_num = generators_numbering_[grid_id];
+        Assert(grid_id >= 0 && grid_id < generators_numbering_.size(),
+               ExcIndexRange(grid_id, 0, generators_numbering_.size()));
+        const auto &g_num = generators_numbering_[grid_id];
 
-                                // Is the grid active?
-                                if (std::get<2>(g_num))
-                                {
-                                    const auto &name = std::get<1>(g_num);
-                                    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-                                    mb->SetBlock(block_index, g.second->get_solid_grid());
-                                    ++block_index;
-                                }
-                            }
+        // Is the grid active?
+        if (std::get<2>(g_num))
+        {
+          const auto &name = std::get<1>(g_num);
+          mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+          mb->SetBlock(block_index, g.second->get_knot_grid());
+          ++block_index;
+        }
+      }
 
-                        } // end lambda function on codim
-                ); // for_each (data_varying_codim_
+    } // end lambda function on codim
+                           ); // for_each (data_varying_codim_
 
-            } // end lambda function on dim
-            ); // for_each (data_varying_dim_
-}
-
-
-
-void
-VtkIgaGridGeneratorContBase::
-set_knot_grids (vtkMultiBlockDataSet * const mb)
-{
-    Assert (this->get_number_active_grids() > 0, ExcEmptyObject());
-
-    mb->SetNumberOfBlocks (this->get_number_active_grids());
-
-    Index block_index = 0;
-    boost::fusion::for_each (data_varying_dim_,
-            [&](const auto & type_and_data_same_dim)
-            {
-                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-                using Type = typename Type_Value::first_type;
-
-                boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
-                        [&](const auto & type_and_data_same_dim_codim)
-                        {
-                            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-                            using Type = typename Type_Value::first_type;
-
-                            auto &generators = type_and_data_same_dim_codim.second.get_generators();
-
-                            for (auto &g : generators)
-                            {
-                                const auto &grid_id = g.first;
-
-                                Assert (grid_id >= 0 && grid_id < generators_numbering_.size(),
-                                        ExcIndexRange(grid_id, 0, generators_numbering_.size()));
-                                const auto &g_num = generators_numbering_[grid_id];
-
-                                // Is the grid active?
-                                if (std::get<2>(g_num))
-                                {
-                                    const auto &name = std::get<1>(g_num);
-                                    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-                                    mb->SetBlock(block_index, g.second->get_knot_grid());
-                                    ++block_index;
-                                }
-                            }
-
-                        } // end lambda function on codim
-                ); // for_each (data_varying_codim_
-
-            } // end lambda function on dim
-            ); // for_each (data_varying_dim_
+  } // end lambda function on dim
+                         ); // for_each (data_varying_dim_
 }
 
 
 
 VtkIgaGridGeneratorContParm::
-VtkIgaGridGeneratorContParm (const FunContPtr_ funcs_container,
-                          const GridInfoPtr_ solid_info,
-                          const GridInfoPtr_ knot_info)
-    :
-            Base_ (funcs_container, solid_info, knot_info)
+VtkIgaGridGeneratorContParm(const FunContPtr_ funcs_container,
+                            const GridInfoPtr_ solid_info,
+                            const GridInfoPtr_ knot_info)
+  :
+  Base_(funcs_container, solid_info, knot_info)
 {
-    this->fill_generators();
+  this->fill_generators();
 }
 
 
 
 auto
 VtkIgaGridGeneratorContParm::
-create (const FunContPtr_ funcs_container,
-        const GridInfoPtr_ solid_info,
-        const GridInfoPtr_ knot_info) -> SelfPtr_
+create(const FunContPtr_ funcs_container,
+       const GridInfoPtr_ solid_info,
+       const GridInfoPtr_ knot_info) -> SelfPtr_
 {
-    return SelfPtr_ (new Self_(funcs_container, solid_info, knot_info));
+  return SelfPtr_(new Self_(funcs_container, solid_info, knot_info));
 }
 
 
 
 void
 VtkIgaGridGeneratorContParm::
-update (const GridInfoPtr_ solid_info,
-        const GridInfoPtr_ knot_info)
+update(const GridInfoPtr_ solid_info,
+       const GridInfoPtr_ knot_info)
 {
-    const bool solid_updated = solid_info_->update (solid_info);
-    const bool knot_updated = knot_info_->update (knot_info);
+  const bool solid_updated = solid_info_->update(solid_info);
+  const bool knot_updated = knot_info_->update(knot_info);
 
 
-    boost::fusion::for_each (data_varying_dim_,
-            [&](const auto & type_and_data_same_dim)
-            {
-                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-                using Type = typename Type_Value::first_type;
+  boost::fusion::for_each(data_varying_dim_,
+                          [&](const auto & type_and_data_same_dim)
+  {
+    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+    using Type = typename Type_Value::first_type;
 
-                boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
-                        [&](const auto & type_and_data_same_dim_codim)
-                        {
-                            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-                            using Type = typename Type_Value::first_type;
+    boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
+                            [&](const auto & type_and_data_same_dim_codim)
+    {
+      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+      using Type = typename Type_Value::first_type;
 
-                            auto &generators = type_and_data_same_dim_codim.second.get_generators();
+      auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
-                            for (auto &g : generators)
-                                g.second->update(solid_updated, knot_updated);
+      for (auto &g : generators)
+        g.second->update(solid_updated, knot_updated);
+    } // end lambda function on codim
+                           ); // for_each (data_varying_codim_
 
-                        } // end lambda function on codim
-                ); // for_each (data_varying_codim_
-
-            } // end lambda function on dim
-            ); // for_each (data_varying_dim_
+  } // end lambda function on dim
+                         ); // for_each (data_varying_dim_
 }
 
 
@@ -334,46 +333,46 @@ void
 VtkIgaGridGeneratorContParm::
 fill_generators()
 {
-    // Iterating over all the functions in the container for building the generators
-    // and setting up the numbering for them.
+  // Iterating over all the functions in the container for building the generators
+  // and setting up the numbering for them.
 
-    const auto &funcs_container_data = funcs_container_->get_data ();
-    boost::fusion::for_each (
-            funcs_container_data,
-            [&](const auto & type_and_data_same_dim)
-            {
-                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-                using Type = typename Type_Value::first_type;
-                const int dim = Type::value;
+  const auto &funcs_container_data = funcs_container_->get_data();
+  boost::fusion::for_each(
+    funcs_container_data,
+    [&](const auto & type_and_data_same_dim)
+  {
+    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+    using Type = typename Type_Value::first_type;
+    const int dim = Type::value;
 
-                boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
-                        [&](const auto & type_and_data_same_dim_codim)
-                        {
-                            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-                            using Type = typename Type_Value::first_type;
-                            const int codim = Type::value;
+    boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
+                            [&](const auto & type_and_data_same_dim_codim)
+    {
+      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+      using Type = typename Type_Value::first_type;
+      const int codim = Type::value;
 
-                            using IdFun = IdentityFunction<dim, dim + codim>;
+      using IdFun = IdentityFunction<dim, dim + codim>;
 
-                            const auto &map_funs = type_and_data_same_dim_codim.second.get_all_mappings();
+      const auto &map_funs = type_and_data_same_dim_codim.second.get_all_mappings();
 
-                            for (const auto &map_fun : map_funs)
-                            {
-                                // const string &name = map_and_name.second;
-                                const string &name = type_and_data_same_dim_codim.
-                                        second.get_mapping_data(map_fun).get_mapping_name();
+      for (const auto &map_fun : map_funs)
+      {
+        // const string &name = map_and_name.second;
+        const string &name = type_and_data_same_dim_codim.
+                             second.get_mapping_data(map_fun).get_mapping_name();
 
-                                // Is it an identity mapping?
-                                if (std::dynamic_pointer_cast<IdFun>(map_fun) != nullptr)
-                                    this->insert_generator<dim, codim> (map_fun, name);
+        // Is it an identity mapping?
+        if (std::dynamic_pointer_cast<IdFun>(map_fun) != nullptr)
+          this->insert_generator<dim, codim> (map_fun, name);
 
-                            } // endl loop on map_funs with a given pair <dim,codim>
+      } // endl loop on map_funs with a given pair <dim,codim>
 
-                        } // end lambda function on codim
-                ); // for_each (data_varying_codim_
+    } // end lambda function on codim
+                           ); // for_each (data_varying_codim_
 
-            } // end lambda function on dim
-            ); // for_each (data_varying_dim_
+  } // end lambda function on dim
+  ); // for_each (data_varying_dim_
 }
 
 
@@ -381,157 +380,157 @@ fill_generators()
 template<int dim, int codim>
 void
 VtkIgaGridGeneratorContParm::
-insert_generator (const MapFunPtr_<dim, codim> map_fun,
-                  const std::string &map_name)
+insert_generator(const MapFunPtr_<dim, codim> map_fun,
+                 const std::string &map_name)
 {
-    Assert(map_fun != nullptr, ExcNullPtr());
+  Assert(map_fun != nullptr, ExcNullPtr());
 
-    // Inserting the new generators indices in the table.
-    generators_numbering_.push_back(
-            make_tuple (map_fun->get_object_id(), map_name, true, false));
+  // Inserting the new generators indices in the table.
+  generators_numbering_.push_back(
+    make_tuple(map_fun->get_object_id(), map_name, true, false));
 
-    auto &data_same_dim_codim = this->template get_data_dim_codim<dim, codim>();
-    auto &generators = data_same_dim_codim.get_generators();
+  auto &data_same_dim_codim = this->template get_data_dim_codim<dim, codim>();
+  auto &generators = data_same_dim_codim.get_generators();
 
-    const Index map_id = generators_numbering_.size() - 1;
+  const Index map_id = generators_numbering_.size() - 1;
 
-    Assert (generators.find(map_id) == generators.end(),
-            ExcMessage("Key already introduced."));
+  Assert(generators.find(map_id) == generators.end(),
+         ExcMessage("Key already introduced."));
 
-    generators[map_id] = VtkIgaGridGenerator<dim, codim>::create_parametric
-            (map_fun, solid_info_, knot_info_, funcs_container_);
+  generators[map_id] = VtkIgaGridGenerator<dim, codim>::create_parametric
+                       (map_fun, solid_info_, knot_info_, funcs_container_);
 }
 
 
 
 VtkIgaGridGeneratorContPhys::
-VtkIgaGridGeneratorContPhys (const FunContPtr_ funcs_container,
-                          const GridInfoPtr_ solid_info,
-                          const GridInfoPtr_ knot_info,
-                          const ControlGridInfoPtr_ control_info)
-    :
-            Base_ (funcs_container, solid_info, knot_info),
-            control_info_(control_info)
+VtkIgaGridGeneratorContPhys(const FunContPtr_ funcs_container,
+                            const GridInfoPtr_ solid_info,
+                            const GridInfoPtr_ knot_info,
+                            const ControlGridInfoPtr_ control_info)
+  :
+  Base_(funcs_container, solid_info, knot_info),
+  control_info_(control_info)
 {
-    Assert (control_info != nullptr, ExcNullPtr())
-    this->fill_generators();
+  Assert(control_info != nullptr, ExcNullPtr())
+  this->fill_generators();
 }
 
 
 
 auto
 VtkIgaGridGeneratorContPhys::
-create (const FunContPtr_ funcs_container,
-        const GridInfoPtr_ solid_info,
-        const GridInfoPtr_ knot_info,
-        const ControlGridInfoPtr_ control_info) -> SelfPtr_
+create(const FunContPtr_ funcs_container,
+       const GridInfoPtr_ solid_info,
+       const GridInfoPtr_ knot_info,
+       const ControlGridInfoPtr_ control_info) -> SelfPtr_
 {
-    return SelfPtr_ (new Self_ (funcs_container, solid_info, knot_info, control_info));
+  return SelfPtr_(new Self_(funcs_container, solid_info, knot_info, control_info));
 }
 
 
 
 void
 VtkIgaGridGeneratorContPhys::
-update (const GridInfoPtr_ solid_info,
-        const GridInfoPtr_ knot_info,
-        const ControlGridInfoPtr_ control_info)
+update(const GridInfoPtr_ solid_info,
+       const GridInfoPtr_ knot_info,
+       const ControlGridInfoPtr_ control_info)
 {
-    const bool solid_updated = solid_info_->update (solid_info);
-    const bool knot_updated = knot_info_->update (knot_info);
-    const bool control_updated = control_info_->update (control_info);
+  const bool solid_updated = solid_info_->update(solid_info);
+  const bool knot_updated = knot_info_->update(knot_info);
+  const bool control_updated = control_info_->update(control_info);
 
-    boost::fusion::for_each (data_varying_dim_,
-            [&](const auto & type_and_data_same_dim)
-            {
-                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-                using Type = typename Type_Value::first_type;
+  boost::fusion::for_each(data_varying_dim_,
+                          [&](const auto & type_and_data_same_dim)
+  {
+    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+    using Type = typename Type_Value::first_type;
 
-                boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
-                        [&](const auto & type_and_data_same_dim_codim)
-                        {
-                            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-                            using Type = typename Type_Value::first_type;
+    boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
+                            [&](const auto & type_and_data_same_dim_codim)
+    {
+      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+      using Type = typename Type_Value::first_type;
 
-                            auto &generators = type_and_data_same_dim_codim.second.get_generators();
+      auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
-                            for (auto &g : generators)
-                                g.second->update(solid_updated, knot_updated, control_updated);
+      for (auto &g : generators)
+        g.second->update(solid_updated, knot_updated, control_updated);
 
-                        } // end lambda function on codim
-                ); // for_each (data_varying_codim_
+    } // end lambda function on codim
+                           ); // for_each (data_varying_codim_
 
-            } // end lambda function on dim
-            ); // for_each (data_varying_dim_
+  } // end lambda function on dim
+                         ); // for_each (data_varying_dim_
 }
 
 
 
 void
 VtkIgaGridGeneratorContPhys::
-set_control_grids (vtkMultiBlockDataSet * const mb)
+set_control_grids(vtkMultiBlockDataSet *const mb)
 {
-    Assert (this->get_number_active_grids_ig() > 0, ExcEmptyObject());
+  Assert(this->get_number_active_grids_ig() > 0, ExcEmptyObject());
 
-    mb->SetNumberOfBlocks (this->get_number_active_grids_ig());
+  mb->SetNumberOfBlocks(this->get_number_active_grids_ig());
 
-    Index block_index = 0;
-    boost::fusion::for_each (data_varying_dim_,
-            [&](const auto & type_and_data_same_dim)
-            {
-                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-                using Type = typename Type_Value::first_type;
+  Index block_index = 0;
+  boost::fusion::for_each(data_varying_dim_,
+                          [&](const auto & type_and_data_same_dim)
+  {
+    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+    using Type = typename Type_Value::first_type;
 
-                boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
-                        [&](const auto & type_and_data_same_dim_codim)
-                        {
-                            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-                            using Type = typename Type_Value::first_type;
+    boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
+                            [&](const auto & type_and_data_same_dim_codim)
+    {
+      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+      using Type = typename Type_Value::first_type;
 
-                            auto &generators = type_and_data_same_dim_codim.second.get_generators();
+      auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
-                            for (auto &g : generators)
-                            {
-                                const auto &grid_id = g.first;
+      for (auto &g : generators)
+      {
+        const auto &grid_id = g.first;
 
-                                Assert (grid_id >= 0 && grid_id < generators_numbering_.size(),
-                                        ExcIndexRange(grid_id, 0, generators_numbering_.size()));
-                                const auto &g_num = generators_numbering_[grid_id];
+        Assert(grid_id >= 0 && grid_id < generators_numbering_.size(),
+               ExcIndexRange(grid_id, 0, generators_numbering_.size()));
+        const auto &g_num = generators_numbering_[grid_id];
 
-                                // Is the grid active?
-                                if (std::get<2>(g_num))
-                                {
-                                    // Is an ig mapping?
-                                    if (std::get<3>(g_num))
-                                    {
-                                        const auto &name = std::get<1>(g_num);
-                                        mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-                                        mb->SetBlock(block_index, g.second->get_control_grid());
-                                        ++block_index;
-                                    }
+        // Is the grid active?
+        if (std::get<2>(g_num))
+        {
+          // Is an ig mapping?
+          if (std::get<3>(g_num))
+          {
+            const auto &name = std::get<1>(g_num);
+            mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+            mb->SetBlock(block_index, g.second->get_control_grid());
+            ++block_index;
+          }
 
-                                }
-                            }
+        }
+      }
 
-                        } // end lambda function on codim
-                ); // for_each (data_varying_codim_
+    } // end lambda function on codim
+                           ); // for_each (data_varying_codim_
 
-            } // end lambda function on dim
-            ); // for_each (data_varying_dim_
+  } // end lambda function on dim
+                         ); // for_each (data_varying_dim_
 }
 
 
 
 Size
 VtkIgaGridGeneratorContPhys::
-get_number_active_grids_ig () const
+get_number_active_grids_ig() const
 {
-    Size count = 0;
-    for (const auto &it : generators_numbering_)
-        if (std::get<3>(it))
-            ++count;
+  Size count = 0;
+  for (const auto &it : generators_numbering_)
+    if (std::get<3>(it))
+      ++count;
 
-    return count;
+  return count;
 }
 
 
@@ -540,46 +539,46 @@ void
 VtkIgaGridGeneratorContPhys::
 fill_generators()
 {
-    // Iterating over all the functions in the container for building the generators
-    // and setting up the numbering for them.
+  // Iterating over all the functions in the container for building the generators
+  // and setting up the numbering for them.
 
-    const auto &funcs_container_data = funcs_container_->get_data ();
-    boost::fusion::for_each (
-            funcs_container_data,
-            [&](const auto & type_and_data_same_dim)
-            {
-                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-                using Type = typename Type_Value::first_type;
-                const int dim = Type::value;
+  const auto &funcs_container_data = funcs_container_->get_data();
+  boost::fusion::for_each(
+    funcs_container_data,
+    [&](const auto & type_and_data_same_dim)
+  {
+    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+    using Type = typename Type_Value::first_type;
+    const int dim = Type::value;
 
-                boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
-                        [&](const auto & type_and_data_same_dim_codim)
-                        {
-                            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-                            using Type = typename Type_Value::first_type;
-                            const int codim = Type::value;
+    boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
+                            [&](const auto & type_and_data_same_dim_codim)
+    {
+      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+      using Type = typename Type_Value::first_type;
+      const int codim = Type::value;
 
-                            using IdFun = IdentityFunction<dim, dim + codim>;
+      using IdFun = IdentityFunction<dim, dim + codim>;
 
-                            const auto &map_funs = type_and_data_same_dim_codim.second.get_all_mappings();
+      const auto &map_funs = type_and_data_same_dim_codim.second.get_all_mappings();
 
-                            for (const auto &map_fun : map_funs)
-                            {
-                                // const string &name = map_and_name.second;
-                                const string &name = type_and_data_same_dim_codim.
-                                        second.get_mapping_data(map_fun).get_mapping_name();
+      for (const auto &map_fun : map_funs)
+      {
+        // const string &name = map_and_name.second;
+        const string &name = type_and_data_same_dim_codim.
+                             second.get_mapping_data(map_fun).get_mapping_name();
 
-                                // Is it a physical mapping?
-                                if (std::dynamic_pointer_cast<IdFun>(map_fun) == nullptr)
-                                    this->insert_generator<dim, codim> (map_fun, name);
+        // Is it a physical mapping?
+        if (std::dynamic_pointer_cast<IdFun>(map_fun) == nullptr)
+          this->insert_generator<dim, codim> (map_fun, name);
 
-                            } // endl loop on map_funs with a given pair <dim,codim>
+      } // endl loop on map_funs with a given pair <dim,codim>
 
-                        } // end lambda function on codim
-                ); // for_each (data_varying_codim_
+    } // end lambda function on codim
+                           ); // for_each (data_varying_codim_
 
-            } // end lambda function on dim
-            ); // for_each (data_varying_dim_
+  } // end lambda function on dim
+  ); // for_each (data_varying_dim_
 }
 
 
@@ -587,30 +586,30 @@ fill_generators()
 template<int dim, int codim>
 void
 VtkIgaGridGeneratorContPhys::
-insert_generator (const MapFunPtr_<dim, codim> map_fun,
-                  const std::string &map_name)
+insert_generator(const MapFunPtr_<dim, codim> map_fun,
+                 const std::string &map_name)
 {
-    Assert(map_fun != nullptr, ExcNullPtr());
+  Assert(map_fun != nullptr, ExcNullPtr());
 
 
-    using IgFun = IgFunction<dim, 0, dim + codim, 1>;
+  using IgFun = IgFunction<dim, 0, dim + codim, 1>;
 
-    const bool is_ig_mapping = std::dynamic_pointer_cast<IgFun>(map_fun) != nullptr;
+  const bool is_ig_mapping = std::dynamic_pointer_cast<IgFun>(map_fun) != nullptr;
 
-    // Inserting the new generators indices in the table.
-    generators_numbering_.push_back(
-            make_tuple (map_fun->get_object_id(), map_name, true, is_ig_mapping));
+  // Inserting the new generators indices in the table.
+  generators_numbering_.push_back(
+    make_tuple(map_fun->get_object_id(), map_name, true, is_ig_mapping));
 
-    auto &data_same_dim_codim = this->template get_data_dim_codim<dim, codim>();
-    auto &generators = data_same_dim_codim.get_generators();
+  auto &data_same_dim_codim = this->template get_data_dim_codim<dim, codim>();
+  auto &generators = data_same_dim_codim.get_generators();
 
-    const Index map_id = generators_numbering_.size() - 1;
+  const Index map_id = generators_numbering_.size() - 1;
 
-    Assert (generators.find(map_id) == generators.end(),
-            ExcMessage("Key already introduced."));
+  Assert(generators.find(map_id) == generators.end(),
+         ExcMessage("Key already introduced."));
 
-    generators[map_id] = VtkIgaGridGenerator<dim, codim>::create_physical
-            (map_fun, solid_info_, knot_info_, control_info_, funcs_container_);
+  generators[map_id] = VtkIgaGridGenerator<dim, codim>::create_physical
+                       (map_fun, solid_info_, knot_info_, control_info_, funcs_container_);
 }
 
 IGA_NAMESPACE_CLOSE

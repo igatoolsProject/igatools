@@ -28,7 +28,6 @@
 
 #include <exception>
 #include <string>
-
 #include <ostream>
 
 
@@ -50,135 +49,135 @@ IGA_NAMESPACE_OPEN
 class ExceptionBase : public std::exception
 {
 public:
-    /**
-     * Default constructor.
-     */
-    ExceptionBase();
+  /**
+   * Default constructor.
+   */
+  ExceptionBase();
 
-    /**
-     *  The constructor takes the file in which the
-     *  error happened, the line and the violated
-     *  condition as well as the name of the
-     *  exception class as a <tt>char*</tt> as arguments.
-     */
-    ExceptionBase(const char *f, const int l, const char *func,
-                  const char *c, const char *e);
+  /**
+   *  The constructor takes the file in which the
+   *  error happened, the line and the violated
+   *  condition as well as the name of the
+   *  exception class as a <tt>char*</tt> as arguments.
+   */
+  ExceptionBase(const char *f, const int l, const char *func,
+                const char *c, const char *e);
 
-    /**
-     * Copy constructor.
-     */
-    ExceptionBase(const ExceptionBase &exc);
+  /**
+   * Copy constructor.
+   */
+  ExceptionBase(const ExceptionBase &exc);
 
-    /**
-     * Destructor. Empty, but needed
-     * for the sake of exception
-     * specification, since the base
-     * class has this exception
-     * specification and the
-     * automatically generated
-     * destructor would have a
-     * different one due to member
-     * objects.
-     */
-    virtual ~ExceptionBase() throw();
+  /**
+   * Destructor. Empty, but needed
+   * for the sake of exception
+   * specification, since the base
+   * class has this exception
+   * specification and the
+   * automatically generated
+   * destructor would have a
+   * different one due to member
+   * objects.
+   */
+  virtual ~ExceptionBase() throw();
 
-    /**
-     *  Set the file name and line of where the
-     *  exception appeared as well as the violated
-     *  condition and the name of the exception as
-     *  a char pointer.
-     */
-    void set_fields(const char *f,
-                    const int   l,
-                    const char *func,
-                    const char *c,
-                    const char *e);
+  /**
+   *  Set the file name and line of where the
+   *  exception appeared as well as the violated
+   *  condition and the name of the exception as
+   *  a char pointer.
+   */
+  void set_fields(const char *f,
+                  const int   l,
+                  const char *func,
+                  const char *c,
+                  const char *e);
 
-    /**
-     *  Print out the general part of the error
-     *  information.
-     */
-    void print_exc_data(std::ostream &out) const;
+  /**
+   *  Print out the general part of the error
+   *  information.
+   */
+  void print_exc_data(std::ostream &out) const;
 
-    /**
-     *  Print more specific information about the
-     *  exception which occured. Overload this
-     *  function in your own exception classes.
-     */
-    virtual void print_info(std::ostream &out) const;
+  /**
+   *  Print more specific information about the
+   *  exception which occured. Overload this
+   *  function in your own exception classes.
+   */
+  virtual void print_info(std::ostream &out) const;
 
 
-    /**
-     *  Function derived from the base class
-     *  which allows to pass information like
-     *  the line and name of the file where the
-     *  exception occurred as well as user
-     *  information.
-     *
-     *  This function is mainly used
-     *  when using exceptions
-     *  declared by the
-     *  <tt>DeclException*</tt>
-     *  macros with the
-     *  <tt>throw</tt> mechanism or
-     *  the <tt>AssertThrow</tt>
-     *  macro.
-     */
-    virtual const char *what() const throw();
+  /**
+   *  Function derived from the base class
+   *  which allows to pass information like
+   *  the line and name of the file where the
+   *  exception occurred as well as user
+   *  information.
+   *
+   *  This function is mainly used
+   *  when using exceptions
+   *  declared by the
+   *  <tt>DeclException*</tt>
+   *  macros with the
+   *  <tt>throw</tt> mechanism or
+   *  the <tt>AssertThrow</tt>
+   *  macro.
+   */
+  virtual const char *what() const throw();
 
-    /**
-     * Print a stacktrace, if one has
-     * been recorded previously, to
-     * the given stream.
-     */
-    void print_stack_trace(std::ostream &out) const;
+  /**
+   * Print a stacktrace, if one has
+   * been recorded previously, to
+   * the given stream.
+   */
+  void print_stack_trace(std::ostream &out) const;
 
-    /**
-     * Retrieves the volated condition, as a string.
-     */
-    const char *get_condition() const;
+  /**
+   * Retrieves the volated condition, as a string.
+   */
+  const char *get_condition() const;
 
 protected:
-    /**
-     * Name of the file this exception happen in.
-     */
-    const char  *file;
+  /**
+   * Name of the file this exception happen in.
+   */
+  const char  *file;
 
-    /**
-     * Line number in this file.
-     */
-    int line;
+  /**
+   * Line number in this file.
+   */
+  int line;
 
-    /**
-     * Name of the function, pretty printed.
-     */
-    const char  *function;
+  /**
+   * Name of the function, pretty printed.
+   */
+  const char  *function;
 
-    /**
-     * The violated condition, as a string.
-     */
-    const char  *cond;
+  /**
+   * The violated condition, as a string.
+   */
+  const char  *cond;
 
-    /**
-     * Name of the exception and call sequence.
-     */
-    const char  *exc;
+  /**
+   * Name of the exception and call sequence.
+   */
+  const char  *exc;
 
-    /**
-     * A backtrace to the position
-     * where the problem happened, if
-     * the system supports this.
-     */
-    char **stacktrace;
+  /**
+   * A backtrace to the position
+   * where the problem happened, if
+   * the system supports this.
+   */
+  char **stacktrace;
 
-    /**
-     * The number of stacktrace
-     * frames that are stored in the
-     * previous variable. Zero if the
-     * system does not support stack
-     * traces.
-     */
-    int n_stacktrace_frames;
+  /**
+   * The number of stacktrace
+   * frames that are stored in the
+   * previous variable. Zero if the
+   * system does not support stack
+   * traces.
+   */
+  int n_stacktrace_frames;
 };
 
 
@@ -305,10 +304,10 @@ void issue_error_throw(const char *file,
                        const char *exc_name,
                        exc         e)
 {
-    // Fill the fields of the
-    // exception object
-    e.set_fields(file, line, function, cond, exc_name);
-    throw e;
+  // Fill the fields of the
+  // exception object
+  e.set_fields(file, line, function, cond, exc_name);
+  throw e;
 }
 
 
@@ -331,7 +330,7 @@ void issue_error_assert_1(const char *file,
                           const char *exc_name,
                           exc         e)
 {
-    issue_error_assert(file,line,function,cond,exc_name,e);
+  issue_error_assert(file,line,function,cond,exc_name,e);
 }
 
 
@@ -363,19 +362,19 @@ void abort();
  * @author Wolfgang Bangerth, November 1997, extensions 1998
  */
 #define Assert(cond, exc)                                           \
-    {                                                                 \
-        if (!(cond))                                                    \
-            ::iga::iga_exceptions::internals::                     \
-            issue_error_assert_1 (__FILE__,                               \
-                                  __LINE__,                              \
-                                  __PRETTY_FUNCTION__, #cond, #exc, exc);\
-    }
+  {                                                                 \
+    if (!(cond))                                                    \
+      ::iga::iga_exceptions::internals::                     \
+      issue_error_assert_1 (__FILE__,                               \
+                            __LINE__,                              \
+                            __PRETTY_FUNCTION__, #cond, #exc, exc);\
+  }
 
 
 #else        ////////////////////////////////////////
 
 #define Assert(cond, exc)                     \
-    { }
+  { }
 #endif      ////////////////////////////////////////
 
 
@@ -403,13 +402,13 @@ void abort();
  */
 
 #define AssertThrow(cond, exc)                                   \
-    {                                                              \
-        if (!(cond))                                                 \
-            ::iga::iga_exceptions::internals::                  \
-            issue_error_throw (__FILE__,                               \
-                               __LINE__,                               \
-                               __PRETTY_FUNCTION__, #cond, #exc, exc); \
-    }
+  {                                                              \
+    if (!(cond))                                                 \
+      ::iga::iga_exceptions::internals::                  \
+      issue_error_throw (__FILE__,                               \
+                         __LINE__,                               \
+                         __PRETTY_FUNCTION__, #cond, #exc, exc); \
+  }
 
 
 
@@ -420,7 +419,7 @@ void abort();
  * @ingroup Exceptions
  */
 #define DeclException0(Exception0)  \
-    class Exception0 :  public iga::ExceptionBase {}
+  class Exception0 :  public iga::ExceptionBase {}
 
 
 
@@ -430,16 +429,16 @@ void abort();
  *  @ingroup Exceptions
   */
 #define DeclException1(Exception1, type1, outsequence)                \
-    class Exception1 : public iga::ExceptionBase {                             \
-    public:                                                             \
-        Exception1 (const type1 a1) : arg1 (a1) {}                      \
-        virtual ~Exception1 () throw () {}                              \
-        virtual void print_info (std::ostream &out) const {              \
-            out outsequence << std::endl;                                 \
-        }                                                               \
-    private:                                                            \
-        const type1 arg1;                                               \
-    }
+  class Exception1 : public iga::ExceptionBase {                             \
+  public:                                                             \
+    Exception1 (const type1 a1) : arg1 (a1) {}                      \
+    virtual ~Exception1 () throw () {}                              \
+    virtual void print_info (std::ostream &out) const {              \
+      out outsequence << std::endl;                                 \
+    }                                                               \
+  private:                                                            \
+    const type1 arg1;                                               \
+  }
 
 
 
@@ -449,18 +448,18 @@ void abort();
  *  @ingroup Exceptions
  */
 #define DeclException2(Exception2, type1, type2, outsequence)         \
-    class Exception2 : public iga::ExceptionBase {                             \
-    public:                                                             \
-        Exception2 (const type1 a1, const type2 a2) :          \
-            arg1 (a1), arg2(a2) {}                                  \
-        virtual ~Exception2 () throw () {}                              \
-        virtual void print_info (std::ostream &out) const {              \
-            out outsequence << std::endl;                                 \
-        }                                                               \
-    private:                                                            \
-        const type1 arg1;                                               \
-        const type2 arg2;                                               \
-    }
+  class Exception2 : public iga::ExceptionBase {                             \
+  public:                                                             \
+    Exception2 (const type1 a1, const type2 a2) :          \
+      arg1 (a1), arg2(a2) {}                                  \
+    virtual ~Exception2 () throw () {}                              \
+    virtual void print_info (std::ostream &out) const {              \
+      out outsequence << std::endl;                                 \
+    }                                                               \
+  private:                                                            \
+    const type1 arg1;                                               \
+    const type2 arg2;                                               \
+  }
 
 
 
@@ -470,19 +469,19 @@ void abort();
  *  @ingroup Exceptions
  */
 #define DeclException3(Exception3, type1, type2, type3, outsequence)  \
-    class Exception3 : public iga::ExceptionBase {                             \
-    public:                                                             \
-        Exception3 (const type1 a1, const type2 a2, const type3 a3) : \
-            arg1 (a1), arg2(a2), arg3(a3) {}                        \
-        virtual ~Exception3 () throw () {}                              \
-        virtual void print_info (std::ostream &out) const {              \
-            out outsequence << std::endl;                                 \
-        }                                                               \
-    private:                                                            \
-        const type1 arg1;                                               \
-        const type2 arg2;                                               \
-        const type3 arg3;                                               \
-    }
+  class Exception3 : public iga::ExceptionBase {                             \
+  public:                                                             \
+    Exception3 (const type1 a1, const type2 a2, const type3 a3) : \
+      arg1 (a1), arg2(a2), arg3(a3) {}                        \
+    virtual ~Exception3 () throw () {}                              \
+    virtual void print_info (std::ostream &out) const {              \
+      out outsequence << std::endl;                                 \
+    }                                                               \
+  private:                                                            \
+    const type1 arg1;                                               \
+    const type2 arg2;                                               \
+    const type3 arg3;                                               \
+  }
 
 
 
@@ -492,21 +491,21 @@ void abort();
  *  @ingroup Exceptions
  */
 #define DeclException4(Exception4, type1, type2, type3, type4, outsequence) \
-    class Exception4 : public iga::ExceptionBase {                             \
-    public:                                                             \
-        Exception4 (const type1 a1, const type2 a2,                     \
-                    const type3 a3, const type4 a4) :                \
-            arg1 (a1), arg2(a2), arg3(a3), arg4(a4) {}              \
-        virtual ~Exception4 () throw () {}                              \
-        virtual void print_info (std::ostream &out) const {              \
-            out outsequence << std::endl;                                 \
-        }                                                               \
-    private:                                                            \
-        const type1 arg1;                                               \
-        const type2 arg2;                                               \
-        const type3 arg3;                                               \
-        const type4 arg4;                                               \
-    }
+  class Exception4 : public iga::ExceptionBase {                             \
+  public:                                                             \
+    Exception4 (const type1 a1, const type2 a2,                     \
+                const type3 a3, const type4 a4) :                \
+      arg1 (a1), arg2(a2), arg3(a3), arg4(a4) {}              \
+    virtual ~Exception4 () throw () {}                              \
+    virtual void print_info (std::ostream &out) const {              \
+      out outsequence << std::endl;                                 \
+    }                                                               \
+  private:                                                            \
+    const type1 arg1;                                               \
+    const type2 arg2;                                               \
+    const type3 arg3;                                               \
+    const type4 arg4;                                               \
+  }
 
 
 
@@ -516,22 +515,22 @@ void abort();
  *  @ingroup Exceptions
  */
 #define DeclException5(Exception5, type1, type2, type3, type4, type5, outsequence) \
-    class Exception5 : public iga::ExceptionBase {                             \
-    public:                                                             \
-        Exception5 (const type1 a1, const type2 a2, const type3 a3,     \
-                    const type4 a4, const type5 a5) :                \
-            arg1 (a1), arg2(a2), arg3(a3), arg4(a4), arg5(a5) {}    \
-        virtual ~Exception5 () throw () {}                              \
-        virtual void print_info (std::ostream &out) const {              \
-            out outsequence << std::endl;                                 \
-        }                                                               \
-    private:                                                            \
-        const type1 arg1;                                               \
-        const type2 arg2;                                               \
-        const type3 arg3;                                               \
-        const type4 arg4;                                               \
-        const type5 arg5;                                               \
-    }
+  class Exception5 : public iga::ExceptionBase {                             \
+  public:                                                             \
+    Exception5 (const type1 a1, const type2 a2, const type3 a3,     \
+                const type4 a4, const type5 a5) :                \
+      arg1 (a1), arg2(a2), arg3(a3), arg4(a4), arg5(a5) {}    \
+    virtual ~Exception5 () throw () {}                              \
+    virtual void print_info (std::ostream &out) const {              \
+      out outsequence << std::endl;                                 \
+    }                                                               \
+  private:                                                            \
+    const type1 arg1;                                               \
+    const type2 arg2;                                               \
+    const type3 arg3;                                               \
+    const type4 arg4;                                               \
+    const type5 arg5;                                               \
+  }
 
 
 
@@ -1046,7 +1045,7 @@ DeclException1(ExcDisabled, char *,
  * @author Guido Kanschat 2010
 */
 #define AssertVectorVectorDimension(vec,dim1,dim2) AssertDimension((vec).size(), (dim1)) \
-    for (int i=0;i<dim1;++i) { AssertDimension((vec)[i].size(), (dim2)); }
+  for (int i=0;i<dim1;++i) { AssertDimension((vec)[i].size(), (dim2)); }
 
 /**
  * Special assertion for index range of nonnegative indices.
