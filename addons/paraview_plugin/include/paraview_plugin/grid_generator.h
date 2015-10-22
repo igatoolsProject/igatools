@@ -45,163 +45,163 @@ template <int dim, int codim>
 class VtkIgaGridGenerator
 {
 private:
-    /**
-     * Space dimension.
-     */
-    static const int space_dim = dim + codim;
+  /**
+   * Space dimension.
+   */
+  static const int space_dim = dim + codim;
 
-    /**
-     * Self type.
-     */
-    typedef VtkIgaGridGenerator Self_;
+  /**
+   * Self type.
+   */
+  typedef VtkIgaGridGenerator Self_;
 
-    /**
-     * Self shared pointer type.
-     */
-    typedef std::shared_ptr<Self_> SelfPtr_;
+  /**
+   * Self shared pointer type.
+   */
+  typedef std::shared_ptr<Self_> SelfPtr_;
 
-    /**
-     * Alias for a shared pointer of a map function type.
-     */
-    typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
+  /**
+   * Alias for a shared pointer of a map function type.
+   */
+  typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
 
-    /**
-     * Alias for mesh grid information shared pointer.
-     */
-    typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
+  /**
+   * Alias for mesh grid information shared pointer.
+   */
+  typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
 
-    /**
-     * Alias for control mesh grid information shared pointer.
-     */
-    typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
+  /**
+   * Alias for control mesh grid information shared pointer.
+   */
+  typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
 
-    /**
-     * Alias for vtk grid object for visualization.
-     */
-    typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
+  /**
+   * Alias for vtk grid object for visualization.
+   */
+  typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
 
-    /**
-     * Functions container shared pointer type.
-     */
-    typedef std::shared_ptr<FunctionsContainer> FunContPtr_;
+  /**
+   * Functions container shared pointer type.
+   */
+  typedef std::shared_ptr<FunctionsContainer> FunContPtr_;
 
-    /**
-     * Vtk solid grid generator type.
-     */
-    typedef std::shared_ptr<VtkIgaSolidGridGenerator<dim, codim>> SolGeneratorPtr_;
+  /**
+   * Vtk solid grid generator type.
+   */
+  typedef std::shared_ptr<VtkIgaSolidGridGenerator<dim, codim>> SolGeneratorPtr_;
 
-    /**
-     * Vtk knot grid generator type.
-     */
-    typedef std::shared_ptr<VtkIgaKnotGridGenerator<dim, codim>> KntGeneratorPtr_;
+  /**
+   * Vtk knot grid generator type.
+   */
+  typedef std::shared_ptr<VtkIgaKnotGridGenerator<dim, codim>> KntGeneratorPtr_;
 
-    /**
-     * Vtk control grid generator type.
-     */
-    typedef std::shared_ptr<VtkIgaControlGridGenerator<dim, codim>> CtrGeneratorPtr_;
+  /**
+   * Vtk control grid generator type.
+   */
+  typedef std::shared_ptr<VtkIgaControlGridGenerator<dim, codim>> CtrGeneratorPtr_;
 
-    /**
-     * Constructor for grids.
-     */
-    VtkIgaGridGenerator(const MapFunPtr_ mapping,
-                     const GridInfoPtr_ solid_grid_info,
-                     const GridInfoPtr_ knot_grid_info,
-                     const ControlGridInfoPtr_ control_grid_info,
-                     const FunContPtr_ func_container,
-                     const bool is_physical);
+  /**
+   * Constructor for grids.
+   */
+  VtkIgaGridGenerator(const MapFunPtr_ mapping,
+                      const GridInfoPtr_ solid_grid_info,
+                      const GridInfoPtr_ knot_grid_info,
+                      const ControlGridInfoPtr_ control_grid_info,
+                      const FunContPtr_ func_container,
+                      const bool is_physical);
 
-    /**
-     * Constructor, copy and assignment operators not allowed to be used.
-     */
-    VtkIgaGridGenerator() = delete;
-    VtkIgaGridGenerator(const VtkIgaGridGenerator &) = delete;
-    VtkIgaGridGenerator(const VtkIgaGridGenerator &&) = delete;
-    void operator=(const VtkIgaGridGenerator &) = delete;
-    void operator=(const VtkIgaGridGenerator &&) = delete;
+  /**
+   * Constructor, copy and assignment operators not allowed to be used.
+   */
+  VtkIgaGridGenerator() = delete;
+  VtkIgaGridGenerator(const VtkIgaGridGenerator &) = delete;
+  VtkIgaGridGenerator(const VtkIgaGridGenerator &&) = delete;
+  void operator=(const VtkIgaGridGenerator &) = delete;
+  void operator=(const VtkIgaGridGenerator &&) = delete;
 
 public:
 
-    /**
-     * Creates a new instance of the class and returns it wrapped into
-     * a shared pointer.
-     *
-     * @Note: this is for physical grids.
-     */
-    static SelfPtr_ create_physical (const MapFunPtr_ mapping,
-                                     const GridInfoPtr_ solid_grid_info,
-                                     const GridInfoPtr_ knot_grid_info,
-                                     const ControlGridInfoPtr_ control_grid_info,
-                                     const FunContPtr_ func_container);
+  /**
+   * Creates a new instance of the class and returns it wrapped into
+   * a shared pointer.
+   *
+   * @Note: this is for physical grids.
+   */
+  static SelfPtr_ create_physical(const MapFunPtr_ mapping,
+                                  const GridInfoPtr_ solid_grid_info,
+                                  const GridInfoPtr_ knot_grid_info,
+                                  const ControlGridInfoPtr_ control_grid_info,
+                                  const FunContPtr_ func_container);
 
-    /**
-     * Creates a new instance of the class and returns it wrapped into
-     * a shared pointer.
-     *
-     * @Note: this is for parametric grids.
-     */
-    static SelfPtr_ create_parametric (const MapFunPtr_ mapping,
-                                       const GridInfoPtr_ solid_grid_info,
-                                       const GridInfoPtr_ knot_grid_info,
-                                       const FunContPtr_ func_container);
+  /**
+   * Creates a new instance of the class and returns it wrapped into
+   * a shared pointer.
+   *
+   * @Note: this is for parametric grids.
+   */
+  static SelfPtr_ create_parametric(const MapFunPtr_ mapping,
+                                    const GridInfoPtr_ solid_grid_info,
+                                    const GridInfoPtr_ knot_grid_info,
+                                    const FunContPtr_ func_container);
 
-    /**
-     * Updates the grid information for the solid, knot and control grids.
-     *
-     * @Note: this function is for physical grids.
-     */
-    void update (const bool solid_updated,
-                 const bool knot_updated,
-                 const bool control_updated);
+  /**
+   * Updates the grid information for the solid, knot and control grids.
+   *
+   * @Note: this function is for physical grids.
+   */
+  void update(const bool solid_updated,
+              const bool knot_updated,
+              const bool control_updated);
 
-    /**
-     * Updates the grid information for the solid and knot.
-     *
-     * @Note: this function is for parametric grids.
-     */
-    void update (const bool solid_updated,
-                 const bool knot_updated);
+  /**
+   * Updates the grid information for the solid and knot.
+   *
+   * @Note: this function is for parametric grids.
+   */
+  void update(const bool solid_updated,
+              const bool knot_updated);
 
-    /**
-     * Computes (if necessary) and returns the vtk grid the solid geometry.
-     */
-    VtkGridPtr_ get_solid_grid ();
+  /**
+   * Computes (if necessary) and returns the vtk grid the solid geometry.
+   */
+  VtkGridPtr_ get_solid_grid();
 
-    /**
-     * Computes (if necessary) and returns the vtk grid the knot geometry.
-     */
-    VtkGridPtr_ get_knot_grid ();
+  /**
+   * Computes (if necessary) and returns the vtk grid the knot geometry.
+   */
+  VtkGridPtr_ get_knot_grid();
 
-    /**
-     * Computes (if necessary) and returns the vtk grid the control geometry.
-     */
-    VtkGridPtr_ get_control_grid ();
+  /**
+   * Computes (if necessary) and returns the vtk grid the control geometry.
+   */
+  VtkGridPtr_ get_control_grid();
 
 private:
 
-    /**
-     * Mapping function for which the grids are built.
-     */
-    const MapFunPtr_ map_fun_;
+  /**
+   * Mapping function for which the grids are built.
+   */
+  const MapFunPtr_ map_fun_;
 
-    /**
-     * Grids information for the solid grid.
-     */
-    GridInfoPtr_ solid_grid_info_;
+  /**
+   * Grids information for the solid grid.
+   */
+  GridInfoPtr_ solid_grid_info_;
 
-    /**
-     * Grids information for the knot grid.
-     */
-    GridInfoPtr_ knot_grid_info_;
+  /**
+   * Grids information for the knot grid.
+   */
+  GridInfoPtr_ knot_grid_info_;
 
-    /**
-     * Grids information for the knot grid.
-     */
-    ControlGridInfoPtr_ control_grid_info_;
+  /**
+   * Grids information for the knot grid.
+   */
+  ControlGridInfoPtr_ control_grid_info_;
 
-    /**
-     * Container for the mapping and field functions.
-     */
-    const FunContPtr_ funcs_container_;
+  /**
+   * Container for the mapping and field functions.
+   */
+  const FunContPtr_ funcs_container_;
 
 //    /**
 //     * Number of visualization vtk cells in each direction for every Bezier
@@ -215,41 +215,41 @@ private:
 //     */
 //    TensorSize<dim> n_knot_cells_;
 
-    /**
-     * Vtk solid grid smart pointer.
-     */
-    VtkGridPtr_ solid_grid_;
+  /**
+   * Vtk solid grid smart pointer.
+   */
+  VtkGridPtr_ solid_grid_;
 
-    /**
-     * Vtk knot grid smart pointer.
-     */
-    VtkGridPtr_ knot_grid_;
+  /**
+   * Vtk knot grid smart pointer.
+   */
+  VtkGridPtr_ knot_grid_;
 
-    /**
-     * Vtk control grid smart pointer.
-     */
-    VtkGridPtr_ control_grid_;
+  /**
+   * Vtk control grid smart pointer.
+   */
+  VtkGridPtr_ control_grid_;
 
-    /**
-     * Flag for indicating if the generator corresponds to physical grids,
-     * or not.
-     */
-    bool is_physical_;
+  /**
+   * Flag for indicating if the generator corresponds to physical grids,
+   * or not.
+   */
+  bool is_physical_;
 
-    /**
-     * Flag for indicating if the vtk solid grid must be recomputed.
-     */
-    bool recompute_solid_;
+  /**
+   * Flag for indicating if the vtk solid grid must be recomputed.
+   */
+  bool recompute_solid_;
 
-    /**
-     * Flag for indicating if the vtk knot grid must be recomputed.
-     */
-    bool recompute_knot_;
+  /**
+   * Flag for indicating if the vtk knot grid must be recomputed.
+   */
+  bool recompute_knot_;
 
-    /**
-     * Flag for indicating if the vtk control grid must be recomputed.
-     */
-    bool recompute_control_;
+  /**
+   * Flag for indicating if the vtk control grid must be recomputed.
+   */
+  bool recompute_control_;
 
 private:
 //    /**
@@ -258,20 +258,20 @@ private:
 //     */
 //    static TensorSize<dim> create_n_cells (GridInfoPtr_ grid_info);
 
-    /**
-     * Computes the vtk grid the solid geometry.
-     */
-    void compute_solid_grid ();
+  /**
+   * Computes the vtk grid the solid geometry.
+   */
+  void compute_solid_grid();
 
-    /**
-     * Computes the vtk grid the knot geometry.
-     */
-    void compute_knot_grid ();
+  /**
+   * Computes the vtk grid the knot geometry.
+   */
+  void compute_knot_grid();
 
-    /**
-     * Computes the vtk grid the control geometry.
-     */
-    void compute_control_grid ();
+  /**
+   * Computes the vtk grid the control geometry.
+   */
+  void compute_control_grid();
 
 };
 

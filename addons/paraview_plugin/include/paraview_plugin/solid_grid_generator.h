@@ -45,225 +45,225 @@ template <int dim, int codim>
 class VtkIgaSolidGridGenerator
 {
 private:
-    /**
-     * Space dimension.
-     */
-    static const int space_dim = dim + codim;
+  /**
+   * Space dimension.
+   */
+  static const int space_dim = dim + codim;
 
-    /**
-     * Self type.
-     */
-    typedef VtkIgaSolidGridGenerator Self_;
+  /**
+   * Self type.
+   */
+  typedef VtkIgaSolidGridGenerator Self_;
 
-    /**
-     * Self shared poitner type.
-     */
-    typedef std::shared_ptr<Self_> SelfPtr_;
+  /**
+   * Self shared poitner type.
+   */
+  typedef std::shared_ptr<Self_> SelfPtr_;
 
-    /**
-     * Alias for a shared pointer of a map function type.
-     */
-    typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
+  /**
+   * Alias for a shared pointer of a map function type.
+   */
+  typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
 
-    /**
-     * Alias for mesh grid information shared pointer.
-     */
-    typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
+  /**
+   * Alias for mesh grid information shared pointer.
+   */
+  typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
 
-    /**
-     * Alias for vtk grid object for visualization.
-     */
-    typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
+  /**
+   * Alias for vtk grid object for visualization.
+   */
+  typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
 
-    /**
-     * Quadrature container shared pointer type.
-     */
-    typedef std::shared_ptr<Quadrature<dim>>  QuadPtr_t_;
+  /**
+   * Quadrature container shared pointer type.
+   */
+  typedef std::shared_ptr<Quadrature<dim>>  QuadPtr_t_;
 
-    /**
-     * Functions container shared pointer type.
-     */
-    typedef typename std::shared_ptr<FunctionsContainer> FunContPtr_t_;
+  /**
+   * Functions container shared pointer type.
+   */
+  typedef typename std::shared_ptr<FunctionsContainer> FunContPtr_t_;
 
-    /**
-     * Constructor.
-     */
-    VtkIgaSolidGridGenerator(const MapFunPtr_ mapping,
-                          const GridInfoPtr_ grid_info,
-                          const FunContPtr_t_ func_container);
+  /**
+   * Constructor.
+   */
+  VtkIgaSolidGridGenerator(const MapFunPtr_ mapping,
+                           const GridInfoPtr_ grid_info,
+                           const FunContPtr_t_ func_container);
 
-    /**
-     * Constructor, copy and assignment operators not allowed to be used.
-     */
-    VtkIgaSolidGridGenerator() = delete;
-    VtkIgaSolidGridGenerator(const VtkIgaSolidGridGenerator &) = delete;
-    VtkIgaSolidGridGenerator(const VtkIgaSolidGridGenerator &&) = delete;
-    void operator=(const VtkIgaSolidGridGenerator &) = delete;
-    void operator=(const VtkIgaSolidGridGenerator &&) = delete;
+  /**
+   * Constructor, copy and assignment operators not allowed to be used.
+   */
+  VtkIgaSolidGridGenerator() = delete;
+  VtkIgaSolidGridGenerator(const VtkIgaSolidGridGenerator &) = delete;
+  VtkIgaSolidGridGenerator(const VtkIgaSolidGridGenerator &&) = delete;
+  void operator=(const VtkIgaSolidGridGenerator &) = delete;
+  void operator=(const VtkIgaSolidGridGenerator &&) = delete;
 
 
 public:
 
-    /**
-     * Creates and returns the vtk grid for the visualization.
-     */
-    static VtkGridPtr_ get_grid (const MapFunPtr_ mapping,
-                                 const GridInfoPtr_ grid_info,
-                                 const FunContPtr_t_ func_container);
+  /**
+   * Creates and returns the vtk grid for the visualization.
+   */
+  static VtkGridPtr_ get_grid(const MapFunPtr_ mapping,
+                              const GridInfoPtr_ grid_info,
+                              const FunContPtr_t_ func_container);
 
 private:
 
-    /**
-     * Creates and returns the vtk grid for the visualization.
-     */
-    VtkGridPtr_ create_grid () const;
+  /**
+   * Creates and returns the vtk grid for the visualization.
+   */
+  VtkGridPtr_ create_grid() const;
 
-    /**
-     * Shared pointer of the mapping function representing the geometry.
-     */
-    const MapFunPtr_ map_fun_;
+  /**
+   * Shared pointer of the mapping function representing the geometry.
+   */
+  const MapFunPtr_ map_fun_;
 
-    /**
-     * Shared pointer of the control grid information for representing the
-     * geometry.
-     */
-    const GridInfoPtr_ grid_info_;
+  /**
+   * Shared pointer of the control grid information for representing the
+   * geometry.
+   */
+  const GridInfoPtr_ grid_info_;
 
-    /**
-     * Shared pointer of the function container.
-     */
-     const FunContPtr_t_ funcs_container_;
+  /**
+   * Shared pointer of the function container.
+   */
+  const FunContPtr_t_ funcs_container_;
 
-    /**
-     * Number of vtk cells per direction in each Bezier element.
-     */
-    TensorSize <dim> n_vis_elements_;
+  /**
+   * Number of vtk cells per direction in each Bezier element.
+   */
+  TensorSize <dim> n_vis_elements_;
 
-    /**
-     * Visualization quadrature.
-     */
-    QuadPtr_t_ quad_;
+  /**
+   * Visualization quadrature.
+   */
+  QuadPtr_t_ quad_;
 
-    /**
-     * Points map.
-     */
-    SafeSTLVector <SafeSTLVector <Index>> points_map_;
+  /**
+   * Points map.
+   */
+  SafeSTLVector <SafeSTLVector <Index>> points_map_;
 
-    /**
-     * Points mask.
-     */
-    SafeSTLVector <Index> points_mask_;
+  /**
+   * Points mask.
+   */
+  SafeSTLVector <Index> points_mask_;
 
-    /**
-     * Connectivity for the vtk cells of a single Bezier element.
-     */
-    SafeSTLVector<SafeSTLVector<Index>> connectivity_;
+  /**
+   * Connectivity for the vtk cells of a single Bezier element.
+   */
+  SafeSTLVector<SafeSTLVector<Index>> connectivity_;
 
-    /**
-     * Total number of points in the visualization.
-     */
-    Size n_total_points_;
-
-
-    /**
-     * Creates and returns the structured vtk grid for the visualization.
-     */
-    VtkGridPtr_ create_grid_vts () const;
-
-    /**
-     * Creates and returns the unstructured vtk grid for the visualization
-     */
-    VtkGridPtr_
-    create_grid_vtu () const;
-
-    /**
-     * Creates the points for the visualization grids.
-     * (Both, structured and unstructured).
-     */
-    vtkSmartPointer<vtkPoints> create_points () const;
-
-    /**
-     * Initializes the points map and mask, and the total number of points in
-     * the visualization.
-     */
-    void init_points_info ();
-
-    /**
-     * Creates the connectivity of the VTK linear cells for a single
-     * Bezier element.
-     */
-    void create_linear_element_connectivity ();
-
-    /**
-     * Creates the connectivity of the VTK quadratic cells for a single
-     * Bezier element. For the 1D case.
-     */
-    template <int aux_dim>
-    void create_quadratic_element_connectivity
-      (typename std::enable_if_t<aux_dim == 1>* = 0);
-
-    /**
-     * Creates the connectivity of the VTK quadratic cells for a single
-     * Bezier element. For the 2D case.
-     */
-    template <int aux_dim>
-    void create_quadratic_element_connectivity
-      (typename std::enable_if_t<aux_dim == 2>* = 0);
-
-    /**
-     * Creates the connectivity of the VTK quadratic cells for a single
-     * Bezier element. For the 3D case.
-     */
-    template <int aux_dim>
-    void create_quadratic_element_connectivity
-      (typename std::enable_if_t<aux_dim == 3>* = 0);
-
-    /**
-     * Creates the quadrature needed for the visualization.
-     */
-    void create_visualization_quadrature();
-
-    /**
-     * Creates the point data associated to the mapping.
-     */
-    template <int range, int rank>
-    void create_point_data (vtkPointData * const point_data) const;
-
-    /**
-     * Auxiliar method for creating the point data associated to the mapping
-     * for dim = 1 and codim = 0.
-     */
-    template <int aux_dim, int aux_codim>
-    void
-    create_point_data_dim_codim(vtkPointData *const data,
-                                typename std::enable_if_t<(aux_dim == 1 && aux_codim == 0)>* = 0) const;
-
-    /**
-     * Auxiliar method for creating the point data associated to the mapping
-     * for the cases that are not dim = 1 and codim = 0.
-     */
-    template <int aux_dim, int aux_codim>
-    void
-    create_point_data_dim_codim(vtkPointData *const data,
-                                typename std::enable_if_t<!(aux_dim == 1 && aux_codim == 0)>* = 0) const;
+  /**
+   * Total number of points in the visualization.
+   */
+  Size n_total_points_;
 
 
-    /**
-     * Copies data from a igatools tensor to a vtk tuple like structure.
-     */
-    void tensor_to_tuple(const Tdouble t, Real *const tuple, int &pos) const;
+  /**
+   * Creates and returns the structured vtk grid for the visualization.
+   */
+  VtkGridPtr_ create_grid_vts() const;
 
-    /**
-     * Copies data from a igatools tensor to a vtk tuple like structure.
-     */
-    template <class Tensor>
-    void tensor_to_tuple(const Tensor &t, Real *const tuple, int &pos) const;
+  /**
+   * Creates and returns the unstructured vtk grid for the visualization
+   */
+  VtkGridPtr_
+  create_grid_vtu() const;
 
-    /**
-     * Copies data from a igatools tensor to a vtk tuple like structure.
-     */
-    template <class Tensor>
-    void tensor_to_tuple(const Tensor &t, Real *const tuple) const;
+  /**
+   * Creates the points for the visualization grids.
+   * (Both, structured and unstructured).
+   */
+  vtkSmartPointer<vtkPoints> create_points() const;
+
+  /**
+   * Initializes the points map and mask, and the total number of points in
+   * the visualization.
+   */
+  void init_points_info();
+
+  /**
+   * Creates the connectivity of the VTK linear cells for a single
+   * Bezier element.
+   */
+  void create_linear_element_connectivity();
+
+  /**
+   * Creates the connectivity of the VTK quadratic cells for a single
+   * Bezier element. For the 1D case.
+   */
+  template <int aux_dim>
+  void create_quadratic_element_connectivity
+  (typename std::enable_if_t<aux_dim == 1> * = 0);
+
+  /**
+   * Creates the connectivity of the VTK quadratic cells for a single
+   * Bezier element. For the 2D case.
+   */
+  template <int aux_dim>
+  void create_quadratic_element_connectivity
+  (typename std::enable_if_t<aux_dim == 2> * = 0);
+
+  /**
+   * Creates the connectivity of the VTK quadratic cells for a single
+   * Bezier element. For the 3D case.
+   */
+  template <int aux_dim>
+  void create_quadratic_element_connectivity
+  (typename std::enable_if_t<aux_dim == 3> * = 0);
+
+  /**
+   * Creates the quadrature needed for the visualization.
+   */
+  void create_visualization_quadrature();
+
+  /**
+   * Creates the point data associated to the mapping.
+   */
+  template <int range, int rank>
+  void create_point_data(vtkPointData *const point_data) const;
+
+  /**
+   * Auxiliar method for creating the point data associated to the mapping
+   * for dim = 1 and codim = 0.
+   */
+  template <int aux_dim, int aux_codim>
+  void
+  create_point_data_dim_codim(vtkPointData *const data,
+                              typename std::enable_if_t<(aux_dim == 1 && aux_codim == 0)>* = 0) const;
+
+  /**
+   * Auxiliar method for creating the point data associated to the mapping
+   * for the cases that are not dim = 1 and codim = 0.
+   */
+  template <int aux_dim, int aux_codim>
+  void
+  create_point_data_dim_codim(vtkPointData *const data,
+                              typename std::enable_if_t<!(aux_dim == 1 && aux_codim == 0)>* = 0) const;
+
+
+  /**
+   * Copies data from a igatools tensor to a vtk tuple like structure.
+   */
+  void tensor_to_tuple(const Tdouble t, Real *const tuple, int &pos) const;
+
+  /**
+   * Copies data from a igatools tensor to a vtk tuple like structure.
+   */
+  template <class Tensor>
+  void tensor_to_tuple(const Tensor &t, Real *const tuple, int &pos) const;
+
+  /**
+   * Copies data from a igatools tensor to a vtk tuple like structure.
+   */
+  template <class Tensor>
+  void tensor_to_tuple(const Tensor &t, Real *const tuple) const;
 
 };
 

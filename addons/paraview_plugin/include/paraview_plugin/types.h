@@ -30,17 +30,17 @@ IGA_NAMESPACE_OPEN
 */
 enum class vtkGridType : std::int64_t
 {
-    /** VTK structured grid */
-    Structured          =    1 << 0,
+  /** VTK structured grid */
+  Structured          =    1 << 0,
 
-    /** VTK unstructure grid with linear cells */
-    UnstructuredLinear  =    1 << 1,
+  /** VTK unstructure grid with linear cells */
+  UnstructuredLinear  =    1 << 1,
 
-    /** VTK unstructure grid with quadratic cells */
-    UnstructuredQuadratic  = 1 << 2,
+  /** VTK unstructure grid with quadratic cells */
+  UnstructuredQuadratic  = 1 << 2,
 
-    /** None */
-    None                   = 1 << 3,
+  /** None */
+  None                   = 1 << 3,
 };
 
 IGA_NAMESPACE_CLOSE

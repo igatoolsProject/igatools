@@ -38,92 +38,92 @@ template <int dim, int codim>
 class VtkIgaKnotGridGenerator
 {
 private:
-    /**
-     * Space dimension.
-     */
-    static const int space_dim = dim + codim;
+  /**
+   * Space dimension.
+   */
+  static const int space_dim = dim + codim;
 
-    /**
-     * Self type.
-     */
-    typedef VtkIgaKnotGridGenerator Self_;
+  /**
+   * Self type.
+   */
+  typedef VtkIgaKnotGridGenerator Self_;
 
-    /**
-     * Self shared poitner type.
-     */
-    typedef std::shared_ptr<Self_> SelfPtr_;
+  /**
+   * Self shared poitner type.
+   */
+  typedef std::shared_ptr<Self_> SelfPtr_;
 
-    /**
-     * Alias for a shared pointer of a map function type.
-     */
-    typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
+  /**
+   * Alias for a shared pointer of a map function type.
+   */
+  typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
 
-    /**
-     * Alias for mesh grid information shared pointer.
-     */
-    typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
+  /**
+   * Alias for mesh grid information shared pointer.
+   */
+  typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
 
-    /**
-     * Alias for vtk grid object for visualization.
-     */
-    typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
+  /**
+   * Alias for vtk grid object for visualization.
+   */
+  typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
 
-    /**
-     * Constructor.
-     */
-    VtkIgaKnotGridGenerator(const MapFunPtr_ mapping,
-                            const GridInfoPtr_ grid_info);
+  /**
+   * Constructor.
+   */
+  VtkIgaKnotGridGenerator(const MapFunPtr_ mapping,
+                          const GridInfoPtr_ grid_info);
 
-    /**
-     * Constructor, copy and assignment operators not allowed to be used.
-     */
-    VtkIgaKnotGridGenerator() = delete;
-    VtkIgaKnotGridGenerator(const VtkIgaKnotGridGenerator &) = delete;
-    VtkIgaKnotGridGenerator(const VtkIgaKnotGridGenerator &&) = delete;
-    void operator=(const VtkIgaKnotGridGenerator &) = delete;
-    void operator=(const VtkIgaKnotGridGenerator &&) = delete;
+  /**
+   * Constructor, copy and assignment operators not allowed to be used.
+   */
+  VtkIgaKnotGridGenerator() = delete;
+  VtkIgaKnotGridGenerator(const VtkIgaKnotGridGenerator &) = delete;
+  VtkIgaKnotGridGenerator(const VtkIgaKnotGridGenerator &&) = delete;
+  void operator=(const VtkIgaKnotGridGenerator &) = delete;
+  void operator=(const VtkIgaKnotGridGenerator &&) = delete;
 
 
 public:
 
-    /**
-     * Creates and returns the vtk grid for the visualization.
-     */
-    static VtkGridPtr_ get_grid (const MapFunPtr_ mapping,
-                                 const GridInfoPtr_ grid_info);
+  /**
+   * Creates and returns the vtk grid for the visualization.
+   */
+  static VtkGridPtr_ get_grid(const MapFunPtr_ mapping,
+                              const GridInfoPtr_ grid_info);
 
 private:
 
-    /**
-     * Creates and returns the vtk grid for the visualization.
-     */
-    VtkGridPtr_ create_grid () const;
+  /**
+   * Creates and returns the vtk grid for the visualization.
+   */
+  VtkGridPtr_ create_grid() const;
 
-    /**
-     * Shared pointer of the mapping function representing the geometry.
-     */
-    const MapFunPtr_ map_fun_;
+  /**
+   * Shared pointer of the mapping function representing the geometry.
+   */
+  const MapFunPtr_ map_fun_;
 
-    /**
-     * Shared pointer of the control grid information for representing the
-     * geometry.
-     */
-    const GridInfoPtr_ grid_info_;
+  /**
+   * Shared pointer of the control grid information for representing the
+   * geometry.
+   */
+  const GridInfoPtr_ grid_info_;
 
-    /**
-     * Creates and returns the vtk grid for the visualization for 1D mappings.
-     */
-    template<int aux_dim>
-    EnableIf<aux_dim == 1, VtkGridPtr_>
-    create_grid () const;
+  /**
+   * Creates and returns the vtk grid for the visualization for 1D mappings.
+   */
+  template<int aux_dim>
+  EnableIf<aux_dim == 1, VtkGridPtr_>
+  create_grid() const;
 
-    /**
-     * Creates and returns the vtk grid for the visualization for 2D and 3D
-     *  mappings.
-     */
-    template<int aux_dim>
-    EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
-    create_grid () const;
+  /**
+   * Creates and returns the vtk grid for the visualization for 2D and 3D
+   *  mappings.
+   */
+  template<int aux_dim>
+  EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
+  create_grid() const;
 
 };
 

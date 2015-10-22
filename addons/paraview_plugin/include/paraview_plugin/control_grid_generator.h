@@ -39,99 +39,99 @@ template <int dim, int codim>
 class VtkIgaControlGridGenerator
 {
 private:
-    /**
-     * Space dimension.
-     */
-    static const int space_dim = dim + codim;
+  /**
+   * Space dimension.
+   */
+  static const int space_dim = dim + codim;
 
-    /**
-     * Self type.
-     */
-    typedef VtkIgaControlGridGenerator Self_;
+  /**
+   * Self type.
+   */
+  typedef VtkIgaControlGridGenerator Self_;
 
-    /**
-     * Self shared poitner type.
-     */
-    typedef std::shared_ptr<Self_> SelfPtr_;
+  /**
+   * Self shared poitner type.
+   */
+  typedef std::shared_ptr<Self_> SelfPtr_;
 
-    /**
-     * Alias for a shared pointer of a map function type.
-     */
-    typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
+  /**
+   * Alias for a shared pointer of a map function type.
+   */
+  typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
 
-    /**
-     * Alias for mesh grid information shared pointer.
-     */
-    typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
+  /**
+   * Alias for mesh grid information shared pointer.
+   */
+  typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
 
-    /**
-     * Alias for vtk grid object for visualization.
-     */
-    typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
+  /**
+   * Alias for vtk grid object for visualization.
+   */
+  typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
 
-    /**
-     * Alias for a ig function type.
-     */
-    typedef IgFunction<dim, 0, space_dim, 1> IgFun_;
+  /**
+   * Alias for a ig function type.
+   */
+  typedef IgFunction<dim, 0, space_dim, 1> IgFun_;
 
-    /**
-     * Alias for a shared pointer of a ig function type.
-     */
-    typedef std::shared_ptr<IgFun_> IgFunPtr_;
+  /**
+   * Alias for a shared pointer of a ig function type.
+   */
+  typedef std::shared_ptr<IgFun_> IgFunPtr_;
 
-    /**
-     * Constructor.
-     */
-    VtkIgaControlGridGenerator(const MapFunPtr_ mapping,
-                            const ControlGridInfoPtr_ grid_info);
+  /**
+   * Constructor.
+   */
+  VtkIgaControlGridGenerator(const MapFunPtr_ mapping,
+                             const ControlGridInfoPtr_ grid_info);
 
-    /**
-     * Constructor, copy and assignment operators not allowed to be used.
-     */
-    VtkIgaControlGridGenerator() = delete;
-    VtkIgaControlGridGenerator(const VtkIgaControlGridGenerator &) = delete;
-    VtkIgaControlGridGenerator(const VtkIgaControlGridGenerator &&) = delete;
-    void operator=(const VtkIgaControlGridGenerator &) = delete;
-    void operator=(const VtkIgaControlGridGenerator &&) = delete;
+  /**
+   * Constructor, copy and assignment operators not allowed to be used.
+   */
+  VtkIgaControlGridGenerator() = delete;
+  VtkIgaControlGridGenerator(const VtkIgaControlGridGenerator &) = delete;
+  VtkIgaControlGridGenerator(const VtkIgaControlGridGenerator &&) = delete;
+  void operator=(const VtkIgaControlGridGenerator &) = delete;
+  void operator=(const VtkIgaControlGridGenerator &&) = delete;
 
 
 public:
 
-    /**
-     * Creates and returns the vtk grid for the visualization.
-     */
-    static VtkGridPtr_ get_grid (const MapFunPtr_ mapping,
-                                 const ControlGridInfoPtr_ grid_info);
+  /**
+   * Creates and returns the vtk grid for the visualization.
+   */
+  static VtkGridPtr_ get_grid(const MapFunPtr_ mapping,
+                              const ControlGridInfoPtr_ grid_info);
 
 private:
 
-    /**
-     * Creates and returns the vtk grid for the visualization.
-     */
-    VtkGridPtr_ create_grid () const;
+  /**
+   * Creates and returns the vtk grid for the visualization.
+   */
+  VtkGridPtr_ create_grid() const;
 
-    /**
-     * Shared pointer of the mapping function representing the geometry.
-     */
-    const IgFunPtr_ ig_fun_;
+  /**
+   * Shared pointer of the mapping function representing the geometry.
+   */
+  const IgFunPtr_ ig_fun_;
 
-    /**
-     * Shared pointer of the control grid information for representing the
-     * geometry.
-     */
-    const ControlGridInfoPtr_ grid_info_;
+  /**
+   * Shared pointer of the control grid information for representing the
+   * geometry.
+   */
+  const ControlGridInfoPtr_ grid_info_;
 
-    /**
-     * Creates and returns the vtk structured grid for the visualization.
-     */
-    VtkGridPtr_
-    create_grid_vts(const vtkSmartPointer<vtkPoints> points) const;
+  /**
+   * Creates and returns the vtk structured grid for the visualization.
+   */
+  VtkGridPtr_
+  create_grid_vts(const vtkSmartPointer<vtkPoints> points) const;
 
-    /**
-     * Creates and returns the vtk unstructured grid for the visualization.
-     */
-    VtkGridPtr_
-    create_grid_vtu(const vtkSmartPointer<vtkPoints> points) const;
+  /**
+   * Creates and returns the vtk unstructured grid for the visualization.
+   */
+  VtkGridPtr_
+  create_grid_vtu(const vtkSmartPointer<vtkPoints> points) const;
 
 };
 

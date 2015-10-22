@@ -47,24 +47,24 @@
 
 #ifdef USE_CEREAL
 
-#include <cereal/cereal.hpp>
-#include <cereal/access.hpp>
-#include <cereal/types/base_class.hpp>
-#include <cereal/types/vector.hpp>
-#include <cereal/types/array.hpp>
-#include <cereal/types/set.hpp>
-#include <cereal/types/map.hpp>
-#include <cereal/types/tuple.hpp>
-#include <cereal/types/utility.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/polymorphic.hpp>
+#include <igatools/contrib/cereal/include/cereal/cereal.hpp>
+#include <igatools/contrib/cereal/include/cereal/access.hpp>
+#include <igatools/contrib/cereal/include/cereal/types/base_class.hpp>
+#include <igatools/contrib/cereal/include/cereal/types/vector.hpp>
+#include <igatools/contrib/cereal/include/cereal/types/array.hpp>
+#include <igatools/contrib/cereal/include/cereal/types/set.hpp>
+#include <igatools/contrib/cereal/include/cereal/types/map.hpp>
+#include <igatools/contrib/cereal/include/cereal/types/tuple.hpp>
+#include <igatools/contrib/cereal/include/cereal/types/utility.hpp>
+#include <igatools/contrib/cereal/include/cereal/types/memory.hpp>
+#include <igatools/contrib/cereal/include/cereal/types/polymorphic.hpp>
 
 //#ifndef NDEBUG
-#include <cereal/archives/xml.hpp>
+#include <igatools/contrib/cereal/include/cereal/archives/xml.hpp>
 using OArchiveCereal = cereal::XMLOutputArchive;
 using IArchiveCereal = cereal::XMLInputArchive;
 //#else
-//#include <cereal/archives/binary.hpp>
+//#include <igatools/contrib/cereal/include/cereal/archives/binary.hpp>
 //using OArchiveCereal = cereal::BinaryOutputArchive;
 //using IArchiveCereal = cereal::BinaryInputArchive;
 //#endif // NDEBUG

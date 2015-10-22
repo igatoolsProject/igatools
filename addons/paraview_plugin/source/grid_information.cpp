@@ -24,16 +24,16 @@
 IGA_NAMESPACE_OPEN
 
 VtkGridInformation::
-VtkGridInformation (const NumCellsContainer_ &num_cells,
-                    const vtkGridType &grid_type)
-    :
-        grid_type_ (grid_type),
-        cells_per_element_(num_cells)
+VtkGridInformation(const NumCellsContainer_ &num_cells,
+                   const vtkGridType &grid_type)
+  :
+  grid_type_(grid_type),
+  cells_per_element_(num_cells)
 {
 #ifndef NDEBUG
-    for (const auto &it : num_cells)
-        Assert(it > 0, ExcMessage("The number of cells per visualization "
-                                  "element must be > 0 in every direction."));
+  for (const auto &it : num_cells)
+    Assert(it > 0, ExcMessage("The number of cells per visualization "
+                              "element must be > 0 in every direction."));
 #endif
 };
 
@@ -41,10 +41,10 @@ VtkGridInformation (const NumCellsContainer_ &num_cells,
 
 auto
 VtkGridInformation::
-create (const NumCellsContainer_ &num_cells,
-        const vtkGridType &grid_type) -> SelfPtr_
+create(const NumCellsContainer_ &num_cells,
+       const vtkGridType &grid_type) -> SelfPtr_
 {
-    return SelfPtr_ (new Self_ (num_cells, grid_type));
+  return SelfPtr_(new Self_(num_cells, grid_type));
 }
 
 
@@ -53,79 +53,79 @@ bool
 VtkGridInformation::
 update(SelfPtr_ grid_info)
 {
-    if (grid_type_ != grid_info->get_grid_type())
-    {
-        grid_type_ = grid_info->get_grid_type();
-        return true;
-    }
+  if (grid_type_ != grid_info->get_grid_type())
+  {
+    grid_type_ = grid_info->get_grid_type();
+    return true;
+  }
 
-    const auto &n_cells = grid_info->get_num_cells_per_element();
-    for (int dir = 0; dir < 3; ++dir)
+  const auto &n_cells = grid_info->get_num_cells_per_element();
+  for (int dir = 0; dir < 3; ++dir)
+  {
+    if (n_cells[dir] != cells_per_element_[dir])
     {
-        if (n_cells[dir] != cells_per_element_[dir])
-        {
-            cells_per_element_ = n_cells;
-            return true;
-        }
+      cells_per_element_ = n_cells;
+      return true;
     }
+  }
 
-    return false;
+  return false;
 }
 
 
 
 
-const vtkGridType&
+const vtkGridType &
 VtkGridInformation::
-get_grid_type () const
+get_grid_type() const
 {
-    return grid_type_;
+  return grid_type_;
 };
 
 
 
 bool
 VtkGridInformation::
-is_structured () const
+is_structured() const
 {
-    return grid_type_ == vtkGridType::Structured;
+  return grid_type_ == vtkGridType::Structured;
 };
 
 
 
 bool
 VtkGridInformation::
-is_quadratic () const
+is_quadratic() const
 {
-    return grid_type_ == vtkGridType::UnstructuredQuadratic;
+  return grid_type_ == vtkGridType::UnstructuredQuadratic;
 };
 
 
 
 auto
 VtkGridInformation::
-get_num_cells_per_element () const ->
-const NumCellsContainer_&
+get_num_cells_per_element() const ->
+const NumCellsContainer_ &
 {
-    return cells_per_element_;
+  return cells_per_element_;
 };
 
 
 
 VtkControlGridInformation::
-VtkControlGridInformation (const bool structured)
-    :
-        grid_type_ (structured ? vtkGridType::Structured :
-                                 vtkGridType::UnstructuredLinear)
+VtkControlGridInformation(const bool structured)
+  :
+  grid_type_(structured ? vtkGridType::Structured :
+            vtkGridType::UnstructuredLinear)
 {}
 
 
 
 auto
 VtkControlGridInformation::
-create (const bool structured) -> SelfPtr_
+create(const bool structured) -> SelfPtr_
 {
-    return SelfPtr_ (new Self_(structured));
+  return SelfPtr_(new Self_(structured));
 }
 
 
@@ -134,32 +134,32 @@ bool
 VtkControlGridInformation::
 update(SelfPtr_ grid_info)
 {
-    if (grid_type_ != grid_info->get_grid_type())
-    {
-        grid_type_ = grid_info->get_grid_type();
-        return true;
-    }
+  if (grid_type_ != grid_info->get_grid_type())
+  {
+    grid_type_ = grid_info->get_grid_type();
+    return true;
+  }
 
-    return false;
+  return false;
 }
 
 
 
 bool
 VtkControlGridInformation::
-is_structured () const
+is_structured() const
 {
-    return grid_type_ == vtkGridType::Structured;
+  return grid_type_ == vtkGridType::Structured;
 }
 
 
 
 
-const vtkGridType&
+const vtkGridType &
 VtkControlGridInformation::
-get_grid_type () const
+get_grid_type() const
 {
-    return grid_type_;
+  return grid_type_;
 };
 
 IGA_NAMESPACE_CLOSE

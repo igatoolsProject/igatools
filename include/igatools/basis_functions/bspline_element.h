@@ -162,7 +162,7 @@ public:
   }
 #endif
 
-  virtual void print_cache_info(LogStream &out) const;
+  virtual void print_cache_info(LogStream &out) const override final;
 
 
 

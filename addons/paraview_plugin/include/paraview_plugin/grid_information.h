@@ -32,82 +32,82 @@ IGA_NAMESPACE_OPEN
 struct VtkGridInformation
 {
 private:
-    /**
-     * Container type for the number of vtk cells per Bezier element.
-     */
-    typedef TensorSize<3> NumCellsContainer_;
+  /**
+   * Container type for the number of vtk cells per Bezier element.
+   */
+  typedef TensorSize<3> NumCellsContainer_;
 
-    /**
-     * Type of the class.
-     */
-    typedef VtkGridInformation Self_;
+  /**
+   * Type of the class.
+   */
+  typedef VtkGridInformation Self_;
 
-    /**
-     * Shared pointer type of the class.
-     */
-    typedef std::shared_ptr<Self_> SelfPtr_;
+  /**
+   * Shared pointer type of the class.
+   */
+  typedef std::shared_ptr<Self_> SelfPtr_;
 
-    /**
-     * Constructor.
-     */
-    VtkGridInformation (const NumCellsContainer_ &num_cells,
-                        const vtkGridType &grid_type);
+  /**
+   * Constructor.
+   */
+  VtkGridInformation(const NumCellsContainer_ &num_cells,
+                     const vtkGridType &grid_type);
 
-    /**
-     * Default and move constructor and move assignment operators not allowed to be used.
-     */
-    VtkGridInformation() = delete;
-    VtkGridInformation(const VtkGridInformation & grid_info) = delete;
-    VtkGridInformation(const VtkGridInformation &&) = delete;
-    void operator=(const VtkGridInformation & grid_info) = delete;
-    void operator=(const VtkGridInformation &&) = delete;
+  /**
+   * Default and move constructor and move assignment operators not allowed to be used.
+   */
+  VtkGridInformation() = delete;
+  VtkGridInformation(const VtkGridInformation &grid_info) = delete;
+  VtkGridInformation(const VtkGridInformation &&) = delete;
+  void operator=(const VtkGridInformation &grid_info) = delete;
+  void operator=(const VtkGridInformation &&) = delete;
 
 public:
 
-    /**
-     * Creates and returns a shared pointer with a new instance of the class.
-     */
-    static SelfPtr_ create(const NumCellsContainer_ &num_cells,
-                             const vtkGridType &grid_type);
+  /**
+   * Creates and returns a shared pointer with a new instance of the class.
+   */
+  static SelfPtr_ create(const NumCellsContainer_ &num_cells,
+                         const vtkGridType &grid_type);
 
-    /**
-     * Updates the informations.
-     * Returns a boolean, the value is true if the information
-     * was updated, false elsewhere.
-     */
-    bool update(SelfPtr_ grid_info);
+  /**
+   * Updates the informations.
+   * Returns a boolean, the value is true if the information
+   * was updated, false elsewhere.
+   */
+  bool update(SelfPtr_ grid_info);
 
-    /**
-     * Retrieves the grid type.
-     */
-    const vtkGridType& get_grid_type () const;
+  /**
+   * Retrieves the grid type.
+   */
+  const vtkGridType &get_grid_type() const;
 
-    /**
-     * Returns true is the grid type is structured, false elsewhere.
-     */
-    bool is_structured () const;
+  /**
+   * Returns true is the grid type is structured, false elsewhere.
+   */
+  bool is_structured() const;
 
-    /**
-     * Returns true is the grid type is quadratic, false elsewhere.
-     */
-    bool is_quadratic () const;
+  /**
+   * Returns true is the grid type is quadratic, false elsewhere.
+   */
+  bool is_quadratic() const;
 
-    /**
-     * Returns the number of cells per element.
-     */
-    const NumCellsContainer_& get_num_cells_per_element () const;
+  /**
+   * Returns the number of cells per element.
+   */
+  const NumCellsContainer_ &get_num_cells_per_element() const;
 
 private:
 
-    /**
-     * Vtk grid type.
-     */
-    vtkGridType grid_type_;
+  /**
+   * Vtk grid type.
+   */
+  vtkGridType grid_type_;
 
-    /**
-     * Number of cells by Bezier element.
-     */
-    NumCellsContainer_ cells_per_element_;
+  /**
+   * Number of cells by Bezier element.
+   */
+  NumCellsContainer_ cells_per_element_;
 };
 
 
@@ -116,70 +116,70 @@ struct VtkControlGridInformation
 {
 private:
 
-    /**
-     * Type of the class.
-     */
-    typedef VtkControlGridInformation Self_;
+  /**
+   * Type of the class.
+   */
+  typedef VtkControlGridInformation Self_;
 
-    /**
-     * Shared pointer type of the class.
-     */
-    typedef std::shared_ptr<Self_> SelfPtr_;
+  /**
+   * Shared pointer type of the class.
+   */
+  typedef std::shared_ptr<Self_> SelfPtr_;
 
 
-    /**
-     * Constructor.
-     */
-    VtkControlGridInformation (const bool structured);
+  /**
+   * Constructor.
+   */
+  VtkControlGridInformation(const bool structured);
 
 public:
-    /**
-     * Default constructor.
-     */
-    VtkControlGridInformation () : VtkControlGridInformation(true) {};
+  /**
+   * Default constructor.
+   */
+  VtkControlGridInformation() : VtkControlGridInformation(true) {};
 private:
 
 
-    /**
-     * Copy and move constructors and assignment operators not allowed to be used.
-     */
-    VtkControlGridInformation(const VtkControlGridInformation &) = delete;
-    VtkControlGridInformation(const VtkControlGridInformation &&) = delete;
-    void operator=(const VtkControlGridInformation &) = delete;
-    void operator=(const VtkControlGridInformation &&) = delete;
+  /**
+   * Copy and move constructors and assignment operators not allowed to be used.
+   */
+  VtkControlGridInformation(const VtkControlGridInformation &) = delete;
+  VtkControlGridInformation(const VtkControlGridInformation &&) = delete;
+  void operator=(const VtkControlGridInformation &) = delete;
+  void operator=(const VtkControlGridInformation &&) = delete;
 
 
 public:
-    /**
-     * Creates and returns a shared pointer with a new instance of the class.
-     */
-    static SelfPtr_ create(const bool structured);
+  /**
+   * Creates and returns a shared pointer with a new instance of the class.
+   */
+  static SelfPtr_ create(const bool structured);
 
-    /**
-     * Updates the informations.
-     * Returns a boolean, the value is true if the information
-     * was updated, false elsewhere.
-     */
-    bool update(SelfPtr_ grid_info);
+  /**
+   * Updates the informations.
+   * Returns a boolean, the value is true if the information
+   * was updated, false elsewhere.
+   */
+  bool update(SelfPtr_ grid_info);
 
-    /**
-     * Returns true is the grid type is structured, false elsewhere.
-     *
-     * @Note: this function recalls the function is_structured() from the
-     * base class.
-     */
-    bool is_structured () const;
+  /**
+   * Returns true is the grid type is structured, false elsewhere.
+   *
+   * @Note: this function recalls the function is_structured() from the
+   * base class.
+   */
+  bool is_structured() const;
 
-    /**
-     * Retrieves the grid type.
-     */
-    const vtkGridType& get_grid_type () const;
+  /**
+   * Retrieves the grid type.
+   */
+  const vtkGridType &get_grid_type() const;
 
 private:
-    /**
-     * Vtk grid type.
-     */
-    vtkGridType grid_type_;
+  /**
+   * Vtk grid type.
+   */
+  vtkGridType grid_type_;
 
 };
 
