@@ -138,7 +138,7 @@ class FunctionsContainer
    * @brief Class used by FunctionsContainer in order to store all the data identified by the
    * index <tt>dim</tt>.
    *
-   * @serializable
+   * @ingroup serializable
    * @author M. Martinelli, 2015
    */
   template <int dim>
@@ -149,7 +149,7 @@ class FunctionsContainer
      * @brief Class used by FunctionsContainerSameDim in order to store all the data identified by the
      * index <tt>codim</tt>.
      *
-     * @serializable
+     * @ingroup serializable
      * @author M. Martinelli, 2015
      */
     template <int codim>
@@ -325,6 +325,7 @@ class FunctionsContainer
        *   (nested) boost::fusion::map containers, one for the index <tt>range</tt> and the other
        *   for the index <tt>rank</tt>.
        *
+       * @ingroup serializable
        */
       class FunctionsSameDomain
       {
@@ -624,6 +625,12 @@ public:
 
 
 private:
+  /**
+   * Adds a Domain @p domain to the container.
+   *
+   * @note In Debug mode, an assertion will be raised if
+   * the @p map is already present in the container,
+   */
   template<int dim, int codim>
   void insert_domain_impl(
     const MappingPtr<dim,codim> &domain)
@@ -640,9 +647,7 @@ private:
 
 public:
   /**
-   * Adds a Domain @p domain (i.e. a geometry parametrization)
-   * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
-   * with the given @p map_name to the container.
+   * Adds a Domain @p domain to the container.
    *
    * @note In Debug mode, an assertion will be raised if
    * the @p map is already present in the container,
@@ -654,9 +659,7 @@ public:
   }
 
   /**
-   * Adds a Domain @p domain (i.e. a geometry parametrization)
-   * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
-   * with the given @p map_name to the container.
+   * Adds a Domain @p domain to the container.
    *
    * @note In Debug mode, an assertion will be raised if
    * the @p map is already present in the container,
@@ -733,15 +736,15 @@ public:
   }
 
   /**
-   * Returns a SafeSTLVector containing a shared pointer to the geometry parametrizations
+   * Returns a SafeSTLVector containing the domains defined by
    * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
    *
    * @code{.cpp}
      FunctionsContainer funcs_container;
      ... // populating the funcs_container with some domains;
 
-     // here we retrieve all the domains in the funcs_container object, with dimension 2 and codimension 1 (i.e. surfaces in 3D space)
-     const auto & all_domains_dim_2_codim_1 = funcs_container.template get_domains_dim_codim<2,1>();
+     // here we retrieve all the domains in the funcs_container object, with dimension 2 and co-dimension 1 (i.e. surfaces in 3D space)
+     const auto all_domains_dim_2_codim_1 = funcs_container.template get_domains_dim_codim<2,1>();
      @endcode
    */
   template <int dim,int codim>
