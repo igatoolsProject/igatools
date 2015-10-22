@@ -29,15 +29,38 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
 Domain<dim_, codim_>::
-Domain(const SharedPtrConstnessHandler<GridFuncType> &func)
+Domain(const SharedPtrConstnessHandler<GridFuncType> &func,
+       const std::string &name)
   :
   grid_func_(func),
-  name_("Domain<" + to_string(dim_) + "," + to_string(codim_) + ">"),
+  name_(name),
   object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
 
 
+template<int dim_, int codim_>
+auto
+Domain<dim_, codim_>::
+create(const std::shared_ptr<GridFuncType> &func,
+       const std::string &name)
+-> std::shared_ptr<self_t>
+{
+  return std::shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<GridFuncType>(func),name));
+}
+
+
+template<int dim_, int codim_>
+auto
+Domain<dim_, codim_>::
+const_create(const std::shared_ptr<const GridFuncType> &func,
+             const std::string &name)
+-> std::shared_ptr<const self_t>
+{
+  return std::shared_ptr<const self_t>(
+    new self_t(SharedPtrConstnessHandler<GridFuncType>(func),name));
+}
 
 
 

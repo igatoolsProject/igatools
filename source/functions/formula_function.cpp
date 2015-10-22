@@ -26,9 +26,10 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, int range, int rank>
 FormulaFunction<dim, codim, range, rank>::
-FormulaFunction(const SharedPtrConstnessHandler<DomainType> &domain)
+FormulaFunction(const SharedPtrConstnessHandler<DomainType> &domain,
+                const std::string &name)
   :
-  parent_t::Function(domain)
+  parent_t(domain,name)
 {}
 
 

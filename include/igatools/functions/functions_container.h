@@ -624,18 +624,9 @@ public:
 
 
 private:
-  /**
-   * Adds a @p domain (i.e. a geometry parametrization)
-   * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
-   * with the given @p map_name to the container.
-   *
-   * @note In Debug mode, an assertion will be raised if
-   * the @p map is already present in the container,
-   */
   template<int dim, int codim>
   void insert_domain_impl(
-    const MappingPtr<dim,codim> &domain,
-    const std::string &map_name)
+    const MappingPtr<dim,codim> &domain)
   {
     auto &data_same_dim_codim = this->template get_data_dim_codim<dim,codim>();
 
@@ -648,37 +639,38 @@ private:
   };
 
 public:
+  /**
+   * Adds a Domain @p domain (i.e. a geometry parametrization)
+   * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+   * with the given @p map_name to the container.
+   *
+   * @note In Debug mode, an assertion will be raised if
+   * the @p map is already present in the container,
+   */
   template<int dim, int codim>
-  void insert_domain(const std::shared_ptr<Domain<dim,codim>> &domain,
-                     const std::string &map_name)
+  void insert_domain(const std::shared_ptr<Domain<dim,codim>> &domain)
   {
-    this->insert_domain_impl(SharedPtrConstnessHandler<Domain<dim,codim>>(domain),map_name);
+    this->insert_domain_impl(SharedPtrConstnessHandler<Domain<dim,codim>>(domain));
   }
 
+  /**
+   * Adds a Domain @p domain (i.e. a geometry parametrization)
+   * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+   * with the given @p map_name to the container.
+   *
+   * @note In Debug mode, an assertion will be raised if
+   * the @p map is already present in the container,
+   */
   template<int dim, int codim>
-  void insert_domain(const std::shared_ptr<const Domain<dim,codim>> &domain,
-                     const std::string &map_name)
+  void insert_domain(const std::shared_ptr<const Domain<dim,codim>> &domain)
   {
-    this->insert_domain_impl(SharedPtrConstnessHandler<Domain<dim,codim>>(domain),map_name);
+    this->insert_domain_impl(SharedPtrConstnessHandler<Domain<dim,codim>>(domain));
   }
 
 private:
-  /**
-   * Adds the Function @p function to the container and creates an association with its
-   * Domain. At the end, the @p function is tagged with the string @p func_name.
-   *
-   * @pre 1) The Domain used to define the Function @p function must be present in the container
-   * (i.e. should be inserted with insert_domain()).
-   * @pre 2) The association <tt>domain-function</tt> must not be already established
-   * (i.e. the Function used as input parameter is already added).
-   *
-   * @note In Debug mode an assertion will be raised if some of the two precondition
-   * above are unsatisfied.
-   */
   template<int dim, int codim,int range,int rank>
   void insert_function_impl(
-    const FuncPtr<dim,codim,range,rank> &function,
-    const std::string &func_name)
+    const FuncPtr<dim,codim,range,rank> &function)
   {
     using boost::fusion::at_key;
 
@@ -702,24 +694,42 @@ private:
   }
 
 public:
+  /**
+   * @brief Adds the Function @p function to the container and creates an association with its Domain.
+   *
+   * @pre 1) The Domain used to define the Function @p function must be present in the container
+   * (i.e. should be inserted with insert_domain()).
+   * @pre 2) The association <tt>domain-function</tt> must not be already established
+   * (i.e. the Function used as input parameter is already added).
+   *
+   * @note In Debug mode an assertion will be raised if some of the two precondition
+   * above are unsatisfied.
+   */
   template<int dim, int codim,int range,int rank>
   void insert_function(
-    const std::shared_ptr<Function<dim,codim,range,rank>> &function,
-    const std::string &func_name)
+    const std::shared_ptr<Function<dim,codim,range,rank>> &function)
   {
     this->insert_function_impl(
-      SharedPtrConstnessHandler<Function<dim,codim,range,rank>>(function),
-      func_name);
+      SharedPtrConstnessHandler<Function<dim,codim,range,rank>>(function));
   }
 
+  /**
+   * @brief Adds the Function @p function to the container and creates an association with its Domain.
+   *
+   * @pre 1) The Domain used to define the Function @p function must be present in the container
+   * (i.e. should be inserted with insert_domain()).
+   * @pre 2) The association <tt>domain-function</tt> must not be already established
+   * (i.e. the Function used as input parameter is already added).
+   *
+   * @note In Debug mode an assertion will be raised if some of the two precondition
+   * above are unsatisfied.
+   */
   template<int dim, int codim,int range,int rank>
   void insert_function(
-    const std::shared_ptr<const Function<dim,codim,range,rank>> &function,
-    const std::string &func_name)
+    const std::shared_ptr<const Function<dim,codim,range,rank>> &function)
   {
     this->insert_function_impl(
-      SharedPtrConstnessHandler<Function<dim,codim,range,rank>>(function),
-      func_name);
+      SharedPtrConstnessHandler<Function<dim,codim,range,rank>>(function));
   }
 
   /**

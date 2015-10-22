@@ -34,12 +34,14 @@ template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
 IgFunction(const SharedPtrConstnessHandler<Sp> &space,
            const EpetraTools::Vector &coeff,
-           const std::string &property)
+           const std::string &property,
+           const std::string &name)
   :
   parent_t::Function(
    space.data_is_const() ?
    SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain())),
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain()),
+   name),
   space_(space),
   property_(property)
 {
@@ -63,12 +65,14 @@ template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
 IgFunction(const SharedPtrConstnessHandler<Sp> &space,
            const IgCoefficients &coeff,
-           const std::string &property)
+           const std::string &property,
+           const std::string &name)
   :
   parent_t::Function(
    space.data_is_const() ?
    SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain())),
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain()),
+   name),
   space_(space),
   property_(property)
 {
@@ -91,10 +95,11 @@ auto
 IgFunction<dim,codim,range,rank>::
 const_create(const std::shared_ptr<const Sp> &space,
              const EpetraTools::Vector &coeff,
-             const std::string &property) ->  std::shared_ptr<const parent_t>
+             const std::string &property,
+             const std::string &name) ->  std::shared_ptr<const parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-  coeff, property);
+  coeff, property,name);
   Assert(ig_func != nullptr, ExcNullPtr());
 
   return ig_func;
@@ -106,10 +111,11 @@ auto
 IgFunction<dim,codim,range,rank>::
 const_create(const std::shared_ptr<const Sp> &space,
              const IgCoefficients &coeff,
-             const std::string &property) ->  std::shared_ptr<const parent_t>
+             const std::string &property,
+             const std::string &name) ->  std::shared_ptr<const parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-  coeff, property);
+  coeff, property,name);
   Assert(ig_func != nullptr, ExcNullPtr());
 
   return ig_func;
@@ -121,10 +127,11 @@ auto
 IgFunction<dim,codim,range,rank>::
 create(const std::shared_ptr<Sp> &space,
        const EpetraTools::Vector &coeff,
-       const std::string &property) ->  std::shared_ptr<parent_t>
+       const std::string &property,
+       const std::string &name) ->  std::shared_ptr<parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-  coeff, property);
+  coeff, property,name);
 
   Assert(ig_func != nullptr, ExcNullPtr());
 #ifdef MESH_REFINEMENT
@@ -139,10 +146,11 @@ auto
 IgFunction<dim,codim,range,rank>::
 create(const std::shared_ptr<Sp> &space,
        const IgCoefficients &coeff,
-       const std::string &property) ->  std::shared_ptr<parent_t>
+       const std::string &property,
+       const std::string &name) ->  std::shared_ptr<parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-  coeff, property);
+  coeff, property,name);
   Assert(ig_func != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT

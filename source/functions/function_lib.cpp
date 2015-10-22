@@ -27,9 +27,11 @@ namespace functions
 
 template<int dim, int codim, int range, int rank>
 ConstantFunction<dim, codim, range, rank>::
-ConstantFunction(const SharedPtrConstnessHandler<DomainType> &domain, const Value &b)
+ConstantFunction(const SharedPtrConstnessHandler<DomainType> &domain,
+                 const Value &b,
+                 const std::string &name)
   :
-  parent_t::FormulaFunction(domain),
+  parent_t(domain,name),
   b_(b)
 {}
 
@@ -38,21 +40,25 @@ ConstantFunction(const SharedPtrConstnessHandler<DomainType> &domain, const Valu
 template<int dim, int codim, int range, int rank>
 auto
 ConstantFunction<dim, codim, range, rank>::
-create(std::shared_ptr<DomainType> domain, const Value &b)
+create(const std::shared_ptr<DomainType> &domain,
+       const Value &b,
+       const std::string &name)
 ->  std::shared_ptr<base_t>
 {
   return std::shared_ptr<base_t>(new
-		  self_t(SharedPtrConstnessHandler<DomainType>(domain), b));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), b,name));
 }
 
 template<int dim, int codim, int range, int rank>
 auto
 ConstantFunction<dim, codim, range, rank>::
-const_create(std::shared_ptr<const DomainType> domain, const Value &b)
+const_create(const std::shared_ptr<const DomainType> &domain,
+             const Value &b,
+             const std::string &name)
 ->  std::shared_ptr<const base_t>
 {
   return std::shared_ptr<const base_t>(new
-	      self_t(SharedPtrConstnessHandler<DomainType>(domain), b));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), b,name));
 }
 
 
@@ -99,9 +105,10 @@ template<int dim, int codim, int range>
 LinearFunction<dim, codim, range>::
 LinearFunction(const SharedPtrConstnessHandler<DomainType> &domain,
                const Derivative<1> &A,
-               const Value &b)
+               const Value &b,
+               const std::string &name)
   :
-  parent_t::FormulaFunction(domain),
+  parent_t(domain,name),
   A_(A),
   b_(b)
 {}
@@ -111,23 +118,26 @@ LinearFunction(const SharedPtrConstnessHandler<DomainType> &domain,
 template<int dim, int codim, int range>
 auto
 LinearFunction<dim, codim, range>::
-create(std::shared_ptr<DomainType> domain,
+create(const std::shared_ptr<DomainType> &domain,
        const Derivative<1> &A,
-       const Value &b) ->  std::shared_ptr<base_t>
+       const Value &b,
+       const std::string &name) ->  std::shared_ptr<base_t>
 {
   return std::shared_ptr<base_t>(new
-		  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b,name));
 }
 
 
 template<int dim, int codim, int range>
 auto
 LinearFunction<dim, codim, range>::
-const_create(std::shared_ptr<const DomainType> domain, const Derivative<1> &A,
-             const Value &b) -> std::shared_ptr<const base_t>
+const_create(const std::shared_ptr<const DomainType> &domain,
+             const Derivative<1> &A,
+             const Value &b,
+             const std::string &name) -> std::shared_ptr<const base_t>
 {
   return std::shared_ptr<const base_t>(new
-		  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b,name));
 }
 
 

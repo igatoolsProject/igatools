@@ -30,14 +30,11 @@ using std::to_string;
 
 template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
-Function(const SharedPtrConstnessHandler<DomainType> &domain)
+Function(const SharedPtrConstnessHandler<DomainType> &domain,
+         const std::string &name)
   :
   domain_(domain),
-  name_("Function<" +
-       to_string(dim_) + "," +
-       to_string(codim_) + "," +
-       to_string(range_) + "," +
-       to_string(rank_)+ ">"),
+  name_(name),
   object_id_(UniqueIdGenerator::get_unique_id())
 {}
 

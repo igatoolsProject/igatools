@@ -141,10 +141,11 @@ private:
   {
     using std::to_string;
     const std::string base_name =
-      "IgGridFunction_" + to_string(dim) + "_" +
+      "GridFunction_" + to_string(dim) + "_" +
       to_string(space_dim);
 
     ar &make_nvp(base_name,base_class<parent_t>(this));
+
     ar &make_nvp("ig_space_",ig_space_);
 
     ar &make_nvp("coeffs_",coeffs_);

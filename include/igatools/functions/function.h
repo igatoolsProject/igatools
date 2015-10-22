@@ -116,7 +116,8 @@ public:
 
 protected:
   /** Constructor */
-  Function(const SharedPtrConstnessHandler<DomainType> &domain);
+  Function(const SharedPtrConstnessHandler<DomainType> &domain,
+           const std::string &name);
 
 
 public:
@@ -124,21 +125,24 @@ public:
   virtual ~Function() = default;
   ///@}
 
+#if 0
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<DomainType> domain)
+  create(std::shared_ptr<DomainType> domain,
+         const std::string &name)
   {
     return std::shared_ptr<self_t>(new
-                                   self_t(SharedPtrConstnessHandler<DomainType>(domain)));
+                                   self_t(SharedPtrConstnessHandler<DomainType>(domain),name));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<const DomainType> domain)
+  const_create(std::shared_ptr<const DomainType> domain,
+               const std::string &name)
   {
     return std::shared_ptr<self_t>(new self_t(
-                                     SharedPtrConstnessHandler<DomainType>(domain)));
+                                     SharedPtrConstnessHandler<DomainType>(domain),name));
   }
-
+#endif
 
   std::shared_ptr<const DomainType> get_domain() const
   {
@@ -263,8 +267,6 @@ private:
 #ifdef MESH_REFINEMENT
     auto tmp = std::const_pointer_cast<self_t>(function_previous_refinement_);
     ar &make_nvp("function_previous_refinement_",tmp);
-    Assert(tmp != nullptr,ExcNullPtr());
-
     function_previous_refinement_ = tmp;
 #endif // MESH_REFINEMENT
   }

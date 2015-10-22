@@ -100,11 +100,13 @@ public:
   //TODO (pauletti, Mar 23, 2015): should we make this private?
   IgFunction(const SharedPtrConstnessHandler<Sp> &space,
              const EpetraTools::Vector &coeff,
-             const std::string &property = DofProperties::active);
+             const std::string &property,
+             const std::string &name);
 
   IgFunction(const SharedPtrConstnessHandler<Sp> &space,
              const IgCoefficients &coeff,
-             const std::string &property = DofProperties::active);
+             const std::string &property,
+             const std::string &name);
 
 
 
@@ -132,22 +134,26 @@ public:
   static std::shared_ptr<const parent_t>
   const_create(const std::shared_ptr<const Sp> &space,
                const EpetraTools::Vector &coeff,
-               const std::string &property = DofProperties::active);
+               const std::string &property = DofProperties::active,
+               const std::string &name = "");
 
   static std::shared_ptr<const parent_t>
   const_create(const std::shared_ptr<const Sp> &space,
                const IgCoefficients &coeff,
-               const std::string &property = DofProperties::active);
+               const std::string &property = DofProperties::active,
+               const std::string &name = "");
 
   static std::shared_ptr<parent_t>
   create(const std::shared_ptr<Sp> &space,
          const EpetraTools::Vector &coeff,
-         const std::string &property = DofProperties::active);
+         const std::string &property = DofProperties::active,
+         const std::string &name = "");
 
   static std::shared_ptr<parent_t>
   create(const std::shared_ptr<Sp> &space,
          const IgCoefficients &coeff,
-         const std::string &property = DofProperties::active);
+         const std::string &property = DofProperties::active,
+         const std::string &name = "");
 
 
 
@@ -195,6 +201,15 @@ private:
   void
   serialize(Archive &ar)
   {
+    using std::to_string;
+    const std::string base_name = "Function_" +
+                                  to_string(dim) + "_" +
+                                  to_string(codim) + "_" +
+                                  to_string(range) + "_" +
+                                  to_string(rank);
+
+    ar &make_nvp(base_name,base_class<base_t>(this));
+
     ar &make_nvp("space_",space_);
     ar &make_nvp("coeff_",coeff_);
     ar &make_nvp("property_",property_);

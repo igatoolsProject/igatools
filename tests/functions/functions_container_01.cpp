@@ -209,12 +209,12 @@ void do_test()
   auto phys_space_1_1_1_0 =
     PhysicalSpace<1,1,1,0>::const_create(
       bsp_space_1_1,
-      Domain<1,0>::const_create(bsp_func_1_1));
+      Domain<1,0>::const_create(bsp_func_1_1,"map_1_1_1_0"));
 
   auto phys_space_2_1_1_0 =
     PhysicalSpace<2,1,1,0>::const_create(
       bsp_space_2_1,
-      Domain<2,0>::const_create(bsp_func_2_2));
+      Domain<2,0>::const_create(bsp_func_2_2,"map_2_1_1_0"));
 
   auto phys_space_3_1_1_0 =
     PhysicalSpace<3,1,1,0>::const_create(
@@ -224,22 +224,22 @@ void do_test()
   auto phys_space_2_2_1_0 =
     PhysicalSpace<2,2,1,0>::const_create(
       bsp_space_2_2,
-      Domain<2,0>::const_create(bsp_func_2_2));
+      Domain<2,0>::const_create(bsp_func_2_2,"map_2_2_1_0"));
 
   auto phys_space_3_3_1_0 =
     PhysicalSpace<3,3,1,0>::const_create(
       bsp_space_3_3,
-      Domain<3,0>::const_create(bsp_func_3_3));
+      Domain<3,0>::const_create(bsp_func_3_3,"map_3_3_1_0"));
 
   auto phys_space_2_1_1_1 =
     PhysicalSpace<2,1,1,1>::const_create(
       bsp_space_2_1,
-      Domain<2,1>::const_create(bsp_func_2_3));
+      Domain<2,1>::const_create(bsp_func_2_3,"map_2_1_1_1"));
 
   auto phys_space_2_3_1_1 =
     PhysicalSpace<2,3,1,1>::const_create(
       bsp_space_2_3,
-      Domain<2,1>::const_create(bsp_func_2_3));
+      Domain<2,1>::const_create(bsp_func_2_3,"map_2_3_1_1"));
 
   auto phys_coeff_1_1_1_0 = EpetraTools::create_vector(*phys_space_1_1_1_0,DofProperties::active,comm);
   (*phys_coeff_1_1_1_0)[0] = 1.;
@@ -268,44 +268,30 @@ void do_test()
   auto phys_coeff_2_3_1_1 = EpetraTools::create_vector(*phys_space_2_3_1_1,DofProperties::active,comm);
   (*phys_coeff_2_3_1_1)[0] = 1.;
 
-  auto phys_func_1_1_1_0 = IgFunction<1,0,1,1>::const_create(phys_space_1_1_1_0,*phys_coeff_1_1_1_0);
-  auto phys_func_2_1_1_0 = IgFunction<2,0,1,1>::const_create(phys_space_2_1_1_0,*phys_coeff_2_1_1_0);
-  auto phys_func_3_1_1_0 = IgFunction<3,0,1,1>::const_create(phys_space_3_1_1_0,*phys_coeff_3_1_1_0);
-  auto phys_func_2_2_1_0 = IgFunction<2,0,2,1>::const_create(phys_space_2_2_1_0,*phys_coeff_2_2_1_0);
-  auto phys_func_3_3_1_0 = IgFunction<3,0,3,1>::const_create(phys_space_3_3_1_0,*phys_coeff_3_3_1_0);
-  auto phys_func_2_1_1_1 = IgFunction<2,1,1,1>::const_create(phys_space_2_1_1_1,*phys_coeff_2_1_1_1);
-  auto phys_func_2_3_1_1 = IgFunction<2,1,3,1>::const_create(phys_space_2_3_1_1,*phys_coeff_2_3_1_1);
+  auto phys_func_1_1_1_0 = IgFunction<1,0,1,1>::const_create(phys_space_1_1_1_0,*phys_coeff_1_1_1_0,DofProperties::active,"phys_func_1_1_1_0");
+  auto phys_func_2_1_1_0 = IgFunction<2,0,1,1>::const_create(phys_space_2_1_1_0,*phys_coeff_2_1_1_0,DofProperties::active,"phys_func_2_1_1_0");
+  auto phys_func_3_1_1_0 = IgFunction<3,0,1,1>::const_create(phys_space_3_1_1_0,*phys_coeff_3_1_1_0,DofProperties::active,"phys_func_3_1_1_0");
+  auto phys_func_2_2_1_0 = IgFunction<2,0,2,1>::const_create(phys_space_2_2_1_0,*phys_coeff_2_2_1_0,DofProperties::active,"phys_func_2_2_1_0");
+  auto phys_func_3_3_1_0 = IgFunction<3,0,3,1>::const_create(phys_space_3_3_1_0,*phys_coeff_3_3_1_0,DofProperties::active,"phys_func_3_3_1_0");
+  auto phys_func_2_1_1_1 = IgFunction<2,1,1,1>::const_create(phys_space_2_1_1_1,*phys_coeff_2_1_1_1,DofProperties::active,"phys_func_1_1_1_1");
+  auto phys_func_2_3_1_1 = IgFunction<2,1,3,1>::const_create(phys_space_2_3_1_1,*phys_coeff_2_3_1_1,DofProperties::active,"phys_func_2_3_1_1");
 
 
   auto funcs_container = std::make_shared<FunctionsContainer>();
 
-  funcs_container->insert_domain(
-    phys_func_1_1_1_0->get_domain(),
-    "map_1_1_1_0");
+  funcs_container->insert_domain(phys_func_1_1_1_0->get_domain());
 
-  funcs_container->insert_domain(
-    phys_func_2_1_1_0->get_domain(),
-    "map_2_1_1_0");
+  funcs_container->insert_domain(phys_func_2_1_1_0->get_domain());
 
-  funcs_container->insert_domain(
-    phys_func_3_1_1_0->get_domain(),
-    "map_3_1_1_0");
+  funcs_container->insert_domain(phys_func_3_1_1_0->get_domain());
 
-  funcs_container->insert_domain(
-    phys_func_2_2_1_0->get_domain(),
-    "map_2_2_1_0");
+  funcs_container->insert_domain(phys_func_2_2_1_0->get_domain());
 
-  funcs_container->insert_domain(
-    phys_func_3_3_1_0->get_domain(),
-    "map_3_3_1_0");
+  funcs_container->insert_domain(phys_func_3_3_1_0->get_domain());
 
-  funcs_container->insert_domain(
-    phys_func_2_1_1_1->get_domain(),
-    "map_2_1_1_1");
+  funcs_container->insert_domain(phys_func_2_1_1_1->get_domain());
 
-  funcs_container->insert_domain(
-    phys_func_2_3_1_1->get_domain(),
-    "map_2_3_1_1");
+  funcs_container->insert_domain(phys_func_2_3_1_1->get_domain());
 
 #if 0
   funcs_container->insert_domain(func_identity_1_1,"map_identity_1_1");
@@ -314,32 +300,25 @@ void do_test()
 #endif
 
   funcs_container->insert_function(
-    phys_func_1_1_1_0,
-    "phys_func_1_1_1_0");
+    phys_func_1_1_1_0);
 
   funcs_container->insert_function(
-    phys_func_2_1_1_0,
-    "phys_func_2_1_1_0");
+    phys_func_2_1_1_0);
 
   funcs_container->insert_function(
-    phys_func_3_1_1_0,
-    "phys_func_3_1_1_0");
+    phys_func_3_1_1_0);
 
   funcs_container->insert_function(
-    phys_func_2_2_1_0,
-    "phys_func_2_2_1_0");
+    phys_func_2_2_1_0);
 
   funcs_container->insert_function(
-    phys_func_3_3_1_0,
-    "phys_func_3_3_1_0");
+    phys_func_3_3_1_0);
 
   funcs_container->insert_function(
-    phys_func_2_1_1_1,
-    "phys_func_2_1_1_1");
+    phys_func_2_1_1_1);
 
   funcs_container->insert_function(
-    phys_func_2_3_1_1,
-    "phys_func_2_3_1_1");
+    phys_func_2_3_1_1);
 
   serialize_deserialize(funcs_container);
 //    funcs_container->print_info(out);
