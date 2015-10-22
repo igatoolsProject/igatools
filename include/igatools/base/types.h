@@ -640,22 +640,6 @@ using QuadVariants = SubElemPtrVariants<Quadrature,dim>;
   }}
 #endif // SERIALIZATION
 
-#ifdef PARAVIEW_PLUGIN
-/**
-* Bit field flags for specifying which VTK grid type must be used.
-*/
-enum class vtkGridType : std::int64_t
-{
-  /** VTK structured grid */
-  Structured          =    1 << 0,
-
-  /** VTK unstructure grid with linear cells */
-  UnstructuredLinear  =    1 << 1,
-
-  /** VTK unstructure grid with quadratic cells */
-  UnstructuredQuadratic  = 1 << 2
-};
-#endif // PARAVIEW_PLUGIN
 
 
 IGA_NAMESPACE_CLOSE

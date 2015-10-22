@@ -21,7 +21,7 @@
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Find Igatools library (Required)
 #-------------------------------------------------------------------------------
-macro(find_igatools)
+macro(find_igatools IGATOOLS_VERSION)
 
   if (IGATOOLS_PREFIX)
     set(igatools_PREFIX ${IGATOOLS_PREFIX} CACHE LOCATION 
@@ -33,7 +33,8 @@ macro(find_igatools)
 
   set(CMAKE_PREFIX_PATH ${igatools_PREFIX}/lib ${CMAKE_PREFIX_PATH} )
 
-  find_package(igatools 1.0.0 REQUIRED PATHS ${igatools_PREFIX})
+
+  find_package(igatools ${IGATOOLS_VERSION} REQUIRED PATHS ${igatools_PREFIX})
   link_directories(${IGATOOLS_LIBRARY_DIR})
   include_directories(${IGATOOLS_INCLUDE_DIRS})
 

@@ -23,7 +23,9 @@
 <ServerManagerConfiguration>
   <ProxyGroup name="sources">
     <!-- ================================================================== -->
-    <SourceProxy name="vtkIgatoolsReader" class="vtkIgatoolsReader" label="vtkIgatoolsReader">
+    <SourceProxy name="IgatoolsParaViewReader"
+                 class="IgatoolsParaViewReader"
+                 label="Igatools-ParaView reader">
       <Documentation
          long_help="Read a .iga file."
          short_help="Read a .iga file.">
@@ -45,11 +47,12 @@
       </Hints>
 
 
-      <!-- Activates/deactives the creation of the physical mesh -->
+      <!-- Activates/deactivates the creation of the physical mesh -->
       <IntVectorProperty name="PhysicalMesh"
                          command="SetPhysicalMesh"
                          number_of_elements="1"
                          label="Create physical geometries"
+                         panel_visibility="advanced"
                          default_values="1">
         <BooleanDomain name="bool"/>
         <Documentation>
@@ -58,11 +61,12 @@
       </IntVectorProperty>
 
 
-      <!-- Activates/deactives the creation of the parametric mesh -->
+      <!-- Activates/deactivates the creation of the parametric mesh -->
       <IntVectorProperty name="ParametricMesh"
                          command="SetParametricMesh"
                          number_of_elements="1"
                          label="Create parametric geometries"
+                         panel_visibility="advanced"
                          default_values="0">
         <BooleanDomain name="bool"/>
         <Documentation>
@@ -75,11 +79,43 @@
       <!-- Options for the physical mesh ################################### -->
       <!-- ################################################################# -->
 
-      <!-- Activates/deactives the creation of the physical solid mesh -->
+
+      <!-- Creates a menu for selecting/deselecting physical maps-->
+      <StringVectorProperty name="PhysGeomArrayInfo" information_only="1" >
+        <ArraySelectionInformationHelper attribute_name="PhysGeom" />
+      </StringVectorProperty>
+
+      <StringVectorProperty name="PhysGeomArrayStatus"
+                            command="SetPhysGeomArrayStatus"
+                            number_of_elements="0"
+                            repeat_command="1" number_of_elements_per_command="2"
+                            element_types="2 0"
+                            panel_visibility="advanced"
+                            information_property="PhysGeomArrayInfo"
+                            label="Physical patches">
+        <ArraySelectionDomain name="array_list">
+          <RequiredProperties>
+            <Property name="PhysGeomArrayInfo" function="ArrayList" />
+          </RequiredProperties>
+        </ArraySelectionDomain>
+
+        <Hints>
+          <!-- This property is hidden when PhysicalMesh = 0 -->
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="PhysicalMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+
+      </StringVectorProperty>
+
+      <!-- Activates/deactivates the creation of the physical solid mesh -->
       <IntVectorProperty name="SolidMeshPhysical"
                          command="SetSolidMeshPhysical"
                          number_of_elements="1"
                          label="Create the solid mesh"
+                         panel_visibility="advanced"
                          default_values="1">
         <BooleanDomain name="bool"/>
         <Documentation>
@@ -99,6 +135,7 @@
       <IntVectorProperty command="SetGridTypePhysicalSolid"
                          default_values="0"
                          name="GridTypePhysicalSolid"
+                         panel_visibility="advanced"
                          label="Grid type"
                          number_of_elements="1">
         <EnumerationDomain name="enum">
@@ -134,6 +171,7 @@
                          default_values="1 1 1"
                          name="NumVisualizationElementsPhysicalSolid"
                          label="Num of cells per Bezier element direction"
+                         panel_visibility="advanced"
                          number_of_elements="3">
         <IntRangeDomain name="range" min="1" max="20"/>
         <Documentation>Set the number of visualization VTK cells in each
@@ -149,11 +187,12 @@
         </Hints>
       </IntVectorProperty>
 
-      <!-- Activates/deactives the creation of the physical knot mesh -->
+      <!-- Activates/deactivates the creation of the physical knot mesh -->
       <IntVectorProperty name="KnotMeshPhysical"
                          command="SetKnotMeshPhysical"
                          number_of_elements="1"
                          label="Create the knot mesh"
+                         panel_visibility="advanced"
                          default_values="0">
         <BooleanDomain name="bool"/>
         <Documentation>
@@ -223,10 +262,11 @@
         </Hints>
       </IntVectorProperty>
 
-      <!-- Activates/deactives the creation of the physical control mesh -->
+      <!-- Activates/deactivates the creation of the physical control mesh -->
       <IntVectorProperty name="ControlMeshPhysical"
                          command="SetControlMeshPhysical"
                          number_of_elements="1"
+                         panel_visibility="advanced"
                          label="Create control mesh"
                          default_values="0">
         <BooleanDomain name="bool"/>
@@ -246,16 +286,16 @@
 
       <!-- Sets the VTK cell type the physical control mesh -->
       <IntVectorProperty command="SetGridTypePhysicalControl"
-                         default_values="0"
+                         default_values="1"
                          panel_visibility="advanced"
                          name="GridTypePhysicalControl"
                          label="Grid type"
                          number_of_elements="1">
         <EnumerationDomain name="enum">
           <Entry text="VTK Unstructured grid - points and lines"
-                 value="0" />
-          <Entry text="VTK Structured grid"
                  value="1" />
+          <Entry text="VTK Structured grid"
+                 value="2" />
         </EnumerationDomain>
         <Documentation>
           This propery specifies which type of grid must be produced
@@ -280,12 +320,44 @@
       <!-- Options for the parametric mesh ################################# -->
       <!-- ################################################################# -->
 
-      <!-- Activates/deactives the creation of the parametric solid mesh -->
+      <!-- Creates a menu for selecting/deselecting parametric maps-->
+      <StringVectorProperty name="ParmGeomArrayInfo" information_only="1" >
+        <ArraySelectionInformationHelper attribute_name="ParmGeom" />
+      </StringVectorProperty>
+
+      <StringVectorProperty name="ParmGeomArrayStatus"
+                            command="SetParmGeomArrayStatus"
+                            number_of_elements="0"
+                            repeat_command="1" number_of_elements_per_command="2"
+                            element_types="2 0"
+                            panel_visibility="advanced"
+                            information_property="ParmGeomArrayInfo"
+                            label="Parametric patches">
+        <ArraySelectionDomain name="array_list">
+          <RequiredProperties>
+            <Property name="ParmGeomArrayInfo" function="ArrayList" />
+          </RequiredProperties>
+        </ArraySelectionDomain>
+
+        <Hints>
+          <!-- This property is hidden when ParametricMesh = 0 -->
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="ParametricMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+
+      </StringVectorProperty>
+
+
+
+      <!-- Activates/deactivates the creation of the parametric solid mesh -->
       <IntVectorProperty name="SolidMeshParametric"
                          command="SetSolidMeshParametric"
                          number_of_elements="1"
                          label="Create the solid mesh"
-                         default_values="0">
+                         default_values="1">
         <BooleanDomain name="bool"/>
         <Documentation>
           Activates/deactivates the creation of the solid mesh geometry.
@@ -354,7 +426,7 @@
         </Hints>
       </IntVectorProperty>
 
-      <!-- Activates/deactives the creation of the parametric knot mesh -->
+      <!-- Activates/deactivates the creation of the parametric knot mesh -->
       <IntVectorProperty name="KnotMeshParametric"
                          command="SetKnotMeshParametric"
                          number_of_elements="1"
@@ -427,6 +499,9 @@
                                    value="0" />
         </Hints>
       </IntVectorProperty>
+
+
+
       <!-- ################################################################# -->
       <!-- ################################################################# -->
 
@@ -438,6 +513,10 @@
       </PropertyGroup>
 
       <PropertyGroup label="Physical mesh">
+        <Property name="PhysGeomArrayStatus" />
+      </PropertyGroup>
+
+      <PropertyGroup label=" ">
         <Property name="SolidMeshPhysical" />
         <Property name="GridTypePhysicalSolid" />
         <Property name="NumVisualizationElementsPhysicalSolid" />
@@ -454,7 +533,12 @@
         <Property name="GridTypePhysicalControl" />
       </PropertyGroup>
 
-      <PropertyGroup label="Parametric mesh">
+
+      <PropertyGroup label="Physical mesh">
+        <Property name="ParmGeomArrayStatus" />
+      </PropertyGroup>
+
+      <PropertyGroup label=" ">
         <Property name="SolidMeshParametric" />
         <Property name="GridTypeParametricSolid" />
         <Property name="NumVisualizationElementsParametricSolid" />

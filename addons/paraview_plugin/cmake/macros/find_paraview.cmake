@@ -22,7 +22,29 @@
 # Find Paraview library (Required)
 #-------------------------------------------------------------------------------
 macro(find_paraview)
-  find_package(ParaView REQUIRED QUIET)
-  include (${PARAVIEW_USE_FILE})  
+
+  find_package (ParaView REQUIRED QUIET)
+  include (${PARAVIEW_USE_FILE})
+
+  if (ParaView_SOURCE_DIR)
+    include_directories (
+      ${PARAVIEW_INCLUDE_DIRS}
+      ${PARAVIEW_GUI_INCLUDE_DIRS}
+      ${PARAVIEW_KWSYS_INCLUDE_DIRS}
+      ${VTK_INCLUDE_DIRS})
+  else ()
+    find_package (ParaView REQUIRED)
+    include (${PARAVIEW_USE_FILE})
+  endif ()
+
+  if (PARAVIEW_BUILD_QT_GUI)
+    if (PARAVIEW_QT_VERSION VERSION_GREATER "4")
+      set (Qt5_FIND_COMPONENTS Widgets)
+      include (ParaViewQt5)
+    else ()
+      include (${QT_USE_FILE})
+    endif ()
+  endif ()
+
   message(STATUS "Found ParaView:  version ${ParaView_VERSION}.")
 endmacro(find_paraview)

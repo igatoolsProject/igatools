@@ -28,7 +28,6 @@
 
 #include <exception>
 #include <string>
-
 #include <ostream>
 
 
