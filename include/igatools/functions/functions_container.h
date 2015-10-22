@@ -42,12 +42,12 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * Type alias for a shared pointer to an object representing the mapping
+ * Type alias for a shared pointer to an object representing the domain
  * \f$ \mathbf{F} \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
  *
  */
 template<int dim, int codim>
-using MappingPtr = std::shared_ptr<const Domain<dim,codim>>;
+using MappingPtr = SharedPtrConstnessHandler<Domain<dim,codim>>;
 
 #if 0
 template <int dim,int codim,int range,int rank>
@@ -79,7 +79,7 @@ struct PairFuncPtrName
 #endif
 
 template <int dim,int codim,int range,int rank>
-using FuncPtr = std::shared_ptr<const Function<dim,codim,range,rank> >;
+using FuncPtr = SharedPtrConstnessHandler<Function<dim,codim,range,rank> >;
 
 /**
  * Type alias for the associative container (a std::map) between an object_id and
@@ -246,7 +246,7 @@ class FunctionsContainer
             using Type = typename Type_Value::first_type;
 
 //            ar.template register_type<IgFunction<dim,codim,range,Type::value>>();
-
+//            using F = Function<dim,codim,range,Type::value>;
             const std::string tag_name = "funcs_rank_" + std::to_string(Type::value);
             ar &make_nvp(tag_name.c_str(),type_and_data_same_rank.second);
           } // end lambda function
@@ -265,21 +265,37 @@ class FunctionsContainer
         boost::fusion::pair<Topology<dim+codim>,FunctionsContainerDataSameDimAndCodimAndRange<dim+codim> >
         >;
 
-      bool is_mapping_present(const MappingPtr<dim,codim> &mapping) const
+      /**
+       * Returns true if the Domain @p domain is already present in the container.
+       */
+      bool is_domain_present(const Domain<dim,codim> &domain) const
       {
-        return (maps_and_data_varying_range_.count(mapping->get_object_id()) == 1)?true:false;
+        return (domains_and_data_varying_range_.count(domain.get_object_id()) == 1)?true:false;
       }
 
-      const auto &get_mapping_data(const MappingPtr<dim,codim> &mapping) const
+      /**
+       * Return a const-reference to the data associated with the Domain @p domain.
+       *
+       * @pre The Domain @p domain MUST be already present in the container,
+       * otherwise in Debug mode an assertion will be raised.
+       */
+      const auto &get_domain_data(const Domain<dim,codim> &domain) const
       {
-        Assert(this->is_mapping_present(mapping),
-               ExcMessage("Map not present in the container."));
-        return maps_and_data_varying_range_.at(mapping->get_object_id());
+        Assert(this->is_domain_present(domain),
+               ExcMessage("Domain not present in the container."));
+        return domains_and_data_varying_range_.at(domain.get_object_id());
       }
 
-      auto &get_mapping_data(const MappingPtr<dim,codim> mapping)
+      /**
+       * Return a reference to the data associated with the Domain @p domain.
+       *
+       * @note If the Domain @p domain MUST is already present in the container
+       * the reference to the associated data will by returned,
+       * otherwise the associated data will be created its reference returned.
+       */
+      auto &get_domain_data(const Domain<dim,codim> &domain)
       {
-        return maps_and_data_varying_range_[mapping->get_object_id()];
+        return domains_and_data_varying_range_[domain.get_object_id()];
       }
 
 
@@ -289,49 +305,49 @@ class FunctionsContainer
        * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
        */
       SafeSTLVector<MappingPtr<dim,codim> >
-      get_all_mappings() const
+      get_all_domains() const
       {
-        SafeSTLVector<MappingPtr<dim,codim>> mappings;
-        for (const auto &m : maps_and_data_varying_range_)
-          mappings.emplace_back(m.second.get_ptr_mapping());
+        SafeSTLVector<MappingPtr<dim,codim>> domains;
+        for (const auto &m : domains_and_data_varying_range_)
+          domains.emplace_back(m.second.get_domain());
 
-        return mappings;
+        return domains;
       }
 
 
       /**
-       * @brief Class used to store the data associated to a mapping (i.e. a geometry parametrization)
+       * @brief Class used to store the data associated to a domain (i.e. a geometry parametrization)
        * \f$\mathbf{F} \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
        *
        * The stored data are:
-       * - a shared pointer, pointing to the mapping function;
-       * - the functions associated to the mapping. The functions are stored using two
+       * - a shared pointer, pointing to the domain function;
+       * - the functions associated to the domain. The functions are stored using two
        *   (nested) boost::fusion::map containers, one for the index <tt>range</tt> and the other
        *   for the index <tt>rank</tt>.
        *
        */
-      class DataAssociatedToMap
+      class FunctionsSameDomain
       {
       public:
-        void set_ptr_mapping(const MappingPtr<dim,codim> &mapping)
+        void set_domain(const MappingPtr<dim,codim> &domain)
         {
-          Assert(mapping != nullptr, ExcNullPtr());
-          mapping_ = mapping;
+          domain_ = domain;
         }
 
-        const auto get_ptr_mapping() const
+        const MappingPtr<dim,codim> &get_domain() const
         {
-          return mapping_;
+          return domain_;
         }
+        //*/
         /*
-                void set_mapping_name(const std::string map_name)
+                void set_domain_name(const std::string map_name)
                 {
-                  mapping_->set_name(map_name);
+                  domain_->set_name(map_name);
                 }
         //*/
-        const std::string &get_mapping_name() const
+        const std::string &get_domain_name() const
         {
-          return mapping_->get_name();
+          return domain_->get_name();
         }
 
         template <int range>
@@ -367,7 +383,7 @@ class FunctionsContainer
 
       private:
 
-        MappingPtr<dim,codim> mapping_;
+        MappingPtr<dim,codim> domain_;
 
         DataVaryingRange funcs_;
 
@@ -382,7 +398,7 @@ class FunctionsContainer
         void
         serialize(Archive &ar)
         {
-          ar &make_nvp("mapping_",mapping_);
+          ar &make_nvp("domain_",domain_);
 
           boost::fusion::for_each(funcs_,
                                   [&](auto & func)
@@ -407,17 +423,17 @@ class FunctionsContainer
       void print_info(LogStream &out) const
       {
         using std::to_string;
-        out.begin_item("Mappings num. : " + to_string(maps_and_data_varying_range_.size()));
+        out.begin_item("Domains num. : " + to_string(domains_and_data_varying_range_.size()));
         int map_id = 0;
-        for (const auto &map_and_data_varying_range : maps_and_data_varying_range_)
+        for (const auto &domain_and_functions : domains_and_data_varying_range_)
         {
-          const auto &data_varying_range = map_and_data_varying_range.second;
-          out.begin_item("Map[" + to_string(map_id++) + "]" +
-                         "   ID: " + std::to_string(map_and_data_varying_range.first) +
-                         "   name: " + data_varying_range.get_mapping_name());
+          const auto &data_varying_range = domain_and_functions.second;
+          out.begin_item("Domain[" + to_string(map_id++) + "]" +
+                         "   ID: " + std::to_string(domain_and_functions.first) +
+                         "   name: " + data_varying_range.get_domain_name());
 
-          const auto &map = *map_and_data_varying_range.second.get_ptr_mapping();
-          map.print_info(out);
+          const auto &domain = *data_varying_range.get_domain();
+          domain.print_info(out);
 
           data_varying_range.print_info(out);
 
@@ -429,7 +445,7 @@ class FunctionsContainer
 
     private:
 
-      std::map<Index,DataAssociatedToMap> maps_and_data_varying_range_;
+      std::map<Index,FunctionsSameDomain> domains_and_data_varying_range_;
 
 #ifdef SERIALIZATION
       /**
@@ -442,8 +458,8 @@ class FunctionsContainer
       void
       serialize(Archive &ar)
       {
-        ar &make_nvp("maps_and_data_varying_range_",
-                     maps_and_data_varying_range_);
+        ar &make_nvp("domains_and_data_varying_range_",
+                     domains_and_data_varying_range_);
       }
       ///@}
 #endif // SERIALIZATION
@@ -607,8 +623,9 @@ public:
   }
 
 
+private:
   /**
-   * Adds a @p mapping (i.e. a geometry parametrization)
+   * Adds a @p domain (i.e. a geometry parametrization)
    * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
    * with the given @p map_name to the container.
    *
@@ -616,60 +633,93 @@ public:
    * the @p map is already present in the container,
    */
   template<int dim, int codim>
-  void insert_mapping(
-    const MappingPtr<dim,codim> &mapping,
+  void insert_domain_impl(
+    const MappingPtr<dim,codim> &domain,
     const std::string &map_name)
   {
-    Assert(mapping != nullptr, ExcNullPtr());
-
     auto &data_same_dim_codim = this->template get_data_dim_codim<dim,codim>();
 
-    Assert(!data_same_dim_codim.is_mapping_present(mapping),
-           ExcMessage("Map already present in the container."));
+    const auto &dom = *(domain.get_ptr_const_data());
+    Assert(!data_same_dim_codim.is_domain_present(dom),
+           ExcMessage("Domain already present in the container."));
 
-    auto &data_same_map = data_same_dim_codim.get_mapping_data(mapping);
-    data_same_map.set_ptr_mapping(mapping);
-//    data_same_map.set_mapping_name(map_name);
+    auto &data_same_domain = data_same_dim_codim.get_domain_data(dom);
+    data_same_domain.set_domain(domain);
   };
 
+public:
+  template<int dim, int codim>
+  void insert_domain(const std::shared_ptr<Domain<dim,codim>> &domain,
+                     const std::string &map_name)
+  {
+    this->insert_domain_impl(SharedPtrConstnessHandler<Domain<dim,codim>>(domain),map_name);
+  }
+
+  template<int dim, int codim>
+  void insert_domain(const std::shared_ptr<const Domain<dim,codim>> &domain,
+                     const std::string &map_name)
+  {
+    this->insert_domain_impl(SharedPtrConstnessHandler<Domain<dim,codim>>(domain),map_name);
+  }
+
+private:
   /**
    * Adds the Function @p function to the container and creates an association with its
    * Domain. At the end, the @p function is tagged with the string @p func_name.
    *
-   * @pre 1) The @p map should be present in the container (i.e. should be inserted with insert_mapping()).
-   * @pre 2) The association <tt>map-function</tt> must not be already established.
+   * @pre 1) The Domain used to define the Function @p function must be present in the container
+   * (i.e. should be inserted with insert_domain()).
+   * @pre 2) The association <tt>domain-function</tt> must not be already established
+   * (i.e. the Function used as input parameter is already added).
    *
    * @note In Debug mode an assertion will be raised if some of the two precondition
    * above are unsatisfied.
    */
   template<int dim, int codim,int range,int rank>
-  void insert_function(
-//    MappingPtr<dim,codim> map,
+  void insert_function_impl(
     const FuncPtr<dim,codim,range,rank> &function,
     const std::string &func_name)
   {
-    Assert(function != nullptr, ExcNullPtr());
-
     using boost::fusion::at_key;
 
     auto &data_same_dim_codim = this->template get_data_dim_codim<dim,codim>();
 
-    auto map = function->get_domain();
-    Assert(data_same_dim_codim.is_mapping_present(map),
-           ExcMessage("Map not present in the container."));
+    const auto &domain = *(function->get_domain());
+    Assert(data_same_dim_codim.is_domain_present(domain),
+           ExcMessage("Domain not present in the container."));
 
-    auto &data_same_map = data_same_dim_codim.get_mapping_data(map);
+    auto &data_same_map = data_same_dim_codim.get_domain_data(domain);
 
     auto &data_same_dim_codim_range = data_same_map.template get_funcs_range<range>();
 
     auto &data_same_dim_codim_range_rank =
       data_same_dim_codim_range.template get_data_rank<rank>();
 
-    Assert(data_same_dim_codim_range_rank.count(function->get_object_id()) == 0,
+    const int func_id = function->get_object_id();
+    Assert(data_same_dim_codim_range_rank.count(func_id) == 0,
            ExcMessage("Function already added to the container."));
-    auto &fn = data_same_dim_codim_range_rank[function->get_object_id()];
-    fn = function;
-//    fn->set_name(func_name);
+    data_same_dim_codim_range_rank[func_id] = function;
+  }
+
+public:
+  template<int dim, int codim,int range,int rank>
+  void insert_function(
+    const std::shared_ptr<Function<dim,codim,range,rank>> &function,
+    const std::string &func_name)
+  {
+    this->insert_function_impl(
+      SharedPtrConstnessHandler<Function<dim,codim,range,rank>>(function),
+      func_name);
+  }
+
+  template<int dim, int codim,int range,int rank>
+  void insert_function(
+    const std::shared_ptr<const Function<dim,codim,range,rank>> &function,
+    const std::string &func_name)
+  {
+    this->insert_function_impl(
+      SharedPtrConstnessHandler<Function<dim,codim,range,rank>>(function),
+      func_name);
   }
 
   /**
@@ -678,42 +728,41 @@ public:
    *
    * @code{.cpp}
      FunctionsContainer funcs_container;
-     ... // populating the funcs_container with some mappings;
+     ... // populating the funcs_container with some domains;
 
-     // here we retrieve all the mappings in the funcs_container object, with dimension 2 and codimension 1 (i.e. surfaces in 3D space)
-     const auto & all_mappings_dim_2_codim_1 = funcs_container.template get_mappings_dim_codim<2,1>();
+     // here we retrieve all the domains in the funcs_container object, with dimension 2 and codimension 1 (i.e. surfaces in 3D space)
+     const auto & all_domains_dim_2_codim_1 = funcs_container.template get_domains_dim_codim<2,1>();
      @endcode
    */
   template <int dim,int codim>
   SafeSTLVector< MappingPtr<dim,codim> >
-  get_mappings_dim_codim() const
+  get_domains_dim_codim() const
   {
-    return this->template get_data_dim_codim<dim,codim>().get_all_mappings();
+    return this->template get_data_dim_codim<dim,codim>().get_all_domains();
   }
 
 
   /**
-   * Returns a const reference to the object associated to the geometry parametrization @p mapping
-   * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+   * Returns a const reference to the object associated to the Domain @p domain
    * used as input argument.
    */
   template <int dim,int codim>
   const auto &
-  get_mapping_data(const MappingPtr<dim,codim> &mapping) const
+  get_domain_data(const Domain<dim,codim> &domain) const
   {
-    return this->template get_data_dim_codim<dim,codim>().get_mapping_data(mapping);
+    return this->template get_data_dim_codim<dim,codim>().get_domain_data(domain);
   }
 
 
   /**
    * Returns all the functions of the type Function<dim,codim,range,rank> associated
-   * to the given @p mapping.
+   * to the given Domain @p domain.
    */
   template <int dim,int codim,int range,int rank>
   const DictionaryFuncPtr<dim,codim,range,rank> &
-  get_functions_associated_to_mapping(const MappingPtr<dim,codim> &mapping) const
+  get_functions_with_same_domain(const Domain<dim,codim> &domain) const
   {
-    return this->template get_mapping_data<dim,codim>(mapping).
+    return this->template get_domain_data<dim,codim>(domain).
     template get_funcs_range<range>().
     template get_data_rank<rank>();
   }

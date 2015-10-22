@@ -73,32 +73,32 @@ using Func = Function<dim,codim,range,1>;
 
 void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
 {
-  const auto mappings_dim_2_codim_0 = funcs_container->template get_mappings_dim_codim<2,0>();
+  const auto domains_dim_2_codim_0 = funcs_container->template get_domains_dim_codim<2,0>();
   out.begin_item("Mappings with dimension 2 and codimension 0:");
   int m_counter = 0;
-  for (const auto &mapping : mappings_dim_2_codim_0)
+  for (const auto &domain : domains_dim_2_codim_0)
   {
 #if 0
     auto flag = ValueFlags::point | ValueFlags::value;
     QUniform<2> quad(2);
-    mapping->reset(flag, quad);
+    domain->reset(flag, quad);
 
     out.begin_item("Mapping before iterators");
-    mapping->print_info(out);
+    domain->print_info(out);
     out.end_item();
 
-    auto elem = mapping->begin();
-    auto end  = mapping->end();
+    auto elem = domain->begin();
+    auto end  = domain->end();
 #endif
 
 #if 0
     try
     {
-      const shared_ptr<IgFunction<2, 0, 2, 1>> ig_fun_ptr = std::dynamic_pointer_cast<IgFunction<2, 0, 2, 1>> (mapping);
+      const shared_ptr<IgFunction<2, 0, 2, 1>> ig_fun_ptr = std::dynamic_pointer_cast<IgFunction<2, 0, 2, 1>> (domain);
       if (ig_fun_ptr == nullptr)
       {
         out << "Identitity func start" << endl;
-        const shared_ptr<IdentityFunction<2, 2>> id_fun_ptr = std::dynamic_pointer_cast<IdentityFunction<2, 2>> (mapping);
+        const shared_ptr<IdentityFunction<2, 2>> id_fun_ptr = std::dynamic_pointer_cast<IdentityFunction<2, 2>> (domain);
         const IdentityFunction<2, 2> &id_fun = *id_fun_ptr;
         out << "Identitity func stop" << endl;
       }
@@ -114,11 +114,11 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
       out << "Catching " << e.what() << endl;
     }
 #endif
-    out << "Mapping[" << m_counter++ << "]   ID= " << mapping->get_object_id()
-        << "   name= " << mapping->get_name() << std::endl;
+    out << "Mapping[" << m_counter++ << "]   ID= " << domain->get_object_id()
+        << "   name= " << domain->get_name() << std::endl;
 
     const auto &funcs_dim_2_codim_0_range_1_rank_1 =
-      funcs_container->template get_functions_associated_to_mapping<2,0,1,1>(mapping);
+      funcs_container->template get_functions_with_same_domain<2,0,1,1>(*domain);
     out.begin_item("Functions<2,0,1,1>:");
     int f_counter = 0;
     for (const auto &f : funcs_dim_2_codim_0_range_1_rank_1)
@@ -279,38 +279,38 @@ void do_test()
 
   auto funcs_container = std::make_shared<FunctionsContainer>();
 
-  funcs_container->insert_mapping(
+  funcs_container->insert_domain(
     phys_func_1_1_1_0->get_domain(),
     "map_1_1_1_0");
 
-  funcs_container->insert_mapping(
+  funcs_container->insert_domain(
     phys_func_2_1_1_0->get_domain(),
     "map_2_1_1_0");
 
-  funcs_container->insert_mapping(
+  funcs_container->insert_domain(
     phys_func_3_1_1_0->get_domain(),
     "map_3_1_1_0");
 
-  funcs_container->insert_mapping(
+  funcs_container->insert_domain(
     phys_func_2_2_1_0->get_domain(),
     "map_2_2_1_0");
 
-  funcs_container->insert_mapping(
+  funcs_container->insert_domain(
     phys_func_3_3_1_0->get_domain(),
     "map_3_3_1_0");
 
-  funcs_container->insert_mapping(
+  funcs_container->insert_domain(
     phys_func_2_1_1_1->get_domain(),
     "map_2_1_1_1");
 
-  funcs_container->insert_mapping(
+  funcs_container->insert_domain(
     phys_func_2_3_1_1->get_domain(),
     "map_2_3_1_1");
 
 #if 0
-  funcs_container->insert_mapping(func_identity_1_1,"map_identity_1_1");
-  funcs_container->insert_mapping(func_identity_2_2,"map_identity_2_2");
-  funcs_container->insert_mapping(func_identity_3_3,"map_identity_3_3");
+  funcs_container->insert_domain(func_identity_1_1,"map_identity_1_1");
+  funcs_container->insert_domain(func_identity_2_2,"map_identity_2_2");
+  funcs_container->insert_domain(func_identity_3_3,"map_identity_3_3");
 #endif
 
   funcs_container->insert_function(

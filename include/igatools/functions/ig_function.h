@@ -90,6 +90,13 @@ private:
   using Sp = PhysicalSpace<dim,range,rank,codim>;
 
 public:
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * serialization mechanism.
+   */
+  IgFunction() = default;
+
+
   //TODO (pauletti, Mar 23, 2015): should we make this private?
   IgFunction(const SharedPtrConstnessHandler<Sp> &space,
              const EpetraTools::Vector &coeff,
@@ -116,6 +123,7 @@ public:
   using typename parent_t::DomainType;
 
 public:
+
 
   std::unique_ptr<typename parent_t::ElementHandler>
   create_cache_handler() const override final;
@@ -155,12 +163,6 @@ public:
 
 
 
-protected:
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * serialization mechanism.
-   */
-  IgFunction() = default;
 
 private:
 
@@ -168,7 +170,7 @@ private:
 
   CoeffType coeff_;
 
-  const std::string property_;
+  std::string property_;
 
 private:
 
@@ -182,21 +184,23 @@ private:
 
 #endif // MESH_REFINEMENT
 
-#if 0
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for the serialization
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
+  serialize(Archive &ar)
+  {
+    ar &make_nvp("space_",space_);
+    ar &make_nvp("coeff_",coeff_);
+    ar &make_nvp("property_",property_);
+  }
   ///@}
 #endif // SERIALIZATION
-#endif
 };
 
 

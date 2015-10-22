@@ -121,6 +121,11 @@ public:
   using ElementAccessor = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
+  /**
+   * Default constructor. It does nothing but it is needed for the serialization
+   * mechanism.
+   */
+  PhysicalSpace() = default;
 
   PhysicalSpace(const self_t &phys_space) = delete;
 
@@ -221,12 +226,6 @@ public:
 
 private:
 
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  PhysicalSpace() = default;
 
   PhysicalSpace(const SharedPtrConstnessHandler<RefSpace> &ref_space,
                 const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
@@ -237,6 +236,8 @@ private:
   SharedPtrConstnessHandler<RefSpace> ref_space_;
 
   SharedPtrConstnessHandler<PhysDomain> phys_domain_;
+
+  const Transformation transformation_type_ = Transformation::h_grad;
 
 
   std::shared_ptr<const self_t> phys_space_previous_refinement_ = nullptr;
@@ -281,7 +282,6 @@ public:
 
 private:
 
-#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -294,27 +294,35 @@ private:
   void
   serialize(Archive &ar)
   {
-    ar &boost::serialization::make_nvp("PhysicalSpace_base_t",
-                                       boost::serialization::base_object<base_t>(*this));
+    using std::to_string;
+    const std::string base_name = "Space_" +
+                                  to_string(dim_) + "_" +
+                                  to_string(codim_) + "_" +
+                                  to_string(range_) + "_" +
+                                  to_string(rank_);
 
-    ar.template register_type<BSplineSpace<dim_,range_,rank_> >();
-#ifdef NURBS
-    ar.template register_type<NURBSSpace<dim_,range_,rank_> >();
-#endif // NURBS
+    ar &make_nvp(base_name,base_class<base_t>(this));
 
-    ar &boost::serialization::make_nvp("ref_space_",ref_space_);
 
-    auto tmp = const_pointer_cast<self_t>(phys_space_previous_refinement_);
-    ar &boost::serialization::make_nvp("phys_space_previous_refinement_",tmp);
+    ar &make_nvp("ref_space_",ref_space_);
+
+    ar &make_nvp("phys_domain_",phys_domain_);
+
+    Transformation transformation_type_tmp = transformation_type_;
+    ar &make_nvp("transformation_type_",transformation_type_tmp);
+    const_cast<Transformation &>(transformation_type_) = transformation_type_tmp;
+
+#ifdef MESH_REFINEMENT
+    auto tmp = std::const_pointer_cast<self_t>(phys_space_previous_refinement_);
+    ar &make_nvp("phys_space_previous_refinement_",tmp);
     phys_space_previous_refinement_ = tmp;
+#endif // MESH_REFINEMENT
   }
 
   ///@}
 #endif // SERIALIZATION
-#endif
 
 
-  const Transformation transformation_type_;
 };
 
 IGA_NAMESPACE_CLOSE

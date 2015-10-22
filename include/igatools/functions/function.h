@@ -236,6 +236,7 @@ private:
 #ifdef MESH_REFINEMENT
 protected:
   std::shared_ptr<const self_t> function_previous_refinement_;
+
 public:
   const std::shared_ptr<const self_t> &get_function_previous_refinement() const
   {
@@ -243,36 +244,32 @@ public:
   }
 #endif // MESH_REFINEMENT
 
-#if 0
 #ifdef SERIALIZATION
-public:
-
-
-
 private:
-
-public:
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for the serialization
    */
   ///@{
-  friend class boost::serialization::access;
+  friend class cereal::access;
 
   template<class Archive>
   void
-  serialize(Archive &ar, const unsigned int version);
-  /*
+  serialize(Archive &ar)
   {
-      ar &boost::serialization::make_nvp("grid_elem_handler_",
-                                         boost::serialization::base_object<Domain>(*this));
+    ar &make_nvp("domain_",domain_);
+    ar &make_nvp("name_",name_);
+    ar &make_nvp("object_id_",object_id_);
 
-      ar &boost::serialization::make_nvp("flags_",flags_);
+#ifdef MESH_REFINEMENT
+    auto tmp = std::const_pointer_cast<self_t>(function_previous_refinement_);
+    ar &make_nvp("function_previous_refinement_",tmp);
+    Assert(tmp != nullptr,ExcNullPtr());
+
+    function_previous_refinement_ = tmp;
+#endif // MESH_REFINEMENT
   }
-  //*/
   ///@}
 #endif // SERIALIZATION
-#endif
 };
 
 IGA_NAMESPACE_CLOSE

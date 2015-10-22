@@ -131,12 +131,12 @@ public:
   /**
    * Copy assignment operator. Not allowed to be used.
    */
-  SharedPtrConstnessHandler<T> &operator=(const SharedPtrConstnessHandler<T> &obj) = delete;
+  SharedPtrConstnessHandler<T> &operator=(const SharedPtrConstnessHandler<T> &obj) = default;
 
   /**
    * Move assignment operator. Not allowed to be used.
    */
-  SharedPtrConstnessHandler<T> &operator=(SharedPtrConstnessHandler<T> &&obj) = delete;
+  SharedPtrConstnessHandler<T> &operator=(SharedPtrConstnessHandler<T> &&obj) = default;
   ///@}
 
 

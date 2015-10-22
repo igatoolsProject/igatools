@@ -331,7 +331,7 @@ private:
                                   to_string(dim_) + "_" +
                                   to_string(0) + "_" +
                                   to_string(range_) + "_" +
-                                  to_string(rank_) + "_hgrad";
+                                  to_string(rank_);
 
     ar &make_nvp(base_name,base_class<BaseSpace>(this));
     ar &make_nvp("bsp_space_",bsp_space_);
