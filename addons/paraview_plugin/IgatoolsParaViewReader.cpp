@@ -176,6 +176,8 @@ parse_file()
   parm_gen_.reset();
   funcs_container_.reset();
 
+//  Assert(false,ExcNotImplemented());
+
   try
   {
 
@@ -189,8 +191,7 @@ parse_file()
     //   Assert here if funcs_container_ is void.
 
     funcs_container_ = std::make_shared <FunctionsContainer> ();
-    Assert(false,ExcNotImplemented());
-    /*
+
     this->template create_geometries<1>();
     this->template create_geometries<2>();
     this->template create_geometries<3>();
@@ -938,10 +939,11 @@ create_geometries()
   using Grid_ = Grid<dim>;
 
   // File names;
-  const string fname_0 = "/Users/antolin/Tmp/paraview/testing/patch_0_" + std::to_string(dim) + "D.xml";
-  const string fname_1 = "/Users/antolin/Tmp/paraview/testing/patch_1_" + std::to_string(dim) + "D.xml";
-  const string fname_2 = "/Users/antolin/Tmp/paraview/testing/patch_2_" + std::to_string(dim) + "D.xml";
-  const string fname_3 = "/Users/antolin/Tmp/paraview/testing/patch_3_" + std::to_string(dim) + "D.xml";
+  const string dir_name = "/home/martinelli/tmp/paraview_plugin/";
+  const string fname_0 = dir_name + "patch_0_" + std::to_string(dim) + "D.xml";
+  const string fname_1 = dir_name + "patch_1_" + std::to_string(dim) + "D.xml";
+  const string fname_2 = dir_name + "patch_2_" + std::to_string(dim) + "D.xml";
+  const string fname_3 = dir_name + "patch_3_" + std::to_string(dim) + "D.xml";
 
   // Reading maps
   const shared_ptr <Map> map_0 =

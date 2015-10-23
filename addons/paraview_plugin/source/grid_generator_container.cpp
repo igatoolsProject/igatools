@@ -319,12 +319,12 @@ update(const GridInfoPtr_ solid_info,
 
       auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
-      AssertThrow(false,ExcNotImplemented());
+      //AssertThrow(false,ExcNotImplemented());
       //TODO: (martinelli,23 Oct 2015): the next commented loop causes internal compiler error on gcc-5.2.0
       /*
-            for (auto &g : generators)
-              g.second->update(solid_updated, knot_updated);
-              //*/
+                  for (const auto &g : generators)
+                    g.second->update(solid_updated, knot_updated);
+                    //*/
     } // end lambda function on codim
                            ); // for_each (data_varying_codim_
 
@@ -457,8 +457,8 @@ update(const GridInfoPtr_ solid_info,
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-      using Type = typename Type_Value::first_type;
+//      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+//      using Type = typename Type_Value::first_type;
 
       auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
