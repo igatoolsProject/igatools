@@ -144,8 +144,8 @@ option(SERIALIZATION "Enable serialization support" OFF)
 option(USE_CEREAL "Use the Cereal serialization library" ON)
 if (SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) is enabled.")
-    
-    if (USE_CEREAL)
+   
+  if (USE_CEREAL)
     	message("----- Serialization with CEREAL library (EXPERIMENTAL) is enabled.")    
 	else (USE_CEREAL)
     	message("----- Serialization with CEREAL library (EXPERIMENTAL) is not enabled.")    

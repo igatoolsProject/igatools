@@ -21,9 +21,10 @@
 #ifndef VTK_GRID_GENERATOR_H_
 #define VTK_GRID_GENERATOR_H_
 
+#include <vtkSmartPointer.h>
+
 #include <igatools/base/config.h>
 
-#include <vtkSmartPointer.h>
 
 class vtkPointSet;
 
@@ -33,6 +34,7 @@ IGA_NAMESPACE_OPEN
 template <class T, int d> class SafeSTLArray;
 class FunctionsContainer;
 template <int dim> class TensorSize;
+template <int dim, int codim> class Domain;
 template <int dim, int codim, int range, int rank> class Function;
 struct VtkGridInformation;
 struct VtkControlGridInformation;
@@ -63,7 +65,7 @@ private:
   /**
    * Alias for a shared pointer of a map function type.
    */
-  typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
+  typedef std::shared_ptr<Domain<dim,codim>> DomainPtr_;
 
   /**
    * Alias for mesh grid information shared pointer.
@@ -103,7 +105,7 @@ private:
   /**
    * Constructor for grids.
    */
-  VtkIgaGridGenerator(const MapFunPtr_ mapping,
+  VtkIgaGridGenerator(const DomainPtr_ domain,
                       const GridInfoPtr_ solid_grid_info,
                       const GridInfoPtr_ knot_grid_info,
                       const ControlGridInfoPtr_ control_grid_info,
@@ -127,7 +129,7 @@ public:
    *
    * @Note: this is for physical grids.
    */
-  static SelfPtr_ create_physical(const MapFunPtr_ mapping,
+  static SelfPtr_ create_physical(const DomainPtr_ domain,
                                   const GridInfoPtr_ solid_grid_info,
                                   const GridInfoPtr_ knot_grid_info,
                                   const ControlGridInfoPtr_ control_grid_info,
@@ -139,7 +141,7 @@ public:
    *
    * @Note: this is for parametric grids.
    */
-  static SelfPtr_ create_parametric(const MapFunPtr_ mapping,
+  static SelfPtr_ create_parametric(const DomainPtr_ domain,
                                     const GridInfoPtr_ solid_grid_info,
                                     const GridInfoPtr_ knot_grid_info,
                                     const FunContPtr_ func_container);
@@ -181,7 +183,7 @@ private:
   /**
    * Mapping function for which the grids are built.
    */
-  const MapFunPtr_ map_fun_;
+  const DomainPtr_ domain_;
 
   /**
    * Grids information for the solid grid.
@@ -199,7 +201,7 @@ private:
   ControlGridInfoPtr_ control_grid_info_;
 
   /**
-   * Container for the mapping and field functions.
+   * Container for the domain and field functions.
    */
   const FunContPtr_ funcs_container_;
 

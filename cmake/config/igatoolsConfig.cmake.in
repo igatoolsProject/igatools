@@ -36,6 +36,7 @@ set(IGATOOLS_INCLUDE_DIRS
   @Petsc_INCLUDE_DIRS@
   @Boost_INCLUDE_DIRS@
   @CMAKE_INSTALL_PREFIX@/include
+  @CMAKE_INSTALL_PREFIX@/include/igatools/contrib/cereal/include
   )
 
 # library path

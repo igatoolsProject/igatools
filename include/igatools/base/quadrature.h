@@ -123,7 +123,7 @@ protected:
 public:
 
   /**
-   * Retuirns a Quadrature object wrapped by a std::shared_ptr,
+   * Returns a Quadrature object wrapped by a std::shared_ptr,
    * given a vector of <tt>points</tt>
    * in the <tt>dim_</tt>-dimensional space,
    * and the <tt>bounding_box</tt> in which the points are defined,
@@ -135,13 +135,6 @@ public:
     const PointVector &points,
     const BBox<dim_> &bounding_box = BBox<dim_>());
 
-
-  /**
-   * Tensor product constructor
-   */
-  Quadrature(const PointArray &points,
-             const WeightArray &weights_1d,
-             const BBox<dim_> &bounding_box);
   /**
    * Non-tensor product constructor.
    *
@@ -154,6 +147,22 @@ public:
    */
   Quadrature(const PointVector &points,
              const BBox<dim_> &bounding_box = BBox<dim_>());
+
+  /**
+   * Returns a Quadrature object wrapped by a std::shared_ptr,
+   * using the tensor-product constructor.
+   */
+  static std::shared_ptr<self_t> create(
+    const PointArray &points,
+    const WeightArray &weights_1d,
+    const BBox<dim_> &bounding_box);
+
+  /**
+   * Tensor product constructor
+   */
+  Quadrature(const PointArray &points,
+             const WeightArray &weights_1d,
+             const BBox<dim_> &bounding_box);
 
   /**
    * Copy constructor.

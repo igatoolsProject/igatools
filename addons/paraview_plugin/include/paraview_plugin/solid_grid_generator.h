@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
 
 class FunctionsContainer;
 template <int dim> class Quadrature;
-template <int dim, int codim, int range, int rank> class Function;
+template <int dim, int codim> class Domain;
 struct VtkGridInformation;
 
 
@@ -61,9 +61,9 @@ private:
   typedef std::shared_ptr<Self_> SelfPtr_;
 
   /**
-   * Alias for a shared pointer of a map function type.
+   * Alias for a shared pointer of a domain type.
    */
-  typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
+  typedef std::shared_ptr<Domain<dim,codim>> DomainPtr_;
 
   /**
    * Alias for mesh grid information shared pointer.
@@ -88,7 +88,7 @@ private:
   /**
    * Constructor.
    */
-  VtkIgaSolidGridGenerator(const MapFunPtr_ mapping,
+  VtkIgaSolidGridGenerator(const DomainPtr_ domain,
                            const GridInfoPtr_ grid_info,
                            const FunContPtr_t_ func_container);
 
@@ -107,7 +107,7 @@ public:
   /**
    * Creates and returns the vtk grid for the visualization.
    */
-  static VtkGridPtr_ get_grid(const MapFunPtr_ mapping,
+  static VtkGridPtr_ get_grid(const DomainPtr_ domain,
                               const GridInfoPtr_ grid_info,
                               const FunContPtr_t_ func_container);
 
@@ -119,9 +119,9 @@ private:
   VtkGridPtr_ create_grid() const;
 
   /**
-   * Shared pointer of the mapping function representing the geometry.
+   * Shared pointer of the domain (i.e. the geometry).
    */
-  const MapFunPtr_ map_fun_;
+  const DomainPtr_ domain_;
 
   /**
    * Shared pointer of the control grid information for representing the

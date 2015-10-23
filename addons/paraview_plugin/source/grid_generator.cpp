@@ -30,14 +30,14 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int codim>
 VtkIgaGridGenerator<dim, codim>::
-VtkIgaGridGenerator(const MapFunPtr_ map_fun,
+VtkIgaGridGenerator(const DomainPtr_ domain,
                     const GridInfoPtr_ solid_grid_info,
                     const GridInfoPtr_ knot_grid_info,
                     const ControlGridInfoPtr_ control_grid_info,
                     const FunContPtr_ func_container,
                     const bool is_physical)
   :
-  map_fun_(map_fun),
+  domain_(domain),
   solid_grid_info_(solid_grid_info),
   knot_grid_info_(knot_grid_info),
   control_grid_info_(control_grid_info),
@@ -47,7 +47,7 @@ VtkIgaGridGenerator(const MapFunPtr_ map_fun,
   recompute_knot_(true),
   recompute_control_(true)
 {
-  Assert(map_fun != nullptr, ExcNullPtr());
+  Assert(domain != nullptr, ExcNullPtr());
   Assert(solid_grid_info_ != nullptr, ExcNullPtr());
   Assert(knot_grid_info_ != nullptr, ExcNullPtr());
 
@@ -59,7 +59,7 @@ VtkIgaGridGenerator(const MapFunPtr_ map_fun,
 template <int dim, int codim>
 auto
 VtkIgaGridGenerator<dim, codim>::
-create_physical(const MapFunPtr_ map_fun,
+create_physical(const DomainPtr_ domain,
                 const GridInfoPtr_ solid_grid_info,
                 const GridInfoPtr_ knot_grid_info,
                 const ControlGridInfoPtr_ control_grid_info,
@@ -67,7 +67,7 @@ create_physical(const MapFunPtr_ map_fun,
 {
   Assert(control_grid_info != nullptr, ExcNullPtr());
 
-  return SelfPtr_(new Self_(map_fun, solid_grid_info, knot_grid_info,
+  return SelfPtr_(new Self_(domain, solid_grid_info, knot_grid_info,
   control_grid_info, func_container, true));
 }
 
@@ -76,12 +76,12 @@ create_physical(const MapFunPtr_ map_fun,
 template <int dim, int codim>
 auto
 VtkIgaGridGenerator<dim, codim>::
-create_parametric(const MapFunPtr_ map_fun,
+create_parametric(const DomainPtr_ domain,
                   const GridInfoPtr_ solid_grid_info,
                   const GridInfoPtr_ knot_grid_info,
                   const FunContPtr_ func_container) -> SelfPtr_
 {
-  return SelfPtr_(new Self_(map_fun, solid_grid_info, knot_grid_info,
+  return SelfPtr_(new Self_(domain, solid_grid_info, knot_grid_info,
   ControlGridInfoPtr_(), func_container, false));
 }
 
@@ -132,7 +132,7 @@ get_solid_grid() -> VtkGridPtr_
   if (recompute_solid_)
   {
     solid_grid_ = VtkIgaSolidGridGenerator<dim, codim>::
-    get_grid(map_fun_, solid_grid_info_, funcs_container_);
+    get_grid(domain_, solid_grid_info_, funcs_container_);
 
     recompute_solid_ = false;
   }
@@ -151,7 +151,7 @@ get_knot_grid() -> VtkGridPtr_
   if (recompute_knot_)
   {
     knot_grid_ = VtkIgaKnotGridGenerator<dim, codim>::
-    get_grid(map_fun_, knot_grid_info_);
+    get_grid(domain_, knot_grid_info_);
 
     recompute_knot_ = false;
   }
@@ -172,7 +172,7 @@ get_control_grid() -> VtkGridPtr_
   if (recompute_control_)
   {
     control_grid_ = VtkIgaControlGridGenerator<dim, codim>::
-    get_grid(map_fun_, control_grid_info_);
+    get_grid(domain_, control_grid_info_);
 
     recompute_control_ = false;
   }

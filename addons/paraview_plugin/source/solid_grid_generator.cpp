@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <paraview_plugin/solid_grid_generator.h>
 
 #include <vtkStructuredGrid.h>
 #include <vtkUnstructuredGrid.h>
@@ -28,11 +27,12 @@
 #include <vtkDoubleArray.h>
 #include <vtkPointData.h>
 
+#include <paraview_plugin/solid_grid_generator.h>
+
 #include <boost/range/irange.hpp>
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function.h>
-#include <igatools/functions/function_element.h>
+#include <igatools/geometry/domain_element.h>
 #include <igatools/functions/functions_container.h>
 #include <igatools/utils/multi_array_utils.h>
 #include <paraview_plugin/grid_information.h>
@@ -42,16 +42,16 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int codim>
 VtkIgaSolidGridGenerator<dim, codim>::
-VtkIgaSolidGridGenerator(const MapFunPtr_ mapping,
+VtkIgaSolidGridGenerator(const DomainPtr_ domain,
                          const GridInfoPtr_ grid_info,
                          const FunContPtr_t_ func_container)
   :
-  map_fun_(mapping),
+  domain_(domain),
   grid_info_(grid_info),
   funcs_container_(func_container)
 {
-  Assert(mapping != nullptr, ExcNullPtr());
-  Assert(grid_info != nullptr, ExcNullPtr());
+  Assert(domain_ != nullptr, ExcNullPtr());
+  Assert(grid_info_ != nullptr, ExcNullPtr());
 
   this->init_points_info();
 }
@@ -61,11 +61,11 @@ VtkIgaSolidGridGenerator(const MapFunPtr_ mapping,
 template <int dim, int codim>
 auto
 VtkIgaSolidGridGenerator<dim, codim>::
-get_grid(const MapFunPtr_ mapping,
+get_grid(const DomainPtr_ domain,
          const GridInfoPtr_ grid_info,
          const FunContPtr_t_ func_container) -> VtkGridPtr_
 {
-  VtkIgaSolidGridGenerator generator(mapping, grid_info, func_container);
+  VtkIgaSolidGridGenerator generator(domain, grid_info, func_container);
   return generator.create_grid();
 }
 
@@ -103,7 +103,7 @@ VtkGridPtr_
 
   const auto points = this->create_points();
 
-  const auto n_intervals = map_fun_->get_grid()->get_num_intervals();
+  const auto n_intervals = domain_->get_grid_function()->get_grid()->get_num_intervals();
   int grid_dim[3] = { 1, 1, 1 };
   for (const auto &dir : boost::irange(0, dim))
     grid_dim[dir] = (n_vis_elements_[dir] + 1) * n_intervals[dir];
@@ -194,23 +194,20 @@ create_points() const
 
   double point_tmp[3] = { 0.0, 0.0, 0.0 };
 
-  const auto &map_fun = map_fun_;
+  auto domain_cache_handler = domain_->create_cache_handler();
+  domain_cache_handler->template set_flags<dim>(domain_element::Flags::point);
 
-  const auto flag = ValueFlags::point | ValueFlags::value;
-  map_fun->reset(flag, *quad_);
 
-  auto elem = map_fun->begin();
-  const auto end = map_fun->end();
+  auto elem = domain_->cbegin();
+  const auto end = domain_->cend();
 
-  const auto topology = Topology <dim> ();
-  map_fun->init_cache(elem, topology);
+  domain_cache_handler->init_cache(elem,quad_);
 
   for (auto pm_el = points_map_.cbegin(); elem != end; ++elem, ++pm_el)
   {
-    map_fun->fill_cache(elem, topology, 0);
+    domain_cache_handler->template fill_cache<dim>(elem,0);
 
-    auto element_vertices_tmp =
-      elem->template get_values <_Value, dim> (0);
+    const auto element_vertices_tmp = elem->template get_points<dim>(0);
     auto pm = pm_el->cbegin();
     for (const auto &mask : points_mask_)
     {
@@ -246,13 +243,15 @@ init_points_info()
   points_map_.clear();
   points_mask_.clear();
 
-  const auto cartesian_grid = map_fun_->get_grid();
-  const Size n_bezier_elements = cartesian_grid->get_num_all_elems();
+  const auto &cartesian_grid = *(domain_->get_grid_function()->get_grid());
+  const Size n_bezier_elements = cartesian_grid.get_num_all_elems();
 
   AssertThrow(n_bezier_elements > 0,
               ExcMessage("0 Bezier elements found."));
 
   points_map_.resize(n_bezier_elements);
+
+  const int n_quad_points = quad_->get_num_points();
 
   if (!grid_info_->is_structured() || dim == 1) // VTK unstructured grid
   {
@@ -264,7 +263,6 @@ init_points_info()
       // Iteration along all the quadrature point.
       // Only the points in an edge are added to the mask.
       const auto &quad_points_1d = quad_->get_points_1d();
-      const Size n_quad_points = quad_->get_num_points();
       for (int i_pt = 0; i_pt < n_quad_points; ++i_pt)
       {
         const auto tensor_id = quad_points_1d.flat_to_tensor(i_pt);
@@ -279,7 +277,7 @@ init_points_info()
 
         if (n_odd_values < 2) // It's on an edge.
           points_mask_.push_back(i_pt);
-      }
+      } // end loop i_pt
 
       // Total number of visualization points per Bezier element.
       const Size n_pts_per_bezier_elem = points_mask_.size();
@@ -290,17 +288,17 @@ init_points_info()
         pm_el.resize(n_pts_per_bezier_elem);
         for (auto &pm : pm_el)
           pm = point_id++;
-      } // points_map_
+      } // end loop pm_el
+
       n_total_points_ = point_id;
 
       this->create_quadratic_element_connectivity<dim>();
 
-    } // VTK quadratic elements
-
+    } // end VTK quadratic elements
     else // VTK linear elements
     {
       // Total number of visualization points per Bezier element.
-      const Size n_pts_per_bezier_elem = quad_->get_num_points();
+      const Size n_pts_per_bezier_elem = n_quad_points;
 
       points_mask_.resize(n_pts_per_bezier_elem);
       Index id = 0;
@@ -318,15 +316,14 @@ init_points_info()
 
       this->create_linear_element_connectivity();
 
-    } // VTK linear elements
+    } // end VTK linear elements
   }
-  else // VTK structured grid
+  else // end VTK structured grid
   {
     // Total number of visualization points per Bezier element.
-    const Size n_pts_per_bezier_elem = quad_->get_num_points();
+    const Size n_pts_per_bezier_elem = n_quad_points;
     // Number of visualization points per Bezier element in each direction.
-    const auto n_pts_dir_per_bezier_elem =
-      quad_->get_num_coords_direction();
+    const auto n_pts_dir_per_bezier_elem = quad_->get_num_coords_direction();
 
     points_mask_.resize(n_pts_per_bezier_elem);
     Index id = 0;
@@ -337,31 +334,34 @@ init_points_info()
 
     TensorSize <dim> n_pts_per_mesh; // Number of points per direction of
     // VTK structured grid.
-    const auto n_intervals = cartesian_grid->get_num_intervals();
+    const auto n_intervals = cartesian_grid.get_num_intervals();
     for (const auto &dir : boost::irange(0, dim))
       n_pts_per_mesh[dir] = n_intervals[dir]
                             * n_pts_dir_per_bezier_elem[dir];
 
-    TensorIndex <dim> elem_t_id; // Tensorial index of the Bezier element.
-    TensorIndex <dim> pt_mesh_t_offset; // Tensorial index of the first point in
-    // Bezier element.
-    TensorIndex <dim> pt_mesh_t_id;     // Tensorial index of the point.
-    TensorIndex <dim> pt_elem_t_id; // Tensorial index of the point referred
-    // to the number of points in a
-    // single element.
+    // Tensorial index of the first point in Bezier element.
+    TensorIndex <dim> pt_mesh_t_offset;
+
+    // Tensorial index of the point.
+    TensorIndex <dim> pt_mesh_t_id;
+
+    // Tensorial index of the point referred to the number of points in a single element.
+    TensorIndex <dim> pt_elem_t_id;
 
     const auto w_elem_pts = MultiArrayUtils <dim>::compute_weight(
                               n_pts_dir_per_bezier_elem);
     const auto w_mesh_pts = MultiArrayUtils <dim>::compute_weight(
                               n_pts_per_mesh);
 
-    for (const auto &i_el : boost::irange(0, n_bezier_elements))
+    int i_el = 0;
+    for (const auto &elem : cartesian_grid)
     {
       auto &pmi = points_map_[i_el];
       pmi.resize(n_pts_per_bezier_elem);
 
+      const auto elem_t_id = elem.get_index();
+
       // Computing the tensor index of the first point of the element.
-      elem_t_id = cartesian_grid->flat_to_tensor(i_el);
       for (const auto &dir : boost::irange(0, dim))
         pt_mesh_t_offset[dir] = elem_t_id[dir]
                                 * n_pts_dir_per_bezier_elem[dir];
@@ -382,8 +382,9 @@ init_points_info()
 
         pm = MultiArrayUtils <dim>::tensor_to_flat_index(
                pt_mesh_t_id, w_mesh_pts);
-      }
-    }
+      } // end loop pm
+      ++i_el;
+    } //end loop elem
   }
 }
 
@@ -456,8 +457,7 @@ create_linear_element_connectivity()
 
   // This grid is going to help in building the connectivity.
   // Every element of the grid refers to a cell.
-  const auto cells_grid = CartesianGrid <dim>::create(
-                            n_elem_bound_per_dir);
+  const auto cells_grid = Grid<dim>::const_create(n_elem_bound_per_dir);
 
   const Size n_cells_per_bezier = n_vis_elements_.flat_size();
   connectivity_.resize(n_cells_per_bezier);
@@ -503,8 +503,7 @@ create_linear_element_connectivity()
   {
     conn_el->resize(n_points_per_single_cell);
 
-    SafeSTLArray <Index, dim> vtk_elem_tensor_idx =
-      cell->get_tensor_index();
+    const auto &vtk_elem_tensor_idx = cell->get_index();
 
     auto conn = conn_el->begin();
     for (int iVertex = 0; iVertex < n_points_per_single_cell;
@@ -516,8 +515,8 @@ create_linear_element_connectivity()
 
       *conn = MultiArrayUtils <dim>::tensor_to_flat_index
               (vtk_vertex_tensor_idx, weight_points);
-    }
-  }
+    } // end loop iVertex
+  } // end loop cell
   //--------------------------------------------------------------------------//
 
 }
@@ -544,8 +543,7 @@ create_quadratic_element_connectivity(
   Index point_id = 0;
   for (auto &conn_el : connectivity_)
   {
-    conn_el =
-    {   point_id, point_id+2, point_id+1};
+    conn_el = {point_id, point_id+2, point_id+1};
     point_id += 2;
   }
 }
@@ -584,8 +582,7 @@ create_quadratic_element_connectivity(
 
   // This grid is going to help in building the connectivity.
   // Every element of the grid refers to a cell.
-  const auto cells_grid = CartesianGrid <aux_dim>::create(
-                            n_elem_bound_per_dir);
+  const auto cells_grid = Grid <aux_dim>::const_create(n_elem_bound_per_dir);
 
   // This array constaints the offsets of the points along the
   // first (u) direction.
@@ -617,20 +614,21 @@ create_quadratic_element_connectivity(
   vtk_vertex_id_0[2] = vtk_vertex_id_0[3] + 2;
 
   auto conn_el = connectivity_.begin();
-  auto cell = cells_grid->begin();
-  const auto end = cells_grid->end();
-  for (; cell != end; ++cell, ++conn_el)
+  for (const auto &cell : *cells_grid)
   {
     conn_el->resize(n_points_per_single_cell);
 
-    SafeSTLArray <Index, aux_dim> vtk_elem_tensor_idx =
-      cell->get_tensor_index();
+    const auto &vtk_elem_tensor_idx = cell.get_index();
+
     auto conn = conn_el->begin();
     for (int i_pt = 0; i_pt < n_points_per_single_cell; ++i_pt, ++conn)
+    {
       *conn = vtk_vertex_id_0[i_pt]
               + offsets_u[i_pt] * vtk_elem_tensor_idx[0]
               + offsets_v * vtk_elem_tensor_idx[1];
-  }
+    } // end loop i_pt
+    ++conn_el;
+  } // end loop cell
 }
 
 
@@ -671,8 +669,7 @@ create_quadratic_element_connectivity(
 
   // This grid is going to help in building the connectivity.
   // Every element of the grid refers to a cell.
-  const auto cells_grid = CartesianGrid <dim>::create(
-                            n_elem_bound_per_dir);
+  const auto cells_grid = Grid <dim>::const_create(n_elem_bound_per_dir);
 
   // This array constaints the offsets of the points along the
   // first (u) direction.
@@ -760,21 +757,22 @@ create_quadratic_element_connectivity(
   vtk_vertex_id_0[6] = vtk_vertex_id_0[7] + 2;
 
   auto conn_el = connectivity_.begin();
-  auto cell = cells_grid->begin();
-  const auto end = cells_grid->end();
-  for (; cell != end; ++cell, ++conn_el)
+  for (const auto &cell : *cells_grid)
   {
     conn_el->resize(n_points_per_single_cell);
 
-    SafeSTLArray <Index, aux_dim> vtk_elem_tensor_idx =
-      cell->get_tensor_index();
+    const auto &vtk_elem_tensor_idx = cell.get_index();
+
     auto conn = conn_el->begin();
     for (int i_pt = 0; i_pt < n_points_per_single_cell; ++i_pt, ++conn)
+    {
       *conn = vtk_vertex_id_0[i_pt]
               + offsets_u[i_pt] * vtk_elem_tensor_idx[0]
               + offsets_v[i_pt] * vtk_elem_tensor_idx[1]
               + offsets_w * vtk_elem_tensor_idx[2];
-  }
+    } // end loop i_pt
+    ++conn_el;
+  } // end loop cell
 }
 
 
@@ -810,20 +808,19 @@ create_point_data(vtkPointData *const point_data) const
 {
 
   // Getting the functions associated with the map.
-  const auto &funcs_map = funcs_container_->template
-                          get_functions_associated_to_mapping <dim, codim, range, rank> (
-                            map_fun_);
+  const auto &funcs_map =
+    funcs_container_->
+    template get_functions_with_same_domain<dim,codim,range,rank>(*domain_);
 
   using Value = typename Function<dim, codim, range, rank>::Value;
 
   static constexpr Size n_comp = Value::size;
   Real tuple[n_comp];
 
-  const auto flag = ValueFlags::value | ValueFlags::point;
   for (const auto &it : funcs_map)
   {
-    const auto &fun = it.second;
-    const auto &name = fun->get_name();
+    const auto &func = *(it.second);
+    const auto &name = func.get_name();
 
     const int n_bezier_elements = points_map_.size();
     const vtkIdType n_tuples = n_bezier_elements * points_mask_.size();
@@ -834,24 +831,24 @@ create_point_data(vtkPointData *const point_data) const
     arr->SetNumberOfComponents(n_comp);
     arr->SetNumberOfTuples(n_tuples);
 
-    fun->reset(flag, *quad_);
+    auto func_cache_handler = func.create_cache_handler();
+    func_cache_handler->template set_flags<dim>(function_element::Flags::value);
 
-    auto elem = fun->begin();
-    const auto end = fun->end();
+    auto elem = func.cbegin();
+    const auto end = func.cend();
 
-    const auto topology = Topology <dim> ();
-    fun->init_cache(elem, topology);
+    func_cache_handler->init_cache(elem,quad_);
 
     auto pnm_it = points_map_.cbegin();
     for (; elem != end; ++elem, ++pnm_it)
     {
-      fun->fill_cache(elem, topology, 0);
+      func_cache_handler->template fill_cache<dim>(elem,0);
 
       auto pnm = pnm_it->cbegin();
-      auto values = elem->template get_values <_Value, dim> (0);
+      auto values = elem->template get_values<typename function_element::_Value, dim>(0);
       for (const auto &pm : points_mask_)
       {
-        this->template tensor_to_tuple <Value> (values[pm], tuple);
+        this->template tensor_to_tuple<Value>(values[pm], tuple);
         arr->SetTuple(*pnm++, tuple);
       }
     }

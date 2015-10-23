@@ -21,17 +21,26 @@
 #ifndef VTK_CONTROL_GRID_GENERATOR_H_
 #define VTK_CONTROL_GRID_GENERATOR_H_
 
+#include <vtkStructuredGrid.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkSmartPointer.h>
+#include <vtkCellArray.h>
+#include <vtkPolyLine.h>
+#include <vtkPolyVertex.h>
+
 #include <igatools/base/config.h>
 
+/*
 class vtkPoints;
 class vtkPointSet;
 template<class T> class vtkSmartPointer;
-
+//*/
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, int codim, int range, int rank> class IgFunction;
+template <int dim, int space_dim> class IgGridFunction;
 template <int dim, int codim, int range, int rank> class Function;
+template <int dim, int codim> class Domain;
 struct VtkControlGridInformation;
 
 
@@ -57,7 +66,7 @@ private:
   /**
    * Alias for a shared pointer of a map function type.
    */
-  typedef std::shared_ptr<Function<dim, 0, space_dim, 1>> MapFunPtr_;
+  typedef std::shared_ptr<Domain<dim,codim>> DomainPtr_;
 
   /**
    * Alias for mesh grid information shared pointer.
@@ -72,17 +81,17 @@ private:
   /**
    * Alias for a ig function type.
    */
-  typedef IgFunction<dim, 0, space_dim, 1> IgFun_;
+  typedef IgGridFunction<dim,space_dim> IgGridFun_;
 
   /**
    * Alias for a shared pointer of a ig function type.
    */
-  typedef std::shared_ptr<IgFun_> IgFunPtr_;
+  typedef std::shared_ptr<const IgGridFun_> IgGridFunPtr_;
 
   /**
    * Constructor.
    */
-  VtkIgaControlGridGenerator(const MapFunPtr_ mapping,
+  VtkIgaControlGridGenerator(const DomainPtr_ domain,
                              const ControlGridInfoPtr_ grid_info);
 
   /**
@@ -100,7 +109,7 @@ public:
   /**
    * Creates and returns the vtk grid for the visualization.
    */
-  static VtkGridPtr_ get_grid(const MapFunPtr_ mapping,
+  static VtkGridPtr_ get_grid(const DomainPtr_ domain,
                               const ControlGridInfoPtr_ grid_info);
 
 private:
@@ -113,7 +122,7 @@ private:
   /**
    * Shared pointer of the mapping function representing the geometry.
    */
-  const IgFunPtr_ ig_fun_;
+  const IgGridFunPtr_ ig_grid_fun_;
 
   /**
    * Shared pointer of the control grid information for representing the

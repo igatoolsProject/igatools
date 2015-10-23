@@ -105,12 +105,23 @@ Quadrature(const PointArray &points,
 
 
 template<int dim_>
-std::shared_ptr<Quadrature<dim_>>
-                               Quadrature<dim_>::
-                               create(const PointVector &points,
-                                      const BBox<dim_> &bounding_box)
+std::shared_ptr<Quadrature<dim_> >
+Quadrature<dim_>::
+create(const PointVector &points,
+       const BBox<dim_> &bounding_box)
 {
   return std::make_shared<self_t>(points,bounding_box);
+}
+
+
+template<int dim_>
+std::shared_ptr<Quadrature<dim_> >
+Quadrature<dim_>::
+create(const PointArray &points,
+       const WeightArray &weights_1d,
+       const BBox<dim_> &bounding_box)
+{
+  return std::make_shared<self_t>(points,weights_1d,bounding_box);
 }
 
 template<int dim_>

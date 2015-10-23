@@ -189,9 +189,12 @@ parse_file()
     //   Assert here if funcs_container_ is void.
 
     funcs_container_ = std::make_shared <FunctionsContainer> ();
+    Assert(false,ExcNotImplemented());
+    /*
     this->template create_geometries<1>();
     this->template create_geometries<2>();
     this->template create_geometries<3>();
+    //*/
 
     // Physical solid grid.
     const auto phys_sol = VtkGridInformation::create
@@ -923,16 +926,16 @@ create_geometries()
   static const int rank = 1;
   static const Transformation transf = Transformation::h_grad;
 
-  using Fun_ = Function<dim, 0, range, rank>;
+//  using Fun_ = Function<dim, 0, range, rank>;
   using FunPhys_ = Function<dim, codim, range, rank>;
-  using IgFun_ = IgFunction<dim, 0, range, rank>;
+//  using IgFun_ = IgFunction<dim, 0, range, rank>;
   using IgFunPhys_ = IgFunction<dim, codim, range, rank>;
-  using PhysSpace_ = PhysicalSpace<dim, range, rank, codim, transf>;
-  using RefSpace_ = ReferenceSpace<dim, range, rank>;
-  using IdFun_ = IdentityFunction<dim, dim>;
-  using MapFunction_ = Function<dim, 0, space_dim, 1>;
-  using Space_ = Space<dim, 0, space_dim, 1>;
-  using Grid_ = CartesianGrid<dim>;
+  using PhysSpace_ = PhysicalSpace<dim, range, rank, codim>;
+//  using RefSpace_ = ReferenceSpace<dim, range, rank>;
+//  using IdFun_ = IdentityFunction<dim, dim>;
+  using Map = Domain<dim,codim>;
+//  using Space_ = Space<dim, 0, space_dim, 1>;
+  using Grid_ = Grid<dim>;
 
   // File names;
   const string fname_0 = "/Users/antolin/Tmp/paraview/testing/patch_0_" + std::to_string(dim) + "D.xml";
@@ -941,15 +944,18 @@ create_geometries()
   const string fname_3 = "/Users/antolin/Tmp/paraview/testing/patch_3_" + std::to_string(dim) + "D.xml";
 
   // Reading maps
-  const shared_ptr <MapFunction_> map_0 =
+  const shared_ptr <Map> map_0 =
     get_mapping_from_file <dim, codim> (fname_0);
-  const shared_ptr <MapFunction_> map_1 =
+  const shared_ptr <Map> map_1 =
     get_mapping_from_file <dim, codim> (fname_1);
-  const shared_ptr <MapFunction_> map_2 =
+  const shared_ptr <Map> map_2 =
     get_mapping_from_file <dim, codim> (fname_2);
-  const shared_ptr <MapFunction_> map_3 =
+  const shared_ptr <Map> map_3 =
     get_mapping_from_file <dim, codim> (fname_3);
 
+  Assert(false,ExcNotImplemented());
+
+#if 0
   // Getting ig spaces.
   shared_ptr <const Space_> space_0 =
     dynamic_pointer_cast <IgFun_> (map_0)->get_ig_space();
@@ -1111,31 +1117,32 @@ create_geometries()
   const string map_name_1 = "map_1_" + std::to_string(dim) + "D";
   const string map_name_2 = "map_2_" + std::to_string(dim) + "D";
   const string map_name_3 = "map_3_" + std::to_string(dim) + "D";
-  funcs_container_->insert_mapping(
-    const_pointer_cast <MapFunction_> (
+  funcs_container_->insert_domain(
+    const_pointer_cast <Map> (
       phys_space_0->get_ptr_const_map_func()),
     map_name_0);
-  funcs_container_->insert_mapping(
-    const_pointer_cast <MapFunction_> (
+  funcs_container_->insert_domain(
+    const_pointer_cast <Map> (
       phys_space_1->get_ptr_const_map_func()),
     map_name_1);
-  funcs_container_->insert_mapping(
-    const_pointer_cast <MapFunction_> (
+  funcs_container_->insert_domain(
+    const_pointer_cast <Map> (
       phys_space_2->get_ptr_const_map_func()),
     map_name_2);
-  funcs_container_->insert_mapping(
-    const_pointer_cast <MapFunction_> (
+  funcs_container_->insert_domain(
+    const_pointer_cast <Map> (
       phys_space_3->get_ptr_const_map_func()),
     map_name_3);
-
-  const string id_map_name_0 = "id_map_0_" + std::to_string(dim) + "D";
-  const string id_map_name_1 = "id_map_1_" + std::to_string(dim) + "D";
-  const string id_map_name_2 = "id_map_2_" + std::to_string(dim) + "D";
-  const string id_map_name_3 = "id_map_3_" + std::to_string(dim) + "D";
-  funcs_container_->insert_mapping(id_map_0, id_map_name_0);
-  funcs_container_->insert_mapping(id_map_1, id_map_name_1);
-  funcs_container_->insert_mapping(id_map_2, id_map_name_2);
-  funcs_container_->insert_mapping(id_map_3, id_map_name_3);
+  /*
+    const string id_map_name_0 = "id_map_0_" + std::to_string(dim) + "D";
+    const string id_map_name_1 = "id_map_1_" + std::to_string(dim) + "D";
+    const string id_map_name_2 = "id_map_2_" + std::to_string(dim) + "D";
+    const string id_map_name_3 = "id_map_3_" + std::to_string(dim) + "D";
+    funcs_container_->insert_domain(id_map_0, id_map_name_0);
+    funcs_container_->insert_domain(id_map_1, id_map_name_1);
+    funcs_container_->insert_domain(id_map_2, id_map_name_2);
+    funcs_container_->insert_domain(id_map_3, id_map_name_3);
+  //*/
 
   // Inserting associated functions.
   const string fun_map_name_0 = "phys_func_0_" + std::to_string(dim)
@@ -1148,21 +1155,25 @@ create_geometries()
                                 + "D";
 
   funcs_container_->insert_function(
-    const_pointer_cast <MapFunction_> (
+    const_pointer_cast <Map> (
       phys_space_0->get_ptr_const_map_func()),
     ps_func_0, fun_map_name_0);
   funcs_container_->insert_function(
-    const_pointer_cast <MapFunction_> (
+    const_pointer_cast <Map> (
       phys_space_1->get_ptr_const_map_func()),
     ps_func_1, fun_map_name_1);
   funcs_container_->insert_function(
-    const_pointer_cast <MapFunction_> (
+    const_pointer_cast <Map> (
       phys_space_2->get_ptr_const_map_func()),
     ps_func_2, fun_map_name_2);
   funcs_container_->insert_function(
-    const_pointer_cast <MapFunction_> (
+    const_pointer_cast <Map> (
       phys_space_3->get_ptr_const_map_func()),
     ps_func_3, fun_map_name_3);
+#endif
+
+
+
 
 #if 0 // The combination dim=1, codim=1, range=2, rank=1 is not instantiated.
   const string id_fun_map_name_0 = "ref_func_0_" + std::to_string(dim) + "D";

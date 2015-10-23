@@ -22,16 +22,17 @@
 
 #include <boost/range/irange.hpp>
 
+/*
 #include <vtkStructuredGrid.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkSmartPointer.h>
 #include <vtkPoints.h>
 #include <vtkIdTypeArray.h>
 #include <vtkCellArray.h>
+//*/
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function.h>
-#include <igatools/functions/function_element.h>
+#include <igatools/geometry/domain_element.h>
 #include <paraview_plugin/grid_information.h>
 
 using std::shared_ptr;
@@ -40,22 +41,22 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int codim>
 VtkIgaKnotGridGenerator<dim, codim>::
-VtkIgaKnotGridGenerator(const MapFunPtr_ mapping,
+VtkIgaKnotGridGenerator(const DomainPtr_ domain,
                         const GridInfoPtr_ grid_info)
   :
-  map_fun_(mapping),
+  domain_(domain),
   grid_info_(grid_info)
 {
-  Assert(mapping != nullptr, ExcNullPtr());
+  Assert(domain_ != nullptr, ExcNullPtr());
   Assert(grid_info != nullptr, ExcNullPtr());
 }
 template <int dim, int codim>
 auto
 VtkIgaKnotGridGenerator<dim, codim>::
-get_grid(const MapFunPtr_ mapping,
+get_grid(const DomainPtr_ domain,
          const GridInfoPtr_ grid_info) -> VtkGridPtr_
 {
-  VtkIgaKnotGridGenerator generator(mapping, grid_info);
+  VtkIgaKnotGridGenerator generator(domain, grid_info);
   return generator.create_grid<dim>();
 }
 
@@ -72,10 +73,10 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
   // In this case the grid consists on a set of points corresponding
   // to the knots.
 
-  const auto cartesian_grid = map_fun_->get_grid();
+  const auto cartesian_grid = domain_->get_grid_function()->get_grid();
   const auto &n_intervals = cartesian_grid->get_num_intervals();
 
-  const QUniform <dim> quad(2);
+  const auto quad = QUniform<dim>::create(2);
   const Size n_vtk_points = n_intervals[0] + 1;
   const Size n_vtk_cells = n_vtk_points;
 
@@ -88,22 +89,21 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
   vtk_cell_ids->SetNumberOfComponents(tuple_size);
   vtk_cell_ids->SetNumberOfTuples(n_vtk_cells);
 
-  const auto flag = ValueFlags::point | ValueFlags::value;
-  auto elem = map_fun_->begin();
-  const auto end  = map_fun_->end();
-  const auto topology = Topology <dim> ();
+  auto elem = domain_->cbegin();
+  const auto end = domain_->cend();
 
   double point_tmp[3] = { 0.0, 0.0, 0.0 };
   vtkIdType tuple[2]  = { 1, 0 };
 
-  map_fun_->reset(flag, quad);
-  map_fun_->init_cache(elem, topology);
+  auto domain_cache_handler = domain_->create_cache_handler();
+  domain_cache_handler->template set_flags<dim>(domain_element::Flags::point);
+  domain_cache_handler->init_cache(elem, quad);
 
   Index pt_id = 0;
   for (; elem != end; ++elem)
   {
-    map_fun_->fill_cache(elem, topology, 0);
-    auto points = elem->template get_values <_Value, dim> (0);
+    domain_cache_handler->template fill_cache<dim>(elem, 0);
+    const auto points = elem->template get_points<dim>(0);
     const auto &pp = points[0];
     for (const auto &dir : boost::irange(0, space_dim))
       point_tmp[dir] = pp[dir];
@@ -112,14 +112,15 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
     vtk_cell_ids->SetTupleValue(pt_id, tuple);
     ++pt_id;
   }
-
-  auto points = elem->template get_values <_Value, dim> (0);
-  const auto &pp = points[1];
-  for (const auto &dir : boost::irange(0, space_dim))
-    point_tmp[dir] = pp[dir];
-  tuple[1] = pt_id;
-  vtk_cell_ids->SetTupleValue(pt_id, tuple);
-  vtk_points->SetPoint(pt_id, point_tmp);
+  /*
+    auto points = elem->template get_points<dim>(0);
+    const auto &pp = points[1];
+    for (const auto &dir : boost::irange(0, space_dim))
+      point_tmp[dir] = pp[dir];
+    tuple[1] = pt_id;
+    vtk_cell_ids->SetTupleValue(pt_id, tuple);
+    vtk_points->SetPoint(pt_id, point_tmp);
+  //*/
 
   // Creating grid.
   auto grid = vtkSmartPointer <vtkUnstructuredGrid>::New();
@@ -157,7 +158,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
            ExcMessage("The number of visualization elements must be > 0."))
   }
 
-  const auto cartesian_grid = map_fun_->get_grid();
+  const auto cartesian_grid = domain_->get_grid_function()->get_grid();
   const auto &n_intervals = cartesian_grid->get_num_intervals();
 
   const Size n_points_per_single_cell = grid_info_->is_quadratic() ? 3 : 2;
@@ -167,7 +168,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
     SafeSTLVector <int> ({{ 0, 1 } });
 
   // A 1D quadrature is built in every direction.
-  SafeSTLArray <shared_ptr <Quadrature <1>>, dim> quadratures;
+  SafeSTLArray <shared_ptr<Quadrature <1>>,dim> quadratures;
   for (const auto &dir : boost::irange(0, dim))
     quadratures[dir] = QUniform<1>::create(
                          n_vis_elements[dir] * (n_points_per_single_cell - 1) + 1);
@@ -228,15 +229,15 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
     const auto &face_elem = UnitElement <dim>::template get_elem <dim - 1>
     (face_id);
 
-    const auto flag = ValueFlags::point | ValueFlags::value;
-    auto elem = map_fun_->begin();
-    const auto topology = Topology <dim> ();
+//    const auto flag = ValueFlags::point | ValueFlags::value;
+    auto elem = domain_->cbegin();
+//    const auto topology = Topology <dim> ();
 
     // Looping along all the knot coordinates of the face.
-    std::map<Index,Index> elem_map;
+    typename Grid<dim>::template SubGridMap<dim-1> elem_map;
     const auto sub_grid =
-      cartesian_grid->template get_sub_grid <dim - 1> (face_id,
-                                                       elem_map);
+      cartesian_grid->template get_sub_grid <dim-1> (face_id,
+                                                     elem_map);
     const auto &face_coords_tensor = sub_grid->get_knot_coordinates();
     const Size n_pts_face = face_coords_tensor.flat_size();
 
@@ -271,11 +272,12 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
         }
         ++ad;
       }
-      Quadrature <dim> quad(quad_points_1d, quad_weights_1d,
-                            BBox <dim> ());
+      const auto quad = Quadrature<dim>::create(quad_points_1d,quad_weights_1d,BBox<dim>());
 
-      map_fun_->reset(flag, quad);
-      map_fun_->init_cache(elem, topology);
+      auto domain_cache_handler = domain_->create_cache_handler();
+      domain_cache_handler->template set_flags<dim>(domain_element::Flags::point);
+      domain_cache_handler->init_cache(elem, quad);
+
       elem_t_id[dir] = 0;
 
       auto &elem_t_id_dir = elem_t_id[dir];
@@ -283,10 +285,10 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
       // Iterating along a single knot line in the direction dir.
       for (int itv = 0; itv < n_intervals[dir]; ++itv, ++elem_t_id_dir)
       {
-        elem.move_to(cartesian_grid->tensor_to_flat(elem_t_id));
+        elem->move_to(elem_t_id);
 
-        map_fun_->fill_cache(elem, topology, 0);
-        auto physical_points = elem->template get_values <_Value, dim> (0);
+        domain_cache_handler->template fill_cache<dim>(*elem, 0);
+        auto physical_points = elem->template get_points<dim>(0);
 
         // Filling points.
         Index vtk_pt_id_0 = vtk_pt_id;

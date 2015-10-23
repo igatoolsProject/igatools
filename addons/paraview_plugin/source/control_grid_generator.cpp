@@ -18,35 +18,37 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <paraview_plugin/grid_information.h>
-
+/*
 #include <vtkStructuredGrid.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkSmartPointer.h>
 #include <vtkCellArray.h>
 #include <vtkPolyLine.h>
 #include <vtkPolyVertex.h>
+//*/
+#include <paraview_plugin/control_grid_generator.h>
+
+#include <paraview_plugin/grid_information.h>
 
 #include <boost/range/irange.hpp>
 
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 #include <igatools/basis_functions/space_element.h>
 #include <igatools/basis_functions/dof_distribution.h>
-#include <paraview_plugin/control_grid_generator.h>
 
 
 IGA_NAMESPACE_OPEN
 
 template <int dim, int codim>
 VtkIgaControlGridGenerator<dim, codim>::
-VtkIgaControlGridGenerator(const MapFunPtr_ mapping,
+VtkIgaControlGridGenerator(const DomainPtr_ domain,
                            const ControlGridInfoPtr_ grid_info)
   :
-  ig_fun_(std::dynamic_pointer_cast <IgFun_> (mapping)),
+  ig_grid_fun_(std::dynamic_pointer_cast<const IgGridFun_>(domain->get_grid_function())),
   grid_info_(grid_info)
 {
-  Assert(mapping != nullptr, ExcNullPtr());
-  Assert(ig_fun_ != nullptr, ExcNullPtr());
+  Assert(domain != nullptr, ExcNullPtr());
+  Assert(ig_grid_fun_ != nullptr, ExcNullPtr());
   Assert(grid_info != nullptr, ExcNullPtr());
 
   // TODO: include assert here to verify that all the components share the
@@ -55,10 +57,10 @@ VtkIgaControlGridGenerator(const MapFunPtr_ mapping,
 template <int dim, int codim>
 auto
 VtkIgaControlGridGenerator<dim, codim>::
-get_grid(const MapFunPtr_ mapping,
+get_grid(const DomainPtr_ domain,
          const ControlGridInfoPtr_ grid_info) -> VtkGridPtr_
 {
-  VtkIgaControlGridGenerator generator(mapping, grid_info);
+  VtkIgaControlGridGenerator generator(domain, grid_info);
   return generator.create_grid();
 }
 
@@ -69,8 +71,8 @@ auto
 VtkIgaControlGridGenerator<dim, codim>::
 create_grid() const -> VtkGridPtr_
 {
-  const auto space = ig_fun_->get_ig_space();
-  const auto &coefs = ig_fun_->get_coefficients();
+  const auto space = ig_grid_fun_->get_ig_space();
+  const auto &coefs = ig_grid_fun_->get_coefficients();
   const auto &dofs = space->get_ptr_const_dof_distribution();
 
   const auto &dofs_table = dofs->get_num_dofs_table();
@@ -116,7 +118,7 @@ auto
 VtkIgaControlGridGenerator<dim, codim>::
 create_grid_vts(const vtkSmartPointer<vtkPoints> points) const -> VtkGridPtr_
 {
-  const auto space = ig_fun_->get_ig_space();
+  const auto space = ig_grid_fun_->get_ig_space();
   const auto &dofs = space->get_ptr_const_dof_distribution();
 
   const auto &dofs_table = dofs->get_num_dofs_table();
@@ -140,7 +142,7 @@ auto
 VtkIgaControlGridGenerator<dim, codim>::
 create_grid_vtu(const vtkSmartPointer<vtkPoints> points) const -> VtkGridPtr_
 {
-  const auto space = ig_fun_->get_ig_space();
+  const auto space = ig_grid_fun_->get_ig_space();
   const auto &dofs = space->get_ptr_const_dof_distribution();
 
   const auto &dofs_table = dofs->get_num_dofs_table();

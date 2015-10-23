@@ -18,13 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#include <vtkMultiBlockDataSet.h>
+#include <vtkInformation.h>
+#include <vtkPointSet.h>
+
 #include <paraview_plugin/grid_generator_container.h>
 
 #include <igatools/functions/functions_container.h>
 #include <paraview_plugin/grid_information.h>
-#include <vtkMultiBlockDataSet.h>
-#include <vtkInformation.h>
-#include <vtkPointSet.h>
 
 using namespace boost::fusion;
 
@@ -184,14 +185,14 @@ set_solid_grids(vtkMultiBlockDataSet *const mb)
   boost::fusion::for_each(data_varying_dim_,
                           [&](const auto & type_and_data_same_dim)
   {
-    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-    using Type = typename Type_Value::first_type;
+//    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+//    using Type = typename Type_Value::first_type;
 
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-      using Type = typename Type_Value::first_type;
+//      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+//      using Type = typename Type_Value::first_type;
 
       auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
@@ -234,14 +235,14 @@ set_knot_grids(vtkMultiBlockDataSet *const mb)
   boost::fusion::for_each(data_varying_dim_,
                           [&](const auto & type_and_data_same_dim)
   {
-    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-    using Type = typename Type_Value::first_type;
+//    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+//    using Type = typename Type_Value::first_type;
 
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-      using Type = typename Type_Value::first_type;
+//      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+//      using Type = typename Type_Value::first_type;
 
       auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
@@ -307,19 +308,23 @@ update(const GridInfoPtr_ solid_info,
   boost::fusion::for_each(data_varying_dim_,
                           [&](const auto & type_and_data_same_dim)
   {
-    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-    using Type = typename Type_Value::first_type;
+//    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+//    using Type = typename Type_Value::first_type;
 
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-      using Type = typename Type_Value::first_type;
+//      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+//      using Type = typename Type_Value::first_type;
 
       auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
-      for (auto &g : generators)
-        g.second->update(solid_updated, knot_updated);
+      AssertThrow(false,ExcNotImplemented());
+      //TODO: (martinelli,23 Oct 2015): the next commented loop causes internal compiler error on gcc-5.2.0
+      /*
+            for (auto &g : generators)
+              g.second->update(solid_updated, knot_updated);
+              //*/
     } // end lambda function on codim
                            ); // for_each (data_varying_codim_
 
@@ -341,31 +346,34 @@ fill_generators()
     funcs_container_data,
     [&](const auto & type_and_data_same_dim)
   {
-    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-    using Type = typename Type_Value::first_type;
-    const int dim = Type::value;
+//    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+//    using Type = typename Type_Value::first_type;
+//    const int dim = Type::value;
 
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-      using Type = typename Type_Value::first_type;
-      const int codim = Type::value;
+//      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+//      using Type = typename Type_Value::first_type;
+//      const int codim = Type::value;
 
-      using IdFun = IdentityFunction<dim, dim + codim>;
+//      using IdFun = IdentityFunction<dim, dim + codim>;
 
-      const auto &map_funs = type_and_data_same_dim_codim.second.get_all_mappings();
+      const auto &domains = type_and_data_same_dim_codim.second.get_all_domains();
 
-      for (const auto &map_fun : map_funs)
+      for (const auto &domain : domains)
       {
         // const string &name = map_and_name.second;
-        const string &name = type_and_data_same_dim_codim.
-                             second.get_mapping_data(map_fun).get_mapping_name();
+        const string &name = domain->get_name();
+//        const string &name = type_and_data_same_dim_codim.
+//                             second.get_mapping_data(map_fun).get_mapping_name();
 
+        Assert(false,ExcNotImplemented());
+        /*
         // Is it an identity mapping?
         if (std::dynamic_pointer_cast<IdFun>(map_fun) != nullptr)
           this->insert_generator<dim, codim> (map_fun, name);
-
+        //*/
       } // endl loop on map_funs with a given pair <dim,codim>
 
     } // end lambda function on codim
@@ -454,9 +462,11 @@ update(const GridInfoPtr_ solid_info,
 
       auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
+      //TODO: (martinelli,23 Oct 2015): the next commented loop causes internal compiler error on gcc-5.2.0
+      /*
       for (auto &g : generators)
         g.second->update(solid_updated, knot_updated, control_updated);
-
+      //*/
     } // end lambda function on codim
                            ); // for_each (data_varying_codim_
 
@@ -547,31 +557,34 @@ fill_generators()
     funcs_container_data,
     [&](const auto & type_and_data_same_dim)
   {
-    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-    using Type = typename Type_Value::first_type;
-    const int dim = Type::value;
+//    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+//    using Type = typename Type_Value::first_type;
+//    const int dim = Type::value;
 
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-      using Type = typename Type_Value::first_type;
-      const int codim = Type::value;
+//      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+//      using Type = typename Type_Value::first_type;
+//      const int codim = Type::value;
 
-      using IdFun = IdentityFunction<dim, dim + codim>;
+//      using IdFun = IdentityFunction<dim, dim + codim>;
 
-      const auto &map_funs = type_and_data_same_dim_codim.second.get_all_mappings();
+      const auto &domains = type_and_data_same_dim_codim.second.get_all_domains();
 
-      for (const auto &map_fun : map_funs)
+      for (const auto &domain : domains)
       {
-        // const string &name = map_and_name.second;
-        const string &name = type_and_data_same_dim_codim.
-                             second.get_mapping_data(map_fun).get_mapping_name();
+        const string &name = domain->get_name();
+
+//        const string &name = type_and_data_same_dim_codim.
+//                             second.get_mapping_data(map_fun).get_mapping_name();
 
         // Is it a physical mapping?
+        Assert(false,ExcNotImplemented());
+        /*
         if (std::dynamic_pointer_cast<IdFun>(map_fun) == nullptr)
           this->insert_generator<dim, codim> (map_fun, name);
-
+        //*/
       } // endl loop on map_funs with a given pair <dim,codim>
 
     } // end lambda function on codim
