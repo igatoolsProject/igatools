@@ -66,17 +66,17 @@ private:
   using GenMap_ = std::map<Index, GridGenPtr_<dim, codim>>;
 
   /**
-   * Function map type.
+   * Domain type.
    */
   template <int dim, int codim>
-  using MapFun_ = Function<dim, 0, dim + codim, 1>;
+  using Domain_ = Domain<dim,codim>;
 
 protected:
   /**
    * Function map shared pointer type.
    */
   template <int dim, int codim>
-  using MapFunPtr_ = std::shared_ptr<MapFun_<dim, codim>>;
+  using DomainPtr_ = std::shared_ptr<const Domain<dim, codim>>;
 
 
   /**
@@ -332,8 +332,7 @@ private:
 
   template <int dim, int codim>
   void
-  insert_generator(const MapFunPtr_<dim, codim> map_fun,
-                   const std::string &map_name);
+  insert_generator(const DomainPtr_<dim, codim> map_fun);
 
 public:
   /**
@@ -346,8 +345,8 @@ public:
   /**
    * TODO:
    */
-  void update(const GridInfoPtr_ solid_info,
-              const GridInfoPtr_ knot_info);
+  void update_parametric(const GridInfoPtr_ solid_info,
+                         const GridInfoPtr_ knot_info);
 
 
 };
@@ -410,9 +409,10 @@ public:
   /**
    * TODO:
    */
-  void update(const GridInfoPtr_ solid_info,
-              const GridInfoPtr_ knot_info,
-              const ControlGridInfoPtr_ control_info);
+  void update_physical(
+    const GridInfoPtr_ solid_info,
+    const GridInfoPtr_ knot_info,
+    const ControlGridInfoPtr_ control_info);
 
 private:
 
@@ -425,8 +425,7 @@ private:
   void fill_generators();
 
   template <int dim, int codim>
-  void insert_generator(const MapFunPtr_<dim, codim> map_fun,
-                        const std::string &map_name);
+  void insert_generator(const DomainPtr_<dim, codim> domain);
 
 public:
 

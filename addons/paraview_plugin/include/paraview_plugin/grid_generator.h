@@ -65,7 +65,7 @@ private:
   /**
    * Alias for a shared pointer of a map function type.
    */
-  typedef std::shared_ptr<Domain<dim,codim>> DomainPtr_;
+  typedef std::shared_ptr<const Domain<dim,codim>> DomainPtr_;
 
   /**
    * Alias for mesh grid information shared pointer.
@@ -151,17 +151,17 @@ public:
    *
    * @Note: this function is for physical grids.
    */
-  void update(const bool solid_updated,
-              const bool knot_updated,
-              const bool control_updated);
+  void update_physical(const bool solid_updated,
+                       const bool knot_updated,
+                       const bool control_updated);
 
   /**
    * Updates the grid information for the solid and knot.
    *
    * @Note: this function is for parametric grids.
    */
-  void update(const bool solid_updated,
-              const bool knot_updated);
+  void update_parametric(const bool solid_updated,
+                         const bool knot_updated);
 
   /**
    * Computes (if necessary) and returns the vtk grid the solid geometry.

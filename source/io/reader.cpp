@@ -91,7 +91,7 @@ xml_element_is_unique(
   const string &tag_name)
 {
   const Size counter = count_xml_elements_same_tag(tree,tag_name);
-  AssertThrow(counter >= 1, ExcLowerRange(counter,1));
+//  AssertThrow(counter >= 1, ExcLowerRange(counter,1));
   return (counter == 1) ? true:false;
 }
 
@@ -220,11 +220,9 @@ template <int dim, int codim>
 std::shared_ptr< Domain<dim,codim> >
 get_mapping_from_file(const std::string &filename)
 {
-  AssertThrow(false,ExcNotImplemented());
-#if 0
   const string file_format_version = get_xml_input_file_format(filename) ;
 
-  shared_ptr< MapFunction_new<dim,codim> > map;
+  shared_ptr< Domain<dim,codim> > map;
   if (file_format_version == "1.0")
   {
     Assert(false,ExcNotImplemented());
@@ -249,8 +247,6 @@ get_mapping_from_file(const std::string &filename)
   AssertThrow(map != nullptr,ExcNullPtr());
 
   return map;
-#endif
-  return nullptr;
 }
 
 
@@ -708,7 +704,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
   using ScalarDegreeTable = typename ScalarBSplineSpace::DegreeTable;
   const ScalarDegreeTable scalar_degree_table(degrees[0]);
 
-  auto new_grid = Grid<dim>::create(*grid);
+//  auto new_grid = Grid<dim>::create(*grid);
 
   using ScalarMultiplicityTable = typename ScalarBSplineSpace::MultiplicityTable;
   const auto scalar_mult_table = ScalarMultiplicityTable(multiplicities[0]);
@@ -719,7 +715,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
 
   auto scalar_spline_space =
-    ScalarBSplineSpace::create(scalar_degree_table, new_grid,
+    ScalarBSplineSpace::create(scalar_degree_table, grid,
                                scalar_mult_table, scalar_periodic, scalar_end_behaviour);
 
 //    using WeightFuncPtr = shared_ptr<WeightFunc>;

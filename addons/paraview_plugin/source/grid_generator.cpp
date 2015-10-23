@@ -90,9 +90,9 @@ create_parametric(const DomainPtr_ domain,
 template <int dim, int codim>
 void
 VtkIgaGridGenerator<dim, codim>::
-update(const bool solid_updated,
-       const bool knot_updated,
-       const bool control_updated)
+update_physical(const bool solid_updated,
+                const bool knot_updated,
+                const bool control_updated)
 {
   Assert(is_physical_, ExcMessage("Not valid for parametric grids."));
 
@@ -110,8 +110,9 @@ update(const bool solid_updated,
 template <int dim, int codim>
 void
 VtkIgaGridGenerator<dim, codim>::
-update(const bool solid_updated,
-       const bool knot_updated)
+update_parametric(
+  const bool solid_updated,
+  const bool knot_updated)
 {
   Assert(!is_physical_, ExcMessage("Not valid for physical grids."));
 

@@ -63,7 +63,7 @@ private:
   /**
    * Alias for a shared pointer of a domain type.
    */
-  typedef std::shared_ptr<Domain<dim,codim>> DomainPtr_;
+  typedef std::shared_ptr<const Domain<dim,codim>> DomainPtr_;
 
   /**
    * Alias for mesh grid information shared pointer.
