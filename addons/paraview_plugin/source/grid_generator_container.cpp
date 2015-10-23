@@ -40,15 +40,18 @@ IGA_NAMESPACE_OPEN
 VtkIgaGridGeneratorContBase::
 VtkIgaGridGeneratorContBase(const FunContPtr_ funcs_container,
                             const GridInfoPtr_ solid_info,
-                            const GridInfoPtr_ knot_info)
+                            const GridInfoPtr_ knot_info,
+                            const ControlGridInfoPtr_ control_info)
   :
   funcs_container_(funcs_container),
   solid_info_(solid_info),
-  knot_info_(knot_info)
+  knot_info_(knot_info),
+  control_info_(control_info)
 {
   Assert(funcs_container_ != nullptr, ExcNullPtr());
   Assert(solid_info_ != nullptr, ExcNullPtr());
   Assert(knot_info_ != nullptr, ExcNullPtr());
+
 }
 
 
@@ -185,15 +188,9 @@ set_solid_grids(vtkMultiBlockDataSet *const mb)
   boost::fusion::for_each(data_varying_dim_,
                           [&](const auto & type_and_data_same_dim)
   {
-//    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-//    using Type = typename Type_Value::first_type;
-
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-//      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-//      using Type = typename Type_Value::first_type;
-
       auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
       for (auto &g : generators)
@@ -235,15 +232,9 @@ set_knot_grids(vtkMultiBlockDataSet *const mb)
   boost::fusion::for_each(data_varying_dim_,
                           [&](const auto & type_and_data_same_dim)
   {
-//    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-//    using Type = typename Type_Value::first_type;
-
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-//      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-//      using Type = typename Type_Value::first_type;
-
       auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
       for (auto &g : generators)
@@ -278,7 +269,7 @@ VtkIgaGridGeneratorContParm(const FunContPtr_ funcs_container,
                             const GridInfoPtr_ solid_info,
                             const GridInfoPtr_ knot_info)
   :
-  Base_(funcs_container, solid_info, knot_info)
+  Base_(funcs_container, solid_info, knot_info, nullptr)
 {
   this->fill_generators();
 }
@@ -295,7 +286,7 @@ create(const FunContPtr_ funcs_container,
 }
 
 
-
+#if 0
 void
 VtkIgaGridGeneratorContParm::
 update_parametric(const GridInfoPtr_ solid_info,
@@ -312,22 +303,22 @@ update_parametric(const GridInfoPtr_ solid_info,
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-
       AssertThrow(false,ExcNotImplemented());
       //TODO: (martinelli,23 Oct 2015): the next commented loop causes internal compiler error on gcc-5.2.0
-      auto &generators = type_and_data_same_dim_codim.second.get_generators();
-      for (const auto &g : generators)
-        g.second->update_parametric(solid_updated, knot_updated);
-      //*/
+      /*
+            auto &generators = type_and_data_same_dim_codim.second.get_generators();
+            for (auto &g : generators)
+              g.second->update(solid_updated, knot_updated,false);
+            //*/
     } // end lambda function on codim
                            ); // for_each (data_varying_codim_
 
   } // end lambda function on dim
                          ); // for_each (data_varying_dim_
 }
+#endif
 
-
-
+#if 0
 void
 VtkIgaGridGeneratorContParm::
 fill_generators()
@@ -340,29 +331,16 @@ fill_generators()
     funcs_container_data,
     [&](const auto & type_and_data_same_dim)
   {
-//    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-//    using Type = typename Type_Value::first_type;
-//    const int dim = Type::value;
 
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-//      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
-//      using Type = typename Type_Value::first_type;
-//      const int codim = Type::value;
-
-//      using IdFun = IdentityFunction<dim, dim + codim>;
 
       const auto &domains = type_and_data_same_dim_codim.second.get_all_domains();
 
       for (const auto &domain : domains)
       {
-        // const string &name = map_and_name.second;
-//        const string &name = domain->get_name();
-//        const string &name = type_and_data_same_dim_codim.
-//                             second.get_mapping_data(map_fun).get_mapping_name();
-
-        Assert(false,ExcNotImplemented());
+        this->insert_generator(domain.get_ptr_const_data());
         /*
         // Is it an identity mapping?
         if (std::dynamic_pointer_cast<IdFun>(map_fun) != nullptr)
@@ -376,9 +354,9 @@ fill_generators()
   } // end lambda function on dim
   ); // for_each (data_varying_dim_
 }
+#endif
 
-
-
+#if 0
 template<int dim, int codim>
 void
 VtkIgaGridGeneratorContParm::
@@ -398,10 +376,10 @@ insert_generator(const DomainPtr_<dim, codim> domain)
   Assert(generators.find(map_id) == generators.end(),
          ExcMessage("Key already introduced."));
 
-  generators[map_id] = VtkIgaGridGenerator<dim, codim>::create_parametric
+  generators[map_id] = VtkIgaGridGeneratorParm<dim, codim>::create
                        (domain, solid_info_, knot_info_, funcs_container_);
 }
-
+#endif
 
 
 VtkIgaGridGeneratorContPhys::
@@ -410,8 +388,7 @@ VtkIgaGridGeneratorContPhys(const FunContPtr_ funcs_container,
                             const GridInfoPtr_ knot_info,
                             const ControlGridInfoPtr_ control_info)
   :
-  Base_(funcs_container, solid_info, knot_info),
-  control_info_(control_info)
+  Base_(funcs_container, solid_info, knot_info,control_info)
 {
   Assert(control_info != nullptr, ExcNullPtr())
   this->fill_generators();
@@ -432,14 +409,19 @@ create(const FunContPtr_ funcs_container,
 
 
 void
-VtkIgaGridGeneratorContPhys::
-update_physical(const GridInfoPtr_ solid_info,
-                const GridInfoPtr_ knot_info,
-                const ControlGridInfoPtr_ control_info)
+VtkIgaGridGeneratorContBase::
+update(const GridInfoPtr_ solid_info,
+       const GridInfoPtr_ knot_info,
+       const ControlGridInfoPtr_ control_info)
 {
   const bool solid_updated = solid_info_->update(solid_info);
   const bool knot_updated = knot_info_->update(knot_info);
-  const bool control_updated = control_info_->update(control_info);
+
+  bool control_updated;
+  if (control_info_)
+    control_updated = control_info_->update(control_info);
+  else
+    false;
 
   boost::fusion::for_each(data_varying_dim_,
                           [&](const auto & type_and_data_same_dim)
@@ -448,15 +430,14 @@ update_physical(const GridInfoPtr_ solid_info,
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
-
-//      AssertThrow(false,ExcNotImplemented());
+      AssertThrow(false,ExcNotImplemented());
 
       //TODO: (martinelli,23 Oct 2015): the next commented loop causes internal compiler error on gcc-5.2.0
-      /*
-            auto &generators = type_and_data_same_dim_codim.second.get_generators();
-            for (auto &g : generators)
-              g.second->update(solid_updated, knot_updated, control_updated);
-            //*/
+
+      auto &generators = type_and_data_same_dim_codim.second.get_generators();
+      for (auto &g : generators)
+        g.second->update(solid_updated, knot_updated, control_updated);
+      //*/
     } // end lambda function on codim
                            ); // for_each (data_varying_codim_
 
@@ -478,9 +459,17 @@ set_control_grids(vtkMultiBlockDataSet *const mb)
   boost::fusion::for_each(data_varying_dim_,
                           [&](const auto & type_and_data_same_dim)
   {
+    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+    using Type = typename Type_Value::first_type;
+    const int dim = Type::value;
+
     boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
                             [&](const auto & type_and_data_same_dim_codim)
     {
+      using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+      using Type = typename Type_Value::first_type;
+      const int codim = Type::value;
+
       auto &generators = type_and_data_same_dim_codim.second.get_generators();
 
       for (auto &g : generators)
@@ -499,7 +488,9 @@ set_control_grids(vtkMultiBlockDataSet *const mb)
           {
             const auto &name = std::get<1>(g_num);
             mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-            mb->SetBlock(block_index, g.second->get_control_grid());
+            mb->SetBlock(block_index,
+                         std::dynamic_pointer_cast<VtkIgaGridGeneratorPhys<dim,codim> >(
+                           g.second)->get_control_grid());
             ++block_index;
           }
 
@@ -530,7 +521,7 @@ get_number_active_grids_ig() const
 
 
 void
-VtkIgaGridGeneratorContPhys::
+VtkIgaGridGeneratorContBase::
 fill_generators()
 {
   // Iterating over all the functions in the container for building the generators
@@ -567,31 +558,52 @@ fill_generators()
 
 template<int dim, int codim>
 void
-VtkIgaGridGeneratorContPhys::
+VtkIgaGridGeneratorContBase::
 insert_generator(const DomainPtr_<dim, codim> domain)
 {
-  Assert(domain != nullptr, ExcNullPtr());
+  if (this->is_physical())
+  {
+    Assert(domain != nullptr, ExcNullPtr());
 
 
-  using IgGridFun = IgGridFunction<dim,dim + codim>;
+    using IgGridFun = IgGridFunction<dim,dim + codim>;
 
-  const bool is_ig_mapping = std::dynamic_pointer_cast<const IgGridFun>(domain->get_grid_function()) != nullptr;
-  AssertThrow(is_ig_mapping, ExcMessage("Not an Isogeometric mapping!"));
+    const bool is_ig_mapping = std::dynamic_pointer_cast<const IgGridFun>(domain->get_grid_function()) != nullptr;
+    AssertThrow(is_ig_mapping, ExcMessage("Not an Isogeometric mapping!"));
 
-  // Inserting the new generators indices in the table.
-  generators_numbering_.push_back(
-    make_tuple(domain->get_object_id(), domain->get_name(), true, is_ig_mapping));
+    // Inserting the new generators indices in the table.
+    generators_numbering_.push_back(
+      make_tuple(domain->get_object_id(), domain->get_name(), true, is_ig_mapping));
 
-  auto &data_same_dim_codim = this->template get_data_dim_codim<dim, codim>();
-  auto &generators = data_same_dim_codim.get_generators();
+    auto &data_same_dim_codim = this->template get_data_dim_codim<dim, codim>();
+    auto &generators = data_same_dim_codim.get_generators();
 
-  const Index map_id = generators_numbering_.size() - 1;
+    const Index map_id = generators_numbering_.size() - 1;
 
-  Assert(generators.find(map_id) == generators.end(),
-         ExcMessage("Key already introduced."));
+    Assert(generators.find(map_id) == generators.end(),
+           ExcMessage("Key already introduced."));
 
-  generators[map_id] = VtkIgaGridGenerator<dim, codim>::create_physical
-                       (domain, solid_info_, knot_info_, control_info_, funcs_container_);
+    generators[map_id] = VtkIgaGridGeneratorPhys<dim, codim>::create
+                         (domain, solid_info_, knot_info_, control_info_, funcs_container_);
+
+  }
+  else
+  {
+    // Inserting the new generators indices in the table.
+    generators_numbering_.push_back(
+      make_tuple(domain->get_object_id(), domain->get_name(), true, false));
+
+    auto &data_same_dim_codim = this->template get_data_dim_codim<dim, codim>();
+    auto &generators = data_same_dim_codim.get_generators();
+
+    const Index map_id = generators_numbering_.size() - 1;
+
+    Assert(generators.find(map_id) == generators.end(),
+           ExcMessage("Key already introduced."));
+
+    generators[map_id] = VtkIgaGridGeneratorParm<dim, codim>::create
+                         (domain, solid_info_, knot_info_, funcs_container_);
+  }
 }
 
 IGA_NAMESPACE_CLOSE

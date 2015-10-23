@@ -91,13 +91,40 @@ protected:
 
 
   /**
+   * Control grid information shared pointer type.
+   */
+  typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
+
+  /**
    * Constructor.
    */
   VtkIgaGridGeneratorContBase(const FunContPtr_ funcs_container,
                               const GridInfoPtr_ solid_info,
-                              const GridInfoPtr_ knot_info);
+                              const GridInfoPtr_ knot_info,
+                              const ControlGridInfoPtr_ control_info);
+
+  virtual ~VtkIgaGridGeneratorContBase() = default;
+
+
+public:
+  /**
+   * TODO:
+   */
+  void update(
+    const GridInfoPtr_ solid_info,
+    const GridInfoPtr_ knot_info,
+    const ControlGridInfoPtr_ control_info);
+
+
+protected:
+  void fill_generators();
+
 
 private:
+
+  template <int dim, int codim>
+  void insert_generator(const DomainPtr_<dim, codim> domain);
+
 
   template <int dim>
   class VtkGridGeneratorContBaseSameDim
@@ -286,6 +313,18 @@ public:
    * */
   void set_knot_grids(vtkMultiBlockDataSet *const mb);
 
+
+  /**
+   * TODO: to document.
+   * */
+  virtual bool is_physical() const = 0;
+
+protected:
+  /**
+   * Grids information for the control mesh.
+   */
+  const ControlGridInfoPtr_ control_info_;
+
 };
 
 
@@ -328,11 +367,21 @@ private:
                               const GridInfoPtr_ solid_info,
                               const GridInfoPtr_ knot_info);
 
+#if 0
   void fill_generators();
 
   template <int dim, int codim>
   void
-  insert_generator(const DomainPtr_<dim, codim> map_fun);
+  insert_generator(const DomainPtr_<dim, codim> domain);
+#endif
+
+  /**
+   * TODO: to document.
+   * */
+  bool is_physical() const override final
+  {
+    return false;
+  }
 
 public:
   /**
@@ -342,11 +391,14 @@ public:
                          const GridInfoPtr_ solid_info,
                          const GridInfoPtr_ knot_info);
 
+#if 0
   /**
    * TODO:
    */
   void update_parametric(const GridInfoPtr_ solid_info,
                          const GridInfoPtr_ knot_info);
+#endif
+
 
 
 };
@@ -383,10 +435,6 @@ private:
    */
   typedef typename Base_::GridInfoPtr_ GridInfoPtr_;
 
-  /**
-   * Control grid information shared pointer type.
-   */
-  typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
 
   /**
    * Constructor.
@@ -406,26 +454,20 @@ public:
                          const GridInfoPtr_ knot_info,
                          const ControlGridInfoPtr_ control_info);
 
-  /**
-   * TODO:
-   */
-  void update_physical(
-    const GridInfoPtr_ solid_info,
-    const GridInfoPtr_ knot_info,
-    const ControlGridInfoPtr_ control_info);
 
 private:
 
+
+
+
+
   /**
-   * Grids information for the control mesh.
-   */
-  const ControlGridInfoPtr_ control_info_;
-
-
-  void fill_generators();
-
-  template <int dim, int codim>
-  void insert_generator(const DomainPtr_<dim, codim> domain);
+   * TODO: to document.
+   * */
+  bool is_physical() const override final
+  {
+    return true;
+  }
 
 public:
 

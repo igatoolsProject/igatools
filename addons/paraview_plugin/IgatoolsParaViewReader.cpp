@@ -270,7 +270,7 @@ update_grid_info()
   const auto phys_ctr = VtkControlGridInformation::create
                         (phys_ctr_grid_type_ == vtkGridType::Structured);
 
-  phys_gen_->update_physical(phys_sol, phys_knt, phys_ctr);
+  phys_gen_->update(phys_sol, phys_knt, phys_ctr);
 
 
   // Parametric solid grid.
@@ -282,7 +282,7 @@ update_grid_info()
   const auto parm_knt = VtkGridInformation::create
                         (n_vis_elem_parm_knot_, parm_knt_grid_type_);
 
-  parm_gen_->update_parametric(parm_sol, parm_knt);
+  parm_gen_->update(parm_sol, parm_knt,nullptr);
 }
 
 

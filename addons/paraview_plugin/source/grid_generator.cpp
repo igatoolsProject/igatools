@@ -33,96 +33,20 @@ VtkIgaGridGenerator<dim, codim>::
 VtkIgaGridGenerator(const DomainPtr_ domain,
                     const GridInfoPtr_ solid_grid_info,
                     const GridInfoPtr_ knot_grid_info,
-                    const ControlGridInfoPtr_ control_grid_info,
-                    const FunContPtr_ func_container,
-                    const bool is_physical)
+                    const FunContPtr_ func_container)
   :
   domain_(domain),
   solid_grid_info_(solid_grid_info),
   knot_grid_info_(knot_grid_info),
-  control_grid_info_(control_grid_info),
   funcs_container_(func_container),
-  is_physical_(is_physical),
   recompute_solid_(true),
-  recompute_knot_(true),
-  recompute_control_(true)
+  recompute_knot_(true)
 {
   Assert(domain != nullptr, ExcNullPtr());
   Assert(solid_grid_info_ != nullptr, ExcNullPtr());
   Assert(knot_grid_info_ != nullptr, ExcNullPtr());
-
   Assert(func_container != nullptr, ExcNullPtr());
 }
-
-
-
-template <int dim, int codim>
-auto
-VtkIgaGridGenerator<dim, codim>::
-create_physical(const DomainPtr_ domain,
-                const GridInfoPtr_ solid_grid_info,
-                const GridInfoPtr_ knot_grid_info,
-                const ControlGridInfoPtr_ control_grid_info,
-                const FunContPtr_ func_container) -> SelfPtr_
-{
-  Assert(control_grid_info != nullptr, ExcNullPtr());
-
-  return SelfPtr_(new Self_(domain, solid_grid_info, knot_grid_info,
-  control_grid_info, func_container, true));
-}
-
-
-
-template <int dim, int codim>
-auto
-VtkIgaGridGenerator<dim, codim>::
-create_parametric(const DomainPtr_ domain,
-                  const GridInfoPtr_ solid_grid_info,
-                  const GridInfoPtr_ knot_grid_info,
-                  const FunContPtr_ func_container) -> SelfPtr_
-{
-  return SelfPtr_(new Self_(domain, solid_grid_info, knot_grid_info,
-  ControlGridInfoPtr_(), func_container, false));
-}
-
-
-
-template <int dim, int codim>
-void
-VtkIgaGridGenerator<dim, codim>::
-update_physical(const bool solid_updated,
-                const bool knot_updated,
-                const bool control_updated)
-{
-  Assert(is_physical_, ExcMessage("Not valid for parametric grids."));
-
-  if (!recompute_solid_)
-    recompute_solid_ = solid_updated;
-
-  if (!recompute_knot_)
-    recompute_knot_ = knot_updated;
-
-  if (!recompute_control_)
-    recompute_control_ = control_updated;
-
-}
-
-template <int dim, int codim>
-void
-VtkIgaGridGenerator<dim, codim>::
-update_parametric(
-  const bool solid_updated,
-  const bool knot_updated)
-{
-  Assert(!is_physical_, ExcMessage("Not valid for physical grids."));
-
-  if (!recompute_solid_)
-    recompute_solid_ = solid_updated;
-
-  if (!recompute_knot_)
-    recompute_knot_ = knot_updated;
-}
-
 
 
 template <int dim, int codim>
@@ -164,16 +88,50 @@ get_knot_grid() -> VtkGridPtr_
 
 
 template <int dim, int codim>
+void
+VtkIgaGridGeneratorPhys<dim, codim>::
+update(const bool solid_updated,
+       const bool knot_updated,
+       const bool control_updated)
+{
+  if (!this->recompute_solid_)
+    this->recompute_solid_ = solid_updated;
+
+  if (!this->recompute_knot_)
+    this->recompute_knot_ = knot_updated;
+
+  if (!this->recompute_control_)
+    this->recompute_control_ = control_updated;
+}
+
+
+template <int dim, int codim>
+void
+VtkIgaGridGeneratorParm<dim, codim>::
+update(const bool solid_updated,
+       const bool knot_updated,
+       const bool control_updated)
+{
+  if (!this->recompute_solid_)
+    this->recompute_solid_ = solid_updated;
+
+  if (!this->recompute_knot_)
+    this->recompute_knot_ = knot_updated;
+}
+
+
+
+
+
+template <int dim, int codim>
 auto
-VtkIgaGridGenerator<dim, codim>::
+VtkIgaGridGeneratorPhys<dim, codim>::
 get_control_grid() -> VtkGridPtr_
 {
-  Assert(is_physical_, ExcMessage("Not valid for parametric grids."));
-
   if (recompute_control_)
   {
-    control_grid_ = VtkIgaControlGridGenerator<dim, codim>::
-    get_grid(domain_, control_grid_info_);
+    control_grid_ = VtkIgaControlGridGenerator<dim,codim>::
+    get_grid(this->domain_, control_grid_info_);
 
     recompute_control_ = false;
   }
@@ -190,6 +148,22 @@ template class VtkIgaGridGenerator<1, 2>;
 template class VtkIgaGridGenerator<2, 0>;
 template class VtkIgaGridGenerator<2, 1>;
 template class VtkIgaGridGenerator<3, 0>;
+
+
+template class VtkIgaGridGeneratorParm<1, 0>;
+template class VtkIgaGridGeneratorParm<1, 1>;
+template class VtkIgaGridGeneratorParm<1, 2>;
+template class VtkIgaGridGeneratorParm<2, 0>;
+template class VtkIgaGridGeneratorParm<2, 1>;
+template class VtkIgaGridGeneratorParm<3, 0>;
+
+
+template class VtkIgaGridGeneratorPhys<1, 0>;
+template class VtkIgaGridGeneratorPhys<1, 1>;
+template class VtkIgaGridGeneratorPhys<1, 2>;
+template class VtkIgaGridGeneratorPhys<2, 0>;
+template class VtkIgaGridGeneratorPhys<2, 1>;
+template class VtkIgaGridGeneratorPhys<3, 0>;
 
 
 

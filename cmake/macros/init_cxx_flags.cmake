@@ -22,7 +22,7 @@
 # Compiler and compile flags
 macro(init_cxx_flags)
   # Initialize CXXFLAGS.
-  set(CMAKE_CXX_FLAGS                "-Wall")
+  set(CMAKE_CXX_FLAGS                "-Wall  -ftemplate-depth=1024")
   set(CMAKE_CXX_FLAGS_DEBUG          "-Wall -O0 -g -ftemplate-backtrace-limit=0")
   set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -mtune=native -DNDEBUG -g -p -pg")
@@ -38,7 +38,7 @@ macro(init_cxx_flags)
     endif()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fuse-ld=gold")
   elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fuse-ld=gold -stdlib=libc++ -ftemplate-depth=1024")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fuse-ld=gold -stdlib=libc++")
     set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -mtune=native -DNDEBUG -ftree-vectorize")
   elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
 #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
