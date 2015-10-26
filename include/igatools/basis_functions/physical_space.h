@@ -22,7 +22,6 @@
 #define __PHYSICAL_SPACE_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/space.h>
 #include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
@@ -34,6 +33,7 @@ IGA_NAMESPACE_OPEN
 
 class SpaceManager;
 
+template <int,int> class PushForward;
 
 template <int,int,int,int> class PhysicalSpaceElement;
 

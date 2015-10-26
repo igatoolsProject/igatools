@@ -33,7 +33,7 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 
 
@@ -52,8 +52,9 @@ void test_evaluate()
   using RefSpacePtr = std::shared_ptr<RefSpace>;
   RefSpacePtr ref_space = BSplineSpace<dim>::create(deg,grid);
   auto phys_space =
-    PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create(
-      ref_space,IdentityFunction<dim>::create(grid));
+    PhysicalSpace<dim,1,1,0>::create(
+      ref_space,
+      Domain<dim,0>::create(grid_functions::IdentityGridFunction<dim>::create(grid)));
 
 
   out << endl;

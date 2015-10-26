@@ -22,6 +22,7 @@
 #include <igatools/functions/function.h>
 #include <igatools/functions/sub_function.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/geometry/push_forward.h>
 
 
 using std::shared_ptr;
