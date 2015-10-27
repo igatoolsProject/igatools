@@ -98,6 +98,8 @@ public:
 
   std::shared_ptr<const GridType> get_grid() const;
 
+  std::shared_ptr<GridType> get_grid();
+
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
 
@@ -147,8 +149,7 @@ public:
   std::shared_ptr<const self_t>
   get_grid_function_previous_refinement() const
   {
-    AssertThrow(false,ExcNotImplemented());
-    return nullptr;
+    return grid_function_previous_refinement_;
   }
 #endif // MESH_REFINEMENT
 
@@ -175,6 +176,13 @@ private:
   }
   ///@}
 #endif // SERIALIZATION
+
+#ifdef MESH_REFINEMENT
+
+protected:
+  std::shared_ptr<const self_t> grid_function_previous_refinement_;
+#endif // MESH_REFINEMENT
+
 };
 
 IGA_NAMESPACE_CLOSE

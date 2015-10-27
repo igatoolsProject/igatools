@@ -228,8 +228,14 @@ IdentityGridFunction<dim>::
 create(const std::shared_ptr<GridType> &domain)
 ->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<self_t>(
+  auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(domain)));
+
+#ifdef MESH_REFINEMENT
+  func->create_connection_for_insert_knots(func);
+#endif
+
+  return func;
 }
 
 template<int dim>
@@ -257,6 +263,19 @@ evaluate_0(const ValueVector<GridPoint> &points,
   }
 }
 
+#ifdef MESH_REFINEMENT
+template<int dim>
+void
+IdentityGridFunction<dim>::
+rebuild_after_insert_knots(
+  const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+  const Grid<dim> &old_grid)
+{
+  this->grid_function_previous_refinement_ =
+    self_t::const_create(
+      this->get_grid()->get_grid_pre_refinement());
+}
+#endif // MESH_REFINEMENT
 
 
 template<int dim>

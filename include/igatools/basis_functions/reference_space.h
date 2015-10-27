@@ -199,7 +199,7 @@ protected:
 #ifdef MESH_REFINEMENT
 
 public:
-  std::shared_ptr<const base_t> get_space_previous_refinement() const override final
+  std::shared_ptr<const self_t> get_space_previous_refinement() const
   {
     return ref_space_previous_refinement_;
   }

@@ -318,21 +318,14 @@ rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
 {
-  auto prev_ref_space =
-    std::const_pointer_cast<RefSpace>(
-      std::dynamic_pointer_cast<const RefSpace>(ref_space_->get_space_previous_refinement()));
+  auto prev_ref_space = ref_space_->get_space_previous_refinement();
   Assert(prev_ref_space != nullptr, ExcNullPtr());
 
-  AssertThrow(false,ExcNotImplemented());
-  //TODO (martinelli, 25 Sep 2015): fix the refinement for the domain
-#if 0
-  Assert(this->get_ptr_map_func()->get_function_previous_refinement() != nullptr, ExcNullPtr());
-  Assert(this->get_ptr_map_func()->get_function_previous_refinement().unique(), ExcNotUnique());
+  auto prev_phys_domain = phys_domain_->get_domain_previous_refinement();
+  Assert(prev_phys_domain != nullptr, ExcNullPtr());
 
   this->phys_space_previous_refinement_ =
-    PhysicalSpace<dim_,range_,rank_,codim_>::create(
-      prev_ref_space,this->get_ptr_map_func()->get_function_previous_refinement());
-#endif
+    self_t::const_create(prev_ref_space,prev_phys_domain);
 }
 
 #endif

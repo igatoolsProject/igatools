@@ -47,6 +47,13 @@ get_grid() const -> std::shared_ptr<const GridType>
   return grid_.get_ptr_const_data();
 }
 
+template<int dim_, int space_dim_>
+auto
+GridFunction<dim_, space_dim_>::
+get_grid() -> std::shared_ptr<GridType>
+{
+  return grid_.get_ptr_data();
+}
 
 
 template<int dim_, int space_dim_>
@@ -72,6 +79,8 @@ create_element(const ListIt &index, const PropId &prop) const
 
   return elem;
 }
+
+
 
 
 

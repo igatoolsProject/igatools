@@ -46,8 +46,14 @@ create(const std::shared_ptr<GridFuncType> &func,
        const std::string &name)
 -> std::shared_ptr<self_t>
 {
-  return std::shared_ptr<self_t>(
+  auto domain = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridFuncType>(func),name));
+
+#ifdef MESH_REFINEMENT
+  domain->create_connection_for_insert_knots(domain);
+#endif
+
+  return domain;
 }
 
 
@@ -62,6 +68,40 @@ const_create(const std::shared_ptr<const GridFuncType> &func,
     new self_t(SharedPtrConstnessHandler<GridFuncType>(func),name));
 }
 
+
+#ifdef MESH_REFINEMENT
+template<int dim_, int codim_>
+void
+Domain<dim_, codim_>::
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &domain)
+{
+  Assert(domain != nullptr, ExcNullPtr());
+  Assert(&(*domain) == &(*this), ExcMessage("Different objects."));
+
+  auto func_to_connect =
+    std::bind(&self_t::rebuild_after_insert_knots,
+              domain.get(),
+              std::placeholders::_1,
+              std::placeholders::_2);
+
+  using SlotType = typename Grid<dim_>::SignalInsertKnotsSlot;
+  grid_func_.get_ptr_data()->get_grid()
+  ->connect_insert_knots(SlotType(func_to_connect).track_foreign(domain));
+}
+
+
+template<int dim_, int codim_>
+void
+Domain<dim_, codim_>::
+rebuild_after_insert_knots(
+  const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
+  const Grid<dim_> &old_grid)
+{
+  this->domain_previous_refinement_ =
+    Domain<dim_,codim_>::const_create(
+      this->grid_func_->get_grid_function_previous_refinement());
+}
+#endif
 
 
 template<int dim_, int codim_>

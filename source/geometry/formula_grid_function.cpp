@@ -42,6 +42,32 @@ create_cache_handler() const
     std::dynamic_pointer_cast<const self_t>(this->shared_from_this()));
 }
 
+
+
+
+#ifdef MESH_REFINEMENT
+template<int dim, int space_dim>
+void
+FormulaGridFunction<dim,space_dim>::
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function)
+{
+  Assert(grid_function != nullptr, ExcNullPtr());
+  Assert(&(*grid_function) == &(*this), ExcMessage("Different objects."));
+
+  auto func_to_connect =
+    std::bind(&self_t::rebuild_after_insert_knots,
+              grid_function.get(),
+              std::placeholders::_1,
+              std::placeholders::_2);
+
+  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
+  this->get_grid()
+  ->connect_insert_knots(SlotType(func_to_connect).track_foreign(grid_function));
+}
+
+
+#endif // MESH_REFINEMENT
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/formula_grid_function.inst>

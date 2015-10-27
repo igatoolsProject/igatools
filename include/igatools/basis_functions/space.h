@@ -254,8 +254,9 @@ public:
   void refine_h(const Size n_subdivisions = 2);
 
 
-
+#if 0
   virtual std::shared_ptr<const self_t> get_space_previous_refinement() const = 0;
+#endif
 
 #endif
 
