@@ -267,7 +267,6 @@ projection_l2_ig_grid_function(
   auto elem = ref_space.cbegin();
   auto end  = ref_space.cend();
 
-  func_elem_handler->init_cache(*f_elem,quad);
   space_elem_handler->init_element_cache(*elem,quad);
 
   const int n_qp = quad->get_num_points();
@@ -277,6 +276,8 @@ projection_l2_ig_grid_function(
   using D0 = grid_function_element::_D<0>;
   if (space_grid == func_grid)
   {
+    func_elem_handler->init_cache(*f_elem,quad);
+
     for (; elem != end; ++elem, ++f_elem)
     {
       const int n_basis = elem->get_num_basis(dofs_property);
@@ -335,7 +336,7 @@ projection_l2_ig_grid_function(
       DenseVector loc_rhs(n_basis);
       DenseMatrix loc_mat(n_basis, n_basis);
 
-      func_elem_handler->template fill_cache<dim>(*f_elem,0);
+//      func_elem_handler->template fill_cache<dim>(*f_elem,0);
       space_elem_handler->fill_element_cache(*elem);
 
       loc_mat = 0.;
@@ -402,10 +403,22 @@ projection_l2_ig_grid_function(
   AssertThrow(result == Belos::ReturnType::Converged,
               ExcMessage("No convergence."));
 
-  IgCoefficients ig_coefficients;
-  AssertThrow(false,ExcNotImplemented())
+  IgCoefficients ig_coeffs;
 
-  return ig_coefficients;
+  const auto &dof_distribution = *(ref_space.get_ptr_const_dof_distribution());
+  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(DofProperties::active);
+
+  const auto &epetra_map = sol->Map();
+
+  for (const auto glob_dof : active_dofs)
+  {
+    auto loc_id = epetra_map.LID(glob_dof);
+    Assert(loc_id >= 0,
+           ExcMessage("Global dof " + std::to_string(glob_dof) + " not present in the input EpetraTools::Vector."));
+    ig_coeffs[glob_dof] = (*sol)[loc_id];
+  }
+
+  return ig_coeffs;
 }
 
 
