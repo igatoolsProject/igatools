@@ -216,9 +216,10 @@ public:
    */
   Index get_object_id() const;
 
-private:
+protected:
   SharedPtrConstnessHandler<DomainType> domain_;
 
+private:
   /**
    * Name associated to the object instance.
    */

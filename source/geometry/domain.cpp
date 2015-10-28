@@ -85,8 +85,9 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &domain)
               std::placeholders::_2);
 
   using SlotType = typename Grid<dim_>::SignalInsertKnotsSlot;
-  grid_func_.get_ptr_data()->get_grid()
-  ->connect_insert_knots(SlotType(func_to_connect).track_foreign(domain));
+//  grid_func_.get_ptr_data()->get_grid()
+//  ->connect_insert_knots(SlotType(func_to_connect).track_foreign(domain));
+  connect_insert_knots(SlotType(func_to_connect).track_foreign(domain));
 }
 
 
@@ -101,6 +102,17 @@ rebuild_after_insert_knots(
     Domain<dim_,codim_>::const_create(
       this->grid_func_->get_grid_function_previous_refinement());
 }
+
+template<int dim_, int codim_>
+boost::signals2::connection
+Domain<dim_, codim_>::
+connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber)
+{
+//  grid_func_.get_ptr_data()->get_grid()->connect_insert_knots(subscriber);
+  return grid_func_.get_ptr_data()->connect_insert_knots(subscriber);
+}
+
+
 #endif
 
 
@@ -111,6 +123,7 @@ get_grid_function() const -> std::shared_ptr<const GridFuncType>
 {
   return grid_func_.get_ptr_const_data();
 }
+
 
 template<int dim_, int codim_>
 const std::string &

@@ -44,8 +44,8 @@ namespace space_tools
  */
 template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
 std::shared_ptr<IgFunction<Space::dim,Space::codim,Space::range,Space::rank> >
-projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space::range,Space::rank>> function,
-              const std::shared_ptr<const Space> &space,
+projection_l2(const Function<Space::dim,Space::codim,Space::range,Space::rank> &function,
+              const std::shared_ptr<Space> &space,
               const std::shared_ptr<const Quadrature<Space::dim>> &quad,
               const std::string &dofs_property = DofProperties::active)
 {
@@ -62,7 +62,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
   auto sol = EpetraTools::create_vector(matrix->DomainMap());
 
   const auto space_grid = space->get_ptr_const_grid();
-  const auto func_grid = function->get_domain()->get_grid_function()->get_grid();
+  const auto func_grid = function.get_domain()->get_grid_function()->get_grid();
 
 
   Assert(space_grid->same_knots_or_refinement_of(*func_grid),
@@ -70,10 +70,6 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
 
   const int dim = Space::dim;
 
-  using FuncFlags = function_element::Flags;
-  auto func_flag = FuncFlags::value;
-  auto func_elem_handler = function->create_cache_handler();
-  func_elem_handler->template set_flags<dim>(func_flag);
 
   using SpFlags = space_element::Flags;
   auto sp_flag = SpFlags::value |
@@ -81,11 +77,10 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
   auto space_elem_handler = space->create_cache_handler();
   space_elem_handler->template set_flags<dim>(sp_flag);
 
-  auto f_elem = function->begin();
+  auto f_elem = function.begin();
   auto elem = space->begin();
   auto end  = space->end();
 
-  func_elem_handler->init_cache(*f_elem,quad);
   space_elem_handler->init_element_cache(*elem,quad);
 
   const int n_qp = quad->get_num_points();
@@ -94,6 +89,12 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
 
   if (space_grid == func_grid)
   {
+    auto func_elem_handler = function.create_cache_handler();
+
+    func_elem_handler->template set_flags<dim>(function_element::Flags::value);
+
+    func_elem_handler->init_cache(*f_elem,quad);
+
     for (; elem != end; ++elem, ++f_elem)
     {
       const int n_basis = elem->get_num_basis(dofs_property);
@@ -152,7 +153,6 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
       DenseVector loc_rhs(n_basis);
       DenseMatrix loc_mat(n_basis, n_basis);
 
-      func_elem_handler->template fill_cache<dim>(*f_elem,0);
       space_elem_handler->fill_element_cache(*elem);
 
       loc_mat = 0.;
@@ -212,7 +212,6 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
       rhs->add_block(elem_dofs,loc_rhs);
     }
     matrix->FillComplete();
-//#endif
   }
 
   auto solver = EpetraTools::create_solver(*matrix, *sol, *rhs);
@@ -236,7 +235,6 @@ projection_l2_ig_grid_function(
 {
   Epetra_SerialComm comm;
 
-//    auto map = EpetraTools::create_map(*space, dofs_property, comm);
   const auto graph =
     EpetraTools::create_graph(ref_space,dofs_property,ref_space,dofs_property,comm);
 
@@ -252,10 +250,6 @@ projection_l2_ig_grid_function(
   Assert(space_grid->same_knots_or_refinement_of(*func_grid),
          ExcMessage("The space grid is not a refinement of the function grid."));
 
-  using FuncFlags = grid_function_element::Flags;
-  auto func_flag = FuncFlags::D0;
-  auto func_elem_handler = ig_grid_function.create_cache_handler();
-  func_elem_handler->template set_flags<dim>(func_flag);
 
   using SpFlags = space_element::Flags;
   auto sp_flag = SpFlags::value |
@@ -276,6 +270,9 @@ projection_l2_ig_grid_function(
   using D0 = grid_function_element::_D<0>;
   if (space_grid == func_grid)
   {
+    auto func_elem_handler = ig_grid_function.create_cache_handler();
+    func_elem_handler->template set_flags<dim>(grid_function_element::Flags::D0);
+
     func_elem_handler->init_cache(*f_elem,quad);
 
     for (; elem != end; ++elem, ++f_elem)
@@ -322,8 +319,6 @@ projection_l2_ig_grid_function(
   }
   else
   {
-//    AssertThrow(false,ExcNotImplemented());
-
     auto map_elems_id_fine_coarse =
       grid_tools::build_map_elements_id_between_grids(*space_grid,*func_grid);
 
@@ -336,7 +331,6 @@ projection_l2_ig_grid_function(
       DenseVector loc_rhs(n_basis);
       DenseMatrix loc_mat(n_basis, n_basis);
 
-//      func_elem_handler->template fill_cache<dim>(*f_elem,0);
       space_elem_handler->fill_element_cache(*elem);
 
       loc_mat = 0.;
@@ -395,7 +389,6 @@ projection_l2_ig_grid_function(
       rhs->add_block(elem_dofs,loc_rhs);
     }
     matrix->FillComplete();
-//#endif
   }
 
   auto solver = EpetraTools::create_solver(*matrix, *sol, *rhs);
@@ -478,7 +471,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
     auto sub_space = space->template get_sub_space<sub_dim>(s_id, dof_map, sub_grid, elem_map);
     auto sub_func = SubFunc::create(sub_grid, function, s_id, elem_map);
 
-    auto proj = projection_l2<SubSpace>(sub_func, sub_space, quad);
+    auto proj = projection_l2<SubSpace>(*sub_func, *sub_space, quad);
 
     const auto &coef = proj->get_coefficients();
     const int face_n_dofs = dof_map.size();

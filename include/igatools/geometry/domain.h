@@ -122,6 +122,7 @@ public:
   std::shared_ptr<const GridFuncType> get_grid_function() const;
 
 
+
 public:
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
@@ -246,6 +247,15 @@ public:
   {
     return domain_previous_refinement_;
   }
+
+  /**
+   *  Connect a slot (i.e. a function pointer) to the refinement signals
+   *  which will be
+   *  emitted whenever a insert_knots() function is called by the underlying
+   *  a Grid member.
+   */
+  boost::signals2::connection
+  connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber);
 
 #endif // MESH_REFINEMENT
 

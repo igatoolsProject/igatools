@@ -93,8 +93,8 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &ig_grid_functi
               std::placeholders::_2);
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  this->get_grid()
-  ->connect_insert_knots(SlotType(func_to_connect).track_foreign(ig_grid_function));
+//  this->get_grid()
+  this->connect_insert_knots(SlotType(func_to_connect).track_foreign(ig_grid_function));
 }
 
 

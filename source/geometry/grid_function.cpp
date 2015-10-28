@@ -47,14 +47,6 @@ get_grid() const -> std::shared_ptr<const GridType>
   return grid_.get_ptr_const_data();
 }
 
-template<int dim_, int space_dim_>
-auto
-GridFunction<dim_, space_dim_>::
-get_grid() -> std::shared_ptr<GridType>
-{
-  return grid_.get_ptr_data();
-}
-
 
 template<int dim_, int space_dim_>
 auto
@@ -163,6 +155,19 @@ cend(const PropId &prop) const -> ElementConstIterator
                               grid_->get_elements_with_property(prop).end(),
                               prop);
 }
+
+
+#ifdef MESH_REFINEMENT
+template<int dim_, int space_dim_>
+boost::signals2::connection
+GridFunction<dim_, space_dim_>::
+connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber)
+{
+  return grid_.get_ptr_data()->connect_insert_knots(subscriber);
+}
+
+#endif //MESH_REFINEMENT
+
 
 IGA_NAMESPACE_CLOSE
 

@@ -81,24 +81,9 @@ public:
 
 
 
-  /*
-  static std::shared_ptr<self_t>
-  create(std::shared_ptr<GridType> grid)
-  {
-    return std::shared_ptr<self_t>(new self_t(grid));
-  }
-
-
-  static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<GridType> grid)
-  {
-    return create(grid);
-  }
-  //*/
 
   std::shared_ptr<const GridType> get_grid() const;
 
-  std::shared_ptr<GridType> get_grid();
 
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
@@ -151,6 +136,16 @@ public:
   {
     return grid_function_previous_refinement_;
   }
+
+  /**
+   *  Connect a slot (i.e. a function pointer) to the refinement signals
+   *  which will be
+   *  emitted whenever a insert_knots() function is called by the underlying
+   *  a Grid member.
+   */
+  boost::signals2::connection
+  connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber);
+
 #endif // MESH_REFINEMENT
 
 private:

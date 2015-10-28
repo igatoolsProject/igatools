@@ -223,29 +223,16 @@ rebuild_after_insert_knots(
       std::dynamic_pointer_cast<const Sp>(space_->get_space_previous_refinement()),
       coeff_,
       property_);
-  /*
-      LogStream out;
-      out.begin_item("function_previous_refinement_");
-      this->function_previous_refinement_->print_info(out);
-      out.end_item();
-  //*/
+
 
   const int max_degree = space_->get_max_degree();
-//    const int max_degree = 10;
+
   const auto quad = QGauss<dim>::create(max_degree+1);
-  auto function_refined = space_tools::projection_l2(
-                            this->function_previous_refinement_,
-                            space_.get_ptr_const_data(),
-                            quad);
-  /*
-      out.begin_item("function_refined");
-      function_refined->print_info(out);
-      out.end_item();
-  //*/
+  auto function_refined =
+    space_tools::projection_l2(
+      *(this->function_previous_refinement_),space_.get_ptr_data(),quad);
 
   this->coeff_ = std::move(function_refined->coeff_);
-//    this->property_ = DofProperties::active;
-
 }
 
 template<int dim,int codim,int range,int rank>
@@ -253,8 +240,6 @@ void
 IgFunction<dim,codim,range,rank>::
 create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
 {
-  AssertThrow(false,ExcNotImplemented());
-  /*
   Assert(ig_function != nullptr, ExcNullPtr());
   Assert(&(*ig_function) == &(*this), ExcMessage("Different objects."));
 
@@ -265,9 +250,13 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
               ig_function.get(),
               std::placeholders::_1,
               std::placeholders::_2);
-  this->grid_->connect_insert_knots(
+  /*
+  this->domain_.get_ptr_data()->get_grid_function()->get_grid()->connect_insert_knots(
     SlotType(func_to_connect).track_foreign(ig_function));
     //*/
+  this->domain_.get_ptr_data()->
+  connect_insert_knots(SlotType(func_to_connect).track_foreign(ig_function));
+//  Assert(false,ExcNotImplemented());
 }
 
 #endif // MESH_REFINEMENT
