@@ -501,10 +501,11 @@ get_element_dofs(
 
 #ifdef MESH_REFINEMENT
 
+#if 0
 template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
-create_connection_for_insert_knots(std::shared_ptr<self_t> space)
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 {
   Assert(space != nullptr, ExcNullPtr());
   Assert(&(*space) == &(*this), ExcMessage("Different objects."));
@@ -518,7 +519,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
   this->get_ptr_grid()->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
 }
-
+#endif
 
 template<int dim_, int range_, int rank_>
 void

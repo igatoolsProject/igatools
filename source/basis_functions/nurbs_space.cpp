@@ -512,6 +512,7 @@ get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 
 #ifdef MESH_REFINEMENT
 
+#if 0
 template<int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
@@ -530,6 +531,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
   std::const_pointer_cast<Grid<dim_>>(this->get_ptr_grid())->connect_insert_knots(
                                      SlotType(func_to_connect).track_foreign(space));
 }
+#endif
 
 template<int dim_, int range_, int rank_>
 void

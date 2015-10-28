@@ -78,26 +78,6 @@ IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
 
 
 #ifdef MESH_REFINEMENT
-#if 0
-template<int dim,int space_dim>
-void
-IgGridFunction<dim,space_dim>::
-create_connection_for_insert_knots(const std::shared_ptr<self_t> &ig_grid_function)
-{
-  Assert(ig_grid_function != nullptr, ExcNullPtr());
-  Assert(&(*ig_grid_function) == &(*this), ExcMessage("Different objects."));
-
-  auto func_to_connect =
-    std::bind(&self_t::rebuild_after_insert_knots,
-              ig_grid_function.get(),
-              std::placeholders::_1,
-              std::placeholders::_2);
-
-  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-//  this->get_grid()
-  this->connect_insert_knots(SlotType(func_to_connect).track_foreign(ig_grid_function));
-}
-#endif
 
 template<int dim,int space_dim>
 void
@@ -121,15 +101,8 @@ rebuild_after_insert_knots(
               ig_space,
               QGauss<dim>::create(max_degree+1),
               DofProperties::active);
-//*/
-
-//  Assert(false,ExcNotImplemented());
-  /*
-  this->grid_function_previous_refinement_ =
-      self_t::const_create(
-        this->grid_func_->get_grid_function_previous_refinement());
-        //*/
 }
+
 #endif // MESH_REFINEMENT
 
 template<int dim,int space_dim>

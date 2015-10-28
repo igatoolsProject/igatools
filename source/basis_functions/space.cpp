@@ -183,6 +183,27 @@ refine_h(const Size n_subdivisions)
   this->get_ptr_grid()->refine(n_subdivisions);
 }
 
+
+#ifdef MESH_REFINEMENT
+template <int dim_,int codim_,int range_,int rank_>
+void
+Space<dim_,codim_,range_,rank_>::
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
+{
+  Assert(space != nullptr, ExcNullPtr());
+  Assert(&(*space) == &(*this), ExcMessage("Different objects."));
+
+  auto func_to_connect =
+    std::bind(&self_t::rebuild_after_insert_knots,
+              space.get(),
+              std::placeholders::_1,
+              std::placeholders::_2);
+
+  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
+  this->get_ptr_grid()->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
+}
+#endif
+
 #endif // MESH_REFINEMENT
 
 

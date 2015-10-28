@@ -203,6 +203,9 @@ public:
   {
     return ref_space_previous_refinement_;
   }
+
+
+
 #endif // MESH_REFINEMENT
 
 private:
