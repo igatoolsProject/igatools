@@ -78,6 +78,7 @@ IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
 
 
 #ifdef MESH_REFINEMENT
+#if 0
 template<int dim,int space_dim>
 void
 IgGridFunction<dim,space_dim>::
@@ -96,7 +97,7 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &ig_grid_functi
 //  this->get_grid()
   this->connect_insert_knots(SlotType(func_to_connect).track_foreign(ig_grid_function));
 }
-
+#endif
 
 template<int dim,int space_dim>
 void

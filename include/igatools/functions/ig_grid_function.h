@@ -168,7 +168,7 @@ private:
     const Grid<dim> &old_grid);
 
 
-  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function);
+//  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function);
 #endif // MESH_REFINEMENT
 
 

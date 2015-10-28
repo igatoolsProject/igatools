@@ -66,27 +66,6 @@ public:
 
   virtual void evaluate_2(const ValueVector<GridPoint> &points,
                           ValueVector<Derivative<2>> &values) const = 0;
-
-#ifdef MESH_REFINEMENT
-protected:
-  /**
-   * Rebuild the internal state of the object after an insert_knots() function is invoked.
-   *
-   * @pre Before invoking this function, must be invoked the function grid_->insert_knots().
-   * @note This function is connected to the Grid's signal for the refinement, and
-   * it is necessary in order to avoid infinite loops in the insert_knots() function calls.
-   *
-   * @ingroup h_refinement
-   */
-  virtual void rebuild_after_insert_knots(
-    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const Grid<dim> &old_grid) = 0;
-
-
-  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function);
-#endif // MESH_REFINEMENT
-
-
 };
 
 IGA_NAMESPACE_CLOSE

@@ -166,7 +166,26 @@ connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscribe
   return grid_.get_ptr_data()->connect_insert_knots(subscriber);
 }
 
-#endif //MESH_REFINEMENT
+template<int dim_, int space_dim_>
+void
+GridFunction<dim_,space_dim_>::
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function)
+{
+  Assert(grid_function != nullptr, ExcNullPtr());
+  Assert(&(*grid_function) == &(*this), ExcMessage("Different objects."));
+
+  auto func_to_connect =
+    std::bind(&self_t::rebuild_after_insert_knots,
+              grid_function.get(),
+              std::placeholders::_1,
+              std::placeholders::_2);
+
+  using SlotType = typename Grid<dim_>::SignalInsertKnotsSlot;
+  this->connect_insert_knots(SlotType(func_to_connect).track_foreign(grid_function));
+}
+
+
+#endif // MESH_REFINEMENT
 
 
 IGA_NAMESPACE_CLOSE
