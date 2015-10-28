@@ -20,6 +20,8 @@
 
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/functions/ig_grid_function_handler.h>
+#include <igatools/basis_functions/space_tools.h>
+#include <igatools/base/quadrature_lib.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -103,7 +105,24 @@ rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
 {
-  Assert(false,ExcNotImplemented());
+  auto ig_grid_function_pre_refinement =
+    self_t::const_create(ig_space_->get_space_previous_refinement(),coeffs_);
+
+  this->grid_function_previous_refinement_ = ig_grid_function_pre_refinement;
+
+
+  const auto &ig_space = *(this->get_ig_space());
+
+  const int max_degree = ig_space.get_max_degree();
+
+  coeffs_ = space_tools::projection_l2_ig_grid_function<dim,space_dim>(
+              *ig_grid_function_pre_refinement,
+              ig_space,
+              QGauss<dim>::create(max_degree+1),
+              DofProperties::active);
+//*/
+
+//  Assert(false,ExcNotImplemented());
   /*
   this->grid_function_previous_refinement_ =
       self_t::const_create(
@@ -139,8 +158,14 @@ IgGridFunction<dim,space_dim>::
 create(const std::shared_ptr<IgSpace> &space,
        const IgCoefficients &coeffs) -> std::shared_ptr<self_t>
 {
-  return std::shared_ptr<self_t>(new IgGridFunction(
+  auto func = std::shared_ptr<self_t>(new IgGridFunction(
     SharedPtrConstnessHandler<IgSpace>(space),coeffs));
+
+#ifdef MESH_REFINEMENT
+  func->create_connection_for_insert_knots(func);
+#endif
+
+  return func;
 }
 
 

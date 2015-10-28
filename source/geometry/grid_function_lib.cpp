@@ -42,8 +42,15 @@ ConstantGridFunction<dim,space_dim>::
 create(const std::shared_ptr<GridType> &domain,
        const Value &b) ->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<GridType>(domain), b));
+  auto func = std::shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<GridType>(domain),b));
+
+#ifdef MESH_REFINEMENT
+  func->create_connection_for_insert_knots(func);
+#endif
+
+  return func;
+
 }
 
 template<int dim, int space_dim>
@@ -55,6 +62,20 @@ const_create(const std::shared_ptr<const GridType> &domain,
   return std::shared_ptr<const self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(domain), b));
 }
+
+#ifdef MESH_REFINEMENT
+template<int dim, int space_dim>
+void
+ConstantGridFunction<dim,space_dim>::
+rebuild_after_insert_knots(
+  const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+  const Grid<dim> &old_grid)
+{
+  this->grid_function_previous_refinement_ =
+    self_t::const_create(
+      this->get_grid()->get_grid_pre_refinement(),b_);
+}
+#endif // MESH_REFINEMENT
 
 
 template<int dim, int space_dim>
@@ -135,8 +156,15 @@ create(const std::shared_ptr<GridType> &domain,
        const Derivative<1> &A,
        const Value &b) ->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<GridType>(domain), A, b));
+  auto func = std::shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<GridType>(domain),A,b));
+
+#ifdef MESH_REFINEMENT
+  func->create_connection_for_insert_knots(func);
+#endif
+
+  return func;
+
 }
 
 template<int dim, int space_dim>
@@ -149,6 +177,20 @@ const_create(const std::shared_ptr<const GridType> &domain,
   return std::shared_ptr<const self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(domain), A, b));
 }
+
+#ifdef MESH_REFINEMENT
+template<int dim, int space_dim>
+void
+LinearGridFunction<dim,space_dim>::
+rebuild_after_insert_knots(
+  const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+  const Grid<dim> &old_grid)
+{
+  this->grid_function_previous_refinement_ =
+    self_t::const_create(
+      this->get_grid()->get_grid_pre_refinement(),A_,b_);
+}
+#endif // MESH_REFINEMENT
 
 
 template<int dim, int space_dim>
@@ -327,7 +369,14 @@ auto
 BallGridFunction<dim>::
 create(std::shared_ptr<GridType> grid) ->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
+  auto func = std::shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<GridType>(grid)));
+
+#ifdef MESH_REFINEMENT
+  func->create_connection_for_insert_knots(func);
+#endif
+
+  return func;
 }
 
 template<int dim>
@@ -338,6 +387,19 @@ const_create(std::shared_ptr<const GridType> grid) ->  std::shared_ptr<const bas
   return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 }
 
+#ifdef MESH_REFINEMENT
+template<int dim>
+void
+BallGridFunction<dim>::
+rebuild_after_insert_knots(
+  const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+  const Grid<dim> &old_grid)
+{
+  this->grid_function_previous_refinement_ =
+    self_t::const_create(
+      this->get_grid()->get_grid_pre_refinement());
+}
+#endif // MESH_REFINEMENT
 
 
 template<int dim>
@@ -568,7 +630,15 @@ auto
 SphereGridFunction<dim>::
 create(std::shared_ptr<GridType> grid) -> std::shared_ptr<base_t>
 {
-  return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
+  auto func = std::shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<GridType>(grid)));
+
+#ifdef MESH_REFINEMENT
+  func->create_connection_for_insert_knots(func);
+#endif
+
+  return func;
+
 }
 
 template<int dim>
@@ -578,6 +648,20 @@ const_create(std::shared_ptr<const GridType> grid) -> std::shared_ptr<const base
 {
   return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 }
+
+#ifdef MESH_REFINEMENT
+template<int dim>
+void
+SphereGridFunction<dim>::
+rebuild_after_insert_knots(
+  const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+  const Grid<dim> &old_grid)
+{
+  this->grid_function_previous_refinement_ =
+    self_t::const_create(
+      this->get_grid()->get_grid_pre_refinement());
+}
+#endif // MESH_REFINEMENT
 
 
 
@@ -829,8 +913,14 @@ create(std::shared_ptr<GridType> grid,
        const Real theta0,
        const Real theta1) ->  std::shared_ptr<base_t>
 {
-  return std::shared_ptr<self_t>(new self_t(
-    SharedPtrConstnessHandler<GridType>(grid),r0,r1,h0,h1,theta0,theta1));
+  auto func = std::shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<GridType>(grid),r0,r1,h0,h1,theta0,theta1));
+
+#ifdef MESH_REFINEMENT
+  func->create_connection_for_insert_knots(func);
+#endif
+
+  return func;
 }
 
 
@@ -847,6 +937,19 @@ const_create(std::shared_ptr<const GridType> grid,
   return std::shared_ptr<const self_t>(new self_t(
     SharedPtrConstnessHandler<GridType>(grid),r0,r1,h0,h1,theta0,theta1));
 }
+
+#ifdef MESH_REFINEMENT
+void
+CylindricalAnnulusGridFunction::
+rebuild_after_insert_knots(
+  const SafeSTLArray<SafeSTLVector<Real>,3> &knots_to_insert,
+  const Grid<3> &old_grid)
+{
+  this->grid_function_previous_refinement_ =
+    self_t::const_create(
+      this->get_grid()->get_grid_pre_refinement(),r0_,r1_,h0_,h1_,theta0_,theta1_);
+}
+#endif // MESH_REFINEMENT
 
 
 auto

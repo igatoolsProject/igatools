@@ -33,7 +33,8 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/functions/ig_grid_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 
 template <int dim>
@@ -62,16 +63,15 @@ void test_evaluate()
     weights_coef[i++] = 1.0;
   }
 
-  using WeightFunc = IgFunction<dim,0,1,1>;
+  using WeightFunc = IgGridFunction<dim,1>;
   auto w_func = WeightFunc::create(scalar_bsp_space,weights_coef);
 
-  using RefSpace = ReferenceSpace<dim>;
-  using RefSpacePtr = std::shared_ptr<RefSpace>;
-  RefSpacePtr ref_space = NURBSSpace<dim>::create(bsp_space,w_func);
+  auto ref_space = NURBSSpace<dim>::create(bsp_space,w_func);
 
   auto phys_space =
-    PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create(
-      ref_space,IdentityFunction<dim>::create(grid));
+    PhysicalSpace<dim,1,1,0>::create(
+      ref_space,
+      Domain<dim,0>::create(grid_functions::IdentityGridFunction<dim>::create(grid)));
 
 
   out << endl;

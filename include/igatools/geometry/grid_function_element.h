@@ -201,9 +201,10 @@ public:
 
   using CacheType = AllSubElementsCache<Cache>;
 
-private:
+protected:
   std::shared_ptr<ContainerType_> grid_function_;
 
+private:
   std::unique_ptr<GridElem> grid_elem_;
 
   CacheType local_cache_;
@@ -221,6 +222,34 @@ class ConstGridFunctionElement
 {
   using GridFunctionElementBase<dim, space_dim,
         const GridFunction<dim,space_dim>>::GridFunctionElementBase;
+
+public:
+  /**
+   * @name Methods for the for the evaluations of Functions's derivatives
+   *  without the use of the cache.
+   */
+  ///@{
+  /**
+   * Returns a ValueTable with the values specified by the template parameter
+   * <tt>ValueType</tt>
+   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+   * @note This function does not use the cache and therefore can be called any time without
+   * needing to pre-call init_cache()/fill_cache().
+   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+   */
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim>> &points)
+  {
+    auto grid_func_elem_handler = this->grid_function_->create_cache_handler();
+    grid_func_elem_handler->template set_flags<dim>(ValueType::flag);
+    grid_func_elem_handler->init_cache(*this,points);
+    grid_func_elem_handler->template fill_cache<dim>(*this,0);
+
+    return this->template get_values_from_cache<ValueType,dim>(0);
+  }
+  ///@}
+
 };
 
 

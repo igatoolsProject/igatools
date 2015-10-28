@@ -226,6 +226,188 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
 }
 
 
+template<int dim,int range, LAPack la_pack = LAPack::trilinos_epetra>
+IgCoefficients
+projection_l2_ig_grid_function(
+  const IgGridFunction<dim,range> &ig_grid_function,
+  const ReferenceSpace<dim,range,1> &ref_space,
+  const std::shared_ptr<const Quadrature<dim>> &quad,
+  const std::string &dofs_property = DofProperties::active)
+{
+  Epetra_SerialComm comm;
+
+//    auto map = EpetraTools::create_map(*space, dofs_property, comm);
+  const auto graph =
+    EpetraTools::create_graph(ref_space,dofs_property,ref_space,dofs_property,comm);
+
+
+  auto matrix = EpetraTools::create_matrix(*graph);
+  auto rhs = EpetraTools::create_vector(matrix->RangeMap());
+  auto sol = EpetraTools::create_vector(matrix->DomainMap());
+
+  const auto space_grid = ref_space.get_ptr_const_grid();
+  const auto func_grid = ig_grid_function.get_grid();
+
+
+  Assert(space_grid->same_knots_or_refinement_of(*func_grid),
+         ExcMessage("The space grid is not a refinement of the function grid."));
+
+  using FuncFlags = grid_function_element::Flags;
+  auto func_flag = FuncFlags::D0;
+  auto func_elem_handler = ig_grid_function.create_cache_handler();
+  func_elem_handler->template set_flags<dim>(func_flag);
+
+  using SpFlags = space_element::Flags;
+  auto sp_flag = SpFlags::value |
+                 SpFlags::w_measure;
+  auto space_elem_handler = ref_space.create_cache_handler();
+  space_elem_handler->template set_flags<dim>(sp_flag);
+
+  auto f_elem = ig_grid_function.cbegin();
+  auto elem = ref_space.cbegin();
+  auto end  = ref_space.cend();
+
+  func_elem_handler->init_cache(*f_elem,quad);
+  space_elem_handler->init_element_cache(*elem,quad);
+
+  const int n_qp = quad->get_num_points();
+
+  using space_element::_Value;
+
+  using D0 = grid_function_element::_D<0>;
+  if (space_grid == func_grid)
+  {
+    for (; elem != end; ++elem, ++f_elem)
+    {
+      const int n_basis = elem->get_num_basis(dofs_property);
+      DenseVector loc_rhs(n_basis);
+      DenseMatrix loc_mat(n_basis, n_basis);
+
+      func_elem_handler->template fill_cache<dim>(*f_elem,0);
+      space_elem_handler->fill_element_cache(*elem);
+
+      loc_mat = 0.;
+      loc_rhs = 0.;
+
+      auto f_at_qp = f_elem->template get_values_from_cache<D0,dim>(0);
+      auto phi = elem->template get_basis_element<space_element::_Value>(dofs_property);
+
+      // computing the upper triangular part of the local matrix
+      auto w_meas = elem->template get_w_measures<dim>(0);
+      for (int i = 0; i < n_basis; ++i)
+      {
+        const auto phi_i = phi.get_function_view(i);
+        for (int j = i; j < n_basis; ++j)
+        {
+          const auto phi_j = phi.get_function_view(j);
+          for (int q = 0; q < n_qp; ++q)
+            loc_mat(i,j) += scalar_product(phi_i[q], phi_j[q]) * w_meas[q];
+        }
+
+        for (int q = 0; q < n_qp; q++)
+          loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
+      }
+
+      // filling symmetric ;lower part of local matrix
+      for (int i = 0; i < n_basis; ++i)
+        for (int j = 0; j < i; ++j)
+          loc_mat(i, j) = loc_mat(j, i);
+
+      const auto elem_dofs = elem->get_local_to_global(dofs_property);
+      matrix->add_block(elem_dofs,elem_dofs,loc_mat);
+      rhs->add_block(elem_dofs,loc_rhs);
+    }
+    matrix->FillComplete();
+  }
+  else
+  {
+//    AssertThrow(false,ExcNotImplemented());
+
+    auto map_elems_id_fine_coarse =
+      grid_tools::build_map_elements_id_between_grids(*space_grid,*func_grid);
+
+    for (const auto &elems_id_pair : map_elems_id_fine_coarse)
+    {
+      elem->move_to(elems_id_pair.first);
+      f_elem->move_to(elems_id_pair.second);
+
+      const int n_basis = elem->get_num_basis(dofs_property);
+      DenseVector loc_rhs(n_basis);
+      DenseMatrix loc_mat(n_basis, n_basis);
+
+      func_elem_handler->template fill_cache<dim>(*f_elem,0);
+      space_elem_handler->fill_element_cache(*elem);
+
+      loc_mat = 0.;
+      loc_rhs = 0.;
+
+
+      //---------------------------------------------------------------------------
+      // the function is supposed to be defined on a coarser grid of the space
+      const auto &elem_grid_accessor = elem->get_grid_element();
+      auto quad_in_func_elem = std::make_shared<Quadrature<dim>>(*quad);
+      quad_in_func_elem->dilate_translate(
+        elem_grid_accessor.
+        template get_side_lengths<dim>(0),
+        elem_grid_accessor.vertex(0));
+
+      const auto &func_grid_elem = f_elem->get_grid_element();
+      auto one_div_f_elem_size = func_grid_elem.template get_side_lengths<dim>(0);
+      for (int dir : UnitElement<dim>::active_directions)
+        one_div_f_elem_size[dir] = 1.0/one_div_f_elem_size[dir];
+
+      auto f_elem_vertex = -func_grid_elem.vertex(0);
+      quad_in_func_elem->translate(f_elem_vertex);
+      quad_in_func_elem->dilate(one_div_f_elem_size);
+
+
+      auto f_at_qp =
+        f_elem->template evaluate_at_points<D0>(quad_in_func_elem);
+      //---------------------------------------------------------------------------
+
+
+      auto phi = elem->template get_basis_element<space_element::_Value>(dofs_property);
+
+      // computing the upper triangular part of the local matrix
+      auto w_meas = elem->template get_w_measures<dim>(0);
+      for (int i = 0; i < n_basis; ++i)
+      {
+        const auto phi_i = phi.get_function_view(i);
+        for (int j = i; j < n_basis; ++j)
+        {
+          const auto phi_j = phi.get_function_view(j);
+          for (int q = 0; q < n_qp; ++q)
+            loc_mat(i,j) += scalar_product(phi_i[q], phi_j[q]) * w_meas[q];
+        }
+
+        for (int q = 0; q < n_qp; q++)
+          loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
+      }
+
+      // filling symmetric ;lower part of local matrix
+      for (int i = 0; i < n_basis; ++i)
+        for (int j = 0; j < i; ++j)
+          loc_mat(i, j) = loc_mat(j, i);
+
+      const auto elem_dofs = elem->get_local_to_global(dofs_property);
+      matrix->add_block(elem_dofs,elem_dofs,loc_mat);
+      rhs->add_block(elem_dofs,loc_rhs);
+    }
+    matrix->FillComplete();
+//#endif
+  }
+
+  auto solver = EpetraTools::create_solver(*matrix, *sol, *rhs);
+  auto result = solver->solve();
+  AssertThrow(result == Belos::ReturnType::Converged,
+              ExcMessage("No convergence."));
+
+  IgCoefficients ig_coefficients;
+  AssertThrow(false,ExcNotImplemented())
+
+  return ig_coefficients;
+}
+
 
 /**
  * Projects (using the L2 scalar product) a function to the whole or part
