@@ -115,10 +115,10 @@ public:
    * grid.
    */
   template<int sdim>
-  std::shared_ptr<NURBSSpace<sdim,range_,rank_> >
+  std::shared_ptr<const NURBSSpace<sdim,range_,rank_> >
   get_sub_nurbs_space(const int sub_elem_id,
                       InterSpaceMap<sdim> &dof_map,
-                      const std::shared_ptr<Grid<sdim>> &sub_grid) const;
+                      const std::shared_ptr<const Grid<sdim>> &sub_grid) const;
 #if 0
   template<int k>
   std::shared_ptr<SubSpace<k> >
@@ -224,11 +224,12 @@ public:
   ///@}
 
   const std::shared_ptr<const BSpSpace> get_spline_space() const;
-
+#if 0
   virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const override final
   {
     return bsp_space_.get_ptr_data()->get_ptr_grid();
   }
+#endif
 
   virtual std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const override final
   {
@@ -310,12 +311,16 @@ private:
     const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
     const Grid<dim_> &old_grid) override final;
 
+public:
+  virtual void refine_h(const Size n_subdivisions = 2) override final;
+
 //  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
 #endif // MESH_REFINEMENT
 
 
 
 #ifdef SERIALIZATION
+private:
   /**
    * @name Functions needed for serialization
    */

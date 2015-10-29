@@ -42,13 +42,13 @@ auto
 ReferenceSpace<dim, range, rank>::
 get_ref_sub_space(const int sub_elem_id,
                   InterSpaceMap<sdim> &dof_map,
-                  const std::shared_ptr<Grid<sdim>> &sub_grid) const
--> std::shared_ptr< SubRefSpace<sdim> >
+                  const std::shared_ptr<const Grid<sdim>> &sub_grid) const
+-> std::shared_ptr<const SubRefSpace<sdim> >
 {
   static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
   "The dimensionality of the sub_grid is not valid.");
 
-  std::shared_ptr< SubRefSpace<sdim> > sub_ref_space;
+  std::shared_ptr< const SubRefSpace<sdim> > sub_ref_space;
   if (this->is_bspline())
   {
     const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
@@ -80,7 +80,7 @@ ReferenceSpace<dim, range, rank>::
 get_sub_space(const int s_id,
               InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
--> std::shared_ptr<SubSpace<k> >
+-> std::shared_ptr<const SubSpace<k> >
 {
   static_assert(k == 0 || (k > 0 && k < dim),
   "The dimensionality of the sub_grid is not valid.");
@@ -117,15 +117,15 @@ get_sub_space(const int s_id,
 
   auto sub_ref_space = this->template get_ref_sub_space<k>(s_id,dof_map,nullptr);
 
-  auto sub_grid = sub_ref_space->get_ptr_grid();
+  auto sub_grid = sub_ref_space->get_ptr_const_grid();
 
-  auto sub_grid_func = SubGridFunc::create(sub_grid,A,b);
+  auto sub_grid_func = SubGridFunc::const_create(sub_grid,A,b);
 
   using SubDomain = Domain<k,dim-k>;
-  auto sub_domain = SubDomain::create(sub_grid_func);
+  auto sub_domain = SubDomain::const_create(sub_grid_func);
 
 
-  auto sub_space = SubSpace<k>::create(sub_ref_space, sub_domain);
+  auto sub_space = SubSpace<k>::const_create(sub_ref_space, sub_domain);
 
   Assert(sub_space != nullptr, ExcNullPtr());
   return sub_space;
@@ -152,25 +152,27 @@ get_max_degree() const
   return max_degree;
 }
 
-
-
-#if 0
-#ifdef SERIALIZATION
+#ifdef MESH_REFINEMENT
 template<int dim, int range, int rank>
-template<class Archive>
 void
 ReferenceSpace<dim, range, rank>::
-serialize(Archive &ar, const unsigned int version)
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 {
-  ar &boost::serialization::make_nvp("ReferenceSpace_base_t",
-                                     boost::serialization::base_object<base_t>(*this));
+  Assert(space != nullptr, ExcNullPtr());
+  Assert(&(*space) == &(*this), ExcMessage("Different objects."));
 
-  auto tmp = const_pointer_cast<RefSpace>(ref_space_previous_refinement_);
-  ar &boost::serialization::make_nvp("ref_space_previous_refinement_",tmp);
-  ref_space_previous_refinement_ = const_pointer_cast<const RefSpace>(tmp);
+  auto func_to_connect =
+    std::bind(&self_t::rebuild_after_insert_knots,
+              space.get(),
+              std::placeholders::_1,
+              std::placeholders::_2);
+
+  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
+  std::const_pointer_cast<Grid<dim>>(this->get_ptr_const_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
 }
-#endif // SERIALIZATION
-#endif
+
+#endif // MESH_REFINEMENT
+
 
 IGA_NAMESPACE_CLOSE
 

@@ -94,9 +94,9 @@ public:
   virtual void print_info(LogStream &out) const override final;
 
   template <int sdim>
-  std::shared_ptr<IgGridFunction<sdim,space_dim> >
+  std::shared_ptr<const IgGridFunction<sdim,space_dim> >
   get_sub_function(const int s_id,
-                   const std::shared_ptr<Grid<sdim>> &sub_grid) const
+                   const std::shared_ptr<const Grid<sdim>> &sub_grid) const
   {
     static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
                   "The dimensionality of the sub_grid is not valid.");
@@ -110,7 +110,7 @@ public:
     for (int sub_dof = 0 ; sub_dof < n_sub_dofs ; ++ sub_dof)
       sub_coeffs[sub_dof] = coeffs_[dof_map[sub_dof]];
 
-    auto sub_func = IgGridFunction<sdim,space_dim>::create(sub_ref_space,sub_coeffs);
+    auto sub_func = IgGridFunction<sdim,space_dim>::const_create(sub_ref_space,sub_coeffs);
 
     return sub_func;
   }

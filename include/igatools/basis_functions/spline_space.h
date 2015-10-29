@@ -492,6 +492,8 @@ public:
 
   void create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> space);
 
+  void refine_h(const Size n_subdivisions);
+
 public:
   std::shared_ptr<const SplineSpace<dim,range,rank> >
   get_spline_space_previous_refinement() const

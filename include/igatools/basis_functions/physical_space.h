@@ -211,11 +211,12 @@ public:
     return phys_domain_.get_ptr_const_data();
   }
 
-
+#if 0
   virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const override final
   {
     return ref_space_.get_ptr_data()->get_ptr_grid();
   }
+#endif
 
   virtual std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const override final
   {
@@ -269,8 +270,12 @@ private:
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) override final;
 
-
 public:
+
+  virtual void refine_h(const Size n_subdivisions = 2) override final;
+
+  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
+
 
   std::shared_ptr<const base_t> get_space_previous_refinement() const
   {

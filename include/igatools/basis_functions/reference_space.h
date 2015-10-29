@@ -176,13 +176,13 @@ public:
 
 
   template<int sdim>
-  std::shared_ptr< SubRefSpace<sdim> >
+  std::shared_ptr<const SubRefSpace<sdim> >
   get_ref_sub_space(const int s_id,
                     InterSpaceMap<sdim> &dof_map,
-                    const std::shared_ptr<Grid<sdim>> &sub_grid = nullptr) const;
+                    const std::shared_ptr<const Grid<sdim>> &sub_grid = nullptr) const;
 
   template<int sdim>
-  std::shared_ptr<SubSpace<sdim> >
+  std::shared_ptr<const SubSpace<sdim> >
   get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
                 SubGridMap<sdim> &elem_map) const;
 
@@ -204,6 +204,7 @@ public:
     return ref_space_previous_refinement_;
   }
 
+  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
 
 
 #endif // MESH_REFINEMENT

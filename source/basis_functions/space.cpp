@@ -175,6 +175,7 @@ get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std
 
 #ifdef MESH_REFINEMENT
 
+#if 0
 template <int dim_,int codim_,int range_,int rank_>
 void
 Space<dim_,codim_,range_,rank_>::
@@ -184,7 +185,6 @@ refine_h(const Size n_subdivisions)
 }
 
 
-#ifdef MESH_REFINEMENT
 template <int dim_,int codim_,int range_,int rank_>
 void
 Space<dim_,codim_,range_,rank_>::
@@ -205,7 +205,6 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 #endif
 
 #endif // MESH_REFINEMENT
-
 
 
 

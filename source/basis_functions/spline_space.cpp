@@ -209,6 +209,16 @@ get_ptr_const_grid() const
 template<int dim, int range, int rank>
 void
 SplineSpace<dim, range, rank>::
+refine_h(const Size n_subdivisions)
+{
+  grid_.get_ptr_data()->refine(n_subdivisions);
+//  Assert(false,ExcNotImplemented());
+}
+
+
+template<int dim, int range, int rank>
+void
+SplineSpace<dim, range, rank>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)

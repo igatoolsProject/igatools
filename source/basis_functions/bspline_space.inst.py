@@ -26,10 +26,10 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 sub_dim_members = \
- ['std::shared_ptr<typename class::template BSplineSpace<sdim,range,rank>> ' + 
+ ['std::shared_ptr<const typename class::template BSplineSpace<sdim,range,rank>> ' + 
   'class::get_sub_bspline_space<sdim>(const int s_id, ' + 
   'InterSpaceMap<sdim> &dof_map, ' +
-  'const std::shared_ptr<Grid<sdim>> &sub_grid) const;'
+  'const std::shared_ptr<const Grid<sdim>> &sub_grid) const;'
 #  ,
 #  'std::shared_ptr<typename class::template SubSpace<k>> ' + 
 #  'class::get_sub_space<k>(const int sub_elem_id, ' + 

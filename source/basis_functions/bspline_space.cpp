@@ -337,13 +337,13 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 get_sub_bspline_space(const int s_id,
                       InterSpaceMap<sdim> &dof_map,
-                      const std::shared_ptr<Grid<sdim>> &sub_grid_in) const
--> std::shared_ptr<BSplineSpace<sdim, range_, rank_> >
+                      const std::shared_ptr<const Grid<sdim>> &sub_grid_in) const
+-> std::shared_ptr<const BSplineSpace<sdim, range_, rank_> >
 {
   static_assert(sdim == 0 || (sdim > 0 && sdim < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
-  std::shared_ptr<Grid<sdim>> sub_grid;
+  std::shared_ptr<const Grid<sdim>> sub_grid;
   if (sub_grid_in != nullptr)
   {
 #ifndef NDEBUG
@@ -374,7 +374,7 @@ get_sub_bspline_space(const int s_id,
     for (int j=0; j<sdim; ++j)
       sub_end_b[comp][j] = end_b_[comp][active_dirs[j]];
   auto sub_space =
-  SubRefSp::create(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
+  SubRefSp::const_create(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
 
   // Creating the mapping between the space degrees of freedom
   const int n_dir = k_elem.constant_directions.size();
@@ -501,25 +501,16 @@ get_element_dofs(
 
 #ifdef MESH_REFINEMENT
 
-#if 0
-template<int dim_, int range_, int rank_>
+
+
+template <int dim_,int range_,int rank_>
 void
-BSplineSpace<dim_, range_, rank_>::
-create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
+BSplineSpace<dim_,range_,rank_>::
+refine_h(const Size n_subdivisions)
 {
-  Assert(space != nullptr, ExcNullPtr());
-  Assert(&(*space) == &(*this), ExcMessage("Different objects."));
-
-  auto func_to_connect =
-    std::bind(&self_t::rebuild_after_insert_knots,
-              space.get(),
-              std::placeholders::_1,
-              std::placeholders::_2);
-
-  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  this->get_ptr_grid()->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
+  space_data_.get_ptr_data()->refine_h(n_subdivisions);
 }
-#endif
+
 
 template<int dim_, int range_, int rank_>
 void
@@ -541,13 +532,10 @@ rebuild_after_insert_knots(
                                 this->space_data_->get_periodic_table()));
 
   operators_ = BernsteinExtraction<dim,range,rank>(*this->space_data_,end_b_);
-  /*
-                   *this->get_ptr_grid(),
-                   this->space_data_->compute_knots_with_repetition(end_b_),
-                   this->space_data_->accumulated_interior_multiplicities(),
-                   this->space_data_->get_degree_table());
-                   //*/
 }
+
+
+
 #endif //MESH_REFINEMENT
 
 template<int dim_, int range_, int rank_>

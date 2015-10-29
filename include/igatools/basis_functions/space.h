@@ -115,7 +115,7 @@ public:
   Index get_object_id() const;
 
 
-  virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const = 0;
+//  virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const = 0;
 
   virtual std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const = 0;
 
@@ -251,7 +251,7 @@ public:
    *
    * @ingroup h_refinement
    */
-  void refine_h(const Size n_subdivisions = 2);
+  virtual void refine_h(const Size n_subdivisions = 2) = 0;
 
 
   /**
@@ -267,7 +267,7 @@ public:
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) = 0;
 
-  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
+//  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
 
 
 #if 0

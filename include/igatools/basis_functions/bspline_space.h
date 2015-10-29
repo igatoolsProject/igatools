@@ -348,12 +348,12 @@ protected:
   ///@}
 
 public:
-
+#if 0
   virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const override final
   {
     return space_data_.get_ptr_data()->get_ptr_grid();
   }
-
+#endif
   virtual std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const override final
   {
     return space_data_.get_ptr_const_data()->get_ptr_const_grid();
@@ -384,10 +384,10 @@ public:
    * grid.
    */
   template<int sdim>
-  std::shared_ptr<BSplineSpace<sdim,range_,rank_> >
+  std::shared_ptr<const BSplineSpace<sdim,range_,rank_> >
   get_sub_bspline_space(const int sub_elem_id,
                         InterSpaceMap<sdim> &dof_map,
-                        const std::shared_ptr<Grid<sdim>> &sub_grid) const;
+                        const std::shared_ptr<const Grid<sdim>> &sub_grid) const;
 
 #if 0
   template<int k>
@@ -466,7 +466,9 @@ private:
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) override final;
 
-//  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
+public:
+  virtual void refine_h(const Size n_subdivisions = 2) override final;
+
 #endif // MESH_REFINEMENT
 
   /**

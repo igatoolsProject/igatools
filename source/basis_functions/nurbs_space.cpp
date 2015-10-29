@@ -363,18 +363,18 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_sub_nurbs_space(const int s_id,
                     InterSpaceMap<sdim> &dof_map,
-                    const std::shared_ptr<Grid<sdim>> &sub_grid) const
--> std::shared_ptr<NURBSSpace<sdim,range_,rank_> >
+                    const std::shared_ptr<const Grid<sdim>> &sub_grid) const
+-> std::shared_ptr<const NURBSSpace<sdim,range_,rank_> >
 {
   static_assert(sdim == 0 || (sdim > 0 && sdim < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
   auto sub_bsp_space = bsp_space_->template get_sub_bspline_space<sdim>(s_id,dof_map,sub_grid);
-  auto space_sub_grid = sub_bsp_space->get_ptr_grid();
+  auto space_sub_grid = sub_bsp_space->get_ptr_const_grid();
 
   auto sub_w_func = weight_func_->template get_sub_function<sdim>(s_id,space_sub_grid);
 
-  auto sub_nrb_space = NURBSSpace<sdim,range_,rank_>::create(sub_bsp_space,sub_w_func);
+  auto sub_nrb_space = NURBSSpace<sdim,range_,rank_>::const_create(sub_bsp_space,sub_w_func);
 
   return sub_nrb_space;
 }
@@ -512,26 +512,15 @@ get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 
 #ifdef MESH_REFINEMENT
 
-#if 0
+
 template<int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
-create_connection_for_insert_knots(std::shared_ptr<self_t> space)
+refine_h(const Size n_subdivisions)
 {
-  Assert(space != nullptr, ExcNullPtr());
-  Assert(&(*space) == &(*this), ExcMessage("Different objects."));
-
-  auto func_to_connect =
-    std::bind(&self_t::rebuild_after_insert_knots,
-              space.get(),
-              std::placeholders::_1,
-              std::placeholders::_2);
-
-  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  std::const_pointer_cast<Grid<dim_>>(this->get_ptr_grid())->connect_insert_knots(
-                                     SlotType(func_to_connect).track_foreign(space));
+  //the refinement of the BSplineSpace also refines the weight_fucntion (they share the same Grid)
+  bsp_space_.get_ptr_data()->refine_h(n_subdivisions);
 }
-#endif
 
 template<int dim_, int range_, int rank_>
 void
@@ -553,7 +542,10 @@ rebuild_after_insert_knots(
     self_t::const_create(bsp_space_pre_refinement,weight_func_pre_refinement_);
 }
 
-#endif // MESH_REFINEMENT
+
+
+
+#endif //MESH_REFINEMENT
 
 
 

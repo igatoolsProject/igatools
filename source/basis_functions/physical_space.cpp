@@ -290,6 +290,15 @@ get_transformation_type() const
 
 #ifdef MESH_REFINEMENT
 
+template <int dim_, int range_, int rank_, int codim_>
+void
+PhysicalSpace<dim_, range_, rank_, codim_>::
+refine_h(const Size n_subdivisions)
+{
+  //the refinement of the ReferenceSpace also refines the Domain (they share the same Grid)
+  ref_space_.get_ptr_data()->refine_h(n_subdivisions);
+}
+
 
 template <int dim_, int range_, int rank_, int codim_>
 void
@@ -306,6 +315,24 @@ rebuild_after_insert_knots(
 
   this->phys_space_previous_refinement_ =
     self_t::const_create(prev_ref_space,prev_phys_domain);
+}
+
+template <int dim_, int range_, int rank_, int codim_>
+void
+PhysicalSpace<dim_, range_, rank_, codim_>::
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
+{
+  Assert(space != nullptr, ExcNullPtr());
+  Assert(&(*space) == &(*this), ExcMessage("Different objects."));
+
+  auto func_to_connect =
+    std::bind(&self_t::rebuild_after_insert_knots,
+              space.get(),
+              std::placeholders::_1,
+              std::placeholders::_2);
+
+  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
+  std::const_pointer_cast<Grid<dim>>(ref_space_->get_ptr_const_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
 }
 
 #endif
