@@ -43,14 +43,14 @@
 using space_tools::get_boundary_dofs;
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-shared_ptr<PhysicalSpace<dim,range,rank,codim>>
-                                             create_space(const shared_ptr<Grid<dim>> &grid,
-                                                          const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
-                                                          const int deg=1)
+shared_ptr<PhysicalSpace<dim,range,rank,codim> >
+create_space(const shared_ptr<Grid<dim>> &grid,
+             const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
+             const int deg=1)
 {
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space = PhysicalSpace<dim,range,rank,codim>;
-  auto ref_space = BspSpace::create(deg, grid);
+  auto ref_space = BspSpace::create(SplineSpace<dim,range,rank>::create(deg,grid));
   return Space::create(ref_space, Domain<dim,codim>::create(grid_func), Transformation::h_grad);
 }
 
@@ -72,17 +72,17 @@ enum  bc : boundary_id
 };
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-shared_ptr<PhysicalSpace<dim,range,rank,codim>>
-                                             create_space_prop(const shared_ptr<Grid<dim>> &grid,
-                                                 const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
-                                                 const int deg=1)
+shared_ptr<PhysicalSpace<dim,range,rank,codim> >
+create_space_prop(const shared_ptr<Grid<dim>> &grid,
+                  const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
+                  const int deg=1)
 {
   const int neu_face = 0;
   grid->set_boundary_id(neu_face, bc::neu);
 
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space = PhysicalSpace<dim,range,rank,codim>;
-  auto ref_space = BspSpace::create(deg, grid);
+  auto ref_space = BspSpace::create(SplineSpace<dim,range,rank>::create(deg,grid));
   auto space = Space::create(ref_space, Domain<dim,codim>::create(grid_func));
 
   std::set<boundary_id>  dir_ids = {bc::dir};

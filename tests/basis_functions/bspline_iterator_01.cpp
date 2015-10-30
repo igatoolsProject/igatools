@@ -40,8 +40,9 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
   OUTSTART
 
   auto grid = Grid<dim>::create();
-  using Space = BSplineSpace<dim, range, rank>;
-  auto space = Space::create(deg, grid);
+  auto space = SplineSpace<dim,range,rank>::create(deg,grid);
+  using Basis = BSplineSpace<dim, range, rank>;
+  auto basis = Basis::create(space);
 
 
   auto quad = QGauss<k>::create(n_qp);
@@ -49,14 +50,14 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
               space_element::Flags::gradient |
               space_element::Flags::hessian;
 
-  auto elem = space->begin();
+  auto elem = basis->begin();
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
 
   elem_handler->template set_flags<k>(flag);
   elem_handler->template init_cache<k>(*elem,quad);
 
-  using Elem = typename Space::ElementAccessor;
+  using Elem = typename Basis::ElementAccessor;
   using _Value = typename Elem::_Value;
   using _Gradient = typename Elem::_Gradient;
   using _Hessian = typename Elem::_Hessian;
@@ -91,10 +92,11 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
   OUTSTART
 
   auto grid = Grid<dim>::create();
-  using Space = BSplineSpace<dim, range, rank>;
-  auto space = Space::create(deg, grid);
+  auto space = SplineSpace<dim,range,rank>::create(deg,grid);
+  using Basis = BSplineSpace<dim, range, rank>;
+  auto basis = Basis::create(space);
 
-  auto dof_distribution = space->get_ptr_dof_distribution();
+  auto dof_distribution = basis->get_ptr_dof_distribution();
   //dof_distribution->add_dofs_property(DofProperties::active);
   for (const auto dof: dof_distribution->get_dofs_view())
     if (dof % 2 == 0)
@@ -107,14 +109,14 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
               space_element::Flags::gradient |
               space_element::Flags::hessian;
 
-  auto elem = space->begin();
+  auto elem = basis->begin();
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
 
   elem_handler->template set_flags<k>(flag);
   elem_handler->init_element_cache(elem,quad);
 
-  using Elem = typename Space::ElementAccessor;
+  using Elem = typename Basis::ElementAccessor;
   using _Value = typename Elem::_Value;
   using _Gradient = typename Elem::_Gradient;
   using _Hessian = typename Elem::_Hessian;

@@ -65,7 +65,8 @@ create_phys_space(const shared_ptr<const Domain<dim,codim>> &domain)
 
   const auto grid = domain->get_grid_function()->get_grid();
 
-  auto bsp_space = BSplineSpace<dim,range,1>::const_create(deg,grid);
+  auto bsp_space = BSplineSpace<dim,range,1>::const_create(
+                     SplineSpace<dim,range,1>::const_create(deg,grid));
 
   auto phys_space = PhysicalSpace<dim,range,1,codim>::const_create(bsp_space,domain);
 

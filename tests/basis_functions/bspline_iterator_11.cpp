@@ -37,20 +37,21 @@ void uniform_space_cache(const space_element::Flags flag,
 {
   OUTSTART
 
-  using Space = BSplineSpace<dim, range, rank>;
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(deg, grid);
+  auto space = SplineSpace<dim,range,rank>::const_create(deg, grid);
+  using Basis = BSplineSpace<dim, range, rank>;
+  auto basis = Basis::const_create(space);
 
-  auto elem = space->begin();
+  auto elem = basis->begin();
 
   auto quad = QGauss<dim>::create(2);
   /*
-  using ElemHandler = typename Space::ElementHandler;
-  auto value_handler = ElemHandler::const_create(space);
+  using ElemHandler = typename Basis::ElementHandler;
+  auto value_handler = ElemHandler::const_create(basis);
   value_handler->reset(flag, quad);
   value_handler->print_info(out);
   //*/
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
   elem_handler->init_element_cache(elem,quad);
   elem_handler->fill_element_cache(elem);

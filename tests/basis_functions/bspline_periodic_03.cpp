@@ -61,7 +61,9 @@ void assemble_matrix(const int n_knots, const int deg)
   end_b[0] = BasisEndBehaviour::periodic;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(degt, grid, InteriorReg::maximum, periodic, end_b);
+  auto space = Space::const_create(
+                 SplineSpace<dim>::const_create(degt, grid, InteriorReg::maximum, periodic),
+                 end_b);
 
   space->print_info(out);
 

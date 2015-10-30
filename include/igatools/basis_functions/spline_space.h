@@ -81,11 +81,11 @@ enum class InteriorReg
 template<int dim, int range = 1, int rank = 1>
 class SplineSpace
 {
-
 private:
   using GridType = Grid<dim>;
 
 public:
+  using self_t = SplineSpace<dim,range,rank>;
 
   using Func = Function<dim, 0, range, rank>;
 
@@ -155,28 +155,118 @@ public:
 
 
 public:
-  static std::shared_ptr<SplineSpace<dim,range,rank> > create(
-    const DegreeTable &deg,
-    const std::shared_ptr<GridType> &grid,
-    const MultiplicityTable &interior_mult,
-    const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
 
-  static std::shared_ptr<const SplineSpace<dim,range,rank> > const_create(
-    const DegreeTable &deg,
-    const std::shared_ptr<const GridType> &grid,
-    const MultiplicityTable &interior_mult,
-    const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
+  /**
+   * Builds and returns a maximum regularity (non-const) SplineSpace
+   * over a (non-const) Grid
+   * @p grid for the given @p degree in all directions and homogeneous
+   * in all components.
+   */
+  static std::shared_ptr<self_t>
+  create(const int degree,
+         const std::shared_ptr<GridType> &grid,
+         const InteriorReg interior_reg = InteriorReg::maximum,
+         const bool periodic = false);
+
+  /**
+   * Builds and returns a maximum regularity (const) SplineSpace
+   * over a (const) Grid
+   * @p grid for the given @p degree in all directions and homogeneous
+   * in all components.
+   */
+  static std::shared_ptr<const self_t>
+  const_create(const int degree,
+               const std::shared_ptr<const GridType> &grid,
+               const InteriorReg interior_reg = InteriorReg::maximum,
+               const bool periodic = false);
+
+  /**
+   * Builds and returns a maximum regularity (non-const) SplineSpace
+   * over a (non-const) Grid
+   * @p grid for the given @p degree[i] in the i-th direction and homogeneous
+   * in all components.
+   */
+  static std::shared_ptr<self_t>
+  create(const Degrees &degree,
+         const std::shared_ptr<GridType> &grid,
+         const InteriorReg interior_reg = InteriorReg::maximum,
+         const Periodicity &periodic = Periodicity(false));
+
+  /**
+   * Builds and returns a maximum regularity (const) SplineSpace
+   * over a (const) Grid
+   * @p grid for the given @p degree[i] in the i-th direction and homogeneous
+   * in all components.
+   */
+  static std::shared_ptr<const self_t>
+  const_create(const Degrees &degree,
+               const std::shared_ptr<const GridType> &grid,
+               const InteriorReg interior_reg = InteriorReg::maximum,
+               const Periodicity &periodic = Periodicity(false));
+
+  /**
+   * Builds and returns a (non-const) SplineSpace
+   * over a (non-const) Grid
+   * @p grid with the given multiplicity vector @p mult_vectors
+   * for each component
+   * and the given @p degree for each direction and for each
+   * component.
+   */
+  static std::shared_ptr<self_t>
+  create(const DegreeTable &deg,
+         const std::shared_ptr<GridType> &grid,
+         const MultiplicityTable &interior_mult,
+         const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
+
+  /**
+   * Builds and returns a (const) SplineSpace
+   * over a (const) Grid
+   * @p grid with the given multiplicity vector @p mult_vectors
+   * for each component
+   * and the given @p degree for each direction and for each
+   * component.
+   */
+  static std::shared_ptr<const self_t>
+  const_create(const DegreeTable &deg,
+               const std::shared_ptr<const GridType> &grid,
+               const MultiplicityTable &interior_mult,
+               const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
+
 
 private:
+
   /**
-   * Construct a spline space with the knots (inferred from the (cons or non-const) @p grid
+   * Constructs a maximum regularity SplineSpace
+   * over a (const or non-const) Grid
+   * @p grid for the given @p degree in all directions and homogeneous
+   * in all components.
+   */
+  explicit SplineSpace(const int degree,
+                       const SharedPtrConstnessHandler<GridType> &grid,
+                       const InteriorReg interior_reg,
+                       const bool periodic);
+
+
+  /**
+   * Constructs a maximum regularity SplineSpace over
+   * over a (const or non-const) Grid
+   * @p grid for the given @p degree[i] in the i-th direction and homogeneous
+   * in all components.
+   */
+  explicit SplineSpace(const Degrees &degree,
+                       const SharedPtrConstnessHandler<GridType> &grid,
+                       const InteriorReg interior_reg,
+                       const Periodicity &periodic);
+
+
+  /**
+   * Construct a SplineSpace with the knots (inferred from the (cons or non-const) @p grid
    * and @p interior_multiplicity), degree and as periodicity conditions
    */
   explicit SplineSpace(const DegreeTable &deg,
                        const SharedPtrConstnessHandler<GridType> &grid,
                        const MultiplicityTable &interior_multiplicity,
-                       const PeriodicityTable &periodic =
-                         PeriodicityTable(SafeSTLArray<bool,dim>(false)));
+                       const PeriodicityTable &periodic);
 
 
 public:

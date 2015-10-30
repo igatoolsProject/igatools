@@ -38,6 +38,148 @@ const SafeSTLArray<Size, SplineSpace<dim, range, rank>::n_components>
 SplineSpace<dim, range, rank>::components =
   sequence<SplineSpace<dim, range, rank>::n_components>();
 
+
+
+
+template<int dim,int range,int rank>
+SplineSpace<dim,range,rank>::
+SplineSpace(const int degree,
+            const SharedPtrConstnessHandler<GridType> &grid,
+            const InteriorReg interior_reg,
+            const bool periodic)
+  :
+  SplineSpace(Degrees(degree), grid, interior_reg,
+             Periodicity(periodic))
+{}
+
+template<int dim,int range,int rank>
+auto
+SplineSpace<dim,range,rank>::
+create(const int degree,
+       const std::shared_ptr<GridType> &grid,
+       const InteriorReg interior_reg,
+       const bool periodic) -> shared_ptr<self_t>
+{
+  auto sp = shared_ptr<self_t>(
+    new self_t(degree,SharedPtrConstnessHandler<GridType>(grid),interior_reg,periodic));
+  Assert(sp != nullptr, ExcNullPtr());
+
+#ifdef MESH_REFINEMENT
+  sp->create_connection_for_insert_knots(sp);
+#endif
+
+  return sp;
+}
+
+template<int dim,int range,int rank>
+auto
+SplineSpace<dim,range,rank>::
+const_create(const int degree,
+             const std::shared_ptr<const GridType> &grid,
+             const InteriorReg interior_reg,
+             const bool periodic) -> shared_ptr<const self_t>
+{
+  auto sp = shared_ptr<const self_t>(
+    new self_t(degree,SharedPtrConstnessHandler<GridType>(grid),interior_reg,periodic));
+  Assert(sp != nullptr, ExcNullPtr());
+
+  return sp;
+}
+
+
+template<int dim,int range,int rank>
+SplineSpace<dim,range,rank>::
+SplineSpace(const Degrees &deg,
+            const SharedPtrConstnessHandler<GridType> &grid,
+            const InteriorReg interior_reg,
+            const Periodicity &periodic)
+  :
+  SplineSpace(DegreeTable(true,deg),
+             grid,
+             self_t::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
+                                                      grid->get_num_intervals()),
+             PeriodicityTable(true,periodic))
+{}
+
+
+template<int dim,int range,int rank>
+auto
+SplineSpace<dim,range,rank>::
+create(const Degrees &deg,
+       const std::shared_ptr<GridType> &grid,
+       const InteriorReg interior_reg,
+       const Periodicity &periodic)
+-> shared_ptr<self_t>
+{
+  auto sp = shared_ptr<self_t>(
+    new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_reg, periodic));
+  Assert(sp != nullptr, ExcNullPtr());
+
+#ifdef MESH_REFINEMENT
+  sp->create_connection_for_insert_knots(sp);
+#endif
+
+  return sp;
+}
+
+template<int dim,int range,int rank>
+auto
+SplineSpace<dim,range,rank>::
+const_create(const Degrees &deg,
+             const std::shared_ptr<const GridType> &grid,
+             const InteriorReg interior_reg,
+             const Periodicity &periodic)
+-> shared_ptr<const self_t>
+{
+  auto sp = shared_ptr<const self_t>(
+    new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_reg, periodic));
+  Assert(sp != nullptr, ExcNullPtr());
+
+  return sp;
+}
+
+#if 0
+template<int dim,int range,int rank>
+auto
+BSplineSpace<dim,range,rank>::
+create(const DegreeTable &deg,
+       const std::shared_ptr<GridType> &grid,
+       const MultiplicityTable &interior_mult,
+       const PeriodicityTable &periodic,
+       const EndBehaviourTable &end_b)
+-> shared_ptr<self_t>
+{
+  auto sp = shared_ptr<self_t>(
+    new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_mult, periodic, end_b));
+  Assert(sp != nullptr, ExcNullPtr());
+
+#ifdef MESH_REFINEMENT
+  sp->create_connection_for_insert_knots(sp);
+#endif
+
+  return sp;
+}
+
+template<int dim,int range,int rank>
+auto
+BSplineSpace<dim,range,rank>::
+const_create(const DegreeTable &deg,
+             const std::shared_ptr<const GridType> &grid,
+             const MultiplicityTable &interior_mult,
+             const PeriodicityTable &periodic,
+             const EndBehaviourTable &end_b)
+-> shared_ptr<const self_t>
+{
+  auto sp = shared_ptr<const self_t>(
+    new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_mult, periodic, end_b));
+  Assert(sp != nullptr, ExcNullPtr());
+
+  return sp;
+}
+#endif
+
+
+
 template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
@@ -222,11 +364,11 @@ rebuild_after_insert_knots(
   Assert(&(*grid_pre_refinement) == &old_grid,ExcMessage("Different grids."));
 
   spline_space_previous_refinement_ =
-    std::shared_ptr<SplineSpace<dim,range,rank> >(
-      new SplineSpace<dim,range,rank>(
-        deg_,
-        SharedPtrConstnessHandler<Grid<dim>>(grid_pre_refinement),
-        interior_mult_));
+    SplineSpace<dim,range,rank>::const_create(
+      deg_,
+      grid_pre_refinement,
+      interior_mult_,
+      periodic_);
 
 
   const auto &old_unique_knots = old_grid.get_knot_coordinates();

@@ -49,7 +49,7 @@ void do_test(const int p, const int num_knots = 10)
 
 
   auto grid = Grid<dim>::create(num_knots);
-  auto space = Space::create(p, grid) ;
+  auto space = Space::create(SplineSpace<dim,range,rank>::create(p, grid)) ;
   auto f = BoundaryFunction<dim>::const_create(grid);
 
 

@@ -45,8 +45,9 @@ template<int dim>
 void uniform_degree(const int deg, shared_ptr<Grid<dim>> grid)
 {
   OUTSTART
-  std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create(deg, grid);
-  space->print_info(out);
+  auto space = SplineSpace<dim>::create(deg, grid);
+  std::shared_ptr<BSplineSpace<dim>> basis = BSplineSpace<dim>::create(space);
+  basis->print_info(out);
   OUTEND
 }
 
@@ -56,8 +57,9 @@ void direction_degree(const TensorIndex<dim> &deg,
                       shared_ptr<Grid<dim>> grid)
 {
   OUTSTART
-  std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create(deg, grid);
-  space->print_info(out);
+  auto space = SplineSpace<dim>::create(deg, grid);
+  std::shared_ptr<BSplineSpace<dim>> basis = BSplineSpace<dim>::create(space);
+  basis->print_info(out);
   OUTEND
 }
 

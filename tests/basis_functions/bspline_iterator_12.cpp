@@ -39,15 +39,18 @@ void space_cache_init_fill_elem(
 {
   OUTSTART
 
-  using Space = BSplineSpace<dim, range, rank>;
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(deg, grid);
+
+  auto space = SplineSpace<dim,range,rank>::const_create(deg, grid);
+
+  using Basis = BSplineSpace<dim, range, rank>;
+  auto basis = Basis::const_create(space);
 
   auto quad = QGauss<dim>::create(2);
 
-  auto elem = space->begin();
+  auto elem = basis->begin();
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
 
   elem_handler->template set_flags<dim>(flag);
   elem_handler->init_element_cache(elem,quad);

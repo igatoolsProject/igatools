@@ -43,19 +43,23 @@ void elem_derivatives(const int n_knots = 5, const int deg=1)
 {
   OUTSTART
 
-  using Space = BSplineSpace<dim, range, rank>;
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(deg, grid);
+
+  auto space = SplineSpace<dim,range,rank>::const_create(deg, grid);
+
+  using Basis = BSplineSpace<dim, range, rank>;
+  auto basis = Basis::const_create(space);
+
 
   auto flag = der_flag[der];
 
   auto quad = QGauss<dim>::create(2);
 
 
-  auto elem = space->begin();
-  auto end = space->end();
+  auto elem = basis->begin();
+  auto end = basis->end();
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
 
   elem_handler->template set_flags<dim>(flag);
   elem_handler->init_element_cache(elem,quad);

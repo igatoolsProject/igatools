@@ -40,10 +40,11 @@ void evaluate_field(const int deg = 1)
   OUTSTART
 
   auto grid = Grid<dim>::create();
+  auto space = SplineSpace<dim, range, rank>::const_create(deg, grid);
 
-  using Space = BSplineSpace<dim,range,rank>;
+  using Basis = BSplineSpace<dim, range, rank>;
+  auto basis = Basis::const_create(space);
 
-  auto space = Space::create(deg, grid);
   const auto  num = space->get_num_basis();
   Epetra_SerialComm comm;
   Epetra_Map map(num, num, 0, comm);
@@ -71,15 +72,15 @@ void evaluate_field(const int deg = 1)
               space_element::Flags::divergence;
 
 
-  auto elem = space->begin();
+  auto elem = basis->begin();
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
 
   elem_handler->template set_flags<dim>(flag);
   elem_handler->init_element_cache(elem,quad);
   elem_handler->fill_element_cache(elem);
 
-  using Elem = typename Space::ElementAccessor;
+  using Elem = typename Basis::ElementAccessor;
   using _Value = typename Elem::_Value;
   using _Gradient = typename Elem::_Gradient;
   using _Hessian = typename Elem::_Hessian;

@@ -112,11 +112,13 @@ void do_test()
   using Space = NURBSSpace< dim, range, rank >;
   auto grid = Grid<dim>::create(coord);
 
-  auto  bsp = BSplineSpace<dim, range, rank >::create(degree, grid);
+  auto  bsp = BSplineSpace<dim, range, rank >::create(
+                SplineSpace<dim,range,rank>::create(degree,grid));
 
   using ScalarBSplineSpace = BSplineSpace<dim>;
   using WeightFunc = IgGridFunction<dim,1>;
-  auto scalar_space = ScalarBSplineSpace::create(degree,grid);
+  auto scalar_space = ScalarBSplineSpace::create(
+                        SplineSpace<dim,1,1>::create(degree,grid));
   const auto n_scalar_basis = scalar_space->get_num_basis();
 
   IgCoefficients weights;

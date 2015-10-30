@@ -50,7 +50,7 @@ void test_evaluate()
 
   using RefSpace = ReferenceSpace<dim>;
   using RefSpacePtr = std::shared_ptr<RefSpace>;
-  RefSpacePtr ref_space = BSplineSpace<dim>::create(deg,grid);
+  RefSpacePtr ref_space = BSplineSpace<dim>::create(SplineSpace<dim>::create(deg,grid));
   auto phys_space =
     PhysicalSpace<dim,1,1,0>::create(
       ref_space,

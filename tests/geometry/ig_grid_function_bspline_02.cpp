@@ -42,7 +42,7 @@ void ig_grid_function_bspline(const int deg = 2)
   using Function = IgGridFunction<dim,dim+codim>;
 
   auto grid = Grid<dim>::create(2);
-  auto space = Space::create(deg, grid);
+  auto space = Space::create(SplineSpace<dim,dim+codim>::create(deg,grid));
 
   IgCoefficients control_pts;
 
@@ -175,8 +175,8 @@ void ig_grid_function_bspline(const int deg = 2)
   auto quad = QGauss<sub_dim>::create(3);
   using Flags = grid_function_element::Flags;
   auto flag =  Flags::D0|
-		       Flags::D1|
-			   Flags::D2;
+               Flags::D1|
+               Flags::D2;
 
   auto cache_handler = F->create_cache_handler();
   cache_handler->template set_flags<sub_dim>(flag);
@@ -195,7 +195,7 @@ void ig_grid_function_bspline(const int deg = 2)
   int elem_id = 0;
   for (; elem != end; ++elem, ++elem_id)
   {
-	out.begin_item("Element: " + std::to_string(elem_id));
+    out.begin_item("Element: " + std::to_string(elem_id));
 
     cache_handler->template fill_cache<sub_dim>(elem, s_id);
 

@@ -80,7 +80,7 @@ void ig_grid_function_bspline(const int deg = 1)
   using Function = IgGridFunction<dim,dim+codim>;
 
   auto grid = Grid<dim>::create(2);
-  auto space = Space::create(deg, grid);
+  auto space = Space::create(SplineSpace<dim,dim+codim>::create(deg,grid));
 
   IgCoefficients control_pts;
 

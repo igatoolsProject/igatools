@@ -34,12 +34,12 @@
 template <int dim>
 void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
 {
-  std::shared_ptr<ReferenceSpace<dim>> space = space_in;
-//  auto space = std::make_shared<SpaceBase<dim>>(space_in->get_grid());
-//  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> space = space_in;
-//  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> space = std::make_shared<TTT<dim>>();
+  std::shared_ptr<ReferenceSpace<dim>> basis = space_in;
+//  auto basis = std::make_shared<SpaceBase<dim>>(space_in->get_grid());
+//  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> basis = space_in;
+//  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> basis = std::make_shared<TTT<dim>>();
   out.begin_item("Original BSplineSpace:");
-  space->print_info(out);
+  basis->print_info(out);
   out.end_item();
 
 
@@ -50,19 +50,19 @@ void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 
-    xml_out << space;
+    xml_out << basis;
   }
 
-  space.reset();
+  basis.reset();
   {
     // de-serialize the BSplineSpace object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
 
-    xml_in >> space;
+    xml_in >> basis;
   }
   out.begin_item("BSplineSpace after serialize-deserialize:");
-  space->print_info(out);
+  basis->print_info(out);
   out.end_item();
 
 }
@@ -86,9 +86,11 @@ template<int dim>
 void uniform_degree(const int deg, shared_ptr<Grid<dim>> grid)
 {
   OUTSTART
-  std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create(deg, grid);
+  auto space = SplineSpace<dim>::create(deg, grid);
+  auto basis = BSplineSpace<dim>::create(space);
+//  std::shared_ptr<BSplineSpace<dim>> basis = BSplineSpace<dim>::create(deg, grid);
 
-  serialize_deserialize(space);
+  serialize_deserialize(basis);
 
   OUTEND
 }
@@ -99,9 +101,11 @@ void direction_degree(const TensorIndex<dim> &deg,
                       shared_ptr<Grid<dim>> grid)
 {
   OUTSTART
-  std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create(deg, grid);
+  auto space = SplineSpace<dim>::create(deg, grid);
+  auto basis = BSplineSpace<dim>::create(space);
+//  std::shared_ptr<BSplineSpace<dim>> basis = BSplineSpace<dim>::create(deg, grid);
 
-  serialize_deserialize(space);
+  serialize_deserialize(basis);
 
   OUTEND
 }

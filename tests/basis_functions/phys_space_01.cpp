@@ -218,7 +218,8 @@ std::shared_ptr<const PhysicalSpace<dim,range,rank,codim>>
   OUTSTART
   auto grid = Grid<dim>::const_create();
   const int deg = 2;
-  auto ref_space = BSplineSpace<dim,range,rank>::const_create(deg,grid);
+  auto ref_space = BSplineSpace<dim,range,rank>::const_create(
+                     SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using GridFunc = grid_functions::BallGridFunction<dim>;
   auto grid_func = GridFunc::const_create(grid);

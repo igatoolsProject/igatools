@@ -42,9 +42,9 @@ void using_const_space(shared_ptr<const IgGridFunction<dim,sp_dim>> fun)
 {
   OUTSTART
 
-  auto space = fun->get_ig_space();
+  auto basis = fun->get_ig_space();
   Epetra_SerialComm comm;
-  auto matrix = EpetraTools::create_matrix(*space,DofProperties::active,comm);
+  auto matrix = EpetraTools::create_matrix(*basis,DofProperties::active,comm);
 
   OUTEND
 }
@@ -63,12 +63,14 @@ void using_const_function(shared_ptr<const GridFunction<dim,sp_dim>> fun)
 int main()
 {
   const int dim = 2;
-  using Space = BSplineSpace<dim>;
+  using Space = SplineSpace<dim>;
+  using Basis = BSplineSpace<dim>;
 
   auto grid = Grid<dim>::const_create(5);
   auto space = Space::const_create(1, grid);
+  auto basis = Basis::const_create(space);
 
-  const auto n_basis = space->get_num_basis();
+  const auto n_basis = basis->get_num_basis();
 
   IgCoefficients coeffs;
   for (int dof = 0 ; dof < n_basis ; ++dof)
@@ -76,7 +78,7 @@ int main()
 
 
   using IgGridFunc = IgGridFunction<dim,1>;
-  auto fun = dynamic_pointer_cast<const IgGridFunc>(IgGridFunc::const_create(space,coeffs));
+  auto fun = dynamic_pointer_cast<const IgGridFunc>(IgGridFunc::const_create(basis,coeffs));
 
   using_const_space<2,1>(fun);
   using_const_function<2,1>(fun);

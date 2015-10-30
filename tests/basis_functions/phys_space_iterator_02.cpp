@@ -182,7 +182,8 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
-  auto ref_space = BspSpace::const_create(deg, grid);
+  auto ref_space = BspSpace::const_create(
+                     SplineSpace<dim,range,rank>::const_create(deg,grid));
 
 
   auto space = create_phys_space(ref_space);

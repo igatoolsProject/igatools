@@ -46,10 +46,13 @@ void do_test()
 
   const int degree = 1;
   const int rank =  1 ;
-  using Space = BSplineSpace< dim, range, rank >;
-  auto space = Space::const_create(degree, grid);
 
-  const auto  num = space->get_num_basis();
+  auto space = SplineSpace<dim, range>::const_create(degree, grid);
+
+  using Basis = BSplineSpace<dim, range>;
+  auto basis = Basis::const_create(space);
+
+  const auto  num = basis->get_num_basis();
   Epetra_SerialComm comm;
   Epetra_Map map(num, num, 0, comm);
 
@@ -74,9 +77,9 @@ void do_test()
 
   auto quad_non_tensor_prod = Quadrature<dim>::create(eval_points);
 
-  auto element1 = space->begin();
+  auto element1 = basis->begin();
 
-  using Elem = typename Space::ElementAccessor;
+  using Elem = typename Basis::ElementAccessor;
   using _Value = typename Elem::_Value;
   using _Gradient = typename Elem::_Gradient;
   using _Hessian = typename Elem::_Hessian;

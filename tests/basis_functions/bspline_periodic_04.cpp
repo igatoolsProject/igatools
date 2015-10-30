@@ -71,7 +71,9 @@ void assemble_matrix(const int n_knots, const int deg)
   grid->set_boundary_id(0, 1);
   grid->set_boundary_id(1, 1);
 
-  auto space = Space::const_create(degt, grid, InteriorReg::maximum, periodic, end_b);
+  auto space = Space::const_create(
+                 SplineSpace<dim>::const_create(degt, grid, InteriorReg::maximum, periodic),
+                 end_b);
 
   space->print_info(out);
 

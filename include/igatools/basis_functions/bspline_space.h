@@ -169,6 +169,7 @@ public:
    * @name Creators.
    */
   ///@{
+#if 0
   /**
    * Builds and returns a maximum regularity (non-const) BSpline space
    * over a (non-const) Grid
@@ -250,14 +251,15 @@ public:
                const MultiplicityTable &interior_mult,
                const PeriodicityTable &periodic,
                const EndBehaviourTable &end_b);
+#endif
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<SpaceData> &space_data,
-         const EndBehaviourTable &end_b);
+         const EndBehaviourTable &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const SpaceData> &space_data,
-               const EndBehaviourTable &end_b);
+               const EndBehaviourTable &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
   ///@}
 
   /**
@@ -287,7 +289,7 @@ protected:
    * mechanism.
    */
   BSplineSpace() = default;
-
+#if 0
   /**
    * Constructs a maximum regularity BSpline space
    * over a (const or non-const) Grid
@@ -327,7 +329,7 @@ protected:
                         const MultiplicityTable &interior_mult,
                         const PeriodicityTable &periodic,
                         const EndBehaviourTable &end_b);
-
+#endif
 
 
   explicit BSplineSpace(const SharedPtrConstnessHandler<SpaceData> &space_data,

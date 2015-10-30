@@ -38,16 +38,19 @@ void get_bdry_dof(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
   using RefSpace = ReferenceSpace<dim, range, rank>;
-  using Space = BSplineSpace<dim, range, rank>;
+  using Basis = BSplineSpace<dim, range, rank>;
   auto grid = Grid<dim>::create(n_knots);
   grid->set_boundary_id(0,1);
 
-  auto space = Space::create(deg, grid);
+  auto space = SplineSpace<dim,range,rank>::create(deg, grid);
+  auto basis = Basis::create(space);
+
+
 
   std::set<boundary_id>  piece_one  = {1};
   std::set<boundary_id>  piece_zero = {0};
-  auto one_dofs = get_boundary_dofs<RefSpace>(space, piece_one);
-  auto zero_dofs = get_boundary_dofs<RefSpace>(space, piece_zero);
+  auto one_dofs = get_boundary_dofs<RefSpace>(basis, piece_one);
+  auto zero_dofs = get_boundary_dofs<RefSpace>(basis, piece_zero);
 
   // TODO (pauletti, Mar 27, 2015): we should create iga::set with print_info
   for (auto &x : one_dofs)

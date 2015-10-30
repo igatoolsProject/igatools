@@ -38,9 +38,11 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
   auto grid = Grid<dim>::create(n);
 
   auto deg = TensorIndex<dim>(degree);
-  auto bsp_space = BSplineSpace<dim,range,rank>::const_create(deg, grid);
+  auto bsp_space = BSplineSpace<dim,range,rank>::const_create(
+                     SplineSpace<dim,range,rank>::create(degree,grid));
 
-  auto scalar_bsp_space = BSplineSpace<dim,1,1>::create(degree, grid);
+  auto scalar_bsp_space = BSplineSpace<dim,1,1>::create(
+                            SplineSpace<dim,1,1>::create(degree,grid));
   const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
 
   using WeightFunc = IgGridFunction<dim,1>;

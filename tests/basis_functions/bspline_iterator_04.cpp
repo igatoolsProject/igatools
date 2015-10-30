@@ -45,27 +45,28 @@ void elem_derivatives(const int n_knots,
 {
   OUTSTART
 
-  using Space = BSplineSpace<dim, range, rank>;
+  using Basis = BSplineSpace<dim, range, rank>;
   auto grid  = Grid<dim>::create(n_knots);
 
-  typename Space::PeriodicityTable periodic((typename Space::Periodicity(SafeSTLArray<bool, dim>(false))));
-  typename Space::EndBehaviourTable ebt((typename Space::EndBehaviour(SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory))));
+//  typename Basis::PeriodicityTable periodic((typename Basis::Periodicity(SafeSTLArray<bool, dim>(false))));
+  typename Basis::EndBehaviourTable ebt((typename Basis::EndBehaviour(SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory))));
   auto int_mult = SplineSpace<dim,range,rank>::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
-  auto space = Space::create(deg, grid, int_mult, periodic, ebt);
+  auto space = SplineSpace<dim,range,rank>::create(deg,grid,int_mult);
+  auto basis = Basis::create(space, ebt);
 
   auto flag = der_flag[der];
   auto quad = QGauss<dim>::create(2);
 
 
-  auto elem = space->begin();
-  auto end  = space->end();
+  auto elem = basis->begin();
+  auto end  = basis->end();
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
   elem_handler->init_element_cache(elem,quad);
 
-  using Elem = typename Space::ElementAccessor;
+  using Elem = typename Basis::ElementAccessor;
   using _Value = typename Elem::_Value;
   using _Gradient = typename Elem::_Gradient;
   using _Hessian = typename Elem::_Hessian;

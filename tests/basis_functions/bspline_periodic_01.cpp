@@ -45,8 +45,9 @@ void plot_basis(const int n_knots, const int deg)
   typename Space::DegreeTable degt(deg1);
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(deg, grid, InteriorReg::maximum, true,
-                             BasisEndBehaviour::periodic);
+  auto space = Space::const_create(
+                 SplineSpace<dim,range>::const_create(deg,grid, InteriorReg::maximum, true),
+                 BasisEndBehaviour::periodic);
 
 
   const int n_basis = space->get_num_basis();

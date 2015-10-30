@@ -46,7 +46,7 @@ void cache_init(const space_element::Flags flag,
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim>;
   auto grid      = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(deg, grid);
+  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -86,7 +86,7 @@ void cache_init_elem(const space_element::Flags flag,
   using Space    = PhysicalSpace<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(deg, grid);
+  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -127,7 +127,7 @@ void cache_fill_elem(const space_element::Flags flag,
   using Space    = PhysicalSpace<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(deg, grid);
+  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -173,7 +173,7 @@ void cache_get_elem_values(const space_element::Flags flag,
   using Space    = PhysicalSpace<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(deg, grid);
+  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;

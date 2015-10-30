@@ -531,10 +531,11 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
   end_behaviour(components_map, SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory));
   typename space_t::PeriodicityTable periodic(components_map, SafeSTLArray<bool,dim>(false));
 
-  auto ref_space = space_t::create(degrees, grid, multiplicities, periodic, end_behaviour);
+  auto spline_space = SplineSpace<dim,range,rank>::create(degrees,grid,multiplicities,periodic);
+  auto bspline_basis = space_t::create(spline_space, end_behaviour);
   //-------------------------------------------------------------------------
 
-  return ref_space;
+  return bspline_basis;
 }
 
 #ifdef NURBS
@@ -691,7 +692,8 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
   end_behaviour(components_map, SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
   typename SpSpace::PeriodicityTable periodic(components_map, SafeSTLArray<bool, dim>(false));
 
-  auto spline_space = SpSpace::create(degrees, grid, multiplicities, periodic, end_behaviour);
+  auto spline_space = SplineSpace<dim,range,rank>::create(degrees,grid,multiplicities,periodic);
+  auto bspline_basis = SpSpace::create(spline_space, end_behaviour);
 
   //---------------------------------------------------------------------------------
 
@@ -714,9 +716,8 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
   typename ScalarBSplineSpace::PeriodicityTable scalar_periodic(SafeSTLArray<bool, dim>(false));
 
 
-  auto scalar_spline_space =
-    ScalarBSplineSpace::create(scalar_degree_table, grid,
-                               scalar_mult_table, scalar_periodic, scalar_end_behaviour);
+  auto scalar_spline_space = SplineSpace<dim,1,1>::create(scalar_degree_table,grid,scalar_mult_table,scalar_periodic);
+  auto scalar_bspline_basis = ScalarBSplineSpace::create(scalar_spline_space, scalar_end_behaviour);
 
 //    using WeightFuncPtr = shared_ptr<WeightFunc>;
   using WeightFunction = typename space_t::WeightFunction;
@@ -733,15 +734,15 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
   for (const auto &w : weights[0])
     w_coeffs[i++] = w;
 
-  auto w_func = WeightFunction::create(scalar_spline_space, w_coeffs);
+  auto w_func = WeightFunction::create(scalar_bspline_basis, w_coeffs);
 
   //*/
   // building the weight function table --- end
   //----------------------------------------
 
-  auto ref_space = space_t::create(spline_space,w_func);
+  auto nurbs_basis = space_t::create(bspline_basis,w_func);
 
-  return ref_space;
+  return nurbs_basis;
 }
 #endif
 

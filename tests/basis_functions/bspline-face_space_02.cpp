@@ -35,26 +35,28 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
 {
   OUTSTART
 
-  using Space = BSplineSpace<dim, range, rank>;
 
+  using Space = SplineSpace<dim, range, rank>;
+  using Basis = BSplineSpace<dim, range, rank>;
 
   auto grid = Grid<dim>::const_create(n);
   auto space = Space::const_create(degree, grid);
+  auto basis = Basis::const_create(space);
 
-  typename Space::template InterSpaceMap<sub_dim> dof_map;
+  typename Basis::template InterSpaceMap<sub_dim> dof_map;
 
   for (auto i : UnitElement<dim>::template elems_ids<sub_dim>())
   {
     typename Grid<dim>::template SubGridMap<sub_dim> elem_map;
 //    auto sub_grid = space->get_grid()->template get_sub_grid<sub_dim>(i, elem_map);
-    out.begin_item(to_string(i) + "-th " + "sub space:");
-    auto sub_space =
-      space->template get_sub_space<sub_dim>(i, dof_map, elem_map);
-    out.begin_item("Space:");
-    sub_space->print_info(out);
+    out.begin_item(to_string(i) + "-th " + "sub basis:");
+    auto sub_basis =
+      basis->template get_sub_space<sub_dim>(i, dof_map, elem_map);
+    out.begin_item("Basis:");
+    sub_basis->print_info(out);
     out.end_item();
 
-    out.begin_item("Dofs sub element to space mapping:");
+    out.begin_item("Dofs sub element to basis mapping:");
     dof_map.print_info(out);
     out.end_item();
     out.end_item();

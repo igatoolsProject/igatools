@@ -48,11 +48,11 @@ void do_test(const int p, const int num_knots = 10)
   const int sub_dim = dim - 1;
 
   using BspSpace = BSplineSpace<dim,range,rank>;
-  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  using Space = PhysicalSpace<dim,range,rank,codim>;
 
 
   auto grid = Grid<dim>::const_create(num_knots);
-  auto ref_space = BspSpace::const_create(p, grid) ;
+  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(p, grid)) ;
   auto map = IdentityFunction<dim>::const_create(grid);
   auto space = Space::const_create(ref_space, map);
 

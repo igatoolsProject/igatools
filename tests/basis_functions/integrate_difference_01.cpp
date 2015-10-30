@@ -41,7 +41,7 @@ void do_test(const int deg, const int n_knots = 10)
 
 
   auto grid = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(deg, grid);
+  auto space = Space::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   const int n_qpoints = ceil((2*dim + 1)/2.);
   QGauss<dim> quad(n_qpoints);

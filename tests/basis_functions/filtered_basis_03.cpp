@@ -74,7 +74,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   grid->set_boundary_id(neu_face, bc::neu);
 
 
-  auto space = Space::create(deg, grid);
+  auto space = Space::create(SplineSpace<dim,range,rank>::create(deg,grid));
 
   std::set<boundary_id>  dir_ids = {bc::dir};
   auto dir_dofs = get_boundary_dofs<RefSpace>(space, dir_ids);

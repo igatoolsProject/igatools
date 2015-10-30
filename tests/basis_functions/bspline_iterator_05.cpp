@@ -36,8 +36,9 @@ void sub_elem_values(const int n_knots, const int deg)
   OUTSTART
 
   auto grid = Grid<dim>::const_create(n_knots);
-  using Space = BSplineSpace<dim>;
-  auto space = Space::const_create(deg, grid);
+  auto space = SplineSpace<dim>::const_create(deg, grid);
+  using Basis = BSplineSpace<dim>;
+  auto basis = Basis::const_create(space);
 
   const int n_qp = 2;
   auto k_quad = QGauss<k>::create(n_qp);
@@ -46,17 +47,17 @@ void sub_elem_values(const int n_knots, const int deg)
               space_element::Flags::gradient|
               space_element::Flags::hessian;
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
   elem_handler->template set_flags<k>(flag);
 
-  using Elem = typename Space::ElementAccessor;
+  using Elem = typename Basis::ElementAccessor;
   using _Value = typename Elem::_Value;
   using _Gradient = typename Elem::_Gradient;
   using _Hessian = typename Elem::_Hessian;
 
-  auto elem = space->begin();
-  auto end =  space->end();
+  auto elem = basis->begin();
+  auto end =  basis->end();
 
   elem_handler->template init_cache<dim>(*elem,quad);
   elem_handler->template init_cache<k>(*elem,k_quad);
