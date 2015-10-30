@@ -130,8 +130,24 @@ get_reference_space() const -> shared_ptr<const RefSpace>
   return ref_space_.get_ptr_const_data();
 }
 
+template <int dim_, int range_, int rank_, int codim_>
+auto
+PhysicalSpace<dim_, range_, rank_, codim_>::
+get_physical_domain() const -> std::shared_ptr<const Domain<dim_,codim_>>
+{
+  return phys_domain_.get_ptr_const_data();
+}
+
+template <int dim_, int range_, int rank_, int codim_>
+auto
+PhysicalSpace<dim_, range_, rank_, codim_>::
+get_grid() const -> std::shared_ptr<const Grid<dim_>>
+{
+  return ref_space_->get_grid();
+}
 
 
+#if 0
 template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_>::
@@ -139,7 +155,7 @@ get_reference_space() -> shared_ptr<RefSpace>
 {
   return ref_space_.get_ptr_data();
 }
-
+#endif
 
 
 template <int dim_, int range_, int rank_, int codim_>

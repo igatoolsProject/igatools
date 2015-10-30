@@ -225,10 +225,7 @@ public:
 
   const std::shared_ptr<const BSpSpace> get_spline_space() const;
 
-  virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final
-  {
-    return bsp_space_.get_ptr_const_data()->get_grid();
-  }
+  virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final;
 
 
   /**
@@ -285,8 +282,8 @@ private:
 
 
 public:
-  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
-      create_cache_handler() const override final;
+  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_> >
+  create_cache_handler() const override final;
 
 
 private:

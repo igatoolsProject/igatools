@@ -150,7 +150,7 @@ template <int> class GridHandler;
  *  of unique knots values (also called
  * "breakpoints") along each coordinate direction.
  *
- * @author M. Martinelli 2012, 2013, 2014
+ * @author M. Martinelli 2012, 2013, 2014, 2015
  * @author pauletti 2012, 2013, 2014, 2015
  *
  * @see get_grid_from_xml()

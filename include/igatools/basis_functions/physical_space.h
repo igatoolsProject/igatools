@@ -187,17 +187,14 @@ public:
     const std::string &dofs_property = DofProperties::active) const override final;
 
 
-  std::shared_ptr<const RefSpace> get_reference_space() const;
-
-  std::shared_ptr<RefSpace> get_reference_space();
 
 
 
 
   void print_info(LogStream &out) const override final;
 
-  std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>>
-                                                              create_cache_handler() const override final;
+  std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_> >
+  create_cache_handler() const override final;
 
 
 
@@ -206,16 +203,15 @@ public:
    */
   virtual int get_max_degree() const override final;
 
-  std::shared_ptr<const Domain<dim_,codim_>> get_physical_domain() const
-  {
-    return phys_domain_.get_ptr_const_data();
-  }
+  std::shared_ptr<const Domain<dim_,codim_>> get_physical_domain() const;
 
 
-  virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final
-  {
-    return ref_space_.get_ptr_const_data()->get_grid();
-  }
+  virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final;
+
+
+  std::shared_ptr<const RefSpace> get_reference_space() const;
+
+//  std::shared_ptr<RefSpace> get_reference_space();
 
   Transformation get_transformation_type() const;
 

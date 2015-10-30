@@ -199,10 +199,7 @@ protected:
 #ifdef MESH_REFINEMENT
 
 public:
-  std::shared_ptr<const self_t> get_space_previous_refinement() const
-  {
-    return ref_space_previous_refinement_;
-  }
+  std::shared_ptr<const self_t> get_space_previous_refinement() const;
 
   void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
 

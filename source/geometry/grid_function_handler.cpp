@@ -43,6 +43,30 @@ GridFunctionHandler<dim_, space_dim_>::
 {}
 
 
+template<int dim_, int space_dim_>
+auto
+GridFunctionHandler<dim_, space_dim_>::
+get_grid_function() const -> std::shared_ptr<GridFunctionType>
+{
+  return grid_function_;
+}
+
+template<int dim_, int space_dim_>
+auto
+GridFunctionHandler<dim_, space_dim_>::
+get_grid_handler() const -> const GridHandler &
+{
+  return *grid_handler_;
+}
+
+template<int dim_, int space_dim_>
+auto
+GridFunctionHandler<dim_, space_dim_>::
+get_grid_handler() -> GridHandler &
+{
+  return *grid_handler_;
+}
+
 
 template<int dim_, int space_dim_>
 auto

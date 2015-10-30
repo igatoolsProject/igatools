@@ -158,6 +158,14 @@ get_weight_func() const -> std::shared_ptr<const WeightFunction>
   return weight_func_.get_ptr_const_data();
 }
 
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_grid() const -> std::shared_ptr<const Grid<dim_>>
+{
+  return bsp_space_->get_grid();
+}
+
 
 
 #if 0

@@ -86,6 +86,41 @@ get_nurbs_space() const -> std::shared_ptr<const Space>
 }
 
 
+template <int dim, int range, int rank>
+void
+NURBSElement<dim, range, rank>::
+operator++()
+{
+  ++bspline_elem_;
+  ++(*weight_elem_);
+}
+
+template <int dim, int range, int rank>
+void
+NURBSElement<dim, range, rank>::
+move_to(const IndexType &elem_id)
+{
+  bspline_elem_.move_to(elem_id);
+  weight_elem_->move_to(elem_id);
+}
+
+
+template <int dim, int range, int rank>
+auto
+NURBSElement<dim, range, rank>::
+get_grid_element() -> GridElem &
+{
+  return bspline_elem_.get_grid_element();
+}
+
+template <int dim, int range, int rank>
+auto
+NURBSElement<dim, range, rank>::
+get_grid_element() const -> const GridElem &
+{
+  return bspline_elem_.get_grid_element();
+}
+
 
 
 

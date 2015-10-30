@@ -171,6 +171,15 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
   std::const_pointer_cast<Grid<dim>>(this->get_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
 }
 
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_space_previous_refinement() const -> std::shared_ptr<const self_t>
+{
+  return ref_space_previous_refinement_;
+}
+
 #endif // MESH_REFINEMENT
 
 

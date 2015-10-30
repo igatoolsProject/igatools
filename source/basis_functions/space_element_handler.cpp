@@ -48,6 +48,44 @@ get_space() const -> std::shared_ptr<const Sp>
 }
 
 
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+init_element_cache(ElementAccessor &elem,
+                   std::shared_ptr<const Quadrature<dim>> quad) const
+{
+  init_cache<dim>(elem, quad);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+init_element_cache(ElementIterator &elem,
+                   std::shared_ptr<const Quadrature<dim>> quad) const
+{
+  init_element_cache(*elem, quad);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+init_face_cache(ElementAccessor &elem,
+                std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
+{
+  Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+  init_cache<(dim > 0) ? dim-1 : 0>(elem, quad);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+init_face_cache(ElementIterator &elem,
+                std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
+{
+  init_face_cache(*elem, quad);
+}
+
+
 #if 0
 
 template<int dim,int codim,int range,int rank>

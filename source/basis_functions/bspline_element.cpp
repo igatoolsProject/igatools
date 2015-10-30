@@ -348,6 +348,39 @@ print_cache_info(LogStream &out) const
 
 
 
+template <int dim, int range, int rank>
+auto
+BSplineElement<dim, range, rank>::
+get_grid_element() -> GridElem &
+{
+  return *grid_elem_;
+}
+
+template <int dim, int range, int rank>
+auto
+BSplineElement<dim, range, rank>::
+get_grid_element() const -> const GridElem &
+{
+  return *grid_elem_;
+}
+
+template <int dim, int range, int rank>
+void
+BSplineElement<dim, range, rank>::
+operator++()
+{
+  ++(*grid_elem_);
+}
+
+template <int dim, int range, int rank>
+void
+BSplineElement<dim, range, rank>::
+move_to(const IndexType &elem_id)
+{
+  grid_elem_->move_to(elem_id);
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/bspline_element.inst>

@@ -95,10 +95,7 @@ public:
   }
 #endif
 
-  std::shared_ptr<GridFunctionType> get_grid_function() const
-  {
-    return grid_function_;
-  }
+  std::shared_ptr<GridFunctionType> get_grid_function() const;
 
 
 public:
@@ -148,16 +145,10 @@ public:
   //protected:
 public:
   const GridHandler &
-  get_grid_handler() const
-  {
-    return *grid_handler_;
-  }
+  get_grid_handler() const;
 
   GridHandler &
-  get_grid_handler()
-  {
-    return *grid_handler_;
-  }
+  get_grid_handler();
 
 protected:
   typename ConstElementAccessor::CacheType &

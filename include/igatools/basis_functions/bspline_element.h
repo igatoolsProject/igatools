@@ -174,33 +174,21 @@ public:
   /**
    * Return a reference to the GridElement.
    */
-  GridElem &get_grid_element() override final
-  {
-    return *grid_elem_;
-  }
+  GridElem &get_grid_element() override final;
 
   /**
    * Return a const-reference to the GridElement.
    */
-  const GridElem &get_grid_element() const override final
-  {
-    return *grid_elem_;
-  }
+  const GridElem &get_grid_element() const override final;
 
-  virtual void operator++() override
-  {
-    ++(*grid_elem_);
-  }
+  virtual void operator++() override;
 
   /**
    * Move the element to the one specified by <tt>elem_id</tt>.
    *
    * @warning Use this function only if you know what you are doing
    */
-  virtual void move_to(const IndexType &elem_id) override final
-  {
-    grid_elem_->move_to(elem_id);
-  }
+  virtual void move_to(const IndexType &elem_id) override final;
 
 
   virtual void print_info(LogStream &out) const override final;

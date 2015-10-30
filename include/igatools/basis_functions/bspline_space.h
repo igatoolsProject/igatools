@@ -348,10 +348,7 @@ protected:
   ///@}
 
 public:
-  virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final
-  {
-    return space_data_.get_ptr_const_data()->get_grid();
-  }
+  virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final;
 
 
   virtual const DegreeTable &get_degree_table() const override final;

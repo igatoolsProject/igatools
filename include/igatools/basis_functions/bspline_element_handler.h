@@ -131,16 +131,7 @@ public:
 
 
   virtual void set_flags_impl(const topology_variant &topology,
-                              const typename space_element::Flags &flag) override final
-  {
-    auto elem_flags = flag;
-    if (contains(flag,space_element::Flags::divergence))
-      elem_flags |= space_element::Flags::gradient;
-
-
-    auto set_flag_dispatcher = SetFlagDispatcher(elem_flags,this->grid_handler_,this->flags_);
-    boost::apply_visitor(set_flag_dispatcher,topology);
-  }
+                              const typename space_element::Flags &flag) override final;
 
 private:
   struct SetFlagDispatcher : boost::static_visitor<void>
@@ -169,15 +160,8 @@ public:
   using BSplineElem = BSplineElement<dim_,range_,rank_>;
 
   virtual void init_cache_impl(BaseElem &elem,
-                               const eval_pts_variant &quad) const override final
-  {
-    auto init_cache_dispatcher =
-      InitCacheDispatcher(
-        this->grid_handler_,
-        this->flags_,
-        dynamic_cast<BSplineElem &>(elem));
-    boost::apply_visitor(init_cache_dispatcher,quad);
-  }
+                               const eval_pts_variant &quad) const override final;
+
 private:
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
@@ -209,15 +193,7 @@ private:
 public:
   virtual void fill_cache_impl(const topology_variant &topology,
                                BaseElem &elem,
-                               const int s_id) const override final
-  {
-    auto fill_cache_dispatcher =
-      FillCacheDispatcherNoGlobalCache(
-        s_id,
-        this->grid_handler_,
-        dynamic_cast<BSplineElem &>(elem));
-    boost::apply_visitor(fill_cache_dispatcher,topology);
-  }
+                               const int s_id) const override final;
 
 private:
   struct FillCacheDispatcherNoGlobalCache : boost::static_visitor<void>

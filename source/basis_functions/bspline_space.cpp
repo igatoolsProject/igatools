@@ -424,6 +424,13 @@ get_sub_bspline_space(const int s_id,
 
 
 
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_grid() const -> std::shared_ptr<const Grid<dim_>>
+{
+  return space_data_->get_grid();
+}
 
 
 

@@ -159,7 +159,7 @@ InitCacheDispatcher(const self_t &nrb_handler,
                     SpaceElement<dim_,0,range_,rank_> &elem)
   :
   nrb_handler_(nrb_handler),
-  elem_(elem)
+  nrb_elem_(dynamic_cast<NURBSElement<dim_,range_,rank_> &>(elem))
 {}
 
 
@@ -171,7 +171,7 @@ FillCacheDispatcher(const self_t &nrb_handler,
                     const int s_id)
   :
   nrb_handler_(nrb_handler),
-  elem_(elem),
+  nrb_elem_(dynamic_cast<NURBSElement<dim_,range_,rank_> &>(elem)),
   s_id_(s_id)
 {}
 

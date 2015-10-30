@@ -114,29 +114,16 @@ public:
   }
 
   void init_element_cache(ElementAccessor &elem,
-                          std::shared_ptr<const Quadrature<dim>> quad) const
-  {
-    init_cache<dim>(elem, quad);
-  }
+                          std::shared_ptr<const Quadrature<dim>> quad) const;
 
   void init_element_cache(ElementIterator &elem,
-                          std::shared_ptr<const Quadrature<dim>> quad) const
-  {
-    init_element_cache(*elem, quad);
-  }
+                          std::shared_ptr<const Quadrature<dim>> quad) const;
 
   void init_face_cache(ElementAccessor &elem,
-                       std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
-  {
-    Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-    init_cache<(dim > 0) ? dim-1 : 0>(elem, quad);
-  }
+                       std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const;
 
   void init_face_cache(ElementIterator &elem,
-                       std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
-  {
-    init_face_cache(*elem, quad);
-  }
+                       std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const;
 
   virtual void fill_cache_impl(const topology_variant &topology,
                                ElementAccessor &elem,

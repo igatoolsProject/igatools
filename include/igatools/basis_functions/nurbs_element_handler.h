@@ -195,22 +195,20 @@ private:
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     {
-      using NURBSElem = NURBSElement<dim_,range_,rank_>;
-      auto &nrb_elem = dynamic_cast<NURBSElem &>(elem_);
+//      using NURBSElem = NURBSElement<dim_,range_,rank_>;
+//      auto &nrb_elem = dynamic_cast<NURBSElem &>(elem_);
 
-      auto &bsp_elem = nrb_elem.bspline_elem_;
+      auto &bsp_elem = nrb_elem_.bspline_elem_;
       nrb_handler_.bsp_elem_handler_->template init_cache<sdim>(bsp_elem,quad);
 
-      auto &w_func_elem = *(nrb_elem.weight_elem_);
+      auto &w_func_elem = *(nrb_elem_.weight_elem_);
       nrb_handler_.w_func_elem_handler_->init_cache(w_func_elem,quad);
 
+      auto &cache = nrb_handler_.get_element_cache(nrb_elem_);
 
+      const auto n_basis = nrb_elem_.get_num_basis(DofProperties::active);
 
-      auto &cache = nrb_handler_.get_element_cache(elem_);
-
-      const auto n_basis = elem_.get_num_basis(DofProperties::active);
-
-      Assert(quad == elem_.get_grid_element().template get_quad<sdim>(),
+      Assert(quad == nrb_elem_.get_grid_element().template get_quad<sdim>(),
              ExcMessage("Different quadratures."));
       const auto n_pts = quad->get_num_points();
 
@@ -226,7 +224,7 @@ private:
 
   private:
     const self_t &nrb_handler_;
-    SpaceElement<dim_,0,range_,rank_> &elem_;
+    NURBSElement<dim_,range_,rank_> &nrb_elem_;
   };
 
 
@@ -239,19 +237,17 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &topology)
     {
+//      static_assert(sdim == dim,"The case with sdim != dim is not implemented!");
       Assert(sdim == dim,ExcNotImplemented());
 
-      using NURBSElem = NURBSElement<dim_,range_,rank_>;
-      auto &nrb_elem = dynamic_cast<NURBSElem &>(elem_);
-
-      auto &bsp_elem = nrb_elem.bspline_elem_;
+      auto &bsp_elem = nrb_elem_.bspline_elem_;
       nrb_handler_.bsp_elem_handler_->template fill_cache<sdim>(bsp_elem,s_id_);
 
-      auto &w_func_elem = *(nrb_elem.weight_elem_);
+      auto &w_func_elem = *(nrb_elem_.weight_elem_);
       nrb_handler_.w_func_elem_handler_->fill_cache(topology,w_func_elem,s_id_);
 
       auto &cache =
-        nrb_handler_.get_element_cache(nrb_elem).template get_sub_elem_cache<sdim>(s_id_);
+        nrb_handler_.get_element_cache(nrb_elem_).template get_sub_elem_cache<sdim>(s_id_);
 
       using space_element::_Value;
       using space_element::_Gradient;
@@ -310,7 +306,7 @@ private:
 
   private:
     const self_t &nrb_handler_;
-    SpaceElement<dim_,0,range_,rank_> &elem_;
+    NURBSElement<dim_,range_,rank_> &nrb_elem_;
     const int s_id_;
 
 

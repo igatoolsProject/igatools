@@ -140,22 +140,14 @@ public:
 
   /** @name Functions/operators for moving the element in the NURBSSpace.*/
   ///@{
-  virtual void operator++() override final
-  {
-    ++bspline_elem_;
-    ++(*weight_elem_);
-  }
+  virtual void operator++() override final;
 
   /**
    * Move the element to the one specified by <tt>elem_id</tt>.
    *
    * @warning Use this function only if you know what you are doing
    */
-  virtual void move_to(const IndexType &elem_id) override final
-  {
-    bspline_elem_.move_to(elem_id);
-    weight_elem_->move_to(elem_id);;
-  }
+  virtual void move_to(const IndexType &elem_id) override final;
   ///@}
 
   /**
@@ -181,18 +173,12 @@ public:
   /**
    * Return a reference to the GridElement.
    */
-  GridElem &get_grid_element() override final
-  {
-    return bspline_elem_.get_grid_element();
-  }
+  GridElem &get_grid_element() override final;
 
   /**
    * Return a const-reference to the GridElement.
    */
-  const GridElem &get_grid_element() const override final
-  {
-    return bspline_elem_.get_grid_element();
-  }
+  const GridElem &get_grid_element() const override final;
 
 
 
