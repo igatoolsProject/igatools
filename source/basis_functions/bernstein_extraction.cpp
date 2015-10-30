@@ -208,7 +208,7 @@ BernsteinExtraction<dim, range, rank>::
 BernsteinExtraction(const Space &space_data,
                     const EndBehaviourTable &end_b)
   :
-  BernsteinExtraction(*space_data.get_ptr_const_grid(),
+  BernsteinExtraction(*space_data.get_grid(),
                      space_data.compute_knots_with_repetition(end_b),
                      space_data.accumulated_interior_multiplicities(),
                      space_data.get_degree_table())

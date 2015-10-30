@@ -61,7 +61,7 @@ projection_l2(const Function<Space::dim,Space::codim,Space::range,Space::rank> &
   auto rhs = EpetraTools::create_vector(matrix->RangeMap());
   auto sol = EpetraTools::create_vector(matrix->DomainMap());
 
-  const auto space_grid = space->get_ptr_const_grid();
+  const auto space_grid = space->get_grid();
   const auto func_grid = function.get_domain()->get_grid_function()->get_grid();
 
 
@@ -243,7 +243,7 @@ projection_l2_ig_grid_function(
   auto rhs = EpetraTools::create_vector(matrix->RangeMap());
   auto sol = EpetraTools::create_vector(matrix->DomainMap());
 
-  const auto space_grid = ref_space.get_ptr_const_grid();
+  const auto space_grid = ref_space.get_grid();
   const auto func_grid = ig_grid_function.get_grid();
 
 
@@ -447,7 +447,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
   using SubFunc = SubFunction<sub_dim, dim, codim, range, rank>;
 
 
-  const auto grid = space->get_ptr_const_grid();
+  const auto grid = space->get_grid();
 
   std::set<int> sub_elems;
   auto bdry_begin = boundary_ids.begin();
@@ -464,7 +464,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
     using  InterGridMap = std::map<Index,Index>;
     InterGridMap elem_map;
 
-    auto grid = space->get_ptr_const_grid();
+    auto grid = space->get_grid();
     auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, elem_map);
 
     InterSpaceMap  dof_map;
@@ -495,7 +495,7 @@ get_boundary_dofs(std::shared_ptr<const Space> space,
   std::set<Index> dofs;
   const int sub_dim = dim - 1;
 
-  auto grid = space->get_ptr_const_grid();
+  auto grid = space->get_grid();
 
   std::set<int> sub_elems;
   auto bdry_begin = boundary_ids.begin();

@@ -110,7 +110,7 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
 template<int dim>
 void PoissonProblem<dim>::assemble()
 {
-  auto grid = space->get_ptr_const_grid();
+  auto grid = space->get_grid();
 
   using Function = Function<dim,0,1,1>;
   using ConstFunction = ConstantFunction<dim,0,1,1>;

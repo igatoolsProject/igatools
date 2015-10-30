@@ -46,7 +46,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
   for (auto i : UnitElement<dim>::template elems_ids<sub_dim>())
   {
     typename Grid<dim>::template SubGridMap<sub_dim> elem_map;
-//    auto sub_grid = space->get_ptr_const_grid()->template get_sub_grid<sub_dim>(i, elem_map);
+//    auto sub_grid = space->get_grid()->template get_sub_grid<sub_dim>(i, elem_map);
     out.begin_item(to_string(i) + "-th " + "sub space:");
     auto sub_space =
       space->template get_sub_space<sub_dim>(i, dof_map, elem_map);

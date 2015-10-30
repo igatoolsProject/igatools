@@ -98,7 +98,7 @@ cbegin(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
            this->create_element(
-             this->get_ptr_const_grid()->get_elements_with_property(prop).begin(),prop));
+             this->get_grid()->get_elements_with_property(prop).begin(),prop));
 }
 
 
@@ -110,7 +110,7 @@ cend(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
            this->create_element(
-             this->get_ptr_const_grid()->get_elements_with_property(prop).end(),prop));
+             this->get_grid()->get_elements_with_property(prop).end(),prop));
 }
 
 

@@ -262,7 +262,7 @@ public:
   void print_info(LogStream &out) const;
 
   std::shared_ptr<Grid<dim> > get_ptr_grid();
-  std::shared_ptr<const Grid<dim> > get_ptr_const_grid() const;
+  std::shared_ptr<const Grid<dim> > get_grid() const;
 
 
   const ComponentContainer<SafeSTLVector<TensorIndex<dim> > > &

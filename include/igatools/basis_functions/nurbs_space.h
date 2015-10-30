@@ -231,9 +231,9 @@ public:
   }
 #endif
 
-  virtual std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const override final
+  virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final
   {
-    return bsp_space_.get_ptr_const_data()->get_ptr_const_grid();
+    return bsp_space_.get_ptr_const_data()->get_grid();
   }
 
 

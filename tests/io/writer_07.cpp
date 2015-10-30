@@ -58,8 +58,8 @@ create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
 
 
 template<int dim,int codim,int range>
-std::shared_ptr<const PhysicalSpace<dim,range,1,codim>>
-                                                     create_phys_space(const shared_ptr<const Domain<dim,codim>> &domain)
+std::shared_ptr<const PhysicalSpace<dim,range,1,codim> >
+create_phys_space(const shared_ptr<const Domain<dim,codim>> &domain)
 {
   const int deg = 2;
 
@@ -74,8 +74,8 @@ std::shared_ptr<const PhysicalSpace<dim,range,1,codim>>
 
 
 template<int dim,int codim,int range>
-std::shared_ptr<const IgFunction<dim,codim,range,1>>
-                                                  create_ig_function(const shared_ptr<const Domain<dim,codim>> &domain)
+std::shared_ptr<const Function<dim,codim,range,1> >
+create_ig_function(const shared_ptr<const Domain<dim,codim>> &domain)
 {
   auto phys_space = create_phys_space<dim,codim,range>(domain);
 

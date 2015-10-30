@@ -218,9 +218,9 @@ public:
   }
 #endif
 
-  virtual std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const override final
+  virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final
   {
-    return ref_space_.get_ptr_const_data()->get_ptr_const_grid();
+    return ref_space_.get_ptr_const_data()->get_grid();
   }
 
   Transformation get_transformation_type() const;

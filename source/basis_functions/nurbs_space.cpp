@@ -49,7 +49,7 @@ NURBSSpace(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
   weight_func_(weight_func)
 {
 #ifndef NDEBUG
-  Assert(this->get_ptr_const_grid() == weight_func_->get_grid(),ExcMessage("Mismatching grids."));
+  Assert(this->get_grid() == weight_func_->get_grid(),ExcMessage("Mismatching grids."));
 
   const auto w_as_ig_func =
     std::dynamic_pointer_cast<const IgGridFunction<dim,1>>(weight_func_.get_ptr_const_data());
@@ -370,7 +370,7 @@ get_sub_nurbs_space(const int s_id,
   "The dimensionality of the sub_grid is not valid.");
 
   auto sub_bsp_space = bsp_space_->template get_sub_bspline_space<sdim>(s_id,dof_map,sub_grid);
-  auto space_sub_grid = sub_bsp_space->get_ptr_const_grid();
+  auto space_sub_grid = sub_bsp_space->get_grid();
 
   auto sub_w_func = weight_func_->template get_sub_function<sdim>(s_id,space_sub_grid);
 

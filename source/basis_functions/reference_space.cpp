@@ -101,7 +101,7 @@ get_sub_space(const int s_id,
     A[i++][active_dir] = 1.0;
 
 
-  const auto grid = this->get_ptr_const_grid();
+  const auto grid = this->get_grid();
 
   i = 0;
   for (const int constant_dir : constant_dirs)
@@ -117,7 +117,7 @@ get_sub_space(const int s_id,
 
   auto sub_ref_space = this->template get_ref_sub_space<k>(s_id,dof_map,nullptr);
 
-  auto sub_grid = sub_ref_space->get_ptr_const_grid();
+  auto sub_grid = sub_ref_space->get_grid();
 
   auto sub_grid_func = SubGridFunc::const_create(sub_grid,A,b);
 
@@ -168,7 +168,7 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
               std::placeholders::_2);
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  std::const_pointer_cast<Grid<dim>>(this->get_ptr_const_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
+  std::const_pointer_cast<Grid<dim>>(this->get_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
 }
 
 #endif // MESH_REFINEMENT

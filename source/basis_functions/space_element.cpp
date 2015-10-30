@@ -37,7 +37,7 @@ SpaceElement(const std::shared_ptr<Sp> space,
   Element(prop),
   space_(space)
 {
-//  grid_elem_ = space_->get_ptr_const_grid()->create_element(index,prop);
+//  grid_elem_ = space_->get_grid()->create_element(index,prop);
 }
 
 

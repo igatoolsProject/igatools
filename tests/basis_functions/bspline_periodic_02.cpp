@@ -59,7 +59,7 @@ void assemble_matrix(const int n_knots, const int deg)
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto space = Space::const_create(deg, grid, InteriorReg::maximum, true,
-                             BasisEndBehaviour::periodic);
+                                   BasisEndBehaviour::periodic);
   Gradient A;
   Value b;
   for (int j = 0; j < range; ++j)
@@ -144,7 +144,7 @@ void assemble_matrix(const int n_knots, const int deg)
 
 
   const int n_plot_points = deg+1;
-  auto map1 = IdentityFunction<dim>::const_create(space->get_ptr_const_grid());
+  auto map1 = IdentityFunction<dim>::const_create(space->get_grid());
   Writer<dim> writer(map1, n_plot_points);
 
   using IgFunc = IgFunction<dim,0,range,1>;

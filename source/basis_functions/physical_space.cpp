@@ -51,7 +51,7 @@ PhysicalSpace(const SharedPtrConstnessHandler<RefSpace> &ref_space,
   phys_domain_(phys_domain),
   transformation_type_(transformation_type)
 {
-  Assert(this->get_ptr_const_grid() == phys_domain_->get_grid_function()->get_grid(),
+  Assert(this->get_grid() == phys_domain_->get_grid_function()->get_grid(),
          ExcMessage("The space and the physical domain must have the same grid!"));
 
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
@@ -332,7 +332,7 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
               std::placeholders::_2);
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  std::const_pointer_cast<Grid<dim>>(ref_space_->get_ptr_const_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
+  std::const_pointer_cast<Grid<dim>>(ref_space_->get_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
 }
 
 #endif

@@ -279,7 +279,7 @@ BSplineElement(const std::shared_ptr<ContainerType> space,
                const PropId &prop)
   :
   parent_t(space,index,prop),
-  grid_elem_(space->get_ptr_const_grid()->create_element(index,prop))
+  grid_elem_(space->get_grid()->create_element(index,prop))
 {}
 
 

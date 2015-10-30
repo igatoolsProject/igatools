@@ -33,8 +33,8 @@ IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
   :
   parent_t(
    space.data_is_const() ?
-   SharedPtrConstnessHandler<GridType>(space->get_ptr_const_grid()) :
-   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(space->get_ptr_const_grid()))),
+   SharedPtrConstnessHandler<GridType>(space->get_grid()) :
+   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(space->get_grid()))),
   ig_space_(space)
 {
   const auto &dof_distribution = *(ig_space_->get_ptr_const_dof_distribution());
@@ -59,8 +59,8 @@ IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
   :
   parent_t(
    space.data_is_const() ?
-   SharedPtrConstnessHandler<GridType>(space->get_ptr_const_grid()) :
-   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(space->get_ptr_const_grid()))),
+   SharedPtrConstnessHandler<GridType>(space->get_grid()) :
+   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(space->get_grid()))),
   ig_space_(space)
 {
 #ifndef NDEBUG

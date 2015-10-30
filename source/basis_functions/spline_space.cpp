@@ -199,7 +199,7 @@ get_ptr_grid()
 template<int dim, int range, int rank>
 std::shared_ptr<const Grid<dim> >
 SplineSpace<dim, range, rank>::
-get_ptr_const_grid() const
+get_grid() const
 {
   return grid_.get_ptr_const_data();
 }

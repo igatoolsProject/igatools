@@ -18,7 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the physical space element iterator
+ *  Test for the refinement of a physical space
+ 8 in which the function mapping is an IgGridFunction
  *
  *  author: pauletti
  *  date: 2013-10-02
@@ -32,7 +33,7 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 
 /*
 template <int dim>
@@ -72,12 +73,10 @@ void test_evaluate()
     weights_coef[i++] = 1.0;
   }
 
-  using WeightFunc = IgFunction<dim,0,1,1>;
+  using WeightFunc = IgGridFunction<dim,1>;
   auto w_func = WeightFunc::create(scalar_bsp_space,weights_coef);
 
-  using RefSpace = ReferenceSpace<dim,dim>;
-  using RefSpacePtr = std::shared_ptr<RefSpace>;
-  RefSpacePtr ref_space = NURBSSpace<dim,dim>::create(bsp_space,w_func);
+  auto ref_space = NURBSSpace<dim,dim>::create(bsp_space,w_func);
 
   IgCoefficients control_pts;
   if (dim == 1)
@@ -143,11 +142,10 @@ void test_evaluate()
     AssertThrow(false,ExcNotImplemented());
   }
 
-  std::shared_ptr<Function<dim,0,dim,1>> func_mapping =
-                                        IgFunction<dim,0,dim,1>::create(ref_space,control_pts);
+  auto func_mapping = IgGridFunction<dim,dim>::create(ref_space,control_pts);
 
   auto phys_space =
-    PhysicalSpace<dim,dim,1,0,Transformation::h_grad>::create(ref_space,func_mapping);
+    PhysicalSpace<dim,dim,1,0>::create(ref_space,Domain<dim,0>::create(func_mapping));
 
 
 

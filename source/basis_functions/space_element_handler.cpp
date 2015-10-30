@@ -56,7 +56,7 @@ SpaceElementHandler<dim,codim,range,rank>::
 reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 {
   const std::set<int> elems_id =
-    space_->get_ptr_const_grid()->get_elements_id();
+    space_->get_grid()->get_elements_id();
 
   this->reset_selected_elements(
     flag,

@@ -29,7 +29,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/io/reader.h>
 
@@ -39,7 +39,7 @@ void run_test(std::string &file_name)
   OUTSTART
 
   // Reading input file.
-  auto map = dynamic_pointer_cast<IgFunction<dim,0,dim,1> >(get_mapping_from_file<dim,0>(file_name));
+  auto map = dynamic_pointer_cast<IgGridFunction<dim,dim> >(get_mapping_from_file<dim,0>(file_name));
 //    auto map = get_mapping_from_file<dim,0>(file_name);
   out.begin_item("IgFunction infos:");
   map->print_info(out);

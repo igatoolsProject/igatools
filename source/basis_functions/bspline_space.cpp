@@ -162,7 +162,7 @@ BSplineSpace(const SharedPtrConstnessHandler<SpaceData> &space_data,
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
 
   const auto &sp_data = *this->space_data_;
-  const auto &grid = *sp_data.get_ptr_const_grid();
+  const auto &grid = *sp_data.get_grid();
   const auto &degree_table = sp_data.get_degree_table();
   const auto rep_knots = sp_data.compute_knots_with_repetition(end_b_);
 
@@ -348,7 +348,7 @@ get_sub_bspline_space(const int s_id,
   {
 #ifndef NDEBUG
     typename Grid<dim_>::template SubGridMap<sdim> elem_map;
-    sub_grid = this->get_ptr_const_grid()->template get_sub_grid<sdim>(s_id, elem_map);
+    sub_grid = this->get_grid()->template get_sub_grid<sdim>(s_id, elem_map);
     Assert(*sub_grid_in == *sub_grid,ExcMessage("Invalid input grid."));
 #endif
     sub_grid = sub_grid_in;
@@ -356,7 +356,7 @@ get_sub_bspline_space(const int s_id,
   else
   {
     typename Grid<dim_>::template SubGridMap<sdim> elem_map;
-    sub_grid = this->get_ptr_const_grid()->template get_sub_grid<sdim>(s_id, elem_map);
+    sub_grid = this->get_grid()->template get_sub_grid<sdim>(s_id, elem_map);
   }
 
   auto sub_mult   = this->space_data_->template get_sub_space_mult<sdim>(s_id);
@@ -449,7 +449,7 @@ get_element_dofs(
   dofs_local_to_patch.clear();
   dofs_local_to_elem.clear();
 
-//    const auto &elem_tensor_id = this->get_ptr_const_grid()->flat_to_tensor(element_id);
+//    const auto &elem_tensor_id = this->get_grid()->flat_to_tensor(element_id);
 
   Index dof_loc_to_elem = 0;
   for (const auto comp : SpaceData::components)
