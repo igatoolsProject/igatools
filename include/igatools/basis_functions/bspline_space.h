@@ -348,12 +348,6 @@ protected:
   ///@}
 
 public:
-#if 0
-  virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const override final
-  {
-    return space_data_.get_ptr_data()->get_ptr_grid();
-  }
-#endif
   virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final
   {
     return space_data_.get_ptr_const_data()->get_grid();

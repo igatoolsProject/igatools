@@ -188,13 +188,6 @@ init()
 }
 
 
-template<int dim, int range, int rank>
-std::shared_ptr<Grid<dim> >
-SplineSpace<dim, range, rank>::
-get_ptr_grid()
-{
-  return grid_.get_ptr_data();
-}
 
 template<int dim, int range, int rank>
 std::shared_ptr<const Grid<dim> >

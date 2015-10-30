@@ -224,12 +224,6 @@ public:
   ///@}
 
   const std::shared_ptr<const BSpSpace> get_spline_space() const;
-#if 0
-  virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const override final
-  {
-    return bsp_space_.get_ptr_data()->get_ptr_grid();
-  }
-#endif
 
   virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final
   {

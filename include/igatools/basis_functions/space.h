@@ -115,8 +115,6 @@ public:
   Index get_object_id() const;
 
 
-//  virtual std::shared_ptr<Grid<dim_>> get_ptr_grid() const = 0;
-
   virtual std::shared_ptr<const Grid<dim_>> get_grid() const = 0;
 
   /**
