@@ -450,7 +450,7 @@ public:
 
 #ifdef SERIALIZATION
     /**
-     * @name Functions needed for boost::serialization
+     * @name Functions needed for the serialization
      * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
      */
     ///@{
@@ -473,9 +473,10 @@ public:
   };
 
 
-  std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
 
 #ifdef MESH_REFINEMENT
+  std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
+
   /**
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
    *
