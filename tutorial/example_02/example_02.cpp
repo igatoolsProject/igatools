@@ -23,18 +23,18 @@
  * and accessing information that do not require the use of cache
  */
 // [old_includes]
-#include <igatools/geometry/grid.h>
 #include <igatools/basis_functions/bspline_space.h>
 // [old_includes]
 // [acc_includes]
-#include <igatools/geometry/grid_element.h <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_element.h>
 // [acc_includes]
-#include <igatools/base/logstream.h>
 
 using namespace iga;
 using namespace std;
 
+// [logstream]
 LogStream out;
+// [logstream]
 
 // [templated_function]
 template <int dim>
@@ -42,16 +42,19 @@ void loop_on_grid()
 {
 // [templated_function]
   // [create_grid]
-  out << "Traversing the elements of a " << dim;
-  out << "-dimensional grid." << endl;
+  out << "Traversing the elements of a "
+		  + to_string(dim) + "-dimensional grid." << endl;
   const int n_knots = 3;
   auto grid = Grid<dim>::create(n_knots);
   // [create_grid]
   // [iter_grid]
-  for (auto elem : *grid)
+  int elem_id = 0;
+  for (const auto &elem : *grid)
   {
-    out << "The tensor index of element: " << elem.get_flat_index();
-    out << " is: "<< elem.get_tensor_index() << endl;
+    out << "The tensor index of element: " << elem_id;
+    out << " is: "<< elem.get_index() << endl;
+
+    ++elem_id;
   }
   // [iter_grid]
   out << endl;
@@ -61,16 +64,17 @@ void loop_on_grid()
 template <int dim>
 void loop_on_space()
 {
-  out << "Traversing the elements of a " << dim;
-  out << "-dimensional B-spline space." << endl;
+  out << "Traversing the elements of a "
+		  + to_string(dim) + "-dimensional B-spline space." << endl;
   const int n_knots = 3;
   auto grid = Grid<dim>::create(n_knots);
   const int degree = 2;
-  auto space = BSplineSpace<dim>::create(degree, grid);
+  auto space = SplineSpace<dim>::create(degree, grid);
+  auto basis = BSplineSpace<dim>::create(space);
 
-  for (auto elem : *space)
+  for (const auto &elem : *basis)
   {
-    out << "Element: " << elem.get_flat_index();
+    out << "Element: " << elem.get_index();
     out << " has global basis: ";
     elem.get_local_to_global(DofProperties::active).print_info(out);
     out << endl;

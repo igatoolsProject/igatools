@@ -28,13 +28,13 @@ Number of basis functions: 16
 and a .vtu file that is saved in the current directory
 \code{.bash}
 $ ls *.vtu
-grid.vtu
+grid_2D.vtu
 \endcode
 
 The grid is saved in a VTK format and can be
 visualized using paraview as follows:
 \code{.bash}
-paraview --data=grid.vtu
+paraview --data=grid_2D.vtu
 \endcode
 \image html example_01-01.png "Cartesian Grid" 
 
@@ -59,8 +59,8 @@ our problem (in this case the dimensionality is 2)
 
 Then we create a uniformly distributed bi-dimensional knot vector with 3 knots
 in each direction for the unit square.
-Notice the strange \<dim\> notation that appears everywhere, it is part
-of the template programming the library uses to be dimension independent
+Notice the strange <tt>\<dim\><tt> notation that appears everywhere: it is part
+of the template programming syntax the library uses to be dimension independent
 \snippet example_01.cpp grid
 
 The next two lines plot the grid geometry in a file 
