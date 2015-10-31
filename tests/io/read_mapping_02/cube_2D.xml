@@ -2,14 +2,14 @@
 <Igatools FormatVersion="2.0">
   <IgMapping Dim="2" Codim="0" RefSpaceType="NURBSSpace">
     <NURBSSpace Dim="2" Range="2" Rank="1">
-      <CartesianGrid Dim="2">
+      <Grid Dim="2">
         <Knots Direction="0" Size="3">
           0.000000 0.500000 1.000000
         </Knots>
         <Knots Direction="1" Size="2">
           0.000000 1.000000
         </Knots>
-      </CartesianGrid>
+      </Grid>
       <NURBSSpaceScalarComponents Size="2">
         <ComponentsMap Size="2">
           0 1

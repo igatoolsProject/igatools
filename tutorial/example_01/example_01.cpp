@@ -19,7 +19,6 @@
 //-+--------------------------------------------------------------------
 
 // [includes]
-#include <igatools/geometry/grid.h>
 #include <igatools/basis_functions/bspline_space.h>
 // [includes]
 // [include_writer]
@@ -29,11 +28,13 @@
 // [using]
 using namespace iga;
 using namespace std;
-// [[using]
+// [using]
 
 int main()
 {
+  // [dim]
   const int dim = 2;
+  // [dim]
 
   // [grid]
   const int n_knots = 3;
@@ -45,16 +46,21 @@ int main()
 
   // [plot_grid]
   Writer<dim> output(grid);
-  output.save("grid");
+  output.save("grid_2D");
   // [plot_grid]
 
   // [space]
   const int degree = 2;
   cout << "Creating a spline space of degree " << degree << endl;
-  auto space = BSplineSpace<dim>::create(degree, grid);
-  cout << "Number of basis functions: ";
-  cout << space->get_num_basis() << endl;
+  auto space = SplineSpace<dim>::create(degree, grid);
   // [space]
+
+  // [basis]
+  cout << "Creating the basis for the spline space" << endl;
+  auto basis = BSplineSpace<dim>::create(space);
+  cout << "Number of basis functions: ";
+  cout << basis->get_num_basis() << endl;
+  // [basis]
 
   return 0;
 }

@@ -2,7 +2,7 @@
 <Igatools FormatVersion="2.0">
   <IgMapping Dim="3" Codim="0" RefSpaceType="BSplineSpace">
     <BSplineSpace Dim="3" Range="3" Rank="1">
-      <CartesianGrid Dim="3">
+      <Grid Dim="3">
         <Knots Direction="0" Size="3">
           0.000000 0.500000 1.000000
         </Knots>
@@ -12,7 +12,7 @@
         <Knots Direction="2" Size="2">
           0.000000 1.000000
         </Knots>
-      </CartesianGrid>
+      </Grid>
       <BSplineSpaceScalarComponents Size="1">
         <ComponentsMap Size="3">
           0 0 0

@@ -3,7 +3,7 @@
 \page example_02 Example 2: traversing elements of a grid-like container
 
 \section Introduction
-In igatools we access information on a CartesianGrid or a BSplineSpace
+In igatools we access information on a Grid or a BSplineSpace
 at the element level, using iterators.
 This example shows how we loop and access information on elements of grid like 
 containers.
@@ -27,7 +27,7 @@ We are going to create a cartesian grid and B-spline space so we need
 the includes of example_01
 \snippet example_02.cpp old_includes
 
-To loop or iterate on the containers (CartesianGrid and BSplineSpace) we 
+To loop or iterate on the containers (Grid and BSplineSpace) we 
 also need to include the element accessors. 
 \snippet example_02.cpp acc_includes
 
@@ -39,14 +39,14 @@ This function creates a grid as in example_01
 \snippet example_02.cpp create_grid
 and iterates (traverse) the elementes of the grid
 \snippet example_02.cpp iter_grid
-elem is a ElementIterator to a CartesianGrid container. The iterator can be
+elem is a ElementIterator to a Grid container. The iterator can be
 asked for information concerning the element currently pointed to.
 
 \section Exercise 
 <ol>
 <li> Modify the functions so that the degree and number of knots
 are passed as arguments, and test it with different grids, degrees, etc.
-<li> Check the documentation of CartesianGridElementAccessor and
+<li> Check the documentation of GridElementAccessor and
 BSplineElementAccessor for other information (without use of cache)
 you can ask the element iterator for.
 <div class="row">
