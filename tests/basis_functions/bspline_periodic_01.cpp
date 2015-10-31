@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for periodic BSplineSpace constructors
+ *  Test for periodic BSpline constructors
  *
  *  author: pauletti
  *  date: 2014-10-23
@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/identity_function.h>
@@ -39,7 +39,7 @@
 template <int dim, int range=1>
 void plot_basis(const int n_knots, const int deg)
 {
-  using Space  = BSplineSpace<dim, range>;
+  using Space  = BSpline<dim, range>;
 
   TensorIndex<dim> deg1(deg);
   typename Space::DegreeTable degt(deg1);

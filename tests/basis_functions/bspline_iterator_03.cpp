@@ -27,7 +27,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/linear_algebra/epetra_vector.h>
 #include <igatools/linear_algebra/dof_tools.h>
@@ -42,7 +42,7 @@ void evaluate_field(const int deg = 1)
   auto grid = Grid<dim>::create();
   auto space = SplineSpace<dim, range, rank>::const_create(deg, grid);
 
-  using Basis = BSplineSpace<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
   auto basis = Basis::const_create(space);
 
   const auto  num = space->get_num_basis();

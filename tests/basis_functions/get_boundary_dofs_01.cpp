@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/space_tools.h>
 
 using space_tools::get_boundary_dofs;
@@ -38,7 +38,7 @@ void get_bdry_dof(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
   using RefSpace = ReferenceSpace<dim, range, rank>;
-  using Basis = BSplineSpace<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
   auto grid = Grid<dim>::create(n_knots);
   grid->set_boundary_id(0,1);
 

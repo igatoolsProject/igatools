@@ -30,7 +30,7 @@
 
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_space_element.h>
 //#include <igatools/basis_functions/space_uniform_quad_cache.h>
 #include <igatools/base/quadrature_lib.h>
@@ -45,7 +45,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
   OUTSTART
 
   auto grid = Grid<dim>::create(n_knots);
-  using Space = BSplineSpace<dim>;
+  using Space = BSpline<dim>;
   auto ref_space = Space::create(SplineSpace<dim>::create(deg, grid)) ;
 
 //  using PhysSpace = PhysicalSpace<dim,1,1,0,Transformation::h_grad>;

@@ -31,7 +31,7 @@
 #include <igatools/geometry/domain.h>
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/function_element.h>
 
@@ -76,7 +76,7 @@ void ig_grid_function_bspline(const int deg = 1)
   OUTSTART
 
   const int sub_dim = dim;
-  using Space = BSplineSpace<dim, dim+codim>;
+  using Space = BSpline<dim, dim+codim>;
   using Function = IgGridFunction<dim,dim+codim>;
 
   auto grid = Grid<dim>::create(2);

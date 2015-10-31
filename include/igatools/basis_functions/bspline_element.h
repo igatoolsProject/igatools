@@ -30,7 +30,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, int range, int rank> class BSplineSpace;
+template <int dim, int range, int rank> class BSpline;
 template <int dim, int range, int rank> class BSplineElementHandler;
 template <class Accessor> class GridIterator;
 
@@ -49,10 +49,10 @@ private:
 public:
 
   /** Type required by the GridIterator templated iterator */
-  using ContainerType = const BSplineSpace<dim, range, rank> ;
+  using ContainerType = const BSpline<dim, range, rank> ;
 
   /** Type required for the generic algorithm on the spaces (plots??) */
-  using Space = BSplineSpace<dim, range, rank> ;
+  using Space = BSpline<dim, range, rank> ;
 
 
   using GridType = Grid<dim>;
@@ -88,7 +88,7 @@ public:
 
   /**
    * Constructs an accessor to element number index of a
-   * BsplineSpace space.
+   * BSpline space.
    */
   BSplineElement(const std::shared_ptr<ContainerType> space,
                  const ListIt &index,
@@ -128,7 +128,7 @@ public:
 
 
   /**
-   * Returns the BSplineSpace upon which the element is defined.
+   * Returns the BSpline upon which the element is defined.
    */
   std::shared_ptr<const Space> get_bspline_space() const;
 

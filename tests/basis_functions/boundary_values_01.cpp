@@ -34,7 +34,7 @@
 #include "common_functions.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 
@@ -47,7 +47,7 @@ void do_test(const int p, const int num_knots = 10)
 {
   const int sub_dim = dim - 1;
 
-  using BspSpace = BSplineSpace<dim,range,rank>;
+  using BspSpace = BSpline<dim,range,rank>;
   using Space = PhysicalSpace<dim,range,rank,codim>;
 
 

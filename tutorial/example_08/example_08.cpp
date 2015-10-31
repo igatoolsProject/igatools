@@ -20,7 +20,7 @@
 
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/identity_function.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_space.h>
 
 #include <igatools/io/writer.h>
@@ -32,7 +32,7 @@ using numbers::PI;
 template<int dim>
 void physical_space(const int deg)
 {
-  using RefSpace = BSplineSpace<dim>;
+  using RefSpace = BSpline<dim>;
   using Space    = PhysicalSpace<dim>;
 
   BBox<dim> box;

@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/ig_grid_function.h>
 
@@ -50,7 +50,7 @@ private:
   using self_t = NURBSSpace<dim_, range_, rank_>;
 
 public:
-  using BSpSpace = BSplineSpace<dim_, range_, rank_>;
+  using BSpSpace = BSpline<dim_, range_, rank_>;
 
 
   /** see documentation in \ref Space */
@@ -144,7 +144,7 @@ public:
   using EndBehaviourTable = typename BSpSpace::EndBehaviourTable;
 
 
-  using WeightSpace = BSplineSpace<dim_,1,1>;
+  using WeightSpace = BSpline<dim_,1,1>;
   using WeightFunction = IgGridFunction<dim_,1>;
   using WeightFunctionPtr = std::shared_ptr<WeightFunction>;
   using Weights = DynamicMultiArray<Real,dim>;
@@ -153,7 +153,7 @@ public:
 public:
   /**
    * Returns a shared_ptr wrapping a (non-const) NURBSSpace from a
-   * (non-const) BSplineSpace and a scalar weight function.
+   * (non-const) BSpline and a scalar weight function.
    */
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<BSpSpace> &bs_space,
@@ -161,7 +161,7 @@ public:
 
   /**
    * Returns a shared_ptr wrapping a (const) NURBSSpace from a
-   * (const) BSplineSpace and a scalar weight function.
+   * (const) BSpline and a scalar weight function.
    */
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const BSpSpace> &bs_space,
@@ -194,7 +194,7 @@ protected:
   NURBSSpace() = default;
 
   /**
-   * Construct a NURBSSpace from a BSplineSpace and a scalar weight function.
+   * Construct a NURBSSpace from a BSpline and a scalar weight function.
    */
   explicit NURBSSpace(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
                       const SharedPtrConstnessHandler<WeightFunction> &weight_func);

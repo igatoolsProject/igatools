@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Igatools FormatVersion="2.0">
-  <IgMapping Dim="3" Codim="0" RefSpaceType="BSplineSpace">
-    <BSplineSpace Dim="3" Range="3" Rank="1">
+  <IgMapping Dim="3" Codim="0" RefSpaceType="BSpline">
+    <BSpline Dim="3" Range="3" Rank="1">
       <Grid Dim="3">
         <Knots Direction="0" Size="3">
           0.000000 0.500000 1.000000
@@ -13,11 +13,11 @@
           0.000000 1.000000
         </Knots>
       </Grid>
-      <BSplineSpaceScalarComponents Size="1">
+      <BSplineScalarComponents Size="1">
         <ComponentsMap Size="3">
           0 0 0
         </ComponentsMap>
-        <BSplineSpaceScalarComponent Id="0">
+        <BSplineScalarComponent Id="0">
           <DofsTensorSize Dim="3">
             4 2 2
           </DofsTensorSize>
@@ -33,9 +33,9 @@
             <InteriorMultiplicity Direction="2"  Size="0">
             </InteriorMultiplicity>
           </InteriorMultiplicities>
-        </BSplineSpaceScalarComponent>
+        </BSplineScalarComponent>
 <!--
-        <BSplineSpaceScalarComponent Id="1">
+        <BSplineScalarComponent Id="1">
           <DofsTensorSize Dim="3">
             4 2 2
           </DofsTensorSize>
@@ -51,8 +51,8 @@
             <InteriorMultiplicity Direction="2"  Size="0">
             </InteriorMultiplicity>
           </InteriorMultiplicities>
-        </BSplineSpaceScalarComponent>
-        <BSplineSpaceScalarComponent Id="2">
+        </BSplineScalarComponent>
+        <BSplineScalarComponent Id="2">
           <DofsTensorSize Dim="3">
             4 2 2
           </DofsTensorSize>
@@ -68,10 +68,10 @@
             <InteriorMultiplicity Direction="2"  Size="0">
             </InteriorMultiplicity>
           </InteriorMultiplicities>
-        </BSplineSpaceScalarComponent>
+        </BSplineScalarComponent>
 -->
-      </BSplineSpaceScalarComponents>
-    </BSplineSpace>
+      </BSplineScalarComponents>
+    </BSpline>
     <ControlPoints Dim="1" Size="48">
       0.000000 0.250000 0.750000 1.000000 0.000000 0.250000 0.750000 1.000000 0.000000 0.250000 0.750000 1.000000 0.000000 0.250000 0.750000 1.000000
       0.000000 0.000000 0.000000 0.000000 1.000000 1.000000 1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 1.000000 1.000000 1.000000

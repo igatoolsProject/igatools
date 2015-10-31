@@ -42,7 +42,7 @@ paraview --data=grid_2D.vtu
 
 First we need to include the header file(s) (where the igatools classes
 we are going to use are declared).
-In this case we have one for the BSplineSpace
+In this case we have one for the BSpline
 class (the class that represents the basis functions of a SplineSpace)
 \snippet example_01.cpp includes
 and another one for the class responsible of saving output in graphical format.
@@ -50,7 +50,7 @@ and another one for the class responsible of saving output in graphical format.
 
 Then we make symbols of a main namespaces accessible 
 in the scope of the using directive so that we can write cout instead of std::cout
-and BSplineSpace instead of iga::BSplineSpace.
+and BSpline instead of iga::BSpline.
 \snippet example_01.cpp using
 
 As first instruction, we define an integer constant that represents the dimensionality of 
@@ -59,7 +59,7 @@ our problem (in this case the dimensionality is 2)
 
 Then we create a uniformly distributed bi-dimensional knot vector with 3 knots
 in each direction for the unit square.
-Notice the strange <tt>\<dim\><tt> notation that appears everywhere: it is part
+Notice the strange <tt>\<dim\></tt> notation that appears everywhere: it is part
 of the template programming syntax the library uses to be dimension independent
 \snippet example_01.cpp grid
 

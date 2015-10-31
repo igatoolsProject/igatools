@@ -52,7 +52,7 @@ typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
 get_weights_from_ref_space(const RefSpace &ref_space,
                            EnableIf<!RefSpace::has_weights> *hw = 0)
 {
-    //in the case of BSplineSpace do nothing (it should returns all weights equal to 1.0)
+    //in the case of BSpline do nothing (it should returns all weights equal to 1.0)
     typename NURBSSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>::WeightsTable
     weights(ref_space.get_components_map());
 
@@ -75,15 +75,15 @@ get_weights_from_ref_space(const RefSpace &ref_space,
 
 
 template<int dim, int range, int rank>
-const BSplineSpace<dim,range,rank> &
+const BSpline<dim,range,rank> &
 get_bspline_space(const NURBSSpace<dim,range,rank> &nurbs_space)
 {
     return *nurbs_space.get_spline_space();
 }
 
 template<int dim, int range, int rank>
-const BSplineSpace<dim,range,rank> &
-get_bspline_space(const BSplineSpace<dim,range,rank> &bspline_space)
+const BSpline<dim,range,rank> &
+get_bspline_space(const BSpline<dim,range,rank> &bspline_space)
 {
     return bspline_space;
 }
@@ -113,7 +113,7 @@ IgMapping(const std::shared_ptr<RefSpace> space,
 
     //----------------------------------
     // copy the control mesh before any refinement
-    using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    using bspline_space_t = BSpline<RefSpace::dim,RefSpace::range,RefSpace::rank>;
     const bspline_space_t &bspline_space = get_bspline_space(*space);
     const auto &num_basis_table = bspline_space.get_num_basis_table();
 
@@ -546,7 +546,7 @@ refine_h_control_mesh(
 
     auto ref_space = data_->ref_space_;
 
-    using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    using bspline_space_t = BSpline<RefSpace::dim,RefSpace::range,RefSpace::rank>;
     const bspline_space_t &bspline_space = get_bspline_space(*ref_space);
 
     auto knots_with_repetitions_pre_refinement = bspline_space.get_spline_space_previous_refinement()

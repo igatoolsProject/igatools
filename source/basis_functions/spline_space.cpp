@@ -141,7 +141,7 @@ const_create(const Degrees &deg,
 #if 0
 template<int dim,int range,int rank>
 auto
-BSplineSpace<dim,range,rank>::
+BSpline<dim,range,rank>::
 create(const DegreeTable &deg,
        const std::shared_ptr<GridType> &grid,
        const MultiplicityTable &interior_mult,
@@ -162,7 +162,7 @@ create(const DegreeTable &deg,
 
 template<int dim,int range,int rank>
 auto
-BSplineSpace<dim,range,rank>::
+BSpline<dim,range,rank>::
 const_create(const DegreeTable &deg,
              const std::shared_ptr<const GridType> &grid,
              const MultiplicityTable &interior_mult,

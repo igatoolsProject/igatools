@@ -66,7 +66,7 @@ void elem_values(const int n_knots = 5, const int deg=1)
 {
   OUTSTART
   const int k = dim;
-  using BspSpace = BSplineSpace<dim, range, rank>;
+  using BspSpace = BSpline<dim, range, rank>;
   using RefSpace = ReferenceSpace<dim, range,rank>;
   using Space = PhysicalSpace<dim,range,rank,codim>;
 //    using ElementHandler = typename Space::ElementHandler;

@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSplineSpace element iterator derivatives values
+ *  Test for the BSpline element iterator derivatives values
  *  in a non homogenous range
  *  author: pauletti
  *  date: Aug 21, 2014
@@ -45,7 +45,7 @@ void elem_derivatives(const int n_knots,
 {
   OUTSTART
 
-  using Basis = BSplineSpace<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
   auto grid  = Grid<dim>::create(n_knots);
 
 //  typename Basis::PeriodicityTable periodic((typename Basis::Periodicity(SafeSTLArray<bool, dim>(false))));

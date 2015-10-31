@@ -20,7 +20,7 @@
 
 
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/base/quadrature_lib.h>
@@ -44,7 +44,7 @@ public:
   void local_assemble();
 
 private:
-  using Space = BSplineSpace<dim>;
+  using Space = BSpline<dim>;
   shared_ptr<const Grid<dim>>  grid;
   shared_ptr<const Space>   space;
 };
@@ -56,7 +56,7 @@ template <int dim>
 PoissonPreparation<dim>::PoissonPreparation(const int n_knots,  const int deg)
   :
   grid {Grid<dim>::create(n_knots)},
-  space {BSplineSpace<dim>::create(deg, grid)}
+  space {BSpline<dim>::create(deg, grid)}
 {}
 // [constructor]
 

@@ -29,7 +29,7 @@
 #include "../tests.h"
 
 #include <igatools/geometry/grid.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/linear_algebra/epetra.h>
 
 #include <igatools/basis_functions/space_tools.h>
@@ -41,7 +41,7 @@ void matrix_map(const int deg, const int n_knots)
 {
   OUTSTART
   auto grid = Grid<dim>::create(n_knots);
-  auto space = BSplineSpace<dim>::create(deg, grid);
+  auto space = BSpline<dim>::create(deg, grid);
 
   Epetra_SerialComm comm;
 
@@ -68,8 +68,8 @@ void matrix_map1(const int deg, const int n_knots)
 {
   OUTSTART
   auto grid = Grid<dim>::create(n_knots);
-  auto r_space = BSplineSpace<dim>::create(deg, grid);
-  auto c_space = BSplineSpace<dim>::create(deg+1, grid);
+  auto r_space = BSpline<dim>::create(deg, grid);
+  auto c_space = BSpline<dim>::create(deg+1, grid);
   MatrixGraph<LAPack::trilinos_epetra> graph(r_space, "active", c_space, "active");
   graph.print_info(out);
 
@@ -100,12 +100,12 @@ template<int dim, int range = 1>
 void matrix_map2(const int deg, const int n_knots)
 {
   OUTSTART
-  using Space = BSplineSpace<dim>;
+  using Space = BSpline<dim>;
   auto grid = Grid<dim>::create(n_knots);
 
   grid->set_boundary_id(0, 1);
 
-  auto space = BSplineSpace<dim>::create(deg, grid);
+  auto space = BSpline<dim>::create(deg, grid);
 
   std::set<boundary_id>  dir_ids = {0};
   auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);

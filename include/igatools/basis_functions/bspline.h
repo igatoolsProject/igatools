@@ -45,16 +45,16 @@ template <int, int, int> class BSplineElementHandler;
  * - the multiplicity vectors
  * - and the degree
  *
- * BSplineSpace allows the use of different multiplicity vectors
+ * BSpline allows the use of different multiplicity vectors
  * and degrees for each direction and for each component.
  *
- * \section const Constructing a BSplineSpace
+ * \section const Constructing a BSpline
  * Similar to the mechanism use in Grid we use
  * the create technique to create a smartpointer for each constructor
  * the class provides.
  * @todo enter a glossary for create idiom technique and refer from here
  * \code
- * auto space = BSplineSpace<dim>::create();
+ * auto space = BSpline<dim>::create();
  * \endcode
  *
  * \section eval Evaluating basis function
@@ -92,14 +92,14 @@ template <int, int, int> class BSplineElementHandler;
  * @ingroup serializable
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class BSplineSpace :
+class BSpline :
   public ReferenceSpace<dim_, range_, rank_>
 {
 private:
   using BaseSpace = ReferenceSpace<dim_, range_, rank_>;
 
   /** Type for current class. */
-  using self_t = BSplineSpace<dim_,range_,rank_>;
+  using self_t = BSpline<dim_,range_,rank_>;
 
 public:
   /** see documentation in \ref Space */
@@ -276,7 +276,7 @@ public:
 
 
   /** Destructor. */
-  virtual ~BSplineSpace() = default;
+  virtual ~BSpline() = default;
 
 
 
@@ -288,7 +288,7 @@ protected:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  BSplineSpace() = default;
+  BSpline() = default;
 #if 0
   /**
    * Constructs a maximum regularity BSpline space
@@ -296,7 +296,7 @@ protected:
    * @p grid for the given @p degree in all directions and homogeneous
    * in all components.
    */
-  explicit BSplineSpace(const int degree,
+  explicit BSpline(const int degree,
                         const SharedPtrConstnessHandler<GridType> &grid,
                         const InteriorReg interior_reg,
                         const bool periodic,
@@ -309,7 +309,7 @@ protected:
    * @p grid for the given @p degree[i] in the i-th direction and homogeneous
    * in all components.
    */
-  explicit BSplineSpace(const Degrees &degree,
+  explicit BSpline(const Degrees &degree,
                         const SharedPtrConstnessHandler<GridType> &grid,
                         const InteriorReg interior_reg,
                         const Periodicity &periodic,
@@ -324,7 +324,7 @@ protected:
    * and the given @p degree for each direction and for each
    * component.
    */
-  explicit BSplineSpace(const DegreeTable &deg,
+  explicit BSpline(const DegreeTable &deg,
                         const SharedPtrConstnessHandler<GridType> &grid,
                         const MultiplicityTable &interior_mult,
                         const PeriodicityTable &periodic,
@@ -332,14 +332,14 @@ protected:
 #endif
 
 
-  explicit BSplineSpace(const SharedPtrConstnessHandler<SpaceData> &space_data,
+  explicit BSpline(const SharedPtrConstnessHandler<SpaceData> &space_data,
                         const EndBehaviourTable &end_b);
 
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  BSplineSpace(const self_t &space) = delete;
+  BSpline(const self_t &space) = delete;
   ///@}
 
   /** @name Assignment operators */
@@ -377,7 +377,7 @@ public:
    * grid.
    */
   template<int sdim>
-  std::shared_ptr<const BSplineSpace<sdim,range_,rank_> >
+  std::shared_ptr<const BSpline<sdim,range_,rank_> >
   get_sub_bspline_space(const int sub_elem_id,
                         InterSpaceMap<sdim> &dof_map,
                         const std::shared_ptr<const Grid<sdim>> &sub_grid) const;
@@ -515,7 +515,7 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-#include <igatools/basis_functions/bspline_space.serial>
+#include <igatools/basis_functions/bspline.serial>
 
 #endif // SERIALIZATION
 

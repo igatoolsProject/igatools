@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for physical space using a BSplineSpace as reference space.
+ *  Test for physical space using a BSpline as reference space.
  *
  *  author: martinelli
  *  date: Sep 24, 2015
@@ -37,7 +37,7 @@
 //#include <igatools/basis_functions/physical_space_element.h>
 //#include <igatools/geometry/push_forward_element.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/geometry/grid_function_lib.h>
 #include <igatools/basis_functions/physical_space.h>
 
@@ -48,7 +48,7 @@ void cache_init(const ValueFlags flag,
 {
   OUTSTART
 
-  using BspSpace = BSplineSpace<dim, range, rank>;
+  using BspSpace = BSpline<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
   auto grid      = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(deg, grid);
@@ -86,7 +86,7 @@ void cache_init_elem(const ValueFlags flag,
 //    const int k = dim;
   OUTSTART
 
-  using BspSpace = BSplineSpace<dim, range, rank>;
+  using BspSpace = BSpline<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
@@ -126,7 +126,7 @@ void cache_fill_elem(const ValueFlags flag,
   OUTSTART
 
 //   const int k = dim;
-  using BspSpace = BSplineSpace<dim, range, rank>;
+  using BspSpace = BSpline<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
@@ -171,7 +171,7 @@ void cache_get_elem_values(const ValueFlags flag,
 {
   OUTSTART
   const int k = dim;
-  using BspSpace = BSplineSpace<dim, range, rank>;
+  using BspSpace = BSpline<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
@@ -218,7 +218,7 @@ std::shared_ptr<const PhysicalSpace<dim,range,rank,codim>>
   OUTSTART
   auto grid = Grid<dim>::const_create();
   const int deg = 2;
-  auto ref_space = BSplineSpace<dim,range,rank>::const_create(
+  auto ref_space = BSpline<dim,range,rank>::const_create(
                      SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using GridFunc = grid_functions::BallGridFunction<dim>;

@@ -31,7 +31,7 @@
 #include <igatools/functions/formula_function.h>
 #include <igatools/functions/identity_function.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/basis_functions/space_tools.h>
@@ -99,7 +99,7 @@ public:
 template<int dim, int range=1, int rank = 1, LAPack la_pack>
 void test_proj(const int p, const int n_knots = 4)
 {
-  using Space = BSplineSpace<dim,range,rank> ;
+  using Space = BSpline<dim,range,rank> ;
   using RefSpace = ReferenceSpace<dim,range,rank> ;
   using Func = TestFunc<dim,range, rank>;
 

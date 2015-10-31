@@ -94,7 +94,7 @@ protected:
 public:
   /**
    * Constructs an accessor to element number index of a
-   * BsplineSpace space.
+   * BSpline space.
    */
   NURBSElement(const std::shared_ptr<ContainerType> space,
                const ListIt &index,

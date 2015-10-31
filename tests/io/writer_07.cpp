@@ -20,7 +20,7 @@
 
 /*
  * Testing the writer, this the add_field() using an
- * IgFunction built with a BSplineSpace
+ * IgFunction built with a BSpline
  * author: martinelli
  * date: Oct 21, 2015
  *
@@ -29,7 +29,7 @@
 #include "../tests.h"
 #include "igatools/io/writer.h"
 #include "igatools/geometry/grid_function_lib.h"
-#include "igatools/basis_functions/bspline_space.h"
+#include "igatools/basis_functions/bspline.h"
 #include "igatools/functions/ig_function.h"
 //#include "igatools/functions/function_lib.h"
 
@@ -65,7 +65,7 @@ create_phys_space(const shared_ptr<const Domain<dim,codim>> &domain)
 
   const auto grid = domain->get_grid_function()->get_grid();
 
-  auto bsp_space = BSplineSpace<dim,range,1>::const_create(
+  auto bsp_space = BSpline<dim,range,1>::const_create(
                      SplineSpace<dim,range,1>::const_create(deg,grid));
 
   auto phys_space = PhysicalSpace<dim,range,1,codim>::const_create(bsp_space,domain);

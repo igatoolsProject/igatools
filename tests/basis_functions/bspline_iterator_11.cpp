@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSplineSpace UniformQuadCache
+ *  Test for the BSpline UniformQuadCache
  *
  *  author: pauletti
  *  date: Aug 21, 2014
@@ -39,7 +39,7 @@ void uniform_space_cache(const space_element::Flags flag,
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto space = SplineSpace<dim,range,rank>::const_create(deg, grid);
-  using Basis = BSplineSpace<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
   auto basis = Basis::const_create(space);
 
   auto elem = basis->begin();

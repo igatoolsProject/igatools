@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for periodic BSplineSpace solving poisson
+ *  Test for periodic BSpline solving poisson
  *
  *  author: pauletti
  *  date: 2015-03-12
@@ -31,7 +31,7 @@
 
 #include "../tests.h"
 #include <igatools/functions/function_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/linear_algebra/epetra_solver.h>
@@ -45,7 +45,7 @@ using functions::ConstantFunction;
 template <int dim, int range=1>
 void assemble_matrix(const int n_knots, const int deg)
 {
-  using Space  = BSplineSpace<dim, range>;
+  using Space  = BSpline<dim, range>;
   using RefSpace  = ReferenceSpace<dim, range>;
 
   using Function = Function<dim,0,range,1>;

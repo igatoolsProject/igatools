@@ -20,7 +20,7 @@
 
 #include <igatools/basis_functions/reference_element_handler.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
 #include <igatools/basis_functions/nurbs_space.h>
@@ -49,7 +49,7 @@ create(const shared_ptr<const Space> &space)
   std::shared_ptr<ReferenceElementHandler<dim,range,rank> > elem_handler = nullptr;
   if (space->is_bspline())
   {
-    using BSplineSp = const BSplineSpace<dim,range,rank>;
+    using BSplineSp = const BSpline<dim,range,rank>;
     auto bsp_space = std::dynamic_pointer_cast< BSplineSp >(space);
     elem_handler = BSplineElementHandler<dim,range,rank>::create(bsp_space);
   }

@@ -22,7 +22,7 @@
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_tools.h>
@@ -59,7 +59,7 @@ private:
 
   // [type aliases]
 private:
-  using RefSpace = BSplineSpace<dim>;
+  using RefSpace = BSpline<dim>;
   using Space    = PhysicalSpace<dim>;
   using Value = typename Function<dim>::Value;
   // [type aliases]

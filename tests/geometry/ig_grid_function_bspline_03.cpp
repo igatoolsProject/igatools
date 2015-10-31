@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  @brief  Test for IgGridFunction class on BSplineSpace of degree 2 on a different grid
+ *  @brief  Test for IgGridFunction class on BSpline of degree 2 on a different grid
  *  and parametrization than the one used in ig_grid_function_bspline_02.cpp
  *
  *  author: martinelli
@@ -32,7 +32,7 @@
 
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/functions/function_element.h>
 
 
@@ -41,7 +41,7 @@ template <int dim, int codim=0>
 void ig_grid_function_bspline(const int deg = 2)
 {
   const int sub_dim = dim;
-  using Space = BSplineSpace<dim, dim+codim>;
+  using Space = BSpline<dim, dim+codim>;
   using Function = IgGridFunction<dim,dim+codim>;
 
 

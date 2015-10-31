@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/functions/sub_function.h>
 //#include <igatools/functions/identity_function.h>
@@ -35,8 +35,8 @@ IGA_NAMESPACE_OPEN
 
 
 template<int dim_, int range_, int rank_>
-BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const SharedPtrConstnessHandler<SpaceData> &space_data,
+BSpline<dim_, range_, rank_>::
+BSpline(const SharedPtrConstnessHandler<SpaceData> &space_data,
              const EndBehaviourTable &end_b)
   :
   space_data_(space_data),
@@ -92,14 +92,14 @@ BSplineSpace(const SharedPtrConstnessHandler<SpaceData> &space_data,
 
 #if 0
 template<int dim_, int range_, int rank_>
-BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const DegreeTable &deg,
+BSpline<dim_, range_, rank_>::
+BSpline(const DegreeTable &deg,
              const SharedPtrConstnessHandler<GridType> &grid,
              const MultiplicityTable &interior_mult,
              const PeriodicityTable &periodic,
              const EndBehaviourTable &end_b)
   :
-  BSplineSpace(
+  BSpline(
    grid.data_is_const() ?
    SharedPtrConstnessHandler<SpaceData>(SpaceData::const_create(deg, grid.get_ptr_const_data(), interior_mult, periodic)) :
    SharedPtrConstnessHandler<SpaceData>(SpaceData::create(deg, grid.get_ptr_data(), interior_mult, periodic)),
@@ -111,7 +111,7 @@ BSplineSpace(const DegreeTable &deg,
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 create(const std::shared_ptr<SpaceData> &space_data,
        const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
@@ -129,7 +129,7 @@ create(const std::shared_ptr<SpaceData> &space_data,
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 const_create(const std::shared_ptr<const SpaceData> &space_data,
              const EndBehaviourTable &end_b)
 -> shared_ptr<const self_t>
@@ -144,7 +144,7 @@ const_create(const std::shared_ptr<const SpaceData> &space_data,
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 get_this_space() const -> shared_ptr<const self_t>
 {
   auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
@@ -156,7 +156,7 @@ get_this_space() const -> shared_ptr<const self_t>
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 create_element(const ListIt &index, const PropId &property) const
 -> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
 {
@@ -171,7 +171,7 @@ create_element(const ListIt &index, const PropId &property) const
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 create_ref_element(const ListIt &index, const PropId &property) const
 -> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
 {
@@ -188,11 +188,11 @@ create_ref_element(const ListIt &index, const PropId &property) const
 template<int dim_, int range_, int rank_>
 template<int sdim>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 get_sub_bspline_space(const int s_id,
                       InterSpaceMap<sdim> &dof_map,
                       const std::shared_ptr<const Grid<sdim>> &sub_grid_in) const
--> std::shared_ptr<const BSplineSpace<sdim, range_, rank_> >
+-> std::shared_ptr<const BSpline<sdim, range_, rank_> >
 {
   static_assert(sdim == 0 || (sdim > 0 && sdim < dim_),
   "The dimensionality of the sub_grid is not valid.");
@@ -217,7 +217,7 @@ get_sub_bspline_space(const int s_id,
   auto sub_degree = this->space_data_->template get_sub_space_degree<sdim>(s_id);
   auto sub_periodic = this->space_data_->template get_sub_space_periodicity<sdim>(s_id);
 
-  using SubBasis = BSplineSpace<sdim,range,rank>;
+  using SubBasis = BSpline<sdim,range,rank>;
 
   using SubEndBT = typename SubBasis::EndBehaviourTable;
   auto &k_elem = UnitElement<dim>::template get_elem<sdim>(s_id);
@@ -282,7 +282,7 @@ get_sub_bspline_space(const int s_id,
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 get_grid() const -> std::shared_ptr<const Grid<dim_>>
 {
   return space_data_->get_grid();
@@ -294,7 +294,7 @@ get_grid() const -> std::shared_ptr<const Grid<dim_>>
 
 template<int dim_, int range_, int rank_>
 void
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 get_element_dofs(
   const IndexType elem_tensor_id,
   SafeSTLVector<Index> &dofs_global,
@@ -368,7 +368,7 @@ get_element_dofs(
 
 template <int dim_,int range_,int rank_>
 void
-BSplineSpace<dim_,range_,rank_>::
+BSpline<dim_,range_,rank_>::
 refine_h(const Size n_subdivisions)
 {
   space_data_.get_ptr_data()->refine_h(n_subdivisions);
@@ -377,13 +377,13 @@ refine_h(const Size n_subdivisions)
 
 template<int dim_, int range_, int rank_>
 void
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
 {
   this->ref_space_previous_refinement_ =
-    BSplineSpace<dim_,range_,rank_>::const_create(
+    BSpline<dim_,range_,rank_>::const_create(
       this->space_data_->get_spline_space_previous_refinement(),
       this->end_b_);
 
@@ -403,7 +403,7 @@ rebuild_after_insert_knots(
 
 template<int dim_, int range_, int rank_>
 void
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
   out.begin_item("Spline Space:");
@@ -424,7 +424,7 @@ print_info(LogStream &out) const
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 get_degree_table() const -> const DegreeTable &
 {
   return this->space_data_->get_degree_table();
@@ -432,7 +432,7 @@ get_degree_table() const -> const DegreeTable &
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 get_periodicity() const -> const PeriodicityTable &
 {
   return space_data_->get_periodicity();
@@ -440,7 +440,7 @@ get_periodicity() const -> const PeriodicityTable &
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 get_end_behaviour_table() const -> const EndBehaviourTable &
 {
   return end_b_;
@@ -449,7 +449,7 @@ get_end_behaviour_table() const -> const EndBehaviourTable &
 
 template<int dim_, int range_, int rank_>
 bool
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 is_bspline() const
 {
   return true;
@@ -457,7 +457,7 @@ is_bspline() const
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 create_cache_handler() const
 -> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
@@ -468,7 +468,7 @@ create_cache_handler() const
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 get_ptr_const_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
 {
   return dof_distribution_;
@@ -476,7 +476,7 @@ get_ptr_const_dof_distribution() const -> shared_ptr<const DofDistribution<dim,r
 
 template<int dim_, int range_, int rank_>
 auto
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 {
   return dof_distribution_;
@@ -490,7 +490,7 @@ get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 template<int dim_, int range_, int rank_>
 template<class Archive>
 void
-BSplineSpace<dim_, range_, rank_>::
+BSpline<dim_, range_, rank_>::
 serialize(Archive &ar)
 {
   using std::to_string;
@@ -519,12 +519,12 @@ serialize(Archive &ar)
 IGA_NAMESPACE_CLOSE
 
 
-#include <igatools/basis_functions/bspline_space.inst>
+#include <igatools/basis_functions/bspline.inst>
 
 
 #ifdef SERIALIZATION
 
-//using BSpSpaceAlias0_1_1 = iga::BSplineSpace<0,1,1>;
+//using BSpSpaceAlias0_1_1 = iga::BSpline<0,1,1>;
 //CEREAL_REGISTER_DYNAMIC_INIT(BSpSpaceAlias0_1_1);
 
 #endif // SERIALIZATION

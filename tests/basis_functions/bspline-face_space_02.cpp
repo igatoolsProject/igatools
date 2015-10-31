@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BsplineSpace class subspace extraction
+ *  Test for the BSpline class subspace extraction
  *
  *  author: pauletti
  *  date: 2014-11-18
@@ -27,7 +27,7 @@
 
 #include "../tests.h"
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 
 
 template<int sub_dim, int dim, int range=1, int rank=1>
@@ -37,7 +37,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
 
 
   using Space = SplineSpace<dim, range, rank>;
-  using Basis = BSplineSpace<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
 
   auto grid = Grid<dim>::const_create(n);
   auto space = Space::const_create(degree, grid);

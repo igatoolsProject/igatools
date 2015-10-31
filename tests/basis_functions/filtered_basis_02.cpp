@@ -31,7 +31,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/linear_algebra/epetra_solver.h>
 #include <igatools/functions/identity_function.h>
@@ -57,7 +57,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
   using RefSpace = ReferenceSpace<dim, range, rank>;
-  using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSpline<dim, range, rank>;
 
   auto grid = Grid<dim>::create(n_knots);
   auto space = Space::create(SplineSpace<dim,range,rank>::create(deg,grid));

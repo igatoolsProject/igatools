@@ -32,24 +32,24 @@
 #include "../tests.h"
 
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 using std::shared_ptr;
 
 template <int dim>
-shared_ptr<BSplineSpace<dim,dim,1> >
+shared_ptr<BSpline<dim,dim,1> >
 create_basis(const int num_knots) ;
 
 template <>
-shared_ptr<BSplineSpace<2,2,1> >
+shared_ptr<BSpline<2,2,1> >
 create_basis<2>(const int num_knots)
 {
   auto knots = Grid<2>::create(num_knots);
 
   using Space = SplineSpace<2,2,1>;
-  using Basis = BSplineSpace<2,2,1>;
+  using Basis = BSpline<2,2,1>;
   typename Basis::DegreeTable degree_table = {{{3,2}},{{2,3}}} ;
 
   using PeriodicityTable = typename Basis::PeriodicityTable;
@@ -66,13 +66,13 @@ create_basis<2>(const int num_knots)
 }
 
 template <>
-shared_ptr<BSplineSpace<3,3,1> >
+shared_ptr<BSpline<3,3,1> >
 create_basis<3>(const int num_knots)
 {
   auto knots = Grid<3>::create(num_knots);
 
   using Space = SplineSpace<3,3,1>;
-  using Basis = BSplineSpace<3,3,1>;
+  using Basis = BSpline<3,3,1>;
   typename Basis::DegreeTable degree_table = { {{3,2,2}},{{2,3,2}},{{2,2,3}}} ;
 
   using SpaceData = typename Basis::SpaceData;
@@ -105,7 +105,7 @@ void do_test()
 
   using std::to_string;
 
-  using Elem = typename BSplineSpace<dim,dim,1>::ElementAccessor;
+  using Elem = typename BSpline<dim,dim,1>::ElementAccessor;
   using _Value = typename Elem::_Value;
   using _Gradient = typename Elem::_Gradient;
   using _Hessian = typename Elem::_Hessian;

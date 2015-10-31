@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSplineSpace ElementHandler functions
+ *  Test for the BSpline ElementHandler functions
  *  init_element_cache() and fill_element_cache()
  *
  *  author: pauletti
@@ -43,7 +43,7 @@ void space_cache_init_fill_elem(
 
   auto space = SplineSpace<dim,range,rank>::const_create(deg, grid);
 
-  using Basis = BSplineSpace<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
   auto basis = Basis::const_create(space);
 
   auto quad = QGauss<dim>::create(2);

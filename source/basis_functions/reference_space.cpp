@@ -23,7 +23,7 @@
 #include <igatools/basis_functions/reference_element.h>
 #include <igatools/base/array_utils.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/geometry/grid_function_lib.h>
 
@@ -51,7 +51,7 @@ get_ref_sub_space(const int sub_elem_id,
   std::shared_ptr< const SubRefSpace<sdim> > sub_ref_space;
   if (this->is_bspline())
   {
-    const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
+    const auto bsp_space = dynamic_cast<const BSpline<dim,range,rank> *>(this);
     Assert(bsp_space != nullptr,ExcNullPtr());
     sub_ref_space = bsp_space->template get_sub_bspline_space<sdim>(sub_elem_id,dof_map,sub_grid);
   }

@@ -29,7 +29,7 @@
 
 #include "common_functions.h"
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/space_tools.h>
 
 
@@ -37,7 +37,7 @@ template<int dim, int range = 1, int rank = 1>
 void norm_difference(const int deg, const int n_knots = 10)
 {
   const Real p=2.;
-  using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSpline<dim, range, rank>;
 
 
   auto grid = Grid<dim>::const_create(n_knots);
@@ -68,7 +68,7 @@ void norm_difference(const int deg, const int n_knots = 10)
 template<int dim, int range = 1, int rank = 1>
 void norm_difference_p(const int deg, const int n_knots, const Real p)
 {
-  using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSpline<dim, range, rank>;
 
 
   auto grid = Grid<dim>::const_create(n_knots);

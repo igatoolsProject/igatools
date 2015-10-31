@@ -82,6 +82,15 @@ get_index() const ->  const IndexType &
 }
 
 
+template <int dim>
+void
+GridElement<dim>::
+operator++()
+{
+  ++index_it_;
+}
+
+
 
 
 
@@ -104,7 +113,7 @@ move_to(const IndexType &elem_id)
 template <int dim>
 bool
 GridElement<dim>::
-is_comparable_with(const self_t &elem) const
+same_grid_of(const self_t &elem) const
 {
   return (get_grid() == elem.get_grid());
 }
@@ -115,7 +124,7 @@ bool
 GridElement<dim>::
 operator ==(const self_t &elem) const
 {
-  Assert(this->is_comparable_with(elem),
+  Assert(this->same_grid_of(elem),
          ExcMessage("Cannot compare elements on different grid."));
   return (get_index() == elem.get_index());
 }
@@ -127,7 +136,7 @@ bool
 GridElement<dim>::
 operator !=(const self_t &elem) const
 {
-  Assert(this->is_comparable_with(elem),
+  Assert(this->same_grid_of(elem),
          ExcMessage("Cannot compare elements on different grid."));
   return (get_index() != elem.get_index());
 }
@@ -137,7 +146,7 @@ bool
 GridElement<dim>::
 operator <(const self_t &elem) const
 {
-  Assert(this->is_comparable_with(elem),
+  Assert(this->same_grid_of(elem),
          ExcMessage("Cannot compare elements on different grid."));
   return (get_index() < elem.get_index());
 }
@@ -147,7 +156,7 @@ bool
 GridElement<dim>::
 operator >(const self_t &elem) const
 {
-  Assert(this->is_comparable_with(elem),
+  Assert(this->same_grid_of(elem),
          ExcMessage("Cannot compare elements on different grid."));
   return (get_index() > elem.get_index());
 }

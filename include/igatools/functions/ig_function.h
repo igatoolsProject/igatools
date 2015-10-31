@@ -27,7 +27,7 @@
 
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/linear_algebra/epetra_vector.h>
-//#include <igatools/basis_functions/bspline_space.h>
+//#include <igatools/basis_functions/bspline.h>
 //#include <igatools/basis_functions/nurbs_space.h>
 
 

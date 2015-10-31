@@ -32,7 +32,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/grid_function_lib.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
@@ -57,7 +57,7 @@ template <int dim, int k, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 {
   OUTSTART
-  using BspSpace = BSplineSpace<dim, range, rank>;
+  using BspSpace = BSpline<dim, range, rank>;
 //    using RefSpace = ReferenceSpace<dim, range,rank>;
   using Space = PhysicalSpace<dim,range,rank,codim>;
 

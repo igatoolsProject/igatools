@@ -32,7 +32,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/formula_function.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/basis_functions/space_tools.h>
@@ -43,7 +43,7 @@ void project_l2(const int p, const int num_knots = 10)
 {
   OUTSTART
 
-  using Space =  BSplineSpace<dim,range,rank>;
+  using Space =  BSpline<dim,range,rank>;
   using RefSpace =  ReferenceSpace<dim,range,rank>;
 
   auto knots = Grid<dim>::const_create(num_knots);

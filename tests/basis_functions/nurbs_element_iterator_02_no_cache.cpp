@@ -43,10 +43,10 @@ void test()
   auto  knots = Grid<dim>::const_create(3);
 
   auto degree = TensorIndex<dim>(r);
-  auto bsp_space = BSplineSpace<dim,range,rank>::const_create(
+  auto bsp_space = BSpline<dim,range,rank>::const_create(
                      SplineSpace<dim,range,rank>::const_create(degree,knots));
 
-  using ScalarSpSpace = BSplineSpace<dim,1,1>;
+  using ScalarSpSpace = BSpline<dim,1,1>;
   auto scalar_bsp_space = ScalarSpSpace::const_create(
                             SplineSpace<dim,1,1>::const_create(degree,knots));
 

@@ -33,7 +33,7 @@
 //#include <igatools/functions/sub_function.h>
 #include <igatools/functions/ig_function.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 

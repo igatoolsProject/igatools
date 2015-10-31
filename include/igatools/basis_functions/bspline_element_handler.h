@@ -27,7 +27,7 @@
 #include <igatools/utils/cartesian_product_array-template.h>
 
 #include <igatools/basis_functions/reference_element_handler.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 
@@ -44,7 +44,7 @@ class BSplineElementHandler
 {
   using base_t = ReferenceElementHandler<dim_,range_,rank_>;
   using self_t = BSplineElementHandler<dim_,range_,rank_>;
-  using Space = BSplineSpace<dim_,range_,rank_>;
+  using Space = BSpline<dim_,range_,rank_>;
   static const Size n_components =  SplineSpace<dim_,range_,rank_>::n_components;
 
   using IndexType = typename Grid<dim_>::IndexType;
@@ -338,7 +338,7 @@ private:
 
 
   /**
-   * Returns the BSplineSpace used to define the BSplineElementHandler object.
+   * Returns the BSpline used to define the BSplineElementHandler object.
    */
   std::shared_ptr<const Space> get_bspline_space() const;
 };

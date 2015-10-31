@@ -39,7 +39,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/function_element.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
@@ -48,7 +48,7 @@ void test()
 {
   const int space_dim = dim + codim;
   using Function = functions::LinearFunction<dim, codim, space_dim>;
-  using Space = BSplineSpace<dim>;
+  using Space = BSpline<dim>;
   using PForward  = PushForward<Transformation::h_grad, dim, codim>;
 
   typename Function::Value    b;

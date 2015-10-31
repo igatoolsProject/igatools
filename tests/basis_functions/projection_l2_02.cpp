@@ -32,7 +32,7 @@
 #include <igatools/functions/identity_function.h>
 #include <igatools/functions/function_lib.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/basis_functions/space_tools.h>
@@ -106,7 +106,7 @@ template<int dim, int codim, int range, int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
   using RefSpace = ReferenceSpace<dim,range,rank>;
-  using BspSpace = BSplineSpace<dim,range,rank>;
+  using BspSpace = BSpline<dim,range,rank>;
   using Space = PhysicalSpace<dim,range,rank,codim>;
 
   auto knots = Grid<dim>::const_create(num_knots);

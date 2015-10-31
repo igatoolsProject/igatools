@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 // [includes]
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 // [includes]
 // [include_writer]
 #include <igatools/io/writer.h>
@@ -57,7 +57,7 @@ int main()
 
   // [basis]
   cout << "Creating the basis for the spline space" << endl;
-  auto basis = BSplineSpace<dim>::create(space);
+  auto basis = BSpline<dim>::create(space);
   cout << "Number of basis functions: ";
   cout << basis->get_num_basis() << endl;
   // [basis]

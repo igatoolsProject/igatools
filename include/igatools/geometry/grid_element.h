@@ -31,13 +31,26 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * @brief This is the base class for all kind of elements.
+ *
+ * It a pure virtual class and contains the interfaces for the functions
+ * that the derived classes must implement
+ * (basically the advance/increment operator <tt>++</tt>).
+ * Moreover it contains the element-property identifier and the associated getter.
+ *
+ * @ingroup elements
+ *
+ * @author martinelli, 2105
+ *
+ */
 class Element
 {
 public:
 
   Element(const PropId &property);
 
-//  virtual ~Element() = default;
+  virtual ~Element() = default;
 
   virtual void operator++() = 0;
 
@@ -73,14 +86,13 @@ private:
  * @ingroup elements
  *
  * ### Quantities handled by the cache
- * - _Point i.e. evaluation points mapped in a element of the parametric domain
- * - _Weight i.e. quadrature weights associated to each evaluation point,
+ * - grid_element::_Point i.e. evaluation points mapped in a element of the parametric domain
+ * - grid_element::_Weight i.e. quadrature weights associated to each evaluation point,
  * multiplied by the element <tt>dim</tt>-dimensional measure.
  *
  * @author pauletti, 2012, 2013, 2014, 2015
- * @author martinelli, 2013, 2014, 2105
+ * @author martinelli, 2012, 2013, 2014, 2105
  *
- * @ingroup serializable
  */
 template <int dim>
 class GridElement : public Element
@@ -149,20 +161,7 @@ public:
   ///@}
 
 
-  const IndexType &get_index() const;
 
-  /** Return the Grid from which the element belongs.*/
-  std::shared_ptr<const Grid<dim>> get_grid() const;
-
-  /**
-   * Returns the unitary quadrature scheme corresponding to the <tt>sdim</tt>-dimensional
-   * s_id-th sub-element.
-   */
-  template <int sdim>
-  std::shared_ptr<const Quadrature<sdim>> get_quad() const
-  {
-    return quad_list_.template get_quad<sdim>();
-  }
 
 
   /**
@@ -171,10 +170,7 @@ public:
    * @note They should be called only by the GridIterator.
    */
   ///@{
-  void operator++() override
-  {
-    ++index_it_;
-  }
+  void operator++() override;
 
   /**
    * Move the element to the one specified by <tt>elem_id</tt>.
@@ -227,18 +223,14 @@ public:
   bool operator>(const self_t &elem) const;
   ///@}
 
-  ///@name Query information that requires the use of the cache
+  ///@name Query information that does not require the use of the cache
   ///@{
 
-  /**
-   * Returns the lengths of the coordinate sides of the cartesian element.
-   * For example in 2 dimensions
-   * \code{.cpp}
-     auto length = elem.coordinate_lenths();
-     // length[0] is the length of the x-side of the element and
-     // length[1] the length of the y-side of the element.
-     \endcode
-   */
+  const IndexType &get_index() const;
+
+  /** Return the Grid from which the element belongs.*/
+  std::shared_ptr<const Grid<dim>> get_grid() const;
+
 
   /**
      * Test if the element has a boundary face.
@@ -252,7 +244,6 @@ public:
    */
   template<int k = (dim > 0) ? (dim-1) : 0>
   bool is_boundary(const Index sub_elem_id) const;
-  ///@}
 
   /**
    * Return the @p i-th vertex
@@ -260,10 +251,35 @@ public:
   Point vertex(const int i) const;
 
 
+  /**
+   * Returns the lengths of the coordinate sides of the <tt>sdim</tt>-dimensional element
+   * of the Grid.
+   * For example in 3 dimensions
+   * \code{.cpp}
+     const int s_id = 1;
+     auto length = elem.template get_side_lengths<2>(s_id);
+     // length[0] is the length of along the first active direction of the face 1
+     // length[1] is the length of along the second active direction of the face 1
+     \endcode
+   */
+  template<int sdim>
+  const Points<sdim> get_side_lengths(const int s_id) const;
 
+  /**
+   * Prints internal information about the GridElementAccessor.
+   * Its main use is for testing and debugging.
+   */
+  void print_info(LogStream &out) const;
 
+  /**
+   * Returns true if two elements belongs from the same Grid.
+   */
+  bool same_grid_of(const self_t &elem) const;
 
-public:
+  ///@}
+
+  ///@name Query information that requires the use of the cache
+  ///@{
   template <int sdim>
   Real get_measure(const int s_id) const;
 
@@ -285,24 +301,24 @@ public:
   template <int sdim>
   ValueVector<Point> get_points(const int s_id = 0) const;
 
-
-
-
-
-private:
   ValueVector<Point> get_element_points() const;
 
-public:
+
   /**
-   * Prints internal information about the GridElementAccessor.
-   * Its main use is for testing and debugging.
+   * Returns the unitary quadrature scheme corresponding to the <tt>sdim</tt>-dimensional
+   * s_id-th sub-element.
    */
-  void print_info(LogStream &out) const;
+  template <int sdim>
+  std::shared_ptr<const Quadrature<sdim>> get_quad() const
+  {
+    return quad_list_.template get_quad<sdim>();
+  }
+
 
   void print_cache_info(LogStream &out) const;
 
-  template<int sdim>
-  const Points<sdim> get_side_lengths(const int s_id) const;
+  ///@}
+
 
 private:
   template <class Accessor> friend class GridIteratorBase;
@@ -319,11 +335,13 @@ private:
   typename List::iterator index_it_;
 
   /**
-   * @name Types, data and methods for the cache.
+   * @name Types and data needed for the definition/use of the cache.
    */
   ///@{
 
 public:
+
+
   using _Point = grid_element::_Point;
   using _Weight = grid_element::_Weight;
 
@@ -334,12 +352,10 @@ private:
                 >;
 
 
-public:
   using ValuesCache = PointValuesCache<dim,CType>;
 
   using CacheType = AllSubElementsCache<ValuesCache>;
 
-private:
   /** List of quadrature pointers for all sub elements */
   QuadList<dim> quad_list_;
 
@@ -356,12 +372,6 @@ private:
   }
   ///@}
 
-private:
-
-  /**
-   * Returns true if two elements belongs from the same Grid.
-   */
-  bool is_comparable_with(const self_t &elem) const;
 
 };
 

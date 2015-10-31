@@ -39,7 +39,7 @@ Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
 Grid                 | GridElement           | GridHandler
 ReferenceSpace       | ReferenceElement      | ReferenceElementHandler
-BSplineSpace         | BSplineElement        | BSplineElementHandler 
+BSpline         | BSplineElement        | BSplineElementHandler 
 NURBSSpace           | NURBSElement          | NURBSElementHandler
 Mapping              | MappingElement        | not defined
 PushForward          | PushForwardElement    | not defined
@@ -96,7 +96,7 @@ Elements             | Element Containers
 -------------------- | ----------------------
 GridElement          | Grid  
 ReferenceElement     | ReferenceSpace      
-BSplineElement       | BSplineSpace         
+BSplineElement       | BSpline         
 NURBSElement         | NURBSSpace          
 MappingElement       | Mapping        
 PushForwardElement   | PushForward    

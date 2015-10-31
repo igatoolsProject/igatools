@@ -30,7 +30,7 @@
 
 #include <igatools/linear_algebra/epetra.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 using namespace Teuchos;
@@ -40,7 +40,7 @@ void matrix_map(const int deg, const int n_knots)
 {
   OUTSTART
   auto grid = Grid<dim>::create(n_knots);
-  auto space = BSplineSpace<dim>::create(deg, grid);
+  auto space = BSpline<dim>::create(deg, grid);
 
   Epetra_SerialComm comm;
 

@@ -21,7 +21,7 @@
 # # QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 include_files = []
-#include_files = ['basis_functions/bspline_space.h',
+#include_files = ['basis_functions/bspline.h',
 #                 'basis_functions/nurbs_space.h']
 # data = Instantiation(include_files)
 data = Instantiation()
@@ -34,7 +34,7 @@ for x in inst.mapping_dims:
 
 for x in inst.sub_ref_sp_dims:
     dims = '%d, %d, %d' %(x.dim, x.range, x.rank)
-    bs_space = 'std::shared_ptr<BSplineSpace<%s>>' % (dims)
+    bs_space = 'std::shared_ptr<BSpline<%s>>' % (dims)
     f.write('template %s get_bspline_space_from_xml<%s> (const boost::property_tree::ptree &);\n' % (bs_space, dims))
     f.write('#ifdef NURBS\n')
     nr_space = 'std::shared_ptr<NURBSSpace<%s>>' % (dims)
@@ -43,7 +43,7 @@ for x in inst.sub_ref_sp_dims:
     
 for x in inst.ref_sp_dims:
     dims = '%d, %d, %d' %(x.dim, x.range, x.rank)
-    bs_space = 'std::shared_ptr<BSplineSpace<%s>>' % (dims)
+    bs_space = 'std::shared_ptr<BSpline<%s>>' % (dims)
     f.write('template %s get_bspline_space_from_xml<%s> (const boost::property_tree::ptree &);\n' % (bs_space, dims))
     f.write('#ifdef NURBS\n')
     nr_space = 'std::shared_ptr<NURBSSpace<%s>>' % (dims)

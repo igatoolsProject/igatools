@@ -29,7 +29,7 @@
 //TODO (pauletti, Apr 11, 2015): rename this test to something more meaningful
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/geometry/grid_function_lib.h>
@@ -64,7 +64,7 @@ int main()
 {
   const int dim = 2;
   using Space = SplineSpace<dim>;
-  using Basis = BSplineSpace<dim>;
+  using Basis = BSpline<dim>;
 
   auto grid = Grid<dim>::const_create(5);
   auto space = Space::const_create(1, grid);

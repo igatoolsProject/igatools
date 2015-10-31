@@ -3,7 +3,7 @@
 \page example_02 Example 2: traversing elements of a grid-like container
 
 \section Introduction
-In igatools we access information on a Grid or a BSplineSpace
+In igatools we access information on a Grid or a BSpline
 at the element level, using iterators.
 This example shows how we loop and access information on elements of grid like 
 containers.
@@ -32,7 +32,7 @@ we need to instantiate an object (of tipe LogStream) that is needed for printing
 on a stream (screen, file, etc.)
 \snippet example_02.cpp logstream
 
-To loop or iterate on the containers (Grid and BSplineSpace) we 
+To loop or iterate on the containers (Grid and BSpline) we 
 also need to include the element accessors. 
 \snippet example_02.cpp acc_includes
 
@@ -44,8 +44,9 @@ This function creates a grid as in example_01
 \snippet example_02.cpp create_grid
 and iterates (traverse) the elements of the Grid
 \snippet example_02.cpp iter_grid
-elem is a ElementIterator to a Grid container. The iterator can be
-asked for information concerning the element currently pointed to.
+<tt>elem</tt> is a const-reference to a GridElement object, i.e. an <em>element-accessor</em> 
+to a Grid container. 
+The element-accessor can be asked for information concerning the element currently pointed to.
 
 \section Exercise 
 <ol>

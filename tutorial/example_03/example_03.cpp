@@ -20,7 +20,7 @@
 
 #include <igatools/geometry/grid.h>
 #include <igatools/geometry/grid_element.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 // [quad include]
@@ -83,9 +83,9 @@ void loop_on_space_with_cache()
   const int n_knots = 3;
   auto grid = Grid<dim>::create(n_knots);
   const int degree = 2;
-  auto space = BSplineSpace<dim>::create(degree, grid);
+  auto space = BSpline<dim>::create(degree, grid);
 
-  using ElementHandler = typename BSplineSpace<dim>::ElementHandler;
+  using ElementHandler = typename BSpline<dim>::ElementHandler;
   auto elem_handler = ElementHandler::create(space);
   auto quad = QGauss<dim>(1);
   auto flag = ValueFlags::value;

@@ -20,7 +20,7 @@
 
 /*
  *  Test for the boundary l2 projection function.
- *  On a BsplineSpace (a reference space)
+ *  On a BSpline (a reference space)
  *
  *  author: pauletti
  *  date: 2014-11-14
@@ -31,7 +31,7 @@
 #include "common_functions.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
@@ -45,7 +45,7 @@ void do_test(const int p, const int num_knots = 10)
 {
   const int sub_dim = dim - 1;
   out << "Dimension: " << dim << endl;
-  using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSpline<dim, range, rank>;
 
 
   auto grid = Grid<dim>::create(num_knots);

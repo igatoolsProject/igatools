@@ -28,13 +28,13 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 
 template<int dim, int range = 1, int rank = 1>
 void get_interior_dof(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
-  using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSpline<dim, range, rank>;
   auto grid = Grid<dim>::const_create(n_knots);
 
   auto space = Space::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));

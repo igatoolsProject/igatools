@@ -30,7 +30,7 @@
 #include <igatools/linear_algebra/epetra_vector.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/function_element.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 using namespace EpetraTools;
@@ -51,7 +51,7 @@ void non_contig_indices()
   out.end_item();
 
   const int dim = 1;
-  using Space = BSplineSpace<dim>;
+  using Space = BSpline<dim>;
   using Function = IgFunction<dim,0,1,1>;
   auto grid = Grid<dim>::create(5);
   const int deg = 1;

@@ -57,7 +57,7 @@ NURBSSpace(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
 
   const auto w_func_space = w_as_ig_func->get_ig_space();
   Assert(w_func_space->is_bspline(),
-         ExcMessage("The space for the weight function is not BSplineSpace."));
+         ExcMessage("The space for the weight function is not BSpline."));
 
   const auto &n_basis_table = this->get_ptr_const_dof_distribution()->get_num_dofs_table();
   int comp_id = 0;
@@ -526,7 +526,7 @@ void
 NURBSSpace<dim_, range_, rank_>::
 refine_h(const Size n_subdivisions)
 {
-  //the refinement of the BSplineSpace also refines the weight_fucntion (they share the same Grid)
+  //the refinement of the BSpline also refines the weight_fucntion (they share the same Grid)
   bsp_space_.get_ptr_data()->refine_h(n_subdivisions);
 }
 

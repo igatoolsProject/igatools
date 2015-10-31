@@ -307,7 +307,7 @@ serialize(Archive &ar, const unsigned int version)
   ar &boost::serialization::make_nvp("IgFunction_base_t",
                                      boost::serialization::base_object<base_t>(*this));
 
-  ar.template register_type<BSplineSpace<dim,range,rank>>();
+  ar.template register_type<BSpline<dim,range,rank>>();
 
 #ifdef NURBS
   ar.template register_type<NURBSSpace<dim,range,rank>>();

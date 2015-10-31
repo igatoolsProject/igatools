@@ -31,7 +31,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 //#include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/epetra_vector.h>
@@ -49,7 +49,7 @@ void do_test()
 
   auto space = SplineSpace<dim, range>::const_create(degree, grid);
 
-  using Basis = BSplineSpace<dim, range>;
+  using Basis = BSpline<dim, range>;
   auto basis = Basis::const_create(space);
 
   const auto  num = basis->get_num_basis();

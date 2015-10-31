@@ -57,9 +57,9 @@ void test_evaluate()
   grid->refine();
 
   const int deg = 2;
-  auto bsp_space = BSplineSpace<dim,dim>::create(SplineSpace<dim,dim>::create(deg,grid));
+  auto bsp_space = BSpline<dim,dim>::create(SplineSpace<dim,dim>::create(deg,grid));
 
-  using ScalarSpSpace = BSplineSpace<dim,1,1>;
+  using ScalarSpSpace = BSpline<dim,1,1>;
   auto scalar_bsp_space = ScalarSpSpace::create(SplineSpace<dim>::create(deg,grid));
 
   const auto n_scalar_basis = scalar_bsp_space->get_num_basis();

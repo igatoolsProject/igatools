@@ -29,7 +29,7 @@
 // TODO (pauletti, Nov 24, 2014): divide in two different tests
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/utils/concatenated_iterator.h>
 
 #include <memory>
@@ -42,7 +42,7 @@ do_test_1()
 {
   out << "========== do_test_1() dim=" << dim << " --- begin ==========" << endl;
   using Grid = Grid<dim>;
-  using RefSpace = BSplineSpace<dim>;
+  using RefSpace = BSpline<dim>;
   using DMA = DynamicMultiArray<Index,dim>;
   using VecIt = typename DMA::iterator;
   using VecConstIt = typename DMA::const_iterator;
@@ -105,7 +105,7 @@ do_test_2()
 {
   out << "========== do_test_2() dim=" << dim << " --- begin ==========" << endl;
   using Grid = Grid<dim>;
-  using RefSpace = BSplineSpace<dim>;
+  using RefSpace = BSpline<dim>;
   using DMA = DynamicMultiArray<Index,dim>;
   using VecIt = typename SafeSTLVector<Index>::iterator;
   using VecConstIt = typename SafeSTLVector<Index>::const_iterator;

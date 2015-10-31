@@ -39,7 +39,7 @@ template <int, int, int ,int> class PhysicalSpace;
 template <int, int, int> class ReferenceElement;
 template <int,int,int> class ReferenceElementHandler;
 
-template <int, int, int> class BSplineSpace;
+template <int, int, int> class BSpline;
 template <int, int, int> class NURBSSpace;
 
 
@@ -47,7 +47,7 @@ template <int,int,int> class DofDistribution;
 
 
 /**
- * @brief Base abstract class for reference spaces (i.e BSplineSpace and NURBSSpace).
+ * @brief Base abstract class for reference spaces (i.e BSpline and NURBSSpace).
  *
  * @ingroup containers
  * @ingroup serializable

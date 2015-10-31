@@ -36,7 +36,7 @@ dim = 0
 range = 0
 rank = 1
 n_components = range ** rank
-space = 'BSplineSpace<%d,%d,%d>' %(dim,range,rank)
+space = 'BSpline<%d,%d,%d>' %(dim,range,rank)
 spaces.append(space)
 for t in types:
     arr = 'SafeSTLArray<%s,%d>' %(t,dim)
@@ -48,7 +48,7 @@ arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(d
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    space = 'BSplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    space = 'BSpline<%d,%d,%d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     n_components = x.range ** x.rank
     for t in types:
@@ -74,7 +74,7 @@ f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(VecBernstOp,cereal::specialization::
 
 id = 0 
 for space in unique(spaces):
-    sp_alias = 'BSplineSpaceAlias%d' %(id)
+    sp_alias = 'BSplineAlias%d' %(id)
     f.write('using %s = iga::%s;\n' % (sp_alias, space));
     f.write('CEREAL_REGISTER_TYPE(%s);\n' %sp_alias);
     id += 1 

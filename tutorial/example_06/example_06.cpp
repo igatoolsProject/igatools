@@ -23,7 +23,7 @@
 #include <igatools/functions/function_lib.h>
 // [functions]
 // [old includes]
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/base/quadrature_lib.h>
@@ -71,7 +71,7 @@ private:
   // [members]
 private:
   using RefSpace = ReferenceSpace<dim>;
-  using Space = BSplineSpace<dim>;
+  using Space = BSpline<dim>;
   shared_ptr<const Space> space;
 
   const Quadrature<dim>   elem_quad;

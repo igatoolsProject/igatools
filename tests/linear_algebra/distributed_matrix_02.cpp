@@ -29,7 +29,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/linear_algebra/epetra_matrix.h>
 
@@ -38,7 +38,7 @@ using namespace EpetraTools;
 template<int dim = 1, int range  = 1, int rank=1>
 void fill_matrix_and_vector()
 {
-  using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSpline<dim, range, rank>;
   const int p_r = 3;
   const int p_c = 2;
 

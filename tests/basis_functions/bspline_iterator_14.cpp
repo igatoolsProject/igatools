@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSplineSpace element iterator derivatives values
+ *  Test for the BSpline element iterator derivatives values
  *  author: pauletti
  *  date: Aug 21, 2014
  *
@@ -47,7 +47,7 @@ void elem_derivatives(const int n_knots = 5, const int deg=1)
 
   auto space = SplineSpace<dim,range,rank>::const_create(deg, grid);
 
-  using Basis = BSplineSpace<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
   auto basis = Basis::const_create(space);
 
 

@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 // [new include]
 #include <igatools/functions/ig_function.h>
@@ -39,7 +39,7 @@ LogStream out;
 template <int dim>
 void plot_basis(const int deg)
 {
-  using Space  = BSplineSpace<dim>;
+  using Space  = BSpline<dim>;
   using Func = IgFunction<dim,0,1,1>;
 
   const int n_knots = deg + 2;

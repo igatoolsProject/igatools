@@ -18,14 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the BSplineSpace element iterator to get the face values
+ *  Test for the BSpline element iterator to get the face values
  *  author: pauletti
  *  date: 2013-10-23
  */
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 
@@ -37,7 +37,7 @@ void sub_elem_values(const int n_knots, const int deg)
 
   auto grid = Grid<dim>::const_create(n_knots);
   auto space = SplineSpace<dim>::const_create(deg, grid);
-  using Basis = BSplineSpace<dim>;
+  using Basis = BSpline<dim>;
   auto basis = Basis::const_create(space);
 
   const int n_qp = 2;

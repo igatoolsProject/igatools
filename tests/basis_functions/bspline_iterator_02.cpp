@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSplineSpace element iterator local to global
+ *  Test for the BSpline element iterator local to global
  *  author: pauletti
  *  date: Aug 21, 2014
  *
@@ -40,7 +40,7 @@ void elem_dofs(const int n_knots = 4, const int deg=1)
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto space = SplineSpace<dim, range, rank>::const_create(deg, grid);
-  auto basis = BSplineSpace<dim, range, rank>::const_create(space);
+  auto basis = BSpline<dim, range, rank>::const_create(space);
 
   auto elem = basis->begin();
   auto end = basis->end();

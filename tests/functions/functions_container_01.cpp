@@ -165,12 +165,12 @@ void do_test()
 
 
   const int deg = 3;
-  auto bsp_space_1_1 = BSplineSpace<1,1,1>::const_create(deg, grid_1);
-  auto bsp_space_2_1 = BSplineSpace<2,1,1>::const_create(deg, grid_2);
-  auto bsp_space_3_1 = BSplineSpace<3,1,1>::const_create(deg, grid_3);
-  auto bsp_space_2_2 = BSplineSpace<2,2,1>::const_create(deg, grid_2);
-  auto bsp_space_3_3 = BSplineSpace<3,3,1>::const_create(deg, grid_3);
-  auto bsp_space_2_3 = BSplineSpace<2,3,1>::const_create(deg, grid_2);
+  auto bsp_space_1_1 = BSpline<1,1,1>::const_create(deg, grid_1);
+  auto bsp_space_2_1 = BSpline<2,1,1>::const_create(deg, grid_2);
+  auto bsp_space_3_1 = BSpline<3,1,1>::const_create(deg, grid_3);
+  auto bsp_space_2_2 = BSpline<2,2,1>::const_create(deg, grid_2);
+  auto bsp_space_3_3 = BSpline<3,3,1>::const_create(deg, grid_3);
+  auto bsp_space_2_3 = BSpline<2,3,1>::const_create(deg, grid_2);
 
   Epetra_SerialComm comm;
   auto bsp_coeff_1_1 = EpetraTools::create_vector(*bsp_space_1_1,DofProperties::active,comm);

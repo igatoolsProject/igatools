@@ -30,7 +30,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
 
@@ -41,7 +41,7 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 
   auto grid = Grid<dim>::create();
   auto space = SplineSpace<dim,range,rank>::create(deg,grid);
-  using Basis = BSplineSpace<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
   auto basis = Basis::create(space);
 
 
@@ -93,7 +93,7 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
 
   auto grid = Grid<dim>::create();
   auto space = SplineSpace<dim,range,rank>::create(deg,grid);
-  using Basis = BSplineSpace<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
   auto basis = Basis::create(space);
 
   auto dof_distribution = basis->get_ptr_dof_distribution();

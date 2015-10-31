@@ -20,14 +20,14 @@
 
 /**
  *  @file
- *  @brief  BSplineSpace constructors
+ *  @brief  BSpline constructors
  *  @author pauletti
  *  @date 2014-10-23
  */
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 
 
 
@@ -46,7 +46,7 @@ void uniform_degree(const int deg, shared_ptr<Grid<dim>> grid)
 {
   OUTSTART
   auto space = SplineSpace<dim>::create(deg, grid);
-  std::shared_ptr<BSplineSpace<dim>> basis = BSplineSpace<dim>::create(space);
+  std::shared_ptr<BSpline<dim>> basis = BSpline<dim>::create(space);
   basis->print_info(out);
   OUTEND
 }
@@ -58,7 +58,7 @@ void direction_degree(const TensorIndex<dim> &deg,
 {
   OUTSTART
   auto space = SplineSpace<dim>::create(deg, grid);
-  std::shared_ptr<BSplineSpace<dim>> basis = BSplineSpace<dim>::create(space);
+  std::shared_ptr<BSpline<dim>> basis = BSpline<dim>::create(space);
   basis->print_info(out);
   OUTEND
 }

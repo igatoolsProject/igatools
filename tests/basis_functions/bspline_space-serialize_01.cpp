@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for BSplineSpace constructors
+ *  Test for BSpline constructors
  *
  *  author: pauletti
  *  date: 2014-10-23
@@ -28,25 +28,25 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 
 
 template <int dim>
-void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
+void serialize_deserialize(const std::shared_ptr<BSpline<dim>> space_in)
 {
   std::shared_ptr<ReferenceSpace<dim>> basis = space_in;
 //  auto basis = std::make_shared<SpaceBase<dim>>(space_in->get_grid());
 //  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> basis = space_in;
 //  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> basis = std::make_shared<TTT<dim>>();
-  out.begin_item("Original BSplineSpace:");
+  out.begin_item("Original BSpline:");
   basis->print_info(out);
   out.end_item();
 
 
   std::string filename = "bspline_space_dim" + std::to_string(dim) + ".xml";
-  std::string tag_name = "BSplineSpace_dim" + std::to_string(dim);
+  std::string tag_name = "BSpline_dim" + std::to_string(dim);
   {
-    // serialize the BSplineSpace object to an xml file
+    // serialize the BSpline object to an xml file
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 
@@ -55,13 +55,13 @@ void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
 
   basis.reset();
   {
-    // de-serialize the BSplineSpace object from an xml file
+    // de-serialize the BSpline object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
 
     xml_in >> basis;
   }
-  out.begin_item("BSplineSpace after serialize-deserialize:");
+  out.begin_item("BSpline after serialize-deserialize:");
   basis->print_info(out);
   out.end_item();
 
@@ -87,8 +87,8 @@ void uniform_degree(const int deg, shared_ptr<Grid<dim>> grid)
 {
   OUTSTART
   auto space = SplineSpace<dim>::create(deg, grid);
-  auto basis = BSplineSpace<dim>::create(space);
-//  std::shared_ptr<BSplineSpace<dim>> basis = BSplineSpace<dim>::create(deg, grid);
+  auto basis = BSpline<dim>::create(space);
+//  std::shared_ptr<BSpline<dim>> basis = BSpline<dim>::create(deg, grid);
 
   serialize_deserialize(basis);
 
@@ -102,8 +102,8 @@ void direction_degree(const TensorIndex<dim> &deg,
 {
   OUTSTART
   auto space = SplineSpace<dim>::create(deg, grid);
-  auto basis = BSplineSpace<dim>::create(space);
-//  std::shared_ptr<BSplineSpace<dim>> basis = BSplineSpace<dim>::create(deg, grid);
+  auto basis = BSpline<dim>::create(space);
+//  std::shared_ptr<BSpline<dim>> basis = BSpline<dim>::create(deg, grid);
 
   serialize_deserialize(basis);
 

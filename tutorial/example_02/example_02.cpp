@@ -23,7 +23,7 @@
  * and accessing information that do not require the use of cache
  */
 // [old_includes]
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 // [old_includes]
 // [acc_includes]
 #include <igatools/basis_functions/bspline_element.h>
@@ -70,7 +70,7 @@ void loop_on_space()
   auto grid = Grid<dim>::create(n_knots);
   const int degree = 2;
   auto space = SplineSpace<dim>::create(degree, grid);
-  auto basis = BSplineSpace<dim>::create(space);
+  auto basis = BSpline<dim>::create(space);
 
   for (const auto &elem : *basis)
   {

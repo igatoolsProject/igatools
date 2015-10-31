@@ -278,7 +278,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
               ExcDimensionMismatch(codim,codim_from_file));
 
   const string ref_space_type = mapping_attributes.get<string>("RefSpaceType");
-  AssertThrow(ref_space_type == "BSplineSpace" || ref_space_type == "NURBSSpace",
+  AssertThrow(ref_space_type == "BSpline" || ref_space_type == "NURBSSpace",
               ExcMessage("Unknown reference space type: "+ref_space_type));
 
   const bool is_nurbs_space = (ref_space_type == "NURBSSpace")?true:false;
@@ -402,18 +402,18 @@ get_grid_from_xml(const boost::property_tree::ptree &tree)
 
 
 template <int dim, int range, int rank>
-shared_ptr< BSplineSpace<dim,range,rank> >
+shared_ptr< BSpline<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 {
-  AssertThrow(xml_element_is_unique(tree,"BSplineSpace"),
-              ExcMessage("The BSplineSpace tag is not unique."));
+  AssertThrow(xml_element_is_unique(tree,"BSpline"),
+              ExcMessage("The BSpline tag is not unique."));
 
-  const auto &ref_space_tree = get_xml_element(tree,"BSplineSpace");
+  const auto &ref_space_tree = get_xml_element(tree,"BSpline");
 
-  using space_t = BSplineSpace<dim,range,rank>;
+  using space_t = BSpline<dim,range,rank>;
 
   //-------------------------------------------------------------------------
-  // reading the BSplineSpace attributes
+  // reading the BSpline attributes
   const auto &ref_space_attributes = get_xml_element_attributes(ref_space_tree);
 
   const int dim_from_file = ref_space_attributes.get<int>("Dim");
@@ -438,7 +438,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 
   //-------------------------------------------------------------------------
   // reading the ScalarComponents
-  const auto &scalar_components_tree = get_xml_element(ref_space_tree,"BSplineSpaceScalarComponents");
+  const auto &scalar_components_tree = get_xml_element(ref_space_tree,"BSplineScalarComponents");
   const auto &scalar_components_attributes = get_xml_element_attributes(scalar_components_tree);
   const int n_sc_components_from_file = scalar_components_attributes.get<int>("Size");
   AssertThrow(n_sc_components_from_file >= 1 && n_sc_components_from_file <= space_t::n_components,
@@ -463,7 +463,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 
 
 
-  const auto &scalar_component_vector = get_xml_element_vector(scalar_components_tree,"BSplineSpaceScalarComponent");
+  const auto &scalar_component_vector = get_xml_element_vector(scalar_components_tree,"BSplineScalarComponent");
   AssertThrow(scalar_component_vector.size() == n_sc_components_from_file,
               ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
   AssertThrow(scalar_component_vector.size() == n_active_components,
@@ -687,7 +687,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
 
   // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
-  using SpSpace = BSplineSpace<dim,range,rank>;
+  using SpSpace = BSpline<dim,range,rank>;
   typename SpSpace::EndBehaviourTable
   end_behaviour(components_map, SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
   typename SpSpace::PeriodicityTable periodic(components_map, SafeSTLArray<bool, dim>(false));
@@ -700,24 +700,24 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
   //----------------------------------------
   // building the weight function table --- begin
-  using ScalarBSplineSpace = BSplineSpace<dim>;
+  using ScalarBSpline = BSpline<dim>;
 //    using WeightFunc = IgFunction<ReferenceSpace<dim,1,1> >;
 
-  using ScalarDegreeTable = typename ScalarBSplineSpace::DegreeTable;
+  using ScalarDegreeTable = typename ScalarBSpline::DegreeTable;
   const ScalarDegreeTable scalar_degree_table(degrees[0]);
 
 //  auto new_grid = Grid<dim>::create(*grid);
 
-  using ScalarMultiplicityTable = typename ScalarBSplineSpace::MultiplicityTable;
+  using ScalarMultiplicityTable = typename ScalarBSpline::MultiplicityTable;
   const auto scalar_mult_table = ScalarMultiplicityTable(multiplicities[0]);
   // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
-  typename ScalarBSplineSpace::EndBehaviourTable
+  typename ScalarBSpline::EndBehaviourTable
   scalar_end_behaviour({SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory)});
-  typename ScalarBSplineSpace::PeriodicityTable scalar_periodic(SafeSTLArray<bool, dim>(false));
+  typename ScalarBSpline::PeriodicityTable scalar_periodic(SafeSTLArray<bool, dim>(false));
 
 
   auto scalar_spline_space = SplineSpace<dim,1,1>::create(scalar_degree_table,grid,scalar_mult_table,scalar_periodic);
-  auto scalar_bspline_basis = ScalarBSplineSpace::create(scalar_spline_space, scalar_end_behaviour);
+  auto scalar_bspline_basis = ScalarBSpline::create(scalar_spline_space, scalar_end_behaviour);
 
 //    using WeightFuncPtr = shared_ptr<WeightFunc>;
   using WeightFunction = typename space_t::WeightFunction;
@@ -1023,12 +1023,12 @@ ig_mapping_reader_version_1_0(const std::string &filename)
   }
   else
   {
-    using space_t = BSplineSpace<dim,dim_phys,1>;
+    using space_t = BSpline<dim,dim_phys,1>;
     auto space = space_t::create(
                    grid,
                    StaticMultiArray<Multiplicity<dim>,dim_phys,1>(multiplicities),
                    StaticMultiArray<TensorIndex<dim>,dim_phys,1>(degree));
-//      BSplineSpace (const DegreeTable &deg, std::shared_ptr< GridType > knots, std::shared_ptr< const MultiplicityTable > interior_mult, const EndBehaviourTable &ends)
+//      BSpline (const DegreeTable &deg, std::shared_ptr< GridType > knots, std::shared_ptr< const MultiplicityTable > interior_mult, const EndBehaviourTable &ends)
 
     map = IgMapping<space_t>::create(space,control_pts);
   }

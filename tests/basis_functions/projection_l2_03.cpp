@@ -31,7 +31,7 @@
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/identity_function.h>
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/basis_functions/space_tools.h>
@@ -41,7 +41,7 @@ void test_proj(const int deg, const int n_knots = 4)
 {
   OUTSTART
 
-  using Space = BSplineSpace<dim,range,rank> ;
+  using Space = BSpline<dim,range,rank> ;
   using RefSpace = ReferenceSpace<dim,range,rank> ;
   using Func = typename functions::ConstantFunction<dim, 0, range, rank>;
 

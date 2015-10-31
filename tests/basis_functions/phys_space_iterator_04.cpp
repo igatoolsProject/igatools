@@ -33,7 +33,7 @@
 //#include <igatools/functions/function_lib.h>
 //#include <igatools/functions/identity_function.h>
 #include <igatools/geometry/grid_function_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
@@ -65,7 +65,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
 {
 
   const int k = dim;
-  using BspSpace = BSplineSpace<dim, range, rank>;
+  using BspSpace = BSpline<dim, range, rank>;
   using Space = PhysicalSpace<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);

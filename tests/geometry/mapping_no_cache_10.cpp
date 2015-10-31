@@ -30,7 +30,7 @@
 #include <igatools/geometry/mapping_element.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/function_element.h>
 
@@ -40,7 +40,7 @@ void ig_mapping(const int deg = 1)
 {
   OUTSTART
 
-  using Space = BSplineSpace<dim,dim>;
+  using Space = BSpline<dim,dim>;
   using RefSpace = ReferenceSpace<dim, dim>;
   using Function = IgFunction<dim,0,dim,1>;
   using Mapping   = Mapping<dim,0>;

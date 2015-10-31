@@ -25,7 +25,7 @@
 
 // [ig map bspline]
 #include <igatools/functions/ig_function.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 // [ig map bspline]
 
@@ -77,7 +77,7 @@ void nurb_geometry()
   const int deg = 2;
   const int n_knots = 3;
   auto grid = Grid<dim>::create(n_knots);
-  using Space = BSplineSpace<dim,dim>;
+  using Space = BSpline<dim,dim>;
   auto space = Space::create(deg, grid);
 
   auto control_pts = create_vector(*space,DofProperties::active,Epetra_SerialComm());

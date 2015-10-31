@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 
 
 
@@ -39,9 +39,9 @@ void component_space(const int deg=3,  const int n_knots = 10)
 
   auto grid  = Grid<dim>::const_create(n_knots);
   using VecSpace = SplineSpace<dim,dim+codim,1>;
-  using VecBasis = BSplineSpace<dim,dim+codim>;
+  using VecBasis = BSpline<dim,dim+codim>;
   using CompSpace  = SplineSpace<dim,1,1>;
-  using CompBasis  = BSplineSpace<dim,1>;
+  using CompBasis  = BSpline<dim,1>;
   typename VecSpace::Degrees degt(deg);
   typename VecSpace::Periodicity periodic(false);
   periodic[0] = true;

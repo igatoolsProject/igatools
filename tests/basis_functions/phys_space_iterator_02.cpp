@@ -31,7 +31,7 @@
 
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
@@ -88,7 +88,7 @@ void serialize_deserialize(std::shared_ptr<Space> space)
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<const BSplineSpace<dim, dim + codim>> space)
+create_function(shared_ptr<const BSpline<dim, dim + codim>> space)
 {
   IgCoefficients control_pts;
 
@@ -161,7 +161,7 @@ create_function(shared_ptr<const BSplineSpace<dim, dim + codim>> space)
 
 template<int dim,int range=dim,int rank=1,int codim=0>
 auto
-create_phys_space(shared_ptr<const BSplineSpace<dim,range,rank>> ref_space)
+create_phys_space(shared_ptr<const BSpline<dim,range,rank>> ref_space)
 {
   using Space = PhysicalSpace<dim,range,rank,codim>;
 
@@ -177,7 +177,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
 {
   OUTSTART
   const int k = dim;
-  using BspSpace = BSplineSpace<dim, range, rank>;
+  using BspSpace = BSpline<dim, range, rank>;
 
 
   auto grid  = Grid<dim>::const_create(n_knots);

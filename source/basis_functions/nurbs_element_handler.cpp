@@ -196,7 +196,7 @@ evaluate_nurbs_values_from_bspline(
    * R_i = -----------
    *            Q
    *
-   * with P_i a basis function of a BSplineSpace
+   * with P_i a basis function of a BSpline
    * and Q an IgGridFunction built over a scalar BSpline space
    *
    */
@@ -260,7 +260,7 @@ evaluate_nurbs_gradients_from_bspline(
    * R_i = ----------
    *            Q
    *
-   * with P_i a basis function of a BSplineSpace
+   * with P_i a basis function of a BSpline
    * and Q an IgFunction built over a scalar space.
    *
    * Then the gradient dR_i is:
@@ -354,7 +354,7 @@ evaluate_nurbs_hessians_from_bspline(
    * Rk = -------
    *         Q
    *
-   * with Pk a basis function of a BSplineSpace
+   * with Pk a basis function of a BSpline
    * and Q an IgFunction built over a scalar space.
    *
    * Then the gradient dRk is defined by the partial derivatives:

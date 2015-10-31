@@ -364,7 +364,7 @@ serialize(Archive &ar, const unsigned int version)
   ar &boost::serialization::make_nvp("PhysicalSpace_base_t",
                                      boost::serialization::base_object<base_t>(*this));
 
-  ar.template register_type<BSplineSpace<dim_,range_,rank_> >();
+  ar.template register_type<BSpline<dim_,range_,rank_> >();
 #ifdef NURBS
   ar.template register_type<NURBSSpace<dim_,range_,rank_> >();
 #endif // NURBS

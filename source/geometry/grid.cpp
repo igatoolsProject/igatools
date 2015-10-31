@@ -741,6 +741,8 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
 
 
 
+#endif // MESH_REFINEMENT
+
 template <int dim_>
 bool
 Grid<dim_>::
@@ -757,9 +759,8 @@ same_knots_or_refinement_of(const Grid<dim_> &grid_to_compare_with) const
           knots_coarse.begin(),
           knots_coarse.end(),
           [&knots_fine](const Real &val)
-  {
-    return !std::binary_search(knots_fine.begin(),knots_fine.end(),val);
-    }))
+          {return !std::binary_search(knots_fine.begin(),knots_fine.end(),val);})
+       )
     {
       is_refinement = false;
       break;
@@ -768,8 +769,6 @@ same_knots_or_refinement_of(const Grid<dim_> &grid_to_compare_with) const
 
   return is_refinement;
 }
-#endif // MESH_REFINEMENT
-
 
 
 template <int dim_>
