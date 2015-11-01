@@ -104,12 +104,12 @@ find_doxygen()
 
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
 
-option(NURBS "Enable NURBS support" ON)
-if (NURBS)
+option(USE_NURBS "Enable NURBS support" ON)
+if (USE_NURBS)
     message("-- NURBS support is enabled.")
-else(NURBS)
+else(USE_NURBS)
     message("-- NURBS support is not enabled.")    
-endif(NURBS)
+endif(USE_NURBS)
 
 option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
 if (REAL_IS_LONG_DOUBLE)
