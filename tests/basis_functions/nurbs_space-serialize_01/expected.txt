@@ -1,7 +1,7 @@
 ========================================================================
 do_test
 ========================================================================
-Original NURBSSpace:
+Original NURBS:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -232,7 +232,7 @@ Original NURBSSpace:
       
    
 
-NURBSSpace after serialize-deserialize:
+NURBS after serialize-deserialize:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -468,7 +468,7 @@ NURBSSpace after serialize-deserialize:
 ========================================================================
 do_test
 ========================================================================
-Original NURBSSpace:
+Original NURBS:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -718,7 +718,7 @@ Original NURBSSpace:
       
    
 
-NURBSSpace after serialize-deserialize:
+NURBS after serialize-deserialize:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -973,7 +973,7 @@ NURBSSpace after serialize-deserialize:
 ========================================================================
 do_test
 ========================================================================
-Original NURBSSpace:
+Original NURBS:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -1242,7 +1242,7 @@ Original NURBSSpace:
       
    
 
-NURBSSpace after serialize-deserialize:
+NURBS after serialize-deserialize:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -1516,7 +1516,7 @@ NURBSSpace after serialize-deserialize:
 ========================================================================
 do_test
 ========================================================================
-Original NURBSSpace:
+Original NURBS:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -1823,7 +1823,7 @@ Original NURBSSpace:
       
    
 
-NURBSSpace after serialize-deserialize:
+NURBS after serialize-deserialize:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -2135,7 +2135,7 @@ NURBSSpace after serialize-deserialize:
 ========================================================================
 do_test
 ========================================================================
-Original NURBSSpace:
+Original NURBS:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -2467,7 +2467,7 @@ Original NURBSSpace:
       
    
 
-NURBSSpace after serialize-deserialize:
+NURBS after serialize-deserialize:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -2804,7 +2804,7 @@ NURBSSpace after serialize-deserialize:
 ========================================================================
 do_test
 ========================================================================
-Original NURBSSpace:
+Original NURBS:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -3161,7 +3161,7 @@ Original NURBSSpace:
       
    
 
-NURBSSpace after serialize-deserialize:
+NURBS after serialize-deserialize:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -3523,7 +3523,7 @@ NURBSSpace after serialize-deserialize:
 ========================================================================
 do_test
 ========================================================================
-Original NURBSSpace:
+Original NURBS:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -3962,7 +3962,7 @@ Original NURBSSpace:
       
    
 
-NURBSSpace after serialize-deserialize:
+NURBS after serialize-deserialize:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -4406,7 +4406,7 @@ NURBSSpace after serialize-deserialize:
 ========================================================================
 do_test
 ========================================================================
-Original NURBSSpace:
+Original NURBS:
    BSpline Space:
       Spline Space:
          Knots without repetition:
@@ -4905,7 +4905,7 @@ Original NURBSSpace:
       
    
 
-NURBSSpace after serialize-deserialize:
+NURBS after serialize-deserialize:
    BSpline Space:
       Spline Space:
          Knots without repetition:

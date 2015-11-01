@@ -40,14 +40,14 @@ template <int, int, int> class ReferenceElement;
 template <int,int,int> class ReferenceElementHandler;
 
 template <int, int, int> class BSpline;
-template <int, int, int> class NURBSSpace;
+template <int, int, int> class NURBS;
 
 
 template <int,int,int> class DofDistribution;
 
 
 /**
- * @brief Base abstract class for reference spaces (i.e BSpline and NURBSSpace).
+ * @brief Base abstract class for reference spaces (i.e BSpline and NURBS).
  *
  * @ingroup containers
  * @ingroup serializable

@@ -24,7 +24,7 @@
 
 #include <igatools/base/config.h>
 
-#ifdef NURBS
+#ifdef USE_NURBS
 
 #include <igatools/base/cache_status.h>
 #include <igatools/base/flags_handler.h>
@@ -42,11 +42,11 @@
 IGA_NAMESPACE_OPEN
 
 
-template<int,int,int> class NURBSSpace;
+template<int,int,int> class NURBS;
 template<int,int,int> class NURBSElement;
 
 /**
- * Global NURBSSpace uniform quadrature
+ * Global NURBS uniform quadrature
  * computational optimization cache.
  *
  * @ingroup handlers
@@ -57,7 +57,7 @@ class NURBSElementHandler
 {
   using base_t = ReferenceElementHandler<dim_,range_,rank_>;
   using self_t = NURBSElementHandler<dim_,range_,rank_>;
-  using Space = NURBSSpace<dim_,range_,rank_>;
+  using Space = NURBS<dim_,range_,rank_>;
   static const Size n_components =  Space::n_components;
 
   using IndexType = typename Grid<dim_>::IndexType;
@@ -147,7 +147,7 @@ private:
 
 
   /**
-   * Returns the NURBSSpace used to define the NURBSElementHandler object.
+   * Returns the NURBS used to define the NURBSElementHandler object.
    */
   std::shared_ptr<const Space> get_nurbs_space() const;
 
@@ -375,7 +375,7 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // #ifdef NURBS
+#endif // #ifdef USE_NURBS
 
 #endif // #ifndef NURBS_ELEMENT_HANDLER_H_
 

@@ -24,7 +24,7 @@
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/basis_functions/dof_distribution.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 
 
 

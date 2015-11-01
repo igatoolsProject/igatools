@@ -2,7 +2,7 @@
 sub_space
 ========================================================================
 Dim: 1     Sub-Dim: 0
-   Original NURBSSpace:
+   Original NURBS:
       BSpline Space:
          Spline Space:
             Knots without repetition:
@@ -625,7 +625,7 @@ Dim: 1     Sub-Dim: 0
       sub_space
       ========================================================================
       Dim: 2     Sub-Dim: 1
-         Original NURBSSpace:
+         Original NURBS:
             BSpline Space:
                Spline Space:
                   Knots without repetition:
@@ -1760,7 +1760,7 @@ Dim: 1     Sub-Dim: 0
                   sub_space
                   ========================================================================
                   Dim: 3     Sub-Dim: 2
-                     Original NURBSSpace:
+                     Original NURBS:
                         BSpline Space:
                            Spline Space:
                               Knots without repetition:

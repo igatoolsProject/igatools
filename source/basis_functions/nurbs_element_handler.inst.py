@@ -20,7 +20,7 @@
 
 from init_instantiation_data import *
 
-include_files = ['basis_functions/nurbs_space.h']
+include_files = ['basis_functions/nurbs.h']
 
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)

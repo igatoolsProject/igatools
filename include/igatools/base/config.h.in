@@ -23,7 +23,7 @@
 
 #cmakedefine REAL_IS_LONG_DOUBLE
 #cmakedefine USE_TRILINOS
-#cmakedefine NURBS
+#cmakedefine USE_NURBS
 #cmakedefine MPATCH
 #cmakedefine HIERARCHICAL
 #cmakedefine SERIALIZATION

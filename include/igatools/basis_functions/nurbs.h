@@ -27,7 +27,7 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/ig_grid_function.h>
 
-#ifdef NURBS
+#ifdef USE_NURBS
 
 IGA_NAMESPACE_OPEN
 
@@ -42,12 +42,12 @@ template <int, int, int> class NURBSElementHandler;
  * @ingroup serializable
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
-class NURBSSpace :
+class NURBS :
   public ReferenceSpace<dim_,range_,rank_>
 {
 private:
   using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
-  using self_t = NURBSSpace<dim_, range_, rank_>;
+  using self_t = NURBS<dim_, range_, rank_>;
 
 public:
   using BSpSpace = BSpline<dim_, range_, rank_>;
@@ -115,7 +115,7 @@ public:
    * grid.
    */
   template<int sdim>
-  std::shared_ptr<const NURBSSpace<sdim,range_,rank_> >
+  std::shared_ptr<const NURBS<sdim,range_,rank_> >
   get_sub_nurbs_space(const int sub_elem_id,
                       InterSpaceMap<sdim> &dof_map,
                       const std::shared_ptr<const Grid<sdim>> &sub_grid) const;
@@ -152,7 +152,7 @@ public:
 
 public:
   /**
-   * Returns a shared_ptr wrapping a (non-const) NURBSSpace from a
+   * Returns a shared_ptr wrapping a (non-const) NURBS from a
    * (non-const) BSpline and a scalar weight function.
    */
   static std::shared_ptr<self_t>
@@ -160,7 +160,7 @@ public:
          const std::shared_ptr<WeightFunction> &weight_func);
 
   /**
-   * Returns a shared_ptr wrapping a (const) NURBSSpace from a
+   * Returns a shared_ptr wrapping a (const) NURBS from a
    * (const) BSpline and a scalar weight function.
    */
   static std::shared_ptr<const self_t>
@@ -182,7 +182,7 @@ public:
   create_ref_element(const ListIt &index, const PropId &property) const override final;
 
   /** Destructor */
-  virtual ~NURBSSpace() = default;
+  virtual ~NURBS() = default;
 
 protected:
   /** @name Constructor */
@@ -191,18 +191,18 @@ protected:
    * Default constructor. It does nothing but it is needed for the
    * serialization mechanism.
    */
-  NURBSSpace() = default;
+  NURBS() = default;
 
   /**
-   * Construct a NURBSSpace from a BSpline and a scalar weight function.
+   * Construct a NURBS from a BSpline and a scalar weight function.
    */
-  explicit NURBSSpace(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
+  explicit NURBS(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
                       const SharedPtrConstnessHandler<WeightFunction> &weight_func);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  NURBSSpace(const self_t &space) = delete;
+  NURBS(const self_t &space) = delete;
 
   ///@}
 
@@ -229,7 +229,7 @@ public:
 
 
   /**
-   * Get the weights function of the NURBSSpace.
+   * Get the weights function of the NURBS.
    */
   std::shared_ptr<const WeightFunction> get_weight_func() const;
 
@@ -345,12 +345,12 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-#include <igatools/basis_functions/nurbs_space.serial>
+#include <igatools/basis_functions/nurbs.serial>
 
 #endif // SERIALIZATION
 
 
-#endif /* #ifdef NURBS */
+#endif /* #ifdef USE_NURBS */
 
 
 #endif /* NURBS_SPACE_H_ */

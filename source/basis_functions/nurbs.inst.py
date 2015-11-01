@@ -27,7 +27,7 @@ from init_instantiation_data import *
 # data = Instantiation(include_files)
 # (f, inst) = (data.file_output, data.inst)
 # # 
-# spaces = ['NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank) 
+# spaces = ['NURBS<%d, %d, %d>' %(x.dim, x.range, x.rank) 
 #           for x in inst.really_all_ref_sp_dims ]
 # for sp in spaces:
 #     f.write('template class %s ;\n' %sp)
@@ -40,7 +40,7 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 sub_dim_members = \
- ['std::shared_ptr<const typename class::template NURBSSpace<sdim,range,rank>> ' + 
+ ['std::shared_ptr<const typename class::template NURBS<sdim,range,rank>> ' + 
   'class::get_sub_nurbs_space<sdim>(const int s_id, ' + 
   'InterSpaceMap<sdim> &dof_map, '+
   'const std::shared_ptr<const Grid<sdim>> &sub_grid) const;'
@@ -51,11 +51,11 @@ sub_dim_members = \
 ]
 
 
-spaces = ['NURBSSpace<0,0,1>']
+spaces = ['NURBS<0,0,1>']
 templated_funcs = []
 
 for x in inst.sub_ref_sp_dims:
-    space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    space = 'NURBS<%d, %d, %d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
         k = max(x.dim-1,0)
@@ -64,7 +64,7 @@ for x in inst.sub_ref_sp_dims:
 
 
 for x in inst.ref_sp_dims:
-    space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    space = 'NURBS<%d, %d, %d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
@@ -90,7 +90,7 @@ archives = ['OArchive','IArchive']
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
 for space in unique(spaces):
-    alias = 'NURBSSpaceAlias%d' %(id)
+    alias = 'NURBSAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, space))
     for ar in archives:
         f.write('template void %s::serialize(%s&);\n' %(alias,ar))

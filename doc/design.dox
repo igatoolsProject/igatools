@@ -40,7 +40,7 @@ Element Containers   | Elements              | Element's cache fillers/handlers
 Grid                 | GridElement           | GridHandler
 ReferenceSpace       | ReferenceElement      | ReferenceElementHandler
 BSpline         | BSplineElement        | BSplineElementHandler 
-NURBSSpace           | NURBSElement          | NURBSElementHandler
+NURBS           | NURBSElement          | NURBSElementHandler
 Mapping              | MappingElement        | not defined
 PushForward          | PushForwardElement    | not defined
 PhysicalSpace        | PhysicalSpaceElement  | PhysSpaceElementHandler
@@ -97,7 +97,7 @@ Elements             | Element Containers
 GridElement          | Grid  
 ReferenceElement     | ReferenceSpace      
 BSplineElement       | BSpline         
-NURBSElement         | NURBSSpace          
+NURBSElement         | NURBS          
 MappingElement       | Mapping        
 PushForwardElement   | PushForward    
 PhysicalSpaceElement | PhysicalSpace

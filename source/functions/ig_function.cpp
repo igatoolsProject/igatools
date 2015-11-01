@@ -309,8 +309,8 @@ serialize(Archive &ar, const unsigned int version)
 
   ar.template register_type<BSpline<dim,range,rank>>();
 
-#ifdef NURBS
-  ar.template register_type<NURBSSpace<dim,range,rank>>();
+#ifdef USE_NURBS
+  ar.template register_type<NURBS<dim,range,rank>>();
 #endif // NURBS
 
   ar.template register_type<PhysicalSpace<dim,range,rank,codim>>();

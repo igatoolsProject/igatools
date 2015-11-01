@@ -278,10 +278,10 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
               ExcDimensionMismatch(codim,codim_from_file));
 
   const string ref_space_type = mapping_attributes.get<string>("RefSpaceType");
-  AssertThrow(ref_space_type == "BSpline" || ref_space_type == "NURBSSpace",
+  AssertThrow(ref_space_type == "BSpline" || ref_space_type == "NURBS",
               ExcMessage("Unknown reference space type: "+ref_space_type));
 
-  const bool is_nurbs_space = (ref_space_type == "NURBSSpace")?true:false;
+  const bool is_nurbs_space = (ref_space_type == "NURBS")?true:false;
   //-------------------------------------------------------------------------
 
 
@@ -311,7 +311,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
   shared_ptr<ref_space_t> ref_space = nullptr;
   if (is_nurbs_space)
   {
-#ifdef NURBS
+#ifdef USE_NURBS
     ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(mapping_tree);
 #else
     Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
@@ -538,23 +538,23 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
   return bspline_basis;
 }
 
-#ifdef NURBS
+#ifdef USE_NURBS
 template <int dim, int range, int rank>
-shared_ptr< NURBSSpace<dim,range,rank> >
+shared_ptr< NURBS<dim,range,rank> >
 get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 {
 //    Assert(false,ExcMessage("This function must be checked (MM:26/11/2014!"));
 //    AssertThrow(false,ExcMessage("This function must be checked (MM:26/11/2014!"));
 
-  AssertThrow(xml_element_is_unique(tree,"NURBSSpace"),
-              ExcMessage("The NURBSSpace tag is not unique."));
+  AssertThrow(xml_element_is_unique(tree,"NURBS"),
+              ExcMessage("The NURBS tag is not unique."));
 
-  const auto &ref_space_tree = get_xml_element(tree,"NURBSSpace");
+  const auto &ref_space_tree = get_xml_element(tree,"NURBS");
 
-  using space_t = NURBSSpace<dim,range,rank>;
+  using space_t = NURBS<dim,range,rank>;
 
   //-------------------------------------------------------------------------
-  // reading the NURBSSpace attributes
+  // reading the NURBS attributes
   const auto &ref_space_attributes = get_xml_element_attributes(ref_space_tree);
 
   const int dim_from_file = ref_space_attributes.get<int>("Dim");
@@ -579,7 +579,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
   //-------------------------------------------------------------------------
   // reading the ScalarComponents
-  const auto &scalar_components_tree = get_xml_element(ref_space_tree,"NURBSSpaceScalarComponents");
+  const auto &scalar_components_tree = get_xml_element(ref_space_tree,"NURBSScalarComponents");
   const auto &scalar_components_attributes = get_xml_element_attributes(scalar_components_tree);
   const int n_sc_components_from_file = scalar_components_attributes.get<int>("Size");
   AssertThrow(n_sc_components_from_file >= 1 && n_sc_components_from_file <= space_t::n_components,
@@ -604,7 +604,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
 
 
-  const auto &scalar_component_vector = get_xml_element_vector(scalar_components_tree,"NURBSSpaceScalarComponent");
+  const auto &scalar_component_vector = get_xml_element_vector(scalar_components_tree,"NURBSScalarComponent");
   AssertThrow(scalar_component_vector.size() == n_sc_components_from_file,
               ExcDimensionMismatch(scalar_component_vector.size(),n_sc_components_from_file));
   AssertThrow(scalar_component_vector.size() == n_active_components,
@@ -753,7 +753,7 @@ IGA_NAMESPACE_CLOSE
 // TODO (pauletti, Dec 27, 2014): commented code below should be removed
 #if 0
 
-#ifdef NURBS
+#ifdef USE_NURBS
 #include <igatools/basis_functions/nurbs_element_accessor.h>
 #endif
 #include <igatools/basis_functions/bspline_element_accessor.h>
@@ -1011,7 +1011,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
     AssertThrow(false,ExcNotImplemented());
 #if 0
 
-    using space_t = NURBSSpace<dim,dim_phys,1>;
+    using space_t = NURBS<dim,dim_phys,1>;
     auto space = space_t::create(
                    grid,
                    StaticMultiArray<Multiplicity<dim>,dim_phys,1>(multiplicities),

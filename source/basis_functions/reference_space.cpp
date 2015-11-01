@@ -24,7 +24,7 @@
 #include <igatools/base/array_utils.h>
 
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/geometry/grid_function_lib.h>
 
 
@@ -57,8 +57,8 @@ get_ref_sub_space(const int sub_elem_id,
   }
   else
   {
-#ifdef NURBS
-    const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
+#ifdef USE_NURBS
+    const auto nrb_space = dynamic_cast<const NURBS<dim,range,rank> *>(this);
     Assert(nrb_space != nullptr,ExcNullPtr());
     sub_ref_space = nrb_space->template get_sub_nurbs_space<sdim>(sub_elem_id,dof_map,sub_grid);
 #else

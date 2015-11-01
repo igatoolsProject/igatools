@@ -23,7 +23,7 @@
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/nurbs_element_handler.h>
 
 using std::shared_ptr;
@@ -55,8 +55,8 @@ create(const shared_ptr<const Space> &space)
   }
   else
   {
-#ifdef NURBS
-    using NURBSSp = const NURBSSpace<dim,range,rank>;
+#ifdef USE_NURBS
+    using NURBSSp = const NURBS<dim,range,rank>;
     auto nrb_space = std::dynamic_pointer_cast< NURBSSp >(space);
     elem_handler = NURBSElementHandler<dim,range,rank>::create(nrb_space);
 #else

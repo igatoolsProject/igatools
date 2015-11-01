@@ -20,10 +20,10 @@
 
 
 #include <igatools/basis_functions/nurbs_element.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/nurbs_element_handler.h>
 
-#ifdef NURBS
+#ifdef USE_NURBS
 
 IGA_NAMESPACE_OPEN
 
@@ -137,7 +137,7 @@ IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_element.inst>
 
-#endif // #ifdef NURBS
+#endif // #ifdef USE_NURBS
 
 
 

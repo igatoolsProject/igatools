@@ -18,14 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/nurbs_element_handler.h>
 //#include <igatools/basis_functions/space_tools.h>
 
 //#include <igatools/base/sub_function.h>
 //#include <igatools/base/exceptions.h>
 
-#ifdef NURBS
+#ifdef USE_NURBS
 
 
 using std::to_string;
@@ -41,8 +41,8 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim_, int range_, int rank_>
-NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
+NURBS<dim_, range_, rank_>::
+NURBS(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
            const SharedPtrConstnessHandler<WeightFunction> &weight_func)
   :
   bsp_space_(bsp_space),
@@ -76,7 +76,7 @@ NURBSSpace(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
 
 template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 create(const std::shared_ptr<BSpSpace> &bs_space,
        const std::shared_ptr<WeightFunction> &weight_func) -> shared_ptr<self_t>
 {
@@ -94,7 +94,7 @@ create(const std::shared_ptr<BSpSpace> &bs_space,
 
 template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 const_create(const std::shared_ptr<const BSpSpace> &bs_space,
              const std::shared_ptr<const WeightFunction> &weight_func) -> shared_ptr<const self_t>
 {
@@ -109,7 +109,7 @@ const_create(const std::shared_ptr<const BSpSpace> &bs_space,
 
 template<int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_this_space() const -> std::shared_ptr<const self_t >
 {
   auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
@@ -121,7 +121,7 @@ get_this_space() const -> std::shared_ptr<const self_t >
 
 template<int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 create_element(const ListIt &index, const PropId &property) const
 -> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
 {
@@ -136,7 +136,7 @@ create_element(const ListIt &index, const PropId &property) const
 
 template<int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 create_ref_element(const ListIt &index, const PropId &property) const
 -> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
 {
@@ -152,7 +152,7 @@ create_ref_element(const ListIt &index, const PropId &property) const
 
 template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_weight_func() const -> std::shared_ptr<const WeightFunction>
 {
   return weight_func_.get_ptr_const_data();
@@ -160,7 +160,7 @@ get_weight_func() const -> std::shared_ptr<const WeightFunction>
 
 template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_grid() const -> std::shared_ptr<const Grid<dim_>>
 {
   return bsp_space_->get_grid();
@@ -171,7 +171,7 @@ get_grid() const -> std::shared_ptr<const Grid<dim_>>
 #if 0
 template <int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 reset_weights(const WeightsTable &weights)
 {
   weights_ = weights;
@@ -181,7 +181,7 @@ reset_weights(const WeightsTable &weights)
 
 template<int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_ref_face_space(const Index face_id,
                    SafeSTLVector<Index> &face_to_element_dofs,
                    typename GridType::FaceGridMap &elem_map) const
@@ -211,7 +211,7 @@ get_ref_face_space(const Index face_id,
 
 template<int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_face_space(const Index face_id,
                SafeSTLVector<Index> &face_to_element_dofs) const
 -> std::shared_ptr<FaceSpace>
@@ -230,7 +230,7 @@ get_face_space(const Index face_id,
 
 template <int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 refine_h_weights(
   const SafeSTLArray<bool,dim> &refinement_directions,
   const GridType &grid_old1)
@@ -345,7 +345,7 @@ refine_h_weights(
 #if 0
 template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_interior_mult() const -> std::shared_ptr<const MultiplicityTable>
 {
   return bsp_space_->get_interior_mult();
@@ -355,7 +355,7 @@ get_interior_mult() const -> std::shared_ptr<const MultiplicityTable>
 
 template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_spline_space() const -> const std::shared_ptr<const BSpSpace>
 {
   return bsp_space_.get_ptr_const_data();
@@ -368,11 +368,11 @@ get_spline_space() const -> const std::shared_ptr<const BSpSpace>
 template<int dim_, int range_, int rank_>
 template<int sdim>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_sub_nurbs_space(const int s_id,
                     InterSpaceMap<sdim> &dof_map,
                     const std::shared_ptr<const Grid<sdim>> &sub_grid) const
--> std::shared_ptr<const NURBSSpace<sdim,range_,rank_> >
+-> std::shared_ptr<const NURBS<sdim,range_,rank_> >
 {
   static_assert(sdim == 0 || (sdim > 0 && sdim < dim_),
   "The dimensionality of the sub_grid is not valid.");
@@ -382,7 +382,7 @@ get_sub_nurbs_space(const int s_id,
 
   auto sub_w_func = weight_func_->template get_sub_function<sdim>(s_id,space_sub_grid);
 
-  auto sub_nrb_space = NURBSSpace<sdim,range_,rank_>::const_create(sub_bsp_space,sub_w_func);
+  auto sub_nrb_space = NURBS<sdim,range_,rank_>::const_create(sub_bsp_space,sub_w_func);
 
   return sub_nrb_space;
 }
@@ -392,7 +392,7 @@ get_sub_nurbs_space(const int s_id,
 template<int dim_, int range_, int rank_>
 template<int k>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
@@ -421,7 +421,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 
 template <int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
   out.begin_item("BSpline Space:");
@@ -437,7 +437,7 @@ print_info(LogStream &out) const
 
 template <int dim_, int range_, int rank_>
 bool
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 is_bspline() const
 {
   return false;
@@ -445,7 +445,7 @@ is_bspline() const
 
 template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_degree_table() const -> const DegreeTable &
 {
   return this->bsp_space_->get_degree_table();
@@ -453,7 +453,7 @@ get_degree_table() const -> const DegreeTable &
 
 template <int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_element_dofs(
   const IndexType element_id,
   SafeSTLVector<Index> &dofs_global,
@@ -475,7 +475,7 @@ get_element_dofs(
 
 template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_periodicity() const -> const PeriodicityTable &
 {
   return bsp_space_->get_periodicity();
@@ -484,7 +484,7 @@ get_periodicity() const -> const PeriodicityTable &
 
 template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_end_behaviour_table() const -> const EndBehaviourTable &
 {
   return bsp_space_->get_end_behaviour_table();
@@ -493,7 +493,7 @@ get_end_behaviour_table() const -> const EndBehaviourTable &
 
 template <int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
   return std::make_unique<ElementHandler>(this->get_this_space());
@@ -502,7 +502,7 @@ create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,0,range
 
 template<int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_ptr_const_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
 {
   return bsp_space_.get_ptr_const_data()->get_ptr_const_dof_distribution();
@@ -510,7 +510,7 @@ get_ptr_const_dof_distribution() const -> shared_ptr<const DofDistribution<dim,r
 
 template<int dim_, int range_, int rank_>
 auto
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 {
   return bsp_space_.get_ptr_data()->get_ptr_dof_distribution();
@@ -523,7 +523,7 @@ get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 
 template<int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 refine_h(const Size n_subdivisions)
 {
   //the refinement of the BSpline also refines the weight_fucntion (they share the same Grid)
@@ -532,7 +532,7 @@ refine_h(const Size n_subdivisions)
 
 template<int dim_, int range_, int rank_>
 void
-NURBSSpace<dim_, range_, rank_>::
+NURBS<dim_, range_, rank_>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
   const Grid<dim_> &old_grid)
@@ -559,7 +559,7 @@ rebuild_after_insert_knots(
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/nurbs_space.inst>
+#include <igatools/basis_functions/nurbs.inst>
 
-#endif // #ifdef NURBS
+#endif // #ifdef USE_NURBS
 

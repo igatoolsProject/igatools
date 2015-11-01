@@ -32,7 +32,7 @@
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>

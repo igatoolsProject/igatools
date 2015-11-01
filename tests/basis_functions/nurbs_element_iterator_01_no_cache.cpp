@@ -21,7 +21,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
 /*
@@ -40,7 +40,7 @@ void test()
   const int r = 2;
 //    out << "test<" << dim << "," << range << ">" << endl;
 
-  using Space = NURBSSpace< dim, range, rank >;
+  using Space = NURBS< dim, range, rank >;
   auto  knots = Grid<dim>::const_create();
 
   auto degree = TensorIndex<dim>(r);

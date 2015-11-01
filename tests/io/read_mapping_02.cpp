@@ -39,7 +39,7 @@ void run_test(std::string &file_name)
   OUTSTART
 
   // Reading input file.
-//    using Space = NURBSSpace<dim,dim,1>;
+//    using Space = NURBS<dim,dim,1>;
 //    auto map = dynamic_pointer_cast<IgFunction<RefSpace> >(get_mapping_from_file<dim,0>(file_name));
   auto map = get_mapping_from_file<dim,0>(file_name);
   out.begin_item("IgFunction infos:");

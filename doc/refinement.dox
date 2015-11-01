@@ -59,7 +59,7 @@
   
   
   One interesting feature is that if we refine grid that is used by another object for which
-  the h-refinement has valid meaning (e.g. Mapping,  BSpline, NURBSSpace or PhysicalSpace), 
+  the h-refinement has valid meaning (e.g. Mapping,  BSpline, NURBS or PhysicalSpace), 
   then the refinement is performed also to all the objects that are using the grid. 
   
     For example we can define some objects built on the same grid

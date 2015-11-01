@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the NURBSSpace class subspace extraction
+ *  Test for the NURBS class subspace extraction
  *
  *  author: martinelli
  *  date: 19 Oct 2015
@@ -27,7 +27,7 @@
 
 #include "../tests.h"
 //#include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 
 
 template<int sub_dim, int dim, int range=1, int rank=1>
@@ -53,7 +53,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
 
   const auto w_func = WeightFunc::const_create(scalar_bsp_space,weights);
 
-  using Space = NURBSSpace<dim,range,rank>;
+  using Space = NURBS<dim,range,rank>;
   auto nrb_space = Space::const_create(bsp_space,w_func);
 
 
@@ -62,7 +62,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
   out.begin_item("Dim: " + std::to_string(dim) + "     Sub-Dim: " + std::to_string(sub_dim));
 
 
-  out.begin_item("Original NURBSSpace:");
+  out.begin_item("Original NURBS:");
   nrb_space->print_info(out);
   out.end_item();
 

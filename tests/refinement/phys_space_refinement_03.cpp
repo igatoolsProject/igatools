@@ -30,14 +30,14 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/push_forward.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/functions/ig_grid_function.h>
 
 /*
 template <int dim>
-using ReferenceSpace = NURBSSpace<dim,dim>;
+using ReferenceSpace = NURBS<dim,dim>;
 
 template <int dim>
 using PushFwd = PushForward<Transformation::h_grad,dim,0> ;
@@ -76,7 +76,7 @@ void test_evaluate()
   using WeightFunc = IgGridFunction<dim,1>;
   auto w_func = WeightFunc::create(scalar_bsp_space,weights_coef);
 
-  auto ref_space = NURBSSpace<dim,dim>::create(bsp_space,w_func);
+  auto ref_space = NURBS<dim,dim>::create(bsp_space,w_func);
 
   IgCoefficients control_pts;
   if (dim == 1)

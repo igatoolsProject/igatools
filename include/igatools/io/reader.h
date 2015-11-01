@@ -26,7 +26,7 @@
 #include <igatools/base/config.h>
 #include <igatools/functions/function.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -193,18 +193,18 @@ template <int dim, int range, int rank>
 std::shared_ptr< BSpline<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree);
 
-#ifdef NURBS
+#ifdef USE_NURBS
 /**
- * Returns a NURBSSpace object (wrapped by a std::shared_ptr) from a Boost XML tree
- * containing exactly one node with the tag "NURBSSpace".
+ * Returns a NURBS object (wrapped by a std::shared_ptr) from a Boost XML tree
+ * containing exactly one node with the tag "NURBS".
  * @note An assertion will be raised (in Debug and Release mode)
- * if no node or more than one node with the tag "NURBSSpace" are present in XML tree.
+ * if no node or more than one node with the tag "NURBS" are present in XML tree.
  * @ingroup input_v2
  * @author M. Martinelli
  * @date 04 Mar 2014
  */
 template <int dim, int range, int rank>
-std::shared_ptr< NURBSSpace<dim,range,rank> >
+std::shared_ptr< NURBS<dim,range,rank> >
 get_nurbs_space_from_xml(const boost::property_tree::ptree &tree);
 #endif
 

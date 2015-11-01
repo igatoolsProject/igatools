@@ -21,29 +21,29 @@
 // TODO (pauletti, Oct 9, 2014): update the code style (its obsolete)
 #include "../tests.h"
 
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
 
 
 template < int dim, int range, int rank>
-void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
+void serialize_deserialize(std::shared_ptr<NURBS<dim,range,rank>> space_in)
 {
   std::shared_ptr<ReferenceSpace<dim,range,rank>> space = space_in;
-  out.begin_item("Original NURBSSpace:");
+  out.begin_item("Original NURBS:");
   space->print_info(out);
   out.end_item();
 
-  using NRBSpace = NURBSSpace<dim,range,rank>;
+  using NRBSpace = NURBS<dim,range,rank>;
 
   std::string template_string_info = "_dim" + std::to_string(dim) +
                                      "_range" + std::to_string(range) +
                                      "_rank" + std::to_string(rank);
   std::string filename = "nurbs_space" + template_string_info + ".xml";
-  std::string tag_name = "NURBSSpace" + template_string_info;
+  std::string tag_name = "NURBS" + template_string_info;
   {
-    // serialize the NURBSSpace object to an xml file
+    // serialize the NURBS object to an xml file
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 //    xml_out.template register_type<NRBSpace>();
@@ -54,7 +54,7 @@ void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
 
   space.reset();
   {
-    // de-serialize the NURBSSpace object from an xml file
+    // de-serialize the NURBS object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
 //    xml_in.template register_type<NRBSpace>();
@@ -62,7 +62,7 @@ void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
     xml_in >> space;
 //    xml_istream.close();
   }
-  out.begin_item("NURBSSpace after serialize-deserialize:");
+  out.begin_item("NURBS after serialize-deserialize:");
   space->print_info(out);
   out.end_item();
   //*/
@@ -109,7 +109,7 @@ void do_test()
 
 
 
-  using Space = NURBSSpace< dim, range, rank >;
+  using Space = NURBS< dim, range, rank >;
   auto grid = Grid<dim>::create(coord);
 
   auto  bsp = BSpline<dim, range, rank >::create(

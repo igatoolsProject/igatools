@@ -22,7 +22,7 @@
 
 /**
  *  @file
- *  @brief  NURBSSpace constructors
+ *  @brief  NURBS constructors
  *  @author pauletti
  *  @date 2014-10-23
  *  @todo update standards
@@ -30,7 +30,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
@@ -75,7 +75,7 @@ void do_test()
 
 
 
-  using Space = NURBSSpace< dim, range, rank >;
+  using Space = NURBS< dim, range, rank >;
   auto grid = Grid<dim>::const_create(coord);
 
   auto  bsp = BSpline<dim, range, rank >::const_create(

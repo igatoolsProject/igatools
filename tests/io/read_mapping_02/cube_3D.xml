@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Igatools FormatVersion="2.0">
-  <IgMapping Dim="3" Codim="0" RefSpaceType="NURBSSpace">
-    <NURBSSpace Dim="3" Range="3" Rank="1">
+  <IgMapping Dim="3" Codim="0" RefSpaceType="NURBS">
+    <NURBS Dim="3" Range="3" Rank="1">
       <Grid Dim="3">
         <Knots Direction="0" Size="3">
           0.000000 0.500000 1.000000
@@ -13,11 +13,11 @@
           0.000000 1.000000
         </Knots>
       </Grid>
-      <NURBSSpaceScalarComponents Size="1">
+      <NURBSScalarComponents Size="1">
         <ComponentsMap Size="3">
           0 0 0
         </ComponentsMap>
-        <NURBSSpaceScalarComponent Id="0">
+        <NURBSScalarComponent Id="0">
           <DofsTensorSize Dim="3">
             4 2 2
           </DofsTensorSize>
@@ -36,9 +36,9 @@
           <Weights Size="16">
             1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
           </Weights>
-        </NURBSSpaceScalarComponent>
+        </NURBSScalarComponent>
 <!--
-        <NURBSSpaceScalarComponent Id="1">
+        <NURBSScalarComponent Id="1">
           <DofsTensorSize Dim="3">
             4 2 2
           </DofsTensorSize>
@@ -57,8 +57,8 @@
           <Weights Size="16">
             1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
           </Weights>
-        </NURBSSpaceScalarComponent>
-        <NURBSSpaceScalarComponent Id="2">
+        </NURBSScalarComponent>
+        <NURBSScalarComponent Id="2">
           <DofsTensorSize Dim="3">
             4 2 2
           </DofsTensorSize>
@@ -77,10 +77,10 @@
           <Weights Size="16">
             1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
           </Weights>
-        </NURBSSpaceScalarComponent>
+        </NURBSScalarComponent>
 -->
-      </NURBSSpaceScalarComponents>
-    </NURBSSpace>
+      </NURBSScalarComponents>
+    </NURBS>
     <ControlPoints Dim="1" Size="48">
       0.000000 0.250000 0.750000 1.000000 0.000000 0.250000 0.750000 1.000000 0.000000 0.250000 0.750000 1.000000 0.000000 0.250000 0.750000 1.000000
       0.000000 0.000000 0.000000 0.000000 1.000000 1.000000 1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 1.000000 1.000000 1.000000

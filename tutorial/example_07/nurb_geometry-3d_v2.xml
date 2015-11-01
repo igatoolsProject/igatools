@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Igatools FormatVersion="2.0">
-    <IgMapping Dim="3" Codim="0" RefSpaceType="NURBSSpace">
-        <NURBSSpace Dim="3" Range="3" Rank="1">
+    <IgMapping Dim="3" Codim="0" RefSpaceType="NURBS">
+        <NURBS Dim="3" Range="3" Rank="1">
             <Grid Dim="3">
                 <Knots Direction="0" Size="2">
                     0.0 1.0
@@ -13,11 +13,11 @@
                     0.0 1.0
                 </Knots>
             </Grid>
-            <NURBSSpaceScalarComponents Size="1">
+            <NURBSScalarComponents Size="1">
                 <ComponentsMap Size="3">
                    0 0 0
                 </ComponentsMap>
-                <NURBSSpaceScalarComponent Id="0">
+                <NURBSScalarComponent Id="0">
                     <DofsTensorSize Dim="3">
                         3 3 2
                     </DofsTensorSize>
@@ -35,9 +35,9 @@
                     <Weights Size="18">
                        1.0 7.071068e-01 1.0 8.660254e-01 6.123724e-01 8.660254e-01 1.0 7.071068e-01 1.0 1.0 7.071068e-01 1.0 8.660254e-01 6.123724e-01 8.660254e-01 1.0 7.071068e-01 1.0
                     </Weights>
-                </NURBSSpaceScalarComponent>
-            </NURBSSpaceScalarComponents>
-       </NURBSSpace>
+                </NURBSScalarComponent>
+            </NURBSScalarComponents>
+       </NURBS>
        <ControlPoints Dim="1" Size="54">
            0.8 0.8 1.776357e-16 0.8 0.8 1.493537e-16 0.4 0.4 4.639483e-17 1.0 1.0 2.220446e-16 1.0 1.0 1.866921e-16 0.5 0.5 5.799354e-17 0.0 4.898587e-17 4.898587e-17 4.618802e-01 4.618802e-01 4.618802e-01 6.928203e-01 6.928203e-01 6.928203e-01 0.0 6.123234e-17 6.123234e-17 5.773503e-01 5.773503e-01 5.773503e-01 8.660254e-01 8.660254e-01 8.660254e-01 0.0 -0.8 -0.8 0.0 -0.8 -0.8 0.0 -0.4 -0.4 0.0 -1.0 -1.0 0.0 -1.0 -1.0 0.0 -0.5 -0.5
        </ControlPoints>

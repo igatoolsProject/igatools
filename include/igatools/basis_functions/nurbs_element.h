@@ -24,7 +24,7 @@
 
 #include <igatools/base/config.h>
 
-#ifdef NURBS
+#ifdef USE_NURBS
 
 #include <igatools/basis_functions/reference_element.h>
 
@@ -40,7 +40,7 @@ IGA_NAMESPACE_OPEN
 
 
 
-template <int dim, int range, int rank> class NURBSSpace;
+template <int dim, int range, int rank> class NURBS;
 template <int,int,int> class NURBSElementHandler;
 template <class Accessor> class GridIterator;
 
@@ -62,10 +62,10 @@ private:
 public:
 
   /** Type required by the GridIterator templated iterator */
-  using ContainerType = const NURBSSpace<dim, range, rank> ;
+  using ContainerType = const NURBS<dim, range, rank> ;
 
   /** Type required for the generic algorithm on the spaces (plots??) */
-  using Space = NURBSSpace<dim, range, rank> ;
+  using Space = NURBS<dim, range, rank> ;
 
 
   using GridType = Grid<dim>;
@@ -138,7 +138,7 @@ public:
   self_t &operator=(self_t &&elem) = default;
   ///@}
 
-  /** @name Functions/operators for moving the element in the NURBSSpace.*/
+  /** @name Functions/operators for moving the element in the NURBS.*/
   ///@{
   virtual void operator++() override final;
 
@@ -151,7 +151,7 @@ public:
   ///@}
 
   /**
-   * Returns the NURBSSpace in which the NURBSElement is defined.
+   * Returns the NURBS in which the NURBSElement is defined.
    */
   std::shared_ptr<const Space> get_nurbs_space() const;
 
@@ -188,7 +188,7 @@ public:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // #ifdef NURBS
+#endif // #ifdef USE_NURBS
 
 
 #endif // end of #ifndef NURBS_ELEMENT_H_

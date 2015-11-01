@@ -33,12 +33,12 @@ spaces = []
 dim = 0
 range = 0
 rank = 1
-space = 'NURBSSpace<%d,%d,%d>' %(dim,range,rank)
+space = 'NURBS<%d,%d,%d>' %(dim,range,rank)
 spaces.append(space)
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    space = 'NURBSSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    space = 'NURBS<%d,%d,%d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
 
 
@@ -56,7 +56,7 @@ f.write('#ifdef SERIALIZATION\n')
 
 id = 0 
 for space in unique(spaces):
-    sp_alias = 'NURBSSpaceAlias%d' %(id)
+    sp_alias = 'NURBSAlias%d' %(id)
     f.write('using %s = iga::%s;\n' % (sp_alias, space));
     f.write('CEREAL_REGISTER_TYPE(%s);\n' %sp_alias);
     id += 1 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Igatools FormatVersion="2.0">
-    <IgMapping Dim="2" Codim="0" RefSpaceType="NURBSSpace">
-        <NURBSSpace Dim="2" Range="2" Rank="1">
+    <IgMapping Dim="2" Codim="0" RefSpaceType="NURBS">
+        <NURBS Dim="2" Range="2" Rank="1">
             <Grid Dim="2">
                 <Knots Direction="0" Size="2">
                     0.0 1.0
@@ -10,11 +10,11 @@
                     0.0 1.0
                 </Knots>
             </Grid>
-            <NURBSSpaceScalarComponents Size="1">
+            <NURBSScalarComponents Size="1">
                 <ComponentsMap Size="2">
                    0 0
                 </ComponentsMap>
-                <NURBSSpaceScalarComponent Id="0">
+                <NURBSScalarComponent Id="0">
                     <DofsTensorSize Dim="2">
                         3 2
                     </DofsTensorSize>
@@ -30,9 +30,9 @@
                     <Weights Size="6">
                        1.0 8.660254e-01 1.0 1.0 8.660254e-01 1.0
                     </Weights>
-                </NURBSSpaceScalarComponent>
-            </NURBSSpaceScalarComponents>
-       </NURBSSpace>
+                </NURBSScalarComponent>
+            </NURBSScalarComponents>
+       </NURBS>
        <ControlPoints Dim="1" Size="12">
           0.8 0.8 0.4 1.0 1.0 0.5 0.0 4.618802e-01 6.928203e-01 0.0 5.773503e-01 8.660254e-01
        </ControlPoints>
