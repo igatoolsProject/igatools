@@ -210,18 +210,12 @@ public:
   /**
    * Return a reference to the GridElement.
    */
-  virtual GridElement<dim_> &get_grid_element() override final
-  {
-    return get_physical_domain_element().get_grid_function_element().get_grid_element();
-  }
+  virtual GridElement<dim_> &get_grid_element() override final;
 
   /**
    * Return a const-reference to the GridElement.
    */
-  virtual const GridElement<dim_> &get_grid_element() const override final
-  {
-    return get_physical_domain_element().get_grid_function_element().get_grid_element();
-  }
+  virtual const GridElement<dim_> &get_grid_element() const override final;
 
   /**
    * Return a const reference of the reference space element.
@@ -313,15 +307,6 @@ public:
 
 
   std::shared_ptr<const PhysSpace> get_physical_space() const;
-
-protected:
-
-  /**
-   * Performs a copy of the input @p element.
-   * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
-   */
-  void copy_from(const self_t &element,
-                 const CopyPolicy &copy_policy);
 
 
 private:

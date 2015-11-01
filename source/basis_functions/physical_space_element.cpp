@@ -53,6 +53,22 @@ get_physical_space() const -> std::shared_ptr<const PhysSpace>
   return phys_space_;
 }
 
+template<int dim_,int range_,int rank_,int codim_>
+auto
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+get_grid_element() -> GridElement<dim_> &
+{
+  return get_physical_domain_element().get_grid_function_element().get_grid_element();
+}
+
+template<int dim_,int range_,int rank_,int codim_>
+auto
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+get_grid_element() const -> const GridElement<dim_> &
+{
+  return get_physical_domain_element().get_grid_function_element().get_grid_element();
+}
+
 
 #if 0
 template<int dim_,int range_,int rank_,int codim_>
