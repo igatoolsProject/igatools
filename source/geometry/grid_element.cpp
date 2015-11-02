@@ -249,11 +249,19 @@ get_measure(const int s_id) const
 
 template <int dim>
 template <int sdim>
-ValueVector<Real>
+const ValueVector<Real> &
 GridElement<dim>::
 get_weights(const int s_id) const
 {
-  return this->template get_values_from_cache<_Weight, sdim>(s_id);
+  return this->template get_values_from_cache<_Weight,sdim>(s_id);
+}
+
+template <int dim>
+const ValueVector<Real> &
+GridElement<dim>::
+get_element_weights() const
+{
+  return this->template get_weights<dim>(0);
 }
 
 
@@ -286,7 +294,7 @@ template <int dim>
 template <int sdim>
 auto
 GridElement<dim>::
-get_points(const int j) const ->ValueVector<Point>
+get_points(const int j) const -> const ValueVector<Point> &
 {
   return this->template get_values_from_cache<_Point,sdim>(j);
 }
@@ -300,7 +308,7 @@ get_points(const int j) const ->ValueVector<Point>
 template <int dim>
 auto
 GridElement<dim>::
-get_element_points() const -> ValueVector<Point>
+get_element_points() const -> const ValueVector<Point> &
 {
   return this->template get_points<dim>(0);
 }

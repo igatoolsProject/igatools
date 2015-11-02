@@ -33,41 +33,48 @@ using namespace std;
 
 LogStream out;
 
+// [func_grid]
 template <int dim>
 void loop_on_grid_with_cache()
 {
-  // [loop as before]
+  // [func_grid]
+  // [loop_as_before]
   out << "Traversing the elements of a " << dim << "-dimensional grid." << endl;
   const int n_knots = 3;
   auto grid = Grid<dim>::const_create(n_knots);
 
-  auto cache_handler = grid->create_cache_handler();
-
-  auto quad = QGauss<dim>::create(2);
-  auto flag = grid_element::Flags::weight;
-
-  cache_handler->set_element_flags(flag);
-
   auto elem = grid->begin();
   const auto elem_end = grid->end();
-  // [loop as before]
-  // [init cache]
+  // [loop_as_before]
+
+  // [create_handler]
+  auto cache_handler = grid->create_cache_handler();
+  // [create_handler]
+
+  // [set_cache]
+  const auto flag = grid_element::Flags::weight;
+  cache_handler->set_element_flags(flag);
+  // [set_cache]
+
+  // [init_cache]
+  auto quad = QGauss<dim>::create(2);
   cache_handler->init_element_cache(elem,quad);
-  // [init cache]
+  // [init_cache]
 
   int elem_id = 0;
   for (; elem != elem_end; ++elem)
   {
-    // [fill cache]
+    // [fill_cache]
     cache_handler->fill_element_cache(elem);
-    // [fill cache]
+    // [fill_cache]
+
     out << "The tensor index of element: " << elem_id << " is: "<< elem->get_index() << endl;
 
-    // [get meas]
-    auto w_meas = elem->template get_weights<dim>(0);
+    // [get_meas]
+    const auto &w_meas = elem->get_element_weights();
     out << "The weighted measure is: ";
     w_meas.print_info(out);
-    // [get meas]
+    // [get_meas]
     out << endl;
 
     ++elem_id;
@@ -76,9 +83,11 @@ void loop_on_grid_with_cache()
 }
 
 
+// [func_basis]
 template <int dim>
-void loop_on_space_with_cache()
+void loop_on_basis_with_cache()
 {
+  // [func_basis]
   out << "Traversing the elements of a " << dim << "-dimensional B-spline space." << endl;
   const int n_knots = 3;
   auto grid = Grid<dim>::const_create(n_knots);
@@ -86,26 +95,34 @@ void loop_on_space_with_cache()
   auto space = SplineSpace<dim>::const_create(degree, grid);
   auto basis = BSpline<dim>::const_create(space);
 
-  auto cache_handler = basis->create_cache_handler();
-  auto quad = QGauss<dim>::create(1);
-  auto flag = space_element::Flags::value;
-
-  cache_handler->set_element_flags(flag);
-
   auto elem = basis->begin();
   const auto elem_end = basis->end();
+
+
+  auto cache_handler = basis->create_cache_handler();
+
+  // [set_basis_flags]
+  auto flag = space_element::Flags::value;
+  cache_handler->set_element_flags(flag);
+  // [set_basis_flags]
+
+
+  auto quad = QGauss<dim>::create(1);
   cache_handler->init_element_cache(elem,quad);
 
   for (; elem != elem_end; ++elem)
   {
     cache_handler->fill_element_cache(elem);
+
     out << "Element: " << elem->get_index() << " has global basis: ";
     elem->get_local_to_global(DofProperties::active).print_info(out);
     out << endl;
 
+    // [basis_values]
     out.begin_item("Basis values:");
     elem->template get_basis_element<space_element::_Value>().print_info(out);
     out.end_item();
+    // [basis_values]
   }
   out << endl;
 }

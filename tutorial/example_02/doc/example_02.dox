@@ -58,7 +58,7 @@ In the body of the function
 we create a SplineSpace object (defined over a certain Grid) and a BSpline basis (as in the \ref example_01)
 \snippet example_02.cpp basis_creation
 As for the Grid, also the BSpline object can be iterated. For the moment, the only available iterator
-provide a traversal mechanism over the (Bezier) element in the space: the class that represents those 
+provide a traversal mechanism over the (Bezier) element in the space: the class that represents these 
 elements, and returned when the iterator is dereferenced, is BSplineElement. 
 
 The BSplineElement class represents an element in the space with the associated non-zero B-Spline basis functions and, 
@@ -66,14 +66,14 @@ among other things, can be queried about the (global) numbering of the active ba
 support over the element.
 \snippet example_02.cpp iter_basis
 
-\section note Note on the spline space and basis functions creation
+\note
 In the current example (as in \ref example_01) we have created an instance of the SplineSpace class (and BSpline basis)
 using the syntax
 \code{.cpp}
   auto space = SplineSpace<dim>::create(degree, grid);
   auto basis = BSpline<dim>::create(space);
 \endcode
-this is an abbreviation for the full template arguments
+that is a convenient abbreviation for the full template arguments specification
 \code{.cpp}
   auto space = SplineSpace<dim,1,1>::create(degree, grid);
   auto basis = BSpline<dim,1,1>::create(space);

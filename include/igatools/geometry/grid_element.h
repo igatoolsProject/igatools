@@ -289,19 +289,32 @@ public:
    * dimensional s_id-th sub-element.
    *
    * @note The returned weights are the quadrature unit weights multiplied by the
-   * <tt>sdim>-dimensional element measure.
+   * <tt>sdim</tt>-dimensional element measure.
    */
   template <int sdim>
-  ValueVector<Real> get_weights(const int s_id) const;
+  const ValueVector<Real> &get_weights(const int s_id) const;
+
+  /**
+   * Returns the quadrature weights corresponding to the <tt>dim</tt>
+   * dimensional element (i.e. the element itself).
+   *
+   * @note The returned weights are the quadrature unit weights multiplied by the
+   * <tt>dim</tt>-dimensional element measure.
+   */
+  const ValueVector<Real> &get_element_weights() const;
 
   /**
    * Returns the quadrature points corresponding to the <tt>sdim</tt>
    * dimensional s_id-th sub-element.
    */
   template <int sdim>
-  ValueVector<Point> get_points(const int s_id = 0) const;
+  const ValueVector<Point> &get_points(const int s_id = 0) const;
 
-  ValueVector<Point> get_element_points() const;
+  /**
+   * Returns the quadrature points corresponding to the <tt>dim</tt>
+   * dimensional element (i.e. the element itself).
+   */
+  const ValueVector<Point> &get_element_points() const;
 
 
   /**

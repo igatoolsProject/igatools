@@ -1,12 +1,12 @@
 /**
 
-\page example_01 Example 1: creating a B-spline space
+\page example_01 Example 1: creating a B-spline basis
 
 \section Introduction
 In this example we create and plot a the knot vectors without repetition
 realized by the Grid class, which also defines the reference domain.
 On this grid by providing the knot multiplicities and degree we create 
-a B-spline space and then a set of basis function.
+a spline space and then a set of B-spline basis function.
 
 To run the example program recall the instructions on the
 \ref tutorial page. As this is the first example we briefly
