@@ -75,6 +75,15 @@ set_flags(const topology_variant &sdim,
 }
 
 
+template <int dim>
+void
+GridHandler<dim>::
+set_element_flags(const Flags &flag)
+{
+  this->template set_flags<dim>(flag);
+}
+
+
 
 
 template <int dim>

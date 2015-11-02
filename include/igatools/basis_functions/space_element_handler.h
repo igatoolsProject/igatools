@@ -95,6 +95,8 @@ public:
     this->set_flags_impl(Topology<sdim>(),flag);
   }
 
+  void set_element_flags(const typename space_element::Flags &flag);
+
   virtual void init_cache_impl(ElementAccessor &elem,
                                const eval_pts_variant &quad) const = 0;
 

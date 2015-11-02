@@ -51,6 +51,15 @@ get_space() const -> std::shared_ptr<const Sp>
 template<int dim,int codim,int range,int rank>
 void
 SpaceElementHandler<dim,codim,range,rank>::
+set_element_flags(const typename space_element::Flags &flag)
+{
+  this->set_flags_impl(Topology<dim>(),flag);
+}
+
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
 init_element_cache(ElementAccessor &elem,
                    std::shared_ptr<const Quadrature<dim>> quad) const
 {

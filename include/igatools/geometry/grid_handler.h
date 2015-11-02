@@ -126,6 +126,9 @@ public:
   void set_flags(const topology_variant &sdim,
                  const Flags &flag);
 
+  void set_element_flags(const Flags &flag);
+
+
   template <int sdim>
   void init_cache(ElementAccessor &elem,
                   std::shared_ptr<const Quadrature<sdim>> quad) const;

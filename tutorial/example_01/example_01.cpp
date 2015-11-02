@@ -39,7 +39,7 @@ int main()
   // [grid]
   const int n_knots = 3;
   cout << "Creating a " << dim << " dimensional cartesian grid" << endl;
-  auto grid = Grid<dim>::create(n_knots);
+  auto grid = Grid<dim>::const_create(n_knots);
   cout << "Number of elements: ";
   cout << grid->get_num_all_elems() << endl;
   // [grid]
@@ -52,12 +52,12 @@ int main()
   // [space]
   const int degree = 2;
   cout << "Creating a spline space of degree " << degree << endl;
-  auto space = SplineSpace<dim>::create(degree, grid);
+  auto space = SplineSpace<dim>::const_create(degree, grid);
   // [space]
 
   // [basis]
   cout << "Creating the basis for the spline space" << endl;
-  auto basis = BSpline<dim>::create(space);
+  auto basis = BSpline<dim>::const_create(space);
   cout << "Number of basis functions: ";
   cout << basis->get_num_basis() << endl;
   // [basis]
