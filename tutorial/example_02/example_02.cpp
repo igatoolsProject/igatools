@@ -42,8 +42,7 @@ void loop_on_grid()
 {
 // [templated_function]
   // [create_grid]
-  out << "Traversing the elements of a "
-		  + to_string(dim) + "-dimensional grid." << endl;
+  out << "Traversing the elements of a " + to_string(dim) + "-dimensional grid." << endl;
   const int n_knots = 3;
   auto grid = Grid<dim>::create(n_knots);
   // [create_grid]
@@ -51,8 +50,7 @@ void loop_on_grid()
   int elem_id = 0;
   for (const auto &elem : *grid)
   {
-    out << "The tensor index of element: " << elem_id;
-    out << " is: "<< elem.get_index() << endl;
+    out << "The tensor index of element: " << elem_id << " is: " << elem.get_index() << endl;
 
     ++elem_id;
   }
@@ -60,25 +58,28 @@ void loop_on_grid()
   out << endl;
 }
 
-
+// [loop_on_space]
 template <int dim>
 void loop_on_space()
 {
-  out << "Traversing the elements of a "
-		  + to_string(dim) + "-dimensional B-spline space." << endl;
+// [loop_on_space]
+  // [basis_creation]
+  out << "Traversing the elements of a " + to_string(dim) + "-dimensional B-spline space." << endl;
   const int n_knots = 3;
   auto grid = Grid<dim>::create(n_knots);
   const int degree = 2;
   auto space = SplineSpace<dim>::create(degree, grid);
   auto basis = BSpline<dim>::create(space);
+// [basis_creation]
 
+  // [iter_basis]
   for (const auto &elem : *basis)
   {
-    out << "Element: " << elem.get_index();
-    out << " has global basis: ";
+    out << "Element: " << elem.get_index() << " has global basis: ";
     elem.get_local_to_global(DofProperties::active).print_info(out);
     out << endl;
   }
+  // [iter_basis]
   out << endl;
 }
 
