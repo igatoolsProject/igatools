@@ -31,7 +31,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/basis_functions/physical_space.h>
+#include <igatools/basis_functions/physical_space_basis.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/functions/ig_grid_function.h>
 
@@ -43,7 +43,7 @@ template <int dim>
 using PushFwd = PushForward<Transformation::h_grad,dim,0> ;
 
 template <int dim>
-using PhysSpace = PhysicalSpace< ReferenceSpace<dim>, PushFwd<dim> > ;
+using PhysSpace = PhysicalSpaceBasis< ReferenceSpace<dim>, PushFwd<dim> > ;
 
 template <class T, int dim>
 using ComponentTable = StaticMultiArray<T, ReferenceSpace<dim>::range, ReferenceSpace<dim>::rank >;
@@ -145,7 +145,7 @@ void test_evaluate()
   auto func_mapping = IgGridFunction<dim,dim>::create(ref_space,control_pts);
 
   auto phys_space =
-    PhysicalSpace<dim,dim,1,0>::create(ref_space,Domain<dim,0>::create(func_mapping));
+    PhysicalSpaceBasis<dim,dim,1,0>::create(ref_space,Domain<dim,0>::create(func_mapping));
 
 
 

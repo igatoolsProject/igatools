@@ -34,7 +34,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, int ,int> class PhysicalSpace;
+template <int, int, int ,int> class PhysicalSpaceBasis;
 
 template <int, int, int> class ReferenceElement;
 template <int,int,int> class ReferenceElementHandler;
@@ -140,7 +140,7 @@ public:
   using SubRefSpace = ReferenceSpace<k, range, rank>;
 
   template <int k>
-  using SubSpace = PhysicalSpace<k,range,rank, dim-k>;
+  using SubSpace = PhysicalSpaceBasis<k,range,rank, dim-k>;
 
   virtual bool is_bspline() const = 0;
 

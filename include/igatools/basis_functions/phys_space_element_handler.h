@@ -144,7 +144,7 @@ phys_space_to_domain_flag(
 
 
 template<int dim, int range, int rank, int codim>
-class PhysicalSpace;
+class PhysicalSpaceBasis;
 
 /**
  * Element handler for an isogeometric space
@@ -157,7 +157,7 @@ class PhysSpaceElementHandler
   public SpaceElementHandler<dim_,codim_,range_,rank_>
 {
 
-  using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
+  using PhysSpace = PhysicalSpaceBasis<dim_,range_,rank_,codim_>;
   using RefSpace =  typename PhysSpace::RefSpace;
   using RefPhysSpaceElementHandler = typename PhysSpace::RefSpace::ElementHandler;
 //    using PFCache = typename PhysSpace::PushForwardType;

@@ -22,7 +22,7 @@
 #include <igatools/functions/ig_function_handler.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/physical_space.h>
+#include <igatools/basis_functions/physical_space_basis.h>
 #include <igatools/basis_functions/space_tools.h>
 
 
@@ -313,7 +313,7 @@ serialize(Archive &ar, const unsigned int version)
   ar.template register_type<NURBS<dim,range,rank>>();
 #endif // NURBS
 
-  ar.template register_type<PhysicalSpace<dim,range,rank,codim>>();
+  ar.template register_type<PhysicalSpaceBasis<dim,range,rank,codim>>();
   auto non_nonst_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
   ar &boost::serialization::make_nvp("space_",non_nonst_space);
   space_ = non_nonst_space;

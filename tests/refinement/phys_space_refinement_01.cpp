@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test refinement of a basic PhysicalSpace using the BSpline as reference space
+ *  Test refinement of a basic PhysicalSpaceBasis using the BSpline as reference space
  *  and the IdentityFunction as mapping.
  *
  *  author: pauletti
@@ -31,7 +31,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/physical_space.h>
+#include <igatools/basis_functions/physical_space_basis.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/geometry/grid_function_lib.h>
 
@@ -52,7 +52,7 @@ void test_evaluate()
   using RefSpacePtr = std::shared_ptr<RefSpace>;
   RefSpacePtr ref_space = BSpline<dim>::create(SplineSpace<dim>::create(deg,grid));
   auto phys_space =
-    PhysicalSpace<dim,1,1,0>::create(
+    PhysicalSpaceBasis<dim,1,1,0>::create(
       ref_space,
       Domain<dim,0>::create(grid_functions::IdentityGridFunction<dim>::create(grid)));
 

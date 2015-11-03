@@ -42,7 +42,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <int,int,int,int>
-class PhysicalSpace;
+class PhysicalSpaceBasis;
 
 
 template <int,int,int,int>
@@ -87,7 +87,7 @@ private:
   using base_t = Function<dim,codim,range,rank>;
   using parent_t = Function<dim,codim,range,rank>;
   using self_t = IgFunction<dim,codim,range,rank>;
-  using Sp = PhysicalSpace<dim,range,rank,codim>;
+  using Sp = PhysicalSpaceBasis<dim,range,rank,codim>;
 
 public:
   /**

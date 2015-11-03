@@ -28,7 +28,7 @@
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
 #include <igatools/geometry/domain.h>
-#include <igatools/basis_functions/physical_space.h>
+#include <igatools/basis_functions/physical_space_basis.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -297,10 +297,10 @@ protected:
    * in all components.
    */
   explicit BSpline(const int degree,
-                        const SharedPtrConstnessHandler<GridType> &grid,
-                        const InteriorReg interior_reg,
-                        const bool periodic,
-                        const BasisEndBehaviour end_b);
+                   const SharedPtrConstnessHandler<GridType> &grid,
+                   const InteriorReg interior_reg,
+                   const bool periodic,
+                   const BasisEndBehaviour end_b);
 
 
   /**
@@ -310,10 +310,10 @@ protected:
    * in all components.
    */
   explicit BSpline(const Degrees &degree,
-                        const SharedPtrConstnessHandler<GridType> &grid,
-                        const InteriorReg interior_reg,
-                        const Periodicity &periodic,
-                        const EndBehaviour &end_b);
+                   const SharedPtrConstnessHandler<GridType> &grid,
+                   const InteriorReg interior_reg,
+                   const Periodicity &periodic,
+                   const EndBehaviour &end_b);
 
 
   /**
@@ -325,15 +325,15 @@ protected:
    * component.
    */
   explicit BSpline(const DegreeTable &deg,
-                        const SharedPtrConstnessHandler<GridType> &grid,
-                        const MultiplicityTable &interior_mult,
-                        const PeriodicityTable &periodic,
-                        const EndBehaviourTable &end_b);
+                   const SharedPtrConstnessHandler<GridType> &grid,
+                   const MultiplicityTable &interior_mult,
+                   const PeriodicityTable &periodic,
+                   const EndBehaviourTable &end_b);
 #endif
 
 
   explicit BSpline(const SharedPtrConstnessHandler<SpaceData> &space_data,
-                        const EndBehaviourTable &end_b);
+                   const EndBehaviourTable &end_b);
 
 
   /**

@@ -59,7 +59,7 @@
   
   
   One interesting feature is that if we refine grid that is used by another object for which
-  the h-refinement has valid meaning (e.g. Mapping,  BSpline, NURBS or PhysicalSpace), 
+  the h-refinement has valid meaning (e.g. Mapping,  BSpline, NURBS or PhysicalSpaceBasis), 
   then the refinement is performed also to all the objects that are using the grid. 
   
     For example we can define some objects built on the same grid
@@ -74,7 +74,7 @@
     using PushFwd = PushForward<Transformation::h_grad,dim,dim>; 
     auto push_fwd = PushFwd::create(map); // push-forward built using the map above
     
-    using PhysSpace = PhysicalSpace<RefSpace,PushFwd>;
+    using PhysSpace = PhysicalSpaceBasis<RefSpace,PushFwd>;
     auto phys_space = PhysSpace::create(ref_space,push_fwd);
   @endcode
   

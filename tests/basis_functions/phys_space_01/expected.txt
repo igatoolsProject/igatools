@@ -1,7 +1,7 @@
 ========================================================================
 create_phys_space
 ========================================================================
-PhysicalSpace<1,1,1,0,Transformation::h_grad>
+PhysicalSpaceBasis<1,1,1,0,Transformation::h_grad>
    Reference space:
       Spline Space:
          Knots without repetition:

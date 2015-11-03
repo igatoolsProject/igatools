@@ -20,7 +20,7 @@
 
 /*
  *  Test for the boundary l2 projection function.
- *  On a PhysicalSpace
+ *  On a PhysicalSpaceBasis
  *
  *  author: pauletti
  *  date: 2014-11-14
@@ -48,7 +48,7 @@ void do_test(const int p, const int num_knots = 10)
   const int sub_dim = dim - 1;
 
   using BspSpace = BSpline<dim,range,rank>;
-  using Space = PhysicalSpace<dim,range,rank,codim>;
+  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
 
 
   auto grid = Grid<dim>::const_create(num_knots);

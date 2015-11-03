@@ -68,7 +68,7 @@ void elem_values(const int n_knots = 5, const int deg=1)
   const int k = dim;
   using BspSpace = BSpline<dim, range, rank>;
   using RefSpace = ReferenceSpace<dim, range,rank>;
-  using Space = PhysicalSpace<dim,range,rank,codim>;
+  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
 //    using ElementHandler = typename Space::ElementHandler;
 
   auto grid  = Grid<dim>::const_create(n_knots);

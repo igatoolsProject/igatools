@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/physical_space.h>
+#include <igatools/basis_functions/physical_space_basis.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_space_element.h>
@@ -48,7 +48,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
   using Space = BSpline<dim>;
   auto ref_space = Space::create(SplineSpace<dim>::create(deg, grid)) ;
 
-//  using PhysSpace = PhysicalSpace<dim,1,1,0,Transformation::h_grad>;
+//  using PhysSpace = PhysicalSpaceBasis<dim,1,1,0,Transformation::h_grad>;
 //  auto identity_mapping = IdentityFunction<dim>::create(grid);
 // auto phys_space = PhysSpace::create(ref_space, identity_mapping) ;
 

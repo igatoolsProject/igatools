@@ -34,7 +34,7 @@
 
 #include <igatools/basis_functions/bspline.h>
 
-#include <igatools/basis_functions/physical_space.h>
+#include <igatools/basis_functions/physical_space_basis.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
@@ -43,13 +43,13 @@
 using space_tools::get_boundary_dofs;
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-shared_ptr<PhysicalSpace<dim,range,rank,codim> >
+shared_ptr<PhysicalSpaceBasis<dim,range,rank,codim> >
 create_space(const shared_ptr<Grid<dim>> &grid,
              const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
              const int deg=1)
 {
   using BspSpace = BSpline<dim, range, rank>;
-  using Space = PhysicalSpace<dim,range,rank,codim>;
+  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
   auto ref_space = BspSpace::create(SplineSpace<dim,range,rank>::create(deg,grid));
   return Space::create(ref_space, Domain<dim,codim>::create(grid_func), Transformation::h_grad);
 }
@@ -72,7 +72,7 @@ enum  bc : boundary_id
 };
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-shared_ptr<PhysicalSpace<dim,range,rank,codim> >
+shared_ptr<PhysicalSpaceBasis<dim,range,rank,codim> >
 create_space_prop(const shared_ptr<Grid<dim>> &grid,
                   const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
                   const int deg=1)
@@ -81,7 +81,7 @@ create_space_prop(const shared_ptr<Grid<dim>> &grid,
   grid->set_boundary_id(neu_face, bc::neu);
 
   using BspSpace = BSpline<dim, range, rank>;
-  using Space = PhysicalSpace<dim,range,rank,codim>;
+  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
   auto ref_space = BspSpace::create(SplineSpace<dim,range,rank>::create(deg,grid));
   auto space = Space::create(ref_space, Domain<dim,codim>::create(grid_func));
 
@@ -118,7 +118,7 @@ create_space_prop(const shared_ptr<Grid<dim>> &grid,
 
 
 template <int dim, int k, int range=1, int rank=1, int codim = 0>
-void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim>> space,
+void elem_values(shared_ptr<PhysicalSpaceBasis<dim,range,rank,codim>> space,
                  const int n_qp = 1,
                  const string &prop = DofProperties::active,
                  const bool no_boundary=true)
@@ -129,7 +129,7 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim>> space,
       << n_qp << "," << prop <<  "," << no_boundary << ")" << std::endl;
 
 
-//    using Space = PhysicalSpace<dim,range,rank,codim>;
+//    using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
 //    using ElementHandler = typename Space::ElementHandler;
 
   auto quad = QGauss<k>::create(n_qp);

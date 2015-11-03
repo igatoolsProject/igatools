@@ -35,7 +35,7 @@
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/basis_functions/physical_space.h>
+#include <igatools/basis_functions/physical_space_basis.h>
 
 #include <unordered_map>
 

@@ -38,7 +38,7 @@
 #include <igatools/basis_functions/space_tools.h>
 
 #include <igatools/io/writer.h>
-#include <igatools/basis_functions/physical_space.h>
+#include <igatools/basis_functions/physical_space_basis.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
@@ -107,7 +107,7 @@ void do_test(const int p, const int num_knots = 10)
 {
   using RefSpace = ReferenceSpace<dim,range,rank>;
   using BspSpace = BSpline<dim,range,rank>;
-  using Space = PhysicalSpace<dim,range,rank,codim>;
+  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
 
   auto knots = Grid<dim>::const_create(num_knots);
   auto ref_space = BspSpace::create(p, knots);

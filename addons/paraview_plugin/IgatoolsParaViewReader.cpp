@@ -931,7 +931,7 @@ create_geometries()
   using FunPhys_ = Function<dim, codim, range, rank>;
 //  using IgFun_ = IgFunction<dim, 0, range, rank>;
   using IgFunPhys_ = IgFunction<dim, codim, range, rank>;
-  using PhysSpace_ = PhysicalSpace<dim, range, rank, codim>;
+  using PhysSpace_ = PhysicalSpaceBasis<dim, range, rank, codim>;
 //  using RefSpace_ = ReferenceSpace<dim, range, rank>;
 //  using IdFun_ = IdentityFunction<dim, dim>;
   using Map = Domain<dim,codim>;

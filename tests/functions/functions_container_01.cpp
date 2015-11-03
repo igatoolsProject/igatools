@@ -44,7 +44,7 @@ void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
   std::string filename = "functions_container.xml";
   std::string tag_name = "FunctionsContainer";
   {
-    // serialize the PhysicalSpace object to an xml file
+    // serialize the PhysicalSpaceBasis object to an xml file
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 
@@ -53,7 +53,7 @@ void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
 
   funcs_container.reset();
   {
-    // de-serialize the PhysicalSpace object from an xml file
+    // de-serialize the PhysicalSpaceBasis object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
 
@@ -207,37 +207,37 @@ void do_test()
 
 
   auto phys_space_1_1_1_0 =
-    PhysicalSpace<1,1,1,0>::const_create(
+    PhysicalSpaceBasis<1,1,1,0>::const_create(
       bsp_space_1_1,
       Domain<1,0>::const_create(bsp_func_1_1,"map_1_1_1_0"));
 
   auto phys_space_2_1_1_0 =
-    PhysicalSpace<2,1,1,0>::const_create(
+    PhysicalSpaceBasis<2,1,1,0>::const_create(
       bsp_space_2_1,
       Domain<2,0>::const_create(bsp_func_2_2,"map_2_1_1_0"));
 
   auto phys_space_3_1_1_0 =
-    PhysicalSpace<3,1,1,0>::const_create(
+    PhysicalSpaceBasis<3,1,1,0>::const_create(
       bsp_space_3_1,
       Domain<3,0>::const_create(bsp_func_3_3));
 
   auto phys_space_2_2_1_0 =
-    PhysicalSpace<2,2,1,0>::const_create(
+    PhysicalSpaceBasis<2,2,1,0>::const_create(
       bsp_space_2_2,
       Domain<2,0>::const_create(bsp_func_2_2,"map_2_2_1_0"));
 
   auto phys_space_3_3_1_0 =
-    PhysicalSpace<3,3,1,0>::const_create(
+    PhysicalSpaceBasis<3,3,1,0>::const_create(
       bsp_space_3_3,
       Domain<3,0>::const_create(bsp_func_3_3,"map_3_3_1_0"));
 
   auto phys_space_2_1_1_1 =
-    PhysicalSpace<2,1,1,1>::const_create(
+    PhysicalSpaceBasis<2,1,1,1>::const_create(
       bsp_space_2_1,
       Domain<2,1>::const_create(bsp_func_2_3,"map_2_1_1_1"));
 
   auto phys_space_2_3_1_1 =
-    PhysicalSpace<2,3,1,1>::const_create(
+    PhysicalSpaceBasis<2,3,1,1>::const_create(
       bsp_space_2_3,
       Domain<2,1>::const_create(bsp_func_2_3,"map_2_3_1_1"));
 

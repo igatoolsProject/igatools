@@ -48,12 +48,12 @@ template <int,int,int,int> class PhysSpaceElementHandler;
  *
  */
 template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0>
-class PhysicalSpace :
+class PhysicalSpaceBasis :
   public Space<dim_,codim_,range_,rank_>
 {
 private:
   using base_t = Space<dim_,codim_,range_,rank_>;
-  using self_t = PhysicalSpace<dim_, range_, rank_, codim_>;
+  using self_t = PhysicalSpaceBasis<dim_, range_, rank_, codim_>;
 
 public:
   ///@{
@@ -125,11 +125,11 @@ public:
    * Default constructor. It does nothing but it is needed for the serialization
    * mechanism.
    */
-  PhysicalSpace() = default;
+  PhysicalSpaceBasis() = default;
 
-  PhysicalSpace(const self_t &phys_space) = delete;
+  PhysicalSpaceBasis(const self_t &phys_space) = delete;
 
-  virtual ~PhysicalSpace() = default;
+  virtual ~PhysicalSpaceBasis() = default;
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<RefSpace> &ref_space,
@@ -159,7 +159,7 @@ public:
 
 
   template <int k>
-  using SubSpace = PhysicalSpace<k, range, rank, codim + dim-k>;
+  using SubSpace = PhysicalSpaceBasis<k, range, rank, codim + dim-k>;
 
   template <int sdim>
   using SubGridMap = typename RefSpace::GridType::template SubGridMap<sdim>;
@@ -218,7 +218,7 @@ public:
 private:
 
 
-  PhysicalSpace(const SharedPtrConstnessHandler<RefSpace> &ref_space,
+  PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefSpace> &ref_space,
                 const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
                 const Transformation &transformation_type);
 

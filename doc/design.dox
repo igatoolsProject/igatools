@@ -43,7 +43,7 @@ BSpline         | BSplineElement        | BSplineElementHandler
 NURBS           | NURBSElement          | NURBSElementHandler
 Mapping              | MappingElement        | not defined
 PushForward          | PushForwardElement    | not defined
-PhysicalSpace        | PhysicalSpaceElement  | PhysSpaceElementHandler
+PhysicalSpaceBasis        | PhysicalSpaceElement  | PhysSpaceElementHandler
 </center>
    For the Mapping and the PushForward, the element filler is the container itself.
    
@@ -100,7 +100,7 @@ BSplineElement       | BSpline
 NURBSElement         | NURBS          
 MappingElement       | Mapping        
 PushForwardElement   | PushForward    
-PhysicalSpaceElement | PhysicalSpace
+PhysicalSpaceElement | PhysicalSpaceBasis
 </center>
 - they have an identifier in order to specify which element in the associated container they are representing;
 - they have @subpage iterators as friend classes (because the an iterator must be able to modify the 
