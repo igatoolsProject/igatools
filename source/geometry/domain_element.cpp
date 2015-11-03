@@ -34,6 +34,61 @@ DomainElement(const std::shared_ptr<ContainerType> &domain,
 {}
 
 
+template<int dim_,int codim_>
+void
+DomainElement<dim_,codim_>::
+operator++()
+{
+  ++(*grid_func_elem_);
+}
+
+template<int dim_,int codim_>
+void
+DomainElement<dim_,codim_>::
+move_to(const IndexType &elem_id)
+{
+  grid_func_elem_->move_to(elem_id);
+}
+
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_grid_function_element() const -> const GridFuncElem &
+{
+  return *grid_func_elem_;
+}
+
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_grid_function_element() -> GridFuncElem &
+{
+  return *grid_func_elem_;
+}
+
+
+template<int dim_,int codim_>
+void
+DomainElement<dim_,codim_>::
+print_info(LogStream &out) const
+{
+  out.begin_item("GridFunctionElement:");
+  grid_func_elem_->print_info(out);
+  out.end_item();
+}
+
+template<int dim_,int codim_>
+void
+DomainElement<dim_,codim_>::
+print_cache_info(LogStream &out) const
+{
+  out.begin_item("GridFunctionElement's cache");
+  grid_func_elem_->print_cache_info(out);
+  out.end_item();
+
+  local_cache_.print_info(out);
+}
+
 
 template<int dim_,int codim_>
 bool

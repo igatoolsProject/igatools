@@ -128,6 +128,26 @@ init_cache(ElementAccessor &elem,
 template <int dim>
 void
 GridHandler<dim>::
+init_element_cache(ElementIterator &elem,
+                   std::shared_ptr<const Quadrature<dim>> quad) const
+{
+  init_cache<dim>(*elem, quad);
+}
+
+template <int dim>
+void
+GridHandler<dim>::
+init_face_cache(ElementIterator &elem,
+                std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
+{
+  Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+  init_cache<(dim > 0) ? dim-1 : 0>(*elem, quad);
+}
+
+
+template <int dim>
+void
+GridHandler<dim>::
 fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
            const int s_id) const
@@ -172,6 +192,24 @@ fill_cache(ElementAccessor &elem, const int s_id) const
   cache.set_filled(true);
 }
 
+
+template <int dim>
+void
+GridHandler<dim>::
+fill_element_cache(ElementIterator &elem) const
+{
+  fill_cache<dim>(*elem,0);
+}
+
+
+template <int dim>
+void
+GridHandler<dim>::
+fill_face_cache(ElementIterator &elem, const int s_id) const
+{
+  Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+  fill_cache<(dim > 0) ? dim-1 : 0>(*elem,s_id);
+}
 
 
 template <int dim>

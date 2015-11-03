@@ -52,8 +52,7 @@ public:
 
   using ElementAccessor = GridFunctionElement<dim_, space_dim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-//  using ConstElementAccessor = GridFunctionElement<dim_, space_dim_>;
-  using ElementConstIterator = GridIterator<ElementAccessor>;
+
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
@@ -109,25 +108,19 @@ public:
   virtual void init_cache(ElementAccessor &elem,
                           const eval_pts_variant &quad) const;
 
-  void init_cache(ElementConstIterator &elem,
-                  const eval_pts_variant &quad) const
-  {
-    this->init_cache(*elem, quad);
-  }
+  void init_cache(ElementIterator &elem,
+                  const eval_pts_variant &quad) const;
 
   virtual void fill_cache(const topology_variant &sdim,
                           ElementAccessor &elem,
                           const int s_id) const;
 
   void fill_cache(const topology_variant &sdim,
-                  ElementConstIterator &elem,
-                  const int s_id) const
-  {
-    this->fill_cache(sdim, *elem, s_id);
-  }
+                  ElementIterator &elem,
+                  const int s_id) const;
 
   template <int sdim>
-  void fill_cache(ElementConstIterator &elem,
+  void fill_cache(ElementIterator &elem,
                   const int s_id)
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);

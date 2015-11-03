@@ -105,16 +105,36 @@ init_cache(ElementAccessor &elem,
   boost::apply_visitor(disp, quad);
 }
 
+template<int dim_, int space_dim_>
+void
+GridFunctionHandler<dim_, space_dim_>::
+init_cache(ElementIterator &elem,
+           const eval_pts_variant &quad) const
+{
+  this->init_cache(*elem, quad);
+}
+
 
 
 template<int dim_, int space_dim_>
-auto
+void
 GridFunctionHandler<dim_, space_dim_>::
 fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
-           const int s_id) const-> void
+           const int s_id) const
 {
   grid_handler_->fill_cache(sdim, *(elem.grid_elem_), s_id);
+}
+
+
+template<int dim_, int space_dim_>
+void
+GridFunctionHandler<dim_, space_dim_>::
+fill_cache(const topology_variant &sdim,
+           ElementIterator &elem,
+           const int s_id) const
+{
+  this->fill_cache(sdim, *elem, s_id);
 }
 
 IGA_NAMESPACE_CLOSE

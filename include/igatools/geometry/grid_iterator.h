@@ -159,7 +159,7 @@ IGA_NAMESPACE_OPEN
  * @tparam Element Type of the accessor.
  *
  * @ingroup iterators
- * @ingroup serializable
+ *
  * @author martinelli 2012,2013,2014,2015
  * @author pauletti 2012,2013,2014,2015
  */
@@ -295,24 +295,6 @@ protected:
    */
   std::unique_ptr<Element> elem_ ;
 
-#ifdef SERIALIZATION
-private:
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    using namespace boost::serialization;
-    ar &make_nvp("accessor_",elem_);
-  }
-  ///@}
-#endif // SERIALIZATION
 };
 
 

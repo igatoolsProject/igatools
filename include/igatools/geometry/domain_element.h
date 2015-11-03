@@ -135,42 +135,18 @@ public:
 
 public:
 
-  void operator++()
-  {
-    ++(*grid_func_elem_);
-  }
+  void operator++();
 
-  void move_to(const IndexType &elem_id)
-  {
-    grid_func_elem_->move_to(elem_id);
-  }
+  void move_to(const IndexType &elem_id);
 
-  const GridFuncElem &get_grid_function_element() const
-  {
-    return *grid_func_elem_;
-  }
+  const GridFuncElem &get_grid_function_element() const;
 
-  GridFuncElem &get_grid_function_element()
-  {
-    return *grid_func_elem_;
-  }
+  GridFuncElem &get_grid_function_element();
 
 
-  void print_info(LogStream &out) const
-  {
-    out.begin_item("GridFunctionElement:");
-    grid_func_elem_->print_info(out);
-    out.end_item();
-  }
+  void print_info(LogStream &out) const;
 
-  void print_cache_info(LogStream &out) const
-  {
-    out.begin_item("GridFunctionElement's cache");
-    grid_func_elem_->print_cache_info(out);
-    out.end_item();
-
-    local_cache_.print_info(out);
-  }
+  void print_cache_info(LogStream &out) const;
 
 public:
   template<int sdim>

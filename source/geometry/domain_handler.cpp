@@ -37,6 +37,13 @@ DomainHandler(std::shared_ptr<DomainType> domain)
 
 
 
+template<int dim_, int codim_>
+auto
+DomainHandler<dim_, codim_>::
+get_domain() const -> std::shared_ptr<DomainType>
+{
+  return domain_;
+}
 
 
 
@@ -81,19 +88,39 @@ init_cache(ElementAccessor &elem,
   boost::apply_visitor(disp, quad);
 }
 
+template<int dim_, int codim_>
+void
+DomainHandler<dim_, codim_>::
+init_cache(ElementIterator &elem,
+           const eval_pts_variant &quad) const
+{
+  this->init_cache(*elem, quad);
+}
+
 
 
 template<int dim_, int codim_>
-auto
+void
 DomainHandler<dim_, codim_>::
 fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
-           const int s_id) const -> void
+           const int s_id) const
 {
   grid_func_handler_->fill_cache(sdim, *(elem.grid_func_elem_), s_id);
 
   auto disp = FillCacheDispatcher(elem, s_id);
   boost::apply_visitor(disp, sdim);
+}
+
+
+template<int dim_, int codim_>
+void
+DomainHandler<dim_, codim_>::
+fill_cache(const topology_variant &sdim,
+           ElementIterator &elem,
+           const int s_id) const
+{
+  this->fill_cache(sdim, *elem, s_id);
 }
 
 
