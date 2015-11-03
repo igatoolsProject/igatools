@@ -172,7 +172,7 @@ private:
   const int s_id_;
   const InterGridMap elem_map_;
 
-  typename SupFunc::ElementConstIterator sup_elem_;
+  typename SupFunc::ElementIterator sup_elem_;
 
 };
 
@@ -346,7 +346,7 @@ private:
   const int s_id_;
   const InterGridMap elem_map_;
 
-  typename SupFunc::ElementConstIterator sup_elem_;
+  typename SupFunc::ElementIterator sup_elem_;
 
 };
 

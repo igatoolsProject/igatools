@@ -54,7 +54,6 @@ public:
 
   using ElementAccessor = typename FuncType::ElementAccessor;
   using ElementIterator = typename FuncType::ElementIterator;
-  using ElementConstIterator = typename FuncType::ElementConstIterator;
 
   using List = typename DomainType::List;
   using ListIt = typename DomainType::ListIt;
@@ -172,7 +171,7 @@ public:
   virtual void init_cache(ElementAccessor &elem,
                           const eval_pts_variant &quad) const;
 
-  void init_cache(ElementConstIterator &elem,
+  void init_cache(ElementIterator &elem,
                   const eval_pts_variant &quad) const
   {
     this->init_cache(*elem, quad);
@@ -184,14 +183,14 @@ public:
                           const int s_id) const;
 
   void fill_cache(const topology_variant &sdim,
-                  ElementConstIterator &elem,
+                  ElementIterator &elem,
                   const int s_id) const
   {
     this->fill_cache(sdim, *elem, s_id);
   }
 
   template <int sdim>
-  void fill_cache(ElementConstIterator &elem,
+  void fill_cache(ElementIterator &elem,
                   const int s_id)
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);

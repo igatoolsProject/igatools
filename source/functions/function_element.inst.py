@@ -28,10 +28,7 @@ data = Instantiation(include_files)
 elements = []
 
 
-#iters =  ['GridIteratorBase', 'GridIterator']
-els =['const iga::Function']
 for row in inst.all_function_dims:
-  for el in els:
     elem = 'FunctionElement<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank)
     elements.append(elem)
     f.write('template class %s ;\n' %(elem))
@@ -42,8 +39,8 @@ for row in inst.all_function_dims:
 #  for acc in accs1: 
 #      f.write('template class ' + acc + '<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank) + ';\n')
 
-accs=  ['FunctionElement', 'FunctionElement']
-iters =  ['GridIteratorBase', 'GridIterator']
+accs=  ['FunctionElement']
+iters =  ['GridIterator']
 for row in inst.all_function_dims:
   for i in range(len(accs)):
     acc = iters[i] + '<' + accs[i] + '<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank) + '>' 

@@ -30,7 +30,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Base class for iterator on collection of objects build over a Grid and
+ * @brief Iterator class collection of objects build over a Grid and
  * having in common a certain property (see Grid documentation).
  *
  * Its purpose is to iterate over the elements of a Grid.
@@ -163,10 +163,8 @@ IGA_NAMESPACE_OPEN
  * @author martinelli 2012,2013,2014,2015
  * @author pauletti 2012,2013,2014,2015
  */
-//TODO (pauletti, Aug 23, 2015): both based and derived should be merged
-// as the constness in in the Element type
 template <class Element>
-class GridIteratorBase
+class GridIterator
   : public std::iterator<std::random_access_iterator_tag, Element>
 {
 public:
@@ -189,7 +187,7 @@ protected:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  GridIteratorBase() = default;
+  GridIterator() = default;
 
 public:
   /**
@@ -199,9 +197,9 @@ public:
    * @warning If the <tt>index</tt> refers to an element that has not the given <tt>property</tt>
    * an assertion will be raised (in DEBUG mode).
    */
-  GridIteratorBase(std::shared_ptr<ContainerType> grid,
-                   const ListIt &index,
-                   const PropId &property);
+  GridIterator(std::shared_ptr<ContainerType> grid,
+               const ListIt &index,
+               const PropId &property);
 
   /**
    * Construct an iterator using the underlying element pointer.
@@ -209,32 +207,27 @@ public:
    * the given <tt>property</tt>
    * an assertion will be raised (in DEBUG mode).
    */
-  GridIteratorBase(std::unique_ptr<Element> &&accessor_ptr);
+  GridIterator(std::unique_ptr<Element> &&accessor_ptr);
 
   /**
-   * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
-   *
-   * @note By default it uses the deep copy.
+   * Copy constructor. Not allowed to be used.
    */
-//  GridIteratorBase(const GridIteratorBase<Element> &it,
-//                   const CopyPolicy &copy_policy = CopyPolicy::deep);
-  GridIteratorBase(const GridIteratorBase<Element> &it) = delete;
+  GridIterator(const GridIterator<Element> &it) = delete;
 
   /** Move constructor. */
-  GridIteratorBase(GridIteratorBase<Element> &&it) = default;
+  GridIterator(GridIterator<Element> &&it) = default;
 
   /** Destructor */
-  ~GridIteratorBase() = default ;
+  ~GridIterator() = default ;
   ///@}
 
   /** @name Assignment operators */
   ///@{
   /**
-   * Copy assignment operator.
-   * It performs a <b>shallow</b> copy of the Element hold by the GridIteratorBase.
+   * Copy assignment operator. Not allowe dto be used.
    */
-  GridIteratorBase<Element> &
-  operator=(const GridIteratorBase<Element> &it) = delete;
+  GridIterator<Element> &
+  operator=(const GridIterator<Element> &it) = delete;
 #if 0
   {
     elem_ = it.elem_;
@@ -243,8 +236,8 @@ public:
 #endif
 
   /** Move assignment operator. */
-  GridIteratorBase<Element> &
-  operator=(GridIteratorBase<Element> &&) = delete;
+  GridIterator<Element> &
+  operator=(GridIterator<Element> &&) = delete;
   ///@}
 
   /** @name Comparison operators */
@@ -253,27 +246,27 @@ public:
    * Compares for equality.
    * @note Internally uses the equality comparison operator implemented by the Element object.
    */
-  bool operator== (const GridIteratorBase &) const;
+  bool operator== (const GridIterator &) const;
 
   /**
    * Compares for inequality.
    * @note Internally uses the inequality comparison operator implemented by the Element object.
    */
-  bool operator!= (const GridIteratorBase &) const;
+  bool operator!= (const GridIterator &) const;
 
   /**
    * "Greather than" comparison operator.
    *
    * @note Internally uses the "greater than" comparison operator implemented by the Element object.
    */
-  bool operator> (const GridIteratorBase &) const;
+  bool operator> (const GridIterator &) const;
 
   /**
    * "Smaller than" comparison operator.
    *
    * @note Internally uses the "smaller than" comparison operator implemented by the Element object.
    */
-  bool operator< (const GridIteratorBase &) const;
+  bool operator< (const GridIterator &) const;
 
   ///@}
 
@@ -283,46 +276,8 @@ public:
    *  the next element and returns
    *  a reference to <tt>*this</tt>.
    */
-  GridIteratorBase<Element> &operator++();
+  GridIterator<Element> &operator++();
   ///@}
-
-protected:
-  /**
-   * Pointer to the object holding the Real data.
-   * @note We use a pointer instead of a reference object because the type Element
-   * can be a pure abstract class (and therefore have some virtual functions)
-   * that must be resolved at run-time.
-   */
-  std::unique_ptr<Element> elem_ ;
-
-};
-
-
-
-/**
- * @brief Iterator on non-const objects that have a "grid-like" structure.
- *
- * @sa GridConstIterator, GridIteratorBase
- *
- * @ingroup iterators
- *
- * @author martinelli, 2014
- */
-template <class Element>
-class GridIterator
-  :
-  public GridIteratorBase<Element>
-{
-public:
-  /** Type of the accessor. */
-  using AccessorType = Element;
-
-  /** Type of the grid-like container . */
-  using ContainerType = typename Element::ContainerType;
-
-  /** The constructors are inherited from the parent class GridIteratorBase */
-  using GridIteratorBase<Element>::GridIteratorBase;
-
 
   /** @name Dereferencing operators */
   ///@{
@@ -351,7 +306,18 @@ public:
   const Element *operator->() const;
   ///@}
 
+protected:
+  /**
+   * Pointer to the object holding the Real data.
+   * @note We use a pointer instead of a reference object because the type Element
+   * can be a pure abstract class (and therefore have some virtual functions)
+   * that must be resolved at run-time.
+   */
+  std::unique_ptr<Element> elem_ ;
+
 };
+
+
 
 IGA_NAMESPACE_CLOSE
 

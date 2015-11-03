@@ -84,7 +84,7 @@ for space in inst.SubPhysSpaces + inst.PhysSpaces:
 
 
 #---------------------------------------------------
-iters =  ['GridIteratorBase' , 'GridIterator']
+iters =  ['GridIterator']
 
 for elem in unique(elements):
     f.write('template class %s ;\n' %elem)

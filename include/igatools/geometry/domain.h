@@ -60,7 +60,6 @@ public:
 
   using ElementAccessor = DomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ElementConstIterator = GridIterator<ElementAccessor>;
 
   using ElementHandler = DomainHandler<dim_, codim_>;
 
@@ -149,22 +148,22 @@ public:
   /**
    * This function returns a element (const) iterator to the first element of the patch.
    */
-  ElementConstIterator begin(const PropId &prop = ElementProperties::active) const;
+  ElementIterator begin(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to one-pass the end of patch.
    */
-  ElementConstIterator end(const PropId &prop = ElementProperties::active) const;
+  ElementIterator end(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to the first element of the patch.
    */
-  ElementConstIterator cbegin(const PropId &prop = ElementProperties::active) const;
+  ElementIterator cbegin(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to one-pass the end of patch.
    */
-  ElementConstIterator cend(const PropId &prop = ElementProperties::active) const;
+  ElementIterator cend(const PropId &prop = ElementProperties::active) const;
   ///@}
 
 

@@ -57,8 +57,8 @@ for dim in inst.sub_domain_dims:
 #  for acc in accs1: 
 #      f.write('template class ' + acc + '<%d>' %(dim) + ';\n')
 
-accs=   [     'GridElement', 'GridElement']
-iters = ['GridIteratorBase', 'GridIterator']
+accs=   ['GridElement']
+iters = ['GridIterator']
 for dim in inst.sub_domain_dims+inst.domain_dims:
   for i in range(len(accs)):
     acc = iters[i] + '<' + accs[i] + '<%d>' %(dim) + '>' 

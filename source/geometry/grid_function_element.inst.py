@@ -69,8 +69,8 @@ for x in inst.mapping_dims:
 
 
 
-accs=  ['GridFunctionElement','GridFunctionElement']
-iters =  ['GridIteratorBase','GridIterator']
+accs=  ['GridFunctionElement']
+iters =  ['GridIterator']
 for x in inst.sub_mapping_dims+inst.mapping_dims:
   for i in range(len(accs)):
     acc = iters[i] + '<' + accs[i]+ '<%d,%d>' %(x.dim,x.space_dim) + '>' 

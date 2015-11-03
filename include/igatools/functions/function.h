@@ -60,7 +60,6 @@ public:
 
   using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ElementConstIterator = GridIterator<ElementAccessor>;
 
   using ElementHandler = FunctionHandler<dim_, codim_, range_, rank_>;
 
@@ -178,22 +177,22 @@ public:
   /**
    * This function returns a element (const) iterator to the first element of the patch.
    */
-  ElementConstIterator begin(const PropId &property = ElementProperties::active) const;
+  ElementIterator begin(const PropId &property = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to one-pass the end of patch.
    */
-  ElementConstIterator end(const PropId &property = ElementProperties::active) const;
+  ElementIterator end(const PropId &property = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to the first element of the patch.
    */
-  ElementConstIterator cbegin(const PropId &property = ElementProperties::active) const;
+  ElementIterator cbegin(const PropId &property = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to one-pass the end of patch.
    */
-  ElementConstIterator cend(const PropId &property = ElementProperties::active) const;
+  ElementIterator cend(const PropId &property = ElementProperties::active) const;
   ///@}
 
   virtual void print_info(LogStream &out) const

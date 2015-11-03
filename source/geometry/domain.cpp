@@ -218,7 +218,7 @@ end(const PropId &prop) -> ElementIterator
 template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
-begin(const PropId &prop) const -> ElementConstIterator
+begin(const PropId &prop) const -> ElementIterator
 {
   return this->cbegin(prop);
 }
@@ -228,7 +228,7 @@ begin(const PropId &prop) const -> ElementConstIterator
 template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
-end(const PropId &prop) const -> ElementConstIterator
+end(const PropId &prop) const -> ElementIterator
 {
   return this->cend(prop);
 }
@@ -238,11 +238,11 @@ end(const PropId &prop) const -> ElementConstIterator
 template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
-cbegin(const PropId &prop) const -> ElementConstIterator
+cbegin(const PropId &prop) const -> ElementIterator
 {
-  return ElementConstIterator(this->shared_from_this(),
-                              grid_func_->get_grid()->get_elements_with_property(prop).begin(),
-                              prop);
+  return ElementIterator(this->shared_from_this(),
+                         grid_func_->get_grid()->get_elements_with_property(prop).begin(),
+                         prop);
 }
 
 
@@ -250,11 +250,11 @@ cbegin(const PropId &prop) const -> ElementConstIterator
 template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
-cend(const PropId &prop) const -> ElementConstIterator
+cend(const PropId &prop) const -> ElementIterator
 {
-  return ElementConstIterator(this->shared_from_this(),
-                              grid_func_->get_grid()->get_elements_with_property(prop).end(),
-                              prop);
+  return ElementIterator(this->shared_from_this(),
+                         grid_func_->get_grid()->get_elements_with_property(prop).end(),
+                         prop);
 }
 
 

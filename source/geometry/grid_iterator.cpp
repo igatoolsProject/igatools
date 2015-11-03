@@ -26,26 +26,26 @@ using std::shared_ptr;
 IGA_NAMESPACE_OPEN
 
 template <class Element>
-GridIteratorBase<Element>::
-GridIteratorBase(std::shared_ptr<ContainerType> container,
-                 const ListIt &index,
-                 const PropId &prop)
+GridIterator<Element>::
+GridIterator(std::shared_ptr<ContainerType> container,
+             const ListIt &index,
+             const PropId &prop)
   :
   elem_(container->create_element(index, prop))
 {}
 
 template <class Element>
-GridIteratorBase<Element>::
-GridIteratorBase(std::unique_ptr<Element> &&elem)
+GridIterator<Element>::
+GridIterator(std::unique_ptr<Element> &&elem)
   :
   elem_(std::move(elem))
 {}
 
 #if 0
 template <class Element>
-GridIteratorBase<Element>::
-GridIteratorBase(const GridIteratorBase<Element> &it,
-                 const CopyPolicy &copy_policy)
+GridIterator<Element>::
+GridIterator(const GridIterator<Element> &it,
+             const CopyPolicy &copy_policy)
 {
   if (copy_policy == CopyPolicy::deep)
   {
@@ -65,8 +65,8 @@ GridIteratorBase(const GridIteratorBase<Element> &it,
 
 
 template <class Element>
-GridIteratorBase<Element> &
-GridIteratorBase<Element>::
+GridIterator<Element> &
+GridIterator<Element>::
 operator++()
 {
   elem_->operator++();
@@ -77,8 +77,8 @@ operator++()
 
 template <class Element>
 bool
-GridIteratorBase<Element>::
-operator==(const GridIteratorBase<Element> &i) const
+GridIterator<Element>::
+operator==(const GridIterator<Element> &i) const
 {
   return *elem_ == *i.elem_;
 }
@@ -87,16 +87,16 @@ operator==(const GridIteratorBase<Element> &i) const
 
 template <class Element>
 bool
-GridIteratorBase<Element>::
-operator>(const GridIteratorBase<Element> &i) const
+GridIterator<Element>::
+operator>(const GridIterator<Element> &i) const
 {
   return (*elem_ > *i.elem_);
 }
 
 template <class Element>
 bool
-GridIteratorBase<Element>::
-operator<(const GridIteratorBase<Element> &i) const
+GridIterator<Element>::
+operator<(const GridIterator<Element> &i) const
 {
   return (*elem_ < *i.elem_);
 }
@@ -105,8 +105,8 @@ operator<(const GridIteratorBase<Element> &i) const
 
 template <class Element>
 bool
-GridIteratorBase<Element>::
-operator!=(const GridIteratorBase<Element> &i) const
+GridIterator<Element>::
+operator!=(const GridIterator<Element> &i) const
 {
   return elem_->operator != (*(i.elem_));
 }
@@ -114,7 +114,7 @@ operator!=(const GridIteratorBase<Element> &i) const
 #if 0
 template <class Element>
 Index
-GridIteratorBase<Element>::
+GridIterator<Element>::
 get_flat_index() const
 {
   return elem_->get_flat_index();
@@ -122,7 +122,7 @@ get_flat_index() const
 
 template <class Element>
 auto
-GridIteratorBase<Element>::
+GridIterator<Element>::
 get_tensor_index() const -> TensIndex
 {
   return elem_->get_tensor_index();
