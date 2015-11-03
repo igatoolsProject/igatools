@@ -340,7 +340,7 @@ private:
   /**
    * Returns the BSpline used to define the BSplineElementHandler object.
    */
-  std::shared_ptr<const Space> get_bspline_space() const;
+  std::shared_ptr<const Space> get_bspline_basis() const;
 };
 
 IGA_NAMESPACE_CLOSE

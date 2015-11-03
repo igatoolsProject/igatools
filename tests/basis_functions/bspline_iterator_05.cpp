@@ -71,15 +71,15 @@ void sub_elem_values(const int n_knots, const int deg)
       out << "Element" << grid_elem.get_index() << endl;
 
       out.begin_item("Basis functions values:");
-      elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
+      elem->template get_basis_data<_Value,dim>(0,DofProperties::active).print_info(out);
       out.end_item();
 
       out.begin_item("Basis functions gradients:");
-      elem->template get_basis<_Gradient,dim>(0,DofProperties::active).print_info(out);
+      elem->template get_basis_data<_Gradient,dim>(0,DofProperties::active).print_info(out);
       out.end_item();
 
       out.begin_item("Basis functions hessians:");
-      elem->template get_basis<_Hessian,dim>(0,DofProperties::active).print_info(out);
+      elem->template get_basis_data<_Hessian,dim>(0,DofProperties::active).print_info(out);
       out.end_item();
 
       for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
@@ -90,15 +90,15 @@ void sub_elem_values(const int n_knots, const int deg)
           out.begin_item("Sub Element: " + std::to_string(s_id));
 
           out.begin_item("Basis functions values:");
-          elem->template get_basis<_Value,k>(s_id,DofProperties::active).print_info(out);
+          elem->template get_basis_data<_Value,k>(s_id,DofProperties::active).print_info(out);
           out.end_item();
 
           out.begin_item("Basis functions gradients:");
-          elem->template get_basis<_Gradient,k>(s_id,DofProperties::active).print_info(out);
+          elem->template get_basis_data<_Gradient,k>(s_id,DofProperties::active).print_info(out);
           out.end_item();
 
           out.begin_item("Basis functions hessians:");
-          elem->template get_basis<_Hessian,k>(s_id,DofProperties::active).print_info(out);
+          elem->template get_basis_data<_Hessian,k>(s_id,DofProperties::active).print_info(out);
           out.end_item();
 
 

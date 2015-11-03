@@ -263,7 +263,7 @@ private:
 
       if (cache.template status_fill<_Value>())
       {
-        const auto &P = bsp_elem.template get_basis<_Value,sdim>(s_id_,DofProperties::active);
+        const auto &P = bsp_elem.template get_basis_data<_Value,sdim>(s_id_,DofProperties::active);
         const auto &Q = w_func_elem.template get_values_from_cache<_D0,sdim>(s_id_);
 
         auto &values = cache.template get_data<_Value>();
@@ -272,8 +272,8 @@ private:
 
       if (cache.template status_fill<_Gradient>())
       {
-        const auto &P = bsp_elem.template get_basis<_Value,sdim>(s_id_,DofProperties::active);
-        const auto &dP = bsp_elem.template get_basis<_Gradient,sdim>(s_id_,DofProperties::active);
+        const auto &P = bsp_elem.template get_basis_data<_Value,sdim>(s_id_,DofProperties::active);
+        const auto &dP = bsp_elem.template get_basis_data<_Gradient,sdim>(s_id_,DofProperties::active);
         const auto &Q = w_func_elem.template get_values_from_cache<_D0,sdim>(s_id_);
         const auto &dQ = w_func_elem.template get_values_from_cache<_D1,sdim>(s_id_);
 
@@ -283,9 +283,9 @@ private:
 
       if (cache.template status_fill<_Hessian>())
       {
-        const auto &P = bsp_elem.template get_basis<_Value,sdim>(s_id_,DofProperties::active);
-        const auto &dP = bsp_elem.template get_basis<_Gradient,sdim>(s_id_,DofProperties::active);
-        const auto &d2P = bsp_elem.template get_basis<_Hessian,sdim>(s_id_,DofProperties::active);
+        const auto &P = bsp_elem.template get_basis_data<_Value,sdim>(s_id_,DofProperties::active);
+        const auto &dP = bsp_elem.template get_basis_data<_Gradient,sdim>(s_id_,DofProperties::active);
+        const auto &d2P = bsp_elem.template get_basis_data<_Hessian,sdim>(s_id_,DofProperties::active);
         const auto &Q = w_func_elem.template get_values_from_cache<_D0,sdim>(s_id_);
         const auto &dQ = w_func_elem.template get_values_from_cache<_D1,sdim>(s_id_);
         const auto &d2Q = w_func_elem.template get_values_from_cache<_D2,sdim>(s_id_);

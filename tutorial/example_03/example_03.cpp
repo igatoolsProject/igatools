@@ -115,7 +115,7 @@ void loop_on_basis_with_cache()
     cache_handler->fill_element_cache(elem_basis);
 
     out << "Element: " << elem_basis->get_index() << " has global basis: ";
-    elem_basis->get_local_to_global(DofProperties::active).print_info(out);
+    elem_basis->get_local_to_global().print_info(out);
     out << endl;
 
     // [basis_values]

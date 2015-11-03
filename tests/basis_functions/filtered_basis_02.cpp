@@ -99,8 +99,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     loc_rhs = 0.0;
 
     elem_handler->fill_element_cache(elem);
-    auto phi = elem->template get_basis<_Value, dim>(0,DofProp::interior);
-    auto grad_phi  = elem->template get_basis<_Gradient, dim>(0,DofProp::interior);
+    auto phi = elem->template get_basis_data<_Value, dim>(0,DofProp::interior);
+    auto grad_phi  = elem->template get_basis_data<_Gradient, dim>(0,DofProp::interior);
     auto w_meas = elem->template get_w_measures<dim>(0);
 
     for (int i = 0; i < n_basis; ++i)

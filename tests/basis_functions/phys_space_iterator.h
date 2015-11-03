@@ -169,15 +169,15 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim>> space,
           elem_filler->template fill_cache<k>(*elem, s_id);
 
           out.begin_item("Values: ");
-          elem->template get_basis<_Value, k>(s_id,prop).print_info(out);
+          elem->template get_basis_data<_Value, k>(s_id,prop).print_info(out);
           out.end_item();
 
           out.begin_item("Gradients: ");
-          elem->template get_basis<_Gradient, k>(s_id,prop).print_info(out);
+          elem->template get_basis_data<_Gradient, k>(s_id,prop).print_info(out);
           out.end_item();
 
           out.begin_item("Hessians: ");
-          elem->template get_basis<_Hessian, k>(s_id,prop).print_info(out);
+          elem->template get_basis_data<_Hessian, k>(s_id,prop).print_info(out);
           out.end_item();
 
           out.begin_item("W * Measures: ");

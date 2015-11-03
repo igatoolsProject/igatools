@@ -108,7 +108,7 @@ void elem_values(const int n_knots = 5, const int deg=1)
   for (; elem != end; ++elem)
   {
     elem_filler->fill_element_cache(elem);
-    elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
+    elem->template get_basis_data<_Value, k>(0,DofProperties::active).print_info(out);
   }
 
   OUTEND

@@ -148,8 +148,8 @@ void PoissonProblem<dim>::assemble()
     loc_rhs = 0.0;
 
     elem_handler->fill_element_cache(elem);
-    auto phi = elem->template get_basis<_Value, dim>(0,DofProperties::active);
-    auto grad_phi  = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
+    auto phi = elem->template get_basis_data<_Value, dim>(0,DofProperties::active);
+    auto grad_phi  = elem->template get_basis_data<_Gradient, dim>(0,DofProperties::active);
     auto w_meas = elem->template get_w_measures<dim>(0);
 
     f->fill_element_cache(f_elem);

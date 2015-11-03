@@ -30,35 +30,14 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_,int codim_,int range_,int rank_>
 SpaceElement<dim_,codim_,range_,rank_>::
-SpaceElement(const std::shared_ptr<Sp> space,
-             const ListIt &index,
+SpaceElement(const std::shared_ptr<Sp> &space_basis,
              const PropId &prop)
   :
   Element(prop),
-  space_(space)
-{
-//  grid_elem_ = space_->get_grid()->create_element(index,prop);
-}
+  space_basis_(space_basis)
+{}
 
 
-
-#if 0
-template<int dim_,int codim_,int range_,int rank_>
-auto
-SpaceElement<dim_,codim_,range_,rank_>::
-get_grid_element() -> GridElem &
-{
-  return *grid_elem_;
-}
-
-template<int dim_,int codim_,int range_,int rank_>
-auto
-SpaceElement<dim_,codim_,range_,rank_>::
-get_grid_element() const -> const  GridElem &
-{
-  return *grid_elem_;
-}
-#endif
 
 template<int dim_,int codim_,int range_,int rank_>
 void
@@ -95,14 +74,6 @@ get_index() const -> IndexType
   return this->get_grid_element().get_index();
 }
 
-template<int dim_,int codim_,int range_,int rank_>
-std::shared_ptr<const Grid<dim_> >
-SpaceElement<dim_,codim_,range_,rank_>::
-get_grid() const
-{
-  return this->get_grid_element().get_grid();
-}
-
 
 
 
@@ -114,7 +85,7 @@ get_local_to_global(const std::string &dofs_property) const
   SafeSTLVector<Index> dofs_global;
   SafeSTLVector<Index> dofs_loc_to_patch;
   SafeSTLVector<Index> dofs_loc_to_elem;
-  this->space_->get_element_dofs(
+  this->space_basis_->get_element_dofs(
     this->get_index(),
     dofs_global,
     dofs_loc_to_patch,
@@ -132,7 +103,7 @@ get_local_to_patch(const std::string &dofs_property) const
   SafeSTLVector<Index> dofs_global;
   SafeSTLVector<Index> dofs_loc_to_patch;
   SafeSTLVector<Index> dofs_loc_to_elem;
-  this->space_->get_element_dofs(
+  this->space_basis_->get_element_dofs(
     this->get_index(),
     dofs_global,
     dofs_loc_to_patch,
@@ -150,7 +121,7 @@ get_local_dofs(const std::string &dofs_property) const
   SafeSTLVector<Index> dofs_global;
   SafeSTLVector<Index> dofs_loc_to_patch;
   SafeSTLVector<Index> dofs_loc_to_elem;
-  this->space_->get_element_dofs(
+  this->space_basis_->get_element_dofs(
     this->get_index(),
     dofs_global,
     dofs_loc_to_patch,
@@ -175,7 +146,7 @@ bool
 SpaceElement<dim_,codim_,range_,rank_>::
 operator==(const self_t &a) const
 {
-  Assert(this->is_comparable_with(a),
+  Assert(this->has_same_basis_of(a),
          ExcMessage("Comparison between elements defined on different spaces"));
   return this->get_grid_element() == a.get_grid_element();
 }
@@ -185,7 +156,7 @@ bool
 SpaceElement<dim_,codim_,range_,rank_>::
 operator!=(const self_t &a) const
 {
-  Assert(this->is_comparable_with(a),
+  Assert(this->has_same_basis_of(a),
          ExcMessage("Comparison between elements defined on different spaces"));
   return this->get_grid_element() != a.get_grid_element();
 }
@@ -195,7 +166,7 @@ bool
 SpaceElement<dim_,codim_,range_,rank_>::
 operator<(const self_t &a) const
 {
-  Assert(this->is_comparable_with(a),
+  Assert(this->has_same_basis_of(a),
          ExcMessage("Comparison between elements defined on different spaces"));
 //  return *grid_elem_ < *a.grid_elem_;
   return this->get_grid_element() < a.get_grid_element();
@@ -206,7 +177,7 @@ bool
 SpaceElement<dim_,codim_,range_,rank_>::
 operator>(const self_t &a) const
 {
-  Assert(this->is_comparable_with(a),
+  Assert(this->has_same_basis_of(a),
          ExcMessage("Comparison between elements defined on different spaces"));
 //  return *grid_elem_ > *a.grid_elem_;
   return this->get_grid_element() > a.get_grid_element();
@@ -237,21 +208,30 @@ get_w_measures(const int j) const
   return w_measures;
 }
 
+
+template<int dim_,int codim_,int range_,int rank_>
+ValueVector<Real>
+SpaceElement<dim_,codim_,range_,rank_>::
+get_element_w_measures() const
+{
+  return this->template get_w_measures<dim>(0);
+}
+
 template<int dim_,int codim_,int range_,int rank_>
 auto
 SpaceElement<dim_,codim_,range_,rank_>::
-get_space() const -> std::shared_ptr<Sp>
+get_space_basis() const -> std::shared_ptr<Sp>
 {
-  return space_;
+  return space_basis_;
 }
 
 
 template<int dim_,int codim_,int range_,int rank_>
 bool
 SpaceElement<dim_,codim_,range_,rank_>::
-is_comparable_with(const self_t &elem) const
+has_same_basis_of(const self_t &elem) const
 {
-  return (space_ == elem.space_);
+  return (space_basis_ == elem.space_basis_);
 }
 
 
@@ -261,7 +241,7 @@ SpaceElement<dim_,codim_,range_,rank_>::
 get_element_values(const std::string &dofs_property) const
 -> ValueTable<Value>
 {
-  return this->template get_basis<space_element::_Value,dim_>(0,dofs_property);
+  return this->template get_basis_data<space_element::_Value,dim_>(0,dofs_property);
 }
 
 template<int dim_,int codim_,int range_,int rank_>
@@ -270,7 +250,7 @@ SpaceElement<dim_,codim_,range_,rank_>::
 get_element_gradients(const std::string &dofs_property) const
 -> ValueTable<Derivative<1>>
 {
-  return this->template get_basis<space_element::_Gradient,dim_>(0,dofs_property);
+  return this->template get_basis_data<space_element::_Gradient,dim_>(0,dofs_property);
 }
 
 template<int dim_,int codim_,int range_,int rank_>
@@ -279,7 +259,7 @@ SpaceElement<dim_,codim_,range_,rank_>::
 get_element_hessians(const std::string &dofs_property) const
 -> ValueTable<Derivative<2>>
 {
-  return this->template get_basis<space_element::_Hessian,dim_>(0,dofs_property);
+  return this->template get_basis_data<space_element::_Hessian,dim_>(0,dofs_property);
 }
 
 template<int dim_,int codim_,int range_,int rank_>
@@ -288,7 +268,7 @@ SpaceElement<dim_,codim_,range_,rank_>::
 get_element_divergences(const std::string &dofs_property) const
 -> ValueTable<Div>
 {
-  return this->template get_basis<space_element::_Divergence,dim_>(0,dofs_property);
+  return this->template get_basis_data<space_element::_Divergence,dim_>(0,dofs_property);
 }
 
 

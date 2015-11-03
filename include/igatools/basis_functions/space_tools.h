@@ -108,7 +108,7 @@ projection_l2(const Function<Space::dim,Space::codim,Space::range,Space::rank> &
       loc_rhs = 0.;
 
       auto f_at_qp = f_elem->template get_values<function_element::_Value,dim>(0);
-      auto phi = elem->template get_basis_element<space_element::_Value>(dofs_property);
+      auto phi = elem->get_element_values(dofs_property);
 
       // computing the upper triangular part of the local matrix
       auto w_meas = elem->template get_w_measures<dim>(0);
@@ -184,7 +184,7 @@ projection_l2(const Function<Space::dim,Space::codim,Space::range,Space::rank> &
       //---------------------------------------------------------------------------
 
 
-      auto phi = elem->template get_basis_element<space_element::_Value>(dofs_property);
+      auto phi = elem->get_element_values(dofs_property);
 
       // computing the upper triangular part of the local matrix
       auto w_meas = elem->template get_w_measures<dim>(0);
@@ -288,7 +288,7 @@ projection_l2_ig_grid_function(
       loc_rhs = 0.;
 
       auto f_at_qp = f_elem->template get_values_from_cache<D0,dim>(0);
-      auto phi = elem->template get_basis_element<space_element::_Value>(dofs_property);
+      auto phi = elem->get_element_values(dofs_property);
 
       // computing the upper triangular part of the local matrix
       auto w_meas = elem->template get_w_measures<dim>(0);
@@ -361,7 +361,7 @@ projection_l2_ig_grid_function(
       //---------------------------------------------------------------------------
 
 
-      auto phi = elem->template get_basis_element<space_element::_Value>(dofs_property);
+      auto phi = elem->get_element_values(dofs_property);
 
       // computing the upper triangular part of the local matrix
       auto w_meas = elem->template get_w_measures<dim>(0);

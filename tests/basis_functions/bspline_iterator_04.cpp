@@ -78,15 +78,15 @@ void elem_derivatives(const int n_knots,
     elem_handler->fill_element_cache(elem);
     if (der == 0)
     {
-      elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
+      elem->template get_basis_data<_Value,dim>(0,DofProperties::active).print_info(out);
     }
     else if (der == 1)
     {
-      elem->template get_basis<_Gradient,dim>(0,DofProperties::active).print_info(out);
+      elem->template get_basis_data<_Gradient,dim>(0,DofProperties::active).print_info(out);
     }
     else if (der == 2)
     {
-      elem->template get_basis<_Hessian,dim>(0,DofProperties::active).print_info(out);
+      elem->template get_basis_data<_Hessian,dim>(0,DofProperties::active).print_info(out);
     }
     else
       AssertThrow(false,ExcMessage("Invalid derivative order."));

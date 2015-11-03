@@ -100,8 +100,8 @@ void  PoissonPreparation<dim>::local_assemble()
 
     // [get the values]
     elem_handler->fill_element_cache(elem);
-    auto values = elem->template get_basis<_Value, dim>(0,DofProperties::active);
-    auto grads  = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
+    auto values = elem->template get_basis_data<_Value, dim>(0,DofProperties::active);
+    auto grads  = elem->template get_basis_data<_Gradient, dim>(0,DofProperties::active);
     auto w_meas = elem->template get_w_measures<dim>(0);
     // [get the values]
 

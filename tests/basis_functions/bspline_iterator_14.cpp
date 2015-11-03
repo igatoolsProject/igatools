@@ -78,19 +78,19 @@ void elem_derivatives(const int n_knots = 5, const int deg=1)
     if (der == 0)
     {
       out.begin_item("Basis function values:");
-      elem->template get_basis<_Value, dim>(0,DofProperties::active).print_info(out);
+      elem->template get_basis_data<_Value, dim>(0,DofProperties::active).print_info(out);
       out.end_item();
     }
     else if (der == 1)
     {
       out.begin_item("Basis function gradients:");
-      elem->template get_basis<_Gradient, dim>(0,DofProperties::active).print_info(out);
+      elem->template get_basis_data<_Gradient, dim>(0,DofProperties::active).print_info(out);
       out.end_item();
     }
     else if (der == 2)
     {
       out.begin_item("Basis function hessians:");
-      elem->template get_basis<_Hessian, dim>(0,DofProperties::active).print_info(out);
+      elem->template get_basis_data<_Hessian, dim>(0,DofProperties::active).print_info(out);
       out.end_item();
     }
     else

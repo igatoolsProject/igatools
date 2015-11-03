@@ -246,10 +246,10 @@ public:
   /** Returns the index of the element. */
   IndexType get_index() const;
 
-
+#if 0
   /** Return the cartesian grid from which the element belongs.*/
   const std::shared_ptr<const Grid<dim>> get_grid() const;
-
+#endif
 
 
 #if 0

@@ -34,7 +34,7 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const ListIt &index,
                      const PropId &prop)
   :
-  parent_t(phys_space,index,prop),
+  parent_t(phys_space,prop),
   ref_space_element_(phys_space->get_reference_space()->create_ref_element(index,prop)),
   phys_domain_element_(make_unique<PhysDomainElem>(
                         std::const_pointer_cast<PhysDomain>(phys_space->get_physical_domain()),
@@ -182,6 +182,7 @@ get_ref_space_element() -> RefElemAccessor &
   return dynamic_cast<RefElemAccessor &>(*ref_space_element_);
 }
 
+#if 0
 template<int dim_,int range_,int rank_,int codim_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
@@ -189,7 +190,7 @@ get_grid() const -> const std::shared_ptr<const Grid<dim> >
 {
   return this->get_ref_space_element().get_grid();
 }
-
+#endif
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
@@ -319,11 +320,7 @@ bool
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 is_comparable_with(const self_t &elem) const
 {
-//   bool same_ref_space =
-//       (ref_space_element_->get_space() == elem.ref_space_element_->get_space());
-  const bool same_phys_space =
-    (this->get_space() == elem.get_space());
-  return (same_phys_space);
+  return (this->get_space_basis() == elem.get_space_basis());
 }
 
 IGA_NAMESPACE_CLOSE

@@ -34,7 +34,7 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
                  const ListIt &index,
                  const PropId &prop)
   :
-  parent_t(space,index,prop),
+  parent_t(space,prop),
   space_(space)
 {
 //    Assert(this->get_space() != nullptr,ExcNullPtr());

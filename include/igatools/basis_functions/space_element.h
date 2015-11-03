@@ -43,7 +43,7 @@ IGA_NAMESPACE_OPEN
 
 /**
  *
- *
+ * @ingroup elements
  */
 template<int dim_,int codim_,int range_,int rank_>
 class SpaceElement : public Element
@@ -90,50 +90,51 @@ public:
   using Flags = space_element::Flags;
 
 
+private:
   /** @name Constructors */
   ///@{
-protected:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * \brief Default constructor. Not allowed to be used.
    */
-  SpaceElement() = default;
-
-public:
-
-  SpaceElement(const std::shared_ptr<Sp> space,
-               const ListIt &index,
-               const PropId &prop = ElementProperties::active);
+  SpaceElement() = delete;
 
   /**
-   * Copy constructor. Not allowed to be used.
+   * \brief Copy constructor. Not allowed to be used.
    */
   SpaceElement(const self_t &elem) = delete;
 
   /**
-   * Move constructor.
+   * \brief Move constructor. Not allowed to be used.
    */
-  SpaceElement(self_t &&elem) = default;
-
-  /**
-   * Destructor.
-   */
-  virtual ~SpaceElement() = default;
+  SpaceElement(self_t &&elem) = delete;
   ///@}
+
 
   /** @name Assignment operators */
   ///@{
   /**
-   * Copy assignment operator. Not allowed to be used.
+   * \brief Copy assignment operator. Not allowed to be used.
    */
   self_t &operator=(const self_t &element) = delete;
 
   /**
-   * Move assignment operator.
+   * \brief Move assignment operator.
    */
   self_t &operator=(self_t &&elem) = default;
   ///@}
+
+public:
+
+  SpaceElement(const std::shared_ptr<Sp> &space_basis,
+               const PropId &prop = ElementProperties::active);
+
+
+
+  /**
+   * \brief Destructor.
+   */
+  virtual ~SpaceElement() = default;
+
 
 
 
@@ -142,34 +143,41 @@ public:
    *
    * @brief The comparison operators compares the <em>position</em> of the element in the grid.
    *
-   * @warning To be comparable, two SpaceElement objects must be defined on the same space
+   * @warning To be comparable, two SpaceElement objects must be defined on the same Basis
    * (and therefore on the same grid),
    * otherwise an assertion will be raised (in Debug mode).
    */
   ///@{
-  /** Returns TRUE if the two elements have the same index on the grid. */
+  /** \brief Returns TRUE if the two elements have the same index on the grid. */
   virtual bool operator==(const self_t &a) const;
 
 
-  /** Returns TRUE if the two elements have different indices on the grid. */
+  /** \brief Returns TRUE if the two elements have different indices on the grid. */
   virtual bool operator!=(const self_t &a) const;
 
   /**
-   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * \brief Returns TRUE if the the index of the element on the left of the
+   * operator <tt> < </tt>
    * is smaller than the the index of the element on the right.
    * */
   virtual bool operator<(const self_t &a) const;
 
   /**
-   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * \brief Returns TRUE if the the index of the element on the left of the
+   * operator <tt> < </tt>
    * is bigger than the the index of the element on the right.
    * */
   virtual bool operator>(const self_t &a) const;
+
+  /**
+   * \brief Returns true if two elements belongs from the same Basis.
+   */
+  bool has_same_basis_of(const self_t &elem) const;
   ///@}
 
 
   /**
-   * Move the element to the one specified by <tt>elem_id</tt>.
+   * \brief Move the element to the one specified by <tt>elem_id</tt>.
    *
    * @warning Use this function only if you know what you are doing
    */
@@ -181,7 +189,7 @@ public:
    */
   ///@{
   /**
-   * Returns the global dofs of the local (non zero) basis functions
+   * \brief Returns the global dofs of the local (non zero) basis functions
    * on the element.
    *
    * @note The dofs can be filtered invoking the function with the argument @p dof_property.
@@ -201,10 +209,10 @@ public:
    *
    */
   SafeSTLVector<Index>
-  get_local_to_global(const std::string &dofs_property) const;
+  get_local_to_global(const std::string &dofs_property = DofProperties::active) const;
 
   /**
-   * Returns the patch dofs of the local (non zero) basis functions
+   * \brief Returns the patch dofs of the local (non zero) basis functions
    * on the element.
    *
    * @note The dofs can be filtered invoking the function with the argument @p dof_property.
@@ -212,66 +220,57 @@ public:
    *
    */
   SafeSTLVector<Index>
-  get_local_to_patch(const std::string &dofs_property) const;
+  get_local_to_patch(const std::string &dofs_property = DofProperties::active) const;
 
 
   SafeSTLVector<Index>
-  get_local_dofs(const std::string &dofs_property) const;
+  get_local_dofs(const std::string &dofs_property = DofProperties::active) const;
 
 
   /**
-   *  Number of non zero basis functions with the given @p dofs_property,
-   *  over the current element.
+   * \brief Returns the number of non zero basis functions with the given
+   * @p dofs_property,
+   * that are non-zero over the current element.
    */
-  Size get_num_basis(const std::string &dofs_property) const;
+  Size get_num_basis(const std::string &dofs_property = DofProperties::active) const;
   ///@}
 
-#if 0
-  /**
-   * Test if the element has a boundary face.
-    */
-  template<int sdim = (dim_ > 0) ? (dim_-1) : 0 >
-  bool is_boundary() const
-  {
-    return grid_elem_->is_boundary<sdim>();
-  }
 
   /**
-   * Test if the face identified by @p s_id on the current element is on the
-   * boundary of the cartesian grid.
-   */
-  template<int sdim = (dim_ > 0) ? (dim_-1) : 0>
-  bool is_boundary(const Index s_id) const
-  {
-    return grid_elem_->is_boundary<sdim>(s_id);
-  }
-#endif
-
-//#if 0
-  /**
-   * Return a reference to the GridElement.
+   * \brief Return a reference to the underlying GridElement.
+   *
+   * \warning Use this function only if you know what you are doing.
    */
   virtual GridElem &get_grid_element() = 0;
 
   /**
-   * Return a const-reference to the GridElement.
+   * \brief Return a const-reference to the underlying GridElement.
    */
   virtual const GridElem &get_grid_element() const = 0;
-//#endif
 
-  /** Returns the index of the element. */
+  /**
+   * \brief Returns the index of the element.
+   */
   IndexType get_index() const;
 
-  /** Return the cartesian grid from which the element belongs.*/
-  std::shared_ptr<const Grid<dim_> > get_grid() const;
 
-
-
-  template <class ValueType, int sub_elem_dim = dim_>
+  /**
+   * \name Functions for retrieving data from the cache.
+   */
+  ///@{
+  /**
+   * \brief Returns the basis function <tt>ValueType</tt> data from the cache
+   * relative to the <tt>sdim</tt>-dimensional  <tt>s_id</tt>-th sub-element.
+   *
+   * @note The returned data is filtered by the <tt>dofs_property</tt>.
+   */
+  template <class ValueType, int sdim = dim_>
   auto
-  get_basis(const int sub_elem_id, const std::string &dofs_property = DofProperties::active) const
+  get_basis_data(const int s_id, const std::string &dofs_property = DofProperties::active) const
   {
-    const auto &values_all_elem_dofs = this->get_data_from_sub_elem_cache<ValueType,sub_elem_dim>(sub_elem_id);
+    const auto &values_all_elem_dofs = all_sub_elems_cache_.
+                                       template get_sub_elem_cache<sdim>(s_id).
+    template get_data<ValueType>();
 
     //--------------------------------------------------------------------------------------
     // filtering the values that correspond to the dofs with the given property --- begin
@@ -279,7 +278,7 @@ public:
     SafeSTLVector<Index> dofs_local_to_patch;
     SafeSTLVector<Index> dofs_local_to_elem;
 
-    this->space_->get_element_dofs(
+    this->space_basis_->get_element_dofs(
       this->get_index(),
       dofs_global,
       dofs_local_to_patch,
@@ -311,42 +310,94 @@ public:
     return values_filtered_elem_dofs;
   }
 
+  /**
+   * \brief Returns the basis function <tt>ValueType</tt> data from the cache
+   * relative to the <tt>dim</tt>-dimensional element (i.e. the element itself).
+   *
+   * @note The returned data is filtered by the <tt>dofs_property</tt>.
+   */
   template <class ValueType>
   auto
-  get_basis_element(const std::string &dofs_property = DofProperties::active) const
+  get_basis_data_element(const std::string &dofs_property = DofProperties::active) const
   {
-    return this->template get_basis<ValueType,dim_>(0,dofs_property);
+    return this->template get_basis_data<ValueType,dim_>(0,dofs_property);
   }
 
-  template <class ValueType, int sub_elem_dim = dim_>
+  template <class ValueType, int sdim = dim_>
   auto
   linear_combination(const SafeSTLVector<Real> &loc_coefs,
-                     const int sub_elem_id,
+                     const int s_id,
                      const std::string &dofs_property) const
   {
     const auto &basis_values =
-      this->template get_basis<ValueType, sub_elem_dim>(sub_elem_id,dofs_property);
+      this->template get_basis_data<ValueType,sdim>(s_id,dofs_property);
     return basis_values.evaluate_linear_combination(loc_coefs) ;
   }
 
+  /**
+   * \brief Returns the <b>basis values</b> evaluated at the evaluation points on the
+   * <dim>-dimensional element (i.e. the element itself).
+   *
+   * @note Before call this function, the SpaceElement cache must be filled with
+   * the appropriate data.
+   */
   ValueTable<Value>
   get_element_values(const std::string &dofs_property = DofProperties::active) const;
 
-  ValueTable<Derivative<1>>
-                         get_element_gradients(const std::string &dofs_property = DofProperties::active) const;
+  /**
+   * \brief Returns the <b>basis gradients</b> evaluated at the evaluation points on the
+   * <dim>-dimensional element (i.e. the element itself).
+   *
+   * @note Before call this function, the SpaceElement cache must be filled with
+   * the appropriate data.
+   */
+  ValueTable<Derivative<1> >
+  get_element_gradients(const std::string &dofs_property = DofProperties::active) const;
 
-  ValueTable<Derivative<2>>
-                         get_element_hessians(const std::string &dofs_property = DofProperties::active) const;
+  /**
+   * \brief Returns the <b>basis hessians</b> evaluated at the evaluation points on the
+   * <dim>-dimensional element (i.e. the element itself).
+   *
+   * @note Before call this function, the SpaceElement cache must be filled with
+   * the appropriate data.
+   */
+  ValueTable<Derivative<2> >
+  get_element_hessians(const std::string &dofs_property = DofProperties::active) const;
 
+  /**
+   * \brief Returns the <b>basis divergences</b> evaluated at the evaluation points on the
+   * <dim>-dimensional element (i.e. the element itself).
+   *
+   * \note Before call this function, the SpaceElement cache must be filled with
+   * the appropriate data.
+   *
+   * \warning The divergence is defined only if ...
+   *
+   * \todo Complete the documentation (03 Nov 2015)
+   */
   ValueTable<Div>
   get_element_divergences(const std::string &dofs_property = DofProperties::active) const;
+
+  /**
+   * \brief Returns the <tt>sdim</tt>-dimensional <tt>s_id</tt>-th sub-element measure
+   * multiplied by the weights of the quadrature.
+   */
+  template <int sdim>
+  ValueVector<Real> get_w_measures(const int s_id) const;
+
+  /**
+   * \brief Returns the <tt>dim</tt>-dimensional element measure
+   * multiplied by the weights of the quadrature.
+   */
+  ValueVector<Real> get_element_w_measures() const;
+  ///@}
 
   /**
    * @name Functions for the basis evaluations without the use of the cache.
    */
   ///@{
   /**
-   * Returns a ValueTable with the quantity specified by the template parameter @p ValueType,
+   * \brief Returns a ValueTable with the quantity specified by the template parameter @p ValueType,
    * computed for all local basis function,
    * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
    * @note This function does not use the cache and therefore can be called any time without
@@ -360,12 +411,12 @@ public:
     const std::shared_ptr<const Quadrature<dim_>> &points,
     const std::string &dofs_property)
   {
-    auto elem_handler = this->space_->create_cache_handler();
+    auto elem_handler = this->space_basis_->create_cache_handler();
     elem_handler->template set_flags<dim_>(ValueType::flag);
     elem_handler->init_element_cache(*this,points);
     elem_handler->fill_element_cache(*this);
 
-    return this->template get_basis_element<ValueType>(dofs_property);
+    return this->template get_basis_data<ValueType,dim_>(0,dofs_property);
   }
 
   ///@}
@@ -373,23 +424,30 @@ public:
 
 
 
+
   /**
-   * Returns the <tt>k</tt> dimensional j-th sub-element measure
-   * multiplied by the weights of the quadrature.
+   * \name Function for printing internal information.
    */
-  template <int k>
-  ValueVector<Real> get_w_measures(const int j) const;
-
-
-
+  ///@{
+  /**
+   * \brief Prints some information about the object.
+   * @note Mostly used for testing and debugging purposes.
+   */
   virtual void print_info(LogStream &out) const;
 
+  /**
+   * \brief Prints some information about the local cache inside the object.
+   * @note Mostly used for testing and debugging purposes.
+   */
   virtual void print_cache_info(LogStream &out) const;
+  ///@}
 
 private:
 
-
-  std::shared_ptr<Sp> space_;
+  /**
+   * \brief Basis upon which the element refers from.
+   */
+  std::shared_ptr<Sp> space_basis_;
 
 public:
   using _Value =  space_element::_Value;
@@ -412,28 +470,17 @@ public:
   using CacheType = AllSubElementsCache<Cache>;
 
 protected:
-  /** The local (element and face) cache. */
+  /** The local (element and sub-element(s)) cache. */
   CacheType all_sub_elems_cache_;
 
 public:
 
-  std::shared_ptr<Sp> get_space() const;
-
-private:
-  template <class ValueType, int sdim>
-  const auto &
-  get_data_from_sub_elem_cache(const int s_id) const
-  {
-    return all_sub_elems_cache_.
-           template get_sub_elem_cache<sdim>(s_id).
-    template get_data<ValueType>();
-  }
-
-
   /**
-   * Returns true if two elements belongs from the same Space.
+   * \brief Returns the Basis upon which the element refers from.
    */
-  bool is_comparable_with(const self_t &elem) const;
+  std::shared_ptr<Sp> get_space_basis() const;
+
+
 
 
   friend class SpaceElementHandler<dim_,codim_,range_,rank_>;

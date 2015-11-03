@@ -221,19 +221,19 @@ void elem_values(const int n_knots = 2, const int deg=1)
 //    elem->print_cache_info(out);
 
     out.begin_item("Values: ");
-    elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
+    elem->template get_basis_data<_Value, k>(0,DofProperties::active).print_info(out);
     out.end_item();
 
     out.begin_item("Gradients: ");
-    elem->template get_basis<_Gradient, k>(0,DofProperties::active).print_info(out);
+    elem->template get_basis_data<_Gradient, k>(0,DofProperties::active).print_info(out);
     out.end_item();
 
     out.begin_item("Hessians: ");
-    elem->template get_basis<_Hessian, k>(0,DofProperties::active).print_info(out);
+    elem->template get_basis_data<_Hessian, k>(0,DofProperties::active).print_info(out);
     out.end_item();
 
     out.begin_item("Divergences: ");
-    elem->template get_basis<_Divergence,k>(0,DofProperties::active).print_info(out);
+    elem->template get_basis_data<_Divergence,k>(0,DofProperties::active).print_info(out);
     out.end_item();
 
     out.begin_item("W * Measures: ");

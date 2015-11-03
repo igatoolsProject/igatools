@@ -78,7 +78,7 @@ associated to the element (that are the quadrature weights on the \f$[0,1]^{dim}
 </div>
 
 
-After the call of the function GridElementHandler::set_element_flags, 
+After the call of the function GridHandler::set_element_flags, 
 we need to communicate which is the element that we want to use and which is the Quadrature
 (i.e. the evaluation points scheme) we'll use on the element 
 (in the example is used the Gaussian quadrature with 2 point along each direction, 
@@ -100,12 +100,13 @@ assign the w_i times the measure (length, area, volume) of the element.
 \snippet example_03.cpp get_meas
 
 
-In second function, the only differences are that we create a BSpline object 
+In the second function, the only differences are that we create a BSpline object 
 (see \ref example_01)
 and then in the element-iterator we compute and ask for the value of the basis function that are non-zero
 over the element:
 \snippet example_03.cpp basis_values
-\note Note also the use of the space_element::Flags::value in the SpaceElement::set_element_flags() 
+\note Note also the use of the space_element::Flags::value in the 
+SpaceElementHandler::set_element_flags() 
 function
 \snippet example_03.cpp set_basis_flags
 

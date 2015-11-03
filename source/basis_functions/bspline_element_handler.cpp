@@ -221,11 +221,11 @@ InitCacheDispatcher::
 init_cache_1D()
 {
   const auto &quad = *bsp_elem_.get_grid_element().template get_quad<sdim>();
-  const auto &bsp_space = dynamic_cast<const Space &>(*bsp_elem_.get_space());
+  const auto &bsp_basis = dynamic_cast<const Space &>(*bsp_elem_.get_space_basis());
 
-  const auto &space_data = *bsp_space.space_data_;
+  const auto &space_data = *bsp_basis.space_data_;
 
-  const auto &degree = bsp_space.get_degree_table();
+  const auto &degree = bsp_basis.get_degree_table();
   const auto &active_components_id = space_data.get_active_components_id();
 
   const auto n_pts = quad.get_num_coords_direction();
@@ -538,18 +538,18 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
   const auto elem_size = grid_elem.template get_side_lengths<dim>(0);
   const auto elem_tensor_id = grid_elem.get_index();
 
-  const auto &bsp_space = dynamic_cast<const Space &>(*bsp_elem_.get_space());
+  const auto &bsp_basis = dynamic_cast<const Space &>(*bsp_elem_.get_space_basis());
 
-  const auto &space_data = *bsp_space.space_data_;
+  const auto &space_data = *bsp_basis.space_data_;
 
-  const auto &degree = bsp_space.get_degree_table();
+  const auto &degree = bsp_basis.get_degree_table();
 
   const auto &active_components_id = space_data.get_active_components_id();
 
   const auto &n_coords = extended_sub_elem_quad.get_num_coords_direction();
 
-  const auto &bezier_op   = bsp_space.operators_;
-  const auto &end_interval = bsp_space.end_interval_;
+  const auto &bezier_op   = bsp_basis.operators_;
+  const auto &end_interval = bsp_basis.end_interval_;
 
   auto &splines_1D_table_subelems = bsp_elem_.all_splines_1D_table_[sdim];
   auto &splines_1D_table = splines_1D_table_subelems[s_id_];
@@ -740,11 +740,11 @@ fill_cache_impl(const topology_variant &topology,
 template<int dim_, int range_ , int rank_>
 auto
 BSplineElementHandler<dim_, range_, rank_>::
-get_bspline_space() const -> std::shared_ptr<const Space>
+get_bspline_basis() const -> std::shared_ptr<const Space>
 {
-  auto bsp_space = std::dynamic_pointer_cast<const Space>(this->get_space());
-  Assert(bsp_space != nullptr,ExcNullPtr());
-  return bsp_space;
+  auto bsp_basis = std::dynamic_pointer_cast<const Space>(this->get_space());
+  Assert(bsp_basis != nullptr,ExcNullPtr());
+  return bsp_basis;
 }
 
 

@@ -80,7 +80,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
     loc_mat = 0.0;
 
     const auto w_meas = elem->template get_w_measures<dim>(0);
-    const auto grad = elem->template get_basis<_Gradient,dim>(0,DofProperties::active);
+    const auto grad = elem->template get_basis_data<_Gradient,dim>(0,DofProperties::active);
 
     for (int i=0; i<n_basis; ++i)
     {
