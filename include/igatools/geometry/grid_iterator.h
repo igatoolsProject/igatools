@@ -30,7 +30,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Iterator class collection of objects build over a Grid and
+ * @brief Iterator for traversing a collection of objects build over a Grid and
  * having in common a certain property (see Grid documentation).
  *
  * Its purpose is to iterate over the elements of a Grid.
@@ -154,7 +154,6 @@ IGA_NAMESPACE_OPEN
  *
  * @see IteratorState
  *
- * @sa GridIterator, GridConstIterator
  *
  * @tparam Element Type of the accessor.
  *
