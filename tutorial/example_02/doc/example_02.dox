@@ -40,7 +40,7 @@ We approach this program to attain dimension independent functions,
 for that we define a <tt>dim</tt> templated function
 \snippet example_02.cpp templated_function
 
-This function creates a grid as in example_01
+This function creates a grid as in \ref example_01
 \snippet example_02.cpp create_grid
 and iterates (traverse) the elements of the Grid
 \snippet example_02.cpp iter_grid

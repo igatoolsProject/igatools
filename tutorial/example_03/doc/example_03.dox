@@ -26,7 +26,7 @@ previous examples we include a new one for quadrature schemes
 \snippet example_03.cpp quad include
 
 For the first function,
-similarly to the previous example, we create a grid and define element iterators
+similarly to the previous example, we create a Grid and define the element iterators
 pointing to the begining and end of the container
 \snippet example_03.cpp loop_as_before
 

@@ -95,8 +95,8 @@ void loop_on_basis_with_cache()
   auto space = SplineSpace<dim>::const_create(degree, grid);
   auto basis = BSpline<dim>::const_create(space);
 
-  auto elem = basis->begin();
-  const auto elem_end = basis->end();
+  auto elem_basis = basis->begin();
+  const auto elem_basis_end = basis->end();
 
 
   auto cache_handler = basis->create_cache_handler();
@@ -108,19 +108,19 @@ void loop_on_basis_with_cache()
 
 
   auto quad = QGauss<dim>::create(1);
-  cache_handler->init_element_cache(elem,quad);
+  cache_handler->init_element_cache(elem_basis,quad);
 
-  for (; elem != elem_end; ++elem)
+  for (; elem_basis != elem_basis_end; ++elem_basis)
   {
-    cache_handler->fill_element_cache(elem);
+    cache_handler->fill_element_cache(elem_basis);
 
-    out << "Element: " << elem->get_index() << " has global basis: ";
-    elem->get_local_to_global(DofProperties::active).print_info(out);
+    out << "Element: " << elem_basis->get_index() << " has global basis: ";
+    elem_basis->get_local_to_global(DofProperties::active).print_info(out);
     out << endl;
 
     // [basis_values]
     out.begin_item("Basis values:");
-    elem->template get_basis_element<space_element::_Value>().print_info(out);
+    elem_basis->get_element_values().print_info(out);
     out.end_item();
     // [basis_values]
   }
@@ -135,9 +135,9 @@ int main()
   loop_on_grid_with_cache<2>();
   loop_on_grid_with_cache<3>();
 
-  loop_on_space_with_cache<1>();
-  loop_on_space_with_cache<2>();
-  loop_on_space_with_cache<3>();
+  loop_on_basis_with_cache<1>();
+  loop_on_basis_with_cache<2>();
+  loop_on_basis_with_cache<3>();
 
   return 0;
 }

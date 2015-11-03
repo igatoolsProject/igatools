@@ -34,7 +34,7 @@ to all the examples.
 The examples invite the user to test his understanding by
 solving some exercises. Usually requiring modification of the
 original example code.
-In order to modify example_01, you have to edit the file
+In order to modify \ref example_01, you have to edit the file
 (replace edit by your favorite editor or IDE).
 \code
 cd $IGA_WS/iga_lib/tutorial/example_01
@@ -46,7 +46,7 @@ make run-example_01
 \endcode
 We recommend that if you plan to develop with igatools
 you take advantage of the features offered by a modern
-IDE such as eclipse or kdevelop.
+IDE such as [Eclipse](http://www.eclipse.org) or [KDevelop](https://www.kdevelop.org).
 
 If you plan to create your own program, do not use the example directories 
 but instead create a new application as explained in 

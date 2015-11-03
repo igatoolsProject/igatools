@@ -73,10 +73,10 @@ void loop_on_space()
 // [basis_creation]
 
   // [iter_basis]
-  for (const auto &elem : *basis)
+  for (const auto &elem_basis : *basis)
   {
-    out << "Element: " << elem.get_index() << " has global basis: ";
-    elem.get_local_to_global(DofProperties::active).print_info(out);
+    out << "Element: " << elem_basis.get_index() << " has global basis: ";
+    elem_basis.get_local_to_global(DofProperties::active).print_info(out);
     out << endl;
   }
   // [iter_basis]

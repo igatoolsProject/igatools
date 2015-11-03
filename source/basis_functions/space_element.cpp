@@ -254,6 +254,44 @@ is_comparable_with(const self_t &elem) const
   return (space_ == elem.space_);
 }
 
+
+template<int dim_,int codim_,int range_,int rank_>
+auto
+SpaceElement<dim_,codim_,range_,rank_>::
+get_element_values(const std::string &dofs_property) const
+-> ValueTable<Value>
+{
+  return this->template get_basis<space_element::_Value,dim_>(0,dofs_property);
+}
+
+template<int dim_,int codim_,int range_,int rank_>
+auto
+SpaceElement<dim_,codim_,range_,rank_>::
+get_element_gradients(const std::string &dofs_property) const
+-> ValueTable<Derivative<1>>
+{
+  return this->template get_basis<space_element::_Gradient,dim_>(0,dofs_property);
+}
+
+template<int dim_,int codim_,int range_,int rank_>
+auto
+SpaceElement<dim_,codim_,range_,rank_>::
+get_element_hessians(const std::string &dofs_property) const
+-> ValueTable<Derivative<2>>
+{
+  return this->template get_basis<space_element::_Hessian,dim_>(0,dofs_property);
+}
+
+template<int dim_,int codim_,int range_,int rank_>
+auto
+SpaceElement<dim_,codim_,range_,rank_>::
+get_element_divergences(const std::string &dofs_property) const
+-> ValueTable<Div>
+{
+  return this->template get_basis<space_element::_Divergence,dim_>(0,dofs_property);
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 

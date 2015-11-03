@@ -329,7 +329,17 @@ public:
     return basis_values.evaluate_linear_combination(loc_coefs) ;
   }
 
+  ValueTable<Value>
+  get_element_values(const std::string &dofs_property = DofProperties::active) const;
 
+  ValueTable<Derivative<1>>
+                         get_element_gradients(const std::string &dofs_property = DofProperties::active) const;
+
+  ValueTable<Derivative<2>>
+                         get_element_hessians(const std::string &dofs_property = DofProperties::active) const;
+
+  ValueTable<Div>
+  get_element_divergences(const std::string &dofs_property = DofProperties::active) const;
 
   /**
    * @name Functions for the basis evaluations without the use of the cache.
