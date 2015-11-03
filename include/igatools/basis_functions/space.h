@@ -156,11 +156,7 @@ public:
   ///@{
   Size get_num_basis() const;
 
-  Size get_num_basis(const int comp) const;
 
-  Size get_num_basis(const int comp, const int dir) const;
-
-  Size get_elem_num_basis() const;
 
   /**
    * This function returns the global dof id corresponding to the basis function
@@ -278,12 +274,12 @@ public:
 private:
 
   /**
-   * Unique identifier associated to each object instance.
+   * \brief Unique identifier associated to each object instance.
    */
   Index object_id_ = 0;
 
   /**
-   * Name associated to the object instance.
+   * \brief Name associated to the object instance.
    */
   std::string name_;
 

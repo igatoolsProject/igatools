@@ -123,30 +123,7 @@ get_num_basis() const -> Size
 }
 
 
-template <int dim_,int codim_,int range_,int rank_>
-auto
-Space<dim_,codim_,range_,rank_>::
-get_num_basis(const int comp) const -> Size
-{
-  return this->get_ptr_const_dof_distribution()->get_num_dofs_table().get_component_size(comp);
-}
 
-template <int dim_,int codim_,int range_,int rank_>
-auto
-Space<dim_,codim_,range_,rank_>::
-get_num_basis(const int comp, const int dir) const -> Size
-{
-  return this->get_ptr_const_dof_distribution()->get_num_dofs_table()[comp][dir];
-}
-
-
-template <int dim_,int codim_,int range_,int rank_>
-auto
-Space<dim_,codim_,range_,rank_>::
-get_elem_num_basis() const -> Size
-{
-  return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
-}
 
 template <int dim_,int codim_,int range_,int rank_>
 auto

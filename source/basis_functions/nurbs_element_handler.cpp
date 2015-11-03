@@ -230,7 +230,7 @@ evaluate_nurbs_values_from_bspline(
       for (int pt = 0 ; pt < n_pts ; ++pt)
         R_fn[pt](comp) = P_fn[pt](comp) * invQ[pt] * w ;
     } // end loop w_fn_id
-    offset += bsp_space.get_num_basis(comp);
+    offset += bsp_space.get_num_comp_basis(comp);
   } // end loop comp
 
   phi.set_status_filled(true);
@@ -323,7 +323,7 @@ evaluate_nurbs_gradients_from_bspline(
           dR_fn_pt(i)(comp) = (dP_fn_pt(i)(comp)*invQ_pt - P_fn_pt_comp*dQ_invQ2_pt[i]) * w;
       } // end loop pt
     } // end loop w_fn_id
-    offset += bsp_space.get_num_basis(comp);
+    offset += bsp_space.get_num_comp_basis(comp);
   } // end loop comp
 
   D1_phi.set_status_filled(true);
@@ -463,7 +463,7 @@ evaluate_nurbs_hessians_from_bspline(
         } // end loop i
       } // end loop pt
     } // end loop w_fn_id
-    offset += bsp_space.get_num_basis(comp);
+    offset += bsp_space.get_num_comp_basis(comp);
   } // end loop comp
   D2_phi.set_status_filled(true);
 }

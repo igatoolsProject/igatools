@@ -41,7 +41,6 @@ template <int,int,int,int> class PhysSpaceElementHandler;
 
 /**
  *
- * @sa FunctionSpace
  *
  * @ingroup containers
  * @ingroup serializable
@@ -219,8 +218,8 @@ private:
 
 
   PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefSpace> &ref_space,
-                const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
-                const Transformation &transformation_type);
+                     const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
+                     const Transformation &transformation_type);
 
 
 
@@ -278,8 +277,8 @@ private:
 
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for the serialization
+   * @see <a href="http://uscilab.github.io/cereal/">Cereal serialization library</a>
    */
   ///@{
   friend class cereal::access;

@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int range_, int rank_>
 BSpline<dim_, range_, rank_>::
 BSpline(const SharedPtrConstnessHandler<SpaceData> &space_data,
-             const EndBehaviourTable &end_b)
+        const EndBehaviourTable &end_b)
   :
   space_data_(space_data),
   end_b_(end_b),
@@ -94,10 +94,10 @@ BSpline(const SharedPtrConstnessHandler<SpaceData> &space_data,
 template<int dim_, int range_, int rank_>
 BSpline<dim_, range_, rank_>::
 BSpline(const DegreeTable &deg,
-             const SharedPtrConstnessHandler<GridType> &grid,
-             const MultiplicityTable &interior_mult,
-             const PeriodicityTable &periodic,
-             const EndBehaviourTable &end_b)
+        const SharedPtrConstnessHandler<GridType> &grid,
+        const MultiplicityTable &interior_mult,
+        const PeriodicityTable &periodic,
+        const EndBehaviourTable &end_b)
   :
   BSpline(
    grid.data_is_const() ?
@@ -250,7 +250,7 @@ get_sub_bspline_space(const int s_id,
   const auto     &space_index_table = this->get_ptr_const_dof_distribution()->get_index_table();
   for (auto comp : SpaceData::components)
   {
-    const auto n_basis = sub_basis->get_num_basis(comp);
+    const auto n_basis = sub_basis->get_num_comp_basis(comp);
     const auto &sub_local_indices = sub_space_index_table[comp];
     const auto &elem_global_indices = space_index_table[comp];
 
@@ -264,7 +264,7 @@ get_sub_bspline_space(const int s_id,
       {
         auto dir = k_elem.constant_directions[j];
         auto val = k_elem.constant_values[j];
-        const int fixed_id = val * (this->get_num_basis(comp, dir) - 1);
+        const int fixed_id = val * (this->get_num_comp_basis(comp, dir) - 1);
         tensor_index[dir] = fixed_id;
 
       }
