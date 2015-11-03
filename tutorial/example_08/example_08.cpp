@@ -33,7 +33,7 @@ template<int dim>
 void physical_space(const int deg)
 {
   using RefSpace = BSpline<dim>;
-  using Space    = PhysicalSpaceBasis<dim>;
+  using Basis    = PhysicalSpaceBasis<dim>;
 
   BBox<dim> box;
   box[0] = {{0.5, 1}};
@@ -45,7 +45,7 @@ void physical_space(const int deg)
   auto ref_space = RefSpace::create(deg, grid);
 
   using Function = functions::BallFunction<dim>;
-  const auto space = Space::create(
+  const auto space = Basis::create(
                        ref_space,
                        Function::create(grid, IdentityFunction<dim>::create(grid)));
 

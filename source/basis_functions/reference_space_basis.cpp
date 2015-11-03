@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/basis_functions/reference_space.h>
+#include <igatools/basis_functions/reference_space_basis.h>
 #include <igatools/basis_functions/reference_element.h>
 #include <igatools/base/array_utils.h>
 
@@ -39,7 +39,7 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range, int rank>
 template<int sdim>
 auto
-ReferenceSpace<dim, range, rank>::
+ReferenceSpaceBasis<dim, range, rank>::
 get_ref_sub_space(const int sub_elem_id,
                   InterSpaceMap<sdim> &dof_map,
                   const std::shared_ptr<const Grid<sdim>> &sub_grid) const
@@ -76,7 +76,7 @@ get_ref_sub_space(const int sub_elem_id,
 template<int dim, int range, int rank>
 template<int k>
 auto
-ReferenceSpace<dim, range, rank>::
+ReferenceSpaceBasis<dim, range, rank>::
 get_sub_space(const int s_id,
               InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
@@ -136,7 +136,7 @@ get_sub_space(const int s_id,
 
 template<int dim, int range, int rank>
 int
-ReferenceSpace<dim, range, rank>::
+ReferenceSpaceBasis<dim, range, rank>::
 get_num_comp_basis(const int comp) const
 {
   return this->get_ptr_const_dof_distribution()->get_num_dofs_table().get_component_size(comp);
@@ -144,7 +144,7 @@ get_num_comp_basis(const int comp) const
 
 template<int dim, int range, int rank>
 int
-ReferenceSpace<dim, range, rank>::
+ReferenceSpaceBasis<dim, range, rank>::
 get_num_comp_basis(const int comp, const int dir) const
 {
   return this->get_ptr_const_dof_distribution()->get_num_dofs_table()[comp][dir];
@@ -155,7 +155,7 @@ get_num_comp_basis(const int comp, const int dir) const
 
 template<int dim, int range, int rank>
 int
-ReferenceSpace<dim, range, rank>::
+ReferenceSpaceBasis<dim, range, rank>::
 get_max_degree() const
 {
   int max_degree = 0;
@@ -171,7 +171,7 @@ get_max_degree() const
 #ifdef MESH_REFINEMENT
 template<int dim, int range, int rank>
 void
-ReferenceSpace<dim, range, rank>::
+ReferenceSpaceBasis<dim, range, rank>::
 create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 {
   Assert(space != nullptr, ExcNullPtr());
@@ -190,10 +190,10 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 
 template<int dim, int range, int rank>
 auto
-ReferenceSpace<dim, range, rank>::
-get_space_previous_refinement() const -> std::shared_ptr<const self_t>
+ReferenceSpaceBasis<dim, range, rank>::
+get_basis_previous_refinement() const -> std::shared_ptr<const self_t>
 {
-  return ref_space_previous_refinement_;
+  return ref_basis_previous_refinement_;
 }
 
 #endif // MESH_REFINEMENT
@@ -201,5 +201,5 @@ get_space_previous_refinement() const -> std::shared_ptr<const self_t>
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/reference_space.inst>
+#include <igatools/basis_functions/reference_space_basis.inst>
 

@@ -65,8 +65,8 @@ template<int dim, int range = 1, int rank = 1>
 void filtered_dofs(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
-  using RefSpace = ReferenceSpace<dim, range, rank>;
-  using Space = BSpline<dim, range, rank>;
+  using RefSpace = ReferenceSpaceBasis<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
 
   auto grid = Grid<dim>::create(n_knots);
 
@@ -74,7 +74,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   grid->set_boundary_id(neu_face, bc::neu);
 
 
-  auto space = Space::create(SplineSpace<dim,range,rank>::create(deg,grid));
+  auto space = Basis::create(SplineSpace<dim,range,rank>::create(deg,grid));
 
   std::set<boundary_id>  dir_ids = {bc::dir};
   auto dir_dofs = get_boundary_dofs<RefSpace>(space, dir_ids);

@@ -44,9 +44,9 @@ public:
   void local_assemble();
 
 private:
-  using Space = BSpline<dim>;
+  using Basis = BSpline<dim>;
   shared_ptr<const Grid<dim>>  grid;
-  shared_ptr<const Space>   space;
+  shared_ptr<const Basis>   space;
 };
 // [class declaration]
 
@@ -71,7 +71,7 @@ void  PoissonPreparation<dim>::local_assemble()
 
 
   // [iterate as before]
-  using ElementHandler = typename Space::ElementHandler;
+  using ElementHandler = typename Basis::ElementHandler;
   auto elem_handler = ElementHandler::create(space);
   auto quad = QGauss<dim>(2);
   auto flag = ValueFlags::value | ValueFlags::gradient |

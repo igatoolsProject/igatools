@@ -47,10 +47,10 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
 
-  using Space = BSpline<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
 
   auto grid = Grid<dim>::create(n_knots);
-  auto space = Space::create(SplineSpace<dim,range,rank>::create(deg,grid));
+  auto space = Basis::create(SplineSpace<dim,range,rank>::create(deg,grid));
   auto dof_dist = space->get_ptr_dof_distribution();
   dof_dist->add_dofs_property(DofProp::interior);
   dof_dist->add_dofs_property(DofProp::dirichlet);

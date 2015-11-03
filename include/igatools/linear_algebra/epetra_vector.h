@@ -60,9 +60,9 @@ using VectorPtr = std::shared_ptr<Vector>;
 
 VectorPtr create_vector(const Map &map);
 
-template <class Space>
+template <class Basis>
 VectorPtr
-create_vector(const Space &space, const std::string &prop,const Comm &comm)
+create_vector(const Basis &space, const std::string &prop,const Comm &comm)
 {
   return create_vector(*create_map(space, prop, comm));
 }

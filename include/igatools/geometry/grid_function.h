@@ -28,9 +28,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, class> class GridFunctionElementBase;
 template <int, int> class GridFunctionElement;
-template <int, int> class ConstGridFunctionElement;
 template <int, int> class GridFunctionHandler;
 
 /**
@@ -50,9 +48,9 @@ public:
   using GridType = Grid<dim_>;
 
   using ElementAccessor = GridFunctionElement<dim_, space_dim_>;
+//  using ConstElementAccessor = ConstGridFunctionElement<dim_, space_dim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ConstElementAccessor = ConstGridFunctionElement<dim_, space_dim_>;
-  using ElementConstIterator = GridIterator<ConstElementAccessor>;
+  using ElementConstIterator = GridIterator<ElementAccessor>;
 
   using ElementHandler = GridFunctionHandler<dim_, space_dim_>;
 
@@ -88,14 +86,17 @@ public:
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
 
-  std::unique_ptr<ConstElementAccessor>
+  std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
+#if 0
   std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop);
+#endif
 
   ///@name Iterating of grid elements
   ///@{
+#if 0
   /**
    * This function returns a element iterator to the first element of the patch.
    */
@@ -105,6 +106,7 @@ public:
    * This function returns a element iterator to one-pass the end of patch.
    */
   ElementIterator end(const PropId &prop = ElementProperties::active);
+#endif
 
   /**
    * This function returns a element (const) iterator to the first element of the patch.
@@ -165,10 +167,7 @@ public:
 private:
   SharedPtrConstnessHandler<Grid<dim_>> grid_;
 
-  friend class GridFunctionElementBase<dim_, space_dim_, GridFunction<dim_, space_dim_>>;
-  friend class GridFunctionElementBase<dim_, space_dim_, const GridFunction<dim_, space_dim_>>;
   friend class GridFunctionElement<dim_, space_dim_>;
-  friend class ConstGridFunctionElement<dim_, space_dim_>;
 
 #ifdef SERIALIZATION
   /**

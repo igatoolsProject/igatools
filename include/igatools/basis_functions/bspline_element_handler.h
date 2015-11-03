@@ -44,13 +44,13 @@ class BSplineElementHandler
 {
   using base_t = ReferenceElementHandler<dim_,range_,rank_>;
   using self_t = BSplineElementHandler<dim_,range_,rank_>;
-  using Space = BSpline<dim_,range_,rank_>;
+  using Basis = BSpline<dim_,range_,rank_>;
   static const Size n_components =  SplineSpace<dim_,range_,rank_>::n_components;
 
   using IndexType = typename Grid<dim_>::IndexType;
 
   template<class T>
-  using ComponentContainer = typename Space::template ComponentContainer<T>;
+  using ComponentContainer = typename Basis::template ComponentContainer<T>;
 
   template<class T>
   using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim_>>;
@@ -58,17 +58,17 @@ class BSplineElementHandler
   template<class T>
   using ComponentDirectionContainer = ComponentContainer<SafeSTLArray<T,dim_>>;
 
-  using TensorSizeTable = typename Space::TensorSizeTable;
+  using TensorSizeTable = typename Basis::TensorSizeTable;
 
   template <int order>
-  using Derivative = typename Space::template Derivative<order>;
+  using Derivative = typename Basis::template Derivative<order>;
 
-  using Value = typename Space::Value;
+  using Value = typename Basis::Value;
 
 
 protected:
 
-  using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
+  using BaseSpace = ReferenceSpaceBasis<dim_,range_,rank_>;
   using RefElementIterator = typename BaseSpace::ElementIterator;
   using RefElementAccessor = typename BaseSpace::ElementAccessor;
 
@@ -96,7 +96,7 @@ public:
 
   BSplineElementHandler() = delete;
 
-  BSplineElementHandler(std::shared_ptr<const Space> space);
+  BSplineElementHandler(std::shared_ptr<const Basis> space);
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -117,7 +117,7 @@ public:
    */
   virtual ~BSplineElementHandler() = default;
 
-//  static std::unique_ptr<self_t> create(std::shared_ptr<const Space> space);
+//  static std::unique_ptr<self_t> create(std::shared_ptr<const Basis> space);
 
   using topology_variant = typename base_t::topology_variant;
   using eval_pts_variant = typename base_t::eval_pts_variant;
@@ -340,7 +340,7 @@ private:
   /**
    * Returns the BSpline used to define the BSplineElementHandler object.
    */
-  std::shared_ptr<const Space> get_bspline_basis() const;
+  std::shared_ptr<const Basis> get_bspline_basis() const;
 };
 
 IGA_NAMESPACE_CLOSE

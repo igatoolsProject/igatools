@@ -31,22 +31,22 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup elements
  */
-template<int dim_, int space_dim_, class ContainerType_>
-class GridFunctionElementBase
+template<int dim_, int space_dim_>
+class GridFunctionElement
 {
 private:
-  using self_t  = GridFunctionElementBase<dim_, space_dim_, ContainerType_>;
+  using self_t  = GridFunctionElement<dim_, space_dim_>;
 
 public:
-  using ContainerType = ContainerType_;
-  using GridElem = typename ContainerType_::GridType::ElementAccessor;
-  using ListIt = typename ContainerType_::ListIt;
+  using ContainerType = const GridFunction<dim_,space_dim_>;
+  using GridElem = typename ContainerType::GridType::ElementAccessor;
+  using ListIt = typename ContainerType::ListIt;
 
   using IndexType = typename Grid<dim_>::IndexType;
 
-  using Value =  typename ContainerType_::Value;
+  using Value =  typename ContainerType::Value;
   template <int order>
-  using Derivative = typename ContainerType_::template Derivative<order>;
+  using Derivative = typename ContainerType::template Derivative<order>;
 
 
 // using Gradient =  typename ContainerType_::Gradient;
@@ -63,31 +63,31 @@ protected:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  GridFunctionElementBase() = default;
+  GridFunctionElement() = default;
 
 public:
   /**
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the Function @p func.
    */
-  GridFunctionElementBase(const std::shared_ptr<ContainerType_> grid_function,
-                          const ListIt &index,
-                          const PropId &prop = ElementProperties::active);
+  GridFunctionElement(const std::shared_ptr<ContainerType> &grid_function,
+                      const ListIt &index,
+                      const PropId &prop = ElementProperties::active);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  GridFunctionElementBase(const self_t &elem) = delete;
+  GridFunctionElement(const self_t &elem) = delete;
 
   /**
    * Move constructor.
    */
-  GridFunctionElementBase(self_t &&elem) = default;
+  GridFunctionElement(self_t &&elem) = default;
 
   /**
    * Destructor.
    */
-  ~GridFunctionElementBase() = default;
+  ~GridFunctionElement() = default;
   ///@}
 
 
@@ -134,44 +134,19 @@ public:
 
 public:
 
-  void operator++()
-  {
-    ++(*grid_elem_);
-  }
+  void operator++();
 
 
-  void move_to(const IndexType &elem_id)
-  {
-    grid_elem_->move_to(elem_id);
-  }
+  void move_to(const IndexType &elem_id);
 
-  const GridElem &get_grid_element() const
-  {
-    return *grid_elem_;
-  }
+  const GridElem &get_grid_element() const;
 
-  GridElem &get_grid_element()
-  {
-    return *grid_elem_;
-  }
+  GridElem &get_grid_element();
 
 
-  void print_info(LogStream &out) const
-  {
-    using std::to_string;
-    out.begin_item("GridElement<" + to_string(dim_) + "," + to_string(space_dim_) +">");
-    grid_elem_->print_info(out);
-    out.end_item();
-  }
+  void print_info(LogStream &out) const;
 
-  void print_cache_info(LogStream &out) const
-  {
-    out.begin_item("GridElement's cache");
-    grid_elem_->print_cache_info(out);
-    out.end_item();
-
-    local_cache_.print_info(out);
-  }
+  void print_cache_info(LogStream &out) const;
 
 public:
 
@@ -182,6 +157,33 @@ public:
                         get_sub_elem_cache<sdim>(s_id);
     return cache.template get_data<ValueType>();
   }
+
+
+  /**
+   * @name Methods for the for the evaluations of Functions's derivatives
+   *  without the use of the cache.
+   */
+  ///@{
+  /**
+   * Returns a ValueTable with the values specified by the template parameter
+   * <tt>ValueType</tt>
+   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+   * @note This function does not use the cache and therefore can be called any time without
+   * needing to pre-call init_cache()/fill_cache().
+   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+   */
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim_>> &points)
+  {
+    auto grid_func_elem_handler = this->grid_function_->create_cache_handler();
+    grid_func_elem_handler->template set_flags<dim_>(ValueType::flag);
+    grid_func_elem_handler->init_cache(*this,points);
+    grid_func_elem_handler->template fill_cache<dim_>(*this,0);
+
+    return this->template get_values_from_cache<ValueType,dim_>(0);
+  }
+  ///@}
 
 
 public:
@@ -202,7 +204,7 @@ public:
   using CacheType = AllSubElementsCache<Cache>;
 
 protected:
-  std::shared_ptr<ContainerType_> grid_function_;
+  std::shared_ptr<ContainerType> grid_function_;
 
 private:
   std::unique_ptr<GridElem> grid_elem_;
@@ -213,55 +215,6 @@ private:
   friend class GridFunctionHandler<dim_, space_dim_>;
 };
 
-
-
-template <int dim, int space_dim>
-class ConstGridFunctionElement
-  : public GridFunctionElementBase<dim, space_dim,
-    const GridFunction<dim,space_dim>>
-{
-  using GridFunctionElementBase<dim, space_dim,
-        const GridFunction<dim,space_dim>>::GridFunctionElementBase;
-
-public:
-  /**
-   * @name Methods for the for the evaluations of Functions's derivatives
-   *  without the use of the cache.
-   */
-  ///@{
-  /**
-   * Returns a ValueTable with the values specified by the template parameter
-   * <tt>ValueType</tt>
-   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-   * @note This function does not use the cache and therefore can be called any time without
-   * needing to pre-call init_cache()/fill_cache().
-   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-   */
-  template <class ValueType>
-  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim>> &points)
-  {
-    auto grid_func_elem_handler = this->grid_function_->create_cache_handler();
-    grid_func_elem_handler->template set_flags<dim>(ValueType::flag);
-    grid_func_elem_handler->init_cache(*this,points);
-    grid_func_elem_handler->template fill_cache<dim>(*this,0);
-
-    return this->template get_values_from_cache<ValueType,dim>(0);
-  }
-  ///@}
-
-};
-
-
-
-template <int dim, int space_dim>
-class GridFunctionElement
-  : public GridFunctionElementBase<dim, space_dim,
-    GridFunction<dim,space_dim>>
-{
-  using GridFunctionElementBase<dim, space_dim,
-        GridFunction<dim,space_dim>>::GridFunctionElementBase;
-};
 
 IGA_NAMESPACE_CLOSE
 

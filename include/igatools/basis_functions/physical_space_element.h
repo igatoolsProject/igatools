@@ -53,20 +53,20 @@ public :
   /** Type required by the GridIterator templated iterator */
   using ContainerType = const PhysSpace;
 
-  using Space = PhysSpace;
+  using Basis = PhysSpace;
   using RefSpace = typename PhysSpace::RefSpace;
   using PushFwd = typename PhysSpace::PushFwd;
 //    using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank,Transformation::h_grad>;
   using RefElemAccessor = ReferenceElement<RefSpace::dim,RefSpace::range,RefSpace::rank>;
 
   using PhysDomain = Domain<dim_, codim_>;
-  using PhysDomainElem = ConstDomainElement<dim_, codim_>;
+  using PhysDomainElem = DomainElement<dim_, codim_>;
 
   static const auto dim = PushFwd::dim;
   static const auto space_dim = PushFwd::space_dim;
   static const auto codim = PushFwd::codim;
 
-  using PhysPoint = typename Space::Point;
+  using PhysPoint = typename Basis::Point;
 
   using GridType = Grid<dim>;
   using IndexType = typename GridType::IndexType;
@@ -194,7 +194,7 @@ public:
     const Quadrature<dim_> &points,
     const std::string &dofs_property)
   {
-    auto elem_handler = typename Space::ElementHandler::create(this->space_);
+    auto elem_handler = typename Basis::ElementHandler::create(this->space_);
 
     elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
     elem_handler->template init_cache<dim>(*this);
@@ -320,7 +320,7 @@ private:
   std::shared_ptr<const PhysSpace> phys_space_;
 
   /**
-   * Returns true if two elements belongs from the same Space.
+   * Returns true if two elements belongs from the same Basis.
    */
   bool is_comparable_with(const self_t &elem) const;
 

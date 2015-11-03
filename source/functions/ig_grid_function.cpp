@@ -87,7 +87,7 @@ rebuild_after_insert_knots(
   const Grid<dim> &old_grid)
 {
   auto ig_grid_function_pre_refinement =
-    self_t::const_create(ig_space_->get_space_previous_refinement(),coeffs_);
+    self_t::const_create(ig_space_->get_basis_previous_refinement(),coeffs_);
 
   this->grid_function_previous_refinement_ = ig_grid_function_pre_refinement;
 
@@ -191,7 +191,7 @@ print_info(LogStream &out) const
                  to_string(dim) + "," +
                  to_string(space_dim) + ">");
 
-  out.begin_item("ReferenceSpace<" +
+  out.begin_item("ReferenceSpaceBasis<" +
                  to_string(dim) + ",1," +
                  to_string(space_dim) + ">:");
   ig_space_->print_info(out);

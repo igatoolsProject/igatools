@@ -109,7 +109,7 @@ auto grid = Grid<dim>::create({3,5});
   <a href="#show3" class="show" id="show3">Hide hint</a>
   <div class="list">
 \code{.cpp}
-auto grid = Grid<dim>::create({{0,0.2,0.8,2},{0,0.25,1}});
+auto grid = Grid<2>::create(CartesianProductArray<Real,2>({{0,0.2,0.8,2},{0,0.25,1}}));
 \endcode
 \image html example_01-04.png "Non uniform knots cartesian grid" 
  </div>

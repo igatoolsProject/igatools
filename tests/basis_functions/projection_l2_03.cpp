@@ -41,12 +41,12 @@ void test_proj(const int deg, const int n_knots = 4)
 {
   OUTSTART
 
-  using Space = BSpline<dim,range,rank> ;
-  using RefSpace = ReferenceSpace<dim,range,rank> ;
+  using Basis = BSpline<dim,range,rank> ;
+  using RefSpace = ReferenceSpaceBasis<dim,range,rank> ;
   using Func = typename functions::ConstantFunction<dim, 0, range, rank>;
 
   auto grid = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(deg, grid);
+  auto space = Basis::const_create(deg, grid);
 
 
   typename Func::Value val;

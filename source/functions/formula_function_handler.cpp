@@ -45,7 +45,7 @@ template<int dim_, int codim_, int range_, int rank_>
 void
 FormulaFunctionHandler<dim_, codim_, range_, rank_ >::
 fill_cache(const topology_variant &sdim,
-           ConstElementAccessor &elem,
+           ElementAccessor &elem,
            const int s_id) const
 {
   this->get_domain_handler()->fill_cache(sdim, elem.get_domain_element(), s_id);

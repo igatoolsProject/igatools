@@ -382,7 +382,7 @@ rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
 {
-  this->ref_space_previous_refinement_ =
+  this->ref_basis_previous_refinement_ =
     BSpline<dim_,range_,rank_>::const_create(
       this->space_data_->get_spline_space_previous_refinement(),
       this->end_b_);
@@ -494,7 +494,7 @@ BSpline<dim_, range_, rank_>::
 serialize(Archive &ar)
 {
   using std::to_string;
-  const std::string base_name = "ReferenceSpace_" +
+  const std::string base_name = "ReferenceSpaceBasis_" +
                                 to_string(dim_) + "_" +
                                 to_string(0) + "_" +
                                 to_string(range_) + "_" +

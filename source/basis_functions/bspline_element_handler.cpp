@@ -161,7 +161,7 @@ public:
 
 template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
-BSplineElementHandler(shared_ptr<const Space> space)
+BSplineElementHandler(shared_ptr<const Basis> space)
   :
   base_t(space)
 {}
@@ -171,7 +171,7 @@ BSplineElementHandler(shared_ptr<const Space> space)
 template<int dim_, int range_ , int rank_>
 auto
 BSplineElementHandler<dim_, range_, rank_>::
-create(std::shared_ptr<const Space> space) -> std::unique_ptr<self_t>
+create(std::shared_ptr<const Basis> space) -> std::unique_ptr<self_t>
 {
   auto handler = std::unique_ptr<self_t>(new self_t(space));
   Assert(handler != nullptr, ExcNullPtr());
@@ -221,7 +221,7 @@ InitCacheDispatcher::
 init_cache_1D()
 {
   const auto &quad = *bsp_elem_.get_grid_element().template get_quad<sdim>();
-  const auto &bsp_basis = dynamic_cast<const Space &>(*bsp_elem_.get_space_basis());
+  const auto &bsp_basis = dynamic_cast<const Basis &>(*bsp_elem_.get_space_basis());
 
   const auto &space_data = *bsp_basis.space_data_;
 
@@ -538,7 +538,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
   const auto elem_size = grid_elem.template get_side_lengths<dim>(0);
   const auto elem_tensor_id = grid_elem.get_index();
 
-  const auto &bsp_basis = dynamic_cast<const Space &>(*bsp_elem_.get_space_basis());
+  const auto &bsp_basis = dynamic_cast<const Basis &>(*bsp_elem_.get_space_basis());
 
   const auto &space_data = *bsp_basis.space_data_;
 
@@ -740,9 +740,9 @@ fill_cache_impl(const topology_variant &topology,
 template<int dim_, int range_ , int rank_>
 auto
 BSplineElementHandler<dim_, range_, rank_>::
-get_bspline_basis() const -> std::shared_ptr<const Space>
+get_bspline_basis() const -> std::shared_ptr<const Basis>
 {
-  auto bsp_basis = std::dynamic_pointer_cast<const Space>(this->get_space());
+  auto bsp_basis = std::dynamic_pointer_cast<const Basis>(this->get_space());
   Assert(bsp_basis != nullptr,ExcNullPtr());
   return bsp_basis;
 }

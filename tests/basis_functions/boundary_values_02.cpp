@@ -45,11 +45,11 @@ void do_test(const int p, const int num_knots = 10)
 {
   const int sub_dim = dim - 1;
   out << "Dimension: " << dim << endl;
-  using Space = BSpline<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
 
 
   auto grid = Grid<dim>::create(num_knots);
-  auto space = Space::create(SplineSpace<dim,range,rank>::create(p, grid)) ;
+  auto space = Basis::create(SplineSpace<dim,range,rank>::create(p, grid)) ;
   auto f = BoundaryFunction<dim>::const_create(grid);
 
 
@@ -64,7 +64,7 @@ void do_test(const int p, const int num_knots = 10)
 
 
   std::map<Index,Real> boundary_values;
-  space_tools::project_boundary_values<Space>(
+  space_tools::project_boundary_values<Basis>(
     f, space, quad, bdry_ids,
     boundary_values);
 

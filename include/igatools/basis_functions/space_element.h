@@ -32,7 +32,7 @@
 
 #include <igatools/basis_functions/spline_space.h>
 
-#include <igatools/basis_functions/space.h>
+#include <igatools/basis_functions/basis.h>
 #include <igatools/geometry/grid_element.h>
 
 
@@ -50,7 +50,7 @@ class SpaceElement : public Element
 {
 protected:
 
-  using Sp = const Space<dim_,codim_,range_,rank_>;
+  using Sp = const Basis<dim_,codim_,range_,rank_>;
 
 private:
   using self_t = SpaceElement<dim_,codim_,range_,rank_>;

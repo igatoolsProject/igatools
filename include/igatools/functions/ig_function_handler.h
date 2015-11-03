@@ -44,7 +44,7 @@ protected:
 //  using typename parent_t::GridType;
 public:
   using FunctionType = const IgFunction<dim,codim,range,rank>;
-  using typename parent_t::ConstElementAccessor;
+  using typename parent_t::ElementAccessor;
   using typename parent_t::Flags;
   using typename parent_t::topology_variant;
   using typename parent_t::eval_pts_variant;
@@ -59,7 +59,7 @@ public:
 
 
   void fill_cache(const topology_variant &sdim,
-                  ConstElementAccessor &elem,
+                  ElementAccessor &elem,
                   const int s_id) const override final;
 
 #if 0
@@ -71,10 +71,10 @@ private:
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
 //    template <int order>
-//    using _D = typename ConstElementAccessor::template _D<order>;
+//    using _D = typename ElementAccessor::template _D<order>;
 
     FillCacheDispatcher(const self_t &ig_function_handler,
-                        ConstElementAccessor &ig_function_elem,
+                        ElementAccessor &ig_function_elem,
                         const int s_id)
       :
       ig_function_handler_(ig_function_handler),
@@ -88,7 +88,7 @@ private:
 
 
     const self_t &ig_function_handler_;
-    ConstElementAccessor &ig_function_elem_;
+    ElementAccessor &ig_function_elem_;
     const int s_id_;
   };
 

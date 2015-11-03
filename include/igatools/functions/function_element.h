@@ -35,58 +35,58 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup elements
  */
-template<int dim, int codim, int range, int rank, class ContainerType_>
-class FunctionElementBase
+template<int dim, int codim, int range, int rank>
+class FunctionElement
 {
 private:
-  using self_t = FunctionElementBase<dim, codim, range, rank, ContainerType_>;
+  using self_t = FunctionElement<dim, codim, range, rank>;
 
 public:
 
-  using ContainerType = ContainerType_;
-  using DomainElem = typename ContainerType_::DomainType::ConstElementAccessor;
+  using ContainerType = const Function<dim,codim,range,rank>;
+  using DomainElem = typename ContainerType::DomainType::ElementAccessor;
 
-  using ListIt = typename ContainerType_::ListIt;
+  using ListIt = typename ContainerType::ListIt;
 
   using IndexType = typename Grid<dim>::IndexType;
 
-  using Value = typename ContainerType_::Value;
-//  using Gradient = typename ContainerType_::Gradient;
-//  using Hessian  = typename ContainerType_::Hessian;
-//  using Div      = typename ContainerType_::Div;
+  using Value = typename ContainerType::Value;
+//  using Gradient = typename ContainerType::Gradient;
+//  using Hessian  = typename ContainerType::Hessian;
+//  using Div      = typename ContainerType::Div;
   template <int order>
-  using Derivative = typename ContainerType_::template Derivative<order>;
+  using Derivative = typename ContainerType::template Derivative<order>;
 
   using Flags = function_element::Flags;
   using CacheFlags = function_element::CacheFlags;
 
 protected:
 
-  FunctionElementBase() = delete;
+  FunctionElement() = delete;
 
 public:
   /**
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the Grid @p grid.
    */
-  FunctionElementBase(const std::shared_ptr<ContainerType_> func,
-                      const ListIt &index,
-                      const PropId &prop = ElementProperties::active);
+  FunctionElement(const std::shared_ptr<ContainerType> &func,
+                  const ListIt &index,
+                  const PropId &prop = ElementProperties::active);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  FunctionElementBase(const self_t &elem) = delete;
+  FunctionElement(const self_t &elem) = delete;
 
   /**
    * Move constructor.
    */
-  FunctionElementBase(self_t &&elem) = default;
+  FunctionElement(self_t &&elem) = default;
 
   /**
    * Destructor.
    */
-  ~FunctionElementBase() = default;
+  ~FunctionElement() = default;
   ///@}
 
 
@@ -148,7 +148,7 @@ public:
 
   void move_to(const IndexType &elem_id)
   {
-	  domain_elem_->move_to(elem_id);
+    domain_elem_->move_to(elem_id);
   }
 
   const DomainElem &get_domain_element() const;
@@ -169,6 +169,31 @@ public:
   }
 
 
+  /**
+   * @name Methods for the for the evaluations of Functions's derivatives
+   *  without the use of the cache.
+   */
+  ///@{
+  /**
+   * Returns a ValueTable with the values specified by the template parameter
+   * <tt>ValueType</tt>
+   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+   * @note This function does not use the cache and therefore can be called any time without
+   * needing to pre-call init_cache()/fill_cache().
+   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+   */
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim>> &points)
+  {
+    auto func_elem_handler = this->func_->create_cache_handler();
+    func_elem_handler->template set_flags<dim>(ValueType::flag);
+    func_elem_handler->init_cache(*this,points);
+    func_elem_handler->template fill_cache<dim>(*this,0);
+
+    return this->template get_values<ValueType,dim>(0);
+  }
+  ///@}
 
 
 
@@ -205,7 +230,7 @@ private:
 
 
 protected:
-  std::shared_ptr<ContainerType_> func_;
+  std::shared_ptr<ContainerType> func_;
 
 private:
   std::unique_ptr<DomainElem> domain_elem_;
@@ -216,55 +241,6 @@ private:
   friend class FunctionHandler<dim, codim, range, rank>;
 };
 
-
-
-template <int dim, int codim, int range, int rank>
-class ConstFunctionElement
-  : public FunctionElementBase<dim, codim, range, rank,
-    const Function<dim,codim,range,rank> >
-{
-  using FunctionElementBase<dim, codim, range, rank,
-        const Function<dim,codim,range,rank>>::FunctionElementBase;
-
-
-public:
-  /**
-   * @name Methods for the for the evaluations of Functions's derivatives
-   *  without the use of the cache.
-   */
-  ///@{
-  /**
-   * Returns a ValueTable with the values specified by the template parameter
-   * <tt>ValueType</tt>
-   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-   * @note This function does not use the cache and therefore can be called any time without
-   * needing to pre-call init_cache()/fill_cache().
-   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-   */
-  template <class ValueType>
-  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim>> &points)
-  {
-	auto func_elem_handler = this->func_->create_cache_handler();
-	func_elem_handler->template set_flags<dim>(ValueType::flag);
-    func_elem_handler->init_cache(*this,points);
-    func_elem_handler->template fill_cache<dim>(*this,0);
-
-    return this->template get_values<ValueType,dim>(0);
-  }
-  ///@}
-
-};
-
-
-template <int dim, int codim, int range, int rank>
-class FunctionElement
-  : public FunctionElementBase<dim, codim, range, rank, Function<dim,codim,range,rank> >
-{
-
-  using FunctionElementBase<dim, codim, range, rank,
-        Function<dim,codim,range,rank>>::FunctionElementBase;
-};
 
 IGA_NAMESPACE_CLOSE
 

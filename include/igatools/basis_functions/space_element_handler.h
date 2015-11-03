@@ -23,7 +23,7 @@
 #define SPACE_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/space.h>
+#include <igatools/basis_functions/basis.h>
 #include <igatools/base/tuple_utils.h>
 #include <igatools/basis_functions/space_element.h>
 
@@ -42,7 +42,7 @@ private:
   using self_t = SpaceElementHandler<dim,codim,range,rank>;
 
 public:
-  using Sp = Space<dim,codim,range,rank>;
+  using Sp = Basis<dim,codim,range,rank>;
   using ElementAccessor = typename Sp::ElementAccessor;
   using ElementIterator = typename Sp::ElementIterator;
 

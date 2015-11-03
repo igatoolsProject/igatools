@@ -27,9 +27,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, class> class DomainElementBase;
 template <int, int> class DomainElement;
-template <int, int> class ConstDomainElement;
 template <int, int> class DomainHandler;
 
 /**
@@ -62,8 +60,7 @@ public:
 
   using ElementAccessor = DomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ConstElementAccessor = ConstDomainElement<dim_, codim_>;
-  using ElementConstIterator = GridIterator<ConstElementAccessor>;
+  using ElementConstIterator = GridIterator<ElementAccessor>;
 
   using ElementHandler = DomainHandler<dim_, codim_>;
 
@@ -127,14 +124,17 @@ public:
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
 
-  std::unique_ptr<ConstElementAccessor>
+  std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
+#if 0
   std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop);
+#endif
 
   ///@name Iterating of grid elements
   ///@{
+#if 0
   /**
    * This function returns a element iterator to the first element of the patch.
    */
@@ -144,6 +144,7 @@ public:
    * This function returns a element iterator to one-pass the end of patch.
    */
   ElementIterator end(const PropId &prop = ElementProperties::active);
+#endif
 
   /**
    * This function returns a element (const) iterator to the first element of the patch.
@@ -196,10 +197,7 @@ private:
    */
   int object_id_;
 
-  friend class DomainElementBase<dim_, codim_, Domain<dim_, codim_>>;
-  friend class DomainElementBase<dim_, codim_, const Domain<dim_, codim_>>;
   friend class DomainElement<dim_, codim_>;
-  friend class ConstDomainElement<dim_, codim_>;
 
 #ifdef SERIALIZATION
   /**

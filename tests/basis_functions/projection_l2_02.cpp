@@ -105,9 +105,9 @@ public:
 template<int dim, int codim, int range, int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
-  using RefSpace = ReferenceSpace<dim,range,rank>;
+  using RefSpace = ReferenceSpaceBasis<dim,range,rank>;
   using BspSpace = BSpline<dim,range,rank>;
-  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
 
   auto knots = Grid<dim>::const_create(num_knots);
   auto ref_space = BspSpace::create(p, knots);
@@ -121,7 +121,7 @@ void do_test(const int p, const int num_knots = 10)
   }
 //    auto map_func = Function::const_create(knots, IdentityFunction<dim>::const_create(knots), A, b);
 
-  auto space = Space::create(
+  auto space = Basis::create(
                  ref_space,
                  Function::const_create(knots, IdentityFunction<dim>::const_create(knots), A, b));
 
@@ -129,7 +129,7 @@ void do_test(const int p, const int num_knots = 10)
   QGauss<dim> quad(n_qpoints);
 
   auto f = BoundaryFunction<dim>::const_create(knots, space->get_ptr_map_func());
-  auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
+  auto proj_func = space_tools::projection_l2<Basis,la_pack>(f, space, quad);
   proj_func->print_info(out);
 
 }

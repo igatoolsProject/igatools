@@ -60,12 +60,12 @@ private:
   // [type aliases]
 private:
   using RefSpace = BSpline<dim>;
-  using Space    = PhysicalSpaceBasis<dim>;
+  using Basis    = PhysicalSpaceBasis<dim>;
   using Value = typename Function<dim>::Value;
   // [type aliases]
 
 
-  shared_ptr<const Space>        space;
+  shared_ptr<const Basis>        space;
   shared_ptr<MapFunction<dim, dim>> map;
 
   const Quadrature<dim>   elem_quad;
@@ -97,7 +97,7 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
   auto ref_space = RefSpace::create(deg, grid);
   using Function = functions::BallFunction<dim>;
   map = Function::create(grid, IdentityFunction<dim>::create(grid));
-  space = Space::create(ref_space, map);
+  space = Basis::create(ref_space, map);
 
   matrix = create_matrix(*space,DofProperties::active,Epetra_SerialComm());
   rhs = create_vector(matrix->RangeMap());
@@ -189,7 +189,7 @@ void PoissonProblem<dim>::assemble()
   const set<boundary_id> dir_id {0};
   std::map<Index, Real> values;
   // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-  project_boundary_values<Space>(
+  project_boundary_values<Basis>(
     const_pointer_cast<const Function>(g),
     space,
     face_quad,

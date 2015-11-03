@@ -24,9 +24,6 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/shared_ptr_constness_handler.h>
 #include <igatools/geometry/grid.h>
-//#include <igatools/base/function.h>
-
-//#include <igatools/basis_functions/space_element.h>
 
 
 
@@ -46,22 +43,23 @@ template <int,int,int> class DofDistribution;
 
 
 /**
- * * @brief This is an auxiliary class used represent the "concept" of isogeometric function space, defined
- * over <tt>dim</tt>-dimensional Grid.
-
- * It is used as base class of ReferenceSpace and PhysicalSpaceBasis.
+ * @brief This is an auxiliary class used represent the "concept" of isogeometric basis function
+ * in which its space is defined over <tt>dim</tt>-dimensional Grid.
+ *
+ * It is used as base class of ReferenceSpaceBasis and PhysicalSpaceBasis.
  *
  * @author martinelli, 2015.
  *
+ * @ingroup containers
  * @ingroup serializable
  */
 template <int dim_,int codim_,int range_,int rank_>
-class Space
+class Basis
   :
-  public std::enable_shared_from_this<Space<dim_,codim_,range_,rank_> >
+  public std::enable_shared_from_this<Basis<dim_,codim_,range_,rank_> >
 {
 private:
-  using self_t = Space<dim_,codim_,range_,rank_>;
+  using self_t = Basis<dim_,codim_,range_,rank_>;
 
 
 
@@ -71,19 +69,19 @@ protected:
   /**
    * Default constructor. It does nothing, apart assigning a unique id to the object.
    */
-  Space();
+  Basis();
 
 
 
   /** Copy constructor. */
-  Space(const self_t &) = delete;
+  Basis(const self_t &) = delete;
 
   /** Move constructor. */
-  Space(self_t &&) = default;
+  Basis(self_t &&) = default;
 
 public:
   /** Destructor. */
-  virtual ~Space() = default;
+  virtual ~Basis() = default;
   ///@}
 
   /** @name Assignment operator. */
@@ -104,30 +102,36 @@ public:
   using ListIt = typename PropertyList::List::iterator;
 
 
-  static const int dim = dim_;
-  static const int codim = codim_;
-  static const int range = range_;
-  static const int rank = rank_;
 
   /**
-   * Returns the unique identifier associated to each object instance.
+   * \brief Returns the unique identifier associated to each object instance.
    */
   Index get_object_id() const;
 
 
-  virtual std::shared_ptr<const Grid<dim_>> get_grid() const = 0;
-
   /**
-   * Get the name associated to the object instance.
+   * \brief Get the name associated to the object instance.
    */
   const std::string &get_name() const;
 
   /**
-   * Set the name associated to the object instance.
+   * \brief Set the name associated to the object instance.
    */
   void set_name(const std::string &name);
 
 
+  /**
+   * \brief Returns the Grid upon which the space is built.
+   */
+  virtual std::shared_ptr<const Grid<dim_>> get_grid() const = 0;
+
+
+  using topology_variant = TopologyVariants<dim_>;
+
+  /**
+   * \name Functions for getting information about the dofs
+   */
+  ///@{
   virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
   get_ptr_const_dof_distribution() const = 0;
 
@@ -142,7 +146,6 @@ public:
    */
   std::set<Index> get_interior_dofs() const;
 
-  using topology_variant = TopologyVariants<dim_>;
 
   std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &topology) const;
 
@@ -152,21 +155,14 @@ public:
     return this->get_boundary_dofs(s_id,Topology<k>());
   }
 
-  /** @name Functions for retrieving information about the number of basis function. */
-  ///@{
-  Size get_num_basis() const;
-
-
 
   /**
    * This function returns the global dof id corresponding to the basis function
    * with tensor index <p>tensor_index</p> on the @p comp component of the space.
    */
   Index
-  get_global_dof_id(const TensorIndex<dim> &tensor_index,
+  get_global_dof_id(const TensorIndex<dim_> &tensor_index,
                     const Index comp) const;
-  ///@}
-
 
 
   virtual void get_element_dofs(
@@ -174,10 +170,16 @@ public:
     SafeSTLVector<Index> &dofs_global,
     SafeSTLVector<Index> &dofs_local_to_patch,
     SafeSTLVector<Index> &dofs_local_to_elem,
-    const std::string &dofs_property = DofProperties::active) const  = 0;
-//  {
-//    Assert(false,ExcMessage("This function must be pure abstract!"));
-//  }
+    const std::string &dofs_property = DofProperties::active) const = 0;
+  ///@}
+
+  /** @name Functions for retrieving information about the number of basis function. */
+  ///@{
+  Size get_num_basis() const;
+
+
+
+  ///@}
 
 
   /**
@@ -258,8 +260,8 @@ public:
    * @ingroup h_refinement
    */
   virtual void rebuild_after_insert_knots(
-    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const Grid<dim> &old_grid) = 0;
+    const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
+    const Grid<dim_> &old_grid) = 0;
 
 //  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
 
@@ -270,6 +272,12 @@ public:
 
 #endif
 
+
+public:
+  static const int dim = dim_;
+  static const int codim = codim_;
+  static const int range = range_;
+  static const int rank = rank_;
 
 private:
 

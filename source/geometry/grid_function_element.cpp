@@ -22,11 +22,11 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim_, int space_dim_, class ContainerType_>
-GridFunctionElementBase<dim_, space_dim_, ContainerType_>::
-GridFunctionElementBase(std::shared_ptr<ContainerType_> grid_function,
-                        const ListIt &index,
-                        const PropId &prop)
+template<int dim_,int space_dim_>
+GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement(const std::shared_ptr<ContainerType> &grid_function,
+                    const ListIt &index,
+                    const PropId &prop)
   :
   grid_function_(grid_function),
   grid_elem_(grid_function_->get_grid()->create_element(index,prop))
@@ -34,9 +34,9 @@ GridFunctionElementBase(std::shared_ptr<ContainerType_> grid_function,
 
 
 
-template<int dim_, int space_dim_, class ContainerType_>
+template<int dim_,int space_dim_>
 bool
-GridFunctionElementBase<dim_, space_dim_, ContainerType_>::
+GridFunctionElement<dim_,space_dim_>::
 operator ==(const self_t &elem) const
 {
   Assert(grid_function_ == elem.grid_function_,
@@ -46,9 +46,9 @@ operator ==(const self_t &elem) const
 
 
 
-template<int dim_, int space_dim_, class ContainerType_>
+template<int dim_,int space_dim_>
 bool
-GridFunctionElementBase<dim_, space_dim_, ContainerType_>::
+GridFunctionElement<dim_,space_dim_>::
 operator !=(const self_t &elem) const
 {
   Assert(grid_function_ == elem.grid_function_,
@@ -58,9 +58,9 @@ operator !=(const self_t &elem) const
 
 
 
-template<int dim_, int space_dim_, class ContainerType_>
+template<int dim_,int space_dim_>
 bool
-GridFunctionElementBase<dim_, space_dim_, ContainerType_>::
+GridFunctionElement<dim_,space_dim_>::
 operator <(const self_t &elem) const
 {
   Assert(grid_function_ == elem.grid_function_,
@@ -70,9 +70,9 @@ operator <(const self_t &elem) const
 
 
 
-template<int dim_, int space_dim_, class ContainerType_>
+template<int dim_,int space_dim_>
 bool
-GridFunctionElementBase<dim_, space_dim_, ContainerType_>::
+GridFunctionElement<dim_,space_dim_>::
 operator >(const self_t &elem) const
 {
   Assert(grid_function_ == elem.grid_function_,
@@ -81,10 +81,68 @@ operator >(const self_t &elem) const
 }
 
 
-//template<int dim_, int space_dim_, class ContainerType_>
+
+template<int dim_,int space_dim_>
+void
+GridFunctionElement<dim_,space_dim_>::
+operator++()
+{
+  ++(*grid_elem_);
+}
+
+
+template<int dim_,int space_dim_>
+void
+GridFunctionElement<dim_,space_dim_>::
+move_to(const IndexType &elem_id)
+{
+  grid_elem_->move_to(elem_id);
+}
+
+template<int dim_,int space_dim_>
+auto
+GridFunctionElement<dim_,space_dim_>::
+get_grid_element() const -> const GridElem &
+{
+  return *grid_elem_;
+}
+
+template<int dim_,int space_dim_>
+auto
+GridFunctionElement<dim_,space_dim_>::
+get_grid_element() -> GridElem &
+{
+  return *grid_elem_;
+}
+
+
+template<int dim_,int space_dim_>
+void
+GridFunctionElement<dim_,space_dim_>::
+print_info(LogStream &out) const
+{
+  using std::to_string;
+  out.begin_item("GridElement<" + to_string(dim_) + "," + to_string(space_dim_) +">");
+  grid_elem_->print_info(out);
+  out.end_item();
+}
+
+template<int dim_,int space_dim_>
+void
+GridFunctionElement<dim_,space_dim_>::
+print_cache_info(LogStream &out) const
+{
+  out.begin_item("GridElement's cache");
+  grid_elem_->print_cache_info(out);
+  out.end_item();
+
+  local_cache_.print_info(out);
+}
+
+//template<int dim_, int space_dim_, class ContainerType>
 //template<int sdim>
 //auto
-//GridFunctionElementBase<dim_, space_dim_, ContainerType_>::
+//GridFunctionElementBase<dim_, space_dim_, ContainerType>::
 //get_w_measures(const int s_id) const -> ValueVector<Real>
 //{
 //  const auto &meas = get_values_from_cache<_Measure, sdim>(s_id);
@@ -97,9 +155,9 @@ operator >(const self_t &elem) const
 //}
 
 #if 0
-template<int dim_, int space_dim_, class ContainerType_>
+template<int dim_, int space_dim_>
 auto
-GridFunctionElementBase<dim_, space_dim_, ContainerType_>::
+GridFunctionElement<dim_, space_dim_>::
 get_exterior_normals() const -> ValueVector<SafeSTLArray<Value, space_dim_> >
 {
   const int sdim = dim_;

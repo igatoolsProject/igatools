@@ -53,7 +53,7 @@ template <int dim>
 void assemble_matrix(const int n_knots, const int deg)
 {
   using Space  = BSpline<dim>;
-  using RefSpace  = ReferenceSpace<dim>;
+  using RefSpace  = ReferenceSpaceBasis<dim>;
 
   using Function = Function<dim,0,1,1>;
   using ConstFunction = functions::LinearFunction<dim,0,1>;

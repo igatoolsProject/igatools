@@ -65,7 +65,7 @@ public:
   using ContainerType = const NURBS<dim, range, rank> ;
 
   /** Type required for the generic algorithm on the spaces (plots??) */
-  using Space = NURBS<dim, range, rank> ;
+  using Basis = NURBS<dim, range, rank> ;
 
 
   using GridType = Grid<dim>;
@@ -153,16 +153,16 @@ public:
   /**
    * Returns the NURBS in which the NURBSElement is defined.
    */
-  std::shared_ptr<const Space> get_nurbs_space() const;
+  std::shared_ptr<const Basis> get_nurbs_space() const;
 
 private:
 
-  using BSpSpace = typename Space::BSpSpace;
+  using BSpSpace = typename Basis::BSpSpace;
 
   typename BSpSpace::ElementAccessor bspline_elem_;
 
-  using WeightFunction = typename Space::WeightFunction;
-  using WeightElem = typename WeightFunction::ConstElementAccessor;
+  using WeightFunction = typename Basis::WeightFunction;
+  using WeightElem = typename WeightFunction::ElementAccessor;
   std::unique_ptr<WeightElem> weight_elem_;
 
 public:

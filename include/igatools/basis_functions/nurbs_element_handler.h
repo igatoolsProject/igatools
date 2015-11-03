@@ -57,24 +57,24 @@ class NURBSElementHandler
 {
   using base_t = ReferenceElementHandler<dim_,range_,rank_>;
   using self_t = NURBSElementHandler<dim_,range_,rank_>;
-  using Space = NURBS<dim_,range_,rank_>;
-  static const Size n_components =  Space::n_components;
+  using Basis = NURBS<dim_,range_,rank_>;
+  static const Size n_components =  Basis::n_components;
 
   using IndexType = typename Grid<dim_>::IndexType;
 
   template<class T>
-  using ComponentContainer = typename Space::template ComponentContainer<T>;
+  using ComponentContainer = typename Basis::template ComponentContainer<T>;
 
   template <int order>
-  using Derivative = typename Space::template Derivative<order>;
+  using Derivative = typename Basis::template Derivative<order>;
 
-  using Value = typename Space::Value;
+  using Value = typename Basis::Value;
 
 protected:
-  using ElementIterator = typename Space::ElementIterator;
-  using ElementAccessor = typename Space::ElementAccessor;
+  using ElementIterator = typename Basis::ElementIterator;
+  using ElementAccessor = typename Basis::ElementAccessor;
 
-  using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
+  using BaseSpace = ReferenceSpaceBasis<dim_,range_,rank_>;
   using RefElementIterator = typename BaseSpace::ElementIterator;
   using RefElementAccessor = typename BaseSpace::ElementAccessor;
 
@@ -92,7 +92,7 @@ public:
    */
   NURBSElementHandler() = delete;
 
-  NURBSElementHandler(std::shared_ptr<const Space> space);
+  NURBSElementHandler(std::shared_ptr<const Basis> space);
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -141,15 +141,15 @@ private:
   std::unique_ptr<IgGridFunctionHandler<dim_,1>> w_func_elem_handler_;
 
 
-  using WeightElem = typename Space::WeightFunction::ElementAccessor;
-//  using WeightElemTable = typename Space::template ComponentContainer<std::shared_ptr<WeightElem>>;
+  using WeightElem = typename Basis::WeightFunction::ElementAccessor;
+//  using WeightElemTable = typename Basis::template ComponentContainer<std::shared_ptr<WeightElem>>;
 
 
 
   /**
    * Returns the NURBS used to define the NURBSElementHandler object.
    */
-  std::shared_ptr<const Space> get_nurbs_space() const;
+  std::shared_ptr<const Basis> get_nurbs_space() const;
 
 
 
@@ -311,7 +311,7 @@ private:
 
 
     using BSplineElem = BSplineElement<dim_,range_,rank_>;
-    using WeightFuncElem = ConstGridFunctionElement<dim_,1>;
+    using WeightFuncElem = GridFunctionElement<dim_,1>;
 
     /**
      * Computes the value of the non-zero NURBS basis

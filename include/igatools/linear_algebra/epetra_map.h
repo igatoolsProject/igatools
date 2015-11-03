@@ -56,8 +56,8 @@ create_map(const std::set<Index> &dofs,const Comm &comm);
  * Create an Epetra_Map object (wrapped by a shared pointer) from a @p space and the @p dofs_property
  * used to extract the dofs from the space.
  */
-template<class Space>
-MapPtr create_map(const Space &space,
+template<class Basis>
+MapPtr create_map(const Basis &space,
                   const std::string &property,
                   const Comm &comm)
 {

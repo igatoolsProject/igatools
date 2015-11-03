@@ -65,7 +65,7 @@ set_flags(const topology_variant &sdim,
 template<int dim_, int codim_, int range_, int rank_>
 void
 FunctionHandler<dim_, codim_, range_, rank_ >::
-init_cache(ConstElementAccessor &elem,
+init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
   domain_handler_->init_cache(*(elem.domain_elem_), quad);
@@ -80,7 +80,7 @@ template<int dim_, int codim_, int range_, int rank_>
 void
 FunctionHandler<dim_, codim_, range_, rank_ >::
 fill_cache(const topology_variant &sdim,
-           ConstElementAccessor &elem,
+           ElementAccessor &elem,
            const int s_id) const
 {
   domain_handler_->fill_cache(sdim, *(elem.domain_elem_), s_id);

@@ -30,14 +30,14 @@ spaces = []
 
 
 
-spaces = ['Space<0,0,0,1>']
+spaces = ['Basis<0,0,0,1>']
 
 for x in inst.all_phy_sp_dims:
-    space = 'Space<%d,%d,%d,%d>' %(x.dim,x.codim,x.range,x.rank)
+    space = 'Basis<%d,%d,%d,%d>' %(x.dim,x.codim,x.range,x.rank)
     spaces.append(space)
 
 for x in inst.all_ref_sp_dims:
-    space = 'Space<%d,0,%d,%d>' %(x.dim,x.range,x.rank)
+    space = 'Basis<%d,0,%d,%d>' %(x.dim,x.range,x.rank)
     spaces.append(space)
     
 for space in unique(spaces):

@@ -33,11 +33,11 @@ sub_dim_members = \
   'class::get_sub_space<k>(const int sub_elem_id, ' + 
   'InterSpaceMap<k> &dof_map, SubGridMap<k> &elem_map) const;']
 
-spaces = ['ReferenceSpace<0,0,1>']
+spaces = ['ReferenceSpaceBasis<0,0,1>']
 templated_funcs = []
 
 for x in inst.sub_ref_sp_dims:
-    space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    space = 'ReferenceSpaceBasis<%d, %d, %d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
         k = max(x.dim-1,0)
@@ -45,7 +45,7 @@ for x in inst.sub_ref_sp_dims:
         templated_funcs.append(s)
 
 for x in inst.ref_sp_dims:
-    space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    space = 'ReferenceSpaceBasis<%d, %d, %d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
@@ -67,7 +67,7 @@ for func in unique(templated_funcs):
 #f.write('#ifdef SERIALIZATION\n')
 #id = 0 
 #for space in unique(spaces):
-#    alias = 'ReferenceSpaceAlias%d' %(id)
+#    alias = 'ReferenceSpaceBasisAlias%d' %(id)
 #    f.write('using %s = iga::%s; \n' % (alias, space))
 #    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
 #    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)

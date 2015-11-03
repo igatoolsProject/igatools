@@ -27,7 +27,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, int> class ReferenceSpace;
+template <int, int, int> class ReferenceSpaceBasis;
 
 /**
  *
@@ -39,21 +39,21 @@ class ReferenceElement : public SpaceElement<dim,0,range,rank>
 public:
 
   /** Type required by the GridForwardIterator templated iterator */
-  using ContainerType = const ReferenceSpace<dim,range,rank> ;
+  using ContainerType = const ReferenceSpaceBasis<dim,range,rank> ;
 
-  using Space = ReferenceSpace<dim,range,rank>;
-  using ConstSpace = const ReferenceSpace<dim,range,rank>;
+  using Basis = ReferenceSpaceBasis<dim,range,rank>;
+  using ConstSpace = const ReferenceSpaceBasis<dim,range,rank>;
 
   using parent_t = SpaceElement<dim,0,range,rank>;
 
-  using RefPoint = typename Space::RefPoint;
-  using Point = typename Space::Point;
-  using Value = typename Space::Value;
+  using RefPoint = typename Basis::RefPoint;
+  using Point = typename Basis::Point;
+  using Value = typename Basis::Value;
 
   template <int order>
-  using Derivative = typename Space::template Derivative<order>;
+  using Derivative = typename Basis::template Derivative<order>;
 
-  using Div = typename Space::Div;
+  using Div = typename Basis::Div;
 
 
   using GridType = Grid<dim>;
@@ -73,7 +73,7 @@ public:
 
   /**
    * Constructs an accessor to element number index of a
-   * ReferenceSpace space.
+   * ReferenceSpaceBasis space.
    */
   ReferenceElement(const std::shared_ptr<ConstSpace> space,
                    const ListIt &index,
@@ -98,10 +98,10 @@ public:
   ValueVector<Real> get_element_w_measures() const;
 
 
-//    using OffsetTable = typename Space::template ComponentContainer<int>;
-  using OffsetTable = SafeSTLArray<int,Space::n_components+1>;
+//    using OffsetTable = typename Basis::template ComponentContainer<int>;
+  using OffsetTable = SafeSTLArray<int,Basis::n_components+1>;
 
-  using TensorSizeTable = typename Space::TensorSizeTable;
+  using TensorSizeTable = typename Basis::TensorSizeTable;
 
 protected:
 
@@ -117,12 +117,12 @@ protected:
 
   using Indexer = CartesianProductIndexer<dim>;
   using IndexerPtr = std::shared_ptr<Indexer>;
-  using IndexerPtrTable = typename Space::template ComponentContainer<IndexerPtr>;
+  using IndexerPtrTable = typename Basis::template ComponentContainer<IndexerPtr>;
 
   /** Hash table for fast conversion between flat-to-tensor basis function ids. */
   IndexerPtrTable basis_functions_indexer_;
 
-  std::shared_ptr<const Space> space_;
+  std::shared_ptr<const Basis> space_;
 
 public:
   using parent_t::get_num_basis;
@@ -146,7 +146,7 @@ public:
 
 
 #if 0
-  std::shared_ptr<const Space> get_ig_space() const;
+  std::shared_ptr<const Basis> get_ig_space() const;
 #endif
 };
 

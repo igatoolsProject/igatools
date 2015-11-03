@@ -64,7 +64,7 @@ identity_map(const int n_knots, const int deg, const string prop=DofProperties::
 
   auto space = create_space<dim>(grid, grid_func, deg);
   /*
-  out.begin_item("Space");
+  out.begin_item("Basis");
   space->print_info(out);
   out.end_item();
   //*/

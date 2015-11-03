@@ -39,13 +39,13 @@
 template <int dim, int range=1>
 void plot_basis(const int n_knots, const int deg)
 {
-  using Space  = BSpline<dim, range>;
+  using Basis  = BSpline<dim, range>;
 
   TensorIndex<dim> deg1(deg);
-  typename Space::DegreeTable degt(deg1);
+  typename Basis::DegreeTable degt(deg1);
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(
+  auto space = Basis::const_create(
                  SplineSpace<dim,range>::const_create(deg,grid, InteriorReg::maximum, true),
                  BasisEndBehaviour::periodic);
 
@@ -55,7 +55,7 @@ void plot_basis(const int n_knots, const int deg)
   space->print_info(out);
 
 #if 0
-  using RefSpace  = ReferenceSpace<dim, range>;
+  using RefSpace  = ReferenceSpaceBasis<dim, range>;
   using Coeffs = typename IgFunction<RefSpace>::CoeffType;
   Coeffs coeffs(n_basis);
 

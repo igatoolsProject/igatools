@@ -220,7 +220,7 @@ rebuild_after_insert_knots(
   using std::const_pointer_cast;
   this->function_previous_refinement_ =
     IgFunction<dim,codim,range,rank>::const_create(
-      std::dynamic_pointer_cast<const Sp>(space_->get_space_previous_refinement()),
+      std::dynamic_pointer_cast<const Sp>(space_->get_basis_previous_refinement()),
       coeff_,
       property_);
 
@@ -314,7 +314,7 @@ serialize(Archive &ar, const unsigned int version)
 #endif // NURBS
 
   ar.template register_type<PhysicalSpaceBasis<dim,range,rank,codim>>();
-  auto non_nonst_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
+  auto non_nonst_space = std::const_pointer_cast<Basis<dim,codim,range,rank>>(space_);
   ar &boost::serialization::make_nvp("space_",non_nonst_space);
   space_ = non_nonst_space;
   Assert(space_ != nullptr,ExcNullPtr());

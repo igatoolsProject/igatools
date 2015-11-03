@@ -48,7 +48,7 @@ void test()
 {
   const int space_dim = dim + codim;
   using Function = functions::LinearFunction<dim, codim, space_dim>;
-  using Space = BSpline<dim>;
+  using Basis = BSpline<dim>;
   using PForward  = PushForward<Transformation::h_grad, dim, codim>;
 
   typename Function::Value    b;
@@ -64,9 +64,9 @@ void test()
   auto quad = QGauss<dim>(2);
   auto grid = Grid<dim>::create(3);
 
-  auto space  = Space::create(1, grid);
+  auto space  = Basis::create(1, grid);
   auto sp_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
-  using ElemHandler = typename Space::ElementHandler;
+  using ElemHandler = typename Basis::ElementHandler;
   auto sp_values = ElemHandler::create(space);
   sp_values->reset(sp_flag, quad);
   auto sp_elem = space->begin();
@@ -96,9 +96,9 @@ void test()
     pf.template fill_cache<dim>(*elem, 0);
 
     const auto &ref_values = sp_elem->template get_basis_data<_Value,dim>(0,DofProperties::active);
-    ValueTable<typename PForward::template PhysValue<Space::range, Space::rank>>
+    ValueTable<typename PForward::template PhysValue<Basis::range, Basis::rank>>
     values(ref_values.get_num_functions(), ref_values.get_num_points());
-    elem->template transform_0<Space::range, Space::rank>
+    elem->template transform_0<Basis::range, Basis::rank>
     (ref_values, values);
 
     ref_values.print_info(out);
@@ -107,10 +107,10 @@ void test()
     out << endl;
 
     const auto &ref_der_1 = sp_elem->template get_basis_data<_Gradient,dim>(0,DofProperties::active);
-    ValueTable<typename PForward::template PhysDerivative<Space::range, Space::rank, 1>>
+    ValueTable<typename PForward::template PhysDerivative<Basis::range, Basis::rank, 1>>
     gradients(ref_values.get_num_functions(), ref_values.get_num_points());
     auto ref_der_tuple_1 = std::make_tuple(ref_values, ref_der_1);
-    elem->template transform_1<Space::range, Space::rank, dim>
+    elem->template transform_1<Basis::range, Basis::rank, dim>
     (ref_der_tuple_1, values, gradients, 0);
 
     ref_der_1.print_info(out);
@@ -120,11 +120,11 @@ void test()
 
 
     const auto &ref_der_2 = sp_elem->template get_basis_data<_Hessian,dim>(0,DofProperties::active);
-    ValueTable<typename PForward::template PhysDerivative<Space::range, Space::rank, 2>>
+    ValueTable<typename PForward::template PhysDerivative<Basis::range, Basis::rank, 2>>
     hessians(ref_values.get_num_functions(), ref_values.get_num_points());
     auto ref_der_tuple_1_2 = std::make_tuple(ref_values, ref_der_1, ref_der_2);
     auto values_gradients_tuple = std::make_tuple(values, gradients);
-    elem->template transform_2<Space::range, Space::rank, dim>
+    elem->template transform_2<Basis::range, Basis::rank, dim>
     (ref_der_tuple_1_2, values_gradients_tuple, hessians, 0);
 
     ref_der_2.print_info(out);

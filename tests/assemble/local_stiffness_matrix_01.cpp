@@ -45,8 +45,8 @@ void loc_stiff_matrix(const int n_knots, const int deg)
   OUTSTART
 
   auto grid = Grid<dim>::create(n_knots);
-  using Space = BSpline<dim>;
-  auto ref_space = Space::create(SplineSpace<dim>::create(deg, grid)) ;
+  using Basis = BSpline<dim>;
+  auto ref_space = Basis::create(SplineSpace<dim>::create(deg, grid)) ;
 
 //  using PhysSpace = PhysicalSpaceBasis<dim,1,1,0,Transformation::h_grad>;
 //  auto identity_mapping = IdentityFunction<dim>::create(grid);

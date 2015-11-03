@@ -225,7 +225,7 @@ fill_points_and_connectivity(
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 get_subelements(
-  const typename Domain<dim,codim>::ConstElementAccessor &elem,
+  const DomainElement<dim,codim> &elem,
   const int elem_flat_id,
   SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
   SafeSTLVector< SafeSTLArray<T,3> > &points_phys_iga_element) const

@@ -24,7 +24,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int space_dim>
 FormulaGridFunctionHandler<dim, space_dim>::
-FormulaGridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function)
+FormulaGridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function)
   :
   parent_t::GridFunctionHandler(grid_function)
 {}
@@ -47,7 +47,7 @@ template<int dim, int space_dim>
 auto
 FormulaGridFunctionHandler<dim, space_dim>::
 fill_cache(const topology_variant &sdim,
-           ConstElementAccessor &elem,
+           ElementAccessor &elem,
            const int s_id) const  -> void
 {
   parent_t::fill_cache(sdim, elem, s_id);

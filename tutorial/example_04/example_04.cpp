@@ -39,12 +39,12 @@ LogStream out;
 template <int dim>
 void plot_basis(const int deg)
 {
-  using Space  = BSpline<dim>;
+  using Basis  = BSpline<dim>;
   using Func = IgFunction<dim,0,1,1>;
 
   const int n_knots = deg + 2;
   auto grid  = Grid<dim>::create(n_knots);
-  auto space = Space::create(deg, grid);
+  auto space = Basis::create(deg, grid);
   // [plot function]
 
   // [init vec]

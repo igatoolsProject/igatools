@@ -100,7 +100,7 @@ template<int dim, int range = 1>
 void matrix_map2(const int deg, const int n_knots)
 {
   OUTSTART
-  using Space = BSpline<dim>;
+  using Basis = BSpline<dim>;
   auto grid = Grid<dim>::create(n_knots);
 
   grid->set_boundary_id(0, 1);
@@ -108,12 +108,12 @@ void matrix_map2(const int deg, const int n_knots)
   auto space = BSpline<dim>::create(deg, grid);
 
   std::set<boundary_id>  dir_ids = {0};
-  auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
+  auto dir_dofs = get_boundary_dofs<Basis>(space, dir_ids);
 
   auto int_dofs = space->get_interior_dofs();
 
   std::set<boundary_id>  neu_ids = {1};
-  auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
+  auto neu_dofs = get_boundary_dofs<Basis>(space, neu_ids);
   SafeSTLVector<Index> common(dim*range);
   auto end1 =
     std::set_intersection(neu_dofs.begin(), neu_dofs.end(),

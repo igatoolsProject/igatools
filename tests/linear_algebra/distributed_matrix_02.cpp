@@ -38,7 +38,7 @@ using namespace EpetraTools;
 template<int dim = 1, int range  = 1, int rank=1>
 void fill_matrix_and_vector()
 {
-  using Space = BSpline<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
   const int p_r = 3;
   const int p_c = 2;
 
@@ -48,8 +48,8 @@ void fill_matrix_and_vector()
   out << " Degree of columns space: " << p_c <<endl;
 
   auto grid = Grid<dim>::create();
-  auto r_space = Space::create(SplineSpace<dim,range,rank>::create(p_r, grid));
-  auto c_space = Space::create(SplineSpace<dim,range,rank>::create(p_c, grid));
+  auto r_space = Basis::create(SplineSpace<dim,range,rank>::create(p_r, grid));
+  auto c_space = Basis::create(SplineSpace<dim,range,rank>::create(p_c, grid));
 
   const auto n_basis_sp_rows = r_space->get_num_basis();
   const auto n_basis_sp_cols = c_space->get_num_basis();

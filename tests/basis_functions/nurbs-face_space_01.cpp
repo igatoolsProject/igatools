@@ -53,11 +53,11 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
 
   const auto w_func = WeightFunc::const_create(scalar_bsp_space,weights);
 
-  using Space = NURBS<dim,range,rank>;
-  auto nrb_space = Space::const_create(bsp_space,w_func);
+  using Basis = NURBS<dim,range,rank>;
+  auto nrb_space = Basis::const_create(bsp_space,w_func);
 
 
-  typename Space::template InterSpaceMap<sub_dim> dof_map;
+  typename Basis::template InterSpaceMap<sub_dim> dof_map;
 
   out.begin_item("Dim: " + std::to_string(dim) + "     Sub-Dim: " + std::to_string(sub_dim));
 
@@ -72,7 +72,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
     out.begin_item(to_string(i) + "-th " + "sub space:");
     auto sub_space =
       nrb_space->template get_sub_space<sub_dim>(i, dof_map, elem_map);
-    out.begin_item("Space:");
+    out.begin_item("Basis:");
     sub_space->print_info(out);
     out.end_item();
   }

@@ -27,7 +27,7 @@
 
 #include <igatools/basis_functions/space_element_handler.h>
 #include <igatools/geometry/grid_handler.h>
-#include <igatools/basis_functions/reference_space.h>
+#include <igatools/basis_functions/reference_space_basis.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -44,9 +44,9 @@ class ReferenceElementHandler
 private:
   using base_t = SpaceElementHandler<dim,0,range,rank>;
 public:
-  using Space = ReferenceSpace<dim,range,rank>;
-  using ElementIterator = typename Space::ElementIterator;
-  using ElementAccessor = typename Space::ElementAccessor;
+  using Basis = ReferenceSpaceBasis<dim,range,rank>;
+  using ElementIterator = typename Basis::ElementIterator;
+  using ElementAccessor = typename Basis::ElementAccessor;
 
   using topology_variant = TopologyVariants<dim>;
   using eval_pts_variant = QuadVariants<dim>;
@@ -56,7 +56,7 @@ public:
 
 #if 0
   static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
-  create(const std::shared_ptr<const Space> &space);
+  create(const std::shared_ptr<const Basis> &space);
 #endif
 
 protected:
@@ -70,7 +70,7 @@ protected:
   ReferenceElementHandler() = default;
 
 
-  ReferenceElementHandler(const std::shared_ptr<const Space> &space);
+  ReferenceElementHandler(const std::shared_ptr<const Basis> &space);
 
   /**
    * Copy constructor. Not allowed to be used.

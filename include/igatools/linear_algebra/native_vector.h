@@ -43,18 +43,18 @@ public:
       (*this)[dof] = coeffs[i++];
   }
 
-  template <class Space>
+  template <class Basis>
   IgCoefficients(
-    const Space &space,
+    const Basis &space,
     const std::string &dofs_property,
     const SafeSTLVector<Real> &coeffs)
     :
     IgCoefficients(space.get_ptr_const_dof_distribution()->get_dofs_id_same_property(dofs_property),coeffs)
   {}
 
-  template <class Space>
+  template <class Basis>
   IgCoefficients(
-    const Space &space,
+    const Basis &space,
     const std::string &dofs_property)
     :
     IgCoefficients(

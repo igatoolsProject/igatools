@@ -28,9 +28,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, int, int, class> class FunctionElementBase;
 template <int, int, int, int> class FunctionElement;
-template <int, int, int, int> class ConstFunctionElement;
 
 /**
  * Function Class
@@ -56,7 +54,6 @@ public:
 
   using ElementAccessor = typename FuncType::ElementAccessor;
   using ElementIterator = typename FuncType::ElementIterator;
-  using ConstElementAccessor = typename FuncType::ConstElementAccessor;
   using ElementConstIterator = typename FuncType::ElementConstIterator;
 
   using List = typename DomainType::List;
@@ -172,7 +169,7 @@ public:
     this->set_flags(Topology<sdim>(), flag);
   }
 
-  virtual void init_cache(ConstElementAccessor &elem,
+  virtual void init_cache(ElementAccessor &elem,
                           const eval_pts_variant &quad) const;
 
   void init_cache(ElementConstIterator &elem,
@@ -183,7 +180,7 @@ public:
 
 
   virtual void fill_cache(const topology_variant &sdim,
-                          ConstElementAccessor &elem,
+                          ElementAccessor &elem,
                           const int s_id) const;
 
   void fill_cache(const topology_variant &sdim,
@@ -201,16 +198,16 @@ public:
   }
 
   template <int sdim>
-  void fill_cache(ConstElementAccessor &elem,
+  void fill_cache(ElementAccessor &elem,
                   const int s_id)
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
 
 protected:
-//  std::shared_ptr<typename ConstElementAccessor::CacheType>
-  typename ConstElementAccessor::CacheType &
-  get_element_cache(ConstElementAccessor &elem) const
+//  std::shared_ptr<typename ElementAccessor::CacheType>
+  typename ElementAccessor::CacheType &
+  get_element_cache(ElementAccessor &elem) const
   {
     return  elem.local_cache_;
   }
@@ -252,7 +249,7 @@ private:
    */
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
-    InitCacheDispatcher(ConstElementAccessor &elem,
+    InitCacheDispatcher(ElementAccessor &elem,
                         const FlagsArray &flags)
       :
       elem_(elem),
@@ -276,7 +273,7 @@ private:
       }
     }
 
-    ConstElementAccessor &elem_;
+    ElementAccessor &elem_;
     const FlagsArray &flags_;
   };
 

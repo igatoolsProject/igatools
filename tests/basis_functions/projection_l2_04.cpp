@@ -99,12 +99,12 @@ public:
 template<int dim, int range=1, int rank = 1, LAPack la_pack>
 void test_proj(const int p, const int n_knots = 4)
 {
-  using Space = BSpline<dim,range,rank> ;
-  using RefSpace = ReferenceSpace<dim,range,rank> ;
+  using Basis = BSpline<dim,range,rank> ;
+  using RefSpace = ReferenceSpaceBasis<dim,range,rank> ;
   using Func = TestFunc<dim,range, rank>;
 
   auto grid = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(p, grid);
+  auto space = Basis::const_create(p, grid);
 
   const int n_qp = 4;
   QGauss<dim> quad(n_qp);

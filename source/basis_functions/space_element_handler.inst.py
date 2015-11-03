@@ -42,7 +42,7 @@ handler_method = 'void %s::fill_cache<0>(ElementAccessor &, const int)' % (handl
 #handler_methods.append(handler_method)
 
 #--------------------------------------------------------------------------------------
-# SpaceElement used by ReferenceSpaceElement 
+# SpaceElement used by ReferenceSpaceBasisElement 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     handler = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.append(handler)

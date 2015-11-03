@@ -29,9 +29,8 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int, int, class> class DomainElementBase;
 template <int, int> class DomainElement;
-template <int, int> class ConstDomainElement;
+
 /**
  * @brief The mapping is a deformation \f$ F : \hat\Omega \to \Omega\f$
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
@@ -66,8 +65,8 @@ public:
 
   using ElementAccessor = DomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ConstElementAccessor = ConstDomainElement<dim_, codim_>;
-  using ElementConstIterator = GridIterator<ConstElementAccessor>;
+//  using ConstElementAccessor = ConstDomainElement<dim_, codim_>;
+  using ElementConstIterator = GridIterator<ElementAccessor>;
 
   using List = typename GridFuncType::List;
   using ListIt = typename GridFuncType::ListIt;
@@ -148,44 +147,44 @@ public:
     this->set_flags(Topology<sdim>(), flag);
   }
 
-  void init_cache(ConstElementAccessor &elem,
+  void init_cache(ElementAccessor &elem,
                   const eval_pts_variant &quad) const;
 
-  void init_cache(ElementConstIterator &elem,
+  void init_cache(ElementIterator &elem,
                   const eval_pts_variant &quad) const
   {
     this->init_cache(*elem, quad);
   }
 
   void fill_cache(const topology_variant &sdim,
-                  ConstElementAccessor &elem,
+                  ElementAccessor &elem,
                   const int s_id) const;
 
   template <int sdim>
-  void fill_cache(ConstElementAccessor &elem,
+  void fill_cache(ElementAccessor &elem,
                   const int s_id) const
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
 
   void fill_cache(const topology_variant &sdim,
-                  ElementConstIterator &elem,
+                  ElementIterator &elem,
                   const int s_id) const
   {
     this->fill_cache(sdim, *elem, s_id);
   }
 
   template <int sdim>
-  void fill_cache(ElementConstIterator &elem,
+  void fill_cache(ElementIterator &elem,
                   const int s_id) const
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
 
 protected:
-//  std::shared_ptr<typename ConstElementAccessor::CacheType>
-  typename ConstElementAccessor::CacheType
-  &get_element_cache(ConstElementAccessor &elem) const
+//  std::shared_ptr<typename ElementAccessor::CacheType>
+  typename ElementAccessor::CacheType
+  &get_element_cache(ElementAccessor &elem) const
   {
     return  elem.local_cache_;
   }
@@ -219,7 +218,7 @@ private:
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
     InitCacheDispatcher(const self_t &domain_handler,
-                        ConstElementAccessor &elem,
+                        ElementAccessor &elem,
                         const FlagsArray &flags)
       :
       domain_handler_(domain_handler),
@@ -243,7 +242,7 @@ private:
     }
 
     const self_t &domain_handler_;
-    ConstElementAccessor &elem_;
+    ElementAccessor &elem_;
     const FlagsArray &flags_;
   };
 
@@ -251,7 +250,7 @@ private:
 
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
-    FillCacheDispatcher(ConstElementAccessor &elem,
+    FillCacheDispatcher(ElementAccessor &elem,
                         const int s_id)
       :
       elem_(elem),
@@ -397,7 +396,7 @@ private:
       cache.set_filled(true);
     }
 
-    ConstElementAccessor &elem_;
+    ElementAccessor &elem_;
     const int s_id_;
   };
 

@@ -40,7 +40,7 @@ void test()
   const int r = 2;
 //    out << "test<" << dim << "," << range << ">" << endl;
 
-  using Space = NURBS< dim, range, rank >;
+  using Basis = NURBS< dim, range, rank >;
   auto  knots = Grid<dim>::const_create();
 
   auto degree = TensorIndex<dim>(r);
@@ -63,7 +63,7 @@ void test()
 
   const auto w_func = WeightFunc::const_create(scalar_bsp_space,weights);
 
-  auto space = Space::const_create(bsp_space,w_func);
+  auto space = Basis::const_create(bsp_space,w_func);
 
   const int n_points = 3;
   auto quad = QGauss<dim>::create(n_points);

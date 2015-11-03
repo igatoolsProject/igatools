@@ -27,11 +27,11 @@
 IGA_NAMESPACE_OPEN
 
 
-template<int dim, int codim, int range, int rank,  class ContainerType_>
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-FunctionElementBase(const std::shared_ptr<ContainerType_> func,
-                    const ListIt &index,
-                    const PropId &prop)
+template<int dim,int codim,int range,int rank>
+FunctionElement<dim,codim,range,rank>::
+FunctionElement(const std::shared_ptr<ContainerType> &func,
+                const ListIt &index,
+                const PropId &prop)
   :
   func_(func),
   domain_elem_(func->get_domain()->create_element(index,prop))
@@ -39,10 +39,10 @@ FunctionElementBase(const std::shared_ptr<ContainerType_> func,
 
 
 #if 0
-template<int dim, int codim, int range, int rank,  class ContainerType_>
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-FunctionElementBase(const self_t &elem,
-                    const CopyPolicy &copy_policy)
+template<int dim,int codim,int range,int rank>
+FunctionElement<dim,codim,range,rank>::
+FunctionElement(const self_t &elem,
+                const CopyPolicy &copy_policy)
   :
   func_(elem.func_)
 {
@@ -60,17 +60,17 @@ FunctionElementBase(const self_t &elem,
 #endif
 
 
-template<int dim, int codim, int range, int rank,  class ContainerType_>
+template<int dim,int codim,int range,int rank>
 auto
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElement<dim,codim,range,rank>::
 get_domain_element() const -> const DomainElem &
 {
   return *domain_elem_;
 }
 
-template<int dim, int codim, int range, int rank,  class ContainerType_>
+template<int dim,int codim,int range,int rank>
 auto
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElement<dim,codim,range,rank>::
 get_domain_element() -> DomainElem &
 {
   return *domain_elem_;
@@ -78,9 +78,9 @@ get_domain_element() -> DomainElem &
 
 
 
-template<int dim, int codim, int range, int rank,  class ContainerType_>
+template<int dim,int codim,int range,int rank>
 bool
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElement<dim,codim,range,rank>::
 operator==(const self_t &a) const
 {
   Assert(func_ == a.func_,
@@ -89,9 +89,9 @@ operator==(const self_t &a) const
 }
 
 
-template<int dim, int codim, int range, int rank,  class ContainerType_>
+template<int dim,int codim,int range,int rank>
 bool
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElement<dim,codim,range,rank>::
 operator!=(const self_t &a) const
 {
   Assert(func_ == a.func_,
@@ -99,9 +99,9 @@ operator!=(const self_t &a) const
   return (*domain_elem_ != *(a.domain_elem_));
 }
 
-template<int dim, int codim, int range, int rank,  class ContainerType_>
+template<int dim,int codim,int range,int rank>
 bool
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElement<dim,codim,range,rank>::
 operator<(const self_t &a) const
 {
   Assert(func_ == a.func_,
@@ -110,9 +110,9 @@ operator<(const self_t &a) const
 }
 
 
-template<int dim, int codim, int range, int rank,  class ContainerType_>
+template<int dim,int codim,int range,int rank>
 bool
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElement<dim,codim,range,rank>::
 operator>(const self_t &a) const
 {
   Assert(func_ == a.func_,
@@ -122,9 +122,9 @@ operator>(const self_t &a) const
 
 
 
-template<int dim, int codim, int range, int rank,  class ContainerType_>
+template<int dim,int codim,int range,int rank>
 void
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElement<dim,codim,range,rank>::
 print_info(LogStream &out) const
 {
   Assert(false, ExcNotImplemented());
@@ -132,9 +132,9 @@ print_info(LogStream &out) const
 
 
 
-template<int dim, int codim, int range, int rank,  class ContainerType_>
+template<int dim,int codim,int range,int rank>
 void
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElement<dim,codim,range,rank>::
 print_cache_info(LogStream &out) const
 {
   local_cache_.print_info(out);
@@ -142,10 +142,10 @@ print_cache_info(LogStream &out) const
 
 #if 0
 #ifdef SERIALIZATION
-template<int dim, int codim, int range, int rank,  class ContainerType_>
+template<int dim,int codim,int range,int rank>
 template<class Archive>
 void
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElement<dim,codim,range,rank>::
 serialize(Archive &ar, const unsigned int version)
 {
   AssertThrow(false,ExcNotImplemented());

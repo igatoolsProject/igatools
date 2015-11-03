@@ -96,7 +96,7 @@ set_flags(const topology_variant &sdim,
 template<int dim_, int space_dim_>
 void
 GridFunctionHandler<dim_, space_dim_>::
-init_cache(ConstElementAccessor &elem,
+init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
   grid_handler_->init_cache(*(elem.grid_elem_), quad);
@@ -111,7 +111,7 @@ template<int dim_, int space_dim_>
 auto
 GridFunctionHandler<dim_, space_dim_>::
 fill_cache(const topology_variant &sdim,
-           ConstElementAccessor &elem,
+           ElementAccessor &elem,
            const int s_id) const-> void
 {
   grid_handler_->fill_cache(sdim, *(elem.grid_elem_), s_id);

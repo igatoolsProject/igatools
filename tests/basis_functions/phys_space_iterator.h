@@ -49,9 +49,9 @@ create_space(const shared_ptr<Grid<dim>> &grid,
              const int deg=1)
 {
   using BspSpace = BSpline<dim, range, rank>;
-  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
   auto ref_space = BspSpace::create(SplineSpace<dim,range,rank>::create(deg,grid));
-  return Space::create(ref_space, Domain<dim,codim>::create(grid_func), Transformation::h_grad);
+  return Basis::create(ref_space, Domain<dim,codim>::create(grid_func), Transformation::h_grad);
 }
 
 
@@ -81,19 +81,19 @@ create_space_prop(const shared_ptr<Grid<dim>> &grid,
   grid->set_boundary_id(neu_face, bc::neu);
 
   using BspSpace = BSpline<dim, range, rank>;
-  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
   auto ref_space = BspSpace::create(SplineSpace<dim,range,rank>::create(deg,grid));
-  auto space = Space::create(ref_space, Domain<dim,codim>::create(grid_func));
+  auto space = Basis::create(ref_space, Domain<dim,codim>::create(grid_func));
 
   std::set<boundary_id>  dir_ids = {bc::dir};
-  auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
+  auto dir_dofs = get_boundary_dofs<Basis>(space, dir_ids);
 
 
   auto int_dofs = space->get_interior_dofs();
 
 
   std::set<boundary_id>  neu_ids = {bc::neu};
-  auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
+  auto neu_dofs = get_boundary_dofs<Basis>(space, neu_ids);
   SafeSTLVector<Index> common(dim*range);
   auto end1 =
     std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
@@ -129,8 +129,8 @@ void elem_values(shared_ptr<PhysicalSpaceBasis<dim,range,rank,codim>> space,
       << n_qp << "," << prop <<  "," << no_boundary << ")" << std::endl;
 
 
-//    using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
-//    using ElementHandler = typename Space::ElementHandler;
+//    using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
+//    using ElementHandler = typename Basis::ElementHandler;
 
   auto quad = QGauss<k>::create(n_qp);
   using space_element::Flags;

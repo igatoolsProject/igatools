@@ -34,7 +34,7 @@
 template <int dim>
 void serialize_deserialize(const std::shared_ptr<BSpline<dim>> space_in)
 {
-  std::shared_ptr<ReferenceSpace<dim>> basis = space_in;
+  std::shared_ptr<ReferenceSpaceBasis<dim>> basis = space_in;
 //  auto basis = std::make_shared<SpaceBase<dim>>(space_in->get_grid());
 //  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> basis = space_in;
 //  std::shared_ptr<Space<dim,0,1,1,Transformation::h_grad>> basis = std::make_shared<TTT<dim>>();

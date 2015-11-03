@@ -70,9 +70,9 @@ private:
 
   // [members]
 private:
-  using RefSpace = ReferenceSpace<dim>;
-  using Space = BSpline<dim>;
-  shared_ptr<const Space> space;
+  using RefSpace = ReferenceSpaceBasis<dim>;
+  using Basis = BSpline<dim>;
+  shared_ptr<const Basis> space;
 
   const Quadrature<dim>   elem_quad;
   const Quadrature<dim-1> face_quad;
@@ -92,7 +92,7 @@ template<int dim>
 PoissonProblem<dim>::
 PoissonProblem(const int n_knots, const int deg)
   :
-  space(Space::create(deg, Grid<dim>::create(n_knots))),
+  space(Basis::create(deg, Grid<dim>::create(n_knots))),
   elem_quad(QGauss<dim>(deg+1)),
   face_quad(QGauss<dim-1>(deg+1)),
   matrix(create_matrix(*space,DofProperties::active, Epetra_SerialComm())),

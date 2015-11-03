@@ -48,7 +48,7 @@ void test_evaluate()
 
   const int deg = 2;
 
-  using RefSpace = ReferenceSpace<dim>;
+  using RefSpace = ReferenceSpaceBasis<dim>;
   using RefSpacePtr = std::shared_ptr<RefSpace>;
   RefSpacePtr ref_space = BSpline<dim>::create(SplineSpace<dim>::create(deg,grid));
   auto phys_space =

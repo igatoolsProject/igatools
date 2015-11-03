@@ -25,7 +25,7 @@
 #include <igatools/base/array_utils.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/utils/cartesian_product_array.h>
-#include <igatools/basis_functions/space.h>
+#include <igatools/basis_functions/basis.h>
 #include <igatools/geometry/grid.h>
 #include <igatools/basis_functions/space_element.h>
 #include <igatools/basis_functions/spline_space.h>
@@ -53,12 +53,12 @@ template <int,int,int> class DofDistribution;
  * @ingroup serializable
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class ReferenceSpace :
-  public Space<dim_,0,range_,rank_>
+class ReferenceSpaceBasis :
+  public Basis<dim_,0,range_,rank_>
 {
 public:
-  using base_t = Space<dim_,0,range_,rank_>;
-  using self_t = ReferenceSpace<dim_,range_,rank_>;
+  using base_t = Basis<dim_,0,range_,rank_>;
+  using self_t = ReferenceSpaceBasis<dim_,range_,rank_>;
 
   static const int dim       = dim_;
   static const int codim     = 0;
@@ -68,12 +68,12 @@ public:
   static const bool is_physical_space = false;
 
   /**
-   * See documentation in \ref Space
+   * See documentation in \ref Basis
    *
-   * @see Space
+   * @see Basis
    */
 
-  using RefSpace = ReferenceSpace<dim_,range_,rank_>;
+  using RefBasis = ReferenceSpaceBasis<dim_,range_,rank_>;
 
   using Func = Function<dim, 0, range, rank>;
 
@@ -123,11 +123,11 @@ protected:
    * Default constructor. It does nothing but it is needed for the serialization
    * mechanism.
    */
-  ReferenceSpace() = default;
+  ReferenceSpaceBasis() = default;
 
 
 public:
-  virtual ~ReferenceSpace() = default;
+  virtual ~ReferenceSpaceBasis() = default;
 
 
   template <int sdim>
@@ -137,7 +137,7 @@ public:
   using InterSpaceMap = SafeSTLVector<Index>;
 
   template <int k>
-  using SubRefSpace = ReferenceSpace<k, range, rank>;
+  using SubRefSpace = ReferenceSpaceBasis<k, range, rank>;
 
   template <int k>
   using SubSpace = PhysicalSpaceBasis<k,range,rank, dim-k>;
@@ -195,14 +195,14 @@ public:
 
 protected:
 
-  std::shared_ptr<const RefSpace> ref_space_previous_refinement_ = nullptr;
+  std::shared_ptr<const RefBasis> ref_basis_previous_refinement_ = nullptr;
 
 
 
 #ifdef MESH_REFINEMENT
 
 public:
-  std::shared_ptr<const self_t> get_space_previous_refinement() const;
+  std::shared_ptr<const self_t> get_basis_previous_refinement() const;
 
   void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
 
@@ -232,9 +232,9 @@ private:
     ar &make_nvp(base_name,base_class<base_t>(this));
 
 #ifdef MESH_REFINEMENT
-    auto tmp = std::const_pointer_cast<RefSpace>(ref_space_previous_refinement_);
-    ar &make_nvp("ref_space_previous_refinement_",tmp);
-    ref_space_previous_refinement_ = std::const_pointer_cast<const RefSpace>(tmp);
+    auto tmp = std::const_pointer_cast<RefBasis>(ref_basis_previous_refinement_);
+    ar &make_nvp("ref_basis_previous_refinement_",tmp);
+    ref_basis_previous_refinement_ = std::const_pointer_cast<const RefBasis>(tmp);
 #endif
   }
 

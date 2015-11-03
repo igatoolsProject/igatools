@@ -41,8 +41,8 @@ void ig_mapping(const int deg = 1)
 {
   OUTSTART
 
-  using Space = BSpline<dim, dim+codim>;
-  //  using RefSpace = ReferenceSpace<dim, dim+codim>;
+  using Basis = BSpline<dim, dim+codim>;
+  //  using RefSpace = ReferenceSpaceBasis<dim, dim+codim>;
   using Function = IgFunction<dim,0,dim+codim,1>;
   using Mapping   = Domain<dim, codim>;
 
@@ -52,7 +52,7 @@ void ig_mapping(const int deg = 1)
   auto quad = QGauss<dim>(2);
   auto grid = Grid<dim>::create(3);
 
-  auto space = Space::create(deg, grid);
+  auto space = Basis::create(deg, grid);
 
   auto c_p = EpetraTools::create_vector(*space, DofProperties::active,Epetra_SerialComm());
   auto &coeff = *c_p;

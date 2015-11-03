@@ -58,9 +58,9 @@ create_matrix(const Graph &graph);
 /**
  * Creates a pointer to the matrix, beginners use mostly for tutorials
  */
-template<class Space>
+template<class Basis>
 MatrixPtr
-create_matrix(const Space &space, const std::string &prop, const Epetra_SerialComm &comm)
+create_matrix(const Basis &space, const std::string &prop, const Epetra_SerialComm &comm)
 {
   return create_matrix(*create_graph(space, prop, space, prop, comm));
 }

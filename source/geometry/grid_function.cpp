@@ -63,9 +63,9 @@ template<int dim_, int space_dim_>
 auto
 GridFunction<dim_, space_dim_>::
 create_element(const ListIt &index, const PropId &prop) const
--> std::unique_ptr<ConstElementAccessor>
+-> std::unique_ptr<ElementAccessor>
 {
-  using Elem = ConstElementAccessor;
+  using Elem = ElementAccessor;
   auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
   Assert(elem != nullptr, ExcNullPtr());
 
@@ -75,6 +75,7 @@ create_element(const ListIt &index, const PropId &prop) const
 
 
 
+#if 0
 
 template<int dim_, int space_dim_>
 auto
@@ -90,7 +91,6 @@ create_element(const ListIt &index, const PropId &prop)
 }
 
 
-
 template<int dim_, int space_dim_>
 auto
 GridFunction<dim_, space_dim_>::
@@ -99,7 +99,6 @@ begin(const PropId &prop) -> ElementIterator
   return ElementIterator(this->shared_from_this(),
   grid_->get_elements_with_property(prop).begin(), prop);
 }
-
 
 
 template<int dim_, int space_dim_>
@@ -111,6 +110,7 @@ end(const PropId &prop) -> ElementIterator
   grid_->get_elements_with_property(prop).end(),
   prop);
 }
+#endif
 
 
 

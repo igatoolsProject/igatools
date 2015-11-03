@@ -37,7 +37,7 @@ template<int dim, int range = 1, int rank = 1>
 void get_bdry_dof(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
-  using RefSpace = ReferenceSpace<dim, range, rank>;
+  using RefSpace = ReferenceSpaceBasis<dim, range, rank>;
   using Basis = BSpline<dim, range, rank>;
   auto grid = Grid<dim>::create(n_knots);
   grid->set_boundary_id(0,1);

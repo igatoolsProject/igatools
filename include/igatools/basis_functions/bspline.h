@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 
-#include <igatools/basis_functions/reference_space.h>
+#include <igatools/basis_functions/reference_space_basis.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
 #include <igatools/geometry/domain.h>
@@ -93,16 +93,16 @@ template <int, int, int> class BSplineElementHandler;
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSpline :
-  public ReferenceSpace<dim_, range_, rank_>
+  public ReferenceSpaceBasis<dim_, range_, rank_>
 {
 private:
-  using BaseSpace = ReferenceSpace<dim_, range_, rank_>;
+  using BaseSpace = ReferenceSpaceBasis<dim_, range_, rank_>;
 
   /** Type for current class. */
   using self_t = BSpline<dim_,range_,rank_>;
 
 public:
-  /** see documentation in \ref Space */
+  /** see documentation in \ref Basis */
 
   using GridType = Grid<dim_>;
   using ElementHandler = BSplineElementHandler<dim_, range_, rank_>;
@@ -126,12 +126,12 @@ public:
   using typename BaseSpace::Div;
 
   /**
-   * See documentation in \ref Space
+   * See documentation in \ref Basis
    *
-   * @see Space
+   * @see Basis
    */
 
-  using RefSpace = typename BaseSpace::RefSpace;
+//  using RefBasis = typename BaseSpace::RefBasis;
 
   using RefPoint = Point;
 

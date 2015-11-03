@@ -78,9 +78,9 @@ move_to(const Index flat_index)
 template <int dim, int range, int rank>
 auto
 NURBSElement<dim, range, rank>::
-get_nurbs_space() const -> std::shared_ptr<const Space>
+get_nurbs_space() const -> std::shared_ptr<const Basis>
 {
-  const auto nrb_space = std::dynamic_pointer_cast<const Space>(this->space_);
+  const auto nrb_space = std::dynamic_pointer_cast<const Basis>(this->space_);
   Assert(nrb_space != nullptr,ExcNullPtr());
   return nrb_space;
 }

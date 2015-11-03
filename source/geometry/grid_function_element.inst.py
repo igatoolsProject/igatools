@@ -34,10 +34,8 @@ elements = []
 templated_functions = []
 
 
-els =['const iga::GridFunction', ' iga::GridFunction']
 for x in inst.sub_mapping_dims:
-  for el in els:
-    elem = 'GridFunctionElementBase<%d,%d,' %(x.dim,x.space_dim) + el + '<%d,%d>' %(x.dim,x.space_dim) + '>'
+    elem = 'GridFunctionElement<%d,%d>' %(x.dim,x.space_dim)
     elements.append(elem)
     for fun in sub_dim_members:
         k = x.dim
@@ -45,8 +43,7 @@ for x in inst.sub_mapping_dims:
         templated_functions.append(s)
 
 for x in inst.mapping_dims:
-  for el in els:
-    elem = 'GridFunctionElementBase<%d,%d,' %(x.dim,x.space_dim) + el + '<%d,%d>' %(x.dim,x.space_dim) + '>'
+    elem = 'GridFunctionElement<%d,%d>' %(x.dim,x.space_dim)
     elements.append(elem)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
@@ -54,26 +51,26 @@ for x in inst.mapping_dims:
             templated_functions.append(s)
 
     #the next classes are needed by NURBS
-    elem = 'GridFunctionElementBase<%d,1,' %(x.dim) + el + '<%d,1>' %(x.dim) + '>'
+    elem = 'GridFunctionElement<%d,1>' %(x.dim)
     elements.append(elem)
 
 
  
  
-accs1 =  ['GridFunctionElement','ConstGridFunctionElement']
-for x in inst.sub_mapping_dims + inst.mapping_dims: 
-  for acc in accs1: 
-      elem = acc + '<%d,%d>' %(x.dim,x.space_dim)
-      elements.append(elem)
-      
-      #the next classes are needed by NURBS
-      elem = acc + '<%d,1>' %(x.dim)
-      elements.append(elem)
+#accs1 =  ['ConstGridFunctionElement']
+#for x in inst.sub_mapping_dims + inst.mapping_dims: 
+#  for acc in accs1: 
+#      elem = acc + '<%d,%d>' %(x.dim,x.space_dim)
+#      elements.append(elem)
+#      
+#      #the next classes are needed by NURBS
+#      elem = acc + '<%d,1>' %(x.dim)
+#      elements.append(elem)
 
 
 
-accs=  ['GridFunctionElement','ConstGridFunctionElement','GridFunctionElement','ConstGridFunctionElement']
-iters =  ['GridIteratorBase', 'GridIteratorBase','GridIterator','GridIterator']
+accs=  ['GridFunctionElement','GridFunctionElement']
+iters =  ['GridIteratorBase','GridIterator']
 for x in inst.sub_mapping_dims+inst.mapping_dims:
   for i in range(len(accs)):
     acc = iters[i] + '<' + accs[i]+ '<%d,%d>' %(x.dim,x.space_dim) + '>' 

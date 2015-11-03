@@ -75,7 +75,7 @@ void do_test()
 
 
 
-  using Space = NURBS< dim, range, rank >;
+  using Basis = NURBS< dim, range, rank >;
   auto grid = Grid<dim>::const_create(coord);
 
   auto  bsp = BSpline<dim, range, rank >::const_create(
@@ -93,7 +93,7 @@ void do_test()
 
   const auto w_func = WeightFunc::const_create(scalar_space,weights);
 
-  auto nurbs_space = Space::const_create(bsp, w_func);
+  auto nurbs_space = Basis::const_create(bsp, w_func);
   nurbs_space->print_info(out);
 //*/
   OUTEND

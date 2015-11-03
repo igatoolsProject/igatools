@@ -20,7 +20,7 @@
 
 
 #include <igatools/basis_functions/reference_element.h>
-#include <igatools/basis_functions/reference_space.h>
+#include <igatools/basis_functions/reference_space_basis.h>
 #include <igatools/basis_functions/space_element.h>
 #include <igatools/basis_functions/reference_element_handler.h>
 
@@ -51,7 +51,7 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
 
   //----------------------------------------------------------------
   comp_offset_[0] = 0;
-  for (int comp = 1; comp <= Space::n_components; ++comp)
+  for (int comp = 1; comp <= Basis::n_components; ++comp)
     comp_offset_[comp] = comp_offset_[comp-1] +
                          this->n_basis_direction_.get_component_size(comp-1);
   //----------------------------------------------------------------
@@ -120,7 +120,7 @@ get_element_w_measures() const -> ValueVector<Real>
 template <int dim, int range, int rank>
 auto
 ReferenceElement<dim, range, rank>::
-get_ig_space() const -> std::shared_ptr<const Space>
+get_ig_space() const -> std::shared_ptr<const Basis>
 {
   return space_;
 }

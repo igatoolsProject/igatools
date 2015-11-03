@@ -29,7 +29,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_ , int rank_>
 NURBSElementHandler<dim_, range_, rank_>::
-NURBSElementHandler(shared_ptr<const Space> space)
+NURBSElementHandler(shared_ptr<const Basis> space)
   :
   base_t(space),
   bsp_elem_handler_(space->get_spline_space()->create_cache_handler()),
@@ -113,9 +113,9 @@ fill_cache_impl(const topology_variant &sdim,
 template<int dim_, int range_ , int rank_>
 auto
 NURBSElementHandler<dim_, range_, rank_>::
-get_nurbs_space() const -> std::shared_ptr<const Space>
+get_nurbs_space() const -> std::shared_ptr<const Basis>
 {
-  auto nrb_space = std::dynamic_pointer_cast<const Space>(this->get_space());
+  auto nrb_space = std::dynamic_pointer_cast<const Basis>(this->get_space());
   Assert(nrb_space != nullptr,ExcNullPtr());
   return nrb_space;
 }

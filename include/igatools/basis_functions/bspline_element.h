@@ -52,7 +52,7 @@ public:
   using ContainerType = const BSpline<dim, range, rank> ;
 
   /** Type required for the generic algorithm on the spaces (plots??) */
-  using Space = BSpline<dim, range, rank> ;
+  using Basis = BSpline<dim, range, rank> ;
 
 
   using GridType = Grid<dim>;
@@ -130,7 +130,7 @@ public:
   /**
    * Returns the BSpline upon which the element is defined.
    */
-  std::shared_ptr<const Space> get_bspline_space() const;
+  std::shared_ptr<const Basis> get_bspline_space() const;
 
 private:
 
@@ -140,7 +140,7 @@ private:
 
   template<class T>
   using ComponentContainer =
-    typename Space::template ComponentContainer<T>;
+    typename Basis::template ComponentContainer<T>;
 
 
   using Splines1D = BasisValues1d;

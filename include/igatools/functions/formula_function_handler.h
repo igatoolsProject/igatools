@@ -41,7 +41,7 @@ protected:
   ///using typename ElementHandler = FormulaFunctionHandler<dim, codim, range, rank>;
 public:
   using FuncType = const FormulaFunction<dim, codim, range, rank>;
-  using typename parent_t::ConstElementAccessor;
+  using typename parent_t::ElementAccessor;
   using typename parent_t::Flags;
   using typename parent_t::DomainHandlerType;
   using typename parent_t::topology_variant;
@@ -55,7 +55,7 @@ public:
                  const Flags &flag) override final;
 
   void fill_cache(const topology_variant &sdim,
-                  ConstElementAccessor &elem,
+                  ElementAccessor &elem,
                   const int s_id) const override final;
 
 private:
@@ -63,7 +63,7 @@ private:
   {
     FillCacheDispatcher(const FuncType &func,
                         const self_t &func_handler,
-                        ConstElementAccessor &elem,
+                        ElementAccessor &elem,
                         const int s_id)
       :
       func_(func),
@@ -77,9 +77,9 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &sub_elem)
     {
-      using _Value = typename ConstElementAccessor::_Value;
-      using _Gradient = typename ConstElementAccessor::_Gradient;
-      using _D2 = typename ConstElementAccessor::_D2;
+      using _Value = typename ElementAccessor::_Value;
+      using _Gradient = typename ElementAccessor::_Gradient;
+      using _D2 = typename ElementAccessor::_D2;
 
       auto &local_cache = func_handler_.get_element_cache(elem_);
       auto &cache = local_cache.template get_sub_elem_cache<sdim>(s_id_);
@@ -116,7 +116,7 @@ private:
 
     const FuncType &func_;
     const self_t     &func_handler_;
-    ConstElementAccessor &elem_;
+    ElementAccessor &elem_;
     const int s_id_;
 
   };

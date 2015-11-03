@@ -29,22 +29,21 @@ elements = []
 
 
 #iters =  ['GridIteratorBase', 'GridIterator']
-els =['const iga::Function', ' iga::Function']
+els =['const iga::Function']
 for row in inst.all_function_dims:
   for el in els:
-    elem = 'FunctionElementBase<%d,%d,%d,%d,' %(row.dim, row.codim, row.range, row.rank) + \
-    el + '<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank) + '>'
+    elem = 'FunctionElement<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank)
     elements.append(elem)
     f.write('template class %s ;\n' %(elem))
    
 
-accs1 =  ['FunctionElement',       'ConstFunctionElement']
-for row in inst.all_function_dims: 
-  for acc in accs1: 
-      f.write('template class ' + acc + '<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank) + ';\n')
+#accs1 =  ['FunctionElement',       'ConstFunctionElement']
+#for row in inst.all_function_dims: 
+#  for acc in accs1: 
+#      f.write('template class ' + acc + '<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank) + ';\n')
 
-accs=  ['FunctionElement',       'ConstFunctionElement', 'FunctionElement', 'ConstFunctionElement']
-iters =  ['GridIteratorBase', 'GridIteratorBase',   'GridIterator', 'GridIterator']
+accs=  ['FunctionElement', 'FunctionElement']
+iters =  ['GridIteratorBase', 'GridIterator']
 for row in inst.all_function_dims:
   for i in range(len(accs)):
     acc = iters[i] + '<' + accs[i] + '<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank) + '>' 

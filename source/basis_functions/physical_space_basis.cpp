@@ -44,8 +44,8 @@ PhysicalSpaceBasis<dim_, range_, rank_, codim_>::components =
 template <int dim_, int range_, int rank_, int codim_>
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefSpace> &ref_space,
-              const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
-              const Transformation &transformation_type)
+                   const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
+                   const Transformation &transformation_type)
   :
   ref_space_(ref_space),
   phys_domain_(phys_domain),
@@ -311,7 +311,7 @@ void
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 refine_h(const Size n_subdivisions)
 {
-  //the refinement of the ReferenceSpace also refines the Domain (they share the same Grid)
+  //the refinement of the ReferenceSpaceBasis also refines the Domain (they share the same Grid)
   ref_space_.get_ptr_data()->refine_h(n_subdivisions);
 }
 
@@ -323,14 +323,14 @@ rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
 {
-  auto prev_ref_space = ref_space_->get_space_previous_refinement();
-  Assert(prev_ref_space != nullptr, ExcNullPtr());
+  auto prev_ref_basis = ref_space_->get_basis_previous_refinement();
+  Assert(prev_ref_basis != nullptr, ExcNullPtr());
 
   auto prev_phys_domain = phys_domain_->get_domain_previous_refinement();
   Assert(prev_phys_domain != nullptr, ExcNullPtr());
 
-  this->phys_space_previous_refinement_ =
-    self_t::const_create(prev_ref_space,prev_phys_domain);
+  this->phys_basis_previous_refinement_ =
+    self_t::const_create(prev_ref_basis,prev_phys_domain);
 }
 
 template <int dim_, int range_, int rank_, int codim_>
@@ -349,6 +349,14 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
   std::const_pointer_cast<Grid<dim>>(ref_space_->get_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
+}
+
+template <int dim_, int range_, int rank_, int codim_>
+auto
+PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+get_basis_previous_refinement() const -> std::shared_ptr<const base_t>
+{
+  return phys_basis_previous_refinement_;
 }
 
 #endif

@@ -28,9 +28,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, class> class GridFunctionElementBase;
 template <int, int> class GridFunctionElement;
-template <int, int> class ConstGridFunctionElement;
 
 /**
  *
@@ -54,8 +52,8 @@ public:
 
   using ElementAccessor = GridFunctionElement<dim_, space_dim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ConstElementAccessor = ConstGridFunctionElement<dim_, space_dim_>;
-  using ElementConstIterator = GridIterator<ConstElementAccessor>;
+//  using ConstElementAccessor = GridFunctionElement<dim_, space_dim_>;
+  using ElementConstIterator = GridIterator<ElementAccessor>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
@@ -108,7 +106,7 @@ public:
     this->set_flags(Topology<sdim>(), flag);
   }
 
-  virtual void init_cache(ConstElementAccessor &elem,
+  virtual void init_cache(ElementAccessor &elem,
                           const eval_pts_variant &quad) const;
 
   void init_cache(ElementConstIterator &elem,
@@ -118,7 +116,7 @@ public:
   }
 
   virtual void fill_cache(const topology_variant &sdim,
-                          ConstElementAccessor &elem,
+                          ElementAccessor &elem,
                           const int s_id) const;
 
   void fill_cache(const topology_variant &sdim,
@@ -136,7 +134,7 @@ public:
   }
 
   template <int sdim>
-  void fill_cache(ConstElementAccessor &elem,
+  void fill_cache(ElementAccessor &elem,
                   const int s_id)
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
@@ -151,8 +149,8 @@ public:
   get_grid_handler();
 
 protected:
-  typename ConstElementAccessor::CacheType &
-  get_element_cache(ConstElementAccessor &elem) const
+  typename ElementAccessor::CacheType &
+  get_element_cache(ElementAccessor &elem) const
   {
     return  elem.local_cache_;
   }
@@ -186,7 +184,7 @@ private:
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
     InitCacheDispatcher(const self_t &grid_function_handler,
-                        ConstElementAccessor &elem,
+                        ElementAccessor &elem,
                         const FlagsArray &flags)
       :
       grid_function_handler_(grid_function_handler),
@@ -210,7 +208,7 @@ private:
     }
 
     const self_t &grid_function_handler_;
-    ConstElementAccessor &elem_;
+    ElementAccessor &elem_;
     const FlagsArray &flags_;
   };
 

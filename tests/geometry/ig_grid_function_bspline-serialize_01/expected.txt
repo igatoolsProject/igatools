@@ -3,7 +3,7 @@ ig_grid_function_bspline
 ========================================================================
 Original IgGridFunction:
    IgGridFunction<1,1>
-      ReferenceSpace<1,1,1>:
+      ReferenceSpaceBasis<1,1,1>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 1 ]
@@ -110,7 +110,7 @@ Original IgGridFunction:
 
 IgGridFunction after serialize-deserialize:
    IgGridFunction<1,1>
-      ReferenceSpace<1,1,1>:
+      ReferenceSpaceBasis<1,1,1>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 1 ]
@@ -238,7 +238,7 @@ ig_grid_function_bspline
 ========================================================================
 Original IgGridFunction:
    IgGridFunction<2,2>
-      ReferenceSpace<2,1,2>:
+      ReferenceSpaceBasis<2,1,2>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 1 1 ]
@@ -377,7 +377,7 @@ Original IgGridFunction:
 
 IgGridFunction after serialize-deserialize:
    IgGridFunction<2,2>
-      ReferenceSpace<2,1,2>:
+      ReferenceSpaceBasis<2,1,2>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 1 1 ]
@@ -537,7 +537,7 @@ ig_grid_function_bspline
 ========================================================================
 Original IgGridFunction:
    IgGridFunction<3,3>
-      ReferenceSpace<3,1,3>:
+      ReferenceSpaceBasis<3,1,3>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 1 1 1 ]
@@ -726,7 +726,7 @@ Original IgGridFunction:
 
 IgGridFunction after serialize-deserialize:
    IgGridFunction<3,3>
-      ReferenceSpace<3,1,3>:
+      ReferenceSpaceBasis<3,1,3>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 1 1 1 ]

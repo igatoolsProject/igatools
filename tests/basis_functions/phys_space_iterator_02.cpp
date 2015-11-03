@@ -42,8 +42,8 @@
 
 
 
-template <class Space>
-void serialize_deserialize(std::shared_ptr<Space> space)
+template <class Basis>
+void serialize_deserialize(std::shared_ptr<Basis> space)
 {
   OUTSTART
 
@@ -53,10 +53,10 @@ void serialize_deserialize(std::shared_ptr<Space> space)
 
 
   std::string template_args =
-    "_dim" + std::to_string(Space::dim) +
-    "_range" + std::to_string(Space::range) +
-    "_rank" + std::to_string(Space::rank) +
-    "_codim" + std::to_string(Space::codim);
+    "_dim" + std::to_string(Basis::dim) +
+    "_range" + std::to_string(Basis::range) +
+    "_rank" + std::to_string(Basis::rank) +
+    "_codim" + std::to_string(Basis::codim);
   std::string filename = "phys_space" + template_args + ".xml";
   std::string tag_name = "PhysicalSpaceBasis" + template_args;
   {
@@ -163,9 +163,9 @@ template<int dim,int range=dim,int rank=1,int codim=0>
 auto
 create_phys_space(shared_ptr<const BSpline<dim,range,rank>> ref_space)
 {
-  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
 
-  return Space::const_create(
+  return Basis::const_create(
            ref_space,
            Domain<dim,codim>::const_create(create_function(ref_space)),
            Transformation::h_grad);

@@ -64,9 +64,9 @@ template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
 create_element(const ListIt &index, const PropId &prop) const
--> std::unique_ptr<ConstElementAccessor>
+-> std::unique_ptr<ElementAccessor>
 {
-  using Elem = ConstElementAccessor;
+  using Elem = ElementAccessor;
   auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
   Assert(elem != nullptr,ExcNullPtr());
 
@@ -74,7 +74,7 @@ create_element(const ListIt &index, const PropId &prop) const
 }
 
 
-
+#if 0
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
@@ -87,9 +87,9 @@ create_element(const ListIt &index, const PropId &prop)
 
   return elem;
 }
+#endif
 
-
-
+#if 0
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
@@ -111,7 +111,7 @@ end(const PropId &prop) -> ElementIterator
   domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).end(),
   prop);
 }
-
+#endif
 
 
 template<int dim_, int codim_, int range_, int rank_>

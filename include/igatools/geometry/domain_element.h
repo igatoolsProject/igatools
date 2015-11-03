@@ -31,21 +31,21 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup elements
  */
-template<int dim_, int codim_, class ContainerType_>
-class DomainElementBase
+template<int dim_, int codim_>
+class DomainElement
 {
 private:
-  using self_t  = DomainElementBase<dim_, codim_, ContainerType_>;
+  using self_t  = DomainElement<dim_, codim_>;
 
 public:
-  using ContainerType = ContainerType_;
-  using GridFuncElem = typename ContainerType_::GridFuncType::ConstElementAccessor;
-  using ListIt = typename ContainerType_::ListIt;
+  using ContainerType = const Domain<dim_,codim_>;
+  using GridFuncElem = typename ContainerType::GridFuncType::ElementAccessor;
+  using ListIt = typename ContainerType::ListIt;
 
   using IndexType = typename Grid<dim_>::IndexType;
 
-  using Point =  typename ContainerType_::Point;
-  using Gradient =  typename ContainerType_::Gradient;
+  using Point =  typename ContainerType::Point;
+  using Gradient =  typename ContainerType::Gradient;
 
   using Flags = domain_element::Flags;
   using CacheFlags = domain_element::CacheFlags;
@@ -59,31 +59,31 @@ protected:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  DomainElementBase() = default;
+  DomainElement() = default;
 
 public:
   /**
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the Function @p func.
    */
-  DomainElementBase(const std::shared_ptr<ContainerType_> domain,
-                    const ListIt &index,
-                    const PropId &prop = ElementProperties::active);
+  DomainElement(const std::shared_ptr<ContainerType> &domain,
+                const ListIt &index,
+                const PropId &prop = ElementProperties::active);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  DomainElementBase(const self_t &elem) = delete;
+  DomainElement(const self_t &elem) = delete;
 
   /**
    * Move constructor.
    */
-  DomainElementBase(self_t &&elem) = default;
+  DomainElement(self_t &&elem) = default;
 
   /**
    * Destructor.
    */
-  ~DomainElementBase() = default;
+  ~DomainElement() = default;
   ///@}
 
 
@@ -271,7 +271,7 @@ public:
   using CacheType = AllSubElementsCache<Cache>;
 
 private:
-  std::shared_ptr<ContainerType_> domain_;
+  std::shared_ptr<ContainerType> domain_;
 
   std::unique_ptr<GridFuncElem> grid_func_elem_;
 
@@ -282,26 +282,6 @@ private:
 };
 
 
-
-template <int dim, int codim>
-class ConstDomainElement
-  : public DomainElementBase<dim, codim,
-    const Domain<dim,codim>>
-{
-  using DomainElementBase<dim, codim,
-        const Domain<dim,codim>>::DomainElementBase;
-};
-
-
-
-template <int dim, int codim>
-class DomainElement
-  : public DomainElementBase<dim, codim,
-    Domain<dim,codim>>
-{
-  using DomainElementBase<dim, codim,
-        Domain<dim,codim>>::DomainElementBase;
-};
 
 IGA_NAMESPACE_CLOSE
 

@@ -23,11 +23,11 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim_, int codim_, class ContainerType_>
-DomainElementBase<dim_, codim_, ContainerType_>::
-DomainElementBase(std::shared_ptr<ContainerType_> domain,
-                  const ListIt &index,
-                  const PropId &prop)
+template<int dim_,int codim_>
+DomainElement<dim_,codim_>::
+DomainElement(const std::shared_ptr<ContainerType> &domain,
+              const ListIt &index,
+              const PropId &prop)
   :
   domain_(domain),
   grid_func_elem_(domain_->get_grid_function()->create_element(index,prop))
@@ -35,9 +35,9 @@ DomainElementBase(std::shared_ptr<ContainerType_> domain,
 
 
 
-template<int dim_, int codim_, class ContainerType_>
+template<int dim_,int codim_>
 bool
-DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElement<dim_,codim_>::
 operator ==(const self_t &elem) const
 {
   Assert(domain_ == elem.domain_,
@@ -47,9 +47,9 @@ operator ==(const self_t &elem) const
 
 
 
-template<int dim_, int codim_, class ContainerType_>
+template<int dim_,int codim_>
 bool
-DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElement<dim_,codim_>::
 operator !=(const self_t &elem) const
 {
   Assert(domain_ == elem.domain_,
@@ -59,9 +59,9 @@ operator !=(const self_t &elem) const
 
 
 
-template<int dim_, int codim_, class ContainerType_>
+template<int dim_,int codim_>
 bool
-DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElement<dim_,codim_>::
 operator <(const self_t &elem) const
 {
   Assert(domain_ == elem.domain_,
@@ -71,9 +71,9 @@ operator <(const self_t &elem) const
 
 
 
-template<int dim_, int codim_, class ContainerType_>
+template<int dim_,int codim_>
 bool
-DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElement<dim_,codim_>::
 operator >(const self_t &elem) const
 {
   Assert(domain_ == elem.domain_,
@@ -83,10 +83,10 @@ operator >(const self_t &elem) const
 
 
 
-template<int dim_, int codim_, class ContainerType_>
+template<int dim_,int codim_>
 template<int sdim>
 auto
-DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElement<dim_,codim_>::
 get_w_measures(const int s_id) const -> ValueVector<Real>
 {
   const auto &meas = get_values_from_cache<_Measure, sdim>(s_id);
@@ -103,9 +103,9 @@ get_w_measures(const int s_id) const -> ValueVector<Real>
 
 
 
-template<int dim_, int codim_, class ContainerType_>
+template<int dim_,int codim_>
 auto
-DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElement<dim_,codim_>::
 get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
 {
   const int sdim = dim_;
@@ -133,9 +133,9 @@ get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
 
 
 #if 0
-template<int dim_, int codim_, class ContainerType_>
+template<int dim_,int codim_>
 auto
-DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElement<dim_,codim_>::
 compute_inv_first_fundamental_form() const -> ValueVector<MetricTensor>
 {
   ValueVector<MetricTensor> res;
@@ -157,9 +157,9 @@ compute_inv_first_fundamental_form() const -> ValueVector<MetricTensor>
 
 
 
-template<int dim_, int codim_, class ContainerType_>
+template<int dim_,int codim_>
 auto
-DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElement<dim_,codim_>::
 compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 {
   Assert(codim==1, ExcNotImplemented());
@@ -193,9 +193,9 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 }
 
 
-template<int dim_, int codim_, class ContainerType_>
+template<int dim_,int codim_>
 auto
-DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElement<dim_,codim_>::
 get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
 {
 #if 0
@@ -226,9 +226,9 @@ get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
 
 
 
-template<int dim_, int codim_, class ContainerType_>
+template<int dim_,int codim_>
 auto
-DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElement<dim_,codim_>::
 get_D_external_normals() const -> ValueVector< Derivative<1> >
 {
   Assert(codim==1, ExcNotImplemented());
@@ -250,9 +250,9 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
 #endif
 
 
-//template<int dim_, int codim_, class ContainerType_>
+//template<int dim_,int codim_>
 //auto
-//DomainElementBase<dim_, codim_, ContainerType_>::
+//DomainElement<dim_,codim_>::
 //clone() const -> std::shared_ptr<self_t>
 //{
 //    auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);

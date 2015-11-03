@@ -51,11 +51,11 @@ void non_contig_indices()
   out.end_item();
 
   const int dim = 1;
-  using Space = BSpline<dim>;
+  using Basis = BSpline<dim>;
   using Function = IgFunction<dim,0,1,1>;
   auto grid = Grid<dim>::create(5);
   const int deg = 1;
-  auto space = Space::create(SplineSpace<dim>::create(deg, grid));
+  auto space = Basis::create(SplineSpace<dim>::create(deg, grid));
   auto dof_distribution = space->get_ptr_dof_distribution();
   dof_distribution->set_all_dofs_property_status(DofProperties::active,false);
   dof_distribution->set_dof_property_status(DofProperties::active,dofs,true);

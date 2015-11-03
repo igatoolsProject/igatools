@@ -43,11 +43,11 @@ void project_l2(const int p, const int num_knots = 10)
 {
   OUTSTART
 
-  using Space =  BSpline<dim,range,rank>;
-  using RefSpace =  ReferenceSpace<dim,range,rank>;
+  using Basis =  BSpline<dim,range,rank>;
+  using RefSpace =  ReferenceSpaceBasis<dim,range,rank>;
 
   auto knots = Grid<dim>::const_create(num_knots);
-  auto space = Space::const_create(p, knots) ;
+  auto space = Basis::const_create(p, knots) ;
 
   const int n_qpoints = 4;
   auto quad = QGauss<dim>::create(n_qpoints);

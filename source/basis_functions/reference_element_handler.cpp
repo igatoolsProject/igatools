@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int range , int rank>
 ReferenceElementHandler<dim, range, rank>::
-ReferenceElementHandler(const shared_ptr<const Space> &space)
+ReferenceElementHandler(const shared_ptr<const Basis> &space)
   :
   base_t(space),
   grid_handler_(space->get_grid())
@@ -44,7 +44,7 @@ ReferenceElementHandler(const shared_ptr<const Space> &space)
 template<int dim, int range , int rank>
 shared_ptr<ReferenceElementHandler<dim,range,rank> >
 ReferenceElementHandler<dim, range, rank>::
-create(const shared_ptr<const Space> &space)
+create(const shared_ptr<const Basis> &space)
 {
   std::shared_ptr<ReferenceElementHandler<dim,range,rank> > elem_handler = nullptr;
   if (space->is_bspline())

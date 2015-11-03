@@ -93,11 +93,11 @@ void do_test(const int p, TensorSize<dim> n_knots)
 {
   const int sub_dim = dim - 1;
   out << "Dimension: " << dim << endl;
-  using Space = BSpline<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
 
 
   auto grid = Grid<dim>::create(n_knots);
-  auto space = Space::create(SplineSpace<dim,range,rank>::const(p, grid)) ;
+  auto space = Basis::create(SplineSpace<dim,range,rank>::const(p, grid)) ;
   auto f = XProject<dim>::const_create(grid);
 
   const int n_qpoints = 4;
@@ -109,7 +109,7 @@ void do_test(const int p, TensorSize<dim> n_knots)
   bdry_ids.insert(dirichlet);
 
   std::map<Index,Real> boundary_values;
-  space_tools::project_boundary_values<Space>(
+  space_tools::project_boundary_values<Basis>(
     f, space, quad, bdry_ids,
     boundary_values);
 

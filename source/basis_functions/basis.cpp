@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/space.h>
+#include <igatools/basis_functions/basis.h>
 #include <igatools/utils/unique_id_generator.h>
 #include <igatools/basis_functions/space_element.h>
 #include <igatools/functions/ig_function.h>
@@ -40,8 +40,8 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim_,int codim_,int range_,int rank_>
-Space<dim_,codim_,range_,rank_>::
-Space()
+Basis<dim_,codim_,range_,rank_>::
+Basis()
   :
   object_id_(UniqueIdGenerator::get_unique_id())
 {}
@@ -50,7 +50,7 @@ Space()
 
 template <int dim_,int codim_,int range_,int rank_>
 Index
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 get_object_id() const
 {
   return object_id_;
@@ -59,7 +59,7 @@ get_object_id() const
 
 template <int dim_,int codim_,int range_,int rank_>
 const std::string &
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 get_name() const
 {
   return name_;
@@ -67,7 +67,7 @@ get_name() const
 
 template <int dim_,int codim_,int range_,int rank_>
 void
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 set_name(const std::string &name)
 {
   name_ = name;
@@ -75,7 +75,7 @@ set_name(const std::string &name)
 
 template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 begin(const PropId &prop) const -> ElementIterator
 {
   return this->cbegin(prop);
@@ -85,7 +85,7 @@ begin(const PropId &prop) const -> ElementIterator
 
 template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 end(const PropId &prop) const -> ElementIterator
 {
   return this->cend(prop);
@@ -93,7 +93,7 @@ end(const PropId &prop) const -> ElementIterator
 
 template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
@@ -105,7 +105,7 @@ cbegin(const PropId &prop) const -> ElementIterator
 
 template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 cend(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
@@ -116,7 +116,7 @@ cend(const PropId &prop) const -> ElementIterator
 
 template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 get_num_basis() const -> Size
 {
   return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
@@ -127,8 +127,8 @@ get_num_basis() const -> Size
 
 template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_>::
-get_global_dof_id(const TensorIndex<dim> &tensor_index,
+Basis<dim_,codim_,range_,rank_>::
+get_global_dof_id(const TensorIndex<dim_> &tensor_index,
                   const Index comp) const -> Index
 {
   return this->get_ptr_const_dof_distribution()->get_index_table()[comp](tensor_index);
@@ -136,7 +136,7 @@ get_global_dof_id(const TensorIndex<dim> &tensor_index,
 
 template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 get_interior_dofs() const -> std::set<Index>
 {
   return this->get_ptr_const_dof_distribution()->get_interior_dofs();
@@ -144,7 +144,7 @@ get_interior_dofs() const -> std::set<Index>
 
 template <int dim_,int codim_,int range_,int rank_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std::set<Index>
 {
   return this->get_ptr_const_dof_distribution()->get_boundary_dofs(s_id,topology);
@@ -158,7 +158,7 @@ get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std
 template <int dim_,int codim_,int range_,int rank_>
 template<class Archive>
 void
-Space<dim_,codim_,range_,rank_>::
+Basis<dim_,codim_,range_,rank_>::
 serialize(Archive &ar)
 {
   ar &make_nvp("object_id_",object_id_);
@@ -170,4 +170,4 @@ serialize(Archive &ar)
 IGA_NAMESPACE_CLOSE
 
 
-#include <igatools/basis_functions/space.inst>
+#include <igatools/basis_functions/basis.inst>

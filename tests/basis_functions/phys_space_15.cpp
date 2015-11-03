@@ -67,16 +67,16 @@ void elem_values(const int n_knots = 5, const int deg=1)
   OUTSTART
   const int k = dim;
   using BspSpace = BSpline<dim, range, rank>;
-  using RefSpace = ReferenceSpace<dim, range,rank>;
-  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
-//    using ElementHandler = typename Space::ElementHandler;
+  using RefSpace = ReferenceSpaceBasis<dim, range,rank>;
+  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
+//    using ElementHandler = typename Basis::ElementHandler;
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
   auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
   auto map_func = create_function(grid);
 
-  auto space = Space::const_create(
+  auto space = Basis::const_create(
                  ref_space,
                  Domain<dim,codim>::const_create(map_func), Transformation::h_grad);
 

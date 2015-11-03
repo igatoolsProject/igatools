@@ -77,8 +77,8 @@ void nurb_geometry()
   const int deg = 2;
   const int n_knots = 3;
   auto grid = Grid<dim>::create(n_knots);
-  using Space = BSpline<dim,dim>;
-  auto space = Space::create(deg, grid);
+  using Basis = BSpline<dim,dim>;
+  auto space = Basis::create(deg, grid);
 
   auto control_pts = create_vector(*space,DofProperties::active,Epetra_SerialComm());
 

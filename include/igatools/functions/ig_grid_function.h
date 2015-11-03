@@ -24,7 +24,7 @@
 
 #include <igatools/geometry/grid_function.h>
 #include <igatools/functions/ig_coefficients.h>
-#include <igatools/basis_functions/reference_space.h>
+#include <igatools/basis_functions/reference_space_basis.h>
 #include <igatools/linear_algebra/epetra_vector.h>
 
 IGA_NAMESPACE_OPEN
@@ -32,7 +32,7 @@ IGA_NAMESPACE_OPEN
 template <int, int> class FormulaGridFunctionHandler;
 
 /**
- * @brief GridFunction built as linear combination of basis functions from ReferenceSpace
+ * @brief GridFunction built as linear combination of basis functions from ReferenceSpaceBasis
  *
  * @ingroup serializable
  */
@@ -49,7 +49,7 @@ protected:
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
-  using IgSpace = ReferenceSpace<dim,space_dim,1>;
+  using IgSpace = ReferenceSpaceBasis<dim,space_dim,1>;
 
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;

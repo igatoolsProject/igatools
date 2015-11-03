@@ -34,9 +34,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, int, int, class> class FunctionElementBase;
 template <int, int, int, int> class FunctionElement;
-template <int, int, int, int> class ConstFunctionElement;
 template <int, int, int, int> class FunctionHandler;
 
 /**
@@ -62,8 +60,7 @@ public:
 
   using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ConstElementAccessor = ConstFunctionElement<dim_, codim_, range_, rank_>;
-  using ElementConstIterator = GridIterator<ConstElementAccessor>;
+  using ElementConstIterator = GridIterator<ElementAccessor>;
 
   using ElementHandler = FunctionHandler<dim_, codim_, range_, rank_>;
 
@@ -155,15 +152,18 @@ public:
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
 
-  std::unique_ptr<ConstElementAccessor>
+  std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
+#if 0
   std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop);
+#endif
 
 public:
   ///@name Iterating of grid elements
   ///@{
+#if 0
   /**
    * This function returns a element iterator to the first element of the patch.
    */
@@ -173,6 +173,7 @@ public:
    * This function returns a element iterator to one-pass the end of patch.
    */
   ElementIterator end(const PropId &property = ElementProperties::active);
+#endif
 
   /**
    * This function returns a element (const) iterator to the first element of the patch.
@@ -231,10 +232,7 @@ private:
   Index object_id_;
 
 
-  friend class FunctionElementBase<dim_, codim_, range_, rank_, Function<dim_, codim_, range_, rank_>>;
-  friend class FunctionElementBase<dim_, codim_, range_, rank_, const Function<dim_, codim_, range_, rank_>>;
   friend class FunctionElement<dim_, codim_, range_, rank_>;
-  friend class ConstFunctionElement<dim_, codim_, range_, rank_>;
 
 
 

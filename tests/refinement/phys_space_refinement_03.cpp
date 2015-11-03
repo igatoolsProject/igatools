@@ -37,16 +37,16 @@
 
 /*
 template <int dim>
-using ReferenceSpace = NURBS<dim,dim>;
+using ReferenceSpaceBasis = NURBS<dim,dim>;
 
 template <int dim>
 using PushFwd = PushForward<Transformation::h_grad,dim,0> ;
 
 template <int dim>
-using PhysSpace = PhysicalSpaceBasis< ReferenceSpace<dim>, PushFwd<dim> > ;
+using PhysSpace = PhysicalSpaceBasis< ReferenceSpaceBasis<dim>, PushFwd<dim> > ;
 
 template <class T, int dim>
-using ComponentTable = StaticMultiArray<T, ReferenceSpace<dim>::range, ReferenceSpace<dim>::rank >;
+using ComponentTable = StaticMultiArray<T, ReferenceSpaceBasis<dim>::range, ReferenceSpaceBasis<dim>::rank >;
 //*/
 
 template <int dim>

@@ -44,14 +44,14 @@ void cache_init(const space_element::Flags flag,
   OUTSTART
 
   using BspSpace = BSpline<dim, range, rank>;
-  using Space    = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim>;
   auto grid      = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
   typename Function::Gradient A;
-  for (int i=0; i<Space::space_dim; i++)
+  for (int i=0; i<Basis::space_dim; i++)
   {
     for (int j=0; j<dim; j++)
       if (j == i)
@@ -61,7 +61,7 @@ void cache_init(const space_element::Flags flag,
 
 //  auto quad = QGauss<dim>::create(2);
   auto map_func = Function::const_create(grid,A, b);
-  auto space = Space::const_create(
+  auto space = Basis::const_create(
                  ref_space,
                  Domain<dim,codim>::const_create(map_func),Transformation::h_grad);
 
@@ -83,7 +83,7 @@ void cache_init_elem(const space_element::Flags flag,
   OUTSTART
 
   using BspSpace = BSpline<dim, range, rank>;
-  using Space    = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
@@ -91,7 +91,7 @@ void cache_init_elem(const space_element::Flags flag,
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
   typename Function::Gradient A;
-  for (int i=0; i<Space::space_dim; i++)
+  for (int i=0; i<Basis::space_dim; i++)
   {
     for (int j=0; j<dim; j++)
       if (j == i)
@@ -101,7 +101,7 @@ void cache_init_elem(const space_element::Flags flag,
 
   auto quad = QGauss<dim>::create(2);
   auto map_func = Function::const_create(grid, A, b);
-  auto space = Space::const_create(
+  auto space = Basis::const_create(
                  ref_space,
                  Domain<dim,codim>::const_create(map_func), Transformation::h_grad);
 
@@ -124,7 +124,7 @@ void cache_fill_elem(const space_element::Flags flag,
 
 //   const int k = dim;
   using BspSpace = BSpline<dim, range, rank>;
-  using Space    = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
@@ -132,7 +132,7 @@ void cache_fill_elem(const space_element::Flags flag,
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
   typename Function::Gradient A;
-  for (int i=0; i<Space::space_dim; i++)
+  for (int i=0; i<Basis::space_dim; i++)
   {
     for (int j=0; j<dim; j++)
       if (j == i)
@@ -142,7 +142,7 @@ void cache_fill_elem(const space_element::Flags flag,
 
   auto quad = QGauss<dim>::create(2);
   auto map_func = Function::const_create(grid,A, b);
-  auto space = Space::const_create(
+  auto space = Basis::const_create(
                  ref_space,
                  Domain<dim,codim>::const_create(map_func), Transformation::h_grad);
 
@@ -170,7 +170,7 @@ void cache_get_elem_values(const space_element::Flags flag,
   OUTSTART
   const int k = dim;
   using BspSpace = BSpline<dim, range, rank>;
-  using Space    = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
@@ -178,7 +178,7 @@ void cache_get_elem_values(const space_element::Flags flag,
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
   typename Function::Gradient A;
-  for (int i=0; i<Space::space_dim; i++)
+  for (int i=0; i<Basis::space_dim; i++)
   {
     for (int j=0; j<dim; j++)
       if (j == i)
@@ -188,7 +188,7 @@ void cache_get_elem_values(const space_element::Flags flag,
 
   auto quad = QGauss<dim>::create(2);
   auto map_func = Function::const_create(grid,  A, b);
-  auto space = Space::const_create(
+  auto space = Basis::const_create(
                  ref_space,
                  Domain<dim,codim>::const_create(map_func), Transformation::h_grad);
 

@@ -36,7 +36,7 @@
 template<int dim, int range>
 void test()
 {
-  using Space = BSpline<dim>;
+  using Basis = BSpline<dim>;
   using Function = IgFunction<dim,0,1,1>;
 
   auto flag = ValueFlags::value | ValueFlags::gradient |
@@ -44,7 +44,7 @@ void test()
   auto quad = QGauss<dim>(2);
   auto grid = Grid<dim>::create(3);
   const int deg = 1;
-  auto space = Space::create(deg, grid);
+  auto space = Basis::create(deg, grid);
 
   Epetra_SerialComm comm;
   auto map = EpetraTools::create_map(*space, "active", comm);

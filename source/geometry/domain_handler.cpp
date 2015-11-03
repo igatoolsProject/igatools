@@ -72,7 +72,7 @@ set_flags(const topology_variant &sdim,
 template<int dim_, int codim_>
 void
 DomainHandler<dim_, codim_>::
-init_cache(ConstElementAccessor &elem,
+init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
   grid_func_handler_->init_cache(*(elem.grid_func_elem_), quad);
@@ -87,7 +87,7 @@ template<int dim_, int codim_>
 auto
 DomainHandler<dim_, codim_>::
 fill_cache(const topology_variant &sdim,
-           ConstElementAccessor &elem,
+           ElementAccessor &elem,
            const int s_id) const -> void
 {
   grid_func_handler_->fill_cache(sdim, *(elem.grid_func_elem_), s_id);

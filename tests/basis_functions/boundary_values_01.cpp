@@ -48,13 +48,13 @@ void do_test(const int p, const int num_knots = 10)
   const int sub_dim = dim - 1;
 
   using BspSpace = BSpline<dim,range,rank>;
-  using Space = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
 
 
   auto grid = Grid<dim>::const_create(num_knots);
   auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(p, grid)) ;
   auto map = IdentityFunction<dim>::const_create(grid);
-  auto space = Space::const_create(ref_space, map);
+  auto space = Basis::const_create(ref_space, map);
 
   auto f = BoundaryFunction<dim>::const_create(grid);
 
@@ -70,7 +70,7 @@ void do_test(const int p, const int num_knots = 10)
 
 
   std::map<Index,Real> boundary_values;
-  space_tools::project_boundary_values<Space>(
+  space_tools::project_boundary_values<Basis>(
     f, space, quad, bdry_ids,
     boundary_values);
 

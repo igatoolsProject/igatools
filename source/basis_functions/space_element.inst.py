@@ -39,7 +39,7 @@ templated_funcs = ['ValueVector<Real> SpaceElement<0,0,0,1>::get_w_measures<0>(c
 
 
 #--------------------------------------------------------------------------------------
-# SpaceElement used by ReferenceSpaceElement 
+# SpaceElement used by ReferenceSpaceBasisElement 
 for x in inst.sub_ref_sp_dims:
     elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
     elements.append(elem)

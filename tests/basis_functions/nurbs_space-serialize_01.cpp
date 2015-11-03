@@ -30,7 +30,7 @@
 template < int dim, int range, int rank>
 void serialize_deserialize(std::shared_ptr<NURBS<dim,range,rank>> space_in)
 {
-  std::shared_ptr<ReferenceSpace<dim,range,rank>> space = space_in;
+  std::shared_ptr<ReferenceSpaceBasis<dim,range,rank>> space = space_in;
   out.begin_item("Original NURBS:");
   space->print_info(out);
   out.end_item();
@@ -109,7 +109,7 @@ void do_test()
 
 
 
-  using Space = NURBS< dim, range, rank >;
+  using Basis = NURBS< dim, range, rank >;
   auto grid = Grid<dim>::create(coord);
 
   auto  bsp = BSpline<dim, range, rank >::create(
@@ -127,7 +127,7 @@ void do_test()
 
   auto w_func = WeightFunc::create(scalar_space,weights);
 
-  auto nurbs_space = Space::create(bsp, w_func);
+  auto nurbs_space = Basis::create(bsp, w_func);
 //    nurbs_space->print_info(out);
 
 

@@ -43,17 +43,17 @@ template <int, int, int> class NURBSElementHandler;
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
 class NURBS :
-  public ReferenceSpace<dim_,range_,rank_>
+  public ReferenceSpaceBasis<dim_,range_,rank_>
 {
 private:
-  using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
+  using BaseSpace = ReferenceSpaceBasis<dim_,range_,rank_>;
   using self_t = NURBS<dim_, range_, rank_>;
 
 public:
   using BSpSpace = BSpline<dim_, range_, rank_>;
 
 
-  /** see documentation in \ref Space */
+  /** see documentation in \ref Basis */
 
   using GridType = Grid<dim_>;
   static const int dim       = dim_;
@@ -67,12 +67,12 @@ public:
 
 
   /**
-   * See documentation in \ref Space
+   * See documentation in \ref Basis
    *
-   * @see Space
+   * @see Basis
    */
 
-  using RefSpace = typename BaseSpace::RefSpace;
+//  using RefBasis = typename BaseSpace::RefBasis;
 
 
   using IndexType = TensorIndex<dim_>;
@@ -197,7 +197,7 @@ protected:
    * Construct a NURBS from a BSpline and a scalar weight function.
    */
   explicit NURBS(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
-                      const SharedPtrConstnessHandler<WeightFunction> &weight_func);
+                 const SharedPtrConstnessHandler<WeightFunction> &weight_func);
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -323,7 +323,7 @@ private:
   serialize(Archive &ar)
   {
     using std::to_string;
-    const std::string base_name = "ReferenceSpace_" +
+    const std::string base_name = "ReferenceSpaceBasis_" +
                                   to_string(dim_) + "_" +
                                   to_string(0) + "_" +
                                   to_string(range_) + "_" +

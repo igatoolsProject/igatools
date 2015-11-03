@@ -42,14 +42,14 @@ namespace space_tools
  * onto the space @p space.
  * The integrals in the computations are done using the quadrature @p Q.
  */
-template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
-std::shared_ptr<IgFunction<Space::dim,Space::codim,Space::range,Space::rank> >
-projection_l2(const Function<Space::dim,Space::codim,Space::range,Space::rank> &function,
-              const std::shared_ptr<Space> &space,
-              const std::shared_ptr<const Quadrature<Space::dim>> &quad,
+template<class Basis, LAPack la_pack = LAPack::trilinos_epetra>
+std::shared_ptr<IgFunction<Basis::dim,Basis::codim,Basis::range,Basis::rank> >
+projection_l2(const Function<Basis::dim,Basis::codim,Basis::range,Basis::rank> &function,
+              const std::shared_ptr<Basis> &space,
+              const std::shared_ptr<const Quadrature<Basis::dim>> &quad,
               const std::string &dofs_property = DofProperties::active)
 {
-  using ProjFunc = IgFunction<Space::dim,Space::codim,Space::range,Space::rank>;
+  using ProjFunc = IgFunction<Basis::dim,Basis::codim,Basis::range,Basis::rank>;
 
   Epetra_SerialComm comm;
 
@@ -68,7 +68,7 @@ projection_l2(const Function<Space::dim,Space::codim,Space::range,Space::rank> &
   Assert(space_grid->same_knots_or_refinement_of(*func_grid),
          ExcMessage("The space grid is not a refinement of the function grid."));
 
-  const int dim = Space::dim;
+  const int dim = Basis::dim;
 
 
   using SpFlags = space_element::Flags;
@@ -219,8 +219,8 @@ projection_l2(const Function<Space::dim,Space::codim,Space::range,Space::rank> &
   AssertThrow(result == Belos::ReturnType::Converged,
               ExcMessage("No convergence."));
 
-  return std::dynamic_pointer_cast<IgFunction<Space::dim,Space::codim,Space::range,Space::rank>>(
-           ProjFunc::create(std::const_pointer_cast<Space>(space),
+  return std::dynamic_pointer_cast<IgFunction<Basis::dim,Basis::codim,Basis::range,Basis::rank>>(
+           ProjFunc::create(std::const_pointer_cast<Basis>(space),
                             *sol, dofs_property));
 }
 
@@ -229,7 +229,7 @@ template<int dim,int range, LAPack la_pack = LAPack::trilinos_epetra>
 IgCoefficients
 projection_l2_ig_grid_function(
   const IgGridFunction<dim,range> &ig_grid_function,
-  const ReferenceSpace<dim,range,1> &ref_space,
+  const ReferenceSpaceBasis<dim,range,1> &ref_space,
   const std::shared_ptr<const Quadrature<dim>> &quad,
   const std::string &dofs_property = DofProperties::active)
 {
@@ -426,24 +426,24 @@ projection_l2_ig_grid_function(
  * for this degree of freedom.
  *
  */
-template<class Space>
+template<class Basis>
 void
-project_boundary_values(const std::shared_ptr<const typename Space::Func> function,
-                        std::shared_ptr<const Space> space,
-                        const Quadrature<Space::dim-1> &quad,
+project_boundary_values(const std::shared_ptr<const typename Basis::Func> function,
+                        std::shared_ptr<const Basis> space,
+                        const Quadrature<Basis::dim-1> &quad,
                         const std::set<boundary_id>  &boundary_ids,
                         std::map<Index, Real>  &boundary_values)
 {
-  const int dim   = Space::dim;
-  const int range = Space::range;
-  const int rank  = Space::rank;
-  const int codim = Space::codim;
-  //const int space_dim = Space::space_dim;
+  const int dim   = Basis::dim;
+  const int range = Basis::range;
+  const int rank  = Basis::rank;
+  const int codim = Basis::codim;
+  //const int space_dim = Basis::space_dim;
 
   const int sub_dim = dim - 1;
-//    using GridType = typename Space::GridType;
-  using SubSpace = typename Space::template SubSpace<sub_dim>;
-  using InterSpaceMap = typename Space::template InterSpaceMap<sub_dim>;
+//    using GridType = typename Basis::GridType;
+  using SubSpace = typename Basis::template SubSpace<sub_dim>;
+  using InterSpaceMap = typename Basis::template InterSpaceMap<sub_dim>;
   using SubFunc = SubFunction<sub_dim, dim, codim, range, rank>;
 
 
@@ -452,7 +452,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
   std::set<int> sub_elems;
   auto bdry_begin = boundary_ids.begin();
   auto bdry_end   = boundary_ids.end();
-  for (auto &s_id : UnitElement<Space::dim>::template elems_ids<sub_dim>())
+  for (auto &s_id : UnitElement<Basis::dim>::template elems_ids<sub_dim>())
   {
     const auto bdry_id = grid->get_boundary_id(s_id);
     if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
@@ -486,12 +486,12 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
  * Returns the list of global ids of the non zero basis functions
  * on the faces with the given boundary ids.
  */
-template<class Space>
+template<class Basis>
 std::set<Index>
-get_boundary_dofs(std::shared_ptr<const Space> space,
+get_boundary_dofs(std::shared_ptr<const Basis> space,
                   const std::set<boundary_id>  &boundary_ids)
 {
-  const int dim   = Space::dim;
+  const int dim   = Basis::dim;
   std::set<Index> dofs;
   const int sub_dim = dim - 1;
 
@@ -500,7 +500,7 @@ get_boundary_dofs(std::shared_ptr<const Space> space,
   std::set<int> sub_elems;
   auto bdry_begin = boundary_ids.begin();
   auto bdry_end   = boundary_ids.end();
-  for (auto &s_id : UnitElement<Space::dim>::template elems_ids<sub_dim>())
+  for (auto &s_id : UnitElement<Basis::dim>::template elems_ids<sub_dim>())
   {
     const auto bdry_id = grid->get_boundary_id(s_id);
     if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)

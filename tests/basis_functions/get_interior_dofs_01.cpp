@@ -34,10 +34,10 @@ template<int dim, int range = 1, int rank = 1>
 void get_interior_dof(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
-  using Space = BSpline<dim, range, rank>;
+  using Basis = BSpline<dim, range, rank>;
   auto grid = Grid<dim>::const_create(n_knots);
 
-  auto space = Space::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
+  auto space = Basis::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
   auto int_dofs = space->get_interior_dofs();
 
   // TODO (pauletti, Mar 27, 2015): we should create iga::set with print_info

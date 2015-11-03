@@ -41,12 +41,12 @@ protected:
   using typename parent_t::GridType;
 public:
   using GridFunctionType =  const FormulaGridFunction<dim, space_dim>;
-  using typename parent_t::ConstElementAccessor;
+  using typename parent_t::ElementAccessor;
   using typename parent_t::Flags;
   using typename parent_t::topology_variant;
   using typename parent_t::eval_pts_variant;
 
-  FormulaGridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function);
+  FormulaGridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function);
 
 
   virtual ~FormulaGridFunctionHandler() = default;
@@ -55,17 +55,17 @@ public:
                  const Flags &flag) override final;
 
   void fill_cache(const topology_variant &sdim,
-                  ConstElementAccessor &elem,
+                  ElementAccessor &elem,
                   const int s_id) const override;
 
 private:
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
     template <int order>
-    using _D = typename ConstElementAccessor::template _D<order>;
+    using _D = typename ElementAccessor::template _D<order>;
 
     FillCacheDispatcher(const self_t &grid_function_handler,
-                        ConstElementAccessor &elem,
+                        ElementAccessor &elem,
                         const int s_id)
       :
       grid_function_handler_(grid_function_handler),
@@ -115,7 +115,7 @@ private:
     }
 
     const self_t     &grid_function_handler_;
-    ConstElementAccessor &elem_;
+    ElementAccessor &elem_;
     const int s_id_;
   };
 

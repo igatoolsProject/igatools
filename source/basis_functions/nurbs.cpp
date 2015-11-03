@@ -43,7 +43,7 @@ IGA_NAMESPACE_OPEN
 template <int dim_, int range_, int rank_>
 NURBS<dim_, range_, rank_>::
 NURBS(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
-           const SharedPtrConstnessHandler<WeightFunction> &weight_func)
+      const SharedPtrConstnessHandler<WeightFunction> &weight_func)
   :
   bsp_space_(bsp_space),
   weight_func_(weight_func)
@@ -537,17 +537,17 @@ rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
   const Grid<dim_> &old_grid)
 {
-  auto bsp_space_pre_refinement =
-    std::dynamic_pointer_cast<const BSpSpace>(bsp_space_->get_space_previous_refinement());
-  Assert(bsp_space_pre_refinement != nullptr,ExcNullPtr());
+  auto bsp_basis_pre_refinement =
+    std::dynamic_pointer_cast<const BSpSpace>(bsp_space_->get_basis_previous_refinement());
+  Assert(bsp_basis_pre_refinement != nullptr,ExcNullPtr());
 
   auto weight_func_pre_refinement_ =
     std::dynamic_pointer_cast<const WeightFunction>(weight_func_->get_grid_function_previous_refinement());
   Assert(weight_func_pre_refinement_ != nullptr,ExcNullPtr());
 
 
-  this->ref_space_previous_refinement_ =
-    self_t::const_create(bsp_space_pre_refinement,weight_func_pre_refinement_);
+  this->ref_basis_previous_refinement_ =
+    self_t::const_create(bsp_basis_pre_refinement,weight_func_pre_refinement_);
 }
 
 

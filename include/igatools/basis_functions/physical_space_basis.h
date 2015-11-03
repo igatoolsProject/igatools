@@ -22,8 +22,8 @@
 #define __PHYSICAL_SPACE_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/space.h>
-#include <igatools/basis_functions/reference_space.h>
+#include <igatools/basis_functions/basis.h>
+#include <igatools/basis_functions/reference_space_basis.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/grid_iterator.h>
@@ -48,24 +48,24 @@ template <int,int,int,int> class PhysSpaceElementHandler;
  */
 template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0>
 class PhysicalSpaceBasis :
-  public Space<dim_,codim_,range_,rank_>
+  public Basis<dim_,codim_,range_,rank_>
 {
 private:
-  using base_t = Space<dim_,codim_,range_,rank_>;
+  using base_t = Basis<dim_,codim_,range_,rank_>;
   using self_t = PhysicalSpaceBasis<dim_, range_, rank_, codim_>;
 
 public:
   ///@{
   /**
-   * See documentation in \ref Space
+   * See documentation in \ref Basis
    *
-   * @see Space
+   * @see Basis
    */
   using PushFwd = PushForward<dim_, codim_>;
 
   using PhysDomain = Domain<dim_, codim_>;
 
-  using RefSpace = ReferenceSpace<dim_,range_,rank_>;
+  using RefSpace = ReferenceSpaceBasis<dim_,range_,rank_>;
 
   using GridType = Grid<dim_>;
   ///@}
@@ -230,7 +230,7 @@ private:
   const Transformation transformation_type_ = Transformation::h_grad;
 
 
-  std::shared_ptr<const self_t> phys_space_previous_refinement_ = nullptr;
+  std::shared_ptr<const self_t> phys_basis_previous_refinement_ = nullptr;
 
 
   friend ElementAccessor;
@@ -266,10 +266,7 @@ public:
   void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
 
 
-  std::shared_ptr<const base_t> get_space_previous_refinement() const
-  {
-    return phys_space_previous_refinement_;
-  }
+  std::shared_ptr<const base_t> get_basis_previous_refinement() const;
 
 #endif // MESH_REFINEMENT
 
@@ -306,9 +303,9 @@ private:
     const_cast<Transformation &>(transformation_type_) = transformation_type_tmp;
 
 #ifdef MESH_REFINEMENT
-    auto tmp = std::const_pointer_cast<self_t>(phys_space_previous_refinement_);
-    ar &make_nvp("phys_space_previous_refinement_",tmp);
-    phys_space_previous_refinement_ = tmp;
+    auto tmp = std::const_pointer_cast<self_t>(phys_basis_previous_refinement_);
+    ar &make_nvp("phys_basis_previous_refinement_",tmp);
+    phys_basis_previous_refinement_ = tmp;
 #endif // MESH_REFINEMENT
   }
 
