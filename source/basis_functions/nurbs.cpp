@@ -59,11 +59,11 @@ NURBS(const SharedPtrConstnessHandler<BSpBasis> &bsp_basis,
   Assert(w_func_basis->is_bspline(),
          ExcMessage("The space for the weight function is not BSpline."));
 
-  const auto &n_basis_table = this->get_ptr_const_dof_distribution()->get_num_dofs_table();
+  const auto &n_basis_table = this->get_spline_space()->get_dof_distribution()->get_num_dofs_table();
   int comp_id = 0;
   for (const auto &n_basis_comp : n_basis_table)
   {
-    Assert(n_basis_comp == w_func_basis->get_ptr_const_dof_distribution()->get_num_dofs_table()[0],
+    Assert(n_basis_comp == w_func_basis->get_spline_space()->get_dof_distribution()->get_num_dofs_table()[0],
            ExcMessage("Mismatching number of basis functions and weight "
                       "coefficients for scalar component " + to_string(comp_id)));
 
@@ -490,23 +490,6 @@ NURBS<dim_, range_, rank_>::
 create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
   return std::make_unique<ElementHandler>(this->get_this_basis());
-}
-
-
-template<int dim_, int range_, int rank_>
-auto
-NURBS<dim_, range_, rank_>::
-get_ptr_const_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
-{
-  return bsp_basis_.get_ptr_const_data()->get_ptr_const_dof_distribution();
-}
-
-template<int dim_, int range_, int rank_>
-auto
-NURBS<dim_, range_, rank_>::
-get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
-{
-  return bsp_basis_.get_ptr_data()->get_ptr_dof_distribution();
 }
 
 

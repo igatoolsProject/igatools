@@ -37,7 +37,7 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
    SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid()))),
   ref_basis_(ref_basis)
 {
-  const auto &dof_distribution = *(ref_basis_->get_ptr_const_dof_distribution());
+  const auto &dof_distribution = *(ref_basis_->get_spline_space()->get_dof_distribution());
   const auto &active_dofs = dof_distribution.get_dofs_id_same_property(DofProperties::active);
 
   const auto &epetra_map = coeff.Map();
@@ -64,7 +64,7 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
   ref_basis_(ref_basis)
 {
 #ifndef NDEBUG
-  const auto &dof_distribution = *(ref_basis_->get_ptr_const_dof_distribution());
+  const auto &dof_distribution = *(ref_basis_->get_spline_space()->get_dof_distribution());
   const auto &active_dofs = dof_distribution.get_dofs_id_same_property(DofProperties::active);
 
   for (const auto glob_dof : active_dofs)

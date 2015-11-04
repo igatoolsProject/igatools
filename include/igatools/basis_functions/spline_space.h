@@ -35,6 +35,8 @@
 IGA_NAMESPACE_OPEN
 
 
+template <int,int,int>
+class DofDistribution;
 
 
 enum class BasisEndBehaviour
@@ -303,6 +305,10 @@ public:
    * in each direction and component
    */
   const TensorSizeTable &get_num_basis_table() const;
+
+
+  std::shared_ptr<const DofDistribution<dim,range,rank> >
+  get_dof_distribution() const;
   ///@}
 
 
@@ -378,6 +384,14 @@ private:
    * Lookup table for the local dofs id in each element component
    */
   ComponentContainer<SafeSTLVector<TensorIndex<dim> > > dofs_tensor_id_elem_table_;
+
+
+  /**
+   * Container with the local to global basis indices
+   * @note The concept of global indices refers to a global numbering of the
+   * dofs of all the spaces.
+   */
+  std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
 
 
 
@@ -559,6 +573,8 @@ public:
       ar &make_nvp("active_components_id_", active_components_id_);
 
       ar &make_nvp("inactive_components_id_", inactive_components_id_);
+
+      ar &make_nvp("dof_distribution_",dof_distribution_);
     }
     ///@}
 #endif // SERIALIZATION

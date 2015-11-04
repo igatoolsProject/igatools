@@ -229,21 +229,21 @@ template<int dim,int range, LAPack la_pack = LAPack::trilinos_epetra>
 IgCoefficients
 projection_l2_ig_grid_function(
   const IgGridFunction<dim,range> &ig_grid_function,
-  const ReferenceSpaceBasis<dim,range,1> &ref_space,
+  const ReferenceSpaceBasis<dim,range,1> &ref_basis,
   const std::shared_ptr<const Quadrature<dim>> &quad,
   const std::string &dofs_property = DofProperties::active)
 {
   Epetra_SerialComm comm;
 
   const auto graph =
-    EpetraTools::create_graph(ref_space,dofs_property,ref_space,dofs_property,comm);
+    EpetraTools::create_graph(ref_basis,dofs_property,ref_basis,dofs_property,comm);
 
 
   auto matrix = EpetraTools::create_matrix(*graph);
   auto rhs = EpetraTools::create_vector(matrix->RangeMap());
   auto sol = EpetraTools::create_vector(matrix->DomainMap());
 
-  const auto space_grid = ref_space.get_grid();
+  const auto space_grid = ref_basis.get_grid();
   const auto func_grid = ig_grid_function.get_grid();
 
 
@@ -254,12 +254,12 @@ projection_l2_ig_grid_function(
   using SpFlags = space_element::Flags;
   auto sp_flag = SpFlags::value |
                  SpFlags::w_measure;
-  auto space_elem_handler = ref_space.create_cache_handler();
+  auto space_elem_handler = ref_basis.create_cache_handler();
   space_elem_handler->template set_flags<dim>(sp_flag);
 
   auto f_elem = ig_grid_function.cbegin();
-  auto elem = ref_space.cbegin();
-  auto end  = ref_space.cend();
+  auto elem = ref_basis.cbegin();
+  auto end  = ref_basis.cend();
 
   space_elem_handler->init_element_cache(*elem,quad);
 
@@ -398,7 +398,7 @@ projection_l2_ig_grid_function(
 
   IgCoefficients ig_coeffs;
 
-  const auto &dof_distribution = *(ref_space.get_ptr_const_dof_distribution());
+  const auto &dof_distribution = *(ref_basis.get_spline_space()->get_dof_distribution());
   const auto &active_dofs = dof_distribution.get_dofs_id_same_property(DofProperties::active);
 
   const auto &epetra_map = sol->Map();

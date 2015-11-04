@@ -133,12 +133,10 @@ public:
    * \name Functions for getting information about the dofs
    */
   ///@{
-  virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
-  get_ptr_const_dof_distribution() const = 0;
+  std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
+  get_dof_distribution() const;
 
 
-  virtual std::shared_ptr<DofDistribution<dim_,range_,rank_> >
-  get_ptr_dof_distribution() = 0;
 
 
   /**

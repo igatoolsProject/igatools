@@ -45,7 +45,7 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
   basis_(space),
   property_(property)
 {
-  const auto &dof_distribution = *(basis_->get_ptr_const_dof_distribution());
+  const auto &dof_distribution = *(basis_->get_spline_space()->get_dof_distribution());
   const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
 
 
@@ -78,7 +78,7 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
 {
 
 #ifndef NDEBUG
-  const auto &dof_distribution = *(basis_->get_ptr_const_dof_distribution());
+  const auto &dof_distribution = *(basis_->get_spline_space()->get_dof_distribution());
   const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
 
   for (const auto glob_dof : active_dofs)

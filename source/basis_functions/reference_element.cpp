@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank>
 ReferenceElement<dim, range, rank>::
-ReferenceElement(const std::shared_ptr<ConstSpace> &basis,
+ReferenceElement(const std::shared_ptr<ConstBasis> &basis,
                  const ListIt &index,
                  const PropId &prop)
   :

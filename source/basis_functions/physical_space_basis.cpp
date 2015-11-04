@@ -238,24 +238,6 @@ get_element_dofs(
 
 
 
-template <int dim_, int range_, int rank_, int codim_>
-auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-get_ptr_const_dof_distribution() const -> std::shared_ptr<const DofDistribution<dim, range, rank> >
-{
-  return ref_basis_->get_ptr_const_dof_distribution();
-}
-
-
-
-template <int dim_, int range_, int rank_, int codim_>
-auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-get_ptr_dof_distribution() -> std::shared_ptr<DofDistribution<dim, range, rank> >
-{
-  return ref_basis_.get_ptr_data()->get_ptr_dof_distribution();
-}
-
 
 
 
@@ -287,15 +269,6 @@ create_cache_handler() const
 
 
 
-#if 0
-template <int dim_, int range_, int rank_, int codim_>
-int
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-get_max_degree() const
-{
-  return ref_basis_->get_max_degree();
-}
-#endif
 
 template <int dim_, int range_, int rank_, int codim_>
 Transformation

@@ -131,16 +131,7 @@ public:
   template< class T>
   using ComponentContainer = typename BSpBasis::template ComponentContainer<T>;
 
-  using Degrees = typename BSpBasis::Degrees;
-  using Multiplicity = typename BSpBasis::Multiplicity;
   using EndBehaviour = typename BSpBasis::EndBehaviour;
-  using Periodicity = typename BSpBasis::Periodicity;
-
-  using KnotsTable = typename BSpBasis::KnotsTable;
-  using DegreeTable = typename BSpBasis::DegreeTable;
-  using MultiplicityTable = typename BSpBasis::MultiplicityTable;
-  using TensorSizeTable = typename BSpBasis::TensorSizeTable;
-  using PeriodicityTable = typename BSpBasis::PeriodicityTable;
   using EndBehaviourTable = typename BSpBasis::EndBehaviourTable;
 
 
@@ -232,9 +223,6 @@ public:
    */
   std::shared_ptr<const WeightFunction> get_weight_func() const;
 
-#if 0
-  const PeriodicityTable &get_periodicity() const override final;
-#endif
 
   /**
    * Returns a const reference to the end behaviour table of the BSpline space.
@@ -248,11 +236,6 @@ public:
    */
   virtual void print_info(LogStream &out) const override final;
 
-  std::shared_ptr<const DofDistribution<dim, range, rank> >
-  get_ptr_const_dof_distribution() const override final;
-
-  std::shared_ptr<DofDistribution<dim, range, rank> >
-  get_ptr_dof_distribution() override final;
 
 
   /**

@@ -110,9 +110,6 @@ public:
   template< class T>
   using ComponentContainer = typename RefBasis::template ComponentContainer<T>;
 
-  using TensorSizeTable = typename RefBasis::TensorSizeTable;
-
-  using DegreeTable = typename RefBasis::DegreeTable;
 
 public:
 
@@ -147,13 +144,6 @@ public:
   create_element(const ListIt &index, const PropId &property) const override final;
 
 
-  /** Returns the container with the global dof distribution (const version). */
-  std::shared_ptr<const DofDistribution<dim, range, rank> >
-  get_ptr_const_dof_distribution() const override final;
-
-  /** Returns the container with the global dof distribution (non const version). */
-  std::shared_ptr<DofDistribution<dim, range, rank> >
-  get_ptr_dof_distribution() override final;
 
 
 

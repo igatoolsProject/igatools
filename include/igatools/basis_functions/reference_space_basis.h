@@ -99,16 +99,7 @@ public:
 
   using SpSpace = SplineSpace<dim_,range_,rank_>;
 
-  using Degrees = typename SpSpace::Degrees;
-  using Multiplicity = typename SpSpace::Multiplicity;
   using EndBehaviour = typename SpSpace::EndBehaviour;
-  using Periodicity = typename SpSpace::Periodicity;
-
-  using KnotsTable = typename SpSpace::KnotsTable;
-  using DegreeTable = typename SpSpace::DegreeTable;
-  using MultiplicityTable = typename SpSpace::MultiplicityTable;
-  using TensorSizeTable = typename SpSpace::TensorSizeTable;
-  using PeriodicityTable = typename SpSpace::PeriodicityTable;
   using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
   template <class T>

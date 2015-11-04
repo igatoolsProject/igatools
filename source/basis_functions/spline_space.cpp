@@ -22,6 +22,8 @@
 #include <igatools/base/array_utils.h>
 #include <igatools/utils/vector_tools.h>
 #include <igatools/utils/multi_array_utils.h>
+#include <igatools/basis_functions/dof_distribution.h>
+
 
 using std::unique_ptr;
 using std::shared_ptr;
@@ -325,6 +327,16 @@ init()
       elem_comp_dof_t_id[dof_f_id] = MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp);
   }
   // building the lookup table for the local dof id on the current component of an element --- end
+  //------------------------------------------------------------------------------
+
+
+
+  //------------------------------------------------------------------------------
+  dof_distribution_ = std::make_shared<DofDistribution<dim,range,rank>>(
+                        this->get_num_basis_table(),
+                        this->get_degree_table(),
+                        this->get_periodic_table());
+  Assert(dof_distribution_ != nullptr, ExcNullPtr());
   //------------------------------------------------------------------------------
 
 }
@@ -896,6 +908,17 @@ get_dofs_tensor_id_elem_table() const
 {
   return dofs_tensor_id_elem_table_;
 }
+
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_dof_distribution() const ->
+std::shared_ptr<const DofDistribution<dim,range,rank> >
+{
+  return dof_distribution_;
+}
+
 
 #ifdef SERIALIZATION
 template<int dim, int range, int rank>

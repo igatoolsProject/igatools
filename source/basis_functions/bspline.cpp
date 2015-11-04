@@ -42,22 +42,15 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   spline_space_(spline_space),
   end_b_(end_b),
   operators_(*spline_space_,end_b),
-  end_interval_(end_b.get_comp_map()),
-  dof_distribution_(std::make_shared<DofDistribution<dim_,range_,rank_>>(
-                     spline_space->get_num_basis_table(),
-                     spline_space->get_degree_table(),
-                     spline_space->get_periodic_table()))
+  end_interval_(end_b.get_comp_map())
 {
-//    Assert(spline_space_ != nullptr,ExcNullPtr());
-  Assert(dof_distribution_ != nullptr,ExcNullPtr());
-
   //------------------------------------------------------------------------------
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
 
-  const auto &sp_data = *this->spline_space_;
-  const auto &grid = *sp_data.get_grid();
-  const auto &degree_table = sp_data.get_degree_table();
-  const auto rep_knots = sp_data.compute_knots_with_repetition(end_b_);
+  const auto &sp_space = *this->spline_space_;
+  const auto &grid = *sp_space.get_grid();
+  const auto &degree_table = sp_space.get_degree_table();
+  const auto rep_knots = sp_space.compute_knots_with_repetition(end_b_);
 
   for (auto i : end_interval_.get_active_components_id())
   {
@@ -79,15 +72,6 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
     } // end loop dir
   } // end loop i
   //------------------------------------------------------------------------------
-
-
-
-#if 0
-  //------------------------------------------------------------------------------
-  this->dof_distribution_->add_dofs_property(this->dofs_property_active_);
-  this->dof_distribution_->set_all_dofs_property_status(this->dofs_property_active_,true);
-  //------------------------------------------------------------------------------
-#endif
 }
 
 #if 0
@@ -246,8 +230,8 @@ get_sub_bspline_space(const int s_id,
   TensorIndex<dim> tensor_index;
   int comp_i = 0;
   dof_map.resize(sub_basis->get_num_basis());
-  const auto &sub_space_index_table = sub_basis->get_ptr_const_dof_distribution()->get_index_table();
-  const auto     &space_index_table = this->get_ptr_const_dof_distribution()->get_index_table();
+  const auto &sub_space_index_table = sub_basis->get_spline_space()->get_dof_distribution()->get_index_table();
+  const auto     &space_index_table = this->get_spline_space()->get_dof_distribution()->get_index_table();
   for (auto comp : SpSpace::components)
   {
     const auto n_basis = sub_basis->get_num_comp_basis(comp);
@@ -302,10 +286,10 @@ get_element_dofs(
   SafeSTLVector<Index> &dofs_local_to_elem,
   const std::string &dofs_property) const
 {
-  const auto &sp_data = *spline_space_;
-  const auto &accum_mult = sp_data.accumulated_interior_multiplicities();
+  const auto &sp_space = *spline_space_;
+  const auto &accum_mult = sp_space.accumulated_interior_multiplicities();
 
-  const auto &dof_distr = *this->dof_distribution_;
+  const auto &dof_distr = *(sp_space.get_dof_distribution());
   const auto &index_table = dof_distr.get_index_table();
 
   dofs_global.clear();
@@ -321,7 +305,7 @@ get_element_dofs(
 
     const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
 
-    const auto &elem_comp_dof_t_id = sp_data.get_dofs_tensor_id_elem_table()[comp];
+    const auto &elem_comp_dof_t_id = sp_space.get_dofs_tensor_id_elem_table()[comp];
 
 //        if (dofs_property == DofProperties::active)
 //        {
@@ -387,13 +371,6 @@ rebuild_after_insert_knots(
       this->spline_space_->get_spline_space_previous_refinement(),
       this->end_b_);
 
-
-  this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
-                              new DofDistribution<dim_,range_,rank_>(
-                                this->spline_space_->get_num_basis_table(),
-                                this->spline_space_->get_degree_table(),
-                                this->spline_space_->get_periodic_table()));
-
   operators_ = BernsteinExtraction<dim,range,rank>(*this->spline_space_,end_b_);
 }
 
@@ -412,7 +389,7 @@ print_info(LogStream &out) const
 
 
   out.begin_item("DoFs Distribution:");
-  this->dof_distribution_->print_info(out);
+  this->get_spline_space()->get_dof_distribution()->print_info(out);
   out.end_item();
 
 
@@ -459,27 +436,11 @@ create_cache_handler() const
 }
 
 
+
 template<int dim_, int range_, int rank_>
-auto
+std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
 BSpline<dim_, range_, rank_>::
-get_ptr_const_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
-{
-  return dof_distribution_;
-}
-
-template<int dim_, int range_, int rank_>
-auto
-BSpline<dim_, range_, rank_>::
-get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
-{
-  return dof_distribution_;
-}
-
-
-template<int dim_, int range_, int rank_>
-std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
-                                                   BSpline<dim_, range_, rank_>::
-                                                   get_spline_space() const
+get_spline_space() const
 {
   return spline_space_.get_ptr_const_data();
 }
@@ -510,7 +471,6 @@ serialize(Archive &ar)
 
   ar &make_nvp("end_interval_",end_interval_);
 
-  ar &make_nvp("dof_distribution_",dof_distribution_);
 
 //    ar &make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 }

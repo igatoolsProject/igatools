@@ -25,7 +25,6 @@
 #include <igatools/base/logstream.h>
 
 #include <igatools/basis_functions/reference_space_basis.h>
-#include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/basis_functions/physical_space_basis.h>
@@ -382,16 +381,13 @@ public:
   /**
    * /brief Returns the SplineSpace used to build the BSpline basis.
    */
-  std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
-                                                     get_spline_space() const override final;
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
+  get_spline_space() const override final;
 
 
 
 public:
 
-#if 0
-  const PeriodicityTable &get_periodicity() const override final;
-#endif
 
   /**
    * Returns a reference to the end behaviour table of the BSpline space.
@@ -403,12 +399,6 @@ public:
    * @note Mostly used for debugging and testing.
    */
   virtual void print_info(LogStream &out) const override final;
-
-  std::shared_ptr<const DofDistribution<dim, range, rank> >
-  get_ptr_const_dof_distribution() const override final;
-
-  std::shared_ptr<DofDistribution<dim, range, rank> >
-  get_ptr_dof_distribution() override final;
 
 
 
@@ -430,12 +420,6 @@ private:
                            ComponentContainer<SafeSTLArray<std::pair<Real,Real>, dim>>;
   EndIntervalTable end_interval_;
 
-  /**
-   * Container with the local to global basis indices
-   * @note The concept of global indices refers to a global numbering of the
-   * dofs of all the spaces.
-   */
-  std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
 
 
   friend class BSplineElement<dim, range, rank>;

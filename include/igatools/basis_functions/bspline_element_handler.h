@@ -58,7 +58,6 @@ class BSplineElementHandler
   template<class T>
   using ComponentDirectionContainer = ComponentContainer<SafeSTLArray<T,dim_>>;
 
-  using TensorSizeTable = typename Basis::TensorSizeTable;
 
   template <int order>
   using Derivative = typename Basis::template Derivative<order>;
