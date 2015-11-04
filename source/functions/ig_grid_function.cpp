@@ -28,16 +28,16 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int space_dim>
 IgGridFunction<dim,space_dim>::
-IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
+IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                const EpetraTools::Vector &coeff)
   :
   parent_t(
-   space.data_is_const() ?
-   SharedPtrConstnessHandler<GridType>(space->get_grid()) :
-   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(space->get_grid()))),
-  ig_space_(space)
+   ref_basis.data_is_const() ?
+   SharedPtrConstnessHandler<GridType>(ref_basis->get_grid()) :
+   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid()))),
+  ref_basis_(ref_basis)
 {
-  const auto &dof_distribution = *(ig_space_->get_ptr_const_dof_distribution());
+  const auto &dof_distribution = *(ref_basis_->get_ptr_const_dof_distribution());
   const auto &active_dofs = dof_distribution.get_dofs_id_same_property(DofProperties::active);
 
   const auto &epetra_map = coeff.Map();
@@ -54,17 +54,17 @@ IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
 
 template<int dim,int space_dim>
 IgGridFunction<dim,space_dim>::
-IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
+IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                const IgCoefficients &coeffs)
   :
   parent_t(
-   space.data_is_const() ?
-   SharedPtrConstnessHandler<GridType>(space->get_grid()) :
-   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(space->get_grid()))),
-  ig_space_(space)
+   ref_basis.data_is_const() ?
+   SharedPtrConstnessHandler<GridType>(ref_basis->get_grid()) :
+   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid()))),
+  ref_basis_(ref_basis)
 {
 #ifndef NDEBUG
-  const auto &dof_distribution = *(ig_space_->get_ptr_const_dof_distribution());
+  const auto &dof_distribution = *(ref_basis_->get_ptr_const_dof_distribution());
   const auto &active_dofs = dof_distribution.get_dofs_id_same_property(DofProperties::active);
 
   for (const auto glob_dof : active_dofs)
@@ -87,18 +87,18 @@ rebuild_after_insert_knots(
   const Grid<dim> &old_grid)
 {
   auto ig_grid_function_pre_refinement =
-    self_t::const_create(ig_space_->get_basis_previous_refinement(),coeffs_);
+    self_t::const_create(ref_basis_->get_basis_previous_refinement(),coeffs_);
 
   this->grid_function_previous_refinement_ = ig_grid_function_pre_refinement;
 
 
-  const auto &ig_space = *(this->get_ig_space());
+  const auto &ref_basis = *(this->get_basis());
 
-  const int max_degree = ig_space.get_max_degree();
+  const int max_degree = ref_basis.get_spline_space()->get_max_degree();
 
   coeffs_ = space_tools::projection_l2_ig_grid_function<dim,space_dim>(
               *ig_grid_function_pre_refinement,
-              ig_space,
+              ref_basis,
               QGauss<dim>::create(max_degree+1),
               DofProperties::active);
 }
@@ -119,21 +119,21 @@ create_cache_handler() const
 template<int dim,int space_dim>
 auto
 IgGridFunction<dim,space_dim>::
-const_create(const std::shared_ptr<const IgSpace> &space,
+const_create(const std::shared_ptr<const RefBasis> &ref_basis,
              const IgCoefficients &coeffs) -> std::shared_ptr<const self_t>
 {
   return std::shared_ptr<const self_t>(new IgGridFunction(
-    SharedPtrConstnessHandler<IgSpace>(space),coeffs));
+    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs));
 }
 
 template<int dim,int space_dim>
 auto
 IgGridFunction<dim,space_dim>::
-create(const std::shared_ptr<IgSpace> &space,
+create(const std::shared_ptr<RefBasis> &ref_basis,
        const IgCoefficients &coeffs) -> std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(new IgGridFunction(
-    SharedPtrConstnessHandler<IgSpace>(space),coeffs));
+    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs));
 
 #ifdef MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
@@ -146,21 +146,21 @@ create(const std::shared_ptr<IgSpace> &space,
 template<int dim,int space_dim>
 auto
 IgGridFunction<dim,space_dim>::
-const_create(const std::shared_ptr<const IgSpace> &space,
+const_create(const std::shared_ptr<const RefBasis> &ref_basis,
              const EpetraTools::Vector &coeffs) -> std::shared_ptr<const self_t>
 {
   return std::shared_ptr<const self_t>(new IgGridFunction(
-    SharedPtrConstnessHandler<IgSpace>(space),coeffs));
+    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs));
 }
 
 template<int dim,int space_dim>
 auto
 IgGridFunction<dim,space_dim>::
-create(const std::shared_ptr<IgSpace> &space,
+create(const std::shared_ptr<RefBasis> &ref_basis,
        const EpetraTools::Vector &coeffs) -> std::shared_ptr<self_t>
 {
   return std::shared_ptr<self_t>(new IgGridFunction(
-    SharedPtrConstnessHandler<IgSpace>(space),coeffs));
+    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs));
 }
 
 
@@ -168,9 +168,9 @@ create(const std::shared_ptr<IgSpace> &space,
 template<int dim,int space_dim>
 auto
 IgGridFunction<dim,space_dim>::
-get_ig_space() const -> std::shared_ptr<const IgSpace>
+get_basis() const -> std::shared_ptr<const RefBasis>
 {
-  return ig_space_.get_ptr_const_data();
+  return ref_basis_.get_ptr_const_data();
 }
 
 template<int dim,int space_dim>
@@ -194,7 +194,7 @@ print_info(LogStream &out) const
   out.begin_item("ReferenceSpaceBasis<" +
                  to_string(dim) + ",1," +
                  to_string(space_dim) + ">:");
-  ig_space_->print_info(out);
+  ref_basis_->print_info(out);
   out.end_item();
 
   out.begin_item("IgCoefficients:");

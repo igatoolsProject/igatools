@@ -223,10 +223,10 @@ init_cache_1D()
   const auto &quad = *bsp_elem_.get_grid_element().template get_quad<sdim>();
   const auto &bsp_basis = dynamic_cast<const Basis &>(*bsp_elem_.get_space_basis());
 
-  const auto &space_data = *bsp_basis.space_data_;
+  const auto &spline_space = *bsp_basis.spline_space_;
 
-  const auto &degree = bsp_basis.get_degree_table();
-  const auto &active_components_id = space_data.get_active_components_id();
+  const auto &degree = spline_space.get_degree_table();
+  const auto &active_components_id = spline_space.get_active_components_id();
 
   const auto n_pts = quad.get_num_coords_direction();
 
@@ -238,7 +238,7 @@ init_cache_1D()
   for (auto s_id = 0 ; s_id < n_sub_elems ; ++s_id)
   {
     auto &splines_1D_table_sub_elem = splines_1D_table[s_id];
-    splines_1D_table_sub_elem = typename BSplineElem::Splines1DTable(space_data.get_components_map());
+    splines_1D_table_sub_elem = typename BSplineElem::Splines1DTable(spline_space.get_components_map());
 
     const auto &sub_elem = UnitElement<dim>::template get_elem<sdim>(s_id);
     TensorSize<dim> n_coords(1);
@@ -540,11 +540,11 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
 
   const auto &bsp_basis = dynamic_cast<const Basis &>(*bsp_elem_.get_space_basis());
 
-  const auto &space_data = *bsp_basis.space_data_;
+  const auto &spline_space = *bsp_basis.spline_space_;
 
-  const auto &degree = bsp_basis.get_degree_table();
+  const auto &degree = spline_space.get_degree_table();
 
-  const auto &active_components_id = space_data.get_active_components_id();
+  const auto &active_components_id = spline_space.get_active_components_id();
 
   const auto &n_coords = extended_sub_elem_quad.get_num_coords_direction();
 

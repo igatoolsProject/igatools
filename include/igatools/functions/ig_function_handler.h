@@ -94,8 +94,8 @@ private:
 
 //  friend struct FillCacheDispatcher;
 
-  using IgSpaceHandler = SpaceElementHandler<dim,codim,range,rank>;
-  std::unique_ptr<IgSpaceHandler> ig_space_handler_;
+  using IgBasisHandler = SpaceElementHandler<dim,codim,range,rank>;
+  std::unique_ptr<IgBasisHandler> ig_basis_handler_;
 
   std::shared_ptr<FunctionType> ig_function_;
 

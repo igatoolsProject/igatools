@@ -144,6 +144,7 @@ public:
 
   virtual bool is_bspline() const = 0;
 
+#if 0
   /**
    * Returns the degree of the BSpline space for each component and for each coordinate direction.
    * \return The degree of the BSpline space for each component and for each coordinate direction.
@@ -151,11 +152,12 @@ public:
    */
   virtual const DegreeTable &get_degree_table() const = 0;
 
-
   /**
-   * Return the maximum value of the polynomial degree, for each component, for each direction;
+   * Return the maximum value of the polynomial degree, for each component of the space
+   * along each direction;
    */
   virtual int get_max_degree() const override final;
+#endif
 
 
 

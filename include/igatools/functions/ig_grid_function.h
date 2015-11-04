@@ -49,7 +49,7 @@ protected:
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
-  using IgSpace = ReferenceSpaceBasis<dim,space_dim,1>;
+  using RefBasis = ReferenceSpaceBasis<dim,space_dim,1>;
 
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
@@ -64,10 +64,10 @@ public:
   virtual ~IgGridFunction() = default;
 
 protected:
-  IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
+  IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                  const IgCoefficients &coeffs);
 
-  IgGridFunction(const SharedPtrConstnessHandler<IgSpace> &space,
+  IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                  const EpetraTools::Vector &coeff);
 
 public:
@@ -75,19 +75,19 @@ public:
   create_cache_handler() const override final;
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const IgSpace> &space,
+  const_create(const std::shared_ptr<const RefBasis> &ref_basis,
                const IgCoefficients &coeffs);
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<IgSpace> &space,
+  create(const std::shared_ptr<RefBasis> &ref_basis,
          const IgCoefficients &coeffs);
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const IgSpace> &space,
+  const_create(const std::shared_ptr<const RefBasis> &ref_basis,
                const EpetraTools::Vector &coeffs);
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<IgSpace> &space,
+  create(const std::shared_ptr<RefBasis> &ref_basis,
          const EpetraTools::Vector &coeffs);
 
 
@@ -102,8 +102,8 @@ public:
                   "The dimensionality of the sub_grid is not valid.");
 
 
-    typename IgSpace::template InterSpaceMap<sdim> dof_map;
-    auto sub_ref_space = ig_space_->template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
+    typename RefBasis::template InterSpaceMap<sdim> dof_map;
+    auto sub_ref_space = ref_basis_->template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
 
     IgCoefficients sub_coeffs;
     const int n_sub_dofs = dof_map.size();
@@ -118,12 +118,12 @@ public:
 
 
 private:
-  SharedPtrConstnessHandler<IgSpace> ig_space_;
+  SharedPtrConstnessHandler<RefBasis> ref_basis_;
 
   IgCoefficients coeffs_;
 
 public:
-  std::shared_ptr<const IgSpace> get_ig_space() const;
+  std::shared_ptr<const RefBasis> get_basis() const;
 
   const IgCoefficients &get_coefficients() const;
 
@@ -146,7 +146,7 @@ private:
 
     ar &make_nvp(base_name,base_class<parent_t>(this));
 
-    ar &make_nvp("ig_space_",ig_space_);
+    ar &make_nvp("ref_basis_",ref_basis_);
 
     ar &make_nvp("coeffs_",coeffs_);
   }

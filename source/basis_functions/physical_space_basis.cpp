@@ -43,11 +43,11 @@ PhysicalSpaceBasis<dim_, range_, rank_, codim_>::components =
 
 template <int dim_, int range_, int rank_, int codim_>
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefSpace> &ref_space,
+PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                    const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
                    const Transformation &transformation_type)
   :
-  ref_space_(ref_space),
+  ref_basis_(ref_basis),
   phys_domain_(phys_domain),
   transformation_type_(transformation_type)
 {
@@ -62,12 +62,12 @@ PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefSpace> &ref_space,
 template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-create(const shared_ptr<RefSpace> &ref_space,
+create(const shared_ptr<RefBasis> &ref_basis,
        const shared_ptr<PhysDomain> &phys_domain,
        const Transformation &transformation_type) -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<RefSpace>(ref_space),
+    new self_t(SharedPtrConstnessHandler<RefBasis>(ref_basis),
   SharedPtrConstnessHandler<PhysDomain>(phys_domain),
   transformation_type));
   Assert(sp != nullptr,ExcNullPtr());
@@ -82,12 +82,12 @@ create(const shared_ptr<RefSpace> &ref_space,
 template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-const_create(const shared_ptr<const RefSpace> &ref_space,
+const_create(const shared_ptr<const RefBasis> &ref_basis,
              const shared_ptr<const PhysDomain> &phys_domain,
              const Transformation &transformation_type) -> shared_ptr<const self_t>
 {
   auto sp = shared_ptr<const self_t>(
-    new self_t(SharedPtrConstnessHandler<RefSpace>(ref_space),
+    new self_t(SharedPtrConstnessHandler<RefBasis>(ref_basis),
   SharedPtrConstnessHandler<PhysDomain>(phys_domain),transformation_type));
   Assert(sp != nullptr,ExcNullPtr());
 
@@ -97,7 +97,7 @@ const_create(const shared_ptr<const RefSpace> &ref_space,
 template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-get_this_space() const -> std::shared_ptr<const self_t >
+get_this_basis() const -> std::shared_ptr<const self_t >
 {
   auto sp = const_cast<self_t *>(this)->shared_from_this();
   auto this_space = std::dynamic_pointer_cast<self_t>(sp);
@@ -114,7 +114,7 @@ create_element(const ListIt &index, const PropId &property) const
 -> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
 {
   std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
-  elem = std::make_unique<ElementAccessor>(this->get_this_space(),index,property);
+  elem = std::make_unique<ElementAccessor>(this->get_this_basis(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -125,9 +125,9 @@ create_element(const ListIt &index, const PropId &property) const
 template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-get_reference_space() const -> shared_ptr<const RefSpace>
+get_reference_basis() const -> shared_ptr<const RefBasis>
 {
-  return ref_space_.get_ptr_const_data();
+  return ref_basis_.get_ptr_const_data();
 }
 
 template <int dim_, int range_, int rank_, int codim_>
@@ -143,7 +143,7 @@ auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 get_grid() const -> std::shared_ptr<const Grid<dim_>>
 {
-  return ref_space_->get_grid();
+  return ref_basis_->get_grid();
 }
 
 
@@ -151,9 +151,9 @@ get_grid() const -> std::shared_ptr<const Grid<dim_>>
 template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-get_reference_space() -> shared_ptr<RefSpace>
+get_reference_basis() -> shared_ptr<RefBasis>
 {
-  return ref_space_.get_ptr_data();
+  return ref_basis_.get_ptr_data();
 }
 #endif
 
@@ -176,7 +176,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
   using SubMap = SubMapFunction<k, dim, space_dim>;
   auto grid =  this->get_grid();
 
-  auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
+  auto sub_ref_space = ref_basis_->get_ref_sub_space(s_id, dof_map, sub_grid);
   shared_ptr<const typename SubMap::SupFunc> F;
   //  auto F = this->phys_domain_->get_function();
   AssertThrow(false,ExcNotImplemented());
@@ -196,7 +196,7 @@ get_face_space(const Index face_id,
                SafeSTLVector<Index> &face_to_element_dofs) const -> shared_ptr<FaceSpace>
 {
   auto elem_map = std::make_shared<typename GridType::FaceGridMap >();
-  auto face_ref_sp = ref_space_->get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
+  auto face_ref_sp = ref_basis_->get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
   auto map  = push_forward_->get_mapping();
 
   auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
@@ -213,7 +213,7 @@ Index
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 get_id() const
 {
-  return ref_space_->get_id();
+  return ref_basis_->get_id();
 }
 #endif
 
@@ -228,7 +228,7 @@ get_element_dofs(
   SafeSTLVector<Index> &dofs_local_to_elem,
   const std::string &dofs_property) const
 {
-  return ref_space_->get_element_dofs(
+  return ref_basis_->get_element_dofs(
            element_id,
            dofs_global,
            dofs_local_to_patch,
@@ -243,7 +243,7 @@ auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 get_ptr_const_dof_distribution() const -> std::shared_ptr<const DofDistribution<dim, range, rank> >
 {
-  return ref_space_->get_ptr_const_dof_distribution();
+  return ref_basis_->get_ptr_const_dof_distribution();
 }
 
 
@@ -253,7 +253,7 @@ auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 get_ptr_dof_distribution() -> std::shared_ptr<DofDistribution<dim, range, rank> >
 {
-  return ref_space_.get_ptr_data()->get_ptr_dof_distribution();
+  return ref_basis_.get_ptr_data()->get_ptr_dof_distribution();
 }
 
 
@@ -265,7 +265,7 @@ PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 print_info(LogStream &out) const
 {
   out.begin_item("Reference space:");
-  ref_space_->print_info(out);
+  ref_basis_->print_info(out);
   out.end_item();
 
   out.begin_item("Physical domain:");
@@ -281,20 +281,21 @@ PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 create_cache_handler() const
 -> std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>>
 {
-  return std::make_unique<ElementHandler>(this->get_this_space());
+  return std::make_unique<ElementHandler>(this->get_this_basis());
 }
 
 
 
 
-
+#if 0
 template <int dim_, int range_, int rank_, int codim_>
 int
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 get_max_degree() const
 {
-  return ref_space_->get_max_degree();
+  return ref_basis_->get_max_degree();
 }
+#endif
 
 template <int dim_, int range_, int rank_, int codim_>
 Transformation
@@ -304,6 +305,16 @@ get_transformation_type() const
   return transformation_type_;
 }
 
+
+template <int dim_, int range_, int rank_, int codim_>
+std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
+                                                   PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+                                                   get_spline_space() const
+{
+  return ref_basis_->get_spline_space();
+}
+
+
 #ifdef MESH_REFINEMENT
 
 template <int dim_, int range_, int rank_, int codim_>
@@ -312,7 +323,7 @@ PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 refine_h(const Size n_subdivisions)
 {
   //the refinement of the ReferenceSpaceBasis also refines the Domain (they share the same Grid)
-  ref_space_.get_ptr_data()->refine_h(n_subdivisions);
+  ref_basis_.get_ptr_data()->refine_h(n_subdivisions);
 }
 
 
@@ -323,7 +334,7 @@ rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
 {
-  auto prev_ref_basis = ref_space_->get_basis_previous_refinement();
+  auto prev_ref_basis = ref_basis_->get_basis_previous_refinement();
   Assert(prev_ref_basis != nullptr, ExcNullPtr());
 
   auto prev_phys_domain = phys_domain_->get_domain_previous_refinement();
@@ -348,7 +359,7 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
               std::placeholders::_2);
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  std::const_pointer_cast<Grid<dim>>(ref_space_->get_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
+  std::const_pointer_cast<Grid<dim>>(ref_basis_->get_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
 }
 
 template <int dim_, int range_, int rank_, int codim_>
@@ -377,7 +388,7 @@ serialize(Archive &ar, const unsigned int version)
   ar.template register_type<NURBS<dim_,range_,rank_> >();
 #endif // NURBS
 
-  ar &boost::serialization::make_nvp("ref_space_",ref_space_);
+  ar &boost::serialization::make_nvp("ref_basis_",ref_basis_);
 
   auto tmp = const_pointer_cast<self_t>(phys_space_previous_refinement_);
   ar &boost::serialization::make_nvp("phys_space_previous_refinement_",tmp);

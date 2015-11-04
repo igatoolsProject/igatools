@@ -306,6 +306,8 @@ public:
   ///@}
 
 
+  int get_max_degree() const ;
+
 
 
   template<int k>

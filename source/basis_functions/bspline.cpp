@@ -36,25 +36,25 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_, int rank_>
 BSpline<dim_, range_, rank_>::
-BSpline(const SharedPtrConstnessHandler<SpaceData> &space_data,
+BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
         const EndBehaviourTable &end_b)
   :
-  space_data_(space_data),
+  spline_space_(spline_space),
   end_b_(end_b),
-  operators_(*space_data_,end_b),
+  operators_(*spline_space_,end_b),
   end_interval_(end_b.get_comp_map()),
   dof_distribution_(std::make_shared<DofDistribution<dim_,range_,rank_>>(
-                     space_data->get_num_basis_table(),
-                     space_data->get_degree_table(),
-                     space_data->get_periodic_table()))
+                     spline_space->get_num_basis_table(),
+                     spline_space->get_degree_table(),
+                     spline_space->get_periodic_table()))
 {
-//    Assert(space_data_ != nullptr,ExcNullPtr());
+//    Assert(spline_space_ != nullptr,ExcNullPtr());
   Assert(dof_distribution_ != nullptr,ExcNullPtr());
 
   //------------------------------------------------------------------------------
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
 
-  const auto &sp_data = *this->space_data_;
+  const auto &sp_data = *this->spline_space_;
   const auto &grid = *sp_data.get_grid();
   const auto &degree_table = sp_data.get_degree_table();
   const auto rep_knots = sp_data.compute_knots_with_repetition(end_b_);
@@ -101,8 +101,8 @@ BSpline(const DegreeTable &deg,
   :
   BSpline(
    grid.data_is_const() ?
-   SharedPtrConstnessHandler<SpaceData>(SpaceData::const_create(deg, grid.get_ptr_const_data(), interior_mult, periodic)) :
-   SharedPtrConstnessHandler<SpaceData>(SpaceData::create(deg, grid.get_ptr_data(), interior_mult, periodic)),
+   SharedPtrConstnessHandler<SpSpace>(SpSpace::const_create(deg, grid.get_ptr_const_data(), interior_mult, periodic)) :
+   SharedPtrConstnessHandler<SpSpace>(SpSpace::create(deg, grid.get_ptr_data(), interior_mult, periodic)),
    end_b)
 {}
 #endif
@@ -112,12 +112,12 @@ BSpline(const DegreeTable &deg,
 template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
-create(const std::shared_ptr<SpaceData> &space_data,
+create(const std::shared_ptr<SpSpace> &spline_space,
        const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<SpaceData>(space_data), end_b));
+    new self_t(SharedPtrConstnessHandler<SpSpace>(spline_space), end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -130,12 +130,12 @@ create(const std::shared_ptr<SpaceData> &space_data,
 template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
-const_create(const std::shared_ptr<const SpaceData> &space_data,
+const_create(const std::shared_ptr<const SpSpace> &spline_space,
              const EndBehaviourTable &end_b)
 -> shared_ptr<const self_t>
 {
   auto sp = shared_ptr<const self_t>(
-    new self_t(SharedPtrConstnessHandler<SpaceData>(space_data), end_b));
+    new self_t(SharedPtrConstnessHandler<SpSpace>(spline_space), end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
   return sp;
@@ -145,7 +145,7 @@ const_create(const std::shared_ptr<const SpaceData> &space_data,
 template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
-get_this_space() const -> shared_ptr<const self_t>
+get_this_basis() const -> shared_ptr<const self_t>
 {
   auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
   auto bsp_space = std::dynamic_pointer_cast<self_t>(ref_sp);
@@ -163,7 +163,7 @@ create_element(const ListIt &index, const PropId &property) const
   using Elem = BSplineElement<dim_,range_,rank_>;
 
   std::unique_ptr<SpaceElement<dim_,0,range_,rank_>>
-  elem = std::make_unique<Elem>(this->get_this_space(),index,property);
+  elem = std::make_unique<Elem>(this->get_this_basis(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -178,7 +178,7 @@ create_ref_element(const ListIt &index, const PropId &property) const
   using Elem = BSplineElement<dim_,range_,rank_>;
 
   std::unique_ptr<ReferenceElement<dim_,range_,rank_>>
-  elem = std::make_unique<Elem>(this->get_this_space(),index,property);
+  elem = std::make_unique<Elem>(this->get_this_basis(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -213,9 +213,9 @@ get_sub_bspline_space(const int s_id,
     sub_grid = this->get_grid()->template get_sub_grid<sdim>(s_id, elem_map);
   }
 
-  auto sub_mult   = this->space_data_->template get_sub_space_mult<sdim>(s_id);
-  auto sub_degree = this->space_data_->template get_sub_space_degree<sdim>(s_id);
-  auto sub_periodic = this->space_data_->template get_sub_space_periodicity<sdim>(s_id);
+  auto sub_mult   = this->spline_space_->template get_sub_space_mult<sdim>(s_id);
+  auto sub_degree = this->spline_space_->template get_sub_space_degree<sdim>(s_id);
+  auto sub_periodic = this->spline_space_->template get_sub_space_periodicity<sdim>(s_id);
 
   using SubBasis = BSpline<sdim,range,rank>;
 
@@ -248,7 +248,7 @@ get_sub_bspline_space(const int s_id,
   dof_map.resize(sub_basis->get_num_basis());
   const auto &sub_space_index_table = sub_basis->get_ptr_const_dof_distribution()->get_index_table();
   const auto     &space_index_table = this->get_ptr_const_dof_distribution()->get_index_table();
-  for (auto comp : SpaceData::components)
+  for (auto comp : SpSpace::components)
   {
     const auto n_basis = sub_basis->get_num_comp_basis(comp);
     const auto &sub_local_indices = sub_space_index_table[comp];
@@ -285,7 +285,7 @@ auto
 BSpline<dim_, range_, rank_>::
 get_grid() const -> std::shared_ptr<const Grid<dim_>>
 {
-  return space_data_->get_grid();
+  return spline_space_->get_grid();
 }
 
 
@@ -302,7 +302,7 @@ get_element_dofs(
   SafeSTLVector<Index> &dofs_local_to_elem,
   const std::string &dofs_property) const
 {
-  const auto &sp_data = *space_data_;
+  const auto &sp_data = *spline_space_;
   const auto &accum_mult = sp_data.accumulated_interior_multiplicities();
 
   const auto &dof_distr = *this->dof_distribution_;
@@ -315,7 +315,7 @@ get_element_dofs(
 //    const auto &elem_tensor_id = this->get_grid()->flat_to_tensor(element_id);
 
   Index dof_loc_to_elem = 0;
-  for (const auto comp : SpaceData::components)
+  for (const auto comp : SpSpace::components)
   {
     const auto &index_table_comp = index_table[comp];
 
@@ -371,7 +371,7 @@ void
 BSpline<dim_,range_,rank_>::
 refine_h(const Size n_subdivisions)
 {
-  space_data_.get_ptr_data()->refine_h(n_subdivisions);
+  spline_space_.get_ptr_data()->refine_h(n_subdivisions);
 }
 
 
@@ -384,17 +384,17 @@ rebuild_after_insert_knots(
 {
   this->ref_basis_previous_refinement_ =
     BSpline<dim_,range_,rank_>::const_create(
-      this->space_data_->get_spline_space_previous_refinement(),
+      this->spline_space_->get_spline_space_previous_refinement(),
       this->end_b_);
 
 
   this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
                               new DofDistribution<dim_,range_,rank_>(
-                                this->space_data_->get_num_basis_table(),
-                                this->space_data_->get_degree_table(),
-                                this->space_data_->get_periodic_table()));
+                                this->spline_space_->get_num_basis_table(),
+                                this->spline_space_->get_degree_table(),
+                                this->spline_space_->get_periodic_table()));
 
-  operators_ = BernsteinExtraction<dim,range,rank>(*this->space_data_,end_b_);
+  operators_ = BernsteinExtraction<dim,range,rank>(*this->spline_space_,end_b_);
 }
 
 
@@ -407,7 +407,7 @@ BSpline<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
   out.begin_item("Spline Space:");
-  this->space_data_->print_info(out);
+  this->spline_space_->print_info(out);
   out.end_item();
 
 
@@ -421,21 +421,22 @@ print_info(LogStream &out) const
   out.end_item();
 }
 
-
+#if 0
 template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 get_degree_table() const -> const DegreeTable &
 {
-  return this->space_data_->get_degree_table();
+  return this->spline_space_->get_degree_table();
 }
+#endif
 
 template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 get_periodicity() const -> const PeriodicityTable &
 {
-  return space_data_->get_periodicity();
+  return spline_space_->get_periodicity();
 }
 
 template<int dim_, int range_, int rank_>
@@ -462,7 +463,7 @@ create_cache_handler() const
 -> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
   return std::make_unique<BSplineElementHandler<dim_,range_,rank_>>(
-    this->get_this_space());
+    this->get_this_basis());
 }
 
 
@@ -483,6 +484,13 @@ get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 }
 
 
+template<int dim_, int range_, int rank_>
+std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
+                                                   BSpline<dim_, range_, rank_>::
+                                                   get_spline_space() const
+{
+  return spline_space_.get_ptr_const_data();
+}
 
 
 #ifdef SERIALIZATION
@@ -502,7 +510,7 @@ serialize(Archive &ar)
 
   ar &make_nvp(base_name,base_class<BaseSpace>(this));
 
-  ar &make_nvp("space_data_",space_data_);
+  ar &make_nvp("spline_space_",spline_space_);
 
   ar &make_nvp("end_b_",end_b_);
 

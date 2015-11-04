@@ -30,17 +30,17 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank>
 ReferenceElement<dim, range, rank>::
-ReferenceElement(const std::shared_ptr<ConstSpace> space,
+ReferenceElement(const std::shared_ptr<ConstSpace> &basis,
                  const ListIt &index,
                  const PropId &prop)
   :
-  parent_t(space,prop),
-  space_(space)
+  parent_t(basis,prop),
+  basis_(basis)
 {
 //    Assert(this->get_space() != nullptr,ExcNullPtr());
 
   //-------------------------------------------------
-  const auto &degree_table = space->get_degree_table();
+  const auto &degree_table = basis->get_spline_space()->get_degree_table();
   TensorSizeTable n_basis(degree_table.get_comp_map());
   for (auto comp : degree_table.get_active_components_id())
     n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
@@ -120,9 +120,9 @@ get_element_w_measures() const -> ValueVector<Real>
 template <int dim, int range, int rank>
 auto
 ReferenceElement<dim, range, rank>::
-get_ig_space() const -> std::shared_ptr<const Basis>
+get_ig_basis() const -> std::shared_ptr<const Basis>
 {
-  return space_;
+  return basis_;
 }
 #endif
 

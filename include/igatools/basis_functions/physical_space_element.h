@@ -54,10 +54,10 @@ public :
   using ContainerType = const PhysSpace;
 
   using Basis = PhysSpace;
-  using RefSpace = typename PhysSpace::RefSpace;
+  using RefBasis = typename PhysSpace::RefBasis;
   using PushFwd = typename PhysSpace::PushFwd;
-//    using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank,Transformation::h_grad>;
-  using RefElemAccessor = ReferenceElement<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+//    using RefElemAccessor = SpaceElement<RefBasis::dim,0,RefBasis::range,RefBasis::rank,Transformation::h_grad>;
+  using RefElemAccessor = ReferenceElement<RefBasis::dim,RefBasis::range,RefBasis::rank>;
 
   using PhysDomain = Domain<dim_, codim_>;
   using PhysDomainElem = DomainElement<dim_, codim_>;

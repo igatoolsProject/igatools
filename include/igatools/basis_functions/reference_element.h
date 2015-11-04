@@ -73,9 +73,9 @@ public:
 
   /**
    * Constructs an accessor to element number index of a
-   * ReferenceSpaceBasis space.
+   * ReferenceSpaceBasis basis.
    */
-  ReferenceElement(const std::shared_ptr<ConstSpace> space,
+  ReferenceElement(const std::shared_ptr<ConstSpace> &basis,
                    const ListIt &index,
                    const PropId &prop = ElementProperties::active);
 
@@ -122,7 +122,7 @@ protected:
   /** Hash table for fast conversion between flat-to-tensor basis function ids. */
   IndexerPtrTable basis_functions_indexer_;
 
-  std::shared_ptr<const Basis> space_;
+  std::shared_ptr<const Basis> basis_;
 
 public:
   using parent_t::get_num_basis;

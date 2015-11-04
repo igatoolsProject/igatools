@@ -35,7 +35,7 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
              const PropId &prop)
   :
   parent_t(space,index,prop),
-  bspline_elem_(space->get_spline_space(),index,prop),
+  bspline_elem_(space->get_bspline_basis(),index,prop),
   weight_elem_(space->weight_func_->create_element(index,prop))
 {
 //    weight_elem_ =
@@ -78,11 +78,11 @@ move_to(const Index flat_index)
 template <int dim, int range, int rank>
 auto
 NURBSElement<dim, range, rank>::
-get_nurbs_space() const -> std::shared_ptr<const Basis>
+get_nurbs_basis() const -> std::shared_ptr<const Basis>
 {
-  const auto nrb_space = std::dynamic_pointer_cast<const Basis>(this->space_);
-  Assert(nrb_space != nullptr,ExcNullPtr());
-  return nrb_space;
+  const auto nrb_basis = std::dynamic_pointer_cast<const Basis>(this->basis_);
+  Assert(nrb_basis != nullptr,ExcNullPtr());
+  return nrb_basis;
 }
 
 

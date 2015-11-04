@@ -37,6 +37,7 @@ template <int,int,int,int> class SpaceElement;
 template <int,int,int,int> class SpaceElementHandler;
 
 
+template <int,int,int> class SplineSpace;
 
 
 template <int,int,int> class DofDistribution;
@@ -182,12 +183,12 @@ public:
 
   ///@}
 
-
+#if 0
   /**
    * Return the maximum value of the polynomial degree, for each component, for each direction;
    */
   virtual int get_max_degree() const = 0;
-
+#endif
 
   /**
    * Create and element (defined on this space) with a given flat_index
@@ -203,6 +204,10 @@ public:
 
   virtual void print_info(LogStream &out) const = 0;
 
+
+  virtual
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
+                                                     get_spline_space() const = 0;
 
 
   using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_>;

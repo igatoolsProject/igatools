@@ -136,7 +136,7 @@ PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
 PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
   :
   base_t(space),
-  ref_space_handler_(space->get_reference_space()->create_cache_handler()),
+  ref_space_handler_(space->get_reference_basis()->create_cache_handler()),
   phys_domain_handler_(space->get_physical_domain()->create_cache_handler()),
   phys_space_(space)
 {}
@@ -274,21 +274,21 @@ operator()(const Topology<sub_elem_dim> &topology)
   if (sub_elem_cache.template status_fill<_Value>())
   {
     PushFwd::template
-    transform_0<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
+    transform_0<RefBasis::range,RefBasis::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
 
     sub_elem_cache.template set_status_filled<_Value>(true);
   }
   if (sub_elem_cache.template status_fill<_Gradient>())
   {
     PushFwd::template
-    transform_1<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
+    transform_1<RefBasis::range,RefBasis::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
 
     sub_elem_cache.template set_status_filled<_Gradient>(true);
   }
   if (sub_elem_cache.template status_fill<_Hessian>())
   {
     PushFwd::template
-    transform_2<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
+    transform_2<RefBasis::range,RefBasis::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
 
     sub_elem_cache.template set_status_filled<_Hessian>(true);
   }

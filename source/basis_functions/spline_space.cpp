@@ -339,6 +339,22 @@ get_grid() const
   return grid_.get_ptr_const_data();
 }
 
+template<int dim, int range, int rank>
+int
+SplineSpace<dim, range, rank>::
+get_max_degree() const
+{
+  int max_degree = 0;
+
+  const auto &degree_table = this->get_degree_table();
+  for (const auto &degree_comp : degree_table)
+    for (const auto &degree_comp_dim : degree_comp)
+      max_degree = std::max(max_degree,degree_comp_dim);
+
+  return max_degree;
+}
+
+
 #ifdef MESH_REFINEMENT
 
 template<int dim, int range, int rank>

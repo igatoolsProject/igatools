@@ -143,19 +143,19 @@ public:
   using ElementIterator = GridIterator<SpaceElement<dim,0,range,rank>>;
 
 
-  using SpaceData = SplineSpace<dim_,range_,rank_>;
+  using SpSpace = SplineSpace<dim_,range_,rank_>;
 
-  using Degrees = typename SpaceData::Degrees;
-  using Multiplicity = typename SpaceData::Multiplicity;
-  using EndBehaviour = typename SpaceData::EndBehaviour;
-  using Periodicity = typename SpaceData::Periodicity;
+  using Degrees = typename SpSpace::Degrees;
+  using Multiplicity = typename SpSpace::Multiplicity;
+  using EndBehaviour = typename SpSpace::EndBehaviour;
+  using Periodicity = typename SpSpace::Periodicity;
 
-  using KnotsTable = typename SpaceData::KnotsTable;
-  using DegreeTable = typename SpaceData::DegreeTable;
-  using MultiplicityTable = typename SpaceData::MultiplicityTable;
-  using TensorSizeTable = typename SpaceData::TensorSizeTable;
-  using PeriodicityTable = typename SpaceData::PeriodicityTable;
-  using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
+  using KnotsTable = typename SpSpace::KnotsTable;
+  using DegreeTable = typename SpSpace::DegreeTable;
+  using MultiplicityTable = typename SpSpace::MultiplicityTable;
+  using TensorSizeTable = typename SpSpace::TensorSizeTable;
+  using PeriodicityTable = typename SpSpace::PeriodicityTable;
+  using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
   using BaseSpace::ComponentContainer;
 
@@ -254,11 +254,11 @@ public:
 #endif
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<SpaceData> &space_data,
+  create(const std::shared_ptr<SpSpace> &spline_space,
          const EndBehaviourTable &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const SpaceData> &space_data,
+  const_create(const std::shared_ptr<const SpSpace> &spline_space,
                const EndBehaviourTable &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
   ///@}
 
@@ -332,7 +332,7 @@ protected:
 #endif
 
 
-  explicit BSpline(const SharedPtrConstnessHandler<SpaceData> &space_data,
+  explicit BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
                    const EndBehaviourTable &end_b);
 
 
@@ -352,9 +352,9 @@ protected:
 public:
   virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final;
 
-
+#if 0
   virtual const DegreeTable &get_degree_table() const override final;
-
+#endif
 
   virtual void get_element_dofs(
     const IndexType element_id,
@@ -392,6 +392,12 @@ public:
 
 
 
+  /**
+   * /brief Returns the SplineSpace used to build the BSpline basis.
+   */
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
+                                                     get_spline_space() const override final;
+
 
 
 public:
@@ -419,7 +425,7 @@ public:
 
 private:
 
-  SharedPtrConstnessHandler<SpaceData > space_data_;
+  SharedPtrConstnessHandler<SpSpace > spline_space_;
 
 
   EndBehaviourTable end_b_;
@@ -469,7 +475,7 @@ public:
    *
    * @note Internally uses the shared_from_this() function.
    */
-  std::shared_ptr<const self_t > get_this_space() const;
+  std::shared_ptr<const self_t > get_this_basis() const;
 
 
 public:
@@ -489,7 +495,7 @@ private:
   /**
    * Lookup table for the local dof id in each element component
    */
-  typename SpaceData::template ComponentContainer<SafeSTLVector<TensorIndex<dim> > >
+  typename SpSpace::template ComponentContainer<SafeSTLVector<TensorIndex<dim> > >
   dofs_tensor_id_elem_table_;
 #endif
 

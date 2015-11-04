@@ -151,15 +151,15 @@ public:
   ///@}
 
   /**
-   * Returns the NURBS in which the NURBSElement is defined.
+   * Returns the NURBS basis in which the NURBSElement is defined.
    */
-  std::shared_ptr<const Basis> get_nurbs_space() const;
+  std::shared_ptr<const Basis> get_nurbs_basis() const;
 
 private:
 
-  using BSpSpace = typename Basis::BSpSpace;
+  using BSpBasis = typename Basis::BSpBasis;
 
-  typename BSpSpace::ElementAccessor bspline_elem_;
+  typename BSpBasis::ElementAccessor bspline_elem_;
 
   using WeightFunction = typename Basis::WeightFunction;
   using WeightElem = typename WeightFunction::ElementAccessor;

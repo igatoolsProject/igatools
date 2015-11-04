@@ -290,11 +290,11 @@ BSplineElement(const std::shared_ptr<ContainerType> space,
 template <int dim, int range, int rank>
 auto
 BSplineElement<dim, range, rank>::
-get_bspline_space() const -> std::shared_ptr<const Basis>
+get_bspline_basis() const -> std::shared_ptr<const Basis>
 {
-  auto bsp_space = std::dynamic_pointer_cast<const Basis>(this->space_);
-  Assert(bsp_space != nullptr,ExcNullPtr());
-  return bsp_space;
+  auto bsp_basis = std::dynamic_pointer_cast<const Basis>(this->basis_);
+  Assert(bsp_basis != nullptr,ExcNullPtr());
+  return bsp_basis;
 }
 
 
