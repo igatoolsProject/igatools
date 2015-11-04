@@ -44,9 +44,7 @@ public:
   void local_assemble();
 
 private:
-  using Basis = BSpline<dim>;
-  shared_ptr<const Grid<dim>>  grid;
-  shared_ptr<const Basis>   space;
+  shared_ptr<const BSpline<dim>> basis;
 };
 // [class declaration]
 
@@ -54,10 +52,11 @@ private:
 // [constructor]
 template <int dim>
 PoissonPreparation<dim>::PoissonPreparation(const int n_knots,  const int deg)
-  :
-  grid {Grid<dim>::create(n_knots)},
-  space {BSpline<dim>::create(deg, grid)}
-{}
+{
+  const auto grid = Grid<dim>::const_create(n_knots) ;
+  const auto space = SplineSpace<dim>::const_create(deg, grid);
+  basis = BSpline<dim>::const_create(space);
+}
 // [constructor]
 
 
@@ -71,19 +70,20 @@ void  PoissonPreparation<dim>::local_assemble()
 
 
   // [iterate as before]
-  using ElementHandler = typename Basis::ElementHandler;
-  auto elem_handler = ElementHandler::create(space);
-  auto quad = QGauss<dim>(2);
-  auto flag = ValueFlags::value | ValueFlags::gradient |
-              ValueFlags::w_measure;
+  auto elem_handler = basis->create_cache_handler();
 
-  elem_handler->reset(flag, quad);
+  using Flags = space_element::Flags;
+  auto flag = Flags::value | Flags::gradient | Flags::w_measure;
 
-  auto elem = space->begin();
-  const auto elem_end = space->end();
-  elem_handler->init_element_cache(elem);
+  elem_handler->set_element_flags(flag);
 
-  const int n_qp = quad.get_num_points();
+  auto elem = basis->begin();
+  const auto elem_end = basis->end();
+
+  auto quad = QGauss<dim>::create(2);
+  elem_handler->init_element_cache(elem,quad);
+
+  const int n_qp = quad->get_num_points();
   for (; elem != elem_end; ++elem)
   {
     // [iterate as before]
@@ -100,24 +100,23 @@ void  PoissonPreparation<dim>::local_assemble()
 
     // [get the values]
     elem_handler->fill_element_cache(elem);
-    auto values = elem->template get_basis_data<_Value, dim>(0,DofProperties::active);
-    auto grads  = elem->template get_basis_data<_Gradient, dim>(0,DofProperties::active);
-    auto w_meas = elem->template get_w_measures<dim>(0);
+    auto values = elem->get_element_values();
+    auto grads  = elem->get_element_gradients();
+    auto w_meas = elem->get_element_w_measures();
     // [get the values]
 
     // [assemble]
-    for (int i=0; i<n_basis; ++i)
+    for (int i = 0 ; i < n_basis ; ++i)
     {
-      auto grd_phi_i = grads.get_function_view(i);
-      for (int j=0; j<n_basis; ++j)
+      const auto &grd_phi_i = grads.get_function_view(i);
+      for (int j = 0 ; j < n_basis ; ++j)
       {
-        auto grd_phi_j = grads.get_function_view(j);
-        for (int qp=0; qp<n_qp; ++qp)
-          loc_mat(i,j) +=
-            scalar_product(grd_phi_i[qp], grd_phi_j[qp])
-            * w_meas[qp];
+        const auto &grd_phi_j = grads.get_function_view(j);
+        for (int qp = 0 ; qp < n_qp ; ++qp)
+          loc_mat(i,j) += scalar_product(grd_phi_i[qp],grd_phi_j[qp]) * w_meas[qp];
       }
-      auto phi_i = values.get_function_view(i);
+
+      const auto &phi_i = values.get_function_view(i);
       for (int qp=0; qp<n_qp; ++qp)
         loc_rhs(i) += phi_i[qp][0] * w_meas[qp];
     }
