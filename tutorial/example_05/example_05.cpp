@@ -22,13 +22,11 @@
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/base/quadrature_lib.h>
 // [new includes]
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/linear_algebra/dense_vector.h>
 // [new includes]
-#include <igatools/base/logstream.h>
 
 using namespace iga;
 using namespace std;
