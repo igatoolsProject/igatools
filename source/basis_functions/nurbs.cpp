@@ -342,15 +342,6 @@ refine_h_weights(
 #endif
 
 
-#if 0
-template <int dim_, int range_, int rank_>
-auto
-NURBS<dim_, range_, rank_>::
-get_interior_mult() const -> std::shared_ptr<const MultiplicityTable>
-{
-  return bsp_basis_->get_interior_mult();
-}
-#endif
 
 
 template <int dim_, int range_, int rank_>
@@ -474,7 +465,7 @@ get_element_dofs(
 
 
 
-
+#if 0
 template <int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
@@ -482,7 +473,7 @@ get_periodicity() const -> const PeriodicityTable &
 {
   return bsp_basis_->get_periodicity();
 }
-
+#endif
 
 template <int dim_, int range_, int rank_>
 auto

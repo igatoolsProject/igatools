@@ -183,12 +183,6 @@ public:
 
   ///@}
 
-#if 0
-  /**
-   * Return the maximum value of the polynomial degree, for each component, for each direction;
-   */
-  virtual int get_max_degree() const = 0;
-#endif
 
   /**
    * Create and element (defined on this space) with a given flat_index
@@ -206,8 +200,8 @@ public:
 
 
   virtual
-  std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
-                                                     get_spline_space() const = 0;
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
+  get_spline_space() const = 0;
 
 
   using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_>;

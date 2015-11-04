@@ -212,9 +212,6 @@ public:
 
   virtual bool is_bspline() const override final;
 
-#if 0
-  virtual const DegreeTable &get_degree_table() const override final;
-#endif
 
   virtual void get_element_dofs(
     const IndexType element_id,
@@ -235,8 +232,9 @@ public:
    */
   std::shared_ptr<const WeightFunction> get_weight_func() const;
 
+#if 0
   const PeriodicityTable &get_periodicity() const override final;
-
+#endif
 
   /**
    * Returns a const reference to the end behaviour table of the BSpline space.

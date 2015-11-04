@@ -425,19 +425,11 @@ print_info(LogStream &out) const
 template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
-get_degree_table() const -> const DegreeTable &
-{
-  return this->spline_space_->get_degree_table();
-}
-#endif
-
-template<int dim_, int range_, int rank_>
-auto
-BSpline<dim_, range_, rank_>::
 get_periodicity() const -> const PeriodicityTable &
 {
   return spline_space_->get_periodicity();
 }
+#endif
 
 template<int dim_, int range_, int rank_>
 auto

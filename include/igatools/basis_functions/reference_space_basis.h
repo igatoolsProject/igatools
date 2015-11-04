@@ -97,26 +97,26 @@ public:
 
   using ElementHandler = ReferenceElementHandler<dim_, range_, rank_>;
 
-  using SpaceData = SplineSpace<dim_,range_,rank_>;
+  using SpSpace = SplineSpace<dim_,range_,rank_>;
 
-  using Degrees = typename SpaceData::Degrees;
-  using Multiplicity = typename SpaceData::Multiplicity;
-  using EndBehaviour = typename SpaceData::EndBehaviour;
-  using Periodicity = typename SpaceData::Periodicity;
+  using Degrees = typename SpSpace::Degrees;
+  using Multiplicity = typename SpSpace::Multiplicity;
+  using EndBehaviour = typename SpSpace::EndBehaviour;
+  using Periodicity = typename SpSpace::Periodicity;
 
-  using KnotsTable = typename SpaceData::KnotsTable;
-  using DegreeTable = typename SpaceData::DegreeTable;
-  using MultiplicityTable = typename SpaceData::MultiplicityTable;
-  using TensorSizeTable = typename SpaceData::TensorSizeTable;
-  using PeriodicityTable = typename SpaceData::PeriodicityTable;
-  using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
+  using KnotsTable = typename SpSpace::KnotsTable;
+  using DegreeTable = typename SpSpace::DegreeTable;
+  using MultiplicityTable = typename SpSpace::MultiplicityTable;
+  using TensorSizeTable = typename SpSpace::TensorSizeTable;
+  using PeriodicityTable = typename SpSpace::PeriodicityTable;
+  using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
   template <class T>
-  using ComponentContainer = typename SpaceData::template ComponentContainer<T>;
+  using ComponentContainer = typename SpSpace::template ComponentContainer<T>;
 
-  using ComponentMap = typename SpaceData::template ComponentContainer<int>::ComponentMap;
+  using ComponentMap = typename SpSpace::template ComponentContainer<int>::ComponentMap;
 
-  static const auto n_components = SpaceData::n_components;
+  static const auto n_components = SpSpace::n_components;
 
 protected:
   /**
@@ -162,15 +162,15 @@ public:
 
 
 
-
   /**
    * Returns a const reference to the end behaviour table of the BSpline space.
    */
   virtual const EndBehaviourTable &get_end_behaviour_table() const = 0;
 
 
+#if 0
   virtual const PeriodicityTable &get_periodicity() const = 0;
-
+#endif
 
 
 

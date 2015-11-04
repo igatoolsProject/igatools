@@ -144,17 +144,7 @@ public:
 
 
   using SpSpace = SplineSpace<dim_,range_,rank_>;
-
-  using Degrees = typename SpSpace::Degrees;
-  using Multiplicity = typename SpSpace::Multiplicity;
   using EndBehaviour = typename SpSpace::EndBehaviour;
-  using Periodicity = typename SpSpace::Periodicity;
-
-  using KnotsTable = typename SpSpace::KnotsTable;
-  using DegreeTable = typename SpSpace::DegreeTable;
-  using MultiplicityTable = typename SpSpace::MultiplicityTable;
-  using TensorSizeTable = typename SpSpace::TensorSizeTable;
-  using PeriodicityTable = typename SpSpace::PeriodicityTable;
   using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
   using BaseSpace::ComponentContainer;
@@ -352,9 +342,6 @@ protected:
 public:
   virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final;
 
-#if 0
-  virtual const DegreeTable &get_degree_table() const override final;
-#endif
 
   virtual void get_element_dofs(
     const IndexType element_id,
@@ -401,7 +388,10 @@ public:
 
 
 public:
+
+#if 0
   const PeriodicityTable &get_periodicity() const override final;
+#endif
 
   /**
    * Returns a reference to the end behaviour table of the BSpline space.
