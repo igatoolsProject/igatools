@@ -25,6 +25,7 @@
 #include <igatools/geometry/grid.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/unit_element.h>
+#include <igatools/geometry/grid_function_element.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/functions/function_element.h>
 
@@ -55,7 +56,8 @@ public:
   Writer(const Writer<dim,codim,T> &writer) = delete;
 
 
-  Writer(const std::shared_ptr<const Grid<dim> > &grid);
+  Writer(const std::shared_ptr<const Grid<dim> > &grid,
+         const Index num_points_direction = 2);
 
 
   Writer(const std::shared_ptr<const GridFunction<dim,dim+codim>> &grid_function,
@@ -137,10 +139,17 @@ public:
 
 
   /**
-   * \brief Add a field to the output file.
+   * \brief Add a field (of type Function) to the output file.
    */
   template<int range, int rank>
   void add_field(const Function<dim,codim,range,rank> &func,
+                 const std::string &name);
+
+  /**
+   * \brief Add a field (of type GridFunction) to the output file.
+   */
+  template<int range>
+  void add_field(const GridFunction<dim,range> &func,
                  const std::string &name);
 
 
@@ -354,8 +363,7 @@ add_field(const Function<dim,codim,range,rank> &func,
          ExcMessage("Different domains between the function and the Writer."));
 
   //--------------------------------------------------------------------------
-  Assert(range <= 3,
-         ExcMessage("The maximum allowed physical domain for VTK file is 3."));
+  static_assert(range <= 3,"The maximum allowed physical domain for VTK file is 3.");
   //--------------------------------------------------------------------------
 
 
@@ -449,6 +457,91 @@ add_field(const Function<dim,codim,range,rank> &func,
   //--------------------------------------------------------------------------
 //#endif
 }
+
+
+
+
+
+template<int dim, int codim, class T>
+template<int range>
+inline
+void
+Writer<dim, codim, T>::
+add_field(const GridFunction<dim,range> &func,
+          const string &name)
+{
+  const auto grid = domain_->get_grid_function()->get_grid();
+  Assert(grid == func.get_grid(),
+         ExcMessage("Different grids between the function and the Writer."));
+
+  //--------------------------------------------------------------------------
+  static_assert(range <= 3,"The maximum allowed physical domain for VTK file is 3.");
+  //--------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------------
+  // get the fields to write and assign them to the vtkUnstructuredGrid object
+  using grid_function_element::Flags;
+  using _D0 = grid_function_element::_D<0>;
+
+  auto func_cache_handler = func.create_cache_handler();
+  func_cache_handler->template set_flags<dim>(Flags::D0);
+
+  auto f_elem = func.cbegin();
+  const auto f_end  = func.cend();
+
+
+
+  func_cache_handler->init_cache(*f_elem,quad_plot_);
+
+
+  const auto n_elements = grid->get_num_all_elems();
+  const auto n_pts_per_elem = quad_plot_->get_num_points();
+
+  const int n_values_per_pt = range;
+  auto data_ptr = std::make_shared<SafeSTLVector<T>>(n_elements * n_pts_per_elem * n_values_per_pt);
+  auto &data = *data_ptr;
+  if (range == 1)
+  {
+    int pos = 0;
+    for (; f_elem != f_end; ++f_elem)
+    {
+      func_cache_handler->template fill_cache<dim>(*f_elem,0);
+
+      const auto &field_values = f_elem->template get_values_from_cache<_D0,dim>(0);
+
+      for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
+        data[pos++] = field_values[iPt][0];
+    }
+
+    fields_.emplace_back(PointData(name,"scalar",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
+    names_point_data_scalar_.emplace_back(name);
+  }
+  else if (range > 1)
+  {
+    int pos = 0;
+    for (; f_elem != f_end; ++f_elem)
+    {
+      func_cache_handler->template fill_cache<dim>(*f_elem,0);
+
+      const auto &field_values = f_elem->template get_values_from_cache<_D0,dim>(0);
+
+      for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
+      {
+        const auto &field_value_ipt = field_values[iPt];
+        for (int i = 0; i < range; ++i)
+          data[pos++] = field_value_ipt[i];
+      }
+    }
+
+    fields_.emplace_back(PointData(name,"vector",n_elements,n_pts_per_elem, n_values_per_pt, data_ptr));
+    names_point_data_vector_.emplace_back(name);
+  }
+  //--------------------------------------------------------------------------
+//#endif
+}
+
+
+
 
 
 IGA_NAMESPACE_CLOSE

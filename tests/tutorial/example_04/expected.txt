@@ -1,173 +1,164 @@
-Coefficient vector of: 2-th basis
------------------------------
-Global_ID        Value
-0        0.00000
-1        0.00000
-2        1.00000
-3        0.00000
-4        0.00000
------------------------------
+IgCoefficient for: 2-th basis
+Coef[loc_id=0 , glob_id=0] = 0.00000
+Coef[loc_id=1 , glob_id=1] = 0.00000
+Coef[loc_id=2 , glob_id=2] = 1.00000
+Coef[loc_id=3 , glob_id=3] = 0.00000
+Coef[loc_id=4 , glob_id=4] = 0.00000
 
 Saving basis plot
-Coefficient vector of: 12-th basis
------------------------------
-Global_ID        Value
-0        0.00000
-1        0.00000
-2        0.00000
-3        0.00000
-4        0.00000
-5        0.00000
-6        0.00000
-7        0.00000
-8        0.00000
-9        0.00000
-10        0.00000
-11        0.00000
-12        1.00000
-13        0.00000
-14        0.00000
-15        0.00000
-16        0.00000
-17        0.00000
-18        0.00000
-19        0.00000
-20        0.00000
-21        0.00000
-22        0.00000
-23        0.00000
-24        0.00000
------------------------------
+IgCoefficient for: 12-th basis
+Coef[loc_id=0 , glob_id=0] = 0.00000
+Coef[loc_id=1 , glob_id=1] = 0.00000
+Coef[loc_id=2 , glob_id=2] = 0.00000
+Coef[loc_id=3 , glob_id=3] = 0.00000
+Coef[loc_id=4 , glob_id=4] = 0.00000
+Coef[loc_id=5 , glob_id=5] = 0.00000
+Coef[loc_id=6 , glob_id=6] = 0.00000
+Coef[loc_id=7 , glob_id=7] = 0.00000
+Coef[loc_id=8 , glob_id=8] = 0.00000
+Coef[loc_id=9 , glob_id=9] = 0.00000
+Coef[loc_id=10 , glob_id=10] = 0.00000
+Coef[loc_id=11 , glob_id=11] = 0.00000
+Coef[loc_id=12 , glob_id=12] = 1.00000
+Coef[loc_id=13 , glob_id=13] = 0.00000
+Coef[loc_id=14 , glob_id=14] = 0.00000
+Coef[loc_id=15 , glob_id=15] = 0.00000
+Coef[loc_id=16 , glob_id=16] = 0.00000
+Coef[loc_id=17 , glob_id=17] = 0.00000
+Coef[loc_id=18 , glob_id=18] = 0.00000
+Coef[loc_id=19 , glob_id=19] = 0.00000
+Coef[loc_id=20 , glob_id=20] = 0.00000
+Coef[loc_id=21 , glob_id=21] = 0.00000
+Coef[loc_id=22 , glob_id=22] = 0.00000
+Coef[loc_id=23 , glob_id=23] = 0.00000
+Coef[loc_id=24 , glob_id=24] = 0.00000
 
 Saving basis plot
-Coefficient vector of: 62-th basis
------------------------------
-Global_ID        Value
-0        0.00000
-1        0.00000
-2        0.00000
-3        0.00000
-4        0.00000
-5        0.00000
-6        0.00000
-7        0.00000
-8        0.00000
-9        0.00000
-10        0.00000
-11        0.00000
-12        0.00000
-13        0.00000
-14        0.00000
-15        0.00000
-16        0.00000
-17        0.00000
-18        0.00000
-19        0.00000
-20        0.00000
-21        0.00000
-22        0.00000
-23        0.00000
-24        0.00000
-25        0.00000
-26        0.00000
-27        0.00000
-28        0.00000
-29        0.00000
-30        0.00000
-31        0.00000
-32        0.00000
-33        0.00000
-34        0.00000
-35        0.00000
-36        0.00000
-37        0.00000
-38        0.00000
-39        0.00000
-40        0.00000
-41        0.00000
-42        0.00000
-43        0.00000
-44        0.00000
-45        0.00000
-46        0.00000
-47        0.00000
-48        0.00000
-49        0.00000
-50        0.00000
-51        0.00000
-52        0.00000
-53        0.00000
-54        0.00000
-55        0.00000
-56        0.00000
-57        0.00000
-58        0.00000
-59        0.00000
-60        0.00000
-61        0.00000
-62        1.00000
-63        0.00000
-64        0.00000
-65        0.00000
-66        0.00000
-67        0.00000
-68        0.00000
-69        0.00000
-70        0.00000
-71        0.00000
-72        0.00000
-73        0.00000
-74        0.00000
-75        0.00000
-76        0.00000
-77        0.00000
-78        0.00000
-79        0.00000
-80        0.00000
-81        0.00000
-82        0.00000
-83        0.00000
-84        0.00000
-85        0.00000
-86        0.00000
-87        0.00000
-88        0.00000
-89        0.00000
-90        0.00000
-91        0.00000
-92        0.00000
-93        0.00000
-94        0.00000
-95        0.00000
-96        0.00000
-97        0.00000
-98        0.00000
-99        0.00000
-100        0.00000
-101        0.00000
-102        0.00000
-103        0.00000
-104        0.00000
-105        0.00000
-106        0.00000
-107        0.00000
-108        0.00000
-109        0.00000
-110        0.00000
-111        0.00000
-112        0.00000
-113        0.00000
-114        0.00000
-115        0.00000
-116        0.00000
-117        0.00000
-118        0.00000
-119        0.00000
-120        0.00000
-121        0.00000
-122        0.00000
-123        0.00000
-124        0.00000
------------------------------
+IgCoefficient for: 62-th basis
+Coef[loc_id=0 , glob_id=0] = 0.00000
+Coef[loc_id=1 , glob_id=1] = 0.00000
+Coef[loc_id=2 , glob_id=2] = 0.00000
+Coef[loc_id=3 , glob_id=3] = 0.00000
+Coef[loc_id=4 , glob_id=4] = 0.00000
+Coef[loc_id=5 , glob_id=5] = 0.00000
+Coef[loc_id=6 , glob_id=6] = 0.00000
+Coef[loc_id=7 , glob_id=7] = 0.00000
+Coef[loc_id=8 , glob_id=8] = 0.00000
+Coef[loc_id=9 , glob_id=9] = 0.00000
+Coef[loc_id=10 , glob_id=10] = 0.00000
+Coef[loc_id=11 , glob_id=11] = 0.00000
+Coef[loc_id=12 , glob_id=12] = 0.00000
+Coef[loc_id=13 , glob_id=13] = 0.00000
+Coef[loc_id=14 , glob_id=14] = 0.00000
+Coef[loc_id=15 , glob_id=15] = 0.00000
+Coef[loc_id=16 , glob_id=16] = 0.00000
+Coef[loc_id=17 , glob_id=17] = 0.00000
+Coef[loc_id=18 , glob_id=18] = 0.00000
+Coef[loc_id=19 , glob_id=19] = 0.00000
+Coef[loc_id=20 , glob_id=20] = 0.00000
+Coef[loc_id=21 , glob_id=21] = 0.00000
+Coef[loc_id=22 , glob_id=22] = 0.00000
+Coef[loc_id=23 , glob_id=23] = 0.00000
+Coef[loc_id=24 , glob_id=24] = 0.00000
+Coef[loc_id=25 , glob_id=25] = 0.00000
+Coef[loc_id=26 , glob_id=26] = 0.00000
+Coef[loc_id=27 , glob_id=27] = 0.00000
+Coef[loc_id=28 , glob_id=28] = 0.00000
+Coef[loc_id=29 , glob_id=29] = 0.00000
+Coef[loc_id=30 , glob_id=30] = 0.00000
+Coef[loc_id=31 , glob_id=31] = 0.00000
+Coef[loc_id=32 , glob_id=32] = 0.00000
+Coef[loc_id=33 , glob_id=33] = 0.00000
+Coef[loc_id=34 , glob_id=34] = 0.00000
+Coef[loc_id=35 , glob_id=35] = 0.00000
+Coef[loc_id=36 , glob_id=36] = 0.00000
+Coef[loc_id=37 , glob_id=37] = 0.00000
+Coef[loc_id=38 , glob_id=38] = 0.00000
+Coef[loc_id=39 , glob_id=39] = 0.00000
+Coef[loc_id=40 , glob_id=40] = 0.00000
+Coef[loc_id=41 , glob_id=41] = 0.00000
+Coef[loc_id=42 , glob_id=42] = 0.00000
+Coef[loc_id=43 , glob_id=43] = 0.00000
+Coef[loc_id=44 , glob_id=44] = 0.00000
+Coef[loc_id=45 , glob_id=45] = 0.00000
+Coef[loc_id=46 , glob_id=46] = 0.00000
+Coef[loc_id=47 , glob_id=47] = 0.00000
+Coef[loc_id=48 , glob_id=48] = 0.00000
+Coef[loc_id=49 , glob_id=49] = 0.00000
+Coef[loc_id=50 , glob_id=50] = 0.00000
+Coef[loc_id=51 , glob_id=51] = 0.00000
+Coef[loc_id=52 , glob_id=52] = 0.00000
+Coef[loc_id=53 , glob_id=53] = 0.00000
+Coef[loc_id=54 , glob_id=54] = 0.00000
+Coef[loc_id=55 , glob_id=55] = 0.00000
+Coef[loc_id=56 , glob_id=56] = 0.00000
+Coef[loc_id=57 , glob_id=57] = 0.00000
+Coef[loc_id=58 , glob_id=58] = 0.00000
+Coef[loc_id=59 , glob_id=59] = 0.00000
+Coef[loc_id=60 , glob_id=60] = 0.00000
+Coef[loc_id=61 , glob_id=61] = 0.00000
+Coef[loc_id=62 , glob_id=62] = 1.00000
+Coef[loc_id=63 , glob_id=63] = 0.00000
+Coef[loc_id=64 , glob_id=64] = 0.00000
+Coef[loc_id=65 , glob_id=65] = 0.00000
+Coef[loc_id=66 , glob_id=66] = 0.00000
+Coef[loc_id=67 , glob_id=67] = 0.00000
+Coef[loc_id=68 , glob_id=68] = 0.00000
+Coef[loc_id=69 , glob_id=69] = 0.00000
+Coef[loc_id=70 , glob_id=70] = 0.00000
+Coef[loc_id=71 , glob_id=71] = 0.00000
+Coef[loc_id=72 , glob_id=72] = 0.00000
+Coef[loc_id=73 , glob_id=73] = 0.00000
+Coef[loc_id=74 , glob_id=74] = 0.00000
+Coef[loc_id=75 , glob_id=75] = 0.00000
+Coef[loc_id=76 , glob_id=76] = 0.00000
+Coef[loc_id=77 , glob_id=77] = 0.00000
+Coef[loc_id=78 , glob_id=78] = 0.00000
+Coef[loc_id=79 , glob_id=79] = 0.00000
+Coef[loc_id=80 , glob_id=80] = 0.00000
+Coef[loc_id=81 , glob_id=81] = 0.00000
+Coef[loc_id=82 , glob_id=82] = 0.00000
+Coef[loc_id=83 , glob_id=83] = 0.00000
+Coef[loc_id=84 , glob_id=84] = 0.00000
+Coef[loc_id=85 , glob_id=85] = 0.00000
+Coef[loc_id=86 , glob_id=86] = 0.00000
+Coef[loc_id=87 , glob_id=87] = 0.00000
+Coef[loc_id=88 , glob_id=88] = 0.00000
+Coef[loc_id=89 , glob_id=89] = 0.00000
+Coef[loc_id=90 , glob_id=90] = 0.00000
+Coef[loc_id=91 , glob_id=91] = 0.00000
+Coef[loc_id=92 , glob_id=92] = 0.00000
+Coef[loc_id=93 , glob_id=93] = 0.00000
+Coef[loc_id=94 , glob_id=94] = 0.00000
+Coef[loc_id=95 , glob_id=95] = 0.00000
+Coef[loc_id=96 , glob_id=96] = 0.00000
+Coef[loc_id=97 , glob_id=97] = 0.00000
+Coef[loc_id=98 , glob_id=98] = 0.00000
+Coef[loc_id=99 , glob_id=99] = 0.00000
+Coef[loc_id=100 , glob_id=100] = 0.00000
+Coef[loc_id=101 , glob_id=101] = 0.00000
+Coef[loc_id=102 , glob_id=102] = 0.00000
+Coef[loc_id=103 , glob_id=103] = 0.00000
+Coef[loc_id=104 , glob_id=104] = 0.00000
+Coef[loc_id=105 , glob_id=105] = 0.00000
+Coef[loc_id=106 , glob_id=106] = 0.00000
+Coef[loc_id=107 , glob_id=107] = 0.00000
+Coef[loc_id=108 , glob_id=108] = 0.00000
+Coef[loc_id=109 , glob_id=109] = 0.00000
+Coef[loc_id=110 , glob_id=110] = 0.00000
+Coef[loc_id=111 , glob_id=111] = 0.00000
+Coef[loc_id=112 , glob_id=112] = 0.00000
+Coef[loc_id=113 , glob_id=113] = 0.00000
+Coef[loc_id=114 , glob_id=114] = 0.00000
+Coef[loc_id=115 , glob_id=115] = 0.00000
+Coef[loc_id=116 , glob_id=116] = 0.00000
+Coef[loc_id=117 , glob_id=117] = 0.00000
+Coef[loc_id=118 , glob_id=118] = 0.00000
+Coef[loc_id=119 , glob_id=119] = 0.00000
+Coef[loc_id=120 , glob_id=120] = 0.00000
+Coef[loc_id=121 , glob_id=121] = 0.00000
+Coef[loc_id=122 , glob_id=122] = 0.00000
+Coef[loc_id=123 , glob_id=123] = 0.00000
+Coef[loc_id=124 , glob_id=124] = 0.00000
 
 Saving basis plot

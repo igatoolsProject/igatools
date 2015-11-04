@@ -122,6 +122,14 @@ get_num_basis() const -> Size
   return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Basis<dim_,codim_,range_,rank_>::
+get_global_dofs(const std::string &dof_prop) const
+-> const std::set<Index> &
+{
+  return this->get_ptr_const_dof_distribution()->get_dofs_id_same_property(dof_prop);
+}
 
 
 

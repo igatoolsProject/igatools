@@ -266,8 +266,8 @@ public:
    * @note Internally uses the "smaller than" comparison operator implemented by the Element object.
    */
   bool operator< (const GridIterator &) const;
-
   ///@}
+
 
   /**
    *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
@@ -276,7 +276,7 @@ public:
    *  a reference to <tt>*this</tt>.
    */
   GridIterator<Element> &operator++();
-  ///@}
+
 
   /** @name Dereferencing operators */
   ///@{

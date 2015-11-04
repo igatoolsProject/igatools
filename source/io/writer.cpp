@@ -70,10 +70,11 @@ create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<const Grid<dim>> &grid)
+Writer(const shared_ptr<const Grid<dim>> &grid,
+       const Index num_points_direction)
   :
   Writer(create_domain_from_grid<dim,codim>(grid),
-        QUniform<dim>::create(2))
+        QUniform<dim>::create(num_points_direction))
 {}
 
 

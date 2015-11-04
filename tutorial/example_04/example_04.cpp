@@ -19,15 +19,10 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element.h>
-// [new include]
-#include <igatools/functions/ig_function.h>
-
-// TODO (pauletti, Nov 26, 2014): this is not correct, fix the writer
-#include <igatools/functions/identity_function.h>
-// [new include]
 #include <igatools/io/writer.h>
-#include <igatools/base/logstream.h>
+// [new include]
+#include <igatools/functions/ig_grid_function.h>
+// [new include]
 
 using namespace iga;
 using std::endl;
@@ -35,48 +30,50 @@ using std::to_string;
 
 LogStream out;
 
-// [plot function]
+// [plot_function]
 template <int dim>
 void plot_basis(const int deg)
 {
-  using Basis  = BSpline<dim>;
-  using Func = IgFunction<dim,0,1,1>;
-
   const int n_knots = deg + 2;
-  auto grid  = Grid<dim>::create(n_knots);
-  auto space = Basis::create(deg, grid);
-  // [plot function]
+  const auto grid = Grid<dim>::const_create(n_knots);
+// [plot_function]
 
-  // [init vec]
-  auto coeffs = EpetraTools::create_vector(*space,DofProperties::active,Epetra_SerialComm());
-  // [init vec]
+// [create_basis]
+  const auto space = SplineSpace<dim>::const_create(deg, grid);
+  const auto basis = BSpline<dim>::const_create(space);
+// [create_basis]
 
-  // [tensor to flat]
+  // [init_vec]
+  IgCoefficients coeffs(basis->get_global_dofs());
+  // [init_vec]
+
+  //[tensor_to_flat]
   TensorIndex<dim> basis_t_index(deg);
-  auto basis_index = space->get_global_dof_id(basis_t_index, 0);
-  (*coeffs)[basis_index] = 1.;
-  // [tensor to flat]
+  const auto j = basis->get_global_dof_id(basis_t_index, 0);
+  coeffs[j] = 1.0;
+  // [tensor_to_flat]
 
-  // [print vector]
-  out << "Coefficient vector of: " << basis_index << "-th basis" << endl;
-  coeffs->print_info(out);
+  // [print_vector]
+  out << "IgCoefficient for: " << j << "-th basis" << endl;
+  coeffs.print_info(out);
   out << endl;
-  // [print vector]
+  // [print_vector]
 
-  // [plot basis]
+  // [basis_to_plot]
+  auto central_basis = IgGridFunction<dim,1>::const_create(basis,coeffs);
+  // [basis_to_plot]
+
+  // [plot_basis]
   out << "Saving basis plot" << endl;
-  const int n_plot_points = 5;
-  Writer<dim> output(IdentityFunction<dim>::create(grid), n_plot_points);
+  const int n_plot_points = 10;
+  Writer<dim> output(grid,n_plot_points);
 
-  string field_name = "basis " + to_string(basis_index);
+  string func_name = "basis " + to_string(j);
+  output.template add_field(*central_basis, func_name);
 
-  auto basis = Func::create(space, coeffs);
-  output.template add_field<1,1>(basis, field_name);
-
-  string file_name = "bspline_basis-" + to_string(dim) + "d";
+  string file_name = "bspline_basis-" + to_string(j) + "_" + to_string(dim) + "d";
   output.save(file_name);
-  // [plot basis]
-
+  // [plot_basis]
 }
 
 

@@ -26,6 +26,7 @@
 #include <igatools/base/logstream.h>
 
 #include <map>
+#include <set>
 
 
 IGA_NAMESPACE_OPEN
@@ -46,6 +47,14 @@ class IgCoefficients
   : public std::map<Index,Real>
 {
 public:
+
+  IgCoefficients() = default;
+
+  /**
+   * /brief Initialize to zero the coefficients associated with the <tt>global_dofs</tt>
+   * used in the input argument.
+   */
+  IgCoefficients(const std::set<Index> &global_dofs);
 
   /**
    * Access operator.

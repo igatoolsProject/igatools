@@ -23,6 +23,13 @@
 
 IGA_NAMESPACE_OPEN
 
+IgCoefficients::
+IgCoefficients(const std::set<Index> &global_dofs)
+{
+  for (const auto &dof : global_dofs)
+    (*this)[dof] = 0.0;
+}
+
 
 const Real &
 IgCoefficients::

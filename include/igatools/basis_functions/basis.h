@@ -178,6 +178,7 @@ public:
   Size get_num_basis() const;
 
 
+  const std::set<Index> &get_global_dofs(const std::string &dof_prop = DofProperties::active) const ;
 
   ///@}
 
