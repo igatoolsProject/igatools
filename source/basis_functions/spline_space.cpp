@@ -939,14 +939,19 @@ serialize(Archive &ar)
 
   ar &make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 
+  ar &make_nvp("dof_distribution_",dof_distribution_);
+
 #ifdef MESH_REFINEMENT
   using self_t = SplineSpace<dim,range,rank>;
   auto tmp = std::const_pointer_cast<self_t>(spline_space_previous_refinement_);
   ar &make_nvp("spline_space_previous_refinement_",tmp);
   spline_space_previous_refinement_ = tmp;
 #endif
+
+
 }
 #endif // SERIALIZATION
+
 
 template<int dim, int range, int rank>
 Size

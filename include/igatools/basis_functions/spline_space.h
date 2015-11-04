@@ -573,8 +573,6 @@ public:
       ar &make_nvp("active_components_id_", active_components_id_);
 
       ar &make_nvp("inactive_components_id_", inactive_components_id_);
-
-      ar &make_nvp("dof_distribution_",dof_distribution_);
     }
     ///@}
 #endif // SERIALIZATION
