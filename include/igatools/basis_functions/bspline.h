@@ -244,11 +244,20 @@ public:
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<SpSpace> &spline_space,
-         const EndBehaviourTable &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
+         const EndBehaviourTable &end_b);
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const SpSpace> &spline_space,
-               const EndBehaviourTable &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
+               const EndBehaviourTable &end_b);
+
+  static std::shared_ptr<self_t>
+  create(const std::shared_ptr<SpSpace> &spline_space,
+         const BasisEndBehaviour &end_b = BasisEndBehaviour::interpolatory);
+
+  static std::shared_ptr<const self_t>
+  const_create(const std::shared_ptr<const SpSpace> &spline_space,
+               const BasisEndBehaviour &end_b = BasisEndBehaviour::interpolatory);
+
   ///@}
 
   /**

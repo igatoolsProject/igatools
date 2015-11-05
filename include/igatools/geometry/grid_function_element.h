@@ -158,6 +158,15 @@ public:
     return cache.template get_data<ValueType>();
   }
 
+  const ValueVector<Value> &
+  get_element_values_D0() const;
+
+  const ValueVector<Derivative<1>> &
+                                get_element_values_D1() const;
+
+  const ValueVector<Derivative<2>> &
+                                get_element_values_D2() const;
+
 
   /**
    * @name Methods for the for the evaluations of Functions's derivatives

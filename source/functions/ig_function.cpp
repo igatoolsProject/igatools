@@ -34,7 +34,7 @@ template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
 IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
            const EpetraTools::Vector &coeff,
-           const std::string &property,
+           const std::string &dofs_property,
            const std::string &name)
   :
   parent_t::Function(
@@ -43,10 +43,10 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
    SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain()),
    name),
   basis_(space),
-  property_(property)
+  dofs_property_(dofs_property)
 {
   const auto &dof_distribution = *(basis_->get_spline_space()->get_dof_distribution());
-  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
+  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(dofs_property);
 
 
   const auto &epetra_map = coeff.Map();
@@ -65,7 +65,7 @@ template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
 IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
            const IgCoefficients &coeff,
-           const std::string &property,
+           const std::string &dofs_property,
            const std::string &name)
   :
   parent_t::Function(
@@ -74,12 +74,12 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
    SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain()),
    name),
   basis_(space),
-  property_(property)
+  dofs_property_(dofs_property)
 {
 
 #ifndef NDEBUG
   const auto &dof_distribution = *(basis_->get_spline_space()->get_dof_distribution());
-  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
+  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(dofs_property);
 
   for (const auto glob_dof : active_dofs)
     coeff_[glob_dof] = coeff.at(glob_dof);
@@ -95,11 +95,11 @@ auto
 IgFunction<dim,codim,range,rank>::
 const_create(const std::shared_ptr<const PhysBasis> &space,
              const EpetraTools::Vector &coeff,
-             const std::string &property,
+             const std::string &dofs_property,
              const std::string &name) ->  std::shared_ptr<const parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
-  coeff, property,name);
+  coeff, dofs_property,name);
   Assert(ig_func != nullptr, ExcNullPtr());
 
   return ig_func;
@@ -111,11 +111,11 @@ auto
 IgFunction<dim,codim,range,rank>::
 const_create(const std::shared_ptr<const PhysBasis> &space,
              const IgCoefficients &coeff,
-             const std::string &property,
+             const std::string &dofs_property,
              const std::string &name) ->  std::shared_ptr<const parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
-  coeff, property,name);
+  coeff, dofs_property,name);
   Assert(ig_func != nullptr, ExcNullPtr());
 
   return ig_func;
@@ -127,11 +127,11 @@ auto
 IgFunction<dim,codim,range,rank>::
 create(const std::shared_ptr<PhysBasis> &space,
        const EpetraTools::Vector &coeff,
-       const std::string &property,
+       const std::string &dofs_property,
        const std::string &name) ->  std::shared_ptr<parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
-  coeff, property,name);
+  coeff, dofs_property,name);
 
   Assert(ig_func != nullptr, ExcNullPtr());
 #ifdef MESH_REFINEMENT
@@ -146,11 +146,11 @@ auto
 IgFunction<dim,codim,range,rank>::
 create(const std::shared_ptr<PhysBasis> &space,
        const IgCoefficients &coeff,
-       const std::string &property,
+       const std::string &dofs_property,
        const std::string &name) ->  std::shared_ptr<parent_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
-  coeff, property,name);
+  coeff, dofs_property,name);
   Assert(ig_func != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -222,7 +222,7 @@ rebuild_after_insert_knots(
     IgFunction<dim,codim,range,rank>::const_create(
       std::dynamic_pointer_cast<const PhysBasis>(basis_->get_basis_previous_refinement()),
       coeff_,
-      property_);
+      dofs_property_);
 
 
   const int max_degree = basis_->get_spline_space()->get_max_degree();
@@ -293,7 +293,7 @@ const std::string &
 IgFunction<dim,codim,range,rank>::
 get_property() const
 {
-  return property_;
+  return dofs_property_;
 }
 
 #if 0
@@ -321,7 +321,7 @@ serialize(Archive &ar, const unsigned int version)
 
   ar &boost::serialization::make_nvp("coeff_",coeff_);
 
-  ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
+  ar &boost::serialization::make_nvp("dofs_property_",const_cast<std::string &>(dofs_property_));
 
   ar.template register_type<BSplineElement<dim,range,rank>>();
   ar.template register_type<NURBSElement<dim,range,rank>>();

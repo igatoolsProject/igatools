@@ -45,8 +45,8 @@ using functions::ConstantFunction;
 template <int dim>
 void assemble_matrix(const int n_knots, const int deg)
 {
-  using Space  = BSpline<dim>;
-  using RefSpace  = ReferenceSpaceBasis<dim>;
+  using Space  = SplineSpace<dim, range>;
+  using Basis  = BSpline<dim, range>;
 
   using Function = Function<dim,0,1,1>;
   using ConstFunction = functions::LinearFunction<dim,0,1>;
@@ -56,16 +56,15 @@ void assemble_matrix(const int n_knots, const int deg)
   typename Space::Degrees degt(deg);
   typename Space::Periodicity periodic(false);
   periodic[0] = true;
-  typename Space::EndBehaviour end_b(BasisEndBehaviour::interpolatory);
+  typename Basis::EndBehaviour end_b(BasisEndBehaviour::interpolatory);
 
   end_b[0] = BasisEndBehaviour::periodic;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(
-                 SplineSpace<dim>::const_create(degt, grid, InteriorReg::maximum, periodic),
-                 end_b);
+  auto space = Space::const_create(degt, grid, InteriorReg::maximum, periodic);
+  auto basis = Basis::const_create(space,end_b);
 
-  space->print_info(out);
+  basis->print_info(out);
 
 
   Gradient A;
@@ -77,18 +76,18 @@ void assemble_matrix(const int n_knots, const int deg)
 
   auto f = ConstFunction::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
 
-  auto matrix = create_matrix(*space,DofProperties::active,Epetra_SerialComm());
+  auto matrix = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
   auto rhs = create_vector(matrix->RangeMap());
   auto solution = create_vector(matrix->DomainMap());
 
   const QGauss<dim>  elem_quad(deg);
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   auto flag = ValueFlags::value | ValueFlags::gradient |ValueFlags::w_measure;
   elem_handler->reset(flag, elem_quad);
   f->reset(ValueFlags::value, elem_quad);
 
-  auto elem   = space->begin();
-  const auto elem_end = space->end();
+  auto elem   = basis->begin();
+  const auto elem_end = basis->end();
   auto f_elem = f->begin();
 
   elem_handler->init_element_cache(elem);
@@ -147,11 +146,11 @@ void assemble_matrix(const int n_knots, const int deg)
   solver->solve();
 
   const int n_plot_points = deg+1;
-  auto map1 = IdentityFunction<dim>::const_create(space->get_grid());
+  auto map1 = IdentityFunction<dim>::const_create(basis->get_grid());
   Writer<dim> writer(map1, n_plot_points);
 
   using IgFunc = IgFunction<dim,0,1,1>;
-  auto solution_function = IgFunc::const_create(space, solution);
+  auto solution_function = IgFunc::const_create(basis, solution);
 
   writer.template add_field<1,1>(solution_function, "solution");
   string filename = "poisson_problem-" + to_string(deg) + "-" +

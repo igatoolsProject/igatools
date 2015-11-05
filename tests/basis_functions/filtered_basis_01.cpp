@@ -50,8 +50,9 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   using Basis = BSpline<dim, range, rank>;
 
   auto grid = Grid<dim>::create(n_knots);
-  auto space = Basis::create(SplineSpace<dim,range,rank>::create(deg,grid));
-  auto dof_dist = space->get_ptr_dof_distribution();
+  auto space = SplineSpace<dim,range,rank>::create(deg,grid);
+  auto basis = Basis::create(space);
+  auto dof_dist = space->get_dof_distribution();
   dof_dist->add_dofs_property(DofProp::interior);
   dof_dist->add_dofs_property(DofProp::dirichlet);
   dof_dist->add_dofs_property(DofProp::neumman);
@@ -63,8 +64,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   std::set<Index> neu_dofs= {7};
   dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
 
-  auto elem = space->begin();
-  auto end  = space->end();
+  auto elem = basis->begin();
+  auto end  = basis->end();
 
   for (; elem != end; ++elem)
   {

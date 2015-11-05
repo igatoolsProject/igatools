@@ -34,8 +34,7 @@
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/linear_algebra/epetra_solver.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 #include <igatools/io/writer.h>
 
 using namespace EpetraTools;
@@ -56,12 +55,12 @@ template<int dim, int range = 1, int rank = 1>
 void filtered_dofs(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
-  using RefSpace = ReferenceSpaceBasis<dim, range, rank>;
   using Basis = BSpline<dim, range, rank>;
 
   auto grid = Grid<dim>::create(n_knots);
-  auto space = Basis::create(SplineSpace<dim,range,rank>::create(deg,grid));
-  auto dof_dist = space->get_ptr_dof_distribution();
+  auto space = SplineSpace<dim,range,rank>::create(deg,grid);
+  auto basis = Basis::create(space);
+  auto dof_dist = space->get_dof_distribution();
   dof_dist->add_dofs_property(DofProp::interior);
   dof_dist->add_dofs_property(DofProp::dirichlet);
   dof_dist->add_dofs_property(DofProp::neumman);
@@ -73,22 +72,25 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   std::set<Index> neu_dofs= {7};
   dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
 
-  auto elem = space->begin();
-  auto end  = space->end();
+  auto elem = basis->begin();
+  auto end  = basis->end();
 
-  auto matrix = create_matrix(*space,DofProp::interior,Epetra_SerialComm());
+  auto matrix = create_matrix(*basis,DofProp::interior,Epetra_SerialComm());
   auto rhs = create_vector(matrix->RangeMap());
   auto solution = create_vector(matrix->DomainMap());
 
   matrix->print_info(out);
   rhs->print_info(out);
 
-  auto elem_handler = space->create_cache_handler();
-  auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
-  QGauss<dim> elem_quad(deg+1);
-  elem_handler->reset(flag, elem_quad);
-  elem_handler->init_element_cache(elem);
-  const int n_qp = elem_quad.get_num_points();
+  auto elem_handler = basis->create_cache_handler();
+  using space_element::Flags;
+  auto flag = Flags::value | Flags::gradient | Flags::w_measure;
+  elem_handler->set_element_flags(flag);
+
+  auto elem_quad = QGauss<dim>::create(deg+1);
+  elem_handler->init_element_cache(elem,elem_quad);
+
+  const int n_qp = elem_quad->get_num_points();
   for (; elem != end; ++elem)
   {
     const int n_basis = elem->get_num_basis(DofProp::interior);
@@ -99,9 +101,9 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     loc_rhs = 0.0;
 
     elem_handler->fill_element_cache(elem);
-    auto phi = elem->template get_basis_data<_Value, dim>(0,DofProp::interior);
-    auto grad_phi  = elem->template get_basis_data<_Gradient, dim>(0,DofProp::interior);
-    auto w_meas = elem->template get_w_measures<dim>(0);
+    auto phi = elem->get_element_values(DofProp::interior);
+    auto grad_phi  = elem->get_element_gradients(DofProp::interior);
+    auto w_meas = elem->get_element_w_measures();
 
     for (int i = 0; i < n_basis; ++i)
     {
@@ -136,11 +138,10 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   solution->print_info(out);
 
   const int n_plot_points = 4;
-  auto map1 = IdentityFunction<dim>::const_create(space->get_grid());
-  Writer<dim> writer(map1, n_plot_points);
-  using IgFunc = IgFunction<dim,0,range,rank>;
-  auto solution_function = IgFunc::const_create(space, solution, DofProp::interior);
-  writer.template add_field<1,1>(solution_function, "solution");
+  Writer<dim> writer(basis->get_grid(), n_plot_points);
+  using IgFunc = IgGridFunction<dim,range>;
+  auto solution_function = IgFunc::create(basis, solution, DofProp::interior);
+  writer.template add_field(solution_function, "solution");
   string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
   writer.save(filename);
 

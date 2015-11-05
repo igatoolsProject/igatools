@@ -129,6 +129,28 @@ const_create(const std::shared_ptr<const SpSpace> &spline_space,
 template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
+create(const std::shared_ptr<SpSpace> &spline_space,
+       const BasisEndBehaviour &end_b)
+-> std::shared_ptr<self_t>
+{
+  return self_t::create(spline_space,EndBehaviour(end_b));
+}
+
+template<int dim_, int range_, int rank_>
+auto
+BSpline<dim_, range_, rank_>::
+const_create(const std::shared_ptr<const SpSpace> &spline_space,
+             const BasisEndBehaviour &end_b)
+-> std::shared_ptr<const self_t>
+{
+  return self_t::const_create(spline_space,EndBehaviour(end_b));
+}
+
+
+
+template<int dim_, int range_, int rank_>
+auto
+BSpline<dim_, range_, rank_>::
 get_this_basis() const -> shared_ptr<const self_t>
 {
   auto ref_sp = const_cast<self_t *>(this)->shared_from_this();

@@ -919,6 +919,14 @@ std::shared_ptr<const DofDistribution<dim,range,rank> >
   return dof_distribution_;
 }
 
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_dof_distribution() ->
+std::shared_ptr<DofDistribution<dim,range,rank> >
+{
+  return dof_distribution_;
+}
 
 #ifdef SERIALIZATION
 template<int dim, int range, int rank>

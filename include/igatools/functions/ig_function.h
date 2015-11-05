@@ -100,12 +100,12 @@ public:
   //TODO (pauletti, Mar 23, 2015): should we make this private?
   IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const EpetraTools::Vector &coeff,
-             const std::string &property,
+             const std::string &dofs_property,
              const std::string &name);
 
   IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const IgCoefficients &coeff,
-             const std::string &property,
+             const std::string &dofs_property,
              const std::string &name);
 
 
@@ -134,25 +134,25 @@ public:
   static std::shared_ptr<const parent_t>
   const_create(const std::shared_ptr<const PhysBasis> &basis,
                const EpetraTools::Vector &coeff,
-               const std::string &property = DofProperties::active,
+               const std::string &dofs_property = DofProperties::active,
                const std::string &name = "");
 
   static std::shared_ptr<const parent_t>
   const_create(const std::shared_ptr<const PhysBasis> &basis,
                const IgCoefficients &coeff,
-               const std::string &property = DofProperties::active,
+               const std::string &dofs_property = DofProperties::active,
                const std::string &name = "");
 
   static std::shared_ptr<parent_t>
   create(const std::shared_ptr<PhysBasis> &basis,
          const EpetraTools::Vector &coeff,
-         const std::string &property = DofProperties::active,
+         const std::string &dofs_property = DofProperties::active,
          const std::string &name = "");
 
   static std::shared_ptr<parent_t>
   create(const std::shared_ptr<PhysBasis> &basis,
          const IgCoefficients &coeff,
-         const std::string &property = DofProperties::active,
+         const std::string &dofs_property = DofProperties::active,
          const std::string &name = "");
 
 
@@ -176,7 +176,7 @@ private:
 
   CoeffType coeff_;
 
-  std::string property_;
+  std::string dofs_property_;
 
 private:
 
@@ -212,7 +212,7 @@ private:
 
     ar &make_nvp("basis_",basis_);
     ar &make_nvp("coeff_",coeff_);
-    ar &make_nvp("property_",property_);
+    ar &make_nvp("dofs_property_",dofs_property_);
   }
   ///@}
 #endif // SERIALIZATION

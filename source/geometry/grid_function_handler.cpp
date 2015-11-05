@@ -91,6 +91,14 @@ set_flags(const topology_variant &sdim,
   boost::apply_visitor(disp, sdim);
 }
 
+template<int dim_, int space_dim_>
+void
+GridFunctionHandler<dim_, space_dim_>::
+set_element_flags(const Flags &flag)
+{
+  this->set_flags(Topology<dim_>(), flag);
+}
+
 
 
 template<int dim_, int space_dim_>
@@ -114,6 +122,24 @@ init_cache(ElementIterator &elem,
   this->init_cache(*elem, quad);
 }
 
+template<int dim_, int space_dim_>
+void
+GridFunctionHandler<dim_, space_dim_>::
+init_element_cache(ElementAccessor &elem,
+                   const std::shared_ptr<const Quadrature<dim_>> &quad) const
+{
+  this->init_cache(elem,quad);
+}
+
+template<int dim_, int space_dim_>
+void
+GridFunctionHandler<dim_, space_dim_>::
+init_element_cache(ElementIterator &elem,
+                   const std::shared_ptr<const Quadrature<dim_>> &quad) const
+{
+  this->init_cache(elem,quad);
+}
+
 
 
 template<int dim_, int space_dim_>
@@ -135,6 +161,22 @@ fill_cache(const topology_variant &sdim,
            const int s_id) const
 {
   this->fill_cache(sdim, *elem, s_id);
+}
+
+template<int dim_, int space_dim_>
+void
+GridFunctionHandler<dim_, space_dim_>::
+fill_element_cache(ElementAccessor &elem)
+{
+  this->fill_cache(Topology<dim_>(), elem,0);
+}
+
+template<int dim_, int space_dim_>
+void
+GridFunctionHandler<dim_, space_dim_>::
+fill_element_cache(ElementIterator &elem)
+{
+  this->fill_cache(Topology<dim_>(), elem,0);
 }
 
 IGA_NAMESPACE_CLOSE

@@ -207,6 +207,7 @@ Dim: 1     Sub-Dim: 0
                Coef[loc_id=0 , glob_id=0] = 0
                Coef[loc_id=1 , glob_id=1] = 1.00000
             
+            Dofs property: active
          
       
    
@@ -400,6 +401,7 @@ Dim: 1     Sub-Dim: 0
                   IgCoefficients:
                      Coef[loc_id=0 , glob_id=0] = 0
                   
+                  Dofs property: active
                
             
          
@@ -604,6 +606,7 @@ Dim: 1     Sub-Dim: 0
                      IgCoefficients:
                         Coef[loc_id=0 , glob_id=0] = 1.00000
                      
+                     Dofs property: active
                   
                
             
@@ -852,6 +855,7 @@ Dim: 1     Sub-Dim: 0
                      Coef[loc_id=4 , glob_id=4] = 4.00000
                      Coef[loc_id=5 , glob_id=5] = 5.00000
                   
+                  Dofs property: active
                
             
          
@@ -1069,6 +1073,7 @@ Dim: 1     Sub-Dim: 0
                            Coef[loc_id=1 , glob_id=1] = 2.00000
                            Coef[loc_id=2 , glob_id=2] = 4.00000
                         
+                        Dofs property: active
                      
                   
                
@@ -1297,6 +1302,7 @@ Dim: 1     Sub-Dim: 0
                               Coef[loc_id=1 , glob_id=1] = 3.00000
                               Coef[loc_id=2 , glob_id=2] = 5.00000
                            
+                           Dofs property: active
                         
                      
                   
@@ -1518,6 +1524,7 @@ Dim: 1     Sub-Dim: 0
                                  Coef[loc_id=0 , glob_id=0] = 0
                                  Coef[loc_id=1 , glob_id=1] = 1.00000
                               
+                              Dofs property: active
                            
                         
                      
@@ -1739,6 +1746,7 @@ Dim: 1     Sub-Dim: 0
                                     Coef[loc_id=0 , glob_id=0] = 4.00000
                                     Coef[loc_id=1 , glob_id=1] = 5.00000
                                  
+                                 Dofs property: active
                               
                            
                         
@@ -2037,6 +2045,7 @@ Dim: 1     Sub-Dim: 0
                                  Coef[loc_id=22 , glob_id=22] = 22.0000
                                  Coef[loc_id=23 , glob_id=23] = 23.0000
                               
+                              Dofs property: active
                            
                         
                      
@@ -2295,6 +2304,7 @@ Dim: 1     Sub-Dim: 0
                                        Coef[loc_id=10 , glob_id=10] = 20.0000
                                        Coef[loc_id=11 , glob_id=11] = 22.0000
                                     
+                                    Dofs property: active
                                  
                               
                            
@@ -2564,6 +2574,7 @@ Dim: 1     Sub-Dim: 0
                                           Coef[loc_id=10 , glob_id=10] = 21.0000
                                           Coef[loc_id=11 , glob_id=11] = 23.0000
                                        
+                                       Dofs property: active
                                     
                                  
                               
@@ -2815,6 +2826,7 @@ Dim: 1     Sub-Dim: 0
                                              Coef[loc_id=6 , glob_id=6] = 18.0000
                                              Coef[loc_id=7 , glob_id=7] = 19.0000
                                           
+                                          Dofs property: active
                                        
                                     
                                  
@@ -3066,6 +3078,7 @@ Dim: 1     Sub-Dim: 0
                                                 Coef[loc_id=6 , glob_id=6] = 22.0000
                                                 Coef[loc_id=7 , glob_id=7] = 23.0000
                                              
+                                             Dofs property: active
                                           
                                        
                                     
@@ -3309,6 +3322,7 @@ Dim: 1     Sub-Dim: 0
                                                    Coef[loc_id=4 , glob_id=4] = 4.00000
                                                    Coef[loc_id=5 , glob_id=5] = 5.00000
                                                 
+                                                Dofs property: active
                                              
                                           
                                        
@@ -3552,6 +3566,7 @@ Dim: 1     Sub-Dim: 0
                                                       Coef[loc_id=4 , glob_id=4] = 22.0000
                                                       Coef[loc_id=5 , glob_id=5] = 23.0000
                                                    
+                                                   Dofs property: active
                                                 
                                              
                                           

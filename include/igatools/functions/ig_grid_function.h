@@ -65,10 +65,12 @@ public:
 
 protected:
   IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
-                 const IgCoefficients &coeffs);
+                 const IgCoefficients &coeffs,
+                 const std::string &dofs_property);
 
   IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
-                 const EpetraTools::Vector &coeff);
+                 const EpetraTools::Vector &coeff,
+                 const std::string &dofs_property);
 
 public:
   std::unique_ptr<typename parent_t::ElementHandler>
@@ -76,19 +78,23 @@ public:
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const RefBasis> &ref_basis,
-               const IgCoefficients &coeffs);
+               const IgCoefficients &coeffs,
+               const std::string &dofs_property = DofProperties::active);
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<RefBasis> &ref_basis,
-         const IgCoefficients &coeffs);
+         const IgCoefficients &coeffs,
+         const std::string &dofs_property = DofProperties::active);
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const RefBasis> &ref_basis,
-               const EpetraTools::Vector &coeffs);
+               const EpetraTools::Vector &coeffs,
+               const std::string &dofs_property = DofProperties::active);
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<RefBasis> &ref_basis,
-         const EpetraTools::Vector &coeffs);
+         const EpetraTools::Vector &coeffs,
+         const std::string &dofs_property = DofProperties::active);
 
 
   virtual void print_info(LogStream &out) const override final;
@@ -122,6 +128,8 @@ private:
 
   IgCoefficients coeffs_;
 
+  std::string dofs_property_;
+
 public:
   std::shared_ptr<const RefBasis> get_basis() const;
 
@@ -149,6 +157,8 @@ private:
     ar &make_nvp("ref_basis_",ref_basis_);
 
     ar &make_nvp("coeffs_",coeffs_);
+
+    ar &make_nvp("dofs_property_",dofs_property_);
   }
   ///@}
 #endif // SERIALIZATION

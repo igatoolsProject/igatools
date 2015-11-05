@@ -25,6 +25,8 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 
+#include <igatools/linear_algebra/epetra_vector.h>
+
 #include <map>
 #include <set>
 
@@ -55,6 +57,8 @@ public:
    * used in the input argument.
    */
   IgCoefficients(const std::set<Index> &global_dofs);
+
+  IgCoefficients(const EpetraTools::Vector &epetra_vector);
 
   /**
    * Access operator.

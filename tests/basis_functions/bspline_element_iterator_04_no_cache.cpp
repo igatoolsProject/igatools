@@ -50,9 +50,9 @@ create_basis<2>(const int num_knots)
 
   using Space = SplineSpace<2,2,1>;
   using Basis = BSpline<2,2,1>;
-  typename Basis::DegreeTable degree_table = {{{3,2}},{{2,3}}} ;
+  typename Space::DegreeTable degree_table = {{{3,2}},{{2,3}}} ;
 
-  using PeriodicityTable = typename Basis::PeriodicityTable;
+  using PeriodicityTable = typename Space::PeriodicityTable;
   using EndBehaviourTable = typename Basis::EndBehaviourTable;
 
   return Basis::create(
@@ -73,10 +73,9 @@ create_basis<3>(const int num_knots)
 
   using Space = SplineSpace<3,3,1>;
   using Basis = BSpline<3,3,1>;
-  typename Basis::DegreeTable degree_table = { {{3,2,2}},{{2,3,2}},{{2,2,3}}} ;
+  typename Space::DegreeTable degree_table = { {{3,2,2}},{{2,3,2}},{{2,2,3}}} ;
 
-  using SpaceData = typename Basis::SpaceData;
-  using PeriodicityTable = typename Basis::PeriodicityTable;
+  using PeriodicityTable = typename Space::PeriodicityTable;
   using EndBehaviourTable = typename Basis::EndBehaviourTable;
 
   return Basis::create(

@@ -96,8 +96,7 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
   using Basis = BSpline<dim, range, rank>;
   auto basis = Basis::create(space);
 
-  auto dof_distribution = basis->get_ptr_dof_distribution();
-  //dof_distribution->add_dofs_property(DofProperties::active);
+  auto dof_distribution = space->get_dof_distribution();
   for (const auto dof: dof_distribution->get_dofs_view())
     if (dof % 2 == 0)
       dof_distribution->set_dof_property_status(DofProperties::active,dof,true);

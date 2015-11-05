@@ -309,6 +309,9 @@ public:
 
   std::shared_ptr<const DofDistribution<dim,range,rank> >
   get_dof_distribution() const;
+
+  std::shared_ptr<DofDistribution<dim,range,rank> >
+  get_dof_distribution();
   ///@}
 
 

@@ -57,19 +57,19 @@ template <int dim, int k, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 {
   OUTSTART
-  using BspSpace = BSpline<dim, range, rank>;
-//    using RefSpace = ReferenceSpaceBasis<dim, range,rank>;
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
-  auto ref_space = BspSpace::const_create(
-                     SplineSpace<dim,range,rank>::const_create(deg,grid));
+  auto space = SplineSpace<dim,range,rank>::const_create(deg,grid);
+
+  auto bsp_basis = BSpline<dim, range, rank>::const_create(space);
+
   auto map_func = create_function(grid);
 
-  auto space = Basis::const_create(
-                 ref_space,
-                 Domain<dim,0>::const_create(map_func), Transformation::h_grad);
+  auto phys_basis =
+    PhysicalSpaceBasis<dim,range,rank,codim>::const_create(
+      bsp_basis,
+      Domain<dim,0>::const_create(map_func), Transformation::h_grad);
 
 
   auto quad = QGauss<k>::create(n_qp);
@@ -80,11 +80,11 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
               Flags::hessian |
               Flags::point;
 
-  auto elem_filler = space->create_cache_handler();
+  auto elem_filler = phys_basis->create_cache_handler();
   elem_filler->template set_flags<k>(flag);
 
-  auto elem = space->begin();
-  auto end = space->end();
+  auto elem = phys_basis->begin();
+  auto end = phys_basis->end();
   elem_filler->init_face_cache(elem,quad);
 
 
