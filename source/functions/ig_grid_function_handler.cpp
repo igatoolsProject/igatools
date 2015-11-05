@@ -137,7 +137,7 @@ operator()(const Topology<sdim> &sub_elem)
     ig_space_handler.template fill_cache<sdim>(*ig_space_elem,s_id_);
 
 
-    const auto &dofs_property = DofProperties::active;
+    const auto &dofs_property = ig_grid_function.get_dofs_property();
 
     const auto &ig_space_elem_global_dofs = ig_space_elem->get_local_to_global(dofs_property);
     const auto &ig_func_coeffs = ig_grid_function.get_coefficients();

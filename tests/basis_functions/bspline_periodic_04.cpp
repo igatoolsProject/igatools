@@ -30,35 +30,33 @@
 // has to be splitted into simpler tests (this one goes onto consistency test)
 
 #include "../tests.h"
-#include <igatools/functions/function_lib.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 
 #include <igatools/linear_algebra/epetra_solver.h>
 #include <igatools/io/writer.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
 using space_tools::project_boundary_values;
 using dof_tools::apply_boundary_values;
-using functions::ConstantFunction;
 
 using namespace EpetraTools;
 
 template <int dim>
 void assemble_matrix(const int n_knots, const int deg)
 {
-  using Space  = SplineSpace<dim, range>;
-  using Basis  = BSpline<dim, range>;
+  using Space  = SplineSpace<dim>;
+  using Basis  = BSpline<dim>;
 
-  using Function = Function<dim,0,1,1>;
-  using ConstFunction = functions::LinearFunction<dim,0,1>;
-  using Value = typename Function::Value;
-  using Gradient = typename Function::Gradient;
+  using LinFunction = grid_functions::LinearGridFunction<dim,1>;
+  using Value = typename LinFunction::Value;
+  using Gradient = typename LinFunction::Gradient;
+
 
   typename Space::Degrees degt(deg);
   typename Space::Periodicity periodic(false);
@@ -67,12 +65,12 @@ void assemble_matrix(const int n_knots, const int deg)
 
   end_b[0] = BasisEndBehaviour::periodic;
 
-  auto grid  = Grid<dim>::const_create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   grid->set_boundary_id(0, 1);
   grid->set_boundary_id(1, 1);
 
-  auto space = Space::const_create(degt, grid, InteriorReg::maximum, periodic);
-  auto basis = Basis::const_create(space,end_b);
+  auto space = Space::create(degt, grid, InteriorReg::maximum, periodic);
+  auto basis = Basis::create(space,end_b);
 
   basis->print_info(out);
 
@@ -84,27 +82,32 @@ void assemble_matrix(const int n_knots, const int deg)
     A[i]=10*(i+1);
   }
 
-  auto f = ConstFunction::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
+  auto f = LinFunction::const_create(grid, A, b);
 
   auto matrix = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
   auto rhs = create_vector(matrix->RangeMap());
   auto solution = create_vector(matrix->DomainMap());
 
 
-  const QGauss<dim>  elem_quad(deg);
   auto elem_handler = basis->create_cache_handler();
-  auto flag = ValueFlags::value | ValueFlags::gradient |ValueFlags::w_measure;
-  elem_handler->reset(flag, elem_quad);
-  f->reset(ValueFlags::value, elem_quad);
+  auto f_handler = f->create_cache_handler();
+
+  using Flags = space_element::Flags;
+  auto flag = Flags::value | Flags::gradient | Flags::w_measure;
+  elem_handler->set_element_flags(flag);
+
+  f_handler->set_element_flags(grid_function_element::Flags::D0);
 
   auto elem   = basis->begin();
   const auto elem_end = basis->end();
   auto f_elem = f->begin();
 
-  elem_handler->init_element_cache(elem);
-  f->init_element_cache(f_elem);
+  auto elem_quad = QGauss<dim>::create(deg);
 
-  const int n_qp = elem_quad.get_num_points();
+  elem_handler->init_element_cache(elem,elem_quad);
+  f_handler->init_element_cache(f_elem,elem_quad);
+
+  const int n_qp = elem_quad->get_num_points();
   for (; elem != elem_end; ++elem, ++f_elem)
   {
     const int n_basis = elem->get_num_basis(DofProperties::active);
@@ -115,15 +118,15 @@ void assemble_matrix(const int n_knots, const int deg)
     loc_rhs = 0.0;
 
     elem_handler->fill_element_cache(elem);
-    f->fill_element_cache(f_elem);
+    f_handler->fill_element_cache(f_elem);
 
-    auto phi = elem->template get_basis_data<_Value, dim>(0,DofProperties::active);
-    auto grad_phi  = elem->template get_basis_data<_Gradient, dim>(0,DofProperties::active);
-    auto w_meas = elem->template get_w_measures<dim>(0);
+    auto phi = elem->get_element_values();
+    auto grad_phi = elem->get_element_gradients();
+    auto w_meas = elem->get_element_w_measures();
 
     grad_phi.print_info(out);
 
-    auto f_values = f_elem->template get_values<_Value,dim>(0);
+    auto f_values = f_elem->get_element_values_D0();
     for (int i = 0; i < n_basis; ++i)
     {
       auto grad_phi_i = grad_phi.get_function_view(i);
@@ -151,18 +154,18 @@ void assemble_matrix(const int n_knots, const int deg)
     rhs->add_block(loc_dofs, loc_rhs);
   }
   matrix->FillComplete();
-  auto g = ConstantFunction<dim,0,1,1>::const_create(grid, IdentityFunction<dim>::const_create(grid), {0.});
+  auto g = grid_functions::ConstantGridFunction<dim,1>::const_create(grid, {0.});
 
-  const QGauss<dim-1>  face_quad(deg);
+  auto face_quad = QGauss<dim-1>::create(deg);
   const std::set<boundary_id> dir_id {0};
   std::map<Index, Real> values;
   // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-  project_boundary_values<RefSpace>(
-    const_pointer_cast<const Function>(g),
-    basis,
-    face_quad,
-    dir_id,
-    values);
+  project_boundary_values(*g,
+                          *basis,
+                          face_quad,
+                          dir_id,
+                          values);
+
   apply_boundary_values(values, *matrix, *rhs, *solution);
 
   matrix->print_info(out);
@@ -171,17 +174,16 @@ void assemble_matrix(const int n_knots, const int deg)
   solver->solve();
 
   const int n_plot_points = deg+1;
-  auto map1 = IdentityFunction<dim>::const_create(basis->get_grid());
-  Writer<dim> writer(map1, n_plot_points);
+  Writer<dim> writer(basis->get_grid(), n_plot_points);
 
 
-  using IgFunc = IgFunction<dim,0,1,1>;
-  auto solution_function = IgFunc::const_create(basis, solution);
+  using IgFunc = IgGridFunction<dim,1>;
+  auto solution_function = IgFunc::const_create(basis, *solution);
 
-  writer.template add_field<1,1>(solution_function, "solution");
+  writer.template add_field(*solution_function, "solution");
   string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
   writer.save(filename);
-
+//#endif
 }
 
 

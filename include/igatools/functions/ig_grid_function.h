@@ -135,6 +135,8 @@ public:
 
   const IgCoefficients &get_coefficients() const;
 
+  const std::string &get_dofs_property() const;
+
 private:
 #ifdef SERIALIZATION
   /**

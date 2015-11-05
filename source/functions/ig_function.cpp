@@ -48,7 +48,6 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
   const auto &dof_distribution = *(basis_->get_spline_space()->get_dof_distribution());
   const auto &active_dofs = dof_distribution.get_dofs_id_same_property(dofs_property);
 
-
   const auto &epetra_map = coeff.Map();
 
   for (const auto glob_dof : active_dofs)
@@ -291,7 +290,7 @@ print_info(LogStream &out) const
 template<int dim,int codim,int range,int rank>
 const std::string &
 IgFunction<dim,codim,range,rank>::
-get_property() const
+get_dofs_property() const
 {
   return dofs_property_;
 }

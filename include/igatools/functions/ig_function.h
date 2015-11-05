@@ -161,7 +161,7 @@ public:
 
   const CoeffType &get_coefficients() const;
 
-  const std::string &get_property() const;
+  const std::string &get_dofs_property() const;
 
   self_t &operator +=(const self_t &fun);
 

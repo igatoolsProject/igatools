@@ -140,8 +140,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   const int n_plot_points = 4;
   Writer<dim> writer(basis->get_grid(), n_plot_points);
   using IgFunc = IgGridFunction<dim,range>;
-  auto solution_function = IgFunc::create(basis, solution, DofProp::interior);
-  writer.template add_field(solution_function, "solution");
+  auto solution_function = IgFunc::create(basis, *solution, DofProp::interior);
+  writer.template add_field(*solution_function, "solution");
   string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
   writer.save(filename);
 
