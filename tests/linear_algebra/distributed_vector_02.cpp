@@ -28,7 +28,7 @@
 #include "../tests.h"
 
 #include <igatools/linear_algebra/epetra_vector.h>
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
@@ -52,27 +52,27 @@ void non_contig_indices()
 
   const int dim = 1;
   using Basis = BSpline<dim>;
-  using Function = IgFunction<dim,0,1,1>;
+  using Function = IgGridFunction<dim,1>;
   auto grid = Grid<dim>::create(5);
   const int deg = 1;
-  auto space = Basis::create(SplineSpace<dim>::create(deg, grid));
-  auto dof_distribution = space->get_ptr_dof_distribution();
+  auto space = SplineSpace<dim>::create(deg, grid);
+  auto basis = Basis::create(space);
+  auto dof_distribution = space->get_dof_distribution();
   dof_distribution->set_all_dofs_property_status(DofProperties::active,false);
   dof_distribution->set_dof_property_status(DofProperties::active,dofs,true);
 
-  auto coeff = create_vector(*space, DofProperties::active,comm);
+  auto coeff = create_vector(*basis, DofProperties::active,comm);
   out.begin_item("coeff");
   coeff->print_info(out);
   out.end_item();
 
-  auto F = Function::create(space, coeff);
+  auto F = Function::create(basis, *coeff);
   auto vec1 = F->get_coefficients();
   out.begin_item("vec1");
   vec1.print_info(out);
   out.end_item();
 
-  auto func = F->clone();
-  auto vec2 = std::dynamic_pointer_cast<Function>(func)->get_coefficients();
+  auto vec2 = F->get_coefficients();
   out.begin_item("vec2");
   vec2.print_info(out);
   out.end_item();

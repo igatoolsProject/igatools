@@ -106,6 +106,7 @@ Original IgGridFunction:
          Coef[loc_id=0 , glob_id=0] = 0
          Coef[loc_id=1 , glob_id=1] = 1.00000
       
+      Dofs property: active
    
 
 IgGridFunction after serialize-deserialize:
@@ -213,6 +214,7 @@ IgGridFunction after serialize-deserialize:
          Coef[loc_id=0 , glob_id=0] = 0
          Coef[loc_id=1 , glob_id=1] = 1.00000
       
+      Dofs property: active
    
 
 ig_grid_function_bspline<1>
@@ -373,6 +375,7 @@ Original IgGridFunction:
          Coef[loc_id=6 , glob_id=6] = 1.00000
          Coef[loc_id=7 , glob_id=7] = 1.00000
       
+      Dofs property: active
    
 
 IgGridFunction after serialize-deserialize:
@@ -512,6 +515,7 @@ IgGridFunction after serialize-deserialize:
          Coef[loc_id=6 , glob_id=6] = 1.00000
          Coef[loc_id=7 , glob_id=7] = 1.00000
       
+      Dofs property: active
    
 
 ig_grid_function_bspline<2>
@@ -722,6 +726,7 @@ Original IgGridFunction:
          Coef[loc_id=22 , glob_id=22] = 1.00000
          Coef[loc_id=23 , glob_id=23] = 1.00000
       
+      Dofs property: active
    
 
 IgGridFunction after serialize-deserialize:
@@ -911,6 +916,7 @@ IgGridFunction after serialize-deserialize:
          Coef[loc_id=22 , glob_id=22] = 1.00000
          Coef[loc_id=23 , glob_id=23] = 1.00000
       
+      Dofs property: active
    
 
 ig_grid_function_bspline<3>

@@ -40,30 +40,34 @@ void matrix_map(const int deg, const int n_knots)
 {
   OUTSTART
   auto grid = Grid<dim>::create(n_knots);
-  auto space = BSpline<dim>::create(deg, grid);
+  auto space = SplineSpace<dim>::create(deg, grid);
+  auto basis = BSpline<dim>::create(space);
 
   Epetra_SerialComm comm;
 
-//    auto map = EpetraTools::create_map(*space, "active", comm);
-  auto graph = EpetraTools::create_graph(*space, "active", *space, "active",comm);
+//    auto map = EpetraTools::create_map(*basis, "active", comm);
+  auto graph = EpetraTools::create_graph(*basis, "active", *basis, "active",comm);
 
   auto matrix = EpetraTools::create_matrix(*graph);
   auto rhs = EpetraTools::create_vector(matrix->RangeMap());
   auto sol = EpetraTools::create_vector(matrix->DomainMap());
 
-  auto quad = QGauss<dim>(2);
-  auto flag = ValueFlags::value | ValueFlags::w_measure;
-  auto elem_handler = space->create_cache_handler();
-  elem_handler->reset(flag, quad);
+  using Flags = space_element::Flags;
+  auto flag = Flags::value | Flags::w_measure;
+  auto elem_handler = basis->create_cache_handler();
+  elem_handler->set_element_flags(flag);
 
-  auto elem = space->begin();
-  auto end  = space->end();
-  elem_handler->init_element_cache(elem);
-  const int n_qp = quad.get_num_points();
+  auto elem = basis->begin();
+  auto end  = basis->end();
+
+  auto quad = QGauss<dim>::create(2);
+  elem_handler->init_element_cache(elem,quad);
+
+  const int n_qp = quad->get_num_points();
 
   for (; elem != end; ++elem)
   {
-    const int n_basis = elem->get_num_basis("active");
+    const int n_basis = elem->get_num_basis();
 
     DenseMatrix loc_mat(n_basis, n_basis);
     loc_mat = 0.0;
@@ -71,8 +75,8 @@ void matrix_map(const int deg, const int n_knots)
     loc_rhs = 0.0;
 
     elem_handler->fill_element_cache(elem);
-    auto phi = elem->template get_basis_data<_Value, dim>(0, "active");
-    auto w_meas = elem->template get_w_measures<dim>(0);
+    auto phi = elem->get_element_values();
+    auto w_meas = elem->get_element_w_measures();
 
     for (int i = 0; i < n_basis; ++i)
     {
