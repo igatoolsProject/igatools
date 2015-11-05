@@ -26,11 +26,9 @@
  */
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain.h>
-#include <igatools/geometry/formula_domain.h>
-#include <igatools/geometry/domain_lib.h>
-#include <igatools/functions/function.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/functions/function_lib.h>
+#include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include "../tests.h"
 
 
@@ -42,45 +40,31 @@ void domain()
   using Grid = Grid<dim>;
   //using Domain = Domain<dim, codim>;
 
-  using Domain = domains::BallDomain<dim>;
+  using Func = grid_functions::BallGridFunction<dim>;
   auto grid = Grid::const_create();
-  auto domain = Domain::const_create(grid);
-  using Function = functions::ConstantFunction<dim,0,1>;//Function<dim>;
+  auto func = Func::const_create(grid);
+  auto domain = Domain<dim,codim>::const_create(func);
 
-  typename Function::Value b{1.};
-  auto  func = Function::create(domain, b);
+  using Flags = typename domain_element::Flags;
 
-  using Flags = typename Function::ElementAccessor::Flags;
+  auto handler = domain->create_cache_handler();
 
-  auto flag = Flags::value | Flags::gradient;
-  //auto s_flag = Flags::point;
-  auto handler = func->create_cache_handler();
-
+  auto flag = Flags::w_measure | Flags::point;
   handler->template set_flags<dim>(flag);
-  //handler->template set_flags<sdim>(s_flag);
 
   auto quad   = QGauss<dim>::create(2);
-//    auto s_quad = QGauss<sdim>::create(1);
 
-  auto elem = func->cbegin();
+  auto elem = domain->cbegin();
+  auto end = domain->cend();
   handler->init_cache(elem, quad);
-//    cache_handler->template init_cache<sdim>(elem, s_quad);
 
-  for (; elem != func->cend(); ++elem)
+  for (; elem != end; ++elem)
   {
-    handler->template fill_cache<dim>(elem, 0);
-    elem->template get_values<function_element::_Value, dim>(0).print_info(out);
-    elem->template get_values<function_element::_Gradient, dim>(0).print_info(out);
-    // elem->template get_w_measures<dim>(0).print_info(out);
+    handler->template fill_cache<dim>(elem,0);
+    elem->template get_points<dim>(0).print_info(out);
+//    elem->get_element_values_D1().print_info(out);
+    elem->template get_w_measures<dim>(0).print_info(out);
     out << endl;
-
-//      for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
-//      {
-//       handler->template fill_cache<sdim>(elem, s_id);
-//        elem->template get_points<sdim>(s_id).print_info(out);
-//        out << endl;
-//      }
-//      out << endl;
   }
 
   OUTEND
