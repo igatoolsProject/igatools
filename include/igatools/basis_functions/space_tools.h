@@ -399,7 +399,7 @@ projection_l2_ig_grid_function(
   IgCoefficients ig_coeffs;
 
   const auto &dof_distribution = *(ref_basis.get_spline_space()->get_dof_distribution());
-  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(DofProperties::active);
+  const auto &active_dofs = dof_distribution.get_global_dofs(DofProperties::active);
 
   const auto &epetra_map = sol->Map();
 
@@ -563,10 +563,12 @@ get_boundary_dofs(std::shared_ptr<const Basis> basis,
       sub_elems.insert(s_id);
   }
 
+  const auto &dof_distribution =
+    *basis->get_spline_space()->get_dof_distribution();
   Topology<sub_dim> sub_elem_topology;
   for (const Index &s_id : sub_elems)
   {
-    auto s_dofs = basis->get_boundary_dofs(s_id,sub_elem_topology);
+    auto s_dofs = dof_distribution.get_boundary_dofs(s_id,sub_elem_topology);
     dofs.insert(s_dofs.begin(), s_dofs.end());
   }
 

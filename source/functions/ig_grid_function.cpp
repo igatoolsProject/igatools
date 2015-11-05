@@ -40,7 +40,7 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
   dofs_property_(dofs_property)
 {
   const auto &dof_distribution = *(ref_basis_->get_spline_space()->get_dof_distribution());
-  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(dofs_property_);
+  const auto &active_dofs = dof_distribution.get_global_dofs(dofs_property_);
 
   const auto &epetra_map = coeff.Map();
 
@@ -69,7 +69,7 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
 {
 #ifndef NDEBUG
   const auto &dof_distribution = *(ref_basis_->get_spline_space()->get_dof_distribution());
-  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(dofs_property_);
+  const auto &active_dofs = dof_distribution.get_global_dofs(dofs_property_);
 
   for (const auto glob_dof : active_dofs)
     coeffs_[glob_dof] = coeffs.at(glob_dof);

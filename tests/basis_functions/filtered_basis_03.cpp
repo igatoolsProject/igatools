@@ -81,7 +81,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   auto dir_dofs = get_boundary_dofs<RefSpace>(basis, dir_ids);
 
 
-  auto int_dofs = basis->get_interior_dofs();
+  auto dof_dist = space->get_dof_distribution();
+  auto int_dofs = dof_dist->get_interior_dofs();
 
 
   std::set<boundary_id>  neu_ids = {bc::neu};
@@ -94,7 +95,6 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   for (auto &id : common)
     neu_dofs.erase(id);
 
-  auto dof_dist = space->get_dof_distribution();
   dof_dist->add_dofs_property(DofProp::interior);
   dof_dist->add_dofs_property(DofProp::dirichlet);
   dof_dist->add_dofs_property(DofProp::neumman);

@@ -46,7 +46,7 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
   dofs_property_(dofs_property)
 {
   const auto &dof_distribution = *(basis_->get_spline_space()->get_dof_distribution());
-  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(dofs_property);
+  const auto &active_dofs = dof_distribution.get_global_dofs(dofs_property);
 
   const auto &epetra_map = coeff.Map();
 
@@ -78,7 +78,7 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
 
 #ifndef NDEBUG
   const auto &dof_distribution = *(basis_->get_spline_space()->get_dof_distribution());
-  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(dofs_property);
+  const auto &active_dofs = dof_distribution.get_global_dofs(dofs_property);
 
   for (const auto glob_dof : active_dofs)
     coeff_[glob_dof] = coeff.at(glob_dof);

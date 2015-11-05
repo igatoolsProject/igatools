@@ -90,7 +90,8 @@ create_space_prop(const shared_ptr<Grid<dim>> &grid,
   auto dir_dofs = get_boundary_dofs<PhysBasis>(phys_basis, dir_ids);
 
 
-  auto int_dofs = phys_basis->get_interior_dofs();
+  auto dof_dist = space->get_dof_distribution();
+  auto int_dofs = dof_dist->get_interior_dofs();
 
 
   std::set<boundary_id>  neu_ids = {bc::neu};
@@ -103,7 +104,6 @@ create_space_prop(const shared_ptr<Grid<dim>> &grid,
   for (auto &id : common)
     neu_dofs.erase(id);
 
-  auto dof_dist = space->get_dof_distribution();
   dof_dist->add_dofs_property(DofProp::interior);
   dof_dist->add_dofs_property(DofProp::dirichlet);
   dof_dist->add_dofs_property(DofProp::neumman);

@@ -28,17 +28,17 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/bspline.h>
+#include <igatools/basis_functions/spline_space.h>
+#include <igatools/basis_functions/dof_distribution.h>
 
 template<int dim, int range = 1, int rank = 1>
 void get_interior_dof(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
-  using Basis = BSpline<dim, range, rank>;
   auto grid = Grid<dim>::const_create(n_knots);
 
-  auto space = Basis::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
-  auto int_dofs = space->get_interior_dofs();
+  auto space = SplineSpace<dim,range,rank>::const_create(deg,grid);
+  auto int_dofs = space->get_dof_distribution()->get_interior_dofs();
 
   // TODO (pauletti, Mar 27, 2015): we should create iga::set with print_info
   for (auto &x : int_dofs)

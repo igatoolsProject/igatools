@@ -216,6 +216,7 @@ Reference space:
             Coef[loc_id=2 , glob_id=2] = 0.650000
             Coef[loc_id=3 , glob_id=3] = 1.00000
          
+         Dofs property: active
       
    
 
@@ -456,6 +457,7 @@ Reference space:
             Coef[loc_id=4 , glob_id=4] = 0.825000
             Coef[loc_id=5 , glob_id=5] = 1.00000
          
+         Dofs property: active
       
    
 
@@ -720,6 +722,7 @@ Reference space:
             Coef[loc_id=14 , glob_id=14] = 0.650000
             Coef[loc_id=15 , glob_id=15] = 1.00000
          
+         Dofs property: active
       
    
 
@@ -1056,6 +1059,7 @@ Reference space:
             Coef[loc_id=34 , glob_id=34] = 0.825000
             Coef[loc_id=35 , glob_id=35] = 1.00000
          
+         Dofs property: active
       
    
 
@@ -1398,6 +1402,7 @@ Reference space:
             Coef[loc_id=62 , glob_id=62] = 0.650000
             Coef[loc_id=63 , glob_id=63] = 1.00000
          
+         Dofs property: active
       
    
 
@@ -2124,6 +2129,7 @@ Reference space:
             Coef[loc_id=214 , glob_id=214] = 0.825000
             Coef[loc_id=215 , glob_id=215] = 1.00000
          
+         Dofs property: active
       
    
 

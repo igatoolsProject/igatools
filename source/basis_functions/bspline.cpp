@@ -254,9 +254,11 @@ get_sub_bspline_space(const int s_id,
   dof_map.resize(sub_basis->get_num_basis());
   const auto &sub_space_index_table = sub_basis->get_spline_space()->get_dof_distribution()->get_index_table();
   const auto     &space_index_table = this->get_spline_space()->get_dof_distribution()->get_index_table();
+  const auto &sub_dof_distribution = *sub_basis->get_spline_space()->get_dof_distribution();
+  const auto &dof_distribution = *this->get_spline_space()->get_dof_distribution();
   for (auto comp : SpSpace::components)
   {
-    const auto n_basis = sub_basis->get_num_comp_basis(comp);
+    const auto n_basis = sub_dof_distribution.get_num_dofs_comp(comp);
     const auto &sub_local_indices = sub_space_index_table[comp];
     const auto &elem_global_indices = space_index_table[comp];
 
@@ -270,7 +272,7 @@ get_sub_bspline_space(const int s_id,
       {
         auto dir = k_elem.constant_directions[j];
         auto val = k_elem.constant_values[j];
-        const int fixed_id = val * (this->get_num_comp_basis(comp, dir) - 1);
+        const int fixed_id = val * (dof_distribution.get_num_dofs_comp(comp,dir) - 1);
         tensor_index[dir] = fixed_id;
 
       }

@@ -208,6 +208,8 @@ evaluate_nurbs_values_from_bspline(
 
   SafeSTLVector<Real> invQ(n_pts);
 
+  const auto &dof_distribution = *bsp_basis.get_spline_space()->get_dof_distribution();
+
   int bsp_fn_id = 0;
   int offset = 0;
   for (int comp = 0 ; comp < n_components ; ++comp)
@@ -230,7 +232,7 @@ evaluate_nurbs_values_from_bspline(
       for (int pt = 0 ; pt < n_pts ; ++pt)
         R_fn[pt](comp) = P_fn[pt](comp) * invQ[pt] * w ;
     } // end loop w_fn_id
-    offset += bsp_basis.get_num_comp_basis(comp);
+    offset += dof_distribution.get_num_dofs_comp(comp);
   } // end loop comp
 
   phi.set_status_filled(true);
@@ -280,6 +282,8 @@ evaluate_nurbs_gradients_from_bspline(
   SafeSTLVector<Real> invQ(n_pts);
   SafeSTLVector<SafeSTLArray<Real,dim>> dQ_invQ2(n_pts);
 
+  const auto &dof_distribution = *bsp_basis.get_spline_space()->get_dof_distribution();
+
   int bsp_fn_id = 0;
   int offset = 0;
   for (int comp = 0 ; comp < n_components ; ++comp)
@@ -323,7 +327,7 @@ evaluate_nurbs_gradients_from_bspline(
           dR_fn_pt(i)(comp) = (dP_fn_pt(i)(comp)*invQ_pt - P_fn_pt_comp*dQ_invQ2_pt[i]) * w;
       } // end loop pt
     } // end loop w_fn_id
-    offset += bsp_basis.get_num_comp_basis(comp);
+    offset += dof_distribution.get_num_dofs_comp(comp);
   } // end loop comp
 
   D1_phi.set_status_filled(true);
@@ -379,6 +383,8 @@ evaluate_nurbs_hessians_from_bspline(
   SafeSTLVector<Real> invQ2(n_pts);
   SafeSTLVector<SafeSTLArray<Real,dim> > dQ_invQ2(n_pts);
   SafeSTLVector<SafeSTLArray<SafeSTLArray<Real,dim>,dim> > Q_terms_2nd_order(n_pts);
+
+  const auto &dof_distribution = *bsp_basis.get_spline_space()->get_dof_distribution();
 
   int bsp_fn_id = 0;
   int offset = 0;
@@ -463,7 +469,7 @@ evaluate_nurbs_hessians_from_bspline(
         } // end loop i
       } // end loop pt
     } // end loop w_fn_id
-    offset += bsp_basis.get_num_comp_basis(comp);
+    offset += dof_distribution.get_num_dofs_comp(comp);
   } // end loop comp
   D2_phi.set_status_filled(true);
 }

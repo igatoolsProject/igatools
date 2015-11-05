@@ -134,21 +134,6 @@ get_sub_space(const int s_id,
 
 
 
-template<int dim, int range, int rank>
-int
-ReferenceSpaceBasis<dim, range, rank>::
-get_num_comp_basis(const int comp) const
-{
-  return this->get_spline_space()->get_dof_distribution()->get_num_dofs_table().get_component_size(comp);
-}
-
-template<int dim, int range, int rank>
-int
-ReferenceSpaceBasis<dim, range, rank>::
-get_num_comp_basis(const int comp, const int dir) const
-{
-  return this->get_spline_space()->get_dof_distribution()->get_num_dofs_table()[comp][dir];
-}
 
 
 

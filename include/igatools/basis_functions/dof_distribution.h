@@ -169,6 +169,21 @@ public:
    */
   const IndexDistributionTable &get_index_table() const;
 
+
+
+  /**
+   * This function returns the global dof id corresponding to the dof
+   * with tensor index <p>tensor_index</p> on the @p comp component of the space.
+   */
+  Index get_global_dof_id(const TensorIndex<dim> &tensor_index,
+                          const Index comp) const;
+
+
+  Size get_num_dofs_comp(const int comp) const;
+
+  Size get_num_dofs_comp(const int comp, const int dir) const;
+
+
   /**
    * Component table with the offset of unique dofs
    * in each component.
@@ -333,12 +348,12 @@ public:
   /**
    * Returns the id of the dofs having a certain @p property (non-const version).
    */
-  std::set<Index> &get_dofs_id_same_property(const std::string &property);
+  std::set<Index> &get_global_dofs(const std::string &property = DofProperties::active);
 
   /**
    * Returns the id of the dofs having a certain @p property (const version).
    */
-  const std::set<Index> &get_dofs_id_same_property(const std::string &property) const;
+  const std::set<Index> &get_global_dofs(const std::string &property = DofProperties::active) const;
 
 
   /**

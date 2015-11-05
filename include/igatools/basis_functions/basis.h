@@ -139,31 +139,6 @@ public:
 
 
 
-  /**
-   * Returns the dofs that are on the interior of the <tt>dim</tt>-dimensional hypercube
-   * (i.e. the dofs that are not on the boundary).
-   */
-  std::set<Index> get_interior_dofs() const;
-
-
-  std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &topology) const;
-
-  template<int k>
-  std::set<Index> get_boundary_dofs(const int s_id) const
-  {
-    return this->get_boundary_dofs(s_id,Topology<k>());
-  }
-
-
-  /**
-   * This function returns the global dof id corresponding to the basis function
-   * with tensor index <p>tensor_index</p> on the @p comp component of the space.
-   */
-  Index
-  get_global_dof_id(const TensorIndex<dim_> &tensor_index,
-                    const Index comp) const;
-
-
   virtual void get_element_dofs(
     const IndexType element_id,
     SafeSTLVector<Index> &dofs_global,
@@ -177,7 +152,7 @@ public:
   Size get_num_basis() const;
 
 
-  const std::set<Index> &get_global_dofs(const std::string &dof_prop = DofProperties::active) const ;
+//  const std::set<Index> &get_global_dofs(const std::string &dof_prop = DofProperties::active) const ;
 
   ///@}
 

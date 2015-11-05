@@ -166,9 +166,6 @@ public:
 
 
 
-  Size get_num_comp_basis(const int comp) const;
-
-  Size get_num_comp_basis(const int comp, const int dir) const;
 
 
   template<int sdim>
