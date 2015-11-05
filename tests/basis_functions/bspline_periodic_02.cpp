@@ -45,13 +45,15 @@ using functions::ConstantFunction;
 template <int dim, int range=1>
 void assemble_matrix(const int n_knots, const int deg)
 {
+  out.begin_item("assemble_matrix<dim=" + to_string(dim) +
+                 ",range=" + to_string(range) + ">");
+
   using Space  = SplineSpace<dim, range>;
   using Basis  = BSpline<dim, range>;
 
-  using Function = Function<dim,0,range,1>;
   using LinFunction = grid_functions::LinearGridFunction<dim,range>;
-  using Value = typename Function::Value;
-  using Gradient = typename Function::Gradient;
+  using Value = typename LinFunction::Value;
+  using Gradient = typename LinFunction::Gradient;
 
 
   TensorIndex<dim> deg1(deg);
@@ -61,6 +63,16 @@ void assemble_matrix(const int n_knots, const int deg)
   auto space = Space::const_create(deg, grid, InteriorReg::maximum, true);
   auto basis = Basis::const_create(space,BasisEndBehaviour::periodic);
 
+  /*
+  out.begin_item("Grid:");
+  grid->print_info(out);
+  out.end_item();
+  //*/
+  /*
+    out.begin_item("BSpline basis:");
+    basis->print_info(out);
+    out.end_item();
+  //*/
   Gradient A;
   Value b;
   for (int j = 0; j < range; ++j)
@@ -70,6 +82,8 @@ void assemble_matrix(const int n_knots, const int deg)
         A[i][j]=10.*(i+1);
     b[j] = -5.;
   }
+
+
 
   auto f = LinFunction::const_create(grid, A, b);
 
@@ -97,8 +111,13 @@ void assemble_matrix(const int n_knots, const int deg)
 
 
   const int n_qp = elem_quad->get_num_points();
-  for (; elem != elem_end; ++elem, ++f_elem)
+
+  int elem_id = 0;
+  for (; elem != elem_end; ++elem, ++f_elem, ++elem_id)
   {
+    out.begin_item("Element : " + to_string(elem_id));
+    out << "Element index: " << elem->get_index() << std::endl;
+
     const int n_basis = elem->get_num_basis(DofProperties::active);
     DenseMatrix loc_mat(n_basis, n_basis);
     loc_mat = 0.0;
@@ -109,11 +128,21 @@ void assemble_matrix(const int n_knots, const int deg)
     elem_handler->fill_element_cache(elem);
     f_handler->fill_element_cache(f_elem);
 
-    auto phi = elem->get_element_values(DofProperties::active);
-    auto grad_phi  = elem->get_element_values(DofProperties::active);
+    auto phi = elem->get_element_values();
+    auto grad_phi  = elem->get_element_gradients();
     auto w_meas = elem->get_element_w_measures();
 
+    out.begin_item("Basis function values:");
+    phi.print_info(out);
+    out.end_item();
+
+    out.begin_item("Basis function gradient:");
     grad_phi.print_info(out);
+    out.end_item();
+
+    out.begin_item("W * Measure:");
+    w_meas.print_info(out);
+    out.end_item();
 
     auto f_values = f_elem->get_element_values_D0();
     for (int i = 0; i < n_basis; ++i)
@@ -141,9 +170,13 @@ void assemble_matrix(const int n_knots, const int deg)
     const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
     matrix->add_block(loc_dofs, loc_dofs,loc_mat);
     rhs->add_block(loc_dofs, loc_rhs);
+
+    out.end_item();
   }
   matrix->FillComplete();
+  out.begin_item("Stiffness matrix:");
   matrix->print_info(out);
+  out.end_item();
 
   auto solver = create_solver(*matrix, *solution, *rhs);
   solver->solve();
@@ -157,6 +190,8 @@ void assemble_matrix(const int n_knots, const int deg)
   writer.template add_field(*solution_function, "solution");
   string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
   writer.save(filename);
+
+  out.end_item();
 }
 
 
