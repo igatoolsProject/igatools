@@ -48,21 +48,39 @@ activate::FlagsToCache activate::grid =
 //---------------------------------------------------------------------
 namespace domain_element
 {
+const Flags _Point::flag;
+const string _Point::name = "Element point";
 
+
+const Flags _Jacobian::flag;
+const string _Jacobian::name = "Element jacobian";
+
+
+const Flags _Hessian::flag;
+const string _Hessian::name = "Element hessian";
+
+
+const Flags _Measure::flag;
 const CacheFlags _Measure::cache_flag;
 const string _Measure::name = "Element measure";
 
+
+const Flags _InvJacobian::flag;
 const CacheFlags _InvJacobian::cache_flag;
 const string _InvJacobian::name = "Element inverse jacobian";
 
+
+const Flags _InvHessian::flag;
 const CacheFlags _InvHessian::cache_flag;
 const string _InvHessian::name = "Element inverse hessian";
 
 
+const Flags _BoundaryNormal::flag;
 const CacheFlags _BoundaryNormal::cache_flag;
 const string _BoundaryNormal::name = "Element boundary normal";
 
 
+const Flags _ExtNormal::flag;
 const CacheFlags _ExtNormal::cache_flag;
 const string _ExtNormal::name = "Element exterior normal";
 

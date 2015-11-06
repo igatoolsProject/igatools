@@ -18,23 +18,87 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for IgFunction in a Mapping without the use of the cache
- *  author: martinelli
- *  date: Jan 30, 2015
+/**
+ *  @file
+ *  @brief Domain using an IgGridFunction withouth the use of the cache
+ *  @author martinelli
+ *  @date Nov 06, 2015
  */
 
 #include "../tests.h"
 
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/functions/function_element.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
 
 
+template<int dim, int codim>
+void ig_mapping(const int deg = 1)
+{
+  OUTSTART
+  out.begin_item("ig_mapping<dim=" + std::to_string(dim) +",codim=" + std::to_string(codim) +">");
+
+
+  auto grid = Grid<dim>::const_create(3);
+  auto space = SplineSpace<dim, dim+codim>::const_create(deg, grid);
+  auto basis = BSpline<dim, dim+codim>::const_create(space);
+
+  auto c_p = EpetraTools::create_vector(*basis, DofProperties::active,Epetra_SerialComm());
+  (*c_p)[0] = 1.;
+  auto F = IgGridFunction<dim,dim+codim>::const_create(basis, *c_p);
+  auto domain = Domain<dim, codim>::const_create(F);
+
+
+
+  auto elem = domain->begin();
+  auto end  = domain->end();
+
+  auto quad = QGauss<dim>::create(2);
+  int elem_id = 0;
+  for (; elem != end; ++elem, ++elem_id)
+  {
+    out.begin_item("Element " +std::to_string(elem_id));
+
+    out << "Element ID: " << elem->get_index() << std::endl;
+
+    out.begin_item("Points:");
+    elem->template evaluate_at_points<domain_element::_Point>(quad).print_info(out);
+    out.end_item();
+
+    out.begin_item("Jacobians:");
+    elem->template evaluate_at_points<domain_element::_Jacobian>(quad).print_info(out);
+    out.end_item();
+
+    out.begin_item("Hessians:");
+    elem->template evaluate_at_points<domain_element::_Hessian>(quad).print_info(out);
+    out.end_item();
+
+    out.end_item();
+  }
+
+  out.end_item();
+  OUTEND
+}
+
+
+int main()
+{
+  ig_mapping<1,0>();
+  ig_mapping<2,0>();
+  ig_mapping<3,0>();
+
+  ig_mapping<1,1>();
+  ig_mapping<2,1>();
+
+  ig_mapping<1,2>();
+
+  return 0;
+}
+/*
 template<int dim>
 void ig_mapping(const int deg = 1)
 {
@@ -80,4 +144,4 @@ int main()
 
   return 0;
 }
-
+//*/

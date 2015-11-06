@@ -219,29 +219,56 @@ struct activate
 };
 
 
+struct _Point
+{
+  static const std::string name;
+  static const auto flag = Flags::point;
+
+  using ValueTypeGridFuncElem = grid_function_element::template _D<0>;
+};
+
+struct _Jacobian
+{
+  static const std::string name;
+  static const auto flag = Flags::jacobian;
+
+  using ValueTypeGridFuncElem = grid_function_element::template _D<1>;
+};
+
+struct _Hessian
+{
+  static const std::string name;
+  static const auto flag = Flags::hessian;
+
+  using ValueTypeGridFuncElem = grid_function_element::template _D<2>;
+};
 
 struct _Measure
 {
   static const std::string name;
   static const auto cache_flag = CacheFlags::measure;
+  static const auto flag = Flags::measure;
 };
 
 struct _InvJacobian
 {
   static const std::string name;
   static const auto cache_flag = CacheFlags::inv_jacobian;
+  static const auto flag = Flags::inv_jacobian;
 };
 
 struct _InvHessian
 {
   static const std::string name;
   static const auto cache_flag = CacheFlags::inv_hessian;
+  static const auto flag = Flags::inv_hessian;
 };
 
 struct _BoundaryNormal
 {
   static const std::string name;
   static const auto cache_flag = CacheFlags::boundary_normal;
+  static const auto flag = Flags::boundary_normal;
 };
 
 
@@ -249,6 +276,7 @@ struct _ExtNormal
 {
   static const std::string name;
   static const auto cache_flag = CacheFlags::ext_normal;
+  static const auto flag = Flags::ext_normal;
 };
 
 

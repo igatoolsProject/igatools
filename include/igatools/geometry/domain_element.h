@@ -208,6 +208,7 @@ public:
 
   ValueVector<Real> get_element_w_measures() const;
 
+
 #if 0
   using MetricTensor =
     Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
@@ -268,6 +269,16 @@ private:
   using InvDerivative = Derivatives<dim_+codim_,dim_,1,order>;
 
 
+  template <class ValueType>
+  struct IsInCache
+  {
+    const static bool value =
+      std::is_same<ValueType,_Measure>::value ||
+      std::is_same<ValueType,_InvJacobian>::value ||
+      std::is_same<ValueType,_BoundaryNormal>::value ||
+      std::is_same<ValueType,_ExtNormal>::value ;
+  };
+
   using CType = boost::fusion::map<
                 boost::fusion::pair<_Measure       ,DataWithFlagStatus<ValueVector<Real>> >,
                 boost::fusion::pair<_InvJacobian   ,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
@@ -295,6 +306,30 @@ private:
 
   template <class Accessor> friend class GridIteratorBase;
   friend class DomainHandler<dim_, codim_>;
+
+
+public:
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim_>> &quad,
+                                    EnableIf< IsInCache<ValueType>::value > * = nullptr)
+  {
+    auto elem_handler = this->domain_->create_cache_handler();
+    elem_handler->set_element_flags(ValueType::flag);
+    elem_handler->init_cache(*this,quad);
+    elem_handler->fill_element_cache(*this);
+
+    return this->template get_values_from_cache<ValueType,dim_>(0);
+  }
+
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim_>> &quad,
+                                    EnableIf< !(IsInCache<ValueType>::value) > * = nullptr)
+  {
+    return grid_func_elem_->template
+           evaluate_at_points<typename ValueType::ValueTypeGridFuncElem>(quad);
+  }
+
+
 };
 
 

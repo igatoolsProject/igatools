@@ -359,6 +359,15 @@ public:
   using _Weight = grid_element::_Weight;
 
 private:
+
+  template <class ValueType>
+  struct IsInCache
+  {
+    const static bool value =
+      std::is_same<ValueType,_Point>::value ||
+      std::is_same<ValueType,_Weight>::value ;
+  };
+
   using CType = boost::fusion::map<
                 boost::fusion::pair< _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
                 boost::fusion::pair<_Weight,DataWithFlagStatus<ValueVector<Real>>>
@@ -385,6 +394,18 @@ private:
   }
   ///@}
 
+public:
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim>> &quad,
+                                    EnableIf< IsInCache<ValueType>::value > * = nullptr)
+  {
+    auto elem_handler = this->grid_->create_cache_handler();
+    elem_handler->set_element_flags(ValueType::flag);
+    elem_handler->init_cache(*this,quad);
+    elem_handler->fill_element_cache(*this);
+
+    return this->template get_values_from_cache<ValueType,dim>(0);
+  }
 
 };
 
