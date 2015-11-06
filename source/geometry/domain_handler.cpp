@@ -109,7 +109,7 @@ template<int dim_, int codim_>
 void
 DomainHandler<dim_, codim_>::
 init_element_cache(ElementIterator &elem,
-                   const std::shared_ptr<Quadrature<dim_>> &quad) const
+                   const std::shared_ptr<const Quadrature<dim_>> &quad) const
 {
   this->init_cache(elem,quad);
 }
@@ -118,7 +118,7 @@ template<int dim_, int codim_>
 void
 DomainHandler<dim_, codim_>::
 init_element_cache(ElementAccessor &elem,
-                   const std::shared_ptr<Quadrature<dim_>> &quad) const
+                   const std::shared_ptr<const Quadrature<dim_>> &quad) const
 {
   this->init_cache(elem,quad);
 }

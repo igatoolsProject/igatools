@@ -19,85 +19,37 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the SphericalFunction class as a mapping
+ *  Test for the SphereGridFunction class as a mapping
  *
- *  author: pauletti
- *  date: 2014-10-24
+ *  author: martinelli
+ *  date: Nov 06, 2015
  *
  */
 
-#include "../tests.h"
-
-#include <igatools/functions/function_lib.h>
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
+#include "domain_values.h"
 
 
 template <int dim>
-void mapping_values()
+std::shared_ptr<const GridFunction<dim,dim+1> >
+create_sphere_function()
 {
-  OUTSTART
+  auto grid = Grid<dim>::const_create();
 
-  using Function = functions::SphereFunction<dim>;
-
-  auto flag = ValueFlags::point | ValueFlags::value |
-              ValueFlags::gradient |
-              ValueFlags::hessian |
-              ValueFlags::measure|
-              ValueFlags::w_measure;
-
-  auto quad = QUniform<dim>(3);
-  auto grid = Grid<dim>::create();
-
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
-
-
-  using Mapping   = Mapping<dim, 1>;
-  Mapping map(F);
-  map.reset(flag, quad);
-
-  auto elem = map.begin();
-  auto end = map.end();
-
-  map.template init_cache<dim>(elem);
-  for (; elem != end; ++elem)
-  {
-    map.template fill_cache<dim>(elem, 0);
-
-    out << "Points:" << endl;
-    elem->get_points().print_info(out);
-    out << endl;
-    out << "Values:" << endl;
-    elem->template get_values<_Value, dim>(0).print_info(out);
-    out << endl;
-    out << "Gradients:" << endl;
-    elem->template get_values<_Gradient, dim>(0).print_info(out);
-    out << endl;
-    out << "Hessians:" << endl;
-    elem->template get_values<_Hessian, dim>(0).print_info(out);
-    out << endl;
-    out << "Measure:" << endl;
-    elem->template get_measures<dim>(0).print_info(out);
-    out << endl;
-    out << "weight * measure:" << endl;
-    elem->template get_w_measures<dim>(0).print_info(out);
-    out << endl;
-  }
-
-  OUTEND
+  using Sph = grid_functions::SphereGridFunction<dim>;
+  return Sph::const_create(grid);
 }
-
 
 int main()
 {
   out.depth_console(10);
 
-  mapping_values<1>();
-  mapping_values<2>();
+  out.begin_item("SphereGridFunction<1>");
+  domain_values<1,2>(create_sphere_function<1>(),QUniform<1>::create(3));
+  out.end_item();
+
+  out.begin_item("SphereGridFunction<2>");
+  domain_values<2,3>(create_sphere_function<2>(),QUniform<2>::create(3));
+  out.end_item();
 
   return 0;
 }

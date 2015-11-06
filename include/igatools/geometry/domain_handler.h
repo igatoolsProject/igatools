@@ -151,10 +151,10 @@ public:
                   const eval_pts_variant &quad) const;
 
   void init_element_cache(ElementIterator &elem,
-                          const std::shared_ptr<Quadrature<dim_>> &quad) const;
+                          const std::shared_ptr<const Quadrature<dim_>> &quad) const;
 
   void init_element_cache(ElementAccessor &elem,
-                          const std::shared_ptr<Quadrature<dim_>> &quad) const;
+                          const std::shared_ptr<const Quadrature<dim_>> &quad) const;
 
   void fill_cache(const topology_variant &sdim,
                   ElementAccessor &elem,
