@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the spherical mapping class.
+ *  Test for the Domain build with CylindricalAnnulusGridFunction class.
  *
  *  author: antolin
  *  date: 2014-03-19
@@ -28,49 +28,52 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
 
 // TODO (pauletti, Nov 20, 2014): this test is more about cylindrical annulus
-template <int dim, int sub_dim = dim-1>
 void test_evaluate()
 {
-  using Function = functions::CylindricalAnnulus<dim>;
-  using Mapping   = Mapping<dim, 0>;
+  const int dim = 3;
+  const int sdim = 2;
+  auto grid = Grid<dim>::const_create();
 
-  auto grid = Grid<dim>::create();
+  using Cyl = grid_functions::CylindricalAnnulusGridFunction;
+  auto cyl = Cyl::const_create(grid,1., 2., 0., 1.0, 0.0, numbers::PI/2.0);
 
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid),
-                            1., 2., 0., 1.0, 0.0, numbers::PI/2.0);
-  Mapping map(F);
+  auto domain = Domain<3,0>::const_create(cyl);
 
-  auto flag = ValueFlags::point | ValueFlags::w_measure;
-  auto quad = QGauss<sub_dim>(3);
+  auto domain_handler = domain->create_cache_handler();
 
-  map.reset(flag, quad);
-
-  auto elem = map.begin();
-  auto end  = map.end();
+  using Flags = domain_element::Flags;
+  auto flag = Flags::w_measure;
+  domain_handler->template set_flags<sdim>(flag);
 
 
-  SafeSTLArray<Real, UnitElement<dim>::template num_elem<sub_dim>()> face_area ;
+  auto elem = domain->begin();
+  auto end  = domain->end();
+
+
+  SafeSTLArray<Real, UnitElement<dim>::template num_elem<sdim>()> face_area ;
   std::fill(face_area.begin(), face_area.end(), 0.0) ;
 
-  map.template init_cache<sub_dim>(elem);
+  auto quad = QGauss<sdim>::create(3);
+
+  domain_handler->init_cache(elem,quad);
 
   for (; elem != end; ++elem)
   {
-    if (elem->is_boundary())
+    const auto &grid_elem = elem->get_grid_function_element().get_grid_element();
+    if (grid_elem.is_boundary())
     {
-      for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
+      for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
       {
-        if (elem->is_boundary(s_id))
+        if (grid_elem.is_boundary(s_id))
         {
-          map.template fill_cache<sub_dim>(elem, s_id);
-          auto w_meas = elem->template get_w_measures<sub_dim>(s_id);
+          domain_handler->template fill_cache<sdim>(elem, s_id);
+          auto w_meas = elem->template get_w_measures<sdim>(s_id);
           for (auto &w : w_meas)
             face_area[s_id] += w;
         }
@@ -79,7 +82,7 @@ void test_evaluate()
   }
 
   out << "Dimension " << dim << endl;
-  for (Index face_id = 0; face_id < UnitElement<dim>::template num_elem<sub_dim>(); ++face_id)
+  for (Index face_id = 0; face_id < UnitElement<dim>::template num_elem<sdim>(); ++face_id)
   {
     out << "Area of face " << face_id << " : " << face_area[face_id] << endl;
   }
@@ -91,7 +94,6 @@ int main()
 {
   out.depth_console(10);
 
-//    test_evaluate<2>();
-  test_evaluate<3>();
+  test_evaluate();
 
 }
