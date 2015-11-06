@@ -48,10 +48,10 @@ get_domain() const -> std::shared_ptr<DomainType>
 
 
 template<int dim_, int codim_>
-auto
+void
 DomainHandler<dim_, codim_>::
 set_flags(const topology_variant &sdim,
-          const Flags &flag) -> void
+          const Flags &flag)
 {
   using GridFuncFlags = typename GridFuncType::ElementHandler::Flags;
   using GridFlags = typename GridFuncType::GridType::ElementHandler::Flags;
@@ -79,6 +79,14 @@ set_flags(const topology_variant &sdim,
 template<int dim_, int codim_>
 void
 DomainHandler<dim_, codim_>::
+set_element_flags(const Flags &flag)
+{
+  this->set_flags(Topology<dim_>(), flag);
+}
+
+template<int dim_, int codim_>
+void
+DomainHandler<dim_, codim_>::
 init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
@@ -97,6 +105,23 @@ init_cache(ElementIterator &elem,
   this->init_cache(*elem, quad);
 }
 
+template<int dim_, int codim_>
+void
+DomainHandler<dim_, codim_>::
+init_element_cache(ElementIterator &elem,
+                   const std::shared_ptr<Quadrature<dim_>> &quad) const
+{
+  this->init_cache(elem,quad);
+}
+
+template<int dim_, int codim_>
+void
+DomainHandler<dim_, codim_>::
+init_element_cache(ElementAccessor &elem,
+                   const std::shared_ptr<Quadrature<dim_>> &quad) const
+{
+  this->init_cache(elem,quad);
+}
 
 
 template<int dim_, int codim_>
@@ -125,6 +150,21 @@ fill_cache(const topology_variant &sdim,
 
 
 
+template<int dim_, int codim_>
+void
+DomainHandler<dim_, codim_>::
+fill_element_cache(ElementAccessor &elem) const
+{
+  this->fill_cache(Topology<dim_>(), elem, 0);
+}
+
+template<int dim_, int codim_>
+void
+DomainHandler<dim_, codim_>::
+fill_element_cache(ElementIterator &elem) const
+{
+  this->fill_cache(Topology<dim_>(), elem, 0);
+}
 
 
 //    if (flag_.fill_inv_hessians())

@@ -142,11 +142,19 @@ public:
     this->set_flags(Topology<sdim>(), flag);
   }
 
+  void set_element_flags(const Flags &flag);
+
   void init_cache(ElementAccessor &elem,
                   const eval_pts_variant &quad) const;
 
   void init_cache(ElementIterator &elem,
                   const eval_pts_variant &quad) const;
+
+  void init_element_cache(ElementIterator &elem,
+                          const std::shared_ptr<Quadrature<dim_>> &quad) const;
+
+  void init_element_cache(ElementAccessor &elem,
+                          const std::shared_ptr<Quadrature<dim_>> &quad) const;
 
   void fill_cache(const topology_variant &sdim,
                   ElementAccessor &elem,
@@ -169,6 +177,11 @@ public:
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
+
+  void fill_element_cache(ElementAccessor &elem) const;
+
+  void fill_element_cache(ElementIterator &elem) const;
+
 
 protected:
 //  std::shared_ptr<typename ElementAccessor::CacheType>

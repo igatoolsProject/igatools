@@ -157,6 +157,22 @@ get_w_measures(const int s_id) const -> ValueVector<Real>
 }
 
 
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_element_measures() const -> const ValueVector<Real> &
+{
+  return get_values_from_cache<_Measure,dim_>(0);
+}
+
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_element_w_measures() const -> ValueVector<Real>
+{
+  return get_w_measures<dim_>(0);
+}
+
 
 template<int dim_,int codim_>
 auto

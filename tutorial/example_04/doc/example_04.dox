@@ -46,14 +46,16 @@ Then we use the grid to create the SplineSpace and the BSpline basis
 
 For storing the coefficient of the linear combination, we use the class IgCoefficients
 that maps the global ids of the basis function with the associated coefficient. Then 
-we need to build an instance of the IgCoefficient class and initialize the coefficients associated to 
-the basis function to zero:
+we need to build an instance of the IgCoefficients class and initialize the coefficients associated to 
+the basis function to zero: in order to do so we need get the DofDistribution 
+(that contains the information about the dofs of the SplineSpace) and extract the global dofs
+to construct an IgCoefficients object
 \snippet example_04.cpp init_vec
 
 To get the "central" basis function we address it by its tensor index, but
 the coefficient vector only knows about (global) flat indices.
 The tensor index is hardcoded to the space while the flat index depends on the
-the degree of freedom distribution policy, which we can ask the space for
+the degree of freedom distribution policy (represented by the class DofDistribution):
 \snippet example_04.cpp tensor_to_flat
 Just to double check we print the vector on the screen
 \snippet example_04.cpp print_vector
