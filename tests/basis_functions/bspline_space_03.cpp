@@ -42,7 +42,7 @@ void using_const_space(shared_ptr<const IgGridFunction<dim,sp_dim>> fun)
 {
   OUTSTART
 
-  auto basis = fun->get_ig_space();
+  auto basis = fun->get_basis();
   Epetra_SerialComm comm;
   auto matrix = EpetraTools::create_matrix(*basis,DofProperties::active,comm);
 

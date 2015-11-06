@@ -42,7 +42,7 @@ do_test_1()
 {
   out << "========== do_test_1() dim=" << dim << " --- begin ==========" << endl;
   using Grid = Grid<dim>;
-  using RefSpace = BSpline<dim>;
+  using BSpBasis = BSpline<dim>;
   using DMA = DynamicMultiArray<Index,dim>;
   using VecIt = typename DMA::iterator;
   using VecConstIt = typename DMA::const_iterator;
@@ -52,7 +52,7 @@ do_test_1()
   SafeSTLVector<VecConstView> ranges;
 
   int n_spaces = 3;
-  SafeSTLVector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
+  SafeSTLVector<shared_ptr<BSpBasis>> bsp_basis(n_spaces);
 
 
   int dofs_offset = 0;
@@ -63,13 +63,15 @@ do_test_1()
 
     int degree = i_sp + 2;
 
-    ref_spaces[i_sp] = RefSpace::create(SplineSpace<dim>::create(degree,grid));
+    auto space = SplineSpace<dim>::create(degree,grid);
 
-    auto dof_distribution = ref_spaces[i_sp]->get_ptr_dof_distribution();
+    bsp_basis[i_sp] = BSpBasis::create(space);
+
+    auto dof_distribution = space->get_dof_distribution();
 
     dof_distribution->add_dofs_offset(dofs_offset);
 
-    dofs_offset += ref_spaces[i_sp]->get_num_basis();
+    dofs_offset += bsp_basis[i_sp]->get_num_basis();
 
     const DMA &index_space = dof_distribution->get_index_table()[0];
 
@@ -105,7 +107,7 @@ do_test_2()
 {
   out << "========== do_test_2() dim=" << dim << " --- begin ==========" << endl;
   using Grid = Grid<dim>;
-  using RefSpace = BSpline<dim>;
+  using BSpBasis = BSpline<dim>;
   using DMA = DynamicMultiArray<Index,dim>;
   using VecIt = typename SafeSTLVector<Index>::iterator;
   using VecConstIt = typename SafeSTLVector<Index>::const_iterator;
@@ -115,7 +117,7 @@ do_test_2()
   SafeSTLVector<VecConstView> ranges;
 
   int n_spaces = 3;
-  SafeSTLVector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
+  SafeSTLVector<shared_ptr<BSpBasis>> bsp_basis(n_spaces);
 
 
   int dofs_offset = 0;
@@ -126,13 +128,15 @@ do_test_2()
 
     int degree = i_sp + 2;
 
-    ref_spaces[i_sp] = RefSpace::create(SplineSpace<dim>::create(degree,grid));
+    auto space = SplineSpace<dim>::create(degree,grid);
 
-    auto dof_distribution = ref_spaces[i_sp]->get_ptr_dof_distribution();
+    bsp_basis[i_sp] = BSpBasis::create(space);
+
+    auto dof_distribution = space->get_dof_distribution();
 
     dof_distribution->add_dofs_offset(dofs_offset);
 
-    dofs_offset += ref_spaces[i_sp]->get_num_basis();
+    dofs_offset += bsp_basis[i_sp]->get_num_basis();
 
     const DMA &index_space = dof_distribution->get_index_table()[0];
 

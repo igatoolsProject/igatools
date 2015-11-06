@@ -312,7 +312,7 @@ get_num_dofs(const std::string &property) const
 template<int dim, int range, int rank>
 std::set<Index> &
 DofDistribution<dim, range, rank>::
-get_dofs_id_same_property(const std::string &property)
+get_global_dofs(const std::string &property)
 {
   return properties_dofs_[property];
 }
@@ -322,7 +322,7 @@ get_dofs_id_same_property(const std::string &property)
 template<int dim, int range, int rank>
 const std::set<Index> &
 DofDistribution<dim, range, rank>::
-get_dofs_id_same_property(const std::string &property) const
+get_global_dofs(const std::string &property) const
 {
   return properties_dofs_[property];
 }
@@ -420,6 +420,33 @@ get_interior_dofs() const -> std::set<Index>
   }
 
   return dofs;
+}
+
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_global_dof_id(const TensorIndex<dim> &tensor_index,
+                  const Index comp) const -> Index
+{
+  return this->get_index_table()[comp](tensor_index);
+}
+
+
+template<int dim, int range, int rank>
+int
+DofDistribution<dim, range, rank>::
+get_num_dofs_comp(const int comp) const
+{
+  return this->get_num_dofs_table().get_component_size(comp);
+}
+
+template<int dim, int range, int rank>
+int
+DofDistribution<dim, range, rank>::
+get_num_dofs_comp(const int comp, const int dir) const
+{
+  return this->get_num_dofs_table()[comp][dir];
 }
 
 

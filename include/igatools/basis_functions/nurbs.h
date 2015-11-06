@@ -50,7 +50,7 @@ private:
   using self_t = NURBS<dim_, range_, rank_>;
 
 public:
-  using BSpSpace = BSpline<dim_, range_, rank_>;
+  using BSpBasis = BSpline<dim_, range_, rank_>;
 
 
   /** see documentation in \ref Basis */
@@ -82,14 +82,14 @@ public:
 
 
 public:
-  using Func = typename BSpSpace::Func;
+  using Func = typename BSpBasis::Func;
   template <int order>
-  using Derivative = typename BSpSpace::template Derivative<order>;
-  using Point = typename BSpSpace::Point;
-  using Value = typename BSpSpace::Value;
-  using Div   = typename BSpSpace::Div;
+  using Derivative = typename BSpBasis::template Derivative<order>;
+  using Point = typename BSpBasis::Point;
+  using Value = typename BSpBasis::Value;
+  using Div   = typename BSpBasis::Div;
 
-  using RefPoint = typename BSpSpace::RefPoint;
+  using RefPoint = typename BSpBasis::RefPoint;
 
 public:
 
@@ -129,19 +129,10 @@ public:
 public:
 //    /** Container indexed by the components of the space */
   template< class T>
-  using ComponentContainer = typename BSpSpace::template ComponentContainer<T>;
+  using ComponentContainer = typename BSpBasis::template ComponentContainer<T>;
 
-  using Degrees = typename BSpSpace::Degrees;
-  using Multiplicity = typename BSpSpace::Multiplicity;
-  using EndBehaviour = typename BSpSpace::EndBehaviour;
-  using Periodicity = typename BSpSpace::Periodicity;
-
-  using KnotsTable = typename BSpSpace::KnotsTable;
-  using DegreeTable = typename BSpSpace::DegreeTable;
-  using MultiplicityTable = typename BSpSpace::MultiplicityTable;
-  using TensorSizeTable = typename BSpSpace::TensorSizeTable;
-  using PeriodicityTable = typename BSpSpace::PeriodicityTable;
-  using EndBehaviourTable = typename BSpSpace::EndBehaviourTable;
+  using EndBehaviour = typename BSpBasis::EndBehaviour;
+  using EndBehaviourTable = typename BSpBasis::EndBehaviourTable;
 
 
   using WeightSpace = BSpline<dim_,1,1>;
@@ -156,7 +147,7 @@ public:
    * (non-const) BSpline and a scalar weight function.
    */
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<BSpSpace> &bs_space,
+  create(const std::shared_ptr<BSpBasis> &bs_space,
          const std::shared_ptr<WeightFunction> &weight_func);
 
   /**
@@ -164,7 +155,7 @@ public:
    * (const) BSpline and a scalar weight function.
    */
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const BSpSpace> &bs_space,
+  const_create(const std::shared_ptr<const BSpBasis> &bs_space,
                const std::shared_ptr<const WeightFunction> &weight_func);
 
   ///@}
@@ -196,7 +187,7 @@ protected:
   /**
    * Construct a NURBS from a BSpline and a scalar weight function.
    */
-  explicit NURBS(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
+  explicit NURBS(const SharedPtrConstnessHandler<BSpBasis> &bsp_basis,
                  const SharedPtrConstnessHandler<WeightFunction> &weight_func);
 
   /**
@@ -212,7 +203,6 @@ public:
 
   virtual bool is_bspline() const override final;
 
-  virtual const DegreeTable &get_degree_table() const override final;
 
   virtual void get_element_dofs(
     const IndexType element_id,
@@ -223,7 +213,7 @@ public:
 
   ///@}
 
-  const std::shared_ptr<const BSpSpace> get_spline_space() const;
+  const std::shared_ptr<const BSpBasis> get_bspline_basis() const;
 
   virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final;
 
@@ -232,8 +222,6 @@ public:
    * Get the weights function of the NURBS.
    */
   std::shared_ptr<const WeightFunction> get_weight_func() const;
-
-  const PeriodicityTable &get_periodicity() const override final;
 
 
   /**
@@ -248,19 +236,20 @@ public:
    */
   virtual void print_info(LogStream &out) const override final;
 
-  std::shared_ptr<const DofDistribution<dim, range, rank> >
-  get_ptr_const_dof_distribution() const override final;
 
-  std::shared_ptr<DofDistribution<dim, range, rank> >
-  get_ptr_dof_distribution() override final;
 
+  /**
+   * /brief Returns the SplineSpace used to build the BSpline basis.
+   */
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
+                                                     get_spline_space() const override final;
 
 
 private:
   /**
    * B-spline space
    */
-  SharedPtrConstnessHandler<BSpSpace> bsp_space_;
+  SharedPtrConstnessHandler<BSpBasis> bsp_basis_;
 
   /**
    * Weight function.
@@ -278,7 +267,7 @@ private:
    *
    * @note Internally uses the shared_from_this() function.
    */
-  std::shared_ptr<const self_t > get_this_space() const;
+  std::shared_ptr<const self_t > get_this_basis() const;
 
 
 public:
@@ -330,7 +319,7 @@ private:
                                   to_string(rank_);
 
     ar &make_nvp(base_name,base_class<BaseSpace>(this));
-    ar &make_nvp("bsp_space_",bsp_space_);
+    ar &make_nvp("bsp_basis_",bsp_basis_);
 
     ar &make_nvp("weight_func_",weight_func_);
   }

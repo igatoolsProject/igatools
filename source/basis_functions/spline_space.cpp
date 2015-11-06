@@ -22,6 +22,8 @@
 #include <igatools/base/array_utils.h>
 #include <igatools/utils/vector_tools.h>
 #include <igatools/utils/multi_array_utils.h>
+#include <igatools/basis_functions/dof_distribution.h>
+
 
 using std::unique_ptr;
 using std::shared_ptr;
@@ -327,6 +329,16 @@ init()
   // building the lookup table for the local dof id on the current component of an element --- end
   //------------------------------------------------------------------------------
 
+
+
+  //------------------------------------------------------------------------------
+  dof_distribution_ = std::make_shared<DofDistribution<dim,range,rank>>(
+                        this->get_num_basis_table(),
+                        this->get_degree_table(),
+                        this->get_periodic_table());
+  Assert(dof_distribution_ != nullptr, ExcNullPtr());
+  //------------------------------------------------------------------------------
+
 }
 
 
@@ -338,6 +350,22 @@ get_grid() const
 {
   return grid_.get_ptr_const_data();
 }
+
+template<int dim, int range, int rank>
+int
+SplineSpace<dim, range, rank>::
+get_max_degree() const
+{
+  int max_degree = 0;
+
+  const auto &degree_table = this->get_degree_table();
+  for (const auto &degree_comp : degree_table)
+    for (const auto &degree_comp_dim : degree_comp)
+      max_degree = std::max(max_degree,degree_comp_dim);
+
+  return max_degree;
+}
+
 
 #ifdef MESH_REFINEMENT
 
@@ -881,6 +909,25 @@ get_dofs_tensor_id_elem_table() const
   return dofs_tensor_id_elem_table_;
 }
 
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_dof_distribution() const ->
+std::shared_ptr<const DofDistribution<dim,range,rank> >
+{
+  return dof_distribution_;
+}
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_dof_distribution() ->
+std::shared_ptr<DofDistribution<dim,range,rank> >
+{
+  return dof_distribution_;
+}
+
 #ifdef SERIALIZATION
 template<int dim, int range, int rank>
 template<class Archive>
@@ -900,14 +947,19 @@ serialize(Archive &ar)
 
   ar &make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 
+  ar &make_nvp("dof_distribution_",dof_distribution_);
+
 #ifdef MESH_REFINEMENT
   using self_t = SplineSpace<dim,range,rank>;
   auto tmp = std::const_pointer_cast<self_t>(spline_space_previous_refinement_);
   ar &make_nvp("spline_space_previous_refinement_",tmp);
   spline_space_previous_refinement_ = tmp;
 #endif
+
+
 }
 #endif // SERIALIZATION
+
 
 template<int dim, int range, int rank>
 Size

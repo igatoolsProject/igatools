@@ -65,7 +65,7 @@ public:
 
   using PhysDomain = Domain<dim_, codim_>;
 
-  using RefSpace = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using RefBasis = ReferenceSpaceBasis<dim_,range_,rank_>;
 
   using GridType = Grid<dim_>;
   ///@}
@@ -103,16 +103,13 @@ public:
   using Gradient = typename Func::Gradient;
   using Div   = typename Func::Div;
 
-  using RefPoint = typename RefSpace::Point;
+  using RefPoint = typename RefBasis::Point;
 
 
 public:
   template< class T>
-  using ComponentContainer = typename RefSpace::template ComponentContainer<T>;
+  using ComponentContainer = typename RefBasis::template ComponentContainer<T>;
 
-  using TensorSizeTable = typename RefSpace::TensorSizeTable;
-
-  using DegreeTable = typename RefSpace::DegreeTable;
 
 public:
 
@@ -131,12 +128,12 @@ public:
   virtual ~PhysicalSpaceBasis() = default;
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<RefSpace> &ref_space,
+  create(const std::shared_ptr<RefBasis> &ref_basis,
          const std::shared_ptr<PhysDomain> &phys_domain,
          const Transformation &transformation_type = Transformation::h_grad);
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const RefSpace> &ref_space,
+  const_create(const std::shared_ptr<const RefBasis> &ref_basis,
                const std::shared_ptr<const PhysDomain> &phys_domain,
                const Transformation &transformation_type = Transformation::h_grad);
 
@@ -147,13 +144,6 @@ public:
   create_element(const ListIt &index, const PropId &property) const override final;
 
 
-  /** Returns the container with the global dof distribution (const version). */
-  std::shared_ptr<const DofDistribution<dim, range, rank> >
-  get_ptr_const_dof_distribution() const override final;
-
-  /** Returns the container with the global dof distribution (non const version). */
-  std::shared_ptr<DofDistribution<dim, range, rank> >
-  get_ptr_dof_distribution() override final;
 
 
 
@@ -161,12 +151,12 @@ public:
   using SubSpace = PhysicalSpaceBasis<k, range, rank, codim + dim-k>;
 
   template <int sdim>
-  using SubGridMap = typename RefSpace::GridType::template SubGridMap<sdim>;
+  using SubGridMap = typename RefBasis::GridType::template SubGridMap<sdim>;
 
 //    using InterGridMap = std::map<Index,Index>;
 
   template <int k>
-  using InterSpaceMap = typename RefSpace::template InterSpaceMap<k>;
+  using InterSpaceMap = typename RefBasis::template InterSpaceMap<k>;
 
 
 
@@ -196,11 +186,12 @@ public:
   create_cache_handler() const override final;
 
 
-
+#if 0
   /**
    * Return the maximum value of the polynomial degree, for each component, for each direction;
    */
   virtual int get_max_degree() const override final;
+#endif
 
   std::shared_ptr<const Domain<dim_,codim_>> get_physical_domain() const;
 
@@ -208,22 +199,26 @@ public:
   virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final;
 
 
-  std::shared_ptr<const RefSpace> get_reference_space() const;
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
+                                                     get_spline_space() const override final;
 
-//  std::shared_ptr<RefSpace> get_reference_space();
+
+  std::shared_ptr<const RefBasis> get_reference_basis() const;
+
+//  std::shared_ptr<RefBasis> get_reference_basis();
 
   Transformation get_transformation_type() const;
 
 private:
 
 
-  PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefSpace> &ref_space,
+  PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                      const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
                      const Transformation &transformation_type);
 
 
 
-  SharedPtrConstnessHandler<RefSpace> ref_space_;
+  SharedPtrConstnessHandler<RefBasis> ref_basis_;
 
   SharedPtrConstnessHandler<PhysDomain> phys_domain_;
 
@@ -241,7 +236,7 @@ private:
    *
    * @note Internally uses the shared_from_this() function.
    */
-  std::shared_ptr<const self_t > get_this_space() const;
+  std::shared_ptr<const self_t > get_this_basis() const;
 
 
 #ifdef MESH_REFINEMENT
@@ -294,7 +289,7 @@ private:
     ar &make_nvp(base_name,base_class<base_t>(this));
 
 
-    ar &make_nvp("ref_space_",ref_space_);
+    ar &make_nvp("ref_basis_",ref_basis_);
 
     ar &make_nvp("phys_domain_",phys_domain_);
 

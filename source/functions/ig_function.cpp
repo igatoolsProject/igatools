@@ -32,9 +32,9 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
-IgFunction(const SharedPtrConstnessHandler<Sp> &space,
+IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
            const EpetraTools::Vector &coeff,
-           const std::string &property,
+           const std::string &dofs_property,
            const std::string &name)
   :
   parent_t::Function(
@@ -42,12 +42,11 @@ IgFunction(const SharedPtrConstnessHandler<Sp> &space,
    SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
    SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain()),
    name),
-  space_(space),
-  property_(property)
+  basis_(space),
+  dofs_property_(dofs_property)
 {
-  const auto &dof_distribution = *(space_->get_ptr_const_dof_distribution());
-  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
-
+  const auto &dof_distribution = *(basis_->get_spline_space()->get_dof_distribution());
+  const auto &active_dofs = dof_distribution.get_global_dofs(dofs_property);
 
   const auto &epetra_map = coeff.Map();
 
@@ -63,9 +62,9 @@ IgFunction(const SharedPtrConstnessHandler<Sp> &space,
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
-IgFunction(const SharedPtrConstnessHandler<Sp> &space,
+IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
            const IgCoefficients &coeff,
-           const std::string &property,
+           const std::string &dofs_property,
            const std::string &name)
   :
   parent_t::Function(
@@ -73,13 +72,13 @@ IgFunction(const SharedPtrConstnessHandler<Sp> &space,
    SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
    SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain()),
    name),
-  space_(space),
-  property_(property)
+  basis_(space),
+  dofs_property_(dofs_property)
 {
 
 #ifndef NDEBUG
-  const auto &dof_distribution = *(space_->get_ptr_const_dof_distribution());
-  const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
+  const auto &dof_distribution = *(basis_->get_spline_space()->get_dof_distribution());
+  const auto &active_dofs = dof_distribution.get_global_dofs(dofs_property);
 
   for (const auto glob_dof : active_dofs)
     coeff_[glob_dof] = coeff.at(glob_dof);
@@ -93,13 +92,13 @@ IgFunction(const SharedPtrConstnessHandler<Sp> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-const_create(const std::shared_ptr<const Sp> &space,
+const_create(const std::shared_ptr<const PhysBasis> &space,
              const EpetraTools::Vector &coeff,
-             const std::string &property,
+             const std::string &dofs_property,
              const std::string &name) ->  std::shared_ptr<const parent_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-  coeff, property,name);
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  coeff, dofs_property,name);
   Assert(ig_func != nullptr, ExcNullPtr());
 
   return ig_func;
@@ -109,13 +108,13 @@ const_create(const std::shared_ptr<const Sp> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-const_create(const std::shared_ptr<const Sp> &space,
+const_create(const std::shared_ptr<const PhysBasis> &space,
              const IgCoefficients &coeff,
-             const std::string &property,
+             const std::string &dofs_property,
              const std::string &name) ->  std::shared_ptr<const parent_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-  coeff, property,name);
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  coeff, dofs_property,name);
   Assert(ig_func != nullptr, ExcNullPtr());
 
   return ig_func;
@@ -125,13 +124,13 @@ const_create(const std::shared_ptr<const Sp> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(const std::shared_ptr<Sp> &space,
+create(const std::shared_ptr<PhysBasis> &space,
        const EpetraTools::Vector &coeff,
-       const std::string &property,
+       const std::string &dofs_property,
        const std::string &name) ->  std::shared_ptr<parent_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-  coeff, property,name);
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  coeff, dofs_property,name);
 
   Assert(ig_func != nullptr, ExcNullPtr());
 #ifdef MESH_REFINEMENT
@@ -144,13 +143,13 @@ create(const std::shared_ptr<Sp> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(const std::shared_ptr<Sp> &space,
+create(const std::shared_ptr<PhysBasis> &space,
        const IgCoefficients &coeff,
-       const std::string &property,
+       const std::string &dofs_property,
        const std::string &name) ->  std::shared_ptr<parent_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<Sp>(space),
-  coeff, property,name);
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  coeff, dofs_property,name);
   Assert(ig_func != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -176,9 +175,9 @@ create_cache_handler() const
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-get_ig_space() const -> std::shared_ptr<const Sp>
+get_basis() const -> std::shared_ptr<const PhysBasis>
 {
-  return space_.get_ptr_const_data();
+  return basis_.get_ptr_const_data();
 }
 
 
@@ -198,7 +197,7 @@ auto
 IgFunction<dim,codim,range,rank>::
 operator +=(const self_t &fun) -> self_t &
 {
-  Assert(space_.get_ptr_const_data() == fun.space_.get_ptr_const_data(),
+  Assert(basis_.get_ptr_const_data() == fun.basis_.get_ptr_const_data(),
   ExcMessage("Functions defined on different spaces."));
 
   for (const auto &f_dof_value : fun.coeff_)
@@ -220,17 +219,17 @@ rebuild_after_insert_knots(
   using std::const_pointer_cast;
   this->function_previous_refinement_ =
     IgFunction<dim,codim,range,rank>::const_create(
-      std::dynamic_pointer_cast<const Sp>(space_->get_basis_previous_refinement()),
+      std::dynamic_pointer_cast<const PhysBasis>(basis_->get_basis_previous_refinement()),
       coeff_,
-      property_);
+      dofs_property_);
 
 
-  const int max_degree = space_->get_max_degree();
+  const int max_degree = basis_->get_spline_space()->get_max_degree();
 
   const auto quad = QGauss<dim>::create(max_degree+1);
   auto function_refined =
     space_tools::projection_l2(
-      *(this->function_previous_refinement_),space_.get_ptr_data(),quad);
+      *(this->function_previous_refinement_),basis_.get_ptr_data(),quad);
 
   this->coeff_ = std::move(function_refined->coeff_);
 }
@@ -277,7 +276,7 @@ print_info(LogStream &out) const
   out.end_item();
 
   out.begin_item("Reference space info:");
-  space_->print_info(out);
+  basis_->print_info(out);
   out.end_item();
   out << std::endl;
 
@@ -291,9 +290,9 @@ print_info(LogStream &out) const
 template<int dim,int codim,int range,int rank>
 const std::string &
 IgFunction<dim,codim,range,rank>::
-get_property() const
+get_dofs_property() const
 {
-  return property_;
+  return dofs_property_;
 }
 
 #if 0
@@ -314,14 +313,14 @@ serialize(Archive &ar, const unsigned int version)
 #endif // NURBS
 
   ar.template register_type<PhysicalSpaceBasis<dim,range,rank,codim>>();
-  auto non_nonst_space = std::const_pointer_cast<Basis<dim,codim,range,rank>>(space_);
-  ar &boost::serialization::make_nvp("space_",non_nonst_space);
-  space_ = non_nonst_space;
-  Assert(space_ != nullptr,ExcNullPtr());
+  auto non_nonst_space = std::const_pointer_cast<Basis<dim,codim,range,rank>>(basis_);
+  ar &boost::serialization::make_nvp("basis_",non_nonst_space);
+  basis_ = non_nonst_space;
+  Assert(basis_ != nullptr,ExcNullPtr());
 
   ar &boost::serialization::make_nvp("coeff_",coeff_);
 
-  ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
+  ar &boost::serialization::make_nvp("dofs_property_",const_cast<std::string &>(dofs_property_));
 
   ar.template register_type<BSplineElement<dim,range,rank>>();
   ar.template register_type<NURBSElement<dim,range,rank>>();

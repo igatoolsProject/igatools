@@ -44,14 +44,14 @@ using space_tools::get_boundary_dofs;
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpaceBasis<dim,range,rank,codim> >
-create_space(const shared_ptr<Grid<dim>> &grid,
-             const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
-             const int deg=1)
+create_phys_basis(const shared_ptr<Grid<dim>> &grid,
+                  const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
+                  const int deg=1)
 {
-  using BspSpace = BSpline<dim, range, rank>;
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
-  auto ref_space = BspSpace::create(SplineSpace<dim,range,rank>::create(deg,grid));
-  return Basis::create(ref_space, Domain<dim,codim>::create(grid_func), Transformation::h_grad);
+  using BSpBasis = BSpline<dim, range, rank>;
+  using PhysBasis = PhysicalSpaceBasis<dim,range,rank,codim>;
+  auto bsp_basis = BSpBasis::create(SplineSpace<dim,range,rank>::create(deg,grid));
+  return PhysBasis::create(bsp_basis, Domain<dim,codim>::create(grid_func), Transformation::h_grad);
 }
 
 
@@ -80,20 +80,22 @@ create_space_prop(const shared_ptr<Grid<dim>> &grid,
   const int neu_face = 0;
   grid->set_boundary_id(neu_face, bc::neu);
 
-  using BspSpace = BSpline<dim, range, rank>;
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
-  auto ref_space = BspSpace::create(SplineSpace<dim,range,rank>::create(deg,grid));
-  auto space = Basis::create(ref_space, Domain<dim,codim>::create(grid_func));
+  using BSpBasis = BSpline<dim, range, rank>;
+  using PhysBasis = PhysicalSpaceBasis<dim,range,rank,codim>;
+  auto space = SplineSpace<dim,range,rank>::create(deg,grid);
+  auto bsp_basis = BSpBasis::create(space);
+  auto phys_basis = PhysBasis::create(bsp_basis, Domain<dim,codim>::create(grid_func));
 
   std::set<boundary_id>  dir_ids = {bc::dir};
-  auto dir_dofs = get_boundary_dofs<Basis>(space, dir_ids);
+  auto dir_dofs = get_boundary_dofs<PhysBasis>(phys_basis, dir_ids);
 
 
-  auto int_dofs = space->get_interior_dofs();
+  auto dof_dist = space->get_dof_distribution();
+  auto int_dofs = dof_dist->get_interior_dofs();
 
 
   std::set<boundary_id>  neu_ids = {bc::neu};
-  auto neu_dofs = get_boundary_dofs<Basis>(space, neu_ids);
+  auto neu_dofs = get_boundary_dofs<PhysBasis>(phys_basis, neu_ids);
   SafeSTLVector<Index> common(dim*range);
   auto end1 =
     std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
@@ -102,7 +104,6 @@ create_space_prop(const shared_ptr<Grid<dim>> &grid,
   for (auto &id : common)
     neu_dofs.erase(id);
 
-  auto dof_dist = space->get_ptr_dof_distribution();
   dof_dist->add_dofs_property(DofProp::interior);
   dof_dist->add_dofs_property(DofProp::dirichlet);
   dof_dist->add_dofs_property(DofProp::neumman);
@@ -112,13 +113,13 @@ create_space_prop(const shared_ptr<Grid<dim>> &grid,
   dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs, true);
   dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs, true);
 
-  return space;
+  return phys_basis;
 }
 
 
 
 template <int dim, int k, int range=1, int rank=1, int codim = 0>
-void elem_values(shared_ptr<PhysicalSpaceBasis<dim,range,rank,codim>> space,
+void elem_values(shared_ptr<PhysicalSpaceBasis<dim,range,rank,codim>> phys_basis,
                  const int n_qp = 1,
                  const string &prop = DofProperties::active,
                  const bool no_boundary=true)
@@ -129,8 +130,8 @@ void elem_values(shared_ptr<PhysicalSpaceBasis<dim,range,rank,codim>> space,
       << n_qp << "," << prop <<  "," << no_boundary << ")" << std::endl;
 
 
-//    using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
-//    using ElementHandler = typename Basis::ElementHandler;
+//    using PhysBasis = PhysicalSpaceBasis<dim,range,rank,codim>;
+//    using ElementHandler = typename PhysBasis::ElementHandler;
 
   auto quad = QGauss<k>::create(n_qp);
   using space_element::Flags;
@@ -142,11 +143,11 @@ void elem_values(shared_ptr<PhysicalSpaceBasis<dim,range,rank,codim>> space,
   //      Flags::point |
   //    ValueFlags::w_measure;
 
-  auto elem_filler = space->create_cache_handler();
+  auto elem_filler = phys_basis->create_cache_handler();
   elem_filler->template set_flags<k>(flag);
 
-  auto elem = space->begin();
-  auto end  = space->end();
+  auto elem = phys_basis->begin();
+  auto end  = phys_basis->end();
   elem_filler->template init_cache<k>(elem,quad);
 
   using space_element::_Value;

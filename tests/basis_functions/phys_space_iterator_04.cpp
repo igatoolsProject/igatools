@@ -65,15 +65,16 @@ void elem_values(const int n_knots = 2, const int deg=1)
 {
 
   const int k = dim;
-  using BspSpace = BSpline<dim, range, rank>;
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using BspBasis = BSpline<dim, range, rank>;
+  using PhysBasis = PhysicalSpaceBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
-  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
+  auto space = SplineSpace<dim,range,rank>::const_create(deg,grid);
+  auto bsp_basis = BspBasis::const_create(space);
   auto phys_domain = create_domain(grid);
 
-  auto space = Basis::const_create(ref_space, phys_domain, Transformation::h_grad);
+  auto phys_basis = PhysBasis::const_create(bsp_basis, phys_domain, Transformation::h_grad);
 
   const int n_qp = 2;
   auto quad = QGauss<k>::create(n_qp);
@@ -82,14 +83,14 @@ void elem_values(const int n_knots = 2, const int deg=1)
               Flags::gradient |
               Flags::hessian;
 
-  auto elem_cache_handler = space->create_cache_handler();
+  auto elem_cache_handler = phys_basis->create_cache_handler();
   elem_cache_handler->template set_flags<dim>(flag);
 
-  auto elem = space->begin();
-  auto end = space->end();
+  auto elem = phys_basis->begin();
+  auto end = phys_basis->end();
   elem_cache_handler->init_element_cache(elem,quad);
 
-  using Elem = typename Basis::ElementAccessor;
+  using Elem = typename PhysBasis::ElementAccessor;
   using _Value = typename Elem::_Value;
   using _Gradient = typename Elem::_Gradient;
   using _Hessian = typename Elem::_Hessian;

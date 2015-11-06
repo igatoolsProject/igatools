@@ -44,12 +44,13 @@ void plot_basis(const int deg)
 // [create_basis]
 
   // [init_vec]
-  IgCoefficients coeffs(basis->get_global_dofs());
+  const auto dof_distribution = space->get_dof_distribution();
+  IgCoefficients coeffs(dof_distribution->get_global_dofs());
   // [init_vec]
 
   //[tensor_to_flat]
   TensorIndex<dim> basis_t_index(deg);
-  const auto j = basis->get_global_dof_id(basis_t_index, 0);
+  const auto j = dof_distribution->get_global_dof_id(basis_t_index, 0);
   coeffs[j] = 1.0;
   // [tensor_to_flat]
 

@@ -97,26 +97,17 @@ public:
 
   using ElementHandler = ReferenceElementHandler<dim_, range_, rank_>;
 
-  using SpaceData = SplineSpace<dim_,range_,rank_>;
+  using SpSpace = SplineSpace<dim_,range_,rank_>;
 
-  using Degrees = typename SpaceData::Degrees;
-  using Multiplicity = typename SpaceData::Multiplicity;
-  using EndBehaviour = typename SpaceData::EndBehaviour;
-  using Periodicity = typename SpaceData::Periodicity;
-
-  using KnotsTable = typename SpaceData::KnotsTable;
-  using DegreeTable = typename SpaceData::DegreeTable;
-  using MultiplicityTable = typename SpaceData::MultiplicityTable;
-  using TensorSizeTable = typename SpaceData::TensorSizeTable;
-  using PeriodicityTable = typename SpaceData::PeriodicityTable;
-  using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
+  using EndBehaviour = typename SpSpace::EndBehaviour;
+  using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
   template <class T>
-  using ComponentContainer = typename SpaceData::template ComponentContainer<T>;
+  using ComponentContainer = typename SpSpace::template ComponentContainer<T>;
 
-  using ComponentMap = typename SpaceData::template ComponentContainer<int>::ComponentMap;
+  using ComponentMap = typename SpSpace::template ComponentContainer<int>::ComponentMap;
 
-  static const auto n_components = SpaceData::n_components;
+  static const auto n_components = SpSpace::n_components;
 
 protected:
   /**
@@ -144,6 +135,7 @@ public:
 
   virtual bool is_bspline() const = 0;
 
+#if 0
   /**
    * Returns the degree of the BSpline space for each component and for each coordinate direction.
    * \return The degree of the BSpline space for each component and for each coordinate direction.
@@ -151,12 +143,12 @@ public:
    */
   virtual const DegreeTable &get_degree_table() const = 0;
 
-
   /**
-   * Return the maximum value of the polynomial degree, for each component, for each direction;
+   * Return the maximum value of the polynomial degree, for each component of the space
+   * along each direction;
    */
   virtual int get_max_degree() const override final;
-
+#endif
 
 
 
@@ -167,15 +159,13 @@ public:
   virtual const EndBehaviourTable &get_end_behaviour_table() const = 0;
 
 
+#if 0
   virtual const PeriodicityTable &get_periodicity() const = 0;
+#endif
 
 
 
 
-
-  Size get_num_comp_basis(const int comp) const;
-
-  Size get_num_comp_basis(const int comp, const int dir) const;
 
 
   template<int sdim>

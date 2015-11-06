@@ -410,7 +410,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 
   const auto &ref_space_tree = get_xml_element(tree,"BSpline");
 
-  using space_t = BSpline<dim,range,rank>;
+  using space_t = SplineSpace<dim,range,rank>;
 
   //-------------------------------------------------------------------------
   // reading the BSpline attributes
@@ -532,7 +532,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
   typename space_t::PeriodicityTable periodic(components_map, SafeSTLArray<bool,dim>(false));
 
   auto spline_space = SplineSpace<dim,range,rank>::create(degrees,grid,multiplicities,periodic);
-  auto bspline_basis = space_t::create(spline_space, end_behaviour);
+  auto bspline_basis = BSpline<dim,range,rank>::create(spline_space, end_behaviour);
   //-------------------------------------------------------------------------
 
   return bspline_basis;
@@ -551,7 +551,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
   const auto &ref_space_tree = get_xml_element(tree,"NURBS");
 
-  using space_t = NURBS<dim,range,rank>;
+  using space_t = SplineSpace<dim,range,rank>;
 
   //-------------------------------------------------------------------------
   // reading the NURBS attributes
@@ -611,7 +611,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
               ExcDimensionMismatch(scalar_component_vector.size(),n_active_components));
 
   using       DegreeTable = typename space_t::DegreeTable;
-  using      WeightsTable = typename space_t::WeightsTable;
+  using      WeightsTable = typename NURBS<dim,range,rank>::WeightsTable;
   using MultiplicityTable = typename space_t::MultiplicityTable;
 
   DegreeTable degrees(components_map);
@@ -690,10 +690,10 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
   using SpSpace = BSpline<dim,range,rank>;
   typename SpSpace::EndBehaviourTable
   end_behaviour(components_map, SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
-  typename SpSpace::PeriodicityTable periodic(components_map, SafeSTLArray<bool, dim>(false));
+  typename SplineSpace<dim,range,rank>::PeriodicityTable periodic(components_map, SafeSTLArray<bool, dim>(false));
 
   auto spline_space = SplineSpace<dim,range,rank>::create(degrees,grid,multiplicities,periodic);
-  auto bspline_basis = SpSpace::create(spline_space, end_behaviour);
+  auto bspline_basis = BSpline<dim,range,rank>::create(spline_space, end_behaviour);
 
   //---------------------------------------------------------------------------------
 
@@ -703,24 +703,24 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
   using ScalarBSpline = BSpline<dim>;
 //    using WeightFunc = IgFunction<ReferenceSpaceBasis<dim,1,1> >;
 
-  using ScalarDegreeTable = typename ScalarBSpline::DegreeTable;
+  using ScalarDegreeTable = typename SplineSpace<dim>::DegreeTable;
   const ScalarDegreeTable scalar_degree_table(degrees[0]);
 
 //  auto new_grid = Grid<dim>::create(*grid);
 
-  using ScalarMultiplicityTable = typename ScalarBSpline::MultiplicityTable;
+  using ScalarMultiplicityTable = typename SplineSpace<dim>::MultiplicityTable;
   const auto scalar_mult_table = ScalarMultiplicityTable(multiplicities[0]);
   // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
   typename ScalarBSpline::EndBehaviourTable
   scalar_end_behaviour({SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory)});
-  typename ScalarBSpline::PeriodicityTable scalar_periodic(SafeSTLArray<bool, dim>(false));
+  typename SplineSpace<dim>::PeriodicityTable scalar_periodic(SafeSTLArray<bool, dim>(false));
 
 
-  auto scalar_spline_space = SplineSpace<dim,1,1>::create(scalar_degree_table,grid,scalar_mult_table,scalar_periodic);
+  auto scalar_spline_space = SplineSpace<dim>::create(scalar_degree_table,grid,scalar_mult_table,scalar_periodic);
   auto scalar_bspline_basis = ScalarBSpline::create(scalar_spline_space, scalar_end_behaviour);
 
 //    using WeightFuncPtr = shared_ptr<WeightFunc>;
-  using WeightFunction = typename space_t::WeightFunction;
+  using WeightFunction = typename NURBS<dim,range,rank>::WeightFunction;
   /*
   const auto &w_coefs = weights[0];
 
@@ -740,7 +740,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
   // building the weight function table --- end
   //----------------------------------------
 
-  auto nurbs_basis = space_t::create(bspline_basis,w_func);
+  auto nurbs_basis = NURBS<dim,range,rank>::create(bspline_basis,w_func);
 
   return nurbs_basis;
 }

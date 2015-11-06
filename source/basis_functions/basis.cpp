@@ -119,43 +119,27 @@ auto
 Basis<dim_,codim_,range_,rank_>::
 get_num_basis() const -> Size
 {
-  return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
+  return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
+#if 0
 template <int dim_,int codim_,int range_,int rank_>
 auto
 Basis<dim_,codim_,range_,rank_>::
 get_global_dofs(const std::string &dof_prop) const
 -> const std::set<Index> &
 {
-  return this->get_ptr_const_dof_distribution()->get_dofs_id_same_property(dof_prop);
+  return this->get_dof_distribution()->get_global_dofs(dof_prop);
 }
-
+#endif
 
 
 template <int dim_,int codim_,int range_,int rank_>
 auto
 Basis<dim_,codim_,range_,rank_>::
-get_global_dof_id(const TensorIndex<dim_> &tensor_index,
-                  const Index comp) const -> Index
+get_dof_distribution() const -> std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
 {
-  return this->get_ptr_const_dof_distribution()->get_index_table()[comp](tensor_index);
-}
-
-template <int dim_,int codim_,int range_,int rank_>
-auto
-Basis<dim_,codim_,range_,rank_>::
-get_interior_dofs() const -> std::set<Index>
-{
-  return this->get_ptr_const_dof_distribution()->get_interior_dofs();
-}
-
-template <int dim_,int codim_,int range_,int rank_>
-auto
-Basis<dim_,codim_,range_,rank_>::
-get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std::set<Index>
-{
-  return this->get_ptr_const_dof_distribution()->get_boundary_dofs(s_id,topology);
+  return this->get_spline_space()->get_dof_distribution();
 }
 
 

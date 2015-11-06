@@ -139,6 +139,35 @@ print_cache_info(LogStream &out) const
   local_cache_.print_info(out);
 }
 
+
+template<int dim_,int space_dim_>
+auto
+GridFunctionElement<dim_,space_dim_>::
+get_element_values_D0() const -> const ValueVector<Value> &
+{
+  using _D0 = grid_function_element::_D<0>;
+  return this->template get_values_from_cache<_D0,dim_>(0);
+}
+
+template<int dim_,int space_dim_>
+auto
+GridFunctionElement<dim_,space_dim_>::
+get_element_values_D1() const -> const ValueVector<Derivative<1>> &
+{
+  using _D1 = grid_function_element::_D<1>;
+  return this->template get_values_from_cache<_D1,dim_>(0);
+}
+
+template<int dim_,int space_dim_>
+auto
+GridFunctionElement<dim_,space_dim_>::
+get_element_values_D2() const -> const ValueVector<Derivative<2>> &
+{
+  using _D2 = grid_function_element::_D<2>;
+  return this->template get_values_from_cache<_D2,dim_>(0);
+}
+
+
 //template<int dim_, int space_dim_, class ContainerType>
 //template<int sdim>
 //auto

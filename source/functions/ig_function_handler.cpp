@@ -31,7 +31,7 @@ IgFunctionHandler<dim,codim,range,rank>::
 IgFunctionHandler(const std::shared_ptr<FunctionType> &ig_function)
   :
   parent_t(ig_function),
-  ig_space_handler_(ig_function->get_ig_space()->create_cache_handler()),
+  ig_basis_handler_(ig_function->get_basis()->create_cache_handler()),
   ig_function_(ig_function)
 {}
 
@@ -68,7 +68,7 @@ set_flags(const topology_variant &sdim,
   if (contains(flag,Flags::D2))
     ig_space_elem_flags |= SpFlags::hessian;
 
-  ig_space_handler_->set_flags_impl(sdim,ig_space_elem_flags);
+  ig_basis_handler_->set_flags_impl(sdim,ig_space_elem_flags);
   //*/
 }
 
@@ -135,16 +135,16 @@ operator()(const Topology<sdim> &sub_elem)
     const auto &grid_elem = domain_elem.get_grid_function_element().get_grid_element();
     const auto &grid_elem_id = grid_elem.get_index();
 
-    const auto ig_space = ig_function.get_ig_space();
-    const auto &ig_space_handler = *ig_function_handler_.ig_space_handler_;
+    const auto ig_space = ig_function.get_basis();
+    const auto &ig_basis_handler = *ig_function_handler_.ig_basis_handler_;
     auto ig_space_elem = ig_space->begin();
     ig_space_elem->move_to(grid_elem_id);
 
-    ig_space_handler.template init_cache<sdim>(*ig_space_elem,grid_elem.template get_quad<sdim>());
-    ig_space_handler.template fill_cache<sdim>(*ig_space_elem,s_id_);
+    ig_basis_handler.template init_cache<sdim>(*ig_space_elem,grid_elem.template get_quad<sdim>());
+    ig_basis_handler.template fill_cache<sdim>(*ig_space_elem,s_id_);
 
 
-    const auto &dofs_property = DofProperties::active;
+    const auto &dofs_property = ig_function.get_dofs_property();
 
     const auto &ig_space_elem_global_dofs = ig_space_elem->get_local_to_global(dofs_property);
     const auto &ig_func_coeffs = ig_function.get_coefficients();

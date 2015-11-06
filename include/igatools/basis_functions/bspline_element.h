@@ -130,7 +130,7 @@ public:
   /**
    * Returns the BSpline upon which the element is defined.
    */
-  std::shared_ptr<const Basis> get_bspline_space() const;
+  std::shared_ptr<const Basis> get_bspline_basis() const;
 
 private:
 

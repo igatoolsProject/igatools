@@ -163,7 +163,7 @@ MapPtr create_map(const SpacePtr space,
                   Comm &comm)
 {
   const auto dof_dist = space->get_ptr_const_dof_distribution();
-  const auto dofs = dof_dist->get_dofs_id_same_property(property);
+  const auto dofs = dof_dist->get_global_dofs(property);
   //TODO (pauletti, Mar 28, 2015): this is double copy of data
   const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
   auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);

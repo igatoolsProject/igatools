@@ -228,6 +228,7 @@ Weight function :
          Coef[loc_id=5 , glob_id=5] = 1.00000
          Coef[loc_id=6 , glob_id=6] = 1.00000
       
+      Dofs property: active
    
 
 ========================================================================
@@ -481,6 +482,7 @@ Weight function :
          Coef[loc_id=5 , glob_id=5] = 1.00000
          Coef[loc_id=6 , glob_id=6] = 1.00000
       
+      Dofs property: active
    
 
 ========================================================================
@@ -753,6 +755,7 @@ Weight function :
          Coef[loc_id=5 , glob_id=5] = 1.00000
          Coef[loc_id=6 , glob_id=6] = 1.00000
       
+      Dofs property: active
    
 
 ========================================================================
@@ -1063,6 +1066,7 @@ Weight function :
          Coef[loc_id=33 , glob_id=33] = 1.00000
          Coef[loc_id=34 , glob_id=34] = 1.00000
       
+      Dofs property: active
    
 
 ========================================================================
@@ -1398,6 +1402,7 @@ Weight function :
          Coef[loc_id=33 , glob_id=33] = 1.00000
          Coef[loc_id=34 , glob_id=34] = 1.00000
       
+      Dofs property: active
    
 
 ========================================================================
@@ -1758,6 +1763,7 @@ Weight function :
          Coef[loc_id=33 , glob_id=33] = 1.00000
          Coef[loc_id=34 , glob_id=34] = 1.00000
       
+      Dofs property: active
    
 
 ========================================================================
@@ -2200,6 +2206,7 @@ Weight function :
          Coef[loc_id=103 , glob_id=103] = 1.00000
          Coef[loc_id=104 , glob_id=104] = 1.00000
       
+      Dofs property: active
    
 
 ========================================================================
@@ -2702,6 +2709,7 @@ Weight function :
          Coef[loc_id=103 , glob_id=103] = 1.00000
          Coef[loc_id=104 , glob_id=104] = 1.00000
       
+      Dofs property: active
    
 
 ========================================================================

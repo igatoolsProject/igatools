@@ -72,10 +72,10 @@ private:
 private:
   using RefSpace = ReferenceSpaceBasis<dim>;
   using Basis = BSpline<dim>;
-  shared_ptr<const Basis> space;
+  shared_ptr<const Basis> basis;
 
-  const Quadrature<dim>   elem_quad;
-  const Quadrature<dim-1> face_quad;
+  shared_ptr<const Quadrature<dim>>   elem_quad;
+  shared_ptr<const Quadrature<dim-1>> face_quad;
   // [members]
 
   // [la members]
@@ -92,10 +92,12 @@ template<int dim>
 PoissonProblem<dim>::
 PoissonProblem(const int n_knots, const int deg)
   :
-  space(Basis::create(deg, Grid<dim>::create(n_knots))),
-  elem_quad(QGauss<dim>(deg+1)),
-  face_quad(QGauss<dim-1>(deg+1)),
-  matrix(create_matrix(*space,DofProperties::active, Epetra_SerialComm())),
+  basis(Basis::const_create(
+         SplineSpace<dim>::const_create(
+           deg, Grid<dim>::const_create(n_knots)))),
+  elem_quad(QGauss<dim>::create(deg+1)),
+  face_quad(QGauss<dim-1>::create(deg+1)),
+  matrix(create_matrix(*basis,DofProperties::active, Epetra_SerialComm())),
   rhs(create_vector(matrix->RangeMap())),
   solution(create_vector(matrix->DomainMap()))
 {}
@@ -105,7 +107,7 @@ PoissonProblem(const int n_knots, const int deg)
 template<int dim>
 void PoissonProblem<dim>::assemble()
 {
-  auto grid = space->get_grid();
+  auto grid = basis->get_grid();
 
   using Function = Function<dim,0,1,1>;
   using ConstFunction = ConstantFunction<dim,0,1,1>;
@@ -114,7 +116,7 @@ void PoissonProblem<dim>::assemble()
   Value b = {5.};
   auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), b);
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
 
   auto flag = ValueFlags::value | ValueFlags::gradient |
               ValueFlags::w_measure;
@@ -123,8 +125,8 @@ void PoissonProblem<dim>::assemble()
   f->reset(ValueFlags::value, elem_quad);
 
   auto f_elem = f->begin();
-  auto elem   = space->begin();
-  const auto elem_end = space->end();
+  auto elem   = basis->begin();
+  const auto elem_end = basis->end();
 
   elem_handler->init_element_cache(elem);
   f->init_element_cache(f_elem);
@@ -135,7 +137,7 @@ void PoissonProblem<dim>::assemble()
   {
     const int n_basis = elem->get_num_basis(DofProperties::active);
 
-    DenseMatrix loc_mat(n_basis, n_basis);
+    DenseMatrix loc_mat(n_basis,n_basis);
     loc_mat = 0.0;
 
     DenseVector loc_rhs(n_basis);
@@ -160,9 +162,9 @@ void PoissonProblem<dim>::assemble()
             scalar_product(grad_phi_i[qp], grad_phi_j[qp])
             * w_meas[qp];
       }
-      auto phi_i = phi.get_function_view(i);
 
-      for (int qp=0; qp<n_qp; ++qp)
+      const auto &phi_i = phi.get_function_view(i);
+      for (int qp = 0; qp<n_qp; ++qp)
         loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
                       * w_meas[qp];
     }
@@ -185,7 +187,7 @@ void PoissonProblem<dim>::assemble()
   // TODO (pauletti, Mar 9, 2015): parametrize with dimension
   project_boundary_values<RefSpace>(
     const_pointer_cast<const Function>(g),
-    space,
+    basis,
     face_quad,
     dir_id,
     values);
@@ -206,12 +208,12 @@ template<int dim>
 void PoissonProblem<dim>::output()
 {
   const int n_plot_points = 2;
-  auto map = IdentityFunction<dim>::create(space->get_grid());
+  auto map = IdentityFunction<dim>::create(basis->get_grid());
   Writer<dim> writer(map, n_plot_points);
 
 
   using IgFunc = IgFunction<dim,0,1,1>;
-  auto solution_function = IgFunc::create(space, solution);
+  auto solution_function = IgFunc::create(basis, solution);
   writer.template add_field<1,1>(solution_function, "solution");
   string filename = "poisson_problem-" + to_string(dim) + "d" ;
   writer.save(filename);

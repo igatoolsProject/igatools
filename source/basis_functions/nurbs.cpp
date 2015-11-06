@@ -42,10 +42,10 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_, int range_, int rank_>
 NURBS<dim_, range_, rank_>::
-NURBS(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
+NURBS(const SharedPtrConstnessHandler<BSpBasis> &bsp_basis,
       const SharedPtrConstnessHandler<WeightFunction> &weight_func)
   :
-  bsp_space_(bsp_space),
+  bsp_basis_(bsp_basis),
   weight_func_(weight_func)
 {
 #ifndef NDEBUG
@@ -55,15 +55,15 @@ NURBS(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
     std::dynamic_pointer_cast<const IgGridFunction<dim,1>>(weight_func_.get_ptr_const_data());
   Assert(w_as_ig_func != nullptr,ExcNullPtr());
 
-  const auto w_func_space = w_as_ig_func->get_ig_space();
-  Assert(w_func_space->is_bspline(),
+  const auto w_func_basis = w_as_ig_func->get_basis();
+  Assert(w_func_basis->is_bspline(),
          ExcMessage("The space for the weight function is not BSpline."));
 
-  const auto &n_basis_table = this->get_ptr_const_dof_distribution()->get_num_dofs_table();
+  const auto &n_basis_table = this->get_spline_space()->get_dof_distribution()->get_num_dofs_table();
   int comp_id = 0;
   for (const auto &n_basis_comp : n_basis_table)
   {
-    Assert(n_basis_comp == w_func_space->get_ptr_const_dof_distribution()->get_num_dofs_table()[0],
+    Assert(n_basis_comp == w_func_basis->get_spline_space()->get_dof_distribution()->get_num_dofs_table()[0],
            ExcMessage("Mismatching number of basis functions and weight "
                       "coefficients for scalar component " + to_string(comp_id)));
 
@@ -77,11 +77,11 @@ NURBS(const SharedPtrConstnessHandler<BSpSpace> &bsp_space,
 template <int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
-create(const std::shared_ptr<BSpSpace> &bs_space,
+create(const std::shared_ptr<BSpBasis> &bs_space,
        const std::shared_ptr<WeightFunction> &weight_func) -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<BSpSpace>(bs_space),
+    new self_t(SharedPtrConstnessHandler<BSpBasis>(bs_space),
   SharedPtrConstnessHandler<WeightFunction>(weight_func)));
   Assert(sp != nullptr, ExcNullPtr());
 
@@ -95,11 +95,11 @@ create(const std::shared_ptr<BSpSpace> &bs_space,
 template <int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
-const_create(const std::shared_ptr<const BSpSpace> &bs_space,
+const_create(const std::shared_ptr<const BSpBasis> &bs_space,
              const std::shared_ptr<const WeightFunction> &weight_func) -> shared_ptr<const self_t>
 {
   auto sp = shared_ptr<const self_t>(
-    new self_t(SharedPtrConstnessHandler<BSpSpace>(bs_space),
+    new self_t(SharedPtrConstnessHandler<BSpBasis>(bs_space),
   SharedPtrConstnessHandler<WeightFunction>(weight_func)));
   Assert(sp != nullptr, ExcNullPtr());
 
@@ -110,7 +110,7 @@ const_create(const std::shared_ptr<const BSpSpace> &bs_space,
 template<int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
-get_this_space() const -> std::shared_ptr<const self_t >
+get_this_basis() const -> std::shared_ptr<const self_t >
 {
   auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
   auto nrb_space = std::dynamic_pointer_cast<self_t>(ref_sp);
@@ -128,7 +128,7 @@ create_element(const ListIt &index, const PropId &property) const
   using Elem = NURBSElement<dim_,range_,rank_>;
 
   std::unique_ptr<SpaceElement<dim_,0,range_,rank_>>
-  elem = std::make_unique<Elem>(this->get_this_space(),index,property);
+  elem = std::make_unique<Elem>(this->get_this_basis(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -143,7 +143,7 @@ create_ref_element(const ListIt &index, const PropId &property) const
   using Elem = NURBSElement<dim_,range_,rank_>;
 
   std::unique_ptr<ReferenceElement<dim_,range_,rank_>>
-  elem = std::make_unique<Elem>(this->get_this_space(),index,property);
+  elem = std::make_unique<Elem>(this->get_this_basis(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -163,7 +163,7 @@ auto
 NURBS<dim_, range_, rank_>::
 get_grid() const -> std::shared_ptr<const Grid<dim_>>
 {
-  return bsp_space_->get_grid();
+  return bsp_basis_->get_grid();
 }
 
 
@@ -187,7 +187,7 @@ get_ref_face_space(const Index face_id,
                    typename GridType::FaceGridMap &elem_map) const
 -> std::shared_ptr<RefFaceSpace>
 {
-  auto f_space = bsp_space_->get_ref_face_space(face_id, face_to_element_dofs, elem_map);
+  auto f_space = bsp_basis_->get_ref_face_space(face_id, face_to_element_dofs, elem_map);
 
   // TODO (pauletti, Jun 11, 2014): this should be put and completed in
   // get_face_weigjts()
@@ -238,11 +238,11 @@ refine_h_weights(
   auto grid = this->get_grid();
   auto grid_old = this->get_grid()->get_grid_pre_refinement();
 
-  auto knots_with_repetitions_pre_refinement = bsp_space_->get_spline_space_previous_refinement()
+  auto knots_with_repetitions_pre_refinement = bsp_basis_->get_spline_space_previous_refinement()
                                                ->compute_knots_with_repetition(
-                                                 bsp_space_->get_end_behaviour());
-  auto knots_with_repetitions = bsp_space_->compute_knots_with_repetition(
-                                  bsp_space_->get_end_behaviour());
+                                                 bsp_basis_->get_end_behaviour());
+  auto knots_with_repetitions = bsp_basis_->compute_knots_with_repetition(
+                                  bsp_basis_->get_end_behaviour());
 
   for (int direction_id = 0; direction_id < dim; ++direction_id)
   {
@@ -250,7 +250,7 @@ refine_h_weights(
     {
       for (const int comp_id : weights_.get_active_components_id())
       {
-        const int p = bsp_space_->get_degree_table()[comp_id][direction_id];
+        const int p = bsp_basis_->get_degree_table()[comp_id][direction_id];
         const auto &U = knots_with_repetitions_pre_refinement[comp_id].get_data_direction(direction_id);
         const auto &Ubar = knots_with_repetitions[comp_id].get_data_direction(direction_id);
 
@@ -282,9 +282,9 @@ refine_h_weights(
         auto new_sizes = old_sizes;
         new_sizes[direction_id] += r+1; // r+1 new weights in the refinement direction
         Assert(new_sizes[direction_id] ==
-               bsp_space_->get_num_basis(comp_id,direction_id),
+               bsp_basis_->get_num_basis(comp_id,direction_id),
                ExcDimensionMismatch(new_sizes[direction_id],
-                                    bsp_space_->get_num_basis(comp_id,direction_id)));
+                                    bsp_basis_->get_num_basis(comp_id,direction_id)));
 
         DynamicMultiArray<Real,dim> Qw(new_sizes);
 
@@ -342,23 +342,14 @@ refine_h_weights(
 #endif
 
 
-#if 0
-template <int dim_, int range_, int rank_>
-auto
-NURBS<dim_, range_, rank_>::
-get_interior_mult() const -> std::shared_ptr<const MultiplicityTable>
-{
-  return bsp_space_->get_interior_mult();
-}
-#endif
 
 
 template <int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
-get_spline_space() const -> const std::shared_ptr<const BSpSpace>
+get_bspline_basis() const -> const std::shared_ptr<const BSpBasis>
 {
-  return bsp_space_.get_ptr_const_data();
+  return bsp_basis_.get_ptr_const_data();
 }
 
 
@@ -377,12 +368,12 @@ get_sub_nurbs_space(const int s_id,
   static_assert(sdim == 0 || (sdim > 0 && sdim < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
-  auto sub_bsp_space = bsp_space_->template get_sub_bspline_space<sdim>(s_id,dof_map,sub_grid);
-  auto space_sub_grid = sub_bsp_space->get_grid();
+  auto sub_bsp_basis = bsp_basis_->template get_sub_bspline_space<sdim>(s_id,dof_map,sub_grid);
+  auto space_sub_grid = sub_bsp_basis->get_grid();
 
   auto sub_w_func = weight_func_->template get_sub_function<sdim>(s_id,space_sub_grid);
 
-  auto sub_nrb_space = NURBS<sdim,range_,rank_>::const_create(sub_bsp_space,sub_w_func);
+  auto sub_nrb_space = NURBS<sdim,range_,rank_>::const_create(sub_bsp_basis,sub_w_func);
 
   return sub_nrb_space;
 }
@@ -425,7 +416,7 @@ NURBS<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
   out.begin_item("BSpline Space:");
-  bsp_space_->print_info(out);
+  bsp_basis_->print_info(out);
   out.end_item();
 
   out.begin_item("Weight function :");
@@ -443,13 +434,15 @@ is_bspline() const
   return false;
 }
 
+#if 0
 template <int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
 get_degree_table() const -> const DegreeTable &
 {
-  return this->bsp_space_->get_degree_table();
+  return this->bsp_basis_->get_degree_table();
 }
+#endif
 
 template <int dim_, int range_, int rank_>
 void
@@ -461,7 +454,7 @@ get_element_dofs(
   SafeSTLVector<Index> &dofs_local_to_elem,
   const std::string &dofs_property) const
 {
-  this->bsp_space_->get_element_dofs(
+  this->bsp_basis_->get_element_dofs(
     element_id,
     dofs_global,
     dofs_local_to_patch,
@@ -472,22 +465,22 @@ get_element_dofs(
 
 
 
-
+#if 0
 template <int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
 get_periodicity() const -> const PeriodicityTable &
 {
-  return bsp_space_->get_periodicity();
+  return bsp_basis_->get_periodicity();
 }
-
+#endif
 
 template <int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
 get_end_behaviour_table() const -> const EndBehaviourTable &
 {
-  return bsp_space_->get_end_behaviour_table();
+  return bsp_basis_->get_end_behaviour_table();
 };
 
 
@@ -496,26 +489,17 @@ auto
 NURBS<dim_, range_, rank_>::
 create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
-  return std::make_unique<ElementHandler>(this->get_this_space());
+  return std::make_unique<ElementHandler>(this->get_this_basis());
 }
 
 
 template<int dim_, int range_, int rank_>
-auto
-NURBS<dim_, range_, rank_>::
-get_ptr_const_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
+std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
+                                                   NURBS<dim_, range_, rank_>::
+                                                   get_spline_space() const
 {
-  return bsp_space_.get_ptr_const_data()->get_ptr_const_dof_distribution();
+  return bsp_basis_->get_spline_space();
 }
-
-template<int dim_, int range_, int rank_>
-auto
-NURBS<dim_, range_, rank_>::
-get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
-{
-  return bsp_space_.get_ptr_data()->get_ptr_dof_distribution();
-}
-
 
 
 #ifdef MESH_REFINEMENT
@@ -527,7 +511,7 @@ NURBS<dim_, range_, rank_>::
 refine_h(const Size n_subdivisions)
 {
   //the refinement of the BSpline also refines the weight_fucntion (they share the same Grid)
-  bsp_space_.get_ptr_data()->refine_h(n_subdivisions);
+  bsp_basis_.get_ptr_data()->refine_h(n_subdivisions);
 }
 
 template<int dim_, int range_, int rank_>
@@ -538,7 +522,7 @@ rebuild_after_insert_knots(
   const Grid<dim_> &old_grid)
 {
   auto bsp_basis_pre_refinement =
-    std::dynamic_pointer_cast<const BSpSpace>(bsp_space_->get_basis_previous_refinement());
+    std::dynamic_pointer_cast<const BSpBasis>(bsp_basis_->get_basis_previous_refinement());
   Assert(bsp_basis_pre_refinement != nullptr,ExcNullPtr());
 
   auto weight_func_pre_refinement_ =

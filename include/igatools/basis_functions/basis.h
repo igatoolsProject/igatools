@@ -37,6 +37,7 @@ template <int,int,int,int> class SpaceElement;
 template <int,int,int,int> class SpaceElementHandler;
 
 
+template <int,int,int> class SplineSpace;
 
 
 template <int,int,int> class DofDistribution;
@@ -132,37 +133,10 @@ public:
    * \name Functions for getting information about the dofs
    */
   ///@{
-  virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
-  get_ptr_const_dof_distribution() const = 0;
+  std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
+  get_dof_distribution() const;
 
 
-  virtual std::shared_ptr<DofDistribution<dim_,range_,rank_> >
-  get_ptr_dof_distribution() = 0;
-
-
-  /**
-   * Returns the dofs that are on the interior of the <tt>dim</tt>-dimensional hypercube
-   * (i.e. the dofs that are not on the boundary).
-   */
-  std::set<Index> get_interior_dofs() const;
-
-
-  std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &topology) const;
-
-  template<int k>
-  std::set<Index> get_boundary_dofs(const int s_id) const
-  {
-    return this->get_boundary_dofs(s_id,Topology<k>());
-  }
-
-
-  /**
-   * This function returns the global dof id corresponding to the basis function
-   * with tensor index <p>tensor_index</p> on the @p comp component of the space.
-   */
-  Index
-  get_global_dof_id(const TensorIndex<dim_> &tensor_index,
-                    const Index comp) const;
 
 
   virtual void get_element_dofs(
@@ -178,15 +152,9 @@ public:
   Size get_num_basis() const;
 
 
-  const std::set<Index> &get_global_dofs(const std::string &dof_prop = DofProperties::active) const ;
+//  const std::set<Index> &get_global_dofs(const std::string &dof_prop = DofProperties::active) const ;
 
   ///@}
-
-
-  /**
-   * Return the maximum value of the polynomial degree, for each component, for each direction;
-   */
-  virtual int get_max_degree() const = 0;
 
 
   /**
@@ -203,6 +171,10 @@ public:
 
   virtual void print_info(LogStream &out) const = 0;
 
+
+  virtual
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
+  get_spline_space() const = 0;
 
 
   using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_>;

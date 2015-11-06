@@ -134,39 +134,19 @@ get_sub_space(const int s_id,
 
 
 
-template<int dim, int range, int rank>
-int
-ReferenceSpaceBasis<dim, range, rank>::
-get_num_comp_basis(const int comp) const
-{
-  return this->get_ptr_const_dof_distribution()->get_num_dofs_table().get_component_size(comp);
-}
-
-template<int dim, int range, int rank>
-int
-ReferenceSpaceBasis<dim, range, rank>::
-get_num_comp_basis(const int comp, const int dir) const
-{
-  return this->get_ptr_const_dof_distribution()->get_num_dofs_table()[comp][dir];
-}
 
 
 
-
+#if 0
 template<int dim, int range, int rank>
 int
 ReferenceSpaceBasis<dim, range, rank>::
 get_max_degree() const
 {
-  int max_degree = 0;
-
-  const auto &degree_table = this->get_degree_table();
-  for (const auto &degree_comp : degree_table)
-    for (const auto &degree_comp_dim : degree_comp)
-      max_degree = std::max(max_degree,degree_comp_dim);
-
-  return max_degree;
+  return this->get_spline_space()->get_max_degree();
 }
+#endif
+
 
 #ifdef MESH_REFINEMENT
 template<int dim, int range, int rank>

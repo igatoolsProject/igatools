@@ -271,6 +271,7 @@ Reference space:
             Coef[loc_id=14 , glob_id=14] = 0.853553
             Coef[loc_id=15 , glob_id=15] = 1.00000
          
+         Dofs property: active
       
    
 
@@ -546,6 +547,7 @@ Physical domain:
                      Coef[loc_id=14 , glob_id=14] = 0.853553
                      Coef[loc_id=15 , glob_id=15] = 1.00000
                   
+                  Dofs property: active
                
             
          
@@ -583,6 +585,7 @@ Physical domain:
             Coef[loc_id=30 , glob_id=30] = 2.50000
             Coef[loc_id=31 , glob_id=31] = 2.50000
          
+         Dofs property: active
       
    
 
@@ -939,6 +942,7 @@ Reference space:
             Coef[loc_id=34 , glob_id=34] = 0.926777
             Coef[loc_id=35 , glob_id=35] = 1.00000
          
+         Dofs property: active
       
    
 
@@ -1294,6 +1298,7 @@ Physical domain:
                      Coef[loc_id=34 , glob_id=34] = 0.926777
                      Coef[loc_id=35 , glob_id=35] = 1.00000
                   
+                  Dofs property: active
                
             
          
@@ -1371,6 +1376,7 @@ Physical domain:
             Coef[loc_id=70 , glob_id=70] = 2.50000
             Coef[loc_id=71 , glob_id=71] = 2.50000
          
+         Dofs property: active
       
    
 
@@ -2447,6 +2453,7 @@ Reference space:
             Coef[loc_id=194 , glob_id=194] = 0.975592
             Coef[loc_id=195 , glob_id=195] = 1.00000
          
+         Dofs property: active
       
    
 
@@ -3522,6 +3529,7 @@ Physical domain:
                      Coef[loc_id=194 , glob_id=194] = 0.975592
                      Coef[loc_id=195 , glob_id=195] = 1.00000
                   
+                  Dofs property: active
                
             
          
@@ -3919,6 +3927,7 @@ Physical domain:
             Coef[loc_id=390 , glob_id=390] = 2.50000
             Coef[loc_id=391 , glob_id=391] = 2.50000
          
+         Dofs property: active
       
    
 

@@ -87,7 +87,7 @@ private:
   using base_t = Function<dim,codim,range,rank>;
   using parent_t = Function<dim,codim,range,rank>;
   using self_t = IgFunction<dim,codim,range,rank>;
-  using Sp = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using PhysBasis = PhysicalSpaceBasis<dim,range,rank,codim>;
 
 public:
   /**
@@ -98,14 +98,14 @@ public:
 
 
   //TODO (pauletti, Mar 23, 2015): should we make this private?
-  IgFunction(const SharedPtrConstnessHandler<Sp> &space,
+  IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const EpetraTools::Vector &coeff,
-             const std::string &property,
+             const std::string &dofs_property,
              const std::string &name);
 
-  IgFunction(const SharedPtrConstnessHandler<Sp> &space,
+  IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const IgCoefficients &coeff,
-             const std::string &property,
+             const std::string &dofs_property,
              const std::string &name);
 
 
@@ -132,36 +132,36 @@ public:
 
 
   static std::shared_ptr<const parent_t>
-  const_create(const std::shared_ptr<const Sp> &space,
+  const_create(const std::shared_ptr<const PhysBasis> &basis,
                const EpetraTools::Vector &coeff,
-               const std::string &property = DofProperties::active,
+               const std::string &dofs_property = DofProperties::active,
                const std::string &name = "");
 
   static std::shared_ptr<const parent_t>
-  const_create(const std::shared_ptr<const Sp> &space,
+  const_create(const std::shared_ptr<const PhysBasis> &basis,
                const IgCoefficients &coeff,
-               const std::string &property = DofProperties::active,
+               const std::string &dofs_property = DofProperties::active,
                const std::string &name = "");
 
   static std::shared_ptr<parent_t>
-  create(const std::shared_ptr<Sp> &space,
+  create(const std::shared_ptr<PhysBasis> &basis,
          const EpetraTools::Vector &coeff,
-         const std::string &property = DofProperties::active,
+         const std::string &dofs_property = DofProperties::active,
          const std::string &name = "");
 
   static std::shared_ptr<parent_t>
-  create(const std::shared_ptr<Sp> &space,
+  create(const std::shared_ptr<PhysBasis> &basis,
          const IgCoefficients &coeff,
-         const std::string &property = DofProperties::active,
+         const std::string &dofs_property = DofProperties::active,
          const std::string &name = "");
 
 
 
-  std::shared_ptr<const Sp> get_ig_space() const;
+  std::shared_ptr<const PhysBasis> get_basis() const;
 
   const CoeffType &get_coefficients() const;
 
-  const std::string &get_property() const;
+  const std::string &get_dofs_property() const;
 
   self_t &operator +=(const self_t &fun);
 
@@ -172,11 +172,11 @@ public:
 
 private:
 
-  SharedPtrConstnessHandler<Sp> space_;
+  SharedPtrConstnessHandler<PhysBasis> basis_;
 
   CoeffType coeff_;
 
-  std::string property_;
+  std::string dofs_property_;
 
 private:
 
@@ -210,9 +210,9 @@ private:
 
     ar &make_nvp(base_name,base_class<base_t>(this));
 
-    ar &make_nvp("space_",space_);
+    ar &make_nvp("basis_",basis_);
     ar &make_nvp("coeff_",coeff_);
-    ar &make_nvp("property_",property_);
+    ar &make_nvp("dofs_property_",dofs_property_);
   }
   ///@}
 #endif // SERIALIZATION

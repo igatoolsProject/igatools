@@ -35,7 +35,7 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const PropId &prop)
   :
   parent_t(phys_space,prop),
-  ref_space_element_(phys_space->get_reference_space()->create_ref_element(index,prop)),
+  ref_space_element_(phys_space->get_reference_basis()->create_ref_element(index,prop)),
   phys_domain_element_(make_unique<PhysDomainElem>(
                         std::const_pointer_cast<PhysDomain>(phys_space->get_physical_domain()),
                         index, prop)),
@@ -223,9 +223,9 @@ print_info(LogStream &out) const
                  to_string(codim_) + ">:");
 
   out.begin_item("ReferenceElement<" +
-                 to_string(RefSpace::dim) + "," +
-                 to_string(RefSpace::range) + "," +
-                 to_string(RefSpace::rank) + ">");
+                 to_string(RefBasis::dim) + "," +
+                 to_string(RefBasis::range) + "," +
+                 to_string(RefBasis::rank) + ">");
   ref_space_element_->print_info(out);
   out.end_item();
 
@@ -257,9 +257,9 @@ print_cache_info(LogStream &out) const
 {
   using std::to_string;
   out.begin_item("ReferenceElement<" +
-                 to_string(RefSpace::dim) + "," +
-                 to_string(RefSpace::range) + "," +
-                 to_string(RefSpace::rank) + "> cache:");
+                 to_string(RefBasis::dim) + "," +
+                 to_string(RefBasis::range) + "," +
+                 to_string(RefBasis::rank) + "> cache:");
   ref_space_element_->print_cache_info(out);
   out.end_item();
 

@@ -41,15 +41,16 @@ void matrix_map(const int deg, const int n_knots)
 {
   OUTSTART
   auto grid = Grid<dim>::create(n_knots);
-  auto space = BSpline<dim>::create(deg, grid);
+  auto space = SplineSpace<dim>::create(deg, grid);
+  auto basis = BSpline<dim>::create(space);
 
   Epetra_SerialComm comm;
 
 
-  auto map = EpetraTools::create_map(*space, "active", comm);
+  auto map = EpetraTools::create_map(*basis, "active", comm);
   map->Print(out.get_file_stream());
 
-  auto graph = EpetraTools::create_graph(*space, "active", *space, "active",comm);
+  auto graph = EpetraTools::create_graph(*basis, "active", *basis, "active",comm);
   graph->Print(out.get_file_stream());
 
   auto matrix = EpetraTools::create_matrix(*graph);

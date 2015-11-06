@@ -39,20 +39,20 @@
 template <int dim, int range=1>
 void plot_basis(const int n_knots, const int deg)
 {
-  using Basis  = BSpline<dim, range>;
+  using Space = SplineSpace<dim, range>;
+  using Basis = BSpline<dim, range>;
 
   TensorIndex<dim> deg1(deg);
-  typename Basis::DegreeTable degt(deg1);
+  typename Space::DegreeTable degt(deg1);
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto space = Basis::const_create(
-                 SplineSpace<dim,range>::const_create(deg,grid, InteriorReg::maximum, true),
-                 BasisEndBehaviour::periodic);
+  auto space = Space::const_create(deg,grid, InteriorReg::maximum, true);
+  auto basis = Basis::const_create(space,BasisEndBehaviour::periodic);
 
 
-  const int n_basis = space->get_num_basis();
+  const int n_basis = basis->get_num_basis();
   out << "Num basis: " << n_basis << endl;
-  space->print_info(out);
+  basis->print_info(out);
 
 #if 0
   using RefSpace  = ReferenceSpaceBasis<dim, range>;

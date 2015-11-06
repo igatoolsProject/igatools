@@ -62,14 +62,14 @@ identity_map(const int n_knots, const int deg, const string prop=DofProperties::
   auto grid  = Grid<dim>::create(n_knots);
   auto grid_func = create_identity_function(grid);
 
-  auto space = create_space<dim>(grid, grid_func, deg);
+  auto phys_basis = create_phys_basis<dim>(grid, grid_func, deg);
   /*
   out.begin_item("Basis");
-  space->print_info(out);
+  phys_basis->print_info(out);
   out.end_item();
   //*/
   const int n_qp = 1;
-  elem_values<dim, sub_dim>(space, n_qp, prop, use_bdry);
+  elem_values<dim, sub_dim>(phys_basis, n_qp, prop, use_bdry);
 
   OUTEND
 }

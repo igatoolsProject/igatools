@@ -36,8 +36,8 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/linear_algebra/epetra_solver.h>
 #include <igatools/io/writer.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 using namespace EpetraTools;
 
@@ -45,22 +45,34 @@ using functions::ConstantFunction;
 template <int dim, int range=1>
 void assemble_matrix(const int n_knots, const int deg)
 {
-  using Space  = BSpline<dim, range>;
-  using RefSpace  = ReferenceSpaceBasis<dim, range>;
+  out.begin_item("assemble_matrix<dim=" + to_string(dim) +
+                 ",range=" + to_string(range) + ">");
 
-  using Function = Function<dim,0,range,1>;
-  using ConstFunction = functions::LinearFunction<dim,0, range>;
-  using Value = typename Function::Value;
-  using Gradient = typename Function::Gradient;
+  using Space  = SplineSpace<dim, range>;
+  using Basis  = BSpline<dim, range>;
+
+  using LinFunction = grid_functions::LinearGridFunction<dim,range>;
+  using Value = typename LinFunction::Value;
+  using Gradient = typename LinFunction::Gradient;
 
 
   TensorIndex<dim> deg1(deg);
   typename Space::DegreeTable degt(deg1);
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto space = Space::const_create(
-                 SplineSpace<dim,range>::const_create(deg, grid, InteriorReg::maximum, true),
-                 BasisEndBehaviour::periodic);
+  auto space = Space::const_create(deg, grid, InteriorReg::maximum, true);
+  auto basis = Basis::const_create(space,BasisEndBehaviour::periodic);
+
+  /*
+  out.begin_item("Grid:");
+  grid->print_info(out);
+  out.end_item();
+  //*/
+  /*
+    out.begin_item("BSpline basis:");
+    basis->print_info(out);
+    out.end_item();
+  //*/
   Gradient A;
   Value b;
   for (int j = 0; j < range; ++j)
@@ -71,29 +83,41 @@ void assemble_matrix(const int n_knots, const int deg)
     b[j] = -5.;
   }
 
-  auto f = ConstFunction::const_create(grid, IdentityFunction<dim>::const_create(grid), A, b);
 
 
-  auto matrix = create_matrix(*space,DofProperties::active,Epetra_SerialComm());
+  auto f = LinFunction::const_create(grid, A, b);
+
+
+  auto matrix = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
   auto rhs = create_vector(matrix->RangeMap());
   auto solution = create_vector(matrix->DomainMap());
 
-  const QGauss<dim>  elem_quad(deg);
-  auto elem_handler = space->create_cache_handler();
-  auto flag = ValueFlags::value | ValueFlags::gradient |ValueFlags::w_measure;
-  elem_handler->reset(flag, elem_quad);
-  f->reset(ValueFlags::value, elem_quad);
+  auto elem_handler = basis->create_cache_handler();
+  auto f_handler = f->create_cache_handler();
 
-  auto elem   = space->begin();
-  const auto elem_end = space->end();
+  using Flags = space_element::Flags;
+  auto flag = Flags::value | Flags::gradient |Flags::w_measure;
+  elem_handler->set_element_flags(flag);
+
+  f_handler->set_element_flags(grid_function_element::Flags::D0);
+
+  auto elem   = basis->begin();
+  const auto elem_end = basis->end();
   auto f_elem = f->begin();
 
-  elem_handler->init_element_cache(elem);
-  f->init_element_cache(f_elem);
+  auto elem_quad = QGauss<dim>::create(deg);
+  elem_handler->init_element_cache(elem,elem_quad);
+  f_handler->init_element_cache(f_elem,elem_quad);
 
-  const int n_qp = elem_quad.get_num_points();
-  for (; elem != elem_end; ++elem, ++f_elem)
+
+  const int n_qp = elem_quad->get_num_points();
+
+  int elem_id = 0;
+  for (; elem != elem_end; ++elem, ++f_elem, ++elem_id)
   {
+    out.begin_item("Element : " + to_string(elem_id));
+    out << "Element index: " << elem->get_index() << std::endl;
+
     const int n_basis = elem->get_num_basis(DofProperties::active);
     DenseMatrix loc_mat(n_basis, n_basis);
     loc_mat = 0.0;
@@ -102,15 +126,25 @@ void assemble_matrix(const int n_knots, const int deg)
     loc_rhs = 0.0;
 
     elem_handler->fill_element_cache(elem);
-    f->fill_element_cache(f_elem);
+    f_handler->fill_element_cache(f_elem);
 
-    auto phi = elem->template get_basis_data<_Value, dim>(0,DofProperties::active);
-    auto grad_phi  = elem->template get_basis_data<_Gradient, dim>(0,DofProperties::active);
-    auto w_meas = elem->template get_w_measures<dim>(0);
+    auto phi = elem->get_element_values();
+    auto grad_phi  = elem->get_element_gradients();
+    auto w_meas = elem->get_element_w_measures();
 
+    out.begin_item("Basis function values:");
+    phi.print_info(out);
+    out.end_item();
+
+    out.begin_item("Basis function gradient:");
     grad_phi.print_info(out);
+    out.end_item();
 
-    auto f_values = f_elem->template get_values<_Value,dim>(0);
+    out.begin_item("W * Measure:");
+    w_meas.print_info(out);
+    out.end_item();
+
+    auto f_values = f_elem->get_element_values_D0();
     for (int i = 0; i < n_basis; ++i)
     {
       auto grad_phi_i = grad_phi.get_function_view(i);
@@ -136,23 +170,28 @@ void assemble_matrix(const int n_knots, const int deg)
     const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
     matrix->add_block(loc_dofs, loc_dofs,loc_mat);
     rhs->add_block(loc_dofs, loc_rhs);
+
+    out.end_item();
   }
   matrix->FillComplete();
+  out.begin_item("Stiffness matrix:");
   matrix->print_info(out);
+  out.end_item();
 
   auto solver = create_solver(*matrix, *solution, *rhs);
   solver->solve();
 
 
   const int n_plot_points = deg+1;
-  auto map1 = IdentityFunction<dim>::const_create(space->get_grid());
-  Writer<dim> writer(map1, n_plot_points);
+  Writer<dim> writer(basis->get_grid(), n_plot_points);
 
-  using IgFunc = IgFunction<dim,0,range,1>;
-  auto solution_function = IgFunc::const_create(space, solution);
-  writer.template add_field<range,1>(solution_function, "solution");
+  using IgFunc = IgGridFunction<dim,range>;
+  auto solution_function = IgFunc::const_create(basis, *solution);
+  writer.template add_field(*solution_function, "solution");
   string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
   writer.save(filename);
+
+  out.end_item();
 }
 
 

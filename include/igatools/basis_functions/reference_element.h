@@ -42,7 +42,7 @@ public:
   using ContainerType = const ReferenceSpaceBasis<dim,range,rank> ;
 
   using Basis = ReferenceSpaceBasis<dim,range,rank>;
-  using ConstSpace = const ReferenceSpaceBasis<dim,range,rank>;
+  using ConstBasis = const ReferenceSpaceBasis<dim,range,rank>;
 
   using parent_t = SpaceElement<dim,0,range,rank>;
 
@@ -73,9 +73,9 @@ public:
 
   /**
    * Constructs an accessor to element number index of a
-   * ReferenceSpaceBasis space.
+   * ReferenceSpaceBasis basis.
    */
-  ReferenceElement(const std::shared_ptr<ConstSpace> space,
+  ReferenceElement(const std::shared_ptr<ConstBasis> &basis,
                    const ListIt &index,
                    const PropId &prop = ElementProperties::active);
 
@@ -101,7 +101,7 @@ public:
 //    using OffsetTable = typename Basis::template ComponentContainer<int>;
   using OffsetTable = SafeSTLArray<int,Basis::n_components+1>;
 
-  using TensorSizeTable = typename Basis::TensorSizeTable;
+  using TensorSizeTable = typename Basis::SpSpace::TensorSizeTable;
 
 protected:
 
@@ -122,7 +122,7 @@ protected:
   /** Hash table for fast conversion between flat-to-tensor basis function ids. */
   IndexerPtrTable basis_functions_indexer_;
 
-  std::shared_ptr<const Basis> space_;
+  std::shared_ptr<const Basis> basis_;
 
 public:
   using parent_t::get_num_basis;

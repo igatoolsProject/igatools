@@ -158,8 +158,8 @@ class PhysSpaceElementHandler
 {
 
   using PhysSpace = PhysicalSpaceBasis<dim_,range_,rank_,codim_>;
-  using RefSpace =  typename PhysSpace::RefSpace;
-  using RefPhysSpaceElementHandler = typename PhysSpace::RefSpace::ElementHandler;
+  using RefBasis =  typename PhysSpace::RefBasis;
+  using RefPhysSpaceElementHandler = typename PhysSpace::RefBasis::ElementHandler;
 //    using PFCache = typename PhysSpace::PushForwardType;
 
   using ElementIterator = typename PhysSpace::ElementIterator;
@@ -247,7 +247,7 @@ public:
 
 private:
 
-  using RefElemHandler = SpaceElementHandler<RefSpace::dim,0,RefSpace::range,RefSpace::rank>;
+  using RefElemHandler = SpaceElementHandler<RefBasis::dim,0,RefBasis::range,RefBasis::rank>;
   std::unique_ptr<RefElemHandler> ref_space_handler_;
 
 
@@ -418,7 +418,7 @@ private:
       if (sub_elem_cache.template status_fill<_Value>())
       {
         push_fwd.template
-        transform_0<RefSpace::range,RefSpace::rank,sdim>(
+        transform_0<RefBasis::range,RefBasis::rank,sdim>(
           s_id_,
           ref_space_elem,
           phys_domain_elem,
@@ -427,13 +427,13 @@ private:
       if (sub_elem_cache.template status_fill<_Gradient>())
       {
         push_fwd.template
-        transform_1<RefSpace::range,RefSpace::rank,sdim>(
+        transform_1<RefBasis::range,RefBasis::rank,sdim>(
           s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
       }
       if (sub_elem_cache.template status_fill<_Hessian>())
       {
         push_fwd.template
-        transform_2<RefSpace::range,RefSpace::rank,sdim>(
+        transform_2<RefBasis::range,RefBasis::rank,sdim>(
           s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
       }
       if (sub_elem_cache.template status_fill<_Divergence>())

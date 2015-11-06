@@ -61,9 +61,9 @@ MapPtr create_map(const Basis &space,
                   const std::string &property,
                   const Comm &comm)
 {
-  const auto &dof_dist = *space.get_ptr_const_dof_distribution();
+  const auto &dof_dist = *space.get_spline_space()->get_dof_distribution();
 
-  return create_map(dof_dist.get_dofs_id_same_property(property),comm);
+  return create_map(dof_dist.get_global_dofs(property),comm);
 }
 
 
