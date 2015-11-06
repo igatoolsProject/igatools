@@ -45,7 +45,8 @@ public:
   using IndexType = typename Grid<dim_>::IndexType;
 
   using Point =  typename ContainerType::Point;
-  using Gradient =  typename ContainerType::Gradient;
+  using Jacobian = typename ContainerType::Gradient;
+  using Hessian = typename ContainerType::template Derivative<2>;
 
   using Flags = domain_element::Flags;
   using CacheFlags = domain_element::CacheFlags;
@@ -139,6 +140,8 @@ public:
 
   void move_to(const IndexType &elem_id);
 
+  const IndexType &get_index() const;
+
   const GridFuncElem &get_grid_function_element() const;
 
   GridFuncElem &get_grid_function_element();
@@ -152,10 +155,24 @@ public:
 
 
   template<int sdim>
-  auto const &get_points(const int s_id) const
+  const ValueVector<Point> &get_points(const int s_id) const
   {
     return grid_func_elem_->template
            get_values_from_cache<grid_function_element::_D<0>, sdim>(s_id);
+  }
+
+  template<int sdim>
+  const ValueVector<Jacobian> &get_jacobians(const int s_id) const
+  {
+    return grid_func_elem_->template
+           get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id);
+  }
+
+  template<int sdim>
+  const ValueVector<Hessian> &get_hessians(const int s_id) const
+  {
+    return grid_func_elem_->template
+           get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id);
   }
 
   template<int sdim>
@@ -167,18 +184,22 @@ public:
   template<int sdim>
   ValueVector<Real> get_w_measures(const int s_id) const;
 
-  auto const &get_element_points() const
-  {
-    return grid_func_elem_->template
-           get_values_from_cache<grid_function_element::_D<0>,dim_>(0);
-  }
-
-  ValueVector<Real> const &get_element_measures() const;
-
-  ValueVector<Real> get_element_w_measures() const;
 
   ValueVector<SafeSTLArray<Point, codim_> >
   get_exterior_normals() const;
+
+
+
+  const ValueVector<Point> &get_element_points() const;
+
+  const ValueVector<Jacobian> &get_element_jacobians() const;
+
+  const ValueVector<Hessian> &get_element_hessians() const;
+
+  ValueVector<Real> const &get_element_measures() const;
+
+
+  ValueVector<Real> get_element_w_measures() const;
 
 #if 0
   using MetricTensor =

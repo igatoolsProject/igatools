@@ -44,7 +44,7 @@ boundary we consider deg+2 knots in each direction.
 Then we use the grid to create the SplineSpace and the BSpline basis
 \snippet example_04.cpp create_basis
 
-For storing the coefficient of the linear combination, we use the class IgCoefficients
+To store the coefficient of the linear combination, we use the class IgCoefficients
 that maps the global ids of the basis function with the associated coefficient. Then 
 we need to build an instance of the IgCoefficients class and initialize the coefficients associated to 
 the basis function to zero: in order to do so we need get the DofDistribution 

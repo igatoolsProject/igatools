@@ -40,37 +40,38 @@ void run_test(std::string &file_name)
 
   // Reading input file.
   auto map = dynamic_pointer_cast<IgGridFunction<dim,dim> >(get_mapping_from_file<dim,0>(file_name));
-//    auto map = get_mapping_from_file<dim,0>(file_name);
-  out.begin_item("IgFunction infos:");
+  out.begin_item("IgGridFunction infos:");
   map->print_info(out);
   out << endl;
 
-  QTrapez<dim> quad;
-  const auto quad_pts = quad.get_points();
+  auto quad = QTrapez<dim>::create();
+  const auto quad_pts = quad->get_points();
   out.begin_item("Quad pts.:");
   quad_pts.print_info(out);
   out.end_item();
   out << endl;
 
 
-  const auto ref_space = map->get_ig_space();
+  const auto basis = map->get_basis();
 
   //------------------------------------------------------
   out.begin_item("Loop using the BSplineElement");
-  auto sp_elem_handler = ref_space->create_cache_handler();
-  sp_elem_handler->reset(ValueFlags::value,quad);
+  auto sp_elem_handler = basis->create_cache_handler();
+  sp_elem_handler->set_element_flags(space_element::Flags::value);
 
-  auto sp_elem     = ref_space->begin();
-  auto sp_elem_end = ref_space->end();
+  auto sp_elem     = basis->begin();
+  auto sp_elem_end = basis->end();
 
-  sp_elem_handler->init_element_cache(sp_elem);
-  for (; sp_elem != sp_elem_end; ++sp_elem)
+  sp_elem_handler->init_element_cache(sp_elem,quad);
+  int elem_id = 0;
+  for (; sp_elem != sp_elem_end; ++sp_elem,++elem_id)
   {
     sp_elem_handler->fill_element_cache(sp_elem);
+    out << "Element: " << elem_id << endl;
 
-    out << "Element id: " << sp_elem->get_flat_index() << endl;
+    out << "Element id: " << sp_elem->get_index() << endl;
 
-    const auto &values = sp_elem->template get_basis_data<_Value,dim>(0,DofProperties::active);
+    const auto &values = sp_elem->get_element_values();
     out << "Values = ";
     values.print_info(out);
     out<< endl;
@@ -81,22 +82,24 @@ void run_test(std::string &file_name)
 
 
   //------------------------------------------------------
-  out.begin_item("Loop using the FunctionElement");
-  map->reset(ValueFlags::point, quad);
+  out.begin_item("Loop using the GridFunctionElement");
+  auto map_handler = map->create_cache_handler();
+  map_handler->set_element_flags(grid_function_element::Flags::D0);
 
   auto map_elem     = map->begin();
   auto map_elem_end = map->end();
 
-  const auto topology = Topology<dim>();
+  map_handler->init_element_cache(map_elem,quad);
 
-  map->init_cache(*map_elem,topology);
-
-  for (; map_elem != map_elem_end; ++map_elem)
+  elem_id = 0;
+  for (; map_elem != map_elem_end; ++map_elem, ++elem_id)
   {
-    map->fill_cache(*map_elem,topology,0);
-    out << "Element id: " << map_elem->get_flat_index() << endl;
+    map_handler->fill_element_cache(map_elem);
 
-    const auto &points = map_elem->get_points();
+    out << "Element: " << elem_id << endl;
+    out << "Element id: " << map_elem->get_index() << endl;
+
+    const auto &points = map_elem->get_element_values_D0();
     int qp = 0;
     for (auto p : points)
       out << "    Point " << ++qp << ": " << p << endl;

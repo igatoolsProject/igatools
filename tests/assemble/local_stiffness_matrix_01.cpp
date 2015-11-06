@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test the assembling of local stiffness matrix
+ *  Test the assembling of local stiffness matrix using a BSpline basis
  *
  *  author: pauletti
  *  date: Oct 09, 2014
@@ -28,74 +28,56 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/physical_space_basis.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/physical_space_element.h>
-//#include <igatools/basis_functions/space_uniform_quad_cache.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
-//#include <igatools/functions/identity_function.h>
-
-#include <igatools/linear_algebra/dense_matrix.h>
 
 
 template<int dim>
 void loc_stiff_matrix(const int n_knots, const int deg)
 {
+
   OUTSTART
+
+  out.begin_item("local_stiff_matrix<" + std::to_string(dim) + ">");
 
   auto grid = Grid<dim>::create(n_knots);
   using Basis = BSpline<dim>;
-  auto ref_space = Basis::create(SplineSpace<dim>::create(deg, grid)) ;
+  auto basis = Basis::create(SplineSpace<dim>::create(deg, grid)) ;
 
-//  using PhysSpace = PhysicalSpaceBasis<dim,1,1,0,Transformation::h_grad>;
-//  auto identity_mapping = IdentityFunction<dim>::create(grid);
-// auto phys_space = PhysSpace::create(ref_space, identity_mapping) ;
+  auto elem_handler = basis->create_cache_handler();
 
-  auto space = ref_space;
-
-
-  auto elem_handler = space->create_cache_handler();
-
-  auto quad = QGauss<dim>::create(deg+1);
 
   using Flags = space_element::Flags;
-  auto flag = Flags::value | Flags::gradient | Flags::w_measure;
+  auto flag = Flags::gradient | Flags::w_measure;
   elem_handler->template set_flags<dim>(flag);
 
-  const int n_qpoints =  quad->get_num_points();
+  auto elem           = basis->begin();
+  const auto elem_end = basis->end();
 
-  auto elem           = space->begin();
-  const auto elem_end = space->end();
-
-  const int n_basis = elem->get_num_basis(DofProperties::active);
-  DenseMatrix loc_mat(n_basis,n_basis);
-
-  using _Gradient = space_element::_Gradient;
+  auto quad = QGauss<dim>::create(deg+1);
   elem_handler->init_element_cache(elem,quad);
-  for (; elem != elem_end; ++elem)
+
+  int elem_id = 0;
+  for (; elem != elem_end; ++elem, ++elem_id)
   {
+    out.begin_item("Element " + std::to_string(elem_id));
+
+    out << "Element ID: " << elem->get_index() << std::endl;
+
     elem_handler->fill_element_cache(elem);
 
-    loc_mat = 0.0;
-
-    const auto w_meas = elem->template get_w_measures<dim>(0);
-    const auto grad = elem->template get_basis_data<_Gradient,dim>(0,DofProperties::active);
-
-    for (int i=0; i<n_basis; ++i)
-    {
-      const auto grad_i = grad.get_function_view(i);
-
-      for (int j=0; j<n_basis; ++j)
-      {
-        const auto grad_j = grad.get_function_view(j);
-        for (int qp = 0; qp < n_qpoints; ++qp)
-          loc_mat(i,j) += scalar_product(grad_i[qp], grad_j[qp]) * w_meas[qp];
-      }
-    }
+    auto loc_mat = elem->integrate_gradu_gradv();
+    out.begin_item("Stiffnes matrix:");
     loc_mat.print_info(out);
-    out << endl;
+    out.end_item();
+
+    out.end_item();
   }
+
+  out.end_item();
 
   OUTEND
 

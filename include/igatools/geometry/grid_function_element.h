@@ -144,6 +144,8 @@ public:
   GridElem &get_grid_element();
 
 
+  const IndexType &get_index() const;
+
   void print_info(LogStream &out) const;
 
   void print_cache_info(LogStream &out) const;
@@ -161,11 +163,11 @@ public:
   const ValueVector<Value> &
   get_element_values_D0() const;
 
-  const ValueVector<Derivative<1>> &
-                                get_element_values_D1() const;
+  const ValueVector<Derivative<1> > &
+  get_element_values_D1() const;
 
-  const ValueVector<Derivative<2>> &
-                                get_element_values_D2() const;
+  const ValueVector<Derivative<2> > &
+  get_element_values_D2() const;
 
 
   /**
