@@ -28,72 +28,78 @@
 
 #include "../tests.h"
 
-#include <igatools/functions/function_lib.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
 
 #include <igatools/linear_algebra/dense_matrix.h>
 #include "Teuchos_LAPACK.hpp"
 
 template <int dim>
-void mapping_values()
+void ext_normal_values()
 {
   OUTSTART
 
-  using Function = functions::SphereFunction<dim>;
+  out.begin_item("ext_normal_values<" + std::to_string(dim) + ">");
 
-  auto flag = ValueFlags::point |  ValueFlags::value |ValueFlags::outer_normal;
+  using Sph = grid_functions::SphereGridFunction<dim>;
 
-  auto quad = QUniform<dim>(3);
+
 
   BBox<dim> box;
   for (int i=0; i<dim-1; ++i)
     box[i] = {0.+M_PI/8, M_PI-M_PI/8};
   if (dim>=1)
     box[dim-1] = {0., M_PI};
-  auto grid = Grid<dim>::create(box, 2);
+  auto grid = Grid<dim>::const_create(box, 2);
 
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
+  auto sphere = Sph::const_create(grid);
 
 
-  using Mapping   = Mapping<dim, 1>;
-  Mapping map(F);
-  map.reset(flag, quad);
+  auto domain = Domain<dim,1>::const_create(sphere);
 
-  auto elem = map.begin();
-  auto end = map.end();
+  auto domain_handler = domain->create_cache_handler();
 
-  map.template init_cache<dim>(elem);
-  for (; elem != end; ++elem)
+  using Flags = domain_element::Flags;
+  auto flag = Flags::point | Flags::jacobian | Flags::ext_normal;
+  domain_handler->set_element_flags(flag);
+
+  auto elem = domain->begin();
+  auto end = domain->end();
+
+  auto quad = QUniform<dim>::create(3);
+  domain_handler->init_cache(elem,quad);
+
+  int elem_id = 0;
+  for (; elem != end; ++elem, ++elem_id)
   {
-    map.template fill_cache<dim>(elem, 0);
-    out << "Normals:" << endl;
-    elem->get_external_normals().print_info(out);
-    out << endl;
+    out.begin_item("Element " + std::to_string(elem_id));
 
-    out << "Points:" << endl;
-    elem->get_points().print_info(out);
-    out << endl;
-    out << "Values:" << endl;
-    elem->template get_values<_Value, dim>(0).print_info(out);
-    out << endl;
-    out << "Gradients:" << endl;
-    elem->template get_values<_Gradient, dim>(0).print_info(out);
-    out << endl;
-//        out << "Hessians:" << endl;
-//        elem->template get_values<2, dim>(0).print_info(out);
-//        out << endl;
-//        out << "Measure:" << endl;
-//        elem->template get_measures<dim>(0).print_info(out);
-//        out << endl;
-//        out << "weight * measure:" << endl;
-//        elem->template get_w_measures<dim>(0).print_info(out);
-    out << endl;
+    out << "Element ID: " << elem->get_index() << std::endl;
+
+    domain_handler->fill_element_cache(elem);
+
+    out.begin_item("Normals:");
+    elem->get_exterior_normals().print_info(out);
+    out.end_item();
+
+    out.begin_item("Ref. Points:");
+    elem->get_grid_function_element().get_grid_element().get_element_points().print_info(out);
+    out.end_item();
+
+    out.begin_item("Points:");
+    elem->get_element_points().print_info(out);
+    out.end_item();
+
+    out.begin_item("Jacobians:");
+    elem->get_element_jacobians().print_info(out);
+    out.end_item();
+
+    out.end_item();
   }
+
+  out.end_item();
 
   OUTEND
 }
@@ -101,8 +107,8 @@ void mapping_values()
 
 int main()
 {
-  mapping_values<1>();
-  mapping_values<2>();
+  ext_normal_values<1>();
+  ext_normal_values<2>();
 
   return 0;
 }
