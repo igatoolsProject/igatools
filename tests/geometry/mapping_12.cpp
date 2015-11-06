@@ -26,19 +26,16 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/function_lib.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_element.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
 
-template<int dim, int codim, int sub_dim = dim>
+template<int dim, int codim>
 void test()
 {
   const int space_dim = dim + codim;
-  using Function = functions::LinearFunction<dim, codim, space_dim>;
-  using Mapping   = Mapping<dim, codim>;
+  using Function = grid_functions::LinearGridFunction<dim,space_dim>;
 
   typename Function::Value    b;
   typename Function::Gradient A;
@@ -50,25 +47,32 @@ void test()
     b[i] = i;
   }
 
-  auto grid = Grid<dim>::create(3);
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  auto grid = Grid<dim>::const_create(3);
+  auto F = Function::const_create(grid, A, b);
 
-  auto flag = ValueFlags::inv_hessian|ValueFlags::inv_gradient|ValueFlags::point;
-  auto quad = QGauss<dim>(2);
+  using Flags = domain_element::Flags;
+  auto flag = Flags::inv_hessian|Flags::inv_jacobian;
 
-  auto map = Mapping::create(F);
-  map->template reset<sub_dim>(flag, quad);
+  auto domain = Domain<dim,codim>::const_create(F);
 
-  auto elem = map->begin();
-  auto end  = map->end();
-  const int s_id = 0;
-  map->template init_cache<sub_dim>(elem);
+  auto domain_handler = domain->create_cache_handler();
+
+  domain_handler->set_element_flags(flag);
+
+  auto elem = domain->begin();
+  auto end  = domain->end();
+
+
+  auto quad = QGauss<dim>::create(2);
+  domain_handler->init_cache(elem,quad);
   for (; elem != end; ++elem)
   {
-    map->template fill_cache<sub_dim>(elem, s_id);
-    elem->template get_values_from_cache<_InvGradient, sub_dim> (s_id).print_info(out);
+    domain_handler->fill_element_cache(elem);
+    out << "Inverse Jacobian:" << std::endl;
+    elem->template get_values_from_cache<domain_element::_InvJacobian,dim>(0).print_info(out);
     out << endl;
-    elem->template get_values_from_cache< _InvHessian, sub_dim> (s_id).print_info(out);
+    out << "Inverse Hessian:" << std::endl;
+    elem->template get_values_from_cache<domain_element::_InvHessian,dim>(0).print_info(out);
     out << endl;
   }
 
