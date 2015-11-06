@@ -185,9 +185,16 @@ public:
   ValueVector<Real> get_w_measures(const int s_id) const;
 
 
-  ValueVector<SafeSTLArray<Point, codim_> >
+  const ValueVector<SafeSTLArray<Point, codim_> > &
   get_exterior_normals() const;
 
+  template <int sdim>
+  const ValueVector<Points<dim_+codim_>> &
+                                      get_boundary_normals(const int s_id, EnableIf<(sdim >= 0)> * = nullptr) const
+  {
+    Assert(dim_ == sdim+1, ExcNotImplemented());
+    return get_values_from_cache<_BoundaryNormal,sdim>(s_id);
+  }
 
 
   const ValueVector<Point> &get_element_points() const;

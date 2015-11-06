@@ -212,7 +212,7 @@ get_element_hessians() const -> const ValueVector<Hessian> &
 template<int dim_,int codim_>
 auto
 DomainElement<dim_,codim_>::
-get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
+get_exterior_normals() const -> const ValueVector<SafeSTLArray<Point, codim_> > &
 {
   const int sdim = dim_;
   const int s_id = 0;
