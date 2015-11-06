@@ -32,8 +32,10 @@
 #include <igatools/geometry/domain_element.h>
 
 template<int dim, int codim>
-void test()
+void linear_grid_func()
 {
+  out.begin_item("linear_grid_func<dim=" + std::to_string(dim) +",codim=" + std::to_string(codim) +">");
+
   const int space_dim = dim + codim;
   using Function = grid_functions::LinearGridFunction<dim,space_dim>;
 
@@ -65,24 +67,40 @@ void test()
 
   auto quad = QGauss<dim>::create(2);
   domain_handler->init_cache(elem,quad);
-  for (; elem != end; ++elem)
+  int elem_id = 0;
+  for (; elem != end; ++elem, ++elem_id)
   {
+    out.begin_item("Element " + std::to_string(elem_id));
+
+    out << "Element ID: " << elem->get_index() << std::endl;
+
     domain_handler->fill_element_cache(elem);
-    out << "Inverse Jacobian:" << std::endl;
+
+    out.begin_item("Inverse Jacobian:");
     elem->template get_values_from_cache<domain_element::_InvJacobian,dim>(0).print_info(out);
-    out << endl;
-    out << "Inverse Hessian:" << std::endl;
+    out.end_item();
+
+    out.begin_item("Inverse Hessian:");
     elem->template get_values_from_cache<domain_element::_InvHessian,dim>(0).print_info(out);
-    out << endl;
+    out.end_item();
+
+    out.end_item();
   }
 
+  out.end_item();
 }
 
 
 int main()
 {
-  test<2,0>();
-//    test<3,3>();
+  linear_grid_func<1,0>();
+  linear_grid_func<2,0>();
+  linear_grid_func<3,0>();
+
+  linear_grid_func<1,1>();
+  linear_grid_func<2,1>();
+
+  linear_grid_func<1,2>();
 
   return 0;
 }

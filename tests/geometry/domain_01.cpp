@@ -37,11 +37,8 @@ void domain()
 {
   OUTSTART
 
-  using Grid = Grid<dim>;
-  //using Domain = Domain<dim, codim>;
-
   using Func = grid_functions::BallGridFunction<dim>;
-  auto grid = Grid::const_create();
+  auto grid = Grid<dim>::const_create();
   auto func = Func::const_create(grid);
   auto domain = Domain<dim,codim>::const_create(func);
 

@@ -264,6 +264,8 @@ public:
 
   using _InvJacobian = domain_element::_InvJacobian;
 
+  using _InvHessian = domain_element::_InvHessian;
+
   using _BoundaryNormal = domain_element::_BoundaryNormal;
 
   using _ExtNormal = domain_element::_ExtNormal;
@@ -280,6 +282,7 @@ private:
       std::is_same<ValueType,_Measure>::value ||
       std::is_same<ValueType,_W_Measure>::value ||
       std::is_same<ValueType,_InvJacobian>::value ||
+      std::is_same<ValueType,_InvHessian>::value ||
       std::is_same<ValueType,_BoundaryNormal>::value ||
       std::is_same<ValueType,_ExtNormal>::value ;
   };
@@ -288,11 +291,11 @@ private:
                 boost::fusion::pair<_Measure       ,DataWithFlagStatus<ValueVector<Real>> >,
                 boost::fusion::pair<_W_Measure     ,DataWithFlagStatus<ValueVector<Real>> >,
                 boost::fusion::pair<_InvJacobian   ,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
+				boost::fusion::pair<_InvHessian    ,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
                 boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<dim_+codim_>>>>,
                 boost::fusion::pair<_ExtNormal     ,DataWithFlagStatus<ValueVector<SafeSTLArray<Point,codim_>>>>
                 >;
 //                ,
-//                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
 //                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
 //                  >;
 

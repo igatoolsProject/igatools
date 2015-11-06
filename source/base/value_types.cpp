@@ -99,7 +99,7 @@ activate::FlagsToCache  activate::domain =
   {Flags::jacobian, CacheFlags::none},
   {Flags::inv_jacobian, CacheFlags::inv_jacobian},
   {Flags::hessian, CacheFlags::none},
-  {Flags::inv_hessian, CacheFlags::inv_hessian},
+  {Flags::inv_hessian, CacheFlags::inv_hessian | CacheFlags::inv_jacobian},
   {Flags::boundary_normal, CacheFlags::boundary_normal | CacheFlags::inv_jacobian},
 };
 
