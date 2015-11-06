@@ -78,15 +78,15 @@ void linear_mapping()
 
     domain_handler->fill_element_cache(elem);
 
-    out.begin_item("Points:");
+    out.begin_item("Ref. Points:");
     elem->get_grid_function_element().get_grid_element().get_element_points().print_info(out);
     out.end_item();
 
-    out.begin_item("Values:");
+    out.begin_item("Points:");
     elem->get_element_points().print_info(out);
     out.end_item();
 
-    out.begin_item("Gradients:");
+    out.begin_item("Jacobians:");
     elem->get_element_jacobians().print_info(out);
     out.end_item();
 
@@ -97,6 +97,7 @@ void linear_mapping()
     out.begin_item("Measures:");
     elem->get_element_measures().print_info(out);
     out.end_item();
+
     out.begin_item("W * Measuress:");
     elem->get_element_w_measures().print_info(out);
     out.end_item();

@@ -287,6 +287,24 @@ private:
         measures.set_status_filled(true);
       }
 
+      using _W_Measure = typename ElementAccessor::_W_Measure;
+      if (cache.template status_fill<_W_Measure>())
+      {
+        const auto &meas = cache.template get_data<_Measure>();
+        const auto &w = elem_.grid_func_elem_->get_grid_element().template get_weights<sdim>(s_id_);
+
+        auto &w_measures = cache.template get_data<_W_Measure>();
+
+        auto it_w = w.cbegin();
+        auto it_meas = meas.cbegin();
+        for (auto &w_m : w_measures)
+        {
+          w_m = (*it_w) * (*it_meas);
+          ++it_w;
+          ++it_meas;
+        }
+        w_measures.set_status_filled(true);
+      }
 
       using _InvJacobian = typename ElementAccessor::_InvJacobian;
       if (cache.template status_fill<_InvJacobian>())

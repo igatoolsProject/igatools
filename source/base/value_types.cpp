@@ -65,6 +65,11 @@ const CacheFlags _Measure::cache_flag;
 const string _Measure::name = "Element measure";
 
 
+const Flags _W_Measure::flag;
+const CacheFlags _W_Measure::cache_flag;
+const string _W_Measure::name = "Element weight * measure";
+
+
 const Flags _InvJacobian::flag;
 const CacheFlags _InvJacobian::cache_flag;
 const string _InvJacobian::name = "Element inverse jacobian";
@@ -88,7 +93,7 @@ const string _ExtNormal::name = "Element exterior normal";
 activate::FlagsToCache  activate::domain =
 {
   {Flags::point, CacheFlags::none},
-  {Flags::w_measure, CacheFlags::measure},
+  {Flags::w_measure, CacheFlags::w_measure | CacheFlags::measure},
   {Flags::measure,   CacheFlags::measure},
   {Flags::ext_normal, CacheFlags::ext_normal},
   {Flags::jacobian, CacheFlags::none},

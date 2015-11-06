@@ -258,6 +258,8 @@ public:
 
   using _Measure = domain_element::_Measure;
 
+  using _W_Measure = domain_element::_W_Measure;
+
   using _InvJacobian = domain_element::_InvJacobian;
 
   using _BoundaryNormal = domain_element::_BoundaryNormal;
@@ -274,6 +276,7 @@ private:
   {
     const static bool value =
       std::is_same<ValueType,_Measure>::value ||
+      std::is_same<ValueType,_W_Measure>::value ||
       std::is_same<ValueType,_InvJacobian>::value ||
       std::is_same<ValueType,_BoundaryNormal>::value ||
       std::is_same<ValueType,_ExtNormal>::value ;
@@ -281,6 +284,7 @@ private:
 
   using CType = boost::fusion::map<
                 boost::fusion::pair<_Measure       ,DataWithFlagStatus<ValueVector<Real>> >,
+                boost::fusion::pair<_W_Measure     ,DataWithFlagStatus<ValueVector<Real>> >,
                 boost::fusion::pair<_InvJacobian   ,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
                 boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<dim_+codim_>>>>,
                 boost::fusion::pair<_ExtNormal     ,DataWithFlagStatus<ValueVector<SafeSTLArray<Point,codim_>>>>

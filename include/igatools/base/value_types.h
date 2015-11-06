@@ -196,13 +196,15 @@ enum class CacheFlags
 
   measure        =    1L << 1,
 
-  inv_jacobian   =    1L << 2,
+  w_measure      =    1L << 2,
 
-  inv_hessian    =    1L << 3,
+  inv_jacobian   =    1L << 3,
 
-  boundary_normal =   1L << 4,
+  inv_hessian    =    1L << 4,
 
-  ext_normal     =    1L << 5
+  boundary_normal =   1L << 5,
+
+  ext_normal     =    1L << 6
 };
 
 
@@ -248,6 +250,13 @@ struct _Measure
   static const std::string name;
   static const auto cache_flag = CacheFlags::measure;
   static const auto flag = Flags::measure;
+};
+
+struct _W_Measure
+{
+  static const std::string name;
+  static const auto cache_flag = CacheFlags::w_measure;
+  static const auto flag = Flags::w_measure;
 };
 
 struct _InvJacobian
