@@ -176,21 +176,24 @@ public:
   }
 
   template<int sdim>
-  ValueVector<Real> const &get_measures(const int s_id) const
+  const ValueVector<Real> &get_measures(const int s_id) const
   {
     return get_values_from_cache<_Measure,sdim>(s_id);
   }
 
   template<int sdim>
-  ValueVector<Real> get_w_measures(const int s_id) const;
+  const ValueVector<Real> &get_w_measures(const int s_id) const
+  {
+    return get_values_from_cache<_W_Measure,sdim>(s_id);
+  }
 
 
   const ValueVector<SafeSTLArray<Point, codim_> > &
   get_exterior_normals() const;
 
   template <int sdim>
-  const ValueVector<Points<dim_+codim_>> &
-                                      get_boundary_normals(const int s_id, EnableIf<(sdim >= 0)> * = nullptr) const
+  const ValueVector<Points<dim_+codim_> > &
+  get_boundary_normals(const int s_id, EnableIf<(sdim >= 0)> * = nullptr) const
   {
     Assert(dim_ == sdim+1, ExcNotImplemented());
     return get_values_from_cache<_BoundaryNormal,sdim>(s_id);
@@ -203,10 +206,9 @@ public:
 
   const ValueVector<Hessian> &get_element_hessians() const;
 
-  ValueVector<Real> const &get_element_measures() const;
+  const ValueVector<Real> &get_element_measures() const;
 
-
-  ValueVector<Real> get_element_w_measures() const;
+  const ValueVector<Real> &get_element_w_measures() const;
 
 
 #if 0

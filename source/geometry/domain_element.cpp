@@ -145,7 +145,7 @@ operator >(const self_t &elem) const
 }
 
 
-
+#if 0
 template<int dim_,int codim_>
 template<int sdim>
 auto
@@ -163,7 +163,7 @@ get_w_measures(const int s_id) const -> ValueVector<Real>
   }
   return w_meas;
 }
-
+#endif
 
 template<int dim_,int codim_>
 auto
@@ -176,9 +176,9 @@ get_element_measures() const -> const ValueVector<Real> &
 template<int dim_,int codim_>
 auto
 DomainElement<dim_,codim_>::
-get_element_w_measures() const -> ValueVector<Real>
+get_element_w_measures() const -> const ValueVector<Real> &
 {
-  return get_w_measures<dim_>(0);
+  return get_values_from_cache<_W_Measure,dim_>(0);
 }
 
 

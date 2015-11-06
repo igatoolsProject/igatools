@@ -27,7 +27,7 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = \
-  ['ValueVector<Real> DomainElement<dim, cod>::get_w_measures<k>(const int s_id) const;']
+  ['const ValueVector<Real> &DomainElement<dim, cod>::get_w_measures<k>(const int s_id) const;']
 #['const ValueVector<Points<dim+cod>> & DomainElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
 
 elements = []
