@@ -20,28 +20,28 @@
 
 /**
  *  @file
- *  @brief Mapping using a linear Function
- *  @author pauletti
- *  @date 2014-10-23
+ *  @brief Domain using a linear Function
+ *  @author martinelli
+ *  @date Nov 06, 2105
  */
 
 #include "../tests.h"
 
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_element.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
 
 template<int dim, int codim>
-void test()
+void linear_mapping()
 {
   OUTSTART
 
+  out.begin_item("linear_mapping<dim=" + std::to_string(dim) +",codim=" + std::to_string(codim) +">");
+
   const int space_dim = dim+codim;
-  using Function = functions::LinearFunction<dim, 0, space_dim>;
-  using Mapping   = Domain<dim, codim>;
+  using Function = grid_functions::LinearGridFunction<dim,space_dim>;
 
   typename Function::Value    b;
   typename Function::Gradient A;
@@ -52,50 +52,72 @@ void test()
         A[j][j] = 2.;
     b[i] = i;
   }
-  auto grid = Grid<dim>::create(3);
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  auto grid = Grid<dim>::const_create(3);
+  auto F = Function::const_create(grid, A, b);
+  auto domain = Domain<dim,codim>::const_create(F);
 
-  auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
-              ValueFlags::hessian |ValueFlags::measure|ValueFlags::w_measure;
-  auto quad = QGauss<dim>(2);
+  auto domain_handler = domain->create_cache_handler();
 
-  Mapping map(F);
-  map.reset(flag, quad);
+  using Flags = domain_element::Flags;
+  auto flag = Flags::point | Flags::jacobian |
+              Flags::hessian |Flags::measure|Flags::w_measure;
+  domain_handler->set_element_flags(flag);
 
-  auto elem = map.begin();
-  auto end  = map.end();
 
-  map.init_cache(elem, Topology<dim>());;
-  for (; elem != end; ++elem)
+  auto elem = domain->begin();
+  auto end  = domain->end();
+
+  auto quad = QGauss<dim>::create(2);
+  domain_handler->init_cache(elem, quad);
+  int elem_id = 0;
+  for (; elem != end; ++elem, ++elem_id)
   {
-    map.fill_cache(elem, Topology<dim>(), 0);
-    out << "Points:" << endl;
-    elem->get_points().print_info(out);
-    out << endl;
-    out << "Values:" << endl;
-    elem->template get_values<_Value,dim>(0).print_info(out);
-    out << endl;
-    out << "Gradients:" << endl;
-    elem->template get_values<_Gradient,dim>(0).print_info(out);
-    out << endl;
-    out << "Hessians:" << endl;
-    elem->template get_values<_Hessian,dim>(0).print_info(out);
-    out << endl;
-//        elem->get_measures().print_info(out);
-//        out << endl;
-//        elem->get_w_measures().print_info(out);
-//        out << endl;
-  }
+    out.begin_item("Element " + std::to_string(elem_id));
 
+    out << "Element ID: " << elem->get_index() << std::endl;
+
+    domain_handler->fill_element_cache(elem);
+
+    out.begin_item("Points:");
+    elem->get_grid_function_element().get_grid_element().get_element_points().print_info(out);
+    out.end_item();
+
+    out.begin_item("Values:");
+    elem->get_element_points().print_info(out);
+    out.end_item();
+
+    out.begin_item("Gradients:");
+    elem->get_element_jacobians().print_info(out);
+    out.end_item();
+
+    out.begin_item("Hessians:");
+    elem->get_element_hessians().print_info(out);
+    out.end_item();
+
+    out.begin_item("Measures:");
+    elem->get_element_measures().print_info(out);
+    out.end_item();
+    out.begin_item("W * Measuress:");
+    elem->get_element_w_measures().print_info(out);
+    out.end_item();
+
+    out.end_item();
+  }
+  out.end_item();
   OUTEND
 }
 
 
 int main()
 {
-  test<2,0>();
-  test<3,0>();
-  test<2,1>();
+  linear_mapping<1,0>();
+  linear_mapping<2,0>();
+  linear_mapping<3,0>();
+
+  linear_mapping<1,1>();
+  linear_mapping<2,1>();
+
+  linear_mapping<1,2>();
 
   return 0;
 }
