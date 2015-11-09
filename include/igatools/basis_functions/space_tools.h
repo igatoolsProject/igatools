@@ -595,10 +595,6 @@ projection_l2_grid_function(
 
   space_elem_handler->init_element_cache(*elem,quad);
 
-  const int n_qp = quad->get_num_points();
-
-  using space_element::_Value;
-
   using D0 = grid_function_element::_D<0>;
   if (space_grid == func_grid)
   {

@@ -28,36 +28,37 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/basis_functions/space_tools.h>
 
-template<int dim , int range=1 ,int rank = 1, LAPack la_pack>
+template<int dim , int range=1>
 void test_proj(const int deg, const int n_knots = 4)
 {
   OUTSTART
 
-  using Basis = BSpline<dim,range,rank> ;
-  using RefSpace = ReferenceSpaceBasis<dim,range,rank> ;
-  using Func = typename functions::ConstantFunction<dim, 0, range, rank>;
 
   auto grid = Grid<dim>::const_create(n_knots);
-  auto space = Basis::const_create(deg, grid);
+  auto space = SplineSpace<dim,range>::const_create(deg, grid);
+  auto basis = BSpline<dim,range>::const_create(space);
 
 
+  using Func = typename grid_functions::ConstantGridFunction<dim,range>;
   typename Func::Value val;
   for (int i=0; i<range; ++i)
     val[i] = i+3;
 
-  auto f = Func::const_create(grid, IdentityFunction<dim>::const_create(grid), val);
+  auto f = Func::const_create(grid,val);
 
   const int n_qp = 4;
-  QGauss<dim> quad(n_qp);
-  auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
+  auto quad = QGauss<dim>::create(n_qp);
+
+  auto coeffs_func = space_tools::projection_l2_grid_function<dim,range>(*f,*basis,quad);
+
+  auto proj_func = IgGridFunction<dim,range>::const_create(basis,coeffs_func);
   proj_func->print_info(out);
 
   OUTEND
@@ -68,18 +69,13 @@ void test_proj(const int deg, const int n_knots = 4)
 
 int main()
 {
-#if defined(USE_TRILINOS)
-  const auto la_pack = LAPack::trilinos_epetra;
-#elif defined(USE_PETSC)
-  const auto la_pack = LAPack::petsc;
-#endif
 
-  test_proj<0,1,1, la_pack>(3);
-  test_proj<1,1,1, la_pack>(3);
-  test_proj<2,1,1, la_pack>(3);
-  test_proj<3,1,1, la_pack>(1);
+//  test_proj<0,1>(3);
+  test_proj<1,1>(3);
+  test_proj<2,1>(3);
+  test_proj<3,1>(1);
 
-  test_proj<2,3,1, la_pack>(1);
+  test_proj<2,3>(1);
 
   return 0;
 }
