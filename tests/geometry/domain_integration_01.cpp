@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Measure of a physical domain (mapping)
+ *  Measure of a physical domain using space_tools::integrate
  *
  *  author: pauletti
  *  date: 2015-08-05
@@ -28,13 +28,12 @@
 
 #include "../tests.h"
 
-#include <igatools/functions/function_lib.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
 #include <igatools/basis_functions/space_tools.h>
 
 
@@ -44,7 +43,11 @@ void intregrate_on_sphere(const int n_knots)
   const int range=1;
   OUTSTART
 
-  using MapFunction       = functions::SphereFunction<dim>;
+  out.begin_item("integrate_on_sphere<dim="
+		  + std::to_string(dim) + ">(n_elems_1D="
+		  + std::to_string(n_knots-1) + ")");
+
+  using Sph = grid_functions::SphereGridFunction<dim>;
   using IntegrandFunction = functions::ConstantFunction<dim,1,1,1>;
 
   BBox<dim> box;
@@ -54,17 +57,20 @@ void intregrate_on_sphere(const int n_knots)
     box[dim-1] = {0., M_PI/2.};
   auto grid = Grid<dim>::create(box, n_knots);
 
-  auto F = MapFunction::create(grid, IdentityFunction<dim>::create(grid));
+  auto sph_func = Sph::create(grid);
+  auto sph_domain = Domain<dim,1>::create(sph_func);
   typename IntegrandFunction::Value val {1.};
-  auto C = IntegrandFunction::create(grid, F, val);
+  auto C = IntegrandFunction::create(sph_domain, val);
 
 
-  auto quad = QGauss<dim>(3);
+  auto quad = QGauss<dim>::create(2);
 
-  SafeSTLVector<typename IntegrandFunction::Value> vec(F->get_grid()->get_num_all_elems());
-  auto area = space_tools::integrate<0,dim, 1, range, 1 >(*C, quad, vec);
-  vec.print_info(out);
-  out << endl;
+  SafeSTLMap<TensorIndex<dim>,
+  	  typename IntegrandFunction::Value> elem_contrib;
+  auto area = space_tools::integrate<0,dim,1,range,1>(*C, quad, elem_contrib);
+  out.begin_item("Area: contribution from the elements");
+  elem_contrib.print_info(out);
+  out.end_item();
 
 
   //n-sphere volume
@@ -74,11 +80,12 @@ void intregrate_on_sphere(const int n_knots)
   auto exact = 2. * std::pow(M_PI, (dim+1)/2.) / tgamma((dim+1)/ 2.);
   auto ans = exact * 0.5 * std::pow(0.25, dim-1.);
 
-  out << exact<< "    "<< ans << "    " << area << endl;
-//    SafeSTLVector<typename IntegrandFunction::template Derivative<1>> vec_der(F->get_grid()->get_num_all_elems());
-//    space_tools::integrate<1, dim, 1, range, 1 >(*C,  quad, vec_der);
-//    vec_der.print_info(out);
-//    out << endl;
+  out.begin_item("Area:");
+  out << "Exact      = " << ans << endl;
+  out << "Quadrature = " << area << endl;
+  out.end_item();
+
+  out.end_item();
 
   OUTEND
 }
@@ -88,8 +95,12 @@ int main()
 {
   out.depth_console(10);
 
-  //intregrate_on_sphere<1>(4);
-  intregrate_on_sphere<2>(2);
+
+  for(int n_knots = 2 ; n_knots <= 5 ;++n_knots)
+  {
+//  intregrate_on_sphere<1>(n_knots);
+	  intregrate_on_sphere<2>(n_knots);
+  }
 
   return 0;
 }

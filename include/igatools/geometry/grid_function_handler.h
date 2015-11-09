@@ -57,7 +57,6 @@ public:
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
   using Flags = grid_function_element::Flags;
-  using CacheFlags = grid_function_element::CacheFlags;
 
 protected:
   using FlagsArray = SafeSTLArray<Flags, dim+1>;

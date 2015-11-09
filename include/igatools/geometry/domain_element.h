@@ -49,7 +49,6 @@ public:
   using Hessian = typename ContainerType::template Derivative<2>;
 
   using Flags = domain_element::Flags;
-  using CacheFlags = domain_element::CacheFlags;
 
 
   /** @name Constructors */

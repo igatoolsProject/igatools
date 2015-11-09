@@ -69,7 +69,7 @@ public:
   using List = typename GridFuncType::List;
   using ListIt = typename GridFuncType::ListIt;
   using Flags = domain_element::Flags;
-  using CacheFlags = domain_element::CacheFlags;
+
 protected:
   using FlagsArray = SafeSTLArray<Flags, dim+1>;
 

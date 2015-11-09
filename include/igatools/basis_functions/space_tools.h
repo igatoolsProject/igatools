@@ -596,12 +596,16 @@ Conditional<order==0,
             typename Function<dim, codim, range, rank>::Value,
             typename Function<dim, codim, range, rank>::template Derivative<order>>
 integrate(Function<dim, codim, range, rank> &f,
-          const Quadrature<dim> &quad,
-          SafeSTLVector<Conditional<order==0,
+          const std::shared_ptr<const Quadrature<dim>> &quad,
+          SafeSTLMap<
+          TensorIndex<dim>,
+          Conditional<order==0,
           typename Function<dim, codim, range, rank>::Value,
           typename Function<dim, codim, range, rank>::template Derivative<order>>
           > &element_error)
 {
+  Assert(quad != nullptr,ExcNullPtr());
+
   using Value = Conditional<order==0,
         typename Function<dim, codim, range, rank>::Value,
         typename Function<dim, codim, range, rank>::template Derivative<order>>;
@@ -615,38 +619,35 @@ integrate(Function<dim, codim, range, rank> &f,
     >
     >;
 
-//  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
-  auto flag = domain_element::Flags::w_measure;
-//      ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
+  auto f_handler = f.create_cache_handler();
 
-  f.reset(flag, quad);
-  const int n_points = quad.get_num_points();
+  const auto flag = function_element::Flags::value |
+                    function_element::Flags::w_measure;
+  f_handler->set_element_flags(flag);
 
   auto elem_f = f.begin();
   auto end = f.end();
 
-  const auto topology = Topology<dim>();
-  f.init_cache(elem_f, topology);
+  const int n_points = quad->get_num_points();
+  f_handler->init_cache(elem_f, quad);
   Value val;
   for (; elem_f != end; ++elem_f)
   {
-    f.fill_cache(elem_f, topology, 0);
-
-    const int elem_id = elem_f->get_flat_index();
+    f_handler->fill_element_cache(elem_f);
 
     auto f_val = elem_f->template get_values<_Val,dim>(0);
-    auto w_meas = elem_f->template get_w_measures<dim>(0);
+    auto w_meas = elem_f->get_domain_element().get_element_w_measures();
 
     val = 0.0;
-    for (int iPt = 0; iPt < n_points; ++iPt)
-      val += f_val[iPt] * w_meas[iPt];
+    for (int pt = 0; pt < n_points; ++pt)
+      val += f_val[pt] * w_meas[pt];
 
-    element_error[ elem_id ] = val;
+    element_error[ elem_f->get_index() ] = val;
   }
 
   val = 0.0;
-  for (auto &el_val : element_error)
-    val += el_val;
+  for (const auto &el_val : element_error)
+    val += el_val.second;
   return val;
 }
 

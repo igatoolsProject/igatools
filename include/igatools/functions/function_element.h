@@ -58,7 +58,6 @@ public:
   using Derivative = typename ContainerType::template Derivative<order>;
 
   using Flags = function_element::Flags;
-  using CacheFlags = function_element::CacheFlags;
 
 protected:
 
@@ -134,22 +133,12 @@ public:
   bool operator>(const self_t &a) const;
   ///@}
 
-  /*
-  ListIt &operator++()
-  {
-    return (++(*domain_elem_));
-  }
-  //*/
 
-  void operator++()
-  {
-    ++(*domain_elem_);
-  }
+  void operator++();
 
-  void move_to(const IndexType &elem_id)
-  {
-    domain_elem_->move_to(elem_id);
-  }
+  void move_to(const IndexType &elem_id);
+
+  const IndexType &get_index() const;
 
   const DomainElem &get_domain_element() const;
 

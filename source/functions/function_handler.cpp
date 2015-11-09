@@ -46,13 +46,13 @@ set_flags(const topology_variant &sdim,
   DomainFlags  dom_flag = DomainFlags::none;
   Flags func_flag = Flags::none;
 
-  SafeSTLVector<Flags> all_flags = {Flags::value, Flags::gradient, Flags::D2};
-  for (auto &fl : all_flags)
+  for (auto &fl : function_element::all_flags)
     if (contains(flag, fl))
-    {
+      func_flag  |= function_element::activate::function[fl];
+
+  for (auto &fl : function_element::all_flags)
+    if (contains(flag, fl))
       dom_flag  |= function_element::activate::domain[fl];
-      func_flag |= function_element::activate::function[fl];
-    }
 
   domain_handler_->set_flags(sdim, dom_flag);
 
@@ -60,6 +60,14 @@ set_flags(const topology_variant &sdim,
   boost::apply_visitor(disp, sdim);
 }
 
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+FunctionHandler<dim_, codim_, range_, rank_ >::
+set_element_flags(const Flags &flag)
+{
+  this->set_flags(Topology<dim_>(), flag);
+}
 
 
 template<int dim_, int codim_, int range_, int rank_>
@@ -72,6 +80,15 @@ init_cache(ElementAccessor &elem,
 
   auto disp = InitCacheDispatcher(elem, flags_);
   boost::apply_visitor(disp, quad);
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+FunctionHandler<dim_, codim_, range_, rank_ >::
+init_cache(ElementIterator &elem,
+           const eval_pts_variant &quad) const
+{
+  this->init_cache(*elem, quad);
 }
 
 
@@ -87,6 +104,32 @@ fill_cache(const topology_variant &sdim,
 }
 
 
+template<int dim_, int codim_, int range_, int rank_>
+void
+FunctionHandler<dim_, codim_, range_, rank_ >::
+fill_cache(const topology_variant &sdim,
+           ElementIterator &elem,
+           const int s_id) const
+{
+  this->fill_cache(sdim, *elem, s_id);
+}
+
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+FunctionHandler<dim_, codim_, range_, rank_ >::
+fill_element_cache(ElementAccessor &elem)
+{
+  this->fill_cache(Topology<dim_>(),elem,0);
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+FunctionHandler<dim_, codim_, range_, rank_ >::
+fill_element_cache(ElementIterator &elem)
+{
+  this->fill_cache(Topology<dim_>(),*elem,0);
+}
 
 IGA_NAMESPACE_CLOSE
 
