@@ -44,7 +44,7 @@ set_flags(const topology_variant &sdim,
 {
   using DomainFlags = typename DomainType::ElementHandler::Flags;
   DomainFlags  dom_flag = DomainFlags::none;
-  CacheFlags func_flag = CacheFlags::none;
+  Flags func_flag = Flags::none;
 
   SafeSTLVector<Flags> all_flags = {Flags::value, Flags::gradient, Flags::D2};
   for (auto &fl : all_flags)

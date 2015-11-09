@@ -30,7 +30,7 @@ DomainHandler(std::shared_ptr<DomainType> domain)
   :
   domain_(domain),
   grid_func_handler_(domain->get_grid_function()->create_cache_handler()),
-  flags_(CacheFlags::none)
+  flags_(Flags::none)
 {
   Assert(domain_ != nullptr, ExcNullPtr());
 }
@@ -58,14 +58,18 @@ set_flags(const topology_variant &sdim,
 
   GridFlags  grid_flag = GridFlags::none;
   GridFuncFlags  grid_func_flag = GridFuncFlags::none;
-  CacheFlags dom_flag = CacheFlags::none;
+  Flags dom_flag = Flags::none;
 
   for (auto &fl : domain_element::all_flags)
     if (contains(flag, fl))
+      dom_flag  |= domain_element::activate::domain[fl];
+
+
+  for (auto &fl : domain_element::all_flags)
+    if (contains(dom_flag, fl))
     {
       grid_func_flag |= domain_element::activate::grid_func[fl];
       grid_flag |= domain_element::activate::grid[fl];
-      dom_flag  |= domain_element::activate::domain[fl];
     }
 
   grid_func_handler_->set_flags(sdim, grid_func_flag);

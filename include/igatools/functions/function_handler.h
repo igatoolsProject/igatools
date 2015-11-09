@@ -58,10 +58,9 @@ public:
   using List = typename DomainType::List;
   using ListIt = typename DomainType::ListIt;
   using Flags = function_element::Flags;
-  using CacheFlags = function_element::CacheFlags;
 
 protected:
-  using FlagsArray = SafeSTLArray<CacheFlags, dim+1>;
+  using FlagsArray = SafeSTLArray<Flags, dim+1>;
 
 #if 0
   /** Types for the input/output evaluation arguments */
@@ -225,7 +224,7 @@ private:
    */
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const CacheFlags flag, FlagsArray &flags)
+    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
       :
       flag_(flag),
       flags_(flags)
@@ -237,7 +236,7 @@ private:
       flags_[sdim] = flag_;
     }
 
-    const CacheFlags flag_;
+    const Flags flag_;
     FlagsArray &flags_;
   };
 

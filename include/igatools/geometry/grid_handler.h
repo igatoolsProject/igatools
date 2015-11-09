@@ -54,7 +54,7 @@ public:
   using Flags = typename ElementAccessor::Flags;
   using CacheFlags = typename ElementAccessor::CacheFlags;
 protected:
-  using FlagsArray = SafeSTLArray<CacheFlags, dim+1>;
+  using FlagsArray = SafeSTLArray<Flags, dim+1>;
   using topology_variant = TopologyVariants<dim>;
   template<int k>
   using ConstQuad = const Quadrature<k>;

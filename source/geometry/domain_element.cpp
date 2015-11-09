@@ -299,32 +299,6 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 }
 
 
-template<int dim_,int codim_>
-auto
-DomainElement<dim_,codim_>::
-get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
-{
-#if 0
-  Assert(codim==1, ExcNotImplemented());
-
-  const auto H = compute_second_fundamental_form();
-  const auto G_inv = compute_inv_first_fundamental_form();
-
-  const auto n_points = H.get_num_points();
-
-  ValueVector<SafeSTLVector<Real>> res(n_points);
-
-  for (int pt = 0; pt < n_points; ++pt)
-  {
-    const MetricTensor B = compose(H[pt], G_inv[pt]);
-    const auto A = unroll_to_matrix(B);
-    res[pt] = A.eigen_values();
-  }
-  return res;
-#endif
-  Assert(codim==1, ExcNotImplemented());
-  return get_values_from_cache<_Curvature,dim_>(0);
-}
 
 
 
@@ -354,6 +328,34 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
   return Dn;
 }
 #endif
+
+
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
+{
+#if 0
+  Assert(codim==1, ExcNotImplemented());
+
+  const auto H = compute_second_fundamental_form();
+  const auto G_inv = compute_inv_first_fundamental_form();
+
+  const auto n_points = H.get_num_points();
+
+  ValueVector<SafeSTLVector<Real>> res(n_points);
+
+  for (int pt = 0; pt < n_points; ++pt)
+  {
+    const MetricTensor B = compose(H[pt], G_inv[pt]);
+    const auto A = unroll_to_matrix(B);
+    res[pt] = A.eigen_values();
+  }
+  return res;
+#endif
+  Assert(codim_==1, ExcNotImplemented());
+  return get_values_from_cache<_Curvature,dim_>(0);
+}
 
 
 //template<int dim_,int codim_>

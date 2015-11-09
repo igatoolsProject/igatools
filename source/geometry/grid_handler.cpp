@@ -30,7 +30,7 @@ GridHandler<dim>::
 GridHandler(shared_ptr<GridType> grid)
   :
   grid_(grid),
-  flags_(CacheFlags::none)
+  flags_(Flags::none)
 {}
 
 
@@ -52,7 +52,7 @@ void
 GridHandler<dim>::
 set_flags(const Flags &flag)
 {
-  CacheFlags grid_flag = CacheFlags::none;
+  Flags grid_flag = Flags::none;
   SafeSTLVector<Flags> all_flags = {Flags::point, Flags::weight};
   for (auto &fl : all_flags)
     if (contains(flag, fl))

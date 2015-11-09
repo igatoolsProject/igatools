@@ -576,10 +576,11 @@ get_boundary_dofs(std::shared_ptr<const Basis> basis,
 }
 
 
-
+#if 0
 // TODO (pauletti, Mar 18, 2015): this could be given a more general use
 static const SafeSTLArray<ValueFlags, 3> order_to_flag =
 {ValueFlags::value,ValueFlags::gradient,ValueFlags::hessian};
+#endif
 
 /**
  * Numerically computes the local element contribution
@@ -614,7 +615,9 @@ integrate(Function<dim, codim, range, rank> &f,
     >
     >;
 
-  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
+//  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
+  auto flag = domain_element::Flags::w_measure;
+//      ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
   f.reset(flag, quad);
   const int n_points = quad.get_num_points();
@@ -664,7 +667,8 @@ void norm_difference(Function<dim, codim, range, rank> &f,
                      SafeSTLVector<Real> &element_error)
 {
   const bool is_inf = p==std::numeric_limits<Real>::infinity()? true : false;
-  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
+  auto flag = domain_element::Flags::w_measure;
+//  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
   using _Val =
     Conditional<order==0,

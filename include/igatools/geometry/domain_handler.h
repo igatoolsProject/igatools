@@ -71,7 +71,7 @@ public:
   using Flags = domain_element::Flags;
   using CacheFlags = domain_element::CacheFlags;
 protected:
-  using FlagsArray = SafeSTLArray<CacheFlags, dim+1>;
+  using FlagsArray = SafeSTLArray<Flags, dim+1>;
 
 
 #if 0
@@ -199,7 +199,7 @@ private:
    */
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const CacheFlags cache_flag, FlagsArray &flags)
+    SetFlagsDispatcher(const Flags cache_flag, FlagsArray &flags)
       :
       cache_flag_(cache_flag),
       flags_(flags)
@@ -211,7 +211,7 @@ private:
       flags_[sdim] |= cache_flag_;
     }
 
-    const CacheFlags cache_flag_;
+    const Flags cache_flag_;
     FlagsArray &flags_;
   };
 
@@ -265,7 +265,7 @@ private:
     {
       auto &cache = elem_.local_cache_.template get_sub_elem_cache<sdim>(s_id_);
 
-      using _Measure = typename ElementAccessor::_Measure;
+      using _Measure = domain_element::_Measure;
       if (cache.template status_fill<_Measure>())
       {
         auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id_);
@@ -287,7 +287,7 @@ private:
         measures.set_status_filled(true);
       }
 
-      using _W_Measure = typename ElementAccessor::_W_Measure;
+      using _W_Measure = domain_element::_W_Measure;
       if (cache.template status_fill<_W_Measure>())
       {
         const auto &meas = cache.template get_data<_Measure>();
@@ -306,7 +306,7 @@ private:
         w_measures.set_status_filled(true);
       }
 
-      using _InvJacobian = typename ElementAccessor::_InvJacobian;
+      using _InvJacobian = domain_element::_InvJacobian;
       if (cache.template status_fill<_InvJacobian>())
       {
         const auto &DF = elem_.grid_func_elem_->
@@ -322,11 +322,11 @@ private:
         D_invF.set_status_filled(true);
       }
 
-      using _InvHessian = typename ElementAccessor::_InvHessian;
+      using _InvHessian = domain_element::_InvHessian;
       if (cache.template status_fill<_InvHessian>())
       {
         const auto &D2_F = elem_.grid_func_elem_->
-        		template get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id_);
+                           template get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id_);
         const auto &D1_invF = cache.template get_data<_InvJacobian>();
         auto &D2_invF       = cache.template get_data<_InvHessian>();
 
@@ -347,7 +347,7 @@ private:
         D2_invF.set_status_filled(true);
       }
 
-      using _BoundaryNormal = typename ElementAccessor::_BoundaryNormal;
+      using _BoundaryNormal = domain_element::_BoundaryNormal;
       if (cache.template status_fill<_BoundaryNormal>())
       {
         Assert(dim_ == sdim+1, ExcMessage("The boundary normal is defined only if sdim == dim-1"));
@@ -369,7 +369,7 @@ private:
         bndry_normals.set_status_filled(true);
       }
 
-      using _ExtNormal = typename ElementAccessor::_ExtNormal;
+      using _ExtNormal = domain_element::_ExtNormal;
       if (cache.template status_fill<_ExtNormal>())
       {
         Assert(sdim == dim_,  ExcMessage("The boundary normal is defined only if sdim == dim"));
@@ -393,28 +393,84 @@ private:
       }
 
 
-#if 0
+      using  _FirstFundamentalForm = domain_element::_FirstFundamentalForm;
+      if (cache.template status_fill<_FirstFundamentalForm>())
+      {
+        const auto &DF = elem_.grid_func_elem_->
+                         template get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id_);
+        const auto n_points = DF.get_num_points();
+
+        auto &first_fundamental_form = cache.template get_data<_FirstFundamentalForm>();
+
+        for (int pt = 0; pt < n_points; ++pt)
+        {
+          const auto &A = DF[pt];
+          const auto A_t   = co_tensor(transpose(A));
+          first_fundamental_form[pt] = compose(A_t, A);
+        }
+
+        first_fundamental_form.set_status_filled(true);
+      }
+
+
+      using _SecondFundamentalForm = domain_element::_SecondFundamentalForm;
+      if (cache.template status_fill<_SecondFundamentalForm>())
+      {
+        Assert(codim_==1, ExcNotImplemented());
+        const auto &D2_F = elem_.grid_func_elem_->
+                           template get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id_);
+        const auto n_points = D2_F.get_num_points();
+
+        const auto &normal = cache.template get_data<_ExtNormal>();
+
+        auto &second_fundamental_form = cache.template get_data<_SecondFundamentalForm>();
+
+        for (int pt = 0; pt < n_points; ++pt)
+        {
+          auto &A = second_fundamental_form[pt];
+          const auto &D2_F_pt = D2_F[pt];
+
+          auto inner_normal = normal[pt][0];  //valid only for codim_ == 1
+          inner_normal.operator-();
+
+          for (int u = 0; u < dim_ ; ++u)
+          {
+            const auto B = co_tensor(transpose(D2_F_pt[u]));
+            A[u] = action(B, inner_normal);
+          }
+        }
+        second_fundamental_form.set_status_filled(true);
+      }
+
+
+      using _Curvature = domain_element::_Curvature;
       if (cache.template status_fill<_Curvature>())
       {
         Assert(sdim == dim_, ExcNotImplemented());
         Assert(codim_ == 1, ExcNotImplemented());
 
-        const auto H = elem.compute_second_fundamental_form();
-        const auto G_inv = elem.compute_inv_first_fundamental_form();
+//        const auto H = elem.compute_second_fundamental_form();
+//        const auto G_inv = elem.compute_inv_first_fundamental_form();
+
+        const auto &H = cache.template get_data<_FirstFundamentalForm>();
+        const auto &G = cache.template get_data<_SecondFundamentalForm>();
+
+        const auto n_points = H.get_num_points();
 
         auto &curvatures = cache.template get_data<_Curvature>();
 
+        Real det;
         for (int pt = 0; pt < n_points; ++pt)
         {
           //          const MetricTensor B = compose(H[pt], G_inv[pt]);
-          const auto B = compose(H[pt], G_inv[pt]);
+          const auto B = compose(H[pt], inverse(G[pt],det));
           const auto A = unroll_to_matrix(B);
           curvatures[pt] = A.eigen_values();
         }
 
-        cache.template set_status_filled<_Curvature>(true);
+        curvatures.set_status_filled(true);
       }
-#endif
+
       cache.set_filled(true);
     }
 

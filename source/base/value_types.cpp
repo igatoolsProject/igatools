@@ -38,8 +38,8 @@ const string _Weight::name = "Element Quadrature Weights";
 
 activate::FlagsToCache activate::grid =
 {
-  {Flags::point, CacheFlags::point},
-  {Flags::weight, CacheFlags::weight}
+  {Flags::point, Flags::point},
+  {Flags::weight, Flags::weight}
 };
 //---------------------------------------------------------------------
 };
@@ -90,17 +90,39 @@ const CacheFlags _ExtNormal::cache_flag;
 const string _ExtNormal::name = "Element exterior normal";
 
 
+const Flags _Curvature::flag;
+const CacheFlags _Curvature::cache_flag;
+const string _Curvature::name = "Element principal curvature";
+
+
+const Flags _FirstFundamentalForm::flag;
+const CacheFlags _FirstFundamentalForm::cache_flag;
+const string _FirstFundamentalForm::name = "Element first fundamental form";
+
+
+const Flags _SecondFundamentalForm::flag;
+const CacheFlags _SecondFundamentalForm::cache_flag;
+const string _SecondFundamentalForm::name = "Element second fundamental form";
+
+
 activate::FlagsToCache  activate::domain =
 {
-  {Flags::point, CacheFlags::none},
-  {Flags::w_measure, CacheFlags::w_measure | CacheFlags::measure},
-  {Flags::measure,   CacheFlags::measure},
-  {Flags::ext_normal, CacheFlags::ext_normal},
-  {Flags::jacobian, CacheFlags::none},
-  {Flags::inv_jacobian, CacheFlags::inv_jacobian},
-  {Flags::hessian, CacheFlags::none},
-  {Flags::inv_hessian, CacheFlags::inv_hessian | CacheFlags::inv_jacobian},
-  {Flags::boundary_normal, CacheFlags::boundary_normal | CacheFlags::inv_jacobian},
+  {Flags::point, Flags::point},
+  {Flags::w_measure, Flags::w_measure | Flags::measure},
+  {Flags::measure,   Flags::measure},
+  {Flags::ext_normal, Flags::ext_normal},
+  {Flags::jacobian, Flags::jacobian},
+  {Flags::inv_jacobian, Flags::inv_jacobian},
+  {Flags::hessian, Flags::hessian},
+  {Flags::inv_hessian, Flags::inv_hessian | Flags::inv_jacobian},
+  {Flags::boundary_normal, Flags::boundary_normal | Flags::inv_jacobian},
+  {Flags::first_fundamental_form, Flags::first_fundamental_form},
+  {Flags::second_fundamental_form, Flags::second_fundamental_form | Flags::ext_normal},
+  {
+    Flags::curvature, Flags::curvature |
+    Flags::first_fundamental_form |
+    Flags::second_fundamental_form
+  }
 };
 
 activate::FlagsToGridFunc activate::grid_func =
@@ -113,7 +135,10 @@ activate::FlagsToGridFunc activate::grid_func =
   {Flags::inv_jacobian, grid_function_element::Flags::D1},
   {Flags::hessian, grid_function_element::Flags::D2},
   {Flags::inv_hessian, grid_function_element::Flags::D2},
-  {Flags::boundary_normal, grid_function_element::Flags::none}
+  {Flags::boundary_normal, grid_function_element::Flags::none},
+  {Flags::first_fundamental_form, grid_function_element::Flags::D1},
+  {Flags::second_fundamental_form, grid_function_element::Flags::D2},
+  {Flags::curvature, grid_function_element::Flags::none}
 };
 
 activate::FlagsToGrid activate::grid =
@@ -126,7 +151,10 @@ activate::FlagsToGrid activate::grid =
   {Flags::inv_jacobian, grid_element::Flags::none},
   {Flags::hessian, grid_element::Flags::none},
   {Flags::inv_hessian, grid_element::Flags::none},
-  {Flags::boundary_normal, grid_element::Flags::none}
+  {Flags::boundary_normal, grid_element::Flags::none},
+  {Flags::first_fundamental_form, grid_element::Flags::none},
+  {Flags::second_fundamental_form, grid_element::Flags::none},
+  {Flags::curvature, grid_element::Flags::none}
 };
 
 };
@@ -157,10 +185,10 @@ template<> const string _D<3>::name = "Grid Function D3";
 
 activate::FlagsToCache  activate::grid_function =
 {
-  {Flags::D0, CacheFlags::D0},
-  {Flags::D1, CacheFlags::D1},
-  {Flags::D2, CacheFlags::D2},
-  {Flags::D3, CacheFlags::D3}
+  {Flags::D0, Flags::D0},
+  {Flags::D1, Flags::D1},
+  {Flags::D2, Flags::D2},
+  {Flags::D3, Flags::D3}
 };
 
 activate::FlagsToGrid activate::grid =
@@ -193,9 +221,9 @@ const string _D2::name = "Function D2";
 
 activate::FlagsToCache  activate::function =
 {
-  {Flags::value, CacheFlags::value},
-  {Flags::gradient, CacheFlags::gradient},
-  {Flags::D2, CacheFlags::D2}
+  {Flags::value, Flags::value},
+  {Flags::gradient, Flags::gradient},
+  {Flags::D2, Flags::D2}
 };
 
 function_element::activate::FlagsToDomain activate::domain =

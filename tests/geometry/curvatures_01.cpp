@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the SphericalFunction class as a mapping
+ *  Test for the curvature of SphericalGridFunction
  *
  *  author: pauletti
  *  date: 2014-10-24
@@ -28,13 +28,11 @@
 
 #include "../tests.h"
 
-#include <igatools/functions/function_lib.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
 
 
 template <int dim>
@@ -42,43 +40,55 @@ void principal_curvatures()
 {
   OUTSTART
 
-  using Function = functions::SphereFunction<dim>;
+  out.begin_item("principal_curvatures<" + std::to_string(dim) +">");
 
-  auto flag = ValueFlags::point |  ValueFlags::value |
-              ValueFlags::curvature;
+  using Sphere = grid_functions::SphereGridFunction<dim>;
 
-  auto quad = QUniform<dim>(3);
+  using Flags = domain_element::Flags;
+  auto flag = Flags::ext_normal |  Flags::curvature;
+
 
   BBox<dim> box;
   for (int i=0; i<dim-1; ++i)
     box[i] = {0.+M_PI/8, M_PI-M_PI/8};
   if (dim>=1)
     box[dim-1] = {0., M_PI};
-  auto grid = Grid<dim>::create(box, 2);
+  auto grid = Grid<dim>::const_create(box, 2);
 
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
+  auto F = Sphere::const_create(grid);
 
+  auto domain = Domain<dim,1>::const_create(F);
 
-  using Mapping   = Mapping<dim, 1>;
-  Mapping map(F);
-  map.reset(flag, quad);
+  auto domain_handler = domain->create_cache_handler();
 
-  auto elem = map.begin();
-  auto end = map.end();
+  domain_handler->set_element_flags(flag);
 
-  map.template init_cache<dim>(elem);
-  for (; elem != end; ++elem)
+  auto elem = domain->begin();
+  auto end = domain->end();
+
+  auto quad = QUniform<dim>::create(3);
+  domain_handler->init_cache(elem,quad);
+  int elem_id = 0;
+  for (; elem != end; ++elem, ++elem_id)
   {
-    map.template fill_cache<dim>(elem, 0);
-    out << "Normals:" << endl;
-    elem->get_external_normals().print_info(out);
-    out << endl;
+    out.begin_item("Element " + std::to_string(elem_id));
 
-    out << "Curvature:" << endl;
+    out << "Element ID: " << elem->get_index() << std::endl;
+
+    domain_handler->fill_element_cache(elem);
+
+    out.begin_item("Normals:");
+    elem->get_exterior_normals().print_info(out);
+    out.end_item();
+
+    out.begin_item("Curvature:");
     elem->get_principal_curvatures().print_info(out);
-    out << endl;
+    out.end_item();
+
+    out.end_item();
   }
 
+  out.end_item();
   OUTEND
 }
 

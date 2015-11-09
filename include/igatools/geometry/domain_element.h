@@ -211,6 +211,9 @@ public:
   const ValueVector<Real> &get_element_w_measures() const;
 
 
+  const ValueVector<SafeSTLVector<Real> > &get_principal_curvatures() const;
+
+
 #if 0
   using MetricTensor =
     Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
@@ -221,7 +224,6 @@ public:
 
   ValueVector< Derivative<1> > get_D_external_normals() const;
 
-  const ValueVector<SafeSTLVector<Real> > &get_principal_curvatures() const;
 
 
   template<int sub_dim>
@@ -270,10 +272,18 @@ public:
 
   using _ExtNormal = domain_element::_ExtNormal;
 
+  using _Curvature = domain_element::_Curvature;
+
+  using _FirstFundamentalForm = domain_element::_FirstFundamentalForm;
+
+  using _SecondFundamentalForm = domain_element::_SecondFundamentalForm;
+
 private:
   template<int order>
   using InvDerivative = Derivatives<dim_+codim_,dim_,1,order>;
 
+  using MetricTensor =
+    Tensor<dim_,1,tensor::covariant,Tensor<dim_,1,tensor::contravariant,Tdouble> >;
 
   template <class ValueType>
   struct IsInCache
@@ -284,20 +294,23 @@ private:
       std::is_same<ValueType,_InvJacobian>::value ||
       std::is_same<ValueType,_InvHessian>::value ||
       std::is_same<ValueType,_BoundaryNormal>::value ||
-      std::is_same<ValueType,_ExtNormal>::value ;
+      std::is_same<ValueType,_ExtNormal>::value ||
+      std::is_same<ValueType,_Curvature>::value ||
+      std::is_same<ValueType,_FirstFundamentalForm>::value ||
+      std::is_same<ValueType,_SecondFundamentalForm>::value;
   };
 
   using CType = boost::fusion::map<
                 boost::fusion::pair<_Measure       ,DataWithFlagStatus<ValueVector<Real>> >,
                 boost::fusion::pair<_W_Measure     ,DataWithFlagStatus<ValueVector<Real>> >,
                 boost::fusion::pair<_InvJacobian   ,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
-				boost::fusion::pair<_InvHessian    ,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
+                boost::fusion::pair<_InvHessian    ,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
                 boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<dim_+codim_>>>>,
-                boost::fusion::pair<_ExtNormal     ,DataWithFlagStatus<ValueVector<SafeSTLArray<Point,codim_>>>>
+                boost::fusion::pair<_ExtNormal     ,DataWithFlagStatus<ValueVector<SafeSTLArray<Point,codim_>>>>,
+                boost::fusion::pair<_Curvature     ,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>,
+                boost::fusion::pair<_FirstFundamentalForm,DataWithFlagStatus<ValueVector<MetricTensor>>>,
+                boost::fusion::pair<_SecondFundamentalForm,DataWithFlagStatus<ValueVector<MetricTensor>>>
                 >;
-//                ,
-//                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
-//                  >;
 
   using Cache = PointValuesCache<dim_,CType>;
 
