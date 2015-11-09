@@ -45,7 +45,7 @@ class DenseVector : public boost::numeric::ublas::vector<Real>
 {
 public:
 
-  /** Inherith the constructors of the base class. */
+  /** Inherits the constructors of the base class. */
   using vector<Real>::vector;
 
   /**

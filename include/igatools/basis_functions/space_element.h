@@ -35,6 +35,8 @@
 #include <igatools/basis_functions/basis.h>
 #include <igatools/geometry/grid_element.h>
 
+#include <igatools/linear_algebra/dense_vector.h>
+
 
 
 IGA_NAMESPACE_OPEN
@@ -447,7 +449,7 @@ public:
    * its (i,j) entry is:
    * \f$ m_{ij} = \int_{\Omega^e} \nabla \varphi_i \cdot \nabla \varphi_j \; d\Omega \f$
    *
-   * \note If the <tt>dofs_property</tt> is omitted, then the mass matrix refers to
+   * \note If the <tt>dofs_property</tt> is omitted, then the stiffness matrix refers to
    * all basis function that have support on the element.
    *
    * \pre In order to call this function the following quantities must be available
@@ -458,6 +460,24 @@ public:
    */
   DenseMatrix
   integrate_gradu_gradv(const PropId &dofs_property = DofProperties::active);
+
+  /**
+   * \brief Computes and returns the vector \f$R\f$ in which
+   * its (i) entry is:
+   * \f$ R_{i} = \int_{\Omega^e} \nabla \varphi_i \cdot f \; d\Omega \f$
+   *
+   * \note If the <tt>dofs_property</tt> is omitted, then the stiffness matrix refers to
+   * all basis function that have support on the element.
+   *
+   * \pre In order to call this function the following quantities must be available
+   * in the element's cache:
+   * - basis values
+   * - weights multiplied by element's measure (w_measures)
+   *
+   */
+  DenseVector
+  integrate_u_func(const ValueVector<Value> &func_at_points,
+		  const PropId &dofs_property = DofProperties::active);
 
 
   /**

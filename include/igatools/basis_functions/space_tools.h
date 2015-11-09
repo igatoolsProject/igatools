@@ -275,28 +275,13 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
 
     for (; elem != end; ++elem, ++f_elem)
     {
-      const int n_basis = elem->get_num_basis(dofs_property);
-      DenseVector loc_rhs(n_basis);
-
       func_elem_handler->template fill_cache<dim>(*f_elem,0);
       space_elem_handler->fill_element_cache(*elem);
 
-      loc_rhs = 0.;
-
       auto f_at_qp = f_elem->template get_values<function_element::_Value,dim>(0);
-      auto phi = elem->get_element_values(dofs_property);
-
-      // computing the upper triangular part of the local matrix
-      auto w_meas = elem->template get_w_measures<dim>(0);
-      for (int i = 0; i < n_basis; ++i)
-      {
-        const auto phi_i = phi.get_function_view(i);
-
-        for (int q = 0; q < n_qp; q++)
-          loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
-      }
 
       const auto loc_mat = elem->integrate_u_v(dofs_property);
+      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
 
       const auto elem_dofs = elem->get_local_to_global(dofs_property);
       matrix->add_block(elem_dofs,elem_dofs,loc_mat);
@@ -316,12 +301,7 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
       elem->move_to(elems_id_pair.first);
       f_elem->move_to(elems_id_pair.second);
 
-      const int n_basis = elem->get_num_basis(dofs_property);
-      DenseVector loc_rhs(n_basis);
-
       space_elem_handler->fill_element_cache(*elem);
-
-      loc_rhs = 0.;
 
 
       //---------------------------------------------------------------------------
@@ -349,19 +329,8 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
       //---------------------------------------------------------------------------
 
 
-      auto phi = elem->get_element_values(dofs_property);
-
-      // computing the upper triangular part of the local matrix
-      auto w_meas = elem->template get_w_measures<dim>(0);
-      for (int i = 0; i < n_basis; ++i)
-      {
-        const auto phi_i = phi.get_function_view(i);
-
-        for (int q = 0; q < n_qp; q++)
-          loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
-      }
-
-      const auto loc_mat = elem->integrate_u_v();
+      const auto loc_mat = elem->integrate_u_v(dofs_property);
+      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
 
       const auto elem_dofs = elem->get_local_to_global(dofs_property);
       matrix->add_block(elem_dofs,elem_dofs,loc_mat);
@@ -640,28 +609,13 @@ projection_l2_grid_function(
 
     for (; elem != end; ++elem, ++f_elem)
     {
-      const int n_basis = elem->get_num_basis(dofs_property);
-      DenseVector loc_rhs(n_basis);
-
       func_elem_handler->template fill_cache<dim>(*f_elem,0);
       space_elem_handler->fill_element_cache(*elem);
 
-      loc_rhs = 0.;
-
       auto f_at_qp = f_elem->template get_values_from_cache<D0,dim>(0);
-      auto phi = elem->get_element_values(dofs_property);
-
-      // computing the upper triangular part of the local matrix
-      auto w_meas = elem->template get_w_measures<dim>(0);
-      for (int i = 0; i < n_basis; ++i)
-      {
-        const auto phi_i = phi.get_function_view(i);
-
-        for (int q = 0; q < n_qp; q++)
-          loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
-      }
 
       const auto loc_mat = elem->integrate_u_v(dofs_property);
+      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
 
       const auto elem_dofs = elem->get_local_to_global(dofs_property);
       matrix->add_block(elem_dofs,elem_dofs,loc_mat);
@@ -679,12 +633,7 @@ projection_l2_grid_function(
       elem->move_to(elems_id_pair.first);
       f_elem->move_to(elems_id_pair.second);
 
-      const int n_basis = elem->get_num_basis(dofs_property);
-      DenseVector loc_rhs(n_basis);
-
       space_elem_handler->fill_element_cache(*elem);
-
-      loc_rhs = 0.;
 
 
       //---------------------------------------------------------------------------
@@ -711,19 +660,8 @@ projection_l2_grid_function(
       //---------------------------------------------------------------------------
 
 
-      auto phi = elem->get_element_values(dofs_property);
-
-      // computing the upper triangular part of the local matrix
-      auto w_meas = elem->template get_w_measures<dim>(0);
-      for (int i = 0; i < n_basis; ++i)
-      {
-        const auto phi_i = phi.get_function_view(i);
-
-        for (int q = 0; q < n_qp; q++)
-          loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
-      }
-
       const auto loc_mat = elem->integrate_u_v(dofs_property);
+      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
 
       const auto elem_dofs = elem->get_local_to_global(dofs_property);
       matrix->add_block(elem_dofs,elem_dofs,loc_mat);
