@@ -83,6 +83,7 @@ public:
       values[i][0] = this->value(p);
     }
   }
+
   void evaluate_1(const ValueVector<GridPoint> &points,
                   ValueVector<Derivative<1>> &values) const override final
   {
