@@ -29,8 +29,8 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/formula_function.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/function_lib.h>
+
+#include <igatools/geometry/grid_function_lib.h>
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
@@ -44,37 +44,33 @@
 
 using numbers::PI;
 
-template<int dim>
-class BoundaryFunction : public FormulaFunction<dim>
+
+template<int dim,int codim,int range,int rank>
+class TestFunction : public FormulaFunction<dim,codim,range,rank>
 {
 private:
-  using base_t = Function<dim>;
-  using parent_t = FormulaFunction<dim>;
-  using self_t = BoundaryFunction<dim>;
-  using typename base_t::GridType;
+  using base_t = Function<dim,codim,range,rank>;
+  using parent_t = FormulaFunction<dim,codim,range,rank>;
+  using self_t = TestFunction<dim,codim,range,rank>;
 public:
-  using typename parent_t::Point;
   using typename parent_t::Value;
+  using typename parent_t::Point;
+
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
-  using typename parent_t::Map;
+
 public:
-  BoundaryFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
-    : FormulaFunction<dim>(grid, map)
+  TestFunction(const SharedPtrConstnessHandler<Domain<dim,codim>> &domain)
+    : parent_t(domain,"TestFunction")
   {}
 
-  static std::shared_ptr<base_t>
-  const_create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
+  static std::shared_ptr<self_t>
+  const_create(const std::shared_ptr<const Domain<dim,codim>> &domain)
   {
-    return std::shared_ptr<base_t>(new self_t(grid, map));
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Domain<dim,codim>>(domain)));
   }
 
-  std::shared_ptr<base_t> clone() const override
-  {
-    return std::make_shared<self_t>(self_t(*this));
-  }
-
-  Real value(Points<dim> x) const
+  Real value(const Points<dim> &x) const
   {
     Real f = 1;
     for (int i = 0; i<dim; ++i)
@@ -83,7 +79,7 @@ public:
   }
 
   void evaluate_0(const ValueVector<Point> &points,
-                  ValueVector<Value> &values) const override
+                  ValueVector<Value> &values) const override final
   {
     for (int i = 0; i<points.size(); ++i)
     {
@@ -92,44 +88,57 @@ public:
     }
   }
   void evaluate_1(const ValueVector<Point> &points,
-                  ValueVector<Derivative<1>> &values) const override
-  {}
+                  ValueVector<Derivative<1>> &values) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
   void evaluate_2(const ValueVector<Point> &points,
-                  ValueVector<Derivative<2>> &values) const override
-  {}
+                  ValueVector<Derivative<2>> &values) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void print_info(LogStream &out) const
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void rebuild_after_insert_knots(
+    const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
+  {
+    Assert(false,ExcNotImplemented());
+  }
 };
 
 
 
-template<int dim, int codim, int range, int rank, LAPack la_pack>
+template<int dim, int codim, int range, int rank>
 void do_test(const int p, const int num_knots = 10)
 {
-  using RefSpace = ReferenceSpaceBasis<dim,range,rank>;
-  using BspSpace = BSpline<dim,range,rank>;
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
+  auto grid = Grid<dim>::const_create(num_knots);
+  auto space = SplineSpace<dim,range,rank>::const_create(p, grid);
+  auto ref_basis = BSpline<dim,range,rank>::const_create(space);
 
-  auto knots = Grid<dim>::const_create(num_knots);
-  auto ref_space = BspSpace::create(p, knots);
-
-  using Function = functions::LinearFunction<dim, 0, dim + codim>;
-  typename Function::Value    b;
-  typename Function::Gradient A;
+  using F = grid_functions::LinearGridFunction<dim,dim + codim>;
+  typename F::Value    b;
+  typename F::Gradient A;
   for (int i = 0; i < dim; ++i)
   {
     A[i][i] = 1+i;
   }
-//    auto map_func = Function::const_create(knots, IdentityFunction<dim>::const_create(knots), A, b);
+  auto map = F::const_create(grid,A, b);
+  auto domain = Domain<dim,codim>::const_create(map);
 
-  auto space = Basis::create(
-                 ref_space,
-                 Function::const_create(knots, IdentityFunction<dim>::const_create(knots), A, b));
+  auto basis = PhysicalSpaceBasis<dim,range,rank,codim>::const_create(ref_basis,domain);
 
   const int n_qpoints = 4;
-  QGauss<dim> quad(n_qpoints);
+  auto quad = QGauss<dim>::const_create(n_qpoints);
 
-  auto f = BoundaryFunction<dim>::const_create(knots, space->get_ptr_map_func());
-  auto proj_func = space_tools::projection_l2<Basis,la_pack>(f, space, quad);
+  auto f = TestFunction<dim,codim,range,rank>::const_create(domain);
+  auto coeffs_func = space_tools::projection_l2_function<dim,codim,range,rank>(*f, *basis, quad);
+
+  auto proj_func = IgFunction<dim,codim,range,rank>::const_create(basis,coeffs_func);
   proj_func->print_info(out);
 
 }
@@ -138,14 +147,9 @@ void do_test(const int p, const int num_knots = 10)
 
 int main()
 {
-#if defined(USE_TRILINOS)
-  const auto la_pack = LAPack::trilinos_epetra;
-#elif defined(USE_PETSC)
-  const auto la_pack = LAPack::petsc;
-#endif
   out.depth_console(20);
   // do_test<1,1,1>(3);
-  do_test<2,0,1,1, la_pack>(3);
+  do_test<2,0,1,1>(3);
   //do_test<3,1,1>(1);
 
   return 0;
