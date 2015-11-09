@@ -17,6 +17,9 @@
 // headers for output
 #include <igatools/io/writer.h>
 #include <igatools/base/logstream.h>
+// finally! my stuff!
+#include "my_formula_grid_function.h"
+
 
 using namespace iga;
 using namespace std;
@@ -59,6 +62,7 @@ class MySpace {
 
       // methods:
     void how_are_you_doin() const;
+    void print_system() const;
     void assemble() const;
     void solve() const;
 };
@@ -114,6 +118,43 @@ void MySpace<dim_>::how_are_you_doin() const {
   out << " basis functions: " << space->get_num_basis() << " = " << nbf << endl;
   out << "   system matrix: " << mat->NumGlobalRows() << " x " << mat->NumGlobalCols() << endl;
 }
+template<int dim_>
+void MySpace<dim_>::print_system() const {
+  if (mat->Filled()) {
+    auto size = mat->NumMyRows();
+    for (int irow=0; irow<size; irow++) {  
+      // extracting the global row
+      double *val; int *ind; int nnz;
+      int ierr = mat->ExtractMyRowView(irow,nnz,val,ind); if (ierr!=0) cout << "I hate Trilinos!" << endl;
+      double *bval;
+      ierr = rhs->ExtractView(&bval); if (ierr!=0) cout << "I hate Trilinos!" << endl;
+      int inz=0;
+      cout << " |";
+      for (int icol=0; icol<size; icol++) {
+        if (icol==ind[inz]) {
+          double en = val[inz];
+          if (fabs(en)<1e-10) printf("   .o ");
+          else if (en>0)      printf("  %1.2f",en);
+          else                printf(" %1.2f",en);
+          inz++;
+        }
+        else printf("   .  ");
+      }
+      if (irow==0)
+        printf(" | = |");
+      else
+        printf(" |   |");
+      double en=bval[irow];
+      if (fabs(en)<1e-10) printf("   .o ");
+      else if (en>0)      printf("  %1.2f",en);
+      else                printf(" %1.2f",en);
+      printf(" |\n");
+    }
+    cout << endl;
+  }
+  else printf("system is not filled yet!\n");
+}
+
 
 // methods: system matrix and right hand side vector assemble
 template<int dim_>
@@ -137,15 +178,16 @@ void MySpace<dim_>::assemble() const {
 
   // starting the cache handler for the (constant) function f:
   typename Function<dim_,0,1,1>::Value f_val {5.0};
-  //using functions::ConstantFunction;
-  //using ConstFunction = ConstantFunction<dim_,0,dim_,1>;
-  auto id = grid_functions::IdentityGridFunction<dim_>::const_create(grid);
-  auto f = functions::ConstantFunction<dim_,0,1,1>::create(grid,f_val); 
-
+  const auto f = grid_functions::ConstantGridFunction<dim_,1>::const_create(grid,f_val);
+  auto funct_handler = f->create_cache_handler();
+  auto funct_el = f->begin();
+  funct_handler->template set_flags<dim_>(grid_function_element::Flags::D0);
+  funct_handler->init_cache(funct_el,quad);
 
   // retrieving the last datum and then starting the loop
   for (int iel=0; basis_el!=basis_eld; ++basis_el) {
     basis_handler->fill_element_cache(basis_el);
+    funct_handler->fill_element_cache(funct_el);
     // preparing some stuff: creating the local matrices
     auto Nbf = basis_el->get_num_basis(DofProperties::active);
     DenseMatrix loc_mat(Nbf,Nbf); loc_mat=0.0;
@@ -154,6 +196,7 @@ void MySpace<dim_>::assemble() const {
     auto values = basis_el->get_element_values();
     auto grads  = basis_el->get_element_gradients();
     auto w_meas = basis_el->get_element_w_measures();
+    auto f_vals = funct_el->get_element_values_D0();
     // finally, the loop
     for (int ibf=0; ibf<Nbf; ibf++) {
       // loop for the stiffness local matrix
@@ -161,28 +204,15 @@ void MySpace<dim_>::assemble() const {
       for (int jbf=0; jbf<Nbf; jbf++) {
         const auto &Dbfj = grads.get_function_view(jbf); // view for the j-th basis function gradient
         for (int iqn=0; iqn<Nqn; iqn++) {
-	  loc_mat(ibf,jbf) += scalar_product(Dbfi[iqn],Dbfj[iqn]) * w_meas[iqn];
-	}
+	        loc_mat(ibf,jbf) += scalar_product(Dbfi[iqn],Dbfj[iqn]) * w_meas[iqn];
+	      }
       }
       // loop for the right hand side local vector
       const auto &bfi = values.get_function_view(ibf);
       for (int iqn=0; iqn<Nqn; iqn++) {
-        loc_rhs(ibf) += bfi[ibf][0] * w_meas[ibf]; 
+        loc_rhs(ibf) += scalar_product(bfi[iqn],f_vals[iqn]) * w_meas[iqn]; 
       }
     }
-    // plotting the computed stuff
-    /*out << "element matrix " << basis_el->get_index() << " = " << iel << endl;
-    //out << lA << endl;
-    for (int ibf=0; ibf<Nbf; ibf++) {
-      for (int jbf=0; jbf<Nbf; jbf++) {
-        auto en = loc_mat(ibf,jbf);
-        if (fabs(en)<1e-10) printf("   o.o  ");
-        else if (en>0)      printf("  %1.4f",en);
-        else                printf(" %1.4f",en);
-      }
-      cout << endl;
-    }
-    cout << endl;*/
     iel++;
     // spatashing element matrix into the global matrix
     const auto loc_dofs = basis_el->get_local_to_global(DofProperties::active);
@@ -190,36 +220,45 @@ void MySpace<dim_>::assemble() const {
     rhs->add_block(loc_dofs,loc_rhs);
   }
   mat->FillComplete();
+  print_system();
 
-  auto size = mat->NumMyRows();
-  for (int irow=0; irow<size; irow++) {  
-    // extracting the global row
-    double *val; int *ind; int nnz;
-    const int ierr = mat->ExtractMyRowView(irow,nnz,val,ind); if (ierr!=0) cout << "I hate Trilinos!" << endl;
-    int inz=0;
-    for (int icol=0; icol<size; icol++) {
-      if (icol==ind[inz]) {
-        double en = val[inz];
-        if (fabs(en)<1e-10) printf("  o.o ");
-        else if (en>0)      printf("  %1.2f",en);
-        else                printf(" %1.2f",en);
-        inz++;
-      }
-      else printf("   .  ");
-    }
-    cout << endl;
+  using space_tools::project_boundary_values;
+  using dof_tools::apply_boundary_values;
+  //using RefSpace = ReferenceSpaceBasis<dim>;
+  //using Function = Function<dim_,0,1,1>;
+
+  // applying boundary condition
+  /*typename Function<dim_,0,1,1>::Value g_val {0.0};
+  const auto g = grid_functions::ConstantGridFunction<dim_,1>::const_create(grid,{0.0});
+  auto face_quad = QGauss<dim_-1>::create(nqn[0]);
+  const set<boundary_id> dir_id {0};
+  std::map<Index,Real> values;
+  project_boundary_values<dim_,1>(*g,*basis,face_quad,dir_id,values);*/
+  const set<boundary_id> dir_id {0};
+  auto bdr_dofs = space_tools::get_boundary_dofs<ReferenceSpaceBasis<dim_>>(basis,dir_id);
+  std::map<Index,Real> bdr_vals;
+
+  //int ind; double val=0.0;
+  for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
+    bdr_vals[*it]=0.0;
+    //rhs->ReplaceMyValues(1,&val,&ind);
   }
-  cout << endl;
 
-  // apply boundary condition
+  //cout << bdr_vals << endl;
+  apply_boundary_values(bdr_vals,*mat,*rhs,*sol);
+  print_system();
+}
 
-
+template<int dim_>
+void MySpace<dim_>::solve() const {
+  auto solver = create_solver(*mat,*sol,*rhs);
+  solver->solve();
 }
 
 int main() {
 
   const int dim  = 2;
-  const int nel  = 2; 
+  const int nel  = 4; 
   const int deg  = 2;
 
   // cool constructor for everything: grid, space, basis
@@ -238,6 +277,7 @@ int main() {
   auto space4 = MySpace<dim>::const_create(nel,deg);
   space4->how_are_you_doin();
   space4->assemble();
-
+  space4->solve();
+  //test();
   return 0;
 }
