@@ -115,6 +115,14 @@ get_grid_element() -> GridElem &
   return *grid_elem_;
 }
 
+template<int dim_,int space_dim_>
+auto
+GridFunctionElement<dim_,space_dim_>::
+get_index() const -> const IndexType &
+{
+  return grid_elem_->get_index();
+}
+
 
 template<int dim_,int space_dim_>
 void

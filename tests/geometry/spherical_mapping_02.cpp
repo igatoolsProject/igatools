@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the BallFunction class as a mapping
+ *  Test for the BallGridFunction class as a mapping
  *  Computing the volume
  *
  *  author: pauletti
@@ -27,25 +27,16 @@
 
 #include "../tests.h"
 
-#include <igatools/functions/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
 
 
 template <int dim>
 Real ball_volume(const int n_knots)
 {
-  using Function = functions::BallFunction<dim>;
-
-  auto flag = ValueFlags::w_measure|ValueFlags::point;
-
-  auto quad = QGauss<dim>(3);
-
-
   BBox<dim> box;
   box[0] = {0., 1.};
   for (int i=1; i<dim-1; ++i)
@@ -53,25 +44,31 @@ Real ball_volume(const int n_knots)
   if (dim>1)
     box[dim-1] = {0., 2. * M_PI};
 
-  auto grid = Grid<dim>::create(box, n_knots);
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
+  auto grid = Grid<dim>::const_create(box, n_knots);
 
-  using Mapping   = Mapping<dim, 0>;
-  using ElementIt = typename Mapping::ElementIterator;
-  auto map = Mapping::create(F);
-  map->template reset<dim>(flag, quad);
+  using Ball = grid_functions::BallGridFunction<dim>;
+  auto ball = Ball::const_create(grid);
+  auto domain = Domain<dim,0>::const_create(ball);
 
-//    ElementIt elem(map, 0);
-//    ElementIt end(map, IteratorState::pass_the_end);
-  ElementIt elem = map->begin();
-  ElementIt end = map->end();
+  auto domain_handler = domain->create_cache_handler();
 
-  map->template init_cache<dim>(elem);
+  auto elem = domain->begin();
+  auto end = domain->end();
+
+
+  using Flags = domain_element::Flags;
+  auto flag = Flags::w_measure;
+
+  domain_handler->set_element_flags(flag);
+
+  auto quad = QGauss<dim>::create(3);
+
+  domain_handler->init_element_cache(elem,quad);
   Real vol = 0.;
   for (; elem != end; ++elem)
   {
-    map->template fill_cache<dim>(elem, 0);
-    const auto w_meas = elem->template get_w_measures<dim>(0);
+    domain_handler->fill_element_cache(elem);
+    const auto w_meas = elem->get_element_w_measures();
 
     for (auto &w : w_meas)
       vol += w;

@@ -271,6 +271,74 @@ get_element_divergences(const std::string &dofs_property) const
   return this->template get_basis_data<space_element::_Divergence,dim_>(0,dofs_property);
 }
 
+template<int dim_,int codim_,int range_,int rank_>
+DenseMatrix
+SpaceElement<dim_,codim_,range_,rank_>::
+integrate_u_v(const PropId &dofs_property)
+{
+  const int n_basis = this->get_num_basis(dofs_property);
+  DenseMatrix M(n_basis,n_basis);
+
+  M = 0.0;
+
+  const auto &w_meas = this->get_element_w_measures();
+  const auto &u = this->get_element_values(dofs_property);
+
+  const int n_pts = u.get_num_points();
+
+  for (int i = 0; i < n_basis; ++i)
+  {
+    const auto u_i = u.get_function_view(i);
+
+    for (int j = i; j < n_basis; ++j)
+    {
+      const auto u_j = u.get_function_view(j);
+
+      for (int pt = 0; pt < n_pts; ++pt)
+        M(i,j) += scalar_product(u_i[pt],u_j[pt]) * w_meas[pt];
+    } // end loop j
+
+    for (int j = 0; j < i; ++j)
+      M(i,j) = M(j,i);
+  } // end loop i
+
+  return M;
+}
+
+template<int dim_,int codim_,int range_,int rank_>
+DenseMatrix
+SpaceElement<dim_,codim_,range_,rank_>::
+integrate_gradu_gradv(const PropId &dofs_property)
+{
+  const int n_basis = this->get_num_basis(dofs_property);
+  DenseMatrix M(n_basis,n_basis);
+
+  M = 0.0;
+
+  const auto &w_meas = this->get_element_w_measures();
+  const auto &gradu = this->get_element_gradients(dofs_property);
+
+  const int n_pts = gradu.get_num_points();
+
+  for (int i = 0; i < n_basis; ++i)
+  {
+    const auto gradu_i = gradu.get_function_view(i);
+
+    for (int j = i; j < n_basis; ++j)
+    {
+      const auto gradu_j = gradu.get_function_view(j);
+
+      for (int pt = 0; pt < n_pts; ++pt)
+        M(i,j) += scalar_product(gradu_i[pt],gradu_j[pt]) * w_meas[pt];
+    } // end loop j
+
+    for (int j = 0; j < i; ++j)
+      M(i,j) = M(j,i);
+  } // end loop i
+
+  return M;
+}
+
 
 IGA_NAMESPACE_CLOSE
 

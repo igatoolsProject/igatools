@@ -144,6 +144,8 @@ public:
   GridElem &get_grid_element();
 
 
+  const IndexType &get_index() const;
+
   void print_info(LogStream &out) const;
 
   void print_cache_info(LogStream &out) const;
@@ -161,13 +163,13 @@ public:
   const ValueVector<Value> &
   get_element_values_D0() const;
 
-  const ValueVector<Derivative<1>> &
-                                get_element_values_D1() const;
+  const ValueVector<Derivative<1> > &
+  get_element_values_D1() const;
 
-  const ValueVector<Derivative<2>> &
-                                get_element_values_D2() const;
+  const ValueVector<Derivative<2> > &
+  get_element_values_D2() const;
 
-
+#if 0
   /**
    * @name Methods for the for the evaluations of Functions's derivatives
    *  without the use of the cache.
@@ -193,13 +195,23 @@ public:
     return this->template get_values_from_cache<ValueType,dim_>(0);
   }
   ///@}
-
+#endif
 
 public:
   template <int order>
   using _D = grid_function_element::_D<order>;
 
 private:
+
+  template <class ValueType>
+  struct IsInCache
+  {
+    const static bool value =
+      std::is_same<ValueType,_D<0>>::value ||
+      std::is_same<ValueType,_D<1>>::value ||
+      std::is_same<ValueType,_D<2>>::value;
+  };
+
   using CType = boost::fusion::map<
                 boost::fusion::pair<_D<0>, DataWithFlagStatus<ValueVector<Value>>>,
                 boost::fusion::pair<_D<1>,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
@@ -222,6 +234,43 @@ private:
 
   template <class Accessor> friend class GridIteratorBase;
   friend class GridFunctionHandler<dim_, space_dim_>;
+
+
+public:
+  /**
+   * @name Methods for the for the evaluations of Functions's derivatives
+   *  without the use of the cache.
+   */
+  ///@{
+
+  /**
+   * Returns a ValueTable with the values specified by the template parameter
+   * <tt>ValueType</tt>
+   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+   * @note This function does not use the cache and therefore can be called any time without
+   * needing to pre-call init_cache()/fill_cache().
+   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+   */
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim_>> &quad,
+                                    EnableIf< IsInCache<ValueType>::value > * = nullptr)
+  {
+    auto elem_handler = this->grid_function_->create_cache_handler();
+    elem_handler->template set_flags<dim_>(ValueType::flag);
+    elem_handler->init_cache(*this,quad);
+    elem_handler->template fill_cache<dim_>(*this,0);
+
+    return this->template get_values_from_cache<ValueType,dim_>(0);
+  }
+
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim_>> &quad,
+                                    EnableIf< !(IsInCache<ValueType>::value) > * = nullptr)
+  {
+    return grid_elem_->template evaluate_at_points<ValueType>(quad);
+  }
+  ///@}
 };
 
 

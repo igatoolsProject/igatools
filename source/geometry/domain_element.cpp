@@ -35,6 +35,14 @@ DomainElement(const std::shared_ptr<ContainerType> &domain,
 
 
 template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_index() const -> const IndexType &
+{
+  return grid_func_elem_->get_index();
+}
+
+template<int dim_,int codim_>
 void
 DomainElement<dim_,codim_>::
 operator++()
@@ -137,7 +145,7 @@ operator >(const self_t &elem) const
 }
 
 
-
+#if 0
 template<int dim_,int codim_>
 template<int sdim>
 auto
@@ -155,13 +163,56 @@ get_w_measures(const int s_id) const -> ValueVector<Real>
   }
   return w_meas;
 }
+#endif
 
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_element_measures() const -> const ValueVector<Real> &
+{
+  return get_values_from_cache<_Measure,dim_>(0);
+}
+
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_element_w_measures() const -> const ValueVector<Real> &
+{
+  return get_values_from_cache<_W_Measure,dim_>(0);
+}
 
 
 template<int dim_,int codim_>
 auto
 DomainElement<dim_,codim_>::
-get_exterior_normals() const -> ValueVector<SafeSTLArray<Point, codim_> >
+get_element_points() const -> const ValueVector<Point> &
+{
+  return grid_func_elem_->template
+  get_values_from_cache<grid_function_element::_D<0>,dim_>(0);
+}
+
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_element_jacobians() const -> const ValueVector<Jacobian> &
+{
+  return grid_func_elem_->template
+  get_values_from_cache<grid_function_element::_D<1>,dim_>(0);
+}
+
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_element_hessians() const -> const ValueVector<Hessian> &
+{
+  return grid_func_elem_->template
+  get_values_from_cache<grid_function_element::_D<2>,dim_>(0);
+}
+
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_exterior_normals() const -> const ValueVector<SafeSTLArray<Point, codim_> > &
 {
   const int sdim = dim_;
   const int s_id = 0;

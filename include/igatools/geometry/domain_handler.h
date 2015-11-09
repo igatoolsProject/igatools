@@ -142,11 +142,19 @@ public:
     this->set_flags(Topology<sdim>(), flag);
   }
 
+  void set_element_flags(const Flags &flag);
+
   void init_cache(ElementAccessor &elem,
                   const eval_pts_variant &quad) const;
 
   void init_cache(ElementIterator &elem,
                   const eval_pts_variant &quad) const;
+
+  void init_element_cache(ElementIterator &elem,
+                          const std::shared_ptr<const Quadrature<dim_>> &quad) const;
+
+  void init_element_cache(ElementAccessor &elem,
+                          const std::shared_ptr<const Quadrature<dim_>> &quad) const;
 
   void fill_cache(const topology_variant &sdim,
                   ElementAccessor &elem,
@@ -169,6 +177,11 @@ public:
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
+
+  void fill_element_cache(ElementAccessor &elem) const;
+
+  void fill_element_cache(ElementIterator &elem) const;
+
 
 protected:
 //  std::shared_ptr<typename ElementAccessor::CacheType>
@@ -274,6 +287,24 @@ private:
         measures.set_status_filled(true);
       }
 
+      using _W_Measure = typename ElementAccessor::_W_Measure;
+      if (cache.template status_fill<_W_Measure>())
+      {
+        const auto &meas = cache.template get_data<_Measure>();
+        const auto &w = elem_.grid_func_elem_->get_grid_element().template get_weights<sdim>(s_id_);
+
+        auto &w_measures = cache.template get_data<_W_Measure>();
+
+        auto it_w = w.cbegin();
+        auto it_meas = meas.cbegin();
+        for (auto &w_m : w_measures)
+        {
+          w_m = (*it_w) * (*it_meas);
+          ++it_w;
+          ++it_meas;
+        }
+        w_measures.set_status_filled(true);
+      }
 
       using _InvJacobian = typename ElementAccessor::_InvJacobian;
       if (cache.template status_fill<_InvJacobian>())
@@ -291,15 +322,18 @@ private:
         D_invF.set_status_filled(true);
       }
 
-#if 0
+      using _InvHessian = typename ElementAccessor::_InvHessian;
       if (cache.template status_fill<_InvHessian>())
       {
-        //        const auto &D1_F = elem.template get_values<_Gradient, sdim>(j);
-        const auto &D2_F = elem.template get_values<_Hessian, sdim>(s_id);
-        const auto &D1_invF = cache.template get_data<_InvGradient>();
+        const auto &D2_F = elem_.grid_func_elem_->
+        		template get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id_);
+        const auto &D1_invF = cache.template get_data<_InvJacobian>();
         auto &D2_invF       = cache.template get_data<_InvHessian>();
 
+        const auto n_points = D2_F.get_num_points();
+
         for (int pt = 0 ; pt < n_points; ++pt)
+        {
           for (int u=0; u<dim_; ++u)
           {
             const auto tmp_u = action(D2_F[pt], D1_invF[pt][u]);
@@ -307,12 +341,11 @@ private:
             {
               const auto tmp_u_v = action(tmp_u, D1_invF[pt][v]);
               D2_invF[pt][u][v] = - action(D1_invF[pt], tmp_u_v);
-            }
-          }
-
-        cache.template set_status_filled<_InvHessian>(true);
+            } //end loop v
+          } // end loop u
+        } // end loop pt
+        D2_invF.set_status_filled(true);
       }
-#endif
 
       using _BoundaryNormal = typename ElementAccessor::_BoundaryNormal;
       if (cache.template status_fill<_BoundaryNormal>())

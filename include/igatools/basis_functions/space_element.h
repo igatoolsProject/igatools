@@ -422,7 +422,42 @@ public:
   ///@}
 
 
+  /**
+   * \brief Computes and returns the <b>local mass-matrix</b> for the basis function
+   * with the given <tt>dofs_property</tt>, i.e. the matrix \f$M\f$ in which
+   * its (i,j) entry is:
+   * \f$ m_{ij} = \int_{\Omega^e} \varphi_i \cdot \varphi_j \; d\Omega \f$
+   *
+   * \note If the <tt>dofs_property</tt> is omitted, then the mass matrix refers to
+   * all basis function that have support on the element.
+   *
+   * \pre In order to call this function the following quantities must be available
+   * in the element's cache:
+   * - basis values
+   * - weights multiplied by element's measure (w_measures)
+   *
+   */
+  DenseMatrix
+  integrate_u_v(const PropId &dofs_property = DofProperties::active);
 
+  /**
+   * \brief Computes and returns the <b>local stiffness-matrix</b> (of the Poisson problem)
+   * for the basis function
+   * with the given <tt>dofs_property</tt>, i.e. the matrix \f$M\f$ in which
+   * its (i,j) entry is:
+   * \f$ m_{ij} = \int_{\Omega^e} \nabla \varphi_i \cdot \nabla \varphi_j \; d\Omega \f$
+   *
+   * \note If the <tt>dofs_property</tt> is omitted, then the mass matrix refers to
+   * all basis function that have support on the element.
+   *
+   * \pre In order to call this function the following quantities must be available
+   * in the element's cache:
+   * - basis gradients
+   * - weights multiplied by element's measure (w_measures)
+   *
+   */
+  DenseMatrix
+  integrate_gradu_gradv(const PropId &dofs_property = DofProperties::active);
 
 
   /**

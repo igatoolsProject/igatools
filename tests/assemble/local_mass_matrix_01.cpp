@@ -19,10 +19,10 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test the assembling of local stiffness matrix using a BSpline basis
+ *  Test the assembling of local mass matrix using a BSpline basis
  *
- *  author: pauletti
- *  date: Oct 09, 2014
+ *  author: martinelli
+ *  date: Nov 06, 2015
  *
  */
 
@@ -34,14 +34,16 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 
+//#include <igatools/linear_algebra/dense_matrix.h>
+
 
 template<int dim>
-void loc_stiff_matrix(const int n_knots, const int deg)
+void loc_mass_matrix(const int n_knots, const int deg)
 {
 
   OUTSTART
 
-  out.begin_item("local_stiff_matrix<" + std::to_string(dim) + ">");
+  out.begin_item("local_mass_matrix<" + std::to_string(dim) + ">");
 
   auto grid = Grid<dim>::create(n_knots);
   using Basis = BSpline<dim>;
@@ -51,7 +53,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 
 
   using Flags = space_element::Flags;
-  auto flag = Flags::gradient | Flags::w_measure;
+  auto flag = Flags::value | Flags::w_measure;
   elem_handler->template set_flags<dim>(flag);
 
   auto elem           = basis->begin();
@@ -69,8 +71,8 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 
     elem_handler->fill_element_cache(elem);
 
-    auto loc_mat = elem->integrate_gradu_gradv();
-    out.begin_item("Stiffnes matrix:");
+    auto loc_mat = elem->integrate_u_v();
+    out.begin_item("Mass matrix:");
     loc_mat.print_info(out);
     out.end_item();
 
@@ -91,9 +93,9 @@ int main()
   const int n_knots = 6;
   const int deg = 1;
 
-  loc_stiff_matrix<1>(n_knots, deg);
-  loc_stiff_matrix<2>(n_knots, deg);
-  loc_stiff_matrix<3>(n_knots, deg);
+  loc_mass_matrix<1>(n_knots, deg);
+  loc_mass_matrix<2>(n_knots, deg);
+  loc_mass_matrix<3>(n_knots, deg);
 
   return  0;
 }

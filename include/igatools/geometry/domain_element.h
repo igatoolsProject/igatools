@@ -45,7 +45,8 @@ public:
   using IndexType = typename Grid<dim_>::IndexType;
 
   using Point =  typename ContainerType::Point;
-  using Gradient =  typename ContainerType::Gradient;
+  using Jacobian = typename ContainerType::Gradient;
+  using Hessian = typename ContainerType::template Derivative<2>;
 
   using Flags = domain_element::Flags;
   using CacheFlags = domain_element::CacheFlags;
@@ -139,6 +140,8 @@ public:
 
   void move_to(const IndexType &elem_id);
 
+  const IndexType &get_index() const;
+
   const GridFuncElem &get_grid_function_element() const;
 
   GridFuncElem &get_grid_function_element();
@@ -149,24 +152,64 @@ public:
   void print_cache_info(LogStream &out) const;
 
 public:
-  template<int sdim>
-  ValueVector<Real> const &get_measures(const int s_id) const
-  {
-    return get_values_from_cache<_Measure,sdim>(s_id);
-  }
+
 
   template<int sdim>
-  auto const get_points(const int s_id) const
+  const ValueVector<Point> &get_points(const int s_id) const
   {
     return grid_func_elem_->template
            get_values_from_cache<grid_function_element::_D<0>, sdim>(s_id);
   }
 
   template<int sdim>
-  ValueVector<Real> get_w_measures(const int s_id) const;
+  const ValueVector<Jacobian> &get_jacobians(const int s_id) const
+  {
+    return grid_func_elem_->template
+           get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id);
+  }
 
-  ValueVector<SafeSTLArray<Point, codim_> >
+  template<int sdim>
+  const ValueVector<Hessian> &get_hessians(const int s_id) const
+  {
+    return grid_func_elem_->template
+           get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id);
+  }
+
+  template<int sdim>
+  const ValueVector<Real> &get_measures(const int s_id) const
+  {
+    return get_values_from_cache<_Measure,sdim>(s_id);
+  }
+
+  template<int sdim>
+  const ValueVector<Real> &get_w_measures(const int s_id) const
+  {
+    return get_values_from_cache<_W_Measure,sdim>(s_id);
+  }
+
+
+  const ValueVector<SafeSTLArray<Point, codim_> > &
   get_exterior_normals() const;
+
+  template <int sdim>
+  const ValueVector<Points<dim_+codim_> > &
+  get_boundary_normals(const int s_id, EnableIf<(sdim >= 0)> * = nullptr) const
+  {
+    Assert(dim_ == sdim+1, ExcNotImplemented());
+    return get_values_from_cache<_BoundaryNormal,sdim>(s_id);
+  }
+
+
+  const ValueVector<Point> &get_element_points() const;
+
+  const ValueVector<Jacobian> &get_element_jacobians() const;
+
+  const ValueVector<Hessian> &get_element_hessians() const;
+
+  const ValueVector<Real> &get_element_measures() const;
+
+  const ValueVector<Real> &get_element_w_measures() const;
+
 
 #if 0
   using MetricTensor =
@@ -217,7 +260,11 @@ public:
 
   using _Measure = domain_element::_Measure;
 
+  using _W_Measure = domain_element::_W_Measure;
+
   using _InvJacobian = domain_element::_InvJacobian;
+
+  using _InvHessian = domain_element::_InvHessian;
 
   using _BoundaryNormal = domain_element::_BoundaryNormal;
 
@@ -228,14 +275,27 @@ private:
   using InvDerivative = Derivatives<dim_+codim_,dim_,1,order>;
 
 
+  template <class ValueType>
+  struct IsInCache
+  {
+    const static bool value =
+      std::is_same<ValueType,_Measure>::value ||
+      std::is_same<ValueType,_W_Measure>::value ||
+      std::is_same<ValueType,_InvJacobian>::value ||
+      std::is_same<ValueType,_InvHessian>::value ||
+      std::is_same<ValueType,_BoundaryNormal>::value ||
+      std::is_same<ValueType,_ExtNormal>::value ;
+  };
+
   using CType = boost::fusion::map<
                 boost::fusion::pair<_Measure       ,DataWithFlagStatus<ValueVector<Real>> >,
+                boost::fusion::pair<_W_Measure     ,DataWithFlagStatus<ValueVector<Real>> >,
                 boost::fusion::pair<_InvJacobian   ,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
+				boost::fusion::pair<_InvHessian    ,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
                 boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<dim_+codim_>>>>,
                 boost::fusion::pair<_ExtNormal     ,DataWithFlagStatus<ValueVector<SafeSTLArray<Point,codim_>>>>
                 >;
 //                ,
-//                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
 //                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
 //                  >;
 
@@ -255,6 +315,30 @@ private:
 
   template <class Accessor> friend class GridIteratorBase;
   friend class DomainHandler<dim_, codim_>;
+
+
+public:
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim_>> &quad,
+                                    EnableIf< IsInCache<ValueType>::value > * = nullptr)
+  {
+    auto elem_handler = this->domain_->create_cache_handler();
+    elem_handler->set_element_flags(ValueType::flag);
+    elem_handler->init_cache(*this,quad);
+    elem_handler->fill_element_cache(*this);
+
+    return this->template get_values_from_cache<ValueType,dim_>(0);
+  }
+
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim_>> &quad,
+                                    EnableIf< !(IsInCache<ValueType>::value) > * = nullptr)
+  {
+    return grid_func_elem_->template
+           evaluate_at_points<typename ValueType::ValueTypeGridFuncElem>(quad);
+  }
+
+
 };
 
 

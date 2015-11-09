@@ -27,60 +27,70 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
 
 
-template <int dim>
-auto create_mapping1(shared_ptr<Grid<dim>> grid)
+auto create_mapping1(const shared_ptr<const Grid<3>> &grid)
 {
-  using Function = functions::CylindricalAnnulus<dim>;
+  using Cyl = grid_functions::CylindricalAnnulusGridFunction;
 
-  return
-    Function::create(grid, IdentityFunction<dim>::create(grid),
-                     1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
+  return Cyl::const_create(grid,1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
 }
 
 template <int dim>
-auto create_mapping2(shared_ptr<Grid<dim>> grid)
+auto create_mapping2(const shared_ptr<const Grid<dim>> &grid)
 {
-  using Function = IdentityFunction<dim>;
+  using Identity = grid_functions::IdentityGridFunction<dim>;
 
-  return Function::create(grid);
+  return Identity::const_create(grid);
 }
 
-template <int sub_dim, int dim, int codim =0 >
+template <int sub_dim>
 void boundary_normals()
 {
-  using Mapping = Mapping<dim, codim>;
+  auto grid = Grid<3>::const_create();
+  auto map_func = create_mapping1(grid);
+  auto domain = Domain<3,0>::const_create(map_func);
 
-  auto grid = Grid<dim>::create();
-  auto map_func =  create_mapping1<dim>(grid);
+  auto domain_handler = domain->create_cache_handler();
 
-  auto flag = ValueFlags::w_measure|ValueFlags::point|
-              ValueFlags::boundary_normal;
-  auto quad = QGauss<sub_dim>(1);
+  using Flags = domain_element::Flags;
+  auto flag = Flags::w_measure| Flags::point| Flags::boundary_normal;
 
-  Mapping map(map_func);
-  map.reset(flag, quad);
+  auto quad = QGauss<sub_dim>::create(1);
 
-  auto elem = map.begin();
-  auto end = map.end();
+  domain_handler->template set_flags<sub_dim>(flag);
 
-  map.template init_cache<sub_dim>(elem);
-  for (; elem != end; ++elem)
+  auto elem = domain->begin();
+  auto end = domain->end();
+
+  domain_handler->init_cache(elem,quad);
+
+  int elem_id = 0;
+  for (; elem != end; ++elem, ++elem_id)
   {
-    for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
+    out.begin_item("Element " + std::to_string(elem_id));
+
+    out << "Element ID: " << elem->get_index() << std::endl;
+
+    for (auto &s_id : UnitElement<3>::template elems_ids<sub_dim>())
     {
-      out << "Face: " << s_id << endl;
-      out << "  Normal vector:" << endl;
-      map.template fill_cache<sub_dim>(elem, s_id);
+      out.begin_item("Face: " + std::to_string(s_id));
+
+      domain_handler->template fill_cache<sub_dim>(elem, s_id);
+
+
+      out.begin_item("Normal vector:");
       elem->template get_boundary_normals<sub_dim>(s_id).print_info(out);
-      out << endl;
+      out.end_item();
+
+      out.end_item();
     }
+
+    out.end_item();
   }
 
 
@@ -89,7 +99,7 @@ void boundary_normals()
 
 int main()
 {
-  boundary_normals<2,3,0>();
+  boundary_normals<2>();
   return 0;
 }
 

@@ -37,33 +37,31 @@ void domain()
 {
   OUTSTART
 
-  using Grid = Grid<dim>;
-  //using Domain = Domain<dim, codim>;
-
   using Func = grid_functions::BallGridFunction<dim>;
-  auto grid = Grid::const_create();
+  auto grid = Grid<dim>::const_create();
   auto func = Func::const_create(grid);
   auto domain = Domain<dim,codim>::const_create(func);
 
-  using Flags = typename domain_element::Flags;
 
   auto handler = domain->create_cache_handler();
 
+  using Flags = typename domain_element::Flags;
   auto flag = Flags::w_measure | Flags::point;
-  handler->template set_flags<dim>(flag);
+  handler->set_element_flags(flag);
 
-  auto quad   = QGauss<dim>::create(2);
 
   auto elem = domain->cbegin();
   auto end = domain->cend();
-  handler->init_cache(elem, quad);
+
+  auto quad = QGauss<dim>::create(2);
+  handler->init_element_cache(elem, quad);
 
   for (; elem != end; ++elem)
   {
-    handler->template fill_cache<dim>(elem,0);
-    elem->template get_points<dim>(0).print_info(out);
+    handler->fill_element_cache(elem);
+    elem->get_element_points().print_info(out);
 //    elem->get_element_values_D1().print_info(out);
-    elem->template get_w_measures<dim>(0).print_info(out);
+    elem->get_element_w_measures().print_info(out);
     out << endl;
   }
 

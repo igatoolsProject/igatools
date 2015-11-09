@@ -416,6 +416,7 @@ using EnableIfConst = EnableIf<std::is_const<C>::value>;
 template <class C>
 using EnableIfNonConst = EnableIf<!(std::is_const<C>::value)>;
 
+
 /**
  * Macro used to generate the metafunction
  * <tt>has_member_function_print_info</tt>

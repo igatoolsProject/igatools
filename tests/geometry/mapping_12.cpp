@@ -26,19 +26,18 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/function_lib.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_element.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
 
-template<int dim, int codim, int sub_dim = dim>
-void test()
+template<int dim, int codim>
+void linear_grid_func()
 {
+  out.begin_item("linear_grid_func<dim=" + std::to_string(dim) +",codim=" + std::to_string(codim) +">");
+
   const int space_dim = dim + codim;
-  using Function = functions::LinearFunction<dim, codim, space_dim>;
-  using Mapping   = Mapping<dim, codim>;
+  using Function = grid_functions::LinearGridFunction<dim,space_dim>;
 
   typename Function::Value    b;
   typename Function::Gradient A;
@@ -50,35 +49,58 @@ void test()
     b[i] = i;
   }
 
-  auto grid = Grid<dim>::create(3);
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  auto grid = Grid<dim>::const_create(3);
+  auto F = Function::const_create(grid, A, b);
 
-  auto flag = ValueFlags::inv_hessian|ValueFlags::inv_gradient|ValueFlags::point;
-  auto quad = QGauss<dim>(2);
+  using Flags = domain_element::Flags;
+  auto flag = Flags::inv_hessian|Flags::inv_jacobian;
 
-  auto map = Mapping::create(F);
-  map->template reset<sub_dim>(flag, quad);
+  auto domain = Domain<dim,codim>::const_create(F);
 
-  auto elem = map->begin();
-  auto end  = map->end();
-  const int s_id = 0;
-  map->template init_cache<sub_dim>(elem);
-  for (; elem != end; ++elem)
+  auto domain_handler = domain->create_cache_handler();
+
+  domain_handler->set_element_flags(flag);
+
+  auto elem = domain->begin();
+  auto end  = domain->end();
+
+
+  auto quad = QGauss<dim>::create(2);
+  domain_handler->init_cache(elem,quad);
+  int elem_id = 0;
+  for (; elem != end; ++elem, ++elem_id)
   {
-    map->template fill_cache<sub_dim>(elem, s_id);
-    elem->template get_values_from_cache<_InvGradient, sub_dim> (s_id).print_info(out);
-    out << endl;
-    elem->template get_values_from_cache< _InvHessian, sub_dim> (s_id).print_info(out);
-    out << endl;
+    out.begin_item("Element " + std::to_string(elem_id));
+
+    out << "Element ID: " << elem->get_index() << std::endl;
+
+    domain_handler->fill_element_cache(elem);
+
+    out.begin_item("Inverse Jacobian:");
+    elem->template get_values_from_cache<domain_element::_InvJacobian,dim>(0).print_info(out);
+    out.end_item();
+
+    out.begin_item("Inverse Hessian:");
+    elem->template get_values_from_cache<domain_element::_InvHessian,dim>(0).print_info(out);
+    out.end_item();
+
+    out.end_item();
   }
 
+  out.end_item();
 }
 
 
 int main()
 {
-  test<2,0>();
-//    test<3,3>();
+  linear_grid_func<1,0>();
+  linear_grid_func<2,0>();
+  linear_grid_func<3,0>();
+
+  linear_grid_func<1,1>();
+  linear_grid_func<2,1>();
+
+  linear_grid_func<1,2>();
 
   return 0;
 }
