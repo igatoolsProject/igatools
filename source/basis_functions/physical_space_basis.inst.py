@@ -34,14 +34,13 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = \
- ['std::shared_ptr<typename class::SubSpace<k> > ' +
+ ['std::shared_ptr<const typename class::SubSpace<k> > ' +
    'class::get_sub_space(const int s_id, InterSpaceMap<k> &dof_map, ' +
-   'std::shared_ptr<Grid<k>> sub_grid, ' + 
-   'SubGridMap<k> &elem_map) const;']
+   'const std::shared_ptr<const Grid<k>> &sub_grid, ' + 
+   'SubGridMap<k> &elem_map, void *) const;']
 
 
 spaces = ['PhysicalSpaceBasis<0,0,1,0>']
-
 templated_funcs = []
 
 for sp in inst.SubPhysSpaces:
@@ -49,9 +48,10 @@ for sp in inst.SubPhysSpaces:
 #    f.write( 'template class %s;\n' %sp.name)
     spaces.append(sp.name)
     for fun in sub_dim_members:
-        k = max(x.dim-1,0)
-        s = fun.replace('class', sp.name).replace('k', '%d' % (k));
-        templated_funcs.append(s)
+        for k in range(0,max(x.dim-1,0)+1):
+            if ((x.dim != 0) and (k>=0)):
+                s = fun.replace('class', sp.name).replace('k', '%d' % (k));
+                templated_funcs.append(s)
 #        f.write('template ' + s + '\n')
 
 
@@ -60,8 +60,9 @@ for sp in inst.PhysSpaces:
 #    f.write( 'template class %s;\n' %sp.name)
     spaces.append(sp.name)
     for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            if (k < x.dim):
+#         for k in inst.sub_dims(x.dim):
+        for k in range(0,max(x.dim-1,0)+1):
+            if ((x.dim != 0) and (k>=0)):
                 s = fun.replace('class', sp.name).replace('k', '%d' % (k));
                 templated_funcs.append(s)
 #            f.write('template ' + s + '\n')

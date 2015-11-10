@@ -216,6 +216,21 @@ public:
    */
   Index get_object_id() const;
 
+
+
+
+  template <int sdim>
+  using SubFunc = Function<(sdim>0)?sdim:0,codim+(dim-((sdim>0)?sdim:0)),range,rank>;
+
+  virtual
+  std::shared_ptr<const SubFunc<(dim>0)?dim-1:0> >
+  get_sub_function(const int s_id,
+                   const std::shared_ptr<const Grid<(dim>0)?dim-1:0>> &sub_grid) const
+  {
+    AssertThrow(false,ExcMessage("This function must be implemented by a derived class."));
+    return nullptr;
+  }
+
 protected:
   SharedPtrConstnessHandler<DomainType> domain_;
 
@@ -232,6 +247,7 @@ private:
 
 
   friend class FunctionElement<dim_, codim_, range_, rank_>;
+
 
 
 

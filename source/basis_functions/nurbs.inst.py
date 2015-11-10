@@ -58,17 +58,19 @@ for x in inst.sub_ref_sp_dims:
     space = 'NURBS<%d, %d, %d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
-        k = max(x.dim-1,0)
-        s = fun.replace('class', space).replace('sdim','%d' % (k)).replace('range','%d' % (x.range)).replace('rank','%d' % (x.rank));
-        templated_funcs.append(s)
+        for k in range(0,max(x.dim-1,0)+1):
+#        k = max(x.dim-1,0)
+            s = fun.replace('class', space).replace('sdim','%d' % (k)).replace('range','%d' % (x.range)).replace('rank','%d' % (x.rank));
+            templated_funcs.append(s)
 
 
 for x in inst.ref_sp_dims:
     space = 'NURBS<%d, %d, %d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            if (k < x.dim):
+        for k in range(0,max(x.dim-1,0)+1):
+#        for k in inst.sub_dims(x.dim):
+#            if (k < x.dim):
                 s = fun.replace('class', space).replace('sdim', '%d' % (k)).replace('range','%d' % (x.range)).replace('rank','%d' % (x.rank));
                 templated_funcs.append(s)
             

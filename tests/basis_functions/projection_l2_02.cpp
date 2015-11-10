@@ -26,9 +26,10 @@
  */
 
 #include "../tests.h"
+#include "./common_functions.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/formula_function.h>
+//#include <igatools/functions/formula_function.h>
 
 #include <igatools/geometry/grid_function_lib.h>
 
@@ -44,72 +45,6 @@
 
 using numbers::PI;
 
-
-template<int dim,int codim,int range,int rank>
-class TestFunction : public FormulaFunction<dim,codim,range,rank>
-{
-private:
-  using base_t = Function<dim,codim,range,rank>;
-  using parent_t = FormulaFunction<dim,codim,range,rank>;
-  using self_t = TestFunction<dim,codim,range,rank>;
-public:
-  using typename parent_t::Value;
-  using typename parent_t::Point;
-
-  template <int order>
-  using Derivative = typename parent_t::template Derivative<order>;
-
-public:
-  TestFunction(const SharedPtrConstnessHandler<Domain<dim,codim>> &domain)
-    : parent_t(domain,"TestFunction")
-  {}
-
-  static std::shared_ptr<self_t>
-  const_create(const std::shared_ptr<const Domain<dim,codim>> &domain)
-  {
-    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Domain<dim,codim>>(domain)));
-  }
-
-  Real value(const Points<dim> &x) const
-  {
-    Real f = 1;
-    for (int i = 0; i<dim; ++i)
-      f = f * cos(2*PI*x[i]);
-    return f;
-  }
-
-  void evaluate_0(const ValueVector<Point> &points,
-                  ValueVector<Value> &values) const override final
-  {
-    for (int i = 0; i<points.size(); ++i)
-    {
-      Points<dim> p = points[i];
-      values[i][0] = this->value(p);
-    }
-  }
-  void evaluate_1(const ValueVector<Point> &points,
-                  ValueVector<Derivative<1>> &values) const override final
-  {
-    Assert(false,ExcNotImplemented());
-  }
-
-  void evaluate_2(const ValueVector<Point> &points,
-                  ValueVector<Derivative<2>> &values) const override final
-  {
-    Assert(false,ExcNotImplemented());
-  }
-
-  void print_info(LogStream &out) const
-  {
-    Assert(false,ExcNotImplemented());
-  }
-
-  void rebuild_after_insert_knots(
-    const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
-  {
-    Assert(false,ExcNotImplemented());
-  }
-};
 
 
 
@@ -135,7 +70,7 @@ void do_test(const int p, const int num_knots = 10)
   const int n_qpoints = 4;
   auto quad = QGauss<dim>::const_create(n_qpoints);
 
-  auto f = TestFunction<dim,codim,range,rank>::const_create(domain);
+  auto f = BoundaryFunction<dim,codim,range,rank>::const_create(domain);
   auto coeffs_func = space_tools::projection_l2_function<dim,codim,range,rank>(*f, *basis, quad);
 
   auto proj_func = IgFunction<dim,codim,range,rank>::const_create(basis,coeffs_func);

@@ -266,7 +266,6 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
 
   space_elem_handler->init_element_cache(*elem,quad);
 
-  const int n_qp = quad->get_num_points();
 
   using space_element::_Value;
 
@@ -750,8 +749,9 @@ project_boundary_values(const Function<dim,codim,range,rank> &func,
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
     InterSpaceMap  dof_map;
-    const auto sub_basis = basis.template get_ref_sub_space<sdim>(s_id, dof_map,sub_grid);
+    const auto sub_basis = basis.template get_sub_space<sdim>(s_id, dof_map,sub_grid,elem_map);
     //    (const int s_id, InterSpaceMap< sdim > &dof_map, const std::shared_ptr< const Grid< sdim >> &sub_grid=nullptr)
+
 
     const auto sub_func = func.get_sub_function(s_id,sub_grid);
 

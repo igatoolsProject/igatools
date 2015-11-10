@@ -161,10 +161,11 @@ public:
 
 
   template<int k>
-  std::shared_ptr<SubSpace<k> >
+  std::shared_ptr<const SubSpace<k> >
   get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-                std::shared_ptr<Grid<k>> sub_grid,
-                SubGridMap<k> &elem_map) const;
+                const std::shared_ptr<const Grid<k>> &sub_grid,
+                SubGridMap<k> &elem_map,
+                EnableIf<(dim_ != 0) &&(k>=0)> * = nullptr) const;
 
 
 

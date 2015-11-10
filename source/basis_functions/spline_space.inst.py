@@ -36,16 +36,18 @@ for x in inst.sub_ref_sp_dims:
     space = 'SplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('class', space).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+        for k in range(0,max(x.dim-1,0)+1):
+#        k = x.dim
+            s = fun.replace('class', space).replace('k', '%d' % (k));
+            f.write('template ' + s + '\n')
     
 
 for x in inst.ref_sp_dims:
     space = 'SplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
+        for k in range(0,max(x.dim-1,0)+1):
+#        for k in inst.sub_dims(x.dim):
             s = fun.replace('class', space).replace('k', '%d' % (k));
             templated_funcs.append(s)
 

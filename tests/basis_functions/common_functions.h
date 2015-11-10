@@ -33,37 +33,121 @@
 #include <igatools/functions/formula_function.h>
 #include <igatools/functions/function_lib.h>
 
+#include <igatools/geometry/formula_grid_function.h>
+
 
 // TODO (pauletti, Nov 13, 2014): delete this after cleaning and arranging test
 using numbers::PI;
 
-template<int dim>
-class BoundaryFunction : public FormulaFunction<dim>
+
+
+
+template<int dim,int range>
+class BoundaryGridFunction : public FormulaGridFunction<dim,range>
 {
 private:
-  using base_t = Function<dim>;
-  using parent_t = FormulaFunction<dim>;
-  using self_t = BoundaryFunction<dim>;
-  using typename parent_t::DomainType;
-
+  using base_t = GridFunction<dim,range>;
+  using parent_t = FormulaGridFunction<dim,range>;
+  using self_t = BoundaryGridFunction<dim,range>;
 public:
-  using typename parent_t::Point;
   using typename parent_t::Value;
+  using typename parent_t::GridPoint;
+
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
+
 public:
-  BoundaryFunction(SharedPtrConstnessHandler<DomainType> domain)
-    : FormulaFunction<dim>(domain)
+  BoundaryGridFunction(const SharedPtrConstnessHandler<Grid<dim>> &grid)
+    : parent_t(grid)
   {}
 
-  static std::shared_ptr<const base_t>
-  const_create(std::shared_ptr<const DomainType> domain)
+  static std::shared_ptr<const self_t>
+  const_create(const std::shared_ptr<const Grid<dim>> &grid)
   {
-    return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<DomainType>(domain)));
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Grid<dim>>(grid)));
   }
 
+  static std::shared_ptr<self_t>
+  create(const std::shared_ptr<Grid<dim>> &grid)
+  {
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Grid<dim>>(grid)));
+  }
 
-  Real value(Points<dim> x) const
+  Real value(const Points<dim> &x) const
+  {
+    Real f = 1;
+    for (int i = 0; i<dim; ++i)
+      f = f * cos(2*PI*x[i]);
+    return f;
+  }
+
+  void evaluate_0(const ValueVector<GridPoint> &points,
+                  ValueVector<Value> &values) const override final
+  {
+    for (int i = 0; i<points.size(); ++i)
+    {
+      Points<dim> p = points[i];
+      values[i][0] = this->value(p);
+    }
+  }
+
+  void evaluate_1(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<1>> &values) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void evaluate_2(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<2>> &values) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void print_info(LogStream &out) const
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void rebuild_after_insert_knots(
+    const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
+  {
+    Assert(false,ExcNotImplemented());
+  }
+};
+
+
+template<int dim,int codim,int range,int rank>
+class BoundaryFunction : public FormulaFunction<dim,codim,range,rank>
+{
+private:
+  using base_t = Function<dim,codim,range,rank>;
+  using parent_t = FormulaFunction<dim,codim,range,rank>;
+  using self_t = BoundaryFunction<dim,codim,range,rank>;
+public:
+  using typename parent_t::Value;
+  using typename parent_t::Point;
+
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+
+public:
+  BoundaryFunction(const SharedPtrConstnessHandler<Domain<dim,codim>> &domain)
+    : parent_t(domain,"BoundaryFunction")
+  {}
+
+  static std::shared_ptr<const self_t>
+  const_create(const std::shared_ptr<const Domain<dim,codim>> &domain)
+  {
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Domain<dim,codim>>(domain)));
+  }
+
+  static std::shared_ptr<self_t>
+  create(const std::shared_ptr<Domain<dim,codim>> &domain)
+  {
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Domain<dim,codim>>(domain)));
+  }
+
+  Real value(const Points<dim> &x) const
   {
     Real f = 1;
     for (int i = 0; i<dim; ++i)
@@ -72,7 +156,7 @@ public:
   }
 
   void evaluate_0(const ValueVector<Point> &points,
-                  ValueVector<Value> &values) const override
+                  ValueVector<Value> &values) const override final
   {
     for (int i = 0; i<points.size(); ++i)
     {
@@ -81,12 +165,27 @@ public:
     }
   }
   void evaluate_1(const ValueVector<Point> &points,
-                  ValueVector<Derivative<1>> &values) const override
-  {}
+                  ValueVector<Derivative<1>> &values) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
   void evaluate_2(const ValueVector<Point> &points,
-                  ValueVector<Derivative<2>> &values) const override
-  {}
+                  ValueVector<Derivative<2>> &values) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void print_info(LogStream &out) const
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void rebuild_after_insert_knots(
+    const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
+  {
+    Assert(false,ExcNotImplemented());
+  }
 };
 
 
