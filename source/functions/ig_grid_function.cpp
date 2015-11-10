@@ -100,7 +100,7 @@ rebuild_after_insert_knots(
 
   const int max_degree = ref_basis.get_spline_space()->get_max_degree();
 
-  coeffs_ = space_tools::projection_l2_ig_grid_function<dim,space_dim>(
+  coeffs_ = space_tools::projection_l2_grid_function<dim,space_dim>(
               *ig_grid_function_pre_refinement,
               ref_basis,
               QGauss<dim>::create(max_degree+1),

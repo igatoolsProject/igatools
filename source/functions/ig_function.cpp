@@ -227,11 +227,11 @@ rebuild_after_insert_knots(
   const int max_degree = basis_->get_spline_space()->get_max_degree();
 
   const auto quad = QGauss<dim>::create(max_degree+1);
-  auto function_refined =
-    space_tools::projection_l2(
-      *(this->function_previous_refinement_),basis_.get_ptr_data(),quad);
+  this->coeff_ =
+    space_tools::projection_l2_function<dim,codim,range,rank>(
+      *(this->function_previous_refinement_),*basis_,quad);
 
-  this->coeff_ = std::move(function_refined->coeff_);
+//  this->coeff_ = std::move(function_refined->coeff_);
 }
 
 template<int dim,int codim,int range,int rank>
