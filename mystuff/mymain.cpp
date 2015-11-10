@@ -19,7 +19,7 @@
 #include <igatools/base/logstream.h>
 // finally! my stuff!
 #include "my_formula_grid_function.h"
-
+#include "custom_grid_function.h"
 
 using namespace iga;
 using namespace std;
@@ -63,7 +63,7 @@ class MySpace {
       // methods:
     void how_are_you_doin() const;
     void print_system() const;
-    void assemble() const;
+    void assemble(bool print) const;
     void solve() const;
 };
 template<int dim_>
@@ -158,7 +158,7 @@ void MySpace<dim_>::print_system() const {
 
 // methods: system matrix and right hand side vector assemble
 template<int dim_>
-void MySpace<dim_>::assemble() const {
+void MySpace<dim_>::assemble(bool print) const {
 
   // starting the cache handler for the basis functions:
   auto basis_handler = basis->create_cache_handler();
@@ -178,7 +178,7 @@ void MySpace<dim_>::assemble() const {
 
   // starting the cache handler for the (constant) function f:
   typename Function<dim_,0,1,1>::Value f_val {5.0};
-  const auto f = grid_functions::ConstantGridFunction<dim_,1>::const_create(grid,f_val);
+  const auto f = grid_functions::CustomGridFunction<dim_,1>::const_create(grid);
   auto funct_handler = f->create_cache_handler();
   auto funct_el = f->begin();
   funct_handler->template set_flags<dim_>(grid_function_element::Flags::D0);
@@ -220,7 +220,7 @@ void MySpace<dim_>::assemble() const {
     rhs->add_block(loc_dofs,loc_rhs);
   }
   mat->FillComplete();
-  print_system();
+  if (print) print_system();
 
   using space_tools::project_boundary_values;
   using dof_tools::apply_boundary_values;
@@ -246,13 +246,21 @@ void MySpace<dim_>::assemble() const {
 
   //cout << bdr_vals << endl;
   apply_boundary_values(bdr_vals,*mat,*rhs,*sol);
-  print_system();
+  if (print) print_system();
 }
 
 template<int dim_>
 void MySpace<dim_>::solve() const {
   auto solver = create_solver(*mat,*sol,*rhs);
   solver->solve();
+}
+
+// ----------------------------------------------------------------------------
+//   MY CUSTOM FUNCTION
+// ----------------------------------------------------------------------------
+template<int dim>
+double test_function(Points<dim> pts) {
+  return 711;
 }
 
 int main() {
@@ -274,10 +282,35 @@ int main() {
   auto space3 = MySpace<dim>::create(nel,deg+2);
   space3->how_are_you_doin();*/
   // testing the simple constant creator
-  auto space4 = MySpace<dim>::const_create(nel,deg);
-  space4->how_are_you_doin();
-  space4->assemble();
-  space4->solve();
-  //test();
+  //auto space4 = MySpace<dim>::const_create(nel,deg);
+  //space4->how_are_you_doin();
+  //space4->assemble(false);
+  //space4->solve();
+
+  /*auto test_class = grid_functions::CustomGridFunction<dim,1>::const_create(space4->grid);
+  auto quad = QGauss<dim>::create(2);
+  auto funct_handler = test_class->create_cache_handler();
+  auto funct_el = test_class->GridFunction<dim,1>::begin();
+  const auto funct_eld = test_class->GridFunction<dim,1>::end();
+  funct_handler->template set_flags<dim>(grid_function_element::Flags::D0);
+  funct_handler->template set_flags<dim>(grid_function_element::Flags::D1);
+  funct_handler->init_element_cache(funct_el,quad);
+  for (int iel=0; funct_el!=funct_eld; ++funct_el) {
+    funct_handler->fill_element_cache(funct_el);
+    auto f_vals = funct_el->get_element_values_D0();
+    auto f_grad = funct_el->get_element_values_D1();
+    std::cout << "evaluation of element " << iel << std::endl;
+    f_vals.print_info(out);
+    out << endl;
+    f_grad.print_info(out);
+    out << endl;
+    iel++;
+  }*/
+
+  auto grid = Grid<dim>::create(nel);
+  auto test_class = grid_functions::CustomGridFunction<dim,1>::create(grid);
+  //test_class->grid_functions::CustomGridFunction<dim,1>::funct[0] = &test_function;
+  test_class->funct[0]=&test_function;
+
   return 0;
 }
