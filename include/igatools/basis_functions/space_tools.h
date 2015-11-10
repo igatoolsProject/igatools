@@ -225,6 +225,144 @@ projection_l2(const Function<Basis::dim,Basis::codim,Basis::range,Basis::rank> &
 }
 
 
+template<int dim,int codim,int range,int rank>
+IgCoefficients
+projection_l2_function(const Function<dim,codim,range,rank> &function,
+                       const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+                       const std::shared_ptr<const Quadrature<dim>> &quad,
+                       const std::string &dofs_property = DofProperties::active)
+{
+  Epetra_SerialComm comm;
+
+//    auto map = EpetraTools::create_map(*space, dofs_property, comm);
+  const auto graph = EpetraTools::create_graph(basis,dofs_property,basis,dofs_property,comm);
+
+
+  auto matrix = EpetraTools::create_matrix(*graph);
+  auto rhs = EpetraTools::create_vector(matrix->RangeMap());
+  auto sol = EpetraTools::create_vector(matrix->DomainMap());
+
+  const auto space_grid = basis.get_grid();
+  const auto func_grid = function.get_domain()->get_grid_function()->get_grid();
+
+
+  Assert(space_grid->same_knots_or_refinement_of(*func_grid),
+         ExcMessage("The space grid is not a refinement of the function grid."));
+
+  using SpFlags = space_element::Flags;
+  auto sp_flag = SpFlags::value |
+                 SpFlags::w_measure;
+  auto space_elem_handler = basis.create_cache_handler();
+  space_elem_handler->set_element_flags(sp_flag);
+
+  auto f_elem = function.begin();
+  auto elem = basis.begin();
+  auto end  = basis.end();
+
+  space_elem_handler->init_element_cache(*elem,quad);
+
+  const int n_qp = quad->get_num_points();
+
+  using space_element::_Value;
+
+  if (space_grid == func_grid)
+  {
+    auto func_elem_handler = function.create_cache_handler();
+
+    func_elem_handler->set_element_flags(function_element::Flags::value);
+
+    func_elem_handler->init_cache(*f_elem,quad);
+
+    for (; elem != end; ++elem, ++f_elem)
+    {
+      func_elem_handler->template fill_cache<dim>(*f_elem,0);
+      space_elem_handler->fill_element_cache(*elem);
+
+      auto f_at_qp = f_elem->template get_values<function_element::_Value,dim>(0);
+
+      const auto loc_mat = elem->integrate_u_v(dofs_property);
+      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
+
+      const auto elem_dofs = elem->get_local_to_global(dofs_property);
+      matrix->add_block(elem_dofs,elem_dofs,loc_mat);
+      rhs->add_block(elem_dofs,loc_rhs);
+    }
+    matrix->FillComplete();
+  }
+  else
+  {
+//    AssertThrow(false,ExcNotImplemented());
+
+    auto map_elems_id_fine_coarse =
+      grid_tools::build_map_elements_id_between_grids(*space_grid,*func_grid);
+
+    for (const auto &elems_id_pair : map_elems_id_fine_coarse)
+    {
+      elem->move_to(elems_id_pair.first);
+      f_elem->move_to(elems_id_pair.second);
+
+      space_elem_handler->fill_element_cache(*elem);
+
+
+      //---------------------------------------------------------------------------
+      // the function is supposed to be defined on the same grid of the space or coarser
+      const auto &elem_grid_accessor = elem->get_grid_element();
+      auto quad_in_func_elem = std::make_shared<Quadrature<dim>>(*quad);
+      quad_in_func_elem->dilate_translate(
+        elem_grid_accessor.
+        template get_side_lengths<dim>(0),
+        elem_grid_accessor.vertex(0));
+
+      const auto &func_grid_elem =
+        f_elem->get_domain_element().get_grid_function_element().get_grid_element();
+      auto one_div_f_elem_size = func_grid_elem.template get_side_lengths<dim>(0);
+      for (int dir : UnitElement<dim>::active_directions)
+        one_div_f_elem_size[dir] = 1.0/one_div_f_elem_size[dir];
+
+      auto f_elem_vertex = -func_grid_elem.vertex(0);
+      quad_in_func_elem->translate(f_elem_vertex);
+      quad_in_func_elem->dilate(one_div_f_elem_size);
+
+
+      auto f_at_qp =
+        f_elem->template evaluate_at_points<function_element::_Value>(quad_in_func_elem);
+      //---------------------------------------------------------------------------
+
+
+      const auto loc_mat = elem->integrate_u_v(dofs_property);
+      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
+
+      const auto elem_dofs = elem->get_local_to_global(dofs_property);
+      matrix->add_block(elem_dofs,elem_dofs,loc_mat);
+      rhs->add_block(elem_dofs,loc_rhs);
+    }
+    matrix->FillComplete();
+  }
+
+  auto solver = EpetraTools::create_solver(*matrix, *sol, *rhs);
+  auto result = solver->solve();
+  AssertThrow(result == Belos::ReturnType::Converged,
+              ExcMessage("No convergence."));
+
+  IgCoefficients ig_coeffs;
+
+  const auto &dof_distribution = *(basis.get_spline_space()->get_dof_distribution());
+  const auto &active_dofs = dof_distribution.get_global_dofs(dofs_property);
+
+  const auto &epetra_map = sol->Map();
+
+  for (const auto glob_dof : active_dofs)
+  {
+    auto loc_id = epetra_map.LID(glob_dof);
+    Assert(loc_id >= 0,
+           ExcMessage("Global dof " + std::to_string(glob_dof) + " not present in the input EpetraTools::Vector."));
+    ig_coeffs[glob_dof] = (*sol)[loc_id];
+  }
+
+  return ig_coeffs;
+}
+
+
 template<int dim,int range, LAPack la_pack = LAPack::trilinos_epetra>
 IgCoefficients
 projection_l2_ig_grid_function(
@@ -399,7 +537,144 @@ projection_l2_ig_grid_function(
   IgCoefficients ig_coeffs;
 
   const auto &dof_distribution = *(ref_basis.get_spline_space()->get_dof_distribution());
-  const auto &active_dofs = dof_distribution.get_global_dofs(DofProperties::active);
+  const auto &active_dofs = dof_distribution.get_global_dofs(dofs_property);
+
+  const auto &epetra_map = sol->Map();
+
+  for (const auto glob_dof : active_dofs)
+  {
+    auto loc_id = epetra_map.LID(glob_dof);
+    Assert(loc_id >= 0,
+           ExcMessage("Global dof " + std::to_string(glob_dof) + " not present in the input EpetraTools::Vector."));
+    ig_coeffs[glob_dof] = (*sol)[loc_id];
+  }
+
+  return ig_coeffs;
+}
+
+
+
+
+template<int dim,int range>
+IgCoefficients
+projection_l2_grid_function(
+  const GridFunction<dim,range> &grid_function,
+  const ReferenceSpaceBasis<dim,range,1> &ref_basis,
+  const std::shared_ptr<const Quadrature<dim>> &quad,
+  const std::string &dofs_property = DofProperties::active)
+{
+  Assert(quad != nullptr,ExcNullPtr());
+
+  Epetra_SerialComm comm;
+
+  const auto graph =
+    EpetraTools::create_graph(ref_basis,dofs_property,ref_basis,dofs_property,comm);
+
+
+  auto matrix = EpetraTools::create_matrix(*graph);
+  auto rhs = EpetraTools::create_vector(matrix->RangeMap());
+  auto sol = EpetraTools::create_vector(matrix->DomainMap());
+
+  const auto space_grid = ref_basis.get_grid();
+  const auto func_grid = grid_function.get_grid();
+
+
+  Assert(space_grid->same_knots_or_refinement_of(*func_grid),
+         ExcMessage("The space grid is not a refinement of the function grid."));
+
+
+  using SpFlags = space_element::Flags;
+  auto sp_flag = SpFlags::value |
+                 SpFlags::w_measure;
+  auto space_elem_handler = ref_basis.create_cache_handler();
+  space_elem_handler->set_element_flags(sp_flag);
+
+  auto f_elem = grid_function.cbegin();
+  auto elem = ref_basis.cbegin();
+  auto end  = ref_basis.cend();
+
+  space_elem_handler->init_element_cache(*elem,quad);
+
+  using D0 = grid_function_element::_D<0>;
+  if (space_grid == func_grid)
+  {
+    auto func_elem_handler = grid_function.create_cache_handler();
+    func_elem_handler->set_element_flags(grid_function_element::Flags::D0);
+
+    func_elem_handler->init_cache(*f_elem,quad);
+
+    for (; elem != end; ++elem, ++f_elem)
+    {
+      func_elem_handler->template fill_cache<dim>(*f_elem,0);
+      space_elem_handler->fill_element_cache(*elem);
+
+      auto f_at_qp = f_elem->template get_values_from_cache<D0,dim>(0);
+
+      const auto loc_mat = elem->integrate_u_v(dofs_property);
+      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
+
+      const auto elem_dofs = elem->get_local_to_global(dofs_property);
+      matrix->add_block(elem_dofs,elem_dofs,loc_mat);
+      rhs->add_block(elem_dofs,loc_rhs);
+    }
+    matrix->FillComplete();
+  }
+  else
+  {
+    auto map_elems_id_fine_coarse =
+      grid_tools::build_map_elements_id_between_grids(*space_grid,*func_grid);
+
+    for (const auto &elems_id_pair : map_elems_id_fine_coarse)
+    {
+      elem->move_to(elems_id_pair.first);
+      f_elem->move_to(elems_id_pair.second);
+
+      space_elem_handler->fill_element_cache(*elem);
+
+
+      //---------------------------------------------------------------------------
+      // the function is supposed to be defined on a coarser grid of the space
+      const auto &elem_grid_accessor = elem->get_grid_element();
+      auto quad_in_func_elem = std::make_shared<Quadrature<dim>>(*quad);
+      quad_in_func_elem->dilate_translate(
+        elem_grid_accessor.
+        template get_side_lengths<dim>(0),
+        elem_grid_accessor.vertex(0));
+
+      const auto &func_grid_elem = f_elem->get_grid_element();
+      auto one_div_f_elem_size = func_grid_elem.template get_side_lengths<dim>(0);
+      for (int dir : UnitElement<dim>::active_directions)
+        one_div_f_elem_size[dir] = 1.0/one_div_f_elem_size[dir];
+
+      auto f_elem_vertex = -func_grid_elem.vertex(0);
+      quad_in_func_elem->translate(f_elem_vertex);
+      quad_in_func_elem->dilate(one_div_f_elem_size);
+
+
+      auto f_at_qp =
+        f_elem->template evaluate_at_points<D0>(quad_in_func_elem);
+      //---------------------------------------------------------------------------
+
+
+      const auto loc_mat = elem->integrate_u_v(dofs_property);
+      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
+
+      const auto elem_dofs = elem->get_local_to_global(dofs_property);
+      matrix->add_block(elem_dofs,elem_dofs,loc_mat);
+      rhs->add_block(elem_dofs,loc_rhs);
+    }
+    matrix->FillComplete();
+  }
+
+  auto solver = EpetraTools::create_solver(*matrix, *sol, *rhs);
+  auto result = solver->solve();
+  AssertThrow(result == Belos::ReturnType::Converged,
+              ExcMessage("No convergence."));
+
+  IgCoefficients ig_coeffs;
+
+  const auto &dof_distribution = *(ref_basis.get_spline_space()->get_dof_distribution());
+  const auto &active_dofs = dof_distribution.get_global_dofs(dofs_property);
 
   const auto &epetra_map = sol->Map();
 
@@ -577,10 +852,6 @@ get_boundary_dofs(std::shared_ptr<const Basis> basis,
 
 
 
-// TODO (pauletti, Mar 18, 2015): this could be given a more general use
-static const SafeSTLArray<ValueFlags, 3> order_to_flag =
-{ValueFlags::value,ValueFlags::gradient,ValueFlags::hessian};
-
 /**
  * Numerically computes the local element contribution
  * to the integral  \f$\int_\Omega D^kf\f$.
@@ -595,12 +866,16 @@ Conditional<order==0,
             typename Function<dim, codim, range, rank>::Value,
             typename Function<dim, codim, range, rank>::template Derivative<order>>
 integrate(Function<dim, codim, range, rank> &f,
-          const Quadrature<dim> &quad,
-          SafeSTLVector<Conditional<order==0,
+          const std::shared_ptr<const Quadrature<dim>> &quad,
+          SafeSTLMap<
+          TensorIndex<dim>,
+          Conditional<order==0,
           typename Function<dim, codim, range, rank>::Value,
           typename Function<dim, codim, range, rank>::template Derivative<order>>
           > &element_error)
 {
+  Assert(quad != nullptr,ExcNullPtr());
+
   using Value = Conditional<order==0,
         typename Function<dim, codim, range, rank>::Value,
         typename Function<dim, codim, range, rank>::template Derivative<order>>;
@@ -614,36 +889,35 @@ integrate(Function<dim, codim, range, rank> &f,
     >
     >;
 
-  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
+  auto f_handler = f.create_cache_handler();
 
-  f.reset(flag, quad);
-  const int n_points = quad.get_num_points();
+  const auto flag = function_element::Flags::value |
+                    function_element::Flags::w_measure;
+  f_handler->set_element_flags(flag);
 
   auto elem_f = f.begin();
   auto end = f.end();
 
-  const auto topology = Topology<dim>();
-  f.init_cache(elem_f, topology);
+  const int n_points = quad->get_num_points();
+  f_handler->init_cache(elem_f, quad);
   Value val;
   for (; elem_f != end; ++elem_f)
   {
-    f.fill_cache(elem_f, topology, 0);
-
-    const int elem_id = elem_f->get_flat_index();
+    f_handler->fill_element_cache(elem_f);
 
     auto f_val = elem_f->template get_values<_Val,dim>(0);
-    auto w_meas = elem_f->template get_w_measures<dim>(0);
+    auto w_meas = elem_f->get_domain_element().get_element_w_measures();
 
     val = 0.0;
-    for (int iPt = 0; iPt < n_points; ++iPt)
-      val += f_val[iPt] * w_meas[iPt];
+    for (int pt = 0; pt < n_points; ++pt)
+      val += f_val[pt] * w_meas[pt];
 
-    element_error[ elem_id ] = val;
+    element_error[ elem_f->get_index() ] = val;
   }
 
   val = 0.0;
-  for (auto &el_val : element_error)
-    val += el_val;
+  for (const auto &el_val : element_error)
+    val += el_val.second;
   return val;
 }
 
@@ -664,7 +938,8 @@ void norm_difference(Function<dim, codim, range, rank> &f,
                      SafeSTLVector<Real> &element_error)
 {
   const bool is_inf = p==std::numeric_limits<Real>::infinity()? true : false;
-  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
+  auto flag = domain_element::Flags::w_measure;
+//  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
   using _Val =
     Conditional<order==0,

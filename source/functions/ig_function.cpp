@@ -266,26 +266,31 @@ IgFunction<dim,codim,range,rank>::
 print_info(LogStream &out) const
 {
   using std::to_string;
-  const std::string template_args= "<" + to_string(dim) + "," + to_string(codim) + ","
-                                   + to_string(range) + "," + to_string(rank) + ">";
+  const std::string func_template_args= "<" +
+                                        to_string(dim) + "," + to_string(codim) + "," +
+                                        to_string(range) + "," + to_string(rank) + ">";
 
-  out.begin_item("IgFunction" + template_args);
+  out.begin_item("IgFunction" + func_template_args);
 
-  out.begin_item("Function" + template_args);
-  parent_t::print_info(out);
-  out.end_item();
+  const std::string basis_template_args= "<" +
+                                         to_string(dim) + "," + to_string(range) + "," +
+                                         to_string(rank) + "," + to_string(codim) + ">";
 
-  out.begin_item("Reference space info:");
+  out.begin_item("PhysicalSpaceBasis" + basis_template_args);
   basis_->print_info(out);
   out.end_item();
-  out << std::endl;
 
-  out.begin_item("Coefficients (a.k.a. \"control values\"):");
+
+  out.begin_item("IgCoefficients:");
   coeff_.print_info(out);
   out.end_item();
 
+  out << "Dofs property: " << dofs_property_ << std::endl;
+
   out.end_item();
 }
+
+
 
 template<int dim,int codim,int range,int rank>
 const std::string &

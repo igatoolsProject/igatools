@@ -91,7 +91,7 @@ using Index = int;
  */
 using Size = int;
 
-
+#if 0
 /**
  * Bit field flags for specifying which element values will be needed
  * through the iterator on the grid like containers.
@@ -168,6 +168,7 @@ enum class ValueFlags : std::int64_t
 
 const std::array<ValueFlags, MAX_NUM_DERIVATIVES> DerivativeFlags =
 {{ValueFlags::value, ValueFlags::gradient,  ValueFlags::hessian}};
+#endif
 
 enum class TransformationFlags : std::int64_t
 {
@@ -347,12 +348,13 @@ int bitcount(Flag a)
   return count;
 }
 
-
+#if 0
 inline
 std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
 {
   return (stream << static_cast< int >(flag));
 }
+#endif
 
 /**
  * Const expression power

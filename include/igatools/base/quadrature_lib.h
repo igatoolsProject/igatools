@@ -106,6 +106,25 @@ public:
    */
   static std::shared_ptr< QGauss< dim > >
   create(const TensorSize<dim> num_points);
+
+
+  /**
+   * Returns a Gauss-Legendre quadrature scheme (wrapped by a std::shared_ptr)
+   * on the \f$ d \f$-dimensional hypercube \f$ [0,1]^d \f$
+   * with \p num_points points in each coordinate direction.
+   */
+  static std::shared_ptr< const QGauss< dim > >
+  const_create(const Size num_points);
+
+  /**
+   * Returns a Gauss-Legendre quadrature scheme (wrapped by a std::shared_ptr)
+   * on the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$
+   * with a (possibly) different number of points in each coordinate direction.
+   * The number of points along the \p i-th coordinate direction is specified by \p num_points[i].
+   */
+  static std::shared_ptr< const QGauss< dim > >
+  const_create(const TensorSize<dim> num_points);
+
 } ;
 
 

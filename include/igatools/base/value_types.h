@@ -47,22 +47,10 @@ enum class Flags
   weight    =    1L << 2
 };
 
-enum class CacheFlags
-{
-  /** Fill nothing */
-  none           =    0,
-
-  //public element information c
-  /** Quadrature points on the element */
-  point          =    1L << 1,
-
-  /** Quadrature weigths on the element */
-  weight         =    1L << 2
-};
 
 struct activate
 {
-  using FlagsToCache = std::map<Flags, CacheFlags>;
+  using FlagsToCache = std::map<Flags, Flags>;
   static FlagsToCache grid;
 };
 
@@ -74,7 +62,6 @@ class _Point
 public:
   static const std::string name;
   static const auto flag = Flags::point;
-  static const auto cache_flag = CacheFlags::point;
 };
 
 /**
@@ -85,7 +72,6 @@ class _Weight
 public:
   static const std::string name;
   static const auto flag = Flags::weight;
-  static const auto cache_flag = CacheFlags::weight;
 };
 
 } // end namespace grid_element
@@ -112,24 +98,10 @@ enum class Flags
 
 static const SafeSTLArray<Flags, 3> all_flags = {Flags::D0, Flags::D1, Flags::D2};
 
-/** Auxiliary quantities stored in a local cache */
-enum class CacheFlags
-{
-  none           =    0,
-
-  D0       =    1L << 1,
-
-  D1       =    1L << 3,
-
-  D2       =    1L << 4,
-
-  D3       =    1L << 5
-};
-
 
 struct activate
 {
-  using FlagsToCache = std::map<Flags, CacheFlags>;
+  using FlagsToCache = std::map<Flags, Flags>;
   static FlagsToCache grid_function;
 
   using FlagsToGrid = std::map<Flags, grid_element::Flags>;
@@ -141,7 +113,6 @@ struct _D
 {
   static const std::string name;
   static const Flags flag;
-  static const CacheFlags cache_flag;
 };
 
 }
@@ -151,32 +122,40 @@ struct _D
 
 namespace domain_element
 {
-/** Quantities that can be requested from a domain element */
+/**
+ * Quantities that can be requested from a DomainElement
+ * */
 enum class Flags
 {
   /** Fill nothing */
-  none           =    0,
+  none            = 0,
 
-  point          =    1L << 1,
+  point           = 1L << 1,
 
-  measure        =    1L << 2,
+  measure         = 1L << 2,
 
-  w_measure      =    1L << 3,
+  w_measure       = 1L << 3,
 
-  ext_normal     =    1L << 4,
+  ext_normal      = 1L << 4,
 
-  jacobian       =    1L << 5,
+  jacobian        = 1L << 5,
 
-  inv_jacobian   =    1L << 6,
+  inv_jacobian    = 1L << 6,
 
-  hessian        =    1L << 7,
+  hessian         = 1L << 7,
 
-  inv_hessian    =    1L << 8,
+  inv_hessian     = 1L << 8,
 
-  boundary_normal =   1L << 9
+  boundary_normal = 1L << 9,
+
+  first_fundamental_form  = 1L << 10,
+
+  second_fundamental_form = 1L << 11,
+
+  curvature       = 1L << 12
 };
 
-static const SafeSTLArray<Flags,9> all_flags =
+static const SafeSTLArray<Flags,12> all_flags =
 {
   Flags::point,
   Flags::measure,
@@ -186,31 +165,16 @@ static const SafeSTLArray<Flags,9> all_flags =
   Flags::inv_jacobian,
   Flags::hessian,
   Flags::inv_hessian,
-  Flags::boundary_normal
-};
-
-/** Auxiliary quantities stored in a local cache */
-enum class CacheFlags
-{
-  none           =    0,
-
-  measure        =    1L << 1,
-
-  w_measure      =    1L << 2,
-
-  inv_jacobian   =    1L << 3,
-
-  inv_hessian    =    1L << 4,
-
-  boundary_normal =   1L << 5,
-
-  ext_normal     =    1L << 6
+  Flags::boundary_normal,
+  Flags::first_fundamental_form,
+  Flags::second_fundamental_form,
+  Flags::curvature
 };
 
 
 struct activate
 {
-  using FlagsToCache = std::map<Flags, CacheFlags>;
+  using FlagsToCache = std::map<Flags, Flags>;
   static FlagsToCache domain;
 
   using FlagsToGridFunc = std::map<Flags, grid_function_element::Flags>;
@@ -248,35 +212,30 @@ struct _Hessian
 struct _Measure
 {
   static const std::string name;
-  static const auto cache_flag = CacheFlags::measure;
   static const auto flag = Flags::measure;
 };
 
 struct _W_Measure
 {
   static const std::string name;
-  static const auto cache_flag = CacheFlags::w_measure;
   static const auto flag = Flags::w_measure;
 };
 
 struct _InvJacobian
 {
   static const std::string name;
-  static const auto cache_flag = CacheFlags::inv_jacobian;
   static const auto flag = Flags::inv_jacobian;
 };
 
 struct _InvHessian
 {
   static const std::string name;
-  static const auto cache_flag = CacheFlags::inv_hessian;
   static const auto flag = Flags::inv_hessian;
 };
 
 struct _BoundaryNormal
 {
   static const std::string name;
-  static const auto cache_flag = CacheFlags::boundary_normal;
   static const auto flag = Flags::boundary_normal;
 };
 
@@ -284,10 +243,28 @@ struct _BoundaryNormal
 struct _ExtNormal
 {
   static const std::string name;
-  static const auto cache_flag = CacheFlags::ext_normal;
   static const auto flag = Flags::ext_normal;
 };
 
+
+struct _FirstFundamentalForm
+{
+  static const std::string name;
+  static const auto flag = Flags::first_fundamental_form;
+};
+
+struct _SecondFundamentalForm
+{
+  static const std::string name;
+  static const auto flag = Flags::second_fundamental_form;
+};
+
+
+struct _Curvature
+{
+  static const std::string name;
+  static const auto flag = Flags::curvature;
+};
 
 }
 
@@ -301,33 +278,31 @@ namespace function_element
 enum class Flags
 {
   /** Fill nothing */
-  none           =    0,
+  none      = 0,
 
-  value          =    1L << 1,
+  value     = 1L << 1,
 
-  gradient       =    1L << 2,
+  gradient  = 1L << 2,
 
-  D2             =    1L << 3
+  D2        = 1L << 3,
 
+  w_measure = 1L << 4
 };
 
 
-/** Auxiliary quantities stored in a local cache */
-enum class CacheFlags
+static const SafeSTLArray<Flags,4> all_flags =
 {
-  none           =    0,
-
-  value          =    1L << 1,
-
-  gradient       =    1L << 2,
-
-  D2             =    1L << 3
+  Flags::value,
+  Flags::gradient,
+  Flags::D2,
+  Flags::w_measure
 };
+
 
 
 struct activate
 {
-  using FlagsToCache = std::map<Flags, CacheFlags>;
+  using FlagsToCache = std::map<Flags, Flags>;
   static FlagsToCache function;
 
   using FlagsToDomain = std::map<Flags, domain_element::Flags>;
@@ -338,21 +313,25 @@ struct _Value
 {
   static const std::string name;
   static const auto flag = Flags::value;
-  static const auto cache_flag = CacheFlags::value;
 };
 
 struct _Gradient
 {
   static const std::string name;
   static const auto flag = Flags::gradient;
-  static const auto cache_flag = CacheFlags::gradient;
 };
 
 struct _D2
 {
   static const std::string name;
   static const auto flag = Flags::D2;
-  static const auto cache_flag = CacheFlags::D2;
+};
+
+
+struct _W_Measure
+{
+  static const std::string name;
+  static const auto flag = Flags::w_measure;
 };
 
 } // end namespace function_element

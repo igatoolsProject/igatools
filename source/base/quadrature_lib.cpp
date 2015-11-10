@@ -290,6 +290,21 @@ QGauss< dim >::create(const TensorSize<dim> num_points)
 }
 
 
+template< int dim >
+std::shared_ptr< const QGauss< dim > >
+QGauss< dim >::const_create(const Size num_points)
+{
+  return (std::make_shared< QGauss<dim> >(num_points)) ;
+}
+
+
+template< int dim >
+std::shared_ptr< const QGauss< dim > >
+QGauss< dim >::const_create(const TensorSize<dim> num_points)
+{
+  return (std::make_shared< QGauss<dim> >(num_points)) ;
+}
+
 
 template< int dim >
 QGaussLobatto< dim >::

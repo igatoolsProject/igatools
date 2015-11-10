@@ -327,7 +327,11 @@ evaluate_1(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<1>> &values) const -> void
 {
   for (auto &val : values)
+  {
     val = 0.0;
+    for (int i = 0 ; i < dim ; ++i)
+      val[i][i] = 1.0;
+  }
 }
 
 template<int dim>

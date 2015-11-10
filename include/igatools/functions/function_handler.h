@@ -58,10 +58,9 @@ public:
   using List = typename DomainType::List;
   using ListIt = typename DomainType::ListIt;
   using Flags = function_element::Flags;
-  using CacheFlags = function_element::CacheFlags;
 
 protected:
-  using FlagsArray = SafeSTLArray<CacheFlags, dim+1>;
+  using FlagsArray = SafeSTLArray<Flags, dim+1>;
 
 #if 0
   /** Types for the input/output evaluation arguments */
@@ -168,14 +167,13 @@ public:
     this->set_flags(Topology<sdim>(), flag);
   }
 
+  void set_element_flags(const Flags &flag);
+
   virtual void init_cache(ElementAccessor &elem,
                           const eval_pts_variant &quad) const;
 
   void init_cache(ElementIterator &elem,
-                  const eval_pts_variant &quad) const
-  {
-    this->init_cache(*elem, quad);
-  }
+                  const eval_pts_variant &quad) const;
 
 
   virtual void fill_cache(const topology_variant &sdim,
@@ -184,10 +182,7 @@ public:
 
   void fill_cache(const topology_variant &sdim,
                   ElementIterator &elem,
-                  const int s_id) const
-  {
-    this->fill_cache(sdim, *elem, s_id);
-  }
+                  const int s_id) const;
 
   template <int sdim>
   void fill_cache(ElementIterator &elem,
@@ -202,6 +197,10 @@ public:
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
+
+  void fill_element_cache(ElementAccessor &elem);
+
+  void fill_element_cache(ElementIterator &elem);
 
 protected:
 //  std::shared_ptr<typename ElementAccessor::CacheType>
@@ -225,7 +224,7 @@ private:
    */
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const CacheFlags flag, FlagsArray &flags)
+    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
       :
       flag_(flag),
       flags_(flags)
@@ -237,7 +236,7 @@ private:
       flags_[sdim] = flag_;
     }
 
-    const CacheFlags flag_;
+    const Flags flag_;
     FlagsArray &flags_;
   };
 

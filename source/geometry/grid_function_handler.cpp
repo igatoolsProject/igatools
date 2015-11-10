@@ -30,7 +30,7 @@ GridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function)
   :
   grid_function_(grid_function),
   grid_handler_(grid_function->get_grid()->create_cache_handler()),
-  flags_(CacheFlags::none)
+  flags_(Flags::none)
 {
   Assert(grid_function_ != nullptr, ExcNullPtr());
 }
@@ -76,7 +76,7 @@ set_flags(const topology_variant &sdim,
 {
   using GridFlags = typename GridType::ElementHandler::Flags;
   GridFlags  grid_flag = GridFlags::none;
-  CacheFlags dom_flag = CacheFlags::none;
+  Flags dom_flag = Flags::none;
 
   for (auto &fl :  grid_function_element::all_flags)
     if (contains(flag, fl))

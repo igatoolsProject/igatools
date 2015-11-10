@@ -105,7 +105,7 @@ print_caches(const FusionContainer &data, LogStream &out)
 }
 
 
-
+#if 0
 /**
  * @ingroup cache
  */
@@ -127,7 +127,7 @@ get_valid_flags_from_cache_type(const CacheType &cache)
   return valid_flags;
 
 }
-
+#endif
 
 template <int sub_elem_dim, class FusionContainer>
 const auto &
@@ -451,7 +451,7 @@ public:
       using ValueType = typename ValueType_ValueContainer::first_type;
       auto &value = type_and_value.second;
 
-      if (contains(flags, ValueType::cache_flag))
+      if (contains(flags, ValueType::flag))
       {
         value.set_status_fill(true);
 
@@ -548,12 +548,12 @@ public:
     return cache;
   }
 
-
+#if 0
   ValueFlags get_valid_flags() const
   {
     return this->template get_sub_elem_cache<SubElemCache::get_dim()>(0).get_valid_flags();
   }
-
+#endif
 
   /**
    * Returns an estimate of the memory used to define the object.

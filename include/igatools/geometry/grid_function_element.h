@@ -52,7 +52,6 @@ public:
 // using Gradient =  typename ContainerType_::Gradient;
 
   using Flags = grid_function_element::Flags;
-  using CacheFlags = grid_function_element::CacheFlags;
 
 
   /** @name Constructors */

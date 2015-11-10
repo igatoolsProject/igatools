@@ -77,6 +77,29 @@ get_domain_element() -> DomainElem &
 }
 
 
+template<int dim,int codim,int range,int rank>
+void
+FunctionElement<dim,codim,range,rank>::
+operator++()
+{
+  ++(*domain_elem_);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+FunctionElement<dim,codim,range,rank>::
+move_to(const IndexType &elem_id)
+{
+  domain_elem_->move_to(elem_id);
+}
+
+template<int dim,int codim,int range,int rank>
+auto
+FunctionElement<dim,codim,range,rank>::
+get_index() const -> const IndexType &
+{
+  return domain_elem_->get_index();
+}
 
 template<int dim,int codim,int range,int rank>
 bool

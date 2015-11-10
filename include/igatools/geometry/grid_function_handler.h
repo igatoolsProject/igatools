@@ -57,10 +57,9 @@ public:
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
   using Flags = grid_function_element::Flags;
-  using CacheFlags = grid_function_element::CacheFlags;
 
 protected:
-  using FlagsArray = SafeSTLArray<CacheFlags, dim+1>;
+  using FlagsArray = SafeSTLArray<Flags, dim+1>;
 
   using topology_variant = TopologyVariants<dim_>;
 
@@ -168,7 +167,7 @@ private:
    */
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const CacheFlags flag, FlagsArray &flags)
+    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
       :
       flag_(flag),
       flags_(flags)
@@ -180,7 +179,7 @@ private:
       flags_[sdim] |= flag_;
     }
 
-    const CacheFlags flag_;
+    const Flags flag_;
     FlagsArray &flags_;
   };
 

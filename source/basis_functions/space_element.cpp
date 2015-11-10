@@ -276,15 +276,14 @@ DenseMatrix
 SpaceElement<dim_,codim_,range_,rank_>::
 integrate_u_v(const PropId &dofs_property)
 {
-  const int n_basis = this->get_num_basis(dofs_property);
-  DenseMatrix M(n_basis,n_basis);
-
-  M = 0.0;
-
   const auto &w_meas = this->get_element_w_measures();
   const auto &u = this->get_element_values(dofs_property);
 
   const int n_pts = u.get_num_points();
+
+  const int n_basis = u.get_num_functions();
+  DenseMatrix M(n_basis,n_basis);
+  M = 0.0;
 
   for (int i = 0; i < n_basis; ++i)
   {
@@ -310,15 +309,14 @@ DenseMatrix
 SpaceElement<dim_,codim_,range_,rank_>::
 integrate_gradu_gradv(const PropId &dofs_property)
 {
-  const int n_basis = this->get_num_basis(dofs_property);
-  DenseMatrix M(n_basis,n_basis);
-
-  M = 0.0;
-
   const auto &w_meas = this->get_element_w_measures();
   const auto &gradu = this->get_element_gradients(dofs_property);
 
   const int n_pts = gradu.get_num_points();
+
+  const int n_basis = gradu.get_num_functions();
+  DenseMatrix M(n_basis,n_basis);
+  M = 0.0;
 
   for (int i = 0; i < n_basis; ++i)
   {
@@ -337,6 +335,35 @@ integrate_gradu_gradv(const PropId &dofs_property)
   } // end loop i
 
   return M;
+}
+
+template<int dim_,int codim_,int range_,int rank_>
+DenseVector
+SpaceElement<dim_,codim_,range_,rank_>::
+integrate_u_func(const ValueVector<Value> &func_at_points,
+		  const PropId &dofs_property)
+{
+  const auto &u = this->get_element_values(dofs_property);
+
+  const int n_pts = u.get_num_points();
+  Assert(n_pts == func_at_points.get_num_points(),
+		  ExcDimensionMismatch(n_pts,func_at_points.get_num_points()));
+
+  const int n_basis = u.get_num_functions();
+  DenseVector R(n_basis);
+  R = 0.0;
+
+  const auto &w_meas = this->get_element_w_measures();
+
+  for (int i = 0; i < n_basis; ++i)
+  {
+    const auto u_i = u.get_function_view(i);
+
+	for (int pt = 0; pt < n_pts; ++pt)
+	  R(i) += scalar_product(u_i[pt],func_at_points[pt]) * w_meas[pt];
+  } // end loop i
+
+  return R;
 }
 
 

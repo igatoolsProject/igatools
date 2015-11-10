@@ -28,49 +28,42 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/formula_function.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/formula_grid_function.h>
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/basis_functions/space_tools.h>
 
-#include <igatools/io/writer.h>
-
 // TODO (pauletti, Nov 13, 2014):  add this function as the p-norm function
 // in the library
 
-template <int dim, int range, int rank>
-class TestFunc : public FormulaFunction<dim, 0, range, rank>
+template<int dim,int range>
+class TestGridFunction : public FormulaGridFunction<dim,range>
 {
 private:
-  using base_t   = Function<dim, 0, range, rank>;
-  using parent_t = FormulaFunction<dim, 0, range, rank>;
-  using self_t = TestFunc<dim, range, rank>;
-  using typename base_t::GridType;
+  using base_t = GridFunction<dim,range>;
+  using parent_t = FormulaGridFunction<dim,range>;
+  using self_t = TestGridFunction<dim,range>;
 public:
-  using typename parent_t::Point;
   using typename parent_t::Value;
+  using typename parent_t::GridPoint;
+
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
-  TestFunc(std::shared_ptr<GridType> grid)
-    : parent_t(grid, IdentityFunction<dim>::const_create(grid))
+public:
+  TestGridFunction(const SharedPtrConstnessHandler<Grid<dim>> &grid)
+    : parent_t(grid)
   {}
 
-  static std::shared_ptr<base_t>
-  const_create(std::shared_ptr<GridType> grid)
+  static std::shared_ptr<self_t>
+  const_create(const std::shared_ptr<const Grid<dim>> &grid)
   {
-    return std::shared_ptr<base_t>(new self_t(grid));
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Grid<dim>>(grid)));
   }
 
-  std::shared_ptr<base_t> clone() const override
-  {
-    return std::make_shared<self_t>(self_t(*this));
-  }
-
-  void evaluate_0(const ValueVector<Point> &points,
+  void evaluate_0(const ValueVector<GridPoint> &points,
                   ValueVector<Value> &values) const override
   {
     auto pt = points.begin();
@@ -85,32 +78,47 @@ public:
   }
 
 
-  void evaluate_1(const ValueVector<Point> &points,
-                  ValueVector<Derivative<1>> &values) const override
-  {}
+  void evaluate_1(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<1>> &values) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
-  void evaluate_2(const ValueVector<Point> &points,
-                  ValueVector<Derivative<2>> &values) const override
-  {}
+  void evaluate_2(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<2>> &values) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void print_info(LogStream &out) const
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void rebuild_after_insert_knots(
+    const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
 };
 
 
 
-template<int dim, int range=1, int rank = 1, LAPack la_pack>
+template<int dim, int range=1>
 void test_proj(const int p, const int n_knots = 4)
 {
-  using Basis = BSpline<dim,range,rank> ;
-  using RefSpace = ReferenceSpaceBasis<dim,range,rank> ;
-  using Func = TestFunc<dim,range, rank>;
-
   auto grid = Grid<dim>::const_create(n_knots);
-  auto space = Basis::const_create(p, grid);
+  auto space = SplineSpace<dim,range>::const_create(p, grid);
+  auto basis = BSpline<dim,range>::const_create(space);
 
   const int n_qp = 4;
-  QGauss<dim> quad(n_qp);
+  auto quad = QGauss<dim>::create(n_qp);
 
-  auto f = Func::const_create(grid);
-  auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
+  auto f = TestGridFunction<dim,range>::const_create(grid);
+  auto coeffs_func = space_tools::projection_l2_grid_function<dim,range>(*f,*basis,quad);
+
+  auto proj_func = IgGridFunction<dim,range>::const_create(basis,coeffs_func);
   proj_func->print_info(out);
 
 }
@@ -118,13 +126,7 @@ void test_proj(const int p, const int n_knots = 4)
 
 int main()
 {
-#if defined(USE_TRILINOS)
-  const auto la_pack = LAPack::trilinos_epetra;
-#elif defined(USE_PETSC)
-  const auto la_pack = LAPack::petsc;
-#endif
-
-  test_proj<2, 3, 1, la_pack>(1);
+  test_proj<2,3>(1);
 
   return 0;
 }
