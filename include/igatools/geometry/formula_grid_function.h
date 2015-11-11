@@ -56,6 +56,31 @@ public:
   std::unique_ptr<typename parent_t::ElementHandler>
   create_cache_handler() const;
 
+
+  template <int sdim>
+  std::shared_ptr<const FormulaGridFunction<sdim,space_dim> >
+  get_sub_function(const int s_id,
+                   const std::shared_ptr<const Grid<sdim>> &sub_grid) const
+  {
+    static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
+                  "The dimensionality of the sub_grid is not valid.");
+
+    /*
+        typename RefBasis::template InterSpaceMap<sdim> dof_map;
+        auto sub_ref_space = ref_basis_->template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
+
+        IgCoefficients sub_coeffs;
+        const int n_sub_dofs = dof_map.size();
+        for (int sub_dof = 0 ; sub_dof < n_sub_dofs ; ++ sub_dof)
+          sub_coeffs[sub_dof] = coeffs_[dof_map[sub_dof]];
+
+        auto sub_func = IgGridFunction<sdim,space_dim>::const_create(sub_ref_space,sub_coeffs);
+
+        return sub_func;
+      //*/
+    return nullptr;
+  }
+
 public:
 
   virtual void evaluate_0(const ValueVector<GridPoint> &points,

@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/physical_space_basis.h>
-#include <igatools/functions/function.h>
-#include <igatools/functions/sub_function.h>
+#include <igatools/geometry/formula_grid_function.h>
+//#include <igatools/functions/sub_function.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 #include <igatools/geometry/push_forward.h>
 
@@ -179,9 +179,16 @@ get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
   const auto F = this->phys_domain_->get_grid_function();
   using IgFunc = IgGridFunction<dim,space_dim>;
   auto ig_func = std::dynamic_pointer_cast<const IgFunc>(F);
+  using FormulaFunc = FormulaGridFunction<dim,space_dim>;
+  auto formula_func = std::dynamic_pointer_cast<const FormulaFunc>(F);
   if (ig_func)
   {
     sub_func = ig_func->get_sub_function(s_id,sub_grid);
+  }
+  else if (formula_func)
+  {
+    AssertThrow(false,ExcMessage("FormulaFunction"));
+    AssertThrow(false,ExcNotImplemented());
   }
   else
   {
