@@ -6,7 +6,6 @@ IGA_NAMESPACE_OPEN
 namespace grid_functions
 {
 
-#define PI 3.14159265358979323846
 
 template<int dim, int space_dim>
 class CustomGridFunction : public FormulaGridFunction<dim,space_dim> {
@@ -33,16 +32,25 @@ public:
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const GridType> &domain);
 
+  static std::shared_ptr<const self_t>
+  const_create(const std::shared_ptr<const GridType> & domain, Value (*f_D0)(const GridPoint));
+
   // info printer method
   virtual void print_info(LogStream &out) const override final;
 
 protected:
   CustomGridFunction(const SharedPtrConstnessHandler<GridType> &domain);
+  CustomGridFunction(const SharedPtrConstnessHandler<GridType> &domain, Value (*f_D0)(const GridPoint));
 
 public:
   // function's functions (thanks anglosaxons for this this beautifully ambiguous expression)
-  std::array<double (*)(const GridPoint),dim> funct;
+  //std::array<Value (*)(const GridPoint),dim> funct;
+  Value (*funct_D0)(const GridPoint);
+  Derivative<1> (*funct_D1)(const GridPoint);
   //std::array<array<void (*)(double),dim>,dim> grads;
+  void test_custom_function(const GridPoint x) {
+    //std::cout << " function value is " << funct[0](x) << std::endl;
+  }
 
 private:
   void evaluate_0(const ValueVector<GridPoint> &points, ValueVector<Value> &values) const;
@@ -65,6 +73,13 @@ CustomGridFunction<dim,space_dim>::CustomGridFunction(const SharedPtrConstnessHa
   parent_t(domain)
 {};
 
+template<int dim, int space_dim>
+CustomGridFunction<dim,space_dim>::CustomGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
+                                                      Value (*f_D0)(const GridPoint))
+  :
+  parent_t(domain)
+{funct_D0 = f_D0;};
+
 // ----------------------------------------------------------------------------
 //  CREATORS
 // ----------------------------------------------------------------------------
@@ -77,9 +92,15 @@ auto CustomGridFunction<dim,space_dim>::create(const std::shared_ptr<GridType> &
   return func;
 };
 
-template<int dim, int space_dim> // const creator
+/*template<int dim, int space_dim> // const creator
 auto CustomGridFunction<dim,space_dim>::const_create(const std::shared_ptr<const GridType> &domain) -> std::shared_ptr<const self_t> {
   return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(domain)));
+};*/
+
+template<int dim, int space_dim> // const creator with functions
+auto CustomGridFunction<dim,space_dim>::const_create(const std::shared_ptr<const GridType> &domain,
+                                                     Value (*f_D0)(const GridPoint)) -> std::shared_ptr<const self_t> {
+  return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(domain),f_D0));
 };
 
 // ----------------------------------------------------------------------------
@@ -89,16 +110,19 @@ template<int dim, int space_dim> // evaluate values
 auto CustomGridFunction<dim,space_dim>::evaluate_0(const ValueVector<GridPoint> &points, ValueVector<Value> &values) const -> void {
   auto point = points.begin();
   for (auto &val : values ) {
-    val = funct[0](*point);
-    for (int idim=0; idim<dim; idim++)
-      val *= sin( (*point)[idim] * PI );
+    //for (int idim=0; idim<space_dim; idim++) {
+    //  val[idim] = funct[idim](*point);
+    //}
+    //for (int idim=0; idim<dim; idim++)
+    //  val *= sin( (*point)[idim] * PI );
+    val = funct_D0(*point);
     ++point;
   }
 };
 
 template<int dim, int space_dim> // evaluate first derivatives
 auto CustomGridFunction<dim,space_dim>::evaluate_1(const ValueVector<GridPoint> &points, ValueVector<Derivative<1>> &values) const -> void {
-  auto point = points.begin();
+  /*auto point = points.begin();
   for (auto &val : values ) {
     for (int idim=0; idim<dim; idim++) {
       val[idim] = PI; 
@@ -108,7 +132,7 @@ auto CustomGridFunction<dim,space_dim>::evaluate_1(const ValueVector<GridPoint> 
       for (int jdim=idim+1; jdim<dim; jdim++)
         val[idim] *= sin((*point)[idim] * PI);
     }
-  }
+  }*/
 };
 
 template<int dim, int space_dim> // evaluate second derivatives

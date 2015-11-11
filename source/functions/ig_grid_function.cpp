@@ -74,7 +74,7 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
   for (const auto glob_dof : active_dofs)
     coeffs_[glob_dof] = coeffs.at(glob_dof);
 #else
-  coeffs_ = coeff;
+  coeffs_ = coeffs;
 #endif
 }
 
