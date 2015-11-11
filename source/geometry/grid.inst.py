@@ -35,16 +35,18 @@ for dim in inst.sub_domain_dims:
     grids.append(grid)
     f.write('template class %s; \n' % (grid))
     for fun in sub_dim_members:
-        k = dim
-        s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
-        f.write('template ' + s + '\n')  
+        for k in range(0,max(dim-1,0)+1):
+#        k = dim
+            s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
+            f.write('template ' + s + '\n')  
     
 for dim in inst.domain_dims:
     grid = 'Grid<%d>' %(dim)   
     grids.append(grid)
     f.write('template class %s; \n' % (grid))
     for fun in sub_dim_members:
-        for k in inst.sub_dims(dim):
+        for k in range(0,max(dim-1,0)+1):
+#        for k in inst.sub_dims(dim):
             s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
             f.write('template ' + s + '\n')
        

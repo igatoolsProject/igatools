@@ -26,6 +26,7 @@
  */
 
 #include "../tests.h"
+#include "./common_functions.h"
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/formula_grid_function.h>

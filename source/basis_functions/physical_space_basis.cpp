@@ -159,31 +159,40 @@ get_reference_basis() -> shared_ptr<RefBasis>
 
 
 template <int dim_, int range_, int rank_, int codim_>
-template<int k>
+template<int sdim>
 auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-              std::shared_ptr<Grid<k>> sub_grid,
-              SubGridMap<k> &elem_map) const
--> std::shared_ptr<SubSpace<k> >
+get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
+              const std::shared_ptr<const Grid<sdim>> &sub_grid,
+              SubGridMap<sdim> &elem_map,
+              EnableIf<(dim_ != 0) &&(sdim>=0)> *) const
+-> std::shared_ptr<const SubSpace<sdim> >
 {
-  static_assert(k == 0 || (k > 0 && k < dim_),
+  static_assert((dim_ == 0 && sdim == 0) || (dim_ > 0 && sdim < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
-  AssertThrow(false,ExcNotImplemented());
-  return nullptr;
-  /*
-  using SubMap = SubMapFunction<k, dim, space_dim>;
-  auto grid =  this->get_grid();
 
-  auto sub_ref_space = ref_basis_->get_ref_sub_space(s_id, dof_map, sub_grid);
-  shared_ptr<const typename SubMap::SupFunc> F;
-  //  auto F = this->phys_domain_->get_function();
-  AssertThrow(false,ExcNotImplemented());
-  auto sub_map_func = SubMap::create(sub_grid, F, s_id, elem_map);
-  auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
-  return sub_space;
-  //*/
+  const auto sub_ref_basis = ref_basis_->get_ref_sub_space(s_id, dof_map, sub_grid);
+
+  shared_ptr<const GridFunction<sdim,space_dim>> sub_func;
+
+  const auto F = this->phys_domain_->get_grid_function();
+  using IgFunc = IgGridFunction<dim,space_dim>;
+  auto ig_func = std::dynamic_pointer_cast<const IgFunc>(F);
+  if (ig_func)
+  {
+    sub_func = ig_func->get_sub_function(s_id,sub_grid);
+  }
+  else
+  {
+    AssertThrow(false,ExcMessage("GridFunction"));
+    AssertThrow(false,ExcNotImplemented());
+  }
+  auto sub_domain = Domain<sdim,space_dim-sdim>::const_create(sub_func);
+
+  auto sub_phys_basis = SubSpace<sdim>::const_create(sub_ref_basis, sub_domain);
+
+  return sub_phys_basis;
 }
 
 

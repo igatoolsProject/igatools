@@ -35,7 +35,7 @@ output.add ('template class grid_functions::LinearGridFunction<0,0>;\n')
 for dim in inst.domain_dims:
     output.add ('template class grid_functions::LinearGridFunction<%d,1>;\n' % (dim) )
     output.add ('template class grid_functions::ConstantGridFunction<%d,1>;\n' % (dim) )
-    for sub_dim in range(max(dim-2,0),dim+1):
+    for sub_dim in range(0,dim+1):
         output.add ('template class grid_functions::LinearGridFunction<%d,%d>;\n' % (sub_dim,dim) )
         output.add ('template class grid_functions::ConstantGridFunction<%d,%d>;\n' % (sub_dim,dim) )
 

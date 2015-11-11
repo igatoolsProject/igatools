@@ -168,13 +168,59 @@ public:
   virtual void print_info(LogStream &out) const override final;
 
 
+  template <int sdim>
+  using SubFunc = typename base_t::template SubFunc<sdim>;
 
+
+  std::shared_ptr<const SubFunc<(dim>0)?dim-1:0> >
+  get_sub_function(const int s_id,
+                   const std::shared_ptr<const Grid<(dim>0)?dim-1:0>> &sub_grid) const override final
+  {
+    return get_sub_function_impl<(dim>0)?dim-1:0>(s_id,sub_grid);
+  }
+
+
+  template <int sdim>
+  std::shared_ptr<const Function<sdim,codim+(dim-sdim),range,rank> >
+  get_sub_function_impl(const int s_id,
+                        const std::shared_ptr<const Grid<sdim>> &sub_grid,
+                        EnableIf<((dim > 0) &&(sdim >=0))> * = nullptr) const
+  {
+    static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
+                  "The dimensionality of the sub_grid is not valid.");
+
+
+
+    typename PhysBasis::template InterSpaceMap<sdim> dof_map;
+    typename Grid<dim>::template SubGridMap<sdim> elem_map;
+    auto sub_basis = basis_->template get_sub_space<sdim>(s_id,dof_map,sub_grid,elem_map);
+
+
+    IgCoefficients sub_coeffs;
+    const int n_sub_dofs = dof_map.size();
+    for (int sub_dof = 0 ; sub_dof < n_sub_dofs ; ++ sub_dof)
+      sub_coeffs[sub_dof] = coeffs_[dof_map[sub_dof]];
+
+    auto sub_func = IgFunction<sdim,codim+(dim-sdim),range,rank>::const_create(sub_basis,sub_coeffs);
+
+    return sub_func;
+  }
+
+  template <int sdim>
+  std::shared_ptr<const Function<sdim,codim+(dim-sdim),range,rank> >
+  get_sub_function_impl(const int s_id,
+                        const std::shared_ptr<const Grid<sdim>> &sub_grid,
+                        EnableIf<!((dim > 0) &&(sdim >=0))> * = nullptr) const
+  {
+    AssertThrow(false,ExcNotImplemented());
+    return nullptr;
+  }
 
 private:
 
   SharedPtrConstnessHandler<PhysBasis> basis_;
 
-  CoeffType coeff_;
+  CoeffType coeffs_;
 
   std::string dofs_property_;
 
@@ -211,7 +257,7 @@ private:
     ar &make_nvp(base_name,base_class<base_t>(this));
 
     ar &make_nvp("basis_",basis_);
-    ar &make_nvp("coeff_",coeff_);
+    ar &make_nvp("coeffs_",coeffs_);
     ar &make_nvp("dofs_property_",dofs_property_);
   }
   ///@}

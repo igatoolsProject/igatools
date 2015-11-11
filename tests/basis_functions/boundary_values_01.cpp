@@ -38,29 +38,26 @@
 #include <igatools/basis_functions/bspline_element.h>
 
 
-#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 
 
 template<int dim , int codim, int range ,int rank>
 void do_test(const int p, const int num_knots = 10)
 {
-  const int sub_dim = dim - 1;
+  auto grid = Grid<dim>::create(num_knots);
+  auto space = SplineSpace<dim,range,rank>::create(p,grid);
+  auto ref_basis = BSpline<dim,range,rank>::create(space) ;
+  auto map = grid_functions::IdentityGridFunction<dim>::create(grid);
+  auto domain = Domain<dim,codim>::create(map);
+  auto basis = PhysicalSpaceBasis<dim,range,rank,codim>::create(ref_basis, domain);
 
-  using BspSpace = BSpline<dim,range,rank>;
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
 
-
-  auto grid = Grid<dim>::const_create(num_knots);
-  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(p, grid)) ;
-  auto map = IdentityFunction<dim>::const_create(grid);
-  auto space = Basis::const_create(ref_space, map);
-
-  auto f = BoundaryFunction<dim>::const_create(grid);
+  auto f = BoundaryFunction<dim,codim,range,rank>::create(domain);
 
 
   const int n_qpoints = 4;
-  QGauss<sub_dim> quad(n_qpoints);
+  auto quad = QGauss<dim-1>::create(n_qpoints);
 
   const boundary_id dirichlet = 1;
   grid->set_boundary_id(0, dirichlet);
@@ -68,11 +65,9 @@ void do_test(const int p, const int num_knots = 10)
   bdry_ids.insert(dirichlet);
 
 
-
   std::map<Index,Real> boundary_values;
-  space_tools::project_boundary_values<Basis>(
-    f, space, quad, bdry_ids,
-    boundary_values);
+  space_tools::project_boundary_values<dim,codim,range,rank>(
+    *f, *basis, quad, bdry_ids,boundary_values);
 
   out << "basis index \t value" << endl;
   for (auto entry : boundary_values)

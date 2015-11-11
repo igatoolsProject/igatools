@@ -55,7 +55,7 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
     auto loc_id = epetra_map.LID(glob_dof);
     Assert(loc_id >= 0,
            ExcMessage("Global dof " + std::to_string(glob_dof) + " not present in the input EpetraTools::Vector."));
-    coeff_[glob_dof] = coeff[loc_id];
+    coeffs_[glob_dof] = coeff[loc_id];
   }
 }
 
@@ -81,9 +81,9 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
   const auto &active_dofs = dof_distribution.get_global_dofs(dofs_property);
 
   for (const auto glob_dof : active_dofs)
-    coeff_[glob_dof] = coeff.at(glob_dof);
+    coeffs_[glob_dof] = coeff.at(glob_dof);
 #else
-  coeff_ = coeff;
+  coeffs_ = coeff;
 #endif
 }
 
@@ -187,7 +187,7 @@ auto
 IgFunction<dim,codim,range,rank>::
 get_coefficients() const -> const CoeffType &
 {
-  return coeff_;
+  return coeffs_;
 }
 
 
@@ -200,8 +200,8 @@ operator +=(const self_t &fun) -> self_t &
   Assert(basis_.get_ptr_const_data() == fun.basis_.get_ptr_const_data(),
   ExcMessage("Functions defined on different spaces."));
 
-  for (const auto &f_dof_value : fun.coeff_)
-    coeff_[f_dof_value.first] += f_dof_value.second;
+  for (const auto &f_dof_value : fun.coeffs_)
+    coeffs_[f_dof_value.first] += f_dof_value.second;
 
   return *this;
 }
@@ -220,18 +220,18 @@ rebuild_after_insert_knots(
   this->function_previous_refinement_ =
     IgFunction<dim,codim,range,rank>::const_create(
       std::dynamic_pointer_cast<const PhysBasis>(basis_->get_basis_previous_refinement()),
-      coeff_,
+      coeffs_,
       dofs_property_);
 
 
   const int max_degree = basis_->get_spline_space()->get_max_degree();
 
   const auto quad = QGauss<dim>::create(max_degree+1);
-  auto function_refined =
-    space_tools::projection_l2(
-      *(this->function_previous_refinement_),basis_.get_ptr_data(),quad);
+  this->coeffs_ =
+    space_tools::projection_l2_function<dim,codim,range,rank>(
+      *(this->function_previous_refinement_),*basis_,quad);
 
-  this->coeff_ = std::move(function_refined->coeff_);
+//  this->coeffs_ = std::move(function_refined->coeffs_);
 }
 
 template<int dim,int codim,int range,int rank>
@@ -282,7 +282,7 @@ print_info(LogStream &out) const
 
 
   out.begin_item("IgCoefficients:");
-  coeff_.print_info(out);
+  coeffs_.print_info(out);
   out.end_item();
 
   out << "Dofs property: " << dofs_property_ << std::endl;
@@ -323,7 +323,7 @@ serialize(Archive &ar, const unsigned int version)
   basis_ = non_nonst_space;
   Assert(basis_ != nullptr,ExcNullPtr());
 
-  ar &boost::serialization::make_nvp("coeff_",coeff_);
+  ar &boost::serialization::make_nvp("coeffs_",coeffs_);
 
   ar &boost::serialization::make_nvp("dofs_property_",const_cast<std::string &>(dofs_property_));
 
