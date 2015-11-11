@@ -681,6 +681,23 @@ private:
 
   TensorSizedContainer<dim_> elems_size_;
 
+  template <int sdim>
+  class SubGridData
+  {
+  private:
+    using SubGrid = Grid<sdim>;
+
+    //TODO (martinelli, November 11, 2015): the number of subgrid must be the number of combination of dim elems taken sdim at time
+    SafeSTLArray<std::shared_ptr<SubGrid>,dim_> sub_grids_;
+
+    using SubGridElemMap =
+      SafeSTLMap<typename SubGrid::IndexType, IndexType>;
+
+    SafeSTLArray<SubGridElemMap,UnitElement<dim>::template num_elem<sdim>()> sub_grid_element_maps_;
+  };
+
+  SubGridData<(dim_>0)? dim_-1 : 0> sub_grid_data_;
+
 public:
   /**
    * Create an element (defined on this grid) with a given index and the given property
