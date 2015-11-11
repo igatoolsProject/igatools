@@ -172,26 +172,20 @@ get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
   "The dimensionality of the sub_grid is not valid.");
 
 
-  auto sub_ref_basis = ref_basis_->get_ref_sub_space(s_id, dof_map, sub_grid);
+  const auto sub_ref_basis = ref_basis_->get_ref_sub_space(s_id, dof_map, sub_grid);
 
   shared_ptr<const GridFunction<sdim,space_dim>> sub_func;
 
   const auto F = this->phys_domain_->get_grid_function();
-  using IgFunc = IgGridFunction<dim,dim+codim>;
+  using IgFunc = IgGridFunction<dim,space_dim>;
   auto ig_func = std::dynamic_pointer_cast<const IgFunc>(F);
   if (ig_func)
   {
-    auto coeffs = ig_func->get_coefficients();
-    IgCoefficients sub_coeffs;
-    const int n_sub_dofs = dof_map.size();
-    for (int sub_dof = 0 ; sub_dof < n_sub_dofs ; ++ sub_dof)
-      sub_coeffs[sub_dof] = coeffs[dof_map[sub_dof]];
-
-    sub_func = IgGridFunction<sdim,space_dim>::const_create(sub_ref_basis,sub_coeffs);
+    sub_func = ig_func->get_sub_function(s_id,sub_grid);
   }
   else
   {
-    AssertThrow(false,ExcMessage("IgFunction"));
+    AssertThrow(false,ExcMessage("GridFunction"));
     AssertThrow(false,ExcNotImplemented());
   }
   auto sub_domain = Domain<sdim,space_dim-sdim>::const_create(sub_func);
