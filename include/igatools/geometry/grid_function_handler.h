@@ -76,20 +76,6 @@ public:
 
   virtual ~GridFunctionHandler();
 
-#if 0
-  static std::shared_ptr<self_t>
-  create(std::shared_ptr<GridFunctionType> grid_function)
-  {
-    return std::shared_ptr<self_t>(new self_t(grid_function));
-  }
-
-
-  static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<GridFunctionType> grid_function)
-  {
-    return create(grid_function);
-  }
-#endif
 
   std::shared_ptr<GridFunctionType> get_grid_function() const;
 
@@ -228,6 +214,191 @@ private:
 
 //  friend ElementAccessor;
 };
+
+
+
+template<int sdim,int dim, int space_dim>
+class SubGridFunctionHandler
+{
+private:
+  using self_t = SubGridFunctionHandler<sdim,dim,space_dim>;
+
+public:
+  using GridFunctionType = const SubGridFunction<sdim,dim,space_dim>;
+//  using GridType = const Grid<dim_>;
+//  using GridHandler = typename GridType::ElementHandler;
+
+  using ElementAccessor = GridFunctionElement<sdim,space_dim>;
+  using ElementIterator = GridIterator<ElementAccessor>;
+
+
+//  using List = typename GridType::List;
+//  using ListIt = typename GridType::ListIt;
+  using Flags = grid_function_element::Flags;
+
+protected:
+  using FlagsArray = SafeSTLArray<Flags, sdim+1>;
+
+  using topology_variant = TopologyVariants<sdim>;
+
+  template<int k>
+  using ConstQuad = const Quadrature<k>;
+  using eval_pts_variant = SubElemPtrVariants<ConstQuad,sdim>;
+
+private:
+  SubGridFunctionHandler() = delete;
+
+public:
+  SubGridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function);
+
+
+  virtual ~SubGridFunctionHandler();
+
+
+  std::shared_ptr<GridFunctionType> get_grid_function() const
+		{
+	  return sub_grid_function_;
+		}
+
+
+public:
+  virtual void set_flags(const topology_variant &topology,
+                         const Flags &flag);
+
+  template <int k>
+  void set_flags(const Flags &flag)
+  {
+    this->set_flags(Topology<k>(), flag);
+  }
+
+  void set_element_flags(const Flags &flag);
+
+  virtual void init_cache(ElementAccessor &elem,
+                          const eval_pts_variant &quad) const;
+
+  void init_cache(ElementIterator &elem,
+                  const eval_pts_variant &quad) const;
+
+  void init_element_cache(ElementAccessor &elem,
+                          const std::shared_ptr<const Quadrature<sdim>> &quad) const;
+
+  void init_element_cache(ElementIterator &elem,
+                          const std::shared_ptr<const Quadrature<sdim>> &quad) const;
+
+  virtual void fill_cache(const topology_variant &topology,
+                          ElementAccessor &elem,
+                          const int s_id) const;
+
+  void fill_cache(const topology_variant &topology,
+                  ElementIterator &elem,
+                  const int s_id) const;
+
+  template <int k>
+  void fill_cache(ElementIterator &elem,
+                  const int s_id)
+  {
+    this->fill_cache(Topology<k>(), elem, s_id);
+  }
+
+  template <int k>
+  void fill_cache(ElementAccessor &elem,
+                  const int s_id)
+  {
+    this->fill_cache(Topology<k>(), elem, s_id);
+  }
+
+  void fill_element_cache(ElementAccessor &elem);
+
+  void fill_element_cache(ElementIterator &elem);
+
+  /*
+  //protected:
+public:
+  const GridHandler &
+  get_grid_handler() const;
+
+  GridHandler &
+  get_grid_handler();
+//*/
+
+protected:
+  typename ElementAccessor::CacheType &
+  get_element_cache(ElementAccessor &elem) const
+  {
+    return  elem.local_cache_;
+  }
+//*/
+
+private:
+  /**
+   * Alternative to
+   * template <int sdim> set_flags()
+   */
+  struct SetFlagsDispatcher : boost::static_visitor<void>
+  {
+    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
+      :
+      flag_(flag),
+      flags_(flags)
+    {}
+
+    template<int k>
+    void operator()(const Topology<k> &)
+    {
+      flags_[k] |= flag_;
+    }
+
+    const Flags flag_;
+    FlagsArray &flags_;
+  };
+
+
+
+  struct InitCacheDispatcher : boost::static_visitor<void>
+  {
+    InitCacheDispatcher(const self_t &grid_function_handler,
+                        ElementAccessor &elem,
+                        const FlagsArray &flags)
+      :
+      grid_function_handler_(grid_function_handler),
+      elem_(elem),
+      flags_(flags)
+    {}
+
+
+    template<int k>
+    void operator()(const std::shared_ptr<const Quadrature<k>> &quad)
+    {
+      auto &cache = grid_function_handler_.get_element_cache(elem_);
+
+      const auto n_points = elem_.get_grid_element().template get_quad<k>()
+                            ->get_num_points();
+      for (auto &s_id: UnitElement<sdim>::template elems_ids<k>())
+      {
+        auto &s_cache = cache.template get_sub_elem_cache<k>(s_id);
+        s_cache.resize(flags_[k], n_points);
+      }
+    }
+
+    const self_t &grid_function_handler_;
+    ElementAccessor &elem_;
+    const FlagsArray &flags_;
+  };
+
+
+
+
+private:
+  std::shared_ptr<GridFunctionType> sub_grid_function_;
+
+  std::unique_ptr<GridFunctionHandler<dim,space_dim>> func_handler_;
+//  std::unique_ptr<GridHandler> grid_handler_;
+
+  FlagsArray flags_;
+
+//  friend ElementAccessor;
+};
+
 
 IGA_NAMESPACE_CLOSE
 

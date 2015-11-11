@@ -284,8 +284,8 @@ public:
     else if (formula_func)
     {
       sub_func = formula_func->get_sub_function(s_id,sub_grid_elem_map,sub_grid);
-      AssertThrow(false,ExcMessage("FormulaFunction"));
-      AssertThrow(false,ExcNotImplemented());
+//      AssertThrow(false,ExcMessage("FormulaFunction"));
+//      AssertThrow(false,ExcNotImplemented());
     }
     else
     {
