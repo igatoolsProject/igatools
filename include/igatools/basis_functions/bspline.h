@@ -26,7 +26,7 @@
 
 #include <igatools/basis_functions/reference_space_basis.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
-#include <igatools/geometry/domain.h>
+//#include <igatools/geometry/domain.h>
 #include <igatools/basis_functions/physical_space_basis.h>
 
 IGA_NAMESPACE_OPEN
@@ -115,7 +115,6 @@ public:
   static const bool is_physical_space = false;
 
 public:
-  using typename BaseSpace::Func;
   using typename BaseSpace::Point;
   using typename BaseSpace::Value;
 

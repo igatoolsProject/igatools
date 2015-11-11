@@ -95,13 +95,12 @@ public:
   using ListIt = typename PropertyList::List::iterator;
 
 public:
-  using Func = Function<dim, codim, range, rank>;
   template <int order>
-  using Derivative = typename Func::template Derivative<order>;
-  using Point = typename Func::Point;
-  using Value = typename Func::Value;
-  using Gradient = typename Func::Gradient;
-  using Div   = typename Func::Div;
+  using Derivative = typename base_t::template Derivative<order>;
+  using Point = typename base_t::Point;
+  using Value = typename base_t::Value;
+  using Gradient = typename base_t::Gradient;
+  using Div   = typename base_t::Div;
 
   using RefPoint = typename RefBasis::Point;
 

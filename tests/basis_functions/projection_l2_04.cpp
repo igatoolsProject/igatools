@@ -40,12 +40,12 @@
 // in the library
 
 template<int dim,int range>
-class TestGridFunction : public FormulaGridFunction<dim,range>
+class Test2GridFunction : public FormulaGridFunction<dim,range>
 {
 private:
   using base_t = GridFunction<dim,range>;
   using parent_t = FormulaGridFunction<dim,range>;
-  using self_t = TestGridFunction<dim,range>;
+  using self_t = Test2GridFunction<dim,range>;
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
@@ -54,7 +54,7 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 
 public:
-  TestGridFunction(const SharedPtrConstnessHandler<Grid<dim>> &grid)
+  Test2GridFunction(const SharedPtrConstnessHandler<Grid<dim>> &grid)
     : parent_t(grid)
   {}
 
@@ -116,7 +116,7 @@ void test_proj(const int p, const int n_knots = 4)
   const int n_qp = 4;
   auto quad = QGauss<dim>::create(n_qp);
 
-  auto f = TestGridFunction<dim,range>::const_create(grid);
+  auto f = Test2GridFunction<dim,range>::const_create(grid);
   auto coeffs_func = space_tools::projection_l2_grid_function<dim,range>(*f,*basis,quad);
 
   auto proj_func = IgGridFunction<dim,range>::const_create(basis,coeffs_func);

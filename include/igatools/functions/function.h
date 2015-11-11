@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/domain.h>
-#include <igatools/geometry/domain_handler.h>
+//#include <igatools/geometry/domain_handler.h>
 
 //#include <igatools/base/tensor.h>
 //#include <igatools/geometry/unit_element.h>

@@ -23,8 +23,6 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/array_utils.h>
-#include <igatools/functions/function.h>
-#include <igatools/functions/function_element.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
@@ -89,14 +87,16 @@ private:
 public:
   using self_t = SplineSpace<dim,range,rank>;
 
-  using Func = Function<dim, 0, range, rank>;
 
 public:
+  /*
+  using Func = Function<dim, 0, range, rank>;
   template <int order>
   using Derivative = typename Func::template Derivative<order>;
   using Point = typename Func::Point;
   using Value = typename Func::Value;
   using Div   = typename Func::Div;
+  //*/
 
 public:
   template<class> class ComponentContainer;

@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/array_utils.h>
-#include <igatools/functions/function_element.h>
+//#include <igatools/functions/function_element.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/basis_functions/basis.h>
 #include <igatools/geometry/grid.h>
@@ -75,13 +75,11 @@ public:
 
   using RefBasis = ReferenceSpaceBasis<dim_,range_,rank_>;
 
-  using Func = Function<dim, 0, range, rank>;
-
   template <int order>
-  using Derivative = typename Func::template Derivative<order>;
-  using Point = typename Func::Point;
-  using Value = typename Func::Value;
-  using Div   = typename Func::Div;
+  using Derivative = typename base_t::template Derivative<order>;
+  using Point = typename base_t::Point;
+  using Value = typename base_t::Value;
+  using Div   = typename base_t::Div;
   using RefPoint = Point;
 
 

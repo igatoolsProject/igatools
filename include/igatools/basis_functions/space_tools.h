@@ -712,9 +712,9 @@ projection_l2_grid_function(
  */
 template<int dim,int codim, int range, int rank>
 void
-project_boundary_values(const Function<dim,codim,range,rank> &func,
+project_boundary_values(const Function<dim-1,codim+1,range,rank> &bndry_func,
                         const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
-                        const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:1>> &quad,
+                        const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
                         const std::set<boundary_id>  &boundary_ids,
                         std::map<Index, Real>  &boundary_values)
 {
@@ -753,10 +753,10 @@ project_boundary_values(const Function<dim,codim,range,rank> &func,
     //    (const int s_id, InterSpaceMap< sdim > &dof_map, const std::shared_ptr< const Grid< sdim >> &sub_grid=nullptr)
 
 
-    const auto sub_func = func.get_sub_function(s_id,sub_grid);
+//    const auto sub_func = func.get_sub_function(s_id,sub_grid);
 
     const auto coeffs = projection_l2_function(
-                          *sub_func,*sub_basis,quad,DofProperties::active);
+                          bndry_func,*sub_basis,quad,DofProperties::active);
 
     const int face_n_dofs = dof_map.size();
     for (Index i = 0; i< face_n_dofs; ++i)

@@ -82,7 +82,6 @@ public:
 
 
 public:
-  using Func = typename BSpBasis::Func;
   template <int order>
   using Derivative = typename BSpBasis::template Derivative<order>;
   using Point = typename BSpBasis::Point;

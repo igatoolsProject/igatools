@@ -38,7 +38,6 @@
 #include <igatools/linear_algebra/dense_vector.h>
 
 
-
 IGA_NAMESPACE_OPEN
 
 
@@ -67,16 +66,18 @@ public:
   using GridElem = GridElement<dim_>;
 
 
-  using Func = Function<dim_,codim_,range_,rank_>;
 
-  using Point = typename Func::Point;
-  using Value = typename Func::Value;
+  using Point = typename Sp::Point;
+  using Value = typename Sp::Value;
   template <int order>
-  using Derivative = typename Func::template Derivative<order>;
-  using Div = typename Func::Div;
+  using Derivative = typename Sp::template Derivative<order>;
+  using Div = typename Sp::Div;
 
   static const int dim = dim_;
-  static const int space_dim = Func::space_dim;
+  static const int space_dim = dim_+codim_;
+
+
+
 
   using ContainerType = Sp;
 
@@ -477,7 +478,7 @@ public:
    */
   DenseVector
   integrate_u_func(const ValueVector<Value> &func_at_points,
-		  const PropId &dofs_property = DofProperties::active);
+                   const PropId &dofs_property = DofProperties::active);
 
 
   /**

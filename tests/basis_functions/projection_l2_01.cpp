@@ -54,7 +54,7 @@ void project_l2(const int p, const int num_knots = 10)
   const int n_qpoints = 4;
   auto quad = QGauss<dim>::const_create(n_qpoints);
 
-  auto f = BoundaryGridFunction<dim,range>::const_create(knots);
+  auto f = TestGridFunction<dim,range>::const_create(knots);
   auto coeffs_func = space_tools::projection_l2_grid_function<dim,range>(*f,*basis,quad);
 
   auto proj_func = IgGridFunction<dim,range>::const_create(basis,coeffs_func);

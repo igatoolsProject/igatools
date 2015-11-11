@@ -174,28 +174,8 @@ get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
 
   const auto sub_ref_basis = ref_basis_->get_ref_sub_space(s_id, dof_map, sub_grid);
 
-  shared_ptr<const GridFunction<sdim,space_dim>> sub_func;
+  const auto sub_domain = this->phys_domain_->get_sub_domain(s_id,elem_map,sub_grid);
 
-  const auto F = this->phys_domain_->get_grid_function();
-  using IgFunc = IgGridFunction<dim,space_dim>;
-  auto ig_func = std::dynamic_pointer_cast<const IgFunc>(F);
-  using FormulaFunc = FormulaGridFunction<dim,space_dim>;
-  auto formula_func = std::dynamic_pointer_cast<const FormulaFunc>(F);
-  if (ig_func)
-  {
-    sub_func = ig_func->get_sub_function(s_id,sub_grid);
-  }
-  else if (formula_func)
-  {
-    AssertThrow(false,ExcMessage("FormulaFunction"));
-    AssertThrow(false,ExcNotImplemented());
-  }
-  else
-  {
-    AssertThrow(false,ExcMessage("GridFunction"));
-    AssertThrow(false,ExcNotImplemented());
-  }
-  auto sub_domain = Domain<sdim,space_dim-sdim>::const_create(sub_func);
 
   auto sub_phys_basis = SubSpace<sdim>::const_create(sub_ref_basis, sub_domain);
 

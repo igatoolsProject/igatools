@@ -70,7 +70,7 @@ void do_test(const int p, const int num_knots = 10)
   const int n_qpoints = 4;
   auto quad = QGauss<dim>::const_create(n_qpoints);
 
-  auto f = BoundaryFunction<dim,codim,range,rank>::const_create(domain);
+  auto f = TestFunction<dim,codim,range,rank>::const_create(domain);
   auto coeffs_func = space_tools::projection_l2_function<dim,codim,range,rank>(*f, *basis, quad);
 
   auto proj_func = IgFunction<dim,codim,range,rank>::const_create(basis,coeffs_func);

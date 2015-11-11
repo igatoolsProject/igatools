@@ -43,12 +43,12 @@ using numbers::PI;
 
 
 template<int dim,int range>
-class BoundaryGridFunction : public FormulaGridFunction<dim,range>
+class TestGridFunction : public FormulaGridFunction<dim,range>
 {
 private:
   using base_t = GridFunction<dim,range>;
   using parent_t = FormulaGridFunction<dim,range>;
-  using self_t = BoundaryGridFunction<dim,range>;
+  using self_t = TestGridFunction<dim,range>;
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
@@ -57,7 +57,7 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 
 public:
-  BoundaryGridFunction(const SharedPtrConstnessHandler<Grid<dim>> &grid)
+  TestGridFunction(const SharedPtrConstnessHandler<Grid<dim>> &grid)
     : parent_t(grid)
   {}
 
@@ -117,12 +117,12 @@ public:
 
 
 template<int dim,int codim,int range,int rank>
-class BoundaryFunction : public FormulaFunction<dim,codim,range,rank>
+class TestFunction : public FormulaFunction<dim,codim,range,rank>
 {
 private:
   using base_t = Function<dim,codim,range,rank>;
   using parent_t = FormulaFunction<dim,codim,range,rank>;
-  using self_t = BoundaryFunction<dim,codim,range,rank>;
+  using self_t = TestFunction<dim,codim,range,rank>;
 public:
   using typename parent_t::Value;
   using typename parent_t::Point;
@@ -131,8 +131,8 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 
 public:
-  BoundaryFunction(const SharedPtrConstnessHandler<Domain<dim,codim>> &domain)
-    : parent_t(domain,"BoundaryFunction")
+  TestFunction(const SharedPtrConstnessHandler<Domain<dim,codim>> &domain)
+    : parent_t(domain,"TestFunction")
   {}
 
   static std::shared_ptr<const self_t>
