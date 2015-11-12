@@ -132,10 +132,10 @@ public:
 
 
 
-  void operator++();
+  virtual void operator++();
 
 
-  void move_to(const IndexType &elem_id);
+  virtual void move_to(const IndexType &elem_id);
 
   const GridElem &get_grid_element() const;
 
@@ -282,6 +282,7 @@ class SubGridFunctionElement
   : public GridFunctionElement<sdim,space_dim>
 {
 private:
+  using parent_t = GridFunctionElement<sdim,space_dim>;
   using self_t = SubGridFunctionElement<sdim,dim,space_dim>;
 
 public:
@@ -318,7 +319,15 @@ public:
    */
   SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
                          const ListIt &index,
-                         const PropId &prop = ElementProperties::active);
+                         const PropId &prop = ElementProperties::active)
+    :
+    parent_t(sub_grid_function,sub_grid_function->get_id_elems_sub_grid().begin(),prop),
+    sup_grid_func_element_(
+     std::make_shared<GridFunctionElement<dim,space_dim>>(
+       sub_grid_function->get_sup_grid_function(),
+       sub_grid_function->get_id_elems_sup_grid().begin(),
+       prop))
+  {}
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -379,22 +388,56 @@ public:
 
 
 
-  void operator++() override;
+  virtual void operator++() override
+  {
+    parent_t::operator++();
+
+    using SubGridFunc = SubGridFunction<sdim,dim,space_dim>;
+    const auto grid_func =
+      std::dynamic_pointer_cast<const SubGridFunc>(this->grid_function_);
+
+    sup_grid_func_element_->move_to(grid_func->get_sup_element_id(this->get_index()));
+//    Assert(false,ExcNotImplemented());
+  }
 
 
-  void move_to(const IndexType &elem_id) override;
+  void move_to(const IndexType &elem_id) override
+  {
+    parent_t::move_to(elem_id);
+    Assert(false,ExcNotImplemented());
+  }
 
-  const GridElem &get_grid_element() const;
+  const GridElem &get_grid_element() const
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
-  GridElem &get_grid_element();
+  GridElem &get_grid_element()
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
 
-  const IndexType &get_index() const override;
+  void print_info(LogStream &out) const
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
-  void print_info(LogStream &out) const override;
+  void print_cache_info(LogStream &out) const
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
-  void print_cache_info(LogStream &out) const override;
 
+  GridFunctionElement<dim,space_dim> &
+  get_sup_grid_function_element()
+  {
+    return *sup_grid_func_element_;
+  }
+
+private:
+
+  std::shared_ptr<GridFunctionElement<dim,space_dim>> sup_grid_func_element_;
 };
 
 

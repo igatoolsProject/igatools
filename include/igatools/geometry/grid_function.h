@@ -212,8 +212,10 @@ public:
   using SuperGrid = Grid<dim>;
 
   using typename base_t::ElementAccessor;
-
   using typename base_t::ElementHandler;
+
+  using List = typename GridType::List;
+  using ListIt = typename GridType::ListIt;
 
 
   //    template <int j>
@@ -278,6 +280,12 @@ public:
 
       constant_coordinates_[i] = (v == 0)? knots.front() : knots.back();
       ++i;
+    }
+
+    for (const auto &elems_id : sub_grid_elem_map_)
+    {
+      id_elems_sub_grid_.insert(elems_id.first);
+      id_elems_sup_grid_.insert(elems_id.second);
     }
     /*
          out.begin_item("Constant coordinates:");
@@ -368,9 +376,29 @@ public:
   }
 
 
-  std::shared_ptr<const SupFunc> get_sup_func() const
+  std::shared_ptr<const SupFunc> get_sup_grid_function() const
   {
     return sup_func_.get_ptr_const_data();
+  }
+
+
+  const SafeSTLSet<typename Grid<sdim>::IndexType> &
+  get_id_elems_sub_grid() const
+  {
+    return id_elems_sub_grid_;
+  }
+
+  const SafeSTLSet<typename Grid<dim>::IndexType> &
+  get_id_elems_sup_grid() const
+  {
+    return id_elems_sup_grid_;
+  }
+
+
+  const typename Grid<dim>::IndexType &
+  get_sup_element_id(const typename Grid<sdim>::IndexType &sub_elem_id)
+  {
+    return sub_grid_elem_map_.at(sub_elem_id);
   }
 
 private:
@@ -385,6 +413,8 @@ private:
 
   const SubGridMap sub_grid_elem_map_;
 
+  SafeSTLSet<typename Grid<sdim>::IndexType> id_elems_sub_grid_;
+  SafeSTLSet<typename Grid<dim>::IndexType> id_elems_sup_grid_;
   //  typename SupFunc::ElementIterator sup_elem_;
 
 };

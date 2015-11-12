@@ -254,7 +254,7 @@ public:
   SubGridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function)
     :
     parent_t(grid_function),
-    sup_grid_func_handler_(grid_function->get_sup_func()->create_cache_handler())
+    sup_grid_func_handler_(grid_function->get_sup_grid_function()->create_cache_handler())
   {}
 
 
@@ -278,7 +278,7 @@ public:
     auto init_dispatcher = InitCacheDispatcher(
                              *(this->sup_grid_func_handler_),
                              sub_grid_func_elem.get_sup_grid_function_element());
-    boost::apply_visitor(init_dispatcher, quad);
+//    boost::apply_visitor(init_dispatcher, quad);
   }
 
 
@@ -347,6 +347,7 @@ private:
     template<int k>
     void operator()(const std::shared_ptr<const Quadrature<k>> &quad)
     {
+      Assert(k >= 0 && k <= sdim,ExcMessage("Invalid topology dimension for the Quadrature scheme."));
       std::shared_ptr<const Quadrature<k+1>> sup_quad;
 
       sup_grid_func_handler_.init_cache(sup_grid_func_elem_,sup_quad);
