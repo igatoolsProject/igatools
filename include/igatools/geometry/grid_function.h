@@ -396,7 +396,7 @@ public:
 
 
   const typename Grid<dim>::IndexType &
-  get_sup_element_id(const typename Grid<sdim>::IndexType &sub_elem_id)
+  get_sup_element_id(const typename Grid<sdim>::IndexType &sub_elem_id) const
   {
     return sub_grid_elem_map_.at(sub_elem_id);
   }
