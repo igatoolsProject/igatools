@@ -84,7 +84,7 @@ public:
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const;
 
-  std::unique_ptr<ElementAccessor>
+  virtual std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
 #if 0
@@ -193,167 +193,201 @@ protected:
 
 
 
+template <int,int,int> class SubGridFunctionElement;
+template <int,int,int> class SubGridFunctionHandler;
 
 template<int sdim,int dim,int space_dim>
- class SubGridFunction :
-   public GridFunction<sdim,space_dim>
- {
- private:
-   using self_t = SubGridFunction<sdim,dim,space_dim>;
+class SubGridFunction :
+  public GridFunction<sdim,space_dim>
+{
+private:
+  using self_t = SubGridFunction<sdim,dim,space_dim>;
 
 
- public:
-   using base_t  = GridFunction<sdim,space_dim>;
-   using SupFunc = GridFunction<dim,space_dim>;
+public:
+  using base_t  = GridFunction<sdim,space_dim>;
+  using SupFunc = GridFunction<dim,space_dim>;
 
-   using GridType = Grid<sdim>;
-   using SuperGrid = Grid<dim>;
+  using GridType = Grid<sdim>;
+  using SuperGrid = Grid<dim>;
 
-   using typename base_t::ElementAccessor;
+  using typename base_t::ElementAccessor;
 
-
-   //    template <int j>
-   using SubGridMap = typename SuperGrid::template SubGridMap<sdim>;
+  using typename base_t::ElementHandler;
 
 
- public:
-
-   SubGridFunction(const SharedPtrConstnessHandler<SupFunc> &func,
-                          const int s_id,
-                          const SubGridMap &sub_grid_elem_map,
-                          const SharedPtrConstnessHandler<GridType> &grid)
-     :
-     base_t(grid),
-     func_(func),
-     s_id_(s_id),
-     elems_property_("boundary"),
-     constant_directions_(UnitElement<dim>::template get_elem<sdim>(s_id).constant_directions),
-     sub_grid_elem_map_(sub_grid_elem_map)
-   {
-	   /*
-     LogStream out;
-     out.begin_item("Grid:");
-     this->get_grid()->print_info(out);
-     out.end_item();
+  //    template <int j>
+  using SubGridMap = typename SuperGrid::template SubGridMap<sdim>;
 
 
-     out.begin_item("Sup. Grid:");
-     auto sup_grid = std::const_pointer_cast<SuperGrid>(func->get_grid());
-     sup_grid->print_info(out);
-     out.end_item();
-//*/
-/*
-     sup_grid->add_property(elems_property_);
-     for (const auto &elem_id : sub_grid_elem_map)
-       sup_grid->set_property_status_elem(elems_property_,elem_id.second,true);
-//*/
+public:
+
+  SubGridFunction(const SharedPtrConstnessHandler<SupFunc> &sup_func,
+                  const int s_id,
+                  const SubGridMap &sub_grid_elem_map,
+                  const SharedPtrConstnessHandler<GridType> &grid)
+    :
+    base_t(grid),
+    sup_func_(sup_func),
+    s_id_(s_id),
+    elems_property_("boundary"),
+    constant_directions_(UnitElement<dim>::template get_elem<sdim>(s_id).constant_directions),
+    sub_grid_elem_map_(sub_grid_elem_map)
+  {
+    /*
+    LogStream out;
+    out.begin_item("Grid:");
+    this->get_grid()->print_info(out);
+    out.end_item();
+
+
+    out.begin_item("Sup. Grid:");
+    auto sup_grid = std::const_pointer_cast<SuperGrid>(func->get_grid());
+    sup_grid->print_info(out);
+    out.end_item();
+    //*/
+    /*
+         sup_grid->add_property(elems_property_);
+         for (const auto &elem_id : sub_grid_elem_map)
+           sup_grid->set_property_status_elem(elems_property_,elem_id.second,true);
+    //*/
 
 //     sup_grid->print_info(out);
 
-/*
-     auto func_elem = this->begin();
-     auto func_elem_end = this->end();
-     int elem_id = 0;
-     for (; func_elem != func_elem_end ; ++func_elem, ++elem_id)
-     {
-       out.begin_item("Element " + std::to_string(elem_id));
+    /*
+         auto func_elem = this->begin();
+         auto func_elem_end = this->end();
+         int elem_id = 0;
+         for (; func_elem != func_elem_end ; ++func_elem, ++elem_id)
+         {
+           out.begin_item("Element " + std::to_string(elem_id));
 
-       out << "Element ID: " << func_elem->get_index() << std::endl;
+           out << "Element ID: " << func_elem->get_index() << std::endl;
 
-       out.end_item();
-     }
-//*/
+           out.end_item();
+         }
+    //*/
 
 
-     const auto &constant_values = UnitElement<dim>::template get_elem<sdim>(s_id).constant_values;
-     int i = 0;
-     for (const auto &v : constant_values)
-     {
-       const auto dir = constant_directions_[i];
-       const auto &knots = grid->get_knot_coordinates(dir);
+    const auto &constant_values = UnitElement<dim>::template get_elem<sdim>(s_id).constant_values;
+    int i = 0;
+    for (const auto &v : constant_values)
+    {
+      const auto dir = constant_directions_[i];
+      const auto &knots = grid->get_knot_coordinates(dir);
 
-       constant_coordinates_[i] = (v == 0)? knots.front() : knots.back();
-       ++i;
-     }
-/*
-     out.begin_item("Constant coordinates:");
-     constant_coordinates_.print_info(out);
-     out.end_item();
-//*/
+      constant_coordinates_[i] = (v == 0)? knots.front() : knots.back();
+      ++i;
+    }
+    /*
+         out.begin_item("Constant coordinates:");
+         constant_coordinates_.print_info(out);
+         out.end_item();
+    //*/
 //     AssertThrow(false,ExcNotImplemented());
-   }
+  }
 
-   auto begin() const
-   {
-     return func_->begin(elems_property_);
-   }
+  virtual ~SubGridFunction() = default;
 
-   auto end() const
-   {
-     return func_->end(elems_property_);
-   }
+  auto begin() const
+  {
+    return sup_func_->begin(elems_property_);
+  }
 
-
-   static std::shared_ptr<const self_t>
-   const_create(const std::shared_ptr<const SupFunc> &func,
-                const int s_id,
-                const SubGridMap &sub_grid_elem_map,
-                const std::shared_ptr<const GridType> &grid)
-   {
-     return std::make_shared<self_t>(SharedPtrConstnessHandler<SupFunc>(func),
-                                     s_id,
-                                     sub_grid_elem_map,
-                                     SharedPtrConstnessHandler<GridType>(grid));
-   }
-
-   static std::shared_ptr<self_t>
-   create(const std::shared_ptr<const SupFunc> &func,
-          const int s_id,
-          const SubGridMap &sub_grid_elem_map,
-          const std::shared_ptr<GridType> &grid)
-   {
-     return std::make_shared<self_t>(SharedPtrConstnessHandler<SupFunc>(func),
-                                     s_id,
-                                     sub_grid_elem_map,
-                                     SharedPtrConstnessHandler<GridType>(grid));
-   }
+  auto end() const
+  {
+    return sup_func_->end(elems_property_);
+  }
 
 
-   void rebuild_after_insert_knots(
-     const SafeSTLArray<SafeSTLVector<double>, sdim> &new_knots,
-     const GridType &old_grid) override final
-   {
-     AssertThrow(false,ExcNotImplemented());
-   }
+  static std::shared_ptr<const self_t>
+  const_create(const std::shared_ptr<const SupFunc> &func,
+               const int s_id,
+               const SubGridMap &sub_grid_elem_map,
+               const std::shared_ptr<const GridType> &grid)
+  {
+    return std::make_shared<self_t>(SharedPtrConstnessHandler<SupFunc>(func),
+                                    s_id,
+                                    sub_grid_elem_map,
+                                    SharedPtrConstnessHandler<GridType>(grid));
+  }
 
-   void print_info(LogStream &out) const override final
-   {
-     out.begin_item("SubGridFunction<" + std::to_string(sdim) + ">");
+  static std::shared_ptr<self_t>
+  create(const std::shared_ptr<const SupFunc> &func,
+         const int s_id,
+         const SubGridMap &sub_grid_elem_map,
+         const std::shared_ptr<GridType> &grid)
+  {
+    return std::make_shared<self_t>(SharedPtrConstnessHandler<SupFunc>(func),
+                                    s_id,
+                                    sub_grid_elem_map,
+                                    SharedPtrConstnessHandler<GridType>(grid));
+  }
 
-     out.begin_item("Sup. function:");
-     func_->print_info(out);
-     out.end_item();
 
-     out << "Sub-element ID: " << s_id_ << std::endl;
+  virtual std::unique_ptr<ElementHandler>
+  create_cache_handler() const override
+  {
+    return std::make_unique<SubGridFunctionHandler<sdim,dim,space_dim>>(
+             std::dynamic_pointer_cast<const self_t>(this->shared_from_this())
+           );
+  }
 
-     out.end_item();
-   }
 
- private:
-   SharedPtrConstnessHandler<SupFunc> func_;
-   const int s_id_;
+  virtual std::unique_ptr<ElementAccessor>
+  create_element(const ListIt &index, const PropId &prop) const override
+  {
+    using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
+    auto elem = std::make_unique<Elem>(
+                  std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+                  index, prop);
+    Assert(elem != nullptr, ExcNullPtr());
 
-   const PropId elems_property_;
+    return elem;
+  }
 
-   const SafeSTLArray<int,dim-sdim> constant_directions_;
 
-   SafeSTLArray<Real,dim-sdim> constant_coordinates_;
+  void rebuild_after_insert_knots(
+    const SafeSTLArray<SafeSTLVector<double>, sdim> &new_knots,
+    const GridType &old_grid) override final
+  {
+    AssertThrow(false,ExcNotImplemented());
+  }
 
-   const SubGridMap sub_grid_elem_map_;
+  void print_info(LogStream &out) const override final
+  {
+    out.begin_item("SubGridFunction<" + std::to_string(sdim) + ">");
 
-   //  typename SupFunc::ElementIterator sup_elem_;
+    out.begin_item("Sup. function:");
+    sup_func_->print_info(out);
+    out.end_item();
 
- };
+    out << "Sub-element ID: " << s_id_ << std::endl;
+
+    out.end_item();
+  }
+
+
+  std::shared_ptr<const SupFunc> get_sup_func() const
+  {
+    return sup_func_.get_ptr_const_data();
+  }
+
+private:
+  SharedPtrConstnessHandler<SupFunc> sup_func_;
+  const int s_id_;
+
+  const PropId elems_property_;
+
+  const SafeSTLArray<int,dim-sdim> constant_directions_;
+
+  SafeSTLArray<Real,dim-sdim> constant_coordinates_;
+
+  const SubGridMap sub_grid_elem_map_;
+
+  //  typename SupFunc::ElementIterator sup_elem_;
+
+};
 
 
 IGA_NAMESPACE_CLOSE

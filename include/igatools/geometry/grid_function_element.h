@@ -131,7 +131,6 @@ public:
   ///@}
 
 
-public:
 
   void operator++();
 
@@ -148,6 +147,7 @@ public:
   void print_info(LogStream &out) const;
 
   void print_cache_info(LogStream &out) const;
+
 
 public:
 
@@ -270,6 +270,131 @@ public:
     return grid_elem_->template evaluate_at_points<ValueType>(quad);
   }
   ///@}
+};
+
+
+
+
+
+
+template <int sdim,int dim,int space_dim>
+class SubGridFunctionElement
+  : public GridFunctionElement<sdim,space_dim>
+{
+private:
+  using self_t = SubGridFunctionElement<sdim,dim,space_dim>;
+
+public:
+  using ContainerType = const SubGridFunction<sdim,dim,space_dim>;
+  using GridElem = typename ContainerType::GridType::ElementAccessor;
+  using ListIt = typename ContainerType::ListIt;
+
+  using IndexType = typename Grid<sdim>::IndexType;
+
+  using Value =  typename ContainerType::Value;
+  template <int order>
+  using Derivative = typename ContainerType::template Derivative<order>;
+
+
+// using Gradient =  typename ContainerType_::Gradient;
+
+  using Flags = grid_function_element::Flags;
+
+
+  /** @name Constructors */
+  ///@{
+protected:
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  SubGridFunctionElement() = default;
+
+public:
+  /**
+   * Construct an accessor pointing to the element with
+   * flat index @p elem_index of the Function @p func.
+   */
+  SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
+                         const ListIt &index,
+                         const PropId &prop = ElementProperties::active);
+
+  /**
+   * Copy constructor. Not allowed to be used.
+   */
+  SubGridFunctionElement(const self_t &elem) = delete;
+
+  /**
+   * Move constructor.
+   */
+  SubGridFunctionElement(self_t &&elem) = default;
+
+  /**
+   * Destructor.
+   */
+  ~SubGridFunctionElement() = default;
+  ///@}
+
+
+  /**
+   * @name Comparison operators
+   * @note In order to be meaningful, the comparison must be performed on
+   * elements defined on
+   * the <b>same</b> GridFunction
+   * (in the sense that the pointer to the GridFunction held by the elements must
+   * point to the same GridFunction object).
+   */
+  ///@{
+  /**
+   * True if the elements have the same index.
+   *  @note In debug mode, it is also check they both refer to
+   *  the same cartesian grid. No check is done on the cache.
+   */
+  bool operator==(const self_t &elem) const;
+
+  /**
+   * True if the elements have different index.
+   *  @note In debug mode, it is also check they both refer to
+   *  the same cartesian grid. No check is done on the cache.
+   */
+  bool operator!=(const self_t &elem) const;
+
+  /**
+   * True if the flat-index of the element on the left is smaller than
+   * the flat-index of the element on the right.
+   *  @note In debug mode, it is also check they both refer to
+   *  the same cartesian grid. No check is done on the cache.
+   */
+  bool operator<(const self_t &elem) const;
+
+  /**
+   * True if the flat-index of the element on the left is bigger than
+   * the flat-index of the element on the right.
+   *  @note In debug mode, it is also check they both refer to
+   *  the same cartesian grid. No check is done on the cache.
+   */
+  bool operator>(const self_t &elem) const;
+  ///@}
+
+
+
+  void operator++() override;
+
+
+  void move_to(const IndexType &elem_id) override;
+
+  const GridElem &get_grid_element() const;
+
+  GridElem &get_grid_element();
+
+
+  const IndexType &get_index() const override;
+
+  void print_info(LogStream &out) const override;
+
+  void print_cache_info(LogStream &out) const override;
+
 };
 
 

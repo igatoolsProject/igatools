@@ -26,7 +26,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int space_dim_>
 GridFunctionHandler<dim_, space_dim_>::
-GridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function)
+GridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function)
   :
   grid_function_(grid_function),
   grid_handler_(grid_function->get_grid()->create_cache_handler()),
@@ -36,11 +36,6 @@ GridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function)
 }
 
 
-
-template<int dim_, int space_dim_>
-GridFunctionHandler<dim_, space_dim_>::
-~GridFunctionHandler()
-{}
 
 
 template<int dim_, int space_dim_>
