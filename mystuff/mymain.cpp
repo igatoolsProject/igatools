@@ -40,7 +40,22 @@ Values<dim,1,1> exact_solution(Points<dim> pts) {
   }
   return x;
 }
-//template<int dim> // exact solution gradient
+//template<int dim>
+//using Derivative = Tensor<dim,1,iga::tensor::covariant,iga::Tensor<dim,1,iga::tensor::contravariant,iga::Tdouble>>;
+/*template<int dim> // exact solution gradient
+Tensor<dim,1,iga::tensor::covariant,iga::Tensor<dim,1,iga::tensor::contravariant,iga::Tdouble>>
+  exact_solution_gradient(Points<dim> pts) {
+  using Derivative = Tensor<dim,1,iga::tensor::covariant,iga::Tensor<dim,1,iga::tensor::contravariant,iga::Tdouble>>;
+  Derivative x = {1.0};
+  for (int idim=0; idim<dim; idim++) {
+    for (int jdim=0; jdim<idim; jdim++)
+      x[idim] *= sin( 2.0 * pts[idim] * PI);
+    x[idim] *= cos( 2.0 * pts[idim] * PI);
+    for (int jdim=dim+1; jdim<dim; jdim++)
+      x[idim] *= sin( 2.0 * pts[idim] * PI);
+  }
+  return x;
+}*/
 
 template<int dim> // source term
 Values<dim,1,1> source_term(Points<dim> pts) {
@@ -48,7 +63,6 @@ Values<dim,1,1> source_term(Points<dim> pts) {
   for (int idim=0; idim<dim; idim++) {
     x *= sin(2.0 * pts[idim] * PI);
   }
-  //printf(" evaluation complete:  f(%f,%f) = %f\n",pts[0],pts[1],x);
   return x;
 }
 
@@ -59,21 +73,21 @@ Values<dim,1,1> source_term(Points<dim> pts) {
 int main() {
 
   const int dim  = 2;
-  const int nel  = 32;
+  const int nel  = 16;
   const int deg  = 2;
-
-  Real err1, err2, eoc, h1, h2;
-  
   using CustomFunct = grid_functions::CustomGridFunction<dim,1>;
-  /*for (int iel=4; iel>nel; iel+=4) {
-    auto problem = PoissonProblem<dim>::create(iel,deg);
+  
+  Real err1, err2, eoc, h1, h2; 
+  for (int ideg=1; ideg<=3; ideg++) { printf("\n");
+  for (int iel=4; iel<=nel; iel+=4) {
+    auto problem = PoissonProblem<dim>::create(iel,ideg);
     auto f = CustomFunct::const_create(problem->grid,&source_term);
     problem->assemble(f);
     problem->solve();
     auto u = CustomFunct::const_create(problem->grid,&exact_solution);
     err2 = problem->l2_error(u);
     h2   = (double)1.0/iel;
-    printf("deg = %d, nel = %2d:\t l2_err = %le",deg,iel,err2);
+    printf("deg = %d, nel = %2d:\t l2_err = %le",ideg,iel,err2);
     if (iel==4)
       printf("  eoc = -\n");
     else {
@@ -81,15 +95,16 @@ int main() {
       printf("  eoc = %1.5f\n",eoc);
     }
     err1 = err2;
-    h1 = h2; 
-  }*/
+    h1 = h2;
+  }
+  }
 
-  auto problem = PoissonProblem<dim>::create(8,deg);
+  /*auto problem = PoissonProblem<dim>::create(4,deg);
   auto f = CustomFunct::const_create(problem->grid,&source_term);
   problem->assemble(f);
   problem->solve();
   auto u = CustomFunct::const_create(problem->grid,&exact_solution);
-  err2 = problem->l2_error(u);
+  cout << "\tthe L2-error is: " << problem->l2_error(u) << endl;
 
   auto solution = IgGridFunction<dim,1>::const_create(problem->basis,*problem->sol);
   const int npt = 10;
@@ -97,7 +112,7 @@ int main() {
   output.template add_field(*solution,"solution");
   output.template add_field(*u,"exact solution");
   output.template add_field(*f,"source term");
-  output.save("plot");
+  output.save("plot");*/
 
   return 0;
 }

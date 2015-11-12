@@ -30,17 +30,24 @@ public:
   create(const std::shared_ptr<GridType> &domain);
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const GridType> &domain);
+  const_create(const std::shared_ptr<const GridType> & domain,
+               Value (*f_D0)(const GridPoint));
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const GridType> & domain, Value (*f_D0)(const GridPoint));
+  const_create(const std::shared_ptr<const GridType> & domain,
+               Value (*f_D0)(const GridPoint),
+               Derivative<1> (*f_D1)(const GridPoint));
 
   // info printer method
   virtual void print_info(LogStream &out) const override final;
 
 protected:
   CustomGridFunction(const SharedPtrConstnessHandler<GridType> &domain);
-  CustomGridFunction(const SharedPtrConstnessHandler<GridType> &domain, Value (*f_D0)(const GridPoint));
+  CustomGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
+                     Value (*f_D0)(const GridPoint));
+  CustomGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
+                     Value (*f_D0)(const GridPoint),
+                     Derivative<1> (*f_D1)(const GridPoint));
 
 public:
   // function's functions (thanks anglosaxons for this this beautifully ambiguous expression)
@@ -80,6 +87,14 @@ CustomGridFunction<dim,space_dim>::CustomGridFunction(const SharedPtrConstnessHa
   parent_t(domain)
 {funct_D0 = f_D0;};
 
+template<int dim, int space_dim>
+CustomGridFunction<dim,space_dim>::CustomGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
+                                                      Value (*f_D0)(const GridPoint),
+                                                      Derivative<1> (*f_D1)(const GridPoint))
+  :
+  parent_t(domain)
+{funct_D0 = f_D0; funct_D1 = f_D1;};
+
 // ----------------------------------------------------------------------------
 //  CREATORS
 // ----------------------------------------------------------------------------
@@ -92,15 +107,17 @@ auto CustomGridFunction<dim,space_dim>::create(const std::shared_ptr<GridType> &
   return func;
 };
 
-/*template<int dim, int space_dim> // const creator
-auto CustomGridFunction<dim,space_dim>::const_create(const std::shared_ptr<const GridType> &domain) -> std::shared_ptr<const self_t> {
-  return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(domain)));
-};*/
-
-template<int dim, int space_dim> // const creator with functions
+template<int dim, int space_dim> // const creator with function
 auto CustomGridFunction<dim,space_dim>::const_create(const std::shared_ptr<const GridType> &domain,
                                                      Value (*f_D0)(const GridPoint)) -> std::shared_ptr<const self_t> {
   return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(domain),f_D0));
+};
+
+template<int dim, int space_dim> // const creator with function and derivatives
+auto CustomGridFunction<dim,space_dim>::const_create(const std::shared_ptr<const GridType> &domain,
+                                                     Value (*f_D0)(const GridPoint),
+                                                     Derivative<1> (*f_D1)(const GridPoint)) -> std::shared_ptr<const self_t> {
+  return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(domain),f_D0,f_D1));
 };
 
 // ----------------------------------------------------------------------------
@@ -110,11 +127,6 @@ template<int dim, int space_dim> // evaluate values
 auto CustomGridFunction<dim,space_dim>::evaluate_0(const ValueVector<GridPoint> &points, ValueVector<Value> &values) const -> void {
   auto point = points.begin();
   for (auto &val : values ) {
-    //for (int idim=0; idim<space_dim; idim++) {
-    //  val[idim] = funct[idim](*point);
-    //}
-    //for (int idim=0; idim<dim; idim++)
-    //  val *= sin( (*point)[idim] * PI );
     val = funct_D0(*point);
     ++point;
   }
@@ -122,17 +134,11 @@ auto CustomGridFunction<dim,space_dim>::evaluate_0(const ValueVector<GridPoint> 
 
 template<int dim, int space_dim> // evaluate first derivatives
 auto CustomGridFunction<dim,space_dim>::evaluate_1(const ValueVector<GridPoint> &points, ValueVector<Derivative<1>> &values) const -> void {
-  /*auto point = points.begin();
+  auto point = points.begin();
   for (auto &val : values ) {
-    for (int idim=0; idim<dim; idim++) {
-      val[idim] = PI; 
-      for (int jdim=0; jdim<idim; jdim++)
-        val[idim] *= sin((*point)[idim] * PI);
-      val[idim] *= cos((*point)[idim] * PI);
-      for (int jdim=idim+1; jdim<dim; jdim++)
-        val[idim] *= sin((*point)[idim] * PI);
-    }
-  }*/
+    val = funct_D1(*point);
+    ++point;
+  }
 };
 
 template<int dim, int space_dim> // evaluate second derivatives
@@ -140,9 +146,12 @@ auto CustomGridFunction<dim,space_dim>::evaluate_2(const ValueVector<GridPoint> 
   std::cout << " not implemented yet!" << std::endl;
 };
 
+// ----------------------------------------------------------------------------
+//   INFO PRINTER
+// ----------------------------------------------------------------------------
 template<int dim, int space_dim>
 void CustomGridFunction<dim,space_dim>::print_info(LogStream &out) const {
-  std::cout << " print_info method tested!" << std::endl;
+  std::cout << " print_info not implemented yet!" << std::endl;
 };
 
 } // of namespace functions.
