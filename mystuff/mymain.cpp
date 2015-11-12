@@ -9,7 +9,7 @@
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/linear_algebra/dense_vector.h>
 // headers for system solving
-#include <igatools/linear_algebra/epetra_solver.h>
+//#include <igatools/linear_algebra/epetra_solver.h>
 #include <igatools/linear_algebra/dof_tools.h>
 // headers for function representations
 #include <igatools/functions/function_lib.h>
@@ -73,27 +73,28 @@ Values<dim,1,1> source_term(Points<dim> pts) {
 int main() {
 
   const int dim  = 2;
-  const int nel  = 16;
+  const int nel  = 20;
   const int deg  = 2;
   using CustomFunct = grid_functions::CustomGridFunction<dim,1>;
   
-  Real err1, err2, eoc, h1, h2; 
-  for (int ideg=1; ideg<=3; ideg++) { printf("\n");
+  Real err1, err2, eoc, h1, h2; int it=0;
+  for (int ideg=1; ideg<=2; ideg++) { printf("\n");
   for (int iel=4; iel<=nel; iel+=4) {
     auto problem = PoissonProblem<dim>::create(iel,ideg);
     auto f = CustomFunct::const_create(problem->grid,&source_term);
     problem->assemble(f);
-    problem->solve();
+    problem->custom_solve(it);
     auto u = CustomFunct::const_create(problem->grid,&exact_solution);
     err2 = problem->l2_error(u);
     h2   = (double)1.0/iel;
     printf("deg = %d, nel = %2d:\t l2_err = %le",ideg,iel,err2);
     if (iel==4)
-      printf("  eoc = -\n");
+      printf("  eoc = -.-");
     else {
       eoc = (log(err2)-log(err1))/(log(h2)-log(h1));
-      printf("  eoc = %1.5f\n",eoc);
+      printf("  eoc = %1.5f",eoc);
     }
+    printf("\t it = %d\n",it);
     err1 = err2;
     h1 = h2;
   }
@@ -102,7 +103,7 @@ int main() {
   /*auto problem = PoissonProblem<dim>::create(4,deg);
   auto f = CustomFunct::const_create(problem->grid,&source_term);
   problem->assemble(f);
-  problem->solve();
+  problem->custom_solve(it);
   auto u = CustomFunct::const_create(problem->grid,&exact_solution);
   cout << "\tthe L2-error is: " << problem->l2_error(u) << endl;
 

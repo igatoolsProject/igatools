@@ -6,7 +6,6 @@ IGA_NAMESPACE_OPEN
 namespace grid_functions
 {
 
-
 template<int dim, int space_dim>
 class CustomGridFunction : public FormulaGridFunction<dim,space_dim> {
   // some useful aliases

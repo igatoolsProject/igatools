@@ -1,3 +1,9 @@
+//#include<igatools/linear_algebra/epetra.h>
+
+#include "AztecOO_config.h"
+#include "AztecOO.h"
+
+
 template<int dim_>
 class PoissonProblem {
 
@@ -36,6 +42,7 @@ class PoissonProblem {
     //using Funct = typename grid_functions::FormulaGridFunction<dim_,1>::CustomGridFunction<dim_,1>;
     void assemble(std::shared_ptr<const GridFunction<dim_,1>> f) const;
     void solve() const;
+    void custom_solve(int &it) const;
     Real l2_error(std::shared_ptr<const GridFunction<dim_,1>> u) const;
 };
 template<int dim_>
@@ -159,10 +166,53 @@ void PoissonProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> 
   apply_boundary_values(bdr_vals,*mat,*rhs,*sol);
 }
 
-template<int dim_> // solver the linear system
+template<int dim_> // solver for the linear system
 void PoissonProblem<dim_>::solve() const {
   auto solver = create_solver(*mat,*sol,*rhs);
   solver->solve();
+}
+
+
+using OP = Epetra_Operator;
+using MV = Epetra_MultiVector;
+using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
+template<int dim_> // custom siuppacool solver
+void PoissonProblem<dim_>::custom_solve(int &it) const {
+  using Teuchos::ParameterList;
+  using Teuchos::parameterList;
+  using Teuchos::RCP;
+  using Teuchos::rcp;
+  Belos::SolverFactory<double, MV, OP> factory;
+  RCP<ParameterList> solverParams = parameterList();
+  solverParams->set("Num Blocks", 40);
+  solverParams->set("Maximum Iterations", 400);
+  solverParams->set("Convergence Tolerance", 1.0e-8);
+
+  SolverPtr solver = factory.create("GMRES", solverParams);
+  RCP<Belos::LinearProblem<double, MV, OP> > problem =
+  rcp(new Belos::LinearProblem<double, MV, OP> (
+  rcp<OP>(mat.get(),false),
+  rcp<MV>(sol.get(),false),
+  rcp<MV>(rhs.get(),false)));
+
+  //RCP<ML_Epetra::MultiLevelPreconditioner> Prec =
+  //rcp(new ML_Epetra::MultiLevelPreconditioner(*(A.get()), true));
+
+  //RCP<Belos::EpetraPrecOp> belosPrec = rcp(new Belos::EpetraPrecOp(Prec));
+  //problem->setLeftPrec(belosPrec);
+
+  problem->setProblem();
+
+  solver->setProblem(problem);
+  solver->solve();
+  it = solver->getNumIters();
+//-----------------------------------------------------
+  
+  //Epetra_LinearProblem prob(,sol,rhs);
+  //AztecOO solvr(prob);
+  //solvr.SetAztecOption(AZ_precond, AZ_Jacobi);
+  //solvr.Iterate(100, 1.0E-8);
+
 }
 
 template<int dim_> // compute the L2 error given the exact solution
