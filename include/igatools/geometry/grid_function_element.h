@@ -58,11 +58,9 @@ public:
   ///@{
 protected:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. Not allowed to be used.
    */
-  GridFunctionElement() = default;
+  GridFunctionElement() = delete;
 
 public:
   /**
@@ -284,11 +282,9 @@ public:
   ///@{
 protected:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. Not allowed to be used.
    */
-  SubGridFunctionElement() = default;
+  SubGridFunctionElement() = delete;
 
 public:
   /**

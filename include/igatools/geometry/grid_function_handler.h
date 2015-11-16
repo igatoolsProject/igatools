@@ -267,9 +267,8 @@ public:
   virtual void set_flags(const topology_variant &topology,
                          const Flags &flag)
   {
-    sup_grid_func_handler_->set_flags(topology,flag);
-//  auto disp = SetFlagsDispatcher(flag,*sup_func_handler_);
-//  boost::apply_visitor(disp, topology);
+    auto set_flags_dispatcher = SetFlagsDispatcher2(flag,*sup_grid_func_handler_);
+    boost::apply_visitor(set_flags_dispatcher,topology);
   }
 
   virtual void init_cache(ElementAccessor &sub_grid_func_elem,
@@ -309,29 +308,30 @@ protected:
 //*/
 
 private:
-#if 0
   /**
    * Alternative to
-   * template <int sdim> set_flags()
+   * template <int k> set_flags()
    */
-  struct SetFlagsDispatcher : boost::static_visitor<void>
+  struct SetFlagsDispatcher2 : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const Flags flag,GridFunctionHandler<dim,space_dim> &sup_handler)
+    SetFlagsDispatcher2(
+      const Flags flag,
+      GridFunctionHandler<dim,space_dim> &sup_handler)
       :
       flag_(flag),
       sup_handler_(sup_handler)
     {}
 
     template<int k>
-    void operator()(const Topology<k> &)
+    void operator()(const Topology<k> &topology)
     {
-      sup_handler_->template set_flags<k>(flag);
+      Assert(k >= 0 && k <= sdim,ExcMessage("Invalid topology dimension."));
+      sup_handler_.template set_flags<k>(flag_);
     }
 
     const Flags flag_;
     GridFunctionHandler<dim,space_dim> &sup_handler_;
   };
-#endif
 
 
   struct InitCacheDispatcher : boost::static_visitor<void>

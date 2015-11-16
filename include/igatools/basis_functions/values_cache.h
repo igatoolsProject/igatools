@@ -41,8 +41,8 @@ IGA_NAMESPACE_OPEN
 /**
  * @ingroup cache
  */
-template <class ValuesCache,int dim,int sub_elem_dim>
-using ValuesCacheAllSubElems = SafeSTLArray<ValuesCache,UnitElement<dim>::template num_elem<sub_elem_dim>()>;
+template <class ValuesCache,int dim,int sdim>
+using ValuesCacheAllSubElems = SafeSTLArray<ValuesCache,UnitElement<dim>::template num_elem<sdim>()>;
 
 /**
  * @ingroup cache
