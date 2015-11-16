@@ -21,6 +21,11 @@
 //#include "my_formula_grid_function.h"
 #include "custom_grid_function.h"
 
+// headers for Trilinos stuff
+#include <Teuchos_GlobalMPISession.hpp>
+#include <Tpetra_DefaultPlatform.hpp>
+#include <Tpetra_Version.hpp>
+
 using namespace iga;
 using namespace std;
 using namespace EpetraTools;
@@ -36,54 +41,41 @@ template<int dim> // exact solution
 Values<dim,1,1> exact_solution(Points<dim> pts) {
   Values<dim,1,1> x = {1.0};
   for (int idim=0; idim<dim; idim++) {
-    x *= sin( 2.0 * pts[idim] * PI);
+    x *= sin( 4.0 * pts[idim] * PI);
   }
   return x;
 }
-//template<int dim>
-//using Derivative = Tensor<dim,1,iga::tensor::covariant,iga::Tensor<dim,1,iga::tensor::contravariant,iga::Tdouble>>;
-/*template<int dim> // exact solution gradient
-Tensor<dim,1,iga::tensor::covariant,iga::Tensor<dim,1,iga::tensor::contravariant,iga::Tdouble>>
-  exact_solution_gradient(Points<dim> pts) {
-  using Derivative = Tensor<dim,1,iga::tensor::covariant,iga::Tensor<dim,1,iga::tensor::contravariant,iga::Tdouble>>;
-  Derivative x = {1.0};
-  for (int idim=0; idim<dim; idim++) {
-    for (int jdim=0; jdim<idim; jdim++)
-      x[idim] *= sin( 2.0 * pts[idim] * PI);
-    x[idim] *= cos( 2.0 * pts[idim] * PI);
-    for (int jdim=dim+1; jdim<dim; jdim++)
-      x[idim] *= sin( 2.0 * pts[idim] * PI);
-  }
-  return x;
-}*/
 
 template<int dim> // source term
 Values<dim,1,1> source_term(Points<dim> pts) {
-  Values<dim,1,1> x = {4.0 * dim * PI * PI};
+  Values<dim,1,1> x = {16.0 * dim * PI * PI};
   for (int idim=0; idim<dim; idim++) {
-    x *= sin(2.0 * pts[idim] * PI);
+    x *= sin(4.0 * pts[idim] * PI);
   }
   return x;
 }
-
 
 // ----------------------------------------------------------------------------
 //   MAIN
 // ----------------------------------------------------------------------------
 int main() {
 
+  // problem input
   const int dim  = 2;
-  const int nel  = 20;
+  const int nel  = 16;
   const int deg  = 2;
+  // problem output
+  int it;
+  double cond, cond2;
   using CustomFunct = grid_functions::CustomGridFunction<dim,1>;
   
-  Real err1, err2, eoc, h1, h2; int it=0;
-  for (int ideg=1; ideg<=2; ideg++) { printf("\n");
+  Real err1, err2, eoc, h1, h2;
+  for (int ideg=2; ideg<=2; ideg++) { printf("\n");
   for (int iel=4; iel<=nel; iel+=4) {
     auto problem = PoissonProblem<dim>::create(iel,ideg);
     auto f = CustomFunct::const_create(problem->grid,&source_term);
     problem->assemble(f);
-    problem->custom_solve(it);
+    problem->custom_solve(it,cond,cond2);
     auto u = CustomFunct::const_create(problem->grid,&exact_solution);
     err2 = problem->l2_error(u);
     h2   = (double)1.0/iel;
@@ -94,18 +86,24 @@ int main() {
       eoc = (log(err2)-log(err1))/(log(h2)-log(h1));
       printf("  eoc = %1.5f",eoc);
     }
-    printf("\t it = %d\n",it);
+    //printf("\t it = %2d\tcond = %3.2f\tcond2 = %3.2f\n",it,cond,cond2);
+    printf("\t it = %2d\tcond = %3.2f\n",it,cond);
     err1 = err2;
     h1 = h2;
   }
   }
 
-  /*auto problem = PoissonProblem<dim>::create(4,deg);
+  /*auto problem = PoissonProblem<dim>::create(nel,deg);
   auto f = CustomFunct::const_create(problem->grid,&source_term);
   problem->assemble(f);
-  problem->custom_solve(it);
+  problem->how_are_you_doin();
+  problem->custom_solve(it,cond);
   auto u = CustomFunct::const_create(problem->grid,&exact_solution);
-  cout << "\tthe L2-error is: " << problem->l2_error(u) << endl;
+  cout << "  --------------------------" << endl;
+  cout << "        L2-error: " << problem->l2_error(u) << endl;
+  cout << "      iterations: " << it << endl;
+  cout << "condition number: " << cond << endl;
+  cout << endl;
 
   auto solution = IgGridFunction<dim,1>::const_create(problem->basis,*problem->sol);
   const int npt = 10;

@@ -2,7 +2,7 @@
 
 #include "AztecOO_config.h"
 #include "AztecOO.h"
-
+#include "AztecOO_ConditionNumber.h"
 
 template<int dim_>
 class PoissonProblem {
@@ -42,7 +42,7 @@ class PoissonProblem {
     //using Funct = typename grid_functions::FormulaGridFunction<dim_,1>::CustomGridFunction<dim_,1>;
     void assemble(std::shared_ptr<const GridFunction<dim_,1>> f) const;
     void solve() const;
-    void custom_solve(int &it) const;
+    void custom_solve(int &it, double &cond, double &cond2) const;
     Real l2_error(std::shared_ptr<const GridFunction<dim_,1>> u) const;
 };
 template<int dim_>
@@ -173,12 +173,12 @@ void PoissonProblem<dim_>::solve() const {
 }
 
 
-using OP = Epetra_Operator;
-using MV = Epetra_MultiVector;
-using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
+//using OP = Epetra_Operator;
+//using MV = Epetra_MultiVector;
+//using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
 template<int dim_> // custom siuppacool solver
-void PoissonProblem<dim_>::custom_solve(int &it) const {
-  using Teuchos::ParameterList;
+void PoissonProblem<dim_>::custom_solve(int &it, double &cond, double &cond2) const {
+  /*using Teuchos::ParameterList;
   using Teuchos::parameterList;
   using Teuchos::RCP;
   using Teuchos::rcp;
@@ -205,13 +205,26 @@ void PoissonProblem<dim_>::custom_solve(int &it) const {
 
   solver->setProblem(problem);
   solver->solve();
-  it = solver->getNumIters();
+  it = solver->getNumIters();*/
 //-----------------------------------------------------
-  
-  //Epetra_LinearProblem prob(,sol,rhs);
-  //AztecOO solvr(prob);
-  //solvr.SetAztecOption(AZ_precond, AZ_Jacobi);
-  //solvr.Iterate(100, 1.0E-8);
+  // setting up the problem
+  Epetra_LinearProblem problem(&*mat,&*sol,&*rhs);
+  AztecOO solver(problem);
+  // setting up the solver
+  solver.SetAztecOption(AZ_solver,  AZ_cg);
+  solver.SetAztecOption(AZ_precond, AZ_none);
+  solver.SetAztecOption(AZ_output,  AZ_none);
+  // solve, for god's sake! SOLVE!
+  solver.Iterate(100, 1.0E-7);
+  // extracting info
+  it    = solver.NumIters();
+  //cond2 = solver.Condest();
+
+  // setting up the condition number estimator
+  AztecOOConditionNumber condest;
+  condest.initialize(*mat);
+  condest.computeConditionNumber(100,1.0E-9);
+  cond = condest.getConditionNumber();
 
 }
 
@@ -268,7 +281,7 @@ Real PoissonProblem<dim_>::l2_error(std::shared_ptr<const GridFunction<dim_,1>> 
 // ----------------------------------------------------------------------------
 template<int dim_> // problem overview
 void PoissonProblem<dim_>::how_are_you_doin() const {
-  out << "regardless copyright infringements, this is the PoissonProblem class instance number " << count << ":" << endl;
+  out << endl;
   out << "        elements: " << grid->get_num_elements() << " = " << grid->get_num_intervals() << endl;
   out << "         degrees: " << space->get_degree_table()[0] << endl;
   TensorSize<dim_> nbf;
