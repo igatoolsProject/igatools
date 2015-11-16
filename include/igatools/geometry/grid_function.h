@@ -281,11 +281,12 @@ public:
       constant_coordinates_[i] = (v == 0)? knots.front() : knots.back();
       ++i;
     }
-
+    LogStream out;
     for (const auto &elems_id : sub_grid_elem_map_)
     {
       id_elems_sub_grid_.insert(elems_id.first);
       id_elems_sup_grid_.insert(elems_id.second);
+      out << "Sub elem ID: " << elems_id.first << "    Sup elem ID: " << elems_id.second << std::endl;
     }
     /*
          out.begin_item("Constant coordinates:");
@@ -399,6 +400,11 @@ public:
   get_sup_element_id(const typename Grid<sdim>::IndexType &sub_elem_id) const
   {
     return sub_grid_elem_map_.at(sub_elem_id);
+  }
+
+  const SubGridMap &get_sub_grid_elem_map() const
+  {
+	return sub_grid_elem_map_;
   }
 
 private:

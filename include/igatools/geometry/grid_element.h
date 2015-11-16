@@ -227,6 +227,11 @@ public:
 
   const IndexType &get_index() const;
 
+  const typename List::iterator & get_index_iterator() const
+  {
+	return index_it_;
+  }
+
   /** Return the Grid from which the element belongs.*/
   std::shared_ptr<const Grid<dim>> get_grid() const;
 

@@ -396,7 +396,23 @@ public:
     const auto grid_func =
       std::dynamic_pointer_cast<const SubGridFunc>(this->grid_function_);
 
-    sup_grid_func_element_->move_to(grid_func->get_sup_element_id(this->get_index()));
+    if (this->get_grid_element().get_index_iterator() != grid_func->get_id_elems_sub_grid().end())
+    {
+    	const auto & sub_elem_id = this->get_index();
+    	const auto & sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
+
+        sup_grid_func_element_->move_to(sup_elem_id);
+        LogStream out;
+        out.begin_item("operator++");
+        out << "Sub elem ID: " << sub_elem_id << "    Sup elem ID: " << sup_elem_id << std::endl;
+        out.end_item();
+    }
+    else
+    {
+    	sup_grid_func_element_->move_to(*(--grid_func->get_id_elems_sup_grid().end()));
+    	++(*sup_grid_func_element_);
+    }
+
 //    Assert(false,ExcNotImplemented());
   }
 
@@ -407,15 +423,6 @@ public:
     Assert(false,ExcNotImplemented());
   }
 
-  const GridElem &get_grid_element() const
-  {
-    Assert(false,ExcNotImplemented());
-  }
-
-  GridElem &get_grid_element()
-  {
-    Assert(false,ExcNotImplemented());
-  }
 
 
   void print_info(LogStream &out) const
