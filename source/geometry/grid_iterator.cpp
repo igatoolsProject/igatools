@@ -39,7 +39,9 @@ GridIterator<Element>::
 GridIterator(std::unique_ptr<Element> &&elem)
   :
   elem_(std::move(elem))
-{}
+{
+  Assert(elem_ != nullptr,ExcNullPtr());
+}
 
 #if 0
 template <class Element>

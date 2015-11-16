@@ -119,12 +119,12 @@ public:
   /**
    * This function returns a element (const) iterator to the first element of the patch.
    */
-  ElementIterator cbegin(const PropId &prop = ElementProperties::active) const;
+  virtual ElementIterator cbegin(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to one-pass the end of patch.
    */
-  ElementIterator cend(const PropId &prop = ElementProperties::active) const;
+  virtual ElementIterator cend(const PropId &prop = ElementProperties::active) const;
   ///@}
 
 
@@ -189,6 +189,14 @@ protected:
   std::shared_ptr<const self_t> grid_function_previous_refinement_;
 #endif // MESH_REFINEMENT
 
+
+public:
+  virtual const SafeSTLSet<typename GridType::IndexType> &
+  get_elements_with_property(const PropId &elems_property) const
+  {
+    return grid_->get_elements_with_property(elems_property);
+  }
+
 };
 
 
@@ -211,8 +219,9 @@ public:
   using GridType = Grid<sdim>;
   using SuperGrid = Grid<dim>;
 
-  using typename base_t::ElementAccessor;
-  using typename base_t::ElementHandler;
+  using ElementAccessor = SubGridFunctionElement<sdim,dim,space_dim>;
+  using ElementIterator = GridIterator<ElementAccessor>;
+  using ElementHandler = SubGridFunctionHandler<sdim,dim,space_dim>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
@@ -298,16 +307,50 @@ public:
 
   virtual ~SubGridFunction() = default;
 
-  auto begin() const
+  virtual GridIterator<GridFunctionElement<sdim,space_dim>>
+                                                         cbegin(const PropId &prop) const override
   {
-    return sup_func_->begin(elems_property_);
+    LogStream out;
+    out << "cbegin" <<std::endl;
+
+    auto elem = std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
+                (
+                  std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+                  id_elems_sub_grid_.begin(),
+                  prop);
+
+    elem->print_info(out);
+
+
+    //TODO: (martinelli, Nov 16,2015): the iterator is not using the property!
+    return GridIterator<GridFunctionElement<sdim,space_dim>>(
+             std::move(elem)
+           );
   }
 
-  auto end() const
+  virtual GridIterator<GridFunctionElement<sdim,space_dim>>
+                                                         cend(const PropId &prop) const override
   {
-    return sup_func_->end(elems_property_);
+    //TODO: (martinelli, Nov 16,2015): the iterator is not using the property!
+    return GridIterator<GridFunctionElement<sdim,space_dim>>(
+             std::move(std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
+                       (
+                         std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+                         id_elems_sub_grid_.end(),
+                         prop))
+           );
+  }
+#if 0
+  auto begin(const PropId &prop) const
+  {
+    return this->cbegin();
   }
 
+  auto end(const PropId &prop) const
+  {
+    return this->cend();
+  }
+#endif
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const SupFunc> &func,
@@ -334,8 +377,8 @@ public:
   }
 
 
-  virtual std::unique_ptr<ElementHandler>
-  create_cache_handler() const override
+  virtual std::unique_ptr<GridFunctionHandler<sdim,space_dim>>
+                                                            create_cache_handler() const override
   {
     return std::make_unique<SubGridFunctionHandler<sdim,dim,space_dim>>(
              std::dynamic_pointer_cast<const self_t>(this->shared_from_this())
@@ -343,8 +386,8 @@ public:
   }
 
 
-  virtual std::unique_ptr<ElementAccessor>
-  create_element(const ListIt &index, const PropId &prop) const override
+  virtual std::unique_ptr<GridFunctionElement<sdim,space_dim>>
+                                                            create_element(const ListIt &index, const PropId &prop) const override
   {
     using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
     auto elem = std::make_unique<Elem>(
@@ -371,7 +414,12 @@ public:
     sup_func_->print_info(out);
     out.end_item();
 
-    out << "Sub-element ID: " << s_id_ << std::endl;
+
+    out << "Sub-element topology ID: " << s_id_ << std::endl;
+
+    out.begin_item("Sub elements ID:");
+    id_elems_sub_grid_.print_info(out);
+    out.end_item();
 
     out.end_item();
   }
@@ -404,7 +452,14 @@ public:
 
   const SubGridMap &get_sub_grid_elem_map() const
   {
-	return sub_grid_elem_map_;
+    return sub_grid_elem_map_;
+  }
+
+  virtual const SafeSTLSet<typename GridType::IndexType> &
+  get_elements_with_property(const PropId &elems_property) const override
+  {
+    //TODO: (martinelli, Nov 16,2015): the property is not used!
+    return id_elems_sub_grid_;
   }
 
 private:
@@ -420,7 +475,7 @@ private:
   const SubGridMap sub_grid_elem_map_;
 
   SafeSTLSet<typename Grid<sdim>::IndexType> id_elems_sub_grid_;
-  SafeSTLSet<typename Grid<dim>::IndexType> id_elems_sup_grid_;
+  SafeSTLSet<typename Grid< dim>::IndexType> id_elems_sup_grid_;
   //  typename SupFunc::ElementIterator sup_elem_;
 
 };

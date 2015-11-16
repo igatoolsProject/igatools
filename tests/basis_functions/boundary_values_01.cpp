@@ -68,6 +68,26 @@ void do_test(const int p, const int num_knots = 10)
   typename ConstFunc::Value a{1.0};
   auto f_at_bndry = functions::ConstantFunction<dim-1,codim+1,range,rank>::const_create(bndry_domain,a,"f_at_bndry");
 
+  out.begin_item("Bndry Domain");
+  bndry_domain->print_info(out);
+  out.end_item();
+
+  auto elem_bndry_domain = bndry_domain->begin();
+  elem_bndry_domain->print_info(out);
+
+  LogStream myout;
+  myout.begin_item("Do test");
+  int elem_id = 0;
+  for (const auto &bndry_elem : *bndry_domain)
+  {
+    myout.begin_item("Element " +std::to_string(elem_id));
+    myout << "Element ID: " << bndry_elem.get_index() << std::endl;
+
+    myout.end_item();
+
+    ++elem_id;
+  }
+  myout.end_item();
 
   const int n_qpoints = 4;
   auto quad = QGauss<dim-1>::create(n_qpoints);
@@ -77,7 +97,7 @@ void do_test(const int p, const int num_knots = 10)
   std::set<boundary_id> bdry_ids;
   bdry_ids.insert(dirichlet);
 
-
+#if 0
   std::map<Index,Real> boundary_values;
   space_tools::project_boundary_values<dim,codim,range,rank>(
     *f_at_bndry, *basis, quad, bdry_ids,boundary_values);
@@ -85,7 +105,7 @@ void do_test(const int p, const int num_knots = 10)
   out << "basis index \t value" << endl;
   for (auto entry : boundary_values)
     out << entry.first << "\t" << entry.second << endl;
-
+#endif
 }
 
 

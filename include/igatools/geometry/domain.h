@@ -294,6 +294,23 @@ public:
     }
     auto sub_domain = Domain<sdim,space_dim-sdim>::const_create(sub_func);
 
+
+    LogStream out;
+    out.begin_item("Sub-Function:");
+    sub_func->print_info(out);
+    out.end_item();
+
+    auto sub_func_elem = sub_func->begin();
+    auto sub_func_end = sub_func->end();
+
+    out.begin_item("Sub-function elements:");
+    for (; sub_func_elem != sub_func_end ; ++sub_func_elem)
+      sub_func_elem->print_info(out);
+//    for (const auto & sub_func_elem : *sub_func)
+//      sub_func_elem.print_info(out);
+    out.end_item();
+
+
     return sub_domain;
   }
 };

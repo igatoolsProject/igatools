@@ -104,14 +104,14 @@ public:
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator==(const self_t &elem) const;
+  virtual bool operator==(const self_t &elem) const;
 
   /**
    * True if the elements have different index.
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator!=(const self_t &elem) const;
+  virtual bool operator!=(const self_t &elem) const;
 
   /**
    * True if the flat-index of the element on the left is smaller than
@@ -119,7 +119,7 @@ public:
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator<(const self_t &elem) const;
+  virtual bool operator<(const self_t &elem) const;
 
   /**
    * True if the flat-index of the element on the left is bigger than
@@ -127,7 +127,7 @@ public:
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator>(const self_t &elem) const;
+  virtual bool operator>(const self_t &elem) const;
   ///@}
 
 
@@ -144,7 +144,7 @@ public:
 
   const IndexType &get_index() const;
 
-  void print_info(LogStream &out) const;
+  virtual void print_info(LogStream &out) const;
 
   void print_cache_info(LogStream &out) const;
 
@@ -168,33 +168,6 @@ public:
   const ValueVector<Derivative<2> > &
   get_element_values_D2() const;
 
-#if 0
-  /**
-   * @name Methods for the for the evaluations of Functions's derivatives
-   *  without the use of the cache.
-   */
-  ///@{
-  /**
-   * Returns a ValueTable with the values specified by the template parameter
-   * <tt>ValueType</tt>
-   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-   * @note This function does not use the cache and therefore can be called any time without
-   * needing to pre-call init_cache()/fill_cache().
-   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-   */
-  template <class ValueType>
-  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim_>> &points)
-  {
-    auto grid_func_elem_handler = this->grid_function_->create_cache_handler();
-    grid_func_elem_handler->template set_flags<dim_>(ValueType::flag);
-    grid_func_elem_handler->init_cache(*this,points);
-    grid_func_elem_handler->template fill_cache<dim_>(*this,0);
-
-    return this->template get_values_from_cache<ValueType,dim_>(0);
-  }
-  ///@}
-#endif
 
 public:
   template <int order>
@@ -226,9 +199,9 @@ public:
 protected:
   std::shared_ptr<ContainerType> grid_function_;
 
-private:
   std::unique_ptr<GridElem> grid_elem_;
 
+private:
   CacheType local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
@@ -270,6 +243,11 @@ public:
     return grid_elem_->template evaluate_at_points<ValueType>(quad);
   }
   ///@}
+
+public:
+
+  bool same_grid_function_of(const self_t &elem) const;
+
 };
 
 
@@ -318,16 +296,28 @@ public:
    * flat index @p elem_index of the Function @p func.
    */
   SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
-                         const ListIt &index,
+                         const ListIt &sub_elem_index_iterator,
                          const PropId &prop = ElementProperties::active)
     :
-    parent_t(sub_grid_function,sub_grid_function->get_id_elems_sub_grid().begin(),prop),
+    parent_t(sub_grid_function,sub_elem_index_iterator,prop),
     sup_grid_func_element_(
      std::make_shared<GridFunctionElement<dim,space_dim>>(
        sub_grid_function->get_sup_grid_function(),
        sub_grid_function->get_id_elems_sup_grid().begin(),
        prop))
-  {}
+  {
+    if (sub_elem_index_iterator != sub_grid_function->get_id_elems_sub_grid().end())
+    {
+      const auto &sup_elem_id = sub_grid_function->get_sup_element_id(*sub_elem_index_iterator);
+
+      sup_grid_func_element_->move_to(sup_elem_id);
+    }
+    else
+    {
+      sup_grid_func_element_->move_to(*(--sub_grid_function->get_id_elems_sup_grid().end()));
+      ++(*sup_grid_func_element_);
+    }
+  }
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -360,14 +350,29 @@ public:
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator==(const self_t &elem) const;
+  bool operator==(const parent_t &elem) const override
+  {
+    const self_t &sub_elem = dynamic_cast<const self_t &>(elem);
+    Assert(this->same_grid_function_of(elem) &&
+           sup_grid_func_element_->same_grid_function_of(*(sub_elem.sup_grid_func_element_)),
+           ExcMessage("Cannot compare elements on different GridFunction."));
+
+    return this->parent_t::operator==(elem);
+  }
 
   /**
    * True if the elements have different index.
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator!=(const self_t &elem) const;
+  bool operator!=(const parent_t &elem) const override
+  {
+    const self_t &sub_elem = dynamic_cast<const self_t &>(elem);
+    Assert(this->same_grid_function_of(elem) &&
+           sup_grid_func_element_->same_grid_function_of(*(sub_elem.sup_grid_func_element_)),
+           ExcMessage("Cannot compare elements on different GridFunction."));
+    return this->parent_t::operator!=(elem);
+  }
 
   /**
    * True if the flat-index of the element on the left is smaller than
@@ -375,7 +380,14 @@ public:
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator<(const self_t &elem) const;
+  bool operator<(const parent_t &elem) const override
+  {
+    const self_t &sub_elem = dynamic_cast<const self_t &>(elem);
+    Assert(this->same_grid_function_of(elem) &&
+           sup_grid_func_element_->same_grid_function_of(*(sub_elem.sup_grid_func_element_)),
+           ExcMessage("Cannot compare elements on different GridFunction."));
+    return this->parent_t::operator<(elem);
+  }
 
   /**
    * True if the flat-index of the element on the left is bigger than
@@ -383,7 +395,14 @@ public:
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator>(const self_t &elem) const;
+  bool operator>(const parent_t &elem) const override
+  {
+    const self_t &sub_elem = dynamic_cast<const self_t &>(elem);
+    Assert(this->same_grid_function_of(elem) &&
+           sup_grid_func_element_->same_grid_function_of(*(sub_elem.sup_grid_func_element_)),
+           ExcMessage("Cannot compare elements on different GridFunction."));
+    return this->parent_t::operator>(elem);
+  }
   ///@}
 
 
@@ -396,21 +415,35 @@ public:
     const auto grid_func =
       std::dynamic_pointer_cast<const SubGridFunc>(this->grid_function_);
 
+#if 0
+    LogStream out;
+    out.begin_item("operator++");
+
+    out.begin_item("Sub-Grid");
+    this->get_grid_element().get_grid()->print_info(out);
+    out.end_item();
+
+    out.begin_item("Sup-Grid");
+    sup_grid_func_element_->get_grid_element().get_grid()->print_info(out);
+    out.end_item();
+
+    out.end_item();
+#endif
     if (this->get_grid_element().get_index_iterator() != grid_func->get_id_elems_sub_grid().end())
     {
-    	const auto & sub_elem_id = this->get_index();
-    	const auto & sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
+      const auto &sub_elem_id = this->get_index();
+      const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
 
-        sup_grid_func_element_->move_to(sup_elem_id);
-        LogStream out;
-        out.begin_item("operator++");
-        out << "Sub elem ID: " << sub_elem_id << "    Sup elem ID: " << sup_elem_id << std::endl;
-        out.end_item();
+      sup_grid_func_element_->move_to(sup_elem_id);
+//      out << "Sub elem ID: " << sub_elem_id << "    Sup elem ID: " << sup_elem_id << std::endl;
     }
     else
     {
-    	sup_grid_func_element_->move_to(*(--grid_func->get_id_elems_sup_grid().end()));
-    	++(*sup_grid_func_element_);
+//      const auto & sup_elem_id = *(grid_func->get_id_elems_sup_grid().end());
+//      sup_grid_func_element_->move_to(sup_elem_id);
+      sup_grid_func_element_->move_to(*(--grid_func->get_id_elems_sup_grid().end()));
+      ++(*sup_grid_func_element_);
+//      out << "Sub elem ID: " << this->get_index() << "    Sup elem ID: " << sup_grid_func_element_->get_index() << std::endl;
     }
 
 //    Assert(false,ExcNotImplemented());
@@ -420,14 +453,44 @@ public:
   void move_to(const IndexType &elem_id) override
   {
     parent_t::move_to(elem_id);
-    Assert(false,ExcNotImplemented());
+
+    using SubGridFunc = SubGridFunction<sdim,dim,space_dim>;
+    const auto grid_func =
+      std::dynamic_pointer_cast<const SubGridFunc>(this->grid_function_);
+
+    if (this->get_grid_element().get_index_iterator() != grid_func->get_id_elems_sub_grid().end())
+    {
+      const auto &sub_elem_id = this->get_index();
+      const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
+
+      sup_grid_func_element_->move_to(sup_elem_id);
+    }
+    else
+    {
+      sup_grid_func_element_->move_to(*(--grid_func->get_id_elems_sup_grid().end()));
+      ++(*sup_grid_func_element_);
+    }
   }
 
 
 
-  void print_info(LogStream &out) const
+  virtual void print_info(LogStream &out) const override
   {
-    Assert(false,ExcNotImplemented());
+    using std::to_string;
+    out.begin_item("SubGridFunctionElement<" +
+                   to_string(sdim) + "," +
+                   to_string(dim) + "," +
+                   to_string(space_dim) + ">");
+
+    out.begin_item("GridFunctionElement<" + to_string(sdim) + "," + to_string(space_dim) + ">");
+    parent_t::print_info(out);
+    out.end_item();
+
+    out.begin_item("Sup-GridFunctionElement<" + to_string(dim) + "," + to_string(space_dim) + ">");
+    sup_grid_func_element_->print_info(out);
+    out.end_item();
+
+    out.end_item();
   }
 
   void print_cache_info(LogStream &out) const
@@ -441,6 +504,8 @@ public:
   {
     return *sup_grid_func_element_;
   }
+
+
 
 private:
 

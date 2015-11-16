@@ -33,14 +33,22 @@ GridFunctionElement(const std::shared_ptr<ContainerType> &grid_function,
 {}
 
 
+template<int dim_,int space_dim_>
+bool
+GridFunctionElement<dim_,space_dim_>::
+same_grid_function_of(const self_t &elem) const
+{
+  return (grid_function_ == elem.grid_function_);
+}
+
 
 template<int dim_,int space_dim_>
 bool
 GridFunctionElement<dim_,space_dim_>::
 operator ==(const self_t &elem) const
 {
-  Assert(grid_function_ == elem.grid_function_,
-         ExcMessage("Cannot compare elements on different grid."));
+  Assert(this->same_grid_function_of(elem),
+         ExcMessage("Cannot compare elements on different GridFunction."));
   return (*grid_elem_ == *(elem.grid_elem_));
 }
 
@@ -51,8 +59,8 @@ bool
 GridFunctionElement<dim_,space_dim_>::
 operator !=(const self_t &elem) const
 {
-  Assert(grid_function_ == elem.grid_function_,
-         ExcMessage("Cannot compare elements on different grid."));
+  Assert(this->same_grid_function_of(elem),
+         ExcMessage("Cannot compare elements on different GridFunction."));
   return (*grid_elem_ != *(elem.grid_elem_));
 }
 
@@ -63,8 +71,8 @@ bool
 GridFunctionElement<dim_,space_dim_>::
 operator <(const self_t &elem) const
 {
-  Assert(grid_function_ == elem.grid_function_,
-         ExcMessage("Cannot compare elements on different grid."));
+  Assert(this->same_grid_function_of(elem),
+         ExcMessage("Cannot compare elements on different GridFunction."));
   return (*grid_elem_ < *(elem.grid_elem_));
 }
 
@@ -75,8 +83,8 @@ bool
 GridFunctionElement<dim_,space_dim_>::
 operator >(const self_t &elem) const
 {
-  Assert(grid_function_ == elem.grid_function_,
-         ExcMessage("Cannot compare elements on different grid."));
+  Assert(this->same_grid_function_of(elem),
+         ExcMessage("Cannot compare elements on different GridFunction."));
   return (*grid_elem_ > *(elem.grid_elem_));
 }
 
