@@ -39,7 +39,8 @@ for dim in inst.domain_dims:
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
-        for k in inst.sub_dims(dim):
+#        for k in inst.sub_dims(dim):
+        for k in range(0,dim+1):
           s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
           f.write('template ' + s + '\n')
         
@@ -48,9 +49,9 @@ for dim in inst.sub_domain_dims:
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
-        k = dim
-        s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
-        f.write('template ' + s + '\n')
+        for k in range(0,dim+1):
+            s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
+            f.write('template ' + s + '\n')
 
 #accs1 =  ['GridElement',       'ConstGridElement']
 #for dim in inst.sub_domain_dims+inst.domain_dims: 
