@@ -208,8 +208,10 @@ private:
 private:
   std::shared_ptr<GridFunctionType> grid_function_;
 
+protected:
   std::unique_ptr<GridHandler> grid_handler_;
 
+private:
   FlagsArray flags_;
 
 //  friend ElementAccessor;
@@ -265,7 +267,7 @@ public:
 
 public:
   virtual void set_flags(const topology_variant &topology,
-                         const Flags &flag)
+                         const Flags &flag) override
   {
     parent_t::set_flags(topology,flag);
 
@@ -273,14 +275,17 @@ public:
     boost::apply_visitor(set_flags_dispatcher,topology);
   }
 
-  virtual void init_cache(ElementAccessor &sub_grid_func_elem,
-                          const eval_pts_variant &quad) const
+  virtual void init_cache(GridFunctionElement<sdim,space_dim> &sub_grid_func_elem,
+                          const eval_pts_variant &quad) const override
   {
     parent_t::init_cache(sub_grid_func_elem,quad);
 
+    auto &as_sub_grid_func_elem =
+      dynamic_cast<SubGridFunctionElement<sdim,dim,space_dim> &>(sub_grid_func_elem);
+
     auto init_dispatcher = InitCacheDispatcher(
                              *(this->sup_grid_func_handler_),
-                             sub_grid_func_elem.get_sup_grid_function_element());
+                             as_sub_grid_func_elem.get_sup_grid_function_element());
     boost::apply_visitor(init_dispatcher, quad);
   }
 
@@ -289,6 +294,9 @@ public:
                           GridFunctionElement<sdim,space_dim> &sub_grid_func_elem,
                           const int s_id) const override
   {
+    this->grid_handler_->fill_cache(topology, sub_grid_func_elem.get_grid_element(), s_id);
+
+
     auto &as_sub_grid_func_elem =
       dynamic_cast<SubGridFunctionElement<sdim,dim,space_dim> &>(sub_grid_func_elem);
 
@@ -376,6 +384,10 @@ private:
       sup_grid_func_handler_.template fill_cache<k>(sup_grid_func_elem_,s_id_);
 
 
+      const auto &sub_unit_elem = UnitElement<dim>::template get_elem<k>(s_id_);
+      const auto &sub_elem_active_dirs = sub_unit_elem.active_directions;
+
+
 
       auto &sub_grid_func_local_cache = sub_grid_func_handler_.get_element_cache(sub_grid_func_elem_);
       auto &sub_grid_func_cache = sub_grid_func_local_cache.template get_sub_elem_cache<k>(s_id_);
@@ -386,29 +398,70 @@ private:
         using _D0 = typename grid_function_element::template _D<0>;
         if (sub_grid_func_cache.template status_fill<_D0>())
         {
-          Assert(false,ExcNotImplemented());
+          const auto &sup_grid_func_D0 = sup_grid_func_elem_.template get_values_from_cache<_D0,k>(s_id_);
+          auto &D0 = sub_grid_func_cache.template get_data<_D0>();
 
-//          auto &F = cache.template get_data<_D<0>>();
-//          formula_grid_function.evaluate_0(grid_pts, F);
-//          F.set_status_filled(true);
+          D0 = sup_grid_func_D0;
+          /*
+                    const int n_pts = sup_grid_func_D0.get_num_points();
+                    for (int pt = 0 ; pt < n_pts ; ++pt)
+                      D0[pt] = sup_grid_func_D0[pt];
+          //*/
+          D0.set_status_filled(true);
         }
 
         using _D1 = typename grid_function_element::template _D<1>;
         if (sub_grid_func_cache.template status_fill<_D1>())
         {
-          Assert(false,ExcNotImplemented());
-//          auto &DF = cache.template get_data<_D<1>>();
-//          formula_grid_function.evaluate_1(grid_pts, DF);
-//          DF.set_status_filled(true);
+          const auto &sup_grid_func_D1 = sup_grid_func_elem_.template get_values_from_cache<_D1,k>(s_id_);
+          auto &D1 = sub_grid_func_cache.template get_data<_D1>();
+
+          const int n_pts = sup_grid_func_D1.get_num_points();
+          for (int pt = 0 ; pt < n_pts ; ++pt)
+          {
+            auto &D1_pt = D1[pt];
+            const auto sup_grid_func_D1_pt = sup_grid_func_D1[pt];
+
+            int dir = 0;
+            for (const int active_dir : sub_elem_active_dirs)
+            {
+              D1_pt[dir] = sup_grid_func_D1_pt[active_dir];
+              ++dir;
+            }
+          } // end loop pt
+
+          D1.set_status_filled(true);
         }
 
         using _D2 = typename grid_function_element::template _D<2>;
         if (sub_grid_func_cache.template status_fill<_D2>())
         {
-          Assert(false,ExcNotImplemented());
-//          auto &D2F = cache.template get_data<_D<2>>();
-//          formula_grid_function.evaluate_2(grid_pts, D2F);
-//          D2F.set_status_filled(true);
+          const auto &sup_grid_func_D2 = sup_grid_func_elem_.template get_values_from_cache<_D2,k>(s_id_);
+          auto &D2 = sub_grid_func_cache.template get_data<_D2>();
+
+          const int n_pts = sup_grid_func_D2.get_num_points();
+          for (int pt = 0 ; pt < n_pts ; ++pt)
+          {
+            auto &D2_pt = D2[pt];
+            const auto sup_grid_func_D2_pt = sup_grid_func_D2[pt];
+
+            int dir_i = 0;
+            for (const int active_dir_i : sub_elem_active_dirs)
+            {
+              auto &D2_pt_i = D2_pt[dir_i];
+              const auto &sup_grid_func_D2_pt_i = sup_grid_func_D2_pt[active_dir_i];
+
+              int dir_j = 0;
+              for (const int active_dir_j : sub_elem_active_dirs)
+              {
+                D2_pt_i[dir_j] = sup_grid_func_D2_pt_i[active_dir_j];
+                ++dir_j;
+              }
+              ++dir_i;
+            }
+          } // end loop pt
+
+          D2.set_status_filled(true);
         }
 //        if (cache.template status_fill<_Divergence>())
 //          Assert(false,ExcNotImplemented());

@@ -50,7 +50,9 @@ fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
            const int s_id) const  -> void
 {
-  parent_t::fill_cache(sdim, elem, s_id);
+//  parent_t::fill_cache(sdim, elem, s_id);
+
+  this->grid_handler_->fill_cache(sdim, elem.get_grid_element(), s_id);
 
 //  GridFunctionType &grid_function = *std::dynamic_pointer_cast<GridFunctionType>(this->get_grid_function());
 //  auto disp = FillCacheDispatcher(grid_function, *this, elem, s_id);
