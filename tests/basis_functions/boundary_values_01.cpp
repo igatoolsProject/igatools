@@ -53,7 +53,7 @@ void do_test(const int p, const int num_knots = 10)
   auto basis = PhysicalSpaceBasis<dim,range,rank,codim>::create(ref_basis, domain);
 
 
-  auto f = TestFunction<dim,codim,range,rank>::create(domain);
+//  auto f = TestFunction<dim,range>::create(domain);
 
   const int sdim = dim-1;
   const int s_id = 0;
@@ -63,10 +63,7 @@ void do_test(const int p, const int num_knots = 10)
   const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,sub_grid_elem_map);
 
   auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
-
-  using ConstFunc = functions::ConstantFunction<dim-1,codim+1,range,rank>;
-  typename ConstFunc::Value a{1.0};
-  auto f_at_bndry = functions::ConstantFunction<dim-1,codim+1,range,rank>::const_create(bndry_domain,a,"f_at_bndry");
+  auto f_at_bndry = TestBoundaryFunction<dim-1,range>::const_create(bndry_domain);
 
 #if 0
   out.begin_item("Bndry Domain");

@@ -116,13 +116,13 @@ public:
 };
 
 
-template<int dim,int codim,int range,int rank>
-class TestFunction : public FormulaFunction<dim,codim,range,rank>
+template<int dim,int range>
+class TestFunction : public FormulaFunction<dim,0,range,1>
 {
 private:
-  using base_t = Function<dim,codim,range,rank>;
-  using parent_t = FormulaFunction<dim,codim,range,rank>;
-  using self_t = TestFunction<dim,codim,range,rank>;
+  using base_t = Function<dim,0,range,1>;
+  using parent_t = FormulaFunction<dim,0,range,1>;
+  using self_t = TestFunction<dim,range>;
 public:
   using typename parent_t::Value;
   using typename parent_t::Point;
@@ -131,20 +131,20 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 
 public:
-  TestFunction(const SharedPtrConstnessHandler<Domain<dim,codim>> &domain)
+  TestFunction(const SharedPtrConstnessHandler<Domain<dim,0>> &domain)
     : parent_t(domain,"TestFunction")
   {}
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const Domain<dim,codim>> &domain)
+  const_create(const std::shared_ptr<const Domain<dim,0>> &domain)
   {
-    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Domain<dim,codim>>(domain)));
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Domain<dim,0>>(domain)));
   }
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<Domain<dim,codim>> &domain)
+  create(const std::shared_ptr<Domain<dim,0>> &domain)
   {
-    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Domain<dim,codim>>(domain)));
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Domain<dim,0>>(domain)));
   }
 
   Real value(const Points<dim> &x) const
@@ -159,11 +159,9 @@ public:
                   ValueVector<Value> &values) const override final
   {
     for (int i = 0; i<points.size(); ++i)
-    {
-      Points<dim> p = points[i];
-      values[i][0] = this->value(p);
-    }
+      values[i][0] = this->value(points[i]);
   }
+
   void evaluate_1(const ValueVector<Point> &points,
                   ValueVector<Derivative<1>> &values) const override final
   {
@@ -188,6 +186,76 @@ public:
   }
 };
 
+
+template<int dim,int range>
+class TestBoundaryFunction : public FormulaFunction<dim,1,range,1>
+{
+private:
+  using base_t = Function<dim,1,range,1>;
+  using parent_t = FormulaFunction<dim,1,range,1>;
+  using self_t = TestBoundaryFunction<dim,range>;
+public:
+  using typename parent_t::Value;
+  using typename parent_t::Point;
+
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+
+public:
+  TestBoundaryFunction(const SharedPtrConstnessHandler<Domain<dim,1>> &domain)
+    : parent_t(domain,"TestBoundaryFunction")
+  {}
+
+  static std::shared_ptr<const self_t>
+  const_create(const std::shared_ptr<const Domain<dim,1>> &domain)
+  {
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Domain<dim,1>>(domain)));
+  }
+
+  static std::shared_ptr<self_t>
+  create(const std::shared_ptr<Domain<dim,1>> &domain)
+  {
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Domain<dim,1>>(domain)));
+  }
+
+  Real value(const Points<dim+1> &x) const
+  {
+    Real f = 1;
+    for (int i = 0; i<dim+1; ++i)
+      f = f * cos(2*PI*x[i]);
+    return f;
+  }
+
+  void evaluate_0(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const override final
+  {
+    for (int i = 0; i<points.size(); ++i)
+      values[i][0] = this->value(points[i]);
+  }
+
+  void evaluate_1(const ValueVector<Point> &points,
+                  ValueVector<Derivative<1>> &values) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void evaluate_2(const ValueVector<Point> &points,
+                  ValueVector<Derivative<2>> &values) const override final
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void print_info(LogStream &out) const
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void rebuild_after_insert_knots(
+    const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
+  {
+    Assert(false,ExcNotImplemented());
+  }
+};
 
 
 /**
