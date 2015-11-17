@@ -716,7 +716,6 @@ project_boundary_values(
   std::map<int, std::shared_ptr<const Function<dim-1,codim+1,range,rank>>> &bndry_funcs,
   const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
   const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
-//                        const std::set<boundary_id>  &boundary_ids,
   std::map<Index, Real>  &boundary_values)
 {
   static_assert(dim > 1,"The dimension must be > 1");
@@ -754,50 +753,6 @@ project_boundary_values(
     for (Index i = 0; i< face_n_dofs; ++i)
       boundary_values[dof_map[i]] = coeffs[i];
   }
-
-
-#if 0
-  static_assert(dim > 1,"The dimension must be > 1");
-
-  const int sdim = dim - 1;
-//    using GridType = typename Basis::GridType;
-  using SubSpace = typename Basis::template SubSpace<sdim>;
-  using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
-  using SubFunc = SubFunction<sdim, dim, codim, range, rank>;
-
-
-  const auto grid = basis->get_grid();
-
-  std::set<int> sub_elems;
-  auto bdry_begin = boundary_ids.begin();
-  auto bdry_end   = boundary_ids.end();
-  for (auto &s_id : UnitElement<Basis::dim>::template elems_ids<sdim>())
-  {
-    const auto bdry_id = grid->get_boundary_id(s_id);
-    if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
-      sub_elems.insert(s_id);
-  }
-
-  for (const Index &s_id : sub_elems)
-  {
-    using  InterGridMap = std::map<Index,Index>;
-    InterGridMap elem_map;
-
-    auto grid = basis->get_grid();
-    auto sub_grid = grid->template get_sub_grid<sdim>(s_id, elem_map);
-
-    InterSpaceMap  dof_map;
-    auto sub_space = basis->template get_sub_space<sdim>(s_id, dof_map, sub_grid, elem_map);
-    auto sub_func = SubFunc::create(sub_grid, function, s_id, elem_map);
-
-    auto proj = projection_l2<SubSpace>(*sub_func, *sub_space, quad);
-
-    const auto &coef = proj->get_coefficients();
-    const int face_n_dofs = dof_map.size();
-    for (Index i = 0; i< face_n_dofs; ++i)
-      boundary_values[dof_map[i]] = coef[i];
-  }
-#endif
 }
 
 
