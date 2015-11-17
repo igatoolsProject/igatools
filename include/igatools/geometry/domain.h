@@ -284,31 +284,28 @@ public:
     else if (formula_func)
     {
       sub_func = formula_func->get_sub_function(s_id,sub_grid_elem_map,sub_grid);
-//      AssertThrow(false,ExcMessage("FormulaFunction"));
-//      AssertThrow(false,ExcNotImplemented());
     }
     else
     {
-      AssertThrow(false,ExcMessage("GridFunction"));
       AssertThrow(false,ExcNotImplemented());
     }
     auto sub_domain = Domain<sdim,space_dim-sdim>::const_create(sub_func);
 
+    /*
+        LogStream out;
+        out.begin_item("Sub-Function:");
+        sub_func->print_info(out);
+        out.end_item();
+        auto sub_func_elem = sub_func->begin();
+        auto sub_func_end = sub_func->end();
 
-    LogStream out;
-    out.begin_item("Sub-Function:");
-    sub_func->print_info(out);
-    out.end_item();
-
-    auto sub_func_elem = sub_func->begin();
-    auto sub_func_end = sub_func->end();
-
-    out.begin_item("Sub-function elements:");
-    for (; sub_func_elem != sub_func_end ; ++sub_func_elem)
-      sub_func_elem->print_info(out);
-//    for (const auto & sub_func_elem : *sub_func)
-//      sub_func_elem.print_info(out);
-    out.end_item();
+        out.begin_item("Sub-function elements:");
+        for (; sub_func_elem != sub_func_end ; ++sub_func_elem)
+          sub_func_elem->print_info(out);
+    //    for (const auto & sub_func_elem : *sub_func)
+    //      sub_func_elem.print_info(out);
+        out.end_item();
+    //*/
 
 
     return sub_domain;
