@@ -302,7 +302,7 @@ public:
        sub_grid_function->get_id_elems_sup_grid().begin(),
        prop))
   {
-    if (sub_elem_index_iterator != sub_grid_function->get_id_elems_sub_grid().end())
+    if (*sub_elem_index_iterator != *sub_grid_function->get_id_elems_sub_grid().end())
     {
       const auto &sup_elem_id = sub_grid_function->get_sup_element_id(*sub_elem_index_iterator);
 
@@ -425,7 +425,7 @@ public:
 
     out.end_item();
 #endif
-    if (this->get_grid_element().get_index_iterator() != grid_func->get_id_elems_sub_grid().end())
+    if (*this->get_grid_element().get_index_iterator() != *grid_func->get_id_elems_sub_grid().end())
     {
       const auto &sub_elem_id = this->get_index();
       const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
@@ -454,7 +454,7 @@ public:
     const auto grid_func =
       std::dynamic_pointer_cast<const SubGridFunc>(this->grid_function_);
 
-    if (this->get_grid_element().get_index_iterator() != grid_func->get_id_elems_sub_grid().end())
+    if (*this->get_grid_element().get_index_iterator() != *grid_func->get_id_elems_sub_grid().end())
     {
       const auto &sub_elem_id = this->get_index();
       const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);

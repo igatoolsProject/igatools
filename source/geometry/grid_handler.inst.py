@@ -26,7 +26,8 @@ data = Instantiation(include_files)
 
 
 
-sub_dim_members = ['void GridHandler<dim>::fill_cache<k>(ElementAccessor &elem, const int j) const;',
+sub_dim_members = [
+                   'void GridHandler<dim>::fill_cache<k>(ElementAccessor &elem, const int j) const;',
              'void GridHandler<dim>::init_cache<k>(ElementAccessor &elem,std::shared_ptr<const Quadrature<k>> quad) const;',
              'void GridHandler<dim>::set_flags<k>(const Flags &flag);']
 

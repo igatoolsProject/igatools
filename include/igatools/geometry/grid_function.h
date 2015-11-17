@@ -82,7 +82,7 @@ public:
 
 
   virtual std::unique_ptr<ElementHandler>
-  create_cache_handler() const;
+  create_cache_handler() const = 0;
 
   virtual std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
@@ -376,18 +376,16 @@ public:
                                     SharedPtrConstnessHandler<GridType>(grid));
   }
 
-
-  virtual std::unique_ptr<GridFunctionHandler<sdim,space_dim>>
-                                                            create_cache_handler() const override
+  virtual std::unique_ptr<GridFunctionHandler<sdim,space_dim> >
+  create_cache_handler() const override
   {
     return std::make_unique<SubGridFunctionHandler<sdim,dim,space_dim>>(
              std::dynamic_pointer_cast<const self_t>(this->shared_from_this())
            );
   }
 
-
-  virtual std::unique_ptr<GridFunctionElement<sdim,space_dim>>
-                                                            create_element(const ListIt &index, const PropId &prop) const override
+  virtual std::unique_ptr<GridFunctionElement<sdim,space_dim> >
+  create_element(const ListIt &index, const PropId &prop) const override
   {
     using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
     auto elem = std::make_unique<Elem>(
