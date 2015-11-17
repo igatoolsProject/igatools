@@ -712,14 +712,14 @@ projection_l2_grid_function(
  */
 template<int dim,int codim, int range, int rank>
 void
-project_boundary_values(const Function<dim-1,codim+1,range,rank> &bndry_func,
-                        const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
-                        const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
-                        const std::set<boundary_id>  &boundary_ids,
-                        std::map<Index, Real>  &boundary_values)
+project_boundary_values(
+  std::map<int, std::shared_ptr<const Function<dim-1,codim+1,range,rank>>> &bndry_funcs,
+  const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+  const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
+//                        const std::set<boundary_id>  &boundary_ids,
+  std::map<Index, Real>  &boundary_values)
 {
   static_assert(dim > 1,"The dimension must be > 1");
-
 
 
   const int sdim = dim - 1;
@@ -732,28 +732,20 @@ project_boundary_values(const Function<dim-1,codim+1,range,rank> &bndry_func,
 
   const auto grid = basis.get_grid();
 
-  std::set<int> sub_elems;
-  auto bdry_begin = boundary_ids.begin();
-  auto bdry_end   = boundary_ids.end();
-  for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
-  {
-    const auto bdry_id = grid->get_boundary_id(s_id);
-    if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
-      sub_elems.insert(s_id);
-  }
-
-  for (const Index &s_id : sub_elems)
+  for (const auto &bndry : bndry_funcs)
   {
     InterGridMap elem_map;
+
+    const int s_id = bndry.first;
+
+    Assert(bndry.second != nullptr,ExcNullPtr());
+    const auto &bndry_func = *bndry.second;
 
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
     InterSpaceMap  dof_map;
     const auto sub_basis = basis.template get_sub_space<sdim>(s_id, dof_map,sub_grid,elem_map);
-    //    (const int s_id, InterSpaceMap< sdim > &dof_map, const std::shared_ptr< const Grid< sdim >> &sub_grid=nullptr)
 
-
-//    const auto sub_func = func.get_sub_function(s_id,sub_grid);
 
     const auto coeffs = projection_l2_function(
                           bndry_func,*sub_basis,quad,DofProperties::active);
@@ -809,19 +801,21 @@ project_boundary_values(const Function<dim-1,codim+1,range,rank> &bndry_func,
 }
 
 
-
+#if 0
 template<int dim,int range>
 void
-project_boundary_values(const GridFunction<dim,range> &grid_func,
-                        const ReferenceSpaceBasis<dim,range> &basis,
-                        const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:1>> &quad,
-                        const std::set<boundary_id>  &boundary_ids,
-                        std::map<Index, Real>  &boundary_values)
+project_boundary_values(
+//    std::map<int, std::shared_ptr<const GridFunction<dim-1,codim+1,range,rank>>> &bndry_funcs,
+  const GridFunction<dim,range> &grid_func,
+  const ReferenceSpaceBasis<dim,range> &basis,
+  const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:1>> &quad,
+  const std::set<boundary_id>  &boundary_ids,
+  std::map<Index, Real>  &boundary_values)
 {
   static_assert(dim > 1,"The dimension must be > 1");
 
-  const auto &ig_grid_func =
-    dynamic_cast<const IgGridFunction<dim,range> &>(grid_func);
+//  const auto &ig_grid_func =
+//    dynamic_cast<const IgGridFunction<dim,range> &>(grid_func);
 
 
   const int sdim = dim - 1;
@@ -852,9 +846,9 @@ project_boundary_values(const GridFunction<dim,range> &grid_func,
 
     InterSpaceMap  dof_map;
     const auto sub_basis = basis.template get_ref_sub_space<sdim>(s_id, dof_map,sub_grid);
-//    (const int s_id, InterSpaceMap< sdim > &dof_map, const std::shared_ptr< const Grid< sdim >> &sub_grid=nullptr)
 
-    const auto sub_func = ig_grid_func.get_sub_function(s_id,sub_grid);
+//    const auto sub_func = ig_grid_func.get_sub_function(s_id,sub_grid);
+    const auto sub_func = grid_func.get_sub_function(s_id,sub_grid);
 
     const auto coeffs = projection_l2_grid_function(
                           *sub_func,*sub_basis,quad,DofProperties::active);
@@ -864,7 +858,7 @@ project_boundary_values(const GridFunction<dim,range> &grid_func,
       boundary_values[dof_map[i]] = coeffs[i];
   }
 }
-
+#endif
 
 /**
  * Returns the list of global ids of the non zero basis functions

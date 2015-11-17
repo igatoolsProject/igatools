@@ -35,8 +35,6 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element.h>
-
 
 #include <igatools/geometry/grid_function_lib.h>
 
@@ -53,8 +51,6 @@ void do_test(const int p, const int num_knots = 10)
   auto basis = PhysicalSpaceBasis<dim,range,rank,codim>::create(ref_basis, domain);
 
 
-//  auto f = TestFunction<dim,range>::create(domain);
-
   const int sdim = dim-1;
   const int s_id = 0;
 
@@ -63,42 +59,20 @@ void do_test(const int p, const int num_knots = 10)
   const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,sub_grid_elem_map);
 
   auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
-  auto f_at_bndry = TestBoundaryFunction<dim-1,range>::const_create(bndry_domain);
 
-#if 0
-  out.begin_item("Bndry Domain");
-  bndry_domain->print_info(out);
-  out.end_item();
 
-  auto elem_bndry_domain = bndry_domain->begin();
-  elem_bndry_domain->print_info(out);
+  using BndFunc = Function<dim-1,1,range,1>;
+  SafeSTLMap<int,std::shared_ptr<const BndFunc>> boundary_functions;
+  boundary_functions[s_id] = TestBoundaryFunction<dim-1,range>::const_create(bndry_domain);
 
-  LogStream myout;
-  myout.begin_item("Do test");
-  int elem_id = 0;
-  for (const auto &bndry_elem : *bndry_domain)
-  {
-    myout.begin_item("Element " +std::to_string(elem_id));
-    myout << "Element ID: " << bndry_elem.get_index() << std::endl;
-
-    myout.end_item();
-
-    ++elem_id;
-  }
-  myout.end_item();
-#endif
 
   const int n_qpoints = 4;
   auto quad = QGauss<dim-1>::create(n_qpoints);
 
-  const boundary_id dirichlet = 1;
-  grid->set_boundary_id(s_id, dirichlet);
-  std::set<boundary_id> bdry_ids;
-  bdry_ids.insert(dirichlet);
 
   std::map<Index,Real> boundary_values;
   space_tools::project_boundary_values<dim,codim,range,rank>(
-    *f_at_bndry, *basis, quad, bdry_ids,boundary_values);
+    boundary_functions, *basis, quad, boundary_values);
 
   out << "basis index \t value" << endl;
   for (auto entry : boundary_values)

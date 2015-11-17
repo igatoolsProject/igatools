@@ -27,17 +27,17 @@
 //TODO: this test should be merge into the other ones
 
 #include "../tests.h"
-
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/formula_function.h>
-#include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element.h>
-
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
+#include "common_functions.h"
 
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/basis_functions/bspline.h>
+
+#include <igatools/geometry/grid_function_lib.h>
+
+#if 0
 template<int dim>
 class XProject : public FormulaFunction<dim>
 {
@@ -84,33 +84,52 @@ public:
                   ValueVector<Derivative<2>> &values) const override
   {}
 };
-
+#endif
 
 
 
 template<int dim , int range ,int rank>
 void do_test(const int p, TensorSize<dim> n_knots)
 {
-  const int sub_dim = dim - 1;
   out << "Dimension: " << dim << endl;
-  using Basis = BSpline<dim, range, rank>;
 
+  /*
+    auto grid = Grid<dim>::create(n_knots);
+    auto space = Basis::create(SplineSpace<dim,range,rank>::const(p, grid)) ;
+    auto f = XProject<dim>::const_create(grid);
+  //*/
 
   auto grid = Grid<dim>::create(n_knots);
-  auto space = Basis::create(SplineSpace<dim,range,rank>::const(p, grid)) ;
-  auto f = XProject<dim>::const_create(grid);
+  auto space = SplineSpace<dim,range,rank>::create(p,grid);
+  auto ref_basis = BSpline<dim,range,rank>::create(space) ;
+  auto map = grid_functions::IdentityGridFunction<dim>::create(grid);
+  auto domain = Domain<dim,0>::create(map);
+  auto basis = PhysicalSpaceBasis<dim,range,rank,0>::create(ref_basis, domain);
+
+
+  const int sdim = dim-1;
+  const int s_id = 2;
+
+  using SubGridElemMap = typename Grid<dim>::template SubGridMap<sdim>;
+  SubGridElemMap sub_grid_elem_map;
+  const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,sub_grid_elem_map);
+
+  auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
+  auto f_at_bndry = TestBoundaryFunction<dim-1,range>::const_create(bndry_domain);
+
+
 
   const int n_qpoints = 4;
-  QGauss<sub_dim> quad(n_qpoints);
+  auto quad = QGauss<sdim>::create(n_qpoints);
 
   const boundary_id dirichlet = 1;
-  grid->set_boundary_id(2, dirichlet);
+  grid->set_boundary_id(s_id, dirichlet);
   std::set<boundary_id> bdry_ids;
   bdry_ids.insert(dirichlet);
 
   std::map<Index,Real> boundary_values;
-  space_tools::project_boundary_values<Basis>(
-    f, space, quad, bdry_ids,
+  space_tools::project_boundary_values<dim,0,range,rank>(
+    *f_at_bndry, *basis, quad, bdry_ids,
     boundary_values);
 
   out << "basis index \t value" << endl;
