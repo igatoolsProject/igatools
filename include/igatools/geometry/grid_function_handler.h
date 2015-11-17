@@ -229,15 +229,11 @@ private:
 
 public:
   using GridFunctionType = const SubGridFunction<sdim,dim,space_dim>;
-//  using GridType = const Grid<dim_>;
-//  using GridHandler = typename GridType::ElementHandler;
 
   using ElementAccessor = SubGridFunctionElement<sdim,dim,space_dim>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
 
-//  using List = typename GridType::List;
-//  using ListIt = typename GridType::ListIt;
   using Flags = grid_function_element::Flags;
 
 protected:
@@ -271,8 +267,7 @@ public:
   {
     parent_t::set_flags(topology,flag);
 
-    auto set_flags_dispatcher = SetFlagsDispatcher(flag,*sup_grid_func_handler_);
-    boost::apply_visitor(set_flags_dispatcher,topology);
+    sup_grid_func_handler_->set_flags(topology,flag);
   }
 
   virtual void init_cache(GridFunctionElement<sdim,space_dim> &sub_grid_func_elem,
@@ -283,10 +278,7 @@ public:
     auto &as_sub_grid_func_elem =
       dynamic_cast<SubGridFunctionElement<sdim,dim,space_dim> &>(sub_grid_func_elem);
 
-    auto init_dispatcher = InitCacheDispatcher(
-                             *(this->sup_grid_func_handler_),
-                             as_sub_grid_func_elem.get_sup_grid_function_element());
-    boost::apply_visitor(init_dispatcher, quad);
+    this->sup_grid_func_handler_->init_cache(as_sub_grid_func_elem.get_sup_grid_function_element(),quad);
   }
 
 
@@ -296,15 +288,14 @@ public:
   {
     this->grid_handler_->fill_cache(topology, sub_grid_func_elem.get_grid_element(), s_id);
 
-
     auto &as_sub_grid_func_elem =
       dynamic_cast<SubGridFunctionElement<sdim,dim,space_dim> &>(sub_grid_func_elem);
 
+    this->sup_grid_func_handler_->fill_cache(topology,as_sub_grid_func_elem.get_sup_grid_function_element(),s_id);
+
     auto fill_dispatcher = FillCacheDispatcher(
                              *this,
-                             *(this->sup_grid_func_handler_),
                              as_sub_grid_func_elem,
-                             as_sub_grid_func_elem.get_sup_grid_function_element(),
                              s_id);
     boost::apply_visitor(fill_dispatcher, topology);
   }
@@ -312,81 +303,26 @@ public:
 
 
 private:
-  /**
-   * Alternative to
-   * template <int k> set_flags()
-   */
-  struct SetFlagsDispatcher : boost::static_visitor<void>
-  {
-    SetFlagsDispatcher(
-      const Flags flag,
-      GridFunctionHandler<dim,space_dim> &sup_handler)
-      :
-      flag_(flag),
-      sup_handler_(sup_handler)
-    {}
-
-    template<int k>
-    void operator()(const Topology<k> &topology)
-    {
-      Assert(k >= 0 && k <= sdim,ExcMessage("Invalid topology dimension."));
-      sup_handler_.template set_flags<k>(flag_);
-    }
-
-    const Flags flag_;
-    GridFunctionHandler<dim,space_dim> &sup_handler_;
-  };
-
-
-  struct InitCacheDispatcher : boost::static_visitor<void>
-  {
-    InitCacheDispatcher(const GridFunctionHandler<dim,space_dim> &sup_grid_func_handler,
-                        GridFunctionElement<dim,space_dim> &sup_grid_func_elem)
-      :
-      sup_grid_func_handler_(sup_grid_func_handler),
-      sup_grid_func_elem_(sup_grid_func_elem)
-    {}
-
-
-    template<int k>
-    void operator()(const std::shared_ptr<const Quadrature<k>> &quad)
-    {
-      Assert(k >= 0 && k <= sdim,ExcMessage("Invalid topology dimension for the Quadrature scheme."));
-      sup_grid_func_handler_.init_cache(sup_grid_func_elem_,quad);
-    }
-
-    const GridFunctionHandler<dim,space_dim> &sup_grid_func_handler_;
-    GridFunctionElement<dim,space_dim> &sup_grid_func_elem_;
-//    const FlagsArray &flags_;
-  };
-
-
 
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
     FillCacheDispatcher(const SubGridFunctionHandler<sdim,dim,space_dim> &sub_grid_func_handler,
-                        const GridFunctionHandler<dim,space_dim> &sup_grid_func_handler,
                         SubGridFunctionElement<sdim,dim,space_dim> &sub_grid_func_elem,
-                        GridFunctionElement<dim,space_dim> &sup_grid_func_elem,
                         const int s_id)
       :
       sub_grid_func_handler_(sub_grid_func_handler),
-      sup_grid_func_handler_(sup_grid_func_handler),
       sub_grid_func_elem_(sub_grid_func_elem),
-      sup_grid_func_elem_(sup_grid_func_elem),
       s_id_(s_id)
     {}
 
     template<int k>
     void operator()(const Topology<k> &topology)
     {
-      Assert(k >= 0 && k <= sdim,ExcMessage("Invalid topology dimension."));
-      sup_grid_func_handler_.template fill_cache<k>(sup_grid_func_elem_,s_id_);
+      static_assert(k >= 0 && k <= sdim,"Invalid topological dimension.");
 
 
       const auto &sub_unit_elem = UnitElement<dim>::template get_elem<k>(s_id_);
       const auto &sub_elem_active_dirs = sub_unit_elem.active_directions;
-
 
 
       auto &sub_grid_func_local_cache = sub_grid_func_handler_.get_element_cache(sub_grid_func_elem_);
@@ -394,26 +330,22 @@ private:
 
       if (!sub_grid_func_cache.fill_none())
       {
-//        const auto &grid_pts = elem_.get_grid_element().template get_points<sdim>(s_id_);
+        const auto &sup_grid_func_elem = sub_grid_func_elem_.get_sup_grid_function_element();
+
         using _D0 = typename grid_function_element::template _D<0>;
         if (sub_grid_func_cache.template status_fill<_D0>())
         {
-          const auto &sup_grid_func_D0 = sup_grid_func_elem_.template get_values_from_cache<_D0,k>(s_id_);
+          const auto &sup_grid_func_D0 = sup_grid_func_elem.template get_values_from_cache<_D0,k>(s_id_);
           auto &D0 = sub_grid_func_cache.template get_data<_D0>();
 
           D0 = sup_grid_func_D0;
-          /*
-                    const int n_pts = sup_grid_func_D0.get_num_points();
-                    for (int pt = 0 ; pt < n_pts ; ++pt)
-                      D0[pt] = sup_grid_func_D0[pt];
-          //*/
           D0.set_status_filled(true);
         }
 
         using _D1 = typename grid_function_element::template _D<1>;
         if (sub_grid_func_cache.template status_fill<_D1>())
         {
-          const auto &sup_grid_func_D1 = sup_grid_func_elem_.template get_values_from_cache<_D1,k>(s_id_);
+          const auto &sup_grid_func_D1 = sup_grid_func_elem.template get_values_from_cache<_D1,k>(s_id_);
           auto &D1 = sub_grid_func_cache.template get_data<_D1>();
 
           const int n_pts = sup_grid_func_D1.get_num_points();
@@ -436,7 +368,7 @@ private:
         using _D2 = typename grid_function_element::template _D<2>;
         if (sub_grid_func_cache.template status_fill<_D2>())
         {
-          const auto &sup_grid_func_D2 = sup_grid_func_elem_.template get_values_from_cache<_D2,k>(s_id_);
+          const auto &sup_grid_func_D2 = sup_grid_func_elem.template get_values_from_cache<_D2,k>(s_id_);
           auto &D2 = sub_grid_func_cache.template get_data<_D2>();
 
           const int n_pts = sup_grid_func_D2.get_num_points();
@@ -474,21 +406,13 @@ private:
 
 
     const SubGridFunctionHandler<sdim,dim,space_dim> &sub_grid_func_handler_;
-    const GridFunctionHandler<dim,space_dim> &sup_grid_func_handler_;
     SubGridFunctionElement<sdim,dim,space_dim> &sub_grid_func_elem_;
-    GridFunctionElement<dim,space_dim> &sup_grid_func_elem_;
     const int s_id_;
-//    const FlagsArray &flags_;
   };
 
 private:
 
   std::unique_ptr<GridFunctionHandler<dim,space_dim>> sup_grid_func_handler_;
-//  std::unique_ptr<GridHandler> grid_handler_;
-
-//  FlagsArray flags_;
-
-//  friend ElementAccessor;
 };
 
 

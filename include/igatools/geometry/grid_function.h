@@ -242,76 +242,24 @@ public:
     sup_func_(sup_func),
     s_id_(s_id),
     elems_property_("boundary"),
-    constant_directions_(UnitElement<dim>::template get_elem<sdim>(s_id).constant_directions),
     sub_grid_elem_map_(sub_grid_elem_map)
   {
-    /*
-    LogStream out;
-    out.begin_item("Grid:");
-    this->get_grid()->print_info(out);
-    out.end_item();
-
-
-    out.begin_item("Sup. Grid:");
-    auto sup_grid = std::const_pointer_cast<SuperGrid>(func->get_grid());
-    sup_grid->print_info(out);
-    out.end_item();
-    //*/
-    /*
-         sup_grid->add_property(elems_property_);
-         for (const auto &elem_id : sub_grid_elem_map)
-           sup_grid->set_property_status_elem(elems_property_,elem_id.second,true);
-    //*/
-
-//     sup_grid->print_info(out);
-
-    /*
-         auto func_elem = this->begin();
-         auto func_elem_end = this->end();
-         int elem_id = 0;
-         for (; func_elem != func_elem_end ; ++func_elem, ++elem_id)
-         {
-           out.begin_item("Element " + std::to_string(elem_id));
-
-           out << "Element ID: " << func_elem->get_index() << std::endl;
-
-           out.end_item();
-         }
-    //*/
-
-
-    const auto &constant_values = UnitElement<dim>::template get_elem<sdim>(s_id).constant_values;
-    int i = 0;
-    for (const auto &v : constant_values)
-    {
-      const auto dir = constant_directions_[i];
-      const auto &knots = grid->get_knot_coordinates(dir);
-
-      constant_coordinates_[i] = (v == 0)? knots.front() : knots.back();
-      ++i;
-    }
-    LogStream out;
+//    LogStream out;
     for (const auto &elems_id : sub_grid_elem_map_)
     {
       id_elems_sub_grid_.insert(elems_id.first);
       id_elems_sup_grid_.insert(elems_id.second);
-      out << "Sub elem ID: " << elems_id.first << "    Sup elem ID: " << elems_id.second << std::endl;
+//      out << "Sub elem ID: " << elems_id.first << "    Sup elem ID: " << elems_id.second << std::endl;
     }
-    /*
-         out.begin_item("Constant coordinates:");
-         constant_coordinates_.print_info(out);
-         out.end_item();
-    //*/
-//     AssertThrow(false,ExcNotImplemented());
   }
 
   virtual ~SubGridFunction() = default;
 
-  virtual GridIterator<GridFunctionElement<sdim,space_dim>>
-                                                         cbegin(const PropId &prop) const override
+  virtual GridIterator<GridFunctionElement<sdim,space_dim> >
+  cbegin(const PropId &prop) const override
   {
-    LogStream out;
-    out << "cbegin" <<std::endl;
+//    LogStream out;
+//    out << "cbegin" <<std::endl;
 
     auto elem = std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
                 (
@@ -319,7 +267,7 @@ public:
                   id_elems_sub_grid_.begin(),
                   prop);
 
-    elem->print_info(out);
+//    elem->print_info(out);
 
 
     //TODO: (martinelli, Nov 16,2015): the iterator is not using the property!
@@ -328,8 +276,8 @@ public:
            );
   }
 
-  virtual GridIterator<GridFunctionElement<sdim,space_dim>>
-                                                         cend(const PropId &prop) const override
+  virtual GridIterator<GridFunctionElement<sdim,space_dim> >
+  cend(const PropId &prop) const override
   {
     //TODO: (martinelli, Nov 16,2015): the iterator is not using the property!
     return GridIterator<GridFunctionElement<sdim,space_dim>>(
@@ -441,7 +389,6 @@ public:
     return id_elems_sup_grid_;
   }
 
-
   const typename Grid<dim>::IndexType &
   get_sup_element_id(const typename Grid<sdim>::IndexType &sub_elem_id) const
   {
@@ -466,15 +413,11 @@ private:
 
   const PropId elems_property_;
 
-  const SafeSTLArray<int,dim-sdim> constant_directions_;
-
-  SafeSTLArray<Real,dim-sdim> constant_coordinates_;
 
   const SubGridMap sub_grid_elem_map_;
 
   SafeSTLSet<typename Grid<sdim>::IndexType> id_elems_sub_grid_;
   SafeSTLSet<typename Grid< dim>::IndexType> id_elems_sup_grid_;
-  //  typename SupFunc::ElementIterator sup_elem_;
 
 };
 
