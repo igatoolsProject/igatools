@@ -24,7 +24,7 @@
 #include <igatools/base/value_types.h>
 #include <igatools/geometry/grid_function.h>
 #include <igatools/geometry/grid_function_element.h>
-//#include <igatools/geometry/sub_grid_function.h>
+#include <igatools/geometry/sub_grid_function.h>
 
 IGA_NAMESPACE_OPEN
 
