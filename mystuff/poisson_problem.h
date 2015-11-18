@@ -163,7 +163,9 @@ void PoissonProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> 
   for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
     bdr_vals[*it]=0.0;
   }
-  apply_boundary_values(bdr_vals,*mat,*rhs,*sol);
+  rhs->Random();
+  apply_boundary_value(bdr_vals,*mat,*rhs,*sol);
+
 }
 
 template<int dim_> // solver for the linear system
@@ -173,58 +175,63 @@ void PoissonProblem<dim_>::solve() const {
 }
 
 
-//using OP = Epetra_Operator;
-//using MV = Epetra_MultiVector;
-//using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
+using OP = Epetra_Operator;
+using MV = Epetra_MultiVector;
+using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
 template<int dim_> // custom siuppacool solver
-void PoissonProblem<dim_>::custom_solve(int &it, double &cond, double &cond2) const {
-  /*using Teuchos::ParameterList;
+void PoissonProblem<dim_>::custom_solve(int &it, double &Acond, double &Bcond) const {
+  using Teuchos::ParameterList;
   using Teuchos::parameterList;
   using Teuchos::RCP;
   using Teuchos::rcp;
-  Belos::SolverFactory<double, MV, OP> factory;
-  RCP<ParameterList> solverParams = parameterList();
-  solverParams->set("Num Blocks", 40);
-  solverParams->set("Maximum Iterations", 400);
-  solverParams->set("Convergence Tolerance", 1.0e-8);
 
-  SolverPtr solver = factory.create("GMRES", solverParams);
-  RCP<Belos::LinearProblem<double, MV, OP> > problem =
-  rcp(new Belos::LinearProblem<double, MV, OP> (
-  rcp<OP>(mat.get(),false),
-  rcp<MV>(sol.get(),false),
-  rcp<MV>(rhs.get(),false)));
+// ----------------------------------------------------------------------------
+//   Belos attempt
+// ----------------------------------------------------------------------------
+  // creating the linear problem
+  /*RCP<Belos::LinearProblem<double, MV, OP> > Bproblem =
+  rcp(new Belos::LinearProblem<double, MV, OP>(rcp<OP>(mat.get(),false),
+                                               rcp<MV>(sol.get(),false),
+                                               rcp<MV>(rhs.get(),false)));
+  Bproblem->setProblem();
+  // parameter list
+  RCP<ParameterList> Bparameters = Teuchos::createParameterList();
+  Bparameters->set("Num Blocks", 40);
+  Bparameters->set("Maximum Iterations", 400);
+  Bparameters->set("Convergence Tolerance", 1.0e-8);
+  Bparameters->set("Estimate Condition Number", true);
+  // solver
+  auto Bsolver = Belos::PseudoBlockCGSolMgr<double,MV,OP>(Bproblem,Bparameters);
+  // let's start this f***** solver
+  Bsolver.solve();
+  it = Bsolver.getNumIters();
+  //Bcond = Bsolver.getConditionEstimate();*/
 
-  //RCP<ML_Epetra::MultiLevelPreconditioner> Prec =
-  //rcp(new ML_Epetra::MultiLevelPreconditioner(*(A.get()), true));
-
-  //RCP<Belos::EpetraPrecOp> belosPrec = rcp(new Belos::EpetraPrecOp(Prec));
-  //problem->setLeftPrec(belosPrec);
-
-  problem->setProblem();
-
-  solver->setProblem(problem);
-  solver->solve();
-  it = solver->getNumIters();*/
-//-----------------------------------------------------
+// ----------------------------------------------------------------------------
+//   AztecOO attempt
+// ----------------------------------------------------------------------------
   // setting up the problem
-  Epetra_LinearProblem problem(&*mat,&*sol,&*rhs);
-  AztecOO solver(problem);
+  Epetra_LinearProblem Eproblem(&*mat,&*sol,&*rhs);
+  AztecOO Asolver(Eproblem);
   // setting up the solver
-  solver.SetAztecOption(AZ_solver,  AZ_cg);
-  solver.SetAztecOption(AZ_precond, AZ_none);
-  solver.SetAztecOption(AZ_output,  AZ_none);
+  Asolver.SetAztecOption(AZ_solver,  AZ_cg_condnum);
+  Asolver.SetAztecOption(AZ_kspace,  100);
+  Asolver.SetAztecOption(AZ_precond, AZ_none);
+  Asolver.SetAztecOption(AZ_output,  AZ_none);
   // solve, for god's sake! SOLVE!
-  solver.Iterate(100, 1.0E-7);
+  Asolver.Iterate(100, 1.0E-7);
   // extracting info
-  it    = solver.NumIters();
-  //cond2 = solver.Condest();
+  it = Asolver.NumIters();
+  const double* aztecStatus = Asolver.GetAztecStatus();
+  Bcond = aztecStatus[AZ_condnum];
+  //Bcond = Asolver.Condest();
 
   // setting up the condition number estimator
-  AztecOOConditionNumber condest;
-  condest.initialize(*mat);
-  condest.computeConditionNumber(100,1.0E-9);
-  cond = condest.getConditionNumber();
+  AztecOOConditionNumber Acondest;
+  Acondest.initialize(*mat);
+  //AztecOOConditionNumber::SolverType solver_type = CG_;
+  Acondest.computeConditionNumber(100,1.0E-7);
+  Acond = Acondest.getConditionNumber();
 
 }
 

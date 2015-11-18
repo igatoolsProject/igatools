@@ -66,16 +66,16 @@ int main() {
   const int deg  = 2;
   // problem output
   int it;
-  double cond, cond2;
+  double Acond, Bcond;
   using CustomFunct = grid_functions::CustomGridFunction<dim,1>;
   
   Real err1, err2, eoc, h1, h2;
   for (int ideg=2; ideg<=2; ideg++) { printf("\n");
-  for (int iel=4; iel<=nel; iel+=4) {
+  for (int iel=16; iel<=64; iel+=4) {
     auto problem = PoissonProblem<dim>::create(iel,ideg);
     auto f = CustomFunct::const_create(problem->grid,&source_term);
     problem->assemble(f);
-    problem->custom_solve(it,cond,cond2);
+    problem->custom_solve(it,Acond,Bcond);
     auto u = CustomFunct::const_create(problem->grid,&exact_solution);
     err2 = problem->l2_error(u);
     h2   = (double)1.0/iel;
@@ -87,7 +87,7 @@ int main() {
       printf("  eoc = %1.5f",eoc);
     }
     //printf("\t it = %2d\tcond = %3.2f\tcond2 = %3.2f\n",it,cond,cond2);
-    printf("\t it = %2d\tcond = %3.2f\n",it,cond);
+    printf("\t it = %2d\tAztecOO cond = %3.2f\tBelos cond = %3.2f\n",it,Acond,Bcond);
     err1 = err2;
     h1 = h2;
   }
