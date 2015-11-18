@@ -14,23 +14,32 @@ IgGridFunction<1,1>
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 ]
+                     Flat ID: 0    Tensor ID: [0]
+                  
                   Entry id: 1
-                  [ 1 ]
+                     Flat ID: 1    Tensor ID: [1]
+                  
                   Entry id: 2
-                  [ 2 ]
+                     Flat ID: 2    Tensor ID: [2]
+                  
                   Entry id: 3
-                  [ 3 ]
+                     Flat ID: 3    Tensor ID: [3]
+                  
                   Entry id: 4
-                  [ 4 ]
+                     Flat ID: 4    Tensor ID: [4]
+                  
                   Entry id: 5
-                  [ 5 ]
+                     Flat ID: 5    Tensor ID: [5]
+                  
                   Entry id: 6
-                  [ 6 ]
+                     Flat ID: 6    Tensor ID: [6]
+                  
                   Entry id: 7
-                  [ 7 ]
+                     Flat ID: 7    Tensor ID: [7]
+                  
                   Entry id: 8
-                  [ 8 ]
+                     Flat ID: 8    Tensor ID: [8]
+                  
                
             
          
@@ -161,167 +170,248 @@ IgGridFunction<2,1>
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0]
+                  
                   Entry id: 1
-                  [ 0 1 ]
+                     Flat ID: 9    Tensor ID: [0,1]
+                  
                   Entry id: 2
-                  [ 0 2 ]
+                     Flat ID: 18    Tensor ID: [0,2]
+                  
                   Entry id: 3
-                  [ 0 3 ]
+                     Flat ID: 27    Tensor ID: [0,3]
+                  
                   Entry id: 4
-                  [ 0 4 ]
+                     Flat ID: 36    Tensor ID: [0,4]
+                  
                   Entry id: 5
-                  [ 0 5 ]
+                     Flat ID: 45    Tensor ID: [0,5]
+                  
                   Entry id: 6
-                  [ 0 6 ]
+                     Flat ID: 54    Tensor ID: [0,6]
+                  
                   Entry id: 7
-                  [ 0 7 ]
+                     Flat ID: 63    Tensor ID: [0,7]
+                  
                   Entry id: 8
-                  [ 0 8 ]
+                     Flat ID: 72    Tensor ID: [0,8]
+                  
                   Entry id: 9
-                  [ 1 0 ]
+                     Flat ID: 1    Tensor ID: [1,0]
+                  
                   Entry id: 10
-                  [ 1 1 ]
+                     Flat ID: 10    Tensor ID: [1,1]
+                  
                   Entry id: 11
-                  [ 1 2 ]
+                     Flat ID: 19    Tensor ID: [1,2]
+                  
                   Entry id: 12
-                  [ 1 3 ]
+                     Flat ID: 28    Tensor ID: [1,3]
+                  
                   Entry id: 13
-                  [ 1 4 ]
+                     Flat ID: 37    Tensor ID: [1,4]
+                  
                   Entry id: 14
-                  [ 1 5 ]
+                     Flat ID: 46    Tensor ID: [1,5]
+                  
                   Entry id: 15
-                  [ 1 6 ]
+                     Flat ID: 55    Tensor ID: [1,6]
+                  
                   Entry id: 16
-                  [ 1 7 ]
+                     Flat ID: 64    Tensor ID: [1,7]
+                  
                   Entry id: 17
-                  [ 1 8 ]
+                     Flat ID: 73    Tensor ID: [1,8]
+                  
                   Entry id: 18
-                  [ 2 0 ]
+                     Flat ID: 2    Tensor ID: [2,0]
+                  
                   Entry id: 19
-                  [ 2 1 ]
+                     Flat ID: 11    Tensor ID: [2,1]
+                  
                   Entry id: 20
-                  [ 2 2 ]
+                     Flat ID: 20    Tensor ID: [2,2]
+                  
                   Entry id: 21
-                  [ 2 3 ]
+                     Flat ID: 29    Tensor ID: [2,3]
+                  
                   Entry id: 22
-                  [ 2 4 ]
+                     Flat ID: 38    Tensor ID: [2,4]
+                  
                   Entry id: 23
-                  [ 2 5 ]
+                     Flat ID: 47    Tensor ID: [2,5]
+                  
                   Entry id: 24
-                  [ 2 6 ]
+                     Flat ID: 56    Tensor ID: [2,6]
+                  
                   Entry id: 25
-                  [ 2 7 ]
+                     Flat ID: 65    Tensor ID: [2,7]
+                  
                   Entry id: 26
-                  [ 2 8 ]
+                     Flat ID: 74    Tensor ID: [2,8]
+                  
                   Entry id: 27
-                  [ 3 0 ]
+                     Flat ID: 3    Tensor ID: [3,0]
+                  
                   Entry id: 28
-                  [ 3 1 ]
+                     Flat ID: 12    Tensor ID: [3,1]
+                  
                   Entry id: 29
-                  [ 3 2 ]
+                     Flat ID: 21    Tensor ID: [3,2]
+                  
                   Entry id: 30
-                  [ 3 3 ]
+                     Flat ID: 30    Tensor ID: [3,3]
+                  
                   Entry id: 31
-                  [ 3 4 ]
+                     Flat ID: 39    Tensor ID: [3,4]
+                  
                   Entry id: 32
-                  [ 3 5 ]
+                     Flat ID: 48    Tensor ID: [3,5]
+                  
                   Entry id: 33
-                  [ 3 6 ]
+                     Flat ID: 57    Tensor ID: [3,6]
+                  
                   Entry id: 34
-                  [ 3 7 ]
+                     Flat ID: 66    Tensor ID: [3,7]
+                  
                   Entry id: 35
-                  [ 3 8 ]
+                     Flat ID: 75    Tensor ID: [3,8]
+                  
                   Entry id: 36
-                  [ 4 0 ]
+                     Flat ID: 4    Tensor ID: [4,0]
+                  
                   Entry id: 37
-                  [ 4 1 ]
+                     Flat ID: 13    Tensor ID: [4,1]
+                  
                   Entry id: 38
-                  [ 4 2 ]
+                     Flat ID: 22    Tensor ID: [4,2]
+                  
                   Entry id: 39
-                  [ 4 3 ]
+                     Flat ID: 31    Tensor ID: [4,3]
+                  
                   Entry id: 40
-                  [ 4 4 ]
+                     Flat ID: 40    Tensor ID: [4,4]
+                  
                   Entry id: 41
-                  [ 4 5 ]
+                     Flat ID: 49    Tensor ID: [4,5]
+                  
                   Entry id: 42
-                  [ 4 6 ]
+                     Flat ID: 58    Tensor ID: [4,6]
+                  
                   Entry id: 43
-                  [ 4 7 ]
+                     Flat ID: 67    Tensor ID: [4,7]
+                  
                   Entry id: 44
-                  [ 4 8 ]
+                     Flat ID: 76    Tensor ID: [4,8]
+                  
                   Entry id: 45
-                  [ 5 0 ]
+                     Flat ID: 5    Tensor ID: [5,0]
+                  
                   Entry id: 46
-                  [ 5 1 ]
+                     Flat ID: 14    Tensor ID: [5,1]
+                  
                   Entry id: 47
-                  [ 5 2 ]
+                     Flat ID: 23    Tensor ID: [5,2]
+                  
                   Entry id: 48
-                  [ 5 3 ]
+                     Flat ID: 32    Tensor ID: [5,3]
+                  
                   Entry id: 49
-                  [ 5 4 ]
+                     Flat ID: 41    Tensor ID: [5,4]
+                  
                   Entry id: 50
-                  [ 5 5 ]
+                     Flat ID: 50    Tensor ID: [5,5]
+                  
                   Entry id: 51
-                  [ 5 6 ]
+                     Flat ID: 59    Tensor ID: [5,6]
+                  
                   Entry id: 52
-                  [ 5 7 ]
+                     Flat ID: 68    Tensor ID: [5,7]
+                  
                   Entry id: 53
-                  [ 5 8 ]
+                     Flat ID: 77    Tensor ID: [5,8]
+                  
                   Entry id: 54
-                  [ 6 0 ]
+                     Flat ID: 6    Tensor ID: [6,0]
+                  
                   Entry id: 55
-                  [ 6 1 ]
+                     Flat ID: 15    Tensor ID: [6,1]
+                  
                   Entry id: 56
-                  [ 6 2 ]
+                     Flat ID: 24    Tensor ID: [6,2]
+                  
                   Entry id: 57
-                  [ 6 3 ]
+                     Flat ID: 33    Tensor ID: [6,3]
+                  
                   Entry id: 58
-                  [ 6 4 ]
+                     Flat ID: 42    Tensor ID: [6,4]
+                  
                   Entry id: 59
-                  [ 6 5 ]
+                     Flat ID: 51    Tensor ID: [6,5]
+                  
                   Entry id: 60
-                  [ 6 6 ]
+                     Flat ID: 60    Tensor ID: [6,6]
+                  
                   Entry id: 61
-                  [ 6 7 ]
+                     Flat ID: 69    Tensor ID: [6,7]
+                  
                   Entry id: 62
-                  [ 6 8 ]
+                     Flat ID: 78    Tensor ID: [6,8]
+                  
                   Entry id: 63
-                  [ 7 0 ]
+                     Flat ID: 7    Tensor ID: [7,0]
+                  
                   Entry id: 64
-                  [ 7 1 ]
+                     Flat ID: 16    Tensor ID: [7,1]
+                  
                   Entry id: 65
-                  [ 7 2 ]
+                     Flat ID: 25    Tensor ID: [7,2]
+                  
                   Entry id: 66
-                  [ 7 3 ]
+                     Flat ID: 34    Tensor ID: [7,3]
+                  
                   Entry id: 67
-                  [ 7 4 ]
+                     Flat ID: 43    Tensor ID: [7,4]
+                  
                   Entry id: 68
-                  [ 7 5 ]
+                     Flat ID: 52    Tensor ID: [7,5]
+                  
                   Entry id: 69
-                  [ 7 6 ]
+                     Flat ID: 61    Tensor ID: [7,6]
+                  
                   Entry id: 70
-                  [ 7 7 ]
+                     Flat ID: 70    Tensor ID: [7,7]
+                  
                   Entry id: 71
-                  [ 7 8 ]
+                     Flat ID: 79    Tensor ID: [7,8]
+                  
                   Entry id: 72
-                  [ 8 0 ]
+                     Flat ID: 8    Tensor ID: [8,0]
+                  
                   Entry id: 73
-                  [ 8 1 ]
+                     Flat ID: 17    Tensor ID: [8,1]
+                  
                   Entry id: 74
-                  [ 8 2 ]
+                     Flat ID: 26    Tensor ID: [8,2]
+                  
                   Entry id: 75
-                  [ 8 3 ]
+                     Flat ID: 35    Tensor ID: [8,3]
+                  
                   Entry id: 76
-                  [ 8 4 ]
+                     Flat ID: 44    Tensor ID: [8,4]
+                  
                   Entry id: 77
-                  [ 8 5 ]
+                     Flat ID: 53    Tensor ID: [8,5]
+                  
                   Entry id: 78
-                  [ 8 6 ]
+                     Flat ID: 62    Tensor ID: [8,6]
+                  
                   Entry id: 79
-                  [ 8 7 ]
+                     Flat ID: 71    Tensor ID: [8,7]
+                  
                   Entry id: 80
-                  [ 8 8 ]
+                     Flat ID: 80    Tensor ID: [8,8]
+                  
                
             
          
@@ -598,1463 +688,2192 @@ IgGridFunction<3,1>
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0,0]
+                  
                   Entry id: 1
-                  [ 0 0 1 ]
+                     Flat ID: 81    Tensor ID: [0,0,1]
+                  
                   Entry id: 2
-                  [ 0 0 2 ]
+                     Flat ID: 162    Tensor ID: [0,0,2]
+                  
                   Entry id: 3
-                  [ 0 0 3 ]
+                     Flat ID: 243    Tensor ID: [0,0,3]
+                  
                   Entry id: 4
-                  [ 0 0 4 ]
+                     Flat ID: 324    Tensor ID: [0,0,4]
+                  
                   Entry id: 5
-                  [ 0 0 5 ]
+                     Flat ID: 405    Tensor ID: [0,0,5]
+                  
                   Entry id: 6
-                  [ 0 0 6 ]
+                     Flat ID: 486    Tensor ID: [0,0,6]
+                  
                   Entry id: 7
-                  [ 0 0 7 ]
+                     Flat ID: 567    Tensor ID: [0,0,7]
+                  
                   Entry id: 8
-                  [ 0 0 8 ]
+                     Flat ID: 648    Tensor ID: [0,0,8]
+                  
                   Entry id: 9
-                  [ 0 1 0 ]
+                     Flat ID: 9    Tensor ID: [0,1,0]
+                  
                   Entry id: 10
-                  [ 0 1 1 ]
+                     Flat ID: 90    Tensor ID: [0,1,1]
+                  
                   Entry id: 11
-                  [ 0 1 2 ]
+                     Flat ID: 171    Tensor ID: [0,1,2]
+                  
                   Entry id: 12
-                  [ 0 1 3 ]
+                     Flat ID: 252    Tensor ID: [0,1,3]
+                  
                   Entry id: 13
-                  [ 0 1 4 ]
+                     Flat ID: 333    Tensor ID: [0,1,4]
+                  
                   Entry id: 14
-                  [ 0 1 5 ]
+                     Flat ID: 414    Tensor ID: [0,1,5]
+                  
                   Entry id: 15
-                  [ 0 1 6 ]
+                     Flat ID: 495    Tensor ID: [0,1,6]
+                  
                   Entry id: 16
-                  [ 0 1 7 ]
+                     Flat ID: 576    Tensor ID: [0,1,7]
+                  
                   Entry id: 17
-                  [ 0 1 8 ]
+                     Flat ID: 657    Tensor ID: [0,1,8]
+                  
                   Entry id: 18
-                  [ 0 2 0 ]
+                     Flat ID: 18    Tensor ID: [0,2,0]
+                  
                   Entry id: 19
-                  [ 0 2 1 ]
+                     Flat ID: 99    Tensor ID: [0,2,1]
+                  
                   Entry id: 20
-                  [ 0 2 2 ]
+                     Flat ID: 180    Tensor ID: [0,2,2]
+                  
                   Entry id: 21
-                  [ 0 2 3 ]
+                     Flat ID: 261    Tensor ID: [0,2,3]
+                  
                   Entry id: 22
-                  [ 0 2 4 ]
+                     Flat ID: 342    Tensor ID: [0,2,4]
+                  
                   Entry id: 23
-                  [ 0 2 5 ]
+                     Flat ID: 423    Tensor ID: [0,2,5]
+                  
                   Entry id: 24
-                  [ 0 2 6 ]
+                     Flat ID: 504    Tensor ID: [0,2,6]
+                  
                   Entry id: 25
-                  [ 0 2 7 ]
+                     Flat ID: 585    Tensor ID: [0,2,7]
+                  
                   Entry id: 26
-                  [ 0 2 8 ]
+                     Flat ID: 666    Tensor ID: [0,2,8]
+                  
                   Entry id: 27
-                  [ 0 3 0 ]
+                     Flat ID: 27    Tensor ID: [0,3,0]
+                  
                   Entry id: 28
-                  [ 0 3 1 ]
+                     Flat ID: 108    Tensor ID: [0,3,1]
+                  
                   Entry id: 29
-                  [ 0 3 2 ]
+                     Flat ID: 189    Tensor ID: [0,3,2]
+                  
                   Entry id: 30
-                  [ 0 3 3 ]
+                     Flat ID: 270    Tensor ID: [0,3,3]
+                  
                   Entry id: 31
-                  [ 0 3 4 ]
+                     Flat ID: 351    Tensor ID: [0,3,4]
+                  
                   Entry id: 32
-                  [ 0 3 5 ]
+                     Flat ID: 432    Tensor ID: [0,3,5]
+                  
                   Entry id: 33
-                  [ 0 3 6 ]
+                     Flat ID: 513    Tensor ID: [0,3,6]
+                  
                   Entry id: 34
-                  [ 0 3 7 ]
+                     Flat ID: 594    Tensor ID: [0,3,7]
+                  
                   Entry id: 35
-                  [ 0 3 8 ]
+                     Flat ID: 675    Tensor ID: [0,3,8]
+                  
                   Entry id: 36
-                  [ 0 4 0 ]
+                     Flat ID: 36    Tensor ID: [0,4,0]
+                  
                   Entry id: 37
-                  [ 0 4 1 ]
+                     Flat ID: 117    Tensor ID: [0,4,1]
+                  
                   Entry id: 38
-                  [ 0 4 2 ]
+                     Flat ID: 198    Tensor ID: [0,4,2]
+                  
                   Entry id: 39
-                  [ 0 4 3 ]
+                     Flat ID: 279    Tensor ID: [0,4,3]
+                  
                   Entry id: 40
-                  [ 0 4 4 ]
+                     Flat ID: 360    Tensor ID: [0,4,4]
+                  
                   Entry id: 41
-                  [ 0 4 5 ]
+                     Flat ID: 441    Tensor ID: [0,4,5]
+                  
                   Entry id: 42
-                  [ 0 4 6 ]
+                     Flat ID: 522    Tensor ID: [0,4,6]
+                  
                   Entry id: 43
-                  [ 0 4 7 ]
+                     Flat ID: 603    Tensor ID: [0,4,7]
+                  
                   Entry id: 44
-                  [ 0 4 8 ]
+                     Flat ID: 684    Tensor ID: [0,4,8]
+                  
                   Entry id: 45
-                  [ 0 5 0 ]
+                     Flat ID: 45    Tensor ID: [0,5,0]
+                  
                   Entry id: 46
-                  [ 0 5 1 ]
+                     Flat ID: 126    Tensor ID: [0,5,1]
+                  
                   Entry id: 47
-                  [ 0 5 2 ]
+                     Flat ID: 207    Tensor ID: [0,5,2]
+                  
                   Entry id: 48
-                  [ 0 5 3 ]
+                     Flat ID: 288    Tensor ID: [0,5,3]
+                  
                   Entry id: 49
-                  [ 0 5 4 ]
+                     Flat ID: 369    Tensor ID: [0,5,4]
+                  
                   Entry id: 50
-                  [ 0 5 5 ]
+                     Flat ID: 450    Tensor ID: [0,5,5]
+                  
                   Entry id: 51
-                  [ 0 5 6 ]
+                     Flat ID: 531    Tensor ID: [0,5,6]
+                  
                   Entry id: 52
-                  [ 0 5 7 ]
+                     Flat ID: 612    Tensor ID: [0,5,7]
+                  
                   Entry id: 53
-                  [ 0 5 8 ]
+                     Flat ID: 693    Tensor ID: [0,5,8]
+                  
                   Entry id: 54
-                  [ 0 6 0 ]
+                     Flat ID: 54    Tensor ID: [0,6,0]
+                  
                   Entry id: 55
-                  [ 0 6 1 ]
+                     Flat ID: 135    Tensor ID: [0,6,1]
+                  
                   Entry id: 56
-                  [ 0 6 2 ]
+                     Flat ID: 216    Tensor ID: [0,6,2]
+                  
                   Entry id: 57
-                  [ 0 6 3 ]
+                     Flat ID: 297    Tensor ID: [0,6,3]
+                  
                   Entry id: 58
-                  [ 0 6 4 ]
+                     Flat ID: 378    Tensor ID: [0,6,4]
+                  
                   Entry id: 59
-                  [ 0 6 5 ]
+                     Flat ID: 459    Tensor ID: [0,6,5]
+                  
                   Entry id: 60
-                  [ 0 6 6 ]
+                     Flat ID: 540    Tensor ID: [0,6,6]
+                  
                   Entry id: 61
-                  [ 0 6 7 ]
+                     Flat ID: 621    Tensor ID: [0,6,7]
+                  
                   Entry id: 62
-                  [ 0 6 8 ]
+                     Flat ID: 702    Tensor ID: [0,6,8]
+                  
                   Entry id: 63
-                  [ 0 7 0 ]
+                     Flat ID: 63    Tensor ID: [0,7,0]
+                  
                   Entry id: 64
-                  [ 0 7 1 ]
+                     Flat ID: 144    Tensor ID: [0,7,1]
+                  
                   Entry id: 65
-                  [ 0 7 2 ]
+                     Flat ID: 225    Tensor ID: [0,7,2]
+                  
                   Entry id: 66
-                  [ 0 7 3 ]
+                     Flat ID: 306    Tensor ID: [0,7,3]
+                  
                   Entry id: 67
-                  [ 0 7 4 ]
+                     Flat ID: 387    Tensor ID: [0,7,4]
+                  
                   Entry id: 68
-                  [ 0 7 5 ]
+                     Flat ID: 468    Tensor ID: [0,7,5]
+                  
                   Entry id: 69
-                  [ 0 7 6 ]
+                     Flat ID: 549    Tensor ID: [0,7,6]
+                  
                   Entry id: 70
-                  [ 0 7 7 ]
+                     Flat ID: 630    Tensor ID: [0,7,7]
+                  
                   Entry id: 71
-                  [ 0 7 8 ]
+                     Flat ID: 711    Tensor ID: [0,7,8]
+                  
                   Entry id: 72
-                  [ 0 8 0 ]
+                     Flat ID: 72    Tensor ID: [0,8,0]
+                  
                   Entry id: 73
-                  [ 0 8 1 ]
+                     Flat ID: 153    Tensor ID: [0,8,1]
+                  
                   Entry id: 74
-                  [ 0 8 2 ]
+                     Flat ID: 234    Tensor ID: [0,8,2]
+                  
                   Entry id: 75
-                  [ 0 8 3 ]
+                     Flat ID: 315    Tensor ID: [0,8,3]
+                  
                   Entry id: 76
-                  [ 0 8 4 ]
+                     Flat ID: 396    Tensor ID: [0,8,4]
+                  
                   Entry id: 77
-                  [ 0 8 5 ]
+                     Flat ID: 477    Tensor ID: [0,8,5]
+                  
                   Entry id: 78
-                  [ 0 8 6 ]
+                     Flat ID: 558    Tensor ID: [0,8,6]
+                  
                   Entry id: 79
-                  [ 0 8 7 ]
+                     Flat ID: 639    Tensor ID: [0,8,7]
+                  
                   Entry id: 80
-                  [ 0 8 8 ]
+                     Flat ID: 720    Tensor ID: [0,8,8]
+                  
                   Entry id: 81
-                  [ 1 0 0 ]
+                     Flat ID: 1    Tensor ID: [1,0,0]
+                  
                   Entry id: 82
-                  [ 1 0 1 ]
+                     Flat ID: 82    Tensor ID: [1,0,1]
+                  
                   Entry id: 83
-                  [ 1 0 2 ]
+                     Flat ID: 163    Tensor ID: [1,0,2]
+                  
                   Entry id: 84
-                  [ 1 0 3 ]
+                     Flat ID: 244    Tensor ID: [1,0,3]
+                  
                   Entry id: 85
-                  [ 1 0 4 ]
+                     Flat ID: 325    Tensor ID: [1,0,4]
+                  
                   Entry id: 86
-                  [ 1 0 5 ]
+                     Flat ID: 406    Tensor ID: [1,0,5]
+                  
                   Entry id: 87
-                  [ 1 0 6 ]
+                     Flat ID: 487    Tensor ID: [1,0,6]
+                  
                   Entry id: 88
-                  [ 1 0 7 ]
+                     Flat ID: 568    Tensor ID: [1,0,7]
+                  
                   Entry id: 89
-                  [ 1 0 8 ]
+                     Flat ID: 649    Tensor ID: [1,0,8]
+                  
                   Entry id: 90
-                  [ 1 1 0 ]
+                     Flat ID: 10    Tensor ID: [1,1,0]
+                  
                   Entry id: 91
-                  [ 1 1 1 ]
+                     Flat ID: 91    Tensor ID: [1,1,1]
+                  
                   Entry id: 92
-                  [ 1 1 2 ]
+                     Flat ID: 172    Tensor ID: [1,1,2]
+                  
                   Entry id: 93
-                  [ 1 1 3 ]
+                     Flat ID: 253    Tensor ID: [1,1,3]
+                  
                   Entry id: 94
-                  [ 1 1 4 ]
+                     Flat ID: 334    Tensor ID: [1,1,4]
+                  
                   Entry id: 95
-                  [ 1 1 5 ]
+                     Flat ID: 415    Tensor ID: [1,1,5]
+                  
                   Entry id: 96
-                  [ 1 1 6 ]
+                     Flat ID: 496    Tensor ID: [1,1,6]
+                  
                   Entry id: 97
-                  [ 1 1 7 ]
+                     Flat ID: 577    Tensor ID: [1,1,7]
+                  
                   Entry id: 98
-                  [ 1 1 8 ]
+                     Flat ID: 658    Tensor ID: [1,1,8]
+                  
                   Entry id: 99
-                  [ 1 2 0 ]
+                     Flat ID: 19    Tensor ID: [1,2,0]
+                  
                   Entry id: 100
-                  [ 1 2 1 ]
+                     Flat ID: 100    Tensor ID: [1,2,1]
+                  
                   Entry id: 101
-                  [ 1 2 2 ]
+                     Flat ID: 181    Tensor ID: [1,2,2]
+                  
                   Entry id: 102
-                  [ 1 2 3 ]
+                     Flat ID: 262    Tensor ID: [1,2,3]
+                  
                   Entry id: 103
-                  [ 1 2 4 ]
+                     Flat ID: 343    Tensor ID: [1,2,4]
+                  
                   Entry id: 104
-                  [ 1 2 5 ]
+                     Flat ID: 424    Tensor ID: [1,2,5]
+                  
                   Entry id: 105
-                  [ 1 2 6 ]
+                     Flat ID: 505    Tensor ID: [1,2,6]
+                  
                   Entry id: 106
-                  [ 1 2 7 ]
+                     Flat ID: 586    Tensor ID: [1,2,7]
+                  
                   Entry id: 107
-                  [ 1 2 8 ]
+                     Flat ID: 667    Tensor ID: [1,2,8]
+                  
                   Entry id: 108
-                  [ 1 3 0 ]
+                     Flat ID: 28    Tensor ID: [1,3,0]
+                  
                   Entry id: 109
-                  [ 1 3 1 ]
+                     Flat ID: 109    Tensor ID: [1,3,1]
+                  
                   Entry id: 110
-                  [ 1 3 2 ]
+                     Flat ID: 190    Tensor ID: [1,3,2]
+                  
                   Entry id: 111
-                  [ 1 3 3 ]
+                     Flat ID: 271    Tensor ID: [1,3,3]
+                  
                   Entry id: 112
-                  [ 1 3 4 ]
+                     Flat ID: 352    Tensor ID: [1,3,4]
+                  
                   Entry id: 113
-                  [ 1 3 5 ]
+                     Flat ID: 433    Tensor ID: [1,3,5]
+                  
                   Entry id: 114
-                  [ 1 3 6 ]
+                     Flat ID: 514    Tensor ID: [1,3,6]
+                  
                   Entry id: 115
-                  [ 1 3 7 ]
+                     Flat ID: 595    Tensor ID: [1,3,7]
+                  
                   Entry id: 116
-                  [ 1 3 8 ]
+                     Flat ID: 676    Tensor ID: [1,3,8]
+                  
                   Entry id: 117
-                  [ 1 4 0 ]
+                     Flat ID: 37    Tensor ID: [1,4,0]
+                  
                   Entry id: 118
-                  [ 1 4 1 ]
+                     Flat ID: 118    Tensor ID: [1,4,1]
+                  
                   Entry id: 119
-                  [ 1 4 2 ]
+                     Flat ID: 199    Tensor ID: [1,4,2]
+                  
                   Entry id: 120
-                  [ 1 4 3 ]
+                     Flat ID: 280    Tensor ID: [1,4,3]
+                  
                   Entry id: 121
-                  [ 1 4 4 ]
+                     Flat ID: 361    Tensor ID: [1,4,4]
+                  
                   Entry id: 122
-                  [ 1 4 5 ]
+                     Flat ID: 442    Tensor ID: [1,4,5]
+                  
                   Entry id: 123
-                  [ 1 4 6 ]
+                     Flat ID: 523    Tensor ID: [1,4,6]
+                  
                   Entry id: 124
-                  [ 1 4 7 ]
+                     Flat ID: 604    Tensor ID: [1,4,7]
+                  
                   Entry id: 125
-                  [ 1 4 8 ]
+                     Flat ID: 685    Tensor ID: [1,4,8]
+                  
                   Entry id: 126
-                  [ 1 5 0 ]
+                     Flat ID: 46    Tensor ID: [1,5,0]
+                  
                   Entry id: 127
-                  [ 1 5 1 ]
+                     Flat ID: 127    Tensor ID: [1,5,1]
+                  
                   Entry id: 128
-                  [ 1 5 2 ]
+                     Flat ID: 208    Tensor ID: [1,5,2]
+                  
                   Entry id: 129
-                  [ 1 5 3 ]
+                     Flat ID: 289    Tensor ID: [1,5,3]
+                  
                   Entry id: 130
-                  [ 1 5 4 ]
+                     Flat ID: 370    Tensor ID: [1,5,4]
+                  
                   Entry id: 131
-                  [ 1 5 5 ]
+                     Flat ID: 451    Tensor ID: [1,5,5]
+                  
                   Entry id: 132
-                  [ 1 5 6 ]
+                     Flat ID: 532    Tensor ID: [1,5,6]
+                  
                   Entry id: 133
-                  [ 1 5 7 ]
+                     Flat ID: 613    Tensor ID: [1,5,7]
+                  
                   Entry id: 134
-                  [ 1 5 8 ]
+                     Flat ID: 694    Tensor ID: [1,5,8]
+                  
                   Entry id: 135
-                  [ 1 6 0 ]
+                     Flat ID: 55    Tensor ID: [1,6,0]
+                  
                   Entry id: 136
-                  [ 1 6 1 ]
+                     Flat ID: 136    Tensor ID: [1,6,1]
+                  
                   Entry id: 137
-                  [ 1 6 2 ]
+                     Flat ID: 217    Tensor ID: [1,6,2]
+                  
                   Entry id: 138
-                  [ 1 6 3 ]
+                     Flat ID: 298    Tensor ID: [1,6,3]
+                  
                   Entry id: 139
-                  [ 1 6 4 ]
+                     Flat ID: 379    Tensor ID: [1,6,4]
+                  
                   Entry id: 140
-                  [ 1 6 5 ]
+                     Flat ID: 460    Tensor ID: [1,6,5]
+                  
                   Entry id: 141
-                  [ 1 6 6 ]
+                     Flat ID: 541    Tensor ID: [1,6,6]
+                  
                   Entry id: 142
-                  [ 1 6 7 ]
+                     Flat ID: 622    Tensor ID: [1,6,7]
+                  
                   Entry id: 143
-                  [ 1 6 8 ]
+                     Flat ID: 703    Tensor ID: [1,6,8]
+                  
                   Entry id: 144
-                  [ 1 7 0 ]
+                     Flat ID: 64    Tensor ID: [1,7,0]
+                  
                   Entry id: 145
-                  [ 1 7 1 ]
+                     Flat ID: 145    Tensor ID: [1,7,1]
+                  
                   Entry id: 146
-                  [ 1 7 2 ]
+                     Flat ID: 226    Tensor ID: [1,7,2]
+                  
                   Entry id: 147
-                  [ 1 7 3 ]
+                     Flat ID: 307    Tensor ID: [1,7,3]
+                  
                   Entry id: 148
-                  [ 1 7 4 ]
+                     Flat ID: 388    Tensor ID: [1,7,4]
+                  
                   Entry id: 149
-                  [ 1 7 5 ]
+                     Flat ID: 469    Tensor ID: [1,7,5]
+                  
                   Entry id: 150
-                  [ 1 7 6 ]
+                     Flat ID: 550    Tensor ID: [1,7,6]
+                  
                   Entry id: 151
-                  [ 1 7 7 ]
+                     Flat ID: 631    Tensor ID: [1,7,7]
+                  
                   Entry id: 152
-                  [ 1 7 8 ]
+                     Flat ID: 712    Tensor ID: [1,7,8]
+                  
                   Entry id: 153
-                  [ 1 8 0 ]
+                     Flat ID: 73    Tensor ID: [1,8,0]
+                  
                   Entry id: 154
-                  [ 1 8 1 ]
+                     Flat ID: 154    Tensor ID: [1,8,1]
+                  
                   Entry id: 155
-                  [ 1 8 2 ]
+                     Flat ID: 235    Tensor ID: [1,8,2]
+                  
                   Entry id: 156
-                  [ 1 8 3 ]
+                     Flat ID: 316    Tensor ID: [1,8,3]
+                  
                   Entry id: 157
-                  [ 1 8 4 ]
+                     Flat ID: 397    Tensor ID: [1,8,4]
+                  
                   Entry id: 158
-                  [ 1 8 5 ]
+                     Flat ID: 478    Tensor ID: [1,8,5]
+                  
                   Entry id: 159
-                  [ 1 8 6 ]
+                     Flat ID: 559    Tensor ID: [1,8,6]
+                  
                   Entry id: 160
-                  [ 1 8 7 ]
+                     Flat ID: 640    Tensor ID: [1,8,7]
+                  
                   Entry id: 161
-                  [ 1 8 8 ]
+                     Flat ID: 721    Tensor ID: [1,8,8]
+                  
                   Entry id: 162
-                  [ 2 0 0 ]
+                     Flat ID: 2    Tensor ID: [2,0,0]
+                  
                   Entry id: 163
-                  [ 2 0 1 ]
+                     Flat ID: 83    Tensor ID: [2,0,1]
+                  
                   Entry id: 164
-                  [ 2 0 2 ]
+                     Flat ID: 164    Tensor ID: [2,0,2]
+                  
                   Entry id: 165
-                  [ 2 0 3 ]
+                     Flat ID: 245    Tensor ID: [2,0,3]
+                  
                   Entry id: 166
-                  [ 2 0 4 ]
+                     Flat ID: 326    Tensor ID: [2,0,4]
+                  
                   Entry id: 167
-                  [ 2 0 5 ]
+                     Flat ID: 407    Tensor ID: [2,0,5]
+                  
                   Entry id: 168
-                  [ 2 0 6 ]
+                     Flat ID: 488    Tensor ID: [2,0,6]
+                  
                   Entry id: 169
-                  [ 2 0 7 ]
+                     Flat ID: 569    Tensor ID: [2,0,7]
+                  
                   Entry id: 170
-                  [ 2 0 8 ]
+                     Flat ID: 650    Tensor ID: [2,0,8]
+                  
                   Entry id: 171
-                  [ 2 1 0 ]
+                     Flat ID: 11    Tensor ID: [2,1,0]
+                  
                   Entry id: 172
-                  [ 2 1 1 ]
+                     Flat ID: 92    Tensor ID: [2,1,1]
+                  
                   Entry id: 173
-                  [ 2 1 2 ]
+                     Flat ID: 173    Tensor ID: [2,1,2]
+                  
                   Entry id: 174
-                  [ 2 1 3 ]
+                     Flat ID: 254    Tensor ID: [2,1,3]
+                  
                   Entry id: 175
-                  [ 2 1 4 ]
+                     Flat ID: 335    Tensor ID: [2,1,4]
+                  
                   Entry id: 176
-                  [ 2 1 5 ]
+                     Flat ID: 416    Tensor ID: [2,1,5]
+                  
                   Entry id: 177
-                  [ 2 1 6 ]
+                     Flat ID: 497    Tensor ID: [2,1,6]
+                  
                   Entry id: 178
-                  [ 2 1 7 ]
+                     Flat ID: 578    Tensor ID: [2,1,7]
+                  
                   Entry id: 179
-                  [ 2 1 8 ]
+                     Flat ID: 659    Tensor ID: [2,1,8]
+                  
                   Entry id: 180
-                  [ 2 2 0 ]
+                     Flat ID: 20    Tensor ID: [2,2,0]
+                  
                   Entry id: 181
-                  [ 2 2 1 ]
+                     Flat ID: 101    Tensor ID: [2,2,1]
+                  
                   Entry id: 182
-                  [ 2 2 2 ]
+                     Flat ID: 182    Tensor ID: [2,2,2]
+                  
                   Entry id: 183
-                  [ 2 2 3 ]
+                     Flat ID: 263    Tensor ID: [2,2,3]
+                  
                   Entry id: 184
-                  [ 2 2 4 ]
+                     Flat ID: 344    Tensor ID: [2,2,4]
+                  
                   Entry id: 185
-                  [ 2 2 5 ]
+                     Flat ID: 425    Tensor ID: [2,2,5]
+                  
                   Entry id: 186
-                  [ 2 2 6 ]
+                     Flat ID: 506    Tensor ID: [2,2,6]
+                  
                   Entry id: 187
-                  [ 2 2 7 ]
+                     Flat ID: 587    Tensor ID: [2,2,7]
+                  
                   Entry id: 188
-                  [ 2 2 8 ]
+                     Flat ID: 668    Tensor ID: [2,2,8]
+                  
                   Entry id: 189
-                  [ 2 3 0 ]
+                     Flat ID: 29    Tensor ID: [2,3,0]
+                  
                   Entry id: 190
-                  [ 2 3 1 ]
+                     Flat ID: 110    Tensor ID: [2,3,1]
+                  
                   Entry id: 191
-                  [ 2 3 2 ]
+                     Flat ID: 191    Tensor ID: [2,3,2]
+                  
                   Entry id: 192
-                  [ 2 3 3 ]
+                     Flat ID: 272    Tensor ID: [2,3,3]
+                  
                   Entry id: 193
-                  [ 2 3 4 ]
+                     Flat ID: 353    Tensor ID: [2,3,4]
+                  
                   Entry id: 194
-                  [ 2 3 5 ]
+                     Flat ID: 434    Tensor ID: [2,3,5]
+                  
                   Entry id: 195
-                  [ 2 3 6 ]
+                     Flat ID: 515    Tensor ID: [2,3,6]
+                  
                   Entry id: 196
-                  [ 2 3 7 ]
+                     Flat ID: 596    Tensor ID: [2,3,7]
+                  
                   Entry id: 197
-                  [ 2 3 8 ]
+                     Flat ID: 677    Tensor ID: [2,3,8]
+                  
                   Entry id: 198
-                  [ 2 4 0 ]
+                     Flat ID: 38    Tensor ID: [2,4,0]
+                  
                   Entry id: 199
-                  [ 2 4 1 ]
+                     Flat ID: 119    Tensor ID: [2,4,1]
+                  
                   Entry id: 200
-                  [ 2 4 2 ]
+                     Flat ID: 200    Tensor ID: [2,4,2]
+                  
                   Entry id: 201
-                  [ 2 4 3 ]
+                     Flat ID: 281    Tensor ID: [2,4,3]
+                  
                   Entry id: 202
-                  [ 2 4 4 ]
+                     Flat ID: 362    Tensor ID: [2,4,4]
+                  
                   Entry id: 203
-                  [ 2 4 5 ]
+                     Flat ID: 443    Tensor ID: [2,4,5]
+                  
                   Entry id: 204
-                  [ 2 4 6 ]
+                     Flat ID: 524    Tensor ID: [2,4,6]
+                  
                   Entry id: 205
-                  [ 2 4 7 ]
+                     Flat ID: 605    Tensor ID: [2,4,7]
+                  
                   Entry id: 206
-                  [ 2 4 8 ]
+                     Flat ID: 686    Tensor ID: [2,4,8]
+                  
                   Entry id: 207
-                  [ 2 5 0 ]
+                     Flat ID: 47    Tensor ID: [2,5,0]
+                  
                   Entry id: 208
-                  [ 2 5 1 ]
+                     Flat ID: 128    Tensor ID: [2,5,1]
+                  
                   Entry id: 209
-                  [ 2 5 2 ]
+                     Flat ID: 209    Tensor ID: [2,5,2]
+                  
                   Entry id: 210
-                  [ 2 5 3 ]
+                     Flat ID: 290    Tensor ID: [2,5,3]
+                  
                   Entry id: 211
-                  [ 2 5 4 ]
+                     Flat ID: 371    Tensor ID: [2,5,4]
+                  
                   Entry id: 212
-                  [ 2 5 5 ]
+                     Flat ID: 452    Tensor ID: [2,5,5]
+                  
                   Entry id: 213
-                  [ 2 5 6 ]
+                     Flat ID: 533    Tensor ID: [2,5,6]
+                  
                   Entry id: 214
-                  [ 2 5 7 ]
+                     Flat ID: 614    Tensor ID: [2,5,7]
+                  
                   Entry id: 215
-                  [ 2 5 8 ]
+                     Flat ID: 695    Tensor ID: [2,5,8]
+                  
                   Entry id: 216
-                  [ 2 6 0 ]
+                     Flat ID: 56    Tensor ID: [2,6,0]
+                  
                   Entry id: 217
-                  [ 2 6 1 ]
+                     Flat ID: 137    Tensor ID: [2,6,1]
+                  
                   Entry id: 218
-                  [ 2 6 2 ]
+                     Flat ID: 218    Tensor ID: [2,6,2]
+                  
                   Entry id: 219
-                  [ 2 6 3 ]
+                     Flat ID: 299    Tensor ID: [2,6,3]
+                  
                   Entry id: 220
-                  [ 2 6 4 ]
+                     Flat ID: 380    Tensor ID: [2,6,4]
+                  
                   Entry id: 221
-                  [ 2 6 5 ]
+                     Flat ID: 461    Tensor ID: [2,6,5]
+                  
                   Entry id: 222
-                  [ 2 6 6 ]
+                     Flat ID: 542    Tensor ID: [2,6,6]
+                  
                   Entry id: 223
-                  [ 2 6 7 ]
+                     Flat ID: 623    Tensor ID: [2,6,7]
+                  
                   Entry id: 224
-                  [ 2 6 8 ]
+                     Flat ID: 704    Tensor ID: [2,6,8]
+                  
                   Entry id: 225
-                  [ 2 7 0 ]
+                     Flat ID: 65    Tensor ID: [2,7,0]
+                  
                   Entry id: 226
-                  [ 2 7 1 ]
+                     Flat ID: 146    Tensor ID: [2,7,1]
+                  
                   Entry id: 227
-                  [ 2 7 2 ]
+                     Flat ID: 227    Tensor ID: [2,7,2]
+                  
                   Entry id: 228
-                  [ 2 7 3 ]
+                     Flat ID: 308    Tensor ID: [2,7,3]
+                  
                   Entry id: 229
-                  [ 2 7 4 ]
+                     Flat ID: 389    Tensor ID: [2,7,4]
+                  
                   Entry id: 230
-                  [ 2 7 5 ]
+                     Flat ID: 470    Tensor ID: [2,7,5]
+                  
                   Entry id: 231
-                  [ 2 7 6 ]
+                     Flat ID: 551    Tensor ID: [2,7,6]
+                  
                   Entry id: 232
-                  [ 2 7 7 ]
+                     Flat ID: 632    Tensor ID: [2,7,7]
+                  
                   Entry id: 233
-                  [ 2 7 8 ]
+                     Flat ID: 713    Tensor ID: [2,7,8]
+                  
                   Entry id: 234
-                  [ 2 8 0 ]
+                     Flat ID: 74    Tensor ID: [2,8,0]
+                  
                   Entry id: 235
-                  [ 2 8 1 ]
+                     Flat ID: 155    Tensor ID: [2,8,1]
+                  
                   Entry id: 236
-                  [ 2 8 2 ]
+                     Flat ID: 236    Tensor ID: [2,8,2]
+                  
                   Entry id: 237
-                  [ 2 8 3 ]
+                     Flat ID: 317    Tensor ID: [2,8,3]
+                  
                   Entry id: 238
-                  [ 2 8 4 ]
+                     Flat ID: 398    Tensor ID: [2,8,4]
+                  
                   Entry id: 239
-                  [ 2 8 5 ]
+                     Flat ID: 479    Tensor ID: [2,8,5]
+                  
                   Entry id: 240
-                  [ 2 8 6 ]
+                     Flat ID: 560    Tensor ID: [2,8,6]
+                  
                   Entry id: 241
-                  [ 2 8 7 ]
+                     Flat ID: 641    Tensor ID: [2,8,7]
+                  
                   Entry id: 242
-                  [ 2 8 8 ]
+                     Flat ID: 722    Tensor ID: [2,8,8]
+                  
                   Entry id: 243
-                  [ 3 0 0 ]
+                     Flat ID: 3    Tensor ID: [3,0,0]
+                  
                   Entry id: 244
-                  [ 3 0 1 ]
+                     Flat ID: 84    Tensor ID: [3,0,1]
+                  
                   Entry id: 245
-                  [ 3 0 2 ]
+                     Flat ID: 165    Tensor ID: [3,0,2]
+                  
                   Entry id: 246
-                  [ 3 0 3 ]
+                     Flat ID: 246    Tensor ID: [3,0,3]
+                  
                   Entry id: 247
-                  [ 3 0 4 ]
+                     Flat ID: 327    Tensor ID: [3,0,4]
+                  
                   Entry id: 248
-                  [ 3 0 5 ]
+                     Flat ID: 408    Tensor ID: [3,0,5]
+                  
                   Entry id: 249
-                  [ 3 0 6 ]
+                     Flat ID: 489    Tensor ID: [3,0,6]
+                  
                   Entry id: 250
-                  [ 3 0 7 ]
+                     Flat ID: 570    Tensor ID: [3,0,7]
+                  
                   Entry id: 251
-                  [ 3 0 8 ]
+                     Flat ID: 651    Tensor ID: [3,0,8]
+                  
                   Entry id: 252
-                  [ 3 1 0 ]
+                     Flat ID: 12    Tensor ID: [3,1,0]
+                  
                   Entry id: 253
-                  [ 3 1 1 ]
+                     Flat ID: 93    Tensor ID: [3,1,1]
+                  
                   Entry id: 254
-                  [ 3 1 2 ]
+                     Flat ID: 174    Tensor ID: [3,1,2]
+                  
                   Entry id: 255
-                  [ 3 1 3 ]
+                     Flat ID: 255    Tensor ID: [3,1,3]
+                  
                   Entry id: 256
-                  [ 3 1 4 ]
+                     Flat ID: 336    Tensor ID: [3,1,4]
+                  
                   Entry id: 257
-                  [ 3 1 5 ]
+                     Flat ID: 417    Tensor ID: [3,1,5]
+                  
                   Entry id: 258
-                  [ 3 1 6 ]
+                     Flat ID: 498    Tensor ID: [3,1,6]
+                  
                   Entry id: 259
-                  [ 3 1 7 ]
+                     Flat ID: 579    Tensor ID: [3,1,7]
+                  
                   Entry id: 260
-                  [ 3 1 8 ]
+                     Flat ID: 660    Tensor ID: [3,1,8]
+                  
                   Entry id: 261
-                  [ 3 2 0 ]
+                     Flat ID: 21    Tensor ID: [3,2,0]
+                  
                   Entry id: 262
-                  [ 3 2 1 ]
+                     Flat ID: 102    Tensor ID: [3,2,1]
+                  
                   Entry id: 263
-                  [ 3 2 2 ]
+                     Flat ID: 183    Tensor ID: [3,2,2]
+                  
                   Entry id: 264
-                  [ 3 2 3 ]
+                     Flat ID: 264    Tensor ID: [3,2,3]
+                  
                   Entry id: 265
-                  [ 3 2 4 ]
+                     Flat ID: 345    Tensor ID: [3,2,4]
+                  
                   Entry id: 266
-                  [ 3 2 5 ]
+                     Flat ID: 426    Tensor ID: [3,2,5]
+                  
                   Entry id: 267
-                  [ 3 2 6 ]
+                     Flat ID: 507    Tensor ID: [3,2,6]
+                  
                   Entry id: 268
-                  [ 3 2 7 ]
+                     Flat ID: 588    Tensor ID: [3,2,7]
+                  
                   Entry id: 269
-                  [ 3 2 8 ]
+                     Flat ID: 669    Tensor ID: [3,2,8]
+                  
                   Entry id: 270
-                  [ 3 3 0 ]
+                     Flat ID: 30    Tensor ID: [3,3,0]
+                  
                   Entry id: 271
-                  [ 3 3 1 ]
+                     Flat ID: 111    Tensor ID: [3,3,1]
+                  
                   Entry id: 272
-                  [ 3 3 2 ]
+                     Flat ID: 192    Tensor ID: [3,3,2]
+                  
                   Entry id: 273
-                  [ 3 3 3 ]
+                     Flat ID: 273    Tensor ID: [3,3,3]
+                  
                   Entry id: 274
-                  [ 3 3 4 ]
+                     Flat ID: 354    Tensor ID: [3,3,4]
+                  
                   Entry id: 275
-                  [ 3 3 5 ]
+                     Flat ID: 435    Tensor ID: [3,3,5]
+                  
                   Entry id: 276
-                  [ 3 3 6 ]
+                     Flat ID: 516    Tensor ID: [3,3,6]
+                  
                   Entry id: 277
-                  [ 3 3 7 ]
+                     Flat ID: 597    Tensor ID: [3,3,7]
+                  
                   Entry id: 278
-                  [ 3 3 8 ]
+                     Flat ID: 678    Tensor ID: [3,3,8]
+                  
                   Entry id: 279
-                  [ 3 4 0 ]
+                     Flat ID: 39    Tensor ID: [3,4,0]
+                  
                   Entry id: 280
-                  [ 3 4 1 ]
+                     Flat ID: 120    Tensor ID: [3,4,1]
+                  
                   Entry id: 281
-                  [ 3 4 2 ]
+                     Flat ID: 201    Tensor ID: [3,4,2]
+                  
                   Entry id: 282
-                  [ 3 4 3 ]
+                     Flat ID: 282    Tensor ID: [3,4,3]
+                  
                   Entry id: 283
-                  [ 3 4 4 ]
+                     Flat ID: 363    Tensor ID: [3,4,4]
+                  
                   Entry id: 284
-                  [ 3 4 5 ]
+                     Flat ID: 444    Tensor ID: [3,4,5]
+                  
                   Entry id: 285
-                  [ 3 4 6 ]
+                     Flat ID: 525    Tensor ID: [3,4,6]
+                  
                   Entry id: 286
-                  [ 3 4 7 ]
+                     Flat ID: 606    Tensor ID: [3,4,7]
+                  
                   Entry id: 287
-                  [ 3 4 8 ]
+                     Flat ID: 687    Tensor ID: [3,4,8]
+                  
                   Entry id: 288
-                  [ 3 5 0 ]
+                     Flat ID: 48    Tensor ID: [3,5,0]
+                  
                   Entry id: 289
-                  [ 3 5 1 ]
+                     Flat ID: 129    Tensor ID: [3,5,1]
+                  
                   Entry id: 290
-                  [ 3 5 2 ]
+                     Flat ID: 210    Tensor ID: [3,5,2]
+                  
                   Entry id: 291
-                  [ 3 5 3 ]
+                     Flat ID: 291    Tensor ID: [3,5,3]
+                  
                   Entry id: 292
-                  [ 3 5 4 ]
+                     Flat ID: 372    Tensor ID: [3,5,4]
+                  
                   Entry id: 293
-                  [ 3 5 5 ]
+                     Flat ID: 453    Tensor ID: [3,5,5]
+                  
                   Entry id: 294
-                  [ 3 5 6 ]
+                     Flat ID: 534    Tensor ID: [3,5,6]
+                  
                   Entry id: 295
-                  [ 3 5 7 ]
+                     Flat ID: 615    Tensor ID: [3,5,7]
+                  
                   Entry id: 296
-                  [ 3 5 8 ]
+                     Flat ID: 696    Tensor ID: [3,5,8]
+                  
                   Entry id: 297
-                  [ 3 6 0 ]
+                     Flat ID: 57    Tensor ID: [3,6,0]
+                  
                   Entry id: 298
-                  [ 3 6 1 ]
+                     Flat ID: 138    Tensor ID: [3,6,1]
+                  
                   Entry id: 299
-                  [ 3 6 2 ]
+                     Flat ID: 219    Tensor ID: [3,6,2]
+                  
                   Entry id: 300
-                  [ 3 6 3 ]
+                     Flat ID: 300    Tensor ID: [3,6,3]
+                  
                   Entry id: 301
-                  [ 3 6 4 ]
+                     Flat ID: 381    Tensor ID: [3,6,4]
+                  
                   Entry id: 302
-                  [ 3 6 5 ]
+                     Flat ID: 462    Tensor ID: [3,6,5]
+                  
                   Entry id: 303
-                  [ 3 6 6 ]
+                     Flat ID: 543    Tensor ID: [3,6,6]
+                  
                   Entry id: 304
-                  [ 3 6 7 ]
+                     Flat ID: 624    Tensor ID: [3,6,7]
+                  
                   Entry id: 305
-                  [ 3 6 8 ]
+                     Flat ID: 705    Tensor ID: [3,6,8]
+                  
                   Entry id: 306
-                  [ 3 7 0 ]
+                     Flat ID: 66    Tensor ID: [3,7,0]
+                  
                   Entry id: 307
-                  [ 3 7 1 ]
+                     Flat ID: 147    Tensor ID: [3,7,1]
+                  
                   Entry id: 308
-                  [ 3 7 2 ]
+                     Flat ID: 228    Tensor ID: [3,7,2]
+                  
                   Entry id: 309
-                  [ 3 7 3 ]
+                     Flat ID: 309    Tensor ID: [3,7,3]
+                  
                   Entry id: 310
-                  [ 3 7 4 ]
+                     Flat ID: 390    Tensor ID: [3,7,4]
+                  
                   Entry id: 311
-                  [ 3 7 5 ]
+                     Flat ID: 471    Tensor ID: [3,7,5]
+                  
                   Entry id: 312
-                  [ 3 7 6 ]
+                     Flat ID: 552    Tensor ID: [3,7,6]
+                  
                   Entry id: 313
-                  [ 3 7 7 ]
+                     Flat ID: 633    Tensor ID: [3,7,7]
+                  
                   Entry id: 314
-                  [ 3 7 8 ]
+                     Flat ID: 714    Tensor ID: [3,7,8]
+                  
                   Entry id: 315
-                  [ 3 8 0 ]
+                     Flat ID: 75    Tensor ID: [3,8,0]
+                  
                   Entry id: 316
-                  [ 3 8 1 ]
+                     Flat ID: 156    Tensor ID: [3,8,1]
+                  
                   Entry id: 317
-                  [ 3 8 2 ]
+                     Flat ID: 237    Tensor ID: [3,8,2]
+                  
                   Entry id: 318
-                  [ 3 8 3 ]
+                     Flat ID: 318    Tensor ID: [3,8,3]
+                  
                   Entry id: 319
-                  [ 3 8 4 ]
+                     Flat ID: 399    Tensor ID: [3,8,4]
+                  
                   Entry id: 320
-                  [ 3 8 5 ]
+                     Flat ID: 480    Tensor ID: [3,8,5]
+                  
                   Entry id: 321
-                  [ 3 8 6 ]
+                     Flat ID: 561    Tensor ID: [3,8,6]
+                  
                   Entry id: 322
-                  [ 3 8 7 ]
+                     Flat ID: 642    Tensor ID: [3,8,7]
+                  
                   Entry id: 323
-                  [ 3 8 8 ]
+                     Flat ID: 723    Tensor ID: [3,8,8]
+                  
                   Entry id: 324
-                  [ 4 0 0 ]
+                     Flat ID: 4    Tensor ID: [4,0,0]
+                  
                   Entry id: 325
-                  [ 4 0 1 ]
+                     Flat ID: 85    Tensor ID: [4,0,1]
+                  
                   Entry id: 326
-                  [ 4 0 2 ]
+                     Flat ID: 166    Tensor ID: [4,0,2]
+                  
                   Entry id: 327
-                  [ 4 0 3 ]
+                     Flat ID: 247    Tensor ID: [4,0,3]
+                  
                   Entry id: 328
-                  [ 4 0 4 ]
+                     Flat ID: 328    Tensor ID: [4,0,4]
+                  
                   Entry id: 329
-                  [ 4 0 5 ]
+                     Flat ID: 409    Tensor ID: [4,0,5]
+                  
                   Entry id: 330
-                  [ 4 0 6 ]
+                     Flat ID: 490    Tensor ID: [4,0,6]
+                  
                   Entry id: 331
-                  [ 4 0 7 ]
+                     Flat ID: 571    Tensor ID: [4,0,7]
+                  
                   Entry id: 332
-                  [ 4 0 8 ]
+                     Flat ID: 652    Tensor ID: [4,0,8]
+                  
                   Entry id: 333
-                  [ 4 1 0 ]
+                     Flat ID: 13    Tensor ID: [4,1,0]
+                  
                   Entry id: 334
-                  [ 4 1 1 ]
+                     Flat ID: 94    Tensor ID: [4,1,1]
+                  
                   Entry id: 335
-                  [ 4 1 2 ]
+                     Flat ID: 175    Tensor ID: [4,1,2]
+                  
                   Entry id: 336
-                  [ 4 1 3 ]
+                     Flat ID: 256    Tensor ID: [4,1,3]
+                  
                   Entry id: 337
-                  [ 4 1 4 ]
+                     Flat ID: 337    Tensor ID: [4,1,4]
+                  
                   Entry id: 338
-                  [ 4 1 5 ]
+                     Flat ID: 418    Tensor ID: [4,1,5]
+                  
                   Entry id: 339
-                  [ 4 1 6 ]
+                     Flat ID: 499    Tensor ID: [4,1,6]
+                  
                   Entry id: 340
-                  [ 4 1 7 ]
+                     Flat ID: 580    Tensor ID: [4,1,7]
+                  
                   Entry id: 341
-                  [ 4 1 8 ]
+                     Flat ID: 661    Tensor ID: [4,1,8]
+                  
                   Entry id: 342
-                  [ 4 2 0 ]
+                     Flat ID: 22    Tensor ID: [4,2,0]
+                  
                   Entry id: 343
-                  [ 4 2 1 ]
+                     Flat ID: 103    Tensor ID: [4,2,1]
+                  
                   Entry id: 344
-                  [ 4 2 2 ]
+                     Flat ID: 184    Tensor ID: [4,2,2]
+                  
                   Entry id: 345
-                  [ 4 2 3 ]
+                     Flat ID: 265    Tensor ID: [4,2,3]
+                  
                   Entry id: 346
-                  [ 4 2 4 ]
+                     Flat ID: 346    Tensor ID: [4,2,4]
+                  
                   Entry id: 347
-                  [ 4 2 5 ]
+                     Flat ID: 427    Tensor ID: [4,2,5]
+                  
                   Entry id: 348
-                  [ 4 2 6 ]
+                     Flat ID: 508    Tensor ID: [4,2,6]
+                  
                   Entry id: 349
-                  [ 4 2 7 ]
+                     Flat ID: 589    Tensor ID: [4,2,7]
+                  
                   Entry id: 350
-                  [ 4 2 8 ]
+                     Flat ID: 670    Tensor ID: [4,2,8]
+                  
                   Entry id: 351
-                  [ 4 3 0 ]
+                     Flat ID: 31    Tensor ID: [4,3,0]
+                  
                   Entry id: 352
-                  [ 4 3 1 ]
+                     Flat ID: 112    Tensor ID: [4,3,1]
+                  
                   Entry id: 353
-                  [ 4 3 2 ]
+                     Flat ID: 193    Tensor ID: [4,3,2]
+                  
                   Entry id: 354
-                  [ 4 3 3 ]
+                     Flat ID: 274    Tensor ID: [4,3,3]
+                  
                   Entry id: 355
-                  [ 4 3 4 ]
+                     Flat ID: 355    Tensor ID: [4,3,4]
+                  
                   Entry id: 356
-                  [ 4 3 5 ]
+                     Flat ID: 436    Tensor ID: [4,3,5]
+                  
                   Entry id: 357
-                  [ 4 3 6 ]
+                     Flat ID: 517    Tensor ID: [4,3,6]
+                  
                   Entry id: 358
-                  [ 4 3 7 ]
+                     Flat ID: 598    Tensor ID: [4,3,7]
+                  
                   Entry id: 359
-                  [ 4 3 8 ]
+                     Flat ID: 679    Tensor ID: [4,3,8]
+                  
                   Entry id: 360
-                  [ 4 4 0 ]
+                     Flat ID: 40    Tensor ID: [4,4,0]
+                  
                   Entry id: 361
-                  [ 4 4 1 ]
+                     Flat ID: 121    Tensor ID: [4,4,1]
+                  
                   Entry id: 362
-                  [ 4 4 2 ]
+                     Flat ID: 202    Tensor ID: [4,4,2]
+                  
                   Entry id: 363
-                  [ 4 4 3 ]
+                     Flat ID: 283    Tensor ID: [4,4,3]
+                  
                   Entry id: 364
-                  [ 4 4 4 ]
+                     Flat ID: 364    Tensor ID: [4,4,4]
+                  
                   Entry id: 365
-                  [ 4 4 5 ]
+                     Flat ID: 445    Tensor ID: [4,4,5]
+                  
                   Entry id: 366
-                  [ 4 4 6 ]
+                     Flat ID: 526    Tensor ID: [4,4,6]
+                  
                   Entry id: 367
-                  [ 4 4 7 ]
+                     Flat ID: 607    Tensor ID: [4,4,7]
+                  
                   Entry id: 368
-                  [ 4 4 8 ]
+                     Flat ID: 688    Tensor ID: [4,4,8]
+                  
                   Entry id: 369
-                  [ 4 5 0 ]
+                     Flat ID: 49    Tensor ID: [4,5,0]
+                  
                   Entry id: 370
-                  [ 4 5 1 ]
+                     Flat ID: 130    Tensor ID: [4,5,1]
+                  
                   Entry id: 371
-                  [ 4 5 2 ]
+                     Flat ID: 211    Tensor ID: [4,5,2]
+                  
                   Entry id: 372
-                  [ 4 5 3 ]
+                     Flat ID: 292    Tensor ID: [4,5,3]
+                  
                   Entry id: 373
-                  [ 4 5 4 ]
+                     Flat ID: 373    Tensor ID: [4,5,4]
+                  
                   Entry id: 374
-                  [ 4 5 5 ]
+                     Flat ID: 454    Tensor ID: [4,5,5]
+                  
                   Entry id: 375
-                  [ 4 5 6 ]
+                     Flat ID: 535    Tensor ID: [4,5,6]
+                  
                   Entry id: 376
-                  [ 4 5 7 ]
+                     Flat ID: 616    Tensor ID: [4,5,7]
+                  
                   Entry id: 377
-                  [ 4 5 8 ]
+                     Flat ID: 697    Tensor ID: [4,5,8]
+                  
                   Entry id: 378
-                  [ 4 6 0 ]
+                     Flat ID: 58    Tensor ID: [4,6,0]
+                  
                   Entry id: 379
-                  [ 4 6 1 ]
+                     Flat ID: 139    Tensor ID: [4,6,1]
+                  
                   Entry id: 380
-                  [ 4 6 2 ]
+                     Flat ID: 220    Tensor ID: [4,6,2]
+                  
                   Entry id: 381
-                  [ 4 6 3 ]
+                     Flat ID: 301    Tensor ID: [4,6,3]
+                  
                   Entry id: 382
-                  [ 4 6 4 ]
+                     Flat ID: 382    Tensor ID: [4,6,4]
+                  
                   Entry id: 383
-                  [ 4 6 5 ]
+                     Flat ID: 463    Tensor ID: [4,6,5]
+                  
                   Entry id: 384
-                  [ 4 6 6 ]
+                     Flat ID: 544    Tensor ID: [4,6,6]
+                  
                   Entry id: 385
-                  [ 4 6 7 ]
+                     Flat ID: 625    Tensor ID: [4,6,7]
+                  
                   Entry id: 386
-                  [ 4 6 8 ]
+                     Flat ID: 706    Tensor ID: [4,6,8]
+                  
                   Entry id: 387
-                  [ 4 7 0 ]
+                     Flat ID: 67    Tensor ID: [4,7,0]
+                  
                   Entry id: 388
-                  [ 4 7 1 ]
+                     Flat ID: 148    Tensor ID: [4,7,1]
+                  
                   Entry id: 389
-                  [ 4 7 2 ]
+                     Flat ID: 229    Tensor ID: [4,7,2]
+                  
                   Entry id: 390
-                  [ 4 7 3 ]
+                     Flat ID: 310    Tensor ID: [4,7,3]
+                  
                   Entry id: 391
-                  [ 4 7 4 ]
+                     Flat ID: 391    Tensor ID: [4,7,4]
+                  
                   Entry id: 392
-                  [ 4 7 5 ]
+                     Flat ID: 472    Tensor ID: [4,7,5]
+                  
                   Entry id: 393
-                  [ 4 7 6 ]
+                     Flat ID: 553    Tensor ID: [4,7,6]
+                  
                   Entry id: 394
-                  [ 4 7 7 ]
+                     Flat ID: 634    Tensor ID: [4,7,7]
+                  
                   Entry id: 395
-                  [ 4 7 8 ]
+                     Flat ID: 715    Tensor ID: [4,7,8]
+                  
                   Entry id: 396
-                  [ 4 8 0 ]
+                     Flat ID: 76    Tensor ID: [4,8,0]
+                  
                   Entry id: 397
-                  [ 4 8 1 ]
+                     Flat ID: 157    Tensor ID: [4,8,1]
+                  
                   Entry id: 398
-                  [ 4 8 2 ]
+                     Flat ID: 238    Tensor ID: [4,8,2]
+                  
                   Entry id: 399
-                  [ 4 8 3 ]
+                     Flat ID: 319    Tensor ID: [4,8,3]
+                  
                   Entry id: 400
-                  [ 4 8 4 ]
+                     Flat ID: 400    Tensor ID: [4,8,4]
+                  
                   Entry id: 401
-                  [ 4 8 5 ]
+                     Flat ID: 481    Tensor ID: [4,8,5]
+                  
                   Entry id: 402
-                  [ 4 8 6 ]
+                     Flat ID: 562    Tensor ID: [4,8,6]
+                  
                   Entry id: 403
-                  [ 4 8 7 ]
+                     Flat ID: 643    Tensor ID: [4,8,7]
+                  
                   Entry id: 404
-                  [ 4 8 8 ]
+                     Flat ID: 724    Tensor ID: [4,8,8]
+                  
                   Entry id: 405
-                  [ 5 0 0 ]
+                     Flat ID: 5    Tensor ID: [5,0,0]
+                  
                   Entry id: 406
-                  [ 5 0 1 ]
+                     Flat ID: 86    Tensor ID: [5,0,1]
+                  
                   Entry id: 407
-                  [ 5 0 2 ]
+                     Flat ID: 167    Tensor ID: [5,0,2]
+                  
                   Entry id: 408
-                  [ 5 0 3 ]
+                     Flat ID: 248    Tensor ID: [5,0,3]
+                  
                   Entry id: 409
-                  [ 5 0 4 ]
+                     Flat ID: 329    Tensor ID: [5,0,4]
+                  
                   Entry id: 410
-                  [ 5 0 5 ]
+                     Flat ID: 410    Tensor ID: [5,0,5]
+                  
                   Entry id: 411
-                  [ 5 0 6 ]
+                     Flat ID: 491    Tensor ID: [5,0,6]
+                  
                   Entry id: 412
-                  [ 5 0 7 ]
+                     Flat ID: 572    Tensor ID: [5,0,7]
+                  
                   Entry id: 413
-                  [ 5 0 8 ]
+                     Flat ID: 653    Tensor ID: [5,0,8]
+                  
                   Entry id: 414
-                  [ 5 1 0 ]
+                     Flat ID: 14    Tensor ID: [5,1,0]
+                  
                   Entry id: 415
-                  [ 5 1 1 ]
+                     Flat ID: 95    Tensor ID: [5,1,1]
+                  
                   Entry id: 416
-                  [ 5 1 2 ]
+                     Flat ID: 176    Tensor ID: [5,1,2]
+                  
                   Entry id: 417
-                  [ 5 1 3 ]
+                     Flat ID: 257    Tensor ID: [5,1,3]
+                  
                   Entry id: 418
-                  [ 5 1 4 ]
+                     Flat ID: 338    Tensor ID: [5,1,4]
+                  
                   Entry id: 419
-                  [ 5 1 5 ]
+                     Flat ID: 419    Tensor ID: [5,1,5]
+                  
                   Entry id: 420
-                  [ 5 1 6 ]
+                     Flat ID: 500    Tensor ID: [5,1,6]
+                  
                   Entry id: 421
-                  [ 5 1 7 ]
+                     Flat ID: 581    Tensor ID: [5,1,7]
+                  
                   Entry id: 422
-                  [ 5 1 8 ]
+                     Flat ID: 662    Tensor ID: [5,1,8]
+                  
                   Entry id: 423
-                  [ 5 2 0 ]
+                     Flat ID: 23    Tensor ID: [5,2,0]
+                  
                   Entry id: 424
-                  [ 5 2 1 ]
+                     Flat ID: 104    Tensor ID: [5,2,1]
+                  
                   Entry id: 425
-                  [ 5 2 2 ]
+                     Flat ID: 185    Tensor ID: [5,2,2]
+                  
                   Entry id: 426
-                  [ 5 2 3 ]
+                     Flat ID: 266    Tensor ID: [5,2,3]
+                  
                   Entry id: 427
-                  [ 5 2 4 ]
+                     Flat ID: 347    Tensor ID: [5,2,4]
+                  
                   Entry id: 428
-                  [ 5 2 5 ]
+                     Flat ID: 428    Tensor ID: [5,2,5]
+                  
                   Entry id: 429
-                  [ 5 2 6 ]
+                     Flat ID: 509    Tensor ID: [5,2,6]
+                  
                   Entry id: 430
-                  [ 5 2 7 ]
+                     Flat ID: 590    Tensor ID: [5,2,7]
+                  
                   Entry id: 431
-                  [ 5 2 8 ]
+                     Flat ID: 671    Tensor ID: [5,2,8]
+                  
                   Entry id: 432
-                  [ 5 3 0 ]
+                     Flat ID: 32    Tensor ID: [5,3,0]
+                  
                   Entry id: 433
-                  [ 5 3 1 ]
+                     Flat ID: 113    Tensor ID: [5,3,1]
+                  
                   Entry id: 434
-                  [ 5 3 2 ]
+                     Flat ID: 194    Tensor ID: [5,3,2]
+                  
                   Entry id: 435
-                  [ 5 3 3 ]
+                     Flat ID: 275    Tensor ID: [5,3,3]
+                  
                   Entry id: 436
-                  [ 5 3 4 ]
+                     Flat ID: 356    Tensor ID: [5,3,4]
+                  
                   Entry id: 437
-                  [ 5 3 5 ]
+                     Flat ID: 437    Tensor ID: [5,3,5]
+                  
                   Entry id: 438
-                  [ 5 3 6 ]
+                     Flat ID: 518    Tensor ID: [5,3,6]
+                  
                   Entry id: 439
-                  [ 5 3 7 ]
+                     Flat ID: 599    Tensor ID: [5,3,7]
+                  
                   Entry id: 440
-                  [ 5 3 8 ]
+                     Flat ID: 680    Tensor ID: [5,3,8]
+                  
                   Entry id: 441
-                  [ 5 4 0 ]
+                     Flat ID: 41    Tensor ID: [5,4,0]
+                  
                   Entry id: 442
-                  [ 5 4 1 ]
+                     Flat ID: 122    Tensor ID: [5,4,1]
+                  
                   Entry id: 443
-                  [ 5 4 2 ]
+                     Flat ID: 203    Tensor ID: [5,4,2]
+                  
                   Entry id: 444
-                  [ 5 4 3 ]
+                     Flat ID: 284    Tensor ID: [5,4,3]
+                  
                   Entry id: 445
-                  [ 5 4 4 ]
+                     Flat ID: 365    Tensor ID: [5,4,4]
+                  
                   Entry id: 446
-                  [ 5 4 5 ]
+                     Flat ID: 446    Tensor ID: [5,4,5]
+                  
                   Entry id: 447
-                  [ 5 4 6 ]
+                     Flat ID: 527    Tensor ID: [5,4,6]
+                  
                   Entry id: 448
-                  [ 5 4 7 ]
+                     Flat ID: 608    Tensor ID: [5,4,7]
+                  
                   Entry id: 449
-                  [ 5 4 8 ]
+                     Flat ID: 689    Tensor ID: [5,4,8]
+                  
                   Entry id: 450
-                  [ 5 5 0 ]
+                     Flat ID: 50    Tensor ID: [5,5,0]
+                  
                   Entry id: 451
-                  [ 5 5 1 ]
+                     Flat ID: 131    Tensor ID: [5,5,1]
+                  
                   Entry id: 452
-                  [ 5 5 2 ]
+                     Flat ID: 212    Tensor ID: [5,5,2]
+                  
                   Entry id: 453
-                  [ 5 5 3 ]
+                     Flat ID: 293    Tensor ID: [5,5,3]
+                  
                   Entry id: 454
-                  [ 5 5 4 ]
+                     Flat ID: 374    Tensor ID: [5,5,4]
+                  
                   Entry id: 455
-                  [ 5 5 5 ]
+                     Flat ID: 455    Tensor ID: [5,5,5]
+                  
                   Entry id: 456
-                  [ 5 5 6 ]
+                     Flat ID: 536    Tensor ID: [5,5,6]
+                  
                   Entry id: 457
-                  [ 5 5 7 ]
+                     Flat ID: 617    Tensor ID: [5,5,7]
+                  
                   Entry id: 458
-                  [ 5 5 8 ]
+                     Flat ID: 698    Tensor ID: [5,5,8]
+                  
                   Entry id: 459
-                  [ 5 6 0 ]
+                     Flat ID: 59    Tensor ID: [5,6,0]
+                  
                   Entry id: 460
-                  [ 5 6 1 ]
+                     Flat ID: 140    Tensor ID: [5,6,1]
+                  
                   Entry id: 461
-                  [ 5 6 2 ]
+                     Flat ID: 221    Tensor ID: [5,6,2]
+                  
                   Entry id: 462
-                  [ 5 6 3 ]
+                     Flat ID: 302    Tensor ID: [5,6,3]
+                  
                   Entry id: 463
-                  [ 5 6 4 ]
+                     Flat ID: 383    Tensor ID: [5,6,4]
+                  
                   Entry id: 464
-                  [ 5 6 5 ]
+                     Flat ID: 464    Tensor ID: [5,6,5]
+                  
                   Entry id: 465
-                  [ 5 6 6 ]
+                     Flat ID: 545    Tensor ID: [5,6,6]
+                  
                   Entry id: 466
-                  [ 5 6 7 ]
+                     Flat ID: 626    Tensor ID: [5,6,7]
+                  
                   Entry id: 467
-                  [ 5 6 8 ]
+                     Flat ID: 707    Tensor ID: [5,6,8]
+                  
                   Entry id: 468
-                  [ 5 7 0 ]
+                     Flat ID: 68    Tensor ID: [5,7,0]
+                  
                   Entry id: 469
-                  [ 5 7 1 ]
+                     Flat ID: 149    Tensor ID: [5,7,1]
+                  
                   Entry id: 470
-                  [ 5 7 2 ]
+                     Flat ID: 230    Tensor ID: [5,7,2]
+                  
                   Entry id: 471
-                  [ 5 7 3 ]
+                     Flat ID: 311    Tensor ID: [5,7,3]
+                  
                   Entry id: 472
-                  [ 5 7 4 ]
+                     Flat ID: 392    Tensor ID: [5,7,4]
+                  
                   Entry id: 473
-                  [ 5 7 5 ]
+                     Flat ID: 473    Tensor ID: [5,7,5]
+                  
                   Entry id: 474
-                  [ 5 7 6 ]
+                     Flat ID: 554    Tensor ID: [5,7,6]
+                  
                   Entry id: 475
-                  [ 5 7 7 ]
+                     Flat ID: 635    Tensor ID: [5,7,7]
+                  
                   Entry id: 476
-                  [ 5 7 8 ]
+                     Flat ID: 716    Tensor ID: [5,7,8]
+                  
                   Entry id: 477
-                  [ 5 8 0 ]
+                     Flat ID: 77    Tensor ID: [5,8,0]
+                  
                   Entry id: 478
-                  [ 5 8 1 ]
+                     Flat ID: 158    Tensor ID: [5,8,1]
+                  
                   Entry id: 479
-                  [ 5 8 2 ]
+                     Flat ID: 239    Tensor ID: [5,8,2]
+                  
                   Entry id: 480
-                  [ 5 8 3 ]
+                     Flat ID: 320    Tensor ID: [5,8,3]
+                  
                   Entry id: 481
-                  [ 5 8 4 ]
+                     Flat ID: 401    Tensor ID: [5,8,4]
+                  
                   Entry id: 482
-                  [ 5 8 5 ]
+                     Flat ID: 482    Tensor ID: [5,8,5]
+                  
                   Entry id: 483
-                  [ 5 8 6 ]
+                     Flat ID: 563    Tensor ID: [5,8,6]
+                  
                   Entry id: 484
-                  [ 5 8 7 ]
+                     Flat ID: 644    Tensor ID: [5,8,7]
+                  
                   Entry id: 485
-                  [ 5 8 8 ]
+                     Flat ID: 725    Tensor ID: [5,8,8]
+                  
                   Entry id: 486
-                  [ 6 0 0 ]
+                     Flat ID: 6    Tensor ID: [6,0,0]
+                  
                   Entry id: 487
-                  [ 6 0 1 ]
+                     Flat ID: 87    Tensor ID: [6,0,1]
+                  
                   Entry id: 488
-                  [ 6 0 2 ]
+                     Flat ID: 168    Tensor ID: [6,0,2]
+                  
                   Entry id: 489
-                  [ 6 0 3 ]
+                     Flat ID: 249    Tensor ID: [6,0,3]
+                  
                   Entry id: 490
-                  [ 6 0 4 ]
+                     Flat ID: 330    Tensor ID: [6,0,4]
+                  
                   Entry id: 491
-                  [ 6 0 5 ]
+                     Flat ID: 411    Tensor ID: [6,0,5]
+                  
                   Entry id: 492
-                  [ 6 0 6 ]
+                     Flat ID: 492    Tensor ID: [6,0,6]
+                  
                   Entry id: 493
-                  [ 6 0 7 ]
+                     Flat ID: 573    Tensor ID: [6,0,7]
+                  
                   Entry id: 494
-                  [ 6 0 8 ]
+                     Flat ID: 654    Tensor ID: [6,0,8]
+                  
                   Entry id: 495
-                  [ 6 1 0 ]
+                     Flat ID: 15    Tensor ID: [6,1,0]
+                  
                   Entry id: 496
-                  [ 6 1 1 ]
+                     Flat ID: 96    Tensor ID: [6,1,1]
+                  
                   Entry id: 497
-                  [ 6 1 2 ]
+                     Flat ID: 177    Tensor ID: [6,1,2]
+                  
                   Entry id: 498
-                  [ 6 1 3 ]
+                     Flat ID: 258    Tensor ID: [6,1,3]
+                  
                   Entry id: 499
-                  [ 6 1 4 ]
+                     Flat ID: 339    Tensor ID: [6,1,4]
+                  
                   Entry id: 500
-                  [ 6 1 5 ]
+                     Flat ID: 420    Tensor ID: [6,1,5]
+                  
                   Entry id: 501
-                  [ 6 1 6 ]
+                     Flat ID: 501    Tensor ID: [6,1,6]
+                  
                   Entry id: 502
-                  [ 6 1 7 ]
+                     Flat ID: 582    Tensor ID: [6,1,7]
+                  
                   Entry id: 503
-                  [ 6 1 8 ]
+                     Flat ID: 663    Tensor ID: [6,1,8]
+                  
                   Entry id: 504
-                  [ 6 2 0 ]
+                     Flat ID: 24    Tensor ID: [6,2,0]
+                  
                   Entry id: 505
-                  [ 6 2 1 ]
+                     Flat ID: 105    Tensor ID: [6,2,1]
+                  
                   Entry id: 506
-                  [ 6 2 2 ]
+                     Flat ID: 186    Tensor ID: [6,2,2]
+                  
                   Entry id: 507
-                  [ 6 2 3 ]
+                     Flat ID: 267    Tensor ID: [6,2,3]
+                  
                   Entry id: 508
-                  [ 6 2 4 ]
+                     Flat ID: 348    Tensor ID: [6,2,4]
+                  
                   Entry id: 509
-                  [ 6 2 5 ]
+                     Flat ID: 429    Tensor ID: [6,2,5]
+                  
                   Entry id: 510
-                  [ 6 2 6 ]
+                     Flat ID: 510    Tensor ID: [6,2,6]
+                  
                   Entry id: 511
-                  [ 6 2 7 ]
+                     Flat ID: 591    Tensor ID: [6,2,7]
+                  
                   Entry id: 512
-                  [ 6 2 8 ]
+                     Flat ID: 672    Tensor ID: [6,2,8]
+                  
                   Entry id: 513
-                  [ 6 3 0 ]
+                     Flat ID: 33    Tensor ID: [6,3,0]
+                  
                   Entry id: 514
-                  [ 6 3 1 ]
+                     Flat ID: 114    Tensor ID: [6,3,1]
+                  
                   Entry id: 515
-                  [ 6 3 2 ]
+                     Flat ID: 195    Tensor ID: [6,3,2]
+                  
                   Entry id: 516
-                  [ 6 3 3 ]
+                     Flat ID: 276    Tensor ID: [6,3,3]
+                  
                   Entry id: 517
-                  [ 6 3 4 ]
+                     Flat ID: 357    Tensor ID: [6,3,4]
+                  
                   Entry id: 518
-                  [ 6 3 5 ]
+                     Flat ID: 438    Tensor ID: [6,3,5]
+                  
                   Entry id: 519
-                  [ 6 3 6 ]
+                     Flat ID: 519    Tensor ID: [6,3,6]
+                  
                   Entry id: 520
-                  [ 6 3 7 ]
+                     Flat ID: 600    Tensor ID: [6,3,7]
+                  
                   Entry id: 521
-                  [ 6 3 8 ]
+                     Flat ID: 681    Tensor ID: [6,3,8]
+                  
                   Entry id: 522
-                  [ 6 4 0 ]
+                     Flat ID: 42    Tensor ID: [6,4,0]
+                  
                   Entry id: 523
-                  [ 6 4 1 ]
+                     Flat ID: 123    Tensor ID: [6,4,1]
+                  
                   Entry id: 524
-                  [ 6 4 2 ]
+                     Flat ID: 204    Tensor ID: [6,4,2]
+                  
                   Entry id: 525
-                  [ 6 4 3 ]
+                     Flat ID: 285    Tensor ID: [6,4,3]
+                  
                   Entry id: 526
-                  [ 6 4 4 ]
+                     Flat ID: 366    Tensor ID: [6,4,4]
+                  
                   Entry id: 527
-                  [ 6 4 5 ]
+                     Flat ID: 447    Tensor ID: [6,4,5]
+                  
                   Entry id: 528
-                  [ 6 4 6 ]
+                     Flat ID: 528    Tensor ID: [6,4,6]
+                  
                   Entry id: 529
-                  [ 6 4 7 ]
+                     Flat ID: 609    Tensor ID: [6,4,7]
+                  
                   Entry id: 530
-                  [ 6 4 8 ]
+                     Flat ID: 690    Tensor ID: [6,4,8]
+                  
                   Entry id: 531
-                  [ 6 5 0 ]
+                     Flat ID: 51    Tensor ID: [6,5,0]
+                  
                   Entry id: 532
-                  [ 6 5 1 ]
+                     Flat ID: 132    Tensor ID: [6,5,1]
+                  
                   Entry id: 533
-                  [ 6 5 2 ]
+                     Flat ID: 213    Tensor ID: [6,5,2]
+                  
                   Entry id: 534
-                  [ 6 5 3 ]
+                     Flat ID: 294    Tensor ID: [6,5,3]
+                  
                   Entry id: 535
-                  [ 6 5 4 ]
+                     Flat ID: 375    Tensor ID: [6,5,4]
+                  
                   Entry id: 536
-                  [ 6 5 5 ]
+                     Flat ID: 456    Tensor ID: [6,5,5]
+                  
                   Entry id: 537
-                  [ 6 5 6 ]
+                     Flat ID: 537    Tensor ID: [6,5,6]
+                  
                   Entry id: 538
-                  [ 6 5 7 ]
+                     Flat ID: 618    Tensor ID: [6,5,7]
+                  
                   Entry id: 539
-                  [ 6 5 8 ]
+                     Flat ID: 699    Tensor ID: [6,5,8]
+                  
                   Entry id: 540
-                  [ 6 6 0 ]
+                     Flat ID: 60    Tensor ID: [6,6,0]
+                  
                   Entry id: 541
-                  [ 6 6 1 ]
+                     Flat ID: 141    Tensor ID: [6,6,1]
+                  
                   Entry id: 542
-                  [ 6 6 2 ]
+                     Flat ID: 222    Tensor ID: [6,6,2]
+                  
                   Entry id: 543
-                  [ 6 6 3 ]
+                     Flat ID: 303    Tensor ID: [6,6,3]
+                  
                   Entry id: 544
-                  [ 6 6 4 ]
+                     Flat ID: 384    Tensor ID: [6,6,4]
+                  
                   Entry id: 545
-                  [ 6 6 5 ]
+                     Flat ID: 465    Tensor ID: [6,6,5]
+                  
                   Entry id: 546
-                  [ 6 6 6 ]
+                     Flat ID: 546    Tensor ID: [6,6,6]
+                  
                   Entry id: 547
-                  [ 6 6 7 ]
+                     Flat ID: 627    Tensor ID: [6,6,7]
+                  
                   Entry id: 548
-                  [ 6 6 8 ]
+                     Flat ID: 708    Tensor ID: [6,6,8]
+                  
                   Entry id: 549
-                  [ 6 7 0 ]
+                     Flat ID: 69    Tensor ID: [6,7,0]
+                  
                   Entry id: 550
-                  [ 6 7 1 ]
+                     Flat ID: 150    Tensor ID: [6,7,1]
+                  
                   Entry id: 551
-                  [ 6 7 2 ]
+                     Flat ID: 231    Tensor ID: [6,7,2]
+                  
                   Entry id: 552
-                  [ 6 7 3 ]
+                     Flat ID: 312    Tensor ID: [6,7,3]
+                  
                   Entry id: 553
-                  [ 6 7 4 ]
+                     Flat ID: 393    Tensor ID: [6,7,4]
+                  
                   Entry id: 554
-                  [ 6 7 5 ]
+                     Flat ID: 474    Tensor ID: [6,7,5]
+                  
                   Entry id: 555
-                  [ 6 7 6 ]
+                     Flat ID: 555    Tensor ID: [6,7,6]
+                  
                   Entry id: 556
-                  [ 6 7 7 ]
+                     Flat ID: 636    Tensor ID: [6,7,7]
+                  
                   Entry id: 557
-                  [ 6 7 8 ]
+                     Flat ID: 717    Tensor ID: [6,7,8]
+                  
                   Entry id: 558
-                  [ 6 8 0 ]
+                     Flat ID: 78    Tensor ID: [6,8,0]
+                  
                   Entry id: 559
-                  [ 6 8 1 ]
+                     Flat ID: 159    Tensor ID: [6,8,1]
+                  
                   Entry id: 560
-                  [ 6 8 2 ]
+                     Flat ID: 240    Tensor ID: [6,8,2]
+                  
                   Entry id: 561
-                  [ 6 8 3 ]
+                     Flat ID: 321    Tensor ID: [6,8,3]
+                  
                   Entry id: 562
-                  [ 6 8 4 ]
+                     Flat ID: 402    Tensor ID: [6,8,4]
+                  
                   Entry id: 563
-                  [ 6 8 5 ]
+                     Flat ID: 483    Tensor ID: [6,8,5]
+                  
                   Entry id: 564
-                  [ 6 8 6 ]
+                     Flat ID: 564    Tensor ID: [6,8,6]
+                  
                   Entry id: 565
-                  [ 6 8 7 ]
+                     Flat ID: 645    Tensor ID: [6,8,7]
+                  
                   Entry id: 566
-                  [ 6 8 8 ]
+                     Flat ID: 726    Tensor ID: [6,8,8]
+                  
                   Entry id: 567
-                  [ 7 0 0 ]
+                     Flat ID: 7    Tensor ID: [7,0,0]
+                  
                   Entry id: 568
-                  [ 7 0 1 ]
+                     Flat ID: 88    Tensor ID: [7,0,1]
+                  
                   Entry id: 569
-                  [ 7 0 2 ]
+                     Flat ID: 169    Tensor ID: [7,0,2]
+                  
                   Entry id: 570
-                  [ 7 0 3 ]
+                     Flat ID: 250    Tensor ID: [7,0,3]
+                  
                   Entry id: 571
-                  [ 7 0 4 ]
+                     Flat ID: 331    Tensor ID: [7,0,4]
+                  
                   Entry id: 572
-                  [ 7 0 5 ]
+                     Flat ID: 412    Tensor ID: [7,0,5]
+                  
                   Entry id: 573
-                  [ 7 0 6 ]
+                     Flat ID: 493    Tensor ID: [7,0,6]
+                  
                   Entry id: 574
-                  [ 7 0 7 ]
+                     Flat ID: 574    Tensor ID: [7,0,7]
+                  
                   Entry id: 575
-                  [ 7 0 8 ]
+                     Flat ID: 655    Tensor ID: [7,0,8]
+                  
                   Entry id: 576
-                  [ 7 1 0 ]
+                     Flat ID: 16    Tensor ID: [7,1,0]
+                  
                   Entry id: 577
-                  [ 7 1 1 ]
+                     Flat ID: 97    Tensor ID: [7,1,1]
+                  
                   Entry id: 578
-                  [ 7 1 2 ]
+                     Flat ID: 178    Tensor ID: [7,1,2]
+                  
                   Entry id: 579
-                  [ 7 1 3 ]
+                     Flat ID: 259    Tensor ID: [7,1,3]
+                  
                   Entry id: 580
-                  [ 7 1 4 ]
+                     Flat ID: 340    Tensor ID: [7,1,4]
+                  
                   Entry id: 581
-                  [ 7 1 5 ]
+                     Flat ID: 421    Tensor ID: [7,1,5]
+                  
                   Entry id: 582
-                  [ 7 1 6 ]
+                     Flat ID: 502    Tensor ID: [7,1,6]
+                  
                   Entry id: 583
-                  [ 7 1 7 ]
+                     Flat ID: 583    Tensor ID: [7,1,7]
+                  
                   Entry id: 584
-                  [ 7 1 8 ]
+                     Flat ID: 664    Tensor ID: [7,1,8]
+                  
                   Entry id: 585
-                  [ 7 2 0 ]
+                     Flat ID: 25    Tensor ID: [7,2,0]
+                  
                   Entry id: 586
-                  [ 7 2 1 ]
+                     Flat ID: 106    Tensor ID: [7,2,1]
+                  
                   Entry id: 587
-                  [ 7 2 2 ]
+                     Flat ID: 187    Tensor ID: [7,2,2]
+                  
                   Entry id: 588
-                  [ 7 2 3 ]
+                     Flat ID: 268    Tensor ID: [7,2,3]
+                  
                   Entry id: 589
-                  [ 7 2 4 ]
+                     Flat ID: 349    Tensor ID: [7,2,4]
+                  
                   Entry id: 590
-                  [ 7 2 5 ]
+                     Flat ID: 430    Tensor ID: [7,2,5]
+                  
                   Entry id: 591
-                  [ 7 2 6 ]
+                     Flat ID: 511    Tensor ID: [7,2,6]
+                  
                   Entry id: 592
-                  [ 7 2 7 ]
+                     Flat ID: 592    Tensor ID: [7,2,7]
+                  
                   Entry id: 593
-                  [ 7 2 8 ]
+                     Flat ID: 673    Tensor ID: [7,2,8]
+                  
                   Entry id: 594
-                  [ 7 3 0 ]
+                     Flat ID: 34    Tensor ID: [7,3,0]
+                  
                   Entry id: 595
-                  [ 7 3 1 ]
+                     Flat ID: 115    Tensor ID: [7,3,1]
+                  
                   Entry id: 596
-                  [ 7 3 2 ]
+                     Flat ID: 196    Tensor ID: [7,3,2]
+                  
                   Entry id: 597
-                  [ 7 3 3 ]
+                     Flat ID: 277    Tensor ID: [7,3,3]
+                  
                   Entry id: 598
-                  [ 7 3 4 ]
+                     Flat ID: 358    Tensor ID: [7,3,4]
+                  
                   Entry id: 599
-                  [ 7 3 5 ]
+                     Flat ID: 439    Tensor ID: [7,3,5]
+                  
                   Entry id: 600
-                  [ 7 3 6 ]
+                     Flat ID: 520    Tensor ID: [7,3,6]
+                  
                   Entry id: 601
-                  [ 7 3 7 ]
+                     Flat ID: 601    Tensor ID: [7,3,7]
+                  
                   Entry id: 602
-                  [ 7 3 8 ]
+                     Flat ID: 682    Tensor ID: [7,3,8]
+                  
                   Entry id: 603
-                  [ 7 4 0 ]
+                     Flat ID: 43    Tensor ID: [7,4,0]
+                  
                   Entry id: 604
-                  [ 7 4 1 ]
+                     Flat ID: 124    Tensor ID: [7,4,1]
+                  
                   Entry id: 605
-                  [ 7 4 2 ]
+                     Flat ID: 205    Tensor ID: [7,4,2]
+                  
                   Entry id: 606
-                  [ 7 4 3 ]
+                     Flat ID: 286    Tensor ID: [7,4,3]
+                  
                   Entry id: 607
-                  [ 7 4 4 ]
+                     Flat ID: 367    Tensor ID: [7,4,4]
+                  
                   Entry id: 608
-                  [ 7 4 5 ]
+                     Flat ID: 448    Tensor ID: [7,4,5]
+                  
                   Entry id: 609
-                  [ 7 4 6 ]
+                     Flat ID: 529    Tensor ID: [7,4,6]
+                  
                   Entry id: 610
-                  [ 7 4 7 ]
+                     Flat ID: 610    Tensor ID: [7,4,7]
+                  
                   Entry id: 611
-                  [ 7 4 8 ]
+                     Flat ID: 691    Tensor ID: [7,4,8]
+                  
                   Entry id: 612
-                  [ 7 5 0 ]
+                     Flat ID: 52    Tensor ID: [7,5,0]
+                  
                   Entry id: 613
-                  [ 7 5 1 ]
+                     Flat ID: 133    Tensor ID: [7,5,1]
+                  
                   Entry id: 614
-                  [ 7 5 2 ]
+                     Flat ID: 214    Tensor ID: [7,5,2]
+                  
                   Entry id: 615
-                  [ 7 5 3 ]
+                     Flat ID: 295    Tensor ID: [7,5,3]
+                  
                   Entry id: 616
-                  [ 7 5 4 ]
+                     Flat ID: 376    Tensor ID: [7,5,4]
+                  
                   Entry id: 617
-                  [ 7 5 5 ]
+                     Flat ID: 457    Tensor ID: [7,5,5]
+                  
                   Entry id: 618
-                  [ 7 5 6 ]
+                     Flat ID: 538    Tensor ID: [7,5,6]
+                  
                   Entry id: 619
-                  [ 7 5 7 ]
+                     Flat ID: 619    Tensor ID: [7,5,7]
+                  
                   Entry id: 620
-                  [ 7 5 8 ]
+                     Flat ID: 700    Tensor ID: [7,5,8]
+                  
                   Entry id: 621
-                  [ 7 6 0 ]
+                     Flat ID: 61    Tensor ID: [7,6,0]
+                  
                   Entry id: 622
-                  [ 7 6 1 ]
+                     Flat ID: 142    Tensor ID: [7,6,1]
+                  
                   Entry id: 623
-                  [ 7 6 2 ]
+                     Flat ID: 223    Tensor ID: [7,6,2]
+                  
                   Entry id: 624
-                  [ 7 6 3 ]
+                     Flat ID: 304    Tensor ID: [7,6,3]
+                  
                   Entry id: 625
-                  [ 7 6 4 ]
+                     Flat ID: 385    Tensor ID: [7,6,4]
+                  
                   Entry id: 626
-                  [ 7 6 5 ]
+                     Flat ID: 466    Tensor ID: [7,6,5]
+                  
                   Entry id: 627
-                  [ 7 6 6 ]
+                     Flat ID: 547    Tensor ID: [7,6,6]
+                  
                   Entry id: 628
-                  [ 7 6 7 ]
+                     Flat ID: 628    Tensor ID: [7,6,7]
+                  
                   Entry id: 629
-                  [ 7 6 8 ]
+                     Flat ID: 709    Tensor ID: [7,6,8]
+                  
                   Entry id: 630
-                  [ 7 7 0 ]
+                     Flat ID: 70    Tensor ID: [7,7,0]
+                  
                   Entry id: 631
-                  [ 7 7 1 ]
+                     Flat ID: 151    Tensor ID: [7,7,1]
+                  
                   Entry id: 632
-                  [ 7 7 2 ]
+                     Flat ID: 232    Tensor ID: [7,7,2]
+                  
                   Entry id: 633
-                  [ 7 7 3 ]
+                     Flat ID: 313    Tensor ID: [7,7,3]
+                  
                   Entry id: 634
-                  [ 7 7 4 ]
+                     Flat ID: 394    Tensor ID: [7,7,4]
+                  
                   Entry id: 635
-                  [ 7 7 5 ]
+                     Flat ID: 475    Tensor ID: [7,7,5]
+                  
                   Entry id: 636
-                  [ 7 7 6 ]
+                     Flat ID: 556    Tensor ID: [7,7,6]
+                  
                   Entry id: 637
-                  [ 7 7 7 ]
+                     Flat ID: 637    Tensor ID: [7,7,7]
+                  
                   Entry id: 638
-                  [ 7 7 8 ]
+                     Flat ID: 718    Tensor ID: [7,7,8]
+                  
                   Entry id: 639
-                  [ 7 8 0 ]
+                     Flat ID: 79    Tensor ID: [7,8,0]
+                  
                   Entry id: 640
-                  [ 7 8 1 ]
+                     Flat ID: 160    Tensor ID: [7,8,1]
+                  
                   Entry id: 641
-                  [ 7 8 2 ]
+                     Flat ID: 241    Tensor ID: [7,8,2]
+                  
                   Entry id: 642
-                  [ 7 8 3 ]
+                     Flat ID: 322    Tensor ID: [7,8,3]
+                  
                   Entry id: 643
-                  [ 7 8 4 ]
+                     Flat ID: 403    Tensor ID: [7,8,4]
+                  
                   Entry id: 644
-                  [ 7 8 5 ]
+                     Flat ID: 484    Tensor ID: [7,8,5]
+                  
                   Entry id: 645
-                  [ 7 8 6 ]
+                     Flat ID: 565    Tensor ID: [7,8,6]
+                  
                   Entry id: 646
-                  [ 7 8 7 ]
+                     Flat ID: 646    Tensor ID: [7,8,7]
+                  
                   Entry id: 647
-                  [ 7 8 8 ]
+                     Flat ID: 727    Tensor ID: [7,8,8]
+                  
                   Entry id: 648
-                  [ 8 0 0 ]
+                     Flat ID: 8    Tensor ID: [8,0,0]
+                  
                   Entry id: 649
-                  [ 8 0 1 ]
+                     Flat ID: 89    Tensor ID: [8,0,1]
+                  
                   Entry id: 650
-                  [ 8 0 2 ]
+                     Flat ID: 170    Tensor ID: [8,0,2]
+                  
                   Entry id: 651
-                  [ 8 0 3 ]
+                     Flat ID: 251    Tensor ID: [8,0,3]
+                  
                   Entry id: 652
-                  [ 8 0 4 ]
+                     Flat ID: 332    Tensor ID: [8,0,4]
+                  
                   Entry id: 653
-                  [ 8 0 5 ]
+                     Flat ID: 413    Tensor ID: [8,0,5]
+                  
                   Entry id: 654
-                  [ 8 0 6 ]
+                     Flat ID: 494    Tensor ID: [8,0,6]
+                  
                   Entry id: 655
-                  [ 8 0 7 ]
+                     Flat ID: 575    Tensor ID: [8,0,7]
+                  
                   Entry id: 656
-                  [ 8 0 8 ]
+                     Flat ID: 656    Tensor ID: [8,0,8]
+                  
                   Entry id: 657
-                  [ 8 1 0 ]
+                     Flat ID: 17    Tensor ID: [8,1,0]
+                  
                   Entry id: 658
-                  [ 8 1 1 ]
+                     Flat ID: 98    Tensor ID: [8,1,1]
+                  
                   Entry id: 659
-                  [ 8 1 2 ]
+                     Flat ID: 179    Tensor ID: [8,1,2]
+                  
                   Entry id: 660
-                  [ 8 1 3 ]
+                     Flat ID: 260    Tensor ID: [8,1,3]
+                  
                   Entry id: 661
-                  [ 8 1 4 ]
+                     Flat ID: 341    Tensor ID: [8,1,4]
+                  
                   Entry id: 662
-                  [ 8 1 5 ]
+                     Flat ID: 422    Tensor ID: [8,1,5]
+                  
                   Entry id: 663
-                  [ 8 1 6 ]
+                     Flat ID: 503    Tensor ID: [8,1,6]
+                  
                   Entry id: 664
-                  [ 8 1 7 ]
+                     Flat ID: 584    Tensor ID: [8,1,7]
+                  
                   Entry id: 665
-                  [ 8 1 8 ]
+                     Flat ID: 665    Tensor ID: [8,1,8]
+                  
                   Entry id: 666
-                  [ 8 2 0 ]
+                     Flat ID: 26    Tensor ID: [8,2,0]
+                  
                   Entry id: 667
-                  [ 8 2 1 ]
+                     Flat ID: 107    Tensor ID: [8,2,1]
+                  
                   Entry id: 668
-                  [ 8 2 2 ]
+                     Flat ID: 188    Tensor ID: [8,2,2]
+                  
                   Entry id: 669
-                  [ 8 2 3 ]
+                     Flat ID: 269    Tensor ID: [8,2,3]
+                  
                   Entry id: 670
-                  [ 8 2 4 ]
+                     Flat ID: 350    Tensor ID: [8,2,4]
+                  
                   Entry id: 671
-                  [ 8 2 5 ]
+                     Flat ID: 431    Tensor ID: [8,2,5]
+                  
                   Entry id: 672
-                  [ 8 2 6 ]
+                     Flat ID: 512    Tensor ID: [8,2,6]
+                  
                   Entry id: 673
-                  [ 8 2 7 ]
+                     Flat ID: 593    Tensor ID: [8,2,7]
+                  
                   Entry id: 674
-                  [ 8 2 8 ]
+                     Flat ID: 674    Tensor ID: [8,2,8]
+                  
                   Entry id: 675
-                  [ 8 3 0 ]
+                     Flat ID: 35    Tensor ID: [8,3,0]
+                  
                   Entry id: 676
-                  [ 8 3 1 ]
+                     Flat ID: 116    Tensor ID: [8,3,1]
+                  
                   Entry id: 677
-                  [ 8 3 2 ]
+                     Flat ID: 197    Tensor ID: [8,3,2]
+                  
                   Entry id: 678
-                  [ 8 3 3 ]
+                     Flat ID: 278    Tensor ID: [8,3,3]
+                  
                   Entry id: 679
-                  [ 8 3 4 ]
+                     Flat ID: 359    Tensor ID: [8,3,4]
+                  
                   Entry id: 680
-                  [ 8 3 5 ]
+                     Flat ID: 440    Tensor ID: [8,3,5]
+                  
                   Entry id: 681
-                  [ 8 3 6 ]
+                     Flat ID: 521    Tensor ID: [8,3,6]
+                  
                   Entry id: 682
-                  [ 8 3 7 ]
+                     Flat ID: 602    Tensor ID: [8,3,7]
+                  
                   Entry id: 683
-                  [ 8 3 8 ]
+                     Flat ID: 683    Tensor ID: [8,3,8]
+                  
                   Entry id: 684
-                  [ 8 4 0 ]
+                     Flat ID: 44    Tensor ID: [8,4,0]
+                  
                   Entry id: 685
-                  [ 8 4 1 ]
+                     Flat ID: 125    Tensor ID: [8,4,1]
+                  
                   Entry id: 686
-                  [ 8 4 2 ]
+                     Flat ID: 206    Tensor ID: [8,4,2]
+                  
                   Entry id: 687
-                  [ 8 4 3 ]
+                     Flat ID: 287    Tensor ID: [8,4,3]
+                  
                   Entry id: 688
-                  [ 8 4 4 ]
+                     Flat ID: 368    Tensor ID: [8,4,4]
+                  
                   Entry id: 689
-                  [ 8 4 5 ]
+                     Flat ID: 449    Tensor ID: [8,4,5]
+                  
                   Entry id: 690
-                  [ 8 4 6 ]
+                     Flat ID: 530    Tensor ID: [8,4,6]
+                  
                   Entry id: 691
-                  [ 8 4 7 ]
+                     Flat ID: 611    Tensor ID: [8,4,7]
+                  
                   Entry id: 692
-                  [ 8 4 8 ]
+                     Flat ID: 692    Tensor ID: [8,4,8]
+                  
                   Entry id: 693
-                  [ 8 5 0 ]
+                     Flat ID: 53    Tensor ID: [8,5,0]
+                  
                   Entry id: 694
-                  [ 8 5 1 ]
+                     Flat ID: 134    Tensor ID: [8,5,1]
+                  
                   Entry id: 695
-                  [ 8 5 2 ]
+                     Flat ID: 215    Tensor ID: [8,5,2]
+                  
                   Entry id: 696
-                  [ 8 5 3 ]
+                     Flat ID: 296    Tensor ID: [8,5,3]
+                  
                   Entry id: 697
-                  [ 8 5 4 ]
+                     Flat ID: 377    Tensor ID: [8,5,4]
+                  
                   Entry id: 698
-                  [ 8 5 5 ]
+                     Flat ID: 458    Tensor ID: [8,5,5]
+                  
                   Entry id: 699
-                  [ 8 5 6 ]
+                     Flat ID: 539    Tensor ID: [8,5,6]
+                  
                   Entry id: 700
-                  [ 8 5 7 ]
+                     Flat ID: 620    Tensor ID: [8,5,7]
+                  
                   Entry id: 701
-                  [ 8 5 8 ]
+                     Flat ID: 701    Tensor ID: [8,5,8]
+                  
                   Entry id: 702
-                  [ 8 6 0 ]
+                     Flat ID: 62    Tensor ID: [8,6,0]
+                  
                   Entry id: 703
-                  [ 8 6 1 ]
+                     Flat ID: 143    Tensor ID: [8,6,1]
+                  
                   Entry id: 704
-                  [ 8 6 2 ]
+                     Flat ID: 224    Tensor ID: [8,6,2]
+                  
                   Entry id: 705
-                  [ 8 6 3 ]
+                     Flat ID: 305    Tensor ID: [8,6,3]
+                  
                   Entry id: 706
-                  [ 8 6 4 ]
+                     Flat ID: 386    Tensor ID: [8,6,4]
+                  
                   Entry id: 707
-                  [ 8 6 5 ]
+                     Flat ID: 467    Tensor ID: [8,6,5]
+                  
                   Entry id: 708
-                  [ 8 6 6 ]
+                     Flat ID: 548    Tensor ID: [8,6,6]
+                  
                   Entry id: 709
-                  [ 8 6 7 ]
+                     Flat ID: 629    Tensor ID: [8,6,7]
+                  
                   Entry id: 710
-                  [ 8 6 8 ]
+                     Flat ID: 710    Tensor ID: [8,6,8]
+                  
                   Entry id: 711
-                  [ 8 7 0 ]
+                     Flat ID: 71    Tensor ID: [8,7,0]
+                  
                   Entry id: 712
-                  [ 8 7 1 ]
+                     Flat ID: 152    Tensor ID: [8,7,1]
+                  
                   Entry id: 713
-                  [ 8 7 2 ]
+                     Flat ID: 233    Tensor ID: [8,7,2]
+                  
                   Entry id: 714
-                  [ 8 7 3 ]
+                     Flat ID: 314    Tensor ID: [8,7,3]
+                  
                   Entry id: 715
-                  [ 8 7 4 ]
+                     Flat ID: 395    Tensor ID: [8,7,4]
+                  
                   Entry id: 716
-                  [ 8 7 5 ]
+                     Flat ID: 476    Tensor ID: [8,7,5]
+                  
                   Entry id: 717
-                  [ 8 7 6 ]
+                     Flat ID: 557    Tensor ID: [8,7,6]
+                  
                   Entry id: 718
-                  [ 8 7 7 ]
+                     Flat ID: 638    Tensor ID: [8,7,7]
+                  
                   Entry id: 719
-                  [ 8 7 8 ]
+                     Flat ID: 719    Tensor ID: [8,7,8]
+                  
                   Entry id: 720
-                  [ 8 8 0 ]
+                     Flat ID: 80    Tensor ID: [8,8,0]
+                  
                   Entry id: 721
-                  [ 8 8 1 ]
+                     Flat ID: 161    Tensor ID: [8,8,1]
+                  
                   Entry id: 722
-                  [ 8 8 2 ]
+                     Flat ID: 242    Tensor ID: [8,8,2]
+                  
                   Entry id: 723
-                  [ 8 8 3 ]
+                     Flat ID: 323    Tensor ID: [8,8,3]
+                  
                   Entry id: 724
-                  [ 8 8 4 ]
+                     Flat ID: 404    Tensor ID: [8,8,4]
+                  
                   Entry id: 725
-                  [ 8 8 5 ]
+                     Flat ID: 485    Tensor ID: [8,8,5]
+                  
                   Entry id: 726
-                  [ 8 8 6 ]
+                     Flat ID: 566    Tensor ID: [8,8,6]
+                  
                   Entry id: 727
-                  [ 8 8 7 ]
+                     Flat ID: 647    Tensor ID: [8,8,7]
+                  
                   Entry id: 728
-                  [ 8 8 8 ]
+                     Flat ID: 728    Tensor ID: [8,8,8]
+                  
                
             
          

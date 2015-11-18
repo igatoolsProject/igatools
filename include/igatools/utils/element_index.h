@@ -77,7 +77,8 @@ public:
 
   void print_info(LogStream &out) const
   {
-    tensor_id_.print_info(out);
+    out << "Flat ID: " << flat_id_ << "    Tensor ID: " << tensor_id_ << std::endl;
+//    tensor_id_.print_info(out);
   }
 private:
   int flat_id_ = 0;
@@ -108,7 +109,9 @@ template <int dim>
 LogStream &
 operator<<(LogStream &out, const ElementIndex<dim> &elem_id)
 {
-  out << elem_id.get_tensor_index();
+  out << "Flat ID: " << elem_id.get_flat_index()
+      << "    Tensor ID: " << elem_id.get_tensor_index() << std::endl;
+//  out << elem_id.get_tensor_index();
   return out;
 }
 

@@ -1,6 +1,7 @@
 SphereGridFunction<1>
    Element 0
-      Element ID: [0]
+      Element ID: Flat ID: 0    Tensor ID: [0]
+      
       Ref. Points:
          ValueVector (num_points=3) :
          [ [ 0 ]  [ 0.500000 ]  [ 1.00000 ]  ]
@@ -29,7 +30,8 @@ SphereGridFunction<1>
 
 SphereGridFunction<2>
    Element 0
-      Element ID: [0,0]
+      Element ID: Flat ID: 0    Tensor ID: [0,0]
+      
       Ref. Points:
          ValueVector (num_points=9) :
          [ [ 0 0 ]  [ 0.500000 0 ]  [ 1.00000 0 ]  [ 0 0.500000 ]  [ 0.500000 0.500000 ]  [ 1.00000 0.500000 ]  [ 0 1.00000 ]  [ 0.500000 1.00000 ]  [ 1.00000 1.00000 ]  ]

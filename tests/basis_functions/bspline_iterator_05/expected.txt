@@ -1,7 +1,8 @@
 ========================================================================
 sub_elem_values
 ========================================================================
-Element[0,0]
+ElementFlat ID: 0    Tensor ID: [0,0]
+
 Basis functions values:
    ValueTable (num_functions=4,num_points=4) :
       Function 0
@@ -195,7 +196,8 @@ Sub Element: 3
 ========================================================================
 sub_elem_values
 ========================================================================
-Element[0]
+ElementFlat ID: 0    Tensor ID: [0]
+
 Basis functions values:
    ValueTable (num_functions=2,num_points=2) :
       Function 0

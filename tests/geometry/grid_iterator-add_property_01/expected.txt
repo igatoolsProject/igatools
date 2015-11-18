@@ -10,22 +10,26 @@ Property:
    red
 
 Index:
-[ 0 ]
+   Flat ID: 0    Tensor ID: [0]
+
 Property: 
    red
 
 Index:
-[ 1 ]
+   Flat ID: 1    Tensor ID: [1]
+
 Property: 
    red
 
 Index:
-[ 2 ]
+   Flat ID: 2    Tensor ID: [2]
+
 Property: 
    blue
 
 Index:
-[ 3 ]
+   Flat ID: 3    Tensor ID: [3]
+
 ========================================================================
 
 ========================================================================
@@ -35,82 +39,98 @@ Property:
    red
 
 Index:
-[ 0 0 ]
+   Flat ID: 0    Tensor ID: [0,0]
+
 Property: 
    red
 
 Index:
-[ 0 1 ]
+   Flat ID: 4    Tensor ID: [0,1]
+
 Property: 
    red
 
 Index:
-[ 0 2 ]
+   Flat ID: 8    Tensor ID: [0,2]
+
 Property: 
    red
 
 Index:
-[ 0 3 ]
+   Flat ID: 12    Tensor ID: [0,3]
+
 Property: 
    red
 
 Index:
-[ 1 0 ]
+   Flat ID: 1    Tensor ID: [1,0]
+
 Property: 
    red
 
 Index:
-[ 1 1 ]
+   Flat ID: 5    Tensor ID: [1,1]
+
 Property: 
    red
 
 Index:
-[ 1 2 ]
+   Flat ID: 9    Tensor ID: [1,2]
+
 Property: 
    red
 
 Index:
-[ 1 3 ]
+   Flat ID: 13    Tensor ID: [1,3]
+
 Property: 
    red
 
 Index:
-[ 2 0 ]
+   Flat ID: 2    Tensor ID: [2,0]
+
 Property: 
    red
 
 Index:
-[ 2 1 ]
+   Flat ID: 6    Tensor ID: [2,1]
+
 Property: 
    red
 
 Index:
-[ 2 2 ]
+   Flat ID: 10    Tensor ID: [2,2]
+
 Property: 
    blue
 
 Index:
-[ 2 3 ]
+   Flat ID: 14    Tensor ID: [2,3]
+
 Property: 
    blue
 
 Index:
-[ 3 0 ]
+   Flat ID: 3    Tensor ID: [3,0]
+
 Property: 
    blue
 
 Index:
-[ 3 1 ]
+   Flat ID: 7    Tensor ID: [3,1]
+
 Property: 
    blue
 
 Index:
-[ 3 2 ]
+   Flat ID: 11    Tensor ID: [3,2]
+
 Property: 
    blue
 
 Index:
-[ 3 3 ]
+   Flat ID: 15    Tensor ID: [3,3]
+
 ========================================================================
 
 ========================================================================
@@ -120,321 +140,385 @@ Property:
    red
 
 Index:
-[ 0 0 0 ]
+   Flat ID: 0    Tensor ID: [0,0,0]
+
 Property: 
    red
 
 Index:
-[ 0 0 1 ]
+   Flat ID: 16    Tensor ID: [0,0,1]
+
 Property: 
    red
 
 Index:
-[ 0 0 2 ]
+   Flat ID: 32    Tensor ID: [0,0,2]
+
 Property: 
    red
 
 Index:
-[ 0 0 3 ]
+   Flat ID: 48    Tensor ID: [0,0,3]
+
 Property: 
    red
 
 Index:
-[ 0 1 0 ]
+   Flat ID: 4    Tensor ID: [0,1,0]
+
 Property: 
    red
 
 Index:
-[ 0 1 1 ]
+   Flat ID: 20    Tensor ID: [0,1,1]
+
 Property: 
    red
 
 Index:
-[ 0 1 2 ]
+   Flat ID: 36    Tensor ID: [0,1,2]
+
 Property: 
    red
 
 Index:
-[ 0 1 3 ]
+   Flat ID: 52    Tensor ID: [0,1,3]
+
 Property: 
    red
 
 Index:
-[ 0 2 0 ]
+   Flat ID: 8    Tensor ID: [0,2,0]
+
 Property: 
    red
 
 Index:
-[ 0 2 1 ]
+   Flat ID: 24    Tensor ID: [0,2,1]
+
 Property: 
    red
 
 Index:
-[ 0 2 2 ]
+   Flat ID: 40    Tensor ID: [0,2,2]
+
 Property: 
    red
 
 Index:
-[ 0 2 3 ]
+   Flat ID: 56    Tensor ID: [0,2,3]
+
 Property: 
    red
 
 Index:
-[ 0 3 0 ]
+   Flat ID: 12    Tensor ID: [0,3,0]
+
 Property: 
    red
 
 Index:
-[ 0 3 1 ]
+   Flat ID: 28    Tensor ID: [0,3,1]
+
 Property: 
    red
 
 Index:
-[ 0 3 2 ]
+   Flat ID: 44    Tensor ID: [0,3,2]
+
 Property: 
    red
 
 Index:
-[ 0 3 3 ]
+   Flat ID: 60    Tensor ID: [0,3,3]
+
 Property: 
    red
 
 Index:
-[ 1 0 0 ]
+   Flat ID: 1    Tensor ID: [1,0,0]
+
 Property: 
    red
 
 Index:
-[ 1 0 1 ]
+   Flat ID: 17    Tensor ID: [1,0,1]
+
 Property: 
    red
 
 Index:
-[ 1 0 2 ]
+   Flat ID: 33    Tensor ID: [1,0,2]
+
 Property: 
    red
 
 Index:
-[ 1 0 3 ]
+   Flat ID: 49    Tensor ID: [1,0,3]
+
 Property: 
    red
 
 Index:
-[ 1 1 0 ]
+   Flat ID: 5    Tensor ID: [1,1,0]
+
 Property: 
    red
 
 Index:
-[ 1 1 1 ]
+   Flat ID: 21    Tensor ID: [1,1,1]
+
 Property: 
    red
 
 Index:
-[ 1 1 2 ]
+   Flat ID: 37    Tensor ID: [1,1,2]
+
 Property: 
    red
 
 Index:
-[ 1 1 3 ]
+   Flat ID: 53    Tensor ID: [1,1,3]
+
 Property: 
    red
 
 Index:
-[ 1 2 0 ]
+   Flat ID: 9    Tensor ID: [1,2,0]
+
 Property: 
    red
 
 Index:
-[ 1 2 1 ]
+   Flat ID: 25    Tensor ID: [1,2,1]
+
 Property: 
    red
 
 Index:
-[ 1 2 2 ]
+   Flat ID: 41    Tensor ID: [1,2,2]
+
 Property: 
    red
 
 Index:
-[ 1 2 3 ]
+   Flat ID: 57    Tensor ID: [1,2,3]
+
 Property: 
    red
 
 Index:
-[ 1 3 0 ]
+   Flat ID: 13    Tensor ID: [1,3,0]
+
 Property: 
    red
 
 Index:
-[ 1 3 1 ]
+   Flat ID: 29    Tensor ID: [1,3,1]
+
 Property: 
    red
 
 Index:
-[ 1 3 2 ]
+   Flat ID: 45    Tensor ID: [1,3,2]
+
 Property: 
    red
 
 Index:
-[ 1 3 3 ]
+   Flat ID: 61    Tensor ID: [1,3,3]
+
 Property: 
    red
 
 Index:
-[ 2 0 0 ]
+   Flat ID: 2    Tensor ID: [2,0,0]
+
 Property: 
    red
 
 Index:
-[ 2 0 1 ]
+   Flat ID: 18    Tensor ID: [2,0,1]
+
 Property: 
    red
 
 Index:
-[ 2 0 2 ]
+   Flat ID: 34    Tensor ID: [2,0,2]
+
 Property: 
    red
 
 Index:
-[ 2 0 3 ]
+   Flat ID: 50    Tensor ID: [2,0,3]
+
 Property: 
    red
 
 Index:
-[ 2 1 0 ]
+   Flat ID: 6    Tensor ID: [2,1,0]
+
 Property: 
    red
 
 Index:
-[ 2 1 1 ]
+   Flat ID: 22    Tensor ID: [2,1,1]
+
 Property: 
    red
 
 Index:
-[ 2 1 2 ]
+   Flat ID: 38    Tensor ID: [2,1,2]
+
 Property: 
    red
 
 Index:
-[ 2 1 3 ]
+   Flat ID: 54    Tensor ID: [2,1,3]
+
 Property: 
    red
 
 Index:
-[ 2 2 0 ]
+   Flat ID: 10    Tensor ID: [2,2,0]
+
 Property: 
    red
 
 Index:
-[ 2 2 1 ]
+   Flat ID: 26    Tensor ID: [2,2,1]
+
 Property: 
    red
 
 Index:
-[ 2 2 2 ]
+   Flat ID: 42    Tensor ID: [2,2,2]
+
 Property: 
    blue
 
 Index:
-[ 2 2 3 ]
+   Flat ID: 58    Tensor ID: [2,2,3]
+
 Property: 
    blue
 
 Index:
-[ 2 3 0 ]
+   Flat ID: 14    Tensor ID: [2,3,0]
+
 Property: 
    blue
 
 Index:
-[ 2 3 1 ]
+   Flat ID: 30    Tensor ID: [2,3,1]
+
 Property: 
    blue
 
 Index:
-[ 2 3 2 ]
+   Flat ID: 46    Tensor ID: [2,3,2]
+
 Property: 
    blue
 
 Index:
-[ 2 3 3 ]
+   Flat ID: 62    Tensor ID: [2,3,3]
+
 Property: 
    blue
 
 Index:
-[ 3 0 0 ]
+   Flat ID: 3    Tensor ID: [3,0,0]
+
 Property: 
    blue
 
 Index:
-[ 3 0 1 ]
+   Flat ID: 19    Tensor ID: [3,0,1]
+
 Property: 
    blue
 
 Index:
-[ 3 0 2 ]
+   Flat ID: 35    Tensor ID: [3,0,2]
+
 Property: 
    blue
 
 Index:
-[ 3 0 3 ]
+   Flat ID: 51    Tensor ID: [3,0,3]
+
 Property: 
    blue
 
 Index:
-[ 3 1 0 ]
+   Flat ID: 7    Tensor ID: [3,1,0]
+
 Property: 
    blue
 
 Index:
-[ 3 1 1 ]
+   Flat ID: 23    Tensor ID: [3,1,1]
+
 Property: 
    blue
 
 Index:
-[ 3 1 2 ]
+   Flat ID: 39    Tensor ID: [3,1,2]
+
 Property: 
    blue
 
 Index:
-[ 3 1 3 ]
+   Flat ID: 55    Tensor ID: [3,1,3]
+
 Property: 
    blue
 
 Index:
-[ 3 2 0 ]
+   Flat ID: 11    Tensor ID: [3,2,0]
+
 Property: 
    blue
 
 Index:
-[ 3 2 1 ]
+   Flat ID: 27    Tensor ID: [3,2,1]
+
 Property: 
    blue
 
 Index:
-[ 3 2 2 ]
+   Flat ID: 43    Tensor ID: [3,2,2]
+
 Property: 
    blue
 
 Index:
-[ 3 2 3 ]
+   Flat ID: 59    Tensor ID: [3,2,3]
+
 Property: 
    blue
 
 Index:
-[ 3 3 0 ]
+   Flat ID: 15    Tensor ID: [3,3,0]
+
 Property: 
    blue
 
 Index:
-[ 3 3 1 ]
+   Flat ID: 31    Tensor ID: [3,3,1]
+
 Property: 
    blue
 
 Index:
-[ 3 3 2 ]
+   Flat ID: 47    Tensor ID: [3,3,2]
+
 Property: 
    blue
 
 Index:
-[ 3 3 3 ]
+   Flat ID: 63    Tensor ID: [3,3,3]
+
 ========================================================================
 

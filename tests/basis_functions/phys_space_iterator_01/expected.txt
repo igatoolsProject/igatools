@@ -5,7 +5,8 @@ identity_map
 identity_map<1,1>(2,1,active,1)
 elem_values<1,1,1,1,0>(1,active,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=2,num_points=1) :
@@ -45,7 +46,8 @@ identity_map
 identity_map<1,0>(2,1,active,1)
 elem_values<1,0,1,1,0>(1,active,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=2,num_points=1) :
@@ -115,7 +117,8 @@ identity_map
 identity_map<1,1>(2,2,active,1)
 elem_values<1,1,1,1,0>(1,active,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=3,num_points=1) :
@@ -161,7 +164,8 @@ identity_map
 identity_map<1,0>(2,2,active,1)
 elem_values<1,0,1,1,0>(1,active,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=3,num_points=1) :
@@ -243,7 +247,8 @@ identity_map
 identity_map<1,1>(3,1,active,1)
 elem_values<1,1,1,1,0>(1,active,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=2,num_points=1) :
@@ -276,7 +281,8 @@ Element 0
    
 
 Element 1
-   Element index: [1]
+   Element index: Flat ID: 1    Tensor ID: [1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=2,num_points=1) :
@@ -316,7 +322,8 @@ identity_map
 identity_map<1,0>(3,1,active,1)
 elem_values<1,0,1,1,0>(1,active,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=2,num_points=1) :
@@ -379,7 +386,8 @@ Element 0
    
 
 Element 1
-   Element index: [1]
+   Element index: Flat ID: 1    Tensor ID: [1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=2,num_points=1) :
@@ -449,7 +457,8 @@ identity_map
 identity_map<1,1>(3,2,active,1)
 elem_values<1,1,1,1,0>(1,active,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=3,num_points=1) :
@@ -488,7 +497,8 @@ Element 0
    
 
 Element 1
-   Element index: [1]
+   Element index: Flat ID: 1    Tensor ID: [1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=3,num_points=1) :
@@ -534,7 +544,8 @@ identity_map
 identity_map<1,0>(3,2,active,1)
 elem_values<1,0,1,1,0>(1,active,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=3,num_points=1) :
@@ -609,7 +620,8 @@ Element 0
    
 
 Element 1
-   Element index: [1]
+   Element index: Flat ID: 1    Tensor ID: [1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=3,num_points=1) :
@@ -692,7 +704,8 @@ identity_map
 identity_map<2,2>(2,1,active,1)
 elem_values<2,2,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -744,7 +757,8 @@ identity_map
 identity_map<2,1>(2,1,active,1)
 elem_values<2,1,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -922,7 +936,8 @@ identity_map
 identity_map<2,2>(2,2,active,1)
 elem_values<2,2,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=1) :
@@ -1004,7 +1019,8 @@ identity_map
 identity_map<2,1>(2,2,active,1)
 elem_values<2,1,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=1) :
@@ -1302,7 +1318,8 @@ identity_map
 identity_map<2,2>(3,1,active,1)
 elem_values<2,2,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -1347,7 +1364,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,1]
+   Element index: Flat ID: 2    Tensor ID: [0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -1392,7 +1410,8 @@ Element 1
    
 
 Element 2
-   Element index: [1,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -1437,7 +1456,8 @@ Element 2
    
 
 Element 3
-   Element index: [1,1]
+   Element index: Flat ID: 3    Tensor ID: [1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -1489,7 +1509,8 @@ identity_map
 identity_map<2,1>(3,1,active,1)
 elem_values<2,1,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -1660,7 +1681,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,1]
+   Element index: Flat ID: 2    Tensor ID: [0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -1831,7 +1853,8 @@ Element 1
    
 
 Element 2
-   Element index: [1,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -2002,7 +2025,8 @@ Element 2
    
 
 Element 3
-   Element index: [1,1]
+   Element index: Flat ID: 3    Tensor ID: [1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -2180,7 +2204,8 @@ identity_map
 identity_map<2,2>(3,2,active,1)
 elem_values<2,2,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=1) :
@@ -2255,7 +2280,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,1]
+   Element index: Flat ID: 2    Tensor ID: [0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=1) :
@@ -2330,7 +2356,8 @@ Element 1
    
 
 Element 2
-   Element index: [1,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=1) :
@@ -2405,7 +2432,8 @@ Element 2
    
 
 Element 3
-   Element index: [1,1]
+   Element index: Flat ID: 3    Tensor ID: [1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=1) :
@@ -2487,7 +2515,8 @@ identity_map
 identity_map<2,1>(3,2,active,1)
 elem_values<2,1,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=1) :
@@ -2778,7 +2807,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,1]
+   Element index: Flat ID: 2    Tensor ID: [0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=1) :
@@ -3069,7 +3099,8 @@ Element 1
    
 
 Element 2
-   Element index: [1,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=1) :
@@ -3360,7 +3391,8 @@ Element 2
    
 
 Element 3
-   Element index: [1,1]
+   Element index: Flat ID: 3    Tensor ID: [1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=1) :
@@ -3659,7 +3691,8 @@ identity_map
 identity_map<3,3>(2,1,active,1)
 elem_values<3,3,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -3735,7 +3768,8 @@ identity_map
 identity_map<3,2>(2,1,active,1)
 elem_values<3,2,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -4141,7 +4175,8 @@ identity_map
 identity_map<3,3>(2,2,active,1)
 elem_values<3,3,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -4331,7 +4366,8 @@ identity_map
 identity_map<3,2>(2,2,active,1)
 elem_values<3,2,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -5421,7 +5457,8 @@ identity_map
 identity_map<3,3>(3,1,active,1)
 elem_values<3,3,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -5490,7 +5527,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,0,1]
+   Element index: Flat ID: 4    Tensor ID: [0,0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -5559,7 +5597,8 @@ Element 1
    
 
 Element 2
-   Element index: [0,1,0]
+   Element index: Flat ID: 2    Tensor ID: [0,1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -5628,7 +5667,8 @@ Element 2
    
 
 Element 3
-   Element index: [0,1,1]
+   Element index: Flat ID: 6    Tensor ID: [0,1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -5697,7 +5737,8 @@ Element 3
    
 
 Element 4
-   Element index: [1,0,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -5766,7 +5807,8 @@ Element 4
    
 
 Element 5
-   Element index: [1,0,1]
+   Element index: Flat ID: 5    Tensor ID: [1,0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -5835,7 +5877,8 @@ Element 5
    
 
 Element 6
-   Element index: [1,1,0]
+   Element index: Flat ID: 3    Tensor ID: [1,1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -5904,7 +5947,8 @@ Element 6
    
 
 Element 7
-   Element index: [1,1,1]
+   Element index: Flat ID: 7    Tensor ID: [1,1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -5980,7 +6024,8 @@ identity_map
 identity_map<3,2>(3,1,active,1)
 elem_values<3,2,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -6379,7 +6424,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,0,1]
+   Element index: Flat ID: 4    Tensor ID: [0,0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -6778,7 +6824,8 @@ Element 1
    
 
 Element 2
-   Element index: [0,1,0]
+   Element index: Flat ID: 2    Tensor ID: [0,1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -7177,7 +7224,8 @@ Element 2
    
 
 Element 3
-   Element index: [0,1,1]
+   Element index: Flat ID: 6    Tensor ID: [0,1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -7576,7 +7624,8 @@ Element 3
    
 
 Element 4
-   Element index: [1,0,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -7975,7 +8024,8 @@ Element 4
    
 
 Element 5
-   Element index: [1,0,1]
+   Element index: Flat ID: 5    Tensor ID: [1,0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -8374,7 +8424,8 @@ Element 5
    
 
 Element 6
-   Element index: [1,1,0]
+   Element index: Flat ID: 3    Tensor ID: [1,1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -8773,7 +8824,8 @@ Element 6
    
 
 Element 7
-   Element index: [1,1,1]
+   Element index: Flat ID: 7    Tensor ID: [1,1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=1) :
@@ -9179,7 +9231,8 @@ identity_map
 identity_map<3,3>(3,2,active,1)
 elem_values<3,3,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -9362,7 +9415,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,0,1]
+   Element index: Flat ID: 4    Tensor ID: [0,0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -9545,7 +9599,8 @@ Element 1
    
 
 Element 2
-   Element index: [0,1,0]
+   Element index: Flat ID: 2    Tensor ID: [0,1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -9728,7 +9783,8 @@ Element 2
    
 
 Element 3
-   Element index: [0,1,1]
+   Element index: Flat ID: 6    Tensor ID: [0,1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -9911,7 +9967,8 @@ Element 3
    
 
 Element 4
-   Element index: [1,0,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -10094,7 +10151,8 @@ Element 4
    
 
 Element 5
-   Element index: [1,0,1]
+   Element index: Flat ID: 5    Tensor ID: [1,0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -10277,7 +10335,8 @@ Element 5
    
 
 Element 6
-   Element index: [1,1,0]
+   Element index: Flat ID: 3    Tensor ID: [1,1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -10460,7 +10519,8 @@ Element 6
    
 
 Element 7
-   Element index: [1,1,1]
+   Element index: Flat ID: 7    Tensor ID: [1,1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -10650,7 +10710,8 @@ identity_map
 identity_map<3,2>(3,2,active,1)
 elem_values<3,2,1,1,0>(1,active,1)
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -11733,7 +11794,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,0,1]
+   Element index: Flat ID: 4    Tensor ID: [0,0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -12816,7 +12878,8 @@ Element 1
    
 
 Element 2
-   Element index: [0,1,0]
+   Element index: Flat ID: 2    Tensor ID: [0,1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -13899,7 +13962,8 @@ Element 2
    
 
 Element 3
-   Element index: [0,1,1]
+   Element index: Flat ID: 6    Tensor ID: [0,1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -14982,7 +15046,8 @@ Element 3
    
 
 Element 4
-   Element index: [1,0,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -16065,7 +16130,8 @@ Element 4
    
 
 Element 5
-   Element index: [1,0,1]
+   Element index: Flat ID: 5    Tensor ID: [1,0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -17148,7 +17214,8 @@ Element 5
    
 
 Element 6
-   Element index: [1,1,0]
+   Element index: Flat ID: 3    Tensor ID: [1,1,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -18231,7 +18298,8 @@ Element 6
    
 
 Element 7
-   Element index: [1,1,1]
+   Element index: Flat ID: 7    Tensor ID: [1,1,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=27,num_points=1) :
@@ -19321,7 +19389,8 @@ identity_map_prop
 identity_map_prop<1,1>(2,1,1)
 elem_values<1,1,1,1,0>(1,interior,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=0,num_points=1) :
@@ -19343,7 +19412,8 @@ Element 0
 
 elem_values<1,1,1,1,0>(1,dirichlet,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=1,num_points=1) :
@@ -19371,7 +19441,8 @@ Element 0
 
 elem_values<1,1,1,1,0>(1,neumman,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=1,num_points=1) :
@@ -19405,7 +19476,8 @@ identity_map_prop
 identity_map_prop<1,0>(3,1,0)
 elem_values<1,0,1,1,0>(1,interior,0)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=1,num_points=1) :
@@ -19432,7 +19504,8 @@ Element 0
    
 
 Element 1
-   Element index: [1]
+   Element index: Flat ID: 1    Tensor ID: [1]
+   
    Sub element id:  1
       Values: 
          ValueTable (num_functions=1,num_points=1) :
@@ -19460,7 +19533,8 @@ Element 1
 
 elem_values<1,0,1,1,0>(1,dirichlet,0)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=0,num_points=1) :
@@ -19481,7 +19555,8 @@ Element 0
    
 
 Element 1
-   Element index: [1]
+   Element index: Flat ID: 1    Tensor ID: [1]
+   
    Sub element id:  1
       Values: 
          ValueTable (num_functions=1,num_points=1) :
@@ -19509,7 +19584,8 @@ Element 1
 
 elem_values<1,0,1,1,0>(1,neumman,0)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=1,num_points=1) :
@@ -19536,7 +19612,8 @@ Element 0
    
 
 Element 1
-   Element index: [1]
+   Element index: Flat ID: 1    Tensor ID: [1]
+   
    Sub element id:  1
       Values: 
          ValueTable (num_functions=0,num_points=1) :
@@ -19564,7 +19641,8 @@ identity_map_prop
 identity_map_prop<2,1>(3,2,0)
 elem_values<2,1,1,1,0>(1,interior,0)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -19651,7 +19729,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,1]
+   Element index: Flat ID: 2    Tensor ID: [0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -19738,7 +19817,8 @@ Element 1
    
 
 Element 2
-   Element index: [1,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0]
+   
    Sub element id:  1
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -19825,7 +19905,8 @@ Element 2
    
 
 Element 3
-   Element index: [1,1]
+   Element index: Flat ID: 3    Tensor ID: [1,1]
+   
    Sub element id:  1
       Values: 
          ValueTable (num_functions=4,num_points=1) :
@@ -19913,7 +19994,8 @@ Element 3
 
 elem_values<2,1,1,1,0>(1,dirichlet,0)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=3,num_points=1) :
@@ -19988,7 +20070,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,1]
+   Element index: Flat ID: 2    Tensor ID: [0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=3,num_points=1) :
@@ -20063,7 +20146,8 @@ Element 1
    
 
 Element 2
-   Element index: [1,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0]
+   
    Sub element id:  1
       Values: 
          ValueTable (num_functions=5,num_points=1) :
@@ -20162,7 +20246,8 @@ Element 2
    
 
 Element 3
-   Element index: [1,1]
+   Element index: Flat ID: 3    Tensor ID: [1,1]
+   
    Sub element id:  1
       Values: 
          ValueTable (num_functions=5,num_points=1) :
@@ -20262,7 +20347,8 @@ Element 3
 
 elem_values<2,1,1,1,0>(1,neumman,0)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=2,num_points=1) :
@@ -20325,7 +20411,8 @@ Element 0
    
 
 Element 1
-   Element index: [0,1]
+   Element index: Flat ID: 2    Tensor ID: [0,1]
+   
    Sub element id:  0
       Values: 
          ValueTable (num_functions=2,num_points=1) :
@@ -20388,7 +20475,8 @@ Element 1
    
 
 Element 2
-   Element index: [1,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0]
+   
    Sub element id:  1
       Values: 
          ValueTable (num_functions=0,num_points=1) :
@@ -20427,7 +20515,8 @@ Element 2
    
 
 Element 3
-   Element index: [1,1]
+   Element index: Flat ID: 3    Tensor ID: [1,1]
+   
    Sub element id:  1
       Values: 
          ValueTable (num_functions=0,num_points=1) :
