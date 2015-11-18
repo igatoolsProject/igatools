@@ -15,7 +15,8 @@ SharedPtrConstnessHandler::print_info()
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 ]
+               Flat ID: 0    Tensor ID: [0]
+            
          
       
    
@@ -30,7 +31,8 @@ SharedPtrConstnessHandler::get_ptr_data()
    Element properties:
       IDs with property "active":
          Entry id: 0
-         [ 0 ]
+            Flat ID: 0    Tensor ID: [0]
+         
       
    
 
@@ -44,7 +46,8 @@ SharedPtrConstnessHandler::get_ptr_const_data()
    Element properties:
       IDs with property "active":
          Entry id: 0
-         [ 0 ]
+            Flat ID: 0    Tensor ID: [0]
+         
       
    
 
@@ -58,7 +61,8 @@ SharedPtrConstnessHandler::get_ref_data()
    Element properties:
       IDs with property "active":
          Entry id: 0
-         [ 0 ]
+            Flat ID: 0    Tensor ID: [0]
+         
       
    
 
@@ -72,7 +76,8 @@ SharedPtrConstnessHandler::get_ref_const_data()
    Element properties:
       IDs with property "active":
          Entry id: 0
-         [ 0 ]
+            Flat ID: 0    Tensor ID: [0]
+         
       
    
 
@@ -92,7 +97,8 @@ SharedPtrConstnessHandler::print_info()
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 ]
+               Flat ID: 0    Tensor ID: [0]
+            
          
       
    
@@ -107,7 +113,8 @@ SharedPtrConstnessHandler::get_ptr_const_data()
    Element properties:
       IDs with property "active":
          Entry id: 0
-         [ 0 ]
+            Flat ID: 0    Tensor ID: [0]
+         
       
    
 
@@ -121,7 +128,8 @@ SharedPtrConstnessHandler::get_ref_const_data()
    Element properties:
       IDs with property "active":
          Entry id: 0
-         [ 0 ]
+            Flat ID: 0    Tensor ID: [0]
+         
       
    
 
@@ -135,7 +143,8 @@ SharedPtrConstnessHandler::operator*()
    Element properties:
       IDs with property "active":
          Entry id: 0
-         [ 0 ]
+            Flat ID: 0    Tensor ID: [0]
+         
       
    
 
@@ -149,7 +158,8 @@ SharedPtrConstnessHandler::operator->()
    Element properties:
       IDs with property "active":
          Entry id: 0
-         [ 0 ]
+            Flat ID: 0    Tensor ID: [0]
+         
       
    
 
