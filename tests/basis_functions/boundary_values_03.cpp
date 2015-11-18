@@ -37,7 +37,6 @@
 
 #include <igatools/geometry/grid_function_lib.h>
 
-#if 0
 template<int dim>
 class XProject : public FormulaFunction<dim>
 {
@@ -45,26 +44,21 @@ private:
   using base_t = Function<dim>;
   using parent_t = FormulaFunction<dim>;
   using self_t = XProject<dim>;
-  using typename base_t::GridType;
 public:
   using typename parent_t::Point;
   using typename parent_t::Value;
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 public:
-  XProject(std::shared_ptr<GridType> grid)
-    : FormulaFunction<dim>(grid, IdentityFunction<dim>::const_create(grid))
+  XProject(const SharedPtrConstnessHandler<Domain<dim,0>> &domain)
+    : FormulaFunction<dim>(domain,"XProject")
   {}
 
-  static std::shared_ptr<base_t>
-  const_create(std::shared_ptr<GridType> grid)
+  static std::shared_ptr<self_t>
+  const_create(const std::shared_ptr<Domain<dim,0>> &domain)
   {
-    return std::shared_ptr<base_t>(new self_t(grid));
-  }
-
-  std::shared_ptr<base_t> clone() const override
-  {
-    return std::make_shared<self_t>(self_t(*this));
+    return std::make_shared<self_t>(
+             SharedPtrConstnessHandler<Domain<dim,0>>(domain));
   }
 
   void evaluate_0(const ValueVector<Point> &points,
@@ -84,7 +78,6 @@ public:
                   ValueVector<Derivative<2>> &values) const override
   {}
 };
-#endif
 
 
 
@@ -110,26 +103,28 @@ void do_test(const int p, TensorSize<dim> n_knots)
   const int sdim = dim-1;
   const int s_id = 2;
 
+  /*
   using SubGridElemMap = typename Grid<dim>::template SubGridMap<sdim>;
   SubGridElemMap sub_grid_elem_map;
   const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,sub_grid_elem_map);
 
   auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
   auto f_at_bndry = TestBoundaryFunction<dim-1,range>::const_create(bndry_domain);
+  //*/
 
-
+  auto f = XProject<dim>::const_create(domain);
 
   const int n_qpoints = 4;
   auto quad = QGauss<sdim>::create(n_qpoints);
 
   const boundary_id dirichlet = 1;
   grid->set_boundary_id(s_id, dirichlet);
-  std::set<boundary_id> bdry_ids;
+  SafeSTLSet<boundary_id> bdry_ids;
   bdry_ids.insert(dirichlet);
 
   std::map<Index,Real> boundary_values;
-  space_tools::project_boundary_values<dim,0,range,rank>(
-    *f_at_bndry, *basis, quad, bdry_ids,
+  space_tools::project_function_on_boundary<dim,0,range,rank>(
+    *f, *basis, quad, bdry_ids,
     boundary_values);
 
   out << "basis index \t value" << endl;

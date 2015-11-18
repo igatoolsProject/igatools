@@ -731,6 +731,8 @@ project_boundary_values(
 
   const auto grid = basis.get_grid();
 
+  boundary_values.clear();
+
   for (const auto &bndry : bndry_funcs)
   {
     InterGridMap elem_map;
@@ -852,6 +854,55 @@ get_boundary_dofs(std::shared_ptr<const Basis> basis,
   return dofs;
 }
 
+
+template<int dim,int codim, int range, int rank>
+void
+project_function_on_boundary(
+  const Function<dim,codim,range,rank> &func_to_project,
+  const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+  const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
+  const std::set<int> &boundary_ids,
+  std::map<Index, Real> &boundary_values)
+{
+  static_assert(dim >= 1,"The topological dimension must be >= 1");
+
+//  const auto domain = basis.get_physical_domain();
+
+  Assert(basis.get_physical_domain() == func_to_project.get_domain(),
+         ExcMessage("The function to project and the physical basis must have the same domain."));
+
+//  const auto grid = domain->get_grid();
+
+
+  const int sdim = dim-1;
+
+//  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
+//  using InterSpaceMap = typename Basis::template InterSpaceMap<dim>;
+//  using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
+
+  using BndryFunc = Function<dim-1,codim+1,range,rank>;
+  using PtrBndryFunc = std::shared_ptr<const BndryFunc>;
+
+  SafeSTLMap<int,PtrBndryFunc> boundary_functions;
+
+  for (const int s_id : boundary_ids)
+  {
+    /*
+    InterGridMap elem_map;
+
+    const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
+
+    InterSpaceMap  dof_map;
+    const auto sub_basis = basis.template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
+    //*/
+    boundary_functions[s_id] = func_to_project.get_sub_function(s_id);
+
+  }
+
+  project_boundary_values<dim,codim,range,rank>(boundary_functions,basis,quad,boundary_values);
+
+  Assert(false,ExcNotImplemented());
+}
 
 
 /**
