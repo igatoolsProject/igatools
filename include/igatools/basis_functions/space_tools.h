@@ -758,6 +758,54 @@ project_boundary_values(
 }
 
 
+template<int dim,int range>
+void
+project_boundary_values(
+  std::map<int, std::shared_ptr<const SubGridFunction<dim-1,dim,range>>> &bndry_funcs,
+  const ReferenceSpaceBasis<dim,range,1> &ref_basis,
+  const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
+  std::map<Index, Real>  &boundary_values)
+{
+  static_assert(dim >= 1,"The dimension must be >= 1");
+
+
+  const int sdim = (dim >=1) ? dim - 1 : 0;
+
+  using Basis = ReferenceSpaceBasis<dim,range,1>;
+  using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
+
+  using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
+
+
+  const auto grid = ref_basis.get_grid();
+
+  boundary_values.clear();
+
+  for (const auto &bndry : bndry_funcs)
+  {
+    InterGridMap elem_map;
+
+    const int s_id = bndry.first;
+
+    Assert(bndry.second != nullptr,ExcNullPtr());
+    const auto &bndry_func = *bndry.second;
+
+    const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
+
+    InterSpaceMap  dof_map;
+    const auto sub_basis = ref_basis.template get_ref_sub_space<sdim>(s_id, dof_map,sub_grid);
+
+
+    const auto coeffs = projection_l2_grid_function(
+                          bndry_func,*sub_basis,quad,DofProperties::active);
+
+    const int face_n_dofs = dof_map.size();
+    for (Index i = 0; i< face_n_dofs; ++i)
+      boundary_values[dof_map[i]] = coeffs[i];
+  }
+}
+
+
 #if 0
 template<int dim,int range>
 void

@@ -49,11 +49,11 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 
 public:
-  static std::shared_ptr<base_t>
+  static std::shared_ptr<self_t>
   create(const std::shared_ptr<GridType> &domain,
          const Value &b);
 
-  static std::shared_ptr<const base_t>
+  static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const GridType> &domain,
                const Value &b);
 
@@ -117,12 +117,12 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 
 public:
-  static std::shared_ptr<base_t>
+  static std::shared_ptr<self_t>
   create(const std::shared_ptr<GridType> &domain,
          const Derivative<1> &A,
          const Value &b);
 
-  static std::shared_ptr<const base_t>
+  static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const GridType> &domain,
                const Derivative<1> &A,
                const Value &b);
@@ -189,10 +189,10 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 
 public:
-  static std::shared_ptr<base_t>
+  static std::shared_ptr<self_t>
   create(const std::shared_ptr<GridType> &domain);
 
-  static std::shared_ptr<const base_t>
+  static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const GridType> &domain);
 
 
@@ -261,10 +261,10 @@ public:
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
-  static std::shared_ptr<base_t>
+  static std::shared_ptr<self_t>
   create(std::shared_ptr<GridType> grid);
 
-  static std::shared_ptr<const base_t>
+  static std::shared_ptr<const self_t>
   const_create(std::shared_ptr<const GridType> grid);
 
   BallGridFunction(const self_t &) = default;
@@ -338,10 +338,10 @@ public:
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
-  static std::shared_ptr<base_t>
+  static std::shared_ptr<self_t>
   create(std::shared_ptr<GridType> grid);
 
-  static std::shared_ptr<const base_t>
+  static std::shared_ptr<const self_t>
   const_create(std::shared_ptr<const GridType> grid);
 
   SphereGridFunction(const self_t &) = default;
@@ -428,7 +428,7 @@ public:
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
-  static std::shared_ptr<base_t>
+  static std::shared_ptr<self_t>
   create(std::shared_ptr<GridType> grid,
          const Real r0,
          const Real r1,
@@ -437,7 +437,7 @@ public:
          const Real theta0,
          const Real theta1);
 
-  static std::shared_ptr<const base_t>
+  static std::shared_ptr<const self_t>
   const_create(std::shared_ptr<const GridType> grid,
                const Real r0,
                const Real r1,

@@ -40,7 +40,7 @@ template<int dim, int space_dim>
 auto
 ConstantGridFunction<dim,space_dim>::
 create(const std::shared_ptr<GridType> &domain,
-       const Value &b) ->  std::shared_ptr<base_t>
+       const Value &b) ->  std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(domain),b));
@@ -57,9 +57,9 @@ template<int dim, int space_dim>
 auto
 ConstantGridFunction<dim,space_dim>::
 const_create(const std::shared_ptr<const GridType> &domain,
-             const Value &b) ->  std::shared_ptr<const base_t>
+             const Value &b) ->  std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const self_t>(
+  return std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(domain), b));
 }
 
@@ -154,7 +154,7 @@ auto
 LinearGridFunction<dim,space_dim>::
 create(const std::shared_ptr<GridType> &domain,
        const Derivative<1> &A,
-       const Value &b) ->  std::shared_ptr<base_t>
+       const Value &b) ->  std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(domain),A,b));
@@ -172,9 +172,9 @@ auto
 LinearGridFunction<dim,space_dim>::
 const_create(const std::shared_ptr<const GridType> &domain,
              const Derivative<1> &A,
-             const Value &b) ->  std::shared_ptr<const base_t>
+             const Value &b) ->  std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const self_t>(
+  return std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(domain), A, b));
 }
 
@@ -268,7 +268,7 @@ template<int dim>
 auto
 IdentityGridFunction<dim>::
 create(const std::shared_ptr<GridType> &domain)
-->  std::shared_ptr<base_t>
+->  std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(domain)));
@@ -284,9 +284,9 @@ template<int dim>
 auto
 IdentityGridFunction<dim>::
 const_create(const std::shared_ptr<const GridType> &domain)
-->  std::shared_ptr<const base_t>
+->  std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const self_t>(
+  return std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(domain)));
 }
 
@@ -371,7 +371,7 @@ BallGridFunction(const SharedPtrConstnessHandler<GridType> &grid)
 template<int dim>
 auto
 BallGridFunction<dim>::
-create(std::shared_ptr<GridType> grid) ->  std::shared_ptr<base_t>
+create(std::shared_ptr<GridType> grid) ->  std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(grid)));
@@ -386,7 +386,7 @@ create(std::shared_ptr<GridType> grid) ->  std::shared_ptr<base_t>
 template<int dim>
 auto
 BallGridFunction<dim>::
-const_create(std::shared_ptr<const GridType> grid) ->  std::shared_ptr<const base_t>
+const_create(std::shared_ptr<const GridType> grid) ->  std::shared_ptr<const self_t>
 {
   return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 }
@@ -632,7 +632,7 @@ SphereGridFunction(const SharedPtrConstnessHandler<GridType> &grid)
 template<int dim>
 auto
 SphereGridFunction<dim>::
-create(std::shared_ptr<GridType> grid) -> std::shared_ptr<base_t>
+create(std::shared_ptr<GridType> grid) -> std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(grid)));
@@ -648,9 +648,9 @@ create(std::shared_ptr<GridType> grid) -> std::shared_ptr<base_t>
 template<int dim>
 auto
 SphereGridFunction<dim>::
-const_create(std::shared_ptr<const GridType> grid) -> std::shared_ptr<const base_t>
+const_create(std::shared_ptr<const GridType> grid) -> std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
+  return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 }
 
 #ifdef MESH_REFINEMENT
@@ -915,7 +915,7 @@ create(std::shared_ptr<GridType> grid,
        const Real h0,
        const Real h1,
        const Real theta0,
-       const Real theta1) ->  std::shared_ptr<base_t>
+       const Real theta1) ->  std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(grid),r0,r1,h0,h1,theta0,theta1));
@@ -936,9 +936,9 @@ const_create(std::shared_ptr<const GridType> grid,
              const Real h0,
              const Real h1,
              const Real theta0,
-             const Real theta1) -> std::shared_ptr<const base_t>
+             const Real theta1) -> std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const self_t>(new self_t(
+  return std::shared_ptr<self_t>(new self_t(
     SharedPtrConstnessHandler<GridType>(grid),r0,r1,h0,h1,theta0,theta1));
 }
 
