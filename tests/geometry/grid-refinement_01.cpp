@@ -43,7 +43,7 @@ void test_evaluate()
   grid->add_property(influence_property);
 
 
-  typename Grid::IndexType elem_id;
+  typename Grid::IndexType elem_id(0,TensorIndex<dim>());
 //    grid->get_element_property(active_property).insert(elem_id);
   grid->get_elements_with_property(influence_property).insert(elem_id);
 

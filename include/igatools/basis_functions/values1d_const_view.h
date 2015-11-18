@@ -36,12 +36,11 @@ IGA_NAMESPACE_OPEN
  * Container for scalar function values and derivatives
  * computed  over points in an interval.
  *
- * @ingroup serializable
  */
 class BasisValues1d
 {
 public:
-  BasisValues1d();
+  BasisValues1d() = default;
 
   BasisValues1d(const int n_func, const int n_points);
 
@@ -63,20 +62,6 @@ public:
 
 private:
   SafeSTLArray<DenseMatrix,MAX_NUM_DERIVATIVES> values_;
-
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version);
-  ///@}
-#endif // SERIALIZATION
 
 };
 

@@ -147,7 +147,7 @@ public:
 
   using BaseSpace::ComponentContainer;
 
-  using IndexType = TensorIndex<dim_>;
+  using IndexType = typename GridType::IndexType;
   using PropertyList = PropertiesIdContainer<IndexType>;
   using List = typename PropertyList::List;
   using ListIt = typename PropertyList::List::iterator;
@@ -157,89 +157,6 @@ public:
    * @name Creators.
    */
   ///@{
-#if 0
-  /**
-   * Builds and returns a maximum regularity (non-const) BSpline space
-   * over a (non-const) Grid
-   * @p grid for the given @p degree in all directions and homogeneous
-   * in all components.
-   */
-  static std::shared_ptr<self_t>
-  create(const int degree,
-         const std::shared_ptr<GridType> &grid,
-         const InteriorReg interior_reg = InteriorReg::maximum,
-         const bool periodic = false,
-         const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
-
-  /**
-   * Builds and returns a maximum regularity (const) BSpline space
-   * over a (const) Grid
-   * @p grid for the given @p degree in all directions and homogeneous
-   * in all components.
-   */
-  static std::shared_ptr<const self_t>
-  const_create(const int degree,
-               const std::shared_ptr<const GridType> &grid,
-               const InteriorReg interior_reg = InteriorReg::maximum,
-               const bool periodic = false,
-               const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
-
-  /**
-   * Builds and returns a maximum regularity (non-const) BSpline space
-   * over a (non-const) Grid
-   * @p grid for the given @p degree[i] in the i-th direction and homogeneous
-   * in all components.
-   */
-  static std::shared_ptr<self_t>
-  create(const Degrees &degree,
-         const std::shared_ptr<GridType> &grid,
-         const InteriorReg interior_reg = InteriorReg::maximum,
-         const Periodicity &periodic = Periodicity(false),
-         const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
-
-  /**
-   * Builds and returns a maximum regularity (const) BSpline space
-   * over a (const) Grid
-   * @p grid for the given @p degree[i] in the i-th direction and homogeneous
-   * in all components.
-   */
-  static std::shared_ptr<const self_t>
-  const_create(const Degrees &degree,
-               const std::shared_ptr<const GridType> &grid,
-               const InteriorReg interior_reg = InteriorReg::maximum,
-               const Periodicity &periodic = Periodicity(false),
-               const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
-
-  /**
-   * Builds and returns a (non-const) BSpline space
-   * over a (non-const) Grid
-   * @p grid with the given multiplicity vector @p mult_vectors
-   * for each component
-   * and the given @p degree for each direction and for each
-   * component.
-   */
-  static std::shared_ptr<self_t>
-  create(const DegreeTable &deg,
-         const std::shared_ptr<GridType> &grid,
-         const MultiplicityTable &interior_mult,
-         const PeriodicityTable &periodic,
-         const EndBehaviourTable &end_b);
-
-  /**
-   * Builds and returns a (const) BSpline space
-   * over a (const) Grid
-   * @p grid with the given multiplicity vector @p mult_vectors
-   * for each component
-   * and the given @p degree for each direction and for each
-   * component.
-   */
-  static std::shared_ptr<const self_t>
-  const_create(const DegreeTable &deg,
-               const std::shared_ptr<const GridType> &grid,
-               const MultiplicityTable &interior_mult,
-               const PeriodicityTable &periodic,
-               const EndBehaviourTable &end_b);
-#endif
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<SpSpace> &spline_space,
@@ -351,7 +268,7 @@ public:
 
 
   virtual void get_element_dofs(
-    const IndexType element_id,
+    const IndexType &element_id,
     SafeSTLVector<Index> &dofs_global,
     SafeSTLVector<Index> &dofs_local_to_patch,
     SafeSTLVector<Index> &dofs_local_to_elem,

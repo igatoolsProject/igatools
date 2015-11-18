@@ -83,7 +83,7 @@ public:
   /**
    * Destructor.
    */
-  ~SubGridFunctionElement() = default;
+  virtual ~SubGridFunctionElement() = default;
   ///@}
 
 
@@ -146,7 +146,7 @@ public:
 
 private:
 
-  std::shared_ptr<GridFunctionElement<dim,space_dim>> sup_grid_func_element_;
+  std::unique_ptr<GridFunctionElement<dim,space_dim>> sup_grid_func_element_;
 };
 
 

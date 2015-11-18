@@ -114,7 +114,8 @@ create_element(const ListIt &index, const PropId &property) const
 -> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
 {
   std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
-  elem = std::make_unique<ElementAccessor>(this->get_this_basis(),index,property);
+  elem = std::unique_ptr<ElementAccessor>(
+    new ElementAccessor(this->get_this_basis(),index,property));
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -218,7 +219,7 @@ template <int dim_, int range_, int rank_, int codim_>
 void
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 get_element_dofs(
-  const IndexType element_id,
+  const IndexType &element_id,
   SafeSTLVector<Index> &dofs_global,
   SafeSTLVector<Index> &dofs_local_to_patch,
   SafeSTLVector<Index> &dofs_local_to_elem,
@@ -259,7 +260,8 @@ PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 create_cache_handler() const
 -> std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>>
 {
-  return std::make_unique<ElementHandler>(this->get_this_basis());
+  return std::unique_ptr<ElementHandler>(
+    new ElementHandler(this->get_this_basis()));
 }
 
 

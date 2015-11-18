@@ -19,13 +19,13 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-include_files = ['utils/tensor_index.h']
+include_files = ['utils/element_index.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 containers = []
 for dim in inst.sub_domain_dims + inst.domain_dims:
-    quad = 'PropertiesIdContainer<iga::TensorIndex<%d>>' %(dim)
+    quad = 'PropertiesIdContainer<iga::ElementIndex<%d>>' %(dim)
     containers.append(quad)
     f.write('template class %s; \n' %(quad))
 

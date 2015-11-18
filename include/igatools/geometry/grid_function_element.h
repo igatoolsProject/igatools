@@ -84,7 +84,7 @@ public:
   /**
    * Destructor.
    */
-  ~GridFunctionElement() = default;
+  virtual ~GridFunctionElement() = default;
   ///@}
 
 

@@ -536,7 +536,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
   const auto n_inter = grid.get_num_intervals();
 
   const auto elem_size = grid_elem.template get_side_lengths<dim>(0);
-  const auto elem_tensor_id = grid_elem.get_index();
+  const auto &elem_tensor_id = grid_elem.get_index().get_tensor_index();
 
   const auto &bsp_basis = dynamic_cast<const Basis &>(*bsp_elem_.get_space_basis());
 

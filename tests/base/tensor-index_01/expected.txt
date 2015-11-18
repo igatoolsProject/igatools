@@ -1,3 +1,15 @@
+Test for printing a TensorIndex<0>
+[]
+
+Test for printing a TensorIndex<1>
+[0]
+
+Test for printing a TensorIndex<2>
+[0,0]
+
+Test for printing a TensorIndex<3>
+[0,0,0]
+
 Test the access to a tensor using tensor indices,
 on a tensor of rank: 3 and dim: 2.
 [ [ [ 0 1.00000 ]  [ 2.00000 3.00000 ]  ]  [ [ 4.00000 5.00000 ]  [ 6.00000 7.00000 ]  ]  ] 

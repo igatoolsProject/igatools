@@ -969,7 +969,7 @@ Conditional<order==0,
 integrate(Function<dim, codim, range, rank> &f,
           const std::shared_ptr<const Quadrature<dim>> &quad,
           SafeSTLMap<
-          TensorIndex<dim>,
+          ElementIndex<dim>,
           Conditional<order==0,
           typename Function<dim, codim, range, rank>::Value,
           typename Function<dim, codim, range, rank>::template Derivative<order>>

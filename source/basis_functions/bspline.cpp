@@ -304,7 +304,7 @@ template<int dim_, int range_, int rank_>
 void
 BSpline<dim_, range_, rank_>::
 get_element_dofs(
-  const IndexType elem_tensor_id,
+  const IndexType &elem_id,
   SafeSTLVector<Index> &dofs_global,
   SafeSTLVector<Index> &dofs_local_to_patch,
   SafeSTLVector<Index> &dofs_local_to_elem,
@@ -320,14 +320,14 @@ get_element_dofs(
   dofs_local_to_patch.clear();
   dofs_local_to_elem.clear();
 
-//    const auto &elem_tensor_id = this->get_grid()->flat_to_tensor(element_id);
+  const auto &elem_t_id = elem_id.get_tensor_index();
 
   Index dof_loc_to_elem = 0;
   for (const auto comp : SpSpace::components)
   {
     const auto &index_table_comp = index_table[comp];
 
-    const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
+    const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_t_id);
 
     const auto &elem_comp_dof_t_id = sp_space.get_dofs_tensor_id_elem_table()[comp];
 

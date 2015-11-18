@@ -126,7 +126,8 @@ operator ==(const self_t &elem) const
 {
   Assert(this->same_grid_of(elem),
          ExcMessage("Cannot compare elements on different grid."));
-  return (get_index() == elem.get_index());
+  const bool res = (get_index() == elem.get_index());
+  return res;
 }
 
 
@@ -138,7 +139,8 @@ operator !=(const self_t &elem) const
 {
   Assert(this->same_grid_of(elem),
          ExcMessage("Cannot compare elements on different grid."));
-  return (get_index() != elem.get_index());
+  const bool res = (get_index() != elem.get_index());
+  return res;
 }
 
 template <int dim>
@@ -148,7 +150,8 @@ operator <(const self_t &elem) const
 {
   Assert(this->same_grid_of(elem),
          ExcMessage("Cannot compare elements on different grid."));
-  return (get_index() < elem.get_index());
+  const bool res = (get_index() < elem.get_index());
+  return res;
 }
 
 template <int dim>
@@ -158,7 +161,8 @@ operator >(const self_t &elem) const
 {
   Assert(this->same_grid_of(elem),
          ExcMessage("Cannot compare elements on different grid."));
-  return (get_index() > elem.get_index());
+  const bool res = (get_index() > elem.get_index());
+  return res;
 }
 
 
@@ -172,7 +176,7 @@ vertex(const int i) const -> Point
   Assert(i < UnitElement<dim>::sub_elements_size[0],
          ExcIndexRange(i,0, UnitElement<dim>::sub_elements_size[0]));
 
-  TensorIndex<dim> index = get_index();
+  TensorIndex<dim> index = get_index().get_tensor_index();
 
   auto all_elems = UnitElement<dim>::all_elems;
   const auto &vertex = std::get<0>(all_elems)[i];
@@ -193,7 +197,7 @@ bool GridElement<dim>::
 is_boundary(const Index id) const
 {
   const auto &n_elem = get_grid()->get_num_intervals();
-  const auto &index = get_index();
+  const auto &elem_tid = get_index().get_tensor_index();
 
   auto &sdim_elem = UnitElement<dim>::template get_elem<sdim>(id);
 
@@ -201,8 +205,8 @@ is_boundary(const Index id) const
   {
     auto dir = sdim_elem.constant_directions[i];
     auto val = sdim_elem.constant_values[i];
-    if (((index[dir] == 0)               && (val == 0)) ||
-        ((index[dir] == n_elem[dir] - 1) && (val == 1)))
+    if (((elem_tid[dir] == 0)               && (val == 0)) ||
+        ((elem_tid[dir] == n_elem[dir] - 1) && (val == 1)))
       return true;
   }
 
@@ -276,11 +280,12 @@ get_side_lengths(const int s_id) const -> const Points<sdim>
 
   auto &s_elem = UnitElement<dim>::template get_elem<sdim>(s_id);
 
+  const auto &elem_tid = this->get_index().get_tensor_index();
   int i=0;
   for (const int active_dir : s_elem.active_directions)
   {
     const auto &knots_active_dir = grid_->get_knot_coordinates(active_dir);
-    const int j = get_index()[active_dir];
+    const int j = elem_tid[active_dir];
     lengths[i] = knots_active_dir[j+1] - knots_active_dir[j];
     ++i;
   }

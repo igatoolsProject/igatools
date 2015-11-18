@@ -31,11 +31,17 @@ SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
   :
   parent_t(sub_grid_function,sub_elem_index_iterator,prop),
   sup_grid_func_element_(
-   std::make_shared<GridFunctionElement<dim,space_dim>>(
-     sub_grid_function->get_sup_grid_function(),
-     sub_grid_function->get_id_elems_sup_grid().begin(),
-     prop))
+   sub_grid_function->get_sup_grid_function()->create_element(
+     sub_grid_function->get_id_elems_sup_grid().begin(),prop))
 {
+  /*
+  using GridFuncElem = GridFunctionElement<dim,space_dim>;
+  sup_grid_func_element_ =
+     std::unique_ptr<GridFuncElem>(new GridFuncElem(
+       sub_grid_function->get_sup_grid_function(),
+       sub_grid_function->get_id_elems_sup_grid().begin(),
+       prop));
+       //*/
   if (*sub_elem_index_iterator != *sub_grid_function->get_id_elems_sub_grid().end())
   {
     const auto &sup_elem_id = sub_grid_function->get_sup_element_id(*sub_elem_index_iterator);
@@ -44,8 +50,8 @@ SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
   }
   else
   {
-    sup_grid_func_element_->move_to(*(--sub_grid_function->get_id_elems_sup_grid().end()));
-    ++(*sup_grid_func_element_);
+    sup_grid_func_element_->move_to(*(sub_grid_function->get_id_elems_sup_grid().rbegin()));
+//    ++(*sup_grid_func_element_);
   }
 }
 

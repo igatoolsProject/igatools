@@ -11,11 +11,11 @@ BSplineElement<1,1,1> cache:
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                   Entry id: 0
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-1.00000,-1.00000),(1.00000,1.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                
@@ -173,11 +173,11 @@ BSplineElement<1,1,1> cache:
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                   Entry id: 0
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-2.00000,-2.00000),(2.00000,2.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                
@@ -335,11 +335,11 @@ BSplineElement<1,1,1> cache:
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                   Entry id: 0
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-2.00000,-2.00000),(2.00000,2.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                
@@ -499,19 +499,19 @@ BSplineElement<2,1,1> cache:
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                   Entry id: 0
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                   Entry id: 1
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                
@@ -871,19 +871,19 @@ BSplineElement<2,1,1> cache:
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                   Entry id: 0
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                   Entry id: 1
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                
@@ -1243,19 +1243,19 @@ BSplineElement<2,1,1> cache:
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                   Entry id: 0
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                   Entry id: 1
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                

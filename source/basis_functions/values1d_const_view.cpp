@@ -24,9 +24,6 @@
 
 IGA_NAMESPACE_OPEN
 
-BasisValues1d::
-BasisValues1d()
-{}
 
 BasisValues1d::
 BasisValues1d(const int n_func, const int n_points)
@@ -56,7 +53,10 @@ resize(const int n_funcs, const int n_points)
       n_points != this->get_num_points())
   {
     for (auto &matrix: values_)
+    {
       matrix.resize(n_funcs,n_points);
+      matrix = 0.0;
+    }
   }
 }
 
@@ -64,7 +64,20 @@ void
 BasisValues1d::
 print_info(LogStream &out) const
 {
-  values_.print_info(out);
+  if (this->get_num_functions() > 0 &&
+      this->get_num_points() > 0)
+  {
+    for (int der_order = 0 ; der_order < MAX_NUM_DERIVATIVES ; ++der_order)
+    {
+      out.begin_item("Derivative order: " + std::to_string(der_order));
+      values_[der_order].print_info(out);
+      out.end_item();
+    }
+  }
+  else
+  {
+    out << "Zero-size object." << std::endl;
+  }
 }
 
 DenseMatrix &

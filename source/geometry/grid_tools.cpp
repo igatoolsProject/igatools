@@ -127,13 +127,17 @@ build_map_elements_id_between_grids(const Grid<dim> &grid_fine,
   InterGridMap<dim> res;
   for (const auto &elem_fine : grid_fine)
   {
-    const auto elem_fine_tid = elem_fine.get_index();
+    const auto &elem_fine_id = elem_fine.get_index();
+    const auto &elem_fine_tid = elem_fine_id.get_tensor_index();
 
     TensorIndex<dim> elem_coarse_tid;
     for (int i = 0 ; i < dim ; ++i)
       elem_coarse_tid[i] = map_interv_id_fine_coarse[i][elem_fine_tid[i]];
 
-    res.emplace(elem_fine_tid, elem_coarse_tid);
+    const int elem_coarse_fid = grid_coarse.tensor_to_flat_element_id(elem_coarse_tid);
+    ElementIndex<dim> elem_coarse_id(elem_coarse_fid,elem_coarse_tid);
+
+    res.emplace(elem_fine_id, elem_coarse_id);
   }
 
   return res;

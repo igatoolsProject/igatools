@@ -90,8 +90,13 @@ int main()
 {
 
   // do_test<1,1,1>(3);
+
+  //TODO (martinelli, Nov 18,2015): with gcc.5.2.0 it crash calling the two function in this order
   do_test<2,1,1>(3);
   do_test<3,1,1>(2);
+
+
+//  do_test<2,1,1>(3);
 
   return 0;
 }

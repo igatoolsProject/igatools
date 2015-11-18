@@ -157,7 +157,7 @@ void PoissonProblem<dim>::assemble()
 
   const auto g = ConstFunction::const_create(grid, {0.});
 
-
+  LogStream out;
   using SubGridElemMap = typename Grid<dim>::template SubGridMap<dim-1>;
   using SubFunc = SubGridFunction<dim-1,dim,1>;
   SafeSTLMap<int,std::shared_ptr<const SubFunc>> bndry_funcs;
@@ -167,6 +167,10 @@ void PoissonProblem<dim>::assemble()
     const auto sub_grid = grid->template get_sub_grid<dim-1>(face_id,sub_grid_elem_map);
 
     bndry_funcs[face_id] = g->template get_sub_function<dim-1>(face_id,sub_grid_elem_map,sub_grid);
+
+    out.begin_item("Boundary function on face " +std::to_string(face_id));
+    bndry_funcs[face_id]->print_info(out);
+    out.end_item();
   }
 
   SafeSTLMap<Index, Real> bndry_values;

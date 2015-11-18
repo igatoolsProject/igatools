@@ -123,9 +123,10 @@ std::unique_ptr<GridFunctionHandler<sdim,space_dim> >
 SubGridFunction<sdim,dim,space_dim>::
 create_cache_handler() const
 {
-  return std::make_unique<SubGridFunctionHandler<sdim,dim,space_dim>>(
-           std::dynamic_pointer_cast<const self_t>(this->shared_from_this())
-         );
+  using Handler = SubGridFunctionHandler<sdim,dim,space_dim>;
+  return std::unique_ptr<Handler>(
+           new Handler(std::dynamic_pointer_cast<const self_t>(this->shared_from_this())
+                      ));
 }
 
 template<int sdim,int dim,int space_dim>
@@ -134,9 +135,9 @@ SubGridFunction<sdim,dim,space_dim>::
 create_element(const ListIt &index, const PropId &prop) const
 {
   using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
-  auto elem = std::make_unique<Elem>(
-                std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
-                index, prop);
+  auto elem = std::unique_ptr<Elem>(
+                new Elem(std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+                         index, prop));
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -171,6 +172,10 @@ print_info(LogStream &out) const
 
   out.begin_item("Sub elements ID:");
   id_elems_sub_grid_.print_info(out);
+  out.end_item();
+
+  out.begin_item("Sup elements ID:");
+  id_elems_sup_grid_.print_info(out);
   out.end_item();
 
   out.end_item();

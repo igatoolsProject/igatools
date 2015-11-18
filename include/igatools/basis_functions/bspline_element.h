@@ -148,6 +148,7 @@ private:
   using AllSplines1DTable = SafeSTLArray<SafeSTLVector<Splines1DTable>,dim+1>;
   AllSplines1DTable all_splines_1D_table_;
 
+
 public:
 #if 0
   ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >

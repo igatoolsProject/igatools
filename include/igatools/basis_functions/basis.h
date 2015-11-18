@@ -134,7 +134,8 @@ public:
 
 public:
 
-  using IndexType = TensorIndex<dim_>;
+  using GridType = Grid<dim_>;
+  using IndexType = typename GridType::IndexType;
   using PropertyList = PropertiesIdContainer<IndexType>;
   using List = typename PropertyList::List;
   using ListIt = typename PropertyList::List::iterator;
@@ -177,7 +178,7 @@ public:
 
 
   virtual void get_element_dofs(
-    const IndexType element_id,
+    const IndexType &element_id,
     SafeSTLVector<Index> &dofs_global,
     SafeSTLVector<Index> &dofs_local_to_patch,
     SafeSTLVector<Index> &dofs_local_to_elem,
