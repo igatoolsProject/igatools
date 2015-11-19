@@ -27,6 +27,7 @@
 #include <igatools/utils/safe_stl_set.h>
 #include <igatools/utils/safe_stl_vector.h>
 #include <igatools/utils/safe_stl_map.h>
+#include <igatools/utils/element_index.h>
 
 #include <map>
 
@@ -162,6 +163,33 @@ private:
 
 
 IGA_NAMESPACE_CLOSE
+
+#ifdef SERIALIZATION
+using MapStringSetIntAlias = iga::SafeSTLMap<std::string,iga::SafeSTLSet<int>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetIntAlias,cereal::specialization::member_serialize);
+
+using MapStringSetElemIDAlias0 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<0>>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias0,cereal::specialization::member_serialize);
+using MapStringSetElemIDAlias1 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<1>>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias1,cereal::specialization::member_serialize);
+using MapStringSetElemIDAlias2 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<2>>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias2,cereal::specialization::member_serialize);
+using MapStringSetElemIDAlias3 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<3>>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias3,cereal::specialization::member_serialize);
+
+#if 0
+using PropertiesIdContainerElemIDAlias0 = iga::PropertiesIdContainer<iga::ElementIndex<0>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(PropertiesIdContainerElemIDAlias0,cereal::specialization::member_serialize);
+using PropertiesIdContainerElemIDAlias1 = iga::PropertiesIdContainer<iga::ElementIndex<1>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(PropertiesIdContainerElemIDAlias1,cereal::specialization::member_serialize);
+using PropertiesIdContainerElemIDAlias2 = iga::PropertiesIdContainer<iga::ElementIndex<2>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(PropertiesIdContainerElemIDAlias2,cereal::specialization::member_serialize);
+using PropertiesIdContainerElemIDAlias3 = iga::PropertiesIdContainer<iga::ElementIndex<3>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(PropertiesIdContainerElemIDAlias3,cereal::specialization::member_serialize);
+#endif
+
+//#include <igatools/utils/element_index.serialization>
+#endif // SERIALIZATION
 
 #endif // #ifndef PROPERTIES_ID_CONTAINER_H_
 

@@ -24,8 +24,8 @@ void
 function_values(shared_ptr<const Function<dim, codim, range, rank>> func)
 {
   const int sdim = dim;
-  using Flags = typename Function<dim, codim, range, rank>::ElementAccessor::Flags;
-  auto flag = Flags::value | Flags::gradient;
+  using Flags = function_element::Flags;
+  auto flag = Flags::D0 | Flags::D1;
   auto handler = func->create_cache_handler();
 
   handler->template set_flags<sdim>(flag);
@@ -38,9 +38,9 @@ function_values(shared_ptr<const Function<dim, codim, range, rank>> func)
   for (; elem != end; ++elem)
   {
     handler->template fill_cache<dim>(elem, 0);
-    elem->template get_values<function_element::_Value, dim>(0).print_info(out);
+    elem->template get_values_from_cache<function_element::template _D<0>, dim>(0).print_info(out);
     out << endl;
-    elem->template get_values<function_element::_Gradient, dim>(0).print_info(out);
+    elem->template get_values_from_cache<function_element::template _D<1>, dim>(0).print_info(out);
     out << endl;
 //    elem->template get_values<function_element::_D2, dim>(0).print_info(out);
 //    out << endl;

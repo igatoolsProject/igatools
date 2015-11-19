@@ -135,12 +135,9 @@ SubGridFunction<sdim,dim,space_dim>::
 create_element(const ListIt &index, const PropId &prop) const
 {
   using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
-  auto elem = std::unique_ptr<Elem>(
-                new Elem(std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
-                         index, prop));
-  Assert(elem != nullptr, ExcNullPtr());
-
-  return elem;
+  return std::unique_ptr<Elem>(
+           new Elem(std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+                    index, prop));
 }
 
 

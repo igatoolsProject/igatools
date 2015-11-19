@@ -29,7 +29,8 @@ Element 0
                active
             
             Index:
-            [ 0 ]
+               Flat ID: 0    Tensor ID: [0]
+            
          
       
       DomainElement<1,0>
@@ -39,7 +40,8 @@ Element 0
                   active
                
                Index:
-               [ 0 ]
+                  Flat ID: 0    Tensor ID: [0]
+               
             
          
       
@@ -117,7 +119,8 @@ Element 0
                active
             
             Index:
-            [ 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0]
+            
          
       
       DomainElement<2,0>
@@ -127,7 +130,8 @@ Element 0
                   active
                
                Index:
-               [ 0 0 ]
+                  Flat ID: 0    Tensor ID: [0,0]
+               
             
          
       
@@ -255,7 +259,8 @@ Element 0
                active
             
             Index:
-            [ 0 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0,0]
+            
          
       
       DomainElement<3,0>
@@ -265,7 +270,8 @@ Element 0
                   active
                
                Index:
-               [ 0 0 0 ]
+                  Flat ID: 0    Tensor ID: [0,0,0]
+               
             
          
       

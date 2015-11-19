@@ -930,7 +930,7 @@ project_function_on_boundary(
 //  using InterSpaceMap = typename Basis::template InterSpaceMap<dim>;
 //  using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
 
-  using BndryFunc = Function<dim-1,codim+1,range,rank>;
+  using BndryFunc = Function<sdim,codim+1,range,rank>;
   using PtrBndryFunc = std::shared_ptr<const BndryFunc>;
 
   SafeSTLMap<int,PtrBndryFunc> boundary_functions;

@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/safe_stl_container.h>
-#include <igatools/utils/tensor_index.h>
+#include <igatools/utils/element_index.h>
 
 #include <set>
 
@@ -74,14 +74,14 @@ IGA_NAMESPACE_CLOSE
 using SafeSTLSetIntAlias = iga::SafeSTLSet<int>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetIntAlias,cereal::specialization::member_serialize);
 
-using SafeSTLSetTensorIndexAlias0 = iga::SafeSTLSet<iga::TensorIndex<0>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetTensorIndexAlias0,cereal::specialization::member_serialize);
-using SafeSTLSetTensorIndexAlias1 = iga::SafeSTLSet<iga::TensorIndex<1>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetTensorIndexAlias1,cereal::specialization::member_serialize);
-using SafeSTLSetTensorIndexAlias2 = iga::SafeSTLSet<iga::TensorIndex<2>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetTensorIndexAlias2,cereal::specialization::member_serialize);
-using SafeSTLSetTensorIndexAlias3 = iga::SafeSTLSet<iga::TensorIndex<3>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetTensorIndexAlias3,cereal::specialization::member_serialize);
+using SafeSTLSetElementIndexAlias0 = iga::SafeSTLSet<iga::ElementIndex<0>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetElementIndexAlias0,cereal::specialization::member_serialize);
+using SafeSTLSetElementIndexAlias1 = iga::SafeSTLSet<iga::ElementIndex<1>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetElementIndexAlias1,cereal::specialization::member_serialize);
+using SafeSTLSetElementIndexAlias2 = iga::SafeSTLSet<iga::ElementIndex<2>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetElementIndexAlias2,cereal::specialization::member_serialize);
+using SafeSTLSetElementIndexAlias3 = iga::SafeSTLSet<iga::ElementIndex<3>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetElementIndexAlias3,cereal::specialization::member_serialize);
 
 //#include <igatools/utils/safe_stl_set.serialization>
 #endif // SERIALIZATION

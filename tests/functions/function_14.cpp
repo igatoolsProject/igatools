@@ -73,6 +73,7 @@ void create_fun()
     b[i] = i;
   }
 
+
   auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
               ValueFlags::hessian;
   auto quad = QGauss<dim>(2);

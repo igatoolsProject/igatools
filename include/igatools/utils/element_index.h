@@ -29,7 +29,11 @@ template <int dim>
 class ElementIndex
 {
 public:
+#ifdef SERIALIZATION
+  ElementIndex() = default;
+#else
   ElementIndex() = delete;
+#endif
 
   ElementIndex(const int flat_id, const TensorIndex<dim> &tensor_id)
     :
@@ -121,7 +125,6 @@ IGA_NAMESPACE_CLOSE
 
 
 
-
 #ifdef SERIALIZATION
 using ElementIndexAlias0 = iga::ElementIndex<0>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias0,cereal::specialization::member_serialize);
@@ -134,7 +137,6 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias3,cereal::specialization::me
 
 //#include <igatools/utils/element_index.serialization>
 #endif // SERIALIZATION
-
 
 
 #endif // __ELEMENT_INDEX_H_
