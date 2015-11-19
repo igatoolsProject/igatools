@@ -71,7 +71,7 @@ int main() {
   
   Real err1, err2, eoc, h1, h2;
   for (int ideg=2; ideg<=2; ideg++) { printf("\n");
-  for (int iel=16; iel<=64; iel+=4) {
+  for (int iel=16; iel<=32; iel+=4) {
     auto problem = PoissonProblem<dim>::create(iel,ideg);
     auto f = CustomFunct::const_create(problem->grid,&source_term);
     problem->assemble(f);

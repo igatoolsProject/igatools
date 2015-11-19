@@ -3,6 +3,7 @@
 #include "AztecOO_config.h"
 #include "AztecOO.h"
 #include "AztecOO_ConditionNumber.h"
+#include "Ifpack_PointRelaxation.h"
 
 template<int dim_>
 class PoissonProblem {
@@ -163,8 +164,8 @@ void PoissonProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> 
   for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
     bdr_vals[*it]=0.0;
   }
-  rhs->Random();
-  apply_boundary_value(bdr_vals,*mat,*rhs,*sol);
+  //rhs->Random();
+  apply_boundary_values(bdr_vals,*mat,*rhs,*sol);
 
 }
 
@@ -180,43 +181,63 @@ using MV = Epetra_MultiVector;
 using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
 template<int dim_> // custom siuppacool solver
 void PoissonProblem<dim_>::custom_solve(int &it, double &Acond, double &Bcond) const {
-  using Teuchos::ParameterList;
-  using Teuchos::parameterList;
-  using Teuchos::RCP;
-  using Teuchos::rcp;
+
+  
+  Ifpack_PointRelaxation prec(&*mat);
+  //cout << prec;
+  //delete &prec;
+  prec.Initialize(); if (!prec.IsInitialized()) printf("Ifpace_PointRelaxation got initialization problems!\n");
+  prec.Compute();    if (!prec.IsComputed())    printf("Ifpace_PointRelaxation got computation problems!\n");
+
 
 // ----------------------------------------------------------------------------
 //   Belos attempt
 // ----------------------------------------------------------------------------
   // creating the linear problem
-  /*RCP<Belos::LinearProblem<double, MV, OP> > Bproblem =
-  rcp(new Belos::LinearProblem<double, MV, OP>(rcp<OP>(mat.get(),false),
-                                               rcp<MV>(sol.get(),false),
-                                               rcp<MV>(rhs.get(),false)));
+  /*using Teuchos::RCP;
+  using Teuchos::rcp;
+  using Teuchos::ParameterList;
+  using Teuchos::parameterList;
+  RCP<Belos::LinearProblem<double, MV, OP> > Bproblem =
+  rcp(new Belos::LinearProblem<double, MV, OP>(RCP<OP>(mat.get(),false),
+                                               RCP<MV>(sol.get(),false),
+                                               RCP<MV>(rhs.get(),false)));
+  RCP<Ifpack_PointRelaxation> precptr = rcp(new Ifpack_PointRelaxation(&*mat));
+  precptr->Initialize();
+  precptr->Compute();
+  Bproblem->setLeftPrec(precptr);
+  Bproblem->setRightPrec(precptr);
   Bproblem->setProblem();
+
   // parameter list
-  RCP<ParameterList> Bparameters = Teuchos::createParameterList();
+  RCP<ParameterList> Bparameters = parameterList();
   Bparameters->set("Num Blocks", 40);
   Bparameters->set("Maximum Iterations", 400);
   Bparameters->set("Convergence Tolerance", 1.0e-8);
   Bparameters->set("Estimate Condition Number", true);
-  // solver
-  auto Bsolver = Belos::PseudoBlockCGSolMgr<double,MV,OP>(Bproblem,Bparameters);
-  // let's start this f***** solver
-  Bsolver.solve();
-  it = Bsolver.getNumIters();
-  //Bcond = Bsolver.getConditionEstimate();*/
+  
+  // creating the solver
+  Belos::SolverFactory<double,MV,OP> factory;
+  RCP<Belos::SolverManager<double,MV,OP>> Bsolver = factory.create("GMRES",Bparameters);
+  Bsolver->setProblem(Bproblem);
 
+  // solving the system
+  Belos::ReturnType result = Bsolver->solve();
+  it = Bsolver->getNumIters();
+  //Bcond = Bsolver->getConditionEstimate();*/
 // ----------------------------------------------------------------------------
 //   AztecOO attempt
 // ----------------------------------------------------------------------------
+
+
   // setting up the problem
-  Epetra_LinearProblem Eproblem(&*mat,&*sol,&*rhs);
+/*  Epetra_LinearProblem Eproblem(&*mat,&*sol,&*rhs);
   AztecOO Asolver(Eproblem);
   // setting up the solver
   Asolver.SetAztecOption(AZ_solver,  AZ_cg_condnum);
   Asolver.SetAztecOption(AZ_kspace,  100);
-  Asolver.SetAztecOption(AZ_precond, AZ_none);
+  //Asolver.SetAztecOption(AZ_precond, AZ_Jacobi);
+  Asolver.SetPrecOperator(&prec);
   Asolver.SetAztecOption(AZ_output,  AZ_none);
   // solve, for god's sake! SOLVE!
   Asolver.Iterate(100, 1.0E-7);
@@ -224,7 +245,27 @@ void PoissonProblem<dim_>::custom_solve(int &it, double &Acond, double &Bcond) c
   it = Asolver.NumIters();
   const double* aztecStatus = Asolver.GetAztecStatus();
   Bcond = aztecStatus[AZ_condnum];
-  //Bcond = Asolver.Condest();
+  //Bcond = Asolver.Condest();*/
+
+  //cout << "  preconditioner used " << prec.NumApplyInverse() << " times!" << endl;
+
+  //Ifpack Factory;
+  //string PrecType = ""; // exact solve on each subdomain 
+  //int OverlapLevel = 1; // one row of overlap among the processes
+  //Ifpack_Preconditioner* Prec = Factory.Create(PrecType, &*mat, OverlapLevel);
+  //assert (Prec != 0);
+
+  //Theucos::ParameterList Iparameter;
+
+  //Prec->SetParameters(Iparameter);
+  //Prec->Initialize();
+  //Prec->Compute();
+  //assert (Prec->IsInitialized() == true);
+  //assert (Prec->IsComputed() == true);
+  //cout << Prec->NumInitialize() << endl; 
+  //cout << Prec->NumCompute() << endl; 
+  //cout << Prec->NumApplyInverse() << endl; 
+  //cout << *Prec;
 
   // setting up the condition number estimator
   AztecOOConditionNumber Acondest;
@@ -232,6 +273,20 @@ void PoissonProblem<dim_>::custom_solve(int &it, double &Acond, double &Bcond) c
   //AztecOOConditionNumber::SolverType solver_type = CG_;
   Acondest.computeConditionNumber(100,1.0E-7);
   Acond = Acondest.getConditionNumber();
+
+  // try this new trick!
+  Epetra_Vector diag(*rhs);
+  mat->ExtractDiagonalCopy(diag);
+  mat->LeftScale(diag);
+  mat->RightScale(diag);
+
+  AztecOOConditionNumber Acondest2;
+  Acondest2.initialize(*mat);
+  //AztecOOConditionNumber::SolverType solver_type = CG_;
+  Acondest2.computeConditionNumber(100,1.0E-7);
+  Bcond = Acondest2.getConditionNumber();
+
+
 
 }
 
