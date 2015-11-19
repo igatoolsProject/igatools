@@ -3,6 +3,7 @@
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/nurbs.h>
 // headers for quadrature
 #include <igatools/base/quadrature_lib.h>
 // headers for linear algebra objects
@@ -21,6 +22,7 @@
 //#include "my_formula_grid_function.h"
 #include "custom_grid_function.h"
 
+
 // headers for Trilinos stuff
 #include <Teuchos_GlobalMPISession.hpp>
 #include <Tpetra_DefaultPlatform.hpp>
@@ -31,7 +33,7 @@ using namespace std;
 using namespace EpetraTools;
 LogStream out;
 
-#include "grid_problem.h"
+//#include "grid_problem.h"
 
 // ----------------------------------------------------------------------------
 //   MY CUSTOM FUNCTION
@@ -59,17 +61,44 @@ Values<dim,1,1> source_term(Points<dim> pts) {
 //   MAIN
 // ----------------------------------------------------------------------------
 int main() {
-  // problem input
+
+  // constructing the geometry
   const int dim = 2;
-  const int nel = 4;
-  //const TensorIndex<dim> deg = {1,2};
-  const int deg = 2;
-  // problem output
-  auto grid  = Grid<dim>::create(nel);
-  using Basis = BSpline<dim,dim>;
-  auto basis = Basis::create(deg, grid);
+  const int nel = 1;
+  const TensorIndex<dim> deg = {1,2};
+  // constructing the underlying NURBS space
+  auto grid         = Grid<dim>::const_create(nel+1);
+  // B-spline vector field for the geometry map
+  auto vect_space   = SplineSpace<dim,dim>::const_create(deg,grid);
+  auto vect_bspline = BSpline<dim,dim>::const_create(vect_space);
+  // B-spline scalar field for the weight function
+  auto scal_space   = SplineSpace<dim,1>::const_create(deg,grid);
+  auto scal_bspline = BSpline<dim,1>::const_create(scal_space);
+  // coefficients for the weight function (i.e. da weghts)
+  IgCoefficients weights(scal_space->get_dof_distribution()->get_global_dofs());
+  weights[0] = 1.0;
+  weights[1] = 1.0;
+  weights[2] = sqrt(2.0)/2.0;
+  weights[3] = sqrt(2.0)/2.0;
+  weights[4] = 1.0;
+  weights[5] = 1.0;
+  auto weight_funct = IgGridFunction<dim,1>::const_create(scal_bspline,weights);
+  auto vect_nurbs   = NURBS<dim,dim>::const_create(vect_bspline,weight_funct);
 
+  IgCoefficients coefs(vect_space->get_dof_distribution()->get_global_dofs());
+  // component x             // component y
+  coefs[ 0] = 1.0;  coefs[ 6] = 0.0;
+  coefs[ 1] = 2.0;  coefs[ 7] = 0.0;
+  coefs[ 2] = 1.0;  coefs[ 8] = 1.0;
+  coefs[ 3] = 2.0;  coefs[ 9] = 2.0;
+  coefs[ 4] = 0.0;  coefs[10] = 1.0;
+  coefs[ 5] = 0.0;  coefs[11] = 2.0;
+  auto geom  = IgGridFunction<dim,dim>::const_create(vect_bspline,coefs);
 
+  // plotting the geometry
+  const int npt = 11;
+  Writer<dim> writer(geom,npt);
+  writer.save("ring");
 
   return 0;
 }
