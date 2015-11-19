@@ -26,7 +26,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int space_dim_>
 GridFunctionHandler<dim_, space_dim_>::
-GridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function)
+GridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function)
   :
   grid_function_(grid_function),
   grid_handler_(grid_function->get_grid()->create_cache_handler()),
@@ -36,11 +36,6 @@ GridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function)
 }
 
 
-
-template<int dim_, int space_dim_>
-GridFunctionHandler<dim_, space_dim_>::
-~GridFunctionHandler()
-{}
 
 
 template<int dim_, int space_dim_>
@@ -141,7 +136,7 @@ init_element_cache(ElementIterator &elem,
 }
 
 
-
+#if 0
 template<int dim_, int space_dim_>
 void
 GridFunctionHandler<dim_, space_dim_>::
@@ -151,7 +146,7 @@ fill_cache(const topology_variant &sdim,
 {
   grid_handler_->fill_cache(sdim, *(elem.grid_elem_), s_id);
 }
-
+#endif
 
 template<int dim_, int space_dim_>
 void
@@ -166,7 +161,7 @@ fill_cache(const topology_variant &sdim,
 template<int dim_, int space_dim_>
 void
 GridFunctionHandler<dim_, space_dim_>::
-fill_element_cache(ElementAccessor &elem)
+fill_element_cache(ElementAccessor &elem) const
 {
   this->fill_cache(Topology<dim_>(), elem,0);
 }
@@ -174,7 +169,7 @@ fill_element_cache(ElementAccessor &elem)
 template<int dim_, int space_dim_>
 void
 GridFunctionHandler<dim_, space_dim_>::
-fill_element_cache(ElementIterator &elem)
+fill_element_cache(ElementIterator &elem) const
 {
   this->fill_cache(Topology<dim_>(), elem,0);
 }

@@ -24,9 +24,11 @@
 #include <igatools/base/config.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/functions/function.h>
-#include <igatools/geometry/domain_handler.h>
+
 
 IGA_NAMESPACE_OPEN
+
+template <int,int> class DomainHandler;
 
 template <int, int, int, int> class FunctionElement;
 

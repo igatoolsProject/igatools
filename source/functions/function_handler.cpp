@@ -23,6 +23,7 @@
 //#include <igatools/utils/unique_id_generator.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
 
 IGA_NAMESPACE_OPEN
 

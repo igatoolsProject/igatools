@@ -15,7 +15,8 @@ Dim: 1     Sub-Dim: 0
                Element properties:
                   IDs with property "active":
                      Entry id: 0
-                     [ 0 ]
+                        Flat ID: 0    Tensor ID: [0]
+                     
                   
                
             
@@ -116,7 +117,8 @@ Dim: 1     Sub-Dim: 0
                      Element properties:
                         IDs with property "active":
                            Entry id: 0
-                           [ 0 ]
+                              Flat ID: 0    Tensor ID: [0]
+                           
                         
                      
                   
@@ -223,6 +225,9 @@ Dim: 1     Sub-Dim: 0
                      
                      Element properties:
                         IDs with property "active":
+                           Entry id: 0
+                              Flat ID: 0    Tensor ID: []
+                           
                         
                      
                   
@@ -316,6 +321,9 @@ Dim: 1     Sub-Dim: 0
                            
                            Element properties:
                               IDs with property "active":
+                                 Entry id: 0
+                                    Flat ID: 0    Tensor ID: []
+                                 
                               
                            
                         
@@ -428,6 +436,9 @@ Dim: 1     Sub-Dim: 0
                         
                         Element properties:
                            IDs with property "active":
+                              Entry id: 0
+                                 Flat ID: 0    Tensor ID: []
+                              
                            
                         
                      
@@ -521,6 +532,9 @@ Dim: 1     Sub-Dim: 0
                               
                               Element properties:
                                  IDs with property "active":
+                                    Entry id: 0
+                                       Flat ID: 0    Tensor ID: []
+                                    
                                  
                               
                            
@@ -643,9 +657,11 @@ Dim: 1     Sub-Dim: 0
                      Element properties:
                         IDs with property "active":
                            Entry id: 0
-                           [ 0 0 ]
+                              Flat ID: 0    Tensor ID: [0,0]
+                           
                            Entry id: 1
-                           [ 0 1 ]
+                              Flat ID: 1    Tensor ID: [0,1]
+                           
                         
                      
                   
@@ -753,9 +769,11 @@ Dim: 1     Sub-Dim: 0
                            Element properties:
                               IDs with property "active":
                                  Entry id: 0
-                                 [ 0 0 ]
+                                    Flat ID: 0    Tensor ID: [0,0]
+                                 
                                  Entry id: 1
-                                 [ 0 1 ]
+                                    Flat ID: 1    Tensor ID: [0,1]
+                                 
                               
                            
                         
@@ -874,9 +892,11 @@ Dim: 1     Sub-Dim: 0
                            Element properties:
                               IDs with property "active":
                                  Entry id: 0
-                                 [ 0 ]
+                                    Flat ID: 0    Tensor ID: [0]
+                                 
                                  Entry id: 1
-                                 [ 1 ]
+                                    Flat ID: 1    Tensor ID: [1]
+                                 
                               
                            
                         
@@ -978,9 +998,11 @@ Dim: 1     Sub-Dim: 0
                                  Element properties:
                                     IDs with property "active":
                                        Entry id: 0
-                                       [ 0 ]
+                                          Flat ID: 0    Tensor ID: [0]
+                                       
                                        Entry id: 1
-                                       [ 1 ]
+                                          Flat ID: 1    Tensor ID: [1]
+                                       
                                     
                                  
                               
@@ -1103,9 +1125,11 @@ Dim: 1     Sub-Dim: 0
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 ]
+                                       Flat ID: 0    Tensor ID: [0]
+                                    
                                     Entry id: 1
-                                    [ 1 ]
+                                       Flat ID: 1    Tensor ID: [1]
+                                    
                                  
                               
                            
@@ -1207,9 +1231,11 @@ Dim: 1     Sub-Dim: 0
                                     Element properties:
                                        IDs with property "active":
                                           Entry id: 0
-                                          [ 0 ]
+                                             Flat ID: 0    Tensor ID: [0]
+                                          
                                           Entry id: 1
-                                          [ 1 ]
+                                             Flat ID: 1    Tensor ID: [1]
+                                          
                                        
                                     
                                  
@@ -1332,7 +1358,8 @@ Dim: 1     Sub-Dim: 0
                                  Element properties:
                                     IDs with property "active":
                                        Entry id: 0
-                                       [ 0 ]
+                                          Flat ID: 0    Tensor ID: [0]
+                                       
                                     
                                  
                               
@@ -1433,7 +1460,8 @@ Dim: 1     Sub-Dim: 0
                                        Element properties:
                                           IDs with property "active":
                                              Entry id: 0
-                                             [ 0 ]
+                                                Flat ID: 0    Tensor ID: [0]
+                                             
                                           
                                        
                                     
@@ -1554,7 +1582,8 @@ Dim: 1     Sub-Dim: 0
                                     Element properties:
                                        IDs with property "active":
                                           Entry id: 0
-                                          [ 0 ]
+                                             Flat ID: 0    Tensor ID: [0]
+                                          
                                        
                                     
                                  
@@ -1655,7 +1684,8 @@ Dim: 1     Sub-Dim: 0
                                           Element properties:
                                              IDs with property "active":
                                                 Entry id: 0
-                                                [ 0 ]
+                                                   Flat ID: 0    Tensor ID: [0]
+                                                
                                              
                                           
                                        
@@ -1785,17 +1815,23 @@ Dim: 1     Sub-Dim: 0
                                  Element properties:
                                     IDs with property "active":
                                        Entry id: 0
-                                       [ 0 0 0 ]
+                                          Flat ID: 0    Tensor ID: [0,0,0]
+                                       
                                        Entry id: 1
-                                       [ 0 0 1 ]
+                                          Flat ID: 2    Tensor ID: [0,0,1]
+                                       
                                        Entry id: 2
-                                       [ 0 0 2 ]
+                                          Flat ID: 4    Tensor ID: [0,0,2]
+                                       
                                        Entry id: 3
-                                       [ 0 1 0 ]
+                                          Flat ID: 1    Tensor ID: [0,1,0]
+                                       
                                        Entry id: 4
-                                       [ 0 1 1 ]
+                                          Flat ID: 3    Tensor ID: [0,1,1]
+                                       
                                        Entry id: 5
-                                       [ 0 1 2 ]
+                                          Flat ID: 5    Tensor ID: [0,1,2]
+                                       
                                     
                                  
                               
@@ -1911,17 +1947,23 @@ Dim: 1     Sub-Dim: 0
                                        Element properties:
                                           IDs with property "active":
                                              Entry id: 0
-                                             [ 0 0 0 ]
+                                                Flat ID: 0    Tensor ID: [0,0,0]
+                                             
                                              Entry id: 1
-                                             [ 0 0 1 ]
+                                                Flat ID: 2    Tensor ID: [0,0,1]
+                                             
                                              Entry id: 2
-                                             [ 0 0 2 ]
+                                                Flat ID: 4    Tensor ID: [0,0,2]
+                                             
                                              Entry id: 3
-                                             [ 0 1 0 ]
+                                                Flat ID: 1    Tensor ID: [0,1,0]
+                                             
                                              Entry id: 4
-                                             [ 0 1 1 ]
+                                                Flat ID: 3    Tensor ID: [0,1,1]
+                                             
                                              Entry id: 5
-                                             [ 0 1 2 ]
+                                                Flat ID: 5    Tensor ID: [0,1,2]
+                                             
                                           
                                        
                                     
@@ -2066,17 +2108,23 @@ Dim: 1     Sub-Dim: 0
                                        Element properties:
                                           IDs with property "active":
                                              Entry id: 0
-                                             [ 0 0 ]
+                                                Flat ID: 0    Tensor ID: [0,0]
+                                             
                                              Entry id: 1
-                                             [ 0 1 ]
+                                                Flat ID: 2    Tensor ID: [0,1]
+                                             
                                              Entry id: 2
-                                             [ 0 2 ]
+                                                Flat ID: 4    Tensor ID: [0,2]
+                                             
                                              Entry id: 3
-                                             [ 1 0 ]
+                                                Flat ID: 1    Tensor ID: [1,0]
+                                             
                                              Entry id: 4
-                                             [ 1 1 ]
+                                                Flat ID: 3    Tensor ID: [1,1]
+                                             
                                              Entry id: 5
-                                             [ 1 2 ]
+                                                Flat ID: 5    Tensor ID: [1,2]
+                                             
                                           
                                        
                                     
@@ -2186,17 +2234,23 @@ Dim: 1     Sub-Dim: 0
                                              Element properties:
                                                 IDs with property "active":
                                                    Entry id: 0
-                                                   [ 0 0 ]
+                                                      Flat ID: 0    Tensor ID: [0,0]
+                                                   
                                                    Entry id: 1
-                                                   [ 0 1 ]
+                                                      Flat ID: 2    Tensor ID: [0,1]
+                                                   
                                                    Entry id: 2
-                                                   [ 0 2 ]
+                                                      Flat ID: 4    Tensor ID: [0,2]
+                                                   
                                                    Entry id: 3
-                                                   [ 1 0 ]
+                                                      Flat ID: 1    Tensor ID: [1,0]
+                                                   
                                                    Entry id: 4
-                                                   [ 1 1 ]
+                                                      Flat ID: 3    Tensor ID: [1,1]
+                                                   
                                                    Entry id: 5
-                                                   [ 1 2 ]
+                                                      Flat ID: 5    Tensor ID: [1,2]
+                                                   
                                                 
                                              
                                           
@@ -2336,17 +2390,23 @@ Dim: 1     Sub-Dim: 0
                                           Element properties:
                                              IDs with property "active":
                                                 Entry id: 0
-                                                [ 0 0 ]
+                                                   Flat ID: 0    Tensor ID: [0,0]
+                                                
                                                 Entry id: 1
-                                                [ 0 1 ]
+                                                   Flat ID: 2    Tensor ID: [0,1]
+                                                
                                                 Entry id: 2
-                                                [ 0 2 ]
+                                                   Flat ID: 4    Tensor ID: [0,2]
+                                                
                                                 Entry id: 3
-                                                [ 1 0 ]
+                                                   Flat ID: 1    Tensor ID: [1,0]
+                                                
                                                 Entry id: 4
-                                                [ 1 1 ]
+                                                   Flat ID: 3    Tensor ID: [1,1]
+                                                
                                                 Entry id: 5
-                                                [ 1 2 ]
+                                                   Flat ID: 5    Tensor ID: [1,2]
+                                                
                                              
                                           
                                        
@@ -2456,17 +2516,23 @@ Dim: 1     Sub-Dim: 0
                                                 Element properties:
                                                    IDs with property "active":
                                                       Entry id: 0
-                                                      [ 0 0 ]
+                                                         Flat ID: 0    Tensor ID: [0,0]
+                                                      
                                                       Entry id: 1
-                                                      [ 0 1 ]
+                                                         Flat ID: 2    Tensor ID: [0,1]
+                                                      
                                                       Entry id: 2
-                                                      [ 0 2 ]
+                                                         Flat ID: 4    Tensor ID: [0,2]
+                                                      
                                                       Entry id: 3
-                                                      [ 1 0 ]
+                                                         Flat ID: 1    Tensor ID: [1,0]
+                                                      
                                                       Entry id: 4
-                                                      [ 1 1 ]
+                                                         Flat ID: 3    Tensor ID: [1,1]
+                                                      
                                                       Entry id: 5
-                                                      [ 1 2 ]
+                                                         Flat ID: 5    Tensor ID: [1,2]
+                                                      
                                                    
                                                 
                                              
@@ -2606,11 +2672,14 @@ Dim: 1     Sub-Dim: 0
                                              Element properties:
                                                 IDs with property "active":
                                                    Entry id: 0
-                                                   [ 0 0 ]
+                                                      Flat ID: 0    Tensor ID: [0,0]
+                                                   
                                                    Entry id: 1
-                                                   [ 0 1 ]
+                                                      Flat ID: 1    Tensor ID: [0,1]
+                                                   
                                                    Entry id: 2
-                                                   [ 0 2 ]
+                                                      Flat ID: 2    Tensor ID: [0,2]
+                                                   
                                                 
                                              
                                           
@@ -2719,11 +2788,14 @@ Dim: 1     Sub-Dim: 0
                                                    Element properties:
                                                       IDs with property "active":
                                                          Entry id: 0
-                                                         [ 0 0 ]
+                                                            Flat ID: 0    Tensor ID: [0,0]
+                                                         
                                                          Entry id: 1
-                                                         [ 0 1 ]
+                                                            Flat ID: 1    Tensor ID: [0,1]
+                                                         
                                                          Entry id: 2
-                                                         [ 0 2 ]
+                                                            Flat ID: 2    Tensor ID: [0,2]
+                                                         
                                                       
                                                    
                                                 
@@ -2858,11 +2930,14 @@ Dim: 1     Sub-Dim: 0
                                                 Element properties:
                                                    IDs with property "active":
                                                       Entry id: 0
-                                                      [ 0 0 ]
+                                                         Flat ID: 0    Tensor ID: [0,0]
+                                                      
                                                       Entry id: 1
-                                                      [ 0 1 ]
+                                                         Flat ID: 1    Tensor ID: [0,1]
+                                                      
                                                       Entry id: 2
-                                                      [ 0 2 ]
+                                                         Flat ID: 2    Tensor ID: [0,2]
+                                                      
                                                    
                                                 
                                              
@@ -2971,11 +3046,14 @@ Dim: 1     Sub-Dim: 0
                                                       Element properties:
                                                          IDs with property "active":
                                                             Entry id: 0
-                                                            [ 0 0 ]
+                                                               Flat ID: 0    Tensor ID: [0,0]
+                                                            
                                                             Entry id: 1
-                                                            [ 0 1 ]
+                                                               Flat ID: 1    Tensor ID: [0,1]
+                                                            
                                                             Entry id: 2
-                                                            [ 0 2 ]
+                                                               Flat ID: 2    Tensor ID: [0,2]
+                                                            
                                                          
                                                       
                                                    
@@ -3110,9 +3188,11 @@ Dim: 1     Sub-Dim: 0
                                                    Element properties:
                                                       IDs with property "active":
                                                          Entry id: 0
-                                                         [ 0 0 ]
+                                                            Flat ID: 0    Tensor ID: [0,0]
+                                                         
                                                          Entry id: 1
-                                                         [ 0 1 ]
+                                                            Flat ID: 1    Tensor ID: [0,1]
+                                                         
                                                       
                                                    
                                                 
@@ -3220,9 +3300,11 @@ Dim: 1     Sub-Dim: 0
                                                          Element properties:
                                                             IDs with property "active":
                                                                Entry id: 0
-                                                               [ 0 0 ]
+                                                                  Flat ID: 0    Tensor ID: [0,0]
+                                                               
                                                                Entry id: 1
-                                                               [ 0 1 ]
+                                                                  Flat ID: 1    Tensor ID: [0,1]
+                                                               
                                                             
                                                          
                                                       
@@ -3354,9 +3436,11 @@ Dim: 1     Sub-Dim: 0
                                                       Element properties:
                                                          IDs with property "active":
                                                             Entry id: 0
-                                                            [ 0 0 ]
+                                                               Flat ID: 0    Tensor ID: [0,0]
+                                                            
                                                             Entry id: 1
-                                                            [ 0 1 ]
+                                                               Flat ID: 1    Tensor ID: [0,1]
+                                                            
                                                          
                                                       
                                                    
@@ -3464,9 +3548,11 @@ Dim: 1     Sub-Dim: 0
                                                             Element properties:
                                                                IDs with property "active":
                                                                   Entry id: 0
-                                                                  [ 0 0 ]
+                                                                     Flat ID: 0    Tensor ID: [0,0]
+                                                                  
                                                                   Entry id: 1
-                                                                  [ 0 1 ]
+                                                                     Flat ID: 1    Tensor ID: [0,1]
+                                                                  
                                                                
                                                             
                                                          

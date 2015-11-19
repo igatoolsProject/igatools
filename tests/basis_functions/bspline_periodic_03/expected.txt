@@ -11,55 +11,80 @@ Spline Space:
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0]
+            
             Entry id: 1
-            [ 0 1 ]
+               Flat ID: 5    Tensor ID: [0,1]
+            
             Entry id: 2
-            [ 0 2 ]
+               Flat ID: 10    Tensor ID: [0,2]
+            
             Entry id: 3
-            [ 0 3 ]
+               Flat ID: 15    Tensor ID: [0,3]
+            
             Entry id: 4
-            [ 0 4 ]
+               Flat ID: 20    Tensor ID: [0,4]
+            
             Entry id: 5
-            [ 1 0 ]
+               Flat ID: 1    Tensor ID: [1,0]
+            
             Entry id: 6
-            [ 1 1 ]
+               Flat ID: 6    Tensor ID: [1,1]
+            
             Entry id: 7
-            [ 1 2 ]
+               Flat ID: 11    Tensor ID: [1,2]
+            
             Entry id: 8
-            [ 1 3 ]
+               Flat ID: 16    Tensor ID: [1,3]
+            
             Entry id: 9
-            [ 1 4 ]
+               Flat ID: 21    Tensor ID: [1,4]
+            
             Entry id: 10
-            [ 2 0 ]
+               Flat ID: 2    Tensor ID: [2,0]
+            
             Entry id: 11
-            [ 2 1 ]
+               Flat ID: 7    Tensor ID: [2,1]
+            
             Entry id: 12
-            [ 2 2 ]
+               Flat ID: 12    Tensor ID: [2,2]
+            
             Entry id: 13
-            [ 2 3 ]
+               Flat ID: 17    Tensor ID: [2,3]
+            
             Entry id: 14
-            [ 2 4 ]
+               Flat ID: 22    Tensor ID: [2,4]
+            
             Entry id: 15
-            [ 3 0 ]
+               Flat ID: 3    Tensor ID: [3,0]
+            
             Entry id: 16
-            [ 3 1 ]
+               Flat ID: 8    Tensor ID: [3,1]
+            
             Entry id: 17
-            [ 3 2 ]
+               Flat ID: 13    Tensor ID: [3,2]
+            
             Entry id: 18
-            [ 3 3 ]
+               Flat ID: 18    Tensor ID: [3,3]
+            
             Entry id: 19
-            [ 3 4 ]
+               Flat ID: 23    Tensor ID: [3,4]
+            
             Entry id: 20
-            [ 4 0 ]
+               Flat ID: 4    Tensor ID: [4,0]
+            
             Entry id: 21
-            [ 4 1 ]
+               Flat ID: 9    Tensor ID: [4,1]
+            
             Entry id: 22
-            [ 4 2 ]
+               Flat ID: 14    Tensor ID: [4,2]
+            
             Entry id: 23
-            [ 4 3 ]
+               Flat ID: 19    Tensor ID: [4,3]
+            
             Entry id: 24
-            [ 4 4 ]
+               Flat ID: 24    Tensor ID: [4,4]
+            
          
       
    
@@ -619,77 +644,113 @@ Spline Space:
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0]
+            
             Entry id: 1
-            [ 0 1 ]
+               Flat ID: 6    Tensor ID: [0,1]
+            
             Entry id: 2
-            [ 0 2 ]
+               Flat ID: 12    Tensor ID: [0,2]
+            
             Entry id: 3
-            [ 0 3 ]
+               Flat ID: 18    Tensor ID: [0,3]
+            
             Entry id: 4
-            [ 0 4 ]
+               Flat ID: 24    Tensor ID: [0,4]
+            
             Entry id: 5
-            [ 0 5 ]
+               Flat ID: 30    Tensor ID: [0,5]
+            
             Entry id: 6
-            [ 1 0 ]
+               Flat ID: 1    Tensor ID: [1,0]
+            
             Entry id: 7
-            [ 1 1 ]
+               Flat ID: 7    Tensor ID: [1,1]
+            
             Entry id: 8
-            [ 1 2 ]
+               Flat ID: 13    Tensor ID: [1,2]
+            
             Entry id: 9
-            [ 1 3 ]
+               Flat ID: 19    Tensor ID: [1,3]
+            
             Entry id: 10
-            [ 1 4 ]
+               Flat ID: 25    Tensor ID: [1,4]
+            
             Entry id: 11
-            [ 1 5 ]
+               Flat ID: 31    Tensor ID: [1,5]
+            
             Entry id: 12
-            [ 2 0 ]
+               Flat ID: 2    Tensor ID: [2,0]
+            
             Entry id: 13
-            [ 2 1 ]
+               Flat ID: 8    Tensor ID: [2,1]
+            
             Entry id: 14
-            [ 2 2 ]
+               Flat ID: 14    Tensor ID: [2,2]
+            
             Entry id: 15
-            [ 2 3 ]
+               Flat ID: 20    Tensor ID: [2,3]
+            
             Entry id: 16
-            [ 2 4 ]
+               Flat ID: 26    Tensor ID: [2,4]
+            
             Entry id: 17
-            [ 2 5 ]
+               Flat ID: 32    Tensor ID: [2,5]
+            
             Entry id: 18
-            [ 3 0 ]
+               Flat ID: 3    Tensor ID: [3,0]
+            
             Entry id: 19
-            [ 3 1 ]
+               Flat ID: 9    Tensor ID: [3,1]
+            
             Entry id: 20
-            [ 3 2 ]
+               Flat ID: 15    Tensor ID: [3,2]
+            
             Entry id: 21
-            [ 3 3 ]
+               Flat ID: 21    Tensor ID: [3,3]
+            
             Entry id: 22
-            [ 3 4 ]
+               Flat ID: 27    Tensor ID: [3,4]
+            
             Entry id: 23
-            [ 3 5 ]
+               Flat ID: 33    Tensor ID: [3,5]
+            
             Entry id: 24
-            [ 4 0 ]
+               Flat ID: 4    Tensor ID: [4,0]
+            
             Entry id: 25
-            [ 4 1 ]
+               Flat ID: 10    Tensor ID: [4,1]
+            
             Entry id: 26
-            [ 4 2 ]
+               Flat ID: 16    Tensor ID: [4,2]
+            
             Entry id: 27
-            [ 4 3 ]
+               Flat ID: 22    Tensor ID: [4,3]
+            
             Entry id: 28
-            [ 4 4 ]
+               Flat ID: 28    Tensor ID: [4,4]
+            
             Entry id: 29
-            [ 4 5 ]
+               Flat ID: 34    Tensor ID: [4,5]
+            
             Entry id: 30
-            [ 5 0 ]
+               Flat ID: 5    Tensor ID: [5,0]
+            
             Entry id: 31
-            [ 5 1 ]
+               Flat ID: 11    Tensor ID: [5,1]
+            
             Entry id: 32
-            [ 5 2 ]
+               Flat ID: 17    Tensor ID: [5,2]
+            
             Entry id: 33
-            [ 5 3 ]
+               Flat ID: 23    Tensor ID: [5,3]
+            
             Entry id: 34
-            [ 5 4 ]
+               Flat ID: 29    Tensor ID: [5,4]
+            
             Entry id: 35
-            [ 5 5 ]
+               Flat ID: 35    Tensor ID: [5,5]
+            
          
       
    

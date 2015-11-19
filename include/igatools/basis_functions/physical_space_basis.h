@@ -89,19 +89,18 @@ public:
   static const SafeSTLArray<int, n_components> components;
 
 
-  using IndexType = TensorIndex<dim_>;
+  using IndexType = typename GridType::IndexType;
   using PropertyList = PropertiesIdContainer<IndexType>;
   using List = typename PropertyList::List;
   using ListIt = typename PropertyList::List::iterator;
 
 public:
-  using Func = Function<dim, codim, range, rank>;
   template <int order>
-  using Derivative = typename Func::template Derivative<order>;
-  using Point = typename Func::Point;
-  using Value = typename Func::Value;
-  using Gradient = typename Func::Gradient;
-  using Div   = typename Func::Div;
+  using Derivative = typename base_t::template Derivative<order>;
+  using Point = typename base_t::Point;
+  using Value = typename base_t::Value;
+  using Gradient = typename base_t::Gradient;
+  using Div   = typename base_t::Div;
 
   using RefPoint = typename RefBasis::Point;
 
@@ -170,7 +169,7 @@ public:
 
 
   void get_element_dofs(
-    const IndexType element_id,
+    const IndexType &element_id,
     SafeSTLVector<Index> &dofs_global,
     SafeSTLVector<Index> &dofs_local_to_patch,
     SafeSTLVector<Index> &dofs_local_to_elem,

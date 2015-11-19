@@ -2,7 +2,7 @@
 elem_values
 ========================================================================
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
    Face 0
       Values: 
          ValueTable (num_functions=4,num_points=2) :
@@ -162,7 +162,7 @@ Element 0
 elem_values
 ========================================================================
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
    Face 0
       Values: 
          ValueTable (num_functions=8,num_points=4) :
@@ -542,7 +542,7 @@ Element 0
 elem_values
 ========================================================================
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
    Face 0
       Values: 
          ValueTable (num_functions=4,num_points=2) :
@@ -621,7 +621,7 @@ Element 0
    
 
 Element 1
-   Element index: [0,1]
+   Element index: Flat ID: 2    Tensor ID: [0,1]
    Face 0
       Values: 
          ValueTable (num_functions=4,num_points=2) :
@@ -700,7 +700,7 @@ Element 1
    
 
 Element 2
-   Element index: [1,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0]
    Face 1
       Values: 
          ValueTable (num_functions=4,num_points=2) :
@@ -779,7 +779,7 @@ Element 2
    
 
 Element 3
-   Element index: [1,1]
+   Element index: Flat ID: 3    Tensor ID: [1,1]
    Face 1
       Values: 
          ValueTable (num_functions=4,num_points=2) :
@@ -863,7 +863,7 @@ Element 3
 elem_values
 ========================================================================
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
    Face 0
       Values: 
          ValueTable (num_functions=8,num_points=4) :
@@ -1052,7 +1052,7 @@ Element 0
    
 
 Element 1
-   Element index: [0,0,1]
+   Element index: Flat ID: 4    Tensor ID: [0,0,1]
    Face 0
       Values: 
          ValueTable (num_functions=8,num_points=4) :
@@ -1241,7 +1241,7 @@ Element 1
    
 
 Element 2
-   Element index: [0,1,0]
+   Element index: Flat ID: 2    Tensor ID: [0,1,0]
    Face 0
       Values: 
          ValueTable (num_functions=8,num_points=4) :
@@ -1430,7 +1430,7 @@ Element 2
    
 
 Element 3
-   Element index: [0,1,1]
+   Element index: Flat ID: 6    Tensor ID: [0,1,1]
    Face 0
       Values: 
          ValueTable (num_functions=8,num_points=4) :
@@ -1619,7 +1619,7 @@ Element 3
    
 
 Element 4
-   Element index: [1,0,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0,0]
    Face 1
       Values: 
          ValueTable (num_functions=8,num_points=4) :
@@ -1808,7 +1808,7 @@ Element 4
    
 
 Element 5
-   Element index: [1,0,1]
+   Element index: Flat ID: 5    Tensor ID: [1,0,1]
    Face 1
       Values: 
          ValueTable (num_functions=8,num_points=4) :
@@ -1997,7 +1997,7 @@ Element 5
    
 
 Element 6
-   Element index: [1,1,0]
+   Element index: Flat ID: 3    Tensor ID: [1,1,0]
    Face 1
       Values: 
          ValueTable (num_functions=8,num_points=4) :
@@ -2186,7 +2186,7 @@ Element 6
    
 
 Element 7
-   Element index: [1,1,1]
+   Element index: Flat ID: 7    Tensor ID: [1,1,1]
    Face 1
       Values: 
          ValueTable (num_functions=8,num_points=4) :

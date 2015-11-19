@@ -30,19 +30,17 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_,int range_,int rank_,int codim_>
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
-PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
+PhysicalSpaceElement(const std::shared_ptr<ContainerType> &phys_space,
                      const ListIt &index,
                      const PropId &prop)
   :
   parent_t(phys_space,prop),
   ref_space_element_(phys_space->get_reference_basis()->create_ref_element(index,prop)),
-  phys_domain_element_(make_unique<PhysDomainElem>(
-                        std::const_pointer_cast<PhysDomain>(phys_space->get_physical_domain()),
-                        index, prop)),
+  phys_domain_element_(phys_space->get_physical_domain()->create_element(index, prop)),
   phys_space_(phys_space)
 {
 //    push_fwd_element_ = std::make_shared<PfElemAccessor>(phys_space->get_map_func(), index);
-  Assert(phys_domain_element_ != nullptr, ExcNullPtr());
+//  Assert(phys_domain_element_ != nullptr, ExcNullPtr());
 }
 
 template<int dim_,int range_,int rank_,int codim_>

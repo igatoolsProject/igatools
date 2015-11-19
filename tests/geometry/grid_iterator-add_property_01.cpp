@@ -47,7 +47,7 @@ void iterate(const int n_knots = 5)
   const TensorIndex<dim> center(2);
   for (auto &elem : *grid)
   {
-    if (elem.get_index() <= center)
+    if (elem.get_index().get_tensor_index() <= center)
     {
       grid->get_elements_with_property(red).insert(elem.get_index());
 //      elem.add_property(red);

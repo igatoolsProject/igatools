@@ -17,11 +17,11 @@ ReferenceElement<1,1,1> cache:
                   Size: [ 1 ]  Weights: [1]
                   Entry id: 0
                      Entry id: 0
-                        Entry id: 0
+                        Derivative order: 0
                         [2,2]((0,0),(0,0))
-                        Entry id: 1
+                        Derivative order: 1
                         [2,2]((0,0),(0,0))
-                        Entry id: 2
+                        Derivative order: 2
                         [2,2]((0,0),(0,0))
                      
                   
@@ -250,16 +250,24 @@ DomainElement<1,0> cache:
          
       
    
-   Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
-      Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
+   Cache for all sub-elements in all dimensions: (memory consumption: 1134 bytes)
+      Cache for sub-element(s) with dimension: 1  (memory consumption : 378 bytes.
          Sub-element id: 0
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -268,20 +276,40 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
       
-      Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
+      Cache for sub-element(s) with dimension: 0  (memory consumption : 756 bytes.
          Sub-element id: 0
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -290,18 +318,38 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
          Sub-element id: 1
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -310,6 +358,18 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -333,11 +393,11 @@ ReferenceElement<1,1,1> cache:
                   Size: [ 1 ]  Weights: [1]
                   Entry id: 0
                      Entry id: 0
-                        Entry id: 0
+                        Derivative order: 0
                         [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                        Entry id: 1
+                        Derivative order: 1
                         [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-                        Entry id: 2
+                        Derivative order: 2
                         [2,2]((0,0),(0,0))
                      
                   
@@ -586,16 +646,24 @@ DomainElement<1,0> cache:
          
       
    
-   Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
-      Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
+   Cache for all sub-elements in all dimensions: (memory consumption: 1134 bytes)
+      Cache for sub-element(s) with dimension: 1  (memory consumption : 378 bytes.
          Sub-element id: 0
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -604,20 +672,40 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
       
-      Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
+      Cache for sub-element(s) with dimension: 0  (memory consumption : 756 bytes.
          Sub-element id: 0
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -626,18 +714,38 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
          Sub-element id: 1
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -646,6 +754,18 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -664,11 +784,11 @@ ReferenceElement<1,1,1> cache:
                   Size: [ 1 ]  Weights: [1]
                   Entry id: 0
                      Entry id: 0
-                        Entry id: 0
+                        Derivative order: 0
                         [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                        Entry id: 1
+                        Derivative order: 1
                         [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-                        Entry id: 2
+                        Derivative order: 2
                         [2,2]((0,0),(0,0))
                      
                   
@@ -917,16 +1037,24 @@ DomainElement<1,0> cache:
          
       
    
-   Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
-      Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
+   Cache for all sub-elements in all dimensions: (memory consumption: 1134 bytes)
+      Cache for sub-element(s) with dimension: 1  (memory consumption : 378 bytes.
          Sub-element id: 0
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -935,20 +1063,40 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
       
-      Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
+      Cache for sub-element(s) with dimension: 0  (memory consumption : 756 bytes.
          Sub-element id: 0
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -957,18 +1105,38 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
          Sub-element id: 1
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -977,6 +1145,18 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -995,11 +1175,11 @@ ReferenceElement<1,1,1> cache:
                   Size: [ 1 ]  Weights: [1]
                   Entry id: 0
                      Entry id: 0
-                        Entry id: 0
+                        Derivative order: 0
                         [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                        Entry id: 1
+                        Derivative order: 1
                         [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-                        Entry id: 2
+                        Derivative order: 2
                         [2,2]((0,0),(0,0))
                      
                   
@@ -1248,16 +1428,24 @@ DomainElement<1,0> cache:
          
       
    
-   Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
-      Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
+   Cache for all sub-elements in all dimensions: (memory consumption: 1134 bytes)
+      Cache for sub-element(s) with dimension: 1  (memory consumption : 378 bytes.
          Sub-element id: 0
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -1266,20 +1454,40 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
       
-      Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
+      Cache for sub-element(s) with dimension: 0  (memory consumption : 756 bytes.
          Sub-element id: 0
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -1288,18 +1496,38 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
          Sub-element id: 1
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -1308,6 +1536,18 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -1326,11 +1566,11 @@ ReferenceElement<1,1,1> cache:
                   Size: [ 1 ]  Weights: [1]
                   Entry id: 0
                      Entry id: 0
-                        Entry id: 0
+                        Derivative order: 0
                         [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                        Entry id: 1
+                        Derivative order: 1
                         [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-                        Entry id: 2
+                        Derivative order: 2
                         [2,2]((0,0),(0,0))
                      
                   
@@ -1579,16 +1819,24 @@ DomainElement<1,0> cache:
          
       
    
-   Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
-      Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
+   Cache for all sub-elements in all dimensions: (memory consumption: 1134 bytes)
+      Cache for sub-element(s) with dimension: 1  (memory consumption : 378 bytes.
          Sub-element id: 0
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -1597,20 +1845,40 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
       
-      Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
+      Cache for sub-element(s) with dimension: 0  (memory consumption : 756 bytes.
          Sub-element id: 0
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -1619,18 +1887,38 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
          Sub-element id: 1
-            Memory consumption: 168 bytes
+            Memory consumption: 378 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
+            Element weight * measure: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
             Element inverse jacobian: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element inverse hessian: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -1639,6 +1927,18 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element exterior normal: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element principal curvature: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element first fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element second fundamental form: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             

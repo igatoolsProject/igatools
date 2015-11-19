@@ -575,7 +575,8 @@ struct seq
 
 template <template<int> class T,int dim>
 using SubElemVariants =
-  typename boost::make_variant_over<typename seq<T, iga::max(0, dim-num_sub_elem), dim>::type>::type;
+  typename boost::make_variant_over<typename seq<T, 0, dim>::type>::type;
+//  typename boost::make_variant_over<typename seq<T, iga::max(0, dim-num_sub_elem), dim>::type>::type;
 
 
 template <int dim>
@@ -608,7 +609,8 @@ struct seq_ptr
 
 template <template<int> class T,int dim>
 using SubElemPtrVariants =
-  typename boost::make_variant_over<typename seq_ptr<T, iga::max(0, dim-num_sub_elem), dim>::type>::type;
+  typename boost::make_variant_over<typename seq_ptr<T, 0, dim>::type>::type;
+//  typename boost::make_variant_over<typename seq_ptr<T, iga::max(0, dim-num_sub_elem), dim>::type>::type;
 
 template <int>
 class Quadrature;

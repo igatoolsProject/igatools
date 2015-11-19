@@ -9,6 +9,9 @@ Spline Space:
       
       Element properties:
          IDs with property "active":
+            Entry id: 0
+               Flat ID: 0    Tensor ID: []
+            
          
       
    
@@ -106,7 +109,8 @@ Spline Space:
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 ]
+               Flat ID: 0    Tensor ID: [0]
+            
          
       
    
@@ -210,7 +214,8 @@ Spline Space:
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0]
+            
          
       
    
@@ -320,7 +325,8 @@ Spline Space:
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0,0]
+            
          
       
    
@@ -427,6 +433,9 @@ Spline Space:
       
       Element properties:
          IDs with property "active":
+            Entry id: 0
+               Flat ID: 0    Tensor ID: []
+            
          
       
    
@@ -524,7 +533,8 @@ Spline Space:
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 ]
+               Flat ID: 0    Tensor ID: [0]
+            
          
       
    
@@ -628,7 +638,8 @@ Spline Space:
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0]
+            
          
       
    
@@ -738,7 +749,8 @@ Spline Space:
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0,0]
+            
          
       
    

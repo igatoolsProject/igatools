@@ -29,29 +29,24 @@
 
 #include "common_functions.h"
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline.h>
+//#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/space_tools.h>
+#include <igatools/geometry/grid_function_lib.h>
 
 
-
-template<int dim, int range = 1, int rank = 1>
+template<int dim, int range = 1>
 void do_test(const int deg, const int n_knots = 10)
 {
-  using Basis = BSpline<dim, range, rank>;
-
-
   auto grid = Grid<dim>::const_create(n_knots);
-  auto space = Basis::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   const int n_qpoints = ceil((2*dim + 1)/2.);
-  QGauss<dim> quad(n_qpoints);
+  auto quad = QGauss<dim>::const_create(n_qpoints);
 
-  auto f = std::shared_ptr<ProductFunction<dim> >(new ProductFunction<dim>(grid, IdentityFunction<dim>::const_create(grid)));
-  typename functions::ConstantFunction<dim,0,1>::Value val {0.};
-  auto g = functions::ConstantFunction<dim,0,1>::const_create(grid, IdentityFunction<dim>::const_create(grid), val);
+  auto f = ProductGridFunction<dim>::const_create(grid);
+  auto g = grid_functions::ConstantGridFunction<dim,1>::const_create(grid, {0.});
 
-  SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
-  Real err = space_tools::l2_norm_difference<dim>(*f, *g, quad, elem_err);
+  SafeSTLMap<ElementIndex<dim>,Real> elem_err;
+  Real err = space_tools::l2_norm_difference<dim,range>(*f, *g, quad, elem_err);
 
   const Real p=2;
   out << std::pow(p+1, -dim/p) << "\t" << err << endl;
@@ -64,9 +59,9 @@ int main()
 {
   out.depth_console(20);
 
-  do_test<1,1,1>(3);
-  do_test<2,1,1>(3);
-  do_test<3,1,1>(1);
+  do_test<1,1>(3);
+  do_test<2,1>(3);
+  do_test<3,1>(1);
 
   return 0;
 }

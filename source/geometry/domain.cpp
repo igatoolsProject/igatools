@@ -169,7 +169,7 @@ create_element(const ListIt &index, const PropId &prop) const
 -> std::unique_ptr<ElementAccessor>
 {
   using Elem = ElementAccessor;
-  auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
+  auto elem = std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -241,7 +241,7 @@ Domain<dim_, codim_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
-                         grid_func_->get_grid()->get_elements_with_property(prop).begin(),
+                         grid_func_->get_elements_with_property(prop).begin(),
                          prop);
 }
 
@@ -253,7 +253,7 @@ Domain<dim_, codim_>::
 cend(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
-                         grid_func_->get_grid()->get_elements_with_property(prop).end(),
+                         grid_func_->get_elements_with_property(prop).end(),
                          prop);
 }
 

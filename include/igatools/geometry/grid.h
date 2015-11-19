@@ -28,6 +28,7 @@
 #include <igatools/utils/safe_stl_map.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
+#include <igatools/utils/element_index.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/array_utils.h>
 #include <igatools/geometry/bbox.h>
@@ -44,6 +45,7 @@ IGA_NAMESPACE_OPEN
 template <int> class Grid;
 template <int> class GridElement;
 template <int> class GridHandler;
+
 
 /**
  * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
@@ -183,7 +185,8 @@ public:
 
   using Point = Points<dim_>;
 
-  using IndexType = TensorIndex<dim_>;
+  using IndexType = ElementIndex<dim_>;
+
   using PropertyList = PropertiesIdContainer<IndexType>;
   using List = typename PropertyList::List;
   using ListIt = typename PropertyList::List::iterator;
@@ -516,6 +519,7 @@ public:
   template<int sdim>
   using SubGridMap =
     SafeSTLMap<typename Grid<sdim>::IndexType, IndexType>;
+
   /**
    * Construct a sub grid of dimension k conforming to
    * the grid sub element sub_elem_id and a map from the elements of
@@ -526,6 +530,18 @@ public:
   std::shared_ptr<Grid<sdim> >
   get_sub_grid(const int sub_elem_id, SubGridMap<sdim> &elem_map) const;
   ///@}
+
+  /**
+   * \brief Returns the TensorIndex corresponding to the element with flat index @p elem_flat_id.
+   */
+  TensorIndex<dim_> flat_to_tensor_element_id(const int elem_flat_id) const;
+
+  /**
+   * \brief Returns the flat index corresponding to the element with TensorIndex @p elem_tensor_id.
+   *
+   * @note In the case of Grid<0>, this function returns 0 despite the input argument @p elem_tensor_id.
+   */
+  int tensor_to_flat_element_id(const TensorIndex<dim_> &elem_tensor_id) const;
 
   /**
    * Given a vector of points, this function return a map with
@@ -681,6 +697,23 @@ private:
 
   TensorSizedContainer<dim_> elems_size_;
 
+  template <int sdim>
+  class SubGridData
+  {
+  private:
+    using SubGrid = Grid<sdim>;
+
+    //TODO (martinelli, November 11, 2015): the number of subgrid must be the number of combination of dim elems taken sdim at time
+    SafeSTLArray<std::shared_ptr<SubGrid>,dim_> sub_grids_;
+
+    using SubGridElemMap =
+      SafeSTLMap<typename SubGrid::IndexType, IndexType>;
+
+    SafeSTLArray<SubGridElemMap,UnitElement<dim>::template num_elem<sdim>()> sub_grid_element_maps_;
+  };
+
+  SubGridData<(dim_>0)? dim_-1 : 0> sub_grid_data_;
+
 public:
   /**
    * Create an element (defined on this grid) with a given index and the given property
@@ -753,6 +786,10 @@ private:
   SafeSTLVector<Index>
   get_sub_elements_id(const TensorSize<dim_> &n_sub_elems,
                       const Index elem_id) const;
+
+
+
+
 #ifdef MESH_REFINEMENT
   /**
    * This class member is the grid before the last refinement. If no

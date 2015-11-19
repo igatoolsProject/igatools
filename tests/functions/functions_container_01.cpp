@@ -33,6 +33,7 @@
 using std::shared_ptr;
 using std::static_pointer_cast;
 
+#ifdef SERIALIZATION
 void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
 {
   OUTSTART
@@ -68,10 +69,28 @@ void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
 }
 
 
+
+void deserialize_only()
+{
+  std::string filename = "functions_container.xml";
+
+  std::ifstream xml_istream(filename);
+  IArchive xml_in(xml_istream);
+
+  auto funcs_container = std::make_shared<FunctionsContainer>();
+  xml_in >> funcs_container;
+
+  out.begin_item("Inside deserialize_only()");
+  print_container(funcs_container);
+  out.end_item();
+}
+#endif // SERIALIZATION
+
+
 template <int dim,int codim,int range>
 using Func = Function<dim,codim,range,1>;
 
-void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
+void print_container(const std::shared_ptr<FunctionsContainer> &funcs_container)
 {
   const auto domains_dim_2_codim_0 = funcs_container->template get_domains_dim_codim<2,0>();
   out.begin_item("Mappings with dimension 2 and codimension 0:");
@@ -133,22 +152,6 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
 }
 
 
-void deserialize_only()
-{
-  std::string filename = "functions_container.xml";
-
-  std::ifstream xml_istream(filename);
-  IArchive xml_in(xml_istream);
-
-  auto funcs_container = std::make_shared<FunctionsContainer>();
-  xml_in >> funcs_container;
-
-  out.begin_item("Inside deserialize_only()");
-  print_container(funcs_container);
-  out.end_item();
-}
-
-
 void do_test()
 {
   int n_elem_per_side = 2;
@@ -165,12 +168,12 @@ void do_test()
 
 
   const int deg = 3;
-  auto bsp_space_1_1 = BSpline<1,1,1>::const_create(deg, grid_1);
-  auto bsp_space_2_1 = BSpline<2,1,1>::const_create(deg, grid_2);
-  auto bsp_space_3_1 = BSpline<3,1,1>::const_create(deg, grid_3);
-  auto bsp_space_2_2 = BSpline<2,2,1>::const_create(deg, grid_2);
-  auto bsp_space_3_3 = BSpline<3,3,1>::const_create(deg, grid_3);
-  auto bsp_space_2_3 = BSpline<2,3,1>::const_create(deg, grid_2);
+  auto bsp_space_1_1 = BSpline<1,1,1>::const_create(SplineSpace<1,1,1>::const_create(deg,grid_1));
+  auto bsp_space_2_1 = BSpline<2,1,1>::const_create(SplineSpace<2,1,1>::const_create(deg,grid_2));
+  auto bsp_space_3_1 = BSpline<3,1,1>::const_create(SplineSpace<3,1,1>::const_create(deg,grid_3));
+  auto bsp_space_2_2 = BSpline<2,2,1>::const_create(SplineSpace<2,2,1>::const_create(deg,grid_2));
+  auto bsp_space_3_3 = BSpline<3,3,1>::const_create(SplineSpace<3,3,1>::const_create(deg,grid_3));
+  auto bsp_space_2_3 = BSpline<2,3,1>::const_create(SplineSpace<2,3,1>::const_create(deg,grid_2));
 
   Epetra_SerialComm comm;
   auto bsp_coeff_1_1 = EpetraTools::create_vector(*bsp_space_1_1,DofProperties::active,comm);
@@ -320,12 +323,18 @@ void do_test()
   funcs_container->insert_function(
     phys_func_2_3_1_1);
 
+  out.begin_item("Functions container:");
+  funcs_container->print_info(out);
+  out.end_item();
+
+
+#ifdef SERIALIZATION
   serialize_deserialize(funcs_container);
 //    funcs_container->print_info(out);
 //    print_container(funcs_container);
 
   deserialize_only();
-
+#endif // SERIALIZATION
 }
 
 

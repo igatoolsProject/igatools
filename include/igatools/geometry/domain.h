@@ -22,8 +22,9 @@
 #define __DOMAIN_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/grid_function.h>
-#include <igatools/geometry/grid_function_handler.h>
+#include <igatools/functions/ig_grid_function.h>
+#include <igatools/geometry/formula_grid_function.h>
+//#include <igatools/geometry/grid_function_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -256,6 +257,59 @@ public:
 
 #endif // MESH_REFINEMENT
 
+
+
+public:
+
+  template <int sdim>
+  using SubGridElemMap = typename Grid<dim>::template SubGridMap<sdim>;
+
+  template <int sdim>
+  std::shared_ptr<const Domain<sdim,space_dim-sdim> >
+  get_sub_domain(const int s_id,
+                 const SubGridElemMap<sdim> &sub_grid_elem_map,
+                 const std::shared_ptr<const Grid<sdim>> &sub_grid) const
+  {
+    std::shared_ptr<const GridFunction<sdim,space_dim>> sub_func;
+
+    const auto F = this->get_grid_function();
+    using IgFunc = IgGridFunction<dim,space_dim>;
+    auto ig_func = std::dynamic_pointer_cast<const IgFunc>(F);
+    using FormulaFunc = FormulaGridFunction<dim,space_dim>;
+    auto formula_func = std::dynamic_pointer_cast<const FormulaFunc>(F);
+    if (ig_func)
+    {
+      sub_func = ig_func->get_sub_function(s_id,sub_grid);
+    }
+    else if (formula_func)
+    {
+      sub_func = formula_func->get_sub_function(s_id,sub_grid_elem_map,sub_grid);
+    }
+    else
+    {
+      AssertThrow(false,ExcNotImplemented());
+    }
+    auto sub_domain = Domain<sdim,space_dim-sdim>::const_create(sub_func);
+
+    /*
+        LogStream out;
+        out.begin_item("Sub-Function:");
+        sub_func->print_info(out);
+        out.end_item();
+        auto sub_func_elem = sub_func->begin();
+        auto sub_func_end = sub_func->end();
+
+        out.begin_item("Sub-function elements:");
+        for (; sub_func_elem != sub_func_end ; ++sub_func_elem)
+          sub_func_elem->print_info(out);
+    //    for (const auto & sub_func_elem : *sub_func)
+    //      sub_func_elem.print_info(out);
+        out.end_item();
+    //*/
+
+
+    return sub_domain;
+  }
 };
 
 IGA_NAMESPACE_CLOSE

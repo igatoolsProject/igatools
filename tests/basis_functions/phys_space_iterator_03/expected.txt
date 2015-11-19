@@ -3,7 +3,7 @@ ball_map
 ========================================================================
 elem_values<1,1,1,1,0>(2,active,1)
 Element 0
-   Element index: [0]
+   Element index: Flat ID: 0    Tensor ID: [0]
    Sub element id:  0
       Values: 
          ValueTable (num_functions=2,num_points=2) :
@@ -42,7 +42,7 @@ ball_map
 ========================================================================
 elem_values<2,1,1,1,0>(2,active,1)
 Element 0
-   Element index: [0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0]
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=2) :
@@ -333,7 +333,7 @@ Element 0
    
 
 Element 1
-   Element index: [0,1]
+   Element index: Flat ID: 2    Tensor ID: [0,1]
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=2) :
@@ -624,7 +624,7 @@ Element 1
    
 
 Element 2
-   Element index: [1,0]
+   Element index: Flat ID: 1    Tensor ID: [1,0]
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=2) :
@@ -915,7 +915,7 @@ Element 2
    
 
 Element 3
-   Element index: [1,1]
+   Element index: Flat ID: 3    Tensor ID: [1,1]
    Sub element id:  0
       Values: 
          ValueTable (num_functions=9,num_points=2) :
@@ -1212,7 +1212,7 @@ ball_map
 ========================================================================
 elem_values<3,3,1,1,0>(2,active,1)
 Element 0
-   Element index: [0,0,0]
+   Element index: Flat ID: 0    Tensor ID: [0,0,0]
    Sub element id:  0
       Values: 
          ValueTable (num_functions=8,num_points=8) :

@@ -48,12 +48,12 @@ using numbers::PI;
 
 
 
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim, int range>
 void do_test(const int p, const int num_knots = 10)
 {
   auto grid = Grid<dim>::const_create(num_knots);
-  auto space = SplineSpace<dim,range,rank>::const_create(p, grid);
-  auto ref_basis = BSpline<dim,range,rank>::const_create(space);
+  auto space = SplineSpace<dim,range>::const_create(p, grid);
+  auto ref_basis = BSpline<dim,range>::const_create(space);
 
   using F = grid_functions::LinearGridFunction<dim,dim + codim>;
   typename F::Value    b;
@@ -65,15 +65,15 @@ void do_test(const int p, const int num_knots = 10)
   auto map = F::const_create(grid,A, b);
   auto domain = Domain<dim,codim>::const_create(map);
 
-  auto basis = PhysicalSpaceBasis<dim,range,rank,codim>::const_create(ref_basis,domain);
+  auto basis = PhysicalSpaceBasis<dim,range,1,codim>::const_create(ref_basis,domain);
 
   const int n_qpoints = 4;
   auto quad = QGauss<dim>::const_create(n_qpoints);
 
-  auto f = BoundaryFunction<dim,codim,range,rank>::const_create(domain);
-  auto coeffs_func = space_tools::projection_l2_function<dim,codim,range,rank>(*f, *basis, quad);
+  auto f = TestFunction<dim,range>::const_create(domain);
+  auto coeffs_func = space_tools::projection_l2_function<dim,codim,range,1>(*f, *basis, quad);
 
-  auto proj_func = IgFunction<dim,codim,range,rank>::const_create(basis,coeffs_func);
+  auto proj_func = IgFunction<dim,codim,range,1>::const_create(basis,coeffs_func);
   proj_func->print_info(out);
 
 }
@@ -84,7 +84,7 @@ int main()
 {
   out.depth_console(20);
   // do_test<1,1,1>(3);
-  do_test<2,0,1,1>(3);
+  do_test<2,0,1>(3);
   //do_test<3,1,1>(1);
 
   return 0;

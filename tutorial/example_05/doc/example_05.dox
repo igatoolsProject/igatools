@@ -3,6 +3,8 @@
 \page example_05 Example 5: Poisson problem: assembling the local contributions
 
 \section Introduction
+In the next 2 program we'll solve a Poisson problem (in weak form) using the BSpline basis function.
+
 The typical example in a Galerkin method is the Poisson problem:
 find  \f$u:\Omega\subset\mathbb{R}^d\to\mathbb{R}\f$ such that
 \f[
@@ -11,16 +13,16 @@ find  \f$u:\Omega\subset\mathbb{R}^d\to\mathbb{R}\f$ such that
 
 It can be rewritten in weak form as: find \f$u\in H^1_0(\Omega) \oplus g\f$ 
 such that
-\f$\mathcal{A}u(v) = F(v) \text{ for all } v \in   H^1_0(\Omega)\f$, where 
-\f$\mathcal{A}u(v) = \int_\Omega \nabla u \cdot \nabla v\f$
+\f$a(u,v) = b(v) \text{ for all } v \in   H^1_0(\Omega)\f$, where 
+\f$a(u,v) = \int_\Omega \nabla u \cdot \nabla v\f$
 and 
-\f$ F(v)  = \int_\Omega f  v\f$.
+\f$ b(v)  = \int_\Omega f  v\f$.
 
 The isogeometric method for this problem requires:
 -# the definition of the isogeometric space;
--# the assembling of the stiffness matrix K
-   and right hand side  F by adding the element contributions;
--# the solving of the linear system K U =  F.
+-# the assembling of the stiffness matrix \f$\mathbf{A}\f$
+   and right hand side  \f$\mathbf{b}\f$ by adding the element contributions;
+-# the solving of the linear system \f$\mathbf{A} \mathbf{u} = \mathbf{b}\f$
 
 This example shows how to program the assembling of local contributions
 (matrix and vector) for the Poisson problem, this being a basic ingredient

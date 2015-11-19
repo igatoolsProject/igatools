@@ -42,10 +42,18 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
   const auto &graph = matrix.Graph();
   const auto &map = graph.RowMap();
 
-  for (; dof != dof_end; ++dof)
+  Assert(graph.IndicesAreLocal(),ExcMessage("Indices in the graph are not local."));
+
+  SafeSTLVector<int> global_dofs;
+  SafeSTLVector<Real> rhs_values;
+  SafeSTLVector<Real> solution_values;
+  int n_dofs = 0;
+  for (; dof != dof_end; ++dof, ++n_dofs)
   {
     const Index row_id = dof->first;
     const Index loc_id = map.LID(dof->first);
+
+    global_dofs.emplace_back(row_id);
 
     const Real bc_value = dof->second;
 
@@ -60,14 +68,17 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
     Real mat_value = NAN;
     for (int i=0; i<NumEntries; ++i)
-      if (Indices[i] != row_id)
+      if (map.GID(Indices[i]) != row_id)
         Values[i] = 0.;
       else mat_value = Values[i];
 
     Assert(mat_value != NAN, ExcInternalError());
-    rhs[row_id] = bc_value * mat_value;
-    solution[row_id] = bc_value;
+    rhs_values.emplace_back(bc_value * mat_value);
+    solution_values.emplace_back(bc_value);
   }
+
+  rhs.ReplaceGlobalValues(n_dofs,rhs_values.data(),global_dofs.data());
+  solution.ReplaceGlobalValues(n_dofs,solution_values.data(),global_dofs.data());
 }
 
 }

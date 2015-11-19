@@ -82,9 +82,9 @@ public:
 
 
   virtual std::unique_ptr<ElementHandler>
-  create_cache_handler() const;
+  create_cache_handler() const = 0;
 
-  std::unique_ptr<ElementAccessor>
+  virtual std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
 #if 0
@@ -119,12 +119,12 @@ public:
   /**
    * This function returns a element (const) iterator to the first element of the patch.
    */
-  ElementIterator cbegin(const PropId &prop = ElementProperties::active) const;
+  virtual ElementIterator cbegin(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to one-pass the end of patch.
    */
-  ElementIterator cend(const PropId &prop = ElementProperties::active) const;
+  virtual ElementIterator cend(const PropId &prop = ElementProperties::active) const;
   ///@}
 
 
@@ -189,7 +189,18 @@ protected:
   std::shared_ptr<const self_t> grid_function_previous_refinement_;
 #endif // MESH_REFINEMENT
 
+
+public:
+  virtual const SafeSTLSet<typename GridType::IndexType> &
+  get_elements_with_property(const PropId &elems_property) const
+  {
+    return grid_->get_elements_with_property(elems_property);
+  }
+
 };
+
+
+
 
 IGA_NAMESPACE_CLOSE
 

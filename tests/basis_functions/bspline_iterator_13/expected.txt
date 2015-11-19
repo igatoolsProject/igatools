@@ -26,7 +26,8 @@ GridElement<1>
       active
    
    Index:
-   [ 0 ]
+      Flat ID: 0    Tensor ID: [0]
+   
 
 BSplineElement<1,1,1> cache:
    Splines 1D table:
@@ -38,11 +39,11 @@ BSplineElement<1,1,1> cache:
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                   Entry id: 0
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-1.00000,-1.00000),(1.00000,1.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                
@@ -215,7 +216,8 @@ GridElement<1>
       active
    
    Index:
-   [ 0 ]
+      Flat ID: 0    Tensor ID: [0]
+   
 
 BSplineElement<1,1,1> cache:
    Splines 1D table:
@@ -227,11 +229,11 @@ BSplineElement<1,1,1> cache:
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                   Entry id: 0
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-1.00000,-1.00000),(1.00000,1.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                
@@ -404,7 +406,8 @@ GridElement<1>
       active
    
    Index:
-   [ 0 ]
+      Flat ID: 0    Tensor ID: [0]
+   
 
 BSplineElement<1,1,1> cache:
    Splines 1D table:
@@ -416,11 +419,11 @@ BSplineElement<1,1,1> cache:
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                   Entry id: 0
-                     Entry id: 0
+                     Derivative order: 0
                      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-                     Entry id: 1
+                     Derivative order: 1
                      [2,2]((-1.00000,-1.00000),(1.00000,1.00000))
-                     Entry id: 2
+                     Derivative order: 2
                      [2,2]((0,0),(0,0))
                   
                

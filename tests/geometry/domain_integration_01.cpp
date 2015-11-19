@@ -44,8 +44,8 @@ void intregrate_on_sphere(const int n_knots)
   OUTSTART
 
   out.begin_item("integrate_on_sphere<dim="
-		  + std::to_string(dim) + ">(n_elems_1D="
-		  + std::to_string(n_knots-1) + ")");
+                 + std::to_string(dim) + ">(n_elems_1D="
+                 + std::to_string(n_knots-1) + ")");
 
   using Sph = grid_functions::SphereGridFunction<dim>;
   using IntegrandFunction = functions::ConstantFunction<dim,1,1,1>;
@@ -65,8 +65,8 @@ void intregrate_on_sphere(const int n_knots)
 
   auto quad = QGauss<dim>::create(2);
 
-  SafeSTLMap<TensorIndex<dim>,
-  	  typename IntegrandFunction::Value> elem_contrib;
+  SafeSTLMap<ElementIndex<dim>,
+             typename IntegrandFunction::Value> elem_contrib;
   auto area = space_tools::integrate<0,dim,1,range,1>(*C, quad, elem_contrib);
   out.begin_item("Area: contribution from the elements");
   elem_contrib.print_info(out);
@@ -96,10 +96,10 @@ int main()
   out.depth_console(10);
 
 
-  for(int n_knots = 2 ; n_knots <= 5 ;++n_knots)
+  for (int n_knots = 2 ; n_knots <= 5 ; ++n_knots)
   {
 //  intregrate_on_sphere<1>(n_knots);
-	  intregrate_on_sphere<2>(n_knots);
+    intregrate_on_sphere<2>(n_knots);
   }
 
   return 0;

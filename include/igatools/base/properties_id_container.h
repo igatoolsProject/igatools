@@ -26,6 +26,7 @@
 #include <igatools/base/logstream.h>
 #include <igatools/utils/safe_stl_set.h>
 #include <igatools/utils/safe_stl_vector.h>
+#include <igatools/utils/safe_stl_map.h>
 
 #include <map>
 
@@ -46,7 +47,7 @@ class PropertiesIdContainer
 public:
   using List = SafeSTLSet<IndexType>;
 private:
-  using ContainerType = std::map<PropId, List>;
+  using ContainerType = SafeSTLMap<PropId, List>;
   using iterator = typename ContainerType::iterator;
   using const_iterator = typename ContainerType::const_iterator;
 

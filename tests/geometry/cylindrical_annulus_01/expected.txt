@@ -1,5 +1,5 @@
 Element 0
-   Element ID: [0,0,0]
+   Element ID: Flat ID: 0    Tensor ID: [0,0,0]
    Ref. Points:
       ValueVector (num_points=1) :
       [ [ 0.500000 0.500000 0.500000 ]  ]

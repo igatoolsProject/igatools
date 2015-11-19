@@ -29,7 +29,6 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int> class FormulaGridFunctionHandler;
 
 /**
  * @brief GridFunction built as linear combination of basis functions from ReferenceSpaceBasis
@@ -45,7 +44,7 @@ private:
   using self_t = IgGridFunction<dim, space_dim>;
 protected:
   using typename parent_t::GridType;
-  using ElementHandler = FormulaGridFunctionHandler<dim, space_dim>;
+  using ElementHandler = typename parent_t::ElementHandler;
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
@@ -73,7 +72,7 @@ protected:
                  const std::string &dofs_property);
 
 public:
-  std::unique_ptr<typename parent_t::ElementHandler>
+  std::unique_ptr<ElementHandler>
   create_cache_handler() const override final;
 
   static std::shared_ptr<const self_t>

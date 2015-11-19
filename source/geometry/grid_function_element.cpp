@@ -33,14 +33,22 @@ GridFunctionElement(const std::shared_ptr<ContainerType> &grid_function,
 {}
 
 
+template<int dim_,int space_dim_>
+bool
+GridFunctionElement<dim_,space_dim_>::
+same_grid_function_of(const self_t &elem) const
+{
+  return (grid_function_ == elem.grid_function_);
+}
+
 
 template<int dim_,int space_dim_>
 bool
 GridFunctionElement<dim_,space_dim_>::
 operator ==(const self_t &elem) const
 {
-  Assert(grid_function_ == elem.grid_function_,
-         ExcMessage("Cannot compare elements on different grid."));
+  Assert(this->same_grid_function_of(elem),
+         ExcMessage("Cannot compare elements on different GridFunction."));
   return (*grid_elem_ == *(elem.grid_elem_));
 }
 
@@ -51,8 +59,8 @@ bool
 GridFunctionElement<dim_,space_dim_>::
 operator !=(const self_t &elem) const
 {
-  Assert(grid_function_ == elem.grid_function_,
-         ExcMessage("Cannot compare elements on different grid."));
+  Assert(this->same_grid_function_of(elem),
+         ExcMessage("Cannot compare elements on different GridFunction."));
   return (*grid_elem_ != *(elem.grid_elem_));
 }
 
@@ -63,8 +71,8 @@ bool
 GridFunctionElement<dim_,space_dim_>::
 operator <(const self_t &elem) const
 {
-  Assert(grid_function_ == elem.grid_function_,
-         ExcMessage("Cannot compare elements on different grid."));
+  Assert(this->same_grid_function_of(elem),
+         ExcMessage("Cannot compare elements on different GridFunction."));
   return (*grid_elem_ < *(elem.grid_elem_));
 }
 
@@ -75,8 +83,8 @@ bool
 GridFunctionElement<dim_,space_dim_>::
 operator >(const self_t &elem) const
 {
-  Assert(grid_function_ == elem.grid_function_,
-         ExcMessage("Cannot compare elements on different grid."));
+  Assert(this->same_grid_function_of(elem),
+         ExcMessage("Cannot compare elements on different GridFunction."));
   return (*grid_elem_ > *(elem.grid_elem_));
 }
 
@@ -176,20 +184,21 @@ get_element_values_D2() const -> const ValueVector<Derivative<2>> &
 }
 
 
-//template<int dim_, int space_dim_, class ContainerType>
-//template<int sdim>
-//auto
-//GridFunctionElementBase<dim_, space_dim_, ContainerType>::
-//get_w_measures(const int s_id) const -> ValueVector<Real>
-//{
-//  const auto &meas = get_values_from_cache<_Measure, sdim>(s_id);
-//  const auto &w = grid_elem_->template get_weights<sdim>(s_id);
-//  auto w_meas = meas;
-//  auto it_w = w.begin();
-//  for (auto &w_m : w_meas)
-//    w_m *= *(it_w);
-//  return w_meas;
-//}
+template<int dim_,int space_dim_>
+const ValueVector<Real> &
+GridFunctionElement<dim_,space_dim_>::
+get_element_weights() const
+{
+  return grid_elem_->get_element_weights();
+}
+
+template<int dim_,int space_dim_>
+const ValueVector<Points<dim_>> &
+                             GridFunctionElement<dim_,space_dim_>::
+                             get_element_points() const
+{
+  return grid_elem_->get_element_points();
+}
 
 #if 0
 template<int dim_, int space_dim_>

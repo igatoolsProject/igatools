@@ -71,25 +71,11 @@ private:
   GridFunctionHandler() = delete;
 
 public:
-  GridFunctionHandler(std::shared_ptr<GridFunctionType> grid_function);
+  GridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function);
 
 
-  virtual ~GridFunctionHandler();
+  virtual ~GridFunctionHandler() = default;
 
-#if 0
-  static std::shared_ptr<self_t>
-  create(std::shared_ptr<GridFunctionType> grid_function)
-  {
-    return std::shared_ptr<self_t>(new self_t(grid_function));
-  }
-
-
-  static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<GridFunctionType> grid_function)
-  {
-    return create(grid_function);
-  }
-#endif
 
   std::shared_ptr<GridFunctionType> get_grid_function() const;
 
@@ -120,7 +106,7 @@ public:
 
   virtual void fill_cache(const topology_variant &sdim,
                           ElementAccessor &elem,
-                          const int s_id) const;
+                          const int s_id) const = 0;
 
   void fill_cache(const topology_variant &sdim,
                   ElementIterator &elem,
@@ -128,21 +114,21 @@ public:
 
   template <int sdim>
   void fill_cache(ElementIterator &elem,
-                  const int s_id)
+                  const int s_id) const
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
 
   template <int sdim>
   void fill_cache(ElementAccessor &elem,
-                  const int s_id)
+                  const int s_id) const
   {
     this->fill_cache(Topology<sdim>(), elem, s_id);
   }
 
-  void fill_element_cache(ElementAccessor &elem);
+  void fill_element_cache(ElementAccessor &elem) const;
 
-  void fill_element_cache(ElementIterator &elem);
+  void fill_element_cache(ElementIterator &elem) const;
 
   //protected:
 public:
@@ -222,12 +208,16 @@ private:
 private:
   std::shared_ptr<GridFunctionType> grid_function_;
 
+protected:
   std::unique_ptr<GridHandler> grid_handler_;
 
+private:
   FlagsArray flags_;
 
 //  friend ElementAccessor;
 };
+
+
 
 IGA_NAMESPACE_CLOSE
 

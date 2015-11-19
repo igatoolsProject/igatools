@@ -332,7 +332,7 @@ get_subelements(
   int vtk_elem_flat_id = 0;
   for (; vtk_elem != vtk_elem_end; ++vtk_elem, ++vtk_elem_flat_id)
   {
-    auto vtk_elem_tensor_idx = vtk_elem->get_index();
+    auto vtk_elem_tensor_idx = vtk_elem->get_index().get_tensor_index();
 
     for (int iVertex = 0; iVertex < n_vertices_per_vtk_element_; ++iVertex)
     {

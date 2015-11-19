@@ -63,6 +63,43 @@ private:
   using self_t = Basis<dim_,codim_,range_,rank_>;
 
 
+public:
+  static const int space_dim = dim_+codim_;
+
+  /** Types for the input/output evaluation arguments */
+  ///@{
+  /**
+   * Type for the input argument of the function.
+   */
+  using Point = Points<space_dim>;
+
+  /**
+   * Type for the return of the function.
+   */
+  using Value = Values<space_dim, range_, rank_>;
+
+  /**
+   * Type for the derivative of the function.
+   */
+  template <int order>
+  using Derivative = Derivatives<space_dim, range_, rank_, order>;
+
+  /**
+   * Type for the gradient of the function.
+   */
+  using Gradient = Derivative<1>;
+
+  /**
+   * Type for the hessian of the function.
+   */
+  using Hessian = Derivative<2>;
+
+  /**
+   * Type for the divergence of function.
+   */
+  using Div = Values<space_dim, space_dim, rank_-1>;
+  ///@}
+
 
   /** @name Constructor and destructor. */
   ///@{
@@ -97,7 +134,8 @@ public:
 
 public:
 
-  using IndexType = TensorIndex<dim_>;
+  using GridType = Grid<dim_>;
+  using IndexType = typename GridType::IndexType;
   using PropertyList = PropertiesIdContainer<IndexType>;
   using List = typename PropertyList::List;
   using ListIt = typename PropertyList::List::iterator;
@@ -140,7 +178,7 @@ public:
 
 
   virtual void get_element_dofs(
-    const IndexType element_id,
+    const IndexType &element_id,
     SafeSTLVector<Index> &dofs_global,
     SafeSTLVector<Index> &dofs_local_to_patch,
     SafeSTLVector<Index> &dofs_local_to_elem,

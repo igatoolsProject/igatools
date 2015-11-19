@@ -150,7 +150,7 @@ public:
 
   template<class ValueType, int sdim>
   auto
-  get_values(const int s_id) const
+  get_values_from_cache(const int s_id) const
   {
     const auto &cache =
       local_cache_.template get_sub_elem_cache<sdim>(s_id);
@@ -180,7 +180,7 @@ public:
     func_elem_handler->init_cache(*this,points);
     func_elem_handler->template fill_cache<dim>(*this,0);
 
-    return this->template get_values<ValueType,dim>(0);
+    return this->template get_values_from_cache<ValueType,dim>(0);
   }
   ///@}
 

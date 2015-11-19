@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/domain.h>
-#include <igatools/geometry/domain_handler.h>
+//#include <igatools/geometry/domain_handler.h>
 
 //#include <igatools/base/tensor.h>
 //#include <igatools/geometry/unit_element.h>
@@ -224,10 +224,34 @@ public:
 
   virtual
   std::shared_ptr<const SubFunc<(dim>0)?dim-1:0> >
-  get_sub_function(const int s_id,
-                   const std::shared_ptr<const Grid<(dim>0)?dim-1:0>> &sub_grid) const
+  get_sub_function(const int s_id,const std::shared_ptr<const Grid<(dim>0)?dim-1:0>> &sub_grid = nullptr) const
   {
+    Assert(dim >= 1,ExcMessage("The topological dimension must be >=1"));
+#if 0
+    const int sdim = (dim>0)?dim-1:0;
+
+    using SubGridElemMap = typename Grid<dim>::template SubGridMap<sdim>;
+    SubGridElemMap sub_grid_elem_map;
+    using SubGrid = Grid<sdim>;
+
+    std::shared_ptr<const SubGrid> s_grid;
+
+    if (sub_grid == nullptr)
+    {
+      const auto grid = domain_->get_grid_function()->get_grid();
+      s_grid = grid->template get_sub_grid<sdim>(s_id,sub_grid_elem_map);
+    }
+    else
+    {
+      s_grid = sub_grid;
+    }
+
+    auto bndry_domain = domain_->get_sub_domain(s_id,sub_grid_elem_map,s_grid);
+#endif
+
+
     AssertThrow(false,ExcMessage("This function must be implemented by a derived class."));
+    AssertThrow(false,ExcNotImplemented());
     return nullptr;
   }
 

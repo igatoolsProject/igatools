@@ -58,11 +58,9 @@ public:
   ///@{
 protected:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. Not allowed to be used.
    */
-  GridFunctionElement() = default;
+  GridFunctionElement() = delete;
 
 public:
   /**
@@ -86,7 +84,7 @@ public:
   /**
    * Destructor.
    */
-  ~GridFunctionElement() = default;
+  virtual ~GridFunctionElement() = default;
   ///@}
 
 
@@ -104,14 +102,14 @@ public:
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator==(const self_t &elem) const;
+  virtual bool operator==(const self_t &elem) const;
 
   /**
    * True if the elements have different index.
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator!=(const self_t &elem) const;
+  virtual bool operator!=(const self_t &elem) const;
 
   /**
    * True if the flat-index of the element on the left is smaller than
@@ -119,7 +117,7 @@ public:
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator<(const self_t &elem) const;
+  virtual bool operator<(const self_t &elem) const;
 
   /**
    * True if the flat-index of the element on the left is bigger than
@@ -127,16 +125,15 @@ public:
    *  @note In debug mode, it is also check they both refer to
    *  the same cartesian grid. No check is done on the cache.
    */
-  bool operator>(const self_t &elem) const;
+  virtual bool operator>(const self_t &elem) const;
   ///@}
 
 
-public:
 
-  void operator++();
+  virtual void operator++();
 
 
-  void move_to(const IndexType &elem_id);
+  virtual void move_to(const IndexType &elem_id);
 
   const GridElem &get_grid_element() const;
 
@@ -145,9 +142,10 @@ public:
 
   const IndexType &get_index() const;
 
-  void print_info(LogStream &out) const;
+  virtual void print_info(LogStream &out) const;
 
   void print_cache_info(LogStream &out) const;
+
 
 public:
 
@@ -168,33 +166,6 @@ public:
   const ValueVector<Derivative<2> > &
   get_element_values_D2() const;
 
-#if 0
-  /**
-   * @name Methods for the for the evaluations of Functions's derivatives
-   *  without the use of the cache.
-   */
-  ///@{
-  /**
-   * Returns a ValueTable with the values specified by the template parameter
-   * <tt>ValueType</tt>
-   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-   * @note This function does not use the cache and therefore can be called any time without
-   * needing to pre-call init_cache()/fill_cache().
-   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-   */
-  template <class ValueType>
-  decltype(auto) evaluate_at_points(const std::shared_ptr<const Quadrature<dim_>> &points)
-  {
-    auto grid_func_elem_handler = this->grid_function_->create_cache_handler();
-    grid_func_elem_handler->template set_flags<dim_>(ValueType::flag);
-    grid_func_elem_handler->init_cache(*this,points);
-    grid_func_elem_handler->template fill_cache<dim_>(*this,0);
-
-    return this->template get_values_from_cache<ValueType,dim_>(0);
-  }
-  ///@}
-#endif
 
 public:
   template <int order>
@@ -226,9 +197,9 @@ public:
 protected:
   std::shared_ptr<ContainerType> grid_function_;
 
-private:
   std::unique_ptr<GridElem> grid_elem_;
 
+private:
   CacheType local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
@@ -270,7 +241,32 @@ public:
     return grid_elem_->template evaluate_at_points<ValueType>(quad);
   }
   ///@}
+
+
+  /**
+   * Returns the quadrature weights corresponding to the <tt>dim</tt>
+   * dimensional element (i.e. the element itself).
+   *
+   * @note The returned weights are the quadrature unit weights multiplied by the
+   * <tt>dim</tt>-dimensional element measure.
+   */
+  const ValueVector<Real> &get_element_weights() const;
+
+  /**
+   * Returns the quadrature points corresponding to the <tt>dim</tt>
+   * dimensional element (i.e. the element itself).
+   */
+  const ValueVector<Points<dim_>> &get_element_points() const;
+
+public:
+
+  bool same_grid_function_of(const self_t &elem) const;
+
 };
+
+
+
+
 
 
 IGA_NAMESPACE_CLOSE

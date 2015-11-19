@@ -47,7 +47,7 @@ get_grid() const -> std::shared_ptr<const GridType>
   return grid_.get_ptr_const_data();
 }
 
-
+#if 0
 template<int dim_, int space_dim_>
 auto
 GridFunction<dim_, space_dim_>::
@@ -56,7 +56,7 @@ create_cache_handler() const
 {
   return std::make_unique<ElementHandler>(this->shared_from_this());
 }
-
+#endif
 
 
 template<int dim_, int space_dim_>

@@ -27,16 +27,15 @@
 //TODO: this test should be merge into the other ones
 
 #include "../tests.h"
-
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/formula_function.h>
-#include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element.h>
-
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
+#include "common_functions.h"
+
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/basis_functions/bspline.h>
+
+#include <igatools/geometry/grid_function_lib.h>
 
 template<int dim>
 class XProject : public FormulaFunction<dim>
@@ -45,26 +44,21 @@ private:
   using base_t = Function<dim>;
   using parent_t = FormulaFunction<dim>;
   using self_t = XProject<dim>;
-  using typename base_t::GridType;
 public:
   using typename parent_t::Point;
   using typename parent_t::Value;
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 public:
-  XProject(std::shared_ptr<GridType> grid)
-    : FormulaFunction<dim>(grid, IdentityFunction<dim>::const_create(grid))
+  XProject(const SharedPtrConstnessHandler<Domain<dim,0>> &domain)
+    : FormulaFunction<dim>(domain,"XProject")
   {}
 
-  static std::shared_ptr<base_t>
-  const_create(std::shared_ptr<GridType> grid)
+  static std::shared_ptr<self_t>
+  const_create(const std::shared_ptr<Domain<dim,0>> &domain)
   {
-    return std::shared_ptr<base_t>(new self_t(grid));
-  }
-
-  std::shared_ptr<base_t> clone() const override
-  {
-    return std::make_shared<self_t>(self_t(*this));
+    return std::make_shared<self_t>(
+             SharedPtrConstnessHandler<Domain<dim,0>>(domain));
   }
 
   void evaluate_0(const ValueVector<Point> &points,
@@ -87,30 +81,50 @@ public:
 
 
 
-
 template<int dim , int range ,int rank>
 void do_test(const int p, TensorSize<dim> n_knots)
 {
-  const int sub_dim = dim - 1;
   out << "Dimension: " << dim << endl;
-  using Basis = BSpline<dim, range, rank>;
 
+  /*
+    auto grid = Grid<dim>::create(n_knots);
+    auto space = Basis::create(SplineSpace<dim,range,rank>::const(p, grid)) ;
+    auto f = XProject<dim>::const_create(grid);
+  //*/
 
   auto grid = Grid<dim>::create(n_knots);
-  auto space = Basis::create(SplineSpace<dim,range,rank>::const(p, grid)) ;
-  auto f = XProject<dim>::const_create(grid);
+  auto space = SplineSpace<dim,range,rank>::create(p,grid);
+  auto ref_basis = BSpline<dim,range,rank>::create(space) ;
+  auto map = grid_functions::IdentityGridFunction<dim>::create(grid);
+  auto domain = Domain<dim,0>::create(map);
+  auto basis = PhysicalSpaceBasis<dim,range,rank,0>::create(ref_basis, domain);
+
+
+  const int sdim = dim-1;
+  const int s_id = 2;
+
+  /*
+  using SubGridElemMap = typename Grid<dim>::template SubGridMap<sdim>;
+  SubGridElemMap sub_grid_elem_map;
+  const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,sub_grid_elem_map);
+
+  auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
+  auto f_at_bndry = TestBoundaryFunction<dim-1,range>::const_create(bndry_domain);
+  //*/
+
+  auto f = XProject<dim>::const_create(domain);
 
   const int n_qpoints = 4;
-  QGauss<sub_dim> quad(n_qpoints);
+  auto quad = QGauss<sdim>::create(n_qpoints);
 
   const boundary_id dirichlet = 1;
-  grid->set_boundary_id(2, dirichlet);
-  std::set<boundary_id> bdry_ids;
+  grid->set_boundary_id(s_id, dirichlet);
+  SafeSTLSet<boundary_id> bdry_ids;
   bdry_ids.insert(dirichlet);
 
   std::map<Index,Real> boundary_values;
-  space_tools::project_boundary_values<Basis>(
-    f, space, quad, bdry_ids,
+  space_tools::project_function_on_boundary<dim,0,range,rank>(
+    *f, *basis, quad, bdry_ids,
     boundary_values);
 
   out << "basis index \t value" << endl;

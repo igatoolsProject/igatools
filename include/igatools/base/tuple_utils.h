@@ -101,7 +101,8 @@ using QuadPtr = std::shared_ptr<const Quadrature<dim>>;
 
 template<int dim>
 class QuadList
-  : public DataVaryingId<QuadPtr, (num_sub_elem <= dim ? dim - num_sub_elem : dim), (num_sub_elem <= dim ? num_sub_elem+1 : 1)>
+//  : public DataVaryingId<QuadPtr, (num_sub_elem <= dim ? dim - num_sub_elem : dim), (num_sub_elem <= dim ? num_sub_elem+1 : 1)>
+  : public DataVaryingId<QuadPtr, 0, dim+1>
 {
 public:
   template<int sdim>
@@ -117,7 +118,7 @@ public:
   {
     return boost::fusion::at_key<Topology<sdim>>(*this);
   }
-
+#if 0
 private:
   /**
    * @name Functions needed for boost::serialization
@@ -151,6 +152,7 @@ private:
 
   };
   ///@}
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

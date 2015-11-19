@@ -26,7 +26,8 @@ data = Instantiation(include_files)
 
 
 
-sub_dim_members = ['void GridHandler<dim>::fill_cache<k>(ElementAccessor &elem, const int j) const;',
+sub_dim_members = [
+                   'void GridHandler<dim>::fill_cache<k>(ElementAccessor &elem, const int j) const;',
              'void GridHandler<dim>::init_cache<k>(ElementAccessor &elem,std::shared_ptr<const Quadrature<k>> quad) const;',
              'void GridHandler<dim>::set_flags<k>(const Flags &flag);']
 
@@ -36,16 +37,16 @@ for dim in inst.sub_domain_dims:
     handlers.append(gh)
     f.write('template class %s; \n' %(gh))
     for fun in sub_dim_members:
-        k = dim
-        s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
-        f.write('template ' + s + '\n')
+        for k in range(0,dim+1):
+            s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
+            f.write('template ' + s + '\n')
 
 for dim in inst.domain_dims:
     gh = 'GridHandler<%d>' %(dim) 
     handlers.append(gh)
     f.write('template class %s; \n' %(gh))
     for fun in sub_dim_members:
-        for k in inst.sub_dims(dim):
+        for k in range(0,dim+1):
             s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
             f.write('template ' + s + '\n')
 

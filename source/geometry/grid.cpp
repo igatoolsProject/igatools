@@ -190,11 +190,21 @@ Grid(const KnotCoordinates &knot_coordinates)
   elems_size_(TensorSize<dim_>(knot_coordinates.tensor_size()-1))
 {
   elem_properties_.add_property(ElementProperties::active);
-  elem_properties_[ElementProperties::active] =
-    el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
-//    elem_properties_.set_ids_property_status(ElementProperties::active,
-//                                             el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals()),
-//                                             true);
+
+  auto &active_elements = elem_properties_[ElementProperties::active];
+  if (dim_ > 0)
+  {
+    auto tensor_index_range = el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
+    for (const auto &tensor_id : tensor_index_range)
+    {
+      const int flat_id = this->tensor_to_flat_element_id(tensor_id);
+      active_elements.emplace(ElementIndex<dim_>(flat_id,tensor_id));
+    }
+  } // end if (dim_ > 0)
+  else // if (dim_ == 0)
+  {
+    active_elements.emplace(ElementIndex<dim_>(0,TensorIndex<dim_>()));
+  } // end if (dim_ == 0)
 
 #ifndef NDEBUG
   for (const int i : UnitElement<dim_>::active_directions)
@@ -535,7 +545,10 @@ Size
 Grid<dim_>::
 get_num_all_elems() const
 {
-  return elems_size_.flat_size();
+  if (dim_ > 0)
+    return elems_size_.flat_size();
+  else
+    return 1;
 }
 
 
@@ -679,8 +692,22 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
   //----------------------------------------------------------------------------------
   // transferring the element properties from the old grid to the new grid --- begin
 
-  elem_properties_[ElementProperties::active] =
-    el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
+  auto &active_elements = elem_properties_[ElementProperties::active];
+  active_elements.clear();
+  if (dim_ > 0)
+  {
+    auto tensor_index_range = el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
+    for (const auto &tensor_id : tensor_index_range)
+    {
+      const int flat_id = this->tensor_to_flat_element_id(tensor_id);
+      active_elements.insert(ElementIndex<dim_>(flat_id,tensor_id));
+    }
+  }
+  else // if (dim_ == 0)
+  {
+    active_elements.emplace(ElementIndex<dim_>(0,TensorIndex<dim_>()));
+  } // end if (dim_ == 0)
+
 
   const auto fine_to_coarse_elems_id = grid_tools::build_map_elements_id_between_grids(
                                          *this,*grid_pre_refinement_);
@@ -759,7 +786,9 @@ same_knots_or_refinement_of(const Grid<dim_> &grid_to_compare_with) const
           knots_coarse.begin(),
           knots_coarse.end(),
           [&knots_fine](const Real &val)
-          {return !std::binary_search(knots_fine.begin(),knots_fine.end(),val);})
+  {
+    return !std::binary_search(knots_fine.begin(),knots_fine.end(),val);
+    })
        )
     {
       is_refinement = false;
@@ -807,24 +836,44 @@ get_sub_grid(const int s_id, SubGridMap<sdim> &elem_map) const
   auto sub_knots = knot_coordinates_.template get_sub_product<sdim>(active_dirs);
   auto sub_grid = Grid<sdim>::create(sub_knots);
 
-  IndexType grid_index;
+  const auto &n_elems = this->get_num_intervals();
+
+  TensorIndex<dim> grid_t_index;
   const int n_dir = s_elem.constant_directions.size();
   for (int j = 0 ; j < n_dir ; ++j)
   {
     auto dir = s_elem.constant_directions[j];
     auto val = s_elem.constant_values[j];
-    grid_index[dir] = val == 0 ? 0 : (knot_coordinates_.tensor_size()[dir]-2);
+    grid_t_index[dir] = (val == 0) ? 0 : (n_elems[dir]-1);
   }
 
   elem_map.clear();
-  for (const auto &s_elem : *sub_grid)
+  if (sdim > 0)
   {
-    const auto s_index = s_elem.get_index();
-    for (int j = 0 ; j < sdim ; ++j)
-      grid_index[active_dirs[j]] = s_index[j];
+    for (const auto &s_elem : *sub_grid)
+    {
+      const auto &s_elem_id = s_elem.get_index();
+      const auto &s_elem_tid = s_elem_id.get_tensor_index();
+      for (int j = 0 ; j < sdim ; ++j)
+        grid_t_index[active_dirs[j]] = s_elem_tid[j];
 
-    elem_map.emplace(s_index,grid_index);
+      const int grid_f_index = this->tensor_to_flat_element_id(grid_t_index);
+      elem_map.emplace(s_elem_id,ElementIndex<dim_>(grid_f_index,grid_t_index));
+    }
   }
+  else
+  {
+    const int grid_f_index = this->tensor_to_flat_element_id(grid_t_index);
+    elem_map.emplace(
+      ElementIndex<sdim>(0,TensorIndex<sdim>()),
+      ElementIndex<dim_>(grid_f_index,grid_t_index));
+  }
+  /*
+    LogStream out;
+    out.begin_item("get_sub_grid<dim=" +std::to_string(dim_) +",sdim="+std::to_string(sdim));
+    elem_map.print_info(out);
+    out.end_item();
+    //*/
   return sub_grid;
 }
 
@@ -874,12 +923,12 @@ find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const
   std::map<IndexType, SafeSTLVector<int> > res;
 
   const int n_points = points.size();
-  for (int k = 0 ; k < n_points ; ++k)
+  for (int pt = 0 ; pt < n_points ; ++pt)
   {
-    const auto &point = points[k];
+    const auto &point = points[pt];
 
     Assert(!test_if_point_on_internal_knots_line(point),
-    ExcMessage("The " + std::to_string(k) + "-th point is on an intenal knots line."));
+    ExcMessage("The " + std::to_string(pt) + "-th point is on an intenal knots line."));
 
     TensorIndex<dim_> elem_t_id;
     for (const auto i : UnitElement<dim_>::active_directions)
@@ -887,7 +936,7 @@ find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const
       const auto &knots = knot_coordinates_.get_data_direction(i);
 
       Assert(point[i] >= knots.front() && point[i] <= knots.back(),
-      ExcMessage("The point " + std::to_string(k) +
+      ExcMessage("The point " + std::to_string(pt) +
       " is not in the interval spanned by the knots along the direction " +
       std::to_string(i)));
 
@@ -898,19 +947,39 @@ find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const
       const Index j = low - knots.begin();
 
       elem_t_id[i] = (j>0) ? j-1 : 0;
-    }
-    /*
-            auto ans = res.emplace(
-                  elem_t_id,
-                           SafeSTLVector<int>(1,k));
+    } // end loop i
 
-            if (!ans.second)
-                (ans.first)->second.push_back(k);
-                //*/
-    res[elem_t_id].push_back(k);
+    const int elem_f_id = this->tensor_to_flat_element_id(elem_t_id);
+    ElementIndex<dim_> elem_id(elem_f_id,elem_t_id);
+    res[elem_id].push_back(pt);
 
-  }
+  } // end loop pt
   return res;
+}
+
+
+template <int dim_>
+TensorIndex<dim_>
+Grid<dim_>::
+flat_to_tensor_element_id(const int elem_flat_id) const
+{
+  using MArrUtls = MultiArrayUtils<dim_>;
+  const auto w = MArrUtls::compute_weight(this->get_num_intervals());
+
+  return MArrUtls::flat_to_tensor_index(elem_flat_id,w);
+}
+
+template <int dim_>
+int
+Grid<dim_>::
+tensor_to_flat_element_id(const TensorIndex<dim_> &elem_tensor_id) const
+{
+  using MArrUtls = MultiArrayUtils<dim_>;
+
+  return (dim_ > 0)?
+         MArrUtls::tensor_to_flat_index(
+           elem_tensor_id,
+           MArrUtls::compute_weight(this->get_num_intervals())) : 0;
 }
 
 

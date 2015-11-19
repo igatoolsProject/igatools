@@ -282,7 +282,7 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
       func_elem_handler->template fill_cache<dim>(*f_elem,0);
       space_elem_handler->fill_element_cache(*elem);
 
-      auto f_at_qp = f_elem->template get_values<function_element::_Value,dim>(0);
+      auto f_at_qp = f_elem->template get_values_from_cache<function_element::_Value,dim>(0);
 
       const auto loc_mat = elem->integrate_u_v(dofs_property);
       const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
@@ -712,14 +712,13 @@ projection_l2_grid_function(
  */
 template<int dim,int codim, int range, int rank>
 void
-project_boundary_values(const Function<dim,codim,range,rank> &func,
-                        const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
-                        const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:1>> &quad,
-                        const std::set<boundary_id>  &boundary_ids,
-                        std::map<Index, Real>  &boundary_values)
+project_boundary_values(
+  std::map<int, std::shared_ptr<const Function<dim-1,codim+1,range,rank>>> &bndry_funcs,
+  const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+  const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
+  std::map<Index, Real>  &boundary_values)
 {
   static_assert(dim > 1,"The dimension must be > 1");
-
 
 
   const int sdim = dim - 1;
@@ -732,96 +731,97 @@ project_boundary_values(const Function<dim,codim,range,rank> &func,
 
   const auto grid = basis.get_grid();
 
-  std::set<int> sub_elems;
-  auto bdry_begin = boundary_ids.begin();
-  auto bdry_end   = boundary_ids.end();
-  for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
-  {
-    const auto bdry_id = grid->get_boundary_id(s_id);
-    if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
-      sub_elems.insert(s_id);
-  }
+  boundary_values.clear();
 
-  for (const Index &s_id : sub_elems)
+  for (const auto &bndry : bndry_funcs)
   {
     InterGridMap elem_map;
+
+    const int s_id = bndry.first;
+
+    Assert(bndry.second != nullptr,ExcNullPtr());
+    const auto &bndry_func = *bndry.second;
 
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
     InterSpaceMap  dof_map;
     const auto sub_basis = basis.template get_sub_space<sdim>(s_id, dof_map,sub_grid,elem_map);
-    //    (const int s_id, InterSpaceMap< sdim > &dof_map, const std::shared_ptr< const Grid< sdim >> &sub_grid=nullptr)
 
-
-    const auto sub_func = func.get_sub_function(s_id,sub_grid);
 
     const auto coeffs = projection_l2_function(
-                          *sub_func,*sub_basis,quad,DofProperties::active);
+                          bndry_func,*sub_basis,quad,DofProperties::active);
 
     const int face_n_dofs = dof_map.size();
     for (Index i = 0; i< face_n_dofs; ++i)
       boundary_values[dof_map[i]] = coeffs[i];
   }
-
-
-#if 0
-  static_assert(dim > 1,"The dimension must be > 1");
-
-  const int sdim = dim - 1;
-//    using GridType = typename Basis::GridType;
-  using SubSpace = typename Basis::template SubSpace<sdim>;
-  using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
-  using SubFunc = SubFunction<sdim, dim, codim, range, rank>;
-
-
-  const auto grid = basis->get_grid();
-
-  std::set<int> sub_elems;
-  auto bdry_begin = boundary_ids.begin();
-  auto bdry_end   = boundary_ids.end();
-  for (auto &s_id : UnitElement<Basis::dim>::template elems_ids<sdim>())
-  {
-    const auto bdry_id = grid->get_boundary_id(s_id);
-    if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
-      sub_elems.insert(s_id);
-  }
-
-  for (const Index &s_id : sub_elems)
-  {
-    using  InterGridMap = std::map<Index,Index>;
-    InterGridMap elem_map;
-
-    auto grid = basis->get_grid();
-    auto sub_grid = grid->template get_sub_grid<sdim>(s_id, elem_map);
-
-    InterSpaceMap  dof_map;
-    auto sub_space = basis->template get_sub_space<sdim>(s_id, dof_map, sub_grid, elem_map);
-    auto sub_func = SubFunc::create(sub_grid, function, s_id, elem_map);
-
-    auto proj = projection_l2<SubSpace>(*sub_func, *sub_space, quad);
-
-    const auto &coef = proj->get_coefficients();
-    const int face_n_dofs = dof_map.size();
-    for (Index i = 0; i< face_n_dofs; ++i)
-      boundary_values[dof_map[i]] = coef[i];
-  }
-#endif
 }
-
 
 
 template<int dim,int range>
 void
-project_boundary_values(const GridFunction<dim,range> &grid_func,
-                        const ReferenceSpaceBasis<dim,range> &basis,
-                        const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:1>> &quad,
-                        const std::set<boundary_id>  &boundary_ids,
-                        std::map<Index, Real>  &boundary_values)
+project_boundary_values(
+  std::map<int, std::shared_ptr<const SubGridFunction<dim-1,dim,range>>> &bndry_funcs,
+  const ReferenceSpaceBasis<dim,range,1> &ref_basis,
+  const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
+  std::map<Index, Real>  &boundary_values)
+{
+  static_assert(dim >= 1,"The dimension must be >= 1");
+
+
+  const int sdim = (dim >=1) ? dim - 1 : 0;
+
+  using Basis = ReferenceSpaceBasis<dim,range,1>;
+  using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
+
+  using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
+
+
+  const auto grid = ref_basis.get_grid();
+
+  boundary_values.clear();
+
+  LogStream out;
+
+  for (const auto &bndry : bndry_funcs)
+  {
+    InterGridMap elem_map;
+
+    const int s_id = bndry.first;
+
+    Assert(bndry.second != nullptr,ExcNullPtr());
+    const auto &bndry_func = *bndry.second;
+
+    const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
+
+    InterSpaceMap  dof_map;
+    const auto sub_basis = ref_basis.template get_ref_sub_space<sdim>(s_id, dof_map,sub_grid);
+
+    const auto coeffs = projection_l2_grid_function(
+                          bndry_func,*sub_basis,quad,DofProperties::active);
+
+    const int face_n_dofs = dof_map.size();
+    for (Index i = 0; i< face_n_dofs; ++i)
+      boundary_values[dof_map[i]] = coeffs[i];
+  }
+}
+
+
+#if 0
+template<int dim,int range>
+void
+project_boundary_values(
+//    std::map<int, std::shared_ptr<const GridFunction<dim-1,codim+1,range,rank>>> &bndry_funcs,
+  const GridFunction<dim,range> &grid_func,
+  const ReferenceSpaceBasis<dim,range> &basis,
+  const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:1>> &quad,
+  const std::set<boundary_id>  &boundary_ids,
+  std::map<Index, Real>  &boundary_values)
 {
   static_assert(dim > 1,"The dimension must be > 1");
 
-  const auto &ig_grid_func =
-    dynamic_cast<const IgGridFunction<dim,range> &>(grid_func);
+//  const auto &ig_grid_func =
+//    dynamic_cast<const IgGridFunction<dim,range> &>(grid_func);
 
 
   const int sdim = dim - 1;
@@ -852,9 +852,9 @@ project_boundary_values(const GridFunction<dim,range> &grid_func,
 
     InterSpaceMap  dof_map;
     const auto sub_basis = basis.template get_ref_sub_space<sdim>(s_id, dof_map,sub_grid);
-//    (const int s_id, InterSpaceMap< sdim > &dof_map, const std::shared_ptr< const Grid< sdim >> &sub_grid=nullptr)
 
-    const auto sub_func = ig_grid_func.get_sub_function(s_id,sub_grid);
+//    const auto sub_func = ig_grid_func.get_sub_function(s_id,sub_grid);
+    const auto sub_func = grid_func.get_sub_function(s_id,sub_grid);
 
     const auto coeffs = projection_l2_grid_function(
                           *sub_func,*sub_basis,quad,DofProperties::active);
@@ -864,7 +864,7 @@ project_boundary_values(const GridFunction<dim,range> &grid_func,
       boundary_values[dof_map[i]] = coeffs[i];
   }
 }
-
+#endif
 
 /**
  * Returns the list of global ids of the non zero basis functions
@@ -904,6 +904,55 @@ get_boundary_dofs(std::shared_ptr<const Basis> basis,
 }
 
 
+template<int dim,int codim, int range, int rank>
+void
+project_function_on_boundary(
+  const Function<dim,codim,range,rank> &func_to_project,
+  const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+  const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
+  const std::set<int> &boundary_ids,
+  std::map<Index, Real> &boundary_values)
+{
+  static_assert(dim >= 1,"The topological dimension must be >= 1");
+
+//  const auto domain = basis.get_physical_domain();
+
+  Assert(basis.get_physical_domain() == func_to_project.get_domain(),
+         ExcMessage("The function to project and the physical basis must have the same domain."));
+
+//  const auto grid = domain->get_grid();
+
+
+  const int sdim = dim-1;
+
+//  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
+//  using InterSpaceMap = typename Basis::template InterSpaceMap<dim>;
+//  using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
+
+  using BndryFunc = Function<dim-1,codim+1,range,rank>;
+  using PtrBndryFunc = std::shared_ptr<const BndryFunc>;
+
+  SafeSTLMap<int,PtrBndryFunc> boundary_functions;
+
+  for (const int s_id : boundary_ids)
+  {
+    /*
+    InterGridMap elem_map;
+
+    const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
+
+    InterSpaceMap  dof_map;
+    const auto sub_basis = basis.template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
+    //*/
+    boundary_functions[s_id] = func_to_project.get_sub_function(s_id);
+
+  }
+
+  project_boundary_values<dim,codim,range,rank>(boundary_functions,basis,quad,boundary_values);
+
+  Assert(false,ExcNotImplemented());
+}
+
 
 /**
  * Numerically computes the local element contribution
@@ -918,10 +967,10 @@ template<int order, int dim, int codim = 0, int range = 1, int rank = 1>
 Conditional<order==0,
             typename Function<dim, codim, range, rank>::Value,
             typename Function<dim, codim, range, rank>::template Derivative<order>>
-integrate(Function<dim, codim, range, rank> &f,
+integrate(const Function<dim, codim, range, rank> &f,
           const std::shared_ptr<const Quadrature<dim>> &quad,
           SafeSTLMap<
-          TensorIndex<dim>,
+          ElementIndex<dim>,
           Conditional<order==0,
           typename Function<dim, codim, range, rank>::Value,
           typename Function<dim, codim, range, rank>::template Derivative<order>>
@@ -949,7 +998,7 @@ integrate(Function<dim, codim, range, rank> &f,
   f_handler->set_element_flags(flag);
 
   auto elem_f = f.begin();
-  auto end = f.end();
+  const auto end = f.end();
 
   const int n_points = quad->get_num_points();
   f_handler->init_cache(elem_f, quad);
@@ -958,7 +1007,7 @@ integrate(Function<dim, codim, range, rank> &f,
   {
     f_handler->fill_element_cache(elem_f);
 
-    auto f_val = elem_f->template get_values<_Val,dim>(0);
+    auto f_val = elem_f->template get_values_from_cache<_Val,dim>(0);
     auto w_meas = elem_f->get_domain_element().get_element_w_measures();
 
     val = 0.0;
@@ -977,22 +1026,25 @@ integrate(Function<dim, codim, range, rank> &f,
 /**
  * Numerically computes the local element contribution
  * to the integral  \f$\int_\Omega |D^p(f-g)|^p\f$.
- * This contributions are added to the vector
+ * This contributions are added to the map
  * @p element_error.
  *
  * @note It is generally not used directly, but usually called from other
  * functions
  */
-template<int order, int dim, int codim = 0, int range = 1, int rank = 1>
-void norm_difference(Function<dim, codim, range, rank> &f,
-                     Function<dim, codim, range, rank> &g,
-                     const Quadrature<dim> &quad,
-                     const Real p,
-                     SafeSTLVector<Real> &element_error)
+template<int order,int dim,int codim,int range,int rank>
+void norm_difference_functions(Function<dim, codim, range, rank> &f,
+                               Function<dim, codim, range, rank> &g,
+                               const std::shared_ptr<const Quadrature<dim>> &quad,
+                               const Real p,
+                               SafeSTLMap<ElementIndex<dim>,Real> &element_error)
 {
+  Assert(f.get_domain() == g.get_domain(),
+         ExcMessage("Functions defined on different domains."));
+
   const bool is_inf = p==std::numeric_limits<Real>::infinity()? true : false;
-  auto flag = domain_element::Flags::w_measure;
-//  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
+  using Flags = function_element::Flags;
+  auto flag = Flags::w_measure;
 
   using _Val =
     Conditional<order==0,
@@ -1003,65 +1055,184 @@ void norm_difference(Function<dim, codim, range, rank> &f,
     >
     >;
 
-  f.reset(flag, quad);
-  g.reset(flag, quad);
-  const int n_points = quad.get_num_points();
+  if (order == 0)
+    flag |=  Flags::value;
+  else if (order == 1)
+    flag |=  Flags::gradient;
+  else if (order == 2)
+    flag |=  Flags::D2;
+  else
+    Assert(false,ExcNotImplemented());
+
+
+  auto f_handler = f.create_cache_handler();
+  auto g_handler = g.create_cache_handler();
+
+  f_handler->set_element_flags(flag);
+  g_handler->set_element_flags(flag);
+
 
   auto elem_f = f.begin();
   auto elem_g = g.begin();
   auto end = f.end();
 
-  const auto topology = Topology<dim>();
+  f_handler->init_cache(elem_f,quad);
+  g_handler->init_cache(elem_g,quad);
 
-  f.init_cache(elem_f, topology);
-  g.init_cache(elem_g, topology);
 
+  const int n_points = quad->get_num_points();
   for (; elem_f != end; ++elem_f, ++elem_g)
   {
-    f.fill_cache(elem_f, topology, 0);
-    g.fill_cache(elem_g, topology, 0);
+    f_handler->fill_element_cache(elem_f);
+    g_handler->fill_element_cache(elem_g);
 
-    const int elem_id = elem_f->get_flat_index();
+    const auto &elem_id = elem_f->get_index();
 
-    auto f_val = elem_f->template get_values<_Val,dim>(0);
-    auto g_val = elem_g->template get_values<_Val,dim>(0);
-    auto w_meas = elem_f->template get_w_measures<dim>(0);
+    auto f_val = elem_f->template get_values_from_cache<_Val,dim>(0);
+    auto g_val = elem_g->template get_values_from_cache<_Val,dim>(0);
+    auto w_meas = elem_f->get_element_w_measures();
 
     Real elem_diff_pow_p = 0.0;
     Real val;
-    for (int iPt = 0; iPt < n_points; ++iPt)
+    for (int pt = 0; pt < n_points; ++pt)
     {
-      const auto err = f_val[iPt] - g_val[iPt];
+      const auto err = f_val[pt] - g_val[pt];
       val = err.norm_square();
       if (is_inf)
         elem_diff_pow_p = std::max(elem_diff_pow_p, fabs(sqrt(val)));
       else
-        elem_diff_pow_p += std::pow(val,p/2.) * w_meas[iPt];
+        elem_diff_pow_p += std::pow(val,p/2.) * w_meas[pt];
     }
     element_error[ elem_id ] += elem_diff_pow_p;
   }
 }
 
 
+template<int order,int dim,int range>
+void norm_difference_grid_functions(
+  const GridFunction<dim,range> &f,
+  const GridFunction<dim,range> &g,
+  const std::shared_ptr<const Quadrature<dim>> &quad,
+  const Real p,
+  SafeSTLMap<ElementIndex<dim>,Real> &element_error)
+{
+  Assert(f.get_grid() == g.get_grid(),
+         ExcMessage("Functions defined on different grids."));
+
+  const bool is_inf = (p==std::numeric_limits<Real>::infinity())? true : false;
+
+  using Flags = grid_function_element::Flags;
+  Flags flag = Flags::weight;//= Flags::w_measure;
+
+  if (order == 0)
+    flag |=  Flags::D0;
+  else if (order == 1)
+    flag |=  Flags::D1;
+  else if (order == 2)
+    flag |=  Flags::D2;
+  else
+    Assert(false,ExcNotImplemented());
+
+//  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
+
+  using _Val = typename grid_function_element::template _D<0>;
+  /*
+  using _Val =
+    Conditional<order==0,
+    typename grid_function_element::_,
+    Conditional<order==1,
+    typename function_element::_Gradient,
+    typename function_element::_D2
+    >
+    >;
+  //*/
+  auto f_handler = f.create_cache_handler();
+  auto g_handler = g.create_cache_handler();
+
+  f_handler->set_element_flags(flag);
+  g_handler->set_element_flags(flag);
+
+
+
+  auto elem_f = f.begin();
+  auto elem_g = g.begin();
+  auto end = f.end();
+
+
+  f_handler->init_cache(elem_f,quad);
+  g_handler->init_cache(elem_g,quad);
+
+
+  const int n_points = quad->get_num_points();
+  for (; elem_f != end; ++elem_f, ++elem_g)
+  {
+    f_handler->fill_element_cache(elem_f);
+    g_handler->fill_element_cache(elem_g);
+
+    const auto &elem_id = elem_f->get_index();
+
+    const auto &f_val = elem_f->template get_values_from_cache<_Val,dim>(0);
+    const auto &g_val = elem_g->template get_values_from_cache<_Val,dim>(0);
+    const auto &w_meas = elem_f->get_element_weights();
+
+    Real elem_diff_pow_p = 0.0;
+    Real val;
+    for (int pt = 0; pt < n_points; ++pt)
+    {
+      const auto err = f_val[pt] - g_val[pt];
+      val = err.norm_square();
+      if (is_inf)
+        elem_diff_pow_p = std::max(elem_diff_pow_p, fabs(sqrt(val)));
+      else
+        elem_diff_pow_p += std::pow(val,p/2.) * w_meas[pt];
+    }
+    element_error[ elem_id ] += elem_diff_pow_p;
+  }
+}
+
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>
-Real l2_norm_difference(Function<dim, codim, range, rank> &f,
-                        Function<dim, codim, range, rank> &g,
-                        const Quadrature<dim> &quad,
-                        SafeSTLVector<Real> &elem_error)
+Real l2_norm_difference(const Function<dim, codim, range, rank> &f,
+                        const Function<dim, codim, range, rank> &g,
+                        const std::shared_ptr<const Quadrature<dim>> &quad,
+                        SafeSTLMap<ElementIndex<dim>,Real> &elems_error)
 {
   const Real p=2.;
   const Real one_p = 1./p;
   const int order=0;
 
-  space_tools::norm_difference<order,dim, codim, range, rank>(f, g, quad, p, elem_error);
+  norm_difference_functions<order,dim, codim, range, rank>(f,g,quad,p,elems_error);
 
-  Real err = 0;
-  for (Real &loc_err : elem_error)
+  Real err = 0.0;
+  for (auto &elem_err : elems_error)
   {
+    auto &loc_err = elem_err.second;
     err += loc_err;
     loc_err = std::pow(loc_err,one_p);
+  }
 
+  return std::pow(err,one_p);
+}
+
+
+template<int dim,int range>
+Real l2_norm_difference(const GridFunction<dim,range> &f,
+                        const GridFunction<dim,range> &g,
+                        const std::shared_ptr<const Quadrature<dim>> &quad,
+                        SafeSTLMap<ElementIndex<dim>,Real> &elems_error)
+{
+  const Real p=2.;
+  const Real one_p = 1./p;
+  const int order=0;
+
+  norm_difference_grid_functions<order,dim,range>(f,g,quad,p,elems_error);
+
+  Real err = 0;
+  for (auto &elem_err : elems_error)
+  {
+    auto &loc_err = elem_err.second;
+    err += loc_err;
+    loc_err = std::pow(loc_err,one_p);
   }
 
   return std::pow(err,one_p);
@@ -1069,21 +1240,22 @@ Real l2_norm_difference(Function<dim, codim, range, rank> &f,
 
 
 
-template<int dim, int codim = 0, int range = 1, int rank = 1>
-Real h1_norm_difference(Function<dim, codim, range, rank> &f,
-                        Function<dim, codim, range, rank> &g,
-                        const Quadrature<dim> &quad,
-                        SafeSTLVector<Real> &elem_error)
+template<int dim,int codim,int range,int rank>
+Real h1_norm_difference(const Function<dim,codim,range,rank> &f,
+                        const Function<dim,codim,range,rank> &g,
+                        const std::shared_ptr<const Quadrature<dim>> &quad,
+                        SafeSTLMap<ElementIndex<dim>,Real> &elems_error)
 {
   const Real p=2.;
   const Real one_p = 1./p;
 
-  space_tools::norm_difference<0,dim, codim, range, rank>(f, g, quad, p, elem_error);
-  space_tools::norm_difference<1,dim, codim, range, rank>(f, g, quad, p, elem_error);
+  norm_difference_functions<0,dim,codim,range,rank>(f,g,quad,p,elems_error);
+  norm_difference_functions<1,dim,codim,range,rank>(f,g,quad,p,elems_error);
 
   Real err = 0;
-  for (Real &loc_err : elem_error)
+  for (auto &elem_err : elems_error)
   {
+    auto &loc_err = elem_err.second;
     err += loc_err;
     loc_err = std::pow(loc_err,one_p);
   }
@@ -1094,17 +1266,19 @@ Real h1_norm_difference(Function<dim, codim, range, rank> &f,
 
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>
-Real inf_norm_difference(Function<dim, codim, range, rank> &f,
-                         Function<dim, codim, range, rank> &g,
-                         const Quadrature<dim> &quad,
-                         SafeSTLVector<Real> &elem_error)
+Real inf_norm_difference(const Function<dim,codim,range,rank> &f,
+                         const Function<dim,codim,range,rank> &g,
+                         const std::shared_ptr<const Quadrature<dim>> &quad,
+                         SafeSTLMap<ElementIndex<dim>,Real> &elems_error)
 {
   const Real p=std::numeric_limits<Real>::infinity();
-  space_tools::norm_difference<0, dim, codim, range, rank>(f, g, quad, p, elem_error);
+  norm_difference_functions<0, dim, codim, range, rank>(f,g,quad,p,elems_error);
   Real err = 0;
-  for (const Real &loc_err : elem_error)
+  for (const auto &elem_err : elems_error)
+  {
+    const auto &loc_err = elem_err.second;
     err = std::max(err,loc_err);
-
+  }
   return err;
 }
 

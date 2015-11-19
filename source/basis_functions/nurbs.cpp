@@ -448,7 +448,7 @@ template <int dim_, int range_, int rank_>
 void
 NURBS<dim_, range_, rank_>::
 get_element_dofs(
-  const IndexType element_id,
+  const IndexType &element_id,
   SafeSTLVector<Index> &dofs_global,
   SafeSTLVector<Index> &dofs_local_to_patch,
   SafeSTLVector<Index> &dofs_local_to_elem,

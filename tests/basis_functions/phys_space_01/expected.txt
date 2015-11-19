@@ -14,7 +14,8 @@ PhysicalSpaceBasis<1,1,1,0,Transformation::h_grad>
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 ]
+                     Flat ID: 0    Tensor ID: [0]
+                  
                
             
          

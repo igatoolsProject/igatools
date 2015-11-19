@@ -85,7 +85,7 @@ public:
    */
   PhysicalSpaceElement() = delete;
 
-  PhysicalSpaceElement(const std::shared_ptr<ContainerType> space,
+  PhysicalSpaceElement(const std::shared_ptr<ContainerType> &space,
                        const ListIt &index,
                        const PropId &prop = ElementProperties::active);
 

@@ -35,8 +35,6 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element.h>
-
 
 #include <igatools/geometry/grid_function_lib.h>
 
@@ -53,26 +51,32 @@ void do_test(const int p, const int num_knots = 10)
   auto basis = PhysicalSpaceBasis<dim,range,rank,codim>::create(ref_basis, domain);
 
 
-  auto f = BoundaryFunction<dim,codim,range,rank>::create(domain);
+  const int sdim = dim-1;
+  const int s_id = 0;
+
+  using SubGridElemMap = typename Grid<dim>::template SubGridMap<sdim>;
+  SubGridElemMap sub_grid_elem_map;
+  const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,sub_grid_elem_map);
+
+  auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
+
+
+  using BndFunc = Function<dim-1,1,range,1>;
+  SafeSTLMap<int,std::shared_ptr<const BndFunc>> boundary_functions;
+  boundary_functions[s_id] = TestBoundaryFunction<dim-1,range>::const_create(bndry_domain);
 
 
   const int n_qpoints = 4;
   auto quad = QGauss<dim-1>::create(n_qpoints);
 
-  const boundary_id dirichlet = 1;
-  grid->set_boundary_id(0, dirichlet);
-  std::set<boundary_id> bdry_ids;
-  bdry_ids.insert(dirichlet);
-
 
   std::map<Index,Real> boundary_values;
   space_tools::project_boundary_values<dim,codim,range,rank>(
-    *f, *basis, quad, bdry_ids,boundary_values);
+    boundary_functions, *basis, quad, boundary_values);
 
   out << "basis index \t value" << endl;
   for (auto entry : boundary_values)
     out << entry.first << "\t" << entry.second << endl;
-
 }
 
 

@@ -30,6 +30,17 @@
 
 #include <igatools/base/tensor.h>
 
+template <int dim>
+void run_test0()
+{
+  out << "Test for printing a TensorIndex<" << dim << ">" << endl;
+
+  TensorIndex<dim> index;
+
+  out << index << endl;
+  out << endl;
+}
+
 
 //Test linear index access
 template <int dim, class type>
@@ -135,6 +146,11 @@ void run_test3()
 int main()
 {
   out.depth_console(10);
+
+  run_test0<0>();
+  run_test0<1>();
+  run_test0<2>();
+  run_test0<3>();
 
   run_test3<2, tensor::covariant>();
   run_test2<3, tensor::covariant>();

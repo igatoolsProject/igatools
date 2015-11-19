@@ -24,6 +24,7 @@
 #include <igatools/base/value_types.h>
 #include <igatools/geometry/grid_function.h>
 #include <igatools/geometry/grid_function_element.h>
+#include <igatools/geometry/sub_grid_function.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -56,6 +57,38 @@ public:
   std::unique_ptr<typename parent_t::ElementHandler>
   create_cache_handler() const;
 
+
+  template <int sdim>
+  using SubGridElemMap = typename Grid<dim>::template SubGridMap<sdim>;
+
+  template <int sdim>
+  std::shared_ptr<const SubGridFunction<sdim,dim,space_dim> >
+  get_sub_function(const int s_id,
+                   const SubGridElemMap<sdim> &sub_grid_elem_map,
+                   const std::shared_ptr<const Grid<sdim>> &sub_grid) const
+  {
+    static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
+                  "The dimensionality of the sub_grid is not valid.");
+
+    auto sub_func = SubGridFunction<sdim,dim,space_dim>::const_create(
+                      this->shared_from_this(),s_id,sub_grid_elem_map,sub_grid);
+//    AssertThrow(false,ExcNotImplemented());
+    /*
+        typename RefBasis::template InterSpaceMap<sdim> dof_map;
+        auto sub_ref_space = ref_basis_->template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
+
+        IgCoefficients sub_coeffs;
+        const int n_sub_dofs = dof_map.size();
+        for (int sub_dof = 0 ; sub_dof < n_sub_dofs ; ++ sub_dof)
+          sub_coeffs[sub_dof] = coeffs_[dof_map[sub_dof]];
+
+        auto sub_func = IgGridFunction<sdim,space_dim>::const_create(sub_ref_space,sub_coeffs);
+
+        return sub_func;
+      //*/
+    return sub_func;
+  }
+
 public:
 
   virtual void evaluate_0(const ValueVector<GridPoint> &points,
@@ -66,6 +99,12 @@ public:
 
   virtual void evaluate_2(const ValueVector<GridPoint> &points,
                           ValueVector<Derivative<2>> &values) const = 0;
+
+
+private:
+
+
+
 };
 
 IGA_NAMESPACE_CLOSE

@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/physical_space_basis.h>
-#include <igatools/functions/function.h>
-#include <igatools/functions/sub_function.h>
+#include <igatools/geometry/formula_grid_function.h>
+//#include <igatools/functions/sub_function.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 #include <igatools/geometry/push_forward.h>
 
@@ -114,7 +114,8 @@ create_element(const ListIt &index, const PropId &property) const
 -> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
 {
   std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
-  elem = std::make_unique<ElementAccessor>(this->get_this_basis(),index,property);
+  elem = std::unique_ptr<ElementAccessor>(
+    new ElementAccessor(this->get_this_basis(),index,property));
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
@@ -174,21 +175,8 @@ get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
 
   const auto sub_ref_basis = ref_basis_->get_ref_sub_space(s_id, dof_map, sub_grid);
 
-  shared_ptr<const GridFunction<sdim,space_dim>> sub_func;
+  const auto sub_domain = this->phys_domain_->get_sub_domain(s_id,elem_map,sub_grid);
 
-  const auto F = this->phys_domain_->get_grid_function();
-  using IgFunc = IgGridFunction<dim,space_dim>;
-  auto ig_func = std::dynamic_pointer_cast<const IgFunc>(F);
-  if (ig_func)
-  {
-    sub_func = ig_func->get_sub_function(s_id,sub_grid);
-  }
-  else
-  {
-    AssertThrow(false,ExcMessage("GridFunction"));
-    AssertThrow(false,ExcNotImplemented());
-  }
-  auto sub_domain = Domain<sdim,space_dim-sdim>::const_create(sub_func);
 
   auto sub_phys_basis = SubSpace<sdim>::const_create(sub_ref_basis, sub_domain);
 
@@ -231,7 +219,7 @@ template <int dim_, int range_, int rank_, int codim_>
 void
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 get_element_dofs(
-  const IndexType element_id,
+  const IndexType &element_id,
   SafeSTLVector<Index> &dofs_global,
   SafeSTLVector<Index> &dofs_local_to_patch,
   SafeSTLVector<Index> &dofs_local_to_elem,
@@ -272,7 +260,8 @@ PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 create_cache_handler() const
 -> std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>>
 {
-  return std::make_unique<ElementHandler>(this->get_this_basis());
+  return std::unique_ptr<ElementHandler>(
+    new ElementHandler(this->get_this_basis()));
 }
 
 
