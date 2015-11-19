@@ -396,7 +396,7 @@ add_field(const Function<dim,codim,range,rank> &func,
     {
       func_cache_handler->template fill_cache<dim>(*f_elem,0);
 
-      const auto &field_values = f_elem->template get_values<_Value,dim>(0);
+      const auto &field_values = f_elem->template get_values_from_cache<_Value,dim>(0);
 
       for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
         data[pos++] = field_values[iPt][0];
@@ -412,7 +412,7 @@ add_field(const Function<dim,codim,range,rank> &func,
     {
       func_cache_handler->template fill_cache<dim>(*f_elem,0);
 
-      const auto &field_values = f_elem->template get_values<_Value,dim>(0);
+      const auto &field_values = f_elem->template get_values_from_cache<_Value,dim>(0);
 
       for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
       {
@@ -435,7 +435,7 @@ add_field(const Function<dim,codim,range,rank> &func,
       Assert(true, ExcMessage(" fix next line "));
       func_cache_handler->template fill_cache<dim>(*f_elem,0);
 
-      const auto &field_values = f_elem->template get_values<_Value,dim>(0);
+      const auto &field_values = f_elem->template get_values_from_cache<_Value,dim>(0);
 
       for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
       {

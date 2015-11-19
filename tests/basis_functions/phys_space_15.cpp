@@ -37,8 +37,6 @@
 
 
 
-template<int dim, int codim>
-using MapFunc = Function<dim, 0, dim+codim>;
 
 
 template<int dim, int codim=0>

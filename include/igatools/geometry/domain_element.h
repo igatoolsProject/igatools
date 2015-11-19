@@ -347,7 +347,7 @@ public:
                                     EnableIf< !(IsInCache<ValueType>::value) > * = nullptr)
   {
     return grid_func_elem_->template
-           evaluate_at_points<typename ValueType::ValueTypeGridFuncElem>(quad);
+           evaluate_at_points<typename ValueType::GridFuncElemType>(quad);
   }
 
 

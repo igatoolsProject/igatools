@@ -1,12 +1,54 @@
-0.577350	0.577350
-0.577350
-0.976520
-0.333333	0.333333
-0.333333
-0.975112
-0.192450	0.192450
-0.192450
-0.977034
-0.500000	0.500000
-0.250000	0.250000
-0.125000	0.125000
+norm_difference<1>(3,10)
+   Error L2:
+      Expected: 0.577350
+      Computed: 0.577350
+   
+   Error H1:
+      1.15470
+   
+   Error inf:
+      0.976520
+   
+
+norm_difference<2>(3,10)
+   Error L2:
+      Expected: 0.333333
+      Computed: 0.333333
+   
+   Error H1:
+      0.881917
+   
+   Error inf:
+      0.975112
+   
+
+norm_difference<3>(1,10)
+   Error L2:
+      Expected: 0.192450
+      Computed: 0.192450
+   
+   Error H1:
+      0.608581
+   
+   Error inf:
+      0.977034
+   
+
+norm_difference_p<1>(3,10,1.000000)
+   Error L2:
+      Expected: 0.500000
+      Computed: 0.500000
+   
+
+norm_difference_p<2>(3,10,1.000000)
+   Error L2:
+      Expected: 0.250000
+      Computed: 0.250000
+   
+
+norm_difference_p<3>(3,10,1.000000)
+   Error L2:
+      Expected: 0.125000
+      Computed: 0.125000
+   
+

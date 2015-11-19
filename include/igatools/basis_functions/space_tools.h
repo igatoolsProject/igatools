@@ -1135,7 +1135,7 @@ void norm_difference_grid_functions(
 
 //  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
-  using _Val = typename grid_function_element::template _D<0>;
+  using _Val = typename grid_function_element::template _D<order>;
   /*
   using _Val =
     Conditional<order==0,
@@ -1263,6 +1263,29 @@ Real h1_norm_difference(const Function<dim,codim,range,rank> &f,
   return std::pow(err,one_p);
 }
 
+template<int dim,int range>
+Real h1_norm_difference(const GridFunction<dim,range> &f,
+                        const GridFunction<dim,range> &g,
+                        const std::shared_ptr<const Quadrature<dim>> &quad,
+                        SafeSTLMap<ElementIndex<dim>,Real> &elems_error)
+{
+  const Real p=2.;
+  const Real one_p = 1./p;
+
+  norm_difference_grid_functions<0,dim,range>(f,g,quad,p,elems_error);
+  norm_difference_grid_functions<1,dim,range>(f,g,quad,p,elems_error);
+
+  Real err = 0;
+  for (auto &elem_err : elems_error)
+  {
+    auto &loc_err = elem_err.second;
+    err += loc_err;
+    loc_err = std::pow(loc_err,one_p);
+  }
+
+  return std::pow(err,one_p);
+}
+
 
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>
@@ -1272,7 +1295,25 @@ Real inf_norm_difference(const Function<dim,codim,range,rank> &f,
                          SafeSTLMap<ElementIndex<dim>,Real> &elems_error)
 {
   const Real p=std::numeric_limits<Real>::infinity();
-  norm_difference_functions<0, dim, codim, range, rank>(f,g,quad,p,elems_error);
+  norm_difference_functions<0,dim,codim,range,rank>(f,g,quad,p,elems_error);
+  Real err = 0;
+  for (const auto &elem_err : elems_error)
+  {
+    const auto &loc_err = elem_err.second;
+    err = std::max(err,loc_err);
+  }
+  return err;
+}
+
+
+template<int dim,int range>
+Real inf_norm_difference(const GridFunction<dim,range> &f,
+                         const GridFunction<dim,range> &g,
+                         const std::shared_ptr<const Quadrature<dim>> &quad,
+                         SafeSTLMap<ElementIndex<dim>,Real> &elems_error)
+{
+  const Real p=std::numeric_limits<Real>::infinity();
+  norm_difference_grid_functions<0,dim,range>(f,g,quad,p,elems_error);
   Real err = 0;
   for (const auto &elem_err : elems_error)
   {

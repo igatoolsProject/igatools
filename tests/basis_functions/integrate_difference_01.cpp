@@ -34,9 +34,13 @@
 #include <igatools/geometry/grid_function_lib.h>
 
 
-template<int dim, int range = 1>
+template<int dim>
 void do_test(const int deg, const int n_knots = 10)
 {
+  out.begin_item("integrate_grid_function<"
+                 + to_string(dim) + ">("
+                 + to_string(deg) + ","
+                 + to_string(n_knots) +")");
   auto grid = Grid<dim>::const_create(n_knots);
 
   const int n_qpoints = ceil((2*dim + 1)/2.);
@@ -46,11 +50,15 @@ void do_test(const int deg, const int n_knots = 10)
   auto g = grid_functions::ConstantGridFunction<dim,1>::const_create(grid, {0.});
 
   SafeSTLMap<ElementIndex<dim>,Real> elem_err;
-  Real err = space_tools::l2_norm_difference<dim,range>(*f, *g, quad, elem_err);
+  Real err = space_tools::l2_norm_difference<dim,1>(*f, *g, quad, elem_err);
 
   const Real p=2;
-  out << std::pow(p+1, -dim/p) << "\t" << err << endl;
+  out.begin_item("Error L2:");
+  out << "Expected: " << std::pow(p+1, -dim/p) << endl;
+  out << "Computed: " << err << endl;
+  out.end_item();
 
+  out.end_item();
 }
 
 
@@ -59,9 +67,9 @@ int main()
 {
   out.depth_console(20);
 
-  do_test<1,1>(3);
-  do_test<2,1>(3);
-  do_test<3,1>(1);
+  do_test<1>(3);
+  do_test<2>(3);
+  do_test<3>(1);
 
   return 0;
 }

@@ -29,31 +29,37 @@
 
 #include "common_functions.h"
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/space_tools.h>
+#include <igatools/geometry/grid_function_lib.h>
 
-template<int dim, int range = 1, int rank = 1>
-void integrate(const int deg,  const int n_knots)
+using std::to_string;
+
+template<int dim>
+void integrate_grid_function(const int deg,  const int n_knots)
 {
-  using Basis = BSpline<dim, range, rank>;
+  out.begin_item("integrate_grid_function<"
+                 + to_string(dim) + ">("
+                 + to_string(deg) + ","
+                 + to_string(n_knots) +")");
 
   auto grid = Grid<dim>::const_create(n_knots);
-  auto space = Basis::const_create(deg, grid);
-
   const int n_qpoints = ceil((2*dim + 1)/2.);
-  QGauss<dim> quad(n_qpoints);
+  auto quad = QGauss<dim>::const_create(n_qpoints);
 
 
-  auto f = NormFunction<dim>::const_create(grid, IdentityFunction<dim>::const_create(grid));
-
-  typename functions::ConstantFunction<dim,0,1>::Value val {0.};
-  auto g = functions::ConstantFunction<dim,0,1>::const_create(grid, IdentityFunction<dim>::const_create(grid), val);
+  auto f = NormGridFunction<dim>::const_create(grid);
+  auto g = grid_functions::ConstantGridFunction<dim,1>::const_create(grid, {0.});
 
 
-  SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
-  Real err = space_tools::l2_norm_difference<dim>(*f, *g, quad, elem_err);
+  SafeSTLMap<ElementIndex<dim>,Real> elem_err_l2;
+  Real err_l2 = space_tools::l2_norm_difference<dim,1>(*f, *g, quad, elem_err_l2);
+  out << "Error L2 = "<< err_l2 << endl;
 
-  out << err << endl;
+  SafeSTLMap<ElementIndex<dim>,Real> elem_err_h1;
+  Real err_h1 = space_tools::h1_norm_difference<dim,1>(*f, *g, quad, elem_err_h1);
+  out << "Error H1 = "<< err_h1 << endl;
+
+  out.end_item();
 }
 
 
@@ -62,7 +68,9 @@ int main()
 {
   out.depth_console(20);
 
-  integrate<3,1,1>(1,3);
+  integrate_grid_function<1>(1,3);
+  integrate_grid_function<2>(1,3);
+  integrate_grid_function<3>(1,3);
 
 
   return 0;
