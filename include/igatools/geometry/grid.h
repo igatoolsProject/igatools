@@ -538,6 +538,8 @@ public:
 
   /**
    * \brief Returns the flat index corresponding to the element with TensorIndex @p elem_tensor_id.
+   *
+   * @note In the case of Grid<0>, this function returns 0 despite the input argument @p elem_tensor_id.
    */
   int tensor_to_flat_element_id(const TensorIndex<dim_> &elem_tensor_id) const;
 

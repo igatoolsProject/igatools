@@ -781,6 +781,8 @@ project_boundary_values(
 
   boundary_values.clear();
 
+  LogStream out;
+
   for (const auto &bndry : bndry_funcs)
   {
     InterGridMap elem_map;
@@ -794,7 +796,6 @@ project_boundary_values(
 
     InterSpaceMap  dof_map;
     const auto sub_basis = ref_basis.template get_ref_sub_space<sdim>(s_id, dof_map,sub_grid);
-
 
     const auto coeffs = projection_l2_grid_function(
                           bndry_func,*sub_basis,quad,DofProperties::active);

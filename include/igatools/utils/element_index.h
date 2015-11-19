@@ -110,7 +110,7 @@ LogStream &
 operator<<(LogStream &out, const ElementIndex<dim> &elem_id)
 {
   out << "Flat ID: " << elem_id.get_flat_index()
-      << "    Tensor ID: " << elem_id.get_tensor_index() << std::endl;
+      << "    Tensor ID: " << elem_id.get_tensor_index();
 //  out << elem_id.get_tensor_index();
   return out;
 }

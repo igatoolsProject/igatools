@@ -191,14 +191,20 @@ Grid(const KnotCoordinates &knot_coordinates)
 {
   elem_properties_.add_property(ElementProperties::active);
 
-  auto tensor_index_range = el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
   auto &active_elements = elem_properties_[ElementProperties::active];
-  for (const auto &tensor_id : tensor_index_range)
+  if (dim_ > 0)
   {
-    const int flat_id = this->tensor_to_flat_element_id(tensor_id);
-//  const auto elem_id = ElementIndex<dim_>(flat_id,tensor_id);
-    active_elements.emplace(ElementIndex<dim_>(flat_id,tensor_id));
-  }
+    auto tensor_index_range = el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
+    for (const auto &tensor_id : tensor_index_range)
+    {
+      const int flat_id = this->tensor_to_flat_element_id(tensor_id);
+      active_elements.emplace(ElementIndex<dim_>(flat_id,tensor_id));
+    }
+  } // end if (dim_ > 0)
+  else // if (dim_ == 0)
+  {
+    active_elements.emplace(ElementIndex<dim_>(0,TensorIndex<dim_>()));
+  } // end if (dim_ == 0)
 
 #ifndef NDEBUG
   for (const int i : UnitElement<dim_>::active_directions)
@@ -539,7 +545,10 @@ Size
 Grid<dim_>::
 get_num_all_elems() const
 {
-  return elems_size_.flat_size();
+  if (dim_ > 0)
+    return elems_size_.flat_size();
+  else
+    return 1;
 }
 
 
@@ -832,16 +841,32 @@ get_sub_grid(const int s_id, SubGridMap<sdim> &elem_map) const
   }
 
   elem_map.clear();
-  for (const auto &s_elem : *sub_grid)
+  if (sdim > 0)
   {
-    const auto &s_elem_id = s_elem.get_index();
-    const auto &s_elem_tid = s_elem_id.get_tensor_index();
-    for (int j = 0 ; j < sdim ; ++j)
-      grid_t_index[active_dirs[j]] = s_elem_tid[j];
+    for (const auto &s_elem : *sub_grid)
+    {
+      const auto &s_elem_id = s_elem.get_index();
+      const auto &s_elem_tid = s_elem_id.get_tensor_index();
+      for (int j = 0 ; j < sdim ; ++j)
+        grid_t_index[active_dirs[j]] = s_elem_tid[j];
 
-    const int grid_f_index = this->tensor_to_flat_element_id(grid_t_index);
-    elem_map.emplace(s_elem_id,ElementIndex<dim_>(grid_f_index,grid_t_index));
+      const int grid_f_index = this->tensor_to_flat_element_id(grid_t_index);
+      elem_map.emplace(s_elem_id,ElementIndex<dim_>(grid_f_index,grid_t_index));
+    }
   }
+  else
+  {
+    const int grid_f_index = this->tensor_to_flat_element_id(grid_t_index);
+    elem_map.emplace(
+      ElementIndex<sdim>(0,TensorIndex<sdim>()),
+      ElementIndex<dim_>(grid_f_index,grid_t_index));
+  }
+  /*
+    LogStream out;
+    out.begin_item("get_sub_grid<dim=" +std::to_string(dim_) +",sdim="+std::to_string(sdim));
+    elem_map.print_info(out);
+    out.end_item();
+    //*/
   return sub_grid;
 }
 
@@ -944,9 +969,10 @@ tensor_to_flat_element_id(const TensorIndex<dim_> &elem_tensor_id) const
 {
   using MArrUtls = MultiArrayUtils<dim_>;
 
-  const auto w = MArrUtls::compute_weight(this->get_num_intervals());
-
-  return MArrUtls::tensor_to_flat_index(elem_tensor_id,w);
+  return (dim_ > 0)?
+         MArrUtls::tensor_to_flat_index(
+           elem_tensor_id,
+           MArrUtls::compute_weight(this->get_num_intervals())) : 0;
 }
 
 

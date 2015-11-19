@@ -48,11 +48,6 @@ using namespace std;
 
 using namespace EpetraTools;
 
-// [short names]
-using grid_functions::ConstantGridFunction;
-using space_tools::project_boundary_values;
-using dof_tools::apply_boundary_values;
-// [short names]
 
 // [class functions]
 template<int dim>
@@ -109,11 +104,8 @@ void PoissonProblem<dim>::assemble()
 {
   auto grid = basis->get_grid();
 
-//  using Function = Function<dim,0,1,1>;
-  using ConstFunction = ConstantGridFunction<dim,1>;
-//  using Value = typename Function::Value;
+  using ConstFunction = grid_functions::ConstantGridFunction<dim,1>;
 
-//  Value b = {5.};
   auto func = ConstFunction::const_create(grid, {5.});
 
   auto basis_elem_handler = basis->create_cache_handler();
@@ -154,7 +146,6 @@ void PoissonProblem<dim>::assemble()
 
 
   // [dirichlet constraint]
-
   const auto g = ConstFunction::const_create(grid, {0.});
 
   LogStream out;
@@ -167,16 +158,12 @@ void PoissonProblem<dim>::assemble()
     const auto sub_grid = grid->template get_sub_grid<dim-1>(face_id,sub_grid_elem_map);
 
     bndry_funcs[face_id] = g->template get_sub_function<dim-1>(face_id,sub_grid_elem_map,sub_grid);
-
-    out.begin_item("Boundary function on face " +std::to_string(face_id));
-    bndry_funcs[face_id]->print_info(out);
-    out.end_item();
   }
 
   SafeSTLMap<Index, Real> bndry_values;
-  project_boundary_values<dim,1>(bndry_funcs,*basis,face_quad,bndry_values);
+  space_tools::project_boundary_values<dim,1>(bndry_funcs,*basis,face_quad,bndry_values);
 
-  apply_boundary_values(bndry_values, *matrix, *rhs, *solution);
+  dof_tools::apply_boundary_values(bndry_values, *matrix, *rhs, *solution);
   // [dirichlet constraint]
 }
 
