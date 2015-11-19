@@ -269,11 +269,12 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
 
   using space_element::_Value;
 
+  using _D0 = function_element::template _D<0>;
   if (space_grid == func_grid)
   {
     auto func_elem_handler = function.create_cache_handler();
 
-    func_elem_handler->set_element_flags(function_element::Flags::value);
+    func_elem_handler->set_element_flags(function_element::Flags::D0);
 
     func_elem_handler->init_cache(*f_elem,quad);
 
@@ -282,7 +283,7 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
       func_elem_handler->template fill_cache<dim>(*f_elem,0);
       space_elem_handler->fill_element_cache(*elem);
 
-      auto f_at_qp = f_elem->template get_values_from_cache<function_element::_Value,dim>(0);
+      auto f_at_qp = f_elem->template get_values_from_cache<_D0,dim>(0);
 
       const auto loc_mat = elem->integrate_u_v(dofs_property);
       const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
@@ -329,7 +330,7 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
 
 
       auto f_at_qp =
-        f_elem->template evaluate_at_points<function_element::_Value>(quad_in_func_elem);
+        f_elem->template evaluate_at_points<_D0>(quad_in_func_elem);
       //---------------------------------------------------------------------------
 
 
@@ -982,18 +983,11 @@ integrate(const Function<dim, codim, range, rank> &f,
         typename Function<dim, codim, range, rank>::Value,
         typename Function<dim, codim, range, rank>::template Derivative<order>>;
 
-  using _Val =
-    Conditional<order==0,
-    typename function_element::_Value,
-    Conditional<order==1,
-    typename function_element::_Gradient,
-    typename function_element::_D2
-    >
-    >;
+  using _Val = typename function_element::template _D<order>;
 
   auto f_handler = f.create_cache_handler();
 
-  const auto flag = function_element::Flags::value |
+  const auto flag = function_element::Flags::D0 |
                     function_element::Flags::w_measure;
   f_handler->set_element_flags(flag);
 
@@ -1046,19 +1040,12 @@ void norm_difference_functions(Function<dim, codim, range, rank> &f,
   using Flags = function_element::Flags;
   auto flag = Flags::w_measure;
 
-  using _Val =
-    Conditional<order==0,
-    typename function_element::_Value,
-    Conditional<order==1,
-    typename function_element::_Gradient,
-    typename function_element::_D2
-    >
-    >;
+  using _Val = typename function_element::template _D<order>;
 
   if (order == 0)
-    flag |=  Flags::value;
+    flag |=  Flags::D0;
   else if (order == 1)
-    flag |=  Flags::gradient;
+    flag |=  Flags::D1;
   else if (order == 2)
     flag |=  Flags::D2;
   else
@@ -1136,16 +1123,7 @@ void norm_difference_grid_functions(
 //  auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
   using _Val = typename grid_function_element::template _D<order>;
-  /*
-  using _Val =
-    Conditional<order==0,
-    typename grid_function_element::_,
-    Conditional<order==1,
-    typename function_element::_Gradient,
-    typename function_element::_D2
-    >
-    >;
-  //*/
+
   auto f_handler = f.create_cache_handler();
   auto g_handler = g.create_cache_handler();
 

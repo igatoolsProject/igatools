@@ -308,9 +308,9 @@ enum class Flags
   /** Fill nothing */
   none      = 0,
 
-  value     = 1L << 1,
+  D0        = 1L << 1,
 
-  gradient  = 1L << 2,
+  D1        = 1L << 2,
 
   D2        = 1L << 3,
 
@@ -320,8 +320,8 @@ enum class Flags
 
 static const SafeSTLArray<Flags,4> all_flags =
 {
-  Flags::value,
-  Flags::gradient,
+  Flags::D0,
+  Flags::D1,
   Flags::D2,
   Flags::w_measure
 };
@@ -337,22 +337,12 @@ struct activate
   static FlagsToDomain domain;
 };
 
-struct _Value
-{
-  static const std::string name;
-  static const auto flag = Flags::value;
-};
 
-struct _Gradient
+template<int order>
+struct _D
 {
   static const std::string name;
-  static const auto flag = Flags::gradient;
-};
-
-struct _D2
-{
-  static const std::string name;
-  static const auto flag = Flags::D2;
+  static const Flags flag;
 };
 
 

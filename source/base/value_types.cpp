@@ -202,30 +202,30 @@ activate::FlagsToGrid activate::grid =
 //---------------------------------------------------------------------
 namespace function_element
 {
-const Flags _Value::flag;
-const string _Value::name = "Function Values";
+template<> const Flags _D<0>::flag = Flags::D0;
+template<> const string _D<0>::name = "Function D0";
 
-const Flags _Gradient::flag;
-const string _Gradient::name = "Function gradients";
+template<> const Flags _D<1>::flag = Flags::D1;
+template<> const string _D<1>::name = "Function D1";
 
-const Flags _D2::flag;
-const string _D2::name = "Function D2";
+template<> const Flags _D<2>::flag = Flags::D2;
+template<> const string _D<2>::name = "Function D2";
 
 const Flags _W_Measure::flag;
-const string _W_Measure::name = "Weight * domain ,measure";
+const string _W_Measure::name = "Weight * domain measure";
 
 activate::FlagsToCache  activate::function =
 {
-  {Flags::value, Flags::value},
-  {Flags::gradient, Flags::gradient},
+  {Flags::D0, Flags::D0},
+  {Flags::D1, Flags::D1},
   {Flags::D2, Flags::D2},
   {Flags::w_measure, Flags::none}
 };
 
 function_element::activate::FlagsToDomain activate::domain =
 {
-  {Flags::value, domain_element::Flags::none},
-  {Flags::gradient, domain_element::Flags::none},
+  {Flags::D0, domain_element::Flags::none},
+  {Flags::D1, domain_element::Flags::none},
   {Flags::D2, domain_element::Flags::none},
   {Flags::w_measure, domain_element::Flags::w_measure}
 };

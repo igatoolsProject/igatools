@@ -77,9 +77,9 @@ private:
     template<int sdim>
     void operator()(const Topology<sdim> &sub_elem)
     {
-      using _Value = typename ElementAccessor::_Value;
-      using _Gradient = typename ElementAccessor::_Gradient;
-      using _D2 = typename ElementAccessor::_D2;
+      using _D0 = function_element::template _D<0>;
+      using _D1 = function_element::template _D<1>;
+      using _D2 = function_element::template _D<2>;
 
       auto &local_cache = func_handler_.get_element_cache(elem_);
       auto &cache = local_cache.template get_sub_elem_cache<sdim>(s_id_);
@@ -89,15 +89,15 @@ private:
 
         const auto &points = elem_.get_domain_element().template get_points<sdim>(s_id_);
 
-        if (cache.template status_fill<_Value>())
+        if (cache.template status_fill<_D0>())
         {
-          auto &F = cache.template get_data<_Value>();
+          auto &F = cache.template get_data<_D0>();
           func_.evaluate_0(points, F);
           F.set_status_filled(true);
         }
-        if (cache.template status_fill<_Gradient>())
+        if (cache.template status_fill<_D1>())
         {
-          auto &DF = cache.template get_data<_Gradient>();
+          auto &DF = cache.template get_data<_D1>();
           func_.evaluate_1(points, DF);
           DF.set_status_filled(true);
         }

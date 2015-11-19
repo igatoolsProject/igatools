@@ -188,17 +188,17 @@ public:
 
 
 
-  using _Value = function_element::_Value;
-  using _Gradient = function_element::_Gradient;
-  using _D2 = function_element::_D2;
+  using _D0 = function_element::template _D<0>;
+  using _D1 = function_element::template _D<1>;
+  using _D2 = function_element::template _D<2>;
 
 private:
 
 
   using CType = boost::fusion::map<
-                boost::fusion::pair<     _Value,DataWithFlagStatus<ValueVector<Value>>>,
-                boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
-                boost::fusion::pair<  _D2,DataWithFlagStatus<ValueVector<Derivative<2>>>>
+                boost::fusion::pair<_D0,DataWithFlagStatus<ValueVector<Value>>>,
+                boost::fusion::pair<_D1,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
+                boost::fusion::pair<_D2,DataWithFlagStatus<ValueVector<Derivative<2>>>>
                 >;
 
 
