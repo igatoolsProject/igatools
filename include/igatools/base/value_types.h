@@ -86,17 +86,29 @@ enum class Flags
 {
   none           =    0,
 
-  D0       =    1L << 1,
+  point    =    1L << 1,
 
-  D1       =    1L << 3,
+  weight   =    1L << 2,
 
-  D2       =    1L << 4,
+  D0       =    1L << 3,
 
-  D3       =    1L << 5
+  D1       =    1L << 4,
+
+  D2       =    1L << 5,
+
+  D3       =    1L << 6
 };
 
 
-static const SafeSTLArray<Flags, 3> all_flags = {Flags::D0, Flags::D1, Flags::D2};
+static const SafeSTLArray<Flags,6> all_flags =
+{
+  Flags::point,
+  Flags::weight,
+  Flags::D0,
+  Flags::D1,
+  Flags::D2,
+  Flags::D3
+};
 
 
 struct activate
@@ -106,6 +118,22 @@ struct activate
 
   using FlagsToGrid = std::map<Flags, grid_element::Flags>;
   static FlagsToGrid grid;
+};
+
+struct _Point
+{
+  static const std::string name;
+  static const auto flag = Flags::point;
+
+  using GridElemType = grid_element::_Point;
+};
+
+struct _Weight
+{
+  static const std::string name;
+  static const auto flag = Flags::weight;
+
+  using GridElemType = grid_element::_Weight;
 };
 
 template <int order>
@@ -190,7 +218,7 @@ struct _Point
   static const std::string name;
   static const auto flag = Flags::point;
 
-  using ValueTypeGridFuncElem = grid_function_element::template _D<0>;
+  using GridFuncElemType = grid_function_element::template _D<0>;
 };
 
 struct _Jacobian
@@ -198,7 +226,7 @@ struct _Jacobian
   static const std::string name;
   static const auto flag = Flags::jacobian;
 
-  using ValueTypeGridFuncElem = grid_function_element::template _D<1>;
+  using GridFuncElemType = grid_function_element::template _D<1>;
 };
 
 struct _Hessian
@@ -206,7 +234,7 @@ struct _Hessian
   static const std::string name;
   static const auto flag = Flags::hessian;
 
-  using ValueTypeGridFuncElem = grid_function_element::template _D<2>;
+  using GridFuncElemType = grid_function_element::template _D<2>;
 };
 
 struct _Measure

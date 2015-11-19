@@ -155,6 +155,12 @@ activate::FlagsToGrid activate::grid =
 namespace grid_function_element
 {
 //TODO: to be generated with mpl? or cog?
+const Flags _Point::flag;
+const string _Point::name = "Element Quadrature Points";
+
+const Flags _Weight::flag;
+const string _Weight::name = "Element Quadrature Weights";
+
 template<> const Flags _D<0>::flag = Flags::D0;
 template<> const string _D<0>::name = "Grid Function D0";
 
@@ -170,6 +176,8 @@ template<> const string _D<3>::name = "Grid Function D3";
 
 activate::FlagsToCache  activate::grid_function =
 {
+  {Flags::point, Flags::none},
+  {Flags::weight, Flags::none},
   {Flags::D0, Flags::D0},
   {Flags::D1, Flags::D1},
   {Flags::D2, Flags::D2},
@@ -178,6 +186,8 @@ activate::FlagsToCache  activate::grid_function =
 
 activate::FlagsToGrid activate::grid =
 {
+  {Flags::point, grid_element::Flags::point},
+  {Flags::weight, grid_element::Flags::weight},
   {Flags::D0, grid_element::Flags::none},
   {Flags::D1, grid_element::Flags::none},
   {Flags::D2, grid_element::Flags::none},

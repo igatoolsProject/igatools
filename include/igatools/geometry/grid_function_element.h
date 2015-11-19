@@ -242,6 +242,22 @@ public:
   }
   ///@}
 
+
+  /**
+   * Returns the quadrature weights corresponding to the <tt>dim</tt>
+   * dimensional element (i.e. the element itself).
+   *
+   * @note The returned weights are the quadrature unit weights multiplied by the
+   * <tt>dim</tt>-dimensional element measure.
+   */
+  const ValueVector<Real> &get_element_weights() const;
+
+  /**
+   * Returns the quadrature points corresponding to the <tt>dim</tt>
+   * dimensional element (i.e. the element itself).
+   */
+  const ValueVector<Points<dim_>> &get_element_points() const;
+
 public:
 
   bool same_grid_function_of(const self_t &elem) const;

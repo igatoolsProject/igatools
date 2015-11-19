@@ -103,13 +103,13 @@ public:
     Assert(false,ExcNotImplemented());
   }
 
-  void print_info(LogStream &out) const
+  void print_info(LogStream &out) const override
   {
     Assert(false,ExcNotImplemented());
   }
 
   void rebuild_after_insert_knots(
-    const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
+    const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
   {
     Assert(false,ExcNotImplemented());
   }
@@ -262,15 +262,15 @@ public:
  * The p-norm of this function on the unit square is
  * (1/(p+1))^(n/p)
  */
-template<int dim, int codim=0, int range = 1, int rank = 1>
-class ProductFunction : public FormulaFunction<dim>
+template<int dim,int range = 1>
+class ProductGridFunction : public FormulaGridFunction<dim,range>
 {
 private:
-  using base_t = Function<dim, codim, range, rank>;
-  using parent_t = FormulaFunction<dim, codim, range, rank>;
-  using self_t = ProductFunction<dim, codim, range, rank>;
+  using base_t = GridFunction<dim,range>;
+  using parent_t = FormulaGridFunction<dim,range>;
+  using self_t = ProductGridFunction<dim,range>;
 public:
-  using typename parent_t::Point;
+  using typename parent_t::GridPoint;
   using typename parent_t::Value;
   using typename parent_t::Gradient;
   using typename parent_t::ElementIterator;
@@ -278,12 +278,17 @@ public:
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
-  using parent_t::FormulaFunction;
+  using parent_t::FormulaGridFunction;
 
+  static std::shared_ptr<const self_t>
+  const_create(const std::shared_ptr<const Grid<dim>> &grid)
+  {
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<Grid<dim>>(grid)));
+  }
 
 
 private:
-  void evaluate_0(const ValueVector<Point> &points,
+  void evaluate_0(const ValueVector<GridPoint> &points,
                   ValueVector<Value> &values) const
   {
     auto pt = points.begin();
@@ -297,13 +302,28 @@ private:
     }
   }
 
-  void evaluate_1(const ValueVector<Point> &points,
+  void evaluate_1(const ValueVector<GridPoint> &points,
                   ValueVector<Derivative<1>> &values) const
-  {}
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
-  void evaluate_2(const ValueVector<Point> &points,
+  void evaluate_2(const ValueVector<GridPoint> &points,
                   ValueVector<Derivative<2>> &values) const
-  {}
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void print_info(LogStream &out) const override
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void rebuild_after_insert_knots(
+    const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
 };
 

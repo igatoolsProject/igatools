@@ -692,14 +692,21 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
   //----------------------------------------------------------------------------------
   // transferring the element properties from the old grid to the new grid --- begin
 
-  auto tensor_index_range = el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
   auto &active_elements = elem_properties_[ElementProperties::active];
   active_elements.clear();
-  for (const auto &tensor_id : tensor_index_range)
+  if (dim_ > 0)
   {
-    const int flat_id = this->tensor_to_flat_element_id(tensor_id);
-    active_elements.insert(ElementIndex<dim_>(flat_id,tensor_id));
+    auto tensor_index_range = el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
+    for (const auto &tensor_id : tensor_index_range)
+    {
+      const int flat_id = this->tensor_to_flat_element_id(tensor_id);
+      active_elements.insert(ElementIndex<dim_>(flat_id,tensor_id));
+    }
   }
+  else // if (dim_ == 0)
+  {
+    active_elements.emplace(ElementIndex<dim_>(0,TensorIndex<dim_>()));
+  } // end if (dim_ == 0)
 
 
   const auto fine_to_coarse_elems_id = grid_tools::build_map_elements_id_between_grids(
