@@ -52,31 +52,41 @@ public:
    */
   ///@{
 private:
-  template <class A>
-  EnableIf<has_print_info<A>(0), void>
-  t_print_info(LogStream &out) const
+  template <class _T>
+  EnableIf<has_print_info<_T>(0), void>
+  t_print_info(LogStream &out, const _T &data) const
   {
-    for (auto &entry : *this)
-    {
-      out << "{";
-      entry.first.print_info(out);
-      out << ", ";
-      entry.second.print_info(out);
-      out << "}" << std::endl;
-    }
+      data.print_info(out);
   }
 
-  template <class A>
-  EnableIf<(!has_print_info<A>(0)), void>
-  t_print_info(LogStream &out) const
+  template <class _T>
+  EnableIf<!has_print_info<_T>(0), void>
+  t_print_info(LogStream &out, const _T &data) const
   {
-    for (auto &entry : *this)
-    {
-      out << "{ " << entry.first;
-      out << ", " << entry.second  << "}";
-      out << std::endl;
-    }
+      out << data;
   }
+
+
+public:
+
+  /**
+   * Prints the content of the SafeSTLMap on the LogStream @p out.
+   * Its use is intended mainly for testing and debugging purpose.
+   */
+  void print_info(LogStream &out) const
+  {
+	for (auto &entry : *this)
+	{
+	      out << "{";
+		  t_print_info<Key>(out,entry.first);
+	      out << ", ";
+		  t_print_info<T>(out,entry.second);
+	      out << "}" << std::endl;
+	}
+  }
+  ///@}
+
+private:
 
 #ifdef SERIALIZATION
   /**
@@ -96,17 +106,6 @@ private:
   ///@}
 #endif // SERIALIZATION
 
-public:
-
-  /**
-   * Prints the content of the vector on the LogStream @p out.
-   * Its use is intended mainly for testing and debugging purpose.
-   */
-  void print_info(LogStream &out) const
-  {
-    t_print_info<T>(out);
-  }
-  ///@}
 };
 
 
