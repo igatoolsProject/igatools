@@ -3,7 +3,6 @@
 Grid 1
 Number of intervals per direction: [ ]
 Knot coordinates:
-   Size: [ ]  Weights: []
 
 Element properties:
    IDs with property "active":
@@ -18,7 +17,6 @@ Element properties:
 Grid 2
 Number of intervals per direction: [ ]
 Knot coordinates:
-   Size: [ ]  Weights: []
 
 Element properties:
    IDs with property "active":
@@ -33,7 +31,6 @@ Element properties:
 Grid union
 Number of intervals per direction: [ ]
 Knot coordinates:
-   Size: [ ]  Weights: []
 
 Element properties:
    IDs with property "active":
@@ -53,8 +50,7 @@ map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: []
 Grid 1
 Number of intervals per direction: [ 2 ]
 Knot coordinates:
-   Size: [ 3 ]  Weights: [3]
-   Direction: 0
+   Entry id: 0
    [ 0 0.500000 1.00000 ]
 
 Element properties:
@@ -73,8 +69,7 @@ Element properties:
 Grid 2
 Number of intervals per direction: [ 3 ]
 Knot coordinates:
-   Size: [ 4 ]  Weights: [4]
-   Direction: 0
+   Entry id: 0
    [ 0 0.333333 0.666667 1.00000 ]
 
 Element properties:
@@ -96,8 +91,7 @@ Element properties:
 Grid union
 Number of intervals per direction: [ 4 ]
 Knot coordinates:
-   Size: [ 5 ]  Weights: [5]
-   Direction: 0
+   Entry id: 0
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
 Element properties:
@@ -127,10 +121,9 @@ map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [0] Flat ID: 1    
 Grid 1
 Number of intervals per direction: [ 2 2 ]
 Knot coordinates:
-   Size: [ 3 3 ]  Weights: [3,9]
-   Direction: 0
+   Entry id: 0
    [ 0 0.500000 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.500000 1.00000 ]
 
 Element properties:
@@ -155,10 +148,9 @@ Element properties:
 Grid 2
 Number of intervals per direction: [ 3 3 ]
 Knot coordinates:
-   Size: [ 4 4 ]  Weights: [4,16]
-   Direction: 0
+   Entry id: 0
    [ 0 0.333333 0.666667 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.333333 0.666667 1.00000 ]
 
 Element properties:
@@ -198,10 +190,9 @@ Element properties:
 Grid union
 Number of intervals per direction: [ 4 4 ]
 Knot coordinates:
-   Size: [ 5 5 ]  Weights: [5,25]
-   Direction: 0
+   Entry id: 0
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
 Element properties:
@@ -267,12 +258,11 @@ map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [0,0] Flat ID: 3  
 Grid 1
 Number of intervals per direction: [ 2 2 2 ]
 Knot coordinates:
-   Size: [ 3 3 3 ]  Weights: [3,9,27]
-   Direction: 0
+   Entry id: 0
    [ 0 0.500000 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.500000 1.00000 ]
-   Direction: 2
+   Entry id: 2
    [ 0 0.500000 1.00000 ]
 
 Element properties:
@@ -309,12 +299,11 @@ Element properties:
 Grid 2
 Number of intervals per direction: [ 3 3 3 ]
 Knot coordinates:
-   Size: [ 4 4 4 ]  Weights: [4,16,64]
-   Direction: 0
+   Entry id: 0
    [ 0 0.333333 0.666667 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.333333 0.666667 1.00000 ]
-   Direction: 2
+   Entry id: 2
    [ 0 0.333333 0.666667 1.00000 ]
 
 Element properties:
@@ -408,12 +397,11 @@ Element properties:
 Grid union
 Number of intervals per direction: [ 4 4 4 ]
 Knot coordinates:
-   Size: [ 5 5 5 ]  Weights: [5,25,125]
-   Direction: 0
+   Entry id: 0
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
-   Direction: 2
+   Entry id: 2
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
 Element properties:

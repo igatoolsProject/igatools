@@ -394,7 +394,7 @@ get_grid_from_xml(const boost::property_tree::ptree &tree)
   }
   //-------------------------------------------------------------------------
 
-  return Grid<dim>::create(CartesianProductArray<Real,dim>(knots));
+  return Grid<dim>::create(knots);
 }
 
 

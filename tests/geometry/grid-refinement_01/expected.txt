@@ -4,8 +4,7 @@ D i m = 1
 Unrefined Grid:
 Number of intervals per direction: [ 1 ]
 Knot coordinates:
-   Size: [ 2 ]  Weights: [2]
-   Direction: 0
+   Entry id: 0
    [ 0 1.00000 ]
 
 Element properties:
@@ -26,8 +25,7 @@ Element properties:
 Previous grid refined with 2 sub_intervals along each direction:
 Number of intervals per direction: [ 2 ]
 Knot coordinates:
-   Size: [ 3 ]  Weights: [3]
-   Direction: 0
+   Entry id: 0
    [ 0 0.500000 1.00000 ]
 
 Element properties:
@@ -54,8 +52,7 @@ Element properties:
 Previous grid refined with 3 sub_intervals along each direction:
 Number of intervals per direction: [ 6 ]
 Knot coordinates:
-   Size: [ 7 ]  Weights: [7]
-   Direction: 0
+   Entry id: 0
    [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
 
 Element properties:
@@ -106,8 +103,7 @@ Element properties:
 Previous grid refined with 4 sub_intervals along the direction 0:
 Number of intervals per direction: [ 24 ]
 Knot coordinates:
-   Size: [ 25 ]  Weights: [25]
-   Direction: 0
+   Entry id: 0
    [ 0 0.0416667 0.0833333 0.125000 0.166667 0.208333 0.250000 0.291667 0.333333 0.375000 0.416667 0.458333 0.500000 0.541667 0.583333 0.625000 0.666667 0.708333 0.750000 0.791667 0.833333 0.875000 0.916667 0.958333 1.00000 ]
 
 Element properties:
@@ -271,10 +267,9 @@ D i m = 2
 Unrefined Grid:
 Number of intervals per direction: [ 1 1 ]
 Knot coordinates:
-   Size: [ 2 2 ]  Weights: [2,4]
-   Direction: 0
+   Entry id: 0
    [ 0 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 1.00000 ]
 
 Element properties:
@@ -295,10 +290,9 @@ Element properties:
 Previous grid refined with 2 sub_intervals along each direction:
 Number of intervals per direction: [ 2 2 ]
 Knot coordinates:
-   Size: [ 3 3 ]  Weights: [3,9]
-   Direction: 0
+   Entry id: 0
    [ 0 0.500000 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.500000 1.00000 ]
 
 Element properties:
@@ -337,10 +331,9 @@ Element properties:
 Previous grid refined with 3 sub_intervals along each direction:
 Number of intervals per direction: [ 6 6 ]
 Knot coordinates:
-   Size: [ 7 7 ]  Weights: [7,49]
-   Direction: 0
+   Entry id: 0
    [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
 
 Element properties:
@@ -571,10 +564,9 @@ Element properties:
 Previous grid refined with 4 sub_intervals along the direction 0:
 Number of intervals per direction: [ 24 6 ]
 Knot coordinates:
-   Size: [ 25 7 ]  Weights: [25,175]
-   Direction: 0
+   Entry id: 0
    [ 0 0.0416667 0.0833333 0.125000 0.166667 0.208333 0.250000 0.291667 0.333333 0.375000 0.416667 0.458333 0.500000 0.541667 0.583333 0.625000 0.666667 0.708333 0.750000 0.791667 0.833333 0.875000 0.916667 0.958333 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
 
 Element properties:
@@ -1458,12 +1450,11 @@ D i m = 3
 Unrefined Grid:
 Number of intervals per direction: [ 1 1 1 ]
 Knot coordinates:
-   Size: [ 2 2 2 ]  Weights: [2,4,8]
-   Direction: 0
+   Entry id: 0
    [ 0 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 1.00000 ]
-   Direction: 2
+   Entry id: 2
    [ 0 1.00000 ]
 
 Element properties:
@@ -1484,12 +1475,11 @@ Element properties:
 Previous grid refined with 2 sub_intervals along each direction:
 Number of intervals per direction: [ 2 2 2 ]
 Knot coordinates:
-   Size: [ 3 3 3 ]  Weights: [3,9,27]
-   Direction: 0
+   Entry id: 0
    [ 0 0.500000 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.500000 1.00000 ]
-   Direction: 2
+   Entry id: 2
    [ 0 0.500000 1.00000 ]
 
 Element properties:
@@ -1552,12 +1542,11 @@ Element properties:
 Previous grid refined with 3 sub_intervals along each direction:
 Number of intervals per direction: [ 6 6 6 ]
 Knot coordinates:
-   Size: [ 7 7 7 ]  Weights: [7,49,343]
-   Direction: 0
+   Entry id: 0
    [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
-   Direction: 2
+   Entry id: 2
    [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
 
 Element properties:
@@ -2868,12 +2857,11 @@ Element properties:
 Previous grid refined with 4 sub_intervals along the direction 0:
 Number of intervals per direction: [ 24 6 6 ]
 Knot coordinates:
-   Size: [ 25 7 7 ]  Weights: [25,175,1225]
-   Direction: 0
+   Entry id: 0
    [ 0 0.0416667 0.0833333 0.125000 0.166667 0.208333 0.250000 0.291667 0.333333 0.375000 0.416667 0.458333 0.500000 0.541667 0.583333 0.625000 0.666667 0.708333 0.750000 0.791667 0.833333 0.875000 0.916667 0.958333 1.00000 ]
-   Direction: 1
+   Entry id: 1
    [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
-   Direction: 2
+   Entry id: 2
    [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
 
 Element properties:

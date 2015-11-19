@@ -193,7 +193,8 @@ public:
 
 
   /** Type for the vector of knot vectors */
-  using KnotCoordinates = CartesianProductArray<Real, dim_>;
+//  using KnotCoordinates = CartesianProductArray<Real, dim_>;
+  using KnotCoordinates = SafeSTLArray<SafeSTLVector<Real>,dim_>;
 
   /** @name Constructors*/
   ///@{
@@ -228,6 +229,7 @@ protected:
    */
   explicit Grid(const BBox<dim_> &bbox,
                 const TensorSize<dim_> &n_knots);
+#if 0
   /**
    * Construct a cartesian grid where the knot coordinate in each
    * direction is provided as CartesianProductArray object.
@@ -239,6 +241,7 @@ protected:
    */
   explicit
   Grid(const KnotCoordinates &knots);
+#endif
 
   /**
    * Construct a cartesian grid where the knot coordinate in each
@@ -314,6 +317,7 @@ public:
   static std::shared_ptr<const self_t>
   const_create(const BBox<dim_> &bbox, const Size n_knots);
 
+#if 0
   /**
    * Construct a (non-const) cartesian grid where the knot coordinate in each
    * direction is provided as CartesianProductArray object.
@@ -341,6 +345,7 @@ public:
    */
   static std::shared_ptr<const self_t>
   const_create(const KnotCoordinates &knots);
+#endif
 
   /**
    * Construct a (non-const) cartesian grid where the knot coordinate in each
@@ -455,7 +460,7 @@ public:
   /**
    * Computes the interval lengths along each direction.
    */
-  CartesianProductArray<Real, dim_> get_element_lengths() const;
+  KnotCoordinates get_element_lengths() const;
 
   /**
    * Returns the smallest <tt>dim_</tt>-dimensional bounding box enclosing the
