@@ -1,6 +1,5 @@
 Element 0
    Element ID: Flat ID: 0    Tensor ID: [0,0,0]
-   
    Face: 0
       Normal vector:
          ValueVector (num_points=1) :

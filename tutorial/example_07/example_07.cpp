@@ -19,12 +19,11 @@
 //-+--------------------------------------------------------------------
 
 // [analytical map]
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
+#include <igatools/geometry/grid_function_lib.h>
 // [analytical map]
 
 // [ig map bspline]
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 // [ig map bspline]
@@ -49,7 +48,7 @@ using std::to_string;
 template<int dim>
 void analytical_geometry()
 {
-  using Function = functions::BallFunction<dim>;
+  using BallFunc = grid_functions::BallGridFunction<dim>;
 
   BBox<dim> box;
   box[0] = {{0.5,1}};
@@ -58,9 +57,9 @@ void analytical_geometry()
 
   const int n_knots = 3;
   auto grid = Grid<dim>::create(box, n_knots);
-  auto map  = Function::create(grid, IdentityFunction<dim>::create(grid));
+  auto map  = BallFunc::create(grid);
 
-  const int n_plot_points = 2;
+  const int n_plot_points = 11;
   Writer<dim> writer(map, n_plot_points);
   string filename = "ball_geometry-" + to_string(dim) + "d" ;
   writer.save(filename);
@@ -72,15 +71,15 @@ void analytical_geometry()
 void nurb_geometry()
 {
   const int dim = 2;
-  using Function = IgFunction<dim,0,dim,1>;
+  using Function = IgGridFunction<dim,dim>;
 
   const int deg = 2;
   const int n_knots = 3;
-  auto grid = Grid<dim>::create(n_knots);
-  using Basis = BSpline<dim,dim>;
-  auto space = Basis::create(deg, grid);
+  auto grid = Grid<dim>::const_create(n_knots);
+  auto space = SplineSpace<dim,dim>::const_create(deg, grid);
+  auto basis = BSpline<dim,dim>::const_create(space);
 
-  auto control_pts = create_vector(*space,DofProperties::active,Epetra_SerialComm());
+  auto control_pts = create_vector(*basis,DofProperties::active,Epetra_SerialComm());
 
   DynamicMultiArray<Points<dim>, dim> c_points(deg-1+n_knots);
   const Real eps = 0.2;
@@ -108,10 +107,10 @@ void nurb_geometry()
     (*control_pts)[i+n_points] = flat_points[i][1];
   }
 
-  auto F = Function::create(space, control_pts);
+  auto F = Function::const_create(basis, *control_pts);
 
 
-  const int n_plot_points = 10;
+  const int n_plot_points = 11;
   Writer<dim> writer(F, n_plot_points);
   string filename = "nurb_geometry-" + to_string(dim) + "d" ;
   writer.save(filename);
@@ -127,7 +126,7 @@ void nurb_geometry_from_file()
 
   auto map = get_mapping_from_file<dim>(input_file);
 
-  const int n_plot_points = 10;
+  const int n_plot_points = 11;
   Writer<dim> writer(map, n_plot_points);
   string filename = "nurb_geometry_from_file-" + to_string(dim) + "d" ;
   writer.save(filename);

@@ -23,8 +23,14 @@ Sub element: 0
    
    Element properties:
       IDs with property "active":
+         Entry id: 0
+            Flat ID: 0    Tensor ID: []
+         
       
    
+   {Flat ID: 0    Tensor ID: []
+   , Flat ID: 0    Tensor ID: [0]
+   }
 
 Sub element: 1
    Number of intervals per direction: [ ]
@@ -33,8 +39,14 @@ Sub element: 1
    
    Element properties:
       IDs with property "active":
+         Entry id: 0
+            Flat ID: 0    Tensor ID: []
+         
       
    
+   {Flat ID: 0    Tensor ID: []
+   , Flat ID: 0    Tensor ID: [0]
+   }
 
 ========================================================================
 

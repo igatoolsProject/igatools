@@ -1,69 +1,41 @@
 Traversing the elements of a 1-dimensional grid.
 The tensor index of element: 0 is: Flat ID: 0    Tensor ID: [0]
-
 The tensor index of element: 1 is: Flat ID: 1    Tensor ID: [1]
-
 
 Traversing the elements of a 2-dimensional grid.
 The tensor index of element: 0 is: Flat ID: 0    Tensor ID: [0,0]
-
 The tensor index of element: 1 is: Flat ID: 2    Tensor ID: [0,1]
-
 The tensor index of element: 2 is: Flat ID: 1    Tensor ID: [1,0]
-
 The tensor index of element: 3 is: Flat ID: 3    Tensor ID: [1,1]
-
 
 Traversing the elements of a 3-dimensional grid.
 The tensor index of element: 0 is: Flat ID: 0    Tensor ID: [0,0,0]
-
 The tensor index of element: 1 is: Flat ID: 4    Tensor ID: [0,0,1]
-
 The tensor index of element: 2 is: Flat ID: 2    Tensor ID: [0,1,0]
-
 The tensor index of element: 3 is: Flat ID: 6    Tensor ID: [0,1,1]
-
 The tensor index of element: 4 is: Flat ID: 1    Tensor ID: [1,0,0]
-
 The tensor index of element: 5 is: Flat ID: 5    Tensor ID: [1,0,1]
-
 The tensor index of element: 6 is: Flat ID: 3    Tensor ID: [1,1,0]
-
 The tensor index of element: 7 is: Flat ID: 7    Tensor ID: [1,1,1]
 
 
-
 Traversing the elements of a 1-dimensional B-spline space.
-Element: Flat ID: 0    Tensor ID: [0]
- has global basis: [ 0 1 2 ]
-Element: Flat ID: 1    Tensor ID: [1]
- has global basis: [ 1 2 3 ]
+Element: Flat ID: 0    Tensor ID: [0] has global basis: [ 0 1 2 ]
+Element: Flat ID: 1    Tensor ID: [1] has global basis: [ 1 2 3 ]
 
 Traversing the elements of a 2-dimensional B-spline space.
-Element: Flat ID: 0    Tensor ID: [0,0]
- has global basis: [ 0 1 2 4 5 6 8 9 10 ]
-Element: Flat ID: 2    Tensor ID: [0,1]
- has global basis: [ 4 5 6 8 9 10 12 13 14 ]
-Element: Flat ID: 1    Tensor ID: [1,0]
- has global basis: [ 1 2 3 5 6 7 9 10 11 ]
-Element: Flat ID: 3    Tensor ID: [1,1]
- has global basis: [ 5 6 7 9 10 11 13 14 15 ]
+Element: Flat ID: 0    Tensor ID: [0,0] has global basis: [ 0 1 2 4 5 6 8 9 10 ]
+Element: Flat ID: 2    Tensor ID: [0,1] has global basis: [ 4 5 6 8 9 10 12 13 14 ]
+Element: Flat ID: 1    Tensor ID: [1,0] has global basis: [ 1 2 3 5 6 7 9 10 11 ]
+Element: Flat ID: 3    Tensor ID: [1,1] has global basis: [ 5 6 7 9 10 11 13 14 15 ]
 
 Traversing the elements of a 3-dimensional B-spline space.
-Element: Flat ID: 0    Tensor ID: [0,0,0]
- has global basis: [ 0 1 2 4 5 6 8 9 10 16 17 18 20 21 22 24 25 26 32 33 34 36 37 38 40 41 42 ]
-Element: Flat ID: 4    Tensor ID: [0,0,1]
- has global basis: [ 16 17 18 20 21 22 24 25 26 32 33 34 36 37 38 40 41 42 48 49 50 52 53 54 56 57 58 ]
-Element: Flat ID: 2    Tensor ID: [0,1,0]
- has global basis: [ 4 5 6 8 9 10 12 13 14 20 21 22 24 25 26 28 29 30 36 37 38 40 41 42 44 45 46 ]
-Element: Flat ID: 6    Tensor ID: [0,1,1]
- has global basis: [ 20 21 22 24 25 26 28 29 30 36 37 38 40 41 42 44 45 46 52 53 54 56 57 58 60 61 62 ]
-Element: Flat ID: 1    Tensor ID: [1,0,0]
- has global basis: [ 1 2 3 5 6 7 9 10 11 17 18 19 21 22 23 25 26 27 33 34 35 37 38 39 41 42 43 ]
-Element: Flat ID: 5    Tensor ID: [1,0,1]
- has global basis: [ 17 18 19 21 22 23 25 26 27 33 34 35 37 38 39 41 42 43 49 50 51 53 54 55 57 58 59 ]
-Element: Flat ID: 3    Tensor ID: [1,1,0]
- has global basis: [ 5 6 7 9 10 11 13 14 15 21 22 23 25 26 27 29 30 31 37 38 39 41 42 43 45 46 47 ]
-Element: Flat ID: 7    Tensor ID: [1,1,1]
- has global basis: [ 21 22 23 25 26 27 29 30 31 37 38 39 41 42 43 45 46 47 53 54 55 57 58 59 61 62 63 ]
+Element: Flat ID: 0    Tensor ID: [0,0,0] has global basis: [ 0 1 2 4 5 6 8 9 10 16 17 18 20 21 22 24 25 26 32 33 34 36 37 38 40 41 42 ]
+Element: Flat ID: 4    Tensor ID: [0,0,1] has global basis: [ 16 17 18 20 21 22 24 25 26 32 33 34 36 37 38 40 41 42 48 49 50 52 53 54 56 57 58 ]
+Element: Flat ID: 2    Tensor ID: [0,1,0] has global basis: [ 4 5 6 8 9 10 12 13 14 20 21 22 24 25 26 28 29 30 36 37 38 40 41 42 44 45 46 ]
+Element: Flat ID: 6    Tensor ID: [0,1,1] has global basis: [ 20 21 22 24 25 26 28 29 30 36 37 38 40 41 42 44 45 46 52 53 54 56 57 58 60 61 62 ]
+Element: Flat ID: 1    Tensor ID: [1,0,0] has global basis: [ 1 2 3 5 6 7 9 10 11 17 18 19 21 22 23 25 26 27 33 34 35 37 38 39 41 42 43 ]
+Element: Flat ID: 5    Tensor ID: [1,0,1] has global basis: [ 17 18 19 21 22 23 25 26 27 33 34 35 37 38 39 41 42 43 49 50 51 53 54 55 57 58 59 ]
+Element: Flat ID: 3    Tensor ID: [1,1,0] has global basis: [ 5 6 7 9 10 11 13 14 15 21 22 23 25 26 27 29 30 31 37 38 39 41 42 43 45 46 47 ]
+Element: Flat ID: 7    Tensor ID: [1,1,1] has global basis: [ 21 22 23 25 26 27 29 30 31 37 38 39 41 42 43 45 46 47 53 54 55 57 58 59 61 62 63 ]
 

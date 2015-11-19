@@ -7,6 +7,9 @@ Knot coordinates:
 
 Element properties:
    IDs with property "active":
+      Entry id: 0
+         Flat ID: 0    Tensor ID: []
+      
    
 
 ------------------------------------------
@@ -19,6 +22,9 @@ Knot coordinates:
 
 Element properties:
    IDs with property "active":
+      Entry id: 0
+         Flat ID: 0    Tensor ID: []
+      
    
 
 ------------------------------------------
@@ -31,10 +37,13 @@ Knot coordinates:
 
 Element properties:
    IDs with property "active":
+      Entry id: 0
+         Flat ID: 0    Tensor ID: []
+      
    
 
-map_elem_grid_union_to_elem_grid_1 = 
-map_elem_grid_union_to_elem_grid_2 = 
+map_elem_grid_union_to_elem_grid_1 = Flat ID: 0    Tensor ID: [] 
+map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [] 
 ------------------------------------------
 =============== Dimension 0 -- end =================
 
@@ -107,16 +116,8 @@ Element properties:
       
    
 
-map_elem_grid_union_to_elem_grid_1 = Flat ID: 0    Tensor ID: [0]
- Flat ID: 0    Tensor ID: [0]
- Flat ID: 1    Tensor ID: [1]
- Flat ID: 1    Tensor ID: [1]
- 
-map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [0]
- Flat ID: 1    Tensor ID: [1]
- Flat ID: 1    Tensor ID: [1]
- Flat ID: 2    Tensor ID: [2]
- 
+map_elem_grid_union_to_elem_grid_1 = Flat ID: 0    Tensor ID: [0] Flat ID: 0    Tensor ID: [0] Flat ID: 1    Tensor ID: [1] Flat ID: 1    Tensor ID: [1] 
+map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [0] Flat ID: 1    Tensor ID: [1] Flat ID: 1    Tensor ID: [1] Flat ID: 2    Tensor ID: [2] 
 ------------------------------------------
 =============== Dimension 1 -- end =================
 
@@ -255,40 +256,8 @@ Element properties:
       
    
 
-map_elem_grid_union_to_elem_grid_1 = Flat ID: 0    Tensor ID: [0,0]
- Flat ID: 0    Tensor ID: [0,0]
- Flat ID: 2    Tensor ID: [0,1]
- Flat ID: 2    Tensor ID: [0,1]
- Flat ID: 0    Tensor ID: [0,0]
- Flat ID: 0    Tensor ID: [0,0]
- Flat ID: 2    Tensor ID: [0,1]
- Flat ID: 2    Tensor ID: [0,1]
- Flat ID: 1    Tensor ID: [1,0]
- Flat ID: 1    Tensor ID: [1,0]
- Flat ID: 3    Tensor ID: [1,1]
- Flat ID: 3    Tensor ID: [1,1]
- Flat ID: 1    Tensor ID: [1,0]
- Flat ID: 1    Tensor ID: [1,0]
- Flat ID: 3    Tensor ID: [1,1]
- Flat ID: 3    Tensor ID: [1,1]
- 
-map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [0,0]
- Flat ID: 3    Tensor ID: [0,1]
- Flat ID: 3    Tensor ID: [0,1]
- Flat ID: 6    Tensor ID: [0,2]
- Flat ID: 1    Tensor ID: [1,0]
- Flat ID: 4    Tensor ID: [1,1]
- Flat ID: 4    Tensor ID: [1,1]
- Flat ID: 7    Tensor ID: [1,2]
- Flat ID: 1    Tensor ID: [1,0]
- Flat ID: 4    Tensor ID: [1,1]
- Flat ID: 4    Tensor ID: [1,1]
- Flat ID: 7    Tensor ID: [1,2]
- Flat ID: 2    Tensor ID: [2,0]
- Flat ID: 5    Tensor ID: [2,1]
- Flat ID: 5    Tensor ID: [2,1]
- Flat ID: 8    Tensor ID: [2,2]
- 
+map_elem_grid_union_to_elem_grid_1 = Flat ID: 0    Tensor ID: [0,0] Flat ID: 0    Tensor ID: [0,0] Flat ID: 2    Tensor ID: [0,1] Flat ID: 2    Tensor ID: [0,1] Flat ID: 0    Tensor ID: [0,0] Flat ID: 0    Tensor ID: [0,0] Flat ID: 2    Tensor ID: [0,1] Flat ID: 2    Tensor ID: [0,1] Flat ID: 1    Tensor ID: [1,0] Flat ID: 1    Tensor ID: [1,0] Flat ID: 3    Tensor ID: [1,1] Flat ID: 3    Tensor ID: [1,1] Flat ID: 1    Tensor ID: [1,0] Flat ID: 1    Tensor ID: [1,0] Flat ID: 3    Tensor ID: [1,1] Flat ID: 3    Tensor ID: [1,1] 
+map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [0,0] Flat ID: 3    Tensor ID: [0,1] Flat ID: 3    Tensor ID: [0,1] Flat ID: 6    Tensor ID: [0,2] Flat ID: 1    Tensor ID: [1,0] Flat ID: 4    Tensor ID: [1,1] Flat ID: 4    Tensor ID: [1,1] Flat ID: 7    Tensor ID: [1,2] Flat ID: 1    Tensor ID: [1,0] Flat ID: 4    Tensor ID: [1,1] Flat ID: 4    Tensor ID: [1,1] Flat ID: 7    Tensor ID: [1,2] Flat ID: 2    Tensor ID: [2,0] Flat ID: 5    Tensor ID: [2,1] Flat ID: 5    Tensor ID: [2,1] Flat ID: 8    Tensor ID: [2,2] 
 ------------------------------------------
 =============== Dimension 2 -- end =================
 
@@ -643,136 +612,8 @@ Element properties:
       
    
 
-map_elem_grid_union_to_elem_grid_1 = Flat ID: 0    Tensor ID: [0,0,0]
- Flat ID: 0    Tensor ID: [0,0,0]
- Flat ID: 4    Tensor ID: [0,0,1]
- Flat ID: 4    Tensor ID: [0,0,1]
- Flat ID: 0    Tensor ID: [0,0,0]
- Flat ID: 0    Tensor ID: [0,0,0]
- Flat ID: 4    Tensor ID: [0,0,1]
- Flat ID: 4    Tensor ID: [0,0,1]
- Flat ID: 2    Tensor ID: [0,1,0]
- Flat ID: 2    Tensor ID: [0,1,0]
- Flat ID: 6    Tensor ID: [0,1,1]
- Flat ID: 6    Tensor ID: [0,1,1]
- Flat ID: 2    Tensor ID: [0,1,0]
- Flat ID: 2    Tensor ID: [0,1,0]
- Flat ID: 6    Tensor ID: [0,1,1]
- Flat ID: 6    Tensor ID: [0,1,1]
- Flat ID: 0    Tensor ID: [0,0,0]
- Flat ID: 0    Tensor ID: [0,0,0]
- Flat ID: 4    Tensor ID: [0,0,1]
- Flat ID: 4    Tensor ID: [0,0,1]
- Flat ID: 0    Tensor ID: [0,0,0]
- Flat ID: 0    Tensor ID: [0,0,0]
- Flat ID: 4    Tensor ID: [0,0,1]
- Flat ID: 4    Tensor ID: [0,0,1]
- Flat ID: 2    Tensor ID: [0,1,0]
- Flat ID: 2    Tensor ID: [0,1,0]
- Flat ID: 6    Tensor ID: [0,1,1]
- Flat ID: 6    Tensor ID: [0,1,1]
- Flat ID: 2    Tensor ID: [0,1,0]
- Flat ID: 2    Tensor ID: [0,1,0]
- Flat ID: 6    Tensor ID: [0,1,1]
- Flat ID: 6    Tensor ID: [0,1,1]
- Flat ID: 1    Tensor ID: [1,0,0]
- Flat ID: 1    Tensor ID: [1,0,0]
- Flat ID: 5    Tensor ID: [1,0,1]
- Flat ID: 5    Tensor ID: [1,0,1]
- Flat ID: 1    Tensor ID: [1,0,0]
- Flat ID: 1    Tensor ID: [1,0,0]
- Flat ID: 5    Tensor ID: [1,0,1]
- Flat ID: 5    Tensor ID: [1,0,1]
- Flat ID: 3    Tensor ID: [1,1,0]
- Flat ID: 3    Tensor ID: [1,1,0]
- Flat ID: 7    Tensor ID: [1,1,1]
- Flat ID: 7    Tensor ID: [1,1,1]
- Flat ID: 3    Tensor ID: [1,1,0]
- Flat ID: 3    Tensor ID: [1,1,0]
- Flat ID: 7    Tensor ID: [1,1,1]
- Flat ID: 7    Tensor ID: [1,1,1]
- Flat ID: 1    Tensor ID: [1,0,0]
- Flat ID: 1    Tensor ID: [1,0,0]
- Flat ID: 5    Tensor ID: [1,0,1]
- Flat ID: 5    Tensor ID: [1,0,1]
- Flat ID: 1    Tensor ID: [1,0,0]
- Flat ID: 1    Tensor ID: [1,0,0]
- Flat ID: 5    Tensor ID: [1,0,1]
- Flat ID: 5    Tensor ID: [1,0,1]
- Flat ID: 3    Tensor ID: [1,1,0]
- Flat ID: 3    Tensor ID: [1,1,0]
- Flat ID: 7    Tensor ID: [1,1,1]
- Flat ID: 7    Tensor ID: [1,1,1]
- Flat ID: 3    Tensor ID: [1,1,0]
- Flat ID: 3    Tensor ID: [1,1,0]
- Flat ID: 7    Tensor ID: [1,1,1]
- Flat ID: 7    Tensor ID: [1,1,1]
- 
-map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [0,0,0]
- Flat ID: 9    Tensor ID: [0,0,1]
- Flat ID: 9    Tensor ID: [0,0,1]
- Flat ID: 18    Tensor ID: [0,0,2]
- Flat ID: 3    Tensor ID: [0,1,0]
- Flat ID: 12    Tensor ID: [0,1,1]
- Flat ID: 12    Tensor ID: [0,1,1]
- Flat ID: 21    Tensor ID: [0,1,2]
- Flat ID: 3    Tensor ID: [0,1,0]
- Flat ID: 12    Tensor ID: [0,1,1]
- Flat ID: 12    Tensor ID: [0,1,1]
- Flat ID: 21    Tensor ID: [0,1,2]
- Flat ID: 6    Tensor ID: [0,2,0]
- Flat ID: 15    Tensor ID: [0,2,1]
- Flat ID: 15    Tensor ID: [0,2,1]
- Flat ID: 24    Tensor ID: [0,2,2]
- Flat ID: 1    Tensor ID: [1,0,0]
- Flat ID: 10    Tensor ID: [1,0,1]
- Flat ID: 10    Tensor ID: [1,0,1]
- Flat ID: 19    Tensor ID: [1,0,2]
- Flat ID: 4    Tensor ID: [1,1,0]
- Flat ID: 13    Tensor ID: [1,1,1]
- Flat ID: 13    Tensor ID: [1,1,1]
- Flat ID: 22    Tensor ID: [1,1,2]
- Flat ID: 4    Tensor ID: [1,1,0]
- Flat ID: 13    Tensor ID: [1,1,1]
- Flat ID: 13    Tensor ID: [1,1,1]
- Flat ID: 22    Tensor ID: [1,1,2]
- Flat ID: 7    Tensor ID: [1,2,0]
- Flat ID: 16    Tensor ID: [1,2,1]
- Flat ID: 16    Tensor ID: [1,2,1]
- Flat ID: 25    Tensor ID: [1,2,2]
- Flat ID: 1    Tensor ID: [1,0,0]
- Flat ID: 10    Tensor ID: [1,0,1]
- Flat ID: 10    Tensor ID: [1,0,1]
- Flat ID: 19    Tensor ID: [1,0,2]
- Flat ID: 4    Tensor ID: [1,1,0]
- Flat ID: 13    Tensor ID: [1,1,1]
- Flat ID: 13    Tensor ID: [1,1,1]
- Flat ID: 22    Tensor ID: [1,1,2]
- Flat ID: 4    Tensor ID: [1,1,0]
- Flat ID: 13    Tensor ID: [1,1,1]
- Flat ID: 13    Tensor ID: [1,1,1]
- Flat ID: 22    Tensor ID: [1,1,2]
- Flat ID: 7    Tensor ID: [1,2,0]
- Flat ID: 16    Tensor ID: [1,2,1]
- Flat ID: 16    Tensor ID: [1,2,1]
- Flat ID: 25    Tensor ID: [1,2,2]
- Flat ID: 2    Tensor ID: [2,0,0]
- Flat ID: 11    Tensor ID: [2,0,1]
- Flat ID: 11    Tensor ID: [2,0,1]
- Flat ID: 20    Tensor ID: [2,0,2]
- Flat ID: 5    Tensor ID: [2,1,0]
- Flat ID: 14    Tensor ID: [2,1,1]
- Flat ID: 14    Tensor ID: [2,1,1]
- Flat ID: 23    Tensor ID: [2,1,2]
- Flat ID: 5    Tensor ID: [2,1,0]
- Flat ID: 14    Tensor ID: [2,1,1]
- Flat ID: 14    Tensor ID: [2,1,1]
- Flat ID: 23    Tensor ID: [2,1,2]
- Flat ID: 8    Tensor ID: [2,2,0]
- Flat ID: 17    Tensor ID: [2,2,1]
- Flat ID: 17    Tensor ID: [2,2,1]
- Flat ID: 26    Tensor ID: [2,2,2]
- 
+map_elem_grid_union_to_elem_grid_1 = Flat ID: 0    Tensor ID: [0,0,0] Flat ID: 0    Tensor ID: [0,0,0] Flat ID: 4    Tensor ID: [0,0,1] Flat ID: 4    Tensor ID: [0,0,1] Flat ID: 0    Tensor ID: [0,0,0] Flat ID: 0    Tensor ID: [0,0,0] Flat ID: 4    Tensor ID: [0,0,1] Flat ID: 4    Tensor ID: [0,0,1] Flat ID: 2    Tensor ID: [0,1,0] Flat ID: 2    Tensor ID: [0,1,0] Flat ID: 6    Tensor ID: [0,1,1] Flat ID: 6    Tensor ID: [0,1,1] Flat ID: 2    Tensor ID: [0,1,0] Flat ID: 2    Tensor ID: [0,1,0] Flat ID: 6    Tensor ID: [0,1,1] Flat ID: 6    Tensor ID: [0,1,1] Flat ID: 0    Tensor ID: [0,0,0] Flat ID: 0    Tensor ID: [0,0,0] Flat ID: 4    Tensor ID: [0,0,1] Flat ID: 4    Tensor ID: [0,0,1] Flat ID: 0    Tensor ID: [0,0,0] Flat ID: 0    Tensor ID: [0,0,0] Flat ID: 4    Tensor ID: [0,0,1] Flat ID: 4    Tensor ID: [0,0,1] Flat ID: 2    Tensor ID: [0,1,0] Flat ID: 2    Tensor ID: [0,1,0] Flat ID: 6    Tensor ID: [0,1,1] Flat ID: 6    Tensor ID: [0,1,1] Flat ID: 2    Tensor ID: [0,1,0] Flat ID: 2    Tensor ID: [0,1,0] Flat ID: 6    Tensor ID: [0,1,1] Flat ID: 6    Tensor ID: [0,1,1] Flat ID: 1    Tensor ID: [1,0,0] Flat ID: 1    Tensor ID: [1,0,0] Flat ID: 5    Tensor ID: [1,0,1] Flat ID: 5    Tensor ID: [1,0,1] Flat ID: 1    Tensor ID: [1,0,0] Flat ID: 1    Tensor ID: [1,0,0] Flat ID: 5    Tensor ID: [1,0,1] Flat ID: 5    Tensor ID: [1,0,1] Flat ID: 3    Tensor ID: [1,1,0] Flat ID: 3    Tensor ID: [1,1,0] Flat ID: 7    Tensor ID: [1,1,1] Flat ID: 7    Tensor ID: [1,1,1] Flat ID: 3    Tensor ID: [1,1,0] Flat ID: 3    Tensor ID: [1,1,0] Flat ID: 7    Tensor ID: [1,1,1] Flat ID: 7    Tensor ID: [1,1,1] Flat ID: 1    Tensor ID: [1,0,0] Flat ID: 1    Tensor ID: [1,0,0] Flat ID: 5    Tensor ID: [1,0,1] Flat ID: 5    Tensor ID: [1,0,1] Flat ID: 1    Tensor ID: [1,0,0] Flat ID: 1    Tensor ID: [1,0,0] Flat ID: 5    Tensor ID: [1,0,1] Flat ID: 5    Tensor ID: [1,0,1] Flat ID: 3    Tensor ID: [1,1,0] Flat ID: 3    Tensor ID: [1,1,0] Flat ID: 7    Tensor ID: [1,1,1] Flat ID: 7    Tensor ID: [1,1,1] Flat ID: 3    Tensor ID: [1,1,0] Flat ID: 3    Tensor ID: [1,1,0] Flat ID: 7    Tensor ID: [1,1,1] Flat ID: 7    Tensor ID: [1,1,1] 
+map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [0,0,0] Flat ID: 9    Tensor ID: [0,0,1] Flat ID: 9    Tensor ID: [0,0,1] Flat ID: 18    Tensor ID: [0,0,2] Flat ID: 3    Tensor ID: [0,1,0] Flat ID: 12    Tensor ID: [0,1,1] Flat ID: 12    Tensor ID: [0,1,1] Flat ID: 21    Tensor ID: [0,1,2] Flat ID: 3    Tensor ID: [0,1,0] Flat ID: 12    Tensor ID: [0,1,1] Flat ID: 12    Tensor ID: [0,1,1] Flat ID: 21    Tensor ID: [0,1,2] Flat ID: 6    Tensor ID: [0,2,0] Flat ID: 15    Tensor ID: [0,2,1] Flat ID: 15    Tensor ID: [0,2,1] Flat ID: 24    Tensor ID: [0,2,2] Flat ID: 1    Tensor ID: [1,0,0] Flat ID: 10    Tensor ID: [1,0,1] Flat ID: 10    Tensor ID: [1,0,1] Flat ID: 19    Tensor ID: [1,0,2] Flat ID: 4    Tensor ID: [1,1,0] Flat ID: 13    Tensor ID: [1,1,1] Flat ID: 13    Tensor ID: [1,1,1] Flat ID: 22    Tensor ID: [1,1,2] Flat ID: 4    Tensor ID: [1,1,0] Flat ID: 13    Tensor ID: [1,1,1] Flat ID: 13    Tensor ID: [1,1,1] Flat ID: 22    Tensor ID: [1,1,2] Flat ID: 7    Tensor ID: [1,2,0] Flat ID: 16    Tensor ID: [1,2,1] Flat ID: 16    Tensor ID: [1,2,1] Flat ID: 25    Tensor ID: [1,2,2] Flat ID: 1    Tensor ID: [1,0,0] Flat ID: 10    Tensor ID: [1,0,1] Flat ID: 10    Tensor ID: [1,0,1] Flat ID: 19    Tensor ID: [1,0,2] Flat ID: 4    Tensor ID: [1,1,0] Flat ID: 13    Tensor ID: [1,1,1] Flat ID: 13    Tensor ID: [1,1,1] Flat ID: 22    Tensor ID: [1,1,2] Flat ID: 4    Tensor ID: [1,1,0] Flat ID: 13    Tensor ID: [1,1,1] Flat ID: 13    Tensor ID: [1,1,1] Flat ID: 22    Tensor ID: [1,1,2] Flat ID: 7    Tensor ID: [1,2,0] Flat ID: 16    Tensor ID: [1,2,1] Flat ID: 16    Tensor ID: [1,2,1] Flat ID: 25    Tensor ID: [1,2,2] Flat ID: 2    Tensor ID: [2,0,0] Flat ID: 11    Tensor ID: [2,0,1] Flat ID: 11    Tensor ID: [2,0,1] Flat ID: 20    Tensor ID: [2,0,2] Flat ID: 5    Tensor ID: [2,1,0] Flat ID: 14    Tensor ID: [2,1,1] Flat ID: 14    Tensor ID: [2,1,1] Flat ID: 23    Tensor ID: [2,1,2] Flat ID: 5    Tensor ID: [2,1,0] Flat ID: 14    Tensor ID: [2,1,1] Flat ID: 14    Tensor ID: [2,1,1] Flat ID: 23    Tensor ID: [2,1,2] Flat ID: 8    Tensor ID: [2,2,0] Flat ID: 17    Tensor ID: [2,2,1] Flat ID: 17    Tensor ID: [2,2,1] Flat ID: 26    Tensor ID: [2,2,2] 
 ------------------------------------------
 =============== Dimension 3 -- end =================
 

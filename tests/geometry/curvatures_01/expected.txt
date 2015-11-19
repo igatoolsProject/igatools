@@ -4,7 +4,6 @@ principal_curvatures
 principal_curvatures<1>
    Element 0
       Element ID: Flat ID: 0    Tensor ID: [0]
-      
       Normals:
          ValueVector (num_points=3) :
             Entry id: 0
@@ -35,7 +34,6 @@ principal_curvatures
 principal_curvatures<2>
    Element 0
       Element ID: Flat ID: 0    Tensor ID: [0,0]
-      
       Normals:
          ValueVector (num_points=9) :
             Entry id: 0

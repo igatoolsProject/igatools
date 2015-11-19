@@ -7,6 +7,9 @@ Knot coordinates:
 
 Element properties:
    IDs with property "active":
+      Entry id: 0
+         Flat ID: 0    Tensor ID: []
+      
    
 
 ========================================================================
@@ -80,6 +83,9 @@ Knot coordinates:
 
 Element properties:
    IDs with property "active":
+      Entry id: 0
+         Flat ID: 0    Tensor ID: []
+      
    
 
 ========================================================================
@@ -186,6 +192,9 @@ Knot coordinates:
 
 Element properties:
    IDs with property "active":
+      Entry id: 0
+         Flat ID: 0    Tensor ID: []
+      
    
 
 ========================================================================
@@ -307,6 +316,9 @@ Knot coordinates:
 
 Element properties:
    IDs with property "active":
+      Entry id: 0
+         Flat ID: 0    Tensor ID: []
+      
    
 
 ========================================================================

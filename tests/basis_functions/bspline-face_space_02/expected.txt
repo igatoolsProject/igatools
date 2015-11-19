@@ -12,6 +12,9 @@ sub_space
                
                Element properties:
                   IDs with property "active":
+                     Entry id: 0
+                        Flat ID: 0    Tensor ID: []
+                     
                   
                
             
@@ -119,6 +122,9 @@ sub_space
                
                Element properties:
                   IDs with property "active":
+                     Entry id: 0
+                        Flat ID: 0    Tensor ID: []
+                     
                   
                
             

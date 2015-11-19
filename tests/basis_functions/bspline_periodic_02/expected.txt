@@ -1,7 +1,6 @@
 assemble_matrix<dim=1,range=1>
    Element : 0
       Element index: Flat ID: 0    Tensor ID: [0]
-      
       Basis function values:
          ValueTable (num_functions=2,num_points=1) :
             Function 0
@@ -25,7 +24,6 @@ assemble_matrix<dim=1,range=1>
    
    Element : 1
       Element index: Flat ID: 1    Tensor ID: [1]
-      
       Basis function values:
          ValueTable (num_functions=2,num_points=1) :
             Function 0
@@ -49,7 +47,6 @@ assemble_matrix<dim=1,range=1>
    
    Element : 2
       Element index: Flat ID: 2    Tensor ID: [2]
-      
       Basis function values:
          ValueTable (num_functions=2,num_points=1) :
             Function 0
@@ -73,7 +70,6 @@ assemble_matrix<dim=1,range=1>
    
    Element : 3
       Element index: Flat ID: 3    Tensor ID: [3]
-      
       Basis function values:
          ValueTable (num_functions=2,num_points=1) :
             Function 0
@@ -97,7 +93,6 @@ assemble_matrix<dim=1,range=1>
    
    Element : 4
       Element index: Flat ID: 4    Tensor ID: [4]
-      
       Basis function values:
          ValueTable (num_functions=2,num_points=1) :
             Function 0
@@ -144,7 +139,6 @@ assemble_matrix<dim=1,range=1>
 assemble_matrix<dim=2,range=1>
    Element : 0
       Element index: Flat ID: 0    Tensor ID: [0,0]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -176,7 +170,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 1
       Element index: Flat ID: 5    Tensor ID: [0,1]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -208,7 +201,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 2
       Element index: Flat ID: 10    Tensor ID: [0,2]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -240,7 +232,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 3
       Element index: Flat ID: 15    Tensor ID: [0,3]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -272,7 +263,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 4
       Element index: Flat ID: 20    Tensor ID: [0,4]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -304,7 +294,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 5
       Element index: Flat ID: 1    Tensor ID: [1,0]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -336,7 +325,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 6
       Element index: Flat ID: 6    Tensor ID: [1,1]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -368,7 +356,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 7
       Element index: Flat ID: 11    Tensor ID: [1,2]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -400,7 +387,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 8
       Element index: Flat ID: 16    Tensor ID: [1,3]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -432,7 +418,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 9
       Element index: Flat ID: 21    Tensor ID: [1,4]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -464,7 +449,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 10
       Element index: Flat ID: 2    Tensor ID: [2,0]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -496,7 +480,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 11
       Element index: Flat ID: 7    Tensor ID: [2,1]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -528,7 +511,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 12
       Element index: Flat ID: 12    Tensor ID: [2,2]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -560,7 +542,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 13
       Element index: Flat ID: 17    Tensor ID: [2,3]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -592,7 +573,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 14
       Element index: Flat ID: 22    Tensor ID: [2,4]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -624,7 +604,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 15
       Element index: Flat ID: 3    Tensor ID: [3,0]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -656,7 +635,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 16
       Element index: Flat ID: 8    Tensor ID: [3,1]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -688,7 +666,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 17
       Element index: Flat ID: 13    Tensor ID: [3,2]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -720,7 +697,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 18
       Element index: Flat ID: 18    Tensor ID: [3,3]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -752,7 +728,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 19
       Element index: Flat ID: 23    Tensor ID: [3,4]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -784,7 +759,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 20
       Element index: Flat ID: 4    Tensor ID: [4,0]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -816,7 +790,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 21
       Element index: Flat ID: 9    Tensor ID: [4,1]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -848,7 +821,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 22
       Element index: Flat ID: 14    Tensor ID: [4,2]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -880,7 +852,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 23
       Element index: Flat ID: 19    Tensor ID: [4,3]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -912,7 +883,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 24
       Element index: Flat ID: 24    Tensor ID: [4,4]
-      
       Basis function values:
          ValueTable (num_functions=4,num_points=1) :
             Function 0
@@ -1099,7 +1069,6 @@ assemble_matrix<dim=2,range=1>
 assemble_matrix<dim=2,range=2>
    Element : 0
       Element index: Flat ID: 0    Tensor ID: [0,0]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1147,7 +1116,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 1
       Element index: Flat ID: 5    Tensor ID: [0,1]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1195,7 +1163,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 2
       Element index: Flat ID: 10    Tensor ID: [0,2]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1243,7 +1210,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 3
       Element index: Flat ID: 15    Tensor ID: [0,3]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1291,7 +1257,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 4
       Element index: Flat ID: 20    Tensor ID: [0,4]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1339,7 +1304,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 5
       Element index: Flat ID: 1    Tensor ID: [1,0]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1387,7 +1351,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 6
       Element index: Flat ID: 6    Tensor ID: [1,1]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1435,7 +1398,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 7
       Element index: Flat ID: 11    Tensor ID: [1,2]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1483,7 +1445,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 8
       Element index: Flat ID: 16    Tensor ID: [1,3]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1531,7 +1492,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 9
       Element index: Flat ID: 21    Tensor ID: [1,4]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1579,7 +1539,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 10
       Element index: Flat ID: 2    Tensor ID: [2,0]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1627,7 +1586,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 11
       Element index: Flat ID: 7    Tensor ID: [2,1]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1675,7 +1633,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 12
       Element index: Flat ID: 12    Tensor ID: [2,2]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1723,7 +1680,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 13
       Element index: Flat ID: 17    Tensor ID: [2,3]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1771,7 +1727,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 14
       Element index: Flat ID: 22    Tensor ID: [2,4]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1819,7 +1774,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 15
       Element index: Flat ID: 3    Tensor ID: [3,0]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1867,7 +1821,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 16
       Element index: Flat ID: 8    Tensor ID: [3,1]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1915,7 +1868,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 17
       Element index: Flat ID: 13    Tensor ID: [3,2]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -1963,7 +1915,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 18
       Element index: Flat ID: 18    Tensor ID: [3,3]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -2011,7 +1962,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 19
       Element index: Flat ID: 23    Tensor ID: [3,4]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -2059,7 +2009,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 20
       Element index: Flat ID: 4    Tensor ID: [4,0]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -2107,7 +2056,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 21
       Element index: Flat ID: 9    Tensor ID: [4,1]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -2155,7 +2103,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 22
       Element index: Flat ID: 14    Tensor ID: [4,2]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -2203,7 +2150,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 23
       Element index: Flat ID: 19    Tensor ID: [4,3]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -2251,7 +2197,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 24
       Element index: Flat ID: 24    Tensor ID: [4,4]
-      
       Basis function values:
          ValueTable (num_functions=8,num_points=1) :
             Function 0
@@ -2886,7 +2831,6 @@ assemble_matrix<dim=2,range=2>
 assemble_matrix<dim=1,range=1>
    Element : 0
       Element index: Flat ID: 0    Tensor ID: [0]
-      
       Basis function values:
          ValueTable (num_functions=3,num_points=2) :
             Function 0
@@ -2914,7 +2858,6 @@ assemble_matrix<dim=1,range=1>
    
    Element : 1
       Element index: Flat ID: 1    Tensor ID: [1]
-      
       Basis function values:
          ValueTable (num_functions=3,num_points=2) :
             Function 0
@@ -2942,7 +2885,6 @@ assemble_matrix<dim=1,range=1>
    
    Element : 2
       Element index: Flat ID: 2    Tensor ID: [2]
-      
       Basis function values:
          ValueTable (num_functions=3,num_points=2) :
             Function 0
@@ -2970,7 +2912,6 @@ assemble_matrix<dim=1,range=1>
    
    Element : 3
       Element index: Flat ID: 3    Tensor ID: [3]
-      
       Basis function values:
          ValueTable (num_functions=3,num_points=2) :
             Function 0
@@ -2998,7 +2939,6 @@ assemble_matrix<dim=1,range=1>
    
    Element : 4
       Element index: Flat ID: 4    Tensor ID: [4]
-      
       Basis function values:
          ValueTable (num_functions=3,num_points=2) :
             Function 0
@@ -3026,7 +2966,6 @@ assemble_matrix<dim=1,range=1>
    
    Element : 5
       Element index: Flat ID: 5    Tensor ID: [5]
-      
       Basis function values:
          ValueTable (num_functions=3,num_points=2) :
             Function 0
@@ -3090,7 +3029,6 @@ assemble_matrix<dim=1,range=1>
 assemble_matrix<dim=2,range=1>
    Element : 0
       Element index: Flat ID: 0    Tensor ID: [0,0]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3142,7 +3080,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 1
       Element index: Flat ID: 6    Tensor ID: [0,1]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3194,7 +3131,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 2
       Element index: Flat ID: 12    Tensor ID: [0,2]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3246,7 +3182,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 3
       Element index: Flat ID: 18    Tensor ID: [0,3]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3298,7 +3233,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 4
       Element index: Flat ID: 24    Tensor ID: [0,4]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3350,7 +3284,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 5
       Element index: Flat ID: 30    Tensor ID: [0,5]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3402,7 +3335,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 6
       Element index: Flat ID: 1    Tensor ID: [1,0]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3454,7 +3386,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 7
       Element index: Flat ID: 7    Tensor ID: [1,1]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3506,7 +3437,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 8
       Element index: Flat ID: 13    Tensor ID: [1,2]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3558,7 +3488,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 9
       Element index: Flat ID: 19    Tensor ID: [1,3]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3610,7 +3539,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 10
       Element index: Flat ID: 25    Tensor ID: [1,4]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3662,7 +3590,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 11
       Element index: Flat ID: 31    Tensor ID: [1,5]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3714,7 +3641,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 12
       Element index: Flat ID: 2    Tensor ID: [2,0]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3766,7 +3692,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 13
       Element index: Flat ID: 8    Tensor ID: [2,1]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3818,7 +3743,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 14
       Element index: Flat ID: 14    Tensor ID: [2,2]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3870,7 +3794,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 15
       Element index: Flat ID: 20    Tensor ID: [2,3]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3922,7 +3845,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 16
       Element index: Flat ID: 26    Tensor ID: [2,4]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -3974,7 +3896,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 17
       Element index: Flat ID: 32    Tensor ID: [2,5]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4026,7 +3947,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 18
       Element index: Flat ID: 3    Tensor ID: [3,0]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4078,7 +3998,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 19
       Element index: Flat ID: 9    Tensor ID: [3,1]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4130,7 +4049,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 20
       Element index: Flat ID: 15    Tensor ID: [3,2]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4182,7 +4100,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 21
       Element index: Flat ID: 21    Tensor ID: [3,3]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4234,7 +4151,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 22
       Element index: Flat ID: 27    Tensor ID: [3,4]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4286,7 +4202,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 23
       Element index: Flat ID: 33    Tensor ID: [3,5]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4338,7 +4253,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 24
       Element index: Flat ID: 4    Tensor ID: [4,0]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4390,7 +4304,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 25
       Element index: Flat ID: 10    Tensor ID: [4,1]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4442,7 +4355,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 26
       Element index: Flat ID: 16    Tensor ID: [4,2]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4494,7 +4406,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 27
       Element index: Flat ID: 22    Tensor ID: [4,3]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4546,7 +4457,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 28
       Element index: Flat ID: 28    Tensor ID: [4,4]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4598,7 +4508,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 29
       Element index: Flat ID: 34    Tensor ID: [4,5]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4650,7 +4559,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 30
       Element index: Flat ID: 5    Tensor ID: [5,0]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4702,7 +4610,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 31
       Element index: Flat ID: 11    Tensor ID: [5,1]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4754,7 +4661,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 32
       Element index: Flat ID: 17    Tensor ID: [5,2]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4806,7 +4712,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 33
       Element index: Flat ID: 23    Tensor ID: [5,3]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4858,7 +4763,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 34
       Element index: Flat ID: 29    Tensor ID: [5,4]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -4910,7 +4814,6 @@ assemble_matrix<dim=2,range=1>
    
    Element : 35
       Element index: Flat ID: 35    Tensor ID: [5,5]
-      
       Basis function values:
          ValueTable (num_functions=9,num_points=4) :
             Function 0
@@ -5598,7 +5501,6 @@ assemble_matrix<dim=2,range=1>
 assemble_matrix<dim=2,range=2>
    Element : 0
       Element index: Flat ID: 0    Tensor ID: [0,0]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -5686,7 +5588,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 1
       Element index: Flat ID: 6    Tensor ID: [0,1]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -5774,7 +5675,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 2
       Element index: Flat ID: 12    Tensor ID: [0,2]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -5862,7 +5762,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 3
       Element index: Flat ID: 18    Tensor ID: [0,3]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -5950,7 +5849,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 4
       Element index: Flat ID: 24    Tensor ID: [0,4]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6038,7 +5936,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 5
       Element index: Flat ID: 30    Tensor ID: [0,5]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6126,7 +6023,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 6
       Element index: Flat ID: 1    Tensor ID: [1,0]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6214,7 +6110,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 7
       Element index: Flat ID: 7    Tensor ID: [1,1]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6302,7 +6197,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 8
       Element index: Flat ID: 13    Tensor ID: [1,2]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6390,7 +6284,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 9
       Element index: Flat ID: 19    Tensor ID: [1,3]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6478,7 +6371,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 10
       Element index: Flat ID: 25    Tensor ID: [1,4]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6566,7 +6458,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 11
       Element index: Flat ID: 31    Tensor ID: [1,5]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6654,7 +6545,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 12
       Element index: Flat ID: 2    Tensor ID: [2,0]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6742,7 +6632,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 13
       Element index: Flat ID: 8    Tensor ID: [2,1]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6830,7 +6719,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 14
       Element index: Flat ID: 14    Tensor ID: [2,2]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -6918,7 +6806,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 15
       Element index: Flat ID: 20    Tensor ID: [2,3]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7006,7 +6893,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 16
       Element index: Flat ID: 26    Tensor ID: [2,4]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7094,7 +6980,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 17
       Element index: Flat ID: 32    Tensor ID: [2,5]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7182,7 +7067,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 18
       Element index: Flat ID: 3    Tensor ID: [3,0]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7270,7 +7154,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 19
       Element index: Flat ID: 9    Tensor ID: [3,1]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7358,7 +7241,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 20
       Element index: Flat ID: 15    Tensor ID: [3,2]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7446,7 +7328,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 21
       Element index: Flat ID: 21    Tensor ID: [3,3]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7534,7 +7415,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 22
       Element index: Flat ID: 27    Tensor ID: [3,4]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7622,7 +7502,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 23
       Element index: Flat ID: 33    Tensor ID: [3,5]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7710,7 +7589,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 24
       Element index: Flat ID: 4    Tensor ID: [4,0]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7798,7 +7676,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 25
       Element index: Flat ID: 10    Tensor ID: [4,1]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7886,7 +7763,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 26
       Element index: Flat ID: 16    Tensor ID: [4,2]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -7974,7 +7850,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 27
       Element index: Flat ID: 22    Tensor ID: [4,3]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -8062,7 +7937,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 28
       Element index: Flat ID: 28    Tensor ID: [4,4]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -8150,7 +8024,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 29
       Element index: Flat ID: 34    Tensor ID: [4,5]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -8238,7 +8111,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 30
       Element index: Flat ID: 5    Tensor ID: [5,0]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -8326,7 +8198,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 31
       Element index: Flat ID: 11    Tensor ID: [5,1]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -8414,7 +8285,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 32
       Element index: Flat ID: 17    Tensor ID: [5,2]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -8502,7 +8372,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 33
       Element index: Flat ID: 23    Tensor ID: [5,3]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -8590,7 +8459,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 34
       Element index: Flat ID: 29    Tensor ID: [5,4]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
@@ -8678,7 +8546,6 @@ assemble_matrix<dim=2,range=2>
    
    Element : 35
       Element index: Flat ID: 35    Tensor ID: [5,5]
-      
       Basis function values:
          ValueTable (num_functions=18,num_points=4) :
             Function 0
