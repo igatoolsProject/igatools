@@ -6,17 +6,17 @@
 #include "Ifpack_PointRelaxation.h"
 
 template<int dim_>
-class PoissonProblem {
+class GridProblem {
 
   private:
-    using self_t = PoissonProblem<dim_>; // creating the alias
+    using self_t = GridProblem<dim_>; // creating the alias
     static int count;
 
     // constructors
   public:
-    PoissonProblem() = delete;
-    PoissonProblem(const Size nel, const Size deg);
-    PoissonProblem(const TensorSize<dim_> nel, const TensorIndex<dim_> deg);
+    GridProblem() = delete;
+    GridProblem(const Size nel, const Size deg);
+    GridProblem(const TensorSize<dim_> nel, const TensorIndex<dim_> deg);
     static const int dim = dim_;
 
   public:
@@ -43,17 +43,17 @@ class PoissonProblem {
     //using Funct = typename grid_functions::FormulaGridFunction<dim_,1>::CustomGridFunction<dim_,1>;
     void assemble(std::shared_ptr<const GridFunction<dim_,1>> f) const;
     void solve() const;
-    void custom_solve(int &it, double &cond, double &cond2) const;
+    void custom_solve(int &it1, double &cond1, int &it2, double &cond2) const;
     Real l2_error(std::shared_ptr<const GridFunction<dim_,1>> u) const;
 };
 template<int dim_>
-int PoissonProblem<dim_>::count=0;
+int GridProblem<dim_>::count=0;
 
 // ----------------------------------------------------------------------------
 //   CONSTRUCTORS
 // ----------------------------------------------------------------------------
 template<int dim_> // constructor: the simple one
-PoissonProblem<dim_>::PoissonProblem(const Size nel, const Size deg)
+GridProblem<dim_>::GridProblem(const Size nel, const Size deg)
   : grid  {Grid<dim_>::const_create(nel+1)}
   , space {SplineSpace<dim_>::const_create(deg,grid)}
   , basis {BSpline<dim_>::const_create(space)}
@@ -64,7 +64,7 @@ PoissonProblem<dim_>::PoissonProblem(const Size nel, const Size deg)
 {count++;}
 
 template<int dim_> // constructor: the cool one
-PoissonProblem<dim_>::PoissonProblem(const TensorSize<dim_> nel, const TensorIndex<dim_> deg) {
+GridProblem<dim_>::GridProblem(const TensorSize<dim_> nel, const TensorIndex<dim_> deg) {
   TensorSize<dim_> nknt, nqn;
   for (int idim=0; idim<dim_; idim++) {
     nknt[idim] = nel[idim]+1;
@@ -84,12 +84,12 @@ PoissonProblem<dim_>::PoissonProblem(const TensorSize<dim_> nel, const TensorInd
 //   CREATORS
 // ----------------------------------------------------------------------------
 template<int dim_> // creator: the non const simple one
-auto PoissonProblem<dim_>::create(const Size nel, const Size deg) -> shared_ptr<self_t> {
+auto GridProblem<dim_>::create(const Size nel, const Size deg) -> shared_ptr<self_t> {
   return shared_ptr<self_t>(new self_t(nel,deg));
 } 
 
 template<int dim_> // creator: the const simple one
-auto PoissonProblem<dim_>::const_create(const Size nel, const Size deg) -> shared_ptr<const self_t> {
+auto GridProblem<dim_>::const_create(const Size nel, const Size deg) -> shared_ptr<const self_t> {
   return create(nel,deg);
 }
 
@@ -97,7 +97,7 @@ auto PoissonProblem<dim_>::const_create(const Size nel, const Size deg) -> share
 //   METHODS
 // ----------------------------------------------------------------------------
 template<int dim_> // assemble the system
-void PoissonProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> source_term) const {
+void GridProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> source_term) const {
 
   // starting the cache handler for the basis functions:
   auto basis_handler = basis->create_cache_handler();
@@ -170,7 +170,7 @@ void PoissonProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> 
 }
 
 template<int dim_> // solver for the linear system
-void PoissonProblem<dim_>::solve() const {
+void GridProblem<dim_>::solve() const {
   auto solver = create_solver(*mat,*sol,*rhs);
   solver->solve();
 }
@@ -180,118 +180,65 @@ using OP = Epetra_Operator;
 using MV = Epetra_MultiVector;
 using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
 template<int dim_> // custom siuppacool solver
-void PoissonProblem<dim_>::custom_solve(int &it, double &Acond, double &Bcond) const {
-
-  
-  Ifpack_PointRelaxation prec(&*mat);
-  //cout << prec;
-  //delete &prec;
-  prec.Initialize(); if (!prec.IsInitialized()) printf("Ifpace_PointRelaxation got initialization problems!\n");
-  prec.Compute();    if (!prec.IsComputed())    printf("Ifpace_PointRelaxation got computation problems!\n");
-
-
-// ----------------------------------------------------------------------------
-//   Belos attempt
-// ----------------------------------------------------------------------------
-  // creating the linear problem
-  /*using Teuchos::RCP;
-  using Teuchos::rcp;
-  using Teuchos::ParameterList;
-  using Teuchos::parameterList;
-  RCP<Belos::LinearProblem<double, MV, OP> > Bproblem =
-  rcp(new Belos::LinearProblem<double, MV, OP>(RCP<OP>(mat.get(),false),
-                                               RCP<MV>(sol.get(),false),
-                                               RCP<MV>(rhs.get(),false)));
-  RCP<Ifpack_PointRelaxation> precptr = rcp(new Ifpack_PointRelaxation(&*mat));
-  precptr->Initialize();
-  precptr->Compute();
-  Bproblem->setLeftPrec(precptr);
-  Bproblem->setRightPrec(precptr);
-  Bproblem->setProblem();
-
-  // parameter list
-  RCP<ParameterList> Bparameters = parameterList();
-  Bparameters->set("Num Blocks", 40);
-  Bparameters->set("Maximum Iterations", 400);
-  Bparameters->set("Convergence Tolerance", 1.0e-8);
-  Bparameters->set("Estimate Condition Number", true);
-  
-  // creating the solver
-  Belos::SolverFactory<double,MV,OP> factory;
-  RCP<Belos::SolverManager<double,MV,OP>> Bsolver = factory.create("GMRES",Bparameters);
-  Bsolver->setProblem(Bproblem);
-
-  // solving the system
-  Belos::ReturnType result = Bsolver->solve();
-  it = Bsolver->getNumIters();
-  //Bcond = Bsolver->getConditionEstimate();*/
-// ----------------------------------------------------------------------------
-//   AztecOO attempt
-// ----------------------------------------------------------------------------
-
+void GridProblem<dim_>::custom_solve(int &it1, double &cond1, int &it2, double &cond2) const {
 
   // setting up the problem
-/*  Epetra_LinearProblem Eproblem(&*mat,&*sol,&*rhs);
-  AztecOO Asolver(Eproblem);
+  Epetra_LinearProblem problem1(&*mat,&*sol,&*rhs);
+  AztecOO solver1(problem1);
   // setting up the solver
-  Asolver.SetAztecOption(AZ_solver,  AZ_cg_condnum);
-  Asolver.SetAztecOption(AZ_kspace,  100);
-  //Asolver.SetAztecOption(AZ_precond, AZ_Jacobi);
-  Asolver.SetPrecOperator(&prec);
-  Asolver.SetAztecOption(AZ_output,  AZ_none);
+  solver1.SetAztecOption(AZ_solver,  AZ_cg);
+  solver1.SetAztecOption(AZ_kspace,  100);
+  solver1.SetAztecOption(AZ_precond, AZ_none);
+  solver1.SetAztecOption(AZ_output,  AZ_none);
   // solve, for god's sake! SOLVE!
-  Asolver.Iterate(100, 1.0E-7);
+  solver1.Iterate(100, 1.0E-7);
   // extracting info
-  it = Asolver.NumIters();
-  const double* aztecStatus = Asolver.GetAztecStatus();
-  Bcond = aztecStatus[AZ_condnum];
-  //Bcond = Asolver.Condest();*/
+  it1 = solver1.NumIters();
 
-  //cout << "  preconditioner used " << prec.NumApplyInverse() << " times!" << endl;
-
-  //Ifpack Factory;
-  //string PrecType = ""; // exact solve on each subdomain 
-  //int OverlapLevel = 1; // one row of overlap among the processes
-  //Ifpack_Preconditioner* Prec = Factory.Create(PrecType, &*mat, OverlapLevel);
-  //assert (Prec != 0);
-
-  //Theucos::ParameterList Iparameter;
-
-  //Prec->SetParameters(Iparameter);
-  //Prec->Initialize();
-  //Prec->Compute();
-  //assert (Prec->IsInitialized() == true);
-  //assert (Prec->IsComputed() == true);
-  //cout << Prec->NumInitialize() << endl; 
-  //cout << Prec->NumCompute() << endl; 
-  //cout << Prec->NumApplyInverse() << endl; 
-  //cout << *Prec;
-
-  // setting up the condition number estimator
-  AztecOOConditionNumber Acondest;
-  Acondest.initialize(*mat);
+  // condition number estimate
+  AztecOOConditionNumber condest1;
+  condest1.initialize(*mat);
   //AztecOOConditionNumber::SolverType solver_type = CG_;
-  Acondest.computeConditionNumber(100,1.0E-7);
-  Acond = Acondest.getConditionNumber();
+  condest1.computeConditionNumber(100,1.0E-7);
+  cond1 = condest1.getConditionNumber();
 
   // try this new trick!
-  Epetra_Vector diag(*rhs);
+  Epetra_Vector diag(mat->DomainMap());
+  Epetra_Vector diag_reciprocal(mat->DomainMap());
   mat->ExtractDiagonalCopy(diag);
-  mat->LeftScale(diag);
-  mat->RightScale(diag);
+  double *val;
+  diag.ExtractView(&val);
+  for (int idof=0; idof<diag.MyLength(); idof++) {
+    diag_reciprocal[idof]=sqrt(1.0/val[idof]);
+  }
+  mat->LeftScale(diag_reciprocal);
+  mat->RightScale(diag_reciprocal);
 
-  AztecOOConditionNumber Acondest2;
-  Acondest2.initialize(*mat);
+  // setting up the problem
+  Epetra_Vector sol2(mat->DomainMap());
+  Epetra_LinearProblem problem2(&*mat,&sol2,&*rhs);
+  AztecOO solver2(problem2);
+  // setting up the solver
+  solver2.SetAztecOption(AZ_solver,  AZ_cg);
+  solver2.SetAztecOption(AZ_kspace,  100);
+  solver2.SetAztecOption(AZ_precond, AZ_none);
+  solver2.SetAztecOption(AZ_output,  AZ_none);
+  // solve, for god's sake! SOLVE!
+  solver2.Iterate(100, 1.0E-7);
+  // extracting info
+  it2 = solver2.NumIters();
+
+  // condition number estimate
+  AztecOOConditionNumber condest2;
+  condest2.initialize(*mat);
   //AztecOOConditionNumber::SolverType solver_type = CG_;
-  Acondest2.computeConditionNumber(100,1.0E-7);
-  Bcond = Acondest2.getConditionNumber();
-
-
+  condest2.computeConditionNumber(100,1.0E-7);
+  cond2 = condest2.getConditionNumber();
 
 }
 
 template<int dim_> // compute the L2 error given the exact solution
-Real PoissonProblem<dim_>::l2_error(std::shared_ptr<const GridFunction<dim_,1>> u_ex) const {
+Real GridProblem<dim_>::l2_error(std::shared_ptr<const GridFunction<dim_,1>> u_ex) const {
 //                                 Real &l2_err, bool compute_h1, Real &h1_err = 0.0) const {
 
   // creating the discrete solution
@@ -342,7 +289,7 @@ Real PoissonProblem<dim_>::l2_error(std::shared_ptr<const GridFunction<dim_,1>> 
 //   INFO PRINTER
 // ----------------------------------------------------------------------------
 template<int dim_> // problem overview
-void PoissonProblem<dim_>::how_are_you_doin() const {
+void GridProblem<dim_>::how_are_you_doin() const {
   out << endl;
   out << "        elements: " << grid->get_num_elements() << " = " << grid->get_num_intervals() << endl;
   out << "         degrees: " << space->get_degree_table()[0] << endl;
@@ -353,7 +300,7 @@ void PoissonProblem<dim_>::how_are_you_doin() const {
 }
 
 template<int dim_> // system matrix printer
-void PoissonProblem<dim_>::print_system() const {
+void GridProblem<dim_>::print_system() const {
   if (mat->Filled()) {
     auto size = mat->NumMyRows();
     for (int irow=0; irow<size; irow++) {  

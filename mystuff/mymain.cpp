@@ -31,7 +31,7 @@ using namespace std;
 using namespace EpetraTools;
 LogStream out;
 
-#include "poisson_problem.h"
+#include "grid_problem.h"
 
 // ----------------------------------------------------------------------------
 //   MY CUSTOM FUNCTION
@@ -59,59 +59,19 @@ Values<dim,1,1> source_term(Points<dim> pts) {
 //   MAIN
 // ----------------------------------------------------------------------------
 int main() {
-
   // problem input
-  const int dim  = 2;
-  const int nel  = 16;
-  const int deg  = 2;
+  const int dim = 2;
+  const int nel = 4;
+  //const TensorIndex<dim> deg = {1,2};
+  const int deg = 2;
   // problem output
-  int it;
-  double Acond, Bcond;
-  using CustomFunct = grid_functions::CustomGridFunction<dim,1>;
-  
-  Real err1, err2, eoc, h1, h2;
-  for (int ideg=2; ideg<=2; ideg++) { printf("\n");
-  for (int iel=16; iel<=32; iel+=4) {
-    auto problem = PoissonProblem<dim>::create(iel,ideg);
-    auto f = CustomFunct::const_create(problem->grid,&source_term);
-    problem->assemble(f);
-    problem->custom_solve(it,Acond,Bcond);
-    auto u = CustomFunct::const_create(problem->grid,&exact_solution);
-    err2 = problem->l2_error(u);
-    h2   = (double)1.0/iel;
-    printf("deg = %d, nel = %2d:\t l2_err = %le",ideg,iel,err2);
-    if (iel==4)
-      printf("  eoc = -.-");
-    else {
-      eoc = (log(err2)-log(err1))/(log(h2)-log(h1));
-      printf("  eoc = %1.5f",eoc);
-    }
-    //printf("\t it = %2d\tcond = %3.2f\tcond2 = %3.2f\n",it,cond,cond2);
-    printf("\t it = %2d\tAztecOO cond = %3.2f\tBelos cond = %3.2f\n",it,Acond,Bcond);
-    err1 = err2;
-    h1 = h2;
-  }
-  }
+  auto grid  = Grid<dim>::create(nel);
+  using Basis = BSpline<dim,dim>;
+  auto basis = Basis::create(deg, grid);
 
-  /*auto problem = PoissonProblem<dim>::create(nel,deg);
-  auto f = CustomFunct::const_create(problem->grid,&source_term);
-  problem->assemble(f);
-  problem->how_are_you_doin();
-  problem->custom_solve(it,cond);
-  auto u = CustomFunct::const_create(problem->grid,&exact_solution);
-  cout << "  --------------------------" << endl;
-  cout << "        L2-error: " << problem->l2_error(u) << endl;
-  cout << "      iterations: " << it << endl;
-  cout << "condition number: " << cond << endl;
-  cout << endl;
 
-  auto solution = IgGridFunction<dim,1>::const_create(problem->basis,*problem->sol);
-  const int npt = 10;
-  Writer<dim> output(problem->grid,npt);
-  output.template add_field(*solution,"solution");
-  output.template add_field(*u,"exact solution");
-  output.template add_field(*f,"source term");
-  output.save("plot");*/
 
   return 0;
 }
+
+
