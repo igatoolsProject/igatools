@@ -98,7 +98,7 @@ NURBS<dim_, range_, rank_>::
 const_create(const std::shared_ptr<const BSpBasis> &bs_space,
              const std::shared_ptr<const WeightFunction> &weight_func) -> shared_ptr<const self_t>
 {
-  auto sp = shared_ptr<const self_t>(
+  auto sp = shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<BSpBasis>(bs_space),
   SharedPtrConstnessHandler<WeightFunction>(weight_func)));
   Assert(sp != nullptr, ExcNullPtr());

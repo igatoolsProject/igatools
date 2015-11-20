@@ -121,7 +121,7 @@ const_create(const std::shared_ptr<const SpSpace> &spline_space,
              const EndBehaviourTable &end_b)
 -> shared_ptr<const self_t>
 {
-  auto sp = shared_ptr<const self_t>(
+  auto sp = shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<SpSpace>(spline_space), end_b));
   Assert(sp != nullptr, ExcNullPtr());
 

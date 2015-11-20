@@ -64,7 +64,7 @@ const_create(const std::shared_ptr<const GridFuncType> &func,
              const std::string &name)
 -> std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const self_t>(
+  return std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridFuncType>(func),name));
 }
 

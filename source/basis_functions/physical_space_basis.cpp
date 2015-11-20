@@ -86,7 +86,7 @@ const_create(const shared_ptr<const RefBasis> &ref_basis,
              const shared_ptr<const PhysDomain> &phys_domain,
              const Transformation &transformation_type) -> shared_ptr<const self_t>
 {
-  auto sp = shared_ptr<const self_t>(
+  auto sp = shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<RefBasis>(ref_basis),
   SharedPtrConstnessHandler<PhysDomain>(phys_domain),transformation_type));
   Assert(sp != nullptr,ExcNullPtr());
