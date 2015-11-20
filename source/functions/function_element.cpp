@@ -122,26 +122,6 @@ operator!=(const self_t &a) const
   return (*domain_elem_ != *(a.domain_elem_));
 }
 
-template<int dim,int codim,int range,int rank>
-bool
-FunctionElement<dim,codim,range,rank>::
-operator<(const self_t &a) const
-{
-  Assert(func_ == a.func_,
-         ExcMessage("The elements cannot be compared because defined with different functions."));
-  return (*domain_elem_ < *(a.domain_elem_));
-}
-
-
-template<int dim,int codim,int range,int rank>
-bool
-FunctionElement<dim,codim,range,rank>::
-operator>(const self_t &a) const
-{
-  Assert(func_ == a.func_,
-         ExcMessage("The elements cannot be compared because defined with different functions."));
-  return (*domain_elem_ > *(a.domain_elem_));
-}
 
 
 

@@ -159,20 +159,6 @@ public:
   virtual bool operator!=(const self_t &a) const;
 
   /**
-   * \brief Returns TRUE if the the index of the element on the left of the
-   * operator <tt> < </tt>
-   * is smaller than the the index of the element on the right.
-   * */
-  virtual bool operator<(const self_t &a) const;
-
-  /**
-   * \brief Returns TRUE if the the index of the element on the left of the
-   * operator <tt> < </tt>
-   * is bigger than the the index of the element on the right.
-   * */
-  virtual bool operator>(const self_t &a) const;
-
-  /**
    * \brief Returns true if two elements belongs from the same Basis.
    */
   bool has_same_basis_of(const self_t &elem) const;

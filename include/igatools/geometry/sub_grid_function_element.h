@@ -110,21 +110,6 @@ public:
    */
   bool operator!=(const parent_t &elem) const override;
 
-  /**
-   * True if the flat-index of the element on the left is smaller than
-   * the flat-index of the element on the right.
-   *  @note In debug mode, it is also check they both refer to
-   *  the same GridFunction. No check is done on the cache.
-   */
-  bool operator<(const parent_t &elem) const override;
-
-  /**
-   * True if the flat-index of the element on the left is bigger than
-   * the flat-index of the element on the right.
-   *  @note In debug mode, it is also check they both refer to
-   *  the same GridFunction. No check is done on the cache.
-   */
-  bool operator>(const parent_t &elem) const override;
   ///@}
 
 

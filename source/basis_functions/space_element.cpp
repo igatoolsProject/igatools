@@ -161,30 +161,6 @@ operator!=(const self_t &a) const
   return this->get_grid_element() != a.get_grid_element();
 }
 
-template<int dim_,int codim_,int range_,int rank_>
-bool
-SpaceElement<dim_,codim_,range_,rank_>::
-operator<(const self_t &a) const
-{
-  Assert(this->has_same_basis_of(a),
-         ExcMessage("Comparison between elements defined on different spaces"));
-//  return *grid_elem_ < *a.grid_elem_;
-  return this->get_grid_element() < a.get_grid_element();
-}
-
-template<int dim_,int codim_,int range_,int rank_>
-bool
-SpaceElement<dim_,codim_,range_,rank_>::
-operator>(const self_t &a) const
-{
-  Assert(this->has_same_basis_of(a),
-         ExcMessage("Comparison between elements defined on different spaces"));
-//  return *grid_elem_ > *a.grid_elem_;
-  return this->get_grid_element() > a.get_grid_element();
-}
-
-
-
 
 
 template<int dim_,int codim_,int range_,int rank_>
@@ -341,13 +317,13 @@ template<int dim_,int codim_,int range_,int rank_>
 DenseVector
 SpaceElement<dim_,codim_,range_,rank_>::
 integrate_u_func(const ValueVector<Value> &func_at_points,
-		  const PropId &dofs_property)
+                 const PropId &dofs_property)
 {
   const auto &u = this->get_element_values(dofs_property);
 
   const int n_pts = u.get_num_points();
   Assert(n_pts == func_at_points.get_num_points(),
-		  ExcDimensionMismatch(n_pts,func_at_points.get_num_points()));
+         ExcDimensionMismatch(n_pts,func_at_points.get_num_points()));
 
   const int n_basis = u.get_num_functions();
   DenseVector R(n_basis);
@@ -359,8 +335,8 @@ integrate_u_func(const ValueVector<Value> &func_at_points,
   {
     const auto u_i = u.get_function_view(i);
 
-	for (int pt = 0; pt < n_pts; ++pt)
-	  R(i) += scalar_product(u_i[pt],func_at_points[pt]) * w_meas[pt];
+    for (int pt = 0; pt < n_pts; ++pt)
+      R(i) += scalar_product(u_i[pt],func_at_points[pt]) * w_meas[pt];
   } // end loop i
 
   return R;

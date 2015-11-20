@@ -80,30 +80,6 @@ operator!=(const parent_t &elem) const
   return this->parent_t::operator!=(elem);
 }
 
-template <int sdim,int dim,int space_dim>
-bool
-SubGridFunctionElement<sdim,dim,space_dim>::
-operator<(const parent_t &elem) const
-{
-  const self_t &sub_elem = dynamic_cast<const self_t &>(elem);
-  Assert(this->same_grid_function_of(elem) &&
-         sup_grid_func_element_->same_grid_function_of(*(sub_elem.sup_grid_func_element_)),
-         ExcMessage("Cannot compare elements on different GridFunction."));
-  return this->parent_t::operator<(elem);
-}
-
-template <int sdim,int dim,int space_dim>
-bool
-SubGridFunctionElement<sdim,dim,space_dim>::
-operator>(const parent_t &elem) const
-{
-  const self_t &sub_elem = dynamic_cast<const self_t &>(elem);
-  Assert(this->same_grid_function_of(elem) &&
-         sup_grid_func_element_->same_grid_function_of(*(sub_elem.sup_grid_func_element_)),
-         ExcMessage("Cannot compare elements on different GridFunction."));
-  return this->parent_t::operator>(elem);
-}
-
 
 
 template <int sdim,int dim,int space_dim>

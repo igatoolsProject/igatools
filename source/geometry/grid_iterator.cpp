@@ -87,22 +87,6 @@ operator==(const GridIterator<Element> &i) const
 
 
 
-template <class Element>
-bool
-GridIterator<Element>::
-operator>(const GridIterator<Element> &i) const
-{
-  return (*elem_ > *i.elem_);
-}
-
-template <class Element>
-bool
-GridIterator<Element>::
-operator<(const GridIterator<Element> &i) const
-{
-  return (*elem_ < *i.elem_);
-}
-
 
 
 template <class Element>

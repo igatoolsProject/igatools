@@ -123,49 +123,6 @@ operator !=(const self_t &elem) const
 
 
 template<int dim_,int codim_>
-bool
-DomainElement<dim_,codim_>::
-operator <(const self_t &elem) const
-{
-  Assert(domain_ == elem.domain_,
-         ExcMessage("Cannot compare elements on different grid."));
-  return (*grid_func_elem_ < *(elem.grid_func_elem_));
-}
-
-
-
-template<int dim_,int codim_>
-bool
-DomainElement<dim_,codim_>::
-operator >(const self_t &elem) const
-{
-  Assert(domain_ == elem.domain_,
-         ExcMessage("Cannot compare elements on different grid."));
-  return (*grid_func_elem_ > *(elem.grid_func_elem_));
-}
-
-
-#if 0
-template<int dim_,int codim_>
-template<int sdim>
-auto
-DomainElement<dim_,codim_>::
-get_w_measures(const int s_id) const -> ValueVector<Real>
-{
-  const auto &meas = get_values_from_cache<_Measure, sdim>(s_id);
-  const auto &w = grid_func_elem_->get_grid_element().template get_weights<sdim>(s_id);
-  auto w_meas = meas;
-  auto it_w = w.begin();
-  for (auto &w_m : w_meas)
-  {
-    w_m *= *(it_w);
-    ++it_w;
-  }
-  return w_meas;
-}
-#endif
-
-template<int dim_,int codim_>
 auto
 DomainElement<dim_,codim_>::
 get_element_measures() const -> const ValueVector<Real> &

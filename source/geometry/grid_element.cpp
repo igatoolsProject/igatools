@@ -143,34 +143,6 @@ operator !=(const self_t &elem) const
   return res;
 }
 
-template <int dim>
-bool
-GridElement<dim>::
-operator <(const self_t &elem) const
-{
-  AssertThrow (false, ExcNotImplemented());
-//  Assert(this->same_grid_of(elem),
-//         ExcMessage("Cannot compare elements on different grid."));
-//  const bool res = (index_it_ < elem.index_it_);
-//  return res;
-  return true;
-}
-
-template <int dim>
-bool
-GridElement<dim>::
-operator >(const self_t &elem) const
-{
-  AssertThrow (false, ExcNotImplemented());
-//  Assert(this->same_grid_of(elem),
-//         ExcMessage("Cannot compare elements on different grid."));
-//  const bool res = (index_it_ > elem.index_it_);
-//  return res;
-  return true;
-}
-
-
-
 
 template <int dim>
 auto
