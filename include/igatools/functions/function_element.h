@@ -119,18 +119,6 @@ public:
 
   /** Returns TRUE if the two elements have different indices on the grid. */
   bool operator!=(const self_t &a) const;
-
-  /**
-   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-   * is smaller than the the index of the element on the right.
-   * */
-  bool operator<(const self_t &a) const;
-
-  /**
-   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-   * is bigger than the the index of the element on the right.
-   * */
-  bool operator>(const self_t &a) const;
   ///@}
 
 
