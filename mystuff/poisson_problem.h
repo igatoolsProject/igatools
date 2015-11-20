@@ -5,26 +5,38 @@
 #include "AztecOO_ConditionNumber.h"
 #include "Ifpack_PointRelaxation.h"
 
+template<int dim>
+class Geometry {
+  public:
+  TensorSize<dim>  nel;
+  TensorIndex<dim> deg;
+  IgCoefficients   coefs;
+  IgCoefficients   weights;
+};
+
 template<int dim_>
-class GridProblem {
+class PoissonProblem {
 
   private:
-    using self_t = GridProblem<dim_>; // creating the alias
+    using self_t = PoissonProblem<dim_>; // creating the alias
     static int count;
 
     // constructors
   public:
-    GridProblem() = delete;
-    GridProblem(const Size nel, const Size deg);
-    GridProblem(const TensorSize<dim_> nel, const TensorIndex<dim_> deg);
+    PoissonProblem() = delete;
+    PoissonProblem(const Size nel, const Size deg);
+    PoissonProblem(const TensorSize<dim_> nel, const TensorIndex<dim_> deg);
+    PoissonProblem(const Size nel, const Size deg, const Geometry<dim_> &geom);
+
     static const int dim = dim_;
 
   public:
       // space data
-    shared_ptr<const Grid<dim_>>        grid;
-    shared_ptr<const SplineSpace<dim_>> space;
-    shared_ptr<const BSpline<dim_>>     basis;
-    shared_ptr<const QGauss<dim_>>      quad;
+    shared_ptr<const Grid<dim_>>           grid;
+    shared_ptr<const SplineSpace<dim_>>    space;
+    shared_ptr<const Basis<dim_,0,1,1>>    basis;
+    shared_ptr<const QGauss<dim_>>         quad;
+    shared_ptr<const Domain<dim_>>       domain;
       // linear system data
     shared_ptr<Matrix> mat;
     shared_ptr<Vector> rhs;
@@ -41,19 +53,19 @@ class GridProblem {
     void how_are_you_doin() const;
     void print_system() const;
     //using Funct = typename grid_functions::FormulaGridFunction<dim_,1>::CustomGridFunction<dim_,1>;
-    void assemble(std::shared_ptr<const GridFunction<dim_,1>> f) const;
+    void assemble(std::shared_ptr<const Function<dim_,0,1,1>> f) const;
     void solve() const;
     void custom_solve(int &it1, double &cond1, int &it2, double &cond2) const;
     Real l2_error(std::shared_ptr<const GridFunction<dim_,1>> u) const;
 };
 template<int dim_>
-int GridProblem<dim_>::count=0;
+int PoissonProblem<dim_>::count=0;
 
 // ----------------------------------------------------------------------------
 //   CONSTRUCTORS
 // ----------------------------------------------------------------------------
-template<int dim_> // constructor: the simple one
-GridProblem<dim_>::GridProblem(const Size nel, const Size deg)
+template<int dim_> // constructor for reference domain problem
+PoissonProblem<dim_>::PoissonProblem(const Size nel, const Size deg)
   : grid  {Grid<dim_>::const_create(nel+1)}
   , space {SplineSpace<dim_>::const_create(deg,grid)}
   , basis {BSpline<dim_>::const_create(space)}
@@ -63,8 +75,8 @@ GridProblem<dim_>::GridProblem(const Size nel, const Size deg)
   , sol   {create_vector(mat->DomainMap())}
 {count++;}
 
-template<int dim_> // constructor: the cool one
-GridProblem<dim_>::GridProblem(const TensorSize<dim_> nel, const TensorIndex<dim_> deg) {
+template<int dim_> // constructor for reference domain problem
+PoissonProblem<dim_>::PoissonProblem(const TensorSize<dim_> nel, const TensorIndex<dim_> deg) {
   TensorSize<dim_> nknt, nqn;
   for (int idim=0; idim<dim_; idim++) {
     nknt[idim] = nel[idim]+1;
@@ -80,24 +92,72 @@ GridProblem<dim_>::GridProblem(const TensorSize<dim_> nel, const TensorIndex<dim
   count++;
 }
 
+template<int dim_> // constructor for pysical domain problem
+PoissonProblem<dim_>::PoissonProblem(const Size nel, const Size deg, const Geometry<dim_> &geom) {
+  // CREATING THE PHYSICAL DOMAIN
+  // geometry grid
+  TensorIndex<dim_> nknt;
+  TensorSize<dim_>  nqn;
+  TensorSize<dim_>  neel;
+  for (int idim=0; idim<dim_; idim++) {
+    nknt[idim] = geom.nel[idim]+1;
+    nqn[idim]  = deg+1;
+    neel[idim] = geom.nel[idim]+1;
+  }
+  grid         = Grid<dim_>::const_create(neel);
+  // B-spline vector field for the geometry function
+  auto vect_space   = SplineSpace<dim,dim>::const_create(geom.deg,grid);
+  auto vect_bspline = BSpline<dim,dim>::const_create(vect_space);
+  // B-spline scalar field for the weight function
+  auto scal_space   = SplineSpace<dim,1>::const_create(geom.deg,grid);
+  auto scal_bspline = BSpline<dim,1>::const_create(scal_space);
+  // the weight function
+  auto weight_funct = IgGridFunction<dim,1>::const_create(scal_bspline,geom.weights);
+  // NURBS vector field for the geometry function
+  auto vect_nurbs   = NURBS<dim,dim>::const_create(vect_bspline,weight_funct);
+  // geometry function 
+  auto geom_funct   = IgGridFunction<dim,dim>::const_create(vect_bspline,geom.coefs);
+  // finally, the domain
+  domain   = Domain<dim>::const_create(geom_funct);
+  // the basis functions in the physical domain
+  basis    = PhysicalSpaceBasis<dim_>::const_create(scal_bspline,domain);
+  // refine everything
+  //grid->refine();
+  // qudrature rule, linear system 
+  quad  = QGauss<dim_>::const_create(nqn);
+  mat   = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
+  rhs   = create_vector(mat->RangeMap());
+  sol   = create_vector(mat->DomainMap());
+}
+
 // ----------------------------------------------------------------------------
 //   CREATORS
 // ----------------------------------------------------------------------------
 template<int dim_> // creator: the non const simple one
-auto GridProblem<dim_>::create(const Size nel, const Size deg) -> shared_ptr<self_t> {
+auto PoissonProblem<dim_>::create(const Size nel, const Size deg) -> shared_ptr<self_t> {
   return shared_ptr<self_t>(new self_t(nel,deg));
-} 
+}
 
 template<int dim_> // creator: the const simple one
-auto GridProblem<dim_>::const_create(const Size nel, const Size deg) -> shared_ptr<const self_t> {
+auto PoissonProblem<dim_>::const_create(const Size nel, const Size deg) -> shared_ptr<const self_t> {
   return create(nel,deg);
 }
+
+/*template<int dim_> // creator
+auto PoissonProblem<dim_>::const_create(const Size nel, const Size deg, const Geometry<dim_> &geom) -> shared_ptr<self_t> {
+  return shared_ptr<self_t>(new self_t(nel,deg));
+}
+
+template<int dim_> // creator
+auto PoissonProblem<dim_>::const_create(const Size nel, const Size deg, const Geometry<dim_> &geom) -> shared_ptr<const self_t> {
+  return create(nel,deg,geom);
+}*/
 
 // ----------------------------------------------------------------------------
 //   METHODS
 // ----------------------------------------------------------------------------
 template<int dim_> // assemble the system
-void GridProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> source_term) const {
+void PoissonProblem<dim_>::assemble(std::shared_ptr<const Function<dim_,0,1,1>> source_term) const {
 
   // starting the cache handler for the basis functions:
   auto basis_handler = basis->create_cache_handler();
@@ -114,8 +174,8 @@ void GridProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> sou
   // starting the cache handler for the (constant) function f:
   auto funct_handler = source_term->create_cache_handler();
   auto funct_el = source_term->begin();
-  funct_handler->template set_flags<dim_>(grid_function_element::Flags::D0);
-  funct_handler->init_element_cache(funct_el,quad);
+  funct_handler->template set_flags<dim_>(function_element::Flags::value);
+  funct_handler->init_cache(funct_el,quad);
 
   // retrieving the last datum and then starting the loop
   for (int iel=0; basis_el!=basis_eld; ++basis_el, ++funct_el) {
@@ -129,7 +189,8 @@ void GridProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> sou
     auto values = basis_el->get_element_values();
     auto grads  = basis_el->get_element_gradients();
     auto w_meas = basis_el->get_element_w_measures();
-    auto f_vals = funct_el->get_element_values_D0();
+    using _D0 = typename function_element::template _Value<0>;
+    auto f_vals = funct_el->template get_values_from_cache<_D0,dim_>(0);
     // finally, the loop
     for (int ibf=0; ibf<Nbf; ibf++) {
       // loop for the stiffness local matrix
@@ -158,7 +219,7 @@ void GridProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> sou
   using space_tools::project_boundary_values;
   using dof_tools::apply_boundary_values;
   const set<boundary_id> dir_id {0};
-  auto bdr_dofs = space_tools::get_boundary_dofs<ReferenceSpaceBasis<dim_>>(basis,dir_id);
+  auto bdr_dofs = space_tools::get_boundary_dofs<Basis<dim_,0,1,1>>(basis,dir_id);
   std::map<Index,Real> bdr_vals;
 
   for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
@@ -170,7 +231,7 @@ void GridProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> sou
 }
 
 template<int dim_> // solver for the linear system
-void GridProblem<dim_>::solve() const {
+void PoissonProblem<dim_>::solve() const {
   auto solver = create_solver(*mat,*sol,*rhs);
   solver->solve();
 }
@@ -180,7 +241,7 @@ using OP = Epetra_Operator;
 using MV = Epetra_MultiVector;
 using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
 template<int dim_> // custom siuppacool solver
-void GridProblem<dim_>::custom_solve(int &it1, double &cond1, int &it2, double &cond2) const {
+void PoissonProblem<dim_>::custom_solve(int &it1, double &cond1, int &it2, double &cond2) const {
 
   // setting up the problem
   Epetra_LinearProblem problem1(&*mat,&*sol,&*rhs);
@@ -238,7 +299,7 @@ void GridProblem<dim_>::custom_solve(int &it1, double &cond1, int &it2, double &
 }
 
 template<int dim_> // compute the L2 error given the exact solution
-Real GridProblem<dim_>::l2_error(std::shared_ptr<const GridFunction<dim_,1>> u_ex) const {
+Real PoissonProblem<dim_>::l2_error(std::shared_ptr<const GridFunction<dim_,1>> u_ex) const {
 //                                 Real &l2_err, bool compute_h1, Real &h1_err = 0.0) const {
 
   // creating the discrete solution
@@ -289,7 +350,7 @@ Real GridProblem<dim_>::l2_error(std::shared_ptr<const GridFunction<dim_,1>> u_e
 //   INFO PRINTER
 // ----------------------------------------------------------------------------
 template<int dim_> // problem overview
-void GridProblem<dim_>::how_are_you_doin() const {
+void PoissonProblem<dim_>::how_are_you_doin() const {
   out << endl;
   out << "        elements: " << grid->get_num_elements() << " = " << grid->get_num_intervals() << endl;
   out << "         degrees: " << space->get_degree_table()[0] << endl;
@@ -300,7 +361,7 @@ void GridProblem<dim_>::how_are_you_doin() const {
 }
 
 template<int dim_> // system matrix printer
-void GridProblem<dim_>::print_system() const {
+void PoissonProblem<dim_>::print_system() const {
   if (mat->Filled()) {
     auto size = mat->NumMyRows();
     for (int irow=0; irow<size; irow++) {  

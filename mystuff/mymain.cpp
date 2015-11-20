@@ -4,6 +4,7 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/basis_functions/nurbs.h>
+#include <igatools/basis_functions/physical_space_basis.h>
 // headers for quadrature
 #include <igatools/base/quadrature_lib.h>
 // headers for linear algebra objects
@@ -14,6 +15,7 @@
 #include <igatools/linear_algebra/dof_tools.h>
 // headers for function representations
 #include <igatools/functions/function_lib.h>
+#include <igatools/functions/function_element.h>
 #include <igatools/geometry/grid_function_lib.h>
 // headers for output
 #include <igatools/io/writer.h>
@@ -21,7 +23,7 @@
 // finally! my stuff!
 //#include "my_formula_grid_function.h"
 #include "custom_grid_function.h"
-
+#include "custom_function.h"
 
 // headers for Trilinos stuff
 #include <Teuchos_GlobalMPISession.hpp>
@@ -33,7 +35,7 @@ using namespace std;
 using namespace EpetraTools;
 LogStream out;
 
-//#include "grid_problem.h"
+#include "poisson_problem.h"
 
 // ----------------------------------------------------------------------------
 //   MY CUSTOM FUNCTION
@@ -94,11 +96,36 @@ int main() {
   coefs[ 4] = 0.0;  coefs[10] = 1.0;
   coefs[ 5] = 0.0;  coefs[11] = 2.0;
   auto geom  = IgGridFunction<dim,dim>::const_create(vect_bspline,coefs);
+  auto domain = Domain<dim>::const_create(geom);
 
   // plotting the geometry
   const int npt = 11;
   Writer<dim> writer(geom,npt);
   writer.save("ring");
+
+  // geometry definition
+  Geometry<dim> geometry;
+  geometry.nel   = {1,1};
+  geometry.deg   = {1,2};
+  // weights
+  geometry.weights[0] = 1.0;
+  geometry.weights[1] = 1.0;
+  geometry.weights[2] = sqrt(2.0)/2.0;
+  geometry.weights[3] = sqrt(2.0)/2.0;
+  geometry.weights[4] = 1.0;
+  geometry.weights[5] = 1.0;
+  // control points
+  geometry.coefs[ 0] = 1.0;  geometry.coefs[ 6] = 0.0;
+  geometry.coefs[ 1] = 2.0;  geometry.coefs[ 7] = 0.0;
+  geometry.coefs[ 2] = 1.0;  geometry.coefs[ 8] = 1.0;
+  geometry.coefs[ 3] = 2.0;  geometry.coefs[ 9] = 2.0;
+  geometry.coefs[ 4] = 0.0;  geometry.coefs[10] = 1.0;
+  geometry.coefs[ 5] = 0.0;  geometry.coefs[11] = 2.0;
+  // new siuppafancy problem
+  auto problem =  PoissonProblem<dim>(16,3,geometry);
+  
+  auto source = functions::CustomFunction<dim,1>::const_create(problem.domain,&source_term);
+  problem.assemble(source);
 
   return 0;
 }
