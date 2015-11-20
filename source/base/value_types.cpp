@@ -81,6 +81,8 @@ const string _BoundaryNormal::name = "Element boundary normal";
 const Flags _ExtNormal::flag;
 const string _ExtNormal::name = "Element exterior normal";
 
+const Flags _ExtNormalD1::flag;
+const string _ExtNormalD1::name = "Element exterior normal 1st derivative";
 
 const Flags _Curvature::flag;
 const string _Curvature::name = "Element principal curvature";
@@ -108,9 +110,17 @@ activate::FlagsToCache  activate::domain =
   {Flags::first_fundamental_form, Flags::first_fundamental_form},
   {Flags::second_fundamental_form, Flags::second_fundamental_form | Flags::ext_normal},
   {
-    Flags::curvature, Flags::curvature |
+    Flags::curvature,
+    Flags::curvature |
     Flags::first_fundamental_form |
     Flags::second_fundamental_form
+  },
+  {
+    Flags::ext_normal_D1,
+    Flags::ext_normal_D1 |
+    Flags::first_fundamental_form |
+    Flags::second_fundamental_form |
+    Flags::ext_normal
   }
 };
 
@@ -127,7 +137,8 @@ activate::FlagsToGridFunc activate::grid_func =
   {Flags::boundary_normal, grid_function_element::Flags::none},
   {Flags::first_fundamental_form, grid_function_element::Flags::D1},
   {Flags::second_fundamental_form, grid_function_element::Flags::D2},
-  {Flags::curvature, grid_function_element::Flags::none}
+  {Flags::curvature, grid_function_element::Flags::none},
+  {Flags::ext_normal_D1, grid_function_element::Flags::none}
 };
 
 activate::FlagsToGrid activate::grid =
@@ -143,7 +154,8 @@ activate::FlagsToGrid activate::grid =
   {Flags::boundary_normal, grid_element::Flags::none},
   {Flags::first_fundamental_form, grid_element::Flags::none},
   {Flags::second_fundamental_form, grid_element::Flags::none},
-  {Flags::curvature, grid_element::Flags::none}
+  {Flags::curvature, grid_element::Flags::none},
+  {Flags::ext_normal_D1, grid_element::Flags::none}
 };
 
 };

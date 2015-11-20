@@ -236,6 +236,17 @@ get_exterior_normals() const -> const ValueVector<SafeSTLArray<Point, codim_> > 
   return get_values_from_cache<domain_element::_ExtNormal,sdim>(s_id);
 }
 
+template<int dim_,int codim_>
+auto
+DomainElement<dim_,codim_>::
+get_exterior_normals_D1() const
+-> const ValueVector<typename GridFunc::template Derivative<1> > &
+{
+  const int sdim = dim_;
+  const int s_id = 0;
+  AssertThrow(codim_ == 1, ExcNotImplemented());
+  return get_values_from_cache<domain_element::_ExtNormalD1,sdim>(s_id);
+}
 
 
 #if 0

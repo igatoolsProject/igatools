@@ -250,10 +250,10 @@ DomainElement<1,0> cache:
          
       
    
-   Cache for all sub-elements in all dimensions: (memory consumption: 1134 bytes)
-      Cache for sub-element(s) with dimension: 1  (memory consumption : 378 bytes.
+   Cache for all sub-elements in all dimensions: (memory consumption: 1260 bytes)
+      Cache for sub-element(s) with dimension: 1  (memory consumption : 420 bytes.
          Sub-element id: 0
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -288,14 +288,18 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
       
-      Cache for sub-element(s) with dimension: 0  (memory consumption : 756 bytes.
+      Cache for sub-element(s) with dimension: 0  (memory consumption : 840 bytes.
          Sub-element id: 0
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -330,12 +334,16 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
          Sub-element id: 1
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -370,6 +378,10 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -646,10 +658,10 @@ DomainElement<1,0> cache:
          
       
    
-   Cache for all sub-elements in all dimensions: (memory consumption: 1134 bytes)
-      Cache for sub-element(s) with dimension: 1  (memory consumption : 378 bytes.
+   Cache for all sub-elements in all dimensions: (memory consumption: 1260 bytes)
+      Cache for sub-element(s) with dimension: 1  (memory consumption : 420 bytes.
          Sub-element id: 0
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -684,14 +696,18 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
       
-      Cache for sub-element(s) with dimension: 0  (memory consumption : 756 bytes.
+      Cache for sub-element(s) with dimension: 0  (memory consumption : 840 bytes.
          Sub-element id: 0
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -726,12 +742,16 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
          Sub-element id: 1
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -766,6 +786,10 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -1037,10 +1061,10 @@ DomainElement<1,0> cache:
          
       
    
-   Cache for all sub-elements in all dimensions: (memory consumption: 1134 bytes)
-      Cache for sub-element(s) with dimension: 1  (memory consumption : 378 bytes.
+   Cache for all sub-elements in all dimensions: (memory consumption: 1260 bytes)
+      Cache for sub-element(s) with dimension: 1  (memory consumption : 420 bytes.
          Sub-element id: 0
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -1075,14 +1099,18 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
       
-      Cache for sub-element(s) with dimension: 0  (memory consumption : 756 bytes.
+      Cache for sub-element(s) with dimension: 0  (memory consumption : 840 bytes.
          Sub-element id: 0
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -1117,12 +1145,16 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
          Sub-element id: 1
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -1157,6 +1189,10 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -1428,10 +1464,10 @@ DomainElement<1,0> cache:
          
       
    
-   Cache for all sub-elements in all dimensions: (memory consumption: 1134 bytes)
-      Cache for sub-element(s) with dimension: 1  (memory consumption : 378 bytes.
+   Cache for all sub-elements in all dimensions: (memory consumption: 1260 bytes)
+      Cache for sub-element(s) with dimension: 1  (memory consumption : 420 bytes.
          Sub-element id: 0
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -1466,14 +1502,18 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
       
-      Cache for sub-element(s) with dimension: 0  (memory consumption : 756 bytes.
+      Cache for sub-element(s) with dimension: 0  (memory consumption : 840 bytes.
          Sub-element id: 0
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -1508,12 +1548,16 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
          Sub-element id: 1
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -1548,6 +1592,10 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
@@ -1819,10 +1867,10 @@ DomainElement<1,0> cache:
          
       
    
-   Cache for all sub-elements in all dimensions: (memory consumption: 1134 bytes)
-      Cache for sub-element(s) with dimension: 1  (memory consumption : 378 bytes.
+   Cache for all sub-elements in all dimensions: (memory consumption: 1260 bytes)
+      Cache for sub-element(s) with dimension: 1  (memory consumption : 420 bytes.
          Sub-element id: 0
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -1857,14 +1905,18 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
       
-      Cache for sub-element(s) with dimension: 0  (memory consumption : 756 bytes.
+      Cache for sub-element(s) with dimension: 0  (memory consumption : 840 bytes.
          Sub-element id: 0
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -1899,12 +1951,16 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             
          
          Sub-element id: 1
-            Memory consumption: 378 bytes
+            Memory consumption: 420 bytes
             
             Element measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -1939,6 +1995,10 @@ DomainElement<1,0> cache:
                   fill = 0    filled = 0
             
             Element second fundamental form: (memory consumption: 42 bytes)
+               Fill flags:
+                  fill = 0    filled = 0
+            
+            Element exterior normal 1st derivative: (memory consumption: 42 bytes)
                Fill flags:
                   fill = 0    filled = 0
             

@@ -33,6 +33,7 @@
 #include <boost/range/irange.hpp>
 
 #include <igatools/functions/ig_grid_function.h>
+#include <igatools/geometry/domain.h>
 #include <igatools/basis_functions/space_element.h>
 #include <igatools/basis_functions/dof_distribution.h>
 
@@ -71,10 +72,9 @@ auto
 VtkIgaControlGridGenerator<dim, codim>::
 create_grid() const -> VtkGridPtr_
 {
-  const auto space = ig_grid_fun_->get_ig_space();
   const auto &coefs = ig_grid_fun_->get_coefficients();
-  const auto &dofs = space->get_ptr_const_dof_distribution();
 
+  const auto &dofs = ig_grid_fun_->get_basis()->get_dof_distribution();
   const auto &dofs_table = dofs->get_num_dofs_table();
 
   const Size n_total_pts = dofs_table.get_component_size(0);
@@ -118,9 +118,7 @@ auto
 VtkIgaControlGridGenerator<dim, codim>::
 create_grid_vts(const vtkSmartPointer<vtkPoints> points) const -> VtkGridPtr_
 {
-  const auto space = ig_grid_fun_->get_ig_space();
-  const auto &dofs = space->get_ptr_const_dof_distribution();
-
+  const auto &dofs = ig_grid_fun_->get_basis()->get_dof_distribution();
   const auto &dofs_table = dofs->get_num_dofs_table();
   const auto n_pts_dir = dofs_table[0];
 
@@ -142,9 +140,7 @@ auto
 VtkIgaControlGridGenerator<dim, codim>::
 create_grid_vtu(const vtkSmartPointer<vtkPoints> points) const -> VtkGridPtr_
 {
-  const auto space = ig_grid_fun_->get_ig_space();
-  const auto &dofs = space->get_ptr_const_dof_distribution();
-
+  const auto &dofs = ig_grid_fun_->get_basis()->get_dof_distribution();
   const auto &dofs_table = dofs->get_num_dofs_table();
   const auto n_pts_dir = dofs_table[0];
 

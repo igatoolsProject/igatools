@@ -420,8 +420,8 @@ update(const GridInfoPtr_ solid_info,
   bool control_updated;
   if (control_info_)
     control_updated = control_info_->update(control_info);
-  else
-    false;
+//  else
+//    false;
 
   boost::fusion::for_each(data_varying_dim_,
                           [&](const auto & type_and_data_same_dim)

@@ -359,7 +359,7 @@ init_points_info()
       auto &pmi = points_map_[i_el];
       pmi.resize(n_pts_per_bezier_elem);
 
-      const auto elem_t_id = elem.get_index();
+      const auto &elem_t_id = elem.get_index().get_tensor_index();
 
       // Computing the tensor index of the first point of the element.
       for (const auto &dir : boost::irange(0, dim))
@@ -503,7 +503,7 @@ create_linear_element_connectivity()
   {
     conn_el->resize(n_points_per_single_cell);
 
-    const auto &vtk_elem_tensor_idx = cell->get_index();
+    const auto &vtk_elem_tensor_idx = cell->get_index().get_tensor_index();
 
     auto conn = conn_el->begin();
     for (int iVertex = 0; iVertex < n_points_per_single_cell;
@@ -618,7 +618,7 @@ create_quadratic_element_connectivity(
   {
     conn_el->resize(n_points_per_single_cell);
 
-    const auto &vtk_elem_tensor_idx = cell.get_index();
+    const auto &vtk_elem_tensor_idx = cell.get_index().get_tensor_index();
 
     auto conn = conn_el->begin();
     for (int i_pt = 0; i_pt < n_points_per_single_cell; ++i_pt, ++conn)
@@ -761,7 +761,7 @@ create_quadratic_element_connectivity(
   {
     conn_el->resize(n_points_per_single_cell);
 
-    const auto &vtk_elem_tensor_idx = cell.get_index();
+    const auto &vtk_elem_tensor_idx = cell.get_index().get_tensor_index();
 
     auto conn = conn_el->begin();
     for (int i_pt = 0; i_pt < n_points_per_single_cell; ++i_pt, ++conn)
@@ -832,20 +832,21 @@ create_point_data(vtkPointData *const point_data) const
     arr->SetNumberOfTuples(n_tuples);
 
     auto func_cache_handler = func.create_cache_handler();
-    func_cache_handler->template set_flags<dim>(function_element::Flags::value);
+    func_cache_handler->template set_flags<dim>(function_element::Flags::D0);
 
     auto elem = func.cbegin();
     const auto end = func.cend();
 
     func_cache_handler->init_cache(elem,quad_);
 
+    using _D0 = typename function_element::template _D<0>;
     auto pnm_it = points_map_.cbegin();
     for (; elem != end; ++elem, ++pnm_it)
     {
       func_cache_handler->template fill_cache<dim>(elem,0);
 
       auto pnm = pnm_it->cbegin();
-      auto values = elem->template get_values<typename function_element::_Value, dim>(0);
+      auto values = elem->template get_values_from_cache<_D0, dim>(0);
       for (const auto &pm : points_mask_)
       {
         this->template tensor_to_tuple<Value>(values[pm], tuple);

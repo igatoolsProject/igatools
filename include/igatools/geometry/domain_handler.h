@@ -452,10 +452,10 @@ private:
 //        const auto H = elem.compute_second_fundamental_form();
 //        const auto G_inv = elem.compute_inv_first_fundamental_form();
 
-        const auto &H = cache.template get_data<_FirstFundamentalForm>();
-        const auto &G = cache.template get_data<_SecondFundamentalForm>();
+        const auto &form_1 = cache.template get_data<_FirstFundamentalForm>();
+        const auto &form_2 = cache.template get_data<_SecondFundamentalForm>();
 
-        const auto n_points = H.get_num_points();
+        const auto n_points = form_1.get_num_points();
 
         auto &curvatures = cache.template get_data<_Curvature>();
 
@@ -463,16 +463,43 @@ private:
         for (int pt = 0; pt < n_points; ++pt)
         {
           //          const MetricTensor B = compose(H[pt], G_inv[pt]);
-          const auto B = compose(H[pt], inverse(G[pt],det));
-          const auto A = unroll_to_matrix(B);
+//          const auto B = compose(form_2[pt], inverse(form_1[pt],det));
+          const auto A = unroll_to_matrix(
+                           compose(form_2[pt], inverse(form_1[pt],det)));
           curvatures[pt] = A.eigen_values();
         }
 
         curvatures.set_status_filled(true);
       }
 
+      using _ExtNormalD1 = domain_element::_ExtNormalD1;
+      if (cache.template status_fill<_ExtNormalD1>())
+      {
+        Assert(sdim == dim_, ExcNotImplemented());
+        Assert(codim_==1, ExcNotImplemented());
+
+        const auto &DF = elem_.grid_func_elem_->
+                         template get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id_);
+
+        const auto form_1 = cache.template get_data<_FirstFundamentalForm>();
+        const auto form_2 = cache.template get_data<_SecondFundamentalForm>();
+
+        const auto n_points = form_1.get_num_points();
+
+        auto &Dn = cache.template get_data<_ExtNormalD1>();
+
+        Real det;
+        for (int pt = 0; pt< n_points; ++pt)
+        {
+//          const auto L = compose(DF[pt], inverse(form_1[pt],det));
+          Dn[pt] = compose(
+                     compose(DF[pt], inverse(form_1[pt],det)), form_2[pt]);
+        }
+        Dn.set_status_filled(true);
+      }
+
       cache.set_filled(true);
-    }
+    } // end operator()
 
     ElementAccessor &elem_;
     const int s_id_;

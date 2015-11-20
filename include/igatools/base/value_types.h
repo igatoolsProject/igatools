@@ -180,10 +180,12 @@ enum class Flags
 
   second_fundamental_form = 1L << 11,
 
-  curvature       = 1L << 12
+  curvature       = 1L << 12,
+
+  ext_normal_D1   = 1L << 13
 };
 
-static const SafeSTLArray<Flags,12> all_flags =
+static const SafeSTLArray<Flags,13> all_flags =
 {
   Flags::point,
   Flags::measure,
@@ -196,7 +198,8 @@ static const SafeSTLArray<Flags,12> all_flags =
   Flags::boundary_normal,
   Flags::first_fundamental_form,
   Flags::second_fundamental_form,
-  Flags::curvature
+  Flags::curvature,
+  Flags::ext_normal_D1
 };
 
 
@@ -274,6 +277,12 @@ struct _ExtNormal
   static const auto flag = Flags::ext_normal;
 };
 
+
+struct _ExtNormalD1
+{
+  static const std::string name;
+  static const auto flag = Flags::ext_normal_D1;
+};
 
 struct _FirstFundamentalForm
 {
