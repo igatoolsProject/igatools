@@ -6,10 +6,12 @@ Original BSpline:
       Knots without repetition:
          Number of intervals per direction: [ ]
          Knot coordinates:
-            Size: [ ]  Weights: []
          
          Element properties:
             IDs with property "active":
+               Entry id: 0
+                  Flat ID: 0    Tensor ID: []
+               
             
          
       
@@ -97,10 +99,12 @@ BSpline after serialize-deserialize:
       Knots without repetition:
          Number of intervals per direction: [ ]
          Knot coordinates:
-            Size: [ ]  Weights: []
          
          Element properties:
             IDs with property "active":
+               Entry id: 0
+                  Flat ID: 0    Tensor ID: []
+               
             
          
       
@@ -193,14 +197,14 @@ Original BSpline:
       Knots without repetition:
          Number of intervals per direction: [ 1 ]
          Knot coordinates:
-            Size: [ 2 ]  Weights: [2]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 ]
+                  Flat ID: 0    Tensor ID: [0]
+               
             
          
       
@@ -292,14 +296,14 @@ BSpline after serialize-deserialize:
       Knots without repetition:
          Number of intervals per direction: [ 1 ]
          Knot coordinates:
-            Size: [ 2 ]  Weights: [2]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 ]
+                  Flat ID: 0    Tensor ID: [0]
+               
             
          
       
@@ -396,16 +400,16 @@ Original BSpline:
       Knots without repetition:
          Number of intervals per direction: [ 1 1 ]
          Knot coordinates:
-            Size: [ 2 2 ]  Weights: [2,4]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
-            Direction: 1
+            Direction 1: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 0 ]
+                  Flat ID: 0    Tensor ID: [0,0]
+               
             
          
       
@@ -501,16 +505,16 @@ BSpline after serialize-deserialize:
       Knots without repetition:
          Number of intervals per direction: [ 1 1 ]
          Knot coordinates:
-            Size: [ 2 2 ]  Weights: [2,4]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
-            Direction: 1
+            Direction 1: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 0 ]
+                  Flat ID: 0    Tensor ID: [0,0]
+               
             
          
       
@@ -611,18 +615,18 @@ Original BSpline:
       Knots without repetition:
          Number of intervals per direction: [ 1 1 1 ]
          Knot coordinates:
-            Size: [ 2 2 2 ]  Weights: [2,4,8]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
-            Direction: 1
+            Direction 1: 
             [ 0 1.00000 ]
-            Direction: 2
+            Direction 2: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 0 0 ]
+                  Flat ID: 0    Tensor ID: [0,0,0]
+               
             
          
       
@@ -722,18 +726,18 @@ BSpline after serialize-deserialize:
       Knots without repetition:
          Number of intervals per direction: [ 1 1 1 ]
          Knot coordinates:
-            Size: [ 2 2 2 ]  Weights: [2,4,8]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
-            Direction: 1
+            Direction 1: 
             [ 0 1.00000 ]
-            Direction: 2
+            Direction 2: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 0 0 ]
+                  Flat ID: 0    Tensor ID: [0,0,0]
+               
             
          
       
@@ -838,10 +842,12 @@ Original BSpline:
       Knots without repetition:
          Number of intervals per direction: [ ]
          Knot coordinates:
-            Size: [ ]  Weights: []
          
          Element properties:
             IDs with property "active":
+               Entry id: 0
+                  Flat ID: 0    Tensor ID: []
+               
             
          
       
@@ -929,10 +935,12 @@ BSpline after serialize-deserialize:
       Knots without repetition:
          Number of intervals per direction: [ ]
          Knot coordinates:
-            Size: [ ]  Weights: []
          
          Element properties:
             IDs with property "active":
+               Entry id: 0
+                  Flat ID: 0    Tensor ID: []
+               
             
          
       
@@ -1025,14 +1033,14 @@ Original BSpline:
       Knots without repetition:
          Number of intervals per direction: [ 1 ]
          Knot coordinates:
-            Size: [ 2 ]  Weights: [2]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 ]
+                  Flat ID: 0    Tensor ID: [0]
+               
             
          
       
@@ -1124,14 +1132,14 @@ BSpline after serialize-deserialize:
       Knots without repetition:
          Number of intervals per direction: [ 1 ]
          Knot coordinates:
-            Size: [ 2 ]  Weights: [2]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 ]
+                  Flat ID: 0    Tensor ID: [0]
+               
             
          
       
@@ -1228,16 +1236,16 @@ Original BSpline:
       Knots without repetition:
          Number of intervals per direction: [ 1 1 ]
          Knot coordinates:
-            Size: [ 2 2 ]  Weights: [2,4]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
-            Direction: 1
+            Direction 1: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 0 ]
+                  Flat ID: 0    Tensor ID: [0,0]
+               
             
          
       
@@ -1333,16 +1341,16 @@ BSpline after serialize-deserialize:
       Knots without repetition:
          Number of intervals per direction: [ 1 1 ]
          Knot coordinates:
-            Size: [ 2 2 ]  Weights: [2,4]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
-            Direction: 1
+            Direction 1: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 0 ]
+                  Flat ID: 0    Tensor ID: [0,0]
+               
             
          
       
@@ -1443,18 +1451,18 @@ Original BSpline:
       Knots without repetition:
          Number of intervals per direction: [ 1 1 1 ]
          Knot coordinates:
-            Size: [ 2 2 2 ]  Weights: [2,4,8]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
-            Direction: 1
+            Direction 1: 
             [ 0 1.00000 ]
-            Direction: 2
+            Direction 2: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 0 0 ]
+                  Flat ID: 0    Tensor ID: [0,0,0]
+               
             
          
       
@@ -1554,18 +1562,18 @@ BSpline after serialize-deserialize:
       Knots without repetition:
          Number of intervals per direction: [ 1 1 1 ]
          Knot coordinates:
-            Size: [ 2 2 2 ]  Weights: [2,4,8]
-            Direction: 0
+            Direction 0: 
             [ 0 1.00000 ]
-            Direction: 1
+            Direction 1: 
             [ 0 1.00000 ]
-            Direction: 2
+            Direction 2: 
             [ 0 1.00000 ]
          
          Element properties:
             IDs with property "active":
                Entry id: 0
-               [ 0 0 0 ]
+                  Flat ID: 0    Tensor ID: [0,0,0]
+               
             
          
       

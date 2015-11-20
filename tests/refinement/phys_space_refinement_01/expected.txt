@@ -8,8 +8,7 @@ O R I G I N A L     S P A C E
          Knots without repetition:
             Number of intervals per direction: [ 2 ]
             Knot coordinates:
-               Size: [ 3 ]  Weights: [3]
-               Direction: 0
+               Direction 0: 
                [ 0 0.500000 1.00000 ]
             
             Element properties:
@@ -123,8 +122,7 @@ R E F I N E D     S P A C E
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
             Knot coordinates:
-               Size: [ 5 ]  Weights: [5]
-               Direction: 0
+               Direction 0: 
                [ 0 0.250000 0.500000 0.750000 1.00000 ]
             
             Element properties:
@@ -250,10 +248,9 @@ O R I G I N A L     S P A C E
          Knots without repetition:
             Number of intervals per direction: [ 2 2 ]
             Knot coordinates:
-               Size: [ 3 3 ]  Weights: [3,9]
-               Direction: 0
+               Direction 0: 
                [ 0 0.500000 1.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 0 0.500000 1.00000 ]
             
             Element properties:
@@ -378,10 +375,9 @@ R E F I N E D     S P A C E
          Knots without repetition:
             Number of intervals per direction: [ 4 4 ]
             Knot coordinates:
-               Size: [ 5 5 ]  Weights: [5,25]
-               Direction: 0
+               Direction 0: 
                [ 0 0.250000 0.500000 0.750000 1.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 0 0.250000 0.500000 0.750000 1.00000 ]
             
             Element properties:
@@ -550,12 +546,11 @@ O R I G I N A L     S P A C E
          Knots without repetition:
             Number of intervals per direction: [ 2 2 2 ]
             Knot coordinates:
-               Size: [ 3 3 3 ]  Weights: [3,9,27]
-               Direction: 0
+               Direction 0: 
                [ 0 0.500000 1.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 0 0.500000 1.00000 ]
-               Direction: 2
+               Direction 2: 
                [ 0 0.500000 1.00000 ]
             
             Element properties:
@@ -697,12 +692,11 @@ R E F I N E D     S P A C E
          Knots without repetition:
             Number of intervals per direction: [ 4 4 4 ]
             Knot coordinates:
-               Size: [ 5 5 5 ]  Weights: [5,25,125]
-               Direction: 0
+               Direction 0: 
                [ 0 0.250000 0.500000 0.750000 1.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 0 0.250000 0.500000 0.750000 1.00000 ]
-               Direction: 2
+               Direction 2: 
                [ 0 0.250000 0.500000 0.750000 1.00000 ]
             
             Element properties:

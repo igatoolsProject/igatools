@@ -229,17 +229,15 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
     const auto &face_elem = UnitElement <dim>::template get_elem <dim - 1>
     (face_id);
 
-//    const auto flag = ValueFlags::point | ValueFlags::value;
-    auto elem = domain_->cbegin();
-//    const auto topology = Topology <dim> ();
 
     // Looping along all the knot coordinates of the face.
     typename Grid<dim>::template SubGridMap<dim-1> elem_map;
     const auto sub_grid =
-      cartesian_grid->template get_sub_grid <dim-1> (face_id,
-                                                     elem_map);
-    const auto &face_coords_tensor = sub_grid->get_knot_coordinates();
-    const Size n_pts_face = face_coords_tensor.flat_size();
+      cartesian_grid->template get_sub_grid <dim-1>(face_id,elem_map);
+    const auto &face_coords_t_size = sub_grid->get_num_knots_dim();
+    const Size n_pts_face = face_coords_t_size.flat_size();
+    const auto face_coords_t_w = MultiArrayUtils<dim-1>::compute_weight(face_coords_t_size);
+
 
     // Points and weights needed for creating quadratures with points
     // only on one edge (along the direction dir).
@@ -252,11 +250,15 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
       dir, quad_dir->get_coords_direction(0));
 
     // Iterating along every knot coordinates of the face
-    TensorIndex <dim> elem_t_id(0);
+    auto grid = domain_->get_grid_function()->get_grid();
+    auto elem = domain_->cbegin();
+
+
+    TensorIndex<dim> elem_t_id(0);
     for (const auto &i_pt : boost::irange(0, n_pts_face))
     {
       // Creating a quadrature along a certain edge of the element.
-      const auto t_id_face = face_coords_tensor.flat_to_tensor(i_pt);
+      const auto t_id_face = MultiArrayUtils<dim-1>::flat_to_tensor_index(i_pt,face_coords_t_w);
       auto ad = face_elem.active_directions.cbegin();
       for (const auto &t : t_id_face)
       {
@@ -285,10 +287,11 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
       // Iterating along a single knot line in the direction dir.
       for (int itv = 0; itv < n_intervals[dir]; ++itv, ++elem_t_id_dir)
       {
-        elem->move_to(elem_t_id);
+        const int elem_f_id = grid->tensor_to_flat_element_id(elem_t_id);
+        elem->move_to(ElementIndex<dim>(elem_f_id,elem_t_id));
 
         domain_cache_handler->template fill_cache<dim>(*elem, 0);
-        auto physical_points = elem->template get_points<dim>(0);
+        const auto &physical_points = elem->template get_points<dim>(0);
 
         // Filling points.
         Index vtk_pt_id_0 = vtk_pt_id;

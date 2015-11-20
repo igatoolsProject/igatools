@@ -303,9 +303,20 @@ private:
   }
 
   void evaluate_1(const ValueVector<GridPoint> &points,
-                  ValueVector<Derivative<1>> &values) const
+                  ValueVector<Derivative<1>> &gradients) const
   {
-    Assert(false,ExcNotImplemented());
+    auto pt = points.begin();
+    auto grad = gradients.begin();
+
+    for (; pt != points.end(); ++pt, ++grad)
+    {
+      Real val = 1.;
+      for (int i = 0; i < dim ; ++i)
+        val *= (*pt)[i];
+
+      for (int j = 0 ; j < dim ; ++j)
+        (*grad)[j] = val/(*pt)[j];
+    }
   }
 
   void evaluate_2(const ValueVector<GridPoint> &points,
@@ -327,6 +338,96 @@ private:
 
 };
 
+
+
+
+/**
+ * Norm Function
+ * F(x) = (sum x_i ^ p)^(1/p)
+ */
+template<int dim>
+class NormGridFunction : public FormulaGridFunction<dim,1>
+{
+
+public:
+  using base_t = GridFunction<dim,1>;
+  using parent_t = FormulaGridFunction<dim,1>;
+  using self_t = NormGridFunction<dim>;
+  using GridType = Grid<dim>;
+
+  using typename parent_t::GridPoint;
+  using typename parent_t::Value;
+  using typename parent_t::Gradient;
+  using typename parent_t::ElementIterator;
+  using typename parent_t::ElementAccessor;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+
+  static std::shared_ptr<const base_t>
+  const_create(std::shared_ptr<const GridType> &grid,const Real p=2.)
+  {
+    return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid), p));
+  }
+
+  NormGridFunction(const self_t &) = default;
+
+protected:
+  NormGridFunction(const SharedPtrConstnessHandler<GridType> &grid,
+                   const Real p)
+    :
+    parent_t(grid),
+    p_(p)
+  {}
+
+
+
+private:
+  void evaluate_0(const ValueVector<GridPoint> &points,
+                  ValueVector<Value> &values) const override
+  {
+    auto pt = points.begin();
+    for (auto &val : values)
+    {
+      val = std::pow(pt->norm_square(), p_/2.);
+      ++pt;
+    }
+  }
+
+  void evaluate_1(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<1>> &gradients) const override
+  {
+    const int n_pts = points.get_num_points();
+    for (int pt = 0 ; pt < n_pts ; ++pt)
+    {
+      const auto &point = points[pt];
+      auto &gradient = gradients[pt];
+
+      const auto tmp = std::pow(point.norm_square(), p_/2.-1.0) * p_;
+      for (int i = 0 ; i < dim ; ++i)
+        gradient[i] = tmp * point[i];
+    }
+
+  }
+
+  void evaluate_2(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<2>> &hessians) const override
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void print_info(LogStream &out) const override
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  void rebuild_after_insert_knots(
+    const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  const Real p_;
+};
 
 /**
  * Norm Function

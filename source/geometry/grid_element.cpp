@@ -179,14 +179,16 @@ vertex(const int i) const -> Point
   TensorIndex<dim> index = get_index().get_tensor_index();
 
   auto all_elems = UnitElement<dim>::all_elems;
-  const auto &vertex = std::get<0>(all_elems)[i];
+  const auto &vertex_id = std::get<0>(all_elems)[i];
 
+  Point vertex;
   for (const auto j : UnitElement<dim>::active_directions)
   {
-    index[j] += vertex.constant_values[j];
+    index[j] += vertex_id.constant_values[j];
+    vertex[j] = grid_->get_knot_coordinates(j)[index[j]];
   }
 
-  return grid_->knot_coordinates_.cartesian_product(index);
+  return vertex;
 }
 
 

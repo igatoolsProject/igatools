@@ -94,17 +94,6 @@ get_derivative(const int order) const
   return values_[order];
 }
 
-#ifdef SERIALIZATION
-
-template<class Archive>
-void
-BasisValues1d::
-serialize(Archive &ar, const unsigned int version)
-{
-  ar &boost::serialization::make_nvp("values_(DenseMatrix)",values_);
-}
-
-#endif //SERIALIZATION
 
 #if 0
 const BasisValues1d *

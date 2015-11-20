@@ -7,8 +7,7 @@ IgGridFunction<1,1>
          Knots without repetition:
             Number of intervals per direction: [ 9 ]
             Knot coordinates:
-               Size: [ 10 ]  Weights: [10]
-               Direction: 0
+               Direction 0: 
                [ 0 0.111111 0.222222 0.333333 0.444444 0.555556 0.666667 0.777778 0.888889 1.00000 ]
             
             Element properties:
@@ -161,10 +160,9 @@ IgGridFunction<2,1>
          Knots without repetition:
             Number of intervals per direction: [ 9 9 ]
             Knot coordinates:
-               Size: [ 10 10 ]  Weights: [10,100]
-               Direction: 0
+               Direction 0: 
                [ 0 0.111111 0.222222 0.333333 0.444444 0.555556 0.666667 0.777778 0.888889 1.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 0 0.111111 0.222222 0.333333 0.444444 0.555556 0.666667 0.777778 0.888889 1.00000 ]
             
             Element properties:
@@ -677,12 +675,11 @@ IgGridFunction<3,1>
          Knots without repetition:
             Number of intervals per direction: [ 9 9 9 ]
             Knot coordinates:
-               Size: [ 10 10 10 ]  Weights: [10,100,1000]
-               Direction: 0
+               Direction 0: 
                [ 0 0.111111 0.222222 0.333333 0.444444 0.555556 0.666667 0.777778 0.888889 1.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 0 0.111111 0.222222 0.333333 0.444444 0.555556 0.666667 0.777778 0.888889 1.00000 ]
-               Direction: 2
+               Direction 2: 
                [ 0 0.111111 0.222222 0.333333 0.444444 0.555556 0.666667 0.777778 0.888889 1.00000 ]
             
             Element properties:

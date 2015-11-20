@@ -25,13 +25,19 @@ data = Instantiation(include_files)
 
 containers = []
 for dim in inst.sub_domain_dims + inst.domain_dims:
-    quad = 'PropertiesIdContainer<iga::ElementIndex<%d>>' %(dim)
-    containers.append(quad)
-    f.write('template class %s; \n' %(quad))
+    element_index = 'ElementIndex<%d>' %(dim)
+    obj = 'SafeSTLSet<%s>' %(element_index)
+    containers.append(obj)
+    containers.append('SafeSTLMap<PropId,%s>' % obj)
+    obj = 'PropertiesIdContainer<%s>' %(element_index)
+    containers.append(obj)
 
-quad = 'PropertiesIdContainer<iga::Index>'
-containers.append(quad)
-f.write('template class %s; \n' %(quad))
+obj = 'PropertiesIdContainer<int>'
+containers.append(obj)
+
+for obj in unique(containers):
+    f.write('template class %s; \n' %(obj))
+
 
 f.write('IGA_NAMESPACE_CLOSE\n')
 

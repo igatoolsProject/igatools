@@ -1,8 +1,7 @@
 Raw components: 
    Size: [ 1 ]  Weights: [1]
    Entry id: 0
-      Size: [ 7 ]  Weights: [7]
-      Direction: 0
+      Entry id: 0
       [ -2.00000 -1.00000 1.00000 2.00000 3.00000 5.00000 6.00000 ]
    
 

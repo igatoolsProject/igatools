@@ -180,10 +180,12 @@ enum class Flags
 
   second_fundamental_form = 1L << 11,
 
-  curvature       = 1L << 12
+  curvature       = 1L << 12,
+
+  ext_normal_D1   = 1L << 13
 };
 
-static const SafeSTLArray<Flags,12> all_flags =
+static const SafeSTLArray<Flags,13> all_flags =
 {
   Flags::point,
   Flags::measure,
@@ -196,7 +198,8 @@ static const SafeSTLArray<Flags,12> all_flags =
   Flags::boundary_normal,
   Flags::first_fundamental_form,
   Flags::second_fundamental_form,
-  Flags::curvature
+  Flags::curvature,
+  Flags::ext_normal_D1
 };
 
 
@@ -275,6 +278,12 @@ struct _ExtNormal
 };
 
 
+struct _ExtNormalD1
+{
+  static const std::string name;
+  static const auto flag = Flags::ext_normal_D1;
+};
+
 struct _FirstFundamentalForm
 {
   static const std::string name;
@@ -308,9 +317,9 @@ enum class Flags
   /** Fill nothing */
   none      = 0,
 
-  value     = 1L << 1,
+  D0        = 1L << 1,
 
-  gradient  = 1L << 2,
+  D1        = 1L << 2,
 
   D2        = 1L << 3,
 
@@ -320,8 +329,8 @@ enum class Flags
 
 static const SafeSTLArray<Flags,4> all_flags =
 {
-  Flags::value,
-  Flags::gradient,
+  Flags::D0,
+  Flags::D1,
   Flags::D2,
   Flags::w_measure
 };
@@ -337,22 +346,12 @@ struct activate
   static FlagsToDomain domain;
 };
 
-struct _Value
-{
-  static const std::string name;
-  static const auto flag = Flags::value;
-};
 
-struct _Gradient
+template<int order>
+struct _D
 {
   static const std::string name;
-  static const auto flag = Flags::gradient;
-};
-
-struct _D2
-{
-  static const std::string name;
-  static const auto flag = Flags::D2;
+  static const Flags flag;
 };
 
 

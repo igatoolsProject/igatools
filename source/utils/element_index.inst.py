@@ -18,26 +18,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
-
-include_files = ['geometry/grid_element.h']
-data = Instantiation(include_files)
+data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-grids = ['Grid<%d>' % (dim) for dim in inst.all_domain_dims]
-for grid in grids:
-    map = 'SafeSTLMap<typename %s::IndexType,typename %s::IndexType>' %(grid,grid)
-    f.write('template std::shared_ptr<%s> grid_tools::build_grid_union('
-            'const %s &,const %s &,%s &,%s &); \n' % (grid,grid,grid, map,map))
+objects = []
+
+for dim in inst.all_domain_dims:
+    obj = 'ElementIndex<%d>' % (dim)
+    objects.append(obj)
     
-#for dim in inst.all_domain_dims:
-#    grid = 'Grid<%d>' % (dim)
-#    f.write('template std::map<Index,Index>'+
-#            ' grid_tools::build_map_elements_id_between_grids('
-#           'const %s &,const %s &); \n' % (grid,grid))
-#    f.write('template SafeSTLArray<SafeSTLVector<Index>,%d>' % (dim)+
-#            ' grid_tools::build_map_intervals_id_between_grids('
-#            'const %s &,const %s &); \n' % (grid,grid))
-#    f.write('template SafeSTLArray<Index,%d>' % (dim)+
-#            ' grid_tools::get_max_num_fine_intervals_in_coarse_interval('
-#            'const %s &,const %s &); \n' % (grid,grid))
+    
+for obj in unique(objects):
+   f.write('template class %s; \n' %obj)
+   f.write('template LogStream & operator<<(LogStream &,const %s &); \n' %(obj) )

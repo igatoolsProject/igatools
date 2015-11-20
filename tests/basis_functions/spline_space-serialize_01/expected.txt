@@ -5,18 +5,20 @@ Original SplineSpace<1,1,1>
    Knots without repetition:
       Number of intervals per direction: [ 3 ]
       Knot coordinates:
-         Size: [ 4 ]  Weights: [4]
-         Direction: 0
+         Direction 0: 
          [ 0 0.333333 0.666667 1.00000 ]
       
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 ]
+               Flat ID: 0    Tensor ID: [0]
+            
             Entry id: 1
-            [ 1 ]
+               Flat ID: 1    Tensor ID: [1]
+            
             Entry id: 2
-            [ 2 ]
+               Flat ID: 2    Tensor ID: [2]
+            
          
       
    
@@ -59,18 +61,20 @@ SplineSpace<1,1,1> after serialize-deserialize.
    Knots without repetition:
       Number of intervals per direction: [ 3 ]
       Knot coordinates:
-         Size: [ 4 ]  Weights: [4]
-         Direction: 0
+         Direction 0: 
          [ 0 0.333333 0.666667 1.00000 ]
       
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 ]
+               Flat ID: 0    Tensor ID: [0]
+            
             Entry id: 1
-            [ 1 ]
+               Flat ID: 1    Tensor ID: [1]
+            
             Entry id: 2
-            [ 2 ]
+               Flat ID: 2    Tensor ID: [2]
+            
          
       
    
@@ -116,8 +120,7 @@ Direction: 0
 Direction: 1
 [ 1.10000 1.20000 1.30000 ]
 Repeated knots:
-Size: [ 10 ]  Weights: [10]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 0 0.333333 0.666667 0.666667 0.666667 1.10000 1.20000 1.30000 ]
 ========================================================================
 
@@ -128,30 +131,37 @@ Original SplineSpace<2,1,1>
    Knots without repetition:
       Number of intervals per direction: [ 2 4 ]
       Knot coordinates:
-         Size: [ 3 5 ]  Weights: [3,15]
-         Direction: 0
+         Direction 0: 
          [ 0 0.500000 1.00000 ]
-         Direction: 1
+         Direction 1: 
          [ 0 0.250000 0.500000 0.750000 1.00000 ]
       
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0]
+            
             Entry id: 1
-            [ 0 1 ]
+               Flat ID: 2    Tensor ID: [0,1]
+            
             Entry id: 2
-            [ 0 2 ]
+               Flat ID: 4    Tensor ID: [0,2]
+            
             Entry id: 3
-            [ 0 3 ]
+               Flat ID: 6    Tensor ID: [0,3]
+            
             Entry id: 4
-            [ 1 0 ]
+               Flat ID: 1    Tensor ID: [1,0]
+            
             Entry id: 5
-            [ 1 1 ]
+               Flat ID: 3    Tensor ID: [1,1]
+            
             Entry id: 6
-            [ 1 2 ]
+               Flat ID: 5    Tensor ID: [1,2]
+            
             Entry id: 7
-            [ 1 3 ]
+               Flat ID: 7    Tensor ID: [1,3]
+            
          
       
    
@@ -196,30 +206,37 @@ SplineSpace<2,1,1> after serialize-deserialize.
    Knots without repetition:
       Number of intervals per direction: [ 2 4 ]
       Knot coordinates:
-         Size: [ 3 5 ]  Weights: [3,15]
-         Direction: 0
+         Direction 0: 
          [ 0 0.500000 1.00000 ]
-         Direction: 1
+         Direction 1: 
          [ 0 0.250000 0.500000 0.750000 1.00000 ]
       
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0]
+            
             Entry id: 1
-            [ 0 1 ]
+               Flat ID: 2    Tensor ID: [0,1]
+            
             Entry id: 2
-            [ 0 2 ]
+               Flat ID: 4    Tensor ID: [0,2]
+            
             Entry id: 3
-            [ 0 3 ]
+               Flat ID: 6    Tensor ID: [0,3]
+            
             Entry id: 4
-            [ 1 0 ]
+               Flat ID: 1    Tensor ID: [1,0]
+            
             Entry id: 5
-            [ 1 1 ]
+               Flat ID: 3    Tensor ID: [1,1]
+            
             Entry id: 6
-            [ 1 2 ]
+               Flat ID: 5    Tensor ID: [1,2]
+            
             Entry id: 7
-            [ 1 3 ]
+               Flat ID: 7    Tensor ID: [1,3]
+            
          
       
    
@@ -272,10 +289,9 @@ Direction: 0
 Direction: 1
 [ 1.00000 1.10000 1.60000 1.60000 ]
 Repeated knots:
-Size: [ 5 13 ]  Weights: [5,65]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 0.500000 1.20000 1.30000 ]
-Direction: 1
+Entry id: 1
 [ -0.600000 0 0 0 0.250000 0.500000 0.500000 0.500000 0.750000 1.00000 1.10000 1.60000 1.60000 ]
 ========================================================================
 
@@ -286,64 +302,87 @@ Original SplineSpace<3,1,1>
    Knots without repetition:
       Number of intervals per direction: [ 2 3 4 ]
       Knot coordinates:
-         Size: [ 3 4 5 ]  Weights: [3,12,60]
-         Direction: 0
+         Direction 0: 
          [ 0 0.500000 1.00000 ]
-         Direction: 1
+         Direction 1: 
          [ 0 0.333333 0.666667 1.00000 ]
-         Direction: 2
+         Direction 2: 
          [ 0 0.250000 0.500000 0.750000 1.00000 ]
       
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0,0]
+            
             Entry id: 1
-            [ 0 0 1 ]
+               Flat ID: 6    Tensor ID: [0,0,1]
+            
             Entry id: 2
-            [ 0 0 2 ]
+               Flat ID: 12    Tensor ID: [0,0,2]
+            
             Entry id: 3
-            [ 0 0 3 ]
+               Flat ID: 18    Tensor ID: [0,0,3]
+            
             Entry id: 4
-            [ 0 1 0 ]
+               Flat ID: 2    Tensor ID: [0,1,0]
+            
             Entry id: 5
-            [ 0 1 1 ]
+               Flat ID: 8    Tensor ID: [0,1,1]
+            
             Entry id: 6
-            [ 0 1 2 ]
+               Flat ID: 14    Tensor ID: [0,1,2]
+            
             Entry id: 7
-            [ 0 1 3 ]
+               Flat ID: 20    Tensor ID: [0,1,3]
+            
             Entry id: 8
-            [ 0 2 0 ]
+               Flat ID: 4    Tensor ID: [0,2,0]
+            
             Entry id: 9
-            [ 0 2 1 ]
+               Flat ID: 10    Tensor ID: [0,2,1]
+            
             Entry id: 10
-            [ 0 2 2 ]
+               Flat ID: 16    Tensor ID: [0,2,2]
+            
             Entry id: 11
-            [ 0 2 3 ]
+               Flat ID: 22    Tensor ID: [0,2,3]
+            
             Entry id: 12
-            [ 1 0 0 ]
+               Flat ID: 1    Tensor ID: [1,0,0]
+            
             Entry id: 13
-            [ 1 0 1 ]
+               Flat ID: 7    Tensor ID: [1,0,1]
+            
             Entry id: 14
-            [ 1 0 2 ]
+               Flat ID: 13    Tensor ID: [1,0,2]
+            
             Entry id: 15
-            [ 1 0 3 ]
+               Flat ID: 19    Tensor ID: [1,0,3]
+            
             Entry id: 16
-            [ 1 1 0 ]
+               Flat ID: 3    Tensor ID: [1,1,0]
+            
             Entry id: 17
-            [ 1 1 1 ]
+               Flat ID: 9    Tensor ID: [1,1,1]
+            
             Entry id: 18
-            [ 1 1 2 ]
+               Flat ID: 15    Tensor ID: [1,1,2]
+            
             Entry id: 19
-            [ 1 1 3 ]
+               Flat ID: 21    Tensor ID: [1,1,3]
+            
             Entry id: 20
-            [ 1 2 0 ]
+               Flat ID: 5    Tensor ID: [1,2,0]
+            
             Entry id: 21
-            [ 1 2 1 ]
+               Flat ID: 11    Tensor ID: [1,2,1]
+            
             Entry id: 22
-            [ 1 2 2 ]
+               Flat ID: 17    Tensor ID: [1,2,2]
+            
             Entry id: 23
-            [ 1 2 3 ]
+               Flat ID: 23    Tensor ID: [1,2,3]
+            
          
       
    
@@ -390,64 +429,87 @@ SplineSpace<3,1,1> after serialize-deserialize.
    Knots without repetition:
       Number of intervals per direction: [ 2 3 4 ]
       Knot coordinates:
-         Size: [ 3 4 5 ]  Weights: [3,12,60]
-         Direction: 0
+         Direction 0: 
          [ 0 0.500000 1.00000 ]
-         Direction: 1
+         Direction 1: 
          [ 0 0.333333 0.666667 1.00000 ]
-         Direction: 2
+         Direction 2: 
          [ 0 0.250000 0.500000 0.750000 1.00000 ]
       
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0,0]
+            
             Entry id: 1
-            [ 0 0 1 ]
+               Flat ID: 6    Tensor ID: [0,0,1]
+            
             Entry id: 2
-            [ 0 0 2 ]
+               Flat ID: 12    Tensor ID: [0,0,2]
+            
             Entry id: 3
-            [ 0 0 3 ]
+               Flat ID: 18    Tensor ID: [0,0,3]
+            
             Entry id: 4
-            [ 0 1 0 ]
+               Flat ID: 2    Tensor ID: [0,1,0]
+            
             Entry id: 5
-            [ 0 1 1 ]
+               Flat ID: 8    Tensor ID: [0,1,1]
+            
             Entry id: 6
-            [ 0 1 2 ]
+               Flat ID: 14    Tensor ID: [0,1,2]
+            
             Entry id: 7
-            [ 0 1 3 ]
+               Flat ID: 20    Tensor ID: [0,1,3]
+            
             Entry id: 8
-            [ 0 2 0 ]
+               Flat ID: 4    Tensor ID: [0,2,0]
+            
             Entry id: 9
-            [ 0 2 1 ]
+               Flat ID: 10    Tensor ID: [0,2,1]
+            
             Entry id: 10
-            [ 0 2 2 ]
+               Flat ID: 16    Tensor ID: [0,2,2]
+            
             Entry id: 11
-            [ 0 2 3 ]
+               Flat ID: 22    Tensor ID: [0,2,3]
+            
             Entry id: 12
-            [ 1 0 0 ]
+               Flat ID: 1    Tensor ID: [1,0,0]
+            
             Entry id: 13
-            [ 1 0 1 ]
+               Flat ID: 7    Tensor ID: [1,0,1]
+            
             Entry id: 14
-            [ 1 0 2 ]
+               Flat ID: 13    Tensor ID: [1,0,2]
+            
             Entry id: 15
-            [ 1 0 3 ]
+               Flat ID: 19    Tensor ID: [1,0,3]
+            
             Entry id: 16
-            [ 1 1 0 ]
+               Flat ID: 3    Tensor ID: [1,1,0]
+            
             Entry id: 17
-            [ 1 1 1 ]
+               Flat ID: 9    Tensor ID: [1,1,1]
+            
             Entry id: 18
-            [ 1 1 2 ]
+               Flat ID: 15    Tensor ID: [1,1,2]
+            
             Entry id: 19
-            [ 1 1 3 ]
+               Flat ID: 21    Tensor ID: [1,1,3]
+            
             Entry id: 20
-            [ 1 2 0 ]
+               Flat ID: 5    Tensor ID: [1,2,0]
+            
             Entry id: 21
-            [ 1 2 1 ]
+               Flat ID: 11    Tensor ID: [1,2,1]
+            
             Entry id: 22
-            [ 1 2 2 ]
+               Flat ID: 17    Tensor ID: [1,2,2]
+            
             Entry id: 23
-            [ 1 2 3 ]
+               Flat ID: 23    Tensor ID: [1,2,3]
+            
          
       
    
@@ -507,12 +569,11 @@ Direction: 0
 Direction: 1
 [ 1.60000 ]
 Repeated knots:
-Size: [ 5 12 5 ]  Weights: [5,60,300]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 0.500000 1.20000 1.30000 ]
-Direction: 1
+Entry id: 1
 [ -0.600000 0 0 0 0.333333 0.666667 0.666667 0.666667 1.00000 1.00000 1.60000 1.60000 ]
-Direction: 2
+Entry id: 2
 [ -0.600000 0.250000 0.500000 0.750000 1.60000 ]
 ========================================================================
 
@@ -523,26 +584,31 @@ Original SplineSpace<2,2,1>
    Knots without repetition:
       Number of intervals per direction: [ 2 3 ]
       Knot coordinates:
-         Size: [ 3 4 ]  Weights: [3,12]
-         Direction: 0
+         Direction 0: 
          [ 0 0.500000 1.00000 ]
-         Direction: 1
+         Direction 1: 
          [ 0 0.333333 0.666667 1.00000 ]
       
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0]
+            
             Entry id: 1
-            [ 0 1 ]
+               Flat ID: 2    Tensor ID: [0,1]
+            
             Entry id: 2
-            [ 0 2 ]
+               Flat ID: 4    Tensor ID: [0,2]
+            
             Entry id: 3
-            [ 1 0 ]
+               Flat ID: 1    Tensor ID: [1,0]
+            
             Entry id: 4
-            [ 1 1 ]
+               Flat ID: 3    Tensor ID: [1,1]
+            
             Entry id: 5
-            [ 1 2 ]
+               Flat ID: 5    Tensor ID: [1,2]
+            
          
       
    
@@ -596,26 +662,31 @@ SplineSpace<2,2,1> after serialize-deserialize.
    Knots without repetition:
       Number of intervals per direction: [ 2 3 ]
       Knot coordinates:
-         Size: [ 3 4 ]  Weights: [3,12]
-         Direction: 0
+         Direction 0: 
          [ 0 0.500000 1.00000 ]
-         Direction: 1
+         Direction 1: 
          [ 0 0.333333 0.666667 1.00000 ]
       
       Element properties:
          IDs with property "active":
             Entry id: 0
-            [ 0 0 ]
+               Flat ID: 0    Tensor ID: [0,0]
+            
             Entry id: 1
-            [ 0 1 ]
+               Flat ID: 2    Tensor ID: [0,1]
+            
             Entry id: 2
-            [ 0 2 ]
+               Flat ID: 4    Tensor ID: [0,2]
+            
             Entry id: 3
-            [ 1 0 ]
+               Flat ID: 1    Tensor ID: [1,0]
+            
             Entry id: 4
-            [ 1 1 ]
+               Flat ID: 3    Tensor ID: [1,1]
+            
             Entry id: 5
-            [ 1 2 ]
+               Flat ID: 5    Tensor ID: [1,2]
+            
          
       
    
@@ -687,15 +758,13 @@ Direction: 0
 Direction: 1
 [ 1.20000 1.30000 ]
 Repeated knots:
-Size: [ 5 12 ]  Weights: [5,60]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 0.500000 1.20000 1.30000 ]
-Direction: 1
+Entry id: 1
 [ -0.600000 0 0 0 0.333333 0.666667 0.666667 0.666667 1.00000 1.00000 1.60000 1.60000 ]
-Size: [ 9 6 ]  Weights: [9,54]
-Direction: 0
+Entry id: 0
 [ -0.600000 0 0 0 0.500000 1.00000 1.00000 1.60000 1.60000 ]
-Direction: 1
+Entry id: 1
 [ -0.500000 0 0.333333 0.666667 1.20000 1.30000 ]
 ========================================================================
 

@@ -68,10 +68,10 @@ void non_uniform_const()
   for (int i = 0; i < dim; ++i)
     n_knots[i] = 2*i+2;
   int k = 0;
-  CartesianProductArray<Real, dim> knots(n_knots);
+  SafeSTLArray<SafeSTLVector<Real>,dim> knots;
   for (int i = 0; i < dim; ++i)
     for (int j = 0; j <n_knots[i] ; ++j)
-      knots.entry(i,j) = k++;
+      knots[i].push_back(k++);
 
   auto grid = Grid<dim>::create(knots);
   grid->print_info(out);

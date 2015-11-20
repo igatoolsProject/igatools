@@ -1,7 +1,4 @@
-========================================================================
-serialize_deserialize
-========================================================================
-Original FunctionsContainer:
+Functions container:
    Dim : 1
       Codim : 0
          Domains num. : 1
@@ -13,16 +10,17 @@ Original FunctionsContainer:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 ]
                               Knot coordinates:
-                                 Size: [ 3 ]  Weights: [3]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 ]
+                                       Flat ID: 0    Tensor ID: [0]
+                                    
                                     Entry id: 1
-                                    [ 1 ]
+                                       Flat ID: 1    Tensor ID: [1]
+                                    
                                  
                               
                            
@@ -117,6 +115,7 @@ Original FunctionsContainer:
                         Coef[loc_id=3 , glob_id=3] = 0
                         Coef[loc_id=4 , glob_id=4] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -156,22 +155,25 @@ Original FunctionsContainer:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 ]  Weights: [3,9]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 1 ]
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
                                     Entry id: 2
-                                    [ 1 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
                                     Entry id: 3
-                                    [ 1 1 ]
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
                                  
                               
                            
@@ -338,6 +340,7 @@ Original FunctionsContainer:
                         Coef[loc_id=48 , glob_id=48] = 0
                         Coef[loc_id=49 , glob_id=49] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -363,22 +366,25 @@ Original FunctionsContainer:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 ]  Weights: [3,9]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 1 ]
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
                                     Entry id: 2
-                                    [ 1 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
                                     Entry id: 3
-                                    [ 1 1 ]
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
                                  
                               
                            
@@ -545,6 +551,7 @@ Original FunctionsContainer:
                         Coef[loc_id=48 , glob_id=48] = 0
                         Coef[loc_id=49 , glob_id=49] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -574,22 +581,25 @@ Original FunctionsContainer:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 ]  Weights: [3,9]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 1 ]
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
                                     Entry id: 2
-                                    [ 1 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
                                     Entry id: 3
-                                    [ 1 1 ]
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
                                  
                               
                            
@@ -803,6 +813,7 @@ Original FunctionsContainer:
                         Coef[loc_id=73 , glob_id=73] = 0
                         Coef[loc_id=74 , glob_id=74] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -828,22 +839,25 @@ Original FunctionsContainer:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 ]  Weights: [3,9]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 1 ]
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
                                     Entry id: 2
-                                    [ 1 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
                                     Entry id: 3
-                                    [ 1 1 ]
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
                                  
                               
                            
@@ -1057,6 +1071,7 @@ Original FunctionsContainer:
                         Coef[loc_id=73 , glob_id=73] = 0
                         Coef[loc_id=74 , glob_id=74] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -1088,32 +1103,39 @@ Original FunctionsContainer:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 3 ]  Weights: [3,9,27]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 2
+                                 Direction 2: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 0 1 ]
+                                       Flat ID: 4    Tensor ID: [0,0,1]
+                                    
                                     Entry id: 2
-                                    [ 0 1 0 ]
+                                       Flat ID: 2    Tensor ID: [0,1,0]
+                                    
                                     Entry id: 3
-                                    [ 0 1 1 ]
+                                       Flat ID: 6    Tensor ID: [0,1,1]
+                                    
                                     Entry id: 4
-                                    [ 1 0 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0,0]
+                                    
                                     Entry id: 5
-                                    [ 1 0 1 ]
+                                       Flat ID: 5    Tensor ID: [1,0,1]
+                                    
                                     Entry id: 6
-                                    [ 1 1 0 ]
+                                       Flat ID: 3    Tensor ID: [1,1,0]
+                                    
                                     Entry id: 7
-                                    [ 1 1 1 ]
+                                       Flat ID: 7    Tensor ID: [1,1,1]
+                                    
                                  
                               
                            
@@ -1642,6 +1664,7 @@ Original FunctionsContainer:
                         Coef[loc_id=373 , glob_id=373] = 0
                         Coef[loc_id=374 , glob_id=374] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -1667,32 +1690,39 @@ Original FunctionsContainer:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 3 ]  Weights: [3,9,27]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 2
+                                 Direction 2: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 0 1 ]
+                                       Flat ID: 4    Tensor ID: [0,0,1]
+                                    
                                     Entry id: 2
-                                    [ 0 1 0 ]
+                                       Flat ID: 2    Tensor ID: [0,1,0]
+                                    
                                     Entry id: 3
-                                    [ 0 1 1 ]
+                                       Flat ID: 6    Tensor ID: [0,1,1]
+                                    
                                     Entry id: 4
-                                    [ 1 0 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0,0]
+                                    
                                     Entry id: 5
-                                    [ 1 0 1 ]
+                                       Flat ID: 5    Tensor ID: [1,0,1]
+                                    
                                     Entry id: 6
-                                    [ 1 1 0 ]
+                                       Flat ID: 3    Tensor ID: [1,1,0]
+                                    
                                     Entry id: 7
-                                    [ 1 1 1 ]
+                                       Flat ID: 7    Tensor ID: [1,1,1]
+                                    
                                  
                               
                            
@@ -2221,6 +2251,2285 @@ Original FunctionsContainer:
                         Coef[loc_id=373 , glob_id=373] = 0
                         Coef[loc_id=374 , glob_id=374] = 0
                      
+                     Dofs property: active
+                  
+               
+               Range : 1
+                  Rank : 1
+                     Functions num. : 0
+                     
+                  
+               
+               Range : 3
+                  Rank : 1
+                     Functions num. : 1
+                        Function[0]   ID: 27   name: phys_func_3_3_1_0
+                        
+                     
+                  
+               
+            
+         
+      
+   
+
+========================================================================
+serialize_deserialize
+========================================================================
+Original FunctionsContainer:
+   Dim : 1
+      Codim : 0
+         Domains num. : 1
+            Domain[0]   ID: 9   name: map_1_1_1_0
+               GridFunction<1,1>
+                  IgGridFunction<1,1>
+                     ReferenceSpaceBasis<1,1,1>:
+                        Spline Space:
+                           Knots without repetition:
+                              Number of intervals per direction: [ 2 ]
+                              Knot coordinates:
+                                 Direction 0: 
+                                 [ 0 0.500000 1.00000 ]
+                              
+                              Element properties:
+                                 IDs with property "active":
+                                    Entry id: 0
+                                       Flat ID: 0    Tensor ID: [0]
+                                    
+                                    Entry id: 1
+                                       Flat ID: 1    Tensor ID: [1]
+                                    
+                                 
+                              
+                           
+                           Degrees:
+                              Raw components: 
+                                 Size: [ 1 ]  Weights: [1]
+                                 Entry id: 0
+                                 [ 3 ]
+                              
+                              Components map: 
+                              [ 0 ]
+                              Active components ids: 
+                              [ 0 ]
+                              Inactive components ids: 
+                              [ ]
+                           
+                           Interior multiplicities:
+                              Size: [ 1 ]  Weights: [1]
+                              Direction: 0
+                              [ 1 ]
+                           
+                           Dimensionality Table:
+                              Raw components: 
+                                 Size: [ 1 ]  Weights: [1]
+                                 Entry id: 0
+                                 [ 5 ]
+                              
+                              Components map: 
+                              [ 0 ]
+                              Active components ids: 
+                              [ 0 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 5 ]
+                              Total Dimension: 5
+                           
+                        
+                        DoFs Distribution:
+                           Num dofs table:
+                              Raw components: 
+                                 Size: [ 1 ]  Weights: [1]
+                                 Entry id: 0
+                                 [ 5 ]
+                              
+                              Components map: 
+                              [ 0 ]
+                              Active components ids: 
+                              [ 0 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 5 ]
+                              Total Dimension: 5
+                           
+                           Index table size:
+                              Raw components: 
+                                 Size: [ 1 ]  Weights: [1]
+                                 Entry id: 0
+                                 [ 5 ]
+                              
+                              Components map: 
+                              [ 0 ]
+                              Active components ids: 
+                              [ 0 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 5 ]
+                              Total Dimension: 5
+                           
+                           Dof indices:
+                              Size: [ 5 ]  Weights: [5]
+                              [ 0 1 2 3 4 ]
+                           
+                           Dof properties:
+                              IDs with property "active":
+                              [ 0 1 2 3 4 ]
+                           
+                        
+                        Bernstein Extraction:
+                           Component[0]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                        
+                     
+                     IgCoefficients:
+                        Coef[loc_id=0 , glob_id=0] = 1.00000
+                        Coef[loc_id=1 , glob_id=1] = 0
+                        Coef[loc_id=2 , glob_id=2] = 0
+                        Coef[loc_id=3 , glob_id=3] = 0
+                        Coef[loc_id=4 , glob_id=4] = 0
+                     
+                     Dofs property: active
+                  
+               
+               Range : 1
+                  Rank : 1
+                     Functions num. : 1
+                        Function[0]   ID: 23   name: phys_func_1_1_1_0
+                        
+                     
+                  
+               
+               Range : 1
+                  Rank : 1
+                     Functions num. : 0
+                     
+                  
+               
+            
+         
+      
+      Codim : 1
+         Domains num. : 0
+         
+      
+      Codim : 2
+         Domains num. : 0
+         
+      
+   
+   Dim : 2
+      Codim : 0
+         Domains num. : 2
+            Domain[0]   ID: 11   name: map_2_1_1_0
+               GridFunction<2,2>
+                  IgGridFunction<2,2>
+                     ReferenceSpaceBasis<2,1,2>:
+                        Spline Space:
+                           Knots without repetition:
+                              Number of intervals per direction: [ 2 2 ]
+                              Knot coordinates:
+                                 Direction 0: 
+                                 [ 0 0.500000 1.00000 ]
+                                 Direction 1: 
+                                 [ 0 0.500000 1.00000 ]
+                              
+                              Element properties:
+                                 IDs with property "active":
+                                    Entry id: 0
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
+                                    Entry id: 1
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
+                                    Entry id: 2
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
+                                    Entry id: 3
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
+                                 
+                              
+                           
+                           Degrees:
+                              Raw components: 
+                                 Size: [ 2 ]  Weights: [2]
+                                 Entry id: 0
+                                 [ 3 3 ]
+                                 Entry id: 1
+                                 [ 0 0 ]
+                              
+                              Components map: 
+                              [ 0 0 ]
+                              Active components ids: 
+                              [ 0 ]
+                              Inactive components ids: 
+                              [ 1 ]
+                           
+                           Interior multiplicities:
+                              Size: [ 1 1 ]  Weights: [1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Size: [ 1 1 ]  Weights: [1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                           
+                           Dimensionality Table:
+                              Raw components: 
+                                 Size: [ 2 ]  Weights: [2]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 ]
+                              Active components ids: 
+                              [ 0 1 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 ]
+                              Total Dimension: 50
+                           
+                        
+                        DoFs Distribution:
+                           Num dofs table:
+                              Raw components: 
+                                 Size: [ 2 ]  Weights: [2]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 ]
+                              Active components ids: 
+                              [ 0 1 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 ]
+                              Total Dimension: 50
+                           
+                           Index table size:
+                              Raw components: 
+                                 Size: [ 2 ]  Weights: [2]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 ]
+                              Active components ids: 
+                              [ 0 1 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 ]
+                              Total Dimension: 50
+                           
+                           Dof indices:
+                              Size: [ 5 5 ]  Weights: [5,25]
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ]
+                              Size: [ 5 5 ]  Weights: [5,25]
+                              [ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 ]
+                           
+                           Dof properties:
+                              IDs with property "active":
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 ]
+                           
+                        
+                        Bernstein Extraction:
+                           Component[0]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Component[1]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                        
+                     
+                     IgCoefficients:
+                        Coef[loc_id=0 , glob_id=0] = 1.00000
+                        Coef[loc_id=1 , glob_id=1] = 0
+                        Coef[loc_id=2 , glob_id=2] = 0
+                        Coef[loc_id=3 , glob_id=3] = 0
+                        Coef[loc_id=4 , glob_id=4] = 0
+                        Coef[loc_id=5 , glob_id=5] = 0
+                        Coef[loc_id=6 , glob_id=6] = 0
+                        Coef[loc_id=7 , glob_id=7] = 0
+                        Coef[loc_id=8 , glob_id=8] = 0
+                        Coef[loc_id=9 , glob_id=9] = 0
+                        Coef[loc_id=10 , glob_id=10] = 0
+                        Coef[loc_id=11 , glob_id=11] = 0
+                        Coef[loc_id=12 , glob_id=12] = 0
+                        Coef[loc_id=13 , glob_id=13] = 0
+                        Coef[loc_id=14 , glob_id=14] = 0
+                        Coef[loc_id=15 , glob_id=15] = 0
+                        Coef[loc_id=16 , glob_id=16] = 0
+                        Coef[loc_id=17 , glob_id=17] = 0
+                        Coef[loc_id=18 , glob_id=18] = 0
+                        Coef[loc_id=19 , glob_id=19] = 0
+                        Coef[loc_id=20 , glob_id=20] = 0
+                        Coef[loc_id=21 , glob_id=21] = 0
+                        Coef[loc_id=22 , glob_id=22] = 0
+                        Coef[loc_id=23 , glob_id=23] = 0
+                        Coef[loc_id=24 , glob_id=24] = 0
+                        Coef[loc_id=25 , glob_id=25] = 0
+                        Coef[loc_id=26 , glob_id=26] = 0
+                        Coef[loc_id=27 , glob_id=27] = 0
+                        Coef[loc_id=28 , glob_id=28] = 0
+                        Coef[loc_id=29 , glob_id=29] = 0
+                        Coef[loc_id=30 , glob_id=30] = 0
+                        Coef[loc_id=31 , glob_id=31] = 0
+                        Coef[loc_id=32 , glob_id=32] = 0
+                        Coef[loc_id=33 , glob_id=33] = 0
+                        Coef[loc_id=34 , glob_id=34] = 0
+                        Coef[loc_id=35 , glob_id=35] = 0
+                        Coef[loc_id=36 , glob_id=36] = 0
+                        Coef[loc_id=37 , glob_id=37] = 0
+                        Coef[loc_id=38 , glob_id=38] = 0
+                        Coef[loc_id=39 , glob_id=39] = 0
+                        Coef[loc_id=40 , glob_id=40] = 0
+                        Coef[loc_id=41 , glob_id=41] = 0
+                        Coef[loc_id=42 , glob_id=42] = 0
+                        Coef[loc_id=43 , glob_id=43] = 0
+                        Coef[loc_id=44 , glob_id=44] = 0
+                        Coef[loc_id=45 , glob_id=45] = 0
+                        Coef[loc_id=46 , glob_id=46] = 0
+                        Coef[loc_id=47 , glob_id=47] = 0
+                        Coef[loc_id=48 , glob_id=48] = 0
+                        Coef[loc_id=49 , glob_id=49] = 0
+                     
+                     Dofs property: active
+                  
+               
+               Range : 1
+                  Rank : 1
+                     Functions num. : 1
+                        Function[0]   ID: 24   name: phys_func_2_1_1_0
+                        
+                     
+                  
+               
+               Range : 2
+                  Rank : 1
+                     Functions num. : 0
+                     
+                  
+               
+            
+            Domain[1]   ID: 15   name: map_2_2_1_0
+               GridFunction<2,2>
+                  IgGridFunction<2,2>
+                     ReferenceSpaceBasis<2,1,2>:
+                        Spline Space:
+                           Knots without repetition:
+                              Number of intervals per direction: [ 2 2 ]
+                              Knot coordinates:
+                                 Direction 0: 
+                                 [ 0 0.500000 1.00000 ]
+                                 Direction 1: 
+                                 [ 0 0.500000 1.00000 ]
+                              
+                              Element properties:
+                                 IDs with property "active":
+                                    Entry id: 0
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
+                                    Entry id: 1
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
+                                    Entry id: 2
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
+                                    Entry id: 3
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
+                                 
+                              
+                           
+                           Degrees:
+                              Raw components: 
+                                 Size: [ 2 ]  Weights: [2]
+                                 Entry id: 0
+                                 [ 3 3 ]
+                                 Entry id: 1
+                                 [ 0 0 ]
+                              
+                              Components map: 
+                              [ 0 0 ]
+                              Active components ids: 
+                              [ 0 ]
+                              Inactive components ids: 
+                              [ 1 ]
+                           
+                           Interior multiplicities:
+                              Size: [ 1 1 ]  Weights: [1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Size: [ 1 1 ]  Weights: [1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                           
+                           Dimensionality Table:
+                              Raw components: 
+                                 Size: [ 2 ]  Weights: [2]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 ]
+                              Active components ids: 
+                              [ 0 1 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 ]
+                              Total Dimension: 50
+                           
+                        
+                        DoFs Distribution:
+                           Num dofs table:
+                              Raw components: 
+                                 Size: [ 2 ]  Weights: [2]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 ]
+                              Active components ids: 
+                              [ 0 1 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 ]
+                              Total Dimension: 50
+                           
+                           Index table size:
+                              Raw components: 
+                                 Size: [ 2 ]  Weights: [2]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 ]
+                              Active components ids: 
+                              [ 0 1 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 ]
+                              Total Dimension: 50
+                           
+                           Dof indices:
+                              Size: [ 5 5 ]  Weights: [5,25]
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ]
+                              Size: [ 5 5 ]  Weights: [5,25]
+                              [ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 ]
+                           
+                           Dof properties:
+                              IDs with property "active":
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 ]
+                           
+                        
+                        Bernstein Extraction:
+                           Component[0]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Component[1]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                        
+                     
+                     IgCoefficients:
+                        Coef[loc_id=0 , glob_id=0] = 1.00000
+                        Coef[loc_id=1 , glob_id=1] = 0
+                        Coef[loc_id=2 , glob_id=2] = 0
+                        Coef[loc_id=3 , glob_id=3] = 0
+                        Coef[loc_id=4 , glob_id=4] = 0
+                        Coef[loc_id=5 , glob_id=5] = 0
+                        Coef[loc_id=6 , glob_id=6] = 0
+                        Coef[loc_id=7 , glob_id=7] = 0
+                        Coef[loc_id=8 , glob_id=8] = 0
+                        Coef[loc_id=9 , glob_id=9] = 0
+                        Coef[loc_id=10 , glob_id=10] = 0
+                        Coef[loc_id=11 , glob_id=11] = 0
+                        Coef[loc_id=12 , glob_id=12] = 0
+                        Coef[loc_id=13 , glob_id=13] = 0
+                        Coef[loc_id=14 , glob_id=14] = 0
+                        Coef[loc_id=15 , glob_id=15] = 0
+                        Coef[loc_id=16 , glob_id=16] = 0
+                        Coef[loc_id=17 , glob_id=17] = 0
+                        Coef[loc_id=18 , glob_id=18] = 0
+                        Coef[loc_id=19 , glob_id=19] = 0
+                        Coef[loc_id=20 , glob_id=20] = 0
+                        Coef[loc_id=21 , glob_id=21] = 0
+                        Coef[loc_id=22 , glob_id=22] = 0
+                        Coef[loc_id=23 , glob_id=23] = 0
+                        Coef[loc_id=24 , glob_id=24] = 0
+                        Coef[loc_id=25 , glob_id=25] = 0
+                        Coef[loc_id=26 , glob_id=26] = 0
+                        Coef[loc_id=27 , glob_id=27] = 0
+                        Coef[loc_id=28 , glob_id=28] = 0
+                        Coef[loc_id=29 , glob_id=29] = 0
+                        Coef[loc_id=30 , glob_id=30] = 0
+                        Coef[loc_id=31 , glob_id=31] = 0
+                        Coef[loc_id=32 , glob_id=32] = 0
+                        Coef[loc_id=33 , glob_id=33] = 0
+                        Coef[loc_id=34 , glob_id=34] = 0
+                        Coef[loc_id=35 , glob_id=35] = 0
+                        Coef[loc_id=36 , glob_id=36] = 0
+                        Coef[loc_id=37 , glob_id=37] = 0
+                        Coef[loc_id=38 , glob_id=38] = 0
+                        Coef[loc_id=39 , glob_id=39] = 0
+                        Coef[loc_id=40 , glob_id=40] = 0
+                        Coef[loc_id=41 , glob_id=41] = 0
+                        Coef[loc_id=42 , glob_id=42] = 0
+                        Coef[loc_id=43 , glob_id=43] = 0
+                        Coef[loc_id=44 , glob_id=44] = 0
+                        Coef[loc_id=45 , glob_id=45] = 0
+                        Coef[loc_id=46 , glob_id=46] = 0
+                        Coef[loc_id=47 , glob_id=47] = 0
+                        Coef[loc_id=48 , glob_id=48] = 0
+                        Coef[loc_id=49 , glob_id=49] = 0
+                     
+                     Dofs property: active
+                  
+               
+               Range : 1
+                  Rank : 1
+                     Functions num. : 0
+                     
+                  
+               
+               Range : 2
+                  Rank : 1
+                     Functions num. : 1
+                        Function[0]   ID: 26   name: phys_func_2_2_1_0
+                        
+                     
+                  
+               
+            
+         
+      
+      Codim : 1
+         Domains num. : 2
+            Domain[0]   ID: 19   name: map_2_1_1_1
+               GridFunction<2,3>
+                  IgGridFunction<2,3>
+                     ReferenceSpaceBasis<2,1,3>:
+                        Spline Space:
+                           Knots without repetition:
+                              Number of intervals per direction: [ 2 2 ]
+                              Knot coordinates:
+                                 Direction 0: 
+                                 [ 0 0.500000 1.00000 ]
+                                 Direction 1: 
+                                 [ 0 0.500000 1.00000 ]
+                              
+                              Element properties:
+                                 IDs with property "active":
+                                    Entry id: 0
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
+                                    Entry id: 1
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
+                                    Entry id: 2
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
+                                    Entry id: 3
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
+                                 
+                              
+                           
+                           Degrees:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 3 3 ]
+                                 Entry id: 1
+                                 [ 0 0 ]
+                                 Entry id: 2
+                                 [ 0 0 ]
+                              
+                              Components map: 
+                              [ 0 0 0 ]
+                              Active components ids: 
+                              [ 0 ]
+                              Inactive components ids: 
+                              [ 1 2 ]
+                           
+                           Interior multiplicities:
+                              Size: [ 1 1 ]  Weights: [1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Size: [ 1 1 ]  Weights: [1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Size: [ 1 1 ]  Weights: [1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                           
+                           Dimensionality Table:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 25 ]
+                              Total Dimension: 75
+                           
+                        
+                        DoFs Distribution:
+                           Num dofs table:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 25 ]
+                              Total Dimension: 75
+                           
+                           Index table size:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 25 ]
+                              Total Dimension: 75
+                           
+                           Dof indices:
+                              Size: [ 5 5 ]  Weights: [5,25]
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ]
+                              Size: [ 5 5 ]  Weights: [5,25]
+                              [ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 ]
+                              Size: [ 5 5 ]  Weights: [5,25]
+                              [ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 ]
+                           
+                           Dof properties:
+                              IDs with property "active":
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 ]
+                           
+                        
+                        Bernstein Extraction:
+                           Component[0]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Component[1]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Component[2]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                        
+                     
+                     IgCoefficients:
+                        Coef[loc_id=0 , glob_id=0] = 1.00000
+                        Coef[loc_id=1 , glob_id=1] = 0
+                        Coef[loc_id=2 , glob_id=2] = 0
+                        Coef[loc_id=3 , glob_id=3] = 0
+                        Coef[loc_id=4 , glob_id=4] = 0
+                        Coef[loc_id=5 , glob_id=5] = 0
+                        Coef[loc_id=6 , glob_id=6] = 0
+                        Coef[loc_id=7 , glob_id=7] = 0
+                        Coef[loc_id=8 , glob_id=8] = 0
+                        Coef[loc_id=9 , glob_id=9] = 0
+                        Coef[loc_id=10 , glob_id=10] = 0
+                        Coef[loc_id=11 , glob_id=11] = 0
+                        Coef[loc_id=12 , glob_id=12] = 0
+                        Coef[loc_id=13 , glob_id=13] = 0
+                        Coef[loc_id=14 , glob_id=14] = 0
+                        Coef[loc_id=15 , glob_id=15] = 0
+                        Coef[loc_id=16 , glob_id=16] = 0
+                        Coef[loc_id=17 , glob_id=17] = 0
+                        Coef[loc_id=18 , glob_id=18] = 0
+                        Coef[loc_id=19 , glob_id=19] = 0
+                        Coef[loc_id=20 , glob_id=20] = 0
+                        Coef[loc_id=21 , glob_id=21] = 0
+                        Coef[loc_id=22 , glob_id=22] = 0
+                        Coef[loc_id=23 , glob_id=23] = 0
+                        Coef[loc_id=24 , glob_id=24] = 0
+                        Coef[loc_id=25 , glob_id=25] = 0
+                        Coef[loc_id=26 , glob_id=26] = 0
+                        Coef[loc_id=27 , glob_id=27] = 0
+                        Coef[loc_id=28 , glob_id=28] = 0
+                        Coef[loc_id=29 , glob_id=29] = 0
+                        Coef[loc_id=30 , glob_id=30] = 0
+                        Coef[loc_id=31 , glob_id=31] = 0
+                        Coef[loc_id=32 , glob_id=32] = 0
+                        Coef[loc_id=33 , glob_id=33] = 0
+                        Coef[loc_id=34 , glob_id=34] = 0
+                        Coef[loc_id=35 , glob_id=35] = 0
+                        Coef[loc_id=36 , glob_id=36] = 0
+                        Coef[loc_id=37 , glob_id=37] = 0
+                        Coef[loc_id=38 , glob_id=38] = 0
+                        Coef[loc_id=39 , glob_id=39] = 0
+                        Coef[loc_id=40 , glob_id=40] = 0
+                        Coef[loc_id=41 , glob_id=41] = 0
+                        Coef[loc_id=42 , glob_id=42] = 0
+                        Coef[loc_id=43 , glob_id=43] = 0
+                        Coef[loc_id=44 , glob_id=44] = 0
+                        Coef[loc_id=45 , glob_id=45] = 0
+                        Coef[loc_id=46 , glob_id=46] = 0
+                        Coef[loc_id=47 , glob_id=47] = 0
+                        Coef[loc_id=48 , glob_id=48] = 0
+                        Coef[loc_id=49 , glob_id=49] = 0
+                        Coef[loc_id=50 , glob_id=50] = 0
+                        Coef[loc_id=51 , glob_id=51] = 0
+                        Coef[loc_id=52 , glob_id=52] = 0
+                        Coef[loc_id=53 , glob_id=53] = 0
+                        Coef[loc_id=54 , glob_id=54] = 0
+                        Coef[loc_id=55 , glob_id=55] = 0
+                        Coef[loc_id=56 , glob_id=56] = 0
+                        Coef[loc_id=57 , glob_id=57] = 0
+                        Coef[loc_id=58 , glob_id=58] = 0
+                        Coef[loc_id=59 , glob_id=59] = 0
+                        Coef[loc_id=60 , glob_id=60] = 0
+                        Coef[loc_id=61 , glob_id=61] = 0
+                        Coef[loc_id=62 , glob_id=62] = 0
+                        Coef[loc_id=63 , glob_id=63] = 0
+                        Coef[loc_id=64 , glob_id=64] = 0
+                        Coef[loc_id=65 , glob_id=65] = 0
+                        Coef[loc_id=66 , glob_id=66] = 0
+                        Coef[loc_id=67 , glob_id=67] = 0
+                        Coef[loc_id=68 , glob_id=68] = 0
+                        Coef[loc_id=69 , glob_id=69] = 0
+                        Coef[loc_id=70 , glob_id=70] = 0
+                        Coef[loc_id=71 , glob_id=71] = 0
+                        Coef[loc_id=72 , glob_id=72] = 0
+                        Coef[loc_id=73 , glob_id=73] = 0
+                        Coef[loc_id=74 , glob_id=74] = 0
+                     
+                     Dofs property: active
+                  
+               
+               Range : 1
+                  Rank : 1
+                     Functions num. : 1
+                        Function[0]   ID: 28   name: phys_func_1_1_1_1
+                        
+                     
+                  
+               
+               Range : 3
+                  Rank : 1
+                     Functions num. : 0
+                     
+                  
+               
+            
+            Domain[1]   ID: 21   name: map_2_3_1_1
+               GridFunction<2,3>
+                  IgGridFunction<2,3>
+                     ReferenceSpaceBasis<2,1,3>:
+                        Spline Space:
+                           Knots without repetition:
+                              Number of intervals per direction: [ 2 2 ]
+                              Knot coordinates:
+                                 Direction 0: 
+                                 [ 0 0.500000 1.00000 ]
+                                 Direction 1: 
+                                 [ 0 0.500000 1.00000 ]
+                              
+                              Element properties:
+                                 IDs with property "active":
+                                    Entry id: 0
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
+                                    Entry id: 1
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
+                                    Entry id: 2
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
+                                    Entry id: 3
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
+                                 
+                              
+                           
+                           Degrees:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 3 3 ]
+                                 Entry id: 1
+                                 [ 0 0 ]
+                                 Entry id: 2
+                                 [ 0 0 ]
+                              
+                              Components map: 
+                              [ 0 0 0 ]
+                              Active components ids: 
+                              [ 0 ]
+                              Inactive components ids: 
+                              [ 1 2 ]
+                           
+                           Interior multiplicities:
+                              Size: [ 1 1 ]  Weights: [1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Size: [ 1 1 ]  Weights: [1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Size: [ 1 1 ]  Weights: [1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                           
+                           Dimensionality Table:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 25 ]
+                              Total Dimension: 75
+                           
+                        
+                        DoFs Distribution:
+                           Num dofs table:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 25 ]
+                              Total Dimension: 75
+                           
+                           Index table size:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 25 25 25 ]
+                              Total Dimension: 75
+                           
+                           Dof indices:
+                              Size: [ 5 5 ]  Weights: [5,25]
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ]
+                              Size: [ 5 5 ]  Weights: [5,25]
+                              [ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 ]
+                              Size: [ 5 5 ]  Weights: [5,25]
+                              [ 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 ]
+                           
+                           Dof properties:
+                              IDs with property "active":
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 ]
+                           
+                        
+                        Bernstein Extraction:
+                           Component[0]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Component[1]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Component[2]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                        
+                     
+                     IgCoefficients:
+                        Coef[loc_id=0 , glob_id=0] = 1.00000
+                        Coef[loc_id=1 , glob_id=1] = 0
+                        Coef[loc_id=2 , glob_id=2] = 0
+                        Coef[loc_id=3 , glob_id=3] = 0
+                        Coef[loc_id=4 , glob_id=4] = 0
+                        Coef[loc_id=5 , glob_id=5] = 0
+                        Coef[loc_id=6 , glob_id=6] = 0
+                        Coef[loc_id=7 , glob_id=7] = 0
+                        Coef[loc_id=8 , glob_id=8] = 0
+                        Coef[loc_id=9 , glob_id=9] = 0
+                        Coef[loc_id=10 , glob_id=10] = 0
+                        Coef[loc_id=11 , glob_id=11] = 0
+                        Coef[loc_id=12 , glob_id=12] = 0
+                        Coef[loc_id=13 , glob_id=13] = 0
+                        Coef[loc_id=14 , glob_id=14] = 0
+                        Coef[loc_id=15 , glob_id=15] = 0
+                        Coef[loc_id=16 , glob_id=16] = 0
+                        Coef[loc_id=17 , glob_id=17] = 0
+                        Coef[loc_id=18 , glob_id=18] = 0
+                        Coef[loc_id=19 , glob_id=19] = 0
+                        Coef[loc_id=20 , glob_id=20] = 0
+                        Coef[loc_id=21 , glob_id=21] = 0
+                        Coef[loc_id=22 , glob_id=22] = 0
+                        Coef[loc_id=23 , glob_id=23] = 0
+                        Coef[loc_id=24 , glob_id=24] = 0
+                        Coef[loc_id=25 , glob_id=25] = 0
+                        Coef[loc_id=26 , glob_id=26] = 0
+                        Coef[loc_id=27 , glob_id=27] = 0
+                        Coef[loc_id=28 , glob_id=28] = 0
+                        Coef[loc_id=29 , glob_id=29] = 0
+                        Coef[loc_id=30 , glob_id=30] = 0
+                        Coef[loc_id=31 , glob_id=31] = 0
+                        Coef[loc_id=32 , glob_id=32] = 0
+                        Coef[loc_id=33 , glob_id=33] = 0
+                        Coef[loc_id=34 , glob_id=34] = 0
+                        Coef[loc_id=35 , glob_id=35] = 0
+                        Coef[loc_id=36 , glob_id=36] = 0
+                        Coef[loc_id=37 , glob_id=37] = 0
+                        Coef[loc_id=38 , glob_id=38] = 0
+                        Coef[loc_id=39 , glob_id=39] = 0
+                        Coef[loc_id=40 , glob_id=40] = 0
+                        Coef[loc_id=41 , glob_id=41] = 0
+                        Coef[loc_id=42 , glob_id=42] = 0
+                        Coef[loc_id=43 , glob_id=43] = 0
+                        Coef[loc_id=44 , glob_id=44] = 0
+                        Coef[loc_id=45 , glob_id=45] = 0
+                        Coef[loc_id=46 , glob_id=46] = 0
+                        Coef[loc_id=47 , glob_id=47] = 0
+                        Coef[loc_id=48 , glob_id=48] = 0
+                        Coef[loc_id=49 , glob_id=49] = 0
+                        Coef[loc_id=50 , glob_id=50] = 0
+                        Coef[loc_id=51 , glob_id=51] = 0
+                        Coef[loc_id=52 , glob_id=52] = 0
+                        Coef[loc_id=53 , glob_id=53] = 0
+                        Coef[loc_id=54 , glob_id=54] = 0
+                        Coef[loc_id=55 , glob_id=55] = 0
+                        Coef[loc_id=56 , glob_id=56] = 0
+                        Coef[loc_id=57 , glob_id=57] = 0
+                        Coef[loc_id=58 , glob_id=58] = 0
+                        Coef[loc_id=59 , glob_id=59] = 0
+                        Coef[loc_id=60 , glob_id=60] = 0
+                        Coef[loc_id=61 , glob_id=61] = 0
+                        Coef[loc_id=62 , glob_id=62] = 0
+                        Coef[loc_id=63 , glob_id=63] = 0
+                        Coef[loc_id=64 , glob_id=64] = 0
+                        Coef[loc_id=65 , glob_id=65] = 0
+                        Coef[loc_id=66 , glob_id=66] = 0
+                        Coef[loc_id=67 , glob_id=67] = 0
+                        Coef[loc_id=68 , glob_id=68] = 0
+                        Coef[loc_id=69 , glob_id=69] = 0
+                        Coef[loc_id=70 , glob_id=70] = 0
+                        Coef[loc_id=71 , glob_id=71] = 0
+                        Coef[loc_id=72 , glob_id=72] = 0
+                        Coef[loc_id=73 , glob_id=73] = 0
+                        Coef[loc_id=74 , glob_id=74] = 0
+                     
+                     Dofs property: active
+                  
+               
+               Range : 1
+                  Rank : 1
+                     Functions num. : 0
+                     
+                  
+               
+               Range : 3
+                  Rank : 1
+                     Functions num. : 1
+                        Function[0]   ID: 29   name: phys_func_2_3_1_1
+                        
+                     
+                  
+               
+            
+         
+      
+   
+   Dim : 3
+      Codim : 0
+         Domains num. : 2
+            Domain[0]   ID: 13   name: 
+               GridFunction<3,3>
+                  IgGridFunction<3,3>
+                     ReferenceSpaceBasis<3,1,3>:
+                        Spline Space:
+                           Knots without repetition:
+                              Number of intervals per direction: [ 2 2 2 ]
+                              Knot coordinates:
+                                 Direction 0: 
+                                 [ 0 0.500000 1.00000 ]
+                                 Direction 1: 
+                                 [ 0 0.500000 1.00000 ]
+                                 Direction 2: 
+                                 [ 0 0.500000 1.00000 ]
+                              
+                              Element properties:
+                                 IDs with property "active":
+                                    Entry id: 0
+                                       Flat ID: 0    Tensor ID: [0,0,0]
+                                    
+                                    Entry id: 1
+                                       Flat ID: 4    Tensor ID: [0,0,1]
+                                    
+                                    Entry id: 2
+                                       Flat ID: 2    Tensor ID: [0,1,0]
+                                    
+                                    Entry id: 3
+                                       Flat ID: 6    Tensor ID: [0,1,1]
+                                    
+                                    Entry id: 4
+                                       Flat ID: 1    Tensor ID: [1,0,0]
+                                    
+                                    Entry id: 5
+                                       Flat ID: 5    Tensor ID: [1,0,1]
+                                    
+                                    Entry id: 6
+                                       Flat ID: 3    Tensor ID: [1,1,0]
+                                    
+                                    Entry id: 7
+                                       Flat ID: 7    Tensor ID: [1,1,1]
+                                    
+                                 
+                              
+                           
+                           Degrees:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 3 3 3 ]
+                                 Entry id: 1
+                                 [ 0 0 0 ]
+                                 Entry id: 2
+                                 [ 0 0 0 ]
+                              
+                              Components map: 
+                              [ 0 0 0 ]
+                              Active components ids: 
+                              [ 0 ]
+                              Inactive components ids: 
+                              [ 1 2 ]
+                           
+                           Interior multiplicities:
+                              Size: [ 1 1 1 ]  Weights: [1,1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Direction: 2
+                              [ 1 ]
+                              Size: [ 1 1 1 ]  Weights: [1,1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Direction: 2
+                              [ 1 ]
+                              Size: [ 1 1 1 ]  Weights: [1,1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Direction: 2
+                              [ 1 ]
+                           
+                           Dimensionality Table:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 125 125 125 ]
+                              Total Dimension: 375
+                           
+                        
+                        DoFs Distribution:
+                           Num dofs table:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 125 125 125 ]
+                              Total Dimension: 375
+                           
+                           Index table size:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 125 125 125 ]
+                              Total Dimension: 375
+                           
+                           Dof indices:
+                              Size: [ 5 5 5 ]  Weights: [5,25,125]
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 ]
+                              Size: [ 5 5 5 ]  Weights: [5,25,125]
+                              [ 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 ]
+                              Size: [ 5 5 5 ]  Weights: [5,25,125]
+                              [ 250 251 252 253 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 272 273 274 275 276 277 278 279 280 281 282 283 284 285 286 287 288 289 290 291 292 293 294 295 296 297 298 299 300 301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 333 334 335 336 337 338 339 340 341 342 343 344 345 346 347 348 349 350 351 352 353 354 355 356 357 358 359 360 361 362 363 364 365 366 367 368 369 370 371 372 373 374 ]
+                           
+                           Dof properties:
+                              IDs with property "active":
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 272 273 274 275 276 277 278 279 280 281 282 283 284 285 286 287 288 289 290 291 292 293 294 295 296 297 298 299 300 301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 333 334 335 336 337 338 339 340 341 342 343 344 345 346 347 348 349 350 351 352 353 354 355 356 357 358 359 360 361 362 363 364 365 366 367 368 369 370 371 372 373 374 ]
+                           
+                        
+                        Bernstein Extraction:
+                           Component[0]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[2]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Component[1]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[2]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Component[2]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[2]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                        
+                     
+                     IgCoefficients:
+                        Coef[loc_id=0 , glob_id=0] = 1.00000
+                        Coef[loc_id=1 , glob_id=1] = 0
+                        Coef[loc_id=2 , glob_id=2] = 0
+                        Coef[loc_id=3 , glob_id=3] = 0
+                        Coef[loc_id=4 , glob_id=4] = 0
+                        Coef[loc_id=5 , glob_id=5] = 0
+                        Coef[loc_id=6 , glob_id=6] = 0
+                        Coef[loc_id=7 , glob_id=7] = 0
+                        Coef[loc_id=8 , glob_id=8] = 0
+                        Coef[loc_id=9 , glob_id=9] = 0
+                        Coef[loc_id=10 , glob_id=10] = 0
+                        Coef[loc_id=11 , glob_id=11] = 0
+                        Coef[loc_id=12 , glob_id=12] = 0
+                        Coef[loc_id=13 , glob_id=13] = 0
+                        Coef[loc_id=14 , glob_id=14] = 0
+                        Coef[loc_id=15 , glob_id=15] = 0
+                        Coef[loc_id=16 , glob_id=16] = 0
+                        Coef[loc_id=17 , glob_id=17] = 0
+                        Coef[loc_id=18 , glob_id=18] = 0
+                        Coef[loc_id=19 , glob_id=19] = 0
+                        Coef[loc_id=20 , glob_id=20] = 0
+                        Coef[loc_id=21 , glob_id=21] = 0
+                        Coef[loc_id=22 , glob_id=22] = 0
+                        Coef[loc_id=23 , glob_id=23] = 0
+                        Coef[loc_id=24 , glob_id=24] = 0
+                        Coef[loc_id=25 , glob_id=25] = 0
+                        Coef[loc_id=26 , glob_id=26] = 0
+                        Coef[loc_id=27 , glob_id=27] = 0
+                        Coef[loc_id=28 , glob_id=28] = 0
+                        Coef[loc_id=29 , glob_id=29] = 0
+                        Coef[loc_id=30 , glob_id=30] = 0
+                        Coef[loc_id=31 , glob_id=31] = 0
+                        Coef[loc_id=32 , glob_id=32] = 0
+                        Coef[loc_id=33 , glob_id=33] = 0
+                        Coef[loc_id=34 , glob_id=34] = 0
+                        Coef[loc_id=35 , glob_id=35] = 0
+                        Coef[loc_id=36 , glob_id=36] = 0
+                        Coef[loc_id=37 , glob_id=37] = 0
+                        Coef[loc_id=38 , glob_id=38] = 0
+                        Coef[loc_id=39 , glob_id=39] = 0
+                        Coef[loc_id=40 , glob_id=40] = 0
+                        Coef[loc_id=41 , glob_id=41] = 0
+                        Coef[loc_id=42 , glob_id=42] = 0
+                        Coef[loc_id=43 , glob_id=43] = 0
+                        Coef[loc_id=44 , glob_id=44] = 0
+                        Coef[loc_id=45 , glob_id=45] = 0
+                        Coef[loc_id=46 , glob_id=46] = 0
+                        Coef[loc_id=47 , glob_id=47] = 0
+                        Coef[loc_id=48 , glob_id=48] = 0
+                        Coef[loc_id=49 , glob_id=49] = 0
+                        Coef[loc_id=50 , glob_id=50] = 0
+                        Coef[loc_id=51 , glob_id=51] = 0
+                        Coef[loc_id=52 , glob_id=52] = 0
+                        Coef[loc_id=53 , glob_id=53] = 0
+                        Coef[loc_id=54 , glob_id=54] = 0
+                        Coef[loc_id=55 , glob_id=55] = 0
+                        Coef[loc_id=56 , glob_id=56] = 0
+                        Coef[loc_id=57 , glob_id=57] = 0
+                        Coef[loc_id=58 , glob_id=58] = 0
+                        Coef[loc_id=59 , glob_id=59] = 0
+                        Coef[loc_id=60 , glob_id=60] = 0
+                        Coef[loc_id=61 , glob_id=61] = 0
+                        Coef[loc_id=62 , glob_id=62] = 0
+                        Coef[loc_id=63 , glob_id=63] = 0
+                        Coef[loc_id=64 , glob_id=64] = 0
+                        Coef[loc_id=65 , glob_id=65] = 0
+                        Coef[loc_id=66 , glob_id=66] = 0
+                        Coef[loc_id=67 , glob_id=67] = 0
+                        Coef[loc_id=68 , glob_id=68] = 0
+                        Coef[loc_id=69 , glob_id=69] = 0
+                        Coef[loc_id=70 , glob_id=70] = 0
+                        Coef[loc_id=71 , glob_id=71] = 0
+                        Coef[loc_id=72 , glob_id=72] = 0
+                        Coef[loc_id=73 , glob_id=73] = 0
+                        Coef[loc_id=74 , glob_id=74] = 0
+                        Coef[loc_id=75 , glob_id=75] = 0
+                        Coef[loc_id=76 , glob_id=76] = 0
+                        Coef[loc_id=77 , glob_id=77] = 0
+                        Coef[loc_id=78 , glob_id=78] = 0
+                        Coef[loc_id=79 , glob_id=79] = 0
+                        Coef[loc_id=80 , glob_id=80] = 0
+                        Coef[loc_id=81 , glob_id=81] = 0
+                        Coef[loc_id=82 , glob_id=82] = 0
+                        Coef[loc_id=83 , glob_id=83] = 0
+                        Coef[loc_id=84 , glob_id=84] = 0
+                        Coef[loc_id=85 , glob_id=85] = 0
+                        Coef[loc_id=86 , glob_id=86] = 0
+                        Coef[loc_id=87 , glob_id=87] = 0
+                        Coef[loc_id=88 , glob_id=88] = 0
+                        Coef[loc_id=89 , glob_id=89] = 0
+                        Coef[loc_id=90 , glob_id=90] = 0
+                        Coef[loc_id=91 , glob_id=91] = 0
+                        Coef[loc_id=92 , glob_id=92] = 0
+                        Coef[loc_id=93 , glob_id=93] = 0
+                        Coef[loc_id=94 , glob_id=94] = 0
+                        Coef[loc_id=95 , glob_id=95] = 0
+                        Coef[loc_id=96 , glob_id=96] = 0
+                        Coef[loc_id=97 , glob_id=97] = 0
+                        Coef[loc_id=98 , glob_id=98] = 0
+                        Coef[loc_id=99 , glob_id=99] = 0
+                        Coef[loc_id=100 , glob_id=100] = 0
+                        Coef[loc_id=101 , glob_id=101] = 0
+                        Coef[loc_id=102 , glob_id=102] = 0
+                        Coef[loc_id=103 , glob_id=103] = 0
+                        Coef[loc_id=104 , glob_id=104] = 0
+                        Coef[loc_id=105 , glob_id=105] = 0
+                        Coef[loc_id=106 , glob_id=106] = 0
+                        Coef[loc_id=107 , glob_id=107] = 0
+                        Coef[loc_id=108 , glob_id=108] = 0
+                        Coef[loc_id=109 , glob_id=109] = 0
+                        Coef[loc_id=110 , glob_id=110] = 0
+                        Coef[loc_id=111 , glob_id=111] = 0
+                        Coef[loc_id=112 , glob_id=112] = 0
+                        Coef[loc_id=113 , glob_id=113] = 0
+                        Coef[loc_id=114 , glob_id=114] = 0
+                        Coef[loc_id=115 , glob_id=115] = 0
+                        Coef[loc_id=116 , glob_id=116] = 0
+                        Coef[loc_id=117 , glob_id=117] = 0
+                        Coef[loc_id=118 , glob_id=118] = 0
+                        Coef[loc_id=119 , glob_id=119] = 0
+                        Coef[loc_id=120 , glob_id=120] = 0
+                        Coef[loc_id=121 , glob_id=121] = 0
+                        Coef[loc_id=122 , glob_id=122] = 0
+                        Coef[loc_id=123 , glob_id=123] = 0
+                        Coef[loc_id=124 , glob_id=124] = 0
+                        Coef[loc_id=125 , glob_id=125] = 0
+                        Coef[loc_id=126 , glob_id=126] = 0
+                        Coef[loc_id=127 , glob_id=127] = 0
+                        Coef[loc_id=128 , glob_id=128] = 0
+                        Coef[loc_id=129 , glob_id=129] = 0
+                        Coef[loc_id=130 , glob_id=130] = 0
+                        Coef[loc_id=131 , glob_id=131] = 0
+                        Coef[loc_id=132 , glob_id=132] = 0
+                        Coef[loc_id=133 , glob_id=133] = 0
+                        Coef[loc_id=134 , glob_id=134] = 0
+                        Coef[loc_id=135 , glob_id=135] = 0
+                        Coef[loc_id=136 , glob_id=136] = 0
+                        Coef[loc_id=137 , glob_id=137] = 0
+                        Coef[loc_id=138 , glob_id=138] = 0
+                        Coef[loc_id=139 , glob_id=139] = 0
+                        Coef[loc_id=140 , glob_id=140] = 0
+                        Coef[loc_id=141 , glob_id=141] = 0
+                        Coef[loc_id=142 , glob_id=142] = 0
+                        Coef[loc_id=143 , glob_id=143] = 0
+                        Coef[loc_id=144 , glob_id=144] = 0
+                        Coef[loc_id=145 , glob_id=145] = 0
+                        Coef[loc_id=146 , glob_id=146] = 0
+                        Coef[loc_id=147 , glob_id=147] = 0
+                        Coef[loc_id=148 , glob_id=148] = 0
+                        Coef[loc_id=149 , glob_id=149] = 0
+                        Coef[loc_id=150 , glob_id=150] = 0
+                        Coef[loc_id=151 , glob_id=151] = 0
+                        Coef[loc_id=152 , glob_id=152] = 0
+                        Coef[loc_id=153 , glob_id=153] = 0
+                        Coef[loc_id=154 , glob_id=154] = 0
+                        Coef[loc_id=155 , glob_id=155] = 0
+                        Coef[loc_id=156 , glob_id=156] = 0
+                        Coef[loc_id=157 , glob_id=157] = 0
+                        Coef[loc_id=158 , glob_id=158] = 0
+                        Coef[loc_id=159 , glob_id=159] = 0
+                        Coef[loc_id=160 , glob_id=160] = 0
+                        Coef[loc_id=161 , glob_id=161] = 0
+                        Coef[loc_id=162 , glob_id=162] = 0
+                        Coef[loc_id=163 , glob_id=163] = 0
+                        Coef[loc_id=164 , glob_id=164] = 0
+                        Coef[loc_id=165 , glob_id=165] = 0
+                        Coef[loc_id=166 , glob_id=166] = 0
+                        Coef[loc_id=167 , glob_id=167] = 0
+                        Coef[loc_id=168 , glob_id=168] = 0
+                        Coef[loc_id=169 , glob_id=169] = 0
+                        Coef[loc_id=170 , glob_id=170] = 0
+                        Coef[loc_id=171 , glob_id=171] = 0
+                        Coef[loc_id=172 , glob_id=172] = 0
+                        Coef[loc_id=173 , glob_id=173] = 0
+                        Coef[loc_id=174 , glob_id=174] = 0
+                        Coef[loc_id=175 , glob_id=175] = 0
+                        Coef[loc_id=176 , glob_id=176] = 0
+                        Coef[loc_id=177 , glob_id=177] = 0
+                        Coef[loc_id=178 , glob_id=178] = 0
+                        Coef[loc_id=179 , glob_id=179] = 0
+                        Coef[loc_id=180 , glob_id=180] = 0
+                        Coef[loc_id=181 , glob_id=181] = 0
+                        Coef[loc_id=182 , glob_id=182] = 0
+                        Coef[loc_id=183 , glob_id=183] = 0
+                        Coef[loc_id=184 , glob_id=184] = 0
+                        Coef[loc_id=185 , glob_id=185] = 0
+                        Coef[loc_id=186 , glob_id=186] = 0
+                        Coef[loc_id=187 , glob_id=187] = 0
+                        Coef[loc_id=188 , glob_id=188] = 0
+                        Coef[loc_id=189 , glob_id=189] = 0
+                        Coef[loc_id=190 , glob_id=190] = 0
+                        Coef[loc_id=191 , glob_id=191] = 0
+                        Coef[loc_id=192 , glob_id=192] = 0
+                        Coef[loc_id=193 , glob_id=193] = 0
+                        Coef[loc_id=194 , glob_id=194] = 0
+                        Coef[loc_id=195 , glob_id=195] = 0
+                        Coef[loc_id=196 , glob_id=196] = 0
+                        Coef[loc_id=197 , glob_id=197] = 0
+                        Coef[loc_id=198 , glob_id=198] = 0
+                        Coef[loc_id=199 , glob_id=199] = 0
+                        Coef[loc_id=200 , glob_id=200] = 0
+                        Coef[loc_id=201 , glob_id=201] = 0
+                        Coef[loc_id=202 , glob_id=202] = 0
+                        Coef[loc_id=203 , glob_id=203] = 0
+                        Coef[loc_id=204 , glob_id=204] = 0
+                        Coef[loc_id=205 , glob_id=205] = 0
+                        Coef[loc_id=206 , glob_id=206] = 0
+                        Coef[loc_id=207 , glob_id=207] = 0
+                        Coef[loc_id=208 , glob_id=208] = 0
+                        Coef[loc_id=209 , glob_id=209] = 0
+                        Coef[loc_id=210 , glob_id=210] = 0
+                        Coef[loc_id=211 , glob_id=211] = 0
+                        Coef[loc_id=212 , glob_id=212] = 0
+                        Coef[loc_id=213 , glob_id=213] = 0
+                        Coef[loc_id=214 , glob_id=214] = 0
+                        Coef[loc_id=215 , glob_id=215] = 0
+                        Coef[loc_id=216 , glob_id=216] = 0
+                        Coef[loc_id=217 , glob_id=217] = 0
+                        Coef[loc_id=218 , glob_id=218] = 0
+                        Coef[loc_id=219 , glob_id=219] = 0
+                        Coef[loc_id=220 , glob_id=220] = 0
+                        Coef[loc_id=221 , glob_id=221] = 0
+                        Coef[loc_id=222 , glob_id=222] = 0
+                        Coef[loc_id=223 , glob_id=223] = 0
+                        Coef[loc_id=224 , glob_id=224] = 0
+                        Coef[loc_id=225 , glob_id=225] = 0
+                        Coef[loc_id=226 , glob_id=226] = 0
+                        Coef[loc_id=227 , glob_id=227] = 0
+                        Coef[loc_id=228 , glob_id=228] = 0
+                        Coef[loc_id=229 , glob_id=229] = 0
+                        Coef[loc_id=230 , glob_id=230] = 0
+                        Coef[loc_id=231 , glob_id=231] = 0
+                        Coef[loc_id=232 , glob_id=232] = 0
+                        Coef[loc_id=233 , glob_id=233] = 0
+                        Coef[loc_id=234 , glob_id=234] = 0
+                        Coef[loc_id=235 , glob_id=235] = 0
+                        Coef[loc_id=236 , glob_id=236] = 0
+                        Coef[loc_id=237 , glob_id=237] = 0
+                        Coef[loc_id=238 , glob_id=238] = 0
+                        Coef[loc_id=239 , glob_id=239] = 0
+                        Coef[loc_id=240 , glob_id=240] = 0
+                        Coef[loc_id=241 , glob_id=241] = 0
+                        Coef[loc_id=242 , glob_id=242] = 0
+                        Coef[loc_id=243 , glob_id=243] = 0
+                        Coef[loc_id=244 , glob_id=244] = 0
+                        Coef[loc_id=245 , glob_id=245] = 0
+                        Coef[loc_id=246 , glob_id=246] = 0
+                        Coef[loc_id=247 , glob_id=247] = 0
+                        Coef[loc_id=248 , glob_id=248] = 0
+                        Coef[loc_id=249 , glob_id=249] = 0
+                        Coef[loc_id=250 , glob_id=250] = 0
+                        Coef[loc_id=251 , glob_id=251] = 0
+                        Coef[loc_id=252 , glob_id=252] = 0
+                        Coef[loc_id=253 , glob_id=253] = 0
+                        Coef[loc_id=254 , glob_id=254] = 0
+                        Coef[loc_id=255 , glob_id=255] = 0
+                        Coef[loc_id=256 , glob_id=256] = 0
+                        Coef[loc_id=257 , glob_id=257] = 0
+                        Coef[loc_id=258 , glob_id=258] = 0
+                        Coef[loc_id=259 , glob_id=259] = 0
+                        Coef[loc_id=260 , glob_id=260] = 0
+                        Coef[loc_id=261 , glob_id=261] = 0
+                        Coef[loc_id=262 , glob_id=262] = 0
+                        Coef[loc_id=263 , glob_id=263] = 0
+                        Coef[loc_id=264 , glob_id=264] = 0
+                        Coef[loc_id=265 , glob_id=265] = 0
+                        Coef[loc_id=266 , glob_id=266] = 0
+                        Coef[loc_id=267 , glob_id=267] = 0
+                        Coef[loc_id=268 , glob_id=268] = 0
+                        Coef[loc_id=269 , glob_id=269] = 0
+                        Coef[loc_id=270 , glob_id=270] = 0
+                        Coef[loc_id=271 , glob_id=271] = 0
+                        Coef[loc_id=272 , glob_id=272] = 0
+                        Coef[loc_id=273 , glob_id=273] = 0
+                        Coef[loc_id=274 , glob_id=274] = 0
+                        Coef[loc_id=275 , glob_id=275] = 0
+                        Coef[loc_id=276 , glob_id=276] = 0
+                        Coef[loc_id=277 , glob_id=277] = 0
+                        Coef[loc_id=278 , glob_id=278] = 0
+                        Coef[loc_id=279 , glob_id=279] = 0
+                        Coef[loc_id=280 , glob_id=280] = 0
+                        Coef[loc_id=281 , glob_id=281] = 0
+                        Coef[loc_id=282 , glob_id=282] = 0
+                        Coef[loc_id=283 , glob_id=283] = 0
+                        Coef[loc_id=284 , glob_id=284] = 0
+                        Coef[loc_id=285 , glob_id=285] = 0
+                        Coef[loc_id=286 , glob_id=286] = 0
+                        Coef[loc_id=287 , glob_id=287] = 0
+                        Coef[loc_id=288 , glob_id=288] = 0
+                        Coef[loc_id=289 , glob_id=289] = 0
+                        Coef[loc_id=290 , glob_id=290] = 0
+                        Coef[loc_id=291 , glob_id=291] = 0
+                        Coef[loc_id=292 , glob_id=292] = 0
+                        Coef[loc_id=293 , glob_id=293] = 0
+                        Coef[loc_id=294 , glob_id=294] = 0
+                        Coef[loc_id=295 , glob_id=295] = 0
+                        Coef[loc_id=296 , glob_id=296] = 0
+                        Coef[loc_id=297 , glob_id=297] = 0
+                        Coef[loc_id=298 , glob_id=298] = 0
+                        Coef[loc_id=299 , glob_id=299] = 0
+                        Coef[loc_id=300 , glob_id=300] = 0
+                        Coef[loc_id=301 , glob_id=301] = 0
+                        Coef[loc_id=302 , glob_id=302] = 0
+                        Coef[loc_id=303 , glob_id=303] = 0
+                        Coef[loc_id=304 , glob_id=304] = 0
+                        Coef[loc_id=305 , glob_id=305] = 0
+                        Coef[loc_id=306 , glob_id=306] = 0
+                        Coef[loc_id=307 , glob_id=307] = 0
+                        Coef[loc_id=308 , glob_id=308] = 0
+                        Coef[loc_id=309 , glob_id=309] = 0
+                        Coef[loc_id=310 , glob_id=310] = 0
+                        Coef[loc_id=311 , glob_id=311] = 0
+                        Coef[loc_id=312 , glob_id=312] = 0
+                        Coef[loc_id=313 , glob_id=313] = 0
+                        Coef[loc_id=314 , glob_id=314] = 0
+                        Coef[loc_id=315 , glob_id=315] = 0
+                        Coef[loc_id=316 , glob_id=316] = 0
+                        Coef[loc_id=317 , glob_id=317] = 0
+                        Coef[loc_id=318 , glob_id=318] = 0
+                        Coef[loc_id=319 , glob_id=319] = 0
+                        Coef[loc_id=320 , glob_id=320] = 0
+                        Coef[loc_id=321 , glob_id=321] = 0
+                        Coef[loc_id=322 , glob_id=322] = 0
+                        Coef[loc_id=323 , glob_id=323] = 0
+                        Coef[loc_id=324 , glob_id=324] = 0
+                        Coef[loc_id=325 , glob_id=325] = 0
+                        Coef[loc_id=326 , glob_id=326] = 0
+                        Coef[loc_id=327 , glob_id=327] = 0
+                        Coef[loc_id=328 , glob_id=328] = 0
+                        Coef[loc_id=329 , glob_id=329] = 0
+                        Coef[loc_id=330 , glob_id=330] = 0
+                        Coef[loc_id=331 , glob_id=331] = 0
+                        Coef[loc_id=332 , glob_id=332] = 0
+                        Coef[loc_id=333 , glob_id=333] = 0
+                        Coef[loc_id=334 , glob_id=334] = 0
+                        Coef[loc_id=335 , glob_id=335] = 0
+                        Coef[loc_id=336 , glob_id=336] = 0
+                        Coef[loc_id=337 , glob_id=337] = 0
+                        Coef[loc_id=338 , glob_id=338] = 0
+                        Coef[loc_id=339 , glob_id=339] = 0
+                        Coef[loc_id=340 , glob_id=340] = 0
+                        Coef[loc_id=341 , glob_id=341] = 0
+                        Coef[loc_id=342 , glob_id=342] = 0
+                        Coef[loc_id=343 , glob_id=343] = 0
+                        Coef[loc_id=344 , glob_id=344] = 0
+                        Coef[loc_id=345 , glob_id=345] = 0
+                        Coef[loc_id=346 , glob_id=346] = 0
+                        Coef[loc_id=347 , glob_id=347] = 0
+                        Coef[loc_id=348 , glob_id=348] = 0
+                        Coef[loc_id=349 , glob_id=349] = 0
+                        Coef[loc_id=350 , glob_id=350] = 0
+                        Coef[loc_id=351 , glob_id=351] = 0
+                        Coef[loc_id=352 , glob_id=352] = 0
+                        Coef[loc_id=353 , glob_id=353] = 0
+                        Coef[loc_id=354 , glob_id=354] = 0
+                        Coef[loc_id=355 , glob_id=355] = 0
+                        Coef[loc_id=356 , glob_id=356] = 0
+                        Coef[loc_id=357 , glob_id=357] = 0
+                        Coef[loc_id=358 , glob_id=358] = 0
+                        Coef[loc_id=359 , glob_id=359] = 0
+                        Coef[loc_id=360 , glob_id=360] = 0
+                        Coef[loc_id=361 , glob_id=361] = 0
+                        Coef[loc_id=362 , glob_id=362] = 0
+                        Coef[loc_id=363 , glob_id=363] = 0
+                        Coef[loc_id=364 , glob_id=364] = 0
+                        Coef[loc_id=365 , glob_id=365] = 0
+                        Coef[loc_id=366 , glob_id=366] = 0
+                        Coef[loc_id=367 , glob_id=367] = 0
+                        Coef[loc_id=368 , glob_id=368] = 0
+                        Coef[loc_id=369 , glob_id=369] = 0
+                        Coef[loc_id=370 , glob_id=370] = 0
+                        Coef[loc_id=371 , glob_id=371] = 0
+                        Coef[loc_id=372 , glob_id=372] = 0
+                        Coef[loc_id=373 , glob_id=373] = 0
+                        Coef[loc_id=374 , glob_id=374] = 0
+                     
+                     Dofs property: active
+                  
+               
+               Range : 1
+                  Rank : 1
+                     Functions num. : 1
+                        Function[0]   ID: 25   name: phys_func_3_1_1_0
+                        
+                     
+                  
+               
+               Range : 3
+                  Rank : 1
+                     Functions num. : 0
+                     
+                  
+               
+            
+            Domain[1]   ID: 17   name: map_3_3_1_0
+               GridFunction<3,3>
+                  IgGridFunction<3,3>
+                     ReferenceSpaceBasis<3,1,3>:
+                        Spline Space:
+                           Knots without repetition:
+                              Number of intervals per direction: [ 2 2 2 ]
+                              Knot coordinates:
+                                 Direction 0: 
+                                 [ 0 0.500000 1.00000 ]
+                                 Direction 1: 
+                                 [ 0 0.500000 1.00000 ]
+                                 Direction 2: 
+                                 [ 0 0.500000 1.00000 ]
+                              
+                              Element properties:
+                                 IDs with property "active":
+                                    Entry id: 0
+                                       Flat ID: 0    Tensor ID: [0,0,0]
+                                    
+                                    Entry id: 1
+                                       Flat ID: 4    Tensor ID: [0,0,1]
+                                    
+                                    Entry id: 2
+                                       Flat ID: 2    Tensor ID: [0,1,0]
+                                    
+                                    Entry id: 3
+                                       Flat ID: 6    Tensor ID: [0,1,1]
+                                    
+                                    Entry id: 4
+                                       Flat ID: 1    Tensor ID: [1,0,0]
+                                    
+                                    Entry id: 5
+                                       Flat ID: 5    Tensor ID: [1,0,1]
+                                    
+                                    Entry id: 6
+                                       Flat ID: 3    Tensor ID: [1,1,0]
+                                    
+                                    Entry id: 7
+                                       Flat ID: 7    Tensor ID: [1,1,1]
+                                    
+                                 
+                              
+                           
+                           Degrees:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 3 3 3 ]
+                                 Entry id: 1
+                                 [ 0 0 0 ]
+                                 Entry id: 2
+                                 [ 0 0 0 ]
+                              
+                              Components map: 
+                              [ 0 0 0 ]
+                              Active components ids: 
+                              [ 0 ]
+                              Inactive components ids: 
+                              [ 1 2 ]
+                           
+                           Interior multiplicities:
+                              Size: [ 1 1 1 ]  Weights: [1,1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Direction: 2
+                              [ 1 ]
+                              Size: [ 1 1 1 ]  Weights: [1,1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Direction: 2
+                              [ 1 ]
+                              Size: [ 1 1 1 ]  Weights: [1,1,1]
+                              Direction: 0
+                              [ 1 ]
+                              Direction: 1
+                              [ 1 ]
+                              Direction: 2
+                              [ 1 ]
+                           
+                           Dimensionality Table:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 125 125 125 ]
+                              Total Dimension: 375
+                           
+                        
+                        DoFs Distribution:
+                           Num dofs table:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 125 125 125 ]
+                              Total Dimension: 375
+                           
+                           Index table size:
+                              Raw components: 
+                                 Size: [ 3 ]  Weights: [3]
+                                 Entry id: 0
+                                 [ 5 5 5 ]
+                                 Entry id: 1
+                                 [ 5 5 5 ]
+                                 Entry id: 2
+                                 [ 5 5 5 ]
+                              
+                              Components map: 
+                              [ 0 1 2 ]
+                              Active components ids: 
+                              [ 0 1 2 ]
+                              Inactive components ids: 
+                              [ ]
+                              Scalar components dimensions:
+                              [ 125 125 125 ]
+                              Total Dimension: 375
+                           
+                           Dof indices:
+                              Size: [ 5 5 5 ]  Weights: [5,25,125]
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 ]
+                              Size: [ 5 5 5 ]  Weights: [5,25,125]
+                              [ 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 ]
+                              Size: [ 5 5 5 ]  Weights: [5,25,125]
+                              [ 250 251 252 253 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 272 273 274 275 276 277 278 279 280 281 282 283 284 285 286 287 288 289 290 291 292 293 294 295 296 297 298 299 300 301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 333 334 335 336 337 338 339 340 341 342 343 344 345 346 347 348 349 350 351 352 353 354 355 356 357 358 359 360 361 362 363 364 365 366 367 368 369 370 371 372 373 374 ]
+                           
+                           Dof properties:
+                              IDs with property "active":
+                              [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 272 273 274 275 276 277 278 279 280 281 282 283 284 285 286 287 288 289 290 291 292 293 294 295 296 297 298 299 300 301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 333 334 335 336 337 338 339 340 341 342 343 344 345 346 347 348 349 350 351 352 353 354 355 356 357 358 359 360 361 362 363 364 365 366 367 368 369 370 371 372 373 374 ]
+                           
+                        
+                        Bernstein Extraction:
+                           Component[0]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[2]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Component[1]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[2]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Component[2]: 
+                           Direction[0]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[1]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                           Direction[2]:
+                           [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.500000),(0.00000,0.00000,0.00000,0.250000))
+                           [4,4]((0.250000,0.00000,0.00000,0.00000),(0.500000,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+                        
+                     
+                     IgCoefficients:
+                        Coef[loc_id=0 , glob_id=0] = 1.00000
+                        Coef[loc_id=1 , glob_id=1] = 0
+                        Coef[loc_id=2 , glob_id=2] = 0
+                        Coef[loc_id=3 , glob_id=3] = 0
+                        Coef[loc_id=4 , glob_id=4] = 0
+                        Coef[loc_id=5 , glob_id=5] = 0
+                        Coef[loc_id=6 , glob_id=6] = 0
+                        Coef[loc_id=7 , glob_id=7] = 0
+                        Coef[loc_id=8 , glob_id=8] = 0
+                        Coef[loc_id=9 , glob_id=9] = 0
+                        Coef[loc_id=10 , glob_id=10] = 0
+                        Coef[loc_id=11 , glob_id=11] = 0
+                        Coef[loc_id=12 , glob_id=12] = 0
+                        Coef[loc_id=13 , glob_id=13] = 0
+                        Coef[loc_id=14 , glob_id=14] = 0
+                        Coef[loc_id=15 , glob_id=15] = 0
+                        Coef[loc_id=16 , glob_id=16] = 0
+                        Coef[loc_id=17 , glob_id=17] = 0
+                        Coef[loc_id=18 , glob_id=18] = 0
+                        Coef[loc_id=19 , glob_id=19] = 0
+                        Coef[loc_id=20 , glob_id=20] = 0
+                        Coef[loc_id=21 , glob_id=21] = 0
+                        Coef[loc_id=22 , glob_id=22] = 0
+                        Coef[loc_id=23 , glob_id=23] = 0
+                        Coef[loc_id=24 , glob_id=24] = 0
+                        Coef[loc_id=25 , glob_id=25] = 0
+                        Coef[loc_id=26 , glob_id=26] = 0
+                        Coef[loc_id=27 , glob_id=27] = 0
+                        Coef[loc_id=28 , glob_id=28] = 0
+                        Coef[loc_id=29 , glob_id=29] = 0
+                        Coef[loc_id=30 , glob_id=30] = 0
+                        Coef[loc_id=31 , glob_id=31] = 0
+                        Coef[loc_id=32 , glob_id=32] = 0
+                        Coef[loc_id=33 , glob_id=33] = 0
+                        Coef[loc_id=34 , glob_id=34] = 0
+                        Coef[loc_id=35 , glob_id=35] = 0
+                        Coef[loc_id=36 , glob_id=36] = 0
+                        Coef[loc_id=37 , glob_id=37] = 0
+                        Coef[loc_id=38 , glob_id=38] = 0
+                        Coef[loc_id=39 , glob_id=39] = 0
+                        Coef[loc_id=40 , glob_id=40] = 0
+                        Coef[loc_id=41 , glob_id=41] = 0
+                        Coef[loc_id=42 , glob_id=42] = 0
+                        Coef[loc_id=43 , glob_id=43] = 0
+                        Coef[loc_id=44 , glob_id=44] = 0
+                        Coef[loc_id=45 , glob_id=45] = 0
+                        Coef[loc_id=46 , glob_id=46] = 0
+                        Coef[loc_id=47 , glob_id=47] = 0
+                        Coef[loc_id=48 , glob_id=48] = 0
+                        Coef[loc_id=49 , glob_id=49] = 0
+                        Coef[loc_id=50 , glob_id=50] = 0
+                        Coef[loc_id=51 , glob_id=51] = 0
+                        Coef[loc_id=52 , glob_id=52] = 0
+                        Coef[loc_id=53 , glob_id=53] = 0
+                        Coef[loc_id=54 , glob_id=54] = 0
+                        Coef[loc_id=55 , glob_id=55] = 0
+                        Coef[loc_id=56 , glob_id=56] = 0
+                        Coef[loc_id=57 , glob_id=57] = 0
+                        Coef[loc_id=58 , glob_id=58] = 0
+                        Coef[loc_id=59 , glob_id=59] = 0
+                        Coef[loc_id=60 , glob_id=60] = 0
+                        Coef[loc_id=61 , glob_id=61] = 0
+                        Coef[loc_id=62 , glob_id=62] = 0
+                        Coef[loc_id=63 , glob_id=63] = 0
+                        Coef[loc_id=64 , glob_id=64] = 0
+                        Coef[loc_id=65 , glob_id=65] = 0
+                        Coef[loc_id=66 , glob_id=66] = 0
+                        Coef[loc_id=67 , glob_id=67] = 0
+                        Coef[loc_id=68 , glob_id=68] = 0
+                        Coef[loc_id=69 , glob_id=69] = 0
+                        Coef[loc_id=70 , glob_id=70] = 0
+                        Coef[loc_id=71 , glob_id=71] = 0
+                        Coef[loc_id=72 , glob_id=72] = 0
+                        Coef[loc_id=73 , glob_id=73] = 0
+                        Coef[loc_id=74 , glob_id=74] = 0
+                        Coef[loc_id=75 , glob_id=75] = 0
+                        Coef[loc_id=76 , glob_id=76] = 0
+                        Coef[loc_id=77 , glob_id=77] = 0
+                        Coef[loc_id=78 , glob_id=78] = 0
+                        Coef[loc_id=79 , glob_id=79] = 0
+                        Coef[loc_id=80 , glob_id=80] = 0
+                        Coef[loc_id=81 , glob_id=81] = 0
+                        Coef[loc_id=82 , glob_id=82] = 0
+                        Coef[loc_id=83 , glob_id=83] = 0
+                        Coef[loc_id=84 , glob_id=84] = 0
+                        Coef[loc_id=85 , glob_id=85] = 0
+                        Coef[loc_id=86 , glob_id=86] = 0
+                        Coef[loc_id=87 , glob_id=87] = 0
+                        Coef[loc_id=88 , glob_id=88] = 0
+                        Coef[loc_id=89 , glob_id=89] = 0
+                        Coef[loc_id=90 , glob_id=90] = 0
+                        Coef[loc_id=91 , glob_id=91] = 0
+                        Coef[loc_id=92 , glob_id=92] = 0
+                        Coef[loc_id=93 , glob_id=93] = 0
+                        Coef[loc_id=94 , glob_id=94] = 0
+                        Coef[loc_id=95 , glob_id=95] = 0
+                        Coef[loc_id=96 , glob_id=96] = 0
+                        Coef[loc_id=97 , glob_id=97] = 0
+                        Coef[loc_id=98 , glob_id=98] = 0
+                        Coef[loc_id=99 , glob_id=99] = 0
+                        Coef[loc_id=100 , glob_id=100] = 0
+                        Coef[loc_id=101 , glob_id=101] = 0
+                        Coef[loc_id=102 , glob_id=102] = 0
+                        Coef[loc_id=103 , glob_id=103] = 0
+                        Coef[loc_id=104 , glob_id=104] = 0
+                        Coef[loc_id=105 , glob_id=105] = 0
+                        Coef[loc_id=106 , glob_id=106] = 0
+                        Coef[loc_id=107 , glob_id=107] = 0
+                        Coef[loc_id=108 , glob_id=108] = 0
+                        Coef[loc_id=109 , glob_id=109] = 0
+                        Coef[loc_id=110 , glob_id=110] = 0
+                        Coef[loc_id=111 , glob_id=111] = 0
+                        Coef[loc_id=112 , glob_id=112] = 0
+                        Coef[loc_id=113 , glob_id=113] = 0
+                        Coef[loc_id=114 , glob_id=114] = 0
+                        Coef[loc_id=115 , glob_id=115] = 0
+                        Coef[loc_id=116 , glob_id=116] = 0
+                        Coef[loc_id=117 , glob_id=117] = 0
+                        Coef[loc_id=118 , glob_id=118] = 0
+                        Coef[loc_id=119 , glob_id=119] = 0
+                        Coef[loc_id=120 , glob_id=120] = 0
+                        Coef[loc_id=121 , glob_id=121] = 0
+                        Coef[loc_id=122 , glob_id=122] = 0
+                        Coef[loc_id=123 , glob_id=123] = 0
+                        Coef[loc_id=124 , glob_id=124] = 0
+                        Coef[loc_id=125 , glob_id=125] = 0
+                        Coef[loc_id=126 , glob_id=126] = 0
+                        Coef[loc_id=127 , glob_id=127] = 0
+                        Coef[loc_id=128 , glob_id=128] = 0
+                        Coef[loc_id=129 , glob_id=129] = 0
+                        Coef[loc_id=130 , glob_id=130] = 0
+                        Coef[loc_id=131 , glob_id=131] = 0
+                        Coef[loc_id=132 , glob_id=132] = 0
+                        Coef[loc_id=133 , glob_id=133] = 0
+                        Coef[loc_id=134 , glob_id=134] = 0
+                        Coef[loc_id=135 , glob_id=135] = 0
+                        Coef[loc_id=136 , glob_id=136] = 0
+                        Coef[loc_id=137 , glob_id=137] = 0
+                        Coef[loc_id=138 , glob_id=138] = 0
+                        Coef[loc_id=139 , glob_id=139] = 0
+                        Coef[loc_id=140 , glob_id=140] = 0
+                        Coef[loc_id=141 , glob_id=141] = 0
+                        Coef[loc_id=142 , glob_id=142] = 0
+                        Coef[loc_id=143 , glob_id=143] = 0
+                        Coef[loc_id=144 , glob_id=144] = 0
+                        Coef[loc_id=145 , glob_id=145] = 0
+                        Coef[loc_id=146 , glob_id=146] = 0
+                        Coef[loc_id=147 , glob_id=147] = 0
+                        Coef[loc_id=148 , glob_id=148] = 0
+                        Coef[loc_id=149 , glob_id=149] = 0
+                        Coef[loc_id=150 , glob_id=150] = 0
+                        Coef[loc_id=151 , glob_id=151] = 0
+                        Coef[loc_id=152 , glob_id=152] = 0
+                        Coef[loc_id=153 , glob_id=153] = 0
+                        Coef[loc_id=154 , glob_id=154] = 0
+                        Coef[loc_id=155 , glob_id=155] = 0
+                        Coef[loc_id=156 , glob_id=156] = 0
+                        Coef[loc_id=157 , glob_id=157] = 0
+                        Coef[loc_id=158 , glob_id=158] = 0
+                        Coef[loc_id=159 , glob_id=159] = 0
+                        Coef[loc_id=160 , glob_id=160] = 0
+                        Coef[loc_id=161 , glob_id=161] = 0
+                        Coef[loc_id=162 , glob_id=162] = 0
+                        Coef[loc_id=163 , glob_id=163] = 0
+                        Coef[loc_id=164 , glob_id=164] = 0
+                        Coef[loc_id=165 , glob_id=165] = 0
+                        Coef[loc_id=166 , glob_id=166] = 0
+                        Coef[loc_id=167 , glob_id=167] = 0
+                        Coef[loc_id=168 , glob_id=168] = 0
+                        Coef[loc_id=169 , glob_id=169] = 0
+                        Coef[loc_id=170 , glob_id=170] = 0
+                        Coef[loc_id=171 , glob_id=171] = 0
+                        Coef[loc_id=172 , glob_id=172] = 0
+                        Coef[loc_id=173 , glob_id=173] = 0
+                        Coef[loc_id=174 , glob_id=174] = 0
+                        Coef[loc_id=175 , glob_id=175] = 0
+                        Coef[loc_id=176 , glob_id=176] = 0
+                        Coef[loc_id=177 , glob_id=177] = 0
+                        Coef[loc_id=178 , glob_id=178] = 0
+                        Coef[loc_id=179 , glob_id=179] = 0
+                        Coef[loc_id=180 , glob_id=180] = 0
+                        Coef[loc_id=181 , glob_id=181] = 0
+                        Coef[loc_id=182 , glob_id=182] = 0
+                        Coef[loc_id=183 , glob_id=183] = 0
+                        Coef[loc_id=184 , glob_id=184] = 0
+                        Coef[loc_id=185 , glob_id=185] = 0
+                        Coef[loc_id=186 , glob_id=186] = 0
+                        Coef[loc_id=187 , glob_id=187] = 0
+                        Coef[loc_id=188 , glob_id=188] = 0
+                        Coef[loc_id=189 , glob_id=189] = 0
+                        Coef[loc_id=190 , glob_id=190] = 0
+                        Coef[loc_id=191 , glob_id=191] = 0
+                        Coef[loc_id=192 , glob_id=192] = 0
+                        Coef[loc_id=193 , glob_id=193] = 0
+                        Coef[loc_id=194 , glob_id=194] = 0
+                        Coef[loc_id=195 , glob_id=195] = 0
+                        Coef[loc_id=196 , glob_id=196] = 0
+                        Coef[loc_id=197 , glob_id=197] = 0
+                        Coef[loc_id=198 , glob_id=198] = 0
+                        Coef[loc_id=199 , glob_id=199] = 0
+                        Coef[loc_id=200 , glob_id=200] = 0
+                        Coef[loc_id=201 , glob_id=201] = 0
+                        Coef[loc_id=202 , glob_id=202] = 0
+                        Coef[loc_id=203 , glob_id=203] = 0
+                        Coef[loc_id=204 , glob_id=204] = 0
+                        Coef[loc_id=205 , glob_id=205] = 0
+                        Coef[loc_id=206 , glob_id=206] = 0
+                        Coef[loc_id=207 , glob_id=207] = 0
+                        Coef[loc_id=208 , glob_id=208] = 0
+                        Coef[loc_id=209 , glob_id=209] = 0
+                        Coef[loc_id=210 , glob_id=210] = 0
+                        Coef[loc_id=211 , glob_id=211] = 0
+                        Coef[loc_id=212 , glob_id=212] = 0
+                        Coef[loc_id=213 , glob_id=213] = 0
+                        Coef[loc_id=214 , glob_id=214] = 0
+                        Coef[loc_id=215 , glob_id=215] = 0
+                        Coef[loc_id=216 , glob_id=216] = 0
+                        Coef[loc_id=217 , glob_id=217] = 0
+                        Coef[loc_id=218 , glob_id=218] = 0
+                        Coef[loc_id=219 , glob_id=219] = 0
+                        Coef[loc_id=220 , glob_id=220] = 0
+                        Coef[loc_id=221 , glob_id=221] = 0
+                        Coef[loc_id=222 , glob_id=222] = 0
+                        Coef[loc_id=223 , glob_id=223] = 0
+                        Coef[loc_id=224 , glob_id=224] = 0
+                        Coef[loc_id=225 , glob_id=225] = 0
+                        Coef[loc_id=226 , glob_id=226] = 0
+                        Coef[loc_id=227 , glob_id=227] = 0
+                        Coef[loc_id=228 , glob_id=228] = 0
+                        Coef[loc_id=229 , glob_id=229] = 0
+                        Coef[loc_id=230 , glob_id=230] = 0
+                        Coef[loc_id=231 , glob_id=231] = 0
+                        Coef[loc_id=232 , glob_id=232] = 0
+                        Coef[loc_id=233 , glob_id=233] = 0
+                        Coef[loc_id=234 , glob_id=234] = 0
+                        Coef[loc_id=235 , glob_id=235] = 0
+                        Coef[loc_id=236 , glob_id=236] = 0
+                        Coef[loc_id=237 , glob_id=237] = 0
+                        Coef[loc_id=238 , glob_id=238] = 0
+                        Coef[loc_id=239 , glob_id=239] = 0
+                        Coef[loc_id=240 , glob_id=240] = 0
+                        Coef[loc_id=241 , glob_id=241] = 0
+                        Coef[loc_id=242 , glob_id=242] = 0
+                        Coef[loc_id=243 , glob_id=243] = 0
+                        Coef[loc_id=244 , glob_id=244] = 0
+                        Coef[loc_id=245 , glob_id=245] = 0
+                        Coef[loc_id=246 , glob_id=246] = 0
+                        Coef[loc_id=247 , glob_id=247] = 0
+                        Coef[loc_id=248 , glob_id=248] = 0
+                        Coef[loc_id=249 , glob_id=249] = 0
+                        Coef[loc_id=250 , glob_id=250] = 0
+                        Coef[loc_id=251 , glob_id=251] = 0
+                        Coef[loc_id=252 , glob_id=252] = 0
+                        Coef[loc_id=253 , glob_id=253] = 0
+                        Coef[loc_id=254 , glob_id=254] = 0
+                        Coef[loc_id=255 , glob_id=255] = 0
+                        Coef[loc_id=256 , glob_id=256] = 0
+                        Coef[loc_id=257 , glob_id=257] = 0
+                        Coef[loc_id=258 , glob_id=258] = 0
+                        Coef[loc_id=259 , glob_id=259] = 0
+                        Coef[loc_id=260 , glob_id=260] = 0
+                        Coef[loc_id=261 , glob_id=261] = 0
+                        Coef[loc_id=262 , glob_id=262] = 0
+                        Coef[loc_id=263 , glob_id=263] = 0
+                        Coef[loc_id=264 , glob_id=264] = 0
+                        Coef[loc_id=265 , glob_id=265] = 0
+                        Coef[loc_id=266 , glob_id=266] = 0
+                        Coef[loc_id=267 , glob_id=267] = 0
+                        Coef[loc_id=268 , glob_id=268] = 0
+                        Coef[loc_id=269 , glob_id=269] = 0
+                        Coef[loc_id=270 , glob_id=270] = 0
+                        Coef[loc_id=271 , glob_id=271] = 0
+                        Coef[loc_id=272 , glob_id=272] = 0
+                        Coef[loc_id=273 , glob_id=273] = 0
+                        Coef[loc_id=274 , glob_id=274] = 0
+                        Coef[loc_id=275 , glob_id=275] = 0
+                        Coef[loc_id=276 , glob_id=276] = 0
+                        Coef[loc_id=277 , glob_id=277] = 0
+                        Coef[loc_id=278 , glob_id=278] = 0
+                        Coef[loc_id=279 , glob_id=279] = 0
+                        Coef[loc_id=280 , glob_id=280] = 0
+                        Coef[loc_id=281 , glob_id=281] = 0
+                        Coef[loc_id=282 , glob_id=282] = 0
+                        Coef[loc_id=283 , glob_id=283] = 0
+                        Coef[loc_id=284 , glob_id=284] = 0
+                        Coef[loc_id=285 , glob_id=285] = 0
+                        Coef[loc_id=286 , glob_id=286] = 0
+                        Coef[loc_id=287 , glob_id=287] = 0
+                        Coef[loc_id=288 , glob_id=288] = 0
+                        Coef[loc_id=289 , glob_id=289] = 0
+                        Coef[loc_id=290 , glob_id=290] = 0
+                        Coef[loc_id=291 , glob_id=291] = 0
+                        Coef[loc_id=292 , glob_id=292] = 0
+                        Coef[loc_id=293 , glob_id=293] = 0
+                        Coef[loc_id=294 , glob_id=294] = 0
+                        Coef[loc_id=295 , glob_id=295] = 0
+                        Coef[loc_id=296 , glob_id=296] = 0
+                        Coef[loc_id=297 , glob_id=297] = 0
+                        Coef[loc_id=298 , glob_id=298] = 0
+                        Coef[loc_id=299 , glob_id=299] = 0
+                        Coef[loc_id=300 , glob_id=300] = 0
+                        Coef[loc_id=301 , glob_id=301] = 0
+                        Coef[loc_id=302 , glob_id=302] = 0
+                        Coef[loc_id=303 , glob_id=303] = 0
+                        Coef[loc_id=304 , glob_id=304] = 0
+                        Coef[loc_id=305 , glob_id=305] = 0
+                        Coef[loc_id=306 , glob_id=306] = 0
+                        Coef[loc_id=307 , glob_id=307] = 0
+                        Coef[loc_id=308 , glob_id=308] = 0
+                        Coef[loc_id=309 , glob_id=309] = 0
+                        Coef[loc_id=310 , glob_id=310] = 0
+                        Coef[loc_id=311 , glob_id=311] = 0
+                        Coef[loc_id=312 , glob_id=312] = 0
+                        Coef[loc_id=313 , glob_id=313] = 0
+                        Coef[loc_id=314 , glob_id=314] = 0
+                        Coef[loc_id=315 , glob_id=315] = 0
+                        Coef[loc_id=316 , glob_id=316] = 0
+                        Coef[loc_id=317 , glob_id=317] = 0
+                        Coef[loc_id=318 , glob_id=318] = 0
+                        Coef[loc_id=319 , glob_id=319] = 0
+                        Coef[loc_id=320 , glob_id=320] = 0
+                        Coef[loc_id=321 , glob_id=321] = 0
+                        Coef[loc_id=322 , glob_id=322] = 0
+                        Coef[loc_id=323 , glob_id=323] = 0
+                        Coef[loc_id=324 , glob_id=324] = 0
+                        Coef[loc_id=325 , glob_id=325] = 0
+                        Coef[loc_id=326 , glob_id=326] = 0
+                        Coef[loc_id=327 , glob_id=327] = 0
+                        Coef[loc_id=328 , glob_id=328] = 0
+                        Coef[loc_id=329 , glob_id=329] = 0
+                        Coef[loc_id=330 , glob_id=330] = 0
+                        Coef[loc_id=331 , glob_id=331] = 0
+                        Coef[loc_id=332 , glob_id=332] = 0
+                        Coef[loc_id=333 , glob_id=333] = 0
+                        Coef[loc_id=334 , glob_id=334] = 0
+                        Coef[loc_id=335 , glob_id=335] = 0
+                        Coef[loc_id=336 , glob_id=336] = 0
+                        Coef[loc_id=337 , glob_id=337] = 0
+                        Coef[loc_id=338 , glob_id=338] = 0
+                        Coef[loc_id=339 , glob_id=339] = 0
+                        Coef[loc_id=340 , glob_id=340] = 0
+                        Coef[loc_id=341 , glob_id=341] = 0
+                        Coef[loc_id=342 , glob_id=342] = 0
+                        Coef[loc_id=343 , glob_id=343] = 0
+                        Coef[loc_id=344 , glob_id=344] = 0
+                        Coef[loc_id=345 , glob_id=345] = 0
+                        Coef[loc_id=346 , glob_id=346] = 0
+                        Coef[loc_id=347 , glob_id=347] = 0
+                        Coef[loc_id=348 , glob_id=348] = 0
+                        Coef[loc_id=349 , glob_id=349] = 0
+                        Coef[loc_id=350 , glob_id=350] = 0
+                        Coef[loc_id=351 , glob_id=351] = 0
+                        Coef[loc_id=352 , glob_id=352] = 0
+                        Coef[loc_id=353 , glob_id=353] = 0
+                        Coef[loc_id=354 , glob_id=354] = 0
+                        Coef[loc_id=355 , glob_id=355] = 0
+                        Coef[loc_id=356 , glob_id=356] = 0
+                        Coef[loc_id=357 , glob_id=357] = 0
+                        Coef[loc_id=358 , glob_id=358] = 0
+                        Coef[loc_id=359 , glob_id=359] = 0
+                        Coef[loc_id=360 , glob_id=360] = 0
+                        Coef[loc_id=361 , glob_id=361] = 0
+                        Coef[loc_id=362 , glob_id=362] = 0
+                        Coef[loc_id=363 , glob_id=363] = 0
+                        Coef[loc_id=364 , glob_id=364] = 0
+                        Coef[loc_id=365 , glob_id=365] = 0
+                        Coef[loc_id=366 , glob_id=366] = 0
+                        Coef[loc_id=367 , glob_id=367] = 0
+                        Coef[loc_id=368 , glob_id=368] = 0
+                        Coef[loc_id=369 , glob_id=369] = 0
+                        Coef[loc_id=370 , glob_id=370] = 0
+                        Coef[loc_id=371 , glob_id=371] = 0
+                        Coef[loc_id=372 , glob_id=372] = 0
+                        Coef[loc_id=373 , glob_id=373] = 0
+                        Coef[loc_id=374 , glob_id=374] = 0
+                     
+                     Dofs property: active
                   
                
                Range : 1
@@ -2254,16 +4563,17 @@ FunctionsContainer after serialize-deserialize:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 ]
                               Knot coordinates:
-                                 Size: [ 3 ]  Weights: [3]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 ]
+                                       Flat ID: 0    Tensor ID: [0]
+                                    
                                     Entry id: 1
-                                    [ 1 ]
+                                       Flat ID: 1    Tensor ID: [1]
+                                    
                                  
                               
                            
@@ -2358,6 +4668,7 @@ FunctionsContainer after serialize-deserialize:
                         Coef[loc_id=3 , glob_id=3] = 0
                         Coef[loc_id=4 , glob_id=4] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -2397,22 +4708,25 @@ FunctionsContainer after serialize-deserialize:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 ]  Weights: [3,9]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 1 ]
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
                                     Entry id: 2
-                                    [ 1 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
                                     Entry id: 3
-                                    [ 1 1 ]
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
                                  
                               
                            
@@ -2579,6 +4893,7 @@ FunctionsContainer after serialize-deserialize:
                         Coef[loc_id=48 , glob_id=48] = 0
                         Coef[loc_id=49 , glob_id=49] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -2604,22 +4919,25 @@ FunctionsContainer after serialize-deserialize:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 ]  Weights: [3,9]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 1 ]
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
                                     Entry id: 2
-                                    [ 1 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
                                     Entry id: 3
-                                    [ 1 1 ]
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
                                  
                               
                            
@@ -2786,6 +5104,7 @@ FunctionsContainer after serialize-deserialize:
                         Coef[loc_id=48 , glob_id=48] = 0
                         Coef[loc_id=49 , glob_id=49] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -2815,22 +5134,25 @@ FunctionsContainer after serialize-deserialize:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 ]  Weights: [3,9]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 1 ]
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
                                     Entry id: 2
-                                    [ 1 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
                                     Entry id: 3
-                                    [ 1 1 ]
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
                                  
                               
                            
@@ -3044,6 +5366,7 @@ FunctionsContainer after serialize-deserialize:
                         Coef[loc_id=73 , glob_id=73] = 0
                         Coef[loc_id=74 , glob_id=74] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -3069,22 +5392,25 @@ FunctionsContainer after serialize-deserialize:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 ]  Weights: [3,9]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 1 ]
+                                       Flat ID: 2    Tensor ID: [0,1]
+                                    
                                     Entry id: 2
-                                    [ 1 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0]
+                                    
                                     Entry id: 3
-                                    [ 1 1 ]
+                                       Flat ID: 3    Tensor ID: [1,1]
+                                    
                                  
                               
                            
@@ -3298,6 +5624,7 @@ FunctionsContainer after serialize-deserialize:
                         Coef[loc_id=73 , glob_id=73] = 0
                         Coef[loc_id=74 , glob_id=74] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -3329,32 +5656,39 @@ FunctionsContainer after serialize-deserialize:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 3 ]  Weights: [3,9,27]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 2
+                                 Direction 2: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 0 1 ]
+                                       Flat ID: 4    Tensor ID: [0,0,1]
+                                    
                                     Entry id: 2
-                                    [ 0 1 0 ]
+                                       Flat ID: 2    Tensor ID: [0,1,0]
+                                    
                                     Entry id: 3
-                                    [ 0 1 1 ]
+                                       Flat ID: 6    Tensor ID: [0,1,1]
+                                    
                                     Entry id: 4
-                                    [ 1 0 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0,0]
+                                    
                                     Entry id: 5
-                                    [ 1 0 1 ]
+                                       Flat ID: 5    Tensor ID: [1,0,1]
+                                    
                                     Entry id: 6
-                                    [ 1 1 0 ]
+                                       Flat ID: 3    Tensor ID: [1,1,0]
+                                    
                                     Entry id: 7
-                                    [ 1 1 1 ]
+                                       Flat ID: 7    Tensor ID: [1,1,1]
+                                    
                                  
                               
                            
@@ -3883,6 +6217,7 @@ FunctionsContainer after serialize-deserialize:
                         Coef[loc_id=373 , glob_id=373] = 0
                         Coef[loc_id=374 , glob_id=374] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1
@@ -3908,32 +6243,39 @@ FunctionsContainer after serialize-deserialize:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 2 2 ]
                               Knot coordinates:
-                                 Size: [ 3 3 3 ]  Weights: [3,9,27]
-                                 Direction: 0
+                                 Direction 0: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 1
+                                 Direction 1: 
                                  [ 0 0.500000 1.00000 ]
-                                 Direction: 2
+                                 Direction 2: 
                                  [ 0 0.500000 1.00000 ]
                               
                               Element properties:
                                  IDs with property "active":
                                     Entry id: 0
-                                    [ 0 0 0 ]
+                                       Flat ID: 0    Tensor ID: [0,0,0]
+                                    
                                     Entry id: 1
-                                    [ 0 0 1 ]
+                                       Flat ID: 4    Tensor ID: [0,0,1]
+                                    
                                     Entry id: 2
-                                    [ 0 1 0 ]
+                                       Flat ID: 2    Tensor ID: [0,1,0]
+                                    
                                     Entry id: 3
-                                    [ 0 1 1 ]
+                                       Flat ID: 6    Tensor ID: [0,1,1]
+                                    
                                     Entry id: 4
-                                    [ 1 0 0 ]
+                                       Flat ID: 1    Tensor ID: [1,0,0]
+                                    
                                     Entry id: 5
-                                    [ 1 0 1 ]
+                                       Flat ID: 5    Tensor ID: [1,0,1]
+                                    
                                     Entry id: 6
-                                    [ 1 1 0 ]
+                                       Flat ID: 3    Tensor ID: [1,1,0]
+                                    
                                     Entry id: 7
-                                    [ 1 1 1 ]
+                                       Flat ID: 7    Tensor ID: [1,1,1]
+                                    
                                  
                               
                            
@@ -4462,6 +6804,7 @@ FunctionsContainer after serialize-deserialize:
                         Coef[loc_id=373 , glob_id=373] = 0
                         Coef[loc_id=374 , glob_id=374] = 0
                      
+                     Dofs property: active
                   
                
                Range : 1

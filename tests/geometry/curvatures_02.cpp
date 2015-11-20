@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the SphericalFunction class as a mapping
+ *  Test for the SphereGridFunction class as a mapping
  *
  *  author: pauletti
  *  date: 2014-10-24
@@ -28,13 +28,11 @@
 
 #include "../tests.h"
 
-#include <igatools/functions/function_lib.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/function_element.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
 
 
 template <int dim>
@@ -42,12 +40,7 @@ void normal_derivatives()
 {
   OUTSTART
 
-  using Function = functions::SphereFunction<dim>;
-
-  auto flag = ValueFlags::point |  ValueFlags::value |
-              ValueFlags::curvature;
-
-  auto quad = QUniform<dim>(3);
+  out.begin_item("normal_derivatives<" + std::to_string(dim) + ">");
 
   BBox<dim> box;
   for (int i=0; i<dim-1; ++i)
@@ -56,39 +49,53 @@ void normal_derivatives()
     box[dim-1] = {0., M_PI};
   auto grid = Grid<dim>::create(box, 2);
 
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
+  using Sphere = grid_functions::SphereGridFunction<dim>;
+
+  auto sphere_func = Sphere::create(grid);
 
 
-  using Mapping   = Mapping<dim, 1>;
-  Mapping map(F);
-  map.reset(flag, quad);
 
-  auto elem = map.begin();
-  auto end = map.end();
+  auto sphere_domain = Domain<dim,1>::create(sphere_func);
 
-  map.template init_cache<dim>(elem);
+  auto domain_handler = sphere_domain->create_cache_handler();
+
+  using Flags = domain_element::Flags;
+  auto flag = Flags::ext_normal |  Flags::ext_normal_D1;
+//  auto flag = Flags::ext_normal_D1;
+  domain_handler->set_element_flags(flag);
+
+  auto elem = sphere_domain->begin();
+  auto end = sphere_domain->end();
+
+  auto quad = QUniform<dim>::create(3);
+
+  domain_handler->init_cache(elem,quad);
   for (; elem != end; ++elem)
   {
-    map.template fill_cache<dim>(elem, 0);
-
-    auto normals = elem->get_external_normals();
-    auto D_normals = elem->get_D_external_normals();
+    domain_handler->fill_element_cache(elem);
 
 
-    out << "Normals:" << endl;
+    out.begin_item("Normals:");
+    auto normals = elem->get_exterior_normals();
     normals.print_info(out);
-    out << endl;
+    out.end_item();
+    //*/
 
-    out << "Der normal:" << endl;
+    out.begin_item("Der normal:");
+    auto D_normals = elem->get_exterior_normals_D1();
     D_normals.print_info(out);
-    out << endl;
+    out.end_item();
 
-    out << "Dn^t on n:" << endl;
+    out.begin_item("Dn^t on n:");
     for (int pt=0; pt<normals.get_num_points(); ++pt)
-      out << action(co_tensor(transpose(D_normals[pt])), normals[pt]) << endl;
+//            out << action(transpose(D_normals[pt]), normals[pt]) << endl;
+      out << action(co_tensor(transpose(D_normals[pt])), normals[pt][0]) << endl;
+    out.end_item();
 
+    //*/
   }
 
+  out.end_item();
   OUTEND
 }
 

@@ -69,27 +69,6 @@ void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
 }
 
 
-
-void deserialize_only()
-{
-  std::string filename = "functions_container.xml";
-
-  std::ifstream xml_istream(filename);
-  IArchive xml_in(xml_istream);
-
-  auto funcs_container = std::make_shared<FunctionsContainer>();
-  xml_in >> funcs_container;
-
-  out.begin_item("Inside deserialize_only()");
-  print_container(funcs_container);
-  out.end_item();
-}
-#endif // SERIALIZATION
-
-
-template <int dim,int codim,int range>
-using Func = Function<dim,codim,range,1>;
-
 void print_container(const std::shared_ptr<FunctionsContainer> &funcs_container)
 {
   const auto domains_dim_2_codim_0 = funcs_container->template get_domains_dim_codim<2,0>();
@@ -150,6 +129,27 @@ void print_container(const std::shared_ptr<FunctionsContainer> &funcs_container)
 
   }
 }
+
+void deserialize_only()
+{
+  std::string filename = "functions_container.xml";
+
+  std::ifstream xml_istream(filename);
+  IArchive xml_in(xml_istream);
+
+  auto funcs_container = std::make_shared<FunctionsContainer>();
+  xml_in >> funcs_container;
+
+  out.begin_item("Inside deserialize_only()");
+  print_container(funcs_container);
+  out.end_item();
+}
+#endif // SERIALIZATION
+
+
+template <int dim,int codim,int range>
+using Func = Function<dim,codim,range,1>;
+
 
 
 void do_test()

@@ -26,7 +26,7 @@
 
 #include "../tests.h"
 
-#include <igatools/functions/ig_function.h>
+#include <igatools/functions/ig_grid_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/basis_functions/bspline.h>
@@ -36,39 +36,43 @@
 template<int dim, int range>
 void test()
 {
-  using Basis = BSpline<dim>;
-  using Function = IgFunction<dim,0,1,1>;
-
-  auto flag = ValueFlags::value | ValueFlags::gradient |
-              ValueFlags::hessian;
-  auto quad = QGauss<dim>(2);
-  auto grid = Grid<dim>::create(3);
+  auto quad = QGauss<dim>::const_create(2);
+  auto grid = Grid<dim>::const_create(3);
   const int deg = 1;
-  auto space = Basis::create(deg, grid);
+  auto space = SplineSpace<dim,range>::const_create(deg, grid);
+  auto basis = BSpline<dim,range>::const_create(space);
+
+  using Function = IgGridFunction<dim,range>;
+
 
   Epetra_SerialComm comm;
-  auto map = EpetraTools::create_map(*space, "active", comm);
+  auto map = EpetraTools::create_map(*basis, "active", comm);
   auto coeff = EpetraTools::create_vector(*map);
   (*coeff)[0] = 1.;
 
-  auto F = Function::create(space, coeff);
-  F->reset(flag, quad);
+  auto func = Function::const_create(basis, *coeff);
 
-  auto elem = F->begin();
-  auto end  = F->end();
+  auto func_handler = func->create_cache_handler();
 
-  const auto topology = Topology<dim>();
-  F->init_cache(*elem,topology);
+  using Flags = grid_function_element::Flags;
+  auto flag = Flags::D0 | Flags::D1 | Flags::D2;
+  func_handler->set_element_flags(flag);
+
+  auto elem = func->begin();
+  auto end  = func->end();
+
+  func_handler->init_cache(*elem,quad);
+
   for (; elem != end; ++elem)
   {
-    F->fill_cache(*elem,topology, 0);
+    func_handler->fill_element_cache(*elem);
 //        elem->get_points().print_info(out);
 //        out << endl;
-    elem->template get_values<_Value, dim>(0).print_info(out);
+    elem->template get_values_from_cache<grid_function_element::_D<0>, dim>(0).print_info(out);
     out << endl;
-    elem->template get_values<_Gradient, dim>(0).print_info(out);
+    elem->template get_values_from_cache<grid_function_element::_D<1>, dim>(0).print_info(out);
     out << endl;
-    elem->template get_values<_Hessian, dim>(0).print_info(out);
+    elem->template get_values_from_cache<grid_function_element::_D<2>, dim>(0).print_info(out);
     out << endl;
   }
 

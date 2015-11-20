@@ -176,7 +176,7 @@ private:
    */
   void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const Grid<dim> &old_grid);
+    const Grid<dim> &old_grid) override final;
 
 
 //  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function);

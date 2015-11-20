@@ -7,20 +7,23 @@ Original NURBS:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
             Knot coordinates:
-               Size: [ 5 ]  Weights: [5]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 ]
+                     Flat ID: 0    Tensor ID: [0]
+                  
                   Entry id: 1
-                  [ 1 ]
+                     Flat ID: 1    Tensor ID: [1]
+                  
                   Entry id: 2
-                  [ 2 ]
+                     Flat ID: 2    Tensor ID: [2]
+                  
                   Entry id: 3
-                  [ 3 ]
+                     Flat ID: 3    Tensor ID: [3]
+                  
                
             
          
@@ -117,20 +120,23 @@ Original NURBS:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
                   Knot coordinates:
-                     Size: [ 5 ]  Weights: [5]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 ]
+                           Flat ID: 0    Tensor ID: [0]
+                        
                         Entry id: 1
-                        [ 1 ]
+                           Flat ID: 1    Tensor ID: [1]
+                        
                         Entry id: 2
-                        [ 2 ]
+                           Flat ID: 2    Tensor ID: [2]
+                        
                         Entry id: 3
-                        [ 3 ]
+                           Flat ID: 3    Tensor ID: [3]
+                        
                      
                   
                
@@ -239,20 +245,23 @@ NURBS after serialize-deserialize:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
             Knot coordinates:
-               Size: [ 5 ]  Weights: [5]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 ]
+                     Flat ID: 0    Tensor ID: [0]
+                  
                   Entry id: 1
-                  [ 1 ]
+                     Flat ID: 1    Tensor ID: [1]
+                  
                   Entry id: 2
-                  [ 2 ]
+                     Flat ID: 2    Tensor ID: [2]
+                  
                   Entry id: 3
-                  [ 3 ]
+                     Flat ID: 3    Tensor ID: [3]
+                  
                
             
          
@@ -349,20 +358,23 @@ NURBS after serialize-deserialize:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
                   Knot coordinates:
-                     Size: [ 5 ]  Weights: [5]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 ]
+                           Flat ID: 0    Tensor ID: [0]
+                        
                         Entry id: 1
-                        [ 1 ]
+                           Flat ID: 1    Tensor ID: [1]
+                        
                         Entry id: 2
-                        [ 2 ]
+                           Flat ID: 2    Tensor ID: [2]
+                        
                         Entry id: 3
-                        [ 3 ]
+                           Flat ID: 3    Tensor ID: [3]
+                        
                      
                   
                
@@ -476,20 +488,23 @@ Original NURBS:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
             Knot coordinates:
-               Size: [ 5 ]  Weights: [5]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 ]
+                     Flat ID: 0    Tensor ID: [0]
+                  
                   Entry id: 1
-                  [ 1 ]
+                     Flat ID: 1    Tensor ID: [1]
+                  
                   Entry id: 2
-                  [ 2 ]
+                     Flat ID: 2    Tensor ID: [2]
+                  
                   Entry id: 3
-                  [ 3 ]
+                     Flat ID: 3    Tensor ID: [3]
+                  
                
             
          
@@ -605,20 +620,23 @@ Original NURBS:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
                   Knot coordinates:
-                     Size: [ 5 ]  Weights: [5]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 ]
+                           Flat ID: 0    Tensor ID: [0]
+                        
                         Entry id: 1
-                        [ 1 ]
+                           Flat ID: 1    Tensor ID: [1]
+                        
                         Entry id: 2
-                        [ 2 ]
+                           Flat ID: 2    Tensor ID: [2]
+                        
                         Entry id: 3
-                        [ 3 ]
+                           Flat ID: 3    Tensor ID: [3]
+                        
                      
                   
                
@@ -727,20 +745,23 @@ NURBS after serialize-deserialize:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
             Knot coordinates:
-               Size: [ 5 ]  Weights: [5]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 ]
+                     Flat ID: 0    Tensor ID: [0]
+                  
                   Entry id: 1
-                  [ 1 ]
+                     Flat ID: 1    Tensor ID: [1]
+                  
                   Entry id: 2
-                  [ 2 ]
+                     Flat ID: 2    Tensor ID: [2]
+                  
                   Entry id: 3
-                  [ 3 ]
+                     Flat ID: 3    Tensor ID: [3]
+                  
                
             
          
@@ -856,20 +877,23 @@ NURBS after serialize-deserialize:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
                   Knot coordinates:
-                     Size: [ 5 ]  Weights: [5]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 ]
+                           Flat ID: 0    Tensor ID: [0]
+                        
                         Entry id: 1
-                        [ 1 ]
+                           Flat ID: 1    Tensor ID: [1]
+                        
                         Entry id: 2
-                        [ 2 ]
+                           Flat ID: 2    Tensor ID: [2]
+                        
                         Entry id: 3
-                        [ 3 ]
+                           Flat ID: 3    Tensor ID: [3]
+                        
                      
                   
                
@@ -983,20 +1007,23 @@ Original NURBS:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
             Knot coordinates:
-               Size: [ 5 ]  Weights: [5]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 ]
+                     Flat ID: 0    Tensor ID: [0]
+                  
                   Entry id: 1
-                  [ 1 ]
+                     Flat ID: 1    Tensor ID: [1]
+                  
                   Entry id: 2
-                  [ 2 ]
+                     Flat ID: 2    Tensor ID: [2]
+                  
                   Entry id: 3
-                  [ 3 ]
+                     Flat ID: 3    Tensor ID: [3]
+                  
                
             
          
@@ -1131,20 +1158,23 @@ Original NURBS:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
                   Knot coordinates:
-                     Size: [ 5 ]  Weights: [5]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 ]
+                           Flat ID: 0    Tensor ID: [0]
+                        
                         Entry id: 1
-                        [ 1 ]
+                           Flat ID: 1    Tensor ID: [1]
+                        
                         Entry id: 2
-                        [ 2 ]
+                           Flat ID: 2    Tensor ID: [2]
+                        
                         Entry id: 3
-                        [ 3 ]
+                           Flat ID: 3    Tensor ID: [3]
+                        
                      
                   
                
@@ -1253,20 +1283,23 @@ NURBS after serialize-deserialize:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
             Knot coordinates:
-               Size: [ 5 ]  Weights: [5]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 ]
+                     Flat ID: 0    Tensor ID: [0]
+                  
                   Entry id: 1
-                  [ 1 ]
+                     Flat ID: 1    Tensor ID: [1]
+                  
                   Entry id: 2
-                  [ 2 ]
+                     Flat ID: 2    Tensor ID: [2]
+                  
                   Entry id: 3
-                  [ 3 ]
+                     Flat ID: 3    Tensor ID: [3]
+                  
                
             
          
@@ -1401,20 +1434,23 @@ NURBS after serialize-deserialize:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
                   Knot coordinates:
-                     Size: [ 5 ]  Weights: [5]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 ]
+                           Flat ID: 0    Tensor ID: [0]
+                        
                         Entry id: 1
-                        [ 1 ]
+                           Flat ID: 1    Tensor ID: [1]
+                        
                         Entry id: 2
-                        [ 2 ]
+                           Flat ID: 2    Tensor ID: [2]
+                        
                         Entry id: 3
-                        [ 3 ]
+                           Flat ID: 3    Tensor ID: [3]
+                        
                      
                   
                
@@ -1528,38 +1564,49 @@ Original NURBS:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
             Knot coordinates:
-               Size: [ 5 4 ]  Weights: [5,20]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0]
+                  
                   Entry id: 1
-                  [ 0 1 ]
+                     Flat ID: 4    Tensor ID: [0,1]
+                  
                   Entry id: 2
-                  [ 0 2 ]
+                     Flat ID: 8    Tensor ID: [0,2]
+                  
                   Entry id: 3
-                  [ 1 0 ]
+                     Flat ID: 1    Tensor ID: [1,0]
+                  
                   Entry id: 4
-                  [ 1 1 ]
+                     Flat ID: 5    Tensor ID: [1,1]
+                  
                   Entry id: 5
-                  [ 1 2 ]
+                     Flat ID: 9    Tensor ID: [1,2]
+                  
                   Entry id: 6
-                  [ 2 0 ]
+                     Flat ID: 2    Tensor ID: [2,0]
+                  
                   Entry id: 7
-                  [ 2 1 ]
+                     Flat ID: 6    Tensor ID: [2,1]
+                  
                   Entry id: 8
-                  [ 2 2 ]
+                     Flat ID: 10    Tensor ID: [2,2]
+                  
                   Entry id: 9
-                  [ 3 0 ]
+                     Flat ID: 3    Tensor ID: [3,0]
+                  
                   Entry id: 10
-                  [ 3 1 ]
+                     Flat ID: 7    Tensor ID: [3,1]
+                  
                   Entry id: 11
-                  [ 3 2 ]
+                     Flat ID: 11    Tensor ID: [3,2]
+                  
                
             
          
@@ -1662,38 +1709,49 @@ Original NURBS:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 ]
                   Knot coordinates:
-                     Size: [ 5 4 ]  Weights: [5,20]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
-                     Direction: 1
+                     Direction 1: 
                      [ 5.00000 6.00000 7.00000 8.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 0 ]
+                           Flat ID: 0    Tensor ID: [0,0]
+                        
                         Entry id: 1
-                        [ 0 1 ]
+                           Flat ID: 4    Tensor ID: [0,1]
+                        
                         Entry id: 2
-                        [ 0 2 ]
+                           Flat ID: 8    Tensor ID: [0,2]
+                        
                         Entry id: 3
-                        [ 1 0 ]
+                           Flat ID: 1    Tensor ID: [1,0]
+                        
                         Entry id: 4
-                        [ 1 1 ]
+                           Flat ID: 5    Tensor ID: [1,1]
+                        
                         Entry id: 5
-                        [ 1 2 ]
+                           Flat ID: 9    Tensor ID: [1,2]
+                        
                         Entry id: 6
-                        [ 2 0 ]
+                           Flat ID: 2    Tensor ID: [2,0]
+                        
                         Entry id: 7
-                        [ 2 1 ]
+                           Flat ID: 6    Tensor ID: [2,1]
+                        
                         Entry id: 8
-                        [ 2 2 ]
+                           Flat ID: 10    Tensor ID: [2,2]
+                        
                         Entry id: 9
-                        [ 3 0 ]
+                           Flat ID: 3    Tensor ID: [3,0]
+                        
                         Entry id: 10
-                        [ 3 1 ]
+                           Flat ID: 7    Tensor ID: [3,1]
+                        
                         Entry id: 11
-                        [ 3 2 ]
+                           Flat ID: 11    Tensor ID: [3,2]
+                        
                      
                   
                
@@ -1836,38 +1894,49 @@ NURBS after serialize-deserialize:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
             Knot coordinates:
-               Size: [ 5 4 ]  Weights: [5,20]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0]
+                  
                   Entry id: 1
-                  [ 0 1 ]
+                     Flat ID: 4    Tensor ID: [0,1]
+                  
                   Entry id: 2
-                  [ 0 2 ]
+                     Flat ID: 8    Tensor ID: [0,2]
+                  
                   Entry id: 3
-                  [ 1 0 ]
+                     Flat ID: 1    Tensor ID: [1,0]
+                  
                   Entry id: 4
-                  [ 1 1 ]
+                     Flat ID: 5    Tensor ID: [1,1]
+                  
                   Entry id: 5
-                  [ 1 2 ]
+                     Flat ID: 9    Tensor ID: [1,2]
+                  
                   Entry id: 6
-                  [ 2 0 ]
+                     Flat ID: 2    Tensor ID: [2,0]
+                  
                   Entry id: 7
-                  [ 2 1 ]
+                     Flat ID: 6    Tensor ID: [2,1]
+                  
                   Entry id: 8
-                  [ 2 2 ]
+                     Flat ID: 10    Tensor ID: [2,2]
+                  
                   Entry id: 9
-                  [ 3 0 ]
+                     Flat ID: 3    Tensor ID: [3,0]
+                  
                   Entry id: 10
-                  [ 3 1 ]
+                     Flat ID: 7    Tensor ID: [3,1]
+                  
                   Entry id: 11
-                  [ 3 2 ]
+                     Flat ID: 11    Tensor ID: [3,2]
+                  
                
             
          
@@ -1970,38 +2039,49 @@ NURBS after serialize-deserialize:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 ]
                   Knot coordinates:
-                     Size: [ 5 4 ]  Weights: [5,20]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
-                     Direction: 1
+                     Direction 1: 
                      [ 5.00000 6.00000 7.00000 8.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 0 ]
+                           Flat ID: 0    Tensor ID: [0,0]
+                        
                         Entry id: 1
-                        [ 0 1 ]
+                           Flat ID: 4    Tensor ID: [0,1]
+                        
                         Entry id: 2
-                        [ 0 2 ]
+                           Flat ID: 8    Tensor ID: [0,2]
+                        
                         Entry id: 3
-                        [ 1 0 ]
+                           Flat ID: 1    Tensor ID: [1,0]
+                        
                         Entry id: 4
-                        [ 1 1 ]
+                           Flat ID: 5    Tensor ID: [1,1]
+                        
                         Entry id: 5
-                        [ 1 2 ]
+                           Flat ID: 9    Tensor ID: [1,2]
+                        
                         Entry id: 6
-                        [ 2 0 ]
+                           Flat ID: 2    Tensor ID: [2,0]
+                        
                         Entry id: 7
-                        [ 2 1 ]
+                           Flat ID: 6    Tensor ID: [2,1]
+                        
                         Entry id: 8
-                        [ 2 2 ]
+                           Flat ID: 10    Tensor ID: [2,2]
+                        
                         Entry id: 9
-                        [ 3 0 ]
+                           Flat ID: 3    Tensor ID: [3,0]
+                        
                         Entry id: 10
-                        [ 3 1 ]
+                           Flat ID: 7    Tensor ID: [3,1]
+                        
                         Entry id: 11
-                        [ 3 2 ]
+                           Flat ID: 11    Tensor ID: [3,2]
+                        
                      
                   
                
@@ -2149,38 +2229,49 @@ Original NURBS:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
             Knot coordinates:
-               Size: [ 5 4 ]  Weights: [5,20]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0]
+                  
                   Entry id: 1
-                  [ 0 1 ]
+                     Flat ID: 4    Tensor ID: [0,1]
+                  
                   Entry id: 2
-                  [ 0 2 ]
+                     Flat ID: 8    Tensor ID: [0,2]
+                  
                   Entry id: 3
-                  [ 1 0 ]
+                     Flat ID: 1    Tensor ID: [1,0]
+                  
                   Entry id: 4
-                  [ 1 1 ]
+                     Flat ID: 5    Tensor ID: [1,1]
+                  
                   Entry id: 5
-                  [ 1 2 ]
+                     Flat ID: 9    Tensor ID: [1,2]
+                  
                   Entry id: 6
-                  [ 2 0 ]
+                     Flat ID: 2    Tensor ID: [2,0]
+                  
                   Entry id: 7
-                  [ 2 1 ]
+                     Flat ID: 6    Tensor ID: [2,1]
+                  
                   Entry id: 8
-                  [ 2 2 ]
+                     Flat ID: 10    Tensor ID: [2,2]
+                  
                   Entry id: 9
-                  [ 3 0 ]
+                     Flat ID: 3    Tensor ID: [3,0]
+                  
                   Entry id: 10
-                  [ 3 1 ]
+                     Flat ID: 7    Tensor ID: [3,1]
+                  
                   Entry id: 11
-                  [ 3 2 ]
+                     Flat ID: 11    Tensor ID: [3,2]
+                  
                
             
          
@@ -2308,38 +2399,49 @@ Original NURBS:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 ]
                   Knot coordinates:
-                     Size: [ 5 4 ]  Weights: [5,20]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
-                     Direction: 1
+                     Direction 1: 
                      [ 5.00000 6.00000 7.00000 8.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 0 ]
+                           Flat ID: 0    Tensor ID: [0,0]
+                        
                         Entry id: 1
-                        [ 0 1 ]
+                           Flat ID: 4    Tensor ID: [0,1]
+                        
                         Entry id: 2
-                        [ 0 2 ]
+                           Flat ID: 8    Tensor ID: [0,2]
+                        
                         Entry id: 3
-                        [ 1 0 ]
+                           Flat ID: 1    Tensor ID: [1,0]
+                        
                         Entry id: 4
-                        [ 1 1 ]
+                           Flat ID: 5    Tensor ID: [1,1]
+                        
                         Entry id: 5
-                        [ 1 2 ]
+                           Flat ID: 9    Tensor ID: [1,2]
+                        
                         Entry id: 6
-                        [ 2 0 ]
+                           Flat ID: 2    Tensor ID: [2,0]
+                        
                         Entry id: 7
-                        [ 2 1 ]
+                           Flat ID: 6    Tensor ID: [2,1]
+                        
                         Entry id: 8
-                        [ 2 2 ]
+                           Flat ID: 10    Tensor ID: [2,2]
+                        
                         Entry id: 9
-                        [ 3 0 ]
+                           Flat ID: 3    Tensor ID: [3,0]
+                        
                         Entry id: 10
-                        [ 3 1 ]
+                           Flat ID: 7    Tensor ID: [3,1]
+                        
                         Entry id: 11
-                        [ 3 2 ]
+                           Flat ID: 11    Tensor ID: [3,2]
+                        
                      
                   
                
@@ -2482,38 +2584,49 @@ NURBS after serialize-deserialize:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
             Knot coordinates:
-               Size: [ 5 4 ]  Weights: [5,20]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0]
+                  
                   Entry id: 1
-                  [ 0 1 ]
+                     Flat ID: 4    Tensor ID: [0,1]
+                  
                   Entry id: 2
-                  [ 0 2 ]
+                     Flat ID: 8    Tensor ID: [0,2]
+                  
                   Entry id: 3
-                  [ 1 0 ]
+                     Flat ID: 1    Tensor ID: [1,0]
+                  
                   Entry id: 4
-                  [ 1 1 ]
+                     Flat ID: 5    Tensor ID: [1,1]
+                  
                   Entry id: 5
-                  [ 1 2 ]
+                     Flat ID: 9    Tensor ID: [1,2]
+                  
                   Entry id: 6
-                  [ 2 0 ]
+                     Flat ID: 2    Tensor ID: [2,0]
+                  
                   Entry id: 7
-                  [ 2 1 ]
+                     Flat ID: 6    Tensor ID: [2,1]
+                  
                   Entry id: 8
-                  [ 2 2 ]
+                     Flat ID: 10    Tensor ID: [2,2]
+                  
                   Entry id: 9
-                  [ 3 0 ]
+                     Flat ID: 3    Tensor ID: [3,0]
+                  
                   Entry id: 10
-                  [ 3 1 ]
+                     Flat ID: 7    Tensor ID: [3,1]
+                  
                   Entry id: 11
-                  [ 3 2 ]
+                     Flat ID: 11    Tensor ID: [3,2]
+                  
                
             
          
@@ -2641,38 +2754,49 @@ NURBS after serialize-deserialize:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 ]
                   Knot coordinates:
-                     Size: [ 5 4 ]  Weights: [5,20]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
-                     Direction: 1
+                     Direction 1: 
                      [ 5.00000 6.00000 7.00000 8.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 0 ]
+                           Flat ID: 0    Tensor ID: [0,0]
+                        
                         Entry id: 1
-                        [ 0 1 ]
+                           Flat ID: 4    Tensor ID: [0,1]
+                        
                         Entry id: 2
-                        [ 0 2 ]
+                           Flat ID: 8    Tensor ID: [0,2]
+                        
                         Entry id: 3
-                        [ 1 0 ]
+                           Flat ID: 1    Tensor ID: [1,0]
+                        
                         Entry id: 4
-                        [ 1 1 ]
+                           Flat ID: 5    Tensor ID: [1,1]
+                        
                         Entry id: 5
-                        [ 1 2 ]
+                           Flat ID: 9    Tensor ID: [1,2]
+                        
                         Entry id: 6
-                        [ 2 0 ]
+                           Flat ID: 2    Tensor ID: [2,0]
+                        
                         Entry id: 7
-                        [ 2 1 ]
+                           Flat ID: 6    Tensor ID: [2,1]
+                        
                         Entry id: 8
-                        [ 2 2 ]
+                           Flat ID: 10    Tensor ID: [2,2]
+                        
                         Entry id: 9
-                        [ 3 0 ]
+                           Flat ID: 3    Tensor ID: [3,0]
+                        
                         Entry id: 10
-                        [ 3 1 ]
+                           Flat ID: 7    Tensor ID: [3,1]
+                        
                         Entry id: 11
-                        [ 3 2 ]
+                           Flat ID: 11    Tensor ID: [3,2]
+                        
                      
                   
                
@@ -2820,38 +2944,49 @@ Original NURBS:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
             Knot coordinates:
-               Size: [ 5 4 ]  Weights: [5,20]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0]
+                  
                   Entry id: 1
-                  [ 0 1 ]
+                     Flat ID: 4    Tensor ID: [0,1]
+                  
                   Entry id: 2
-                  [ 0 2 ]
+                     Flat ID: 8    Tensor ID: [0,2]
+                  
                   Entry id: 3
-                  [ 1 0 ]
+                     Flat ID: 1    Tensor ID: [1,0]
+                  
                   Entry id: 4
-                  [ 1 1 ]
+                     Flat ID: 5    Tensor ID: [1,1]
+                  
                   Entry id: 5
-                  [ 1 2 ]
+                     Flat ID: 9    Tensor ID: [1,2]
+                  
                   Entry id: 6
-                  [ 2 0 ]
+                     Flat ID: 2    Tensor ID: [2,0]
+                  
                   Entry id: 7
-                  [ 2 1 ]
+                     Flat ID: 6    Tensor ID: [2,1]
+                  
                   Entry id: 8
-                  [ 2 2 ]
+                     Flat ID: 10    Tensor ID: [2,2]
+                  
                   Entry id: 9
-                  [ 3 0 ]
+                     Flat ID: 3    Tensor ID: [3,0]
+                  
                   Entry id: 10
-                  [ 3 1 ]
+                     Flat ID: 7    Tensor ID: [3,1]
+                  
                   Entry id: 11
-                  [ 3 2 ]
+                     Flat ID: 11    Tensor ID: [3,2]
+                  
                
             
          
@@ -3004,38 +3139,49 @@ Original NURBS:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 ]
                   Knot coordinates:
-                     Size: [ 5 4 ]  Weights: [5,20]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
-                     Direction: 1
+                     Direction 1: 
                      [ 5.00000 6.00000 7.00000 8.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 0 ]
+                           Flat ID: 0    Tensor ID: [0,0]
+                        
                         Entry id: 1
-                        [ 0 1 ]
+                           Flat ID: 4    Tensor ID: [0,1]
+                        
                         Entry id: 2
-                        [ 0 2 ]
+                           Flat ID: 8    Tensor ID: [0,2]
+                        
                         Entry id: 3
-                        [ 1 0 ]
+                           Flat ID: 1    Tensor ID: [1,0]
+                        
                         Entry id: 4
-                        [ 1 1 ]
+                           Flat ID: 5    Tensor ID: [1,1]
+                        
                         Entry id: 5
-                        [ 1 2 ]
+                           Flat ID: 9    Tensor ID: [1,2]
+                        
                         Entry id: 6
-                        [ 2 0 ]
+                           Flat ID: 2    Tensor ID: [2,0]
+                        
                         Entry id: 7
-                        [ 2 1 ]
+                           Flat ID: 6    Tensor ID: [2,1]
+                        
                         Entry id: 8
-                        [ 2 2 ]
+                           Flat ID: 10    Tensor ID: [2,2]
+                        
                         Entry id: 9
-                        [ 3 0 ]
+                           Flat ID: 3    Tensor ID: [3,0]
+                        
                         Entry id: 10
-                        [ 3 1 ]
+                           Flat ID: 7    Tensor ID: [3,1]
+                        
                         Entry id: 11
-                        [ 3 2 ]
+                           Flat ID: 11    Tensor ID: [3,2]
+                        
                      
                   
                
@@ -3178,38 +3324,49 @@ NURBS after serialize-deserialize:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
             Knot coordinates:
-               Size: [ 5 4 ]  Weights: [5,20]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0]
+                  
                   Entry id: 1
-                  [ 0 1 ]
+                     Flat ID: 4    Tensor ID: [0,1]
+                  
                   Entry id: 2
-                  [ 0 2 ]
+                     Flat ID: 8    Tensor ID: [0,2]
+                  
                   Entry id: 3
-                  [ 1 0 ]
+                     Flat ID: 1    Tensor ID: [1,0]
+                  
                   Entry id: 4
-                  [ 1 1 ]
+                     Flat ID: 5    Tensor ID: [1,1]
+                  
                   Entry id: 5
-                  [ 1 2 ]
+                     Flat ID: 9    Tensor ID: [1,2]
+                  
                   Entry id: 6
-                  [ 2 0 ]
+                     Flat ID: 2    Tensor ID: [2,0]
+                  
                   Entry id: 7
-                  [ 2 1 ]
+                     Flat ID: 6    Tensor ID: [2,1]
+                  
                   Entry id: 8
-                  [ 2 2 ]
+                     Flat ID: 10    Tensor ID: [2,2]
+                  
                   Entry id: 9
-                  [ 3 0 ]
+                     Flat ID: 3    Tensor ID: [3,0]
+                  
                   Entry id: 10
-                  [ 3 1 ]
+                     Flat ID: 7    Tensor ID: [3,1]
+                  
                   Entry id: 11
-                  [ 3 2 ]
+                     Flat ID: 11    Tensor ID: [3,2]
+                  
                
             
          
@@ -3362,38 +3519,49 @@ NURBS after serialize-deserialize:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 ]
                   Knot coordinates:
-                     Size: [ 5 4 ]  Weights: [5,20]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
-                     Direction: 1
+                     Direction 1: 
                      [ 5.00000 6.00000 7.00000 8.00000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 0 ]
+                           Flat ID: 0    Tensor ID: [0,0]
+                        
                         Entry id: 1
-                        [ 0 1 ]
+                           Flat ID: 4    Tensor ID: [0,1]
+                        
                         Entry id: 2
-                        [ 0 2 ]
+                           Flat ID: 8    Tensor ID: [0,2]
+                        
                         Entry id: 3
-                        [ 1 0 ]
+                           Flat ID: 1    Tensor ID: [1,0]
+                        
                         Entry id: 4
-                        [ 1 1 ]
+                           Flat ID: 5    Tensor ID: [1,1]
+                        
                         Entry id: 5
-                        [ 1 2 ]
+                           Flat ID: 9    Tensor ID: [1,2]
+                        
                         Entry id: 6
-                        [ 2 0 ]
+                           Flat ID: 2    Tensor ID: [2,0]
+                        
                         Entry id: 7
-                        [ 2 1 ]
+                           Flat ID: 6    Tensor ID: [2,1]
+                        
                         Entry id: 8
-                        [ 2 2 ]
+                           Flat ID: 10    Tensor ID: [2,2]
+                        
                         Entry id: 9
-                        [ 3 0 ]
+                           Flat ID: 3    Tensor ID: [3,0]
+                        
                         Entry id: 10
-                        [ 3 1 ]
+                           Flat ID: 7    Tensor ID: [3,1]
+                        
                         Entry id: 11
-                        [ 3 2 ]
+                           Flat ID: 11    Tensor ID: [3,2]
+                        
                      
                   
                
@@ -3541,64 +3709,87 @@ Original NURBS:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]
             Knot coordinates:
-               Size: [ 5 4 3 ]  Weights: [5,20,60]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 5.00000 6.00000 7.00000 8.00000 ]
-               Direction: 2
+               Direction 2: 
                [ 9.00000 10.0000 11.0000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0,0]
+                  
                   Entry id: 1
-                  [ 0 0 1 ]
+                     Flat ID: 12    Tensor ID: [0,0,1]
+                  
                   Entry id: 2
-                  [ 0 1 0 ]
+                     Flat ID: 4    Tensor ID: [0,1,0]
+                  
                   Entry id: 3
-                  [ 0 1 1 ]
+                     Flat ID: 16    Tensor ID: [0,1,1]
+                  
                   Entry id: 4
-                  [ 0 2 0 ]
+                     Flat ID: 8    Tensor ID: [0,2,0]
+                  
                   Entry id: 5
-                  [ 0 2 1 ]
+                     Flat ID: 20    Tensor ID: [0,2,1]
+                  
                   Entry id: 6
-                  [ 1 0 0 ]
+                     Flat ID: 1    Tensor ID: [1,0,0]
+                  
                   Entry id: 7
-                  [ 1 0 1 ]
+                     Flat ID: 13    Tensor ID: [1,0,1]
+                  
                   Entry id: 8
-                  [ 1 1 0 ]
+                     Flat ID: 5    Tensor ID: [1,1,0]
+                  
                   Entry id: 9
-                  [ 1 1 1 ]
+                     Flat ID: 17    Tensor ID: [1,1,1]
+                  
                   Entry id: 10
-                  [ 1 2 0 ]
+                     Flat ID: 9    Tensor ID: [1,2,0]
+                  
                   Entry id: 11
-                  [ 1 2 1 ]
+                     Flat ID: 21    Tensor ID: [1,2,1]
+                  
                   Entry id: 12
-                  [ 2 0 0 ]
+                     Flat ID: 2    Tensor ID: [2,0,0]
+                  
                   Entry id: 13
-                  [ 2 0 1 ]
+                     Flat ID: 14    Tensor ID: [2,0,1]
+                  
                   Entry id: 14
-                  [ 2 1 0 ]
+                     Flat ID: 6    Tensor ID: [2,1,0]
+                  
                   Entry id: 15
-                  [ 2 1 1 ]
+                     Flat ID: 18    Tensor ID: [2,1,1]
+                  
                   Entry id: 16
-                  [ 2 2 0 ]
+                     Flat ID: 10    Tensor ID: [2,2,0]
+                  
                   Entry id: 17
-                  [ 2 2 1 ]
+                     Flat ID: 22    Tensor ID: [2,2,1]
+                  
                   Entry id: 18
-                  [ 3 0 0 ]
+                     Flat ID: 3    Tensor ID: [3,0,0]
+                  
                   Entry id: 19
-                  [ 3 0 1 ]
+                     Flat ID: 15    Tensor ID: [3,0,1]
+                  
                   Entry id: 20
-                  [ 3 1 0 ]
+                     Flat ID: 7    Tensor ID: [3,1,0]
+                  
                   Entry id: 21
-                  [ 3 1 1 ]
+                     Flat ID: 19    Tensor ID: [3,1,1]
+                  
                   Entry id: 22
-                  [ 3 2 0 ]
+                     Flat ID: 11    Tensor ID: [3,2,0]
+                  
                   Entry id: 23
-                  [ 3 2 1 ]
+                     Flat ID: 23    Tensor ID: [3,2,1]
+                  
                
             
          
@@ -3706,64 +3897,87 @@ Original NURBS:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 2 ]
                   Knot coordinates:
-                     Size: [ 5 4 3 ]  Weights: [5,20,60]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
-                     Direction: 1
+                     Direction 1: 
                      [ 5.00000 6.00000 7.00000 8.00000 ]
-                     Direction: 2
+                     Direction 2: 
                      [ 9.00000 10.0000 11.0000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 0 0 ]
+                           Flat ID: 0    Tensor ID: [0,0,0]
+                        
                         Entry id: 1
-                        [ 0 0 1 ]
+                           Flat ID: 12    Tensor ID: [0,0,1]
+                        
                         Entry id: 2
-                        [ 0 1 0 ]
+                           Flat ID: 4    Tensor ID: [0,1,0]
+                        
                         Entry id: 3
-                        [ 0 1 1 ]
+                           Flat ID: 16    Tensor ID: [0,1,1]
+                        
                         Entry id: 4
-                        [ 0 2 0 ]
+                           Flat ID: 8    Tensor ID: [0,2,0]
+                        
                         Entry id: 5
-                        [ 0 2 1 ]
+                           Flat ID: 20    Tensor ID: [0,2,1]
+                        
                         Entry id: 6
-                        [ 1 0 0 ]
+                           Flat ID: 1    Tensor ID: [1,0,0]
+                        
                         Entry id: 7
-                        [ 1 0 1 ]
+                           Flat ID: 13    Tensor ID: [1,0,1]
+                        
                         Entry id: 8
-                        [ 1 1 0 ]
+                           Flat ID: 5    Tensor ID: [1,1,0]
+                        
                         Entry id: 9
-                        [ 1 1 1 ]
+                           Flat ID: 17    Tensor ID: [1,1,1]
+                        
                         Entry id: 10
-                        [ 1 2 0 ]
+                           Flat ID: 9    Tensor ID: [1,2,0]
+                        
                         Entry id: 11
-                        [ 1 2 1 ]
+                           Flat ID: 21    Tensor ID: [1,2,1]
+                        
                         Entry id: 12
-                        [ 2 0 0 ]
+                           Flat ID: 2    Tensor ID: [2,0,0]
+                        
                         Entry id: 13
-                        [ 2 0 1 ]
+                           Flat ID: 14    Tensor ID: [2,0,1]
+                        
                         Entry id: 14
-                        [ 2 1 0 ]
+                           Flat ID: 6    Tensor ID: [2,1,0]
+                        
                         Entry id: 15
-                        [ 2 1 1 ]
+                           Flat ID: 18    Tensor ID: [2,1,1]
+                        
                         Entry id: 16
-                        [ 2 2 0 ]
+                           Flat ID: 10    Tensor ID: [2,2,0]
+                        
                         Entry id: 17
-                        [ 2 2 1 ]
+                           Flat ID: 22    Tensor ID: [2,2,1]
+                        
                         Entry id: 18
-                        [ 3 0 0 ]
+                           Flat ID: 3    Tensor ID: [3,0,0]
+                        
                         Entry id: 19
-                        [ 3 0 1 ]
+                           Flat ID: 15    Tensor ID: [3,0,1]
+                        
                         Entry id: 20
-                        [ 3 1 0 ]
+                           Flat ID: 7    Tensor ID: [3,1,0]
+                        
                         Entry id: 21
-                        [ 3 1 1 ]
+                           Flat ID: 19    Tensor ID: [3,1,1]
+                        
                         Entry id: 22
-                        [ 3 2 0 ]
+                           Flat ID: 11    Tensor ID: [3,2,0]
+                        
                         Entry id: 23
-                        [ 3 2 1 ]
+                           Flat ID: 23    Tensor ID: [3,2,1]
+                        
                      
                   
                
@@ -3981,64 +4195,87 @@ NURBS after serialize-deserialize:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]
             Knot coordinates:
-               Size: [ 5 4 3 ]  Weights: [5,20,60]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 5.00000 6.00000 7.00000 8.00000 ]
-               Direction: 2
+               Direction 2: 
                [ 9.00000 10.0000 11.0000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0,0]
+                  
                   Entry id: 1
-                  [ 0 0 1 ]
+                     Flat ID: 12    Tensor ID: [0,0,1]
+                  
                   Entry id: 2
-                  [ 0 1 0 ]
+                     Flat ID: 4    Tensor ID: [0,1,0]
+                  
                   Entry id: 3
-                  [ 0 1 1 ]
+                     Flat ID: 16    Tensor ID: [0,1,1]
+                  
                   Entry id: 4
-                  [ 0 2 0 ]
+                     Flat ID: 8    Tensor ID: [0,2,0]
+                  
                   Entry id: 5
-                  [ 0 2 1 ]
+                     Flat ID: 20    Tensor ID: [0,2,1]
+                  
                   Entry id: 6
-                  [ 1 0 0 ]
+                     Flat ID: 1    Tensor ID: [1,0,0]
+                  
                   Entry id: 7
-                  [ 1 0 1 ]
+                     Flat ID: 13    Tensor ID: [1,0,1]
+                  
                   Entry id: 8
-                  [ 1 1 0 ]
+                     Flat ID: 5    Tensor ID: [1,1,0]
+                  
                   Entry id: 9
-                  [ 1 1 1 ]
+                     Flat ID: 17    Tensor ID: [1,1,1]
+                  
                   Entry id: 10
-                  [ 1 2 0 ]
+                     Flat ID: 9    Tensor ID: [1,2,0]
+                  
                   Entry id: 11
-                  [ 1 2 1 ]
+                     Flat ID: 21    Tensor ID: [1,2,1]
+                  
                   Entry id: 12
-                  [ 2 0 0 ]
+                     Flat ID: 2    Tensor ID: [2,0,0]
+                  
                   Entry id: 13
-                  [ 2 0 1 ]
+                     Flat ID: 14    Tensor ID: [2,0,1]
+                  
                   Entry id: 14
-                  [ 2 1 0 ]
+                     Flat ID: 6    Tensor ID: [2,1,0]
+                  
                   Entry id: 15
-                  [ 2 1 1 ]
+                     Flat ID: 18    Tensor ID: [2,1,1]
+                  
                   Entry id: 16
-                  [ 2 2 0 ]
+                     Flat ID: 10    Tensor ID: [2,2,0]
+                  
                   Entry id: 17
-                  [ 2 2 1 ]
+                     Flat ID: 22    Tensor ID: [2,2,1]
+                  
                   Entry id: 18
-                  [ 3 0 0 ]
+                     Flat ID: 3    Tensor ID: [3,0,0]
+                  
                   Entry id: 19
-                  [ 3 0 1 ]
+                     Flat ID: 15    Tensor ID: [3,0,1]
+                  
                   Entry id: 20
-                  [ 3 1 0 ]
+                     Flat ID: 7    Tensor ID: [3,1,0]
+                  
                   Entry id: 21
-                  [ 3 1 1 ]
+                     Flat ID: 19    Tensor ID: [3,1,1]
+                  
                   Entry id: 22
-                  [ 3 2 0 ]
+                     Flat ID: 11    Tensor ID: [3,2,0]
+                  
                   Entry id: 23
-                  [ 3 2 1 ]
+                     Flat ID: 23    Tensor ID: [3,2,1]
+                  
                
             
          
@@ -4146,64 +4383,87 @@ NURBS after serialize-deserialize:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 2 ]
                   Knot coordinates:
-                     Size: [ 5 4 3 ]  Weights: [5,20,60]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
-                     Direction: 1
+                     Direction 1: 
                      [ 5.00000 6.00000 7.00000 8.00000 ]
-                     Direction: 2
+                     Direction 2: 
                      [ 9.00000 10.0000 11.0000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 0 0 ]
+                           Flat ID: 0    Tensor ID: [0,0,0]
+                        
                         Entry id: 1
-                        [ 0 0 1 ]
+                           Flat ID: 12    Tensor ID: [0,0,1]
+                        
                         Entry id: 2
-                        [ 0 1 0 ]
+                           Flat ID: 4    Tensor ID: [0,1,0]
+                        
                         Entry id: 3
-                        [ 0 1 1 ]
+                           Flat ID: 16    Tensor ID: [0,1,1]
+                        
                         Entry id: 4
-                        [ 0 2 0 ]
+                           Flat ID: 8    Tensor ID: [0,2,0]
+                        
                         Entry id: 5
-                        [ 0 2 1 ]
+                           Flat ID: 20    Tensor ID: [0,2,1]
+                        
                         Entry id: 6
-                        [ 1 0 0 ]
+                           Flat ID: 1    Tensor ID: [1,0,0]
+                        
                         Entry id: 7
-                        [ 1 0 1 ]
+                           Flat ID: 13    Tensor ID: [1,0,1]
+                        
                         Entry id: 8
-                        [ 1 1 0 ]
+                           Flat ID: 5    Tensor ID: [1,1,0]
+                        
                         Entry id: 9
-                        [ 1 1 1 ]
+                           Flat ID: 17    Tensor ID: [1,1,1]
+                        
                         Entry id: 10
-                        [ 1 2 0 ]
+                           Flat ID: 9    Tensor ID: [1,2,0]
+                        
                         Entry id: 11
-                        [ 1 2 1 ]
+                           Flat ID: 21    Tensor ID: [1,2,1]
+                        
                         Entry id: 12
-                        [ 2 0 0 ]
+                           Flat ID: 2    Tensor ID: [2,0,0]
+                        
                         Entry id: 13
-                        [ 2 0 1 ]
+                           Flat ID: 14    Tensor ID: [2,0,1]
+                        
                         Entry id: 14
-                        [ 2 1 0 ]
+                           Flat ID: 6    Tensor ID: [2,1,0]
+                        
                         Entry id: 15
-                        [ 2 1 1 ]
+                           Flat ID: 18    Tensor ID: [2,1,1]
+                        
                         Entry id: 16
-                        [ 2 2 0 ]
+                           Flat ID: 10    Tensor ID: [2,2,0]
+                        
                         Entry id: 17
-                        [ 2 2 1 ]
+                           Flat ID: 22    Tensor ID: [2,2,1]
+                        
                         Entry id: 18
-                        [ 3 0 0 ]
+                           Flat ID: 3    Tensor ID: [3,0,0]
+                        
                         Entry id: 19
-                        [ 3 0 1 ]
+                           Flat ID: 15    Tensor ID: [3,0,1]
+                        
                         Entry id: 20
-                        [ 3 1 0 ]
+                           Flat ID: 7    Tensor ID: [3,1,0]
+                        
                         Entry id: 21
-                        [ 3 1 1 ]
+                           Flat ID: 19    Tensor ID: [3,1,1]
+                        
                         Entry id: 22
-                        [ 3 2 0 ]
+                           Flat ID: 11    Tensor ID: [3,2,0]
+                        
                         Entry id: 23
-                        [ 3 2 1 ]
+                           Flat ID: 23    Tensor ID: [3,2,1]
+                        
                      
                   
                
@@ -4426,64 +4686,87 @@ Original NURBS:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]
             Knot coordinates:
-               Size: [ 5 4 3 ]  Weights: [5,20,60]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 5.00000 6.00000 7.00000 8.00000 ]
-               Direction: 2
+               Direction 2: 
                [ 9.00000 10.0000 11.0000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0,0]
+                  
                   Entry id: 1
-                  [ 0 0 1 ]
+                     Flat ID: 12    Tensor ID: [0,0,1]
+                  
                   Entry id: 2
-                  [ 0 1 0 ]
+                     Flat ID: 4    Tensor ID: [0,1,0]
+                  
                   Entry id: 3
-                  [ 0 1 1 ]
+                     Flat ID: 16    Tensor ID: [0,1,1]
+                  
                   Entry id: 4
-                  [ 0 2 0 ]
+                     Flat ID: 8    Tensor ID: [0,2,0]
+                  
                   Entry id: 5
-                  [ 0 2 1 ]
+                     Flat ID: 20    Tensor ID: [0,2,1]
+                  
                   Entry id: 6
-                  [ 1 0 0 ]
+                     Flat ID: 1    Tensor ID: [1,0,0]
+                  
                   Entry id: 7
-                  [ 1 0 1 ]
+                     Flat ID: 13    Tensor ID: [1,0,1]
+                  
                   Entry id: 8
-                  [ 1 1 0 ]
+                     Flat ID: 5    Tensor ID: [1,1,0]
+                  
                   Entry id: 9
-                  [ 1 1 1 ]
+                     Flat ID: 17    Tensor ID: [1,1,1]
+                  
                   Entry id: 10
-                  [ 1 2 0 ]
+                     Flat ID: 9    Tensor ID: [1,2,0]
+                  
                   Entry id: 11
-                  [ 1 2 1 ]
+                     Flat ID: 21    Tensor ID: [1,2,1]
+                  
                   Entry id: 12
-                  [ 2 0 0 ]
+                     Flat ID: 2    Tensor ID: [2,0,0]
+                  
                   Entry id: 13
-                  [ 2 0 1 ]
+                     Flat ID: 14    Tensor ID: [2,0,1]
+                  
                   Entry id: 14
-                  [ 2 1 0 ]
+                     Flat ID: 6    Tensor ID: [2,1,0]
+                  
                   Entry id: 15
-                  [ 2 1 1 ]
+                     Flat ID: 18    Tensor ID: [2,1,1]
+                  
                   Entry id: 16
-                  [ 2 2 0 ]
+                     Flat ID: 10    Tensor ID: [2,2,0]
+                  
                   Entry id: 17
-                  [ 2 2 1 ]
+                     Flat ID: 22    Tensor ID: [2,2,1]
+                  
                   Entry id: 18
-                  [ 3 0 0 ]
+                     Flat ID: 3    Tensor ID: [3,0,0]
+                  
                   Entry id: 19
-                  [ 3 0 1 ]
+                     Flat ID: 15    Tensor ID: [3,0,1]
+                  
                   Entry id: 20
-                  [ 3 1 0 ]
+                     Flat ID: 7    Tensor ID: [3,1,0]
+                  
                   Entry id: 21
-                  [ 3 1 1 ]
+                     Flat ID: 19    Tensor ID: [3,1,1]
+                  
                   Entry id: 22
-                  [ 3 2 0 ]
+                     Flat ID: 11    Tensor ID: [3,2,0]
+                  
                   Entry id: 23
-                  [ 3 2 1 ]
+                     Flat ID: 23    Tensor ID: [3,2,1]
+                  
                
             
          
@@ -4651,64 +4934,87 @@ Original NURBS:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 2 ]
                   Knot coordinates:
-                     Size: [ 5 4 3 ]  Weights: [5,20,60]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
-                     Direction: 1
+                     Direction 1: 
                      [ 5.00000 6.00000 7.00000 8.00000 ]
-                     Direction: 2
+                     Direction 2: 
                      [ 9.00000 10.0000 11.0000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 0 0 ]
+                           Flat ID: 0    Tensor ID: [0,0,0]
+                        
                         Entry id: 1
-                        [ 0 0 1 ]
+                           Flat ID: 12    Tensor ID: [0,0,1]
+                        
                         Entry id: 2
-                        [ 0 1 0 ]
+                           Flat ID: 4    Tensor ID: [0,1,0]
+                        
                         Entry id: 3
-                        [ 0 1 1 ]
+                           Flat ID: 16    Tensor ID: [0,1,1]
+                        
                         Entry id: 4
-                        [ 0 2 0 ]
+                           Flat ID: 8    Tensor ID: [0,2,0]
+                        
                         Entry id: 5
-                        [ 0 2 1 ]
+                           Flat ID: 20    Tensor ID: [0,2,1]
+                        
                         Entry id: 6
-                        [ 1 0 0 ]
+                           Flat ID: 1    Tensor ID: [1,0,0]
+                        
                         Entry id: 7
-                        [ 1 0 1 ]
+                           Flat ID: 13    Tensor ID: [1,0,1]
+                        
                         Entry id: 8
-                        [ 1 1 0 ]
+                           Flat ID: 5    Tensor ID: [1,1,0]
+                        
                         Entry id: 9
-                        [ 1 1 1 ]
+                           Flat ID: 17    Tensor ID: [1,1,1]
+                        
                         Entry id: 10
-                        [ 1 2 0 ]
+                           Flat ID: 9    Tensor ID: [1,2,0]
+                        
                         Entry id: 11
-                        [ 1 2 1 ]
+                           Flat ID: 21    Tensor ID: [1,2,1]
+                        
                         Entry id: 12
-                        [ 2 0 0 ]
+                           Flat ID: 2    Tensor ID: [2,0,0]
+                        
                         Entry id: 13
-                        [ 2 0 1 ]
+                           Flat ID: 14    Tensor ID: [2,0,1]
+                        
                         Entry id: 14
-                        [ 2 1 0 ]
+                           Flat ID: 6    Tensor ID: [2,1,0]
+                        
                         Entry id: 15
-                        [ 2 1 1 ]
+                           Flat ID: 18    Tensor ID: [2,1,1]
+                        
                         Entry id: 16
-                        [ 2 2 0 ]
+                           Flat ID: 10    Tensor ID: [2,2,0]
+                        
                         Entry id: 17
-                        [ 2 2 1 ]
+                           Flat ID: 22    Tensor ID: [2,2,1]
+                        
                         Entry id: 18
-                        [ 3 0 0 ]
+                           Flat ID: 3    Tensor ID: [3,0,0]
+                        
                         Entry id: 19
-                        [ 3 0 1 ]
+                           Flat ID: 15    Tensor ID: [3,0,1]
+                        
                         Entry id: 20
-                        [ 3 1 0 ]
+                           Flat ID: 7    Tensor ID: [3,1,0]
+                        
                         Entry id: 21
-                        [ 3 1 1 ]
+                           Flat ID: 19    Tensor ID: [3,1,1]
+                        
                         Entry id: 22
-                        [ 3 2 0 ]
+                           Flat ID: 11    Tensor ID: [3,2,0]
+                        
                         Entry id: 23
-                        [ 3 2 1 ]
+                           Flat ID: 23    Tensor ID: [3,2,1]
+                        
                      
                   
                
@@ -4926,64 +5232,87 @@ NURBS after serialize-deserialize:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]
             Knot coordinates:
-               Size: [ 5 4 3 ]  Weights: [5,20,60]
-               Direction: 0
+               Direction 0: 
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction: 1
+               Direction 1: 
                [ 5.00000 6.00000 7.00000 8.00000 ]
-               Direction: 2
+               Direction 2: 
                [ 9.00000 10.0000 11.0000 ]
             
             Element properties:
                IDs with property "active":
                   Entry id: 0
-                  [ 0 0 0 ]
+                     Flat ID: 0    Tensor ID: [0,0,0]
+                  
                   Entry id: 1
-                  [ 0 0 1 ]
+                     Flat ID: 12    Tensor ID: [0,0,1]
+                  
                   Entry id: 2
-                  [ 0 1 0 ]
+                     Flat ID: 4    Tensor ID: [0,1,0]
+                  
                   Entry id: 3
-                  [ 0 1 1 ]
+                     Flat ID: 16    Tensor ID: [0,1,1]
+                  
                   Entry id: 4
-                  [ 0 2 0 ]
+                     Flat ID: 8    Tensor ID: [0,2,0]
+                  
                   Entry id: 5
-                  [ 0 2 1 ]
+                     Flat ID: 20    Tensor ID: [0,2,1]
+                  
                   Entry id: 6
-                  [ 1 0 0 ]
+                     Flat ID: 1    Tensor ID: [1,0,0]
+                  
                   Entry id: 7
-                  [ 1 0 1 ]
+                     Flat ID: 13    Tensor ID: [1,0,1]
+                  
                   Entry id: 8
-                  [ 1 1 0 ]
+                     Flat ID: 5    Tensor ID: [1,1,0]
+                  
                   Entry id: 9
-                  [ 1 1 1 ]
+                     Flat ID: 17    Tensor ID: [1,1,1]
+                  
                   Entry id: 10
-                  [ 1 2 0 ]
+                     Flat ID: 9    Tensor ID: [1,2,0]
+                  
                   Entry id: 11
-                  [ 1 2 1 ]
+                     Flat ID: 21    Tensor ID: [1,2,1]
+                  
                   Entry id: 12
-                  [ 2 0 0 ]
+                     Flat ID: 2    Tensor ID: [2,0,0]
+                  
                   Entry id: 13
-                  [ 2 0 1 ]
+                     Flat ID: 14    Tensor ID: [2,0,1]
+                  
                   Entry id: 14
-                  [ 2 1 0 ]
+                     Flat ID: 6    Tensor ID: [2,1,0]
+                  
                   Entry id: 15
-                  [ 2 1 1 ]
+                     Flat ID: 18    Tensor ID: [2,1,1]
+                  
                   Entry id: 16
-                  [ 2 2 0 ]
+                     Flat ID: 10    Tensor ID: [2,2,0]
+                  
                   Entry id: 17
-                  [ 2 2 1 ]
+                     Flat ID: 22    Tensor ID: [2,2,1]
+                  
                   Entry id: 18
-                  [ 3 0 0 ]
+                     Flat ID: 3    Tensor ID: [3,0,0]
+                  
                   Entry id: 19
-                  [ 3 0 1 ]
+                     Flat ID: 15    Tensor ID: [3,0,1]
+                  
                   Entry id: 20
-                  [ 3 1 0 ]
+                     Flat ID: 7    Tensor ID: [3,1,0]
+                  
                   Entry id: 21
-                  [ 3 1 1 ]
+                     Flat ID: 19    Tensor ID: [3,1,1]
+                  
                   Entry id: 22
-                  [ 3 2 0 ]
+                     Flat ID: 11    Tensor ID: [3,2,0]
+                  
                   Entry id: 23
-                  [ 3 2 1 ]
+                     Flat ID: 23    Tensor ID: [3,2,1]
+                  
                
             
          
@@ -5151,64 +5480,87 @@ NURBS after serialize-deserialize:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 2 ]
                   Knot coordinates:
-                     Size: [ 5 4 3 ]  Weights: [5,20,60]
-                     Direction: 0
+                     Direction 0: 
                      [ 0 1.00000 2.00000 3.00000 4.00000 ]
-                     Direction: 1
+                     Direction 1: 
                      [ 5.00000 6.00000 7.00000 8.00000 ]
-                     Direction: 2
+                     Direction 2: 
                      [ 9.00000 10.0000 11.0000 ]
                   
                   Element properties:
                      IDs with property "active":
                         Entry id: 0
-                        [ 0 0 0 ]
+                           Flat ID: 0    Tensor ID: [0,0,0]
+                        
                         Entry id: 1
-                        [ 0 0 1 ]
+                           Flat ID: 12    Tensor ID: [0,0,1]
+                        
                         Entry id: 2
-                        [ 0 1 0 ]
+                           Flat ID: 4    Tensor ID: [0,1,0]
+                        
                         Entry id: 3
-                        [ 0 1 1 ]
+                           Flat ID: 16    Tensor ID: [0,1,1]
+                        
                         Entry id: 4
-                        [ 0 2 0 ]
+                           Flat ID: 8    Tensor ID: [0,2,0]
+                        
                         Entry id: 5
-                        [ 0 2 1 ]
+                           Flat ID: 20    Tensor ID: [0,2,1]
+                        
                         Entry id: 6
-                        [ 1 0 0 ]
+                           Flat ID: 1    Tensor ID: [1,0,0]
+                        
                         Entry id: 7
-                        [ 1 0 1 ]
+                           Flat ID: 13    Tensor ID: [1,0,1]
+                        
                         Entry id: 8
-                        [ 1 1 0 ]
+                           Flat ID: 5    Tensor ID: [1,1,0]
+                        
                         Entry id: 9
-                        [ 1 1 1 ]
+                           Flat ID: 17    Tensor ID: [1,1,1]
+                        
                         Entry id: 10
-                        [ 1 2 0 ]
+                           Flat ID: 9    Tensor ID: [1,2,0]
+                        
                         Entry id: 11
-                        [ 1 2 1 ]
+                           Flat ID: 21    Tensor ID: [1,2,1]
+                        
                         Entry id: 12
-                        [ 2 0 0 ]
+                           Flat ID: 2    Tensor ID: [2,0,0]
+                        
                         Entry id: 13
-                        [ 2 0 1 ]
+                           Flat ID: 14    Tensor ID: [2,0,1]
+                        
                         Entry id: 14
-                        [ 2 1 0 ]
+                           Flat ID: 6    Tensor ID: [2,1,0]
+                        
                         Entry id: 15
-                        [ 2 1 1 ]
+                           Flat ID: 18    Tensor ID: [2,1,1]
+                        
                         Entry id: 16
-                        [ 2 2 0 ]
+                           Flat ID: 10    Tensor ID: [2,2,0]
+                        
                         Entry id: 17
-                        [ 2 2 1 ]
+                           Flat ID: 22    Tensor ID: [2,2,1]
+                        
                         Entry id: 18
-                        [ 3 0 0 ]
+                           Flat ID: 3    Tensor ID: [3,0,0]
+                        
                         Entry id: 19
-                        [ 3 0 1 ]
+                           Flat ID: 15    Tensor ID: [3,0,1]
+                        
                         Entry id: 20
-                        [ 3 1 0 ]
+                           Flat ID: 7    Tensor ID: [3,1,0]
+                        
                         Entry id: 21
-                        [ 3 1 1 ]
+                           Flat ID: 19    Tensor ID: [3,1,1]
+                        
                         Entry id: 22
-                        [ 3 2 0 ]
+                           Flat ID: 11    Tensor ID: [3,2,0]
+                        
                         Entry id: 23
-                        [ 3 2 1 ]
+                           Flat ID: 23    Tensor ID: [3,2,1]
+                        
                      
                   
                

@@ -39,7 +39,8 @@ private:
 
 public:
   using ContainerType = const Domain<dim_,codim_>;
-  using GridFuncElem = typename ContainerType::GridFuncType::ElementAccessor;
+  using GridFunc = typename ContainerType::GridFuncType;
+  using GridFuncElem = typename GridFunc::ElementAccessor;
   using ListIt = typename ContainerType::ListIt;
 
   using IndexType = typename Grid<dim_>::IndexType;
@@ -190,6 +191,9 @@ public:
   const ValueVector<SafeSTLArray<Point, codim_> > &
   get_exterior_normals() const;
 
+  const ValueVector<typename GridFunc::template Derivative<1> > &
+  get_exterior_normals_D1() const;
+
   template <int sdim>
   const ValueVector<Points<dim_+codim_> > &
   get_boundary_normals(const int s_id, EnableIf<(sdim >= 0)> * = nullptr) const
@@ -270,6 +274,7 @@ public:
   using _BoundaryNormal = domain_element::_BoundaryNormal;
 
   using _ExtNormal = domain_element::_ExtNormal;
+  using _ExtNormalD1 = domain_element::_ExtNormalD1;
 
   using _Curvature = domain_element::_Curvature;
 
@@ -278,6 +283,9 @@ public:
   using _SecondFundamentalForm = domain_element::_SecondFundamentalForm;
 
 private:
+  template<int order>
+  using Derivative = typename GridFunc::template Derivative<order>;
+
   template<int order>
   using InvDerivative = Derivatives<dim_+codim_,dim_,1,order>;
 
@@ -296,7 +304,8 @@ private:
       std::is_same<ValueType,_ExtNormal>::value ||
       std::is_same<ValueType,_Curvature>::value ||
       std::is_same<ValueType,_FirstFundamentalForm>::value ||
-      std::is_same<ValueType,_SecondFundamentalForm>::value;
+      std::is_same<ValueType,_SecondFundamentalForm>::value ||
+      std::is_same<ValueType,_ExtNormalD1>::value;;
   };
 
   using CType = boost::fusion::map<
@@ -308,7 +317,8 @@ private:
                 boost::fusion::pair<_ExtNormal     ,DataWithFlagStatus<ValueVector<SafeSTLArray<Point,codim_>>>>,
                 boost::fusion::pair<_Curvature     ,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>,
                 boost::fusion::pair<_FirstFundamentalForm,DataWithFlagStatus<ValueVector<MetricTensor>>>,
-                boost::fusion::pair<_SecondFundamentalForm,DataWithFlagStatus<ValueVector<MetricTensor>>>
+                boost::fusion::pair<_SecondFundamentalForm,DataWithFlagStatus<ValueVector<MetricTensor>>>,
+                boost::fusion::pair<_ExtNormalD1   ,DataWithFlagStatus<ValueVector<Derivative<1>>>>
                 >;
 
   using Cache = PointValuesCache<dim_,CType>;
@@ -347,7 +357,7 @@ public:
                                     EnableIf< !(IsInCache<ValueType>::value) > * = nullptr)
   {
     return grid_func_elem_->template
-           evaluate_at_points<typename ValueType::ValueTypeGridFuncElem>(quad);
+           evaluate_at_points<typename ValueType::GridFuncElemType>(quad);
   }
 
 

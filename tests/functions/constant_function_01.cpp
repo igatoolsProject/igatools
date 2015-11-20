@@ -27,6 +27,8 @@
 #include <igatools/geometry/domain_lib.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/functions/function_lib.h>
+#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/geometry/domain.h>
 
 #include <igatools/base/quadrature_lib.h>
 
@@ -38,18 +40,17 @@ using namespace functions;
 template<int dim, int codim, int range, int rank>
 void constant_func()
 {
-  using Grid = Grid<dim>;
-  using Domain = domains::BallDomain<dim>;
   using Function = functions::ConstantFunction<dim, codim, range, rank>;
 
-  auto grid = Grid::const_create(3);
-  auto domain = Domain::const_create(grid);
+  auto grid = Grid<dim>::const_create(3);
+  auto ball_func = grid_functions::BallGridFunction<dim>::const_create(grid);
+  auto ball_domain = Domain<dim,0>::const_create(ball_func);
 
   typename Function::Value b;
   for (int i=0; i<range; ++i)
     b[i] = i;
 
-  auto func = Function::const_create(domain, b);
+  auto func = Function::const_create(ball_domain, b);
   function_values<dim, codim, range>(func);
 }
 

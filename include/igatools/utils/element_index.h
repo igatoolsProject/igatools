@@ -29,57 +29,31 @@ template <int dim>
 class ElementIndex
 {
 public:
+#ifdef SERIALIZATION
+  ElementIndex() = default;
+#else
   ElementIndex() = delete;
+#endif
 
-  ElementIndex(const int flat_id, const TensorIndex<dim> &tensor_id)
-    :
-    flat_id_(flat_id),
-    tensor_id_(tensor_id)
-  {}
+  ElementIndex(const int flat_id, const TensorIndex<dim> &tensor_id);
 
 
   const TensorIndex<dim> &
-  get_tensor_index() const
-  {
-    return tensor_id_;
-  }
+  get_tensor_index() const;
 
-  const int
-  get_flat_index() const
-  {
-    return flat_id_;
-  }
+  int get_flat_index() const;
 
 
-  bool operator==(const ElementIndex<dim> &elem) const
-  {
-    const bool same_tid = (this->tensor_id_ == elem.tensor_id_);
-    const bool same_fid = (this->flat_id_ == elem.flat_id_);
-    return (same_tid && same_fid);
-  }
+  bool operator==(const ElementIndex<dim> &elem) const;
 
-  bool operator!=(const ElementIndex<dim> &elem) const
-  {
-    const bool different_tid = (this->tensor_id_ != elem.tensor_id_);
-    const bool different_fid = (this->flat_id_ != elem.flat_id_);
-    return (different_tid || different_fid);
-  }
+  bool operator!=(const ElementIndex<dim> &elem) const;
 
-  bool operator<(const ElementIndex<dim> &elem) const
-  {
-    return (this->tensor_id_ < elem.tensor_id_);
-  }
+  bool operator<(const ElementIndex<dim> &elem) const;
 
-  bool operator>(const ElementIndex<dim> &elem) const
-  {
-    return (this->tensor_id_ > elem.tensor_id_);
-  }
+  bool operator>(const ElementIndex<dim> &elem) const;
 
-  void print_info(LogStream &out) const
-  {
-    out << "Flat ID: " << flat_id_ << "    Tensor ID: " << tensor_id_ << std::endl;
-//    tensor_id_.print_info(out);
-  }
+  void print_info(LogStream &out) const;
+
 private:
   int flat_id_ = 0;
   TensorIndex<dim> tensor_id_;
@@ -121,7 +95,6 @@ IGA_NAMESPACE_CLOSE
 
 
 
-
 #ifdef SERIALIZATION
 using ElementIndexAlias0 = iga::ElementIndex<0>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias0,cereal::specialization::member_serialize);
@@ -134,7 +107,6 @@ CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias3,cereal::specialization::me
 
 //#include <igatools/utils/element_index.serialization>
 #endif // SERIALIZATION
-
 
 
 #endif // __ELEMENT_INDEX_H_

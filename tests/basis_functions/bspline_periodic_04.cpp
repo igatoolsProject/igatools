@@ -154,9 +154,12 @@ void assemble_matrix(const int n_knots, const int deg)
     rhs->add_block(loc_dofs, loc_rhs);
   }
   matrix->FillComplete();
+
   auto g = grid_functions::ConstantGridFunction<dim,1>::const_create(grid, {0.});
 
   auto face_quad = QGauss<dim-1>::create(deg);
+
+#if 0
   const std::set<boundary_id> dir_id {0};
   std::map<Index, Real> values;
   // TODO (pauletti, Mar 9, 2015): parametrize with dimension
@@ -166,7 +169,23 @@ void assemble_matrix(const int n_knots, const int deg)
                           dir_id,
                           values);
 
-  apply_boundary_values(values, *matrix, *rhs, *solution);
+#endif
+
+  using SubGridElemMap = typename Grid<dim>::template SubGridMap<dim-1>;
+  using SubFunc = SubGridFunction<dim-1,dim,1>;
+  SafeSTLMap<int,std::shared_ptr<const SubFunc>> bndry_funcs;
+  for (int face_id = 0 ; face_id < UnitElement<dim>::n_faces ; ++face_id)
+  {
+    SubGridElemMap sub_grid_elem_map;
+    const auto sub_grid = grid->template get_sub_grid<dim-1>(face_id,sub_grid_elem_map);
+
+    bndry_funcs[face_id] = g->template get_sub_function<dim-1>(face_id,sub_grid_elem_map,sub_grid);
+  }
+
+  SafeSTLMap<Index, Real> bndry_values;
+  space_tools::project_boundary_values<dim,1>(bndry_funcs,*basis,face_quad,bndry_values);
+
+  apply_boundary_values(bndry_values, *matrix, *rhs, *solution);
 
   matrix->print_info(out);
 

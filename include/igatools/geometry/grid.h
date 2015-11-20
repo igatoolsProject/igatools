@@ -193,7 +193,8 @@ public:
 
 
   /** Type for the vector of knot vectors */
-  using KnotCoordinates = CartesianProductArray<Real, dim_>;
+//  using KnotCoordinates = CartesianProductArray<Real, dim_>;
+  using KnotCoordinates = SafeSTLArray<std::shared_ptr<SafeSTLVector<Real>>,dim_>;
 
   /** @name Constructors*/
   ///@{
@@ -228,24 +229,14 @@ protected:
    */
   explicit Grid(const BBox<dim_> &bbox,
                 const TensorSize<dim_> &n_knots);
-  /**
-   * Construct a cartesian grid where the knot coordinate in each
-   * direction is provided as CartesianProductArray object.
-   *
-   * The knot coordinate in each direction must be sorted and without
-   * repetition.
-   * @note In Debug mode, a check for this precondition (up to machine precision)
-   * is perform and if not satistified an exception is raised.
-   */
-  explicit
-  Grid(const KnotCoordinates &knots);
 
   /**
    * Construct a cartesian grid where the knot coordinate in each
    * direction is provided as SafeSTLArray of SafeSTLVector<Real>.
    *
-   * The knot coordinate in each direction must be sorted and without
+   * @pre The knot coordinate in each direction must be sorted and without
    * repetition.
+   *
    * @note In Debug mode, a check for this precondition (up to machine precision)
    * is perform and if not satisfied an exception is raised.
    */
@@ -255,10 +246,10 @@ protected:
 public:
   /**
    * Copy constructor.
-   * Perform a deep copy of the member variables except the
+   * Perform a deep or shallow copy of the member variables except the
    * signal_refine_ variable, that is not copied at all.
    */
-  Grid(const self_t &grid);
+  Grid(const self_t &grid,const CopyPolicy &copy_policy = CopyPolicy::deep);
 
   /**  Move constructor */
   Grid(self_t &&grid) = default;
@@ -314,33 +305,6 @@ public:
   static std::shared_ptr<const self_t>
   const_create(const BBox<dim_> &bbox, const Size n_knots);
 
-  /**
-   * Construct a (non-const) cartesian grid where the knot coordinate in each
-   * direction is provided as CartesianProductArray object.
-   *
-   * @pre The knot coordinate in each direction must be sorted and without
-   * repetition.
-   *
-   * @note In Debug mode, a check for this precondition
-   * (up to machine precision)
-   * is perform and if not satisfied an exception is raised.
-   */
-  static std::shared_ptr<self_t>
-  create(const KnotCoordinates &knots);
-
-  /**
-   * Construct a (const) cartesian grid where the knot coordinate in each
-   * direction is provided as CartesianProductArray object.
-   *
-   * @pre The knot coordinate in each direction must be sorted and without
-   * repetition.
-   *
-   * @note In Debug mode, a check for this precondition
-   * (up to machine precision)
-   * is perform and if not satisfied an exception is raised.
-   */
-  static std::shared_ptr<const self_t>
-  const_create(const KnotCoordinates &knots);
 
   /**
    * Construct a (non-const) cartesian grid where the knot coordinate in each
@@ -448,15 +412,15 @@ public:
   SafeSTLVector<Real> const &get_knot_coordinates(const int i) const;
 
   /**
-   * Returns the knot coordinates along all the directions (const version).
+   * Returns the knots along all the directions (const version).
    */
-  KnotCoordinates const &get_knot_coordinates() const;
-
+  KnotCoordinates const &get_knots() const;
+#if 0
   /**
    * Computes the interval lengths along each direction.
    */
-  CartesianProductArray<Real, dim_> get_element_lengths() const;
-
+  KnotCoordinates get_element_lengths() const;
+#endif
   /**
    * Returns the smallest <tt>dim_</tt>-dimensional bounding box enclosing the
    * domain represented by the Grid object.
@@ -581,6 +545,9 @@ public:
   /**
    * Comparison operator. Returns true if the knot coordinates of two grid
    * are equal.
+   *
+   * @note The knot coordinates are are compared with respect to the pointed SafeSTLVector,
+   *  and not w.r.t. the pointer itself.
    */
   bool operator==(const Grid<dim_> &grid) const;
 
@@ -827,6 +794,18 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+#ifdef SERIALIZATION
+
+using ArrayPtrVectorRealAlias0 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,0>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias0,cereal::specialization::member_serialize);
+using ArrayPtrVectorRealAlias1 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,1>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias1,cereal::specialization::member_serialize);
+using ArrayPtrVectorRealAlias2 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,2>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias2,cereal::specialization::member_serialize);
+using ArrayPtrVectorRealAlias3 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,3>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias3,cereal::specialization::member_serialize);
+
+#endif //SERIALIZATION
 //#include <igatools/geometry/grid.serial>
 
 #endif /* CARTESIAN_GRID_H_ */

@@ -370,10 +370,10 @@ add_field(const Function<dim,codim,range,rank> &func,
   //--------------------------------------------------------------------------
   // get the fields to write and assign them to the vtkUnstructuredGrid object
   using function_element::Flags;
-  using function_element::_Value;
+  using _D0 = function_element::template _D<0>;
 
   auto func_cache_handler = func.create_cache_handler();
-  func_cache_handler->template set_flags<dim>(Flags::value);
+  func_cache_handler->template set_flags<dim>(Flags::D0);
 
   auto f_elem = func.cbegin();
   const auto f_end  = func.cend();
@@ -396,7 +396,7 @@ add_field(const Function<dim,codim,range,rank> &func,
     {
       func_cache_handler->template fill_cache<dim>(*f_elem,0);
 
-      const auto &field_values = f_elem->template get_values<_Value,dim>(0);
+      const auto &field_values = f_elem->template get_values_from_cache<_D0,dim>(0);
 
       for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
         data[pos++] = field_values[iPt][0];
@@ -412,7 +412,7 @@ add_field(const Function<dim,codim,range,rank> &func,
     {
       func_cache_handler->template fill_cache<dim>(*f_elem,0);
 
-      const auto &field_values = f_elem->template get_values<_Value,dim>(0);
+      const auto &field_values = f_elem->template get_values_from_cache<_D0,dim>(0);
 
       for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
       {
@@ -435,7 +435,7 @@ add_field(const Function<dim,codim,range,rank> &func,
       Assert(true, ExcMessage(" fix next line "));
       func_cache_handler->template fill_cache<dim>(*f_elem,0);
 
-      const auto &field_values = f_elem->template get_values<_Value,dim>(0);
+      const auto &field_values = f_elem->template get_values_from_cache<_D0,dim>(0);
 
       for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
       {

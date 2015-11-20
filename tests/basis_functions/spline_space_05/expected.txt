@@ -3,8 +3,7 @@
 Knots without repetition:
    Number of intervals per direction: [ 3 ]
    Knot coordinates:
-      Size: [ 4 ]  Weights: [4]
-      Direction: 0
+      Direction 0: 
       [ 0 0.333333 0.666667 1.00000 ]
    
    Element properties:
@@ -60,8 +59,7 @@ Dimensionality Table:
 Knots without repetition:
    Number of intervals per direction: [ 3 ]
    Knot coordinates:
-      Size: [ 4 ]  Weights: [4]
-      Direction: 0
+      Direction 0: 
       [ 0 0.333333 0.666667 1.00000 ]
    
    Element properties:
@@ -124,10 +122,9 @@ Dimensionality Table:
 Knots without repetition:
    Number of intervals per direction: [ 3 3 ]
    Knot coordinates:
-      Size: [ 4 4 ]  Weights: [4,16]
-      Direction: 0
+      Direction 0: 
       [ 0 0.333333 0.666667 1.00000 ]
-      Direction: 1
+      Direction 1: 
       [ 0 0.333333 0.666667 1.00000 ]
    
    Element properties:
@@ -212,10 +209,9 @@ Dimensionality Table:
 Knots without repetition:
    Number of intervals per direction: [ 3 3 ]
    Knot coordinates:
-      Size: [ 4 4 ]  Weights: [4,16]
-      Direction: 0
+      Direction 0: 
       [ 0 0.333333 0.666667 1.00000 ]
-      Direction: 1
+      Direction 1: 
       [ 0 0.333333 0.666667 1.00000 ]
    
    Element properties:

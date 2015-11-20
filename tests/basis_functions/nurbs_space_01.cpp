@@ -44,28 +44,28 @@ void do_test()
   SafeSTLVector<Real> coord_y {5,6,7,8};
   SafeSTLVector<Real> coord_z {9, 10, 11};
 
-  CartesianProductArray<Real, dim> coord;
+  SafeSTLArray<SafeSTLVector<Real>, dim> coord;
   CartesianProductArray<Index , dim>  mult;
   TensorIndex<dim> degree;
 
   if (dim == 1)
   {
-    coord.copy_data_direction(0,coord_x);
+    coord[0] = coord_x;
     degree[0] = 3;
   }
   else if (dim == 2)
   {
-    coord.copy_data_direction(0,coord_x);
-    coord.copy_data_direction(1,coord_y);
+    coord[0] = coord_x;
+    coord[1] = coord_y;
 
     degree[0] = 3;
     degree[1] = 2;
   }
   else if (dim == 3)
   {
-    coord.copy_data_direction(0,coord_x);
-    coord.copy_data_direction(1,coord_y);
-    coord.copy_data_direction(2,coord_z);
+    coord[0] = coord_x;
+    coord[1] = coord_y;
+    coord[2] = coord_z;
 
     degree[0] = 3;
     degree[1] = 2;
