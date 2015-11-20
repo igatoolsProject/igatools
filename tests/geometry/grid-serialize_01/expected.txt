@@ -4,7 +4,6 @@ serialize_grid
 Grid<0> before serialize-deserialize.
    Number of intervals per direction: [ ]
    Knot coordinates:
-      Size: [ ]  Weights: []
    
    Element properties:
       IDs with property "active":
@@ -17,7 +16,6 @@ Grid<0> before serialize-deserialize.
 Grid<0> after serialize-deserialize.
    Number of intervals per direction: [ ]
    Knot coordinates:
-      Size: [ ]  Weights: []
    
    Element properties:
       IDs with property "active":
@@ -35,8 +33,7 @@ serialize_grid
 Grid<1> before serialize-deserialize.
    Number of intervals per direction: [ 3 ]
    Knot coordinates:
-      Size: [ 4 ]  Weights: [4]
-      Direction: 0
+      Direction 0: 
       [ 0 0.333333 0.666667 1.00000 ]
    
    Element properties:
@@ -56,8 +53,7 @@ Grid<1> before serialize-deserialize.
 Grid<1> after serialize-deserialize.
    Number of intervals per direction: [ 3 ]
    Knot coordinates:
-      Size: [ 4 ]  Weights: [4]
-      Direction: 0
+      Direction 0: 
       [ 0 0.333333 0.666667 1.00000 ]
    
    Element properties:
@@ -82,10 +78,9 @@ serialize_grid
 Grid<2> before serialize-deserialize.
    Number of intervals per direction: [ 3 3 ]
    Knot coordinates:
-      Size: [ 4 4 ]  Weights: [4,16]
-      Direction: 0
+      Direction 0: 
       [ 0 0.333333 0.666667 1.00000 ]
-      Direction: 1
+      Direction 1: 
       [ 0 0.333333 0.666667 1.00000 ]
    
    Element properties:
@@ -123,10 +118,9 @@ Grid<2> before serialize-deserialize.
 Grid<2> after serialize-deserialize.
    Number of intervals per direction: [ 3 3 ]
    Knot coordinates:
-      Size: [ 4 4 ]  Weights: [4,16]
-      Direction: 0
+      Direction 0: 
       [ 0 0.333333 0.666667 1.00000 ]
-      Direction: 1
+      Direction 1: 
       [ 0 0.333333 0.666667 1.00000 ]
    
    Element properties:
@@ -169,12 +163,11 @@ serialize_grid
 Grid<3> before serialize-deserialize.
    Number of intervals per direction: [ 3 3 3 ]
    Knot coordinates:
-      Size: [ 4 4 4 ]  Weights: [4,16,64]
-      Direction: 0
+      Direction 0: 
       [ 0 0.333333 0.666667 1.00000 ]
-      Direction: 1
+      Direction 1: 
       [ 0 0.333333 0.666667 1.00000 ]
-      Direction: 2
+      Direction 2: 
       [ 0 0.333333 0.666667 1.00000 ]
    
    Element properties:
@@ -266,12 +259,11 @@ Grid<3> before serialize-deserialize.
 Grid<3> after serialize-deserialize.
    Number of intervals per direction: [ 3 3 3 ]
    Knot coordinates:
-      Size: [ 4 4 4 ]  Weights: [4,16,64]
-      Direction: 0
+      Direction 0: 
       [ 0 0.333333 0.666667 1.00000 ]
-      Direction: 1
+      Direction 1: 
       [ 0 0.333333 0.666667 1.00000 ]
-      Direction: 2
+      Direction 2: 
       [ 0 0.333333 0.666667 1.00000 ]
    
    Element properties:

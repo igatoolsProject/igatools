@@ -185,7 +185,7 @@ vertex(const int i) const -> Point
   for (const auto j : UnitElement<dim>::active_directions)
   {
     index[j] += vertex_id.constant_values[j];
-    vertex[j] = grid_->knot_coordinates_[j][index[j]];
+    vertex[j] = grid_->get_knot_coordinates(j)[index[j]];
   }
 
   return vertex;

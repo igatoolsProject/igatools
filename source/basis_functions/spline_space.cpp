@@ -399,14 +399,14 @@ rebuild_after_insert_knots(
       periodic_);
 
 
-  const auto &old_unique_knots = old_grid.get_knot_coordinates();
+  const auto &old_unique_knots = old_grid.get_knots();
 
 #ifndef NDEBUG
   //---------------------------------------------------------------------------------------
   // check that the new knots are internal to the grid --- begin
   for (const auto dir : UnitElement<dim>::active_directions)
   {
-    const auto &knots_dir = old_unique_knots[dir];
+    const auto &knots_dir = *old_unique_knots[dir];
 
     for (const auto &knt_value : knots_to_insert[dir])
     {
@@ -431,7 +431,7 @@ rebuild_after_insert_knots(
 
     for (const auto dir : UnitElement<dim>::active_directions)
     {
-      const auto &old_unique_knots_dir = old_unique_knots[dir];
+      const auto &old_unique_knots_dir = *old_unique_knots[dir];
       const auto &interior_mult_comp_dir = interior_mult_comp.get_data_direction(dir);
 
       const int n_internal_knots_old = old_unique_knots_dir.size() - 2;

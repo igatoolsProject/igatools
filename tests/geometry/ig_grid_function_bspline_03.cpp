@@ -48,13 +48,11 @@ void ig_grid_function_bspline(const int deg = 2)
 
   //----------------------------------------------------------------------------------------------
   int n_knots = 2;
-  CartesianProductArray<Real , dim> coord ;
+  SafeSTLArray<SafeSTLVector<Real>, dim> coord ;
   for (int i = 0; i < dim; ++i)
   {
-    SafeSTLVector<Real> tmp_coord;
     for (int j = 0; j < n_knots; ++j)
-      tmp_coord.push_back(j);
-    coord.copy_data_direction(i,tmp_coord);
+      coord[i].push_back(j);
   }
 
   auto grid = Grid<dim>::create(coord);

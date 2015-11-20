@@ -26,7 +26,7 @@ data = Instantiation(include_files)
 
 grids = ['Grid<%d>' % (dim) for dim in inst.all_domain_dims]
 for grid in grids:
-    map = 'std::map<typename %s::IndexType,typename %s::IndexType>' %(grid,grid)
+    map = 'SafeSTLMap<typename %s::IndexType,typename %s::IndexType>' %(grid,grid)
     f.write('template std::shared_ptr<%s> grid_tools::build_grid_union('
             'const %s &,const %s &,%s &,%s &); \n' % (grid,grid,grid, map,map))
     

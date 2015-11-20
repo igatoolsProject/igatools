@@ -38,7 +38,7 @@ test(const int deg = 1)
   typename SplineSpace::DegreeTable degt {{deg}};
 
 
-  CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
+  SafeSTLArray<SafeSTLVector<Real>,dim> knots({{0,1,2,3,4}});
   auto grid = Grid<dim>::const_create(knots);
 
   typename SplineSpace::PeriodicityTable per_t(SafeSTLArray<bool,dim>(true));

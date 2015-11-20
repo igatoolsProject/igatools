@@ -2,10 +2,9 @@ Spline Space:
    Knots without repetition:
       Number of intervals per direction: [ 5 5 ]
       Knot coordinates:
-         Size: [ 6 6 ]  Weights: [6,36]
-         Direction: 0
+         Direction 0: 
          [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
-         Direction: 1
+         Direction 1: 
          [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
       
       Element properties:
@@ -635,10 +634,9 @@ Spline Space:
    Knots without repetition:
       Number of intervals per direction: [ 6 6 ]
       Knot coordinates:
-         Size: [ 7 7 ]  Weights: [7,49]
-         Direction: 0
+         Direction 0: 
          [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
-         Direction: 1
+         Direction 1: 
          [ 0 0.166667 0.333333 0.500000 0.666667 0.833333 1.00000 ]
       
       Element properties:

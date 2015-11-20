@@ -51,7 +51,7 @@ filled_progression(const BBox<dim_> &end_points, const TensorSize<dim_> &n_knots
 //  SafeSTLVector<Real> knots_1d;
   for (const int i : UnitElement<dim_>::active_directions)
   {
-	auto &knots_1d = knot_coordinates[i];
+    auto &knots_1d = knot_coordinates[i];
     const Size n_i = n_knots[i];
     Assert(n_i > 1, ExcLowerRange(n_i,2));
 
@@ -183,15 +183,21 @@ const_create(const BBox<dim_> &bbox,
 
 template<int dim_>
 Grid<dim_>::
-Grid(const KnotCoordinates &knot_coordinates)
+Grid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates)
   :
-  knot_coordinates_(knot_coordinates),
+//  knot_coordinates_(knot_coordinates),
   boundary_id_(0),
   object_id_(UniqueIdGenerator::get_unique_id())
 {
   TensorSize<dim_> t_size;
   for (int i = 0 ; i < dim ; ++i)
-	t_size[i]= knot_coordinates_[i].size()-1;
+  {
+    Assert(std::is_sorted(knot_coordinates[i].begin(),knot_coordinates[i].end()),
+           ExcMessage("Knots vector along direction " + std::to_string(i) + "is not sorted."));
+    t_size[i]= knot_coordinates[i].size()-1;
+    knot_coordinates_[i] =
+      std::make_shared<SafeSTLVector<Real>>(knot_coordinates[i]);
+  }
 
   elems_size_ = TensorSizedContainer<dim_>(t_size);
 
@@ -235,15 +241,15 @@ Grid(const KnotCoordinates &knot_coordinates)
 template<int dim_>
 auto
 Grid<dim_>::
-create(const KnotCoordinates &knot_coordinates) -> shared_ptr<self_t>
+create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots) -> shared_ptr<self_t>
 {
-  return shared_ptr<self_t>(new self_t(knot_coordinates));
+  return shared_ptr<self_t>(new self_t(knots));
 }
 
 template<int dim_>
 auto
 Grid<dim_>::
-const_create(const KnotCoordinates &knots) -> shared_ptr<const self_t>
+const_create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots) -> shared_ptr<const self_t>
 {
   return create(knots);
 }
@@ -283,7 +289,7 @@ auto
 Grid<dim_>::
 create(const self_t &grid) -> std::shared_ptr<self_t>
 {
-  return shared_ptr<self_t>(new self_t(grid));
+  return shared_ptr<self_t>(new self_t(grid,CopyPolicy::deep));
 }
 
 template<int dim_>
@@ -297,7 +303,7 @@ const_create(const self_t &grid) -> shared_ptr<const self_t>
 
 template<int dim_>
 Grid<dim_>::
-Grid(const self_t &grid)
+Grid(const self_t &grid,const CopyPolicy &copy_policy)
   :
 //  TensorSizedContainer<dim_>(grid),
   knot_coordinates_(grid.knot_coordinates_),
@@ -305,7 +311,20 @@ Grid(const self_t &grid)
   elem_properties_(grid.elem_properties_),
   object_id_(UniqueIdGenerator::get_unique_id()),
   elems_size_(grid.elems_size_)
-{}
+{
+  if (copy_policy == CopyPolicy::shallow)
+  {
+    knot_coordinates_ = grid.knot_coordinates_;
+  }
+  else
+  {
+    for (int i = 0 ; i < dim_ ; ++i)
+    {
+      knot_coordinates_[i] =
+        std::make_shared<SafeSTLVector<Real>>(*grid.knot_coordinates_[i]);
+    }
+  }
+}
 
 
 
@@ -317,8 +336,8 @@ operator==(const Grid<dim_> &grid) const
   bool same_knots_coordinates = true;
   for (const auto i : UnitElement<dim_>::active_directions)
   {
-    const auto &knots_a = this->knot_coordinates_[i];
-    const auto &knots_b =  grid.knot_coordinates_[i];
+    const auto &knots_a = this->get_knot_coordinates(i);
+    const auto &knots_b =  grid.get_knot_coordinates(i);
 
     same_knots_coordinates = same_knots_coordinates && (knots_a == knots_b);
   }
@@ -339,7 +358,7 @@ template<int dim_>
 SafeSTLVector< Real > const &
 Grid<dim_>::get_knot_coordinates(const int i) const
 {
-  return knot_coordinates_[i];
+  return *knot_coordinates_[i];
 }
 
 
@@ -347,18 +366,18 @@ Grid<dim_>::get_knot_coordinates(const int i) const
 template<int dim_>
 auto
 Grid<dim_>::
-get_knot_coordinates() const -> KnotCoordinates const &
+get_knots() const -> KnotCoordinates const &
 {
   return knot_coordinates_;
 }
 
 
-
+#if 0
 template<int dim_>
 auto
 Grid<dim_>::get_element_lengths() const -> KnotCoordinates
 {
-	Assert(false,ExcNotImplemented());
+  Assert(false,ExcNotImplemented());
 #if 0
   auto const &size = get_num_intervals();
   KnotCoordinates length(size);
@@ -375,7 +394,7 @@ Grid<dim_>::get_element_lengths() const -> KnotCoordinates
 
   return knot_coordinates_;
 }
-
+#endif
 
 
 template<int dim_>
@@ -581,7 +600,7 @@ get_num_knots_dim() const -> TensorSize<dim_>
 {
   TensorSize<dim_> n_knots;
   for (int i = 0 ; i < dim ; ++i)
-	n_knots[i]= knot_coordinates_[i].size();
+    n_knots[i]= knot_coordinates_[i]->size();
 
   return n_knots;
 }
@@ -681,7 +700,7 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
 {
   //----------------------------------------------------------------------------------
   // make a copy of the grid before the refinement
-  grid_pre_refinement_ = make_shared<self_t>(*this);
+  grid_pre_refinement_ = self_t::create(*this);
   //----------------------------------------------------------------------------------
 
 
@@ -691,25 +710,23 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
   {
     std::set<Real> new_coords_no_duplicates(knots_to_insert[dir].begin(),knots_to_insert[dir].end());
 
-    const auto &old_coords = knot_coordinates_[dir];
+    const auto &old_coords = grid_pre_refinement_->get_knot_coordinates(dir);
     new_coords_no_duplicates.insert(old_coords.begin(),old_coords.end());
 
-    knot_coordinates_[dir] =
-      SafeSTLVector<Real>(new_coords_no_duplicates.begin(),
-                          new_coords_no_duplicates.end());
+    *knot_coordinates_[dir] = SafeSTLVector<Real>(new_coords_no_duplicates.begin(),
+                                                  new_coords_no_duplicates.end());
   }
   TensorSize<dim_> t_size;
   for (int i = 0 ; i < dim ; ++i)
-	t_size[i]= knot_coordinates_[i].size()-1;
+    t_size[i]= knot_coordinates_[i]->size()-1;
 
   elems_size_ = TensorSizedContainer<dim_>(t_size);
   // inserts the knots into the current grid --- end
   //----------------------------------------------------------------------------------
 
-//Assert(false,ExcNotImplemented());
+
   //----------------------------------------------------------------------------------
   // transferring the element properties from the old grid to the new grid --- begin
-
   auto &active_elements = elem_properties_[ElementProperties::active];
   active_elements.clear();
   if (dim_ > 0)
@@ -826,7 +843,13 @@ print_info(LogStream &out) const
   out << "Number of intervals per direction: " << elems_size_.tensor_size() << endl;
 
   out.begin_item("Knot coordinates:");
-  knot_coordinates_.print_info(out);
+  for (int i = 0 ; i < dim_ ; ++i)
+  {
+    out.begin_item("Direction " + std::to_string(i) + ": ");
+    knot_coordinates_[i]->print_info(out);
+    out.end_item();
+  }
+//  knot_coordinates_.print_info(out);
   out.end_item();
 
 
@@ -855,8 +878,8 @@ get_sub_grid(const int s_id, SubGridMap<sdim> &elem_map) const
   int i = 0;
   for (const int active_dir : active_dirs)
   {
-	sub_knots[i] = knot_coordinates_[active_dir];
-	++i;
+    sub_knots[i] = *knot_coordinates_[active_dir];
+    ++i;
   }
   auto sub_grid = Grid<sdim>::create(sub_knots);
 
@@ -912,8 +935,8 @@ get_bounding_box() const -> BBox<dim_>
 
   for (const auto i : UnitElement<dim_>::active_directions)
   {
-    bounding_box[i][0] = knot_coordinates_[i].front();
-    bounding_box[i][1] = knot_coordinates_[i].back();
+    bounding_box[i][0] = knot_coordinates_[i]->front();
+    bounding_box[i][1] = knot_coordinates_[i]->back();
   }
 
   return bounding_box;
@@ -928,7 +951,7 @@ test_if_point_on_internal_knots_line(const Points<dim_> &point) const
   bool res = false;
   for (const auto i : UnitElement<dim_>::active_directions)
   {
-    const auto &knots = knot_coordinates_[i];
+    const auto &knots = *knot_coordinates_[i];
     if (std::binary_search(knots.begin()+1,knots.end()-1,point[i]))
     {
       res = true;
@@ -957,7 +980,7 @@ find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const
     TensorIndex<dim_> elem_t_id;
     for (const auto i : UnitElement<dim_>::active_directions)
     {
-      const auto &knots = knot_coordinates_[i];
+      const auto &knots = *knot_coordinates_[i];
 
       Assert(point[i] >= knots.front() && point[i] <= knots.back(),
       ExcMessage("The point " + std::to_string(pt) +

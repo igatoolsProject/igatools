@@ -104,7 +104,7 @@ public:
   static const SafeSTLArray<Size, n_components> components;
 
 public:
-  using KnotCoordinates = typename GridType::KnotCoordinates;
+  using KnotCoordinates = SafeSTLArray<SafeSTLVector<Real>,dim>;
   using BoundaryKnots = SafeSTLArray<CartesianProductArray<Real,2>, dim>;
   using Degrees  = TensorIndex<dim>;
   using Multiplicity = CartesianProductArray<Size, dim>;

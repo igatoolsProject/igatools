@@ -52,16 +52,16 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   const auto &degree_table = sp_space.get_degree_table();
   const auto rep_knots = sp_space.compute_knots_with_repetition(end_b_);
 
-  const auto &knots_coord = grid.get_knot_coordinates();
+  const auto &knots_coord = grid.get_knots();
   for (auto i : end_interval_.get_active_components_id())
   {
-	const auto &rep_knots_i = rep_knots[i];
+    const auto &rep_knots_i = rep_knots[i];
 
     for (int dir=0; dir<dim; ++dir)
     {
       const auto p = degree_table[i][dir];
 
-      const auto &knots_coord_dir = knots_coord[dir];
+      const auto &knots_coord_dir = *knots_coord[dir];
 
       const auto x1 = knots_coord_dir[1];
       const auto a = knots_coord_dir[0];

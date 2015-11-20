@@ -56,14 +56,14 @@ private:
   EnableIf<has_print_info<_T>(0), void>
   t_print_info(LogStream &out, const _T &data) const
   {
-      data.print_info(out);
+    data.print_info(out);
   }
 
   template <class _T>
   EnableIf<!has_print_info<_T>(0), void>
   t_print_info(LogStream &out, const _T &data) const
   {
-      out << data;
+    out << data;
   }
 
 
@@ -75,14 +75,16 @@ public:
    */
   void print_info(LogStream &out) const
   {
-	for (auto &entry : *this)
-	{
-	      out << "{";
-		  t_print_info<Key>(out,entry.first);
-	      out << ", ";
-		  t_print_info<T>(out,entry.second);
-	      out << "}" << std::endl;
-	}
+    for (auto &entry : *this)
+    {
+      out.begin_item("Key:");
+      t_print_info<Key>(out,entry.first);
+      out.end_item();
+
+      out.begin_item("Value:");
+      t_print_info<T>(out,entry.second);
+      out.end_item();
+    }
   }
   ///@}
 

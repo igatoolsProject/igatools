@@ -82,7 +82,7 @@ get_max_num_fine_intervals_in_coarse_interval(const Grid<dim> &grid_fine,
  * @relates Grid
  */
 template<int dim>
-using InterGridMap = std::map<typename Grid<dim>::IndexType,typename Grid<dim>::IndexType>;
+using InterGridMap = SafeSTLMap<typename Grid<dim>::IndexType,typename Grid<dim>::IndexType>;
 
 
 /**

@@ -8,8 +8,7 @@ Original IgGridFunction:
             Knots without repetition:
                Number of intervals per direction: [ 1 ]
                Knot coordinates:
-                  Size: [ 2 ]  Weights: [2]
-                  Direction: 0
+                  Direction 0: 
                   [ 0 1.00000 ]
                
                Element properties:
@@ -117,8 +116,7 @@ IgGridFunction after serialize-deserialize:
             Knots without repetition:
                Number of intervals per direction: [ 1 ]
                Knot coordinates:
-                  Size: [ 2 ]  Weights: [2]
-                  Direction: 0
+                  Direction 0: 
                   [ 0 1.00000 ]
                
                Element properties:
@@ -247,10 +245,9 @@ Original IgGridFunction:
             Knots without repetition:
                Number of intervals per direction: [ 1 1 ]
                Knot coordinates:
-                  Size: [ 2 2 ]  Weights: [2,4]
-                  Direction: 0
+                  Direction 0: 
                   [ 0 1.00000 ]
-                  Direction: 1
+                  Direction 1: 
                   [ 0 1.00000 ]
                
                Element properties:
@@ -388,10 +385,9 @@ IgGridFunction after serialize-deserialize:
             Knots without repetition:
                Number of intervals per direction: [ 1 1 ]
                Knot coordinates:
-                  Size: [ 2 2 ]  Weights: [2,4]
-                  Direction: 0
+                  Direction 0: 
                   [ 0 1.00000 ]
-                  Direction: 1
+                  Direction 1: 
                   [ 0 1.00000 ]
                
                Element properties:
@@ -550,12 +546,11 @@ Original IgGridFunction:
             Knots without repetition:
                Number of intervals per direction: [ 1 1 1 ]
                Knot coordinates:
-                  Size: [ 2 2 2 ]  Weights: [2,4,8]
-                  Direction: 0
+                  Direction 0: 
                   [ 0 1.00000 ]
-                  Direction: 1
+                  Direction 1: 
                   [ 0 1.00000 ]
-                  Direction: 2
+                  Direction 2: 
                   [ 0 1.00000 ]
                
                Element properties:
@@ -741,12 +736,11 @@ IgGridFunction after serialize-deserialize:
             Knots without repetition:
                Number of intervals per direction: [ 1 1 1 ]
                Knot coordinates:
-                  Size: [ 2 2 2 ]  Weights: [2,4,8]
-                  Direction: 0
+                  Direction 0: 
                   [ 0 1.00000 ]
-                  Direction: 1
+                  Direction 1: 
                   [ 0 1.00000 ]
-                  Direction: 2
+                  Direction 2: 
                   [ 0 1.00000 ]
                
                Element properties:

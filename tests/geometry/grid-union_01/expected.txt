@@ -50,7 +50,7 @@ map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: []
 Grid 1
 Number of intervals per direction: [ 2 ]
 Knot coordinates:
-   Entry id: 0
+   Direction 0: 
    [ 0 0.500000 1.00000 ]
 
 Element properties:
@@ -69,7 +69,7 @@ Element properties:
 Grid 2
 Number of intervals per direction: [ 3 ]
 Knot coordinates:
-   Entry id: 0
+   Direction 0: 
    [ 0 0.333333 0.666667 1.00000 ]
 
 Element properties:
@@ -91,7 +91,7 @@ Element properties:
 Grid union
 Number of intervals per direction: [ 4 ]
 Knot coordinates:
-   Entry id: 0
+   Direction 0: 
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
 Element properties:
@@ -121,9 +121,9 @@ map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [0] Flat ID: 1    
 Grid 1
 Number of intervals per direction: [ 2 2 ]
 Knot coordinates:
-   Entry id: 0
+   Direction 0: 
    [ 0 0.500000 1.00000 ]
-   Entry id: 1
+   Direction 1: 
    [ 0 0.500000 1.00000 ]
 
 Element properties:
@@ -148,9 +148,9 @@ Element properties:
 Grid 2
 Number of intervals per direction: [ 3 3 ]
 Knot coordinates:
-   Entry id: 0
+   Direction 0: 
    [ 0 0.333333 0.666667 1.00000 ]
-   Entry id: 1
+   Direction 1: 
    [ 0 0.333333 0.666667 1.00000 ]
 
 Element properties:
@@ -190,9 +190,9 @@ Element properties:
 Grid union
 Number of intervals per direction: [ 4 4 ]
 Knot coordinates:
-   Entry id: 0
+   Direction 0: 
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
-   Entry id: 1
+   Direction 1: 
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
 Element properties:
@@ -258,11 +258,11 @@ map_elem_grid_union_to_elem_grid_2 = Flat ID: 0    Tensor ID: [0,0] Flat ID: 3  
 Grid 1
 Number of intervals per direction: [ 2 2 2 ]
 Knot coordinates:
-   Entry id: 0
+   Direction 0: 
    [ 0 0.500000 1.00000 ]
-   Entry id: 1
+   Direction 1: 
    [ 0 0.500000 1.00000 ]
-   Entry id: 2
+   Direction 2: 
    [ 0 0.500000 1.00000 ]
 
 Element properties:
@@ -299,11 +299,11 @@ Element properties:
 Grid 2
 Number of intervals per direction: [ 3 3 3 ]
 Knot coordinates:
-   Entry id: 0
+   Direction 0: 
    [ 0 0.333333 0.666667 1.00000 ]
-   Entry id: 1
+   Direction 1: 
    [ 0 0.333333 0.666667 1.00000 ]
-   Entry id: 2
+   Direction 2: 
    [ 0 0.333333 0.666667 1.00000 ]
 
 Element properties:
@@ -397,11 +397,11 @@ Element properties:
 Grid union
 Number of intervals per direction: [ 4 4 4 ]
 Knot coordinates:
-   Entry id: 0
+   Direction 0: 
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
-   Entry id: 1
+   Direction 1: 
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
-   Entry id: 2
+   Direction 2: 
    [ 0 0.333333 0.500000 0.666667 1.00000 ]
 
 Element properties:
