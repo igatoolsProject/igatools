@@ -195,7 +195,7 @@ public:
    * Prints the information of the class in the stream @p using the
    * indentation @p indent
    */
-  void PrintSelf(ostream &os, vtkIndent indent);
+  void PrintSelf(ostream &os, vtkIndent indent) override;
 
 
   /**
