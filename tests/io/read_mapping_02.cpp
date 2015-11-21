@@ -29,52 +29,57 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/functions/ig_function.h>
 #include <igatools/basis_functions/nurbs_element.h>
 #include <igatools/io/reader.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
 
 template <int dim>
 void run_test(std::string &file_name)
 {
   OUTSTART
 
+  out.begin_item("run_test<" + std::to_string(dim) + ">(" + file_name + ")");
+
   // Reading input file.
 //    using Basis = NURBS<dim,dim,1>;
 //    auto map = dynamic_pointer_cast<IgFunction<RefSpace> >(get_mapping_from_file<dim,0>(file_name));
   auto map = get_mapping_from_file<dim,0>(file_name);
-  out.begin_item("IgFunction infos:");
+  out.begin_item("Domain infos:");
   map->print_info(out);
   out << endl;
 
-  QTrapez<dim> quad;
-  const auto quad_pts = quad.get_points();
+  auto quad = QTrapez<dim>::create();
+  const auto quad_pts = quad->get_points();
   out.begin_item("Quad pts.:");
   quad_pts.print_info(out);
   out.end_item();
   out << endl;
 
 
-  const auto ref_space = dynamic_pointer_cast<IgFunction<dim,0,dim,1> >(map)->get_ig_space();
+  using IgGridFunc = const IgGridFunction<dim,dim>;
+  const auto basis = dynamic_pointer_cast<IgGridFunc>(map->get_grid_function())->get_basis();
 
   //------------------------------------------------------
   out.begin_item("Loop using the NURBSElement");
-  auto sp_elem_handler = ref_space->create_cache_handler();
-  sp_elem_handler->reset(ValueFlags::value,quad);
+  auto sp_elem_handler = basis->create_cache_handler();
+  sp_elem_handler->set_element_flags(space_element::Flags::value);
 
-  auto sp_elem     = ref_space->begin();
-  auto sp_elem_end = ref_space->end();
+  auto sp_elem     = basis->begin();
+  auto sp_elem_end = basis->end();
 
-  sp_elem_handler->init_element_cache(sp_elem);
+  sp_elem_handler->init_element_cache(sp_elem,quad);
   for (; sp_elem != sp_elem_end; ++sp_elem)
   {
     sp_elem_handler->fill_element_cache(sp_elem);
 
-    out << "Element id: " << sp_elem->get_flat_index() << endl;
+    out << "Element id: " << sp_elem->get_index().get_flat_index() << endl;
 
-    const auto &values = sp_elem->template get_basis_data<_Value,dim>(0,DofProperties::active);
-    out << "Values = ";
+    const auto &values = sp_elem->template get_basis_data<space_element::_Value,dim>(0,DofProperties::active);
+    out.begin_item("Values = ");
     values.print_info(out);
-    out<< endl;
+    out.end_item();
   }
   out.end_item();
   out << endl;
@@ -82,28 +87,30 @@ void run_test(std::string &file_name)
 
 
   //------------------------------------------------------
-  out.begin_item("Loop using the FunctionElement");
-  map->reset(ValueFlags::point, quad);
+  out.begin_item("Loop using the DomainElement");
+  auto map_handler = map->create_cache_handler();
+  map_handler->set_element_flags(domain_element::Flags::point);
+
 
   auto map_elem     = map->begin();
   auto map_elem_end = map->end();
 
-  const auto elem_topology = Topology<dim>();
-  map->init_cache(*map_elem,elem_topology);
+  map_handler->init_cache(*map_elem,quad);
 
   for (; map_elem != map_elem_end; ++map_elem)
   {
-    map->fill_cache(*map_elem,elem_topology,0);
-    out << "Element id: " << map_elem->get_flat_index() << endl;
+	  map_handler->fill_element_cache(*map_elem);
+    out << "Element id: " << map_elem->get_index().get_flat_index() << endl;
 
-    const auto &points = map_elem->get_points();
+    const auto &points = map_elem->get_element_points();
     int qp = 0;
     for (auto p : points)
       out << "    Point " << ++qp << ": " << p << endl;
   }
   out.end_item();
-  out << endl;
+
   //------------------------------------------------------
+  out.end_item();
   OUTEND
 }
 
