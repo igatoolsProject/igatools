@@ -93,6 +93,7 @@ init_cxx_flags()
 find_sed()
 find_python()
 find_doxygen()
+find_xercesc()
 #
 #-------------------------------------------------------------------------------
 
@@ -171,6 +172,17 @@ else(PARAVIEW_PLUGIN)
     message("-- Paraview plugin building (EXPERIMENTAL) is not enabled.")
 endif(PARAVIEW_PLUGIN)
 
+option(XML_IO "Enable XML I/O support" OFF)
+if (XML_IO)
+    if (XERCESC_FOUND)
+      message("-- XML I/O support (EXPERIMENTAL) is enabled.")
+    else(XERCESC_FOUND)
+      message(FATAL_ERROR "XML I/O support (EXPERIMENTAL) is enabled but Xerces-C is NOT FOUND.")
+    endif(XERCESC_FOUND)
+else(XML_IO)
+    message("-- XML I/O support (EXPERIMENTAL) is not enabled.")    
+endif(XML_IO)
+
 
 option(use_other_templates "Enable a mechanism to use uninstantiated templates" ON)
 option(submit_test "Allow test submition" OFF)
@@ -243,6 +255,7 @@ target_link_libraries(${lib_name}
   ${Trilinos_TPL_LIBRARIES} 
   ${Trilinos_LIBRARIES} 
   ${Petsc_LIBRARIES} 
+  ${XERCESC_LIBRARIES}
   ${Boost_LIBRARIES})
 set_property(TARGET ${lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})
 
