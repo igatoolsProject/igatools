@@ -64,7 +64,7 @@ protected:
   SpaceElementHandler() = delete;
 
 
-  SpaceElementHandler(std::shared_ptr<const Sp> space);
+  SpaceElementHandler(const std::shared_ptr<const Sp> &space);
 
   /**
    * Copy constructor. Not allowed to be used.

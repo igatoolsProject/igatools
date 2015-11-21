@@ -25,7 +25,7 @@
 #include <igatools/geometry/grid.h>
 
 IGA_NAMESPACE_OPEN
-
+#if 0
 template <int, int> class IdentityFunctionElementHandler;
 
 /**
@@ -112,7 +112,7 @@ private:
 #endif // SERIALIZATION
 
 };
-
+#endif
 IGA_NAMESPACE_CLOSE
 
 #endif

@@ -240,7 +240,7 @@ public:
   /**
    * \brief Returns the index of the element.
    */
-  IndexType get_index() const;
+  const IndexType & get_index() const;
 
 
   /**

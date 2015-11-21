@@ -26,7 +26,7 @@
 #include <igatools/geometry/grid_handler.h>
 
 IGA_NAMESPACE_OPEN
-
+#if 0
 /**
  * create a rectangular "identity" tensor
  */
@@ -214,6 +214,7 @@ private:
 #endif
 };
 
+#endif
 IGA_NAMESPACE_CLOSE
 
 #endif

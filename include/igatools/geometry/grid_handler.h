@@ -59,15 +59,6 @@ protected:
   using ConstQuad = const Quadrature<k>;
   using eval_pts_variant = SubElemPtrVariants<ConstQuad,dim>;
 
-public:
-#if 0
-  /**
-   * @name Creators.
-   */
-  ///@{
-  static std::unique_ptr<self_t> create(std::shared_ptr<GridType> grid);
-  ///@}
-#endif
 
   /**
    * @name Constructors
@@ -81,7 +72,7 @@ public:
   /**
    * Constructor.
    */
-  GridHandler(std::shared_ptr<GridType> grid);
+  GridHandler(const std::shared_ptr<GridType> &grid);
 
   /**
    * Copy constructor.

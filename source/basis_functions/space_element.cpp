@@ -69,7 +69,7 @@ print_cache_info(LogStream &out) const
 template<int dim_,int codim_,int range_,int rank_>
 auto
 SpaceElement<dim_,codim_,range_,rank_>::
-get_index() const -> IndexType
+get_index() const -> const IndexType &
 {
   return this->get_grid_element().get_index();
 }

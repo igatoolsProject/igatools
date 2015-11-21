@@ -27,24 +27,12 @@ IGA_NAMESPACE_OPEN
 
 template <int dim>
 GridHandler<dim>::
-GridHandler(shared_ptr<GridType> grid)
+GridHandler(const shared_ptr<GridType> &grid)
   :
   grid_(grid),
   flags_(Flags::none)
 {}
 
-
-#if 0
-template <int dim>
-std::unique_ptr<GridHandler<dim> >
-GridHandler<dim>::
-create(std::shared_ptr<GridType> grid)
-{
-  auto elem_handler = std::unique_shared<self_t>(grid);
-  Assert(elem_handler != nullptr,ExcNullPtr());
-  return elem_handler;
-}
-#endif
 
 template <int dim>
 template<int sdim>
