@@ -444,23 +444,6 @@ get_degree_table() const -> const DegreeTable &
 }
 #endif
 
-template <int dim_, int range_, int rank_>
-void
-NURBS<dim_, range_, rank_>::
-get_element_dofs(
-  const IndexType &element_id,
-  SafeSTLVector<Index> &dofs_global,
-  SafeSTLVector<Index> &dofs_local_to_patch,
-  SafeSTLVector<Index> &dofs_local_to_elem,
-  const std::string &dofs_property) const
-{
-  this->bsp_basis_->get_element_dofs(
-    element_id,
-    dofs_global,
-    dofs_local_to_patch,
-    dofs_local_to_elem,
-    dofs_property);
-}
 
 
 

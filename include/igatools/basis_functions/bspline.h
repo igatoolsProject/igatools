@@ -198,52 +198,10 @@ protected:
   /** @name Constructors */
   ///@{
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. It does nothing but it is needed for the serialization
    */
   BSpline() = default;
-#if 0
-  /**
-   * Constructs a maximum regularity BSpline space
-   * over a (const or non-const) Grid
-   * @p grid for the given @p degree in all directions and homogeneous
-   * in all components.
-   */
-  explicit BSpline(const int degree,
-                   const SharedPtrConstnessHandler<GridType> &grid,
-                   const InteriorReg interior_reg,
-                   const bool periodic,
-                   const BasisEndBehaviour end_b);
 
-
-  /**
-   * Constructs a maximum regularity BSpline space over
-   * over a (const or non-const) Grid
-   * @p grid for the given @p degree[i] in the i-th direction and homogeneous
-   * in all components.
-   */
-  explicit BSpline(const Degrees &degree,
-                   const SharedPtrConstnessHandler<GridType> &grid,
-                   const InteriorReg interior_reg,
-                   const Periodicity &periodic,
-                   const EndBehaviour &end_b);
-
-
-  /**
-   * Constructs a BSpline space over
-   * over a (const or non-const) Grid
-   * @p grid with the given multiplicity vector @p mult_vectors
-   * for each component
-   * and the given @p degree for each direction and for each
-   * component.
-   */
-  explicit BSpline(const DegreeTable &deg,
-                   const SharedPtrConstnessHandler<GridType> &grid,
-                   const MultiplicityTable &interior_mult,
-                   const PeriodicityTable &periodic,
-                   const EndBehaviourTable &end_b);
-#endif
 
 
   explicit BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
@@ -265,14 +223,6 @@ protected:
 
 public:
   virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final;
-
-
-  virtual void get_element_dofs(
-    const IndexType &element_id,
-    SafeSTLVector<Index> &dofs_global,
-    SafeSTLVector<Index> &dofs_local_to_patch,
-    SafeSTLVector<Index> &dofs_local_to_elem,
-    const std::string &dofs_property = DofProperties::active) const override final;
 
 
 

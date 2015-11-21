@@ -71,14 +71,6 @@ public:
   /** @name Constructors */
   ///@{
 public:
-#if 0
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-  BSplineElement() = default;
-#endif
 
   /**
    * Default constructor.

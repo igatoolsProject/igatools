@@ -85,7 +85,7 @@ get_local_to_global(const std::string &dofs_property) const
   SafeSTLVector<Index> dofs_global;
   SafeSTLVector<Index> dofs_loc_to_patch;
   SafeSTLVector<Index> dofs_loc_to_elem;
-  this->space_basis_->get_element_dofs(
+  this->space_basis_->get_spline_space()->get_element_dofs(
     this->get_index(),
     dofs_global,
     dofs_loc_to_patch,
@@ -103,7 +103,7 @@ get_local_to_patch(const std::string &dofs_property) const
   SafeSTLVector<Index> dofs_global;
   SafeSTLVector<Index> dofs_loc_to_patch;
   SafeSTLVector<Index> dofs_loc_to_elem;
-  this->space_basis_->get_element_dofs(
+  this->space_basis_->get_spline_space()->get_element_dofs(
     this->get_index(),
     dofs_global,
     dofs_loc_to_patch,
@@ -121,7 +121,7 @@ get_local_dofs(const std::string &dofs_property) const
   SafeSTLVector<Index> dofs_global;
   SafeSTLVector<Index> dofs_loc_to_patch;
   SafeSTLVector<Index> dofs_loc_to_elem;
-  this->space_basis_->get_element_dofs(
+  this->space_basis_->get_spline_space()->get_element_dofs(
     this->get_index(),
     dofs_global,
     dofs_loc_to_patch,

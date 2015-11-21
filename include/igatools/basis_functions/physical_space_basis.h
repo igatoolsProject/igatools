@@ -168,14 +168,6 @@ public:
 
 
 
-  void get_element_dofs(
-    const IndexType &element_id,
-    SafeSTLVector<Index> &dofs_global,
-    SafeSTLVector<Index> &dofs_local_to_patch,
-    SafeSTLVector<Index> &dofs_local_to_elem,
-    const std::string &dofs_property = DofProperties::active) const override final;
-
-
 
 
 

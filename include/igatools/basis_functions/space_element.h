@@ -267,7 +267,7 @@ public:
     SafeSTLVector<Index> dofs_local_to_patch;
     SafeSTLVector<Index> dofs_local_to_elem;
 
-    this->space_basis_->get_element_dofs(
+    this->space_basis_->get_spline_space()->get_element_dofs(
       this->get_index(),
       dofs_global,
       dofs_local_to_patch,

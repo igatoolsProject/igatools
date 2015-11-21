@@ -203,13 +203,6 @@ public:
   virtual bool is_bspline() const override final;
 
 
-  virtual void get_element_dofs(
-    const IndexType &element_id,
-    SafeSTLVector<Index> &dofs_global,
-    SafeSTLVector<Index> &dofs_local_to_patch,
-    SafeSTLVector<Index> &dofs_local_to_elem,
-    const std::string &dofs_property = DofProperties::active) const override final;
-
   ///@}
 
   const std::shared_ptr<const BSpBasis> get_bspline_basis() const;
