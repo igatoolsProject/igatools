@@ -36,27 +36,20 @@ XERCES_CPP_NAMESPACE_END
 IGA_NAMESPACE_OPEN
 
 /**
- * Forward declarations.
- */
-
-class XMLParserErrorHandler;
-
-/**
  * @brief Class for parsing input files.
  *
- * This is a class for parsing XML input files and validate them againts
+ * This is a class for parsing XML input files and validate them against
  * a XML Schema grammar.
  *
  * This class provides the capability of creating a @p XercesDOMParser,
- * checking the validity of the input file (if it exists, it is corrupted, etc),
- * and retrieve and XML @p DOMDocument where the input file the information is
- * contained.
+ * checking the validity of the input file (if it exists, it is corrupted,
+ * etc), and retrieving a XML @p DOMDocument containing an input file.
  *
- * This class uses a @ref XMLParserErrorHandler for managing the possible errors
- * than can appear during the parsing process.
+ * This class uses a @ref XMLParserErrorHandler for managing the possible
+ * errors than can appear during the parsing process.
  *
- * The destructor of the class is in charge of of deleting @ref parser_ and
- * shutdown all the @p xerces active process.
+ * The destructor of the class is in charge of of deleting @ref parser_
+ * and to shutdown all the @p xerces active process.
  *
  * \author antolin, 2015
  */
@@ -78,8 +71,6 @@ private:
   /** @name Constructors, destructor, assignment operators and creators */
   ///@{
 
-private:
-
   /**
    * @brief Constructor taking the error handler and the file path.
    *
@@ -90,11 +81,9 @@ private:
    * of @ref check_file, the XML platform is initialized and @ref parser_ is
    * created.
    *
-   * @param[in] eh Error handler for managing parsing errors.
    * @param[in] file_path Path of the file to be parsed.
    */
-  XMLFileParser(const std::shared_ptr<XMLParserErrorHandler> eh,
-             const std::string &file_path);
+  XMLFileParser(const std::string &file_path);
 
   /**
    * @brief Deleted default constructor.
@@ -142,23 +131,21 @@ public:
   /**
    * @brief Destructor.
    *
-   * Destructor: finalizes the parsing process: deletes the @ref parser_ and terminates
-   * the platform utils.
+   * Destructor: finalizes the parsing process: deletes the @ref parser_
+   * and terminates the platform utils.
    */
   ~XMLFileParser();
 
   /**
    * @brief Returns a new instance wrapped into a shared pointer.
    *
-   * Builds and returns a new instance of the class wrapped into a shared pointer.
-   * It uses the above defined default constructor.
+   * Builds and returns a new instance of the class wrapped into a
+   * shared pointer. It uses the above defined default constructor.
    *
-   * @param[in] eh Error handler for managing parsing errors.
    * @param[in] file_path Path of the file to be parsed.
    * @return A shared pointer with a new instance of the class.
    */
-  static SelfPtr_ create(const std::shared_ptr<XMLParserErrorHandler> eh,
-                         const std::string &file_path);
+  static SelfPtr_ create(const std::string &file_path);
 
   ///@}
 
@@ -172,11 +159,6 @@ private:
   /// DOM parser.
   /** DOM parser. */
   xercesc::XercesDOMParser *parser_;
-
-  /// Error handler for managing parsing errors.
-  /** Error handler for managing parsing errors. */
-  const std::shared_ptr<XMLParserErrorHandler> eh_;
-
 
 public:
   /**
@@ -199,12 +181,13 @@ public:
 
 private:
   /**
-   * @brief Checks if the @ref file_path_ can be read
+   * @brief Checks if the file can be read.
    *
-   * Checks if the @ref file_path_ can be read. It throws an error message
+   * Checks if the file can be read. It throws an error message
    * if the file can not be read properly.
+   * @param[in] file_path Path of the file to be checked.
    */
-  void check_file() const;
+  static void check_file(const std::string &file_path);
 
 };
 

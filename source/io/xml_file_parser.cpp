@@ -23,34 +23,22 @@
 
 #include <igatools/io/xml_parser_error_handler.h>
 
-//#include <isolde/base/exceptions.h>
-#undef Assert
-//
+#undef Assert // Notice this!!
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/sax/HandlerBase.hpp>
-//
-//#include <sys/stat.h>
-
-
 
 using namespace xercesc;
 using std::string;
-using std::to_string;
-using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
 
 XMLFileParser::
-XMLFileParser(const std::shared_ptr<XMLParserErrorHandler> eh,
-              const string &file_path)
+XMLFileParser(const string &file_path)
   :
-  file_path_(file_path),
-  eh_(eh)
+  file_path_(file_path)
 {
-//  IsoldeAssert(eh_ != nullptr, ExcNullPtr());
-
-  this->check_file();
+  this->check_file(file_path);
 
   try
   {
@@ -59,7 +47,7 @@ XMLFileParser(const std::shared_ptr<XMLParserErrorHandler> eh,
   catch (XMLException &exception)
   {
     char *error_msg = XMLString::transcode(exception.getMessage());
-//    eh_->error(false, error_msg);
+    AssertThrow (false, ExcMessage(error_msg));
     XMLString::release(&error_msg);
   }
 
@@ -70,10 +58,9 @@ XMLFileParser(const std::shared_ptr<XMLParserErrorHandler> eh,
 
 auto
 XMLFileParser::
-create(const std::shared_ptr<XMLParserErrorHandler> eh,
-       const string &file_path) -> SelfPtr_
+create(const string &file_path) -> SelfPtr_
 {
-  return SelfPtr_(new Self_(eh, file_path));
+  return SelfPtr_(new Self_(file_path));
 }
 
 
@@ -90,7 +77,7 @@ XMLFileParser::
   catch (XMLException &exception)
   {
     char *error_msg = XMLString::transcode(exception.getMessage());
-//    eh_->error(false, error_msg);
+    AssertThrow (false, ExcMessage(error_msg));
     XMLString::release(&error_msg);
   }
 }
@@ -99,15 +86,14 @@ XMLFileParser::
 
 void
 XMLFileParser::
-check_file() const
+check_file(const string &file_path)
 {
-#if 0
   // Checking if the file exists.
   errno = 0;
   struct stat buffer;
-  if (stat(file_path_.c_str(), &buffer) == -1) // ==0 ok; ==-1 error
+  if (stat(file_path.c_str(), &buffer) == -1) // ==0 ok; ==-1 error
   {
-    string error_msg = "Parsing file path " + file_path_ + " : ";
+    string error_msg = "Parsing file path " + file_path + " : ";
     if (errno == ENOENT)   // errno declared by include file errno.h
       error_msg += "Path file does not exist, or path is an empty string.";
     else if (errno == ENOTDIR)
@@ -120,9 +106,8 @@ check_file() const
       error_msg += "File can not be read";
     else
       error_msg += "An unknown problem was encountered.";
-    eh_->error(error_msg);
+    AssertThrow (false, ExcXMLError(error_msg, 0, 0));
   }
-#endif
 }
 
 
@@ -134,8 +119,7 @@ parse(void (*load_grammar)(XercesDOMParser *const))
   load_grammar(parser_);
 
   // Configuring DOM parser
-
-//  parser_->setErrorHandler(eh_.get());
+  parser_->setErrorHandler(XMLParserErrorHandler());
   parser_->setValidationScheme(XercesDOMParser::Val_Always);
   parser_->setDoNamespaces(true);
   parser_->setDoSchema(true);
