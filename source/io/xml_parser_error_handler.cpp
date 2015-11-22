@@ -1,20 +1,21 @@
 //-+--------------------------------------------------------------------
-// Isolde (Isogeometric Solver Environment) is a software for
-// analyzing continuum mechanics problems by means of Isogeometric Methods.
-// Copyright (C) 2012-2014 by the isolde authors (see authors.txt).
+// Igatools a general purpose Isogeometric analysis library.
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
-// This file is part of the isolde software.
+// This file is part of the igatools library.
 //
-// Isolde is property of the University of Pavia and IMATI / CNR,
-// Italy. It can not be neither redistributed nor modify without
-// an express authorization of the authors.
-//
-// This software is based on igatools library, that is distributed
-// under GNU General Public License version 3.
+// The igatools library is free software: you can use it, redistribute
+// it and/or modify it under the terms of the GNU General Public
+// License as published by the Free Software Foundation, either
+// version 3 of the License, or (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
 #include <igatools/io/xml_parser_error_handler.h>
@@ -26,14 +27,6 @@
 using namespace xercesc;
 
 IGA_NAMESPACE_OPEN
-
-
-auto
-XMLParserErrorHandler::
-create() -> SelfPtr_
-{
-  return SelfPtr_(new Self_());
-}
 
 
 void
