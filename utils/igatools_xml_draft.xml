@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Igatools FormatVersion="2.0">
+
+  <Grid IgaObjectId="0" Dim="2">
+    <Knots Direction="0" Size="3">
+      0.000000 0.500000 1.000000
+    </Knots>
+    <Knots Direction="1" Size="2">
+      0.000000 1.000000
+    </Knots>
+  </Grid>
+
+  <SplineSpace IgaObjectId="1" Dim="2" Range="2" Rank="1">
+    <Grid GetFromIgaObjectId="0"/>
+
+    <SplineSpaceComponent ComponentId="0">
+      <Degrees> 2 2 </Degrees>
+      <InteriorMultiplicities>
+        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicity>
+        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicity>
+      </InteriorMultiplicities>
+      <!-- This tag is optional -->
+      <Periodicity> false false </Periodicity>
+    </SplineSpaceComponent>
+
+    <SplineSpaceComponent ComponentId="1">
+      <Degrees> 2 2 </Degrees>
+      <InteriorMultiplicities>
+        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicity>
+        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicity>
+      </InteriorMultiplicities>
+      <!-- This tag is optional -->
+      <Periodicity> false false </Periodicity>
+    </SplineSpaceComponent>
+
+  </SplineSpace>
+
+  <SplineSpace IgaObjectId="2" Dim="2" Range="1" Rank="1">
+    <Grid GetFromIgaObjectId="0"/>
+
+    <SplineSpaceComponent ComponentId="0">
+      <Degrees> 2 2 </Degrees>
+      <InteriorMultiplicities>
+        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicity>
+        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicity>
+      </InteriorMultiplicities>
+      <!-- This tag is optional -->
+      <Periodicity> false false </Periodicity>
+    </SplineSpaceComponent>
+
+  </SplineSpace>
+
+  <BSpline IgaObjectId="3" Dim="2" Range="2" Rank="1">
+    <SplineSpace GetFromIgaObjectId="1"/>
+    <!-- This tag is optional -->
+    <EndBehaviour>
+      <EndBehaviour ComponentId="0">end_knots end_knots</EndBehaviour>
+      <EndBehaviour ComponentId="1">end_knots end_knots</EndBehaviour>
+    </EndBehaviour>
+  </BSpline>
+
+  <BSpline IgaObjectId="4" Dim="2" Range="1" Rank="1">
+    <SplineSpace GetFromIgaObjectId="2"/>
+    <!-- This tag is optional -->
+    <EndBehaviour>
+      <EndBehaviour ComponentId="0">end_knots end_knots</EndBehaviour>
+    </EndBehaviour>
+  </BSpline>
+
+  <IgGridFunction IgaObjectId="5" Dim="2" SpaceDim="1">
+    <ReferenceSpaceBasis GetFromIgaObjectId="4"/>
+    <IgCoefficients Size="12">
+      1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
+    </IgCoefficients>
+    <!-- This tag is optional -->
+    <DofsProperty>active</DofsProperty>
+  </IgGridFunction>
+
+  <NURBS IgaObjectId="6" Dim="2" Range="2" Rank="1">
+    <BSpline GetFromIgaObjectId="4"/>
+    <WeightFunction GetFromIgaObjectId="5"/>
+  </BSpline>
+
+  <IgGridFunction IgaObjectId="7" Dim="2" SpaceDim="2">
+    <ReferenceSpaceBasis GetFromIgaObjectId="6"/>
+    <IgCoefficients Size="24">
+      0.0 1.0 2.0 3.0 0.0 1.0 2.0 3.0 0.0 1.0 2.0 3.0
+      0.0 0.0 0.0 0.0 1.0 1.0 1.0 1.0 2.0 2.0 2.0 2.0
+    </IgCoefficients>
+    <!-- This tag is optional -->
+    <DofsProperty>active</DofsProperty>
+  </IgGridFunction>
+
+  <Domain IgaObjectId="8"  Dim="2" Codim="0">
+    <GridFunction GetFromIgaObjectId="7"/>
+    <!-- This tag is optional -->
+    <Name>my_domain</Name>
+  </Domain>
+
+  <PhysicalSpaceBasis IgaObjectId="9" Dim="2" Range="2" Rank="1" Codim="0">
+    <ReferenceSpaceBasis GetFromIgaObjectId="6"/>
+    <Domain GetFromIgaObjectId="8"/>
+    <!-- This tag is optional -->
+    <Transformation>h_grad</Transformation>
+  </PhysicalSpaceBasis>
+
+  <IgFunction IgaObjectId="10" Dim="2" Range="2" Rank="1" Codim="0">
+    <PhysicalSpaceBasis GetFromIgaObjectId="9"/>
+    <IgCoefficients Size="24">
+      0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+      0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+    </IgCoefficients>
+    <!-- This tag is optional -->
+    <Name>my_function</Name>
+    <!-- This tag is optional -->
+    <DofsProperty>active</DofsProperty>
+  </IgFunction>
+
+</Igatools>
