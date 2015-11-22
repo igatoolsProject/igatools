@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <Igatools FormatVersion="2.0">
 
   <Grid IgaObjectId="0" Dim="2">
@@ -17,8 +16,8 @@
     <SplineSpaceComponent ComponentId="0">
       <Degrees> 2 2 </Degrees>
       <InteriorMultiplicities>
-        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicity>
-        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicity>
+        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicities>
+        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicities>
       </InteriorMultiplicities>
       <!-- This tag is optional -->
       <Periodicity> false false </Periodicity>
@@ -27,8 +26,8 @@
     <SplineSpaceComponent ComponentId="1">
       <Degrees> 2 2 </Degrees>
       <InteriorMultiplicities>
-        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicity>
-        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicity>
+        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicities>
+        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicities>
       </InteriorMultiplicities>
       <!-- This tag is optional -->
       <Periodicity> false false </Periodicity>
@@ -42,8 +41,8 @@
     <SplineSpaceComponent ComponentId="0">
       <Degrees> 2 2 </Degrees>
       <InteriorMultiplicities>
-        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicity>
-        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicity>
+        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicities>
+        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicities>
       </InteriorMultiplicities>
       <!-- This tag is optional -->
       <Periodicity> false false </Periodicity>
@@ -80,7 +79,7 @@
   <NURBS IgaObjectId="6" Dim="2" Range="2" Rank="1">
     <BSpline GetFromIgaObjectId="4"/>
     <WeightFunction GetFromIgaObjectId="5"/>
-  </BSpline>
+  </NURBS>
 
   <IgGridFunction IgaObjectId="7" Dim="2" SpaceDim="2">
     <ReferenceSpaceBasis GetFromIgaObjectId="6"/>
