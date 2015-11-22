@@ -21,11 +21,11 @@
 #ifndef XML_PARSER_ERROR_HANDLER_H_
 #define XML_PARSER_ERROR_HANDLER_H_
 
-#if XML_IO
-
 #include <igatools/base/config.h>
 
-#include <xercesc/sax/ParserErrorHandler.hpp>
+#ifdef XML_IO
+
+#include <xercesc/sax/ErrorHandler.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -46,7 +46,7 @@ IGA_NAMESPACE_OPEN
  * @author P. Antolin
  * @date 2015
  */
-class XMLParserErrorHandler : public xercesc::ParserErrorHandler
+class XMLParserErrorHandler : public xercesc::ErrorHandler
 {
 private:
 
@@ -63,7 +63,7 @@ private:
 
   ///@}
 
-public:
+private:
   /** @name Constructors, destructor, assignment operators and creators */
   ///@{
 
@@ -74,8 +74,6 @@ public:
    * @return New instance of the class.
    */
   XMLParserErrorHandler() = default;
-
-private:
 
   /**
    * @brief Deleted copy constructor.
@@ -108,6 +106,17 @@ private:
    * @note Deleted: not allowed.
    */
   XMLParserErrorHandler &operator= (XMLParserErrorHandler &&) = delete;
+
+public:
+  /**
+   * @brief Returns a new instance wrapped into a shared pointer.
+   *
+   * Builds and returns a new instance of the class wrapped into a
+   * shared pointer. It uses the above defined default constructor.
+   *
+   * @return A shared pointer with a new instance of the class.
+   */
+  static SelfPtr_ create();
 
   ///@}
 

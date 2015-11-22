@@ -20,13 +20,20 @@
 
 #include <igatools/io/xml_parser_error_handler.h>
 
-#if XML_IO
+#ifdef XML_IO
 
 #include <xercesc/sax/HandlerBase.hpp>
 
 using namespace xercesc;
 
 IGA_NAMESPACE_OPEN
+
+auto
+XMLParserErrorHandler::
+create () -> SelfPtr_
+{
+    return SelfPtr_ (new Self_());
+}
 
 
 void

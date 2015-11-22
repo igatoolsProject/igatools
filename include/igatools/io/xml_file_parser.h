@@ -21,9 +21,9 @@
 #ifndef XML_FILE_PARSER_H_
 #define XML_FILE_PARSER_H_
 
-#if XML_IO
-
 #include <igatools/base/config.h>
+
+#ifdef XML_IO
 
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>

@@ -20,13 +20,15 @@
 
 #include <igatools/io/xml_file_parser.h>
 
-#if XML_IO
+#ifdef XML_IO
 
 #include <igatools/io/xml_parser_error_handler.h>
 
 #undef Assert // Notice this!!
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/sax/HandlerBase.hpp>
+
+#include <sys/stat.h>
 
 using namespace xercesc;
 using std::string;
@@ -120,7 +122,8 @@ parse(void (*load_grammar)(XercesDOMParser *const))
   load_grammar(parser_);
 
   // Configuring DOM parser
-  parser_->setErrorHandler(XMLParserErrorHandler());
+  const auto error_handler = XMLParserErrorHandler::create();
+  parser_->setErrorHandler(error_handler.get());
   parser_->setValidationScheme(XercesDOMParser::Val_Always);
   parser_->setDoNamespaces(true);
   parser_->setDoSchema(true);
