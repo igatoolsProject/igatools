@@ -932,9 +932,9 @@ DeclException1(ExcMessage,
 DeclException3(ExcXMLError,
                std::string, int, int,
                << "An error occurred parsing XML document at line "
-               << (arg2 > 0 ? std::string("UNKNOWN") : std::to_string(arg2)) << " "
+               << (arg2 > 0 ? std::to_string(arg2) : std::string("UNKNOWN")) << " "
                << "column "
-               << (arg3 > 0 ? std::string("UNKNOWN") : std::to_string(arg3)) << ". "
+               << (arg3 > 0 ? std::to_string(arg3) : std::string("UNKNOWN")) << ". "
                << "The reported error is:\n\t" << arg1);
 
 /**
@@ -946,9 +946,9 @@ DeclException3(ExcXMLError,
 DeclException3(ExcXMLWarning,
                std::string, int, int,
                << "An warning occurred parsing XML document at line "
-               << (arg2 > 0 ? std::string("UNKNOWN") : std::to_string(arg2)) << " "
+               << (arg2 > 0 ? std::to_string(arg2) : std::string("UNKNOWN")) << " "
                << "column "
-               << (arg3 > 0 ? std::string("UNKNOWN") : std::to_string(arg3)) << ". "
+               << (arg3 > 0 ? std::to_string(arg3) : std::string("UNKNOWN")) << ". "
                << "The reported warning is:\n\t" << arg1);
 
 /**
