@@ -27,6 +27,9 @@
 #undef Assert // Notice this!!
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/sax/HandlerBase.hpp>
+#include <xercesc/framework/MemBufInputSource.hpp>
+#include <fstream>
+#include <streambuf>
 
 #include <sys/stat.h>
 
@@ -154,6 +157,36 @@ parse(void (*load_grammar)(XercesDOMParser *const))
   parser_->setValidationConstraintFatal(true);
   parser_->useCachedGrammarInParse(true);
 //      parser_->setHandleMultipleImports(true);
+
+  parser_->parse(file_path_.c_str());
+
+  // no need to free this pointer - owned by the parent parser object
+  return parser_->getDocument();
+}
+
+
+
+DOMDocument *
+XMLFileParser::
+parse(const string &grammar_file)
+{
+  this->check_file(grammar_file);
+
+  // Configuring DOM parser
+  const auto error_handler = XMLParserErrorHandler::create();
+  parser_->setErrorHandler(error_handler.get());
+  parser_->useCachedGrammarInParse(true);
+  parser_->setValidationScheme(XercesDOMParser::Val_Always);
+  parser_->setDoNamespaces(true);
+  parser_->setDoSchema(true);
+  parser_->setLoadExternalDTD(false);
+  parser_->setValidationSchemaFullChecking(true);
+  parser_->setValidationConstraintFatal(true);
+  parser_->useCachedGrammarInParse(true);
+//      parser_->setHandleMultipleImports(true);
+
+  parser_->loadGrammar(grammar_file.c_str(),
+                      Grammar::SchemaGrammarType, true);
 
   parser_->parse(file_path_.c_str());
 

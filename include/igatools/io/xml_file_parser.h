@@ -193,6 +193,7 @@ public:
    * @return XML document object.
    */
   xercesc::DOMDocument * parse();
+  xercesc::DOMDocument * parse(const std::string &grammar_file);
 
 private:
   /**
