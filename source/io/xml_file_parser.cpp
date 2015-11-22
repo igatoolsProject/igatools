@@ -117,21 +117,43 @@ check_file(const string &file_path)
 
 DOMDocument *
 XMLFileParser::
+parse()
+{
+  // Configuring DOM parser
+  const auto error_handler = XMLParserErrorHandler::create();
+  parser_->useCachedGrammarInParse(false);
+  parser_->setValidationScheme(XercesDOMParser::Val_Never);
+  parser_->setErrorHandler(error_handler.get());
+  parser_->setLoadExternalDTD(false);
+  parser_->setValidationSchemaFullChecking(false);
+  parser_->setValidationConstraintFatal(false);
+  parser_->useCachedGrammarInParse(false);
+  //    parser_->setHandleMultipleImports(true);
+
+  parser_->parse(file_path_.c_str());
+
+  // no need to free this pointer - owned by the parent parser object
+  return parser_->getDocument();
+}
+
+
+
+DOMDocument *
+XMLFileParser::
 parse(void (*load_grammar)(XercesDOMParser *const))
 {
   load_grammar(parser_);
 
   // Configuring DOM parser
   const auto error_handler = XMLParserErrorHandler::create();
-  parser_->setErrorHandler(error_handler.get());
+  parser_->useCachedGrammarInParse(true);
   parser_->setValidationScheme(XercesDOMParser::Val_Always);
-  parser_->setDoNamespaces(true);
-  parser_->setDoSchema(true);
+  parser_->setErrorHandler(error_handler.get());
   parser_->setLoadExternalDTD(false);
   parser_->setValidationSchemaFullChecking(true);
   parser_->setValidationConstraintFatal(true);
   parser_->useCachedGrammarInParse(true);
-  //    parser_->setHandleMultipleImports(true);
+//      parser_->setHandleMultipleImports(true);
 
   parser_->parse(file_path_.c_str());
 

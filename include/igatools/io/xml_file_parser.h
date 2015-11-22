@@ -167,7 +167,7 @@ public:
    * @brief Parses the file and returns a XML document object.
    *
    * Parses the file and returns a XML document object. Before parsing the file,
-   * all the required configuration flags are set and the needed Schema
+   * all the required configuration flags are setup and the needed Schema
    * grammars are loaded.
    *
    * @attention If there is any problem parsing the input file, error messages
@@ -180,6 +180,19 @@ public:
    */
   xercesc::DOMDocument *
   parse(void (*load_grammar)(xercesc::XercesDOMParser *const));
+
+  /**
+   * @brief Parses the file and returns a XML document object.
+   *
+   * Parses the file and returns a XML document object. Before parsing the file,
+   * all the required configuration flags are setup.
+   *
+   * @attention If there is any problem parsing the input file, error messages
+   * and exceptions will be thrown.
+   *
+   * @return XML document object.
+   */
+  xercesc::DOMDocument * parse();
 
 private:
   /**
