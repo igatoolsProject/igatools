@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified"
+           elementFormDefault="unqualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Direction type -->
+  <xs:simpleType name="DirectionType">
+    <xs:restriction base="xs:nonNegativeInteger">
+      <xs:maxInclusive value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Component type -->
+  <xs:simpleType name="ComponentType">
+    <xs:restriction base="xs:nonNegativeInteger">
+      <xs:maxInclusive value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Vector of doubles -->
+  <xs:simpleType name="DoubleListType">
+    <xs:list itemType="xs:double"/>
+  </xs:simpleType>
+
+  <!-- Vector of non negative integers -->
+  <xs:simpleType name="NonNegativeIntegerListType">
+    <xs:list itemType="xs:nonNegativeInteger"/>
+  </xs:simpleType>
+
+  <!-- Dim type -->
+  <xs:simpleType name="DimType">
+    <xs:restriction base="xs:nonNegativeInteger">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="3"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Range type -->
+  <xs:simpleType name="RangeType">
+    <xs:restriction base="xs:positiveInteger">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="3"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Rank type -->
+  <xs:simpleType name="RankType">
+    <xs:restriction base="xs:positiveInteger">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Codim type -->
+  <xs:simpleType name="CodimType">
+    <xs:restriction base="xs:nonNegativeInteger">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Spacedim type -->
+  <xs:simpleType name="SpacedimType">
+    <xs:restriction base="xs:nonNegativeInteger">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="3"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Vector of booleans -->
+  <xs:simpleType name="BooleanListType">
+    <xs:list itemType="xs:boolean"/>
+  </xs:simpleType>
+
+  <!-- Vector of non negative integer Size type -->
+  <xs:complexType name="NonNegativeIntegerSizeListType">
+    <xs:simpleContent>
+      <xs:extension base="NonNegativeIntegerListType">
+        <xs:attribute name="Size" type="SizeType" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Size type -->
+  <xs:simpleType name="SizeType">
+    <xs:restriction base="xs:nonNegativeInteger"/>
+  </xs:simpleType>
+
+  <!-- Vector of non negative Size/Direction type -->
+  <xs:complexType name="NonNegativeIntegerSizeDirectionListType">
+    <xs:simpleContent>
+      <xs:extension base="NonNegativeIntegerListType">
+        <xs:attribute name="Size" type="SizeType" use="required"/>
+        <xs:attribute name="Direction" type="DirectionType" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Vector of double Size type -->
+  <xs:complexType name="DoubleSizeListType">
+    <xs:simpleContent>
+      <xs:extension base="DoubleListType">
+        <xs:attribute name="Size" type="SizeType" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Vector of double Size/Direction type -->
+  <xs:complexType name="DoubleSizeDirectionListType">
+    <xs:simpleContent>
+      <xs:extension base="DoubleListType">
+        <xs:attribute name="Size" type="SizeType" use="required"/>
+        <xs:attribute name="Direction" type="DirectionType" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Vector of doubles with minimum size 2 -->
+  <xs:simpleType name="DoubleListMin2Type">
+    <xs:restriction base="DoubleListType">
+      <xs:minLength value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <!-- Vector of double Size/Direction type with minimum size 2 -->
+  <xs:complexType name="DoubleSizeDirectionListMin2Type">
+    <xs:simpleContent>
+      <xs:extension base="DoubleListMin2Type">
+        <xs:attribute name="Size" type="SizeType" use="required"/>
+        <xs:attribute name="Direction" type="DirectionType" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Id type -->
+  <xs:simpleType name="IdType">
+    <xs:restriction base="xs:nonNegativeInteger"/>
+  </xs:simpleType>
+
+  <!-- ComponentIdType: type with ComponentId attribute -->
+  <xs:complexType name="ComponentIdType">
+    <xs:attribute name="ComponentId" type="ComponentType" use="required"/>
+  </xs:complexType>
+
+  <!-- IgaObjectIdType: type with IgaObjectId attribute -->
+  <xs:complexType name="IgaObjectIdType">
+    <xs:attribute name="IgaObjectId" type="IdType" use="required"/>
+  </xs:complexType>
+
+  <!-- IgaObjectDimIdType: type with IgaObjectId and Dim attributes -->
+  <xs:complexType name="IgaObjectIdDimType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdType">
+        <xs:attribute name="Dim" type="DimType" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- IgaObjectDimIdType: type with IgaObjectId, Dim, Range and Rank attributes -->
+  <xs:complexType name="IgaObjectIdDimRangeRankType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdType">
+        <xs:attribute name="Dim" type="DimType" use="required"/>
+        <xs:attribute name="Range" type="RangeType" use="required"/>
+        <xs:attribute name="Rank" type="RankType" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- IgaObjectDimIdType: type with IgaObjectId, Dim, Range, Rank and Codim attributes -->
+  <xs:complexType name="IgaObjectIdDimRangeRankCodimType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdType">
+        <xs:attribute name="Dim" type="DimType" use="required"/>
+        <xs:attribute name="Range" type="RangeType" use="required"/>
+        <xs:attribute name="Rank" type="RankType" use="required"/>
+        <xs:attribute name="Codim" type="CodimType" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- IgaObjectDimIdType: type with IgaObjectId, Dim and Codim attributes -->
+  <xs:complexType name="IgaObjectIdDimCodimType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdType">
+        <xs:attribute name="Dim" type="DimType" use="required"/>
+        <xs:attribute name="Codim" type="CodimType" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- IgaObjectDimIdType: type with IgaObjectId, Dim and Spacedim attributes -->
+  <xs:complexType name="IgaObjectIdDimSpacedimType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdType">
+        <xs:attribute name="Dim" type="DimType" use="required"/>
+        <xs:attribute name="Spacedim" type="SpacedimType" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- GetFromIgaObjectIdType: type with GetFromIgaObjectId attribute -->
+  <xs:complexType name="GetFromIgaObjectIdType">
+    <xs:attribute name="GetFromIgaObjectId" type="IdType" use="required"/>
+  </xs:complexType>
+
+  <!-- Grid type -->
+  <xs:complexType name="GridType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdDimType">
+        <xs:sequence>
+          <xs:element name="Knots" maxOccurs="3" minOccurs="0"
+                      type="DoubleSizeDirectionListMin2Type"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- SplineSpace type -->
+  <xs:complexType name="SplineSpaceType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdDimRangeRankType">
+        <xs:all>
+
+          <xs:element name="Grid" type="GetFromIgaObjectIdType"/>
+
+          <xs:element name="SplineSpaceComponents">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SplineSpaceComponent" maxOccurs="3" minOccurs="0">
+                  <xs:complexType>
+                    <xs:complexContent>
+                      <xs:extension base="ComponentIdType">
+                        <xs:all>
+
+                          <xs:element name="Degrees" type="NonNegativeIntegerListType" maxOccurs="1" minOccurs="1"/>
+
+                          <xs:element name="InteriorMultiplicities" maxOccurs="1" minOccurs="1">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="InteriorMultiplicities" maxOccurs="3" minOccurs="0" type="NonNegativeIntegerSizeDirectionListType"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+
+                          <xs:element name="Periodicity" type="BooleanListType" maxOccurs="1"/>
+
+                        </xs:all>
+                      </xs:extension>
+                    </xs:complexContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- BSpline type -->
+  <xs:complexType name="BSplineType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdDimRangeRankType">
+        <xs:all>
+
+          <xs:element name="SplineSpace" type="GetFromIgaObjectIdType" minOccurs="1" maxOccurs="1"/>
+
+          <xs:element name="EndBehaviour" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <!-- To be changed -->
+                <xs:element name="EndBehaviour" type="NonNegativeIntegerSizeListType"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- IgGridFunction type -->
+  <xs:complexType name="IgGridFunctionType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdDimSpacedimType">
+        <xs:all>
+
+          <xs:element name="ReferenceSpaceBasis" type="GetFromIgaObjectIdType" minOccurs="1" maxOccurs="1"/>
+
+          <xs:element name="IgCoefficients" type="DoubleSizeDirectionListType" minOccurs="1" maxOccurs="1"/>
+
+          <!-- To be changed -->
+          <xs:element name="DofsProperty" maxOccurs="1" type="NonNegativeIntegerSizeListType"/>
+
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- NURBS type -->
+  <xs:complexType name="NURBSType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdDimRangeRankType">
+        <xs:all>
+          <xs:element name="BSpline" type="GetFromIgaObjectIdType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="WeightFunction" type="GetFromIgaObjectIdType" minOccurs="1" maxOccurs="1"/>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- Domain type -->
+  <xs:complexType name="DomainType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdDimCodimType">
+        <xs:all>
+          <xs:element name="GridFunction" type="GetFromIgaObjectIdType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Name" type="xs:normalizedString" maxOccurs="1"/>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- PhysicalSpaceBasis type -->
+  <xs:complexType name="PhysicalSpaceBasisType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdDimRangeRankCodimType">
+        <xs:all>
+          <xs:element name="ReferenceSpaceBasis" type="GetFromIgaObjectIdType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Domain" type="GetFromIgaObjectIdType" minOccurs="1" maxOccurs="1"/>
+          <!-- To be changed -->
+          <xs:element name="Transformation" type="xs:normalizedString" maxOccurs="1"/>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- IgFunction type -->
+  <xs:complexType name="IgFunctionType">
+    <xs:complexContent>
+      <xs:extension base="IgaObjectIdDimRangeRankCodimType">
+        <xs:all>
+          <xs:element name="PhysicalSpaceBasis" type="GetFromIgaObjectIdType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="IgCoefficients" type="DoubleSizeDirectionListType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Name" type="xs:normalizedString" maxOccurs="1"/>
+          <!-- To be changed -->
+          <xs:element name="DofsProperty" type="NonNegativeIntegerSizeListType" maxOccurs="1"/>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="Igatools">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="Grid" type="GridType"/>
+          <xs:element name="SplineSpace" type="SplineSpaceType"/>
+          <xs:element name="BSplineSpace" type="BSplineType"/>
+          <xs:element name="IgGridFunction" type="IgGridFunctionType"/>
+          <xs:element name="NURBS" type="NURBSType"/>
+          <xs:element name="Domain" type="DomainType"/>
+          <xs:element name="PhysicalSpaceBasis" type="PhysicalSpaceBasisType"/>
+          <xs:element name="IgFunction" type="IgFunctionType"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="FormatVersion" type="xs:float" fixed="2.0" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
