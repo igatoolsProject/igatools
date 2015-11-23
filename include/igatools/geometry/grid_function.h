@@ -87,10 +87,6 @@ public:
   virtual std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
-#if 0
-  std::unique_ptr<ElementAccessor>
-  create_element(const ListIt &index, const PropId &prop);
-#endif
 
   ///@name Iterating of grid elements
   ///@{

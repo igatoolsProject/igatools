@@ -148,7 +148,7 @@ void PoissonProblem<dim>::assemble()
   // [dirichlet constraint]
   const auto g = ConstFunction::const_create(grid, {0.});
 
-  LogStream out;
+//  LogStream out;
   using SubGridElemMap = typename Grid<dim>::template SubGridMap<dim-1>;
   using SubFunc = SubGridFunction<dim-1,dim,1>;
   SafeSTLMap<int,std::shared_ptr<const SubFunc>> bndry_funcs;

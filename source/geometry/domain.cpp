@@ -157,7 +157,7 @@ Domain<dim_, codim_>::
 create_cache_handler() const
 -> std::unique_ptr<ElementHandler>
 {
-  return std::make_unique<ElementHandler>(this->shared_from_this());
+  return std::unique_ptr<ElementHandler>(new ElementHandler(this->shared_from_this()));
 }
 
 
@@ -169,10 +169,7 @@ create_element(const ListIt &index, const PropId &prop) const
 -> std::unique_ptr<ElementAccessor>
 {
   using Elem = ElementAccessor;
-  auto elem = std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
-  Assert(elem != nullptr, ExcNullPtr());
-
-  return elem;
+  return std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
 }
 
 

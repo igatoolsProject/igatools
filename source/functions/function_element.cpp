@@ -63,6 +63,37 @@ FunctionElement(const self_t &elem,
 template<int dim,int codim,int range,int rank>
 auto
 FunctionElement<dim,codim,range,rank>::
+get_element_values_D0() const
+-> const ValueVector<Value>
+{
+  using _D0 = function_element::template _D<0>;
+  return get_values_from_cache<_D0,dim>(0);
+}
+
+template<int dim,int codim,int range,int rank>
+auto
+FunctionElement<dim,codim,range,rank>::
+get_element_values_D1() const
+-> const ValueVector<Derivative<1> >
+{
+  using _D1 = function_element::template _D<1>;
+  return get_values_from_cache<_D1,dim>(0);
+}
+
+template<int dim,int codim,int range,int rank>
+auto
+FunctionElement<dim,codim,range,rank>::
+get_element_values_D2() const
+-> const ValueVector<Derivative<2> >
+{
+  using _D2 = function_element::template _D<2>;
+  return get_values_from_cache<_D2,dim>(0);
+}
+
+
+template<int dim,int codim,int range,int rank>
+auto
+FunctionElement<dim,codim,range,rank>::
 get_domain_element() const -> const DomainElem &
 {
   return *domain_elem_;

@@ -167,8 +167,9 @@ IgFunction<dim,codim,range,rank>::
 create_cache_handler() const
 -> std::unique_ptr<typename parent_t::ElementHandler>
 {
-  return std::make_unique<IgFunctionHandler<dim,codim,range,rank>>(
-    std::dynamic_pointer_cast<const self_t>(this->shared_from_this()));
+  using Handler = IgFunctionHandler<dim,codim,range,rank>;
+  return std::unique_ptr<Handler>(new Handler(
+    std::dynamic_pointer_cast<const self_t>(this->shared_from_this())));
 }
 
 

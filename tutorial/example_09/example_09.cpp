@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 // [old includes]
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/functions/function_lib.h>
-#include <igatools/functions/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_space_basis.h>
@@ -65,11 +65,11 @@ private:
   // [type aliases]
 
 
-  shared_ptr<const Basis>        space;
-  shared_ptr<MapFunction<dim, dim>> map;
+  shared_ptr<const Basis>        basis;
+//  shared_ptr<MapFunction<dim, dim>> domain;
 
-  const Quadrature<dim>   elem_quad;
-  const Quadrature<dim-1> face_quad;
+  const std::shared_ptr<const Quadrature<dim>>   elem_quad;
+  const std::shared_ptr<const Quadrature<dim-1>> face_quad;
 
   const boundary_id dir_id = 0;
 
@@ -85,8 +85,8 @@ template<int dim>
 PoissonProblem<dim>::
 PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
   :
-  elem_quad(QGauss<dim>(deg+1)),
-  face_quad(QGauss<dim-1>(deg+1))
+  elem_quad(QGauss<dim>::create(deg+1)),
+  face_quad(QGauss<dim-1>::create(deg+1))
 {
   BBox<dim> box;
   box[0] = {{0.5,1}};
@@ -94,12 +94,13 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
     box[i] = {{PI/4,PI/2}};
 
   auto grid = Grid<dim>::create(box, n_knots);
-  auto ref_space = RefSpace::create(deg, grid);
-  using Function = functions::BallFunction<dim>;
-  map = Function::create(grid, IdentityFunction<dim>::create(grid));
-  space = Basis::create(ref_space, map);
+  auto space = SplineSpace<dim>::create(deg, grid);
+  auto ref_basis = BSpline<dim>::create(space);
+  auto ball_func = grid_functions::BallGridFunction<dim>::create(grid);
+  auto ball_domain = Domain<dim>::create(ball_func);
+  basis = Basis::create(ref_basis, ball_domain);
 
-  matrix = create_matrix(*space,DofProperties::active,Epetra_SerialComm());
+  matrix = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
   rhs = create_vector(matrix->RangeMap());
   solution=create_vector(matrix->DomainMap());
 
@@ -110,70 +111,44 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
 template<int dim>
 void PoissonProblem<dim>::assemble()
 {
-  auto grid = space->get_grid();
+//  auto grid = basis->get_grid();
 
-  using Function = Function<dim,0,1,1>;
-  using ConstFunction = ConstantFunction<dim,0,1,1>;
-  using Value = typename Function::Value;
+  const auto domain = basis->get_physical_domain();
 
-  Value b = {5.};
-  auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), b);
+  using ConstFunc = functions::ConstantFunction<dim,0,1,1>;
+  auto f = ConstFunc::const_create(domain, {5.});
 
-  auto elem_handler = space->create_cache_handler();
+  auto basis_elem_handler = basis->create_cache_handler();
+  auto f_elem_handler = f->create_cache_handler();
 
-  auto flag = ValueFlags::value | ValueFlags::gradient |
-              ValueFlags::w_measure;
+  using Flags = space_element::Flags;
+  auto flag = Flags::value |
+              Flags::gradient |
+              Flags::w_measure;
 
-  elem_handler->reset(flag, elem_quad);
+  basis_elem_handler->set_element_flags(flag);
 
-  f->reset(ValueFlags::value, elem_quad);
+  f_elem_handler->set_element_flags(function_element::Flags::D0);
 
   auto f_elem = f->begin();
-  auto elem   = space->begin();
-  const auto elem_end = space->end();
+  auto basis_elem   = basis->begin();
+  const auto elem_end = basis->end();
 
-  elem_handler->init_element_cache(elem);
-  f->init_element_cache(f_elem);
+  basis_elem_handler->init_cache(basis_elem,elem_quad);
+  f_elem_handler->init_cache(f_elem,elem_quad);
 
-  const int n_qp = elem_quad.get_num_points();
+//  const int n_qp = elem_quad->get_num_points();
 
-  for (; elem != elem_end; ++elem, ++f_elem)
+  for (; basis_elem != elem_end; ++basis_elem, ++f_elem)
   {
-    const int n_basis = elem->get_num_basis(DofProperties::active);
+    f_elem_handler->fill_element_cache(f_elem);
+    const auto &f_values = f_elem->get_element_values_D0();
 
-    DenseMatrix loc_mat(n_basis, n_basis);
-    loc_mat = 0.0;
+    basis_elem_handler->fill_element_cache(basis_elem);
+    const auto loc_mat = basis_elem->integrate_gradu_gradv();
+    const auto loc_rhs = basis_elem->integrate_u_func(f_values);
 
-    DenseVector loc_rhs(n_basis);
-    loc_rhs = 0.0;
-
-    elem_handler->fill_element_cache(elem);
-    auto phi = elem->template get_basis_data<_Value, dim>(0,DofProperties::active);
-    auto grad_phi  = elem->template get_basis_data<_Gradient, dim>(0,DofProperties::active);
-    auto w_meas = elem->template get_w_measures<dim>(0);
-
-    f->fill_element_cache(f_elem);
-    auto f_values = f_elem->template get_values<_Value, dim>(0);
-
-    for (int i = 0; i < n_basis; ++i)
-    {
-      auto grad_phi_i = grad_phi.get_function_view(i);
-      for (int j = 0; j < n_basis; ++j)
-      {
-        auto grad_phi_j = grad_phi.get_function_view(j);
-        for (int qp = 0; qp < n_qp; ++qp)
-          loc_mat(i,j) +=
-            scalar_product(grad_phi_i[qp], grad_phi_j[qp])
-            * w_meas[qp];
-      }
-      auto phi_i = phi.get_function_view(i);
-
-      for (int qp=0; qp<n_qp; ++qp)
-        loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-                      * w_meas[qp];
-    }
-
-    const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
+    const auto loc_dofs = basis_elem->get_local_to_global(DofProperties::active);
     matrix->add_block(loc_dofs, loc_dofs,loc_mat);
     rhs->add_block(loc_dofs, loc_rhs);
   }
@@ -182,21 +157,23 @@ void PoissonProblem<dim>::assemble()
 
   // [dirichlet constraint]
 
-  auto g = ConstFunction::
-           create(grid, IdentityFunction<dim>::create(grid), {0.});
 
+  using SubGridElemMap = typename Grid<dim>::template SubGridMap<dim-1>;
+  using FuncAtBndry = Function<dim-1,1,1>;
+  SafeSTLMap<int,std::shared_ptr<const FuncAtBndry>> bndry_funcs;
+  for (int face_id = 0 ; face_id < UnitElement<dim>::n_faces ; ++face_id)
+  {
+    SubGridElemMap sub_grid_elem_map;
+    const auto sub_grid = domain->get_grid_function()->get_grid()->template get_sub_grid<dim-1>(face_id,sub_grid_elem_map);
 
-  const set<boundary_id> dir_id {0};
-  std::map<Index, Real> values;
-  // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-  project_boundary_values<Basis>(
-    const_pointer_cast<const Function>(g),
-    space,
-    face_quad,
-    dir_id,
-    values);
-  apply_boundary_values(values, *matrix, *rhs, *solution);
-  // [dirichlet constraint]
+    const auto sub_domain = domain->template get_sub_domain<dim-1>(face_id,sub_grid_elem_map,sub_grid);
+    bndry_funcs[face_id] = functions::ConstantFunction<dim-1,1,1>::const_create(sub_domain, {0.});
+  }
+
+  SafeSTLMap<Index, Real> bndry_values;
+  space_tools::project_boundary_values(bndry_funcs,*basis,face_quad,bndry_values);
+
+  apply_boundary_values(bndry_values, *matrix, *rhs, *solution);
 }
 
 
@@ -213,12 +190,13 @@ template<int dim>
 void PoissonProblem<dim>::output()
 {
   const int n_plot_points = 2;
-  auto map = space->get_ptr_const_map_func();
-  Writer<dim> writer(map, n_plot_points);
+  auto domain = basis->get_physical_domain();
+  Writer<dim> writer(domain, n_plot_points);
 
   using IgFunc = IgFunction<dim,0,1,1>;
-  auto solution_function = IgFunc::create(space, solution);
-  writer.template add_field<1,1>(solution_function, "solution");
+  auto solution_function = IgFunc::const_create(basis, *solution);
+  writer.template add_field<1,1>(*solution_function, "solution");
+
   string filename = "poisson_problem-" + to_string(dim) + "d" ;
   writer.save(filename);
 }
@@ -239,12 +217,14 @@ int main()
 {
   const int n_knots = 10;
   const int deg     = 1;
-
-  PoissonProblem<1> poisson_1d(deg, {n_knots});
-  poisson_1d.run();
+  /*
+    PoissonProblem<1> poisson_1d(deg, {n_knots});
+    poisson_1d.run();
+  //*/
 
   PoissonProblem<2> poisson_2d(deg, {n_knots, n_knots});
   poisson_2d.run();
+//*/
 
   PoissonProblem<3> poisson_3d(deg, {n_knots, n_knots, n_knots});
   poisson_3d.run();
