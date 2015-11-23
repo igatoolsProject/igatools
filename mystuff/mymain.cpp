@@ -126,7 +126,10 @@ int main() {
   
   auto source = grid_functions::CustomGridFunction<dim,1>::const_create(problem.grid,&source_term);
   problem.assemble(source);
-  problem.custom_solve
+  int it1, it2;
+  double cond1, cond2;
+  problem.custom_solve(it1,cond1,it2,cond2);
+  printf(" %3d - %1.3f\t%3d - %1.3f\n",it1,cond1,it2,cond2);
 
   return 0;
 }

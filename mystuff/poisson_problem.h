@@ -243,9 +243,9 @@ using OP = Epetra_Operator;
 using MV = Epetra_MultiVector;
 using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
 template<int dim_> // custom siuppacool solver
-void PoissonProblem<dim_>::custom_solve(int &it1, double &cond, int &it2, double &cond2) const {
+void PoissonProblem<dim_>::custom_solve(int &it1, double &cond1, int &it2, double &cond2) const {
 
-  double cond1;
+  //double cond1;
 
   // setting up the problem
   Epetra_LinearProblem problem1(&*mat,&*sol,&*rhs);
@@ -297,7 +297,7 @@ void PoissonProblem<dim_>::custom_solve(int &it1, double &cond, int &it2, double
   AztecOOConditionNumber cond_estimator;
   cond_estimator.initialize(*mat);
   cond_estimator.computeConditionNumber(100,1.0E-7);
-  cond = cond_estimator.getConditionNumber();
+  cond2 = cond_estimator.getConditionNumber();
 
 }
 
