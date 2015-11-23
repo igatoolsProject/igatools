@@ -113,12 +113,8 @@ PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
 create_element(const ListIt &index, const PropId &property) const
 -> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
 {
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
-  elem = std::unique_ptr<ElementAccessor>(
+  return std::unique_ptr<ElementAccessor>(
     new ElementAccessor(this->get_this_basis(),index,property));
-  Assert(elem != nullptr, ExcNullPtr());
-
-  return elem;
 }
 
 

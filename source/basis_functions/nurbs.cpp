@@ -127,11 +127,7 @@ create_element(const ListIt &index, const PropId &property) const
 {
   using Elem = NURBSElement<dim_,range_,rank_>;
 
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_>>
-  elem = std::make_unique<Elem>(this->get_this_basis(),index,property);
-  Assert(elem != nullptr, ExcNullPtr());
-
-  return elem;
+  return std::unique_ptr<Elem>(new Elem(this->get_this_basis(),index,property));
 }
 
 template<int dim_, int range_, int rank_>
@@ -142,11 +138,7 @@ create_ref_element(const ListIt &index, const PropId &property) const
 {
   using Elem = NURBSElement<dim_,range_,rank_>;
 
-  std::unique_ptr<ReferenceElement<dim_,range_,rank_>>
-  elem = std::make_unique<Elem>(this->get_this_basis(),index,property);
-  Assert(elem != nullptr, ExcNullPtr());
-
-  return elem;
+  return std::unique_ptr<Elem>(new Elem(this->get_this_basis(),index,property));
 }
 
 
@@ -472,7 +464,7 @@ auto
 NURBS<dim_, range_, rank_>::
 create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
-  return std::make_unique<ElementHandler>(this->get_this_basis());
+  return std::unique_ptr<ElementHandler>(new ElementHandler(this->get_this_basis()));
 }
 
 

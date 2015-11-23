@@ -47,17 +47,6 @@ get_grid() const -> std::shared_ptr<const GridType>
   return grid_.get_ptr_const_data();
 }
 
-#if 0
-template<int dim_, int space_dim_>
-auto
-GridFunction<dim_, space_dim_>::
-create_cache_handler() const
--> std::unique_ptr<ElementHandler>
-{
-  return std::make_unique<ElementHandler>(this->shared_from_this());
-}
-#endif
-
 
 template<int dim_, int space_dim_>
 auto
@@ -66,51 +55,12 @@ create_element(const ListIt &index, const PropId &prop) const
 -> std::unique_ptr<ElementAccessor>
 {
   using Elem = ElementAccessor;
-  auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
-  Assert(elem != nullptr, ExcNullPtr());
-
-  return elem;
+  return std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
 }
 
 
 
 
-#if 0
-
-template<int dim_, int space_dim_>
-auto
-GridFunction<dim_, space_dim_>::
-create_element(const ListIt &index, const PropId &prop)
--> std::unique_ptr<ElementAccessor>
-{
-  using Elem = ElementAccessor;
-  auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
-  Assert(elem != nullptr, ExcNullPtr());
-
-  return elem;
-}
-
-
-template<int dim_, int space_dim_>
-auto
-GridFunction<dim_, space_dim_>::
-begin(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(this->shared_from_this(),
-  grid_->get_elements_with_property(prop).begin(), prop);
-}
-
-
-template<int dim_, int space_dim_>
-auto
-GridFunction<dim_, space_dim_>::
-end(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(this->shared_from_this(),
-  grid_->get_elements_with_property(prop).end(),
-  prop);
-}
-#endif
 
 
 

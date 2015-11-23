@@ -40,8 +40,8 @@ FormulaFunction<dim, codim, range, rank>::
 create_cache_handler() const
 -> std::unique_ptr<typename parent_t::ElementHandler>
 {
-  return std::make_unique<ElementHandler>(
-    std::dynamic_pointer_cast<const self_t>(this->shared_from_this()));
+  return std::unique_ptr<ElementHandler>(new ElementHandler(
+    std::dynamic_pointer_cast<const self_t>(this->shared_from_this())));
 }
 
 IGA_NAMESPACE_CLOSE

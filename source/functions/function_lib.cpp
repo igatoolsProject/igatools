@@ -43,9 +43,9 @@ ConstantFunction<dim, codim, range, rank>::
 create(const std::shared_ptr<DomainType> &domain,
        const Value &b,
        const std::string &name)
-->  std::shared_ptr<base_t>
+->  std::shared_ptr<self_t>
 {
-  return std::shared_ptr<base_t>(new
+  return std::shared_ptr<self_t>(new
   self_t(SharedPtrConstnessHandler<DomainType>(domain), b,name));
 }
 
@@ -55,9 +55,9 @@ ConstantFunction<dim, codim, range, rank>::
 const_create(const std::shared_ptr<const DomainType> &domain,
              const Value &b,
              const std::string &name)
-->  std::shared_ptr<const base_t>
+->  std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<base_t>(new
+  return std::shared_ptr<self_t>(new
   self_t(SharedPtrConstnessHandler<DomainType>(domain), b,name));
 }
 
@@ -121,9 +121,9 @@ LinearFunction<dim, codim, range>::
 create(const std::shared_ptr<DomainType> &domain,
        const Derivative<1> &A,
        const Value &b,
-       const std::string &name) ->  std::shared_ptr<base_t>
+       const std::string &name) ->  std::shared_ptr<self_t>
 {
-  return std::shared_ptr<base_t>(new
+  return std::shared_ptr<self_t>(new
   self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b,name));
 }
 
@@ -134,9 +134,9 @@ LinearFunction<dim, codim, range>::
 const_create(const std::shared_ptr<const DomainType> &domain,
              const Derivative<1> &A,
              const Value &b,
-             const std::string &name) -> std::shared_ptr<const base_t>
+             const std::string &name) -> std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<base_t>(new
+  return std::shared_ptr<self_t>(new
   self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b,name));
 }
 

@@ -55,7 +55,7 @@ Function<dim_, codim_, range_, rank_ >::
 create_cache_handler() const
 -> std::unique_ptr<ElementHandler>
 {
-  return std::make_unique<ElementHandler>(this->shared_from_this());
+  return std::unique_ptr<ElementHandler>(new ElementHandler(this->shared_from_this()));
 }
 
 
@@ -67,27 +67,10 @@ create_element(const ListIt &index, const PropId &prop) const
 -> std::unique_ptr<ElementAccessor>
 {
   using Elem = ElementAccessor;
-  auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
-  Assert(elem != nullptr,ExcNullPtr());
-
-  return elem;
+  return std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
 }
 
 
-#if 0
-template<int dim_, int codim_, int range_, int rank_>
-auto
-Function<dim_, codim_, range_, rank_ >::
-create_element(const ListIt &index, const PropId &prop)
--> std::unique_ptr<ElementAccessor>
-{
-  using Elem = ElementAccessor;
-  auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
-  Assert(elem != nullptr,ExcNullPtr());
-
-  return elem;
-}
-#endif
 
 #if 0
 template<int dim_, int codim_, int range_, int rank_>

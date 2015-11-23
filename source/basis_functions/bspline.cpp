@@ -171,11 +171,7 @@ create_element(const ListIt &index, const PropId &property) const
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_>>
-  elem = std::make_unique<Elem>(this->get_this_basis(),index,property);
-  Assert(elem != nullptr, ExcNullPtr());
-
-  return elem;
+  return std::make_unique<Elem>(this->get_this_basis(),index,property);
 }
 
 template<int dim_, int range_, int rank_>
@@ -186,11 +182,7 @@ create_ref_element(const ListIt &index, const PropId &property) const
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
-  std::unique_ptr<ReferenceElement<dim_,range_,rank_>>
-  elem = std::make_unique<Elem>(this->get_this_basis(),index,property);
-  Assert(elem != nullptr, ExcNullPtr());
-
-  return elem;
+  return std::unique_ptr<Elem>(new Elem(this->get_this_basis(),index,property));
 }
 
 
@@ -391,8 +383,8 @@ BSpline<dim_, range_, rank_>::
 create_cache_handler() const
 -> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
-  return std::make_unique<BSplineElementHandler<dim_,range_,rank_>>(
-    this->get_this_basis());
+  using Handler = BSplineElementHandler<dim_,range_,rank_>;
+  return std::unique_ptr<Handler>(new Handler(this->get_this_basis()));
 }
 
 

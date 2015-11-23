@@ -174,11 +174,21 @@ public:
 
 
 
+  const ValueVector<Value>
+  get_element_values_D0() const;
+
+  const ValueVector<Derivative<1> >
+  get_element_values_D1() const;
+
+  const ValueVector<Derivative<2> >
+  get_element_values_D2() const;
 
 
   using _D0 = function_element::template _D<0>;
   using _D1 = function_element::template _D<1>;
   using _D2 = function_element::template _D<2>;
+
+
 
 private:
 
