@@ -28,11 +28,17 @@
 #include <boost/fusion/container/map.hpp>
 #include <boost/fusion/container/vector.hpp>
 
+IGA_NAMESPACE_OPEN
+
 template <int dim> class Grid;
 template <int dim, int range, int rank> class SplineSpace;
 template <int dim, int range, int rank> class ReferenceSpaceBasis;
-
-IGA_NAMESPACE_OPEN
+template <int dim, int range, int rank> class BSpline;
+template <int dim, int range, int rank> class NURBS;
+template <int dim, int range> class GridFunction;
+template <int dim, int codim> class Domain;
+template <int dim, int range, int rank, int codim> class PhysicalSpaceBasis;
+template <int dim, int codim, int range, int rank> class Function;
 
 /**
  * @brief To be documented.
@@ -76,11 +82,46 @@ private:
   template <int dim, int range, int rank>
   using MapRefSpacePtr_t = std::map<Index, RefSpacePtr_t<dim, range, rank>>;
 
+  /** Type for the shared pointer of a grid function. */
+  template <int dim, int range>
+  using GridFuncPtr_t = std::shared_ptr<GridFunction<dim, range>>;
+
+  /** Type for the map of indices and grid function shared pointers. */
+  template <int dim, int range>
+  using MapGridFuncPtr_t = std::map<Index, GridFuncPtr_t<dim, range>>;
+
+  /** Type for the shared pointer of a domain. */
+  template <int dim, int codim>
+  using DomainPtr_t = std::shared_ptr<Domain<dim, codim>>;
+
+  /** Type for the map of indices and domain shared pointers. */
+  template <int dim, int codim>
+  using MapDomainPtr_t = std::map<Index, DomainPtr_t<dim, codim>>;
+
+  /** Alias for physical space basis. */
+  template <int dim, int range, int rank, int codim>
+  using PhysSpace_t = PhysicalSpaceBasis<dim, range, rank, codim>;
+
+  /** Type for the shared pointer of a physical space basis. */
+  template <int dim, int range, int rank, int codim>
+  using PhysSpacePtr_t = std::shared_ptr<PhysSpace_t<dim, range, rank, codim>>;
+
+  /** Type for the map of indices and physical space basis shared pointers. */
+  template <int dim, int range, int rank, int codim>
+  using MapPhysSpacePtr_t = std::map<Index, PhysSpacePtr_t<dim, range, rank, codim>>;
+
+  /** Type for the shared pointer of a function. */
+  template <int dim, int codim, int range, int rank>
+  using FunctionPtr_t = std::shared_ptr<Function<dim, codim, range, rank>>;
+
+  /** Type for the map of indices and physical space basis shared pointers. */
+  template <int dim, int codim, int range, int rank>
+  using MapFunctionPtr_t = std::map<Index, FunctionPtr_t<dim, codim, range, rank>>;
+
   typedef boost::fusion::map<
   boost::fusion::pair<Grid<0>, MapGridPtr_t<0>>,
   boost::fusion::pair<Grid<1>, MapGridPtr_t<1>>,
   boost::fusion::pair<Grid<2>, MapGridPtr_t<2>>,
-  boost::fusion::pair<Grid<3>, MapGridPtr_t<3>>,
   boost::fusion::pair<Grid<3>, MapGridPtr_t<3>>,
   boost::fusion::pair<SplineSpace<0,0,1>, MapSplineSpacePtr_t<0,0,1>>,
   boost::fusion::pair<SplineSpace<0,1,1>, MapSplineSpacePtr_t<0,1,1>>,
@@ -105,7 +146,85 @@ private:
   boost::fusion::pair<RefSpace_t<2,2,1>, MapRefSpacePtr_t<2,2,1>>,
   boost::fusion::pair<RefSpace_t<2,3,1>, MapRefSpacePtr_t<2,3,1>>,
   boost::fusion::pair<RefSpace_t<3,1,1>, MapRefSpacePtr_t<3,1,1>>,
-  boost::fusion::pair<RefSpace_t<3,3,1>, MapRefSpacePtr_t<3,3,1>>> ObjectTypes_t;
+  boost::fusion::pair<RefSpace_t<3,3,1>, MapRefSpacePtr_t<3,3,1>>,
+  boost::fusion::pair<GridFunction<0,0>, MapGridFuncPtr_t<0,0>>,
+  boost::fusion::pair<GridFunction<0,1>, MapGridFuncPtr_t<0,1>>,
+  boost::fusion::pair<GridFunction<0,2>, MapGridFuncPtr_t<0,2>>,
+  boost::fusion::pair<GridFunction<0,3>, MapGridFuncPtr_t<0,3>>,
+  boost::fusion::pair<GridFunction<1,1>, MapGridFuncPtr_t<1,1>>,
+  boost::fusion::pair<GridFunction<1,2>, MapGridFuncPtr_t<1,2>>,
+  boost::fusion::pair<GridFunction<1,3>, MapGridFuncPtr_t<1,3>>,
+  boost::fusion::pair<GridFunction<2,1>, MapGridFuncPtr_t<2,1>>,
+  boost::fusion::pair<GridFunction<2,2>, MapGridFuncPtr_t<2,2>>,
+  boost::fusion::pair<GridFunction<2,3>, MapGridFuncPtr_t<2,3>>,
+  boost::fusion::pair<GridFunction<3,1>, MapGridFuncPtr_t<3,1>>,
+  boost::fusion::pair<GridFunction<3,3>, MapGridFuncPtr_t<3,3>>,
+  boost::fusion::pair<Domain<0,0>, MapDomainPtr_t<0,0>>,
+  boost::fusion::pair<Domain<0,1>, MapDomainPtr_t<0,1>>,
+  boost::fusion::pair<Domain<0,2>, MapDomainPtr_t<0,2>>,
+  boost::fusion::pair<Domain<0,3>, MapDomainPtr_t<0,3>>,
+  boost::fusion::pair<Domain<1,0>, MapDomainPtr_t<1,0>>,
+  boost::fusion::pair<Domain<1,1>, MapDomainPtr_t<1,1>>,
+  boost::fusion::pair<Domain<1,2>, MapDomainPtr_t<1,2>>,
+  boost::fusion::pair<Domain<2,0>, MapDomainPtr_t<2,0>>,
+  boost::fusion::pair<Domain<2,1>, MapDomainPtr_t<2,1>>,
+  boost::fusion::pair<Domain<3,0>, MapDomainPtr_t<3,0>>,
+  boost::fusion::pair<PhysSpace_t<0,0,1,0>, MapPhysSpacePtr_t<0,0,1,0>>,
+  boost::fusion::pair<PhysSpace_t<0,1,1,2>, MapPhysSpacePtr_t<0,1,1,2>>,
+  boost::fusion::pair<PhysSpace_t<0,1,1,1>, MapPhysSpacePtr_t<0,1,1,1>>,
+  boost::fusion::pair<PhysSpace_t<0,1,1,3>, MapPhysSpacePtr_t<0,1,1,3>>,
+  boost::fusion::pair<PhysSpace_t<0,3,1,2>, MapPhysSpacePtr_t<0,3,1,2>>,
+  boost::fusion::pair<PhysSpace_t<0,3,1,1>, MapPhysSpacePtr_t<0,3,1,1>>,
+  boost::fusion::pair<PhysSpace_t<0,2,1,2>, MapPhysSpacePtr_t<0,2,1,2>>,
+  boost::fusion::pair<PhysSpace_t<0,2,1,1>, MapPhysSpacePtr_t<0,2,1,1>>,
+  boost::fusion::pair<PhysSpace_t<0,3,1,3>, MapPhysSpacePtr_t<0,3,1,3>>,
+  boost::fusion::pair<PhysSpace_t<1,1,1,0>, MapPhysSpacePtr_t<1,1,1,0>>,
+  boost::fusion::pair<PhysSpace_t<1,1,1,1>, MapPhysSpacePtr_t<1,1,1,1>>,
+  boost::fusion::pair<PhysSpace_t<1,2,1,1>, MapPhysSpacePtr_t<1,2,1,1>>,
+  boost::fusion::pair<PhysSpace_t<1,3,1,1>, MapPhysSpacePtr_t<1,3,1,1>>,
+  boost::fusion::pair<PhysSpace_t<1,1,1,2>, MapPhysSpacePtr_t<1,1,1,2>>,
+  boost::fusion::pair<PhysSpace_t<1,3,1,2>, MapPhysSpacePtr_t<1,3,1,2>>,
+  boost::fusion::pair<PhysSpace_t<2,1,1,0>, MapPhysSpacePtr_t<2,1,1,0>>,
+  boost::fusion::pair<PhysSpace_t<2,2,1,0>, MapPhysSpacePtr_t<2,2,1,0>>,
+  boost::fusion::pair<PhysSpace_t<2,1,1,1>, MapPhysSpacePtr_t<2,1,1,1>>,
+  boost::fusion::pair<PhysSpace_t<2,3,1,1>, MapPhysSpacePtr_t<2,3,1,1>>,
+  boost::fusion::pair<PhysSpace_t<3,1,1,0>, MapPhysSpacePtr_t<3,1,1,0>>,
+  boost::fusion::pair<PhysSpace_t<3,3,1,0>, MapPhysSpacePtr_t<3,3,1,0>>,
+  boost::fusion::pair<PhysSpace_t<1,2,1,0>, MapPhysSpacePtr_t<1,2,1,0>>,
+  boost::fusion::pair<PhysSpace_t<1,3,1,0>, MapPhysSpacePtr_t<1,3,1,0>>,
+  boost::fusion::pair<PhysSpace_t<2,3,1,0>, MapPhysSpacePtr_t<2,3,1,0>>,
+  boost::fusion::pair<PhysSpace_t<0,1,1,0>, MapPhysSpacePtr_t<0,1,1,0>>,
+  boost::fusion::pair<PhysSpace_t<0,2,1,0>, MapPhysSpacePtr_t<0,2,1,0>>,
+  boost::fusion::pair<PhysSpace_t<0,3,1,0>, MapPhysSpacePtr_t<0,3,1,0>>,
+  boost::fusion::pair<Function<0,0,0,1>, MapFunctionPtr_t<0,0,0,1>>,
+  boost::fusion::pair<Function<0,2,1,1>, MapFunctionPtr_t<0,2,1,1>>,
+  boost::fusion::pair<Function<0,1,1,1>, MapFunctionPtr_t<0,1,1,1>>,
+  boost::fusion::pair<Function<0,3,1,1>, MapFunctionPtr_t<0,3,1,1>>,
+  boost::fusion::pair<Function<0,2,3,1>, MapFunctionPtr_t<0,2,3,1>>,
+  boost::fusion::pair<Function<0,1,3,1>, MapFunctionPtr_t<0,1,3,1>>,
+  boost::fusion::pair<Function<0,2,2,1>, MapFunctionPtr_t<0,2,2,1>>,
+  boost::fusion::pair<Function<0,1,2,1>, MapFunctionPtr_t<0,1,2,1>>,
+  boost::fusion::pair<Function<0,3,3,1>, MapFunctionPtr_t<0,3,3,1>>,
+  boost::fusion::pair<Function<1,0,1,1>, MapFunctionPtr_t<1,0,1,1>>,
+  boost::fusion::pair<Function<1,1,1,1>, MapFunctionPtr_t<1,1,1,1>>,
+  boost::fusion::pair<Function<1,1,2,1>, MapFunctionPtr_t<1,1,2,1>>,
+  boost::fusion::pair<Function<1,1,3,1>, MapFunctionPtr_t<1,1,3,1>>,
+  boost::fusion::pair<Function<1,2,1,1>, MapFunctionPtr_t<1,2,1,1>>,
+  boost::fusion::pair<Function<1,2,3,1>, MapFunctionPtr_t<1,2,3,1>>,
+  boost::fusion::pair<Function<2,0,1,1>, MapFunctionPtr_t<2,0,1,1>>,
+  boost::fusion::pair<Function<2,0,2,1>, MapFunctionPtr_t<2,0,2,1>>,
+  boost::fusion::pair<Function<2,1,1,1>, MapFunctionPtr_t<2,1,1,1>>,
+  boost::fusion::pair<Function<2,1,3,1>, MapFunctionPtr_t<2,1,3,1>>,
+  boost::fusion::pair<Function<3,0,1,1>, MapFunctionPtr_t<3,0,1,1>>,
+  boost::fusion::pair<Function<3,0,3,1>, MapFunctionPtr_t<3,0,3,1>>,
+  boost::fusion::pair<Function<1,0,2,1>, MapFunctionPtr_t<1,0,2,1>>,
+  boost::fusion::pair<Function<1,0,3,1>, MapFunctionPtr_t<1,0,3,1>>,
+  boost::fusion::pair<Function<2,0,3,1>, MapFunctionPtr_t<2,0,3,1>>,
+  boost::fusion::pair<Function<0,0,1,1>, MapFunctionPtr_t<0,0,1,1>>,
+  boost::fusion::pair<Function<0,0,2,1>, MapFunctionPtr_t<0,0,2,1>>,
+  boost::fusion::pair<Function<0,0,3,1>, MapFunctionPtr_t<0,0,3,1>>
+  > ObjectTypes_t;
+
 
 
   /** @name Constructors*/
@@ -222,6 +341,106 @@ public:
    */
   template <int dim, int range, int rank>
   bool is_ref_space (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank>
+  std::shared_ptr<BSpline<dim, range, rank>> get_bspline (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank>
+  std::shared_ptr<NURBS<dim, range, rank>> get_nurbs (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank>
+  bool is_bspline (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank>
+  bool is_nurbs (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range>
+  void add_grid_function (const GridFuncPtr_t<dim, range> grid_func,
+                          const Index &id);
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range>
+  GridFuncPtr_t<dim, range> get_grid_function (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range>
+  bool is_grid_function (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int codim>
+  void add_domain (const DomainPtr_t<dim, codim> domain,
+                   const Index &id);
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int codim>
+  DomainPtr_t<dim, codim> get_domain (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int codim>
+  bool is_domain (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank, int codim>
+  void add_phys_space_basis (const PhysSpacePtr_t<dim, range, rank, codim> space,
+                             const Index &id);
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank, int codim>
+  PhysSpacePtr_t<dim, range, rank, codim> get_phys_space_basis (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank, int codim>
+  bool is_phys_space_basis (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int codim, int range, int rank>
+  void add_function (const FunctionPtr_t<dim, codim, range, rank> function,
+                     const Index &id);
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int codim, int range, int rank>
+  FunctionPtr_t<dim, codim, range, rank> get_function (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int codim, int range, int rank>
+  bool is_function (const Index &id) const;
 
 private:
   /**
