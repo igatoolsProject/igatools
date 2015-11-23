@@ -8,6 +8,8 @@
     <Knots Direction="1" Size="2">
       0.000000 1.000000
     </Knots>
+    <!-- This tag is optional -->
+    <Name>my_grid</Name>
   </Grid>
 
   <SplineSpace IgaObjectId="1" Dim="2" Range="2" Rank="1">
@@ -35,6 +37,9 @@
       </SplineSpaceComponent>
     </SplineSpaceComponents>
 
+    <!-- This tag is optional -->
+    <Name>my_spline_space_0</Name>
+
   </SplineSpace>
 
   <SplineSpace IgaObjectId="2" Dim="2" Range="1" Rank="1">
@@ -52,6 +57,9 @@
       </SplineSpaceComponent>
     </SplineSpaceComponents>
 
+    <!-- This tag is optional -->
+    <Name>my_spline_space_1</Name>
+
   </SplineSpace>
 
   <BSpline IgaObjectId="3" Dim="2" Range="2" Rank="1">
@@ -61,6 +69,8 @@
       <EndBehaviour ComponentId="0">end_knots end_knots</EndBehaviour>
       <EndBehaviour ComponentId="1">end_knots end_knots</EndBehaviour>
     </EndBehaviour>
+    <!-- This tag is optional -->
+    <Name>my_bspline_0</Name>
   </BSpline>
 
   <BSpline IgaObjectId="4" Dim="2" Range="1" Rank="1">
@@ -69,23 +79,30 @@
     <EndBehaviour>
       <EndBehaviour ComponentId="0">end_knots end_knots</EndBehaviour>
     </EndBehaviour>
+    <!-- This tag is optional -->
+    <Name>my_bspline_1</Name>
   </BSpline>
 
-  <IgGridFunction IgaObjectId="5" Dim="2" SpaceDim="1">
+
+  <IgGridFunction IgaObjectId="5" Dim="2" Spacedim="1">
     <ReferenceSpaceBasis GetFromIgaObjectId="4"/>
     <IgCoefficients Size="12">
       1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
     </IgCoefficients>
     <!-- This tag is optional -->
     <DofsProperty>active</DofsProperty>
+    <!-- This tag is optional -->
+    <Name>my_ig_grid_function_0</Name>
   </IgGridFunction>
 
   <NURBS IgaObjectId="6" Dim="2" Range="2" Rank="1">
-    <BSpline GetFromIgaObjectId="4"/>
+    <BSpline GetFromIgaObjectId="3"/>
     <WeightFunction GetFromIgaObjectId="5"/>
+    <!-- This tag is optional -->
+    <Name>my_nurbs</Name>
   </NURBS>
 
-  <IgGridFunction IgaObjectId="7" Dim="2" SpaceDim="2">
+  <IgGridFunction IgaObjectId="7" Dim="2" Spacedim="2">
     <ReferenceSpaceBasis GetFromIgaObjectId="6"/>
     <IgCoefficients Size="24">
       0.0 1.0 2.0 3.0 0.0 1.0 2.0 3.0 0.0 1.0 2.0 3.0
@@ -93,6 +110,8 @@
     </IgCoefficients>
     <!-- This tag is optional -->
     <DofsProperty>active</DofsProperty>
+    <!-- This tag is optional -->
+    <Name>my_ig_grid_function_1</Name>
   </IgGridFunction>
 
   <Domain IgaObjectId="8"  Dim="2" Codim="0">
@@ -106,6 +125,8 @@
     <Domain GetFromIgaObjectId="8"/>
     <!-- This tag is optional -->
     <Transformation>h_grad</Transformation>
+    <!-- This tag is optional -->
+    <Name>my_physical_space</Name>
   </PhysicalSpaceBasis>
 
   <IgFunction IgaObjectId="10" Dim="2" Range="2" Rank="1" Codim="0">
@@ -118,6 +139,8 @@
     <Name>my_function</Name>
     <!-- This tag is optional -->
     <DofsProperty>active</DofsProperty>
+    <!-- This tag is optional -->
+    <Name>my_ig_function</Name>
   </IgFunction>
 
 </Igatools>
