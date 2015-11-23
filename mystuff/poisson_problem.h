@@ -53,7 +53,7 @@ class PoissonProblem {
     void how_are_you_doin() const;
     void print_system() const;
     //using Funct = typename grid_functions::FormulaGridFunction<dim_,1>::CustomGridFunction<dim_,1>;
-    void assemble(std::shared_ptr<const Function<dim_,0,1,1>> f) const;
+    void assemble(std::shared_ptr<const GridFunction<dim_,1>> f) const;
     void solve() const;
     void custom_solve(int &it1, double &cond1, int &it2, double &cond2) const;
     Real l2_error(std::shared_ptr<const GridFunction<dim_,1>> u) const;
@@ -157,7 +157,7 @@ auto PoissonProblem<dim_>::const_create(const Size nel, const Size deg, const Ge
 //   METHODS
 // ----------------------------------------------------------------------------
 template<int dim_> // assemble the system
-void PoissonProblem<dim_>::assemble(std::shared_ptr<const Function<dim_,0,1,1>> source_term) const {
+void PoissonProblem<dim_>::assemble(std::shared_ptr<const GridFunction<dim_,1>> source_term) const {
 
   // starting the cache handler for the basis functions:
   auto basis_handler = basis->create_cache_handler();
@@ -174,13 +174,15 @@ void PoissonProblem<dim_>::assemble(std::shared_ptr<const Function<dim_,0,1,1>> 
   // starting the cache handler for the (constant) function f:
   auto funct_handler = source_term->create_cache_handler();
   auto funct_el = source_term->begin();
-  funct_handler->template set_flags<dim_>(function_element::Flags::D0);
+  //funct_handler->template set_flags<dim_>(function_element::Flags::D0);
+  funct_handler->set_element_flags(grid_function_element::Flags::D0);
   funct_handler->init_cache(funct_el,quad);
 
   // retrieving the last datum and then starting the loop
   for (int iel=0; basis_el!=basis_eld; ++basis_el, ++funct_el) {
     basis_handler->fill_element_cache(basis_el);
-    funct_handler->fill_element_cache(funct_el);
+    //funct_handler->fill_element_cache(funct_el);
+    //funct_handler->template fill_cache<dim_>(funct_el,0);
     // preparing some stuff: creating the local matrices
     auto Nbf = basis_el->get_num_basis(DofProperties::active);
     DenseMatrix loc_mat(Nbf,Nbf); loc_mat=0.0;
@@ -189,8 +191,8 @@ void PoissonProblem<dim_>::assemble(std::shared_ptr<const Function<dim_,0,1,1>> 
     auto values = basis_el->get_element_values();
     auto grads  = basis_el->get_element_gradients();
     auto w_meas = basis_el->get_element_w_measures();
-    using _D0 = typename function_element::template _D<0>;
-    auto f_vals = funct_el->template get_values_from_cache<_D0,dim_>(0);
+    //using _D0 = typename function_element::template _D<0>;
+    //auto f_vals = funct_el->template get_values_from_cache<_D0,dim_>(0);
     // finally, the loop
     for (int ibf=0; ibf<Nbf; ibf++) {
       // loop for the stiffness local matrix
@@ -202,16 +204,16 @@ void PoissonProblem<dim_>::assemble(std::shared_ptr<const Function<dim_,0,1,1>> 
         }
       }
       // loop for the right hand side local vector
-      const auto &bfi = values.get_function_view(ibf); // view for the i-th basis function
-      for (int iqn=0; iqn<Nqn; iqn++) {
-        loc_rhs(ibf) += scalar_product(bfi[iqn],f_vals[iqn]) * w_meas[iqn]; 
-      }
+      //const auto &bfi = values.get_function_view(ibf); // view for the i-th basis function
+      //for (int iqn=0; iqn<Nqn; iqn++) {
+      //  loc_rhs(ibf) += scalar_product(bfi[iqn],f_vals[iqn]) * w_meas[iqn]; 
+      //}
     }
     iel++;
     // spatashing element matrix into the global matrix
     const auto loc_dofs = basis_el->get_local_to_global(DofProperties::active);
     mat->add_block(loc_dofs,loc_dofs,loc_mat);
-    rhs->add_block(loc_dofs,loc_rhs);
+    //rhs->add_block(loc_dofs,loc_rhs);
   }
   mat->FillComplete();
 
@@ -225,7 +227,7 @@ void PoissonProblem<dim_>::assemble(std::shared_ptr<const Function<dim_,0,1,1>> 
   for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
     bdr_vals[*it]=0.0;
   }
-  //rhs->Random();
+  rhs->Random();
   apply_boundary_values(bdr_vals,*mat,*rhs,*sol);
 
 }
@@ -241,7 +243,9 @@ using OP = Epetra_Operator;
 using MV = Epetra_MultiVector;
 using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
 template<int dim_> // custom siuppacool solver
-void PoissonProblem<dim_>::custom_solve(int &it1, double &cond1, int &it2, double &cond2) const {
+void PoissonProblem<dim_>::custom_solve(int &it1, double &cond, int &it2, double &cond2) const {
+
+  double cond1;
 
   // setting up the problem
   Epetra_LinearProblem problem1(&*mat,&*sol,&*rhs);
@@ -267,10 +271,10 @@ void PoissonProblem<dim_>::custom_solve(int &it1, double &cond1, int &it2, doubl
   Epetra_Vector diag(mat->DomainMap());
   Epetra_Vector diag_reciprocal(mat->DomainMap());
   mat->ExtractDiagonalCopy(diag);
-  double *val;
-  diag.ExtractView(&val);
+  //double *val;
+  //diag.ExtractView(&val);
   for (int idof=0; idof<diag.MyLength(); idof++) {
-    diag_reciprocal[idof]=sqrt(1.0/val[idof]);
+    diag_reciprocal[idof]=sqrt(1.0/diag[idof]);
   }
   mat->LeftScale(diag_reciprocal);
   mat->RightScale(diag_reciprocal);
@@ -290,11 +294,10 @@ void PoissonProblem<dim_>::custom_solve(int &it1, double &cond1, int &it2, doubl
   it2 = solver2.NumIters();
 
   // condition number estimate
-  AztecOOConditionNumber condest2;
-  condest2.initialize(*mat);
-  //AztecOOConditionNumber::SolverType solver_type = CG_;
-  condest2.computeConditionNumber(100,1.0E-7);
-  cond2 = condest2.getConditionNumber();
+  AztecOOConditionNumber cond_estimator;
+  cond_estimator.initialize(*mat);
+  cond_estimator.computeConditionNumber(100,1.0E-7);
+  cond = cond_estimator.getConditionNumber();
 
 }
 

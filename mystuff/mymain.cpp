@@ -124,8 +124,9 @@ int main() {
   // new siuppafancy problem
   auto problem =  PoissonProblem<dim>(16,3,geometry);
   
-  auto source = functions::CustomFunction<dim,1>::const_create(problem.domain,&source_term);
+  auto source = grid_functions::CustomGridFunction<dim,1>::const_create(problem.grid,&source_term);
   problem.assemble(source);
+  problem.custom_solve
 
   return 0;
 }
