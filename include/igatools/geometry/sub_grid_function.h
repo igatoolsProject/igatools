@@ -73,17 +73,6 @@ public:
   virtual GridIterator<GridFunctionElement<sdim,space_dim> >
   cend(const PropId &prop) const override;
 
-#if 0
-  auto begin(const PropId &prop) const
-  {
-    return this->cbegin();
-  }
-
-  auto end(const PropId &prop) const
-  {
-    return this->cend();
-  }
-#endif
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const SupFunc> &func,

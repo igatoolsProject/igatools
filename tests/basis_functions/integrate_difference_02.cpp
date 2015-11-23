@@ -50,7 +50,6 @@ void integrate_grid_function(const int deg,  const int n_knots)
   auto f = NormGridFunction<dim>::const_create(grid);
   auto g = grid_functions::ConstantGridFunction<dim,1>::const_create(grid, {0.});
 
-
   SafeSTLMap<ElementIndex<dim>,Real> elem_err_l2;
   Real err_l2 = space_tools::l2_norm_difference<dim,1>(*f, *g, quad, elem_err_l2);
   out << "Error L2 = "<< err_l2 << endl;

@@ -30,11 +30,12 @@ for grid in grids:
     f.write('template std::shared_ptr<%s> grid_tools::build_grid_union('
             'const %s &,const %s &,%s &,%s &); \n' % (grid,grid,grid, map,map))
     
-#for dim in inst.all_domain_dims:
-#    grid = 'Grid<%d>' % (dim)
-#    f.write('template std::map<Index,Index>'+
-#            ' grid_tools::build_map_elements_id_between_grids('
-#           'const %s &,const %s &); \n' % (grid,grid))
+for dim in inst.all_domain_dims:
+    grid = 'Grid<%d>' % (dim)
+    index = 'typename %s::IndexType' % (grid)
+    f.write('template iga::SafeSTLMap<%s, %s>' % (index, index) + 
+            ' grid_tools::build_map_elements_id_between_grids(' +
+            'const %s &,const %s &); \n' % (grid, grid))
 #    f.write('template SafeSTLArray<SafeSTLVector<Index>,%d>' % (dim)+
 #            ' grid_tools::build_map_intervals_id_between_grids('
 #            'const %s &,const %s &); \n' % (grid,grid))

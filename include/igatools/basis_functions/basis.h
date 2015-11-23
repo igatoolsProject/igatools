@@ -173,16 +173,6 @@ public:
   ///@{
   std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
   get_dof_distribution() const;
-
-
-
-
-  virtual void get_element_dofs(
-    const IndexType &element_id,
-    SafeSTLVector<Index> &dofs_global,
-    SafeSTLVector<Index> &dofs_local_to_patch,
-    SafeSTLVector<Index> &dofs_local_to_elem,
-    const std::string &dofs_property = DofProperties::active) const = 0;
   ///@}
 
   /** @name Functions for retrieving information about the number of basis function. */

@@ -796,6 +796,73 @@ get_multiplicity_from_regularity(const InteriorReg reg,
 template<int dim, int range, int rank>
 void
 SplineSpace<dim, range, rank>::
+get_element_dofs(
+  const typename GridType::IndexType &elem_id,
+  SafeSTLVector<Index> &dofs_global,
+  SafeSTLVector<Index> &dofs_local_to_patch,
+  SafeSTLVector<Index> &dofs_local_to_elem,
+  const std::string &dofs_property) const
+{
+  const auto &accum_mult = this->accumulated_interior_multiplicities();
+
+  const auto &dof_distr = *(this->get_dof_distribution());
+  const auto &index_table = dof_distr.get_index_table();
+
+  dofs_global.clear();
+  dofs_local_to_patch.clear();
+  dofs_local_to_elem.clear();
+
+  const auto &elem_t_id = elem_id.get_tensor_index();
+
+  Index dof_loc_to_elem = 0;
+  for (const auto comp : components)
+  {
+    const auto &index_table_comp = index_table[comp];
+
+    const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_t_id);
+
+    const auto &elem_comp_dof_t_id = this->get_dofs_tensor_id_elem_table()[comp];
+
+//        if (dofs_property == DofProperties::active)
+//        {
+//            for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+//            {
+//                const auto dof_global = index_table_comp(dof_t_origin + loc_dof_t_id);
+//                dofs_global.emplace_back(dof_global);
+//
+//                const auto dof_loc_to_patch = this->dof_distribution_->global_to_patch_local(dof_global);
+//                dofs_local_to_patch.emplace_back(dof_loc_to_patch);
+//
+//                dofs_local_to_elem.emplace_back(dof_loc_to_elem);
+//
+//                ++dof_loc_to_elem;
+//            } // end loop loc_dof_t_id
+//        }
+//        else
+    {
+      for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+      {
+        const auto dof_global = index_table_comp(dof_t_origin + loc_dof_t_id);
+        if (dof_distr.test_if_dof_has_property(dof_global, dofs_property))
+        {
+          dofs_global.emplace_back(dof_global);
+
+          const auto dof_loc_to_patch = dof_distr.global_to_patch_local(dof_global);
+          dofs_local_to_patch.emplace_back(dof_loc_to_patch);
+
+          dofs_local_to_elem.emplace_back(dof_loc_to_elem);
+
+        }
+        ++dof_loc_to_elem;
+      } // end loop loc_dof_t_id
+    }
+
+  } // end comp loop
+}
+
+template<int dim, int range, int rank>
+void
+SplineSpace<dim, range, rank>::
 print_info(LogStream &out) const
 {
   out.begin_item("Knots without repetition:");

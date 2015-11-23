@@ -121,31 +121,15 @@ public:
 
 
 public:
-  virtual std::unique_ptr<ElementHandler>
+  std::unique_ptr<ElementHandler>
   create_cache_handler() const;
 
   std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
-#if 0
-  std::unique_ptr<ElementAccessor>
-  create_element(const ListIt &index, const PropId &prop);
-#endif
 
   ///@name Iterating of grid elements
   ///@{
-#if 0
-  /**
-   * This function returns a element iterator to the first element of the patch.
-   */
-  ElementIterator begin(const PropId &prop = ElementProperties::active);
-
-  /**
-   * This function returns a element iterator to one-pass the end of patch.
-   */
-  ElementIterator end(const PropId &prop = ElementProperties::active);
-#endif
-
   /**
    * This function returns a element (const) iterator to the first element of the patch.
    */

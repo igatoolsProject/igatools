@@ -64,7 +64,7 @@ const_create(const std::shared_ptr<const GridFuncType> &func,
              const std::string &name)
 -> std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const self_t>(
+  return std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridFuncType>(func),name));
 }
 
@@ -175,44 +175,6 @@ create_element(const ListIt &index, const PropId &prop) const
   return elem;
 }
 
-
-#if 0
-template<int dim_, int codim_>
-auto
-Domain<dim_, codim_>::
-create_element(const ListIt &index, const PropId &prop)
--> std::unique_ptr<ElementAccessor>
-{
-  using Elem = ElementAccessor;
-  auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
-  Assert(elem != nullptr, ExcNullPtr());
-
-  return elem;
-}
-#endif
-
-#if 0
-template<int dim_, int codim_>
-auto
-Domain<dim_, codim_>::
-begin(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(this->shared_from_this(),
-  grid_func_->get_grid()->get_elements_with_property(prop).begin(), prop);
-}
-
-
-
-template<int dim_, int codim_>
-auto
-Domain<dim_, codim_>::
-end(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(this->shared_from_this(),
-  grid_func_->get_grid()->get_elements_with_property(prop).end(),
-  prop);
-}
-#endif
 
 
 template<int dim_, int codim_>

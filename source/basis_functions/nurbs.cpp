@@ -98,7 +98,7 @@ NURBS<dim_, range_, rank_>::
 const_create(const std::shared_ptr<const BSpBasis> &bs_space,
              const std::shared_ptr<const WeightFunction> &weight_func) -> shared_ptr<const self_t>
 {
-  auto sp = shared_ptr<const self_t>(
+  auto sp = shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<BSpBasis>(bs_space),
   SharedPtrConstnessHandler<WeightFunction>(weight_func)));
   Assert(sp != nullptr, ExcNullPtr());
@@ -444,23 +444,6 @@ get_degree_table() const -> const DegreeTable &
 }
 #endif
 
-template <int dim_, int range_, int rank_>
-void
-NURBS<dim_, range_, rank_>::
-get_element_dofs(
-  const IndexType &element_id,
-  SafeSTLVector<Index> &dofs_global,
-  SafeSTLVector<Index> &dofs_local_to_patch,
-  SafeSTLVector<Index> &dofs_local_to_elem,
-  const std::string &dofs_property) const
-{
-  this->bsp_basis_->get_element_dofs(
-    element_id,
-    dofs_global,
-    dofs_local_to_patch,
-    dofs_local_to_elem,
-    dofs_property);
-}
 
 
 

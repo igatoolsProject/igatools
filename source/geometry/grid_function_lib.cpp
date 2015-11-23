@@ -388,7 +388,7 @@ auto
 BallGridFunction<dim>::
 const_create(std::shared_ptr<const GridType> grid) ->  std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
+  return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 }
 
 #ifdef MESH_REFINEMENT

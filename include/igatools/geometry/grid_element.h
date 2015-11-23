@@ -205,21 +205,6 @@ public:
    */
   bool operator!=(const self_t &elem) const;
 
-  /**
-   * True if the flat-index of the element on the left is smaller than
-   * the flat-index of the element on the right.
-   *  @note In debug mode, it is also check they both refer to
-   *  the same cartesian grid. No check is done on the cache.
-   */
-  bool operator<(const self_t &elem) const;
-
-  /**
-   * True if the flat-index of the element on the left is bigger than
-   * the flat-index of the element on the right.
-   *  @note In debug mode, it is also check they both refer to
-   *  the same cartesian grid. No check is done on the cache.
-   */
-  bool operator>(const self_t &elem) const;
   ///@}
 
   ///@name Query information that does not require the use of the cache
@@ -227,9 +212,9 @@ public:
 
   const IndexType &get_index() const;
 
-  const typename List::iterator & get_index_iterator() const
+  const typename List::iterator &get_index_iterator() const
   {
-	return index_it_;
+    return index_it_;
   }
 
   /** Return the Grid from which the element belongs.*/

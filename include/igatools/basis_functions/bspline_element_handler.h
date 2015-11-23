@@ -28,8 +28,8 @@
 
 #include <igatools/basis_functions/reference_element_handler.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
 #include <igatools/basis_functions/bernstein_basis.h>
+#include <igatools/basis_functions/values1d_const_view.h>
 
 
 IGA_NAMESPACE_OPEN

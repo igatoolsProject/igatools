@@ -159,20 +159,6 @@ public:
   virtual bool operator!=(const self_t &a) const;
 
   /**
-   * \brief Returns TRUE if the the index of the element on the left of the
-   * operator <tt> < </tt>
-   * is smaller than the the index of the element on the right.
-   * */
-  virtual bool operator<(const self_t &a) const;
-
-  /**
-   * \brief Returns TRUE if the the index of the element on the left of the
-   * operator <tt> < </tt>
-   * is bigger than the the index of the element on the right.
-   * */
-  virtual bool operator>(const self_t &a) const;
-
-  /**
    * \brief Returns true if two elements belongs from the same Basis.
    */
   bool has_same_basis_of(const self_t &elem) const;
@@ -254,7 +240,7 @@ public:
   /**
    * \brief Returns the index of the element.
    */
-  IndexType get_index() const;
+  const IndexType & get_index() const;
 
 
   /**
@@ -281,7 +267,7 @@ public:
     SafeSTLVector<Index> dofs_local_to_patch;
     SafeSTLVector<Index> dofs_local_to_elem;
 
-    this->space_basis_->get_element_dofs(
+    this->space_basis_->get_spline_space()->get_element_dofs(
       this->get_index(),
       dofs_global,
       dofs_local_to_patch,

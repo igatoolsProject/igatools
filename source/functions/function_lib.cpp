@@ -57,7 +57,7 @@ const_create(const std::shared_ptr<const DomainType> &domain,
              const std::string &name)
 ->  std::shared_ptr<const base_t>
 {
-  return std::shared_ptr<const base_t>(new
+  return std::shared_ptr<base_t>(new
   self_t(SharedPtrConstnessHandler<DomainType>(domain), b,name));
 }
 
@@ -136,7 +136,7 @@ const_create(const std::shared_ptr<const DomainType> &domain,
              const Value &b,
              const std::string &name) -> std::shared_ptr<const base_t>
 {
-  return std::shared_ptr<const base_t>(new
+  return std::shared_ptr<base_t>(new
   self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b,name));
 }
 

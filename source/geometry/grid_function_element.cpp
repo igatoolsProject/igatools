@@ -66,28 +66,6 @@ operator !=(const self_t &elem) const
 
 
 
-template<int dim_,int space_dim_>
-bool
-GridFunctionElement<dim_,space_dim_>::
-operator <(const self_t &elem) const
-{
-  Assert(this->same_grid_function_of(elem),
-         ExcMessage("Cannot compare elements on different GridFunction."));
-  return (*grid_elem_ < *(elem.grid_elem_));
-}
-
-
-
-template<int dim_,int space_dim_>
-bool
-GridFunctionElement<dim_,space_dim_>::
-operator >(const self_t &elem) const
-{
-  Assert(this->same_grid_function_of(elem),
-         ExcMessage("Cannot compare elements on different GridFunction."));
-  return (*grid_elem_ > *(elem.grid_elem_));
-}
-
 
 
 template<int dim_,int space_dim_>

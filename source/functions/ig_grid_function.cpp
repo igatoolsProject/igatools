@@ -127,7 +127,7 @@ const_create(const std::shared_ptr<const RefBasis> &ref_basis,
              const IgCoefficients &coeffs,
              const std::string &dofs_property) -> std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const self_t>(new IgGridFunction(
+  return std::shared_ptr<self_t>(new IgGridFunction(
     SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
 }
 
@@ -156,7 +156,7 @@ const_create(const std::shared_ptr<const RefBasis> &ref_basis,
              const EpetraTools::Vector &coeffs,
              const std::string &dofs_property) -> std::shared_ptr<const self_t>
 {
-  return std::shared_ptr<const self_t>(new IgGridFunction(
+  return std::shared_ptr<self_t>(new IgGridFunction(
     SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
 }
 

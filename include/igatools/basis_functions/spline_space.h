@@ -280,6 +280,13 @@ public:
 
   const SafeSTLVector<Index> &get_active_components_id() const;
 
+  void get_element_dofs(
+    const typename GridType::IndexType &elem_id,
+    SafeSTLVector<Index> &dofs_global,
+    SafeSTLVector<Index> &dofs_local_to_patch,
+    SafeSTLVector<Index> &dofs_local_to_elem,
+    const std::string &dofs_property) const;
+
   /** @name Getting information about the space */
   ///@{
   /**

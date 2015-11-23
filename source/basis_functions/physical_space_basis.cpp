@@ -86,7 +86,7 @@ const_create(const shared_ptr<const RefBasis> &ref_basis,
              const shared_ptr<const PhysDomain> &phys_domain,
              const Transformation &transformation_type) -> shared_ptr<const self_t>
 {
-  auto sp = shared_ptr<const self_t>(
+  auto sp = shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<RefBasis>(ref_basis),
   SharedPtrConstnessHandler<PhysDomain>(phys_domain),transformation_type));
   Assert(sp != nullptr,ExcNullPtr());
@@ -214,23 +214,6 @@ get_id() const
 }
 #endif
 
-
-template <int dim_, int range_, int rank_, int codim_>
-void
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-get_element_dofs(
-  const IndexType &element_id,
-  SafeSTLVector<Index> &dofs_global,
-  SafeSTLVector<Index> &dofs_local_to_patch,
-  SafeSTLVector<Index> &dofs_local_to_elem,
-  const std::string &dofs_property) const
-{
-  return ref_basis_->get_element_dofs(
-           element_id,
-           dofs_global,
-           dofs_local_to_patch,
-           dofs_local_to_elem,dofs_property);
-}
 
 
 

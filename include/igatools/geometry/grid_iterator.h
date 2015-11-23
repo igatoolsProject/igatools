@@ -245,27 +245,13 @@ public:
    * Compares for equality.
    * @note Internally uses the equality comparison operator implemented by the Element object.
    */
-  bool operator== (const GridIterator &) const;
+  bool operator==(const GridIterator &) const;
 
   /**
    * Compares for inequality.
    * @note Internally uses the inequality comparison operator implemented by the Element object.
    */
-  bool operator!= (const GridIterator &) const;
-
-  /**
-   * "Greather than" comparison operator.
-   *
-   * @note Internally uses the "greater than" comparison operator implemented by the Element object.
-   */
-  bool operator> (const GridIterator &) const;
-
-  /**
-   * "Smaller than" comparison operator.
-   *
-   * @note Internally uses the "smaller than" comparison operator implemented by the Element object.
-   */
-  bool operator< (const GridIterator &) const;
+  bool operator!=(const GridIterator &) const;
   ///@}
 
 

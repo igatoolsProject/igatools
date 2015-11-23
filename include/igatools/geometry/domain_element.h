@@ -110,22 +110,6 @@ public:
    *  the same cartesian grid. No check is done on the cache.
    */
   bool operator!=(const self_t &elem) const;
-
-  /**
-   * True if the flat-index of the element on the left is smaller than
-   * the flat-index of the element on the right.
-   *  @note In debug mode, it is also check they both refer to
-   *  the same cartesian grid. No check is done on the cache.
-   */
-  bool operator<(const self_t &elem) const;
-
-  /**
-   * True if the flat-index of the element on the left is bigger than
-   * the flat-index of the element on the right.
-   *  @note In debug mode, it is also check they both refer to
-   *  the same cartesian grid. No check is done on the cache.
-   */
-  bool operator>(const self_t &elem) const;
   ///@}
 
 #if 0

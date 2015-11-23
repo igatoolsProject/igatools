@@ -126,7 +126,7 @@ operator ==(const self_t &elem) const
 {
   Assert(this->same_grid_of(elem),
          ExcMessage("Cannot compare elements on different grid."));
-  const bool res = (get_index() == elem.get_index());
+  const bool res = (index_it_ == elem.index_it_);
   return res;
 }
 
@@ -139,33 +139,9 @@ operator !=(const self_t &elem) const
 {
   Assert(this->same_grid_of(elem),
          ExcMessage("Cannot compare elements on different grid."));
-  const bool res = (get_index() != elem.get_index());
+  const bool res = (index_it_ != elem.index_it_);
   return res;
 }
-
-template <int dim>
-bool
-GridElement<dim>::
-operator <(const self_t &elem) const
-{
-  Assert(this->same_grid_of(elem),
-         ExcMessage("Cannot compare elements on different grid."));
-  const bool res = (get_index() < elem.get_index());
-  return res;
-}
-
-template <int dim>
-bool
-GridElement<dim>::
-operator >(const self_t &elem) const
-{
-  Assert(this->same_grid_of(elem),
-         ExcMessage("Cannot compare elements on different grid."));
-  const bool res = (get_index() > elem.get_index());
-  return res;
-}
-
-
 
 
 template <int dim>
