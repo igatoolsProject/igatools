@@ -23,6 +23,15 @@
 
 #include <igatools/base/config.h>
 
+#include <igatools/utils/safe_stl_vector.h>
+
+#include <boost/fusion/container/map.hpp>
+#include <boost/fusion/container/vector.hpp>
+
+template <int dim> class Grid;
+template <int dim, int range, int rank> class SplineSpace;
+template <int dim, int range, int rank> class ReferenceSpaceBasis;
+
 IGA_NAMESPACE_OPEN
 
 /**
@@ -34,19 +43,78 @@ IGA_NAMESPACE_OPEN
  */
 class ObjectsContainer
 {
+private:
+
   /** Type for current class. */
   using self_t = ObjectsContainer;
 
+  /** Type for the shared pointer of a grid. */
+  template <int dim>
+  using GridPtr_t = std::shared_ptr<Grid<dim>>;
+
+  /** Type for the map of indices and grid shared pointers. */
+  template <int dim>
+  using MapGridPtr_t = std::map<Index, GridPtr_t<dim>>;
+
+  /** Type for the shared pointer of a spline space. */
+  template <int dim, int range, int rank>
+  using SplineSpacePtr_t = std::shared_ptr<SplineSpace<dim, range, rank>>;
+
+  /** Type for the map of indices and spline space shared pointers. */
+  template <int dim, int range, int rank>
+  using MapSplineSpacePtr_t = std::map<Index, SplineSpacePtr_t<dim, range, rank>>;
+
+  /** Alias for the reference space basis. */
+  template <int dim, int range, int rank>
+  using RefSpace_t = ReferenceSpaceBasis<dim, range, rank>;
+
+  /** Type for the shared pointer of a reference space basis. */
+  template <int dim, int range, int rank>
+  using RefSpacePtr_t = std::shared_ptr<RefSpace_t<dim, range, rank>>;
+
+  /** Type for the map of indices and reference space basis shared pointers. */
+  template <int dim, int range, int rank>
+  using MapRefSpacePtr_t = std::map<Index, RefSpacePtr_t<dim, range, rank>>;
+
+  typedef boost::fusion::map<
+  boost::fusion::pair<Grid<0>, MapGridPtr_t<0>>,
+  boost::fusion::pair<Grid<1>, MapGridPtr_t<1>>,
+  boost::fusion::pair<Grid<2>, MapGridPtr_t<2>>,
+  boost::fusion::pair<Grid<3>, MapGridPtr_t<3>>,
+  boost::fusion::pair<Grid<3>, MapGridPtr_t<3>>,
+  boost::fusion::pair<SplineSpace<0,0,1>, MapSplineSpacePtr_t<0,0,1>>,
+  boost::fusion::pair<SplineSpace<0,1,1>, MapSplineSpacePtr_t<0,1,1>>,
+  boost::fusion::pair<SplineSpace<0,2,1>, MapSplineSpacePtr_t<0,2,1>>,
+  boost::fusion::pair<SplineSpace<0,3,1>, MapSplineSpacePtr_t<0,3,1>>,
+  boost::fusion::pair<SplineSpace<1,1,1>, MapSplineSpacePtr_t<1,1,1>>,
+  boost::fusion::pair<SplineSpace<1,2,1>, MapSplineSpacePtr_t<1,2,1>>,
+  boost::fusion::pair<SplineSpace<1,3,1>, MapSplineSpacePtr_t<1,3,1>>,
+  boost::fusion::pair<SplineSpace<2,1,1>, MapSplineSpacePtr_t<2,1,1>>,
+  boost::fusion::pair<SplineSpace<2,2,1>, MapSplineSpacePtr_t<2,2,1>>,
+  boost::fusion::pair<SplineSpace<2,3,1>, MapSplineSpacePtr_t<2,3,1>>,
+  boost::fusion::pair<SplineSpace<3,1,1>, MapSplineSpacePtr_t<3,1,1>>,
+  boost::fusion::pair<SplineSpace<3,3,1>, MapSplineSpacePtr_t<3,3,1>>,
+  boost::fusion::pair<RefSpace_t<0,0,1>, MapRefSpacePtr_t<0,0,1>>,
+  boost::fusion::pair<RefSpace_t<0,1,1>, MapRefSpacePtr_t<0,1,1>>,
+  boost::fusion::pair<RefSpace_t<0,2,1>, MapRefSpacePtr_t<0,2,1>>,
+  boost::fusion::pair<RefSpace_t<0,3,1>, MapRefSpacePtr_t<0,3,1>>,
+  boost::fusion::pair<RefSpace_t<1,1,1>, MapRefSpacePtr_t<1,1,1>>,
+  boost::fusion::pair<RefSpace_t<1,2,1>, MapRefSpacePtr_t<1,2,1>>,
+  boost::fusion::pair<RefSpace_t<1,3,1>, MapRefSpacePtr_t<1,3,1>>,
+  boost::fusion::pair<RefSpace_t<2,1,1>, MapRefSpacePtr_t<2,1,1>>,
+  boost::fusion::pair<RefSpace_t<2,2,1>, MapRefSpacePtr_t<2,2,1>>,
+  boost::fusion::pair<RefSpace_t<2,3,1>, MapRefSpacePtr_t<2,3,1>>,
+  boost::fusion::pair<RefSpace_t<3,1,1>, MapRefSpacePtr_t<3,1,1>>,
+  boost::fusion::pair<RefSpace_t<3,3,1>, MapRefSpacePtr_t<3,3,1>>> ObjectTypes_t;
+
+
   /** @name Constructors*/
   ///@{
-public:
   /**
    * To document
    */
   ObjectsContainer();
 
-
-public:
   /**
    * Copy constructor.
    */
@@ -55,10 +123,12 @@ public:
   /**  Move constructor */
   ObjectsContainer(self_t &&container) = default;
 
+public:
   /** Destructor */
   ~ObjectsContainer() = default;
   ///@}
 
+public:
   /**
    * @name Creators
    * @note The functions here return:
@@ -79,6 +149,7 @@ public:
   static std::shared_ptr<const self_t> const_create();
   ///@}
 
+private:
   /**
    * @name Assignment operators
    */
@@ -95,6 +166,68 @@ public:
   self_t &operator=(self_t &&container) = default;
   ///@}
 
+public:
+  /**
+   * @todo To be documented.
+   */
+  template <int dim>
+  void add_grid (const GridPtr_t<dim> grid, const Index &id);
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim>
+  GridPtr_t<dim> get_grid (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim>
+  bool is_grid (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank>
+  void add_spline_space (const SplineSpacePtr_t<dim, range, rank> spline_space,
+                         const Index &id);
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank>
+  SplineSpacePtr_t<dim, range, rank> get_spline_space (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank>
+  bool is_spline_space (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank>
+  void add_ref_space (const RefSpacePtr_t<dim, range, rank> ref_space,
+                      const Index &id);
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank>
+  RefSpacePtr_t<dim, range, rank> get_ref_space (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <int dim, int range, int rank>
+  bool is_ref_space (const Index &id) const;
+
+private:
+  /**
+   * Container for the objects.
+   */
+  ObjectTypes_t objects_;
 
 };
 
