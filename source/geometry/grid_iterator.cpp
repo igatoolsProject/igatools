@@ -24,7 +24,7 @@
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
-
+#if 0
 template <class Element>
 GridIterator<Element>::
 GridIterator(std::shared_ptr<ContainerType> container,
@@ -43,27 +43,6 @@ GridIterator(std::unique_ptr<Element> &&elem)
   Assert(elem_ != nullptr,ExcNullPtr());
 }
 
-#if 0
-template <class Element>
-GridIterator<Element>::
-GridIterator(const GridIterator<Element> &it,
-             const CopyPolicy &copy_policy)
-{
-  if (copy_policy == CopyPolicy::deep)
-  {
-    elem_->deep_copy_from(*(it.elem_));
-  }
-  else if (copy_policy == CopyPolicy::shallow)
-  {
-    elem_->shallow_copy_from(*(it.elem_));
-  }
-  else
-  {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
-  }
-}
-#endif
 
 
 template <class Element>
@@ -96,24 +75,6 @@ operator!=(const GridIterator<Element> &i) const
 {
   return elem_->operator != (*(i.elem_));
 }
-
-#if 0
-template <class Element>
-Index
-GridIterator<Element>::
-get_flat_index() const
-{
-  return elem_->get_flat_index();
-}
-
-template <class Element>
-auto
-GridIterator<Element>::
-get_tensor_index() const -> TensIndex
-{
-  return elem_->get_tensor_index();
-}
-#endif
 
 
 
@@ -154,5 +115,5 @@ operator -> () const
 {
   return this->elem_.get();
 }
-
+#endif
 IGA_NAMESPACE_CLOSE

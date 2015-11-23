@@ -87,6 +87,8 @@ public:
 
   PhysicalSpaceElement(const std::shared_ptr<ContainerType> &space,
                        const ListIt &index,
+					   GridIterator<RefElemAccessor> &&ref_space_element,
+					   GridIterator<PhysDomainElem> &&phys_domain_element,
                        const PropId &prop = ElementProperties::active);
 
 
@@ -301,9 +303,9 @@ private:
   template <class Accessor> friend class GridIteratorBase;
   template <int,int,int,int> friend class PhysSpaceElementHandler;
 
-  std::unique_ptr<RefElemAccessor> ref_space_element_;
+  GridIterator<RefElemAccessor> ref_space_element_;
 
-  std::unique_ptr<PhysDomainElem> phys_domain_element_;
+  GridIterator<PhysDomainElem> phys_domain_element_;
 
   std::shared_ptr<const PhysSpace> phys_space_;
 
