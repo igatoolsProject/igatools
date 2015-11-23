@@ -76,14 +76,14 @@ private:
 template<int dim, int space_dim>
 CustomFunction<dim,space_dim>::CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain) 
   :
-  parent_t(domain)
+  parent_t(domain,"")
 {};
 
 template<int dim, int space_dim>
 CustomFunction<dim,space_dim>::CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain,
                                                       Value (*f_D0)(const Point))
   :
-  parent_t(domain)
+  parent_t(domain,"")
 {funct_D0 = f_D0;};
 
 template<int dim, int space_dim>
@@ -91,7 +91,7 @@ CustomFunction<dim,space_dim>::CustomFunction(const SharedPtrConstnessHandler<Do
                                                       Value (*f_D0)(const Point),
                                                       Derivative<1> (*f_D1)(const Point))
   :
-  parent_t(domain)
+  parent_t(domain,"")
 {funct_D0 = f_D0; funct_D1 = f_D1;};
 
 // ----------------------------------------------------------------------------

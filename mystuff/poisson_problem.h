@@ -174,7 +174,7 @@ void PoissonProblem<dim_>::assemble(std::shared_ptr<const Function<dim_,0,1,1>> 
   // starting the cache handler for the (constant) function f:
   auto funct_handler = source_term->create_cache_handler();
   auto funct_el = source_term->begin();
-  funct_handler->template set_flags<dim_>(function_element::Flags::value);
+  funct_handler->template set_flags<dim_>(function_element::Flags::D0);
   funct_handler->init_cache(funct_el,quad);
 
   // retrieving the last datum and then starting the loop
@@ -189,7 +189,7 @@ void PoissonProblem<dim_>::assemble(std::shared_ptr<const Function<dim_,0,1,1>> 
     auto values = basis_el->get_element_values();
     auto grads  = basis_el->get_element_gradients();
     auto w_meas = basis_el->get_element_w_measures();
-    using _D0 = typename function_element::template _Value<0>;
+    using _D0 = typename function_element::template _D<0>;
     auto f_vals = funct_el->template get_values_from_cache<_D0,dim_>(0);
     // finally, the loop
     for (int ibf=0; ibf<Nbf; ibf++) {
