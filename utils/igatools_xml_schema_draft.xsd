@@ -103,7 +103,7 @@
       <xs:enumeration value="h_grad"/>
       <xs:enumeration value="h_curl"/>
       <xs:enumeration value="h_div"/>
-      <xs:enumeration value="l2"/>
+      <xs:enumeration value="l_2"/>
     </xs:restriction>
   </xs:simpleType>
 

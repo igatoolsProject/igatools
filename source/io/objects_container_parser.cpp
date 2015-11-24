@@ -637,8 +637,8 @@ parse_domain(const shared_ptr<XMLElement> xml_elem,
 template <int dim, int codim, int range, int rank>
 void
 ObjectsContainerParser::
-parse_phys_space(const shared_ptr<XMLElement> xml_elem,
-                 const std::shared_ptr<ObjectsContainer> container) const
+parse_ig_function(const shared_ptr<XMLElement> xml_elem,
+                  const std::shared_ptr<ObjectsContainer> container) const
 {
     AssertThrow (false, ExcNotImplemented());
 }
@@ -648,10 +648,71 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
 template <int dim, int codim, int range, int rank>
 void
 ObjectsContainerParser::
-parse_ig_function(const shared_ptr<XMLElement> xml_elem,
-                  const std::shared_ptr<ObjectsContainer> container) const
+parse_phys_space(const shared_ptr<XMLElement> xml_elem,
+                 const std::shared_ptr<ObjectsContainer> container) const
 {
-    AssertThrow (false, ExcNotImplemented());
+    Assert (xml_elem->get_name() == "PhysicalSpaceBasis",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Range") == range,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
+    Assert (xml_elem->get_attribute<int>("Rank") == rank,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
+    Assert (xml_elem->get_attribute<int>("Codim") == codim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
+
+    using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
+    using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
+    using DomainType = Domain<dim, codim>;
+
+    Transformation transf = Transformation::h_grad;
+    if (xml_elem->has_element("Transformation"))
+    {
+        const auto trans_str = xml_elem->get_single_element("Transformation")->get_value<string>();
+        if (trans_str == "h_grad")
+            transf = Transformation::h_grad;
+        else if (trans_str == "h_div")
+            transf = Transformation::h_div;
+        else if (trans_str == "h_curl")
+            transf = Transformation::h_curl;
+        else if (trans_str == "l_2")
+            transf = Transformation::l_2;
+        else
+        {
+            // Throw error
+        }
+    }
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    AssertThrow (!container->is_id_present(object_id),
+                 ExcMessage("Parsing Physical Space Basis already defined IgaObjectId=" +
+                            to_string(object_id) + "."));
+
+    const auto rs_tag = xml_elem->get_single_element("ReferenceSpaceBasis");
+    const auto rs_id = rs_tag->get_attribute<Index>("GetFromIgaObjectId");
+    AssertThrow (container->is_object<RefSpaceType> (rs_id),
+                 ExcMessage("Parsing Physical Space Basis with IgaObjectId=" +
+         to_string(object_id) + " the GetFromIgaObjectId does not "
+         "correspond to a ReferenceSpaceBasis with the expected dimension."));
+
+    const auto rs = container->get_object<RefSpaceType>(rs_id);
+    Assert (rs != nullptr, ExcNullPtr());
+
+    const auto dm_tag = xml_elem->get_single_element("Domain");
+    const auto dm_id = dm_tag->get_attribute<Index>("GetFromIgaObjectId");
+    AssertThrow (container->is_object<DomainType> (dm_id),
+                 ExcMessage("Parsing Physical Space Basis with IgaObjectId=" +
+         to_string(object_id) + " the GetFromIgaObjectId does not "
+         "correspond to a Domain with the expected dimension."));
+
+    const auto dm = container->get_object<DomainType>(dm_id);
+    Assert (dm != nullptr, ExcNullPtr());
+
+    const auto ps = PhysSpaceType::create(rs, dm, transf);
+
+    container->insert_object<PhysSpaceType>(ps, object_id);
 }
 
 
