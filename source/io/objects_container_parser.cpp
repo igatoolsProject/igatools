@@ -30,6 +30,7 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/functions/function.h>
+#include <igatools/functions/ig_function.h>
 
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
 
@@ -640,7 +641,64 @@ ObjectsContainerParser::
 parse_ig_function(const shared_ptr<XMLElement> xml_elem,
                   const std::shared_ptr<ObjectsContainer> container) const
 {
-    AssertThrow (false, ExcNotImplemented());
+    Assert (xml_elem->get_name() == "IgFunction",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Range") == range,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
+    Assert (xml_elem->get_attribute<int>("Rank") == rank,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
+    Assert (xml_elem->get_attribute<int>("Codim") == codim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
+
+    using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
+    using IgFunctionType = IgFunction<dim, codim, range, rank>;
+    using FunctionType = Function<dim, codim, range, rank>;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    AssertThrow (!container->is_id_present(object_id),
+                 ExcMessage("Parsing IgFunction already defined IgaObjectId=" +
+                            to_string(object_id) + "."));
+
+    const auto ps_tag = xml_elem->get_single_element("PhysicalSpaceBasis");
+    const auto ps_id = ps_tag->get_attribute<Index>("GetFromIgaObjectId");
+    AssertThrow (container->is_object<PhysSpaceType> (ps_id),
+                 ExcMessage("Parsing Ig Function with IgaObjectId=" +
+         to_string(object_id) + " the GetFromIgaObjectId does not "
+         "correspond to a Physical Space Basis with the expected dimension."));
+    const auto ps = container->get_object<PhysSpaceType>(ps_id);
+    Assert (ps != nullptr, ExcNullPtr());
+
+    string dofs_property = "active";
+    if (xml_elem->has_element("DofsProperty"))
+    {
+        const auto dp_elem = xml_elem->get_single_element("DofsProperty");
+        dofs_property = dp_elem->get_value<string>();
+    }
+
+    const auto ig_elem = xml_elem->get_single_element("IgCoefficients");
+    const auto size = ig_elem->get_attribute<Index>("Size");
+    const auto ig_coefs_vec = ig_elem->get_values_vector<Real>();
+    // Check ig_coefs_vec.size() == size
+
+    std::set<Index> indices;
+    for (int i = 0; i < size; ++i)
+        indices.insert(i);
+    IgCoefficients ig_coefs (indices);
+    for (int i = 0; i < size; ++i)
+        ig_coefs[i] = ig_coefs_vec[i];
+
+    string name = "";
+    if (xml_elem->has_element("Name"))
+    {
+        const auto nm_elem = xml_elem->get_single_element("Name");
+        name = nm_elem->get_value<string>();
+    }
+
+    const auto igf = IgFunctionType::create(ps, ig_coefs, dofs_property, name);
+    container->insert_object<FunctionType>(igf, object_id);
 }
 
 
