@@ -251,6 +251,85 @@ public:
           std::shared_ptr<SplineSpace<3,1,1>>,
           std::shared_ptr<SplineSpace<3,3,1>>> ValidSplineSpacePtrs;
 
+  /**
+   * Valid Domain instantiations.
+   */
+  typedef boost::fusion::vector<
+          std::shared_ptr<Domain<0,0>>,
+          std::shared_ptr<Domain<0,1>>,
+          std::shared_ptr<Domain<0,2>>,
+          std::shared_ptr<Domain<0,3>>,
+          std::shared_ptr<Domain<1,0>>,
+          std::shared_ptr<Domain<1,1>>,
+          std::shared_ptr<Domain<1,2>>,
+          std::shared_ptr<Domain<2,0>>,
+          std::shared_ptr<Domain<2,1>>,
+          std::shared_ptr<Domain<3,0>>> ValidDomainPtrs;
+
+  /**
+   * Valid Physical Spaces instantiations.
+   */
+  typedef boost::fusion::vector<
+          std::shared_ptr<PhysSpace_t<0,0,1,0>>,
+          std::shared_ptr<PhysSpace_t<0,1,1,2>>,
+          std::shared_ptr<PhysSpace_t<0,1,1,1>>,
+          std::shared_ptr<PhysSpace_t<0,1,1,3>>,
+          std::shared_ptr<PhysSpace_t<0,3,1,2>>,
+          std::shared_ptr<PhysSpace_t<0,3,1,1>>,
+          std::shared_ptr<PhysSpace_t<0,2,1,2>>,
+          std::shared_ptr<PhysSpace_t<0,2,1,1>>,
+          std::shared_ptr<PhysSpace_t<0,3,1,3>>,
+          std::shared_ptr<PhysSpace_t<1,1,1,0>>,
+          std::shared_ptr<PhysSpace_t<1,1,1,1>>,
+          std::shared_ptr<PhysSpace_t<1,2,1,1>>,
+          std::shared_ptr<PhysSpace_t<1,3,1,1>>,
+          std::shared_ptr<PhysSpace_t<1,1,1,2>>,
+          std::shared_ptr<PhysSpace_t<1,3,1,2>>,
+          std::shared_ptr<PhysSpace_t<2,1,1,0>>,
+          std::shared_ptr<PhysSpace_t<2,2,1,0>>,
+          std::shared_ptr<PhysSpace_t<2,1,1,1>>,
+          std::shared_ptr<PhysSpace_t<2,3,1,1>>,
+          std::shared_ptr<PhysSpace_t<3,1,1,0>>,
+          std::shared_ptr<PhysSpace_t<3,3,1,0>>,
+          std::shared_ptr<PhysSpace_t<1,2,1,0>>,
+          std::shared_ptr<PhysSpace_t<1,3,1,0>>,
+          std::shared_ptr<PhysSpace_t<2,3,1,0>>,
+          std::shared_ptr<PhysSpace_t<0,1,1,0>>,
+          std::shared_ptr<PhysSpace_t<0,2,1,0>>,
+          std::shared_ptr<PhysSpace_t<0,3,1,0>>> ValidPhysSpacePtrs;
+
+  /**
+   * Valid Function instantiations.
+   */
+  typedef boost::fusion::vector<
+          std::shared_ptr<Function<0,0,0,1>>,
+          std::shared_ptr<Function<0,2,1,1>>,
+          std::shared_ptr<Function<0,1,1,1>>,
+          std::shared_ptr<Function<0,3,1,1>>,
+          std::shared_ptr<Function<0,2,3,1>>,
+          std::shared_ptr<Function<0,1,3,1>>,
+          std::shared_ptr<Function<0,2,2,1>>,
+          std::shared_ptr<Function<0,1,2,1>>,
+          std::shared_ptr<Function<0,3,3,1>>,
+          std::shared_ptr<Function<1,0,1,1>>,
+          std::shared_ptr<Function<1,1,1,1>>,
+          std::shared_ptr<Function<1,1,2,1>>,
+          std::shared_ptr<Function<1,1,3,1>>,
+          std::shared_ptr<Function<1,2,1,1>>,
+          std::shared_ptr<Function<1,2,3,1>>,
+          std::shared_ptr<Function<2,0,1,1>>,
+          std::shared_ptr<Function<2,0,2,1>>,
+          std::shared_ptr<Function<2,1,1,1>>,
+          std::shared_ptr<Function<2,1,3,1>>,
+          std::shared_ptr<Function<3,0,1,1>>,
+          std::shared_ptr<Function<3,0,3,1>>,
+          std::shared_ptr<Function<1,0,2,1>>,
+          std::shared_ptr<Function<1,0,3,1>>,
+          std::shared_ptr<Function<2,0,3,1>>,
+          std::shared_ptr<Function<0,0,1,1>>,
+          std::shared_ptr<Function<0,0,2,1>>,
+          std::shared_ptr<Function<0,0,3,1>>> ValidFunctionPtrs;
+
 
 private:
 

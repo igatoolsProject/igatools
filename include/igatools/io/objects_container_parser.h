@@ -177,6 +177,38 @@ private:
   void parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
                      const std::shared_ptr<ObjectsContainer> container) const;
 
+  void parse_grid_functions_and_nurbs(const std::shared_ptr<XMLElement> xml_elem,
+                           const std::shared_ptr<ObjectsContainer> container) const;
+
+  template <int dim, int range, int rank>
+  void parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
+                   const std::shared_ptr<ObjectsContainer> container) const;
+
+  template <int dim, int range>
+  void parse_ig_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                              const std::shared_ptr<ObjectsContainer> container) const;
+
+  void parse_domains(const std::shared_ptr<XMLElement> xml_elem,
+                     const std::shared_ptr<ObjectsContainer> container) const;
+
+  template <int dim, int codim>
+  void parse_domain(const std::shared_ptr<XMLElement> xml_elem,
+                    const std::shared_ptr<ObjectsContainer> container) const;
+
+  void parse_phys_spaces(const std::shared_ptr<XMLElement> xml_elem,
+                         const std::shared_ptr<ObjectsContainer> container) const;
+
+  template <int dim, int codim, int range, int rank>
+  void parse_phys_space(const std::shared_ptr<XMLElement> xml_elem,
+                        const std::shared_ptr<ObjectsContainer> container) const;
+
+  void parse_ig_functions(const std::shared_ptr<XMLElement> xml_elem,
+                          const std::shared_ptr<ObjectsContainer> container) const;
+
+  template <int dim, int codim, int range, int rank>
+  void parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
+                         const std::shared_ptr<ObjectsContainer> container) const;
+
 
 };
 

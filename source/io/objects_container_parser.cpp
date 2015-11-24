@@ -29,6 +29,7 @@
 #include <igatools/geometry/grid.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/bspline.h>
+#include <igatools/functions/function.h>
 
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
 
@@ -65,6 +66,10 @@ parse(const string &schema_file) const
     this->parse_grids (xml_elem, container);
     this->parse_spline_spaces (xml_elem, container);
     this->parse_bsplines (xml_elem, container);
+    this->parse_grid_functions_and_nurbs (xml_elem, container);
+    this->parse_domains (xml_elem, container);
+    this->parse_phys_spaces (xml_elem, container);
+    this->parse_ig_functions (xml_elem, container);
     return container;
 }
 
@@ -366,6 +371,7 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
             ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
 
     using BSplineType = BSpline<dim, range, rank>;
+    using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
     using SplineSpaceType = SplineSpace<dim, range, rank>;
     using EndBehaviourTable = typename SplineSpaceType::EndBehaviourTable;
     using EndBehaviour = typename SplineSpaceType::EndBehaviour;
@@ -433,89 +439,184 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
     }
     const auto bspline = BSplineType::create(ssp, end_beh_table);
 
+    container->insert_object<RefSpaceType>(bspline, object_id);
+}
 
-#if 0
 
-    const bool default_periodicity = false;
 
-    DegreeTable deg_table;
-    MultiplicityTable mult_table;
-    PeriodicityTable period_table;
+void
+ObjectsContainerParser::
+parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
+                               const shared_ptr<ObjectsContainer> container) const
+{
+    AssertThrow (false, ExcNotImplemented());
+}
 
-    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    AssertThrow (!container->is_id_present(object_id),
-                 ExcMessage("Parsing SplineSpace already defined IgaObjectId=" +
-                            to_string(object_id) + "."));
+template <int dim, int range>
+void
+ObjectsContainerParser::
+parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
+                       const std::shared_ptr<ObjectsContainer> container) const
+{
+    AssertThrow (false, ExcNotImplemented());
+}
 
-    const auto grid_tag = xml_elem->get_single_element("Grid");
-    const auto grid_id = grid_tag->get_attribute<Index>("GetFromIgaObjectId");
 
-    AssertThrow (container->is_object<GridType> (grid_id),
-                 ExcMessage("Parsing SplineSpace with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a grid with the expected dimension."));
 
-    const auto grid = container->get_object<GridType>(grid_id);
+template <int dim, int range, int rank>
+void
+ObjectsContainerParser::
+parse_nurbs(const shared_ptr<XMLElement> xml_elem,
+            const std::shared_ptr<ObjectsContainer> container) const
+{
+    AssertThrow (false, ExcNotImplemented());
+}
 
-    const auto comps_elem = xml_elem->get_single_element("SplineSpaceComponents");
-    // Check that comps_elem == n_components
-    for (const auto &comp_elem : comps_elem->get_children_elements("SplineSpaceComponent"))
+
+
+void
+ObjectsContainerParser::
+parse_domains(const shared_ptr<XMLElement> xml_elem,
+              const shared_ptr<ObjectsContainer> container) const
+{
+    for (const auto &dm : xml_elem->get_children_elements("Domain"))
     {
-        const auto comp_id = comp_elem->get_attribute<Index>("ComponentId");
-        // To check here 0 <= comp_id < n_components and is not repeated.
+        const int dm_dim = dm->get_attribute<int>("Dim");
+        const int dm_codim = dm->get_attribute<int>("Codim");
 
-        const auto degree_elem = comp_elem->get_single_element("Degrees");
-        const auto degs_vector = degree_elem->get_values_vector<Index>();
-        // Check here that degs_vector.size() == dim
-        for (int d = 0; d < dim; ++d)
-            deg_table[comp_id][d] = degs_vector[d];
+        using ValidDomainPtrs = typename ObjectsContainer::ValidDomainPtrs;
+        ValidDomainPtrs valid_dm_ptr_types;
 
-        const auto int_mults_elem =
-                comp_elem->get_single_element("InteriorMultiplicities")
-                ->get_children_elements("InteriorMultiplicities");
-        // Check here that  int_muls_elem.size() == dim
-
-        for (const auto &im : int_mults_elem)
+        bool found = false;
+        boost::fusion::for_each(valid_dm_ptr_types, [&](const auto &dm_ptr_type)
         {
-            const auto dir = im->get_attribute<Index>("Direction");
-//            AssertThrow (parsed_dirs.find(dir) == parsed_dirs.cend(),
-//                         ExcMessage("Parsing Grid with IgaObjectId=" +
-//                                    to_string(object_id) + " knot vector for "
-//                                    "Direction " + to_string(dir) + " defined"
-//                                    " more than once."));
-//            parsed_dirs.insert(dir);
+            if (found)
+                return;
 
-            const auto mults = im->get_values_vector<Index>();
-            mult_table[comp_id].copy_data_direction(dir, mults);
-            // Check here that the multiplicities match with the grid.
+            using DomainType = typename
+                    std::remove_reference<decltype(dm_ptr_type)>::type::element_type;
+            static const int dim = DomainType::dim;
+            static const int space_dim = DomainType::space_dim;
+            static const int codim = space_dim - dim;
 
-//            AssertThrow (im->get_attribute<int>("Size") == mults.size(),
-//                         ExcMessage("Parsing Grid with IgaObjectId=" +
-//                                    to_string(object_id) + " knot vector Size for Direction " +
-//                                    to_string(dir) + " does not match with the specified one."));
-        }
+            if (dm_dim == dim && dm_codim == codim)
+            {
+                found = true;
+                parse_domain<dim, codim>(dm, container);
+            }
+        });
+    }
+}
 
-        if (comp_elem->has_element("Periodicity"))
+
+
+void
+ObjectsContainerParser::
+parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
+                  const shared_ptr<ObjectsContainer> container) const
+{
+    for (const auto &ps : xml_elem->get_children_elements("PhysicalSpaceBasis"))
+    {
+        const int ps_dim = ps->get_attribute<int>("Dim");
+        const int ps_codim = ps->get_attribute<int>("Codim");
+        const int ps_range = ps->get_attribute<int>("Range");
+        const int ps_rank = ps->get_attribute<int>("Rank");
+
+        using ValidPhysSpacePtrs = typename ObjectsContainer::ValidPhysSpacePtrs;
+        ValidPhysSpacePtrs valid_ps_ptr_types;
+
+        bool found = false;
+        boost::fusion::for_each(valid_ps_ptr_types, [&](const auto &ps_ptr_type)
         {
-            const auto periodic_vector = comp_elem->
-                    get_single_element("Periodicity")->get_values_vector<bool>();
-            // Check dimension
-            for (int d = 0; d < dim; ++d)
-                period_table[comp_id][d] = periodic_vector[d];
-        }
-        else
+            if (found)
+                return;
+
+            using PhysSpaceType = typename
+                    std::remove_reference<decltype(ps_ptr_type)>::type::element_type;
+            static const int dim = PhysSpaceType::dim;
+            static const int range = PhysSpaceType::range;
+            static const int rank = PhysSpaceType::rank;
+            static const int codim = PhysSpaceType::codim;
+
+            if (ps_dim == dim && ps_range == range && ps_rank == rank && ps_codim == codim)
+            {
+                found = true;
+                parse_phys_space<dim, codim, range, rank>(ps, container);
+            }
+        });
+    }
+}
+
+
+
+void
+ObjectsContainerParser::
+parse_ig_functions(const shared_ptr<XMLElement> xml_elem,
+                  const shared_ptr<ObjectsContainer> container) const
+{
+    for (const auto &fn : xml_elem->get_children_elements("IgFunction"))
+    {
+        const int fn_dim = fn->get_attribute<int>("Dim");
+        const int fn_codim = fn->get_attribute<int>("Codim");
+        const int fn_range = fn->get_attribute<int>("Range");
+        const int fn_rank = fn->get_attribute<int>("Rank");
+
+        using ValidFunctionPtrs = typename ObjectsContainer::ValidFunctionPtrs;
+        ValidFunctionPtrs valid_fn_ptr_types;
+
+        bool found = false;
+        boost::fusion::for_each(valid_fn_ptr_types, [&](const auto &fn_ptr_type)
         {
-            for (int d = 0; d < dim; ++d)
-                period_table[comp_id][d] = default_periodicity;
+            if (found)
+                return;
 
-        }
-    } // Spline Space components
+            using FunctionType = typename
+                    std::remove_reference<decltype(fn_ptr_type)>::type::element_type;
+            static const int dim = FunctionType::dim;
+            static const int range = FunctionType::range;
+            static const int rank = FunctionType::rank;
+            static const int codim = FunctionType::codim;
+
+            if (fn_dim == dim && fn_range == range && fn_rank == rank && fn_codim == codim)
+            {
+                found = true;
+                parse_ig_function<dim, codim, range, rank>(fn, container);
+            }
+        });
+    }
+}
 
 
-    const auto spline_space = SplineSpaceType::create (deg_table, grid, mult_table, period_table);
 
-    container->insert_object<SplineSpaceType>(spline_space, object_id);
-#endif
+template <int dim, int codim>
+void
+ObjectsContainerParser::
+parse_domain(const shared_ptr<XMLElement> xml_elem,
+             const std::shared_ptr<ObjectsContainer> container) const
+{
+    AssertThrow (false, ExcNotImplemented());
+}
+
+
+
+template <int dim, int codim, int range, int rank>
+void
+ObjectsContainerParser::
+parse_phys_space(const shared_ptr<XMLElement> xml_elem,
+                 const std::shared_ptr<ObjectsContainer> container) const
+{
+    AssertThrow (false, ExcNotImplemented());
+}
+
+
+
+template <int dim, int codim, int range, int rank>
+void
+ObjectsContainerParser::
+parse_ig_function(const shared_ptr<XMLElement> xml_elem,
+                  const std::shared_ptr<ObjectsContainer> container) const
+{
+    AssertThrow (false, ExcNotImplemented());
 }
 
 
