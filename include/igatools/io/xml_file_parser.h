@@ -36,6 +36,8 @@ XERCES_CPP_NAMESPACE_END
 
 IGA_NAMESPACE_OPEN
 
+class XMLDocument;
+
 /**
  * @brief Class for parsing input files.
  *
@@ -142,7 +144,7 @@ public:
    * @brief Returns a new instance wrapped into a shared pointer.
    *
    * Builds and returns a new instance of the class wrapped into a
-   * shared pointer. It uses the above defined default constructor.
+   * shared pointer. It uses the above defined constructor.
    *
    * @param[in] file_path Path of the file to be parsed.
    * @return A shared pointer with a new instance of the class.
@@ -178,7 +180,7 @@ public:
    *
    * @return XML document object.
    */
-  std::unique_ptr<xercesc::DOMDocument>
+  std::shared_ptr<XMLDocument>
   parse(void (*load_grammar)(xercesc::XercesDOMParser *const));
 
   /**
@@ -192,8 +194,8 @@ public:
    *
    * @return XML document object.
    */
-  std::unique_ptr<xercesc::DOMDocument> parse();
-  std::unique_ptr<xercesc::DOMDocument> parse(const std::string &grammar_file);
+  std::shared_ptr<XMLDocument> parse();
+  std::shared_ptr<XMLDocument> parse(const std::string &grammar_file);
 
 private:
   /**

@@ -22,6 +22,8 @@
 
 #ifdef XML_IO
 
+#include <igatools/io/xml_document.h>
+
 #undef Assert
 #include <xercesc/parsers/XercesDOMParser.hpp>
 
@@ -33,6 +35,7 @@
 #include <sys/stat.h>
 
 using std::string;
+using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
@@ -116,7 +119,7 @@ check_file(const string &file_path)
 
 
 
-std::unique_ptr<xercesc::DOMDocument>
+std::shared_ptr<XMLDocument>
 XMLFileParser::
 parse()
 {
@@ -133,13 +136,12 @@ parse()
 
   parser_->parse(file_path_.c_str());
 
-  // no need to free this pointer - owned by the parent parser object
-  return std::unique_ptr<xercesc::DOMDocument>(parser_->getDocument());
+  return XMLDocument::create(shared_ptr<xercesc::DOMDocument>(parser_->getDocument()));
 }
 
 
 
-std::unique_ptr<xercesc::DOMDocument>
+std::shared_ptr<XMLDocument>
 XMLFileParser::
 parse(void (*load_grammar)(xercesc::XercesDOMParser *const))
 {
@@ -158,13 +160,11 @@ parse(void (*load_grammar)(xercesc::XercesDOMParser *const))
 
   parser_->parse(file_path_.c_str());
 
-  // no need to free this pointer - owned by the parent parser object
-  return std::unique_ptr<xercesc::DOMDocument>(parser_->getDocument());
+  return XMLDocument::create(shared_ptr<xercesc::DOMDocument>(parser_->getDocument()));
 }
 
 
-
-std::unique_ptr<xercesc::DOMDocument>
+std::shared_ptr<XMLDocument>
 XMLFileParser::
 parse(const string &grammar_file)
 {
@@ -188,8 +188,7 @@ parse(const string &grammar_file)
 
   parser_->parse(file_path_.c_str());
 
-  // no need to free this pointer - owned by the parent parser object
-  return std::unique_ptr<xercesc::DOMDocument>(parser_->getDocument());
+  return XMLDocument::create(shared_ptr<xercesc::DOMDocument>(parser_->getDocument()));
 }
 
 IGA_NAMESPACE_CLOSE

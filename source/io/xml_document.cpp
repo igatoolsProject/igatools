@@ -18,46 +18,42 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/io/objects_container_parser.h>
+#include <igatools/io/xml_document.h>
 
 #ifdef XML_IO
 
-#include <igatools/io/xml_file_parser.h>
-#include <igatools/base/objects_container.h>
-
 #include <xercesc/dom/DOMDocument.hpp>
 
-//#undef Assert // Notice this!!
+//
+//#undef Assert
 //#include <xercesc/parsers/XercesDOMParser.hpp>
+//
+//#include <igatools/io/xml_parser_error_handler.h>
 //#include <xercesc/sax/HandlerBase.hpp>
 //#include <xercesc/framework/MemBufInputSource.hpp>
 //#include <fstream>
 //#include <streambuf>
-//
 //#include <sys/stat.h>
 //
-//using namespace xercesc;
-using std::string;
+//using std::string;
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
 
-ObjectsContainerParser::
-ObjectsContainerParser(const string &file_path)
-  :
-  file_parser_(XMLFileParser::create(file_path))
-{}
-
-
-
-shared_ptr<ObjectsContainer>
-ObjectsContainerParser::
-parse(const string &schema_file) const
+XMLDocument::
+XMLDocument(const shared_ptr<xercesc::DOMDocument> dom_doc)
 {
-    const auto xml_doc = file_parser_->parse(schema_file);
-    const auto container = ObjectsContainer::create();
-    return container;
+}
+
+
+
+auto
+XMLDocument::
+create(const shared_ptr<xercesc::DOMDocument> dom_doc) ->
+SelfPtr_
+{
+    return SelfPtr_ (new XMLDocument (dom_doc));
 }
 
 IGA_NAMESPACE_CLOSE
