@@ -594,7 +594,42 @@ ObjectsContainerParser::
 parse_domain(const shared_ptr<XMLElement> xml_elem,
              const std::shared_ptr<ObjectsContainer> container) const
 {
-    AssertThrow (false, ExcNotImplemented());
+    Assert (xml_elem->get_name() == "Domain",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Codim") == codim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
+
+    using DomainType = Domain<dim, codim>;
+    static const int space_dim = dim + codim;
+    using GridFuncType = GridFunction<dim, space_dim>;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    AssertThrow (!container->is_id_present(object_id),
+                 ExcMessage("Parsing Domain already defined IgaObjectId=" +
+                            to_string(object_id) + "."));
+
+    const auto gf_tag = xml_elem->get_single_element("GridFunction");
+    const auto gf_id = gf_tag->get_attribute<Index>("GetFromIgaObjectId");
+    AssertThrow (container->is_object<GridFuncType> (gf_id),
+                 ExcMessage("Parsing Domain with IgaObjectId=" +
+         to_string(object_id) + " the GetFromIgaObjectId does not "
+         "correspond to a GridFunc with the expected dimension."));
+
+    const auto gf = container->get_object<GridFuncType>(gf_id);
+    Assert (gf != nullptr, ExcNullPtr());
+
+    string name = "";
+    if (xml_elem->has_element("Name"))
+    {
+        const auto nm_elem = xml_elem->get_single_element("Name");
+        name = nm_elem->get_value<string>();
+    }
+    const auto domain = DomainType::create(gf, name);
+
+    container->insert_object<DomainType>(domain, object_id);
 }
 
 
