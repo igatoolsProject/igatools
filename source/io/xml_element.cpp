@@ -301,6 +301,104 @@ get_attribute<bool> (const string &name) const
 }
 
 
+
+template <class T>
+SafeSTLVector<T>
+XMLElement::
+get_values_vector()
+{
+  SafeSTLVector<T> data;
+  const auto text_elem = this->get_single_text_element();
+
+  const string str = XMLString::transcode(text_elem->getWholeText());
+
+  try
+  {
+    T v;
+    std::stringstream line_stream(str);
+    while (line_stream >> v)
+      data.push_back(v);
+
+  }
+  catch (...)
+  {
+    AssertThrow(false, ExcMessage("Impossible to parse vector."));
+  }
+
+  return data;
+}
+
+
+
+auto
+XMLElement::
+get_single_element() -> SelfPtr_
+{
+  xercesc::DOMNodeList *children = root_elem_->getChildNodes();
+
+  const Size n_children = children->getLength();
+
+  SelfPtr_ element;
+
+  for (int i = 0; i < n_children; ++i)
+  {
+    xercesc::DOMNode *n = children->item(i);
+
+    if (n->getNodeType() && // true is not NULL
+        n->getNodeType() == xercesc::DOMNode::ELEMENT_NODE)  // is element
+    {
+      element = Self_::create(DOMElemPtr_(dynamic_cast<xercesc::DOMElement *>(n)));
+      break;
+    }
+  }
+
+  // if there is more than one element, an error is thrown.
+#ifndef NDEBUG
+  Size n_children_elems = 0;
+  for (int i = 0; i < n_children; ++i)
+  {
+    auto *n = children->item(i);
+
+    if (n->getNodeType() && // true is not NULL
+        n->getNodeType() == xercesc::DOMNode::ELEMENT_NODE)  // is element
+      ++n_children_elems;
+  }
+  Assert(n_children_elems == 1, ExcDimensionMismatch(n_children_elems, 1));
+  Assert(element != nullptr, ExcNullPtr());
+#endif
+
+  return element;
+}
+
+
+
+auto
+XMLElement::
+get_single_element(const string &name) -> SelfPtr_
+{
+  // Getting all the elements with the given name.
+  auto *children = root_elem_->getChildNodes();
+  const Size n_children = children->getLength();
+
+  Size n_matching_childs = 0;
+  SelfPtr_ element;
+  for (int c = 0; c < n_children; ++c)
+  {
+      auto *elem = dynamic_cast<xercesc::DOMElement *>(children->item(c));
+      if (elem != nullptr && XMLString::transcode(elem->getNodeName()) == name)
+      {
+          element = Self_::create(DOMElemPtr_(elem));
+          ++n_matching_childs;
+      }
+  }
+
+  Assert(n_matching_childs == 1, ExcDimensionMismatch(n_matching_childs, 1));
+  Assert(element != nullptr, ExcNullPtr());
+
+  return element;
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #endif // XML_IO

@@ -218,10 +218,50 @@ public:
    * @param[in] name Name of the attribute.
    * @return Value of the attribute.
    *
+   * @tparam T Type of value returned.
    * @note In debug mode, if the attribute is not present,
    * an error is thrown.
    */
   template <class T> T get_attribute(const std::string &name) const;
+
+  /**
+   * @brief Returns a vector of numerical values contained in the element.
+   *
+   * Returns a vector of numerical values with type @p T that
+   * are contained in the element.
+   *
+   * @tparam T Type of value returned in the vector.
+   * @return Vector containing the extracted numerical values.
+   */
+  template <class T>
+  SafeSTLVector<T> get_values_vector();
+
+  /**
+   * @brief Returns the only one child element contained in the element.
+   *
+   * Returns the only one child element contained in the element.
+   *
+   * @return Single extracted element.
+   *
+   * @note In debug mode, if more than one children element, an error
+   * is thrown.
+   */
+  SelfPtr_ get_single_element();
+
+  /**
+   * @brief Returns the only one child element contained in the element
+   * with the given tag @p name.
+   *
+   * Returns the only one child element contained in the element that has
+   * the given tag @p name.
+   *
+   * @param[in] name Name of the element to be extracted.
+   * @return Single extracted element.
+   *
+   * @note In debug mode, if more than one children element that has
+   * the given @p name, an error is thrown.
+   */
+  SelfPtr_ get_single_element(const std::string &name);
 
 private:
   /**
