@@ -25,7 +25,9 @@
 #include <igatools/io/xml_file_parser.h>
 #include <igatools/io/xml_element.h>
 #include <igatools/base/objects_container.h>
+
 #include <igatools/geometry/grid.h>
+#include <igatools/basis_functions/spline_space.h>
 
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
 
@@ -60,6 +62,7 @@ parse(const string &schema_file) const
     const shared_ptr<XMLElement> xml_elem = file_parser_->parse(schema_file);
     const auto container = ObjectsContainer::create();
     this->parse_grids (xml_elem, container);
+    this->parse_spline_spaces (xml_elem, container);
     return container;
 }
 
@@ -75,7 +78,7 @@ parse_grids(const shared_ptr<XMLElement> xml_elem,
     {
         const int grid_dim = ge->get_attribute<int>("Dim");
 
-        using ValidGridPtrs = typename ObjectsContainer::ValidGrids;
+        using ValidGridPtrs = typename ObjectsContainer::ValidGridPtrs;
         ValidGridPtrs valid_grid_ptr_types;
 
         bool found = false;
@@ -93,6 +96,15 @@ parse_grids(const shared_ptr<XMLElement> xml_elem,
                 parse_grid<dim>(ge, container);
             }
         });
+
+        // Grid dimension not found
+        AssertThrow (found,
+                     ExcMessage("Parsing Grid with IgaObjectId=" +
+                                to_string(ge->get_attribute<Index>("IgaObjectId")) +
+                                " not valid dimension "
+                                + to_string(ge->get_attribute<int>("Dim")) +
+                                " for a grid. Maybe igatools was not "
+                                "instantiated for this dimension."));
     }
 }
 
@@ -105,7 +117,7 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
            const std::shared_ptr<ObjectsContainer> container) const
 {
     Assert (xml_elem->get_name() == "Grid",
-            ExcMessage("No Grid xml tag."));
+            ExcMessage("Invalid XML tag."));
 
     Assert (xml_elem->get_attribute<int>("Dim") == dim,
             ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
@@ -137,6 +149,7 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
                                 to_string(object_id) + " knot vector for "
                                 "Direction " + to_string(dir) + " defined"
                                 " more than once."));
+        // TODO: to check here that the direction is lower than dir.
         parsed_dirs.insert(dir);
 
         knots[dir] = ke->get_values_vector<Real>();
@@ -150,6 +163,149 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
     const auto grid = GridType::create(knots);
 
     container->insert_object<GridType>(grid, object_id);
+}
+
+
+
+void
+ObjectsContainerParser::
+parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
+                    const shared_ptr<ObjectsContainer> container) const
+{
+    for (const auto &ssp : xml_elem->get_children_elements("SplineSpace"))
+    {
+        const int ssp_dim = ssp->get_attribute<int>("Dim");
+        const int ssp_range = ssp->get_attribute<int>("Range");
+        const int ssp_rank = ssp->get_attribute<int>("Rank");
+
+        using ValidSplineSpacePtrs = typename ObjectsContainer::ValidSplineSpacePtrs;
+        ValidSplineSpacePtrs valid_ssp_ptr_types;
+
+        bool found = false;
+        boost::fusion::for_each(valid_ssp_ptr_types, [&](const auto &ssp_ptr_type)
+        {
+            if (found)
+                return;
+
+            using SplineSpaceType = typename
+                    std::remove_reference<decltype(ssp_ptr_type)>::type::element_type;
+            static const int dim = SplineSpaceType::dim;
+            static const int range = SplineSpaceType::range;
+            static const int rank = SplineSpaceType::rank;
+
+            if (ssp_dim == dim && ssp_range == range && ssp_rank == rank)
+            {
+                found = true;
+                parse_spline_space<dim, range, rank>(ssp, container);
+            }
+        });
+    }
+}
+
+
+
+template <int dim, int range, int rank>
+void
+ObjectsContainerParser::
+parse_spline_space(const shared_ptr<XMLElement> xml_elem,
+                   const std::shared_ptr<ObjectsContainer> container) const
+{
+    Assert (xml_elem->get_name() == "SplineSpace",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Range") == range,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
+    Assert (xml_elem->get_attribute<int>("Rank") == rank,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
+
+    using GridType = Grid<dim>;
+    using SplineSpaceType = SplineSpace<dim, range, rank>;
+    using DegreeTable = typename SplineSpaceType::DegreeTable;
+    using MultiplicityTable = typename SplineSpaceType::MultiplicityTable;
+    using PeriodicityTable = typename SplineSpaceType::PeriodicityTable;
+    static const int n_components = SplineSpaceType::n_components;
+
+    const bool default_periodicity = false;
+
+    DegreeTable deg_table;
+    MultiplicityTable mult_table;
+    PeriodicityTable period_table;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    AssertThrow (!container->is_id_present(object_id),
+                 ExcMessage("Parsing SplineSpace already defined IgaObjectId=" +
+                            to_string(object_id) + "."));
+
+    const auto grid_tag = xml_elem->get_single_element("Grid");
+    const auto grid_id = grid_tag->get_attribute<Index>("GetFromIgaObjectId");
+
+    AssertThrow (container->is_object<GridType> (grid_id),
+                 ExcMessage("Parsing SplineSpace with IgaObjectId=" +
+         to_string(object_id) + " the GetFromIgaObjectId does not "
+         "correspond to a grid with the expected dimension."));
+
+    const auto grid = container->get_object<GridType>(grid_id);
+
+    const auto comps_elem = xml_elem->get_single_element("SplineSpaceComponents");
+    // Check that comps_elem == n_components
+    for (const auto &comp_elem : comps_elem->get_children_elements("SplineSpaceComponent"))
+    {
+        const auto comp_id = comp_elem->get_attribute<Index>("ComponentId");
+        // To check here 0 <= comp_id < n_components and is not repeated.
+
+        const auto degree_elem = comp_elem->get_single_element("Degrees");
+        const auto degs_vector = degree_elem->get_values_vector<Index>();
+        // Check here that degs_vector.size() == dim
+        for (int d = 0; d < dim; ++d)
+            deg_table[comp_id][d] = degs_vector[d];
+
+        const auto int_mults_elem =
+                comp_elem->get_single_element("InteriorMultiplicities")
+                ->get_children_elements("InteriorMultiplicities");
+        // Check here that  int_muls_elem.size() == dim
+
+        for (const auto &im : int_mults_elem)
+        {
+            const auto dir = im->get_attribute<Index>("Direction");
+//            AssertThrow (parsed_dirs.find(dir) == parsed_dirs.cend(),
+//                         ExcMessage("Parsing Grid with IgaObjectId=" +
+//                                    to_string(object_id) + " knot vector for "
+//                                    "Direction " + to_string(dir) + " defined"
+//                                    " more than once."));
+//            parsed_dirs.insert(dir);
+
+            const auto mults = im->get_values_vector<Index>();
+            mult_table[comp_id].copy_data_direction(dir, mults);
+            // Check here that the multiplicities match with the grid.
+
+//            AssertThrow (im->get_attribute<int>("Size") == mults.size(),
+//                         ExcMessage("Parsing Grid with IgaObjectId=" +
+//                                    to_string(object_id) + " knot vector Size for Direction " +
+//                                    to_string(dir) + " does not match with the specified one."));
+        }
+
+        if (comp_elem->has_element("Periodicity"))
+        {
+            const auto periodic_vector = comp_elem->
+                    get_single_element("Periodicity")->get_values_vector<bool>();
+            // Check dimension
+            for (int d = 0; d < dim; ++d)
+                period_table[comp_id][d] = periodic_vector[d];
+        }
+        else
+        {
+            for (int d = 0; d < dim; ++d)
+                period_table[comp_id][d] = default_periodicity;
+
+        }
+    } // Spline Space components
+
+
+    const auto spline_space = SplineSpaceType::create (deg_table, grid, mult_table, period_table);
+
+    container->insert_object<SplineSpaceType>(spline_space, object_id);
 }
 
 

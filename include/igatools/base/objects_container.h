@@ -232,7 +232,24 @@ public:
   typedef boost::fusion::vector<std::shared_ptr<Grid<0>>,
                                 std::shared_ptr<Grid<1>>,
                                 std::shared_ptr<Grid<2>>,
-                                std::shared_ptr<Grid<3>>> ValidGrids;
+                                std::shared_ptr<Grid<3>>> ValidGridPtrs;
+
+  /**
+   * Valid Grid instantiations.
+   */
+  typedef boost::fusion::vector<
+          std::shared_ptr<SplineSpace<0,0,1>>,
+          std::shared_ptr<SplineSpace<0,1,1>>,
+          std::shared_ptr<SplineSpace<0,2,1>>,
+          std::shared_ptr<SplineSpace<0,3,1>>,
+          std::shared_ptr<SplineSpace<1,1,1>>,
+          std::shared_ptr<SplineSpace<1,2,1>>,
+          std::shared_ptr<SplineSpace<1,3,1>>,
+          std::shared_ptr<SplineSpace<2,1,1>>,
+          std::shared_ptr<SplineSpace<2,2,1>>,
+          std::shared_ptr<SplineSpace<2,3,1>>,
+          std::shared_ptr<SplineSpace<3,1,1>>,
+          std::shared_ptr<SplineSpace<3,3,1>>> ValidSplineSpacePtrs;
 
 
 private:

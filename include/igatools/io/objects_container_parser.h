@@ -162,6 +162,13 @@ public:
   void parse_grid(const std::shared_ptr<XMLElement> xml_elem,
                   const std::shared_ptr<ObjectsContainer> container) const;
 
+  void parse_spline_spaces(const std::shared_ptr<XMLElement> xml_elem,
+                           const std::shared_ptr<ObjectsContainer> container) const;
+
+  template <int dim, int range, int rank>
+  void parse_spline_space(const std::shared_ptr<XMLElement> xml_elem,
+                          const std::shared_ptr<ObjectsContainer> container) const;
+
 
 };
 
