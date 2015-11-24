@@ -64,6 +64,19 @@ parse(const string &schema_file) const
 {
     const shared_ptr<XMLElement> xml_elem = file_parser_->parse(schema_file);
     const auto container = ObjectsContainer::create();
+
+    // Checking for repeated iga object ids.
+    SafeSTLSet<Index> object_ids;
+    for (const auto &el : xml_elem->get_children_elements())
+    {
+        const Index obj_id = el->get_attribute<Index>("IgaObjectId");
+        AssertThrow (object_ids.find(obj_id) == object_ids.cend(),
+                ExcMessage("IgaObjectId " + to_string(obj_id) + " is "
+                           "used more than once."));
+        object_ids.insert(obj_id);
+    }
+
+
     this->parse_grids (xml_elem, container);
     this->parse_spline_spaces (xml_elem, container);
     this->parse_bsplines (xml_elem, container);
@@ -772,7 +785,6 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
 
     container->insert_object<PhysSpaceType>(ps, object_id);
 }
-
 
 IGA_NAMESPACE_CLOSE
 
