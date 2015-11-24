@@ -22,18 +22,16 @@
 
 #ifdef XML_IO
 
-#include <igatools/io/xml_parser_error_handler.h>
-
-#undef Assert // Notice this!!
+#undef Assert
 #include <xercesc/parsers/XercesDOMParser.hpp>
+
+#include <igatools/io/xml_parser_error_handler.h>
 #include <xercesc/sax/HandlerBase.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
 #include <fstream>
 #include <streambuf>
-
 #include <sys/stat.h>
 
-using namespace xercesc;
 using std::string;
 
 IGA_NAMESPACE_OPEN
@@ -48,16 +46,16 @@ XMLFileParser(const string &file_path)
 
   try
   {
-    XMLPlatformUtils::Initialize();
+    xercesc::XMLPlatformUtils::Initialize();
   }
-  catch (XMLException &exception)
+  catch (xercesc::XMLException &exception)
   {
-    char *error_msg = XMLString::transcode(exception.getMessage());
+    char *error_msg = xercesc::XMLString::transcode(exception.getMessage());
     AssertThrow (false, ExcMessage(error_msg));
-    XMLString::release(&error_msg);
+    xercesc::XMLString::release(&error_msg);
   }
 
-  parser_ = new XercesDOMParser;
+  parser_ = new xercesc::XercesDOMParser;
 }
 
 
@@ -78,13 +76,13 @@ XMLFileParser::
 
   try
   {
-    XMLPlatformUtils::Terminate();
+    xercesc::XMLPlatformUtils::Terminate();
   }
-  catch (XMLException &exception)
+  catch (xercesc::XMLException &exception)
   {
-    char *error_msg = XMLString::transcode(exception.getMessage());
+    char *error_msg = xercesc::XMLString::transcode(exception.getMessage());
     AssertThrow (false, ExcMessage(error_msg));
-    XMLString::release(&error_msg);
+    xercesc::XMLString::release(&error_msg);
   }
 }
 
@@ -118,14 +116,14 @@ check_file(const string &file_path)
 
 
 
-DOMDocument *
+xercesc::DOMDocument *
 XMLFileParser::
 parse()
 {
   // Configuring DOM parser
   const auto error_handler = XMLParserErrorHandler::create();
   parser_->useCachedGrammarInParse(false);
-  parser_->setValidationScheme(XercesDOMParser::Val_Never);
+  parser_->setValidationScheme(xercesc::XercesDOMParser::Val_Never);
   parser_->setErrorHandler(error_handler.get());
   parser_->setLoadExternalDTD(false);
   parser_->setValidationSchemaFullChecking(false);
@@ -141,16 +139,16 @@ parse()
 
 
 
-DOMDocument *
+xercesc::DOMDocument *
 XMLFileParser::
-parse(void (*load_grammar)(XercesDOMParser *const))
+parse(void (*load_grammar)(xercesc::XercesDOMParser *const))
 {
   load_grammar(parser_);
 
   // Configuring DOM parser
   const auto error_handler = XMLParserErrorHandler::create();
   parser_->useCachedGrammarInParse(true);
-  parser_->setValidationScheme(XercesDOMParser::Val_Always);
+  parser_->setValidationScheme(xercesc::XercesDOMParser::Val_Always);
   parser_->setErrorHandler(error_handler.get());
   parser_->setLoadExternalDTD(false);
   parser_->setValidationSchemaFullChecking(true);
@@ -166,7 +164,7 @@ parse(void (*load_grammar)(XercesDOMParser *const))
 
 
 
-DOMDocument *
+xercesc::DOMDocument *
 XMLFileParser::
 parse(const string &grammar_file)
 {
@@ -176,7 +174,7 @@ parse(const string &grammar_file)
   const auto error_handler = XMLParserErrorHandler::create();
   parser_->setErrorHandler(error_handler.get());
   parser_->useCachedGrammarInParse(true);
-  parser_->setValidationScheme(XercesDOMParser::Val_Always);
+  parser_->setValidationScheme(xercesc::XercesDOMParser::Val_Always);
   parser_->setDoNamespaces(true);
   parser_->setDoSchema(true);
   parser_->setLoadExternalDTD(false);
@@ -186,7 +184,7 @@ parse(const string &grammar_file)
 //      parser_->setHandleMultipleImports(true);
 
   parser_->loadGrammar(grammar_file.c_str(),
-                      Grammar::SchemaGrammarType, true);
+                      xercesc::Grammar::SchemaGrammarType, true);
 
   parser_->parse(file_path_.c_str());
 
