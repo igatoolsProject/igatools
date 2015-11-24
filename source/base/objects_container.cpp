@@ -446,6 +446,50 @@ is_function (const Index &id) const
 
 
 
+template <class T>
+void
+ObjectsContainer::
+insert_object (const std::shared_ptr<T> object,
+               const Index &id)
+{
+    Assert (object != nullptr, ExcNullPtr());
+
+    // TODO: this will be replaced when the global enumeration control is
+    // performed.
+    Assert ((!this->is_object<T>(id)),
+            ExcMessage("Object id already defined for the same object type"));
+
+    auto &objects_T = at_key<T>(objects_);
+
+    objects_T[id] = object;
+};
+
+
+
+template <class T>
+auto
+ObjectsContainer::
+get_object (const Index &id) const -> std::shared_ptr<T>
+{
+    Assert ((this->is_object<T>(id)),
+            ExcMessage("Object id does not correspond to an object of "
+                       "the given type."));
+    return at_key<T>(objects_).at(id);
+};
+
+
+
+template <class T>
+bool
+ObjectsContainer::
+is_object (const Index &id) const
+{
+    const auto &objects_T = at_key<T>(objects_);
+    return objects_T.find(id) != objects_T.end();
+};
+
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/base/objects_container.inst>

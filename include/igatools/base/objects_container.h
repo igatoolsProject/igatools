@@ -442,6 +442,24 @@ public:
   template <int dim, int codim, int range, int rank>
   bool is_function (const Index &id) const;
 
+  /**
+   * @todo To be documented.
+   */
+  template <class T>
+  void insert_object (const std::shared_ptr<T> object, const Index &id);
+
+  /**
+   * @todo To be documented.
+   */
+  template <class T>
+  std::shared_ptr<T> get_object (const Index &id) const;
+
+  /**
+   * @todo To be documented.
+   */
+  template <class T>
+  bool is_object (const Index &id) const;
+
 private:
   /**
    * Container for the objects.
