@@ -375,6 +375,33 @@ get_values_vector() const
 
 
 
+template <>
+SafeSTLVector<string>
+XMLElement::
+get_values_vector() const
+{
+  SafeSTLVector<string> data;
+  const auto text_elem = this->get_single_text_element();
+
+  const string str = XMLString::transcode(text_elem->getWholeText());
+
+  try
+  {
+    string v;
+    std::stringstream line_stream(str);
+    while (line_stream  >> v)
+      data.push_back(v);
+  }
+  catch (...)
+  {
+    AssertThrow(false, ExcMessage("Impossible to parse vector."));
+  }
+
+  return data;
+}
+
+
+
 auto
 XMLElement::
 get_single_element() -> SelfPtr_
