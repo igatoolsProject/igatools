@@ -36,7 +36,7 @@ for dim in unique(dims):
     grid_ptr = 'std::shared_ptr<Grid<%d>>' % (dim)
     f.write('template bool ObjectsContainer::is_grid<%d>(const Index&) const;\n' % (dim))
     f.write('template %s ObjectsContainer::get_grid<%d>(const Index&) const;\n' % (grid_ptr, dim))
-    f.write('template void ObjectsContainer::add_grid<%d>(const %s, const Index&);\n' % (dim, grid_ptr))
+    f.write('template void ObjectsContainer::insert_grid<%d>(const %s, const Index&);\n' % (dim, grid_ptr))
 f.write('\n')
 
 
@@ -54,7 +54,7 @@ for dims in space_dims:
     ss_ptr = 'std::shared_ptr<SplineSpace<%s>>' % (dims_str)
     f.write('template bool ObjectsContainer::is_spline_space<%s>(const Index&) const;\n' % (dims_str))
     f.write('template %s ObjectsContainer::get_spline_space<%s>(const Index&) const;\n' % (ss_ptr, dims_str))
-    f.write('template void ObjectsContainer::add_spline_space<%s>(const %s, const Index&);\n' % (dims_str, ss_ptr))
+    f.write('template void ObjectsContainer::insert_spline_space<%s>(const %s, const Index&);\n' % (dims_str, ss_ptr))
 f.write('\n')
 
 # Reference spaces
@@ -63,7 +63,7 @@ for dims in space_dims:
     rs_ptr = 'std::shared_ptr<ReferenceSpaceBasis<%s>>' % (dims_str)
     f.write('template bool ObjectsContainer::is_ref_space<%s>(const Index&) const;\n' % (dims_str))
     f.write('template %s ObjectsContainer::get_ref_space<%s>(const Index&) const;\n' % (rs_ptr, dims_str))
-    f.write('template void ObjectsContainer::add_ref_space<%s>(const %s, const Index&);\n' % (dims_str, rs_ptr))
+    f.write('template void ObjectsContainer::insert_ref_space<%s>(const %s, const Index&);\n' % (dims_str, rs_ptr))
 f.write('\n')
 
 
@@ -98,7 +98,7 @@ for dims in unique(gf_dims):
     gf_ptr = 'std::shared_ptr<GridFunction<%s>>' % (dims_str)
     f.write('template bool ObjectsContainer::is_grid_function<%s>(const Index&) const;\n' % (dims_str))
     f.write('template %s ObjectsContainer::get_grid_function<%s>(const Index&) const;\n' % (gf_ptr, dims_str))
-    f.write('template void ObjectsContainer::add_grid_function<%s>(const %s, const Index&);\n' % (dims_str, gf_ptr))
+    f.write('template void ObjectsContainer::insert_grid_function<%s>(const %s, const Index&);\n' % (dims_str, gf_ptr))
 f.write('\n')
 
 
@@ -114,7 +114,7 @@ for dims in unique(dm_dims):
     dm_ptr = 'std::shared_ptr<Domain<%s>>' % (dims_str)
     f.write('template bool ObjectsContainer::is_domain<%s>(const Index&) const;\n' % (dims_str))
     f.write('template %s ObjectsContainer::get_domain<%s>(const Index&) const;\n' % (dm_ptr, dims_str))
-    f.write('template void ObjectsContainer::add_domain<%s>(const %s, const Index&);\n' % (dims_str, dm_ptr))
+    f.write('template void ObjectsContainer::insert_domain<%s>(const %s, const Index&);\n' % (dims_str, dm_ptr))
 f.write('\n')
 
 
@@ -130,7 +130,7 @@ for dims in unique(sp_specs):
     ps_ptr = 'std::shared_ptr<PhysicalSpaceBasis<%s>>' % (dims_str)
     f.write('template bool ObjectsContainer::is_phys_space_basis<%s>(const Index&) const;\n' % (dims_str))
     f.write('template %s ObjectsContainer::get_phys_space_basis<%s>(const Index&) const;\n' % (ps_ptr, dims_str))
-    f.write('template void ObjectsContainer::add_phys_space_basis<%s>(const %s, const Index&);\n' % (dims_str, ps_ptr))
+    f.write('template void ObjectsContainer::insert_phys_space_basis<%s>(const %s, const Index&);\n' % (dims_str, ps_ptr))
 f.write('\n')
 
 
@@ -140,5 +140,5 @@ for dims in inst.all_function_dims:
     fn_ptr = 'std::shared_ptr<Function<%s>>' % (dims_str)
     f.write('template bool ObjectsContainer::is_function<%s>(const Index&) const;\n' % (dims_str))
     f.write('template %s ObjectsContainer::get_function<%s>(const Index&) const;\n' % (fn_ptr, dims_str))
-    f.write('template void ObjectsContainer::add_function<%s>(const %s, const Index&);\n' % (dims_str, fn_ptr))
+    f.write('template void ObjectsContainer::insert_function<%s>(const %s, const Index&);\n' % (dims_str, fn_ptr))
 f.write('\n')

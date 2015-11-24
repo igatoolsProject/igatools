@@ -63,7 +63,7 @@ const_create() -> shared_ptr<const self_t>
 template <int dim>
 void
 ObjectsContainer::
-add_grid (const GridPtr_t<dim> grid, const Index &id)
+insert_grid (const GridPtr_t<dim> grid, const Index &id)
 {
     Assert (grid != nullptr, ExcNullPtr());
 
@@ -107,7 +107,7 @@ is_grid (const Index &id) const
 template <int dim, int range, int rank>
 void
 ObjectsContainer::
-add_spline_space (const SplineSpacePtr_t<dim, range, rank> spline_space,
+insert_spline_space (const SplineSpacePtr_t<dim, range, rank> spline_space,
                   const Index &id)
 {
     Assert (spline_space != nullptr, ExcNullPtr());
@@ -152,7 +152,7 @@ is_spline_space (const Index &id) const
 template <int dim, int range, int rank>
 void
 ObjectsContainer::
-add_ref_space (const RefSpacePtr_t<dim, range, rank> ref_space,
+insert_ref_space (const RefSpacePtr_t<dim, range, rank> ref_space,
                const Index &id)
 {
     Assert (ref_space != nullptr, ExcNullPtr());
@@ -267,7 +267,7 @@ is_nurbs (const Index &id) const
 template <int dim, int range>
 void
 ObjectsContainer::
-add_grid_function (const GridFuncPtr_t<dim, range> grid_func,
+insert_grid_function (const GridFuncPtr_t<dim, range> grid_func,
                    const Index &id)
 {
     Assert (grid_func != nullptr, ExcNullPtr());
@@ -312,7 +312,7 @@ is_grid_function (const Index &id) const
 template <int dim, int codim>
 void
 ObjectsContainer::
-add_domain (const DomainPtr_t<dim, codim> domain,
+insert_domain (const DomainPtr_t<dim, codim> domain,
             const Index &id)
 {
     Assert (domain != nullptr, ExcNullPtr());
@@ -357,7 +357,7 @@ is_domain (const Index &id) const
 template <int dim, int range, int rank, int codim>
 void
 ObjectsContainer::
-add_phys_space_basis (const PhysSpacePtr_t<dim, range, rank, codim> space,
+insert_phys_space_basis (const PhysSpacePtr_t<dim, range, rank, codim> space,
                       const Index &id)
 {
     Assert (space != nullptr, ExcNullPtr());
@@ -403,7 +403,7 @@ is_phys_space_basis (const Index &id) const
 template <int dim, int codim, int range, int rank>
 void
 ObjectsContainer::
-add_function (const FunctionPtr_t<dim, codim, range, rank> function,
+insert_function (const FunctionPtr_t<dim, codim, range, rank> function,
               const Index &id)
 {
     Assert (function != nullptr, ExcNullPtr());

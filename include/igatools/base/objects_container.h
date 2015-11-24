@@ -290,7 +290,7 @@ public:
    * @todo To be documented.
    */
   template <int dim>
-  void add_grid (const GridPtr_t<dim> grid, const Index &id);
+  void insert_grid (const GridPtr_t<dim> grid, const Index &id);
 
   /**
    * @todo To be documented.
@@ -308,7 +308,7 @@ public:
    * @todo To be documented.
    */
   template <int dim, int range, int rank>
-  void add_spline_space (const SplineSpacePtr_t<dim, range, rank> spline_space,
+  void insert_spline_space (const SplineSpacePtr_t<dim, range, rank> spline_space,
                          const Index &id);
 
   /**
@@ -327,7 +327,7 @@ public:
    * @todo To be documented.
    */
   template <int dim, int range, int rank>
-  void add_ref_space (const RefSpacePtr_t<dim, range, rank> ref_space,
+  void insert_ref_space (const RefSpacePtr_t<dim, range, rank> ref_space,
                       const Index &id);
 
   /**
@@ -370,7 +370,7 @@ public:
    * @todo To be documented.
    */
   template <int dim, int range>
-  void add_grid_function (const GridFuncPtr_t<dim, range> grid_func,
+  void insert_grid_function (const GridFuncPtr_t<dim, range> grid_func,
                           const Index &id);
 
   /**
@@ -389,7 +389,7 @@ public:
    * @todo To be documented.
    */
   template <int dim, int codim>
-  void add_domain (const DomainPtr_t<dim, codim> domain,
+  void insert_domain (const DomainPtr_t<dim, codim> domain,
                    const Index &id);
 
   /**
@@ -408,7 +408,7 @@ public:
    * @todo To be documented.
    */
   template <int dim, int range, int rank, int codim>
-  void add_phys_space_basis (const PhysSpacePtr_t<dim, range, rank, codim> space,
+  void insert_phys_space_basis (const PhysSpacePtr_t<dim, range, rank, codim> space,
                              const Index &id);
 
   /**
@@ -427,7 +427,7 @@ public:
    * @todo To be documented.
    */
   template <int dim, int codim, int range, int rank>
-  void add_function (const FunctionPtr_t<dim, codim, range, rank> function,
+  void insert_function (const FunctionPtr_t<dim, codim, range, rank> function,
                      const Index &id);
 
   /**
