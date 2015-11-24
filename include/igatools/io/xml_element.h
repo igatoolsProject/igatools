@@ -57,7 +57,7 @@ private:
   typedef std::shared_ptr<Self_> SelfPtr_;
 
   /** Type for a shared pointer of the current class. */
-  typedef std::shared_ptr<xercesc::DOMElement> DOMElemPtr_;
+  typedef xercesc::DOMElement * DOMElemPtr_;
 
   ///@}
 
@@ -207,7 +207,7 @@ public:
    * @warning In debug mode, if more than one children of type @p DOMText
    * are present the element, or there is anyone, an error is thrown.
    */
-  std::shared_ptr<xercesc::DOMText> get_single_text_element() const;
+  xercesc::DOMText *get_single_text_element() const;
 
   /**
    * @brief Returns the value of the attribute with the given @p name.
@@ -218,10 +218,50 @@ public:
    * @param[in] name Name of the attribute.
    * @return Value of the attribute.
    *
+   * @tparam T Type of value returned.
    * @note In debug mode, if the attribute is not present,
    * an error is thrown.
    */
   template <class T> T get_attribute(const std::string &name) const;
+
+  /**
+   * @brief Returns a vector of numerical values contained in the element.
+   *
+   * Returns a vector of numerical values with type @p T that
+   * are contained in the element.
+   *
+   * @tparam T Type of value returned in the vector.
+   * @return Vector containing the extracted numerical values.
+   */
+  template <class T>
+  SafeSTLVector<T> get_values_vector();
+
+  /**
+   * @brief Returns the only one child element contained in the element.
+   *
+   * Returns the only one child element contained in the element.
+   *
+   * @return Single extracted element.
+   *
+   * @note In debug mode, if more than one children element, an error
+   * is thrown.
+   */
+  SelfPtr_ get_single_element();
+
+  /**
+   * @brief Returns the only one child element contained in the element
+   * with the given tag @p name.
+   *
+   * Returns the only one child element contained in the element that has
+   * the given tag @p name.
+   *
+   * @param[in] name Name of the element to be extracted.
+   * @return Single extracted element.
+   *
+   * @note In debug mode, if more than one children element that has
+   * the given @p name, an error is thrown.
+   */
+  SelfPtr_ get_single_element(const std::string &name);
 
 private:
   /**

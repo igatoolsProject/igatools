@@ -136,9 +136,9 @@ parse()
 
   parser_->parse(file_path_.c_str());
 
-  const auto root_elem = shared_ptr<xercesc::DOMElement>
-    (parser_->getDocument()->getDocumentElement());
-  return XMLElement::create(root_elem);
+  xercesc::DOMDocument *dom_doc = parser_->getDocument();
+  xercesc::DOMElement *dom_elem = dom_doc->getDocumentElement();
+  return XMLElement::create(dom_elem);
 }
 
 
@@ -162,9 +162,9 @@ parse(void (*load_grammar)(xercesc::XercesDOMParser *const))
 
   parser_->parse(file_path_.c_str());
 
-  const auto root_elem = shared_ptr<xercesc::DOMElement>
-    (parser_->getDocument()->getDocumentElement());
-  return XMLElement::create(root_elem);
+  xercesc::DOMDocument *dom_doc = parser_->getDocument();
+  xercesc::DOMElement *dom_elem = dom_doc->getDocumentElement();
+  return XMLElement::create(dom_elem);
 }
 
 
@@ -192,9 +192,11 @@ parse(const string &grammar_file)
 
   parser_->parse(file_path_.c_str());
 
-  const auto root_elem = shared_ptr<xercesc::DOMElement>
-    (parser_->getDocument()->getDocumentElement());
-  return XMLElement::create(root_elem);
+  // This pointer must not be freed, it is owned by the parent parser
+  // object.
+  xercesc::DOMDocument *dom_doc = parser_->getDocument();
+  xercesc::DOMElement *dom_elem = dom_doc->getDocumentElement();
+  return XMLElement::create(dom_elem);
 }
 
 IGA_NAMESPACE_CLOSE
