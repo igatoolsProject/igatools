@@ -178,7 +178,7 @@ public:
    *
    * @return XML document object.
    */
-  xercesc::DOMDocument *
+  std::unique_ptr<xercesc::DOMDocument>
   parse(void (*load_grammar)(xercesc::XercesDOMParser *const));
 
   /**
@@ -192,8 +192,8 @@ public:
    *
    * @return XML document object.
    */
-  xercesc::DOMDocument * parse();
-  xercesc::DOMDocument * parse(const std::string &grammar_file);
+  std::unique_ptr<xercesc::DOMDocument> parse();
+  std::unique_ptr<xercesc::DOMDocument> parse(const std::string &grammar_file);
 
 private:
   /**

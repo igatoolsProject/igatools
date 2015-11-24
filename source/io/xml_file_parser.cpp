@@ -116,7 +116,7 @@ check_file(const string &file_path)
 
 
 
-xercesc::DOMDocument *
+std::unique_ptr<xercesc::DOMDocument>
 XMLFileParser::
 parse()
 {
@@ -134,12 +134,12 @@ parse()
   parser_->parse(file_path_.c_str());
 
   // no need to free this pointer - owned by the parent parser object
-  return parser_->getDocument();
+  return std::unique_ptr<xercesc::DOMDocument>(parser_->getDocument());
 }
 
 
 
-xercesc::DOMDocument *
+std::unique_ptr<xercesc::DOMDocument>
 XMLFileParser::
 parse(void (*load_grammar)(xercesc::XercesDOMParser *const))
 {
@@ -159,12 +159,12 @@ parse(void (*load_grammar)(xercesc::XercesDOMParser *const))
   parser_->parse(file_path_.c_str());
 
   // no need to free this pointer - owned by the parent parser object
-  return parser_->getDocument();
+  return std::unique_ptr<xercesc::DOMDocument>(parser_->getDocument());
 }
 
 
 
-xercesc::DOMDocument *
+std::unique_ptr<xercesc::DOMDocument>
 XMLFileParser::
 parse(const string &grammar_file)
 {
@@ -189,7 +189,7 @@ parse(const string &grammar_file)
   parser_->parse(file_path_.c_str());
 
   // no need to free this pointer - owned by the parent parser object
-  return parser_->getDocument();
+  return std::unique_ptr<xercesc::DOMDocument>(parser_->getDocument());
 }
 
 IGA_NAMESPACE_CLOSE
