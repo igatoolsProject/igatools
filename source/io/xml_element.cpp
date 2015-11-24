@@ -292,23 +292,78 @@ get_attribute<bool> (const string &name) const
 
 
 
-template <class T>
-SafeSTLVector<T>
+template <>
+SafeSTLVector<Real>
 XMLElement::
 get_values_vector() const
 {
-  SafeSTLVector<T> data;
+  SafeSTLVector<Real> data;
   const auto text_elem = this->get_single_text_element();
 
   const string str = XMLString::transcode(text_elem->getWholeText());
 
   try
   {
-    T v;
+    Real v;
     std::stringstream line_stream(str);
     while (line_stream >> v)
       data.push_back(v);
 
+  }
+  catch (...)
+  {
+    AssertThrow(false, ExcMessage("Impossible to parse vector."));
+  }
+
+  return data;
+}
+
+
+
+template <>
+SafeSTLVector<Index>
+XMLElement::
+get_values_vector() const
+{
+  SafeSTLVector<Index> data;
+  const auto text_elem = this->get_single_text_element();
+
+  const string str = XMLString::transcode(text_elem->getWholeText());
+
+  try
+  {
+    Index v;
+    std::stringstream line_stream(str);
+    while (line_stream >> v)
+      data.push_back(v);
+
+  }
+  catch (...)
+  {
+    AssertThrow(false, ExcMessage("Impossible to parse vector."));
+  }
+
+  return data;
+}
+
+
+
+template <>
+SafeSTLVector<bool>
+XMLElement::
+get_values_vector() const
+{
+  SafeSTLVector<bool> data;
+  const auto text_elem = this->get_single_text_element();
+
+  const string str = XMLString::transcode(text_elem->getWholeText());
+
+  try
+  {
+    bool v;
+    std::stringstream line_stream(str);
+    while (line_stream  >> std::boolalpha >> v)
+      data.push_back(v);
   }
   catch (...)
   {
@@ -387,9 +442,6 @@ get_single_element(const string &name) -> SelfPtr_
   return element;
 }
 
-
-template SafeSTLVector<Real> XMLElement::get_values_vector<Real>() const;
-template SafeSTLVector<Index> XMLElement::get_values_vector<Index>() const;
 
 IGA_NAMESPACE_CLOSE
 
