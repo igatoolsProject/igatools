@@ -25,19 +25,13 @@
 
 #ifdef XML_IO
 
-//#include <xercesc/util/XercesDefs.hpp>
-//#include <xercesc/sax/ErrorHandler.hpp>
-
-//XERCES_CPP_NAMESPACE_BEGIN
-//class XercesDOMParser;
-//class DOMDocument;
-//XERCES_CPP_NAMESPACE_END
-
 
 IGA_NAMESPACE_OPEN
 
 class XMLFileParser;
+class XMLElement;
 class ObjectsContainer;
+template <int dim> class Grid;
 
 /**
  * @brief Class for parsing input files.
@@ -136,20 +130,15 @@ private:
 public:
 
   /**
-   * @brief Default destructor.
+   * @brief Returns a new instance wrapped into a shared pointer.
+   *
+   * Builds and returns a new instance of the class wrapped into a
+   * shared pointer. It uses the above defined default constructor.
+   *
+   * @param[in] file_path Path of the file to be parsed.
+   * @return A shared pointer with a new instance of the class.
    */
-  ~ObjectsContainerParser() = default;
-
-//  /**
-//   * @brief Returns a new instance wrapped into a shared pointer.
-//   *
-//   * Builds and returns a new instance of the class wrapped into a
-//   * shared pointer. It uses the above defined default constructor.
-//   *
-//   * @param[in] file_path Path of the file to be parsed.
-//   * @return A shared pointer with a new instance of the class.
-//   */
-//  static SelfPtr_ create(const std::string &file_path);
+  static SelfPtr_ create(const std::string &file_path);
 
   ///@}
 
@@ -165,6 +154,13 @@ public:
    * @todo To be documented.
    */
   std::shared_ptr<ObjectsContainer> parse(const std::string &schema_file) const;
+
+  void parse_grids(const std::shared_ptr<XMLElement> xml_elem,
+                   const std::shared_ptr<ObjectsContainer> container) const;
+
+  template <int dim>
+  void parse_grid(const std::shared_ptr<XMLElement> xml_elem,
+                  const std::shared_ptr<ObjectsContainer> container) const;
 
 
 };

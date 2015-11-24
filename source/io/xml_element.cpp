@@ -295,7 +295,7 @@ get_attribute<bool> (const string &name) const
 template <class T>
 SafeSTLVector<T>
 XMLElement::
-get_values_vector()
+get_values_vector() const
 {
   SafeSTLVector<T> data;
   const auto text_elem = this->get_single_text_element();
@@ -387,6 +387,9 @@ get_single_element(const string &name) -> SelfPtr_
   return element;
 }
 
+
+template SafeSTLVector<Real> XMLElement::get_values_vector<Real>() const;
+template SafeSTLVector<Index> XMLElement::get_values_vector<Index>() const;
 
 IGA_NAMESPACE_CLOSE
 

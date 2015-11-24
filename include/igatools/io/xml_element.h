@@ -234,7 +234,7 @@ public:
    * @return Vector containing the extracted numerical values.
    */
   template <class T>
-  SafeSTLVector<T> get_values_vector();
+  SafeSTLVector<T> get_values_vector() const;
 
   /**
    * @brief Returns the only one child element contained in the element.

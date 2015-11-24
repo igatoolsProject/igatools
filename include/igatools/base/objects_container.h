@@ -225,6 +225,17 @@ private:
   boost::fusion::pair<Function<0,0,3,1>, MapFunctionPtr_t<0,0,3,1>>
   > ObjectTypes_t;
 
+public:
+  /**
+   * Valid Grid instantiations.
+   */
+  typedef boost::fusion::vector<std::shared_ptr<Grid<0>>,
+                                std::shared_ptr<Grid<1>>,
+                                std::shared_ptr<Grid<2>>,
+                                std::shared_ptr<Grid<3>>> ValidGrids;
+
+
+private:
 
 
   /** @name Constructors*/
@@ -459,6 +470,8 @@ public:
    */
   template <class T>
   bool is_object (const Index &id) const;
+
+  bool is_id_present (const Index &id) const;
 
 private:
   /**

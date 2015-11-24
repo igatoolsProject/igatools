@@ -490,6 +490,25 @@ is_object (const Index &id) const
 
 
 
+bool
+ObjectsContainer::
+is_id_present (const Index &id) const
+{
+    bool found = false;
+    boost::fusion::for_each(objects_, [&](const auto &objects_fusion_map)
+    {
+        if (found)
+            return;
+
+        const auto &objects_map = objects_fusion_map.second;
+        found = objects_map.find(id) != objects_map.cend();
+    });
+
+    return false;
+};
+
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/base/objects_container.inst>
