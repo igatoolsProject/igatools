@@ -407,6 +407,7 @@ XMLElement::
 get_single_element() -> SelfPtr_
 {
   DOMNodeList *children = root_elem_->getChildNodes();
+
   const Size n_children = children->getLength();
 
   SelfPtr_ element;
