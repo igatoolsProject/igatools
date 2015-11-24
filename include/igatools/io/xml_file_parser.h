@@ -36,7 +36,7 @@ XERCES_CPP_NAMESPACE_END
 
 IGA_NAMESPACE_OPEN
 
-class XMLDocument;
+class XMLElement;
 
 /**
  * @brief Class for parsing input files.
@@ -180,7 +180,7 @@ public:
    *
    * @return XML document object.
    */
-  std::shared_ptr<XMLDocument>
+  std::shared_ptr<XMLElement>
   parse(void (*load_grammar)(xercesc::XercesDOMParser *const));
 
   /**
@@ -194,8 +194,8 @@ public:
    *
    * @return XML document object.
    */
-  std::shared_ptr<XMLDocument> parse();
-  std::shared_ptr<XMLDocument> parse(const std::string &grammar_file);
+  std::shared_ptr<XMLElement> parse();
+  std::shared_ptr<XMLElement> parse(const std::string &grammar_file);
 
 private:
   /**

@@ -22,7 +22,7 @@
 
 #ifdef XML_IO
 
-#include <igatools/io/xml_document.h>
+#include <igatools/io/xml_element.h>
 
 #undef Assert
 #include <xercesc/parsers/XercesDOMParser.hpp>
@@ -119,7 +119,7 @@ check_file(const string &file_path)
 
 
 
-std::shared_ptr<XMLDocument>
+std::shared_ptr<XMLElement>
 XMLFileParser::
 parse()
 {
@@ -136,12 +136,14 @@ parse()
 
   parser_->parse(file_path_.c_str());
 
-  return XMLDocument::create(shared_ptr<xercesc::DOMDocument>(parser_->getDocument()));
+  const auto root_elem = shared_ptr<xercesc::DOMElement>
+    (parser_->getDocument()->getDocumentElement());
+  return XMLElement::create(root_elem);
 }
 
 
 
-std::shared_ptr<XMLDocument>
+std::shared_ptr<XMLElement>
 XMLFileParser::
 parse(void (*load_grammar)(xercesc::XercesDOMParser *const))
 {
@@ -160,11 +162,13 @@ parse(void (*load_grammar)(xercesc::XercesDOMParser *const))
 
   parser_->parse(file_path_.c_str());
 
-  return XMLDocument::create(shared_ptr<xercesc::DOMDocument>(parser_->getDocument()));
+  const auto root_elem = shared_ptr<xercesc::DOMElement>
+    (parser_->getDocument()->getDocumentElement());
+  return XMLElement::create(root_elem);
 }
 
 
-std::shared_ptr<XMLDocument>
+std::shared_ptr<XMLElement>
 XMLFileParser::
 parse(const string &grammar_file)
 {
@@ -188,7 +192,9 @@ parse(const string &grammar_file)
 
   parser_->parse(file_path_.c_str());
 
-  return XMLDocument::create(shared_ptr<xercesc::DOMDocument>(parser_->getDocument()));
+  const auto root_elem = shared_ptr<xercesc::DOMElement>
+    (parser_->getDocument()->getDocumentElement());
+  return XMLElement::create(root_elem);
 }
 
 IGA_NAMESPACE_CLOSE
