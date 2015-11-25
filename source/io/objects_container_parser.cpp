@@ -25,6 +25,7 @@
 #include <igatools/io/xml_file_parser.h>
 #include <igatools/io/xml_element.h>
 #include <igatools/base/objects_container.h>
+#include <igatools/base/instantiated_types.h>
 
 #include <igatools/geometry/grid.h>
 #include <igatools/basis_functions/spline_space.h>
@@ -83,7 +84,7 @@ parse(const string &schema_file) const
     this->parse_grid_functions_and_nurbs (xml_elem, container);
     this->parse_domains (xml_elem, container);
     this->parse_phys_spaces (xml_elem, container);
-    this->parse_ig_functions (xml_elem, container);
+    this->parse_functions (xml_elem, container);
     return container;
 }
 
@@ -99,7 +100,7 @@ parse_grids(const shared_ptr<XMLElement> xml_elem,
     {
         const int grid_dim = ge->get_attribute<int>("Dim");
 
-        using ValidGridPtrs = typename ObjectsContainer::ValidGridPtrs;
+        using ValidGridPtrs = typename InstantiatedTypes::ValidGridPtrs;
         ValidGridPtrs valid_grid_ptr_types;
 
         bool found = false;
@@ -199,7 +200,7 @@ parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
         const int ssp_range = ssp->get_attribute<int>("Range");
         const int ssp_rank = ssp->get_attribute<int>("Rank");
 
-        using ValidSplineSpacePtrs = typename ObjectsContainer::ValidSplineSpacePtrs;
+        using ValidSplineSpacePtrs = typename InstantiatedTypes::ValidSplineSpacePtrs;
         ValidSplineSpacePtrs valid_ssp_ptr_types;
 
         bool found = false;
@@ -342,7 +343,7 @@ parse_bsplines(const shared_ptr<XMLElement> xml_elem,
         const int bs_range = bs->get_attribute<int>("Range");
         const int bs_rank = bs->get_attribute<int>("Rank");
 
-        using ValidBSplinePtrs = typename ObjectsContainer::ValidSplineSpacePtrs;
+        using ValidBSplinePtrs = typename InstantiatedTypes::ValidSplineSpacePtrs;
         ValidBSplinePtrs valid_bs_ptr_types;
 
         bool found = false;
@@ -600,7 +601,7 @@ parse_domains(const shared_ptr<XMLElement> xml_elem,
         const int dm_dim = dm->get_attribute<int>("Dim");
         const int dm_codim = dm->get_attribute<int>("Codim");
 
-        using ValidDomainPtrs = typename ObjectsContainer::ValidDomainPtrs;
+        using ValidDomainPtrs = typename InstantiatedTypes::ValidDomainPtrs;
         ValidDomainPtrs valid_dm_ptr_types;
 
         bool found = false;
@@ -638,7 +639,7 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
         const int ps_range = ps->get_attribute<int>("Range");
         const int ps_rank = ps->get_attribute<int>("Rank");
 
-        using ValidPhysSpacePtrs = typename ObjectsContainer::ValidPhysSpacePtrs;
+        using ValidPhysSpacePtrs = typename InstantiatedTypes::ValidPhysSpacePtrs;
         ValidPhysSpacePtrs valid_ps_ptr_types;
 
         bool found = false;
@@ -667,8 +668,8 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
 
 void
 ObjectsContainerParser::
-parse_ig_functions(const shared_ptr<XMLElement> xml_elem,
-                  const shared_ptr<ObjectsContainer> container) const
+parse_functions(const shared_ptr<XMLElement> xml_elem,
+                const shared_ptr<ObjectsContainer> container) const
 {
     for (const auto &fn : xml_elem->get_children_elements("IgFunction"))
     {
@@ -677,7 +678,7 @@ parse_ig_functions(const shared_ptr<XMLElement> xml_elem,
         const int fn_range = fn->get_attribute<int>("Range");
         const int fn_rank = fn->get_attribute<int>("Rank");
 
-        using ValidFunctionPtrs = typename ObjectsContainer::ValidFunctionPtrs;
+        using ValidFunctionPtrs = typename InstantiatedTypes::ValidFunctionPtrs;
         ValidFunctionPtrs valid_fn_ptr_types;
 
         bool found = false;

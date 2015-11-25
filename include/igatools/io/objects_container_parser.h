@@ -202,8 +202,8 @@ private:
   void parse_phys_space(const std::shared_ptr<XMLElement> xml_elem,
                         const std::shared_ptr<ObjectsContainer> container) const;
 
-  void parse_ig_functions(const std::shared_ptr<XMLElement> xml_elem,
-                          const std::shared_ptr<ObjectsContainer> container) const;
+  void parse_functions(const std::shared_ptr<XMLElement> xml_elem,
+                       const std::shared_ptr<ObjectsContainer> container) const;
 
   template <int dim, int codim, int range, int rank>
   void parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
