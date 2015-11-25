@@ -88,10 +88,47 @@ int main() {
 
   // linear elasticity problem creation
   TensorSize<dim>  nel = {4,4};
-  TensorIndex<dim> deg = {3,3};
+  TensorIndex<dim> deg = {2,2};
   auto problem =  ElasticityProblem<dim>(nel,deg,geometry);
 
+  problem.assemble(0.57,0.38);
+  problem.solve();
   problem.output();
+
+  /*auto grid    = Grid<dim>::create(3);
+  auto space   = SplineSpace<dim,dim>::create(2,grid);
+  auto id      = grid_functions::IdentityGridFunction<dim>::create(grid);
+  auto domain  = Domain<dim>::create(id);
+  auto refbasis= BSpline<dim,dim>::create(space);
+  auto basis   = PhysicalSpaceBasis<dim,dim>::create(refbasis,domain);
+  auto quad    = QGauss<dim>::create(3);
+  grid->refine();
+  
+  auto handler = basis->create_cache_handler();
+  auto el      = basis->begin();
+  auto el_end  = basis->end();
+  // setting the flags
+  using Flags = space_element::Flags;
+  auto flag = Flags::value | Flags::gradient | Flags::w_measure | Flags::divergence;
+  handler->set_element_flags(flag);
+  // setting the quarature rule
+  handler->init_element_cache(el,quad);
+  for (; el!=el_end; ++el) {
+    handler->fill_element_cache(el);
+    auto values = el->get_element_values();
+    auto grads  = el->get_element_gradients();
+    auto divs   = el->get_element_divergences();
+    auto w_meas = el->get_element_w_measures();
+    auto Nqn = quad->get_num_points();
+    auto Nbf = el->get_num_basis(DofProperties::active);
+    for (int ibf=0; ibf<Nbf; ibf++) {
+      auto grad = grads.get_function_view(ibf);
+      for (int iqn=0; iqn<Nqn; iqn++) {
+        out << grad[iqn] << endl;
+      }
+    }
+  }//*/
+
 
   return 0;
 }
