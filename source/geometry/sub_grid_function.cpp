@@ -141,6 +141,7 @@ create_element(const ListIt &index, const PropId &prop) const
 }
 
 
+#ifdef MESH_REFINEMENT
 template<int sdim,int dim,int space_dim>
 void
 SubGridFunction<sdim,dim,space_dim>::
@@ -150,7 +151,7 @@ rebuild_after_insert_knots(
 {
   AssertThrow(false,ExcNotImplemented());
 }
-
+#endif
 
 
 template<int sdim,int dim,int space_dim>
