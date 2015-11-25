@@ -496,8 +496,14 @@ get_single_element(const string &name) -> SelfPtr_
   return element;
 }
 
-template string XMLElement::get_value<string> () const;
 
+
+void
+XMLElement::
+print_info(LogStream &out) const
+{
+    AssertThrow (false, ExcNotImplemented());
+}
 
 IGA_NAMESPACE_CLOSE
 

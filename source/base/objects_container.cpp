@@ -22,6 +22,7 @@
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/NURBS.h>
+#include <igatools/functions/function.h>
 
 #include <boost/fusion/container/map.hpp>
 #include <boost/fusion/include/map.hpp>
@@ -31,6 +32,7 @@
 
 
 using std::shared_ptr;
+using std::to_string;
 using namespace boost::fusion;
 
 IGA_NAMESPACE_OPEN
@@ -120,6 +122,168 @@ is_id_present (const Index &id) const
 
     return false;
 };
+
+
+
+void
+ObjectsContainer::
+print_info (LogStream &out) const
+{
+    using GPtrs = typename InstantiatedTypes::ValidGridPtrs;
+    using SSPtrs = typename InstantiatedTypes::ValidSplineSpacePtrs;
+    using GFPtrs = typename InstantiatedTypes::ValidGridFunctionPtrs;
+    using DPtrs = typename InstantiatedTypes::ValidDomainPtrs;
+    using PSPtrs = typename InstantiatedTypes::ValidPhysSpacePtrs;
+    using FPtrs = typename InstantiatedTypes::ValidFunctionPtrs;
+
+
+    // Grids
+    GPtrs valid_grid_ptr_types;
+    boost::fusion::for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
+    {
+        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+        const auto objects = at_key<Type>(objects_);
+
+        out.begin_item("Grid"
+                " Dim : " + to_string(Type::dim) +
+                ". Number of objects: " + to_string(objects.size()));
+        for (const auto &object : objects)
+        {
+            out.begin_item("Object Id : " + to_string(object.first));
+            object.second->print_info(out);
+            out.end_item();
+        }
+        out.end_item();
+    });
+
+    // Spline spaces
+    SSPtrs valid_ssp_ptr_types;
+    boost::fusion::for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
+    {
+        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+        const auto objects = at_key<Type>(objects_);
+
+        out.begin_item("SplineSpace"
+                " Dim : " + to_string(Type::dim) +
+                " Range : " + to_string(Type::range) +
+                " Rank : "+ to_string(Type::rank) +
+                ". Number of objects: " + to_string(objects.size())
+        );
+        for (const auto &object : objects)
+        {
+            out.begin_item("Object Id : " + to_string(object.first));
+            object.second->print_info(out);
+            out.end_item();
+        }
+        out.end_item();
+    });
+
+    // Reference space basis
+    boost::fusion::for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
+    {
+        using SSType = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+        using Type = ReferenceSpaceBasis<SSType::dim, SSType::range, SSType::rank>;
+        const auto objects = at_key<Type>(objects_);
+
+        out.begin_item("ReferenceSpaceBasis"
+                " Dim : " + to_string(Type::dim) +
+                " Range : " + to_string(Type::range) +
+                " Rank : "+ to_string(Type::rank) +
+                ". Number of objects: " + to_string(objects.size())
+        );
+        for (const auto &object : objects)
+        {
+            out.begin_item("Object Id : " + to_string(object.first));
+            object.second->print_info(out);
+            out.end_item();
+        }
+        out.end_item();
+    });
+
+    // Grid functions
+    GFPtrs valid_gf_ptr_types;
+    boost::fusion::for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
+    {
+        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+        const auto objects = at_key<Type>(objects_);
+
+        out.begin_item("GridFunction"
+                " Dim : " + to_string(Type::dim) +
+                " Spacedim : " + to_string(Type::space_dim) +
+                ". Number of objects: " + to_string(objects.size()));
+        for (const auto &object : objects)
+        {
+            out.begin_item("Object Id : " + to_string(object.first));
+            object.second->print_info(out);
+            out.end_item();
+        }
+        out.end_item();
+    });
+
+    // Domains
+    DPtrs valid_dm_ptr_types;
+    boost::fusion::for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
+    {
+        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+        const auto objects = at_key<Type>(objects_);
+
+        out.begin_item("Domain"
+                " Dim : " + to_string(Type::dim) +
+                " Codim : " + to_string(Type::space_dim - Type::dim) +
+                ". Number of objects: " + to_string(objects.size()));
+        for (const auto &object : objects)
+        {
+            out.begin_item("Object Id : " + to_string(object.first));
+            object.second->print_info(out);
+            out.end_item();
+        }
+        out.end_item();
+    });
+
+    // Physical space basis
+    PSPtrs valid_ps_ptr_types;
+    boost::fusion::for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
+    {
+        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+        const auto objects = at_key<Type>(objects_);
+
+        out.begin_item("PhysicalSpaceBasis"
+                " Dim : " + to_string(Type::dim) +
+                " Range : " + to_string(Type::range) +
+                " Rank : " + to_string(Type::rank) +
+                " Codim : " + to_string(Type::codim) +
+                ". Number of objects: " + to_string(objects.size()));
+        for (const auto &object : objects)
+        {
+            out.begin_item("Object Id : " + to_string(object.first));
+            object.second->print_info(out);
+            out.end_item();
+        }
+        out.end_item();
+    });
+
+    // Function
+    FPtrs valid_fn_ptr_types;
+    boost::fusion::for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
+    {
+        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+        const auto objects = at_key<Type>(objects_);
+
+        out.begin_item("Function"
+                " Dim : " + to_string(Type::dim) +
+                " Codim : " + to_string(Type::codim) +
+                " Range : " + to_string(Type::range) +
+                " Rank : " + to_string(Type::rank) +
+                ". Number of objects: " + to_string(objects.size()));
+        for (const auto &object : objects)
+        {
+            out.begin_item("Object Id : " + to_string(object.first));
+            object.second->print_info(out);
+            out.end_item();
+        }
+        out.end_item();
+    });
+}
 
 
 

@@ -36,6 +36,7 @@ class ObjectsContainer;
 template <int dim> class Grid;
 template <class T> class SafeSTLVector;
 class IgCoefficients;
+class LogStream;
 
 /**
  * @brief Class for parsing input files.
@@ -158,6 +159,11 @@ public:
    * @todo To be documented.
    */
   std::shared_ptr<ObjectsContainer> parse(const std::string &schema_file) const;
+
+  /**
+   * Prints some internal information. Mostly used for testing and debugging purposes.
+   */
+  void print_info(LogStream &out) const;
 
 private:
   void parse_grids(const std::shared_ptr<XMLElement> xml_elem,

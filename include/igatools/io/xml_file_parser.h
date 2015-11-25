@@ -37,6 +37,7 @@ XERCES_CPP_NAMESPACE_END
 IGA_NAMESPACE_OPEN
 
 class XMLElement;
+class LogStream;
 
 /**
  * @brief Class for parsing input files.
@@ -196,6 +197,11 @@ public:
    */
   std::shared_ptr<XMLElement> parse();
   std::shared_ptr<XMLElement> parse(const std::string &grammar_file);
+
+  /**
+   * Prints some internal information. Mostly used for testing and debugging purposes.
+   */
+  void print_info(LogStream &out) const;
 
 private:
   /**

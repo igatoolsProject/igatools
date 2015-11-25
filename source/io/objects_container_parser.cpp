@@ -1322,6 +1322,15 @@ parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
     return ig_coefs;
 }
 
+
+
+void
+ObjectsContainerParser::
+print_info (LogStream &out) const
+{
+    AssertThrow (false, ExcNotImplemented());
+}
+
 IGA_NAMESPACE_CLOSE
 
 #endif // XML_IO

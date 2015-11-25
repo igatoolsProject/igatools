@@ -89,8 +89,8 @@ void insert_objects (const std::shared_ptr<ObjectsContainer> container,
   using GridFuncType = GridFunction<dim, range>;
   using DomainType = Domain<dim, codim>;
   using ConstGridFunc = grid_functions::ConstantGridFunction<dim, range>;
-  using ConstFuncType = functions::ConstantFunction<dim, codim, range, rank>;
-  using FuncType = Function<dim, codim, range, rank>;
+  //  using ConstFuncType = functions::ConstantFunction<dim, codim, range, rank>;
+  //  using FuncType = Function<dim, codim, range, rank>;
   using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
 
   auto grid = GridType::create(coord);
@@ -138,94 +138,10 @@ void insert_objects (const std::shared_ptr<ObjectsContainer> container,
   container->insert_object<PhysSpaceType>(phys_space, object_id);
   ++object_id;
 
-  const auto const_func = ConstFuncType::create(domain, val);
-  container->insert_object<FuncType>(const_func, object_id);
-  ++object_id;
-}
-
-
-template< int dim, int range, int rank = 1>
-void retrieve_objects(const std::shared_ptr<ObjectsContainer> container,
-                      Index &object_id)
-{
-  OUTSTART
-
-  // Defining used types.
-  static const int codim = range - dim;
-  using GridType = Grid<dim>;
-  using SpSpaceType = SplineSpace<dim, range, rank>;
-  using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
-  using BSplineType = BSpline<dim, range, rank>;
-  using NURBSType = NURBS<dim, range, rank>;
-  using ScalarBSplineType = BSpline<dim, 1, 1>;
-  using ScalarRefSpaceType = ReferenceSpaceBasis<dim, 1, 1>;
-  using ScalarGridFuncType = GridFunction<dim, 1>;
-  using GridFuncType = GridFunction<dim, range>;
-  using DomainType = Domain<dim, codim>;
-  using FuncType = Function<dim, codim, range, rank>;
-  using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
-
-  const auto grid = container->get_object<GridType>(object_id);
-  ++object_id;
-  grid->print_info(out);
-  out << endl;
-
-  const auto ssp = container->get_object<SpSpaceType>(object_id);
-  ++object_id;
-  ssp->print_info(out);
-  out << endl;
-
-  const auto rs0 = container->get_object<RefSpaceType>(object_id);
-  const auto bsp0 = std::dynamic_pointer_cast<BSplineType>(rs0);
-  ++object_id;
-  rs0->print_info(out);
-  out << endl;
-  bsp0->print_info(out);
-  out << endl;
-
-  const auto rs1 = container->get_object<ScalarRefSpaceType>(object_id);
-  const auto bsp1 = std::dynamic_pointer_cast<ScalarBSplineType>(rs1);
-  ++object_id;
-  rs1->print_info(out);
-  out << endl;
-  bsp1->print_info(out);
-  out << endl;
-
-  const auto gf0 = container->get_object<ScalarGridFuncType>(object_id);
-  ++object_id;
-  gf0->print_info(out);
-  out << endl;
-
-  const auto rs2 = container->get_object<RefSpaceType>(object_id);
-  const auto nr = std::dynamic_pointer_cast<NURBSType>(rs2);
-  ++object_id;
-  rs2->print_info(out);
-  out << endl;
-  nr->print_info(out);
-  out << endl;
-
-  const auto gf1 = container->get_object<GridFuncType>(object_id);
-  ++object_id;
-  gf1->print_info(out);
-  out << endl;
-
-  const auto dm = container->get_object<DomainType>(object_id);
-  ++object_id;
-  dm->print_info(out);
-  out << endl;
-
-  const auto ps = container->get_object<PhysSpaceType>(object_id);
-  ++object_id;
-  ps->print_info(out);
-  out << endl;
-
-  const auto fn = container->get_object<FuncType>(object_id);
-  ++object_id;
-  //  fn->print_info(out);
-  out << endl;
-
-  OUTEND
-
+  //  Note: Ig function is not implemented.
+  //  const auto const_func = ConstFuncType::create(domain, val);
+  //  container->insert_object<FuncType>(const_func, object_id);
+  //  ++object_id;
 }
 
 
@@ -242,13 +158,9 @@ int main()
   insert_objects<2, 3>(container, object_id);
   insert_objects<3, 3>(container, object_id);
 
-  object_id = 0;
-  retrieve_objects<1, 1>(container, object_id);
-  retrieve_objects<1, 2>(container, object_id);
-  retrieve_objects<1, 3>(container, object_id);
-  retrieve_objects<2, 2>(container, object_id);
-  retrieve_objects<2, 3>(container, object_id);
-  retrieve_objects<3, 3>(container, object_id);
+  OUTSTART
+  container->print_info(out);
+  OUTEND
 
   return 0;
 }

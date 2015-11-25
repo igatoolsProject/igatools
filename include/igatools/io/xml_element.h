@@ -36,6 +36,7 @@ XERCES_CPP_NAMESPACE_END
 IGA_NAMESPACE_OPEN
 
 template <class T> class SafeSTLVector;
+class LogStream;
 
 /**
  * @todo To be documented.
@@ -262,6 +263,11 @@ public:
    * the given @p name, an error is thrown.
    */
   SelfPtr_ get_single_element(const std::string &name);
+
+  /**
+   * Prints some internal information. Mostly used for testing and debugging purposes.
+   */
+  void print_info(LogStream &out) const;
 
 private:
   /**

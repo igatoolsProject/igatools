@@ -199,6 +199,15 @@ parse(const string &grammar_file)
   return XMLElement::create(dom_elem);
 }
 
+
+
+void
+XMLFileParser::
+print_info(LogStream &out) const
+{
+    AssertThrow (false, ExcNotImplemented());
+}
+
 IGA_NAMESPACE_CLOSE
 
 #endif // XML_IO

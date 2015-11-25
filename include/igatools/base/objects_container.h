@@ -27,6 +27,8 @@
 
 IGA_NAMESPACE_OPEN
 
+class LogStream;
+
 /**
  * @brief To be documented.
  *
@@ -126,6 +128,11 @@ public:
    */
   bool is_id_present (const Index &id) const;
 
+  /**
+   * Prints some internal information. Mostly used for testing and debugging purposes.
+   */
+  void print_info (LogStream &out) const;
+
 private:
   /**
    * Container for the objects.
@@ -136,4 +143,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif /*OBJECTS_CONTAINER_H_ */
+#endif /*__OBJECTS_CONTAINER_H_ */
