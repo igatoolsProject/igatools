@@ -122,9 +122,10 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 cbegin(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-                         domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).begin(),
-                         prop);
+  return ElementIterator(
+           this->create_element(
+             domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).begin(),
+             prop));
 }
 
 
@@ -134,9 +135,10 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 cend(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-                         domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).end(),
-                         prop);
+  return ElementIterator(
+           this->create_element(
+             domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).end(),
+             prop));
 }
 
 

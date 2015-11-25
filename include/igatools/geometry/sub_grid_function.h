@@ -90,7 +90,7 @@ public:
   create_cache_handler() const override;
 
   virtual std::unique_ptr<GridFunctionElement<sdim,space_dim> >
-  create_element(const ListIt &index, const PropId &prop) const override;
+  create_element(const ListIt &index, const PropId &prop) const override final;
 
 #ifdef MESH_REFINEMENT
   void rebuild_after_insert_knots(

@@ -89,9 +89,9 @@ auto
 GridFunction<dim_, space_dim_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-                         grid_->get_elements_with_property(prop).begin(),
-                         prop);
+  return ElementIterator(
+           this->create_element(grid_->get_elements_with_property(prop).begin(),
+                                prop));
 }
 
 
@@ -101,9 +101,9 @@ auto
 GridFunction<dim_, space_dim_>::
 cend(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-                         grid_->get_elements_with_property(prop).end(),
-                         prop);
+  return ElementIterator(
+           this->create_element(grid_->get_elements_with_property(prop).end(),
+                                prop));
 }
 
 
