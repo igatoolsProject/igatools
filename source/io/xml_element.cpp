@@ -192,6 +192,7 @@ get_single_text_element() const
 
 
 
+#if 0
 template <class T>
 T
 XMLElement::
@@ -201,6 +202,30 @@ get_value () const
   {
     const auto text_elem = this->get_single_text_element();
     return XMLString::transcode(text_elem->getWholeText());
+  }
+  catch (...)
+  {
+    AssertThrow(false, ExcMessage("Error parsing text element."));
+    return "Error"; // For avoiding the warning.
+  }
+}
+#endif
+
+
+
+template <>
+string
+XMLElement::
+get_value<string> () const
+{
+  try
+  {
+    const auto text_elem = this->get_single_text_element();
+    string s = XMLString::transcode(text_elem->getWholeText());
+    // Trimming (removing spaces, tabs, jumps ...) both ends of the string.
+    s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+    return s;
   }
   catch (...)
   {
@@ -229,6 +254,7 @@ get_attribute<Index> (const string &name) const
     AssertThrow(false, ExcMessage("Value has not type Index."));
     return 0;
   }
+
 }
 
 

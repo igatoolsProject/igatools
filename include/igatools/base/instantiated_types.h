@@ -248,6 +248,23 @@ public:
           std::shared_ptr<SplineSpace<3,3,1>>> ValidSplineSpacePtrs;
 
   /**
+   * Valid GridFunction instantiations.
+   */
+  typedef boost::fusion::vector<
+          std::shared_ptr<GridFunction<0,0>>,
+          std::shared_ptr<GridFunction<0,1>>,
+          std::shared_ptr<GridFunction<0,2>>,
+          std::shared_ptr<GridFunction<0,3>>,
+          std::shared_ptr<GridFunction<1,1>>,
+          std::shared_ptr<GridFunction<1,2>>,
+          std::shared_ptr<GridFunction<1,3>>,
+          std::shared_ptr<GridFunction<2,1>>,
+          std::shared_ptr<GridFunction<2,2>>,
+          std::shared_ptr<GridFunction<2,3>>,
+          std::shared_ptr<GridFunction<3,1>>,
+          std::shared_ptr<GridFunction<3,3>>> ValidGridFunctionPtrs;
+
+  /**
    * Valid Domain instantiations.
    */
   typedef boost::fusion::vector<

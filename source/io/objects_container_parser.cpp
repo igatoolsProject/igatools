@@ -30,6 +30,7 @@
 #include <igatools/geometry/grid.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/bspline.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/functions/function.h>
 #include <igatools/functions/ig_function.h>
 
@@ -38,6 +39,7 @@
 using std::string;
 using std::to_string;
 using std::shared_ptr;
+using std::set;
 
 IGA_NAMESPACE_OPEN
 
@@ -76,7 +78,6 @@ parse(const string &schema_file) const
                            "used more than once."));
         object_ids.insert(obj_id);
     }
-
 
     this->parse_grids (xml_elem, container);
     this->parse_spline_spaces (xml_elem, container);
@@ -121,70 +122,12 @@ parse_grids(const shared_ptr<XMLElement> xml_elem,
 
         // Grid dimension not found
         AssertThrow (found,
-                     ExcMessage("Parsing Grid with IgaObjectId=" +
-                                to_string(ge->get_attribute<Index>("IgaObjectId")) +
-                                " not valid dimension "
-                                + to_string(ge->get_attribute<int>("Dim")) +
-                                " for a grid. Maybe igatools was not "
-                                "instantiated for this dimension."));
+          ExcMessage(this->get_type_id_string("Grid",
+                     ge->get_attribute<Index>("IgaObjectId"),
+                     SafeSTLVector<int>(1, grid_dim))
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
     }
-}
-
-
-
-template <int dim>
-void
-ObjectsContainerParser::
-parse_grid(const shared_ptr<XMLElement> xml_elem,
-           const std::shared_ptr<ObjectsContainer> container) const
-{
-    Assert (xml_elem->get_name() == "Grid",
-            ExcMessage("Invalid XML tag."));
-
-    Assert (xml_elem->get_attribute<int>("Dim") == dim,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-
-    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    AssertThrow (!container->is_id_present(object_id),
-                 ExcMessage("Parsing Grid already defined IgaObjectId=" +
-                            to_string(object_id) + "."));
-
-    // Check here that the object id is not already defined.
-
-    const auto knots_children = xml_elem->get_children_elements("Knots");
-    AssertThrow (dim == knots_children.size(),
-                 ExcMessage("Parsing Grid with IgaObjectId=" +
-                            to_string(object_id) + " the number of knots vectors does " +
-                            "match with Dim of the Grid."));
-
-    using GridType = Grid<dim>;
-
-    SafeSTLArray<SafeSTLVector<Real>, dim> knots;
-
-    SafeSTLSet<Index> parsed_dirs;
-
-    for (const auto &ke : knots_children)
-    {
-        const auto dir = ke->get_attribute<Index>("Direction");
-        AssertThrow (parsed_dirs.find(dir) == parsed_dirs.cend(),
-                     ExcMessage("Parsing Grid with IgaObjectId=" +
-                                to_string(object_id) + " knot vector for "
-                                "Direction " + to_string(dir) + " defined"
-                                " more than once."));
-        // TODO: to check here that the direction is lower than dir.
-        parsed_dirs.insert(dir);
-
-        knots[dir] = ke->get_values_vector<Real>();
-
-        AssertThrow (ke->get_attribute<int>("Size") == knots[dir].size(),
-                     ExcMessage("Parsing Grid with IgaObjectId=" +
-                                to_string(object_id) + " knot vector Size for Direction " +
-                                to_string(dir) + " does not match with the specified one."));
-    }
-
-    const auto grid = GridType::create(knots);
-
-    container->insert_object<GridType>(grid, object_id);
 }
 
 
@@ -221,113 +164,15 @@ parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
                 parse_spline_space<dim, range, rank>(ssp, container);
             }
         });
+
+        // SplineSpace dimensions not found
+        AssertThrow (found,
+          ExcMessage(this->get_type_id_string("SplineSpace",
+                     ssp->get_attribute<Index>("IgaObjectId"),
+                     {{ssp_dim, ssp_range, ssp_rank}})
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
     }
-}
-
-
-
-template <int dim, int range, int rank>
-void
-ObjectsContainerParser::
-parse_spline_space(const shared_ptr<XMLElement> xml_elem,
-                   const std::shared_ptr<ObjectsContainer> container) const
-{
-    Assert (xml_elem->get_name() == "SplineSpace",
-            ExcMessage("Invalid XML tag."));
-
-    Assert (xml_elem->get_attribute<int>("Dim") == dim,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-    Assert (xml_elem->get_attribute<int>("Range") == range,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-    Assert (xml_elem->get_attribute<int>("Rank") == rank,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
-
-    using GridType = Grid<dim>;
-    using SplineSpaceType = SplineSpace<dim, range, rank>;
-    using DegreeTable = typename SplineSpaceType::DegreeTable;
-    using MultiplicityTable = typename SplineSpaceType::MultiplicityTable;
-    using PeriodicityTable = typename SplineSpaceType::PeriodicityTable;
-    static const int n_components = SplineSpaceType::n_components;
-
-    const bool default_periodicity = false;
-
-    DegreeTable deg_table;
-    MultiplicityTable mult_table;
-    PeriodicityTable period_table;
-
-    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    AssertThrow (!container->is_id_present(object_id),
-                 ExcMessage("Parsing SplineSpace already defined IgaObjectId=" +
-                            to_string(object_id) + "."));
-
-    const auto grid_tag = xml_elem->get_single_element("Grid");
-    const auto grid_id = grid_tag->get_attribute<Index>("GetFromIgaObjectId");
-
-    AssertThrow (container->is_object<GridType> (grid_id),
-                 ExcMessage("Parsing SplineSpace with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a grid with the expected dimension."));
-
-    const auto grid = container->get_object<GridType>(grid_id);
-
-    const auto comps_elem = xml_elem->get_single_element("SplineSpaceComponents");
-    // Check that comps_elem == n_components
-    for (const auto &comp_elem : comps_elem->get_children_elements("SplineSpaceComponent"))
-    {
-        const auto comp_id = comp_elem->get_attribute<Index>("ComponentId");
-        // To check here 0 <= comp_id < n_components and is not repeated.
-
-        const auto degree_elem = comp_elem->get_single_element("Degrees");
-        const auto degs_vector = degree_elem->get_values_vector<Index>();
-        // Check here that degs_vector.size() == dim
-        for (int d = 0; d < dim; ++d)
-            deg_table[comp_id][d] = degs_vector[d];
-
-        const auto int_mults_elem =
-                comp_elem->get_single_element("InteriorMultiplicities")
-                ->get_children_elements("InteriorMultiplicities");
-        // Check here that  int_muls_elem.size() == dim
-
-        for (const auto &im : int_mults_elem)
-        {
-            const auto dir = im->get_attribute<Index>("Direction");
-//            AssertThrow (parsed_dirs.find(dir) == parsed_dirs.cend(),
-//                         ExcMessage("Parsing Grid with IgaObjectId=" +
-//                                    to_string(object_id) + " knot vector for "
-//                                    "Direction " + to_string(dir) + " defined"
-//                                    " more than once."));
-//            parsed_dirs.insert(dir);
-
-            const auto mults = im->get_values_vector<Index>();
-            mult_table[comp_id].copy_data_direction(dir, mults);
-            // Check here that the multiplicities match with the grid.
-
-//            AssertThrow (im->get_attribute<int>("Size") == mults.size(),
-//                         ExcMessage("Parsing Grid with IgaObjectId=" +
-//                                    to_string(object_id) + " knot vector Size for Direction " +
-//                                    to_string(dir) + " does not match with the specified one."));
-        }
-
-        if (comp_elem->has_element("Periodicity"))
-        {
-            const auto periodic_vector = comp_elem->
-                    get_single_element("Periodicity")->get_values_vector<bool>();
-            // Check dimension
-            for (int d = 0; d < dim; ++d)
-                period_table[comp_id][d] = periodic_vector[d];
-        }
-        else
-        {
-            for (int d = 0; d < dim; ++d)
-                period_table[comp_id][d] = default_periodicity;
-
-        }
-    } // Spline Space components
-
-
-    const auto spline_space = SplineSpaceType::create (deg_table, grid, mult_table, period_table);
-
-    container->insert_object<SplineSpaceType>(spline_space, object_id);
 }
 
 
@@ -364,97 +209,104 @@ parse_bsplines(const shared_ptr<XMLElement> xml_elem,
                 parse_bspline<dim, range, rank>(bs, container);
             }
         });
+
+        // BSpline dimensions not found
+        AssertThrow (found,
+          ExcMessage(this->get_type_id_string("BSpline",
+                     bs->get_attribute<Index>("IgaObjectId"),
+                     {{bs_dim, bs_range, bs_rank}})
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
     }
 }
 
 
 
-template <int dim, int range, int rank>
 void
 ObjectsContainerParser::
-parse_bspline(const shared_ptr<XMLElement> xml_elem,
-              const std::shared_ptr<ObjectsContainer> container) const
+parse_nurbs(const shared_ptr<XMLElement> xml_elem,
+            const shared_ptr<ObjectsContainer> container) const
 {
-    Assert (xml_elem->get_name() == "BSpline",
-            ExcMessage("Invalid XML tag."));
-
-    Assert (xml_elem->get_attribute<int>("Dim") == dim,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-    Assert (xml_elem->get_attribute<int>("Range") == range,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-    Assert (xml_elem->get_attribute<int>("Rank") == rank,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
-
-    using BSplineType = BSpline<dim, range, rank>;
-    using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
-    using SplineSpaceType = SplineSpace<dim, range, rank>;
-    using EndBehaviourTable = typename SplineSpaceType::EndBehaviourTable;
-    using EndBehaviour = typename SplineSpaceType::EndBehaviour;
-    static const int n_components = SplineSpaceType::n_components;
-    EndBehaviourTable end_beh_table;
-
-    // Initializing to default values.
-    for (auto &eb_c : end_beh_table)
-        for (auto &eb : eb_c)
-            eb = BasisEndBehaviour::interpolatory;
-
-
-    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    AssertThrow (!container->is_id_present(object_id),
-                 ExcMessage("Parsing BSplineSpace already defined IgaObjectId=" +
-                            to_string(object_id) + "."));
-
-    const auto ssp_tag = xml_elem->get_single_element("SplineSpace");
-    const auto ssp_id = ssp_tag->get_attribute<Index>("GetFromIgaObjectId");
-    AssertThrow (container->is_object<SplineSpaceType> (ssp_id),
-                 ExcMessage("Parsing BSpline with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a SplineSpace with the expected dimension."));
-
-    const auto ssp = container->get_object<SplineSpaceType>(ssp_id);
-    Assert (ssp != nullptr, ExcNullPtr());
-
-    if (xml_elem->has_element("EndBehaviour"))
+    for (const auto &nr : xml_elem->get_children_elements("NURBS"))
     {
-        const auto eb_elems = xml_elem->get_single_element("EndBehaviour")
-                ->get_children_elements("EndBehaviour");
-        // Check eb_elems.size() == n_components
+        const int nr_dim = nr->get_attribute<int>("Dim");
+        const int nr_range = nr->get_attribute<int>("Range");
+        const int nr_rank = nr->get_attribute<int>("Rank");
 
-        for (const auto &eb : eb_elems)
+        using ValidNURBSPtrs = typename InstantiatedTypes::ValidSplineSpacePtrs;
+        ValidNURBSPtrs valid_nr_ptr_types;
+
+        bool found = false;
+        boost::fusion::for_each(valid_nr_ptr_types, [&](const auto &nr_ptr_type)
         {
-            const auto comp_id = eb->get_attribute<Index>("ComponentId");
-            // Check component
-            const auto string_vec =  eb->get_values_vector<string>();
-            // check string_vec.size()
-            Index d = 0;
-            for (const auto &sv : string_vec)
-            {
-                if (sv == "interpolatory")
-                {
-                    // Check spline space periodicity
-                    end_beh_table[comp_id][d] = BasisEndBehaviour::interpolatory;
-                }
-                else if (sv == "end_knots")
-                {
-                    // Check spline space periodicity
-                    end_beh_table[comp_id][d] = BasisEndBehaviour::end_knots;
-                }
-                else if (sv == "periodic")
-                {
-                    // Check spline space periodicity
-                    end_beh_table[comp_id][d] = BasisEndBehaviour::periodic;
-                }
-                else
-                {
-                    // throw error
-                }
-                ++d;
-            }
-        }
-    }
-    const auto bspline = BSplineType::create(ssp, end_beh_table);
+            if (found)
+                return;
 
-    container->insert_object<RefSpaceType>(bspline, object_id);
+            using NURBSType = typename
+                    std::remove_reference<decltype(nr_ptr_type)>::type::element_type;
+            static const int dim   = NURBSType::dim;
+            static const int range = NURBSType::range;
+            static const int rank  = NURBSType::rank;
+
+            if (nr_dim == dim && nr_range == range && nr_rank == rank)
+            {
+                found = true;
+                parse_nurbs<dim, range, rank>(nr, container);
+            }
+        });
+
+        // NURBS dimensions not found
+        AssertThrow (found,
+          ExcMessage(this->get_type_id_string("NURBS",
+                     nr->get_attribute<Index>("IgaObjectId"),
+                     {{nr_dim, nr_range, nr_rank}})
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
+    }
+}
+
+
+
+void
+ObjectsContainerParser::
+parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
+                        const shared_ptr<ObjectsContainer> container,
+                        const bool &first_parsing) const
+{
+    for (const auto &gf : xml_elem->get_children_elements("IgGridFunction"))
+    {
+        const int gf_dim = gf->get_attribute<int>("Dim");
+        const int gf_space_dim = gf->get_attribute<int>("Spacedim"); // This is going to change.
+
+        using ValidGridFunctionPtrs = typename InstantiatedTypes::ValidGridFunctionPtrs;
+        ValidGridFunctionPtrs valid_gf_ptr_types;
+
+        bool found = false;
+        boost::fusion::for_each(valid_gf_ptr_types, [&](const auto &gf_ptr_type)
+        {
+            if (found)
+                return;
+
+            using GridFuncType = typename
+                    std::remove_reference<decltype(gf_ptr_type)>::type::element_type;
+            static const int dim   = GridFuncType::dim;
+            static const int space_dim   = GridFuncType::space_dim;
+
+            if (gf_dim == dim && gf_space_dim == space_dim)
+            {
+                found = true;
+                parse_ig_grid_function<dim, space_dim>(gf, container, first_parsing);
+            }
+        });
+
+        // NURBS dimensions not found
+        AssertThrow (found,
+          ExcMessage(this->get_type_id_string("IgGridFunction",
+                     gf->get_attribute<Index>("IgaObjectId"),
+                     {{gf_dim, gf_space_dim}})
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
+    }
 }
 
 
@@ -464,129 +316,28 @@ ObjectsContainerParser::
 parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
                                const shared_ptr<ObjectsContainer> container) const
 {
-    AssertThrow (false, ExcNotImplemented());
-    // Call properly here parse ig_grid_function and parse_nurbs
-}
-
-template <int dim, int range>
-void
-ObjectsContainerParser::
-parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
-                       const std::shared_ptr<ObjectsContainer> container) const
-{
-    Assert (xml_elem->get_name() == "IgGridFunction",
-            ExcMessage("Invalid XML tag."));
-
-    Assert (xml_elem->get_attribute<int>("Dim") == dim,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-    Assert (xml_elem->get_attribute<int>("Range") == range,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-
-    using IgGridFunctionType = IgGridFunction<dim, range>;
-    using GridFunctionType = GridFunction<dim, range>;
-    using RefSpaceType     = ReferenceSpaceBasis<dim, range, 1>;
-
-    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    AssertThrow (!container->is_id_present(object_id),
-                 ExcMessage("Parsing IgFunction already defined IgaObjectId=" +
-                            to_string(object_id) + "."));
-
-    const auto rs_tag = xml_elem->get_single_element("ReferenceSpaceBasis");
-    const auto rs_id = rs_tag->get_attribute<Index>("GetFromIgaObjectId");
-    AssertThrow (container->is_object<RefSpaceType> (rs_id),
-                 ExcMessage("Parsing Ig Function with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a Reference Space Basis with the expected dimension."));
-    const auto rs = container->get_object<RefSpaceType>(rs_id);
-    Assert (rs != nullptr, ExcNullPtr());
-
-    string dofs_property = "active";
-    if (xml_elem->has_element("DofsProperty"))
-    {
-        const auto dp_elem = xml_elem->get_single_element("DofsProperty");
-        dofs_property = dp_elem->get_value<string>();
-    }
-
-    const auto ig_elem = xml_elem->get_single_element("IgCoefficients");
-    const auto size = ig_elem->get_attribute<Index>("Size");
-    const auto ig_coefs_vec = ig_elem->get_values_vector<Real>();
-    // Check ig_coefs_vec.size() == size
-
-    std::set<Index> indices;
-    for (int i = 0; i < size; ++i)
-        indices.insert(i);
-    IgCoefficients ig_coefs (indices);
-    for (int i = 0; i < size; ++i)
-        ig_coefs[i] = ig_coefs_vec[i];
-
-    const auto igf = IgGridFunctionType::create(rs, ig_coefs, dofs_property);
-    container->insert_object<GridFunctionType>(igf, object_id);
-}
+    // Due to the relationship between ig grid functions and NURBS,
+    // their parsing must be done in a specific order. That is:
+    //
+    //   1 - parse grid functions that are not ig.
+    //   2 - parse ig grid functions built upon a BSpline.
+    //   3 - parse nurbs
+    //   4 - parse the remaning ig grid functions.
 
 
+    // Parse grid functions that are not ig.
+    // Nothing to be done, by now.
 
-template <int dim, int range, int rank>
-void
-ObjectsContainerParser::
-parse_nurbs(const shared_ptr<XMLElement> xml_elem,
-            const std::shared_ptr<ObjectsContainer> container) const
-{
-    Assert (xml_elem->get_name() == "NURBS",
-            ExcMessage("Invalid XML tag."));
+    // Parsing ig grid functions built upon a BSpline.
+    bool first_parsing = true;
+    parse_ig_grid_functions(xml_elem, container, first_parsing);
 
-    Assert (xml_elem->get_attribute<int>("Dim") == dim,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-    Assert (xml_elem->get_attribute<int>("Range") == range,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-    Assert (xml_elem->get_attribute<int>("Rank") == rank,
-            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
+    // Parsing NURBS.
+    this->parse_nurbs(xml_elem, container);
 
-    using BSplineType = BSpline<dim, range, rank>;
-    using NURBSType   = NURBS<dim, range, rank>;
-    using WeightIgFunctionType = IgGridFunction<dim, 1>;
-    using WeightFunctionType = GridFunction<dim, 1>;
-    using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
-
-    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    AssertThrow (!container->is_id_present(object_id),
-                 ExcMessage("Parsing NURBS already defined IgaObjectId=" +
-                            to_string(object_id) + "."));
-
-    // Parsing BSpline
-    const auto bs_tag = xml_elem->get_single_element("BSpline");
-    const auto bs_id = bs_tag->get_attribute<Index>("GetFromIgaObjectId");
-    AssertThrow (container->is_object<RefSpaceType> (bs_id),
-                 ExcMessage("Parsing NURBS with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a BSpline with the expected dimension."));
-
-    const auto rs = container->get_object<RefSpaceType>(bs_id);
-    Assert (rs != nullptr, ExcNullPtr());
-    const auto bs = std::dynamic_pointer_cast<BSplineType>(rs);
-    AssertThrow (bs != nullptr,
-                 ExcMessage("Parsing NURBS with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a BSpline with the expected dimension."));
-
-    // Parsing Weight function
-    const auto wg_tag = xml_elem->get_single_element("WeightFunction");
-    const auto wg_id = bs_tag->get_attribute<Index>("GetFromIgaObjectId");
-    AssertThrow (container->is_object<WeightFunctionType> (wg_id),
-                 ExcMessage("Parsing NURBS with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a GridFunction with the expected dimension."));
-
-    const auto gf = container->get_object<WeightFunctionType>(wg_id);
-    Assert (gf != nullptr, ExcNullPtr());
-    const auto wf = std::dynamic_pointer_cast<WeightIgFunctionType>(gf);
-    AssertThrow (wf != nullptr,
-                 ExcMessage("Parsing NURBS with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a IgGridFunction with the expected dimension."));
-
-    const auto nurbs = NURBSType::create(bs, wf);
-    Assert (nurbs != nullptr, ExcNullPtr());
-    container->insert_object<RefSpaceType>(nurbs, object_id);
+    // Parsing the remaining ig grid functions.
+    first_parsing = false;
+    parse_ig_grid_functions(xml_elem, container, first_parsing);
 }
 
 
@@ -622,6 +373,14 @@ parse_domains(const shared_ptr<XMLElement> xml_elem,
                 parse_domain<dim, codim>(dm, container);
             }
         });
+
+        // Domains dimensions not found
+        AssertThrow (found,
+          ExcMessage(this->get_type_id_string("Domain",
+                     dm->get_attribute<Index>("IgaObjectId"),
+                     {{dm_dim, dm_codim}})
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
     }
 }
 
@@ -661,6 +420,14 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
                 parse_phys_space<dim, codim, range, rank>(ps, container);
             }
         });
+
+        // PhysicalSpaceBasis dimensions not found
+        AssertThrow (found,
+          ExcMessage(this->get_type_id_string("PhysicalSpaceBasis",
+                     ps->get_attribute<Index>("IgaObjectId"),
+                     {{ps_dim, ps_range, ps_rank, ps_codim}})
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
     }
 }
 
@@ -700,7 +467,564 @@ parse_functions(const shared_ptr<XMLElement> xml_elem,
                 parse_ig_function<dim, codim, range, rank>(fn, container);
             }
         });
+
+        // Function dimensions not found
+        AssertThrow (found,
+          ExcMessage(this->get_type_id_string("Function",
+                     fn->get_attribute<Index>("IgaObjectId"),
+                     {{fn_dim, fn_codim, fn_range, fn_rank}})
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
     }
+}
+
+
+
+template <int dim>
+void
+ObjectsContainerParser::
+parse_grid(const shared_ptr<XMLElement> xml_elem,
+           const std::shared_ptr<ObjectsContainer> container) const
+{
+    Assert (xml_elem->get_name() == "Grid", ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+
+    using GridType = Grid<dim>;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    const string parsing_msg = this->get_type_id_string("Grid", object_id,
+                               SafeSTLVector<int>(1, dim));
+
+    const auto knots_children = xml_elem->get_children_elements("Knots");
+    // Checking the number of knot vector match with the dimension.
+    AssertThrow (dim == knots_children.size(),
+                 ExcMessage("Parsing " + parsing_msg + ", the number of "
+                            "knots vectors is not valid."));
+
+    SafeSTLArray<SafeSTLVector<Real>, dim> knots;
+
+    SafeSTLSet<Index> parsed_dirs;
+
+    for (const auto &ke : knots_children)
+    {
+        const auto dir = ke->get_attribute<Index>("Direction");
+        // Checking the <= 0 direction < dim
+        AssertThrow (dir >= 0 && dir < dim,
+                     ExcMessage("Parsing knot vectors for " + parsing_msg +
+                                ", not valid Direction=" + to_string(dir) + "."));
+        // Checking the direction has not been defined before.
+        AssertThrow (parsed_dirs.find(dir) == parsed_dirs.cend(),
+                     ExcMessage("Parsing knot vectors for " + parsing_msg +
+                                ", Direction=" + to_string(dir) + " defined"
+                                " more than once."));
+        parsed_dirs.insert(dir);
+
+        knots[dir] = ke->get_values_vector<Real>();
+
+        const auto size = ke->get_attribute<int>("Size");
+        // Checking that the specified size matches with the actual vector size.
+        AssertThrow (size == knots[dir].size(),
+                     ExcMessage("Parsing knot vectors for " + parsing_msg +
+                                ", in Direction=" + to_string(dir) +
+                                " Size=" + to_string(size) + " do not match "
+                                "with the vector size."));
+    }
+
+    const auto grid = GridType::create(knots);
+    container->insert_object<GridType>(grid, object_id);
+}
+
+
+
+template <int dim, int range, int rank>
+void
+ObjectsContainerParser::
+parse_spline_space(const shared_ptr<XMLElement> xml_elem,
+                   const std::shared_ptr<ObjectsContainer> container) const
+{
+    Assert (xml_elem->get_name() == "SplineSpace",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Range") == range,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
+    Assert (xml_elem->get_attribute<int>("Rank") == rank,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
+
+    using GridType = Grid<dim>;
+    using SplineSpaceType = SplineSpace<dim, range, rank>;
+    using DegreeTable = typename SplineSpaceType::DegreeTable;
+    using MultiplicityTable = typename SplineSpaceType::MultiplicityTable;
+    using PeriodicityTable = typename SplineSpaceType::PeriodicityTable;
+    static const int n_components = SplineSpaceType::n_components;
+
+    DegreeTable deg_table;
+    MultiplicityTable mult_table;
+
+    PeriodicityTable period_table;
+    // Initializing default periodicity
+    const bool default_periodicity = false;
+    for (auto &p_t : period_table)
+        for (auto &p : p_t)
+            p = default_periodicity;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+
+    const auto grid_tag = xml_elem->get_single_element("Grid");
+    const auto grid_id = grid_tag->get_attribute<Index>("GetFromIgaObjectId");
+
+    const string parsing_msg = this->get_type_id_string("SplineSpace", object_id,
+                                                        {{dim, range, rank}});
+
+    // Checking the grid with proper dimension and id exists.
+    AssertThrow (container->is_object<GridType> (grid_id),
+                 ExcMessage("Parsing " + parsing_msg + " not matching definition" +
+                            "for " + this->get_type_id_string("Grid", grid_id,
+                            SafeSTLVector<Index>(dim)) + "."));
+    const auto grid = container->get_object<GridType>(grid_id);
+    const auto grid_num_intervals = grid->get_num_intervals();
+
+    // Parsing spline space components.
+    const auto comps_elem = xml_elem->get_single_element("SplineSpaceComponents");
+
+    // Checking that the right number of components is defined.
+    const auto comp_children = comps_elem->get_children_elements("SplineSpaceComponent");
+    AssertThrow (n_components == comp_children.size(),
+                 ExcMessage("Parsing " + parsing_msg + ", the number of "
+                            "SplineSpaceComponent XML elements does not match "
+                            "with the number of components of the space."));
+
+    SafeSTLSet<Index> parsed_comps;
+    for (const auto &comp_elem : comp_children)
+    {
+        const auto comp_id = comp_elem->get_attribute<Index>("ComponentId");
+        // Checking the <= 0 comp_id < n_components
+        AssertThrow (comp_id >= 0 && comp_id < n_components,
+                     ExcMessage("Parsing SplineSpaceComponents for " + parsing_msg +
+                                ", not valid ComponentId=" + to_string(comp_id) + "."));
+        // Checking the component id has not been defined before.
+        AssertThrow (parsed_comps.find(comp_id) == parsed_comps.cend(),
+                     ExcMessage("Parsing SplineSpaceComponents for " + parsing_msg +
+                                ", ComponentId=" + to_string(comp_id) + " defined"
+                                " more than once."));
+        parsed_comps.insert(comp_id);
+
+        const auto degree_elem = comp_elem->get_single_element("Degrees");
+        const auto degs_vector = degree_elem->get_values_vector<Index>();
+        // Check here that degs_vector.size() == dim
+        AssertThrow (degs_vector.size() == dim,
+                     ExcMessage("Parsing " + parsing_msg +
+                                ", in SplineSpaceComponent ComponentId=" +
+                                to_string(comp_id) + " the number of "
+                                "degrees does not match with the Space dimension."));
+        for (int d = 0; d < dim; ++d)
+            deg_table[comp_id][d] = degs_vector[d];
+
+        const auto int_mults_elem =
+                comp_elem->get_single_element("InteriorMultiplicities")
+                ->get_children_elements("InteriorMultiplicities");
+        // Check here that int_muls_elem.size() == dim
+        AssertThrow (int_mults_elem.size() == dim,
+                 ExcMessage("Parsing " + parsing_msg +
+                            ", in SplineSpaceComponent ComponentId=" +
+                            to_string(comp_id) + " the number of "
+                            "InteriorMultiplicities XML elements does not match "
+                            "with the Space dimension."));
+
+        SafeSTLSet<Index> parsed_dirs;
+        for (const auto &im : int_mults_elem)
+        {
+            const auto dir = im->get_attribute<Index>("Direction");
+
+            // Checking the <= 0 direction < dim
+            AssertThrow (dir >= 0 && dir < dim,
+                         ExcMessage("Parsing InteriorMultiplicities for " +
+                                    parsing_msg +
+                                    " SplineSpaceComponent ComponentId=" +
+                                    to_string(comp_id) +", not valid "
+                                    "Direction=" + to_string(dir) + "."));
+
+            // Checking the direction has not been defined before.
+            AssertThrow (parsed_dirs.find(dir) == parsed_dirs.cend(),
+                         ExcMessage("Parsing InteriorMultiplicities for " +
+                                    parsing_msg +
+                                    " SplineSpaceComponent ComponentId=" +
+                                    to_string(comp_id) +", Direction=" +
+                                    to_string(dir) + " defined more than once."));
+            parsed_dirs.insert(dir);
+
+            const auto mults = im->get_values_vector<Index>();
+            mult_table[comp_id].copy_data_direction(dir, mults);
+            const auto size = im->get_attribute<int>("Size");
+
+            // Checking that the specified size matches with the actual vector size.
+            AssertThrow (size == mults.size(),
+                         ExcMessage("Parsing InteriorMultiplicities for " +
+                                    parsing_msg +
+                                    " SplineSpaceComponent ComponentId=" +
+                                    to_string(comp_id) +" in Direction=" +
+                                    to_string(dir) + ", Size=" +
+                                    to_string(size) + " do not match "
+                                    "with the vector size."));
+
+            // Check here that the multiplicities match with the grid.
+            AssertThrow ((grid_num_intervals[dir] - 1) == mults.size(),
+                         ExcMessage("Parsing InteriorMultiplicities for " +
+                                    parsing_msg +
+                                    " SplineSpaceComponent ComponentId=" +
+                                    to_string(comp_id) +" in Direction=" +
+                                    to_string(dir) + ", the number of "
+                                    "multiplicities do not match with the"
+                                    " grid intervals."));
+        }
+
+        // Parsing periodicity, if defined.
+        if (comp_elem->has_element("Periodicity"))
+        {
+            const auto periodic_vector = comp_elem->
+                    get_single_element("Periodicity")->get_values_vector<bool>();
+
+            // Checking the dimensions of the periodicities vector.
+            AssertThrow (periodic_vector.size() == dim,
+                 ExcMessage("Parsing " + parsing_msg +
+                            ", in SplineSpaceComponent ComponentId=" +
+                            to_string(comp_id) + " the number of "
+                            " values defined for Periodicity does not "
+                            "match with the Space dimension."));
+
+            for (int d = 0; d < dim; ++d)
+                period_table[comp_id][d] = periodic_vector[d];
+        }
+    } // Spline Space components
+
+    const auto spline_space = SplineSpaceType::create
+            (deg_table, grid, mult_table, period_table);
+    container->insert_object<SplineSpaceType>(spline_space, object_id);
+}
+
+
+
+template <int dim, int range, int rank>
+void
+ObjectsContainerParser::
+parse_bspline(const shared_ptr<XMLElement> xml_elem,
+              const std::shared_ptr<ObjectsContainer> container) const
+{
+    Assert (xml_elem->get_name() == "BSpline",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Range") == range,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
+    Assert (xml_elem->get_attribute<int>("Rank") == rank,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
+
+    using BSplineType = BSpline<dim, range, rank>;
+    using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
+    using SplineSpaceType = SplineSpace<dim, range, rank>;
+    using EndBehaviourTable = typename SplineSpaceType::EndBehaviourTable;
+    static const int n_components = SplineSpaceType::n_components;
+
+    EndBehaviourTable end_beh_table;
+    // Initializing to default values.
+    for (auto &eb_c : end_beh_table)
+        for (auto &eb : eb_c)
+            eb = BasisEndBehaviour::interpolatory;
+
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    const auto ssp_tag = xml_elem->get_single_element("SplineSpace");
+    const auto ssp_id = ssp_tag->get_attribute<Index>("GetFromIgaObjectId");
+
+    const string parsing_msg = this->get_type_id_string("SplineSpace", object_id,
+                                                        {{dim, range, rank}});
+
+    // Checking the spline space with proper dimension and id exists.
+    AssertThrow (container->is_object<SplineSpaceType> (ssp_id),
+                 ExcMessage("Parsing " + parsing_msg + " not matching "
+                            "definition for " +
+                            this->get_type_id_string("SplineSpace", ssp_id,
+                            {{dim, range, rank}}) + "."));
+    const auto ssp = container->get_object<SplineSpaceType>(ssp_id);
+    Assert (ssp != nullptr, ExcNullPtr());
+
+    // Parsing end bevaviour, if exists
+    if (xml_elem->has_element("EndBehaviour"))
+    {
+
+        // Checking that the right number of components is defined.
+        const auto eb_elems = xml_elem->get_single_element("EndBehaviour")
+                ->get_children_elements("EndBehaviour");
+        AssertThrow (n_components == eb_elems.size(),
+                     ExcMessage("Parsing " + parsing_msg + ", the number of "
+                                "EndBehaviour elements does not match "
+                                "with the number of components of the space."));
+
+        const auto &ssp_periodic_table = ssp->get_periodic_table();
+
+        SafeSTLSet<Index> parsed_comps;
+        for (const auto &eb : eb_elems)
+        {
+            const auto comp_id = eb->get_attribute<Index>("ComponentId");
+            // Checking the <= 0 comp_id < n_components
+            AssertThrow (comp_id >= 0 && comp_id < n_components,
+                         ExcMessage("Parsing EndBehaviour for " + parsing_msg +
+                                    ", not valid ComponentId=" + to_string(comp_id) + "."));
+            // Checking the component id has not been defined before.
+            AssertThrow (parsed_comps.find(comp_id) == parsed_comps.cend(),
+                         ExcMessage("Parsing EndBehaviour for " + parsing_msg +
+                                    ", ComponentId=" + to_string(comp_id) + " defined"
+                                    " more than once."));
+            parsed_comps.insert(comp_id);
+
+            const auto string_vec =  eb->get_values_vector<string>();
+
+            // Checking the dimension of the end behaviour vector.
+            AssertThrow (string_vec.size() == dim,
+                 ExcMessage("Parsing " + parsing_msg +
+                            ", in EndBehaviour ComponentId=" +
+                            to_string(comp_id) + " the number of "
+                            " values defined does not match with the "
+                            "Space dimension."));
+
+            for (int dir = 0; dir < dim; ++dir)
+            {
+                const auto &sv = string_vec[dir];
+                const bool ssp_periodic = ssp_periodic_table[comp_id][dir];
+                if (sv == "interpolatory")
+                {
+                    AssertThrow (!ssp_periodic,
+                      ExcMessage("Parsing " + parsing_msg + ", in "
+                      "EndBehaviour ComponentId=" + to_string(comp_id) +
+                      " Direction=" + to_string(dir) + ", behaviour " +
+                      sv + " do not match with Spline Space, that is "
+                      "periodic for this component and direction."));
+                    end_beh_table[comp_id][dir] = BasisEndBehaviour::interpolatory;
+                }
+                else if (sv == "end_knots")
+                {
+                    AssertThrow (false,
+                      ExcMessage("Parsing " + parsing_msg + ", in "
+                      "EndBehaviour ComponentId=" + to_string(comp_id) +
+                      " Direction=" + to_string(dir) + ", behaviour " +
+                      sv + ". CURRENTLY end_knots cannot be selected from"
+                      " the XML input file."));
+
+                    AssertThrow (!ssp_periodic,
+                      ExcMessage("Parsing " + parsing_msg + ", in "
+                      "EndBehaviour ComponentId=" + to_string(comp_id) +
+                      " Direction=" + to_string(dir) + ", behaviour " +
+                      sv + " do not match with Spline Space, that is "
+                      "periodic for this component and direction."));
+                    end_beh_table[comp_id][dir] = BasisEndBehaviour::end_knots;
+                }
+                else if (sv == "periodic")
+                {
+                    AssertThrow (ssp_periodic,
+                      ExcMessage("Parsing " + parsing_msg + ", in "
+                      "EndBehaviour ComponentId=" + to_string(comp_id) +
+                      " Direction=" + to_string(dir) + ", behaviour " +
+                      sv + " do not match with Spline Space, that is not "
+                      "periodic for this component and direction."));
+                    end_beh_table[comp_id][dir] = BasisEndBehaviour::periodic;
+                }
+                // If is not one of those types, the XML schema should have
+                // thrown the error before.
+            }
+        }
+    }
+
+    const auto bspline = BSplineType::create(ssp, end_beh_table);
+    container->insert_object<RefSpaceType>(bspline, object_id);
+}
+
+template <int dim, int space_dim>
+void
+ObjectsContainerParser::
+parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
+                       const std::shared_ptr<ObjectsContainer> container,
+                       const bool &first_parsing) const
+{
+    Assert (xml_elem->get_name() == "IgGridFunction",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Spacedim") == space_dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Spacedim"), space_dim));
+
+    static const int rank = 1;
+    using IgGridFunctionType = IgGridFunction<dim, space_dim>;
+    using GridFunctionType = GridFunction<dim, space_dim>;
+    using RefSpaceType     = ReferenceSpaceBasis<dim, space_dim, rank>;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    const string parsing_msg = this->get_type_id_string("IgGridFunction",
+                               object_id, {{dim, space_dim}});
+
+    const auto rs_tag = xml_elem->get_single_element("ReferenceSpaceBasis");
+    const auto rs_id = rs_tag->get_attribute<Index>("GetFromIgaObjectId");
+
+    // Checking the spline space with proper dimension and id exists.
+    if (!container->is_object<RefSpaceType> (rs_id))
+    {
+        // If does not exist there are two possibiities:
+        if (first_parsing)
+            // It is the first parsing time for the ig grid function.
+            // It is assumed that the reference space is a NURBS that
+            // has not been parsed yet.
+            return;
+        else
+            // It is not the first parsing time for the ig grid function.
+            // There is an error in the input file
+            AssertThrow (false,
+                         ExcMessage("Parsing " + parsing_msg + " not matching "
+                                    "definition for " +
+                                    this->get_type_id_string("ReferenceSpaceBasis", rs_id,
+                                    {{dim, space_dim, rank}}) + "."));
+
+    }
+    else if (!first_parsing && container->is_object<GridFunctionType> (object_id))
+        // We check if the ig grid function was already parsed.
+        return;
+
+    const auto rs = container->get_object<RefSpaceType>(rs_id);
+    Assert (rs != nullptr, ExcNullPtr());
+
+    const string dofs_property = parse_dofs_property(xml_elem);
+    const auto dof_distribution = rs->get_spline_space()->get_dof_distribution();
+    AssertThrow (dof_distribution->is_property_defined(dofs_property),
+                 ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
+                            dofs_property + "\" not defined for " +
+                            this->get_type_id_string("ReferenceSpaceBasis", rs_id,
+                            {{dim, space_dim, rank}}) + "."));
+
+    const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
+    const auto ig_coefs = parse_ig_coefficients(xml_elem, parsing_msg, global_dofs);
+
+    AssertThrow (rs->get_num_basis() == ig_coefs.size(),
+                 ExcMessage("Parsing " + parsing_msg + " the cardinality "
+                            "of the ReferenceSpaceBasis (" +
+                            to_string(rs->get_num_basis()) + ") is "
+                            "different to the dimension of the "
+                            "IgCoefficients (" + to_string(ig_coefs.size())
+                            + ")."));
+
+    const auto igf = IgGridFunctionType::create(rs, ig_coefs, dofs_property);
+    container->insert_object<GridFunctionType>(igf, object_id);
+}
+
+
+
+template <int dim, int range, int rank>
+void
+ObjectsContainerParser::
+parse_nurbs(const shared_ptr<XMLElement> xml_elem,
+            const std::shared_ptr<ObjectsContainer> container) const
+{
+    Assert (xml_elem->get_name() == "NURBS",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Range") == range,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
+    Assert (xml_elem->get_attribute<int>("Rank") == rank,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
+
+    using BSplineType = BSpline<dim, range, rank>;
+    using NURBSType   = NURBS<dim, range, rank>;
+    using WeightIgFunctionType = IgGridFunction<dim, 1>;
+    using WeightFunctionType = GridFunction<dim, 1>;
+    using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+
+    const string parsing_msg = this->get_type_id_string("NURBS",
+                               object_id, {{dim, range, rank}});
+
+    // Parsing BSpline
+    const auto bs_tag = xml_elem->get_single_element("BSpline");
+    const auto bs_id = bs_tag->get_attribute<Index>("GetFromIgaObjectId");
+    // Checking the bspline with the proper dimensions and id exists.
+    AssertThrow (container->is_object<RefSpaceType> (bs_id),
+                 ExcMessage("Parsing " + parsing_msg + " not matching "
+                            "definition for " +
+                            this->get_type_id_string("BSpline", bs_id,
+                            {{dim, range, rank}}) + "."));
+
+    const auto rs = container->get_object<RefSpaceType>(bs_id);
+    Assert (rs != nullptr, ExcNullPtr());
+    // Checking that the reference space is a BSpline.
+    const auto bs = std::dynamic_pointer_cast<BSplineType>(rs);
+    Assert (bs != nullptr, ExcNullPtr());
+    AssertThrow (rs->is_bspline(),
+                 ExcMessage("Parsing " + parsing_msg + " not matching "
+                            "definition for " +
+                            this->get_type_id_string("BSplineSpaceBasis", bs_id,
+                            {{dim, range, rank}}) + ". It is a "
+                            "ReferenceBasisSpace, but not a BSpline."
+                            "BSpline space basis must be used for "
+                            "defining IgGridFunctions used as weight "
+                            "functions for NURBS space basis."));
+
+    // Parsing Weight function
+    const auto wg_tag = xml_elem->get_single_element("WeightFunction");
+    const auto wg_id = wg_tag->get_attribute<Index>("GetFromIgaObjectId");
+    // Checking that the grid function with the proper dimensions exists.
+    AssertThrow (container->is_object<WeightFunctionType> (wg_id),
+                 ExcMessage("Parsing " + parsing_msg + " not matching "
+                            "definition for " +
+                            this->get_type_id_string("IgGridFunction", wg_id,
+                            {{dim, 1}}) +  ". The error could be caused "
+                            "by the fact the object does not correspond "
+                            "to IgGridFunction built upon a BSpline. "
+                            "Currently igatools only allows to build "
+                            "weight functions based on scalar BSpline "
+                            "space basis."));
+
+    const auto gf = container->get_object<WeightFunctionType>(wg_id);
+    Assert (gf != nullptr, ExcNullPtr());
+    const auto wf = std::dynamic_pointer_cast<WeightIgFunctionType>(gf);
+    // Checking that the grid function is a ig grid function.
+    AssertThrow (wf != nullptr,
+                 ExcMessage("Parsing " + parsing_msg + " not matching "
+                            "definition for " +
+                            this->get_type_id_string("IgGridFunction", wg_id,
+                            {{dim, 1}}) + ". It is a"
+                            "GridFunction, but not a IgGridFunction"));
+
+    // Checking that the weight function was defined upon a BSpline.
+    const auto w_func_basis = wf->get_basis();
+    Assert(wf->get_basis()->is_bspline(),
+           ExcMessage("Parsing " + parsing_msg + ", " +
+                      this->get_type_id_string("IgGridFunction", wg_id,
+                      {{dim, 1}}) + ". It is based on a NURBS space basis"
+                      ", but must be based on BSpline space basis."));
+
+    // Checking that the grids of the bspline and weight function match.
+    AssertThrow(bs->get_grid() == wf->get_grid(),
+                ExcMessage("Parsing " + parsing_msg + ", mismatching "
+                           "grids for the BSpline and WeightFunction."));
+
+    // Checking that the number of basis functions and weights match.
+    const auto &n_basis_table = bs->get_spline_space()->get_dof_distribution()->get_num_dofs_table();
+    int comp_id = 0;
+    for (const auto &n_basis_comp : n_basis_table)
+    {
+        AssertThrow(n_basis_comp ==
+                    w_func_basis->get_spline_space()->get_dof_distribution()->get_num_dofs_table()[0],
+               ExcMessage("Parsing " + parsing_msg + ", mismatching number of basis functions and weight "
+                          "coefficients for scalar component " + to_string(comp_id++)));
+    }
+
+    const auto nurbs = NURBSType::create(bs, wf);
+    Assert (nurbs != nullptr, ExcNullPtr());
+    container->insert_object<RefSpaceType>(nurbs, object_id);
 }
 
 
@@ -719,21 +1043,23 @@ parse_domain(const shared_ptr<XMLElement> xml_elem,
     Assert (xml_elem->get_attribute<int>("Codim") == codim,
             ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
 
-    using DomainType = Domain<dim, codim>;
     static const int space_dim = dim + codim;
+    using DomainType = Domain<dim, codim>;
     using GridFuncType = GridFunction<dim, space_dim>;
 
     const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    AssertThrow (!container->is_id_present(object_id),
-                 ExcMessage("Parsing Domain already defined IgaObjectId=" +
-                            to_string(object_id) + "."));
+
+    const string parsing_msg = this->get_type_id_string("Domain",
+                               object_id, {{dim, codim}});
 
     const auto gf_tag = xml_elem->get_single_element("GridFunction");
     const auto gf_id = gf_tag->get_attribute<Index>("GetFromIgaObjectId");
+    // Checking if the grid function exists.
     AssertThrow (container->is_object<GridFuncType> (gf_id),
-                 ExcMessage("Parsing Domain with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a GridFunc with the expected dimension."));
+                 ExcMessage("Parsing " + parsing_msg + " not matching "
+                            "definition for " +
+                            this->get_type_id_string("GridFunction", gf_id,
+                            {{dim, space_dim}}) + "."));
 
     const auto gf = container->get_object<GridFuncType>(gf_id);
     Assert (gf != nullptr, ExcNullPtr());
@@ -769,39 +1095,42 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
     using FunctionType = Function<dim, codim, range, rank>;
 
     const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    AssertThrow (!container->is_id_present(object_id),
-                 ExcMessage("Parsing IgFunction already defined IgaObjectId=" +
-                            to_string(object_id) + "."));
+
+    const string parsing_msg = this->get_type_id_string("Function",
+                               object_id, {{dim, codim, range, rank}});
 
     const auto ps_tag = xml_elem->get_single_element("PhysicalSpaceBasis");
     const auto ps_id = ps_tag->get_attribute<Index>("GetFromIgaObjectId");
+
+    // Checking if the physical space exists.
     AssertThrow (container->is_object<PhysSpaceType> (ps_id),
-                 ExcMessage("Parsing Ig Function with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a Physical Space Basis with the expected dimension."));
+                 ExcMessage("Parsing " + parsing_msg + " not matching "
+                            "definition for " +
+                            this->get_type_id_string("PhysicalSpaceBasis", ps_id,
+                            {{dim, range, rank, codim}}) + "."));
     const auto ps = container->get_object<PhysSpaceType>(ps_id);
     Assert (ps != nullptr, ExcNullPtr());
 
-    string dofs_property = "active";
-    if (xml_elem->has_element("DofsProperty"))
-    {
-        const auto dp_elem = xml_elem->get_single_element("DofsProperty");
-        dofs_property = dp_elem->get_value<string>();
-    }
-
-    const auto ig_elem = xml_elem->get_single_element("IgCoefficients");
-    const auto size = ig_elem->get_attribute<Index>("Size");
-    const auto ig_coefs_vec = ig_elem->get_values_vector<Real>();
-    // Check ig_coefs_vec.size() == size
-
-    std::set<Index> indices;
-    for (int i = 0; i < size; ++i)
-        indices.insert(i);
-    IgCoefficients ig_coefs (indices);
-    for (int i = 0; i < size; ++i)
-        ig_coefs[i] = ig_coefs_vec[i];
-
     const auto name = parse_name (xml_elem);
+
+    const string dofs_property = parse_dofs_property(xml_elem);
+    const auto dof_distribution = ps->get_spline_space()->get_dof_distribution();
+    AssertThrow (dof_distribution->is_property_defined(dofs_property),
+                 ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
+                            dofs_property + "\" not defined for " +
+                            this->get_type_id_string("PhysicalSpaceBasis", ps_id,
+                            {{dim, range, rank, codim}}) + "."));
+
+    const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
+    const auto ig_coefs = parse_ig_coefficients(xml_elem, parsing_msg, global_dofs);
+
+    AssertThrow (ps->get_num_basis() == ig_coefs.size(),
+                 ExcMessage("Parsing " + parsing_msg + " the cardinality "
+                            "of the PhysicalSpaceBasis (" +
+                            to_string(ps->get_num_basis()) + ") is "
+                            "different to the dimension of the "
+                            "IgCoefficients (" + to_string(ig_coefs.size())
+                            + ")."));
 
     const auto igf = IgFunctionType::create(ps, ig_coefs, dofs_property, name);
     container->insert_object<FunctionType>(igf, object_id);
@@ -843,39 +1172,45 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
             transf = Transformation::h_curl;
         else if (trans_str == "l_2")
             transf = Transformation::l_2;
-        else
-        {
-            // Throw error
-        }
+        // If is not one of those types, the XML schema should have
+        // thrown the error before.
     }
 
     const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    AssertThrow (!container->is_id_present(object_id),
-                 ExcMessage("Parsing Physical Space Basis already defined IgaObjectId=" +
-                            to_string(object_id) + "."));
+
+    const auto parsing_msg = this->get_type_id_string("PhysicalSpaceBasis",
+            object_id, {{dim, range, rank}});
 
     const auto rs_tag = xml_elem->get_single_element("ReferenceSpaceBasis");
     const auto rs_id = rs_tag->get_attribute<Index>("GetFromIgaObjectId");
+
     AssertThrow (container->is_object<RefSpaceType> (rs_id),
-                 ExcMessage("Parsing Physical Space Basis with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a ReferenceSpaceBasis with the expected dimension."));
+                 ExcMessage("Parsing " + parsing_msg + " not matching "
+                            "definition for " +
+                            this->get_type_id_string("ReferenceSpaceBasis", rs_id,
+                            {{dim, range, rank}}) + "."));
 
     const auto rs = container->get_object<RefSpaceType>(rs_id);
     Assert (rs != nullptr, ExcNullPtr());
 
     const auto dm_tag = xml_elem->get_single_element("Domain");
     const auto dm_id = dm_tag->get_attribute<Index>("GetFromIgaObjectId");
+
     AssertThrow (container->is_object<DomainType> (dm_id),
-                 ExcMessage("Parsing Physical Space Basis with IgaObjectId=" +
-         to_string(object_id) + " the GetFromIgaObjectId does not "
-         "correspond to a Domain with the expected dimension."));
+                 ExcMessage("Parsing " + parsing_msg + " not matching "
+                            "definition for " +
+                            this->get_type_id_string("Domain", dm_id,
+                            {{dim, codim}}) + "."));
 
     const auto dm = container->get_object<DomainType>(dm_id);
     Assert (dm != nullptr, ExcNullPtr());
 
-    const auto ps = PhysSpaceType::create(rs, dm, transf);
+    // Checking that the reference space and domain grids match.
+    AssertThrow(rs->get_grid() == dm->get_grid_function()->get_grid(),
+                ExcMessage("Parsing " + parsing_msg + ", mismatching "
+                           "grids for the ReferenceSpaceBasis and Domain."));
 
+    const auto ps = PhysSpaceType::create(rs, dm, transf);
     container->insert_object<PhysSpaceType>(ps, object_id);
 }
 
@@ -889,6 +1224,102 @@ parse_name(const shared_ptr<XMLElement> xml_elem) const
         return xml_elem->get_single_element("Name")->get_value<string>();
     else
         return string("");
+}
+
+
+
+string
+ObjectsContainerParser::
+parse_dofs_property(const shared_ptr<XMLElement> xml_elem) const
+{
+    if (xml_elem->has_element("DofsProperty"))
+        return xml_elem->get_single_element("DofsProperty")->get_value<string>();
+    else
+        return DofProperties::active;
+}
+
+
+
+std::string
+ObjectsContainerParser::
+get_type_dimensions_string(const string &object_type,
+                          const SafeSTLVector<int> &dims) const
+{
+    string dims_str = object_type + "<";
+    for (const auto &d : dims)
+        dims_str += to_string(d) + ", ";
+    return dims_str.substr(0, dims_str.size() - 2) + ">";
+}
+
+
+
+std::string
+ObjectsContainerParser::
+get_type_id_string(const string &object_type,
+                   const Index &object_id,
+                   const SafeSTLVector<int> &dims) const
+{
+    return get_type_dimensions_string(object_type, dims) +
+            " (IgaObjectId=" + to_string(object_id) + ")";
+
+}
+
+
+
+IgCoefficients
+ObjectsContainerParser::
+parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
+                      const string &parsing_msg,
+                      const set<Index> &space_global_dofs) const
+{
+    Assert (xml_elem->has_element("IgCoefficients"),
+            ExcMessage("IgCoefficients XML element not present."));
+
+    const auto ig_elem = xml_elem->get_single_element("IgCoefficients");
+    const auto size = ig_elem->get_attribute<Index>("Size");
+
+    const auto ig_ind_elem = ig_elem->get_single_element("Indices");
+    const auto ig_coefs_ind_vec = ig_ind_elem->get_values_vector<Index>();
+    AssertThrow (size == ig_coefs_ind_vec.size(),
+                 ExcMessage("Parsing IgCoefficients indices for " + parsing_msg +
+                            ", Size=" + to_string(size) + " do not match "
+                            "with the vector size."));
+
+    const auto ig_val_elem = ig_elem->get_single_element("Values");
+    const auto ig_coefs_val_vec = ig_val_elem->get_values_vector<Real>();
+    AssertThrow (size == ig_coefs_val_vec.size(),
+                 ExcMessage("Parsing IgCoefficients values for " + parsing_msg +
+                            ", Size=" + to_string(size) + " do not match "
+                            "with the vector size."));
+
+    std::set<Index> indices;
+    for (const auto &i : ig_coefs_ind_vec)
+        indices.insert(i);
+    std::copy(ig_coefs_ind_vec.cbegin(), ig_coefs_ind_vec.cend(),
+              std::inserter(indices, indices.begin()));
+
+    // Checking that there are not repeated indices.
+    AssertThrow (size == indices.size(),
+                 ExcMessage("Parsing IgCoefficients for " + parsing_msg +
+                            ", not valid indices vector parsed. Repeated "
+                            "indices may found."));
+
+    IgCoefficients ig_coefs (indices);
+
+    const auto end_dofs = space_global_dofs.cend();
+
+    auto ind_it = ig_coefs_ind_vec.cbegin();
+    auto val_it = ig_coefs_val_vec.cbegin();
+    auto val_end = ig_coefs_val_vec.cend();
+    for (; val_it != val_end; ++val_it, ++ind_it)
+    {
+        ig_coefs[*ind_it] = *val_it;
+        AssertThrow (space_global_dofs.find(*ind_it) != end_dofs,
+                 ExcMessage("Parsing IgCoefficients for " + parsing_msg +
+                            ", " + to_string(*ind_it) + " is not a valid index."));
+    }
+
+    return ig_coefs;
 }
 
 IGA_NAMESPACE_CLOSE

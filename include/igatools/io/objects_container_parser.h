@@ -23,6 +23,8 @@
 
 #include <igatools/base/config.h>
 
+#include <set>
+
 #ifdef XML_IO
 
 
@@ -32,6 +34,8 @@ class XMLFileParser;
 class XMLElement;
 class ObjectsContainer;
 template <int dim> class Grid;
+template <class T> class SafeSTLVector;
+class IgCoefficients;
 
 /**
  * @brief Class for parsing input files.
@@ -159,58 +163,80 @@ private:
   void parse_grids(const std::shared_ptr<XMLElement> xml_elem,
                    const std::shared_ptr<ObjectsContainer> container) const;
 
+  void parse_spline_spaces(const std::shared_ptr<XMLElement> xml_elem,
+                           const std::shared_ptr<ObjectsContainer> container) const;
+
+  void parse_bsplines(const std::shared_ptr<XMLElement> xml_elem,
+                      const std::shared_ptr<ObjectsContainer> container) const;
+
+  void parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
+                   const std::shared_ptr<ObjectsContainer> container) const;
+
+  void parse_grid_functions_and_nurbs(const std::shared_ptr<XMLElement> xml_elem,
+                           const std::shared_ptr<ObjectsContainer> container) const;
+
+  void parse_ig_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
+                               const std::shared_ptr<ObjectsContainer> container,
+                               const bool &based_on_nurbs) const;
+
+  void parse_domains(const std::shared_ptr<XMLElement> xml_elem,
+                     const std::shared_ptr<ObjectsContainer> container) const;
+
+  void parse_phys_spaces(const std::shared_ptr<XMLElement> xml_elem,
+                         const std::shared_ptr<ObjectsContainer> container) const;
+
+  void parse_functions(const std::shared_ptr<XMLElement> xml_elem,
+                       const std::shared_ptr<ObjectsContainer> container) const;
+
   template <int dim>
   void parse_grid(const std::shared_ptr<XMLElement> xml_elem,
                   const std::shared_ptr<ObjectsContainer> container) const;
-
-  void parse_spline_spaces(const std::shared_ptr<XMLElement> xml_elem,
-                           const std::shared_ptr<ObjectsContainer> container) const;
 
   template <int dim, int range, int rank>
   void parse_spline_space(const std::shared_ptr<XMLElement> xml_elem,
                           const std::shared_ptr<ObjectsContainer> container) const;
 
-  void parse_bsplines(const std::shared_ptr<XMLElement> xml_elem,
-                      const std::shared_ptr<ObjectsContainer> container) const;
-
   template <int dim, int range, int rank>
   void parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
                      const std::shared_ptr<ObjectsContainer> container) const;
-
-  void parse_grid_functions_and_nurbs(const std::shared_ptr<XMLElement> xml_elem,
-                           const std::shared_ptr<ObjectsContainer> container) const;
 
   template <int dim, int range, int rank>
   void parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
                    const std::shared_ptr<ObjectsContainer> container) const;
 
-  template <int dim, int range>
+  template <int dim, int space_dim>
   void parse_ig_grid_function(const std::shared_ptr<XMLElement> xml_elem,
-                              const std::shared_ptr<ObjectsContainer> container) const;
-
-  void parse_domains(const std::shared_ptr<XMLElement> xml_elem,
-                     const std::shared_ptr<ObjectsContainer> container) const;
+                              const std::shared_ptr<ObjectsContainer> container,
+                              const bool &first_parsing) const;
 
   template <int dim, int codim>
   void parse_domain(const std::shared_ptr<XMLElement> xml_elem,
                     const std::shared_ptr<ObjectsContainer> container) const;
 
-  void parse_phys_spaces(const std::shared_ptr<XMLElement> xml_elem,
-                         const std::shared_ptr<ObjectsContainer> container) const;
-
   template <int dim, int codim, int range, int rank>
   void parse_phys_space(const std::shared_ptr<XMLElement> xml_elem,
                         const std::shared_ptr<ObjectsContainer> container) const;
-
-  void parse_functions(const std::shared_ptr<XMLElement> xml_elem,
-                       const std::shared_ptr<ObjectsContainer> container) const;
 
   template <int dim, int codim, int range, int rank>
   void parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
                          const std::shared_ptr<ObjectsContainer> container) const;
 
-  std::string parse_name(const std::shared_ptr<XMLElement> xml_elem) const;
 
+  std::string parse_name(const std::shared_ptr<XMLElement> xml_elem) const;
+  std::string parse_dofs_property(const std::shared_ptr<XMLElement> xml_elem) const;
+
+  std::string get_type_id_string(const std::string &object_type,
+                                 const Index &object_id,
+                                 const SafeSTLVector<int> &dims) const;
+
+  std::string get_type_dimensions_string(const std::string &object_type,
+                                         const SafeSTLVector<int> &dims) const;
+
+  // TODO: maybe this should be done with a shared pointer, in
+  // order to avoid the copy
+  IgCoefficients parse_ig_coefficients(const std::shared_ptr<XMLElement> xml_elem,
+                                       const std::string &parsing_msg,
+                                       const std::set<Index> &space_global_dofs) const;
 
 };
 
