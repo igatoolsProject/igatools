@@ -74,28 +74,40 @@ void insert_objects (const std::shared_ptr<ObjectsContainer> container,
     degree[2] = 1;
   }
 
-
-  using Basis = NURBS< dim, range, rank >;
-  auto grid = Grid<dim>::create(coord);
-  container->insert_grid<dim>(grid, object_id);
-  ++object_id;
-
-  auto ssp = SplineSpace<dim,range,rank>::create(degree,grid);
-  container->insert_spline_space<dim,range,rank>(ssp, object_id);
-  ++object_id;
-
-  auto  bsp = BSpline<dim, range, rank >::create(ssp);
-  container->insert_ref_space<dim, range, rank>(bsp, object_id);
-  ++object_id;
-
-  using ScalarBSpline = BSpline<dim>;
-  using WeightFunc = IgGridFunction<dim,1>;
+  // Defining used types.
+  static const int codim = range - dim;
+  using GridType = Grid<dim>;
+  using SpSpaceType = SplineSpace<dim, range, rank>;
+  using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
+  using BSplineType = BSpline<dim, range, rank>;
+  using NURBSType = NURBS<dim, range, rank>;
+  using ScalarSpSpaceType = SplineSpace<dim, 1, 1>;
+  using ScalarBSplineType = BSpline<dim, 1, 1>;
+  using ScalarRefSpaceType = ReferenceSpaceBasis<dim, 1, 1>;
+  using WeightFuncType = IgGridFunction<dim, 1>;
+  using ScalarGridFuncType = GridFunction<dim, 1>;
+  using GridFuncType = GridFunction<dim, range>;
+  using DomainType = Domain<dim, codim>;
   using ConstGridFunc = grid_functions::ConstantGridFunction<dim, range>;
-  using ConstFunc = functions::ConstantFunction<dim, range - dim, range, 1>;
-  auto scalar_space = ScalarBSpline::create(
-                        SplineSpace<dim,1,1>::create(degree,grid));
+  using ConstFuncType = functions::ConstantFunction<dim, codim, range, rank>;
+  using FuncType = Function<dim, codim, range, rank>;
+  using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
 
-  container->insert_ref_space<dim, 1, 1>(scalar_space, object_id);
+  auto grid = GridType::create(coord);
+  container->insert_object<GridType>(grid, object_id);
+  ++object_id;
+
+  auto ssp = SpSpaceType::create(degree,grid);
+  container->insert_object<SpSpaceType>(ssp, object_id);
+  ++object_id;
+
+  auto  bsp = BSplineType::create(ssp);
+  container->insert_object<RefSpaceType>(bsp, object_id);
+  ++object_id;
+
+  auto scalar_space = ScalarBSplineType::create(ScalarSpSpaceType::create(degree,grid));
+
+  container->insert_object<ScalarRefSpaceType>(scalar_space, object_id);
   ++object_id;
 
   const auto n_scalar_basis = scalar_space->get_num_basis();
@@ -104,30 +116,30 @@ void insert_objects (const std::shared_ptr<ObjectsContainer> container,
   for (int dof = 0 ; dof < n_scalar_basis ; ++dof)
     weights[dof] = 1.0;
 
-  const auto w_func = WeightFunc::create(scalar_space,weights);
+  const auto w_func = WeightFuncType::create(scalar_space,weights);
 
-  container->insert_grid_function<dim, 1>(w_func, object_id);
+  container->insert_object<ScalarGridFuncType>(w_func, object_id);
   ++object_id;
 
-  auto nurbs_space = Basis::create(bsp, w_func);
-  container->insert_ref_space<dim, range, rank>(nurbs_space, object_id);
+  auto nurbs_space = NURBSType::create(bsp, w_func);
+  container->insert_object<RefSpaceType>(nurbs_space, object_id);
   ++object_id;
 
   const Values<dim, range, 1> val;
   const auto const_grid_func = ConstGridFunc::create(grid, val);
-  container->insert_grid_function<dim, range>(const_grid_func, object_id);
+  container->insert_object<GridFuncType>(const_grid_func, object_id);
   ++object_id;
 
-  const auto domain = Domain<dim, range - dim>::create (const_grid_func, "my_domain");
-  container->insert_domain<dim, range - dim>(domain, object_id);
+  const auto domain = DomainType::create (const_grid_func, "my_domain");
+  container->insert_object<DomainType>(domain, object_id);
   ++object_id;
 
-  const auto phys_space = PhysicalSpaceBasis<dim, range, 1, range-dim>::create(nurbs_space, domain);
-  container->insert_phys_space_basis<dim, range, 1, range-dim>(phys_space, object_id);
+  const auto phys_space = PhysSpaceType::create(nurbs_space, domain);
+  container->insert_object<PhysSpaceType>(phys_space, object_id);
   ++object_id;
 
-  const auto const_func = ConstFunc::create(domain, val);
-  container->insert_function<dim, range-dim, range, 1>(const_func, object_id);
+  const auto const_func = ConstFuncType::create(domain, val);
+  container->insert_object<FuncType>(const_func, object_id);
   ++object_id;
 }
 
@@ -138,61 +150,76 @@ void retrieve_objects(const std::shared_ptr<ObjectsContainer> container,
 {
   OUTSTART
 
-  const auto grid = container->get_grid<dim>(object_id);
+  // Defining used types.
+  static const int codim = range - dim;
+  using GridType = Grid<dim>;
+  using SpSpaceType = SplineSpace<dim, range, rank>;
+  using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
+  using BSplineType = BSpline<dim, range, rank>;
+  using NURBSType = NURBS<dim, range, rank>;
+  using ScalarBSplineType = BSpline<dim, 1, 1>;
+  using ScalarRefSpaceType = ReferenceSpaceBasis<dim, 1, 1>;
+  using ScalarGridFuncType = GridFunction<dim, 1>;
+  using GridFuncType = GridFunction<dim, range>;
+  using DomainType = Domain<dim, codim>;
+  using FuncType = Function<dim, codim, range, rank>;
+  using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
+
+  const auto grid = container->get_object<GridType>(object_id);
   ++object_id;
   grid->print_info(out);
   out << endl;
 
-  const auto ssp = container->get_spline_space<dim,range,rank>(object_id);
+  const auto ssp = container->get_object<SpSpaceType>(object_id);
   ++object_id;
   ssp->print_info(out);
   out << endl;
 
-  const auto rs0 = container->get_ref_space<dim,range,rank>(object_id);
-  const auto bsp0 = container->get_bspline<dim,range,rank>(object_id);
+  const auto rs0 = container->get_object<RefSpaceType>(object_id);
+  const auto bsp0 = std::dynamic_pointer_cast<BSplineType>(rs0);
   ++object_id;
   rs0->print_info(out);
   out << endl;
   bsp0->print_info(out);
   out << endl;
 
-  const auto rs1 = container->get_ref_space<dim,1,1>(object_id);
-  const auto bsp1 = container->get_bspline<dim,1,1>(object_id);
+  const auto rs1 = container->get_object<ScalarRefSpaceType>(object_id);
+  const auto bsp1 = std::dynamic_pointer_cast<ScalarBSplineType>(rs1);
   ++object_id;
   rs1->print_info(out);
   out << endl;
   bsp1->print_info(out);
   out << endl;
 
-  const auto gf0 = container->get_grid_function<dim, 1>(object_id);
+  const auto gf0 = container->get_object<ScalarGridFuncType>(object_id);
   ++object_id;
   gf0->print_info(out);
   out << endl;
 
-  const auto rs2 = container->get_ref_space<dim, range, rank>(object_id);
-  const auto nr = container->get_nurbs<dim, range, rank>(object_id);
+  const auto rs2 = container->get_object<RefSpaceType>(object_id);
+  const auto nr = std::dynamic_pointer_cast<NURBSType>(rs2);
   ++object_id;
   rs2->print_info(out);
   out << endl;
   nr->print_info(out);
   out << endl;
 
-  const auto gf1 = container->get_grid_function<dim, range>(object_id);
+  const auto gf1 = container->get_object<GridFuncType>(object_id);
   ++object_id;
   gf1->print_info(out);
   out << endl;
 
-  const auto dm = container->get_domain<dim, range-dim>(object_id);
+  const auto dm = container->get_object<DomainType>(object_id);
   ++object_id;
   dm->print_info(out);
   out << endl;
 
-  const auto ps = container->get_phys_space_basis<dim, range, 1, range-dim>(object_id);
+  const auto ps = container->get_object<PhysSpaceType>(object_id);
   ++object_id;
   ps->print_info(out);
   out << endl;
 
-  const auto fn = container->get_function<dim, range-dim, range, 1>(object_id);
+  const auto fn = container->get_object<FuncType>(object_id);
   ++object_id;
   //  fn->print_info(out);
   out << endl;
