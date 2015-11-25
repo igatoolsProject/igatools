@@ -737,12 +737,7 @@ parse_domain(const shared_ptr<XMLElement> xml_elem,
     const auto gf = container->get_object<GridFuncType>(gf_id);
     Assert (gf != nullptr, ExcNullPtr());
 
-    string name = "";
-    if (xml_elem->has_element("Name"))
-    {
-        const auto nm_elem = xml_elem->get_single_element("Name");
-        name = nm_elem->get_value<string>();
-    }
+    const auto name = parse_name (xml_elem);
     const auto domain = DomainType::create(gf, name);
 
     container->insert_object<DomainType>(domain, object_id);
@@ -805,12 +800,7 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
     for (int i = 0; i < size; ++i)
         ig_coefs[i] = ig_coefs_vec[i];
 
-    string name = "";
-    if (xml_elem->has_element("Name"))
-    {
-        const auto nm_elem = xml_elem->get_single_element("Name");
-        name = nm_elem->get_value<string>();
-    }
+    const auto name = parse_name (xml_elem);
 
     const auto igf = IgFunctionType::create(ps, ig_coefs, dofs_property, name);
     container->insert_object<FunctionType>(igf, object_id);
@@ -886,6 +876,18 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
     const auto ps = PhysSpaceType::create(rs, dm, transf);
 
     container->insert_object<PhysSpaceType>(ps, object_id);
+}
+
+
+
+string
+ObjectsContainerParser::
+parse_name(const shared_ptr<XMLElement> xml_elem) const
+{
+    if (xml_elem->has_element("Name"))
+        return xml_elem->get_single_element("Name")->get_value<string>();
+    else
+        return string("");
 }
 
 IGA_NAMESPACE_CLOSE

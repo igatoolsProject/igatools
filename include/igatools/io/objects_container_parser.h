@@ -209,6 +209,8 @@ private:
   void parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
                          const std::shared_ptr<ObjectsContainer> container) const;
 
+  std::string parse_name(const std::shared_ptr<XMLElement> xml_elem) const;
+
 
 };
 
