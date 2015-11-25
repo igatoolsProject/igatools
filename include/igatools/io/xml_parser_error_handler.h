@@ -53,11 +53,9 @@ private:
   /** @name Types and static values */
   ///@{
 
-  /// Type for the current class.
   /** Type for the current class. */
   typedef XMLParserErrorHandler Self_;
 
-  /// Type for a shared pointer of the current class.
   /** Type for a shared pointer of the current class. */
   typedef std::shared_ptr<Self_> SelfPtr_;
 

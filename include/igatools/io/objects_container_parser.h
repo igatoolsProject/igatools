@@ -127,36 +127,48 @@ public:
 private:
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static void parse_grids(const std::shared_ptr<XMLElement> xml_elem,
                    const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static void parse_spline_spaces(const std::shared_ptr<XMLElement> xml_elem,
                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static void parse_bsplines(const std::shared_ptr<XMLElement> xml_elem,
                       const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static void parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
                    const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static void parse_grid_functions_and_nurbs(const std::shared_ptr<XMLElement> xml_elem,
                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static void parse_ig_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
                                const std::shared_ptr<ObjectsContainer> container,
@@ -164,24 +176,32 @@ private:
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static void parse_domains(const std::shared_ptr<XMLElement> xml_elem,
                      const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static void parse_phys_spaces(const std::shared_ptr<XMLElement> xml_elem,
                          const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static void parse_functions(const std::shared_ptr<XMLElement> xml_elem,
                        const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   template <int dim>
   static void parse_grid(const std::shared_ptr<XMLElement> xml_elem,
@@ -189,6 +209,8 @@ private:
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   template <int dim, int range, int rank>
   static void parse_spline_space(const std::shared_ptr<XMLElement> xml_elem,
@@ -196,6 +218,8 @@ private:
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   template <int dim, int range, int rank>
   static void parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
@@ -203,6 +227,8 @@ private:
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   template <int dim, int range, int rank>
   static void parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
@@ -210,6 +236,8 @@ private:
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   template <int dim, int space_dim>
   static void parse_ig_grid_function(const std::shared_ptr<XMLElement> xml_elem,
@@ -218,6 +246,8 @@ private:
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   template <int dim, int codim>
   static void parse_domain(const std::shared_ptr<XMLElement> xml_elem,
@@ -225,6 +255,8 @@ private:
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   template <int dim, int codim, int range, int rank>
   static void parse_phys_space(const std::shared_ptr<XMLElement> xml_elem,
@@ -232,6 +264,8 @@ private:
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   template <int dim, int codim, int range, int rank>
   static void parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
@@ -239,16 +273,22 @@ private:
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static std::string parse_name(const std::shared_ptr<XMLElement> xml_elem);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static std::string parse_dofs_property(const std::shared_ptr<XMLElement> xml_elem);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static std::string get_type_id_string(const std::string &object_type,
                                  const Index &object_id,
@@ -256,12 +296,16 @@ private:
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   static std::string get_type_dimensions_string(const std::string &object_type,
                                          const SafeSTLVector<int> &dims);
 
   /**
    * @todo To be documented.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Objects container to be filled with the parsed object.
    */
   // TODO: maybe this should be done with a shared pointer, in
   // order to astatic void the copy

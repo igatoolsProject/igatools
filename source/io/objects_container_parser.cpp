@@ -1267,6 +1267,7 @@ parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
     const auto ig_elem = xml_elem->get_single_element("IgCoefficients");
     const auto size = ig_elem->get_attribute<Index>("Size");
 
+    // Gettint the indices.
     const auto ig_ind_elem = ig_elem->get_single_element("Indices");
     const auto ig_coefs_ind_vec = ig_ind_elem->get_values_vector<Index>();
     AssertThrow (size == ig_coefs_ind_vec.size(),
@@ -1274,6 +1275,7 @@ parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
                             ", Size=" + to_string(size) + " do not match "
                             "with the vector size."));
 
+    // Gettint the values.
     const auto ig_val_elem = ig_elem->get_single_element("Values");
     const auto ig_coefs_val_vec = ig_val_elem->get_values_vector<Real>();
     AssertThrow (size == ig_coefs_val_vec.size(),
@@ -1295,8 +1297,9 @@ parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
 
     IgCoefficients ig_coefs (indices);
 
+    // Checking if the parsed indices match with space_global_dofs and
+    // filling the values of the ig coefficients vector.
     const auto end_dofs = space_global_dofs.cend();
-
     auto ind_it = ig_coefs_ind_vec.cbegin();
     auto val_it = ig_coefs_val_vec.cbegin();
     auto val_end = ig_coefs_val_vec.cend();
