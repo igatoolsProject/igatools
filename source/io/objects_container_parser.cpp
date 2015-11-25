@@ -464,6 +464,7 @@ parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
                                const shared_ptr<ObjectsContainer> container) const
 {
     AssertThrow (false, ExcNotImplemented());
+    // Call properly here parse ig_grid_function and parse_nurbs
 }
 
 template <int dim, int range>
@@ -483,7 +484,62 @@ ObjectsContainerParser::
 parse_nurbs(const shared_ptr<XMLElement> xml_elem,
             const std::shared_ptr<ObjectsContainer> container) const
 {
-    AssertThrow (false, ExcNotImplemented());
+    Assert (xml_elem->get_name() == "NURBS",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Range") == range,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
+    Assert (xml_elem->get_attribute<int>("Rank") == rank,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
+
+    using BSplineType = BSpline<dim, range, rank>;
+    using NURBSType   = NURBS<dim, range, rank>;
+    using WeightIgFunctionType = IgGridFunction<dim, 1>;
+    using WeightFunctionType = GridFunction<dim, 1>;
+    using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    AssertThrow (!container->is_id_present(object_id),
+                 ExcMessage("Parsing NURBS already defined IgaObjectId=" +
+                            to_string(object_id) + "."));
+
+    // Parsing BSpline
+    const auto bs_tag = xml_elem->get_single_element("BSpline");
+    const auto bs_id = bs_tag->get_attribute<Index>("GetFromIgaObjectId");
+    AssertThrow (container->is_object<RefSpaceType> (bs_id),
+                 ExcMessage("Parsing NURBS with IgaObjectId=" +
+         to_string(object_id) + " the GetFromIgaObjectId does not "
+         "correspond to a BSpline with the expected dimension."));
+
+    const auto rs = container->get_object<RefSpaceType>(bs_id);
+    Assert (rs != nullptr, ExcNullPtr());
+    const auto bs = std::dynamic_pointer_cast<BSplineType>(rs);
+    AssertThrow (bs != nullptr,
+                 ExcMessage("Parsing NURBS with IgaObjectId=" +
+         to_string(object_id) + " the GetFromIgaObjectId does not "
+         "correspond to a BSpline with the expected dimension."));
+
+    // Parsing Weight function
+    const auto wg_tag = xml_elem->get_single_element("WeightFunction");
+    const auto wg_id = bs_tag->get_attribute<Index>("GetFromIgaObjectId");
+    AssertThrow (container->is_object<WeightFunctionType> (wg_id),
+                 ExcMessage("Parsing NURBS with IgaObjectId=" +
+         to_string(object_id) + " the GetFromIgaObjectId does not "
+         "correspond to a GridFunction with the expected dimension."));
+
+    const auto gf = container->get_object<WeightFunctionType>(wg_id);
+    Assert (gf != nullptr, ExcNullPtr());
+    const auto wf = std::dynamic_pointer_cast<WeightIgFunctionType>(gf);
+    AssertThrow (wf != nullptr,
+                 ExcMessage("Parsing NURBS with IgaObjectId=" +
+         to_string(object_id) + " the GetFromIgaObjectId does not "
+         "correspond to a IgGridFunction with the expected dimension."));
+
+    const auto nurbs = NURBSType::create(bs, wf);
+    Assert (nurbs != nullptr, ExcNullPtr());
+    container->insert_object<RefSpaceType>(nurbs, object_id);
 }
 
 
