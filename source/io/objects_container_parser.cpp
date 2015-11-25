@@ -473,7 +473,53 @@ ObjectsContainerParser::
 parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
                        const std::shared_ptr<ObjectsContainer> container) const
 {
-    AssertThrow (false, ExcNotImplemented());
+    Assert (xml_elem->get_name() == "IgGridFunction",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Range") == range,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
+
+    using IgGridFunctionType = IgGridFunction<dim, range>;
+    using GridFunctionType = GridFunction<dim, range>;
+    using RefSpaceType     = ReferenceSpaceBasis<dim, range, 1>;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    AssertThrow (!container->is_id_present(object_id),
+                 ExcMessage("Parsing IgFunction already defined IgaObjectId=" +
+                            to_string(object_id) + "."));
+
+    const auto rs_tag = xml_elem->get_single_element("ReferenceSpaceBasis");
+    const auto rs_id = rs_tag->get_attribute<Index>("GetFromIgaObjectId");
+    AssertThrow (container->is_object<RefSpaceType> (rs_id),
+                 ExcMessage("Parsing Ig Function with IgaObjectId=" +
+         to_string(object_id) + " the GetFromIgaObjectId does not "
+         "correspond to a Reference Space Basis with the expected dimension."));
+    const auto rs = container->get_object<RefSpaceType>(rs_id);
+    Assert (rs != nullptr, ExcNullPtr());
+
+    string dofs_property = "active";
+    if (xml_elem->has_element("DofsProperty"))
+    {
+        const auto dp_elem = xml_elem->get_single_element("DofsProperty");
+        dofs_property = dp_elem->get_value<string>();
+    }
+
+    const auto ig_elem = xml_elem->get_single_element("IgCoefficients");
+    const auto size = ig_elem->get_attribute<Index>("Size");
+    const auto ig_coefs_vec = ig_elem->get_values_vector<Real>();
+    // Check ig_coefs_vec.size() == size
+
+    std::set<Index> indices;
+    for (int i = 0; i < size; ++i)
+        indices.insert(i);
+    IgCoefficients ig_coefs (indices);
+    for (int i = 0; i < size; ++i)
+        ig_coefs[i] = ig_coefs_vec[i];
+
+    const auto igf = IgGridFunctionType::create(rs, ig_coefs, dofs_property);
+    container->insert_object<GridFunctionType>(igf, object_id);
 }
 
 
