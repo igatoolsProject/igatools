@@ -40,36 +40,24 @@ using std::string;
 using std::to_string;
 using std::shared_ptr;
 using std::set;
+using std::remove_reference;
+using std::dynamic_pointer_cast;
+using std::copy;
+using std::inserter;
 
 IGA_NAMESPACE_OPEN
 
-
-ObjectsContainerParser::
-ObjectsContainerParser(const string &file_path)
-  :
-  file_parser_(XMLFileParser::create(file_path))
-{}
-
-
-
-auto
-ObjectsContainerParser::
-create(const string &file_path) -> SelfPtr_
-{
-    return SelfPtr_ (new Self_ (file_path));
-}
-
-
-
 shared_ptr<ObjectsContainer>
 ObjectsContainerParser::
-parse(const string &schema_file) const
+parse(const string &file_path, const string &schema_file)
 {
-    const shared_ptr<XMLElement> xml_elem = file_parser_->parse(schema_file);
+    const auto parser = XMLFileParser::create(file_path);
+    const auto xml_elem = parser->parse(schema_file);
     const auto container = ObjectsContainer::create();
 
     // Checking for repeated iga object ids.
     SafeSTLSet<Index> object_ids;
+    const auto kk = xml_elem->get_children_elements();
     for (const auto &el : xml_elem->get_children_elements())
     {
         const Index obj_id = el->get_attribute<Index>("IgaObjectId");
@@ -79,13 +67,13 @@ parse(const string &schema_file) const
         object_ids.insert(obj_id);
     }
 
-    this->parse_grids (xml_elem, container);
-    this->parse_spline_spaces (xml_elem, container);
-    this->parse_bsplines (xml_elem, container);
-    this->parse_grid_functions_and_nurbs (xml_elem, container);
-    this->parse_domains (xml_elem, container);
-    this->parse_phys_spaces (xml_elem, container);
-    this->parse_functions (xml_elem, container);
+    Self_::parse_grids (xml_elem, container);
+    Self_::parse_spline_spaces (xml_elem, container);
+    Self_::parse_bsplines (xml_elem, container);
+    Self_::parse_grid_functions_and_nurbs (xml_elem, container);
+    Self_::parse_domains (xml_elem, container);
+    Self_::parse_phys_spaces (xml_elem, container);
+    Self_::parse_functions (xml_elem, container);
 
     return container;
 }
@@ -95,7 +83,7 @@ parse(const string &schema_file) const
 void
 ObjectsContainerParser::
 parse_grids(const shared_ptr<XMLElement> xml_elem,
-            const shared_ptr<ObjectsContainer> container) const
+            const shared_ptr<ObjectsContainer> container)
 {
     const auto grid_elems = xml_elem->get_children_elements("Grid");
     for (const auto &ge : grid_elems)
@@ -111,7 +99,7 @@ parse_grids(const shared_ptr<XMLElement> xml_elem,
             if (found)
                 return;
 
-            using GridType = typename std::remove_reference<decltype(grid_ptr_type)>::type::element_type;
+            using GridType = typename remove_reference<decltype(grid_ptr_type)>::type::element_type;
             static const int dim = GridType::dim;
 
             if (grid_dim == dim)
@@ -123,7 +111,7 @@ parse_grids(const shared_ptr<XMLElement> xml_elem,
 
         // Grid dimension not found
         AssertThrow (found,
-          ExcMessage(this->get_type_id_string("Grid",
+          ExcMessage(Self_::get_type_id_string("Grid",
                      ge->get_attribute<Index>("IgaObjectId"),
                      SafeSTLVector<int>(1, grid_dim))
                      + " is not a valid type. Possibly the type was not "
@@ -136,7 +124,7 @@ parse_grids(const shared_ptr<XMLElement> xml_elem,
 void
 ObjectsContainerParser::
 parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
-                    const shared_ptr<ObjectsContainer> container) const
+                    const shared_ptr<ObjectsContainer> container)
 {
     for (const auto &ssp : xml_elem->get_children_elements("SplineSpace"))
     {
@@ -154,7 +142,7 @@ parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
                 return;
 
             using SplineSpaceType = typename
-                    std::remove_reference<decltype(ssp_ptr_type)>::type::element_type;
+                    remove_reference<decltype(ssp_ptr_type)>::type::element_type;
             static const int dim = SplineSpaceType::dim;
             static const int range = SplineSpaceType::range;
             static const int rank = SplineSpaceType::rank;
@@ -168,7 +156,7 @@ parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
 
         // SplineSpace dimensions not found
         AssertThrow (found,
-          ExcMessage(this->get_type_id_string("SplineSpace",
+          ExcMessage(Self_::get_type_id_string("SplineSpace",
                      ssp->get_attribute<Index>("IgaObjectId"),
                      {{ssp_dim, ssp_range, ssp_rank}})
                      + " is not a valid type. Possibly the type was not "
@@ -181,7 +169,7 @@ parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
 void
 ObjectsContainerParser::
 parse_bsplines(const shared_ptr<XMLElement> xml_elem,
-               const shared_ptr<ObjectsContainer> container) const
+               const shared_ptr<ObjectsContainer> container)
 {
     for (const auto &bs : xml_elem->get_children_elements("BSpline"))
     {
@@ -199,7 +187,7 @@ parse_bsplines(const shared_ptr<XMLElement> xml_elem,
                 return;
 
             using BSplineType = typename
-                    std::remove_reference<decltype(bs_ptr_type)>::type::element_type;
+                    remove_reference<decltype(bs_ptr_type)>::type::element_type;
             static const int dim = BSplineType::dim;
             static const int range = BSplineType::range;
             static const int rank = BSplineType::rank;
@@ -213,7 +201,7 @@ parse_bsplines(const shared_ptr<XMLElement> xml_elem,
 
         // BSpline dimensions not found
         AssertThrow (found,
-          ExcMessage(this->get_type_id_string("BSpline",
+          ExcMessage(Self_::get_type_id_string("BSpline",
                      bs->get_attribute<Index>("IgaObjectId"),
                      {{bs_dim, bs_range, bs_rank}})
                      + " is not a valid type. Possibly the type was not "
@@ -226,7 +214,7 @@ parse_bsplines(const shared_ptr<XMLElement> xml_elem,
 void
 ObjectsContainerParser::
 parse_nurbs(const shared_ptr<XMLElement> xml_elem,
-            const shared_ptr<ObjectsContainer> container) const
+            const shared_ptr<ObjectsContainer> container)
 {
     for (const auto &nr : xml_elem->get_children_elements("NURBS"))
     {
@@ -244,7 +232,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
                 return;
 
             using NURBSType = typename
-                    std::remove_reference<decltype(nr_ptr_type)>::type::element_type;
+                    remove_reference<decltype(nr_ptr_type)>::type::element_type;
             static const int dim   = NURBSType::dim;
             static const int range = NURBSType::range;
             static const int rank  = NURBSType::rank;
@@ -258,7 +246,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
 
         // NURBS dimensions not found
         AssertThrow (found,
-          ExcMessage(this->get_type_id_string("NURBS",
+          ExcMessage(Self_::get_type_id_string("NURBS",
                      nr->get_attribute<Index>("IgaObjectId"),
                      {{nr_dim, nr_range, nr_rank}})
                      + " is not a valid type. Possibly the type was not "
@@ -272,7 +260,7 @@ void
 ObjectsContainerParser::
 parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
                         const shared_ptr<ObjectsContainer> container,
-                        const bool &first_parsing) const
+                        const bool &first_parsing)
 {
     for (const auto &gf : xml_elem->get_children_elements("IgGridFunction"))
     {
@@ -289,7 +277,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
                 return;
 
             using GridFuncType = typename
-                    std::remove_reference<decltype(gf_ptr_type)>::type::element_type;
+                    remove_reference<decltype(gf_ptr_type)>::type::element_type;
             static const int dim   = GridFuncType::dim;
             static const int space_dim   = GridFuncType::space_dim;
 
@@ -302,7 +290,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
 
         // NURBS dimensions not found
         AssertThrow (found,
-          ExcMessage(this->get_type_id_string("IgGridFunction",
+          ExcMessage(Self_::get_type_id_string("IgGridFunction",
                      gf->get_attribute<Index>("IgaObjectId"),
                      {{gf_dim, gf_space_dim}})
                      + " is not a valid type. Possibly the type was not "
@@ -315,7 +303,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
 void
 ObjectsContainerParser::
 parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
-                               const shared_ptr<ObjectsContainer> container) const
+                               const shared_ptr<ObjectsContainer> container)
 {
     // Due to the relationship between ig grid functions and NURBS,
     // their parsing must be done in a specific order. That is:
@@ -334,7 +322,7 @@ parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
     parse_ig_grid_functions(xml_elem, container, first_parsing);
 
     // Parsing NURBS.
-    this->parse_nurbs(xml_elem, container);
+    Self_::parse_nurbs(xml_elem, container);
 
     // Parsing the remaining ig grid functions.
     first_parsing = false;
@@ -346,7 +334,7 @@ parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
 void
 ObjectsContainerParser::
 parse_domains(const shared_ptr<XMLElement> xml_elem,
-              const shared_ptr<ObjectsContainer> container) const
+              const shared_ptr<ObjectsContainer> container)
 {
     for (const auto &dm : xml_elem->get_children_elements("Domain"))
     {
@@ -363,7 +351,7 @@ parse_domains(const shared_ptr<XMLElement> xml_elem,
                 return;
 
             using DomainType = typename
-                    std::remove_reference<decltype(dm_ptr_type)>::type::element_type;
+                    remove_reference<decltype(dm_ptr_type)>::type::element_type;
             static const int dim = DomainType::dim;
             static const int space_dim = DomainType::space_dim;
             static const int codim = space_dim - dim;
@@ -377,7 +365,7 @@ parse_domains(const shared_ptr<XMLElement> xml_elem,
 
         // Domains dimensions not found
         AssertThrow (found,
-          ExcMessage(this->get_type_id_string("Domain",
+          ExcMessage(Self_::get_type_id_string("Domain",
                      dm->get_attribute<Index>("IgaObjectId"),
                      {{dm_dim, dm_codim}})
                      + " is not a valid type. Possibly the type was not "
@@ -390,7 +378,7 @@ parse_domains(const shared_ptr<XMLElement> xml_elem,
 void
 ObjectsContainerParser::
 parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
-                  const shared_ptr<ObjectsContainer> container) const
+                  const shared_ptr<ObjectsContainer> container)
 {
     for (const auto &ps : xml_elem->get_children_elements("PhysicalSpaceBasis"))
     {
@@ -409,7 +397,7 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
                 return;
 
             using PhysSpaceType = typename
-                    std::remove_reference<decltype(ps_ptr_type)>::type::element_type;
+                    remove_reference<decltype(ps_ptr_type)>::type::element_type;
             static const int dim = PhysSpaceType::dim;
             static const int range = PhysSpaceType::range;
             static const int rank = PhysSpaceType::rank;
@@ -424,7 +412,7 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
 
         // PhysicalSpaceBasis dimensions not found
         AssertThrow (found,
-          ExcMessage(this->get_type_id_string("PhysicalSpaceBasis",
+          ExcMessage(Self_::get_type_id_string("PhysicalSpaceBasis",
                      ps->get_attribute<Index>("IgaObjectId"),
                      {{ps_dim, ps_range, ps_rank, ps_codim}})
                      + " is not a valid type. Possibly the type was not "
@@ -437,7 +425,7 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
 void
 ObjectsContainerParser::
 parse_functions(const shared_ptr<XMLElement> xml_elem,
-                const shared_ptr<ObjectsContainer> container) const
+                const shared_ptr<ObjectsContainer> container)
 {
     for (const auto &fn : xml_elem->get_children_elements("IgFunction"))
     {
@@ -456,7 +444,7 @@ parse_functions(const shared_ptr<XMLElement> xml_elem,
                 return;
 
             using FunctionType = typename
-                    std::remove_reference<decltype(fn_ptr_type)>::type::element_type;
+                    remove_reference<decltype(fn_ptr_type)>::type::element_type;
             static const int dim = FunctionType::dim;
             static const int range = FunctionType::range;
             static const int rank = FunctionType::rank;
@@ -471,7 +459,7 @@ parse_functions(const shared_ptr<XMLElement> xml_elem,
 
         // Function dimensions not found
         AssertThrow (found,
-          ExcMessage(this->get_type_id_string("Function",
+          ExcMessage(Self_::get_type_id_string("Function",
                      fn->get_attribute<Index>("IgaObjectId"),
                      {{fn_dim, fn_codim, fn_range, fn_rank}})
                      + " is not a valid type. Possibly the type was not "
@@ -485,7 +473,7 @@ template <int dim>
 void
 ObjectsContainerParser::
 parse_grid(const shared_ptr<XMLElement> xml_elem,
-           const std::shared_ptr<ObjectsContainer> container) const
+           const shared_ptr<ObjectsContainer> container)
 {
     Assert (xml_elem->get_name() == "Grid", ExcMessage("Invalid XML tag."));
 
@@ -495,7 +483,7 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
     using GridType = Grid<dim>;
 
     const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    const string parsing_msg = this->get_type_id_string("Grid", object_id,
+    const string parsing_msg = Self_::get_type_id_string("Grid", object_id,
                                SafeSTLVector<int>(1, dim));
 
     const auto knots_children = xml_elem->get_children_elements("Knots");
@@ -543,7 +531,7 @@ template <int dim, int range, int rank>
 void
 ObjectsContainerParser::
 parse_spline_space(const shared_ptr<XMLElement> xml_elem,
-                   const std::shared_ptr<ObjectsContainer> container) const
+                   const shared_ptr<ObjectsContainer> container)
 {
     Assert (xml_elem->get_name() == "SplineSpace",
             ExcMessage("Invalid XML tag."));
@@ -577,13 +565,13 @@ parse_spline_space(const shared_ptr<XMLElement> xml_elem,
     const auto grid_tag = xml_elem->get_single_element("Grid");
     const auto grid_id = grid_tag->get_attribute<Index>("GetFromIgaObjectId");
 
-    const string parsing_msg = this->get_type_id_string("SplineSpace", object_id,
+    const string parsing_msg = Self_::get_type_id_string("SplineSpace", object_id,
                                                         {{dim, range, rank}});
 
     // Checking the grid with proper dimension and id exists.
     AssertThrow (container->is_object<GridType> (grid_id),
                  ExcMessage("Parsing " + parsing_msg + " not matching definition" +
-                            "for " + this->get_type_id_string("Grid", grid_id,
+                            "for " + Self_::get_type_id_string("Grid", grid_id,
                             SafeSTLVector<Index>(dim)) + "."));
     const auto grid = container->get_object<GridType>(grid_id);
     const auto grid_num_intervals = grid->get_num_intervals();
@@ -712,7 +700,7 @@ template <int dim, int range, int rank>
 void
 ObjectsContainerParser::
 parse_bspline(const shared_ptr<XMLElement> xml_elem,
-              const std::shared_ptr<ObjectsContainer> container) const
+              const shared_ptr<ObjectsContainer> container)
 {
     Assert (xml_elem->get_name() == "BSpline",
             ExcMessage("Invalid XML tag."));
@@ -741,14 +729,14 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
     const auto ssp_tag = xml_elem->get_single_element("SplineSpace");
     const auto ssp_id = ssp_tag->get_attribute<Index>("GetFromIgaObjectId");
 
-    const string parsing_msg = this->get_type_id_string("SplineSpace", object_id,
+    const string parsing_msg = Self_::get_type_id_string("SplineSpace", object_id,
                                                         {{dim, range, rank}});
 
     // Checking the spline space with proper dimension and id exists.
     AssertThrow (container->is_object<SplineSpaceType> (ssp_id),
                  ExcMessage("Parsing " + parsing_msg + " not matching "
                             "definition for " +
-                            this->get_type_id_string("SplineSpace", ssp_id,
+                            Self_::get_type_id_string("SplineSpace", ssp_id,
                             {{dim, range, rank}}) + "."));
     const auto ssp = container->get_object<SplineSpaceType>(ssp_id);
     Assert (ssp != nullptr, ExcNullPtr());
@@ -847,8 +835,8 @@ template <int dim, int space_dim>
 void
 ObjectsContainerParser::
 parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
-                       const std::shared_ptr<ObjectsContainer> container,
-                       const bool &first_parsing) const
+                       const shared_ptr<ObjectsContainer> container,
+                       const bool &first_parsing)
 {
     Assert (xml_elem->get_name() == "IgGridFunction",
             ExcMessage("Invalid XML tag."));
@@ -864,7 +852,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
     using RefSpaceType     = ReferenceSpaceBasis<dim, space_dim, rank>;
 
     const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
-    const string parsing_msg = this->get_type_id_string("IgGridFunction",
+    const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
                                object_id, {{dim, space_dim}});
 
     const auto rs_tag = xml_elem->get_single_element("ReferenceSpaceBasis");
@@ -885,7 +873,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
             AssertThrow (false,
                          ExcMessage("Parsing " + parsing_msg + " not matching "
                                     "definition for " +
-                                    this->get_type_id_string("ReferenceSpaceBasis", rs_id,
+                                    Self_::get_type_id_string("ReferenceSpaceBasis", rs_id,
                                     {{dim, space_dim, rank}}) + "."));
 
     }
@@ -901,7 +889,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
     AssertThrow (dof_distribution->is_property_defined(dofs_property),
                  ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
                             dofs_property + "\" not defined for " +
-                            this->get_type_id_string("ReferenceSpaceBasis", rs_id,
+                            Self_::get_type_id_string("ReferenceSpaceBasis", rs_id,
                             {{dim, space_dim, rank}}) + "."));
 
     const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
@@ -925,7 +913,7 @@ template <int dim, int range, int rank>
 void
 ObjectsContainerParser::
 parse_nurbs(const shared_ptr<XMLElement> xml_elem,
-            const std::shared_ptr<ObjectsContainer> container) const
+            const shared_ptr<ObjectsContainer> container)
 {
     Assert (xml_elem->get_name() == "NURBS",
             ExcMessage("Invalid XML tag."));
@@ -945,7 +933,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
 
     const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
 
-    const string parsing_msg = this->get_type_id_string("NURBS",
+    const string parsing_msg = Self_::get_type_id_string("NURBS",
                                object_id, {{dim, range, rank}});
 
     // Parsing BSpline
@@ -955,18 +943,18 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
     AssertThrow (container->is_object<RefSpaceType> (bs_id),
                  ExcMessage("Parsing " + parsing_msg + " not matching "
                             "definition for " +
-                            this->get_type_id_string("BSpline", bs_id,
+                            Self_::get_type_id_string("BSpline", bs_id,
                             {{dim, range, rank}}) + "."));
 
     const auto rs = container->get_object<RefSpaceType>(bs_id);
     Assert (rs != nullptr, ExcNullPtr());
     // Checking that the reference space is a BSpline.
-    const auto bs = std::dynamic_pointer_cast<BSplineType>(rs);
+    const auto bs = dynamic_pointer_cast<BSplineType>(rs);
     Assert (bs != nullptr, ExcNullPtr());
     AssertThrow (rs->is_bspline(),
                  ExcMessage("Parsing " + parsing_msg + " not matching "
                             "definition for " +
-                            this->get_type_id_string("BSplineSpaceBasis", bs_id,
+                            Self_::get_type_id_string("BSplineSpaceBasis", bs_id,
                             {{dim, range, rank}}) + ". It is a "
                             "ReferenceBasisSpace, but not a BSpline."
                             "BSpline space basis must be used for "
@@ -980,7 +968,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
     AssertThrow (container->is_object<WeightFunctionType> (wg_id),
                  ExcMessage("Parsing " + parsing_msg + " not matching "
                             "definition for " +
-                            this->get_type_id_string("IgGridFunction", wg_id,
+                            Self_::get_type_id_string("IgGridFunction", wg_id,
                             {{dim, 1}}) +  ". The error could be caused "
                             "by the fact the object does not correspond "
                             "to IgGridFunction built upon a BSpline. "
@@ -990,12 +978,12 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
 
     const auto gf = container->get_object<WeightFunctionType>(wg_id);
     Assert (gf != nullptr, ExcNullPtr());
-    const auto wf = std::dynamic_pointer_cast<WeightIgFunctionType>(gf);
+    const auto wf = dynamic_pointer_cast<WeightIgFunctionType>(gf);
     // Checking that the grid function is a ig grid function.
     AssertThrow (wf != nullptr,
                  ExcMessage("Parsing " + parsing_msg + " not matching "
                             "definition for " +
-                            this->get_type_id_string("IgGridFunction", wg_id,
+                            Self_::get_type_id_string("IgGridFunction", wg_id,
                             {{dim, 1}}) + ". It is a"
                             "GridFunction, but not a IgGridFunction"));
 
@@ -1003,7 +991,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
     const auto w_func_basis = wf->get_basis();
     Assert(wf->get_basis()->is_bspline(),
            ExcMessage("Parsing " + parsing_msg + ", " +
-                      this->get_type_id_string("IgGridFunction", wg_id,
+                      Self_::get_type_id_string("IgGridFunction", wg_id,
                       {{dim, 1}}) + ". It is based on a NURBS space basis"
                       ", but must be based on BSpline space basis."));
 
@@ -1034,7 +1022,7 @@ template <int dim, int codim>
 void
 ObjectsContainerParser::
 parse_domain(const shared_ptr<XMLElement> xml_elem,
-             const std::shared_ptr<ObjectsContainer> container) const
+             const shared_ptr<ObjectsContainer> container)
 {
     Assert (xml_elem->get_name() == "Domain",
             ExcMessage("Invalid XML tag."));
@@ -1050,7 +1038,7 @@ parse_domain(const shared_ptr<XMLElement> xml_elem,
 
     const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
 
-    const string parsing_msg = this->get_type_id_string("Domain",
+    const string parsing_msg = Self_::get_type_id_string("Domain",
                                object_id, {{dim, codim}});
 
     const auto gf_tag = xml_elem->get_single_element("GridFunction");
@@ -1059,7 +1047,7 @@ parse_domain(const shared_ptr<XMLElement> xml_elem,
     AssertThrow (container->is_object<GridFuncType> (gf_id),
                  ExcMessage("Parsing " + parsing_msg + " not matching "
                             "definition for " +
-                            this->get_type_id_string("GridFunction", gf_id,
+                            Self_::get_type_id_string("GridFunction", gf_id,
                             {{dim, space_dim}}) + "."));
 
     const auto gf = container->get_object<GridFuncType>(gf_id);
@@ -1077,7 +1065,7 @@ template <int dim, int codim, int range, int rank>
 void
 ObjectsContainerParser::
 parse_ig_function(const shared_ptr<XMLElement> xml_elem,
-                  const std::shared_ptr<ObjectsContainer> container) const
+                  const shared_ptr<ObjectsContainer> container)
 {
     Assert (xml_elem->get_name() == "IgFunction",
             ExcMessage("Invalid XML tag."));
@@ -1097,7 +1085,7 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
 
     const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
 
-    const string parsing_msg = this->get_type_id_string("Function",
+    const string parsing_msg = Self_::get_type_id_string("Function",
                                object_id, {{dim, codim, range, rank}});
 
     const auto ps_tag = xml_elem->get_single_element("PhysicalSpaceBasis");
@@ -1107,7 +1095,7 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
     AssertThrow (container->is_object<PhysSpaceType> (ps_id),
                  ExcMessage("Parsing " + parsing_msg + " not matching "
                             "definition for " +
-                            this->get_type_id_string("PhysicalSpaceBasis", ps_id,
+                            Self_::get_type_id_string("PhysicalSpaceBasis", ps_id,
                             {{dim, range, rank, codim}}) + "."));
     const auto ps = container->get_object<PhysSpaceType>(ps_id);
     Assert (ps != nullptr, ExcNullPtr());
@@ -1119,7 +1107,7 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
     AssertThrow (dof_distribution->is_property_defined(dofs_property),
                  ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
                             dofs_property + "\" not defined for " +
-                            this->get_type_id_string("PhysicalSpaceBasis", ps_id,
+                            Self_::get_type_id_string("PhysicalSpaceBasis", ps_id,
                             {{dim, range, rank, codim}}) + "."));
 
     const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
@@ -1143,7 +1131,7 @@ template <int dim, int codim, int range, int rank>
 void
 ObjectsContainerParser::
 parse_phys_space(const shared_ptr<XMLElement> xml_elem,
-                 const std::shared_ptr<ObjectsContainer> container) const
+                 const shared_ptr<ObjectsContainer> container)
 {
     Assert (xml_elem->get_name() == "PhysicalSpaceBasis",
             ExcMessage("Invalid XML tag."));
@@ -1179,7 +1167,7 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
 
     const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
 
-    const auto parsing_msg = this->get_type_id_string("PhysicalSpaceBasis",
+    const auto parsing_msg = Self_::get_type_id_string("PhysicalSpaceBasis",
             object_id, {{dim, range, rank}});
 
     const auto rs_tag = xml_elem->get_single_element("ReferenceSpaceBasis");
@@ -1188,7 +1176,7 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
     AssertThrow (container->is_object<RefSpaceType> (rs_id),
                  ExcMessage("Parsing " + parsing_msg + " not matching "
                             "definition for " +
-                            this->get_type_id_string("ReferenceSpaceBasis", rs_id,
+                            Self_::get_type_id_string("ReferenceSpaceBasis", rs_id,
                             {{dim, range, rank}}) + "."));
 
     const auto rs = container->get_object<RefSpaceType>(rs_id);
@@ -1200,7 +1188,7 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
     AssertThrow (container->is_object<DomainType> (dm_id),
                  ExcMessage("Parsing " + parsing_msg + " not matching "
                             "definition for " +
-                            this->get_type_id_string("Domain", dm_id,
+                            Self_::get_type_id_string("Domain", dm_id,
                             {{dim, codim}}) + "."));
 
     const auto dm = container->get_object<DomainType>(dm_id);
@@ -1219,7 +1207,7 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
 
 string
 ObjectsContainerParser::
-parse_name(const shared_ptr<XMLElement> xml_elem) const
+parse_name(const shared_ptr<XMLElement> xml_elem)
 {
     if (xml_elem->has_element("Name"))
         return xml_elem->get_single_element("Name")->get_value<string>();
@@ -1231,7 +1219,7 @@ parse_name(const shared_ptr<XMLElement> xml_elem) const
 
 string
 ObjectsContainerParser::
-parse_dofs_property(const shared_ptr<XMLElement> xml_elem) const
+parse_dofs_property(const shared_ptr<XMLElement> xml_elem)
 {
     if (xml_elem->has_element("DofsProperty"))
         return xml_elem->get_single_element("DofsProperty")->get_value<string>();
@@ -1241,10 +1229,10 @@ parse_dofs_property(const shared_ptr<XMLElement> xml_elem) const
 
 
 
-std::string
+string
 ObjectsContainerParser::
 get_type_dimensions_string(const string &object_type,
-                          const SafeSTLVector<int> &dims) const
+                          const SafeSTLVector<int> &dims)
 {
     string dims_str = object_type + "<";
     for (const auto &d : dims)
@@ -1254,11 +1242,11 @@ get_type_dimensions_string(const string &object_type,
 
 
 
-std::string
+string
 ObjectsContainerParser::
 get_type_id_string(const string &object_type,
                    const Index &object_id,
-                   const SafeSTLVector<int> &dims) const
+                   const SafeSTLVector<int> &dims)
 {
     return get_type_dimensions_string(object_type, dims) +
             " (IgaObjectId=" + to_string(object_id) + ")";
@@ -1271,7 +1259,7 @@ IgCoefficients
 ObjectsContainerParser::
 parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
                       const string &parsing_msg,
-                      const set<Index> &space_global_dofs) const
+                      const set<Index> &space_global_dofs)
 {
     Assert (xml_elem->has_element("IgCoefficients"),
             ExcMessage("IgCoefficients XML element not present."));
@@ -1293,11 +1281,11 @@ parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
                             ", Size=" + to_string(size) + " do not match "
                             "with the vector size."));
 
-    std::set<Index> indices;
+    set<Index> indices;
     for (const auto &i : ig_coefs_ind_vec)
         indices.insert(i);
-    std::copy(ig_coefs_ind_vec.cbegin(), ig_coefs_ind_vec.cend(),
-              std::inserter(indices, indices.begin()));
+    copy(ig_coefs_ind_vec.cbegin(), ig_coefs_ind_vec.cend(),
+              inserter(indices, indices.begin()));
 
     // Checking that there are not repeated indices.
     AssertThrow (size == indices.size(),
@@ -1321,17 +1309,6 @@ parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
     }
 
     return ig_coefs;
-}
-
-
-
-void
-ObjectsContainerParser::
-print_info (LogStream &out) const
-{
-    out.begin_item ("ObjectsContainerParser:");
-    file_parser_->print_info(out);
-    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE
