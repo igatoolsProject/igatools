@@ -120,56 +120,6 @@ check_file(const string &file_path)
 }
 
 
-
-std::shared_ptr<XMLElement>
-XMLFileParser::
-parse()
-{
-  // Configuring DOM parser
-  const auto error_handler = XMLParserErrorHandler::create();
-  parser_->useCachedGrammarInParse(false);
-  parser_->setValidationScheme(xercesc::XercesDOMParser::Val_Never);
-  parser_->setErrorHandler(error_handler.get());
-  parser_->setLoadExternalDTD(false);
-  parser_->setValidationSchemaFullChecking(false);
-  parser_->setValidationConstraintFatal(false);
-  parser_->useCachedGrammarInParse(false);
-  //    parser_->setHandleMultipleImports(true);
-
-  parser_->parse(file_path_.c_str());
-
-  xercesc::DOMDocument *dom_doc = parser_->getDocument();
-  xercesc::DOMElement *dom_elem = dom_doc->getDocumentElement();
-  return XMLElement::create(dom_elem);
-}
-
-
-
-std::shared_ptr<XMLElement>
-XMLFileParser::
-parse(void (*load_grammar)(xercesc::XercesDOMParser *const))
-{
-  load_grammar(parser_);
-
-  // Configuring DOM parser
-  const auto error_handler = XMLParserErrorHandler::create();
-  parser_->useCachedGrammarInParse(true);
-  parser_->setValidationScheme(xercesc::XercesDOMParser::Val_Always);
-  parser_->setErrorHandler(error_handler.get());
-  parser_->setLoadExternalDTD(false);
-  parser_->setValidationSchemaFullChecking(true);
-  parser_->setValidationConstraintFatal(true);
-  parser_->useCachedGrammarInParse(true);
-//      parser_->setHandleMultipleImports(true);
-
-  parser_->parse(file_path_.c_str());
-
-  xercesc::DOMDocument *dom_doc = parser_->getDocument();
-  xercesc::DOMElement *dom_elem = dom_doc->getDocumentElement();
-  return XMLElement::create(dom_elem);
-}
-
-
 std::shared_ptr<XMLElement>
 XMLFileParser::
 parse(const string &grammar_file)

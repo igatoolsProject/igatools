@@ -43,17 +43,18 @@ class LogStream;
  * @brief Class for parsing input files.
  *
  * This is a class for parsing XML input files and validate them against
- * a XML Schema grammar.
+ * a XML Schema grammar defined in an external file.
  *
  * This class provides the capability of creating a @p XercesDOMParser,
  * checking the validity of the input file (if it exists, it is corrupted,
- * etc), and retrieving a XML @p DOMDocument containing an input file.
+ * etc), and retrieving a  @p XMLElement containing the XML document
+ * contained in the input file.
  *
  * This class uses a @ref XMLParserErrorHandler for managing the possible
  * errors than can appear during the parsing process.
  *
  * The destructor of the class is in charge of of deleting @ref parser_
- * and to shutdown all the @p xerces active process.
+ * and to shutdown all the @p Xerces-c active process.
  *
  * @author P. Antolin
  * @date 2015
@@ -77,14 +78,13 @@ private:
   ///@{
 
   /**
-   * @brief Constructor taking the error handler and the file path.
+   * @brief Constructor taking the path of the file to be parsed.
    *
-   * Constructor taking the error handler and the path of the file to be
-   * parsed.
+   * Constructor taking the path of the file to be parsed.
    *
-   * Inside the constructor, the validity of the input file is checked by means
-   * of @ref check_file, the XML platform is initialized and @ref parser_ is
-   * created.
+   * Inside the constructor, the validity of the input file is checked by
+   * means @ref check_file, the XML platform is initialized and
+   * @ref parser_ is created.
    *
    * @param[in] file_path Path of the file to be parsed.
    */
@@ -154,36 +154,15 @@ public:
 
   ///@}
 
-
 private:
 
-  /// Path of the file to be parsed.
   /** Path of the file to be parsed. */
   const std::string file_path_;
 
-  /// DOM parser.
   /** DOM parser. */
   xercesc::XercesDOMParser *parser_;
 
 public:
-  /**
-   * @brief Parses the file and returns a XML document object.
-   *
-   * Parses the file and returns a XML document object. Before parsing the file,
-   * all the required configuration flags are setup and the needed Schema
-   * grammars are loaded.
-   *
-   * @attention If there is any problem parsing the input file, error messages
-   * and exceptions will be thrown.
-   *
-   * @param[in] load_grammar Pointer to a function in charge of loading the
-   *                         XML Schema grammar into the @ref parser_.
-   *
-   * @return XML document object.
-   */
-  std::shared_ptr<XMLElement>
-  parse(void (*load_grammar)(xercesc::XercesDOMParser *const));
-
   /**
    * @brief Parses the file and returns a XML document object.
    *
@@ -195,11 +174,12 @@ public:
    *
    * @return XML document object.
    */
-  std::shared_ptr<XMLElement> parse();
   std::shared_ptr<XMLElement> parse(const std::string &grammar_file);
 
   /**
-   * Prints some internal information. Mostly used for testing and debugging purposes.
+   * Prints some internal information. Mostly used for testing and
+   * debugging purposes.
+   * @param[in] out Log stream for writing the output.
    */
   void print_info(LogStream &out) const;
 
@@ -220,4 +200,3 @@ IGA_NAMESPACE_CLOSE
 #endif // XML_IO
 
 #endif // XML_FILE_PARSER_H_
-
