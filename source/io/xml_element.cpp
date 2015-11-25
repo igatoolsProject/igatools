@@ -24,12 +24,14 @@
 
 #include <igatools/utils/safe_stl_vector.h>
 
+#include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMNode.hpp>
 #include <xercesc/dom/DOMNodeList.hpp>
-#include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOMText.hpp>
-//#include <xercesc/dom/DOMAttr.hpp>
+#include <xercesc/dom/DOMImplementation.hpp>
+#include <xercesc/dom/DOMImplementationRegistry.hpp>
+#include <xercesc/dom/DOMLSSerializer.hpp>
 
 using std::string;
 using std::shared_ptr;
@@ -497,12 +499,21 @@ get_single_element(const string &name) -> SelfPtr_
 }
 
 
-
 void
 XMLElement::
 print_info(LogStream &out) const
 {
-    AssertThrow (false, ExcNotImplemented());
+    xercesc::DOMImplementation *impl = xercesc::
+            DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
+    xercesc::DOMLSSerializer* writer = ((xercesc::DOMImplementationLS*)impl)->createLSSerializer();
+    const auto *xmlch_output = writer->writeToString(root_elem_);
+    const auto output_string = XMLString::transcode (xmlch_output);
+    out.begin_item("XMLElement:");
+    out << output_string;
+    out.end_item();
+
+    delete xmlch_output;
+    delete writer;
 }
 
 IGA_NAMESPACE_CLOSE

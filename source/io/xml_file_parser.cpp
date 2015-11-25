@@ -27,7 +27,9 @@
 #undef Assert
 #include <xercesc/parsers/XercesDOMParser.hpp>
 
+#include <igatools/base/logstream.h>
 #include <igatools/io/xml_parser_error_handler.h>
+
 #include <xercesc/sax/HandlerBase.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
 #include <fstream>
@@ -205,7 +207,9 @@ void
 XMLFileParser::
 print_info(LogStream &out) const
 {
-    AssertThrow (false, ExcNotImplemented());
+    out.begin_item("XML file parser:");
+    out << "File path: " << file_path_ << std::endl;
+    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE

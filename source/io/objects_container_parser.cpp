@@ -86,6 +86,7 @@ parse(const string &schema_file) const
     this->parse_domains (xml_elem, container);
     this->parse_phys_spaces (xml_elem, container);
     this->parse_functions (xml_elem, container);
+
     return container;
 }
 
@@ -1328,7 +1329,9 @@ void
 ObjectsContainerParser::
 print_info (LogStream &out) const
 {
-    AssertThrow (false, ExcNotImplemented());
+    out.begin_item ("ObjectsContainerParser:");
+    file_parser_->print_info(out);
+    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE
