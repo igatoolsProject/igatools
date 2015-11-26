@@ -54,6 +54,22 @@ class LogStream;
  * But the schema is unable to control other questions, e.g. if a certain
  * @p Grid, used by a @ref SplineSpace, is defined in the file.
  *
+ * Currently, this class is able to parse:
+ * - @ref Grid
+ * - @ref SplineSpace
+ * - @ref BSpline
+ * - @ref NURBS
+ * - @ref IdentityGridFunction
+ * - @ref ConstantGridFunction
+ * - @ref IgGridFunction
+ * - @ref Domain
+ * - @ref PhysicalSpaceBasis
+ * - @ref ConstantFunction
+ * - @ref IgFunction
+ *
+ * If any type different from the ones above is found an exception
+ * is thrown.
+ *
  * @alert It could be unsafe to take a @ref XMLElement outside of
  * the class in order to be reused somewhere else. It could cause problem
  * with the @p Xerces-c memory deallocation. Not getter should be
@@ -219,6 +235,28 @@ private:
                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
+   * @brief Parses all the <tt>IdentityGridFunction</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
+   */
+  static void parse_identity_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
+                               const std::shared_ptr<ObjectsContainer> container);
+
+  /**
+   * @brief Parses all the <tt>ConstantGridFunction</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
+   */
+  static void parse_constant_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
+                               const std::shared_ptr<ObjectsContainer> container);
+
+  /**
    * @brief Parses all the <tt>IgGridFunction</tt>s
    * contained into the XML document and stores them into the container.
    *
@@ -278,6 +316,36 @@ private:
    */
   static void parse_functions(const std::shared_ptr<XMLElement> xml_elem,
                        const std::shared_ptr<ObjectsContainer> container);
+
+  /**
+   * @brief Parses all the <tt>IgFunction</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>IgFunction</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
+   */
+  static void parse_ig_functions(const std::shared_ptr<XMLElement> xml_elem,
+                       const std::shared_ptr<ObjectsContainer> container);
+
+  /**
+   * @brief Parses all the <tt>ConstantFunction</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>ConstantFunction</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
+   */
+  static void parse_constant_functions(const std::shared_ptr<XMLElement> xml_elem,
+                                       const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @brief Parses a <tt>Grid</tt> XML element and inserts
@@ -348,6 +416,39 @@ private:
   template <int dim, int range, int rank>
   static void parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
                    const std::shared_ptr<ObjectsContainer> container);
+
+  /**
+   * @brief Parses a <tt>IdentityGridFunction</tt> XML element and inserts
+   * it into the objects container.
+   *
+   * Parses a <tt>IdentityGridFunction</tt> XML element contained in
+   * @ref xml_elem and inserts it into the objects @ref container.
+   *
+   * @tparam dim Dimension of the grid function.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
+   */
+  template <int dim>
+  static void parse_identity_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                              const std::shared_ptr<ObjectsContainer> container);
+
+  /**
+   * @brief Parses a <tt>ConstantGridFunction</tt> XML element and inserts
+   * it into the objects container.
+   *
+   * Parses a <tt>ConstantGridFunction</tt> XML element contained in
+   * @ref xml_elem and inserts it into the objects @ref container.
+   *
+   * @tparam dim Dimension of the grid function.
+   * @tparam space_dim Space dimension of the grid function.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
+   */
+  template <int dim, int space_dim>
+  static void parse_constant_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                              const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @brief Parses a <tt>IgGridFunction</tt> XML element and inserts
@@ -428,6 +529,25 @@ private:
    */
   template <int dim, int codim, int range, int rank>
   static void parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
+                         const std::shared_ptr<ObjectsContainer> container);
+
+  /**
+   * @brief Parses an <tt>ConstantFunction</tt> XML element and inserts it into
+   * the objects container.
+   *
+   * Parses an <tt>ConstantFunction</tt> XML element contained in @ref xml_elem
+   * and inserts it into the objects @ref container.
+   *
+   * @tparam dim Dimension of the function.
+   * @tparam codim Codimension of the function.
+   * @tparam range Range of the function.
+   * @tparam rank Rank of the function.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
+   */
+  template <int dim, int codim, int range, int rank>
+  static void parse_constant_function(const std::shared_ptr<XMLElement> xml_elem,
                          const std::shared_ptr<ObjectsContainer> container);
 
   /**

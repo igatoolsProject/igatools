@@ -28,11 +28,13 @@
 #include <igatools/base/instantiated_types.h>
 
 #include <igatools/geometry/grid.h>
+#include <igatools/geometry/grid_function_lib.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs.h>
 #include <igatools/functions/function.h>
 #include <igatools/functions/ig_function.h>
+#include <igatools/functions/function_lib.h>
 
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
 
@@ -259,6 +261,90 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
 
 void
 ObjectsContainerParser::
+parse_identity_grid_functions(const shared_ptr<XMLElement> xml_elem,
+                              const shared_ptr<ObjectsContainer> container)
+{
+    for (const auto &id : xml_elem->get_children_elements("IdentityGridFunction"))
+    {
+        const int id_dim = id->get_attribute<int>("Dim");
+
+        using GridPtrs = typename InstantiatedTypes::GridPtrs;
+        GridPtrs valid_id_ptr_types;
+
+        bool found = false;
+        boost::fusion::for_each(valid_id_ptr_types, [&](const auto &id_ptr_type)
+        {
+            if (found)
+                return;
+
+            using GridType = typename
+                    remove_reference<decltype(id_ptr_type)>::type::element_type;
+            static const int dim   = GridType::dim;
+
+            if (id_dim == dim)
+            {
+                found = true;
+                parse_identity_grid_function<dim>(id, container);
+            }
+        });
+
+        // IdentityGridFunction dimensions not found
+        AssertThrow (found,
+          ExcMessage(Self_::get_type_id_string("IdentityGridFunction",
+                     id->get_attribute<Index>("IgaObjectId"),
+                     SafeSTLVector<int>(1, id_dim))
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
+    }
+}
+
+
+
+void
+ObjectsContainerParser::
+parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
+                              const shared_ptr<ObjectsContainer> container)
+{
+    for (const auto &cgf : xml_elem->get_children_elements("ConstantGridFunction"))
+    {
+        const int cgf_dim = cgf->get_attribute<int>("Dim");
+        const int cgf_space_dim = cgf->get_attribute<int>("Spacedim"); // This is going to change.
+
+        using GridFunctionPtrs = typename InstantiatedTypes::GridFunctionPtrs;
+        GridFunctionPtrs valid_cgf_ptr_types;
+
+        bool found = false;
+        boost::fusion::for_each(valid_cgf_ptr_types, [&](const auto &cgf_ptr_type)
+        {
+            if (found)
+                return;
+
+            using GridFuncType = typename
+                    remove_reference<decltype(cgf_ptr_type)>::type::element_type;
+            static const int dim   = GridFuncType::dim;
+            static const int space_dim  = GridFuncType::space_dim;
+
+            if (cgf_dim == dim && cgf_space_dim == space_dim)
+            {
+                found = true;
+                parse_constant_grid_function<dim, space_dim>(cgf, container);
+            }
+        });
+
+        // ConstantGridFunction dimensions not found
+        AssertThrow (found,
+          ExcMessage(Self_::get_type_id_string("ConstantGridFunction",
+                     cgf->get_attribute<Index>("IgaObjectId"),
+                     {{cgf_dim, cgf_space_dim}})
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
+    }
+}
+
+
+
+void
+ObjectsContainerParser::
 parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
                         const bool &first_parsing,
                         const shared_ptr<ObjectsContainer> container)
@@ -315,8 +401,11 @@ parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
     //   4 - parse the remaning ig grid functions.
 
 
-    // Parse grid functions that are not ig.
-    // Nothing to be done, by now.
+    // Parsing identity grid functions.
+    parse_identity_grid_functions(xml_elem, container);
+
+    // Parsing constant grid functions.
+    parse_constant_grid_functions(xml_elem, container);
 
     // Parsing ig grid functions built upon a BSpline.
     bool first_parsing = true;
@@ -428,6 +517,17 @@ ObjectsContainerParser::
 parse_functions(const shared_ptr<XMLElement> xml_elem,
                 const shared_ptr<ObjectsContainer> container)
 {
+    parse_ig_functions (xml_elem, container);
+    parse_constant_functions (xml_elem, container);
+}
+
+
+
+void
+ObjectsContainerParser::
+parse_ig_functions(const shared_ptr<XMLElement> xml_elem,
+                   const shared_ptr<ObjectsContainer> container)
+{
     for (const auto &fn : xml_elem->get_children_elements("IgFunction"))
     {
         const int fn_dim = fn->get_attribute<int>("Dim");
@@ -460,7 +560,54 @@ parse_functions(const shared_ptr<XMLElement> xml_elem,
 
         // Function dimensions not found
         AssertThrow (found,
-          ExcMessage(Self_::get_type_id_string("Function",
+          ExcMessage(Self_::get_type_id_string("IgFunction",
+                     fn->get_attribute<Index>("IgaObjectId"),
+                     {{fn_dim, fn_codim, fn_range, fn_rank}})
+                     + " is not a valid type. Possibly the type was not "
+                     "instantiated for the specified dimensions."));
+    }
+}
+
+
+
+void
+ObjectsContainerParser::
+parse_constant_functions(const shared_ptr<XMLElement> xml_elem,
+                   const shared_ptr<ObjectsContainer> container)
+{
+    for (const auto &fn : xml_elem->get_children_elements("ConstantFunction"))
+    {
+        const int fn_dim = fn->get_attribute<int>("Dim");
+        const int fn_codim = fn->get_attribute<int>("Codim");
+        const int fn_range = fn->get_attribute<int>("Range");
+        const int fn_rank = fn->get_attribute<int>("Rank");
+
+        using FunctionPtrs = typename InstantiatedTypes::FunctionPtrs;
+        FunctionPtrs valid_fn_ptr_types;
+
+        bool found = false;
+        boost::fusion::for_each(valid_fn_ptr_types, [&](const auto &fn_ptr_type)
+        {
+            if (found)
+                return;
+
+            using FunctionType = typename
+                    remove_reference<decltype(fn_ptr_type)>::type::element_type;
+            static const int dim = FunctionType::dim;
+            static const int range = FunctionType::range;
+            static const int rank = FunctionType::rank;
+            static const int codim = FunctionType::codim;
+
+            if (fn_dim == dim && fn_range == range && fn_rank == rank && fn_codim == codim)
+            {
+                found = true;
+                parse_constant_function<dim, codim, range, rank>(fn, container);
+            }
+        });
+
+        // Function dimensions not found
+        AssertThrow (found,
+          ExcMessage(Self_::get_type_id_string("ConstantFunction",
                      fn->get_attribute<Index>("IgaObjectId"),
                      {{fn_dim, fn_codim, fn_range, fn_rank}})
                      + " is not a valid type. Possibly the type was not "
@@ -832,6 +979,97 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
     container->insert_object<RefSpaceType>(bspline, object_id);
 }
 
+
+
+template <int dim>
+void
+ObjectsContainerParser::
+parse_identity_grid_function(const shared_ptr<XMLElement> xml_elem,
+                       const shared_ptr<ObjectsContainer> container)
+{
+    Assert (xml_elem->get_name() == "IdentityGridFunction",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+
+    using IdentityGridFunctionType = grid_functions::IdentityGridFunction<dim>;
+    using GridFunctionType = GridFunction<dim, dim>;
+    using GridType = Grid<dim>;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    const string parsing_msg = Self_::get_type_id_string("IdentityGridFunction",
+                               object_id, SafeSTLVector<int>(1, dim));
+
+    const auto gr_tag = xml_elem->get_single_element("Grid");
+    const auto gr_id = gr_tag->get_attribute<Index>("GetFromIgaObjectId");
+
+    // Checking the grid with proper dimension and id exists.
+    AssertThrow (container->is_object<GridType> (gr_id),
+                 ExcMessage("Parsing " + parsing_msg + " not matching definition" +
+                            "for " + Self_::get_type_id_string("Grid", gr_id,
+                            SafeSTLVector<Index>(dim)) + "."));
+
+    const auto grid = container->get_object<GridType>(gr_id);
+
+    const auto id_func = IdentityGridFunctionType::create(grid);
+    container->insert_object<GridFunctionType>(id_func, object_id);
+}
+
+
+
+template <int dim, int space_dim>
+void
+ObjectsContainerParser::
+parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
+                       const shared_ptr<ObjectsContainer> container)
+{
+    Assert (xml_elem->get_name() == "ConstantGridFunction",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Spacedim") == space_dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Spacedim"), space_dim));
+
+    using GridType = Grid<dim>;
+    using ConstGridFunctionType = grid_functions::ConstantGridFunction<dim, space_dim>;
+    using GridFunctionType = GridFunction<dim, space_dim>;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+    const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
+                               object_id, {{dim, space_dim}});
+
+    // Gettting grid.
+    const auto gr_tag = xml_elem->get_single_element("Grid");
+    const auto gr_id = gr_tag->get_attribute<Index>("GetFromIgaObjectId");
+
+    // Checking the grid with proper dimension and id exists.
+    AssertThrow (container->is_object<GridType> (gr_id),
+                 ExcMessage("Parsing " + parsing_msg + " not matching definition" +
+                            "for " + Self_::get_type_id_string("Grid", gr_id,
+                            SafeSTLVector<Index>(dim)) + "."));
+    const auto grid = container->get_object<GridType>(gr_id);
+
+    // Parsing values.
+    const auto vals_tag = xml_elem->get_single_element("Values");
+
+    const auto vals_vec = vals_tag->get_values_vector<Real>();
+    AssertThrow (vals_vec.size() == space_dim,
+                 ExcMessage("Parsing " + parsing_msg + ", the number of "
+                            "components in Values XML does not match "
+                            "with the number of components of the GridFunction."));
+
+    typename GridFunctionType::Value values;
+    for (int c = 0; c < space_dim; ++c)
+        values[c] = vals_vec[c];
+
+    const auto cgf = ConstGridFunctionType::create (grid, values);
+    container->insert_object<GridFunctionType>(cgf, object_id);
+}
+
+
+
 template <int dim, int space_dim>
 void
 ObjectsContainerParser::
@@ -1086,7 +1324,7 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
 
     const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
 
-    const string parsing_msg = Self_::get_type_id_string("Function",
+    const string parsing_msg = Self_::get_type_id_string("IgFunction",
                                object_id, {{dim, codim, range, rank}});
 
     const auto ps_tag = xml_elem->get_single_element("PhysicalSpaceBasis");
@@ -1124,6 +1362,68 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
 
     const auto igf = IgFunctionType::create(ps, ig_coefs, dofs_property, name);
     container->insert_object<FunctionType>(igf, object_id);
+}
+
+
+
+template <int dim, int codim, int range, int rank>
+void
+ObjectsContainerParser::
+parse_constant_function(const shared_ptr<XMLElement> xml_elem,
+                        const shared_ptr<ObjectsContainer> container)
+{
+    Assert (xml_elem->get_name() == "ConstantFunction",
+            ExcMessage("Invalid XML tag."));
+
+    Assert (xml_elem->get_attribute<int>("Dim") == dim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+    Assert (xml_elem->get_attribute<int>("Range") == range,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
+    Assert (xml_elem->get_attribute<int>("Rank") == rank,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
+    Assert (xml_elem->get_attribute<int>("Codim") == codim,
+            ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
+
+    using DomainType = Domain<dim, codim>;
+    using FunctionType = Function<dim, codim, range, rank>;
+    using ConstFunctionType = functions::ConstantFunction<dim, codim, range, rank>;
+    using Values = typename FunctionType::Value;
+    static const int n_components = Values::size;
+
+    const auto object_id = xml_elem->get_attribute<Index>("IgaObjectId");
+
+    const string parsing_msg = Self_::get_type_id_string("ConstantFunction",
+                               object_id, {{dim, codim, range, rank}});
+
+    const auto dm_tag = xml_elem->get_single_element("Domain");
+    const auto dm_id = dm_tag->get_attribute<Index>("GetFromIgaObjectId");
+
+    AssertThrow (container->is_object<DomainType> (dm_id),
+                 ExcMessage("Parsing " + parsing_msg + " not matching "
+                            "definition for " +
+                            Self_::get_type_id_string("Domain", dm_id,
+                            {{dim, codim}}) + "."));
+
+    const auto dm = container->get_object<DomainType>(dm_id);
+    Assert (dm != nullptr, ExcNullPtr());
+
+    // Parsing values.
+    const auto vals_tag = xml_elem->get_single_element("Values");
+
+    const auto vals_vec = vals_tag->get_values_vector<Real>();
+    AssertThrow (vals_vec.size() == n_components,
+                 ExcMessage("Parsing " + parsing_msg + ", the number of "
+                            "components in Values XML does not match "
+                            "with the number of components of the Function."));
+
+    typename FunctionType::Value values;
+    for (int c = 0; c < n_components; ++c)
+        values[c] = vals_vec[c];
+
+    const auto name = parse_name (xml_elem);
+
+    const auto cgf = ConstFunctionType::create (dm, values, name);
+    container->insert_object<FunctionType>(cgf, object_id);
 }
 
 
