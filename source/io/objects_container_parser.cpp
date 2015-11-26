@@ -53,7 +53,7 @@ ObjectsContainerParser::
 parse(const string &file_path)
 {
     const auto parser = XMLFileParser::create();
-    const string schema_file = "include/igatools/io/objects_container_XML_schema.xsd";
+    const string schema_file = IGATOOLS_OBJECTS_CONTAINER_XML_SCHEMA;
     const auto xml_elem = parser->parse(file_path, schema_file);
     const auto container = ObjectsContainer::create();
 

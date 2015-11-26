@@ -456,7 +456,7 @@
           <xs:element name="Domain" type="DomainType"/>
           <xs:element name="PhysicalSpaceBasis" type="PhysicalSpaceBasisType"/>
           <xs:element name="IgFunction" type="IgFunctionType"/>
-          <xs:element name="ConstantIgFunction" type="ConstantIgFunctionType"/>
+          <xs:element name="ConstantFunction" type="ConstantFunctionType"/>
         </xs:choice>
       </xs:sequence>
       <xs:attribute name="FormatVersion" type="xs:float" fixed="2.0" use="required"/>
