@@ -34,6 +34,7 @@
 using std::shared_ptr;
 using std::to_string;
 using namespace boost::fusion;
+using boost::fusion::for_each;
 
 IGA_NAMESPACE_OPEN
 
@@ -65,15 +66,11 @@ const_create() -> shared_ptr<const self_t>
 template <class T>
 void
 ObjectsContainer::
-insert_object (const std::shared_ptr<T> object,
+insert_object (const shared_ptr<T> object,
                const Index &id)
 {
     Assert (object != nullptr, ExcNullPtr());
-
-    // TODO: this will be replaced when the global enumeration control is
-    // performed.
-    Assert ((!this->is_object<T>(id)),
-            ExcMessage("Object id already defined for the same object type"));
+    Assert (!this->is_id_present(id), ExcMessage("Object id already defined."));
 
     auto &objects_T = at_key<T>(objects_);
 
@@ -85,7 +82,7 @@ insert_object (const std::shared_ptr<T> object,
 template <class T>
 auto
 ObjectsContainer::
-get_object (const Index &id) const -> std::shared_ptr<T>
+get_object (const Index &id) const -> shared_ptr<T>
 {
     Assert ((this->is_object<T>(id)),
             ExcMessage("Object id does not correspond to an object of "
@@ -111,7 +108,7 @@ ObjectsContainer::
 is_id_present (const Index &id) const
 {
     bool found = false;
-    boost::fusion::for_each(objects_, [&](const auto &objects_fusion_map)
+    for_each(objects_, [&](const auto &objects_fusion_map)
     {
         if (found)
             return;
@@ -139,7 +136,7 @@ print_info (LogStream &out) const
 
     // Grids
     GPtrs valid_grid_ptr_types;
-    boost::fusion::for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
+    for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
         const auto objects = at_key<Type>(objects_);
@@ -158,7 +155,7 @@ print_info (LogStream &out) const
 
     // Spline spaces
     SSPtrs valid_ssp_ptr_types;
-    boost::fusion::for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
+    for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
         const auto objects = at_key<Type>(objects_);
@@ -179,7 +176,7 @@ print_info (LogStream &out) const
     });
 
     // Reference space basis
-    boost::fusion::for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
+    for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
     {
         using SSType = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
         using Type = ReferenceSpaceBasis<SSType::dim, SSType::range, SSType::rank>;
@@ -202,7 +199,7 @@ print_info (LogStream &out) const
 
     // Grid functions
     GFPtrs valid_gf_ptr_types;
-    boost::fusion::for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
+    for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
         const auto objects = at_key<Type>(objects_);
@@ -222,7 +219,7 @@ print_info (LogStream &out) const
 
     // Domains
     DPtrs valid_dm_ptr_types;
-    boost::fusion::for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
+    for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
         const auto objects = at_key<Type>(objects_);
@@ -242,7 +239,7 @@ print_info (LogStream &out) const
 
     // Physical space basis
     PSPtrs valid_ps_ptr_types;
-    boost::fusion::for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
+    for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
         const auto objects = at_key<Type>(objects_);
@@ -264,7 +261,7 @@ print_info (LogStream &out) const
 
     // Function
     FPtrs valid_fn_ptr_types;
-    boost::fusion::for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
+    for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
         const auto objects = at_key<Type>(objects_);
@@ -284,7 +281,6 @@ print_info (LogStream &out) const
         out.end_item();
     });
 }
-
 
 
 IGA_NAMESPACE_CLOSE
