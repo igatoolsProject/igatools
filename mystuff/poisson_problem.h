@@ -12,6 +12,39 @@ class Geometry {
   TensorIndex<dim> deg;
   IgCoefficients   coefs;
   IgCoefficients   weights;
+  void load(const char* fname) {
+    FILE *fp;
+    int check;
+    fp=fopen(fname,"r");
+    if (fp==0) cout << "cannot open the .nurbs file!" <<endl;
+    else {
+      // checking dimension
+      fscanf(fp,"%d",&check);
+      if (check!=dim) cout << "wrong geometry dimension!" << endl;
+      else {
+        // reading degrees
+        for (int idim=0; idim<dim; idim++)
+          fscanf(fp,"%d",&deg[idim]);
+        // reading elements
+        for (int idim=0; idim<dim; idim++)
+          fscanf(fp,"%d",&nel[idim]);
+        // reading number of control points
+        int ncp;
+        fscanf(fp,"%d",&ncp);
+        // reading control points
+        double data;
+        for (int icp=0; icp<ncp*dim; icp++) {
+          fscanf(fp,"%lf",&data);
+          coefs[icp]=data;
+        }
+        // reading weights
+        for (int icp=0; icp<ncp; icp++) {
+          fscanf(fp,"%lf",&data);
+          weights[icp]=data;
+        }
+      }
+    }
+  }
 };
 
 template<int dim>
@@ -23,22 +56,27 @@ class ElasticityProblem {
     ElasticityProblem(const TensorSize<dim> nel, 
                       const TensorIndex<dim> deg,
                       const Geometry<dim> &geom);
-
+    ElasticityProblem(const TensorSize<dim> nel,
+                      const TensorIndex<dim> deg);
   private:
       // space data
     shared_ptr<Grid<dim>>                   grid;
     shared_ptr<Domain<dim>>                 domain;
-    shared_ptr<PhysicalSpaceBasis<dim,dim>> basis;
+    shared_ptr<Domain<dim>>                 deformed_domain;
+    shared_ptr<BSpline<dim,dim,1>>          basis;
     shared_ptr<const QGauss<dim>>           elem_quad;
     shared_ptr<const QGauss<dim-1>>         face_quad;
       // linear system data
     shared_ptr<Matrix> mat;
     shared_ptr<Vector> rhs;
     shared_ptr<Vector> sol;
+    bool is_grid;
 
   public:
     void assemble(const Real lambda, const Real mu) const;
     void solve() const;
+    void check() const;
+    void deform() const;
     void output() const;
 };
 
@@ -112,6 +150,30 @@ ElasticityProblem<dim>::ElasticityProblem(const TensorSize<dim> nel,
   mat   = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
   rhs   = create_vector(mat->RangeMap());
   sol   = create_vector(mat->DomainMap());
+  is_grid=false;
+}
+
+template<int dim>
+ElasticityProblem<dim>::ElasticityProblem(const TensorSize<dim> nel,
+                                          const TensorIndex<dim> deg) {
+  TensorSize<dim> num_knots;
+  for (int idim=0; idim<dim; idim++) {
+    num_knots[idim] = nel[idim]+1;
+  }
+  grid = Grid<dim>::create(num_knots);
+  auto space = SplineSpace<dim,dim>::create(deg,grid);
+  basis = BSpline<dim,dim>::create(space);
+  TensorSize<dim> elem_num_quad;
+  for (int idim=0; idim<dim; idim++) {
+    elem_num_quad[idim] = deg[idim]+1;
+  }
+  elem_quad = QGauss<dim>::const_create(elem_num_quad);
+  is_grid=true;
+  mat   = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
+  rhs   = create_vector(mat->RangeMap());
+  sol   = create_vector(mat->DomainMap());
+  auto id_funct = grid_functions::IdentityGridFunction<dim>::create(grid);
+  domain = Domain<dim>::create(id_funct);
 }
 
 // ----------------------------------------------------------------------------
@@ -127,7 +189,7 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
 
   // starting the cache handler for the basis functions:
   auto basis_handler = basis->create_cache_handler();
-  auto basis_el = basis->begin();
+  auto basis_el      = basis->begin();
   const auto basis_eld = basis->end();
   // setting the flags
   using Flags = space_element::Flags;
@@ -137,32 +199,40 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
   auto Nqn = elem_quad->get_num_points();
   basis_handler->init_element_cache(basis_el,elem_quad);
 
-  // starting the cache handler for the (constant) function f:
-  //auto funct_handler = source_term->create_cache_handler();
-  //auto funct_el = source_term->begin();
-  //funct_handler->template set_flags<dim>(function_element::Flags::D0);
-  //funct_handler->set_element_flags(grid_function_element::Flags::D0);
-  //funct_handler->init_cache(funct_el,quad);
+  // ATTEMPT 1: GridFunction
+  auto source_term   = grid_functions::ConstantGridFunction<dim,dim>::const_create(grid,{0.0,0.0,-0.0001});
+  auto funct_handler = source_term->create_cache_handler();
+  auto funct_el      = source_term->begin();
+  funct_handler->set_element_flags(grid_function_element::Flags::D0);
+  funct_handler->init_cache(funct_el,elem_quad);
+
+  // ATTEMPT 2: Function
+  /*auto source_term = functions::ConstantFunction<dim,0,dim>::const_create(domain,{0.0,0.0,-1.0});
+  auto funct_handler = source_term->create_cache_handler();
+  auto funct_el = source_term->begin();
+  funct_handler->set_element_flags(function_element::Flags::D0);
+  funct_handler->init_cache(funct_el,elem_quad);//*/
 
   const auto l = lambda;
   const auto m = 0.5*mu;
   // retrieving the last datum and then starting the loop
   for (; basis_el!=basis_eld; ++basis_el) {
     basis_handler->fill_element_cache(basis_el);
-    //funct_handler->fill_element_cache(funct_el);
+    funct_handler->fill_element_cache(funct_el);
     //funct_handler->template fill_cache<dim>(funct_el,0);
 
     // preparing some stuff: creating the local matrices
     auto Nbf = basis_el->get_num_basis(DofProperties::active);
     DenseMatrix loc_mat(Nbf,Nbf); loc_mat=0.0;
     DenseVector loc_rhs(Nbf);     loc_rhs=0.0;
-    
+
     // gathering the requested data
     auto values = basis_el->get_element_values();
     auto grads  = basis_el->get_element_gradients();
     auto divs   = basis_el->get_element_divergences();
     auto w_meas = basis_el->get_element_w_measures();
-    
+    auto &fval  = funct_el->get_element_values_D0();
+
     // precomputing epsilon(v) = 0.5 * (\grad(v) + \grad(v)^T)
     using Der = typename SpaceElement<dim,0,dim,1>::template Derivative<1>;
     ValueTable<Der> epsils(Nbf,Nqn);
@@ -182,25 +252,28 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
       for (int jbf=0; jbf<Nbf; jbf++) {
         const auto &div_j = divs.get_function_view(jbf); // view for the j-th basis function divergence
 	      const auto &eps_j = epsils.get_function_view(jbf);
+        double part_1 = 0.0, part_2 = 0.0;
         for (int iqn=0; iqn<Nqn; iqn++) {
           // PART 1: assembling  lambda \int div(v_i)*div(v_j)
-          loc_mat(ibf,jbf) += l * scalar_product(div_i[iqn], div_j[iqn]) * w_meas[iqn];
+          part_1 += scalar_product(div_i[iqn], div_j[iqn]) * w_meas[iqn];
           // PART 2: assembling  2mu \int eps(v_i):eps(v_j)
-          loc_mat(ibf,jbf) += m * scalar_product(eps_i[iqn],eps_j[iqn]) * w_meas[iqn];
+          part_2 += scalar_product(eps_i[iqn],eps_j[iqn]) * w_meas[iqn];
         }
+        loc_mat(ibf,jbf) = l*part_1 + m*part_1;
       }
       // loop for the right hand side local vector
-      //const auto &bfi = values.get_function_view(ibf); // view for the i-th basis function
+      //const auto &val_i = values.get_function_view(ibf); // view for the i-th basis function
       //for (int iqn=0; iqn<Nqn; iqn++) {
-      //  loc_rhs(ibf) += scalar_product(bfi[iqn],f_vals[iqn]) * w_meas[iqn]; 
+        // PART 3: assembling \int v_i*1
+        //loc_rhs(ibf) += scalar_product(val_i[iqn][0],fval[iqn]) * w_meas[iqn];
       //}
-      loc_rhs(ibf) = 0.1;
     }
-    
+    loc_rhs = basis_el->integrate_u_func(fval);
+
     // spatashing element matrix into the global matrix
     const auto loc_dofs = basis_el->get_local_to_global(DofProperties::active);
     mat->add_block(loc_dofs,loc_dofs,loc_mat);
-    rhs->add_block(loc_dofs,loc_rhs);//*/
+    rhs->add_block(loc_dofs,loc_rhs);
   }
   mat->FillComplete();//*/
 
@@ -209,14 +282,13 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
   using dof_tools::apply_boundary_values;
 
     // ATTEMPT 1
-  const set<boundary_id> dir_id {1};
   auto dof_distribution = basis->get_dof_distribution();
   Topology<dim-1> sub_elem_topology;
-  auto bdr_dofs = dof_distribution->get_boundary_dofs(3,sub_elem_topology);
+  auto bdr_dofs = dof_distribution->get_boundary_dofs(0,sub_elem_topology);
   std::map<Index,Real> bdr_vals;
   for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
     bdr_vals[*it]=0.0;
-    cout << "changed boundary value " << *it << endl;
+    //cout << "changed boundary value " << *it << endl;
   }
   apply_boundary_values(bdr_vals,*mat,*rhs,*sol);//*/
 
@@ -239,6 +311,44 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
   //out << rhs << endl;
 }
 
+template<int dim>
+void ElasticityProblem<dim>::check() const {
+
+  // dirichlet face
+  for (int iface=0; iface<6; iface++) {
+    cout << endl << "  FACE " << iface << endl;
+    auto dof_distribution = basis->get_dof_distribution();
+    Topology<dim-1> sub_elem_topology;
+    auto bdr_dofs = dof_distribution->get_boundary_dofs(iface,sub_elem_topology);   
+    set<Index>::iterator it=bdr_dofs.begin();
+    for (int idim=0; idim<dim; idim++) {
+      for (int irow=0; irow<6; irow++) {
+        for (int icol=0; icol<6; icol++) {
+          if ((*sol)[*it]<0)
+            printf(" %1.6f",(*sol)[*it]);
+          else
+            printf("  %1.6f",(*sol)[*it]);
+          ++it;
+        }
+        printf("\n");
+      }
+      printf("\n");
+    }
+    cout << endl;
+  }
+
+  // other face (hihihi)
+  //cout << "other face" << endl;
+  //dof_distribution = basis->get_dof_distribution();
+  //bdr_dofs = dof_distribution->get_boundary_dofs(1,sub_elem_topology);   
+  //for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
+  //  out << (*sol)[*it];
+  //}
+
+
+}
+
+
 template<int dim> // solver for the linear system
 void ElasticityProblem<dim>::solve() const {
   //auto solver = create_solver(*mat,*sol,*rhs);
@@ -254,6 +364,17 @@ void ElasticityProblem<dim>::solve() const {
   // solve, for god's sake! SOLVE!
   solver.Iterate(1000, 1.0E-7);
 }
+
+/*void ElasticityProblem<dim>::deform() const {
+
+  auto geom_funct = domain->get_grid_function();
+  auto coefs      = geom_funct->get_coefficients();
+  auto vect_nurbs = geom_funct->get_basis();
+  IgCoefficiencts deformed_coefs;
+  for (int ien=0; ien<sol->MyLength(); ien++) {
+    deformed_coefs[ien] = coefs[ien] + sol[ien];
+  }  
+}//*/
 
 
 /*using OP = Epetra_Operator;
@@ -374,8 +495,14 @@ void ElasticityProblem<dim>::output() const
   //auto domain = basis->get_physical_domain();
   Writer<dim> writer(domain, num_plot_pts);
   //using IgFunc = IgFunction<dim,0,1,1>;
-  auto solution_function = IgFunction<dim,0,dim,1>::const_create(basis, *sol);
-  writer.template add_field<dim,1>(*solution_function, "solution");
+  if (is_grid) {
+    auto solution_function = IgGridFunction<dim,dim>::create(basis, *sol);
+    writer.template add_field<dim>(*solution_function, "solution");
+  }
+  else {
+    //auto solution_function = IgFunction<dim,0,dim,1>::create(basis, *sol);
+    //writer.template add_field<dim,1>(*solution_function, "solution");
+  }
   string filename = "plot_" + to_string(dim) + "d" ;
   writer.save(filename);
 }

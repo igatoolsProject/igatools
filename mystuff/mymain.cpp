@@ -65,11 +65,14 @@ Values<dim,1,1> source_term(Points<dim> pts) {
 int main() {
 
   // problem dimension
-  const int dim = 2;
+  const int dim = 3;
 
   // geometry definition
   Geometry<dim> geometry;
-  geometry.nel   = {1,1};
+  if (dim==2) geometry.load("../../../ring.nurbs");
+  if (dim==3) geometry.load("../../../hose.nurbs");
+
+  /*geometry.nel   = {1,1};
   geometry.deg   = {1,2};
   // weights
   geometry.weights[0] = 1.0;
@@ -84,16 +87,21 @@ int main() {
   geometry.coefs[ 2] = 1.0;  geometry.coefs[ 8] = 1.0;
   geometry.coefs[ 3] = 2.0;  geometry.coefs[ 9] = 2.0;
   geometry.coefs[ 4] = 0.0;  geometry.coefs[10] = 1.0;
-  geometry.coefs[ 5] = 0.0;  geometry.coefs[11] = 2.0;
+  geometry.coefs[ 5] = 0.0;  geometry.coefs[11] = 2.0;//*/
 
   // linear elasticity problem creation
-  TensorSize<dim>  nel = {4,4};
-  TensorIndex<dim> deg = {2,2};
-  auto problem =  ElasticityProblem<dim>(nel,deg,geometry);
+  TensorSize<dim>  nel;
+  TensorIndex<dim> deg;
+  for (int idim=0; idim<dim; idim++) {
+    nel[idim]=4;
+    deg[idim]=2;
+  }
+  auto problem =  ElasticityProblem<dim>(nel,deg);
 
-  problem.assemble(0.57,0.38);
+  problem.assemble(1.0,0.49);
   problem.solve();
-  problem.output();
+  problem.check();
+  problem.output();//*/
 
   /*auto grid    = Grid<dim>::create(3);
   auto space   = SplineSpace<dim,dim>::create(2,grid);
