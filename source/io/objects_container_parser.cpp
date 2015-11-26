@@ -49,9 +49,10 @@ IGA_NAMESPACE_OPEN
 
 shared_ptr<ObjectsContainer>
 ObjectsContainerParser::
-parse(const string &file_path, const string &schema_file)
+parse(const string &file_path)
 {
     const auto parser = XMLFileParser::create();
+    const string schema_file = "include/igatools/io/objects_container_XML_schema.xsd";
     const auto xml_elem = parser->parse(file_path, schema_file);
     const auto container = ObjectsContainer::create();
 
@@ -259,8 +260,8 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
 void
 ObjectsContainerParser::
 parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
-                        const shared_ptr<ObjectsContainer> container,
-                        const bool &first_parsing)
+                        const bool &first_parsing,
+                        const shared_ptr<ObjectsContainer> container)
 {
     for (const auto &gf : xml_elem->get_children_elements("IgGridFunction"))
     {
@@ -284,7 +285,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
             if (gf_dim == dim && gf_space_dim == space_dim)
             {
                 found = true;
-                parse_ig_grid_function<dim, space_dim>(gf, container, first_parsing);
+                parse_ig_grid_function<dim, space_dim>(gf, first_parsing, container);
             }
         });
 
@@ -319,14 +320,14 @@ parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
 
     // Parsing ig grid functions built upon a BSpline.
     bool first_parsing = true;
-    parse_ig_grid_functions(xml_elem, container, first_parsing);
+    parse_ig_grid_functions(xml_elem, first_parsing, container);
 
     // Parsing NURBS.
     Self_::parse_nurbs(xml_elem, container);
 
     // Parsing the remaining ig grid functions.
     first_parsing = false;
-    parse_ig_grid_functions(xml_elem, container, first_parsing);
+    parse_ig_grid_functions(xml_elem, first_parsing, container);
 }
 
 
@@ -835,8 +836,8 @@ template <int dim, int space_dim>
 void
 ObjectsContainerParser::
 parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
-                       const shared_ptr<ObjectsContainer> container,
-                       const bool &first_parsing)
+                       const bool &first_parsing,
+                       const shared_ptr<ObjectsContainer> container)
 {
     Assert (xml_elem->get_name() == "IgGridFunction",
             ExcMessage("Invalid XML tag."));
@@ -1231,26 +1232,16 @@ parse_dofs_property(const shared_ptr<XMLElement> xml_elem)
 
 string
 ObjectsContainerParser::
-get_type_dimensions_string(const string &object_type,
-                          const SafeSTLVector<int> &dims)
-{
-    string dims_str = object_type + "<";
-    for (const auto &d : dims)
-        dims_str += to_string(d) + ", ";
-    return dims_str.substr(0, dims_str.size() - 2) + ">";
-}
-
-
-
-string
-ObjectsContainerParser::
 get_type_id_string(const string &object_type,
                    const Index &object_id,
                    const SafeSTLVector<int> &dims)
 {
-    return get_type_dimensions_string(object_type, dims) +
-            " (IgaObjectId=" + to_string(object_id) + ")";
 
+    string dims_str = object_type + "<";
+    for (const auto &d : dims)
+        dims_str += to_string(d) + ", ";
+    return dims_str.substr(0, dims_str.size() - 2) + ">" +
+            " (IgaObjectId=" + to_string(object_id) + ")";
 }
 
 

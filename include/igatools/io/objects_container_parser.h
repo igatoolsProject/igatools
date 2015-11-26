@@ -39,20 +39,29 @@ class IgCoefficients;
 class LogStream;
 
 /**
- * @brief Class for parsing input files.
+ * @brief Helper class for creating an @ref ObjectsContainer parsed from
+ * a file.
  *
- * This is a class for parsing XML input files and validate them against
- * a XML Schema grammar.
+ * This is a helper class for creating an @ref ObjectsContainer parsed
+ * from a file. It receives an input file that is parsed by means of
+ * the @ref XMLFileParser for receiving a @ref XMLElement containing
+ * all the information.
  *
- * This class provides the capability of creating a @p XercesDOMParser,
- * checking the validity of the input file (if it exists, it is corrupted,
- * etc), and retrieving a XML @p DOMDocument containing an input file.
+ * Before starting to parse the @ref XMLElement, the XML document
+ * is validated against an XML schema definition. This schema
+ * definition controls the main structure of the file: which elements
+ * should be present, attributes, types, enumerations, etc.
+ * But the schema is unable to control other questions, e.g. if a certain
+ * @p Grid, used by a @ref SplineSpace, is defined in the file.
  *
- * This class uses a @ref XMLParserErrorHandler for managing the possible
- * errors than can appear during the parsing process.
+ * @alert It could be unsafe to take a @ref XMLElement outside of
+ * the class in order to be reused somewhere else. It could cause problem
+ * with the @p Xerces-c memory deallocation. Not getter should be
+ * provided for retrieving it.
  *
- * The destructor of the class is in charge of of deleting @ref parser_
- * and to shutdown all the @p xerces active process.
+ * @see ObjectsContainer
+ * @see XMLFileParser
+ * @see XMLElement
  *
  * @author P. Antolin
  * @date 2015
@@ -119,196 +128,362 @@ private:
 
 public:
   /**
-   * @todo To be documented.
+   * @brief Creates an @ref ObjectsContainer by reading the objects
+   * from a given file.
+   *
+   * Creates an @ref ObjectsContainer by reading the objects
+   * from a given @ref file_path and inserting them.
+   *
+   * @param[in] file_path Path of the file to be parsed.
+   * @return Objects container with all the objects stored inside.
    */
-  static std::shared_ptr<ObjectsContainer> parse(const std::string &file_path,
-                                                 const std::string &schema_file);
+  static std::shared_ptr<ObjectsContainer> parse(const std::string &file_path);
 
 private:
   /**
-   * @todo To be documented.
+   * @brief Parses all the <tt>Grid</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>Grid</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
    */
   static void parse_grids(const std::shared_ptr<XMLElement> xml_elem,
                    const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses all the <tt>SplineSpace</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>SplineSpace</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
    */
   static void parse_spline_spaces(const std::shared_ptr<XMLElement> xml_elem,
                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses all the <tt>BSpline</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>BSpline</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
    */
   static void parse_bsplines(const std::shared_ptr<XMLElement> xml_elem,
                       const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses all the <tt>NURBS</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>NURBS</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
    */
   static void parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
                    const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses all the <tt>GridFunction</tt>s and <tt>NURBS</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>GridFunction</tt>s and <tt>NURBS</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
+   * They are parsed in proper order to avoid conflicts in the declaration
+   * of <tt>NURBS</tt>s that take <tt>IgGridFunction</tt>s as arguments.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
    */
   static void parse_grid_functions_and_nurbs(const std::shared_ptr<XMLElement> xml_elem,
                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses all the <tt>IgGridFunction</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>IgGridFunction</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
    */
   static void parse_ig_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
-                               const std::shared_ptr<ObjectsContainer> container,
-                               const bool &based_on_nurbs);
+                               const bool &first_parsing,
+                               const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses all the <tt>Domain</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>Domain</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
    */
   static void parse_domains(const std::shared_ptr<XMLElement> xml_elem,
                      const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses all the <tt>PhysicalSpaceBasis</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>PhysicalSpaceBasis</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
    */
   static void parse_phys_spaces(const std::shared_ptr<XMLElement> xml_elem,
                          const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses all the <tt>Function</tt>s
+   * contained into the XML document and stores them into the container.
+   *
+   * Parses all the <tt>Function</tt>s
+   * contained into the XML document @ref xml_elem and stores them into
+   * the @ref container.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
    */
   static void parse_functions(const std::shared_ptr<XMLElement> xml_elem,
                        const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses a <tt>Grid</tt> XML element and inserts
+   * it into the objects container.
+   *
+   * Parses a <tt>Grid</tt> XML element contained in
+   * @ref xml_elem and inserts it into the objects @ref container.
+   *
+   * @tparam dim Dimension of the Grid.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
    */
   template <int dim>
   static void parse_grid(const std::shared_ptr<XMLElement> xml_elem,
                   const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses a <tt>SplineSpace</tt> XML element and inserts
+   * it into the objects container.
+   *
+   * Parses a <tt>SplineSpace</tt> XML element contained in
+   * @ref xml_elem and inserts it into the objects @ref container.
+   *
+   * @tparam dim Dimension of the SplineSpace.
+   * @tparam range Range of the SplineSpace.
+   * @tparam rank Rank of the SplineSpace.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
    */
   template <int dim, int range, int rank>
   static void parse_spline_space(const std::shared_ptr<XMLElement> xml_elem,
                           const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses a <tt>BSpline</tt> XML element and inserts
+   * it into the objects container.
+   *
+   * Parses a <tt>BSpline</tt> XML element contained in
+   * @ref xml_elem and inserts it into the objects @ref container.
+   *
+   * @tparam dim Dimension of the BSpline space basis.
+   * @tparam range Range of the BSpline space basis.
+   * @tparam rank Rank of the BSpline space basis.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
    */
   template <int dim, int range, int rank>
   static void parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
                      const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses a <tt>NURBS</tt> XML element and inserts
+   * it into the objects container.
+   *
+   * Parses a <tt>NURBS</tt> XML element contained in
+   * @ref xml_elem and inserts it into the objects @ref container.
+   *
+   * @tparam dim Dimension of the NURBS space basis.
+   * @tparam range Range of the NURBS space basis.
+   * @tparam rank Rank of the NURBS space basis.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
    */
   template <int dim, int range, int rank>
   static void parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
                    const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses a <tt>IgGridFunction</tt> XML element and inserts
+   * it into the objects container.
+   *
+   * Parses a <tt>IgGridFunction</tt> XML element contained in
+   * @ref xml_elem and inserts it into the objects @ref container.
+   *
+   * This function is called twice:
+   * - During the first time (<tt>first_parsing == true</tt>) the
+   *   grid functions based on @p BSpline are parsed.
+   * - In the second time (<tt>first_parsing == false</tt>) the
+   *   grid functions based on @p NURBS are parsed.
+   *
+   * @tparam dim Dimension of the grid function.
+   * @tparam space_dim Space dimension of the grid function.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in] first_parsing Indicates if the function is called for
+   *                          first time, or not.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
    */
   template <int dim, int space_dim>
   static void parse_ig_grid_function(const std::shared_ptr<XMLElement> xml_elem,
-                              const std::shared_ptr<ObjectsContainer> container,
-                              const bool &first_parsing);
+                              const bool &first_parsing,
+                              const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses a <tt>Domain</tt> XML element and inserts
+   * it into the objects container.
+   *
+   * Parses a <tt>Domain</tt> XML element contained in
+   * @ref xml_elem and inserts it into the objects @ref container.
+   *
+   * @tparam dim Dimension of the domain.
+   * @tparam codim Codimension of the domain.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
    */
   template <int dim, int codim>
   static void parse_domain(const std::shared_ptr<XMLElement> xml_elem,
                     const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses a <tt>PhysicalSpaceBasis</tt> XML element and inserts
+   * it into the objects container.
+   *
+   * Parses a <tt>PhysicalSpaceBasis</tt> XML element contained in
+   * @ref xml_elem and inserts it into the objects @ref container.
+   *
+   * @tparam dim Dimension of the physical space basis.
+   * @tparam range Range of the physical space basis.
+   * @tparam rank Rank of the physical space basis.
+   * @tparam codim Codimension of the physical space basis.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
    */
   template <int dim, int codim, int range, int rank>
   static void parse_phys_space(const std::shared_ptr<XMLElement> xml_elem,
                         const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses an <tt>IgFunction</tt> XML element and inserts it into
+   * the objects container.
+   *
+   * Parses an <tt>IgFunction</tt> XML element contained in @ref xml_elem
+   * and inserts it into the objects @ref container.
+   *
+   * @tparam dim Dimension of the function.
+   * @tparam codim Codimension of the function.
+   * @tparam range Range of the function.
+   * @tparam rank Rank of the function.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
    */
   template <int dim, int codim, int range, int rank>
   static void parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
                          const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @todo To be documented.
+   * @brief Parses a <tt>Name</tt> XML element.
+   * Parses a <tt>Name</tt> XML element contained in @ref xml_elem.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * return Name string parsed.
    */
   static std::string parse_name(const std::shared_ptr<XMLElement> xml_elem);
 
   /**
-   * @todo To be documented.
+   * @brief Parses a <tt>DofsProperty</tt> XML element.
+   * Parses a <tt>DofsProperty</tt> XML element contained in @ref xml_elem.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * return Dofs property string parsed.
    */
   static std::string parse_dofs_property(const std::shared_ptr<XMLElement> xml_elem);
 
   /**
-   * @todo To be documented.
-   * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @brief Produces an string of the given type and dimensions and the
+   * object id associated to it.
+   *
+   * Produces an string of the given type and dimensions and the object
+   * id associated to it.
+   *
+   * It will produce a string like <tt>Type<X, Y, Z> (IgaObjectId (W))</tt>.
+   * This is used for error messaging purposes.
+   *
+   * @param[in] object_type String with the object type.
+   * @param[in] object_id Id associated to the object.
+   * @param[in] dims Vector with the dimensions of the object.
+   * @return String containing the object type and its id
    */
   static std::string get_type_id_string(const std::string &object_type,
                                  const Index &object_id,
                                  const SafeSTLVector<int> &dims);
 
   /**
-   * @todo To be documented.
+   * @todo Parses an IgCoefficients vector.
+   *
+   * Parses an IgCoefficients vector from the given @p xml_elem
+   * The indices of the parsed coefficients are checked with
+   * @p space_global_dofs, that are the global indices of the dofs
+   * of the space associated to the coefficients.
+   *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
-   */
-  static std::string get_type_dimensions_string(const std::string &object_type,
-                                         const SafeSTLVector<int> &dims);
-
-  /**
-   * @todo To be documented.
-   * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] container Objects container to be filled with the parsed object.
+   * @param[in] parsing_msg String containing information about the
+   *             XML element document to produce richer error messages.
+   * @param[in] space_global_dofs Global indices of the dofs of
+   *            space to which the coefficients are associated to.
+   * @return IgCoefficients vector.
    */
   // TODO: maybe this should be done with a shared pointer, in
-  // order to astatic void the copy
+  // order to avoid the copy.
   static IgCoefficients parse_ig_coefficients(const std::shared_ptr<XMLElement> xml_elem,
                                        const std::string &parsing_msg,
                                        const std::set<Index> &space_global_dofs);
