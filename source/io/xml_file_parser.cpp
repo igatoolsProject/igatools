@@ -44,6 +44,8 @@ IGA_NAMESPACE_OPEN
 
 XMLFileParser::
 XMLFileParser()
+    :
+    error_handler_(XMLParserErrorHandler::create())
 {
   try
   {
@@ -56,7 +58,18 @@ XMLFileParser()
     xercesc::XMLString::release(&error_msg);
   }
 
+  // Creating and configuring DOM parser
   parser_ = new xercesc::XercesDOMParser;
+
+  parser_->setErrorHandler(error_handler_.get());
+
+  parser_->setDoNamespaces(true);
+  parser_->setDoSchema(true);
+  parser_->setLoadExternalDTD(false);
+  parser_->setValidationSchemaFullChecking(true);
+  parser_->setValidationConstraintFatal(true);
+  parser_->useCachedGrammarInParse(true);
+  // parser_->setHandleMultipleImports(true);
 }
 
 
@@ -116,6 +129,7 @@ check_file(const string &file_path)
 }
 
 
+
 std::shared_ptr<XMLElement>
 XMLFileParser::
 parse(const string &file_path, const string &grammar_file) const
@@ -123,28 +137,38 @@ parse(const string &file_path, const string &grammar_file) const
   this->check_file(file_path);
   this->check_file(grammar_file);
 
-  // Configuring DOM parser
-  const auto error_handler = XMLParserErrorHandler::create();
-  parser_->setErrorHandler(error_handler.get());
-  parser_->useCachedGrammarInParse(true);
+  // Activation of the validation.
   parser_->setValidationScheme(xercesc::XercesDOMParser::Val_Always);
-  parser_->setDoNamespaces(true);
-  parser_->setDoSchema(true);
-  parser_->setLoadExternalDTD(false);
-  parser_->setValidationSchemaFullChecking(true);
-  parser_->setValidationConstraintFatal(true);
-  parser_->useCachedGrammarInParse(true);
-  // parser_->setHandleMultipleImports(true);
-
+  // Loading grammar
   parser_->loadGrammar(grammar_file.c_str(),
                       xercesc::Grammar::SchemaGrammarType, true);
 
   parser_->parse(file_path.c_str());
 
+  // Deactivation of the validation.
+  parser_->setValidationScheme(xercesc::XercesDOMParser::Val_Never);
+  // Unloading grammar
+  parser_->resetCachedGrammarPool();
+
   // This pointer must not be freed, it is owned by the parent parser
   // object.
-  xercesc::DOMDocument *dom_doc = parser_->getDocument();
-  xercesc::DOMElement *dom_elem = dom_doc->getDocumentElement();
+  xercesc::DOMElement *dom_elem = parser_->getDocument()->getDocumentElement();
+  return XMLElement::create(dom_elem);
+}
+
+
+
+std::shared_ptr<XMLElement>
+XMLFileParser::
+parse(const string &file_path) const
+{
+  this->check_file(file_path);
+
+  parser_->parse(file_path.c_str());
+
+  // This pointer must not be freed, it is owned by the parent parser
+  // object.
+  xercesc::DOMElement *dom_elem = parser_->getDocument()->getDocumentElement();
   return XMLElement::create(dom_elem);
 }
 

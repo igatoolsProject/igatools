@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef XML_FILE_PARSER_H_
-#define XML_FILE_PARSER_H_
+#ifndef __XML_FILE_PARSER_H_
+#define __XML_FILE_PARSER_H_
 
 #include <igatools/base/config.h>
 
@@ -37,18 +37,24 @@ XERCES_CPP_NAMESPACE_END
 IGA_NAMESPACE_OPEN
 
 class XMLElement;
+class XMLParserErrorHandler;
 class LogStream;
 
 /**
- * @brief Class for parsing input files.
+ * @brief Class for parsing XML input files.
  *
- * This is a class for parsing XML input files and validate them against
- * a XML Schema grammar defined in an external file.
+ * This is a class for parsing XML input files and optionally validate
+ * them against XML Schema grammars.
  *
  * This class provides the capability of creating a @p XercesDOMParser,
  * checking the validity of the input file (if it exists, it is corrupted,
  * etc), and retrieving a  @p XMLElement wrapping the XML document
  * contained in the input file.
+ *
+ * Once the class is instantiated by means of the @ref create static
+ * method, the file is parsed by calling the @ref parse method.
+ * This @ref parse method can be called as many times as needed for
+ * parsing more than one file.
  *
  * This class uses a @ref XMLParserErrorHandler for managing the possible
  * errors than can appear during the parsing process.
@@ -140,30 +146,49 @@ public:
 
   ///@}
 
-private:
-
-  /** DOM parser. */
-  xercesc::XercesDOMParser *parser_;
-
 public:
   /**
    * @brief Parses the input file and returns a XML document object.
    *
    * Parses the input file and returns a XML document object.
-   * Before parsing the file, all the required configuration flags are
-   * setup and the validity of both files is checked.
+   * Before parsing the file the validity of both files is checked.
    *
-   * @attention If there is any problem parsing the input file, error messages
-   * and exceptions will be thrown.
+   * This method validates the content of @p file_path against the
+   * XML schema defined in @p grammar_file
+   *
+   * @attention If there is any problem parsing the input file, error
+   * messages and exceptions will be thrown.
    *
    * @param[in] file_path Path of the file to be parsed.
-   * @param[in] grammar_file File containing the schema to validate the XML document.
-   * @return XML document object.
+   * @param[in] grammar_file Path of the file containing the schema to
+   *                         validate the XML document.
+   * @return XML element containing the parsed document.
    */
   std::shared_ptr<XMLElement> parse(const std::string &file_path,
                                     const std::string &grammar_file) const;
 
+  /**
+   * @brief Parses the input file and returns a XML document object.
+   *
+   * Parses the input file and returns a XML document object.
+   * Before parsing the file the validity of the file is checked.
+   *
+   * @attention If there is any problem parsing the input file, error
+   * messages and exceptions will be thrown.
+   *
+   * @param[in] file_path Path of the file to be parsed.
+   * @return XML element containing the parsed document.
+   */
+  std::shared_ptr<XMLElement> parse(const std::string &file_path) const;
+
 private:
+
+  /** Parser error handler. */
+  const std::shared_ptr<XMLParserErrorHandler> error_handler_;
+
+  /** DOM parser. */
+  xercesc::XercesDOMParser *parser_;
+
   /**
    * @brief Checks if the file can be read.
    *
@@ -180,4 +205,4 @@ IGA_NAMESPACE_CLOSE
 
 #endif // XML_IO
 
-#endif // XML_FILE_PARSER_H_
+#endif // __XML_FILE_PARSER_H_
