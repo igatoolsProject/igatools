@@ -88,5 +88,3 @@ macro(generate_serial)
     endforeach(dir ${source_dirs})  
     
 endmacro(generate_serial)
-
-

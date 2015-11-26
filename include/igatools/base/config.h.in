@@ -40,14 +40,16 @@
 #define IGA_NAMESPACE_OPEN namespace iga {
 #define IGA_NAMESPACE_CLOSE }
 
-#include <igatools/base/types.h>
-#include <igatools/base/numbers.h>
-
 //--------------------------------------------------------------------
 #ifdef XML_IO
+#define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+#define BOOST_MPL_LIMIT_VECTOR_SIZE 30
 #define FUSION_MAX_VECTOR_SIZE 30
 #endif
 //--------------------------------------------------------------------
+
+#include <igatools/base/types.h>
+#include <igatools/base/numbers.h>
 
 //--------------------------------------------------------------------
 #ifdef SERIALIZATION

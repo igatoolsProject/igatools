@@ -23,7 +23,15 @@
 
 #include <igatools/base/config.h>
 
-#include <igatools/base/instantiated_types.h>
+#include <igatools/base/instantiated_types.inst>
+#include <igatools/utils/safe_stl_map.h>
+
+#include <boost/fusion/container/vector.hpp>
+#include <boost/fusion/container/map.hpp>
+
+#include <boost/fusion/algorithm/transformation/transform.hpp>
+#include <boost/fusion/include/transform.hpp>
+#include <boost/mpl/copy.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -78,6 +86,96 @@ private:
 
   /** Type for current class. */
   using self_t = ObjectsContainer;
+
+  template< class T >
+  struct as_fusion_vector_shared_ptr
+  {
+      /**
+       * This functor transform a <tt>boost::mpl::vector</tt> of type into a
+       *  <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of the types.
+       */
+
+      typedef typename boost::fusion::result_of::as_vector<
+        typename boost::mpl::transform<T, std::shared_ptr<boost::mpl::_1>>::type>::type type;
+  };
+
+  /** Alias for all instantiated grids. */
+  using Grids        = typename InstantiatedTypes::Grids;
+
+  /** Alias for all instantiated spline spaces. */
+  using SpSpaces = typename InstantiatedTypes::SplineSpaces;
+
+  /** Alias for all instantiated spline spaces. */
+  using RefSpaces = typename InstantiatedTypes::RefSpaceBases;
+
+  /** Alias for all instantiated grids functions. */
+  using GridFunc     = typename InstantiatedTypes::GridFunctions;
+
+  /** Alias for all instantiated domains. */
+  using Domains      = typename InstantiatedTypes::Domains;
+
+  /** Alias for all instantiated physical space basis. */
+  using PhysSpaces   = typename InstantiatedTypes::PhysSpaces;
+
+  /** Alias for all instantiated  functions.*/
+  using Functions    = typename InstantiatedTypes::Functions;
+
+public:
+
+  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated grids. */
+  using GridPtrs      = as_fusion_vector_shared_ptr<Grids>::type;
+
+  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated spline spaces. */
+  using SpSpacePtrs   = as_fusion_vector_shared_ptr<SpSpaces>::type;
+
+  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated reference spaces. */
+  using RefSpacePtrs   = as_fusion_vector_shared_ptr<RefSpaces>::type;
+
+  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated grid functions. */
+  using GridFuncPtrs  = as_fusion_vector_shared_ptr<GridFunc>::type;
+
+  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated domains. */
+  using DomainPtrs    = as_fusion_vector_shared_ptr<Domains>::type;
+
+  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated physical spaces. */
+  using PhysSpacePtrs = as_fusion_vector_shared_ptr<PhysSpaces>::type;
+
+  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated functions. */
+  using FunctionPtrs  = as_fusion_vector_shared_ptr<Functions>::type;
+
+
+private:
+  /** <tt>mpl::vector</tt> containing all the instantiated types together. */
+  typedef boost::mpl::copy<Grids,
+          boost::mpl::back_inserter<boost::mpl::copy<SpSpaces,
+          boost::mpl::back_inserter<boost::mpl::copy<RefSpaces,
+          boost::mpl::back_inserter<boost::mpl::copy<GridFunc,
+          boost::mpl::back_inserter<boost::mpl::copy<Domains,
+          boost::mpl::back_inserter<boost::mpl::copy<PhysSpaces,
+          boost::mpl::back_inserter<Functions>
+      >::type> >::type> >::type> >::type> >::type> >::type AllTypes_;
+
+  template <class T>
+  struct as_fusion_map
+  {
+      /**
+       * This functor transform a sequence of types @p T into a
+       * <tt>boost::fusion::map</tt> composed of <tt>pair</tt>s of the form
+       * <tt>pair<T, SafeSTLMap<Index, shared_ptr<T>></tt>.
+       */
+
+  private:
+      template <class S>
+      using Pair_ = boost::fusion::pair<S, SafeSTLMap<Index, std::shared_ptr<S>>>;
+
+  public:
+      typedef typename boost::fusion::result_of::as_map<
+        typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
+  };
+
+  /** Container for shared pointer of all the instantiated types. */
+  using ObjectMapTypes_ = as_fusion_map<AllTypes_>::type;
+
 
 private:
 
@@ -213,7 +311,7 @@ public:
 private:
 
   /** Container for the objects. */
-  InstantiatedTypes::ObjectTypes objects_;
+  ObjectMapTypes_ objects_;
 
 };
 

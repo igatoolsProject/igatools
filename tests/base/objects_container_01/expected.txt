@@ -1,8 +1,6 @@
 ========================================================================
 main
 ========================================================================
-Grid Dim : 0. Number of objects: 0
-
 Grid Dim : 1. Number of objects: 3
    Object Id : 0
       Number of intervals per direction: [ 4 ]
@@ -262,6 +260,8 @@ Grid Dim : 3. Number of objects: 1
          
       
    
+
+Grid Dim : 0. Number of objects: 0
 
 SplineSpace Dim : 0 Range : 0 Rank : 1. Number of objects: 0
 
@@ -4713,13 +4713,13 @@ ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
       
    
 
-GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
-
 GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
 
-GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
-
 GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
+
+GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
+
+GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
 
 GridFunction Dim : 1 Spacedim : 1. Number of objects: 4
    Object Id : 4
@@ -5120,6 +5120,14 @@ GridFunction Dim : 1 Spacedim : 3. Number of objects: 1
       
    
 
+GridFunction Dim : 2 Spacedim : 2. Number of objects: 1
+   Object Id : 33
+      ConstantGridFunction<2,2>
+         b:
+         [ 0 0 ] 
+      
+   
+
 GridFunction Dim : 2 Spacedim : 1. Number of objects: 2
    Object Id : 31
       IgGridFunction<2,1>
@@ -5492,17 +5500,17 @@ GridFunction Dim : 2 Spacedim : 1. Number of objects: 2
       
    
 
-GridFunction Dim : 2 Spacedim : 2. Number of objects: 1
-   Object Id : 33
-      ConstantGridFunction<2,2>
-         b:
-         [ 0 0 ] 
-      
-   
-
 GridFunction Dim : 2 Spacedim : 3. Number of objects: 1
    Object Id : 42
       ConstantGridFunction<2,3>
+         b:
+         [ 0 0 0 ] 
+      
+   
+
+GridFunction Dim : 3 Spacedim : 3. Number of objects: 1
+   Object Id : 51
+      ConstantGridFunction<3,3>
          b:
          [ 0 0 0 ] 
       
@@ -5808,21 +5816,13 @@ GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
       
    
 
-GridFunction Dim : 3 Spacedim : 3. Number of objects: 1
-   Object Id : 51
-      ConstantGridFunction<3,3>
-         b:
-         [ 0 0 0 ] 
-      
-   
+Domain Dim : 0 Codim : 1. Number of objects: 0
+
+Domain Dim : 0 Codim : 3. Number of objects: 0
 
 Domain Dim : 0 Codim : 0. Number of objects: 0
 
-Domain Dim : 0 Codim : 1. Number of objects: 0
-
 Domain Dim : 0 Codim : 2. Number of objects: 0
-
-Domain Dim : 0 Codim : 3. Number of objects: 0
 
 Domain Dim : 1 Codim : 0. Number of objects: 1
    Object Id : 7
@@ -8050,24 +8050,6 @@ PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
 
 PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
 
-Function Dim : 0 Codim : 0 Range : 0 Rank : 1. Number of objects: 0
-
-Function Dim : 0 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
-
-Function Dim : 0 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
-
-Function Dim : 0 Codim : 3 Range : 1 Rank : 1. Number of objects: 0
-
-Function Dim : 0 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
-
-Function Dim : 0 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
-
-Function Dim : 0 Codim : 2 Range : 2 Rank : 1. Number of objects: 0
-
-Function Dim : 0 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
-
-Function Dim : 0 Codim : 3 Range : 3 Rank : 1. Number of objects: 0
-
 Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
 
 Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
@@ -8098,11 +8080,29 @@ Function Dim : 1 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
 
 Function Dim : 2 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
 
+Function Dim : 0 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
+
+Function Dim : 0 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
+
+Function Dim : 0 Codim : 2 Range : 2 Rank : 1. Number of objects: 0
+
+Function Dim : 0 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
+
+Function Dim : 0 Codim : 3 Range : 1 Rank : 1. Number of objects: 0
+
+Function Dim : 0 Codim : 3 Range : 3 Rank : 1. Number of objects: 0
+
 Function Dim : 0 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
 
 Function Dim : 0 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
 
 Function Dim : 0 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+
+Function Dim : 0 Codim : 0 Range : 0 Rank : 1. Number of objects: 0
+
+Function Dim : 0 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+
+Function Dim : 0 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
 
 ========================================================================
 

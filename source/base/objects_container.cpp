@@ -24,12 +24,6 @@
 #include <igatools/basis_functions/NURBS.h>
 #include <igatools/functions/function.h>
 
-#include <boost/fusion/container/map.hpp>
-#include <boost/fusion/include/map.hpp>
-#include <boost/fusion/container/map/map_fwd.hpp>
-#include <boost/fusion/include/map_fwd.hpp>
-#include <boost/fusion/include/at_key.hpp>
-
 
 using std::shared_ptr;
 using std::to_string;
@@ -126,16 +120,9 @@ void
 ObjectsContainer::
 print_info (LogStream &out) const
 {
-    using GPtrs = typename InstantiatedTypes::GridPtrs;
-    using SSPtrs = typename InstantiatedTypes::SplineSpacePtrs;
-    using GFPtrs = typename InstantiatedTypes::GridFunctionPtrs;
-    using DPtrs = typename InstantiatedTypes::DomainPtrs;
-    using PSPtrs = typename InstantiatedTypes::PhysSpacePtrs;
-    using FPtrs = typename InstantiatedTypes::FunctionPtrs;
 
 
-    // Grids
-    GPtrs valid_grid_ptr_types;
+    GridPtrs valid_grid_ptr_types;
     for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
@@ -154,8 +141,8 @@ print_info (LogStream &out) const
     });
 
     // Spline spaces
-    SSPtrs valid_ssp_ptr_types;
-    for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
+    SpSpacePtrs valid_rsp_ptr_types;
+    for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
         const auto objects = at_key<Type>(objects_);
@@ -176,7 +163,7 @@ print_info (LogStream &out) const
     });
 
     // Reference space basis
-    for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
+    for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
     {
         using SSType = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
         using Type = ReferenceSpaceBasis<SSType::dim, SSType::range, SSType::rank>;
@@ -198,7 +185,7 @@ print_info (LogStream &out) const
     });
 
     // Grid functions
-    GFPtrs valid_gf_ptr_types;
+    GridFuncPtrs valid_gf_ptr_types;
     for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
@@ -218,7 +205,7 @@ print_info (LogStream &out) const
     });
 
     // Domains
-    DPtrs valid_dm_ptr_types;
+    DomainPtrs valid_dm_ptr_types;
     for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
@@ -238,7 +225,7 @@ print_info (LogStream &out) const
     });
 
     // Physical space basis
-    PSPtrs valid_ps_ptr_types;
+    PhysSpacePtrs valid_ps_ptr_types;
     for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
@@ -260,7 +247,7 @@ print_info (LogStream &out) const
     });
 
     // Function
-    FPtrs valid_fn_ptr_types;
+    FunctionPtrs valid_fn_ptr_types;
     for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
     {
         using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
