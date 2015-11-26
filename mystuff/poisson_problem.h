@@ -73,11 +73,15 @@ class ElasticityProblem {
     bool is_grid;
 
   public:
-    void assemble(const Real lambda, const Real mu) const;
+    shared_ptr<Grid<dim>> get_grid() const {
+      return grid;
+    }
+    void assemble(const Real lambda, const Real mu, shared_ptr<const FormulaGridFunction<dim,dim>> source_term) const;
     void solve() const;
     void check() const;
     void deform() const;
     void output() const;
+    void output(shared_ptr<const FormulaGridFunction<dim,dim>> exact_solution) const;
 };
 
 // ----------------------------------------------------------------------------
@@ -180,7 +184,9 @@ ElasticityProblem<dim>::ElasticityProblem(const TensorSize<dim> nel,
 //   METHODS
 // ----------------------------------------------------------------------------
 template<int dim> // assemble the system
-void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
+void ElasticityProblem<dim>::assemble(const Real lambda,
+                                      const Real mu,
+                                      shared_ptr<const FormulaGridFunction<dim,dim>> source_term) const {
 
   //out << "Number of elements: " << grid->get_num_intervals() << endl;
   //auto d = basis->get_spline_space()->get_degree_table();
@@ -200,7 +206,7 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
   basis_handler->init_element_cache(basis_el,elem_quad);
 
   // ATTEMPT 1: GridFunction
-  auto source_term   = grid_functions::ConstantGridFunction<dim,dim>::const_create(grid,{0.0,0.0,-0.0001});
+  //auto source_term   = grid_functions::ConstantGridFunction<dim,dim>::const_create(grid,{0.0,0.0,-0.0001});
   auto funct_handler = source_term->create_cache_handler();
   auto funct_el      = source_term->begin();
   funct_handler->set_element_flags(grid_function_element::Flags::D0);
@@ -216,7 +222,7 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
   const auto l = lambda;
   const auto m = 0.5*mu;
   // retrieving the last datum and then starting the loop
-  for (; basis_el!=basis_eld; ++basis_el) {
+  for (int iel=0; basis_el!=basis_eld; iel++, ++basis_el, ++funct_el) {
     basis_handler->fill_element_cache(basis_el);
     funct_handler->fill_element_cache(funct_el);
     //funct_handler->template fill_cache<dim>(funct_el,0);
@@ -233,8 +239,13 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
     auto w_meas = basis_el->get_element_w_measures();
     auto &fval  = funct_el->get_element_values_D0();
 
+    //out << "Element " << iel << endl;
+    //for (int iqn=0; iqn<Nqn; iqn++) {
+    //  out << fval[iqn] << endl;
+    //}
+
     // precomputing epsilon(v) = 0.5 * (\grad(v) + \grad(v)^T)
-    using Der = typename SpaceElement<dim,0,dim,1>::template Derivative<1>;
+    /*using Der = typename SpaceElement<dim,0,dim,1>::template Derivative<1>;
     ValueTable<Der> epsils(Nbf,Nqn);
     for (int ibf=0; ibf<Nbf; ibf++) {
       auto epsil = epsils.get_function_view(ibf);
@@ -259,7 +270,7 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
           // PART 2: assembling  2mu \int eps(v_i):eps(v_j)
           part_2 += scalar_product(eps_i[iqn],eps_j[iqn]) * w_meas[iqn];
         }
-        loc_mat(ibf,jbf) = l*part_1 + m*part_1;
+        loc_mat(ibf,jbf) = l*part_1 + m*part_2;
       }
       // loop for the right hand side local vector
       //const auto &val_i = values.get_function_view(ibf); // view for the i-th basis function
@@ -267,7 +278,8 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
         // PART 3: assembling \int v_i*1
         //loc_rhs(ibf) += scalar_product(val_i[iqn][0],fval[iqn]) * w_meas[iqn];
       //}
-    }
+    }*/
+    loc_mat = mu * basis_el->integrate_gradu_gradv();
     loc_rhs = basis_el->integrate_u_func(fval);
 
     // spatashing element matrix into the global matrix
@@ -281,14 +293,23 @@ void ElasticityProblem<dim>::assemble(const Real lambda, const Real mu) const {
   using space_tools::project_boundary_values;
   using dof_tools::apply_boundary_values;
 
+
     // ATTEMPT 1
-  auto dof_distribution = basis->get_dof_distribution();
-  Topology<dim-1> sub_elem_topology;
-  auto bdr_dofs = dof_distribution->get_boundary_dofs(0,sub_elem_topology);
   std::map<Index,Real> bdr_vals;
-  for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
-    bdr_vals[*it]=0.0;
+  std::set<Index> faces = {0};
+  auto dof_distribution = basis->get_dof_distribution(); 
+  Topology<dim-1> sub_elem_topology;
+  for (set<Index>::iterator iface=faces.begin(); iface!=faces.end(); iface++) {
+    auto bdr_dofs = dof_distribution->get_boundary_dofs(*iface,sub_elem_topology);
+    for (set<Index>::iterator ival=bdr_dofs.begin(); ival!=bdr_dofs.end(); ival++) {
+      bdr_vals[*ival]=0.0;
+     // cout << "changed boundary value " << *ival << endl;
+    }
+  //bdr_dofs = dof_distribution->get_boundary_dofs(1,sub_elem_topology);
+  //for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
+    //bdr_vals[*it]=0.0;
     //cout << "changed boundary value " << *it << endl;
+  //}
   }
   apply_boundary_values(bdr_vals,*mat,*rhs,*sol);//*/
 
@@ -496,8 +517,28 @@ void ElasticityProblem<dim>::output() const
   Writer<dim> writer(domain, num_plot_pts);
   //using IgFunc = IgFunction<dim,0,1,1>;
   if (is_grid) {
-    auto solution_function = IgGridFunction<dim,dim>::create(basis, *sol);
-    writer.template add_field<dim>(*solution_function, "solution");
+    auto solution = IgGridFunction<dim,dim>::create(basis, *sol);
+    writer.template add_field<dim>(*solution, "solution");
+  }
+  else {
+    //auto solution_function = IgFunction<dim,0,dim,1>::create(basis, *sol);
+    //writer.template add_field<dim,1>(*solution_function, "solution");
+  }
+  string filename = "plot_" + to_string(dim) + "d" ;
+  writer.save(filename);
+}
+
+template<int dim>
+void ElasticityProblem<dim>::output(shared_ptr<const FormulaGridFunction<dim,dim>> exact_solution) const
+{
+  const int num_plot_pts = 10;
+  //auto domain = basis->get_physical_domain();
+  Writer<dim> writer(domain, num_plot_pts);
+  //using IgFunc = IgFunction<dim,0,1,1>;
+  if (is_grid) {
+    auto solution = IgGridFunction<dim,dim>::create(basis, *sol);
+    writer.template add_field<dim>(*solution, "solution");
+    writer.template add_field<dim>(*exact_solution,"exact solution");
   }
   else {
     //auto solution_function = IgFunction<dim,0,dim,1>::create(basis, *sol);

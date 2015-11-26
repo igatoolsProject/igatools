@@ -41,21 +41,23 @@ LogStream out;
 //   MY CUSTOM FUNCTION
 // ----------------------------------------------------------------------------
 #define PI 3.141592653589793
-template<int dim> // exact solution
-Values<dim,1,1> exact_solution(Points<dim> pts) {
-  Values<dim,1,1> x = {1.0};
-  for (int idim=0; idim<dim; idim++) {
-    x *= sin( 4.0 * pts[idim] * PI);
-  }
+Values<3,3,1> u(Points<3> pts) {
+  Values<3,3,1> x = {0.0,0.0,0.0};
+  x[2] = 0.1 * (cos(2.0*PI*pts[0]) - 1.0);
+  //for (int idim=0; idim<dim; idim++) {
+  //  x *= sin( 4.0 * pts[idim] * PI);
+  //}
   return x;
 }
 
-template<int dim> // source term
-Values<dim,1,1> source_term(Points<dim> pts) {
-  Values<dim,1,1> x = {16.0 * dim * PI * PI};
-  for (int idim=0; idim<dim; idim++) {
-    x *= sin(4.0 * pts[idim] * PI);
-  }
+Real lambda = 0.0;
+Real mu     = 0.38462;
+Values<3,3,1> f(Points<3> pts) {
+  Values<3,3,1> x = {0.0,0.0,-0.1};
+  x[2] = mu*PI*PI*0.4 * cos(2.0*PI*pts[0]);// * cos(2.0*PI*pts[1]);
+  //for (int idim=0; idim<dim; idim++) {
+  //  x *= sin(4.0 * pts[idim] * PI);
+  //}
   return x;
 }
 
@@ -97,11 +99,15 @@ int main() {
     deg[idim]=2;
   }
   auto problem =  ElasticityProblem<dim>(nel,deg);
+  auto grid = problem.get_grid();
+  using namespace grid_functions;
+  auto source_term = CustomGridFunction<dim,dim>::const_create(grid,f);
 
-  problem.assemble(1.0,0.49);
+  problem.assemble(lambda,mu,source_term);
   problem.solve();
-  problem.check();
-  problem.output();//*/
+  //problem.check();
+  auto exact_solution = CustomGridFunction<dim,dim>::const_create(grid,u);
+  problem.output(exact_solution);//*
 
   /*auto grid    = Grid<dim>::create(3);
   auto space   = SplineSpace<dim,dim>::create(2,grid);
