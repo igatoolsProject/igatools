@@ -126,12 +126,12 @@ void
 ObjectsContainer::
 print_info (LogStream &out) const
 {
-    using GPtrs = typename InstantiatedTypes::ValidGridPtrs;
-    using SSPtrs = typename InstantiatedTypes::ValidSplineSpacePtrs;
-    using GFPtrs = typename InstantiatedTypes::ValidGridFunctionPtrs;
-    using DPtrs = typename InstantiatedTypes::ValidDomainPtrs;
-    using PSPtrs = typename InstantiatedTypes::ValidPhysSpacePtrs;
-    using FPtrs = typename InstantiatedTypes::ValidFunctionPtrs;
+    using GPtrs = typename InstantiatedTypes::GridPtrs;
+    using SSPtrs = typename InstantiatedTypes::SplineSpacePtrs;
+    using GFPtrs = typename InstantiatedTypes::GridFunctionPtrs;
+    using DPtrs = typename InstantiatedTypes::DomainPtrs;
+    using PSPtrs = typename InstantiatedTypes::PhysSpacePtrs;
+    using FPtrs = typename InstantiatedTypes::FunctionPtrs;
 
 
     // Grids

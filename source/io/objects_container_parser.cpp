@@ -91,8 +91,8 @@ parse_grids(const shared_ptr<XMLElement> xml_elem,
     {
         const int grid_dim = ge->get_attribute<int>("Dim");
 
-        using ValidGridPtrs = typename InstantiatedTypes::ValidGridPtrs;
-        ValidGridPtrs valid_grid_ptr_types;
+        using GridPtrs = typename InstantiatedTypes::GridPtrs;
+        GridPtrs valid_grid_ptr_types;
 
         bool found = false;
         boost::fusion::for_each(valid_grid_ptr_types, [&](const auto &grid_ptr_type)
@@ -133,8 +133,8 @@ parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
         const int ssp_range = ssp->get_attribute<int>("Range");
         const int ssp_rank = ssp->get_attribute<int>("Rank");
 
-        using ValidSplineSpacePtrs = typename InstantiatedTypes::ValidSplineSpacePtrs;
-        ValidSplineSpacePtrs valid_ssp_ptr_types;
+        using SplineSpacePtrs = typename InstantiatedTypes::SplineSpacePtrs;
+        SplineSpacePtrs valid_ssp_ptr_types;
 
         bool found = false;
         boost::fusion::for_each(valid_ssp_ptr_types, [&](const auto &ssp_ptr_type)
@@ -178,8 +178,8 @@ parse_bsplines(const shared_ptr<XMLElement> xml_elem,
         const int bs_range = bs->get_attribute<int>("Range");
         const int bs_rank = bs->get_attribute<int>("Rank");
 
-        using ValidBSplinePtrs = typename InstantiatedTypes::ValidSplineSpacePtrs;
-        ValidBSplinePtrs valid_bs_ptr_types;
+        using BSplinePtrs = typename InstantiatedTypes::SplineSpacePtrs;
+        BSplinePtrs valid_bs_ptr_types;
 
         bool found = false;
         boost::fusion::for_each(valid_bs_ptr_types, [&](const auto &bs_ptr_type)
@@ -223,8 +223,8 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
         const int nr_range = nr->get_attribute<int>("Range");
         const int nr_rank = nr->get_attribute<int>("Rank");
 
-        using ValidNURBSPtrs = typename InstantiatedTypes::ValidSplineSpacePtrs;
-        ValidNURBSPtrs valid_nr_ptr_types;
+        using NURBSPtrs = typename InstantiatedTypes::SplineSpacePtrs;
+        NURBSPtrs valid_nr_ptr_types;
 
         bool found = false;
         boost::fusion::for_each(valid_nr_ptr_types, [&](const auto &nr_ptr_type)
@@ -268,8 +268,8 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
         const int gf_dim = gf->get_attribute<int>("Dim");
         const int gf_space_dim = gf->get_attribute<int>("Spacedim"); // This is going to change.
 
-        using ValidGridFunctionPtrs = typename InstantiatedTypes::ValidGridFunctionPtrs;
-        ValidGridFunctionPtrs valid_gf_ptr_types;
+        using GridFunctionPtrs = typename InstantiatedTypes::GridFunctionPtrs;
+        GridFunctionPtrs valid_gf_ptr_types;
 
         bool found = false;
         boost::fusion::for_each(valid_gf_ptr_types, [&](const auto &gf_ptr_type)
@@ -342,8 +342,8 @@ parse_domains(const shared_ptr<XMLElement> xml_elem,
         const int dm_dim = dm->get_attribute<int>("Dim");
         const int dm_codim = dm->get_attribute<int>("Codim");
 
-        using ValidDomainPtrs = typename InstantiatedTypes::ValidDomainPtrs;
-        ValidDomainPtrs valid_dm_ptr_types;
+        using DomainPtrs = typename InstantiatedTypes::DomainPtrs;
+        DomainPtrs valid_dm_ptr_types;
 
         bool found = false;
         boost::fusion::for_each(valid_dm_ptr_types, [&](const auto &dm_ptr_type)
@@ -388,8 +388,8 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
         const int ps_range = ps->get_attribute<int>("Range");
         const int ps_rank = ps->get_attribute<int>("Rank");
 
-        using ValidPhysSpacePtrs = typename InstantiatedTypes::ValidPhysSpacePtrs;
-        ValidPhysSpacePtrs valid_ps_ptr_types;
+        using PhysSpacePtrs = typename InstantiatedTypes::PhysSpacePtrs;
+        PhysSpacePtrs valid_ps_ptr_types;
 
         bool found = false;
         boost::fusion::for_each(valid_ps_ptr_types, [&](const auto &ps_ptr_type)
@@ -435,8 +435,8 @@ parse_functions(const shared_ptr<XMLElement> xml_elem,
         const int fn_range = fn->get_attribute<int>("Range");
         const int fn_rank = fn->get_attribute<int>("Rank");
 
-        using ValidFunctionPtrs = typename InstantiatedTypes::ValidFunctionPtrs;
-        ValidFunctionPtrs valid_fn_ptr_types;
+        using FunctionPtrs = typename InstantiatedTypes::FunctionPtrs;
+        FunctionPtrs valid_fn_ptr_types;
 
         bool found = false;
         boost::fusion::for_each(valid_fn_ptr_types, [&](const auto &fn_ptr_type)

@@ -23,98 +23,216 @@
 
 #include <igatools/base/config.h>
 
-#include <map>
 #include <boost/fusion/container/map.hpp>
 #include <boost/fusion/container/vector.hpp>
+
+#include <igatools/utils/safe_stl_map.h>
 
 IGA_NAMESPACE_OPEN
 
 template <int dim> class Grid;
-template <int dim, int range, int rank> class SplineSpace;
-template <int dim, int range, int rank> class ReferenceSpaceBasis;
-template <int dim, int range, int rank> class BSpline;
-template <int dim, int range, int rank> class NURBS;
 template <int dim, int range> class GridFunction;
 template <int dim, int codim> class Domain;
+template <int dim, int range, int rank> class SplineSpace;
+template <int dim, int range, int rank> class BSpline;
+template <int dim, int range, int rank> class NURBS;
+template <int dim, int range, int rank> class ReferenceSpaceBasis;
 template <int dim, int range, int rank, int codim> class PhysicalSpaceBasis;
 template <int dim, int codim, int range, int rank> class Function;
 
 /**
- * @brief To be documented.
+ * @brief This is a helper struct for defining containers for all
+ * the igatools instantiated types.
  *
- * @author P. Antolin 2015
+ * This is a helper struct for defining containers for all
+ * the igatools instantiated types.
  *
- * @todo document more
+ * The types are stored as shared pointers into <tt>boost::fusion</tt>
+ * vectors.
+ *
+ * @author P. Antolin
+ * @date 2015
  */
 struct InstantiatedTypes
 {
 private:
 
-  /** Type for the shared pointer of a grid. */
+  /** Alias type for the shared pointer of a grid. */
   template <int dim>
   using GridPtr = std::shared_ptr<Grid<dim>>;
 
-  /** Type for the map of indices and grid shared pointers. */
+  /** Alias type for the map of indices and grid shared pointers. */
   template <int dim>
-  using MapGridPtr = std::map<Index, GridPtr<dim>>;
+  using MapGridPtr = SafeSTLMap<Index, GridPtr<dim>>;
 
-  /** Type for the shared pointer of a spline space. */
+  /** Alias type for the shared pointer of a spline space. */
   template <int dim, int range, int rank>
   using SplineSpacePtr = std::shared_ptr<SplineSpace<dim, range, rank>>;
 
-  /** Type for the map of indices and spline space shared pointers. */
+  /** Alias type for the map of indices and spline space shared pointers. */
   template <int dim, int range, int rank>
-  using MapSplineSpacePtr = std::map<Index, SplineSpacePtr<dim, range, rank>>;
+  using MapSplineSpacePtr = SafeSTLMap<Index, SplineSpacePtr<dim, range, rank>>;
 
   /** Alias for the reference space basis. */
   template <int dim, int range, int rank>
   using RefSpace = ReferenceSpaceBasis<dim, range, rank>;
 
-  /** Type for the shared pointer of a reference space basis. */
+  /** Alias type for the shared pointer of a reference space basis. */
   template <int dim, int range, int rank>
   using RefSpacePtr = std::shared_ptr<RefSpace<dim, range, rank>>;
 
-  /** Type for the map of indices and reference space basis shared pointers. */
+  /** Alias type for the map of indices and reference space basis shared pointers. */
   template <int dim, int range, int rank>
-  using MapRefSpacePtr = std::map<Index, RefSpacePtr<dim, range, rank>>;
+  using MapRefSpacePtr = SafeSTLMap<Index, RefSpacePtr<dim, range, rank>>;
 
-  /** Type for the shared pointer of a grid function. */
+  /** Alias type for the shared pointer of a grid function. */
   template <int dim, int range>
   using GridFuncPtr = std::shared_ptr<GridFunction<dim, range>>;
 
-  /** Type for the map of indices and grid function shared pointers. */
+  /** Alias type for the map of indices and grid function shared pointers. */
   template <int dim, int range>
-  using MapGridFuncPtr = std::map<Index, GridFuncPtr<dim, range>>;
+  using MapGridFuncPtr = SafeSTLMap<Index, GridFuncPtr<dim, range>>;
 
-  /** Type for the shared pointer of a domain. */
+  /** Alias type for the shared pointer of a domain. */
   template <int dim, int codim>
   using DomainPtr = std::shared_ptr<Domain<dim, codim>>;
 
-  /** Type for the map of indices and domain shared pointers. */
+  /** Alias type for the map of indices and domain shared pointers. */
   template <int dim, int codim>
-  using MapDomainPtr = std::map<Index, DomainPtr<dim, codim>>;
+  using MapDomainPtr = SafeSTLMap<Index, DomainPtr<dim, codim>>;
 
   /** Alias for physical space basis. */
   template <int dim, int range, int rank, int codim>
   using PhysSpace = PhysicalSpaceBasis<dim, range, rank, codim>;
 
-  /** Type for the shared pointer of a physical space basis. */
+  /** Alias type for the shared pointer of a physical space basis. */
   template <int dim, int range, int rank, int codim>
   using PhysSpacePtr = std::shared_ptr<PhysSpace<dim, range, rank, codim>>;
 
-  /** Type for the map of indices and physical space basis shared pointers. */
+  /** Alias type for the map of indices and physical space basis shared pointers. */
   template <int dim, int range, int rank, int codim>
-  using MapPhysSpacePtr = std::map<Index, PhysSpacePtr<dim, range, rank, codim>>;
+  using MapPhysSpacePtr = SafeSTLMap<Index, PhysSpacePtr<dim, range, rank, codim>>;
 
-  /** Type for the shared pointer of a function. */
+  /** Alias type for the shared pointer of a function. */
   template <int dim, int codim, int range, int rank>
   using FunctionPtr = std::shared_ptr<Function<dim, codim, range, rank>>;
 
-  /** Type for the map of indices and physical space basis shared pointers. */
+  /** Alias type for the map of indices and physical space basis shared pointers. */
   template <int dim, int codim, int range, int rank>
-  using MapFunctionPtr = std::map<Index, FunctionPtr<dim, codim, range, rank>>;
+  using MapFunctionPtr = SafeSTLMap<Index, FunctionPtr<dim, codim, range, rank>>;
+#include <map>
 
 public:
+  /** All grid instantiations. */
+  typedef boost::fusion::vector<std::shared_ptr<Grid<0>>,
+                                std::shared_ptr<Grid<1>>,
+                                std::shared_ptr<Grid<2>>,
+                                std::shared_ptr<Grid<3>>> GridPtrs;
+
+  /** All spline space instantiations. */
+  typedef boost::fusion::vector<
+          std::shared_ptr<SplineSpace<0,0,1>>,
+          std::shared_ptr<SplineSpace<0,1,1>>,
+          std::shared_ptr<SplineSpace<0,2,1>>,
+          std::shared_ptr<SplineSpace<0,3,1>>,
+          std::shared_ptr<SplineSpace<1,1,1>>,
+          std::shared_ptr<SplineSpace<1,2,1>>,
+          std::shared_ptr<SplineSpace<1,3,1>>,
+          std::shared_ptr<SplineSpace<2,1,1>>,
+          std::shared_ptr<SplineSpace<2,2,1>>,
+          std::shared_ptr<SplineSpace<2,3,1>>,
+          std::shared_ptr<SplineSpace<3,1,1>>,
+          std::shared_ptr<SplineSpace<3,3,1>>> SplineSpacePtrs;
+
+  /** All grid function instantiations. */
+  typedef boost::fusion::vector<
+          std::shared_ptr<GridFunction<0,0>>,
+          std::shared_ptr<GridFunction<0,1>>,
+          std::shared_ptr<GridFunction<0,2>>,
+          std::shared_ptr<GridFunction<0,3>>,
+          std::shared_ptr<GridFunction<1,1>>,
+          std::shared_ptr<GridFunction<1,2>>,
+          std::shared_ptr<GridFunction<1,3>>,
+          std::shared_ptr<GridFunction<2,1>>,
+          std::shared_ptr<GridFunction<2,2>>,
+          std::shared_ptr<GridFunction<2,3>>,
+          std::shared_ptr<GridFunction<3,1>>,
+          std::shared_ptr<GridFunction<3,3>>> GridFunctionPtrs;
+
+  /** All domain instantiations. */
+  typedef boost::fusion::vector<
+          std::shared_ptr<Domain<0,0>>,
+          std::shared_ptr<Domain<0,1>>,
+          std::shared_ptr<Domain<0,2>>,
+          std::shared_ptr<Domain<0,3>>,
+          std::shared_ptr<Domain<1,0>>,
+          std::shared_ptr<Domain<1,1>>,
+          std::shared_ptr<Domain<1,2>>,
+          std::shared_ptr<Domain<2,0>>,
+          std::shared_ptr<Domain<2,1>>,
+          std::shared_ptr<Domain<3,0>>> DomainPtrs;
+
+  /** All physical space basis instantiations. */
+  typedef boost::fusion::vector<
+          std::shared_ptr<PhysSpace<0,0,1,0>>,
+          std::shared_ptr<PhysSpace<0,1,1,2>>,
+          std::shared_ptr<PhysSpace<0,1,1,1>>,
+          std::shared_ptr<PhysSpace<0,1,1,3>>,
+          std::shared_ptr<PhysSpace<0,3,1,2>>,
+          std::shared_ptr<PhysSpace<0,3,1,1>>,
+          std::shared_ptr<PhysSpace<0,2,1,2>>,
+          std::shared_ptr<PhysSpace<0,2,1,1>>,
+          std::shared_ptr<PhysSpace<0,3,1,3>>,
+          std::shared_ptr<PhysSpace<1,1,1,0>>,
+          std::shared_ptr<PhysSpace<1,1,1,1>>,
+          std::shared_ptr<PhysSpace<1,2,1,1>>,
+          std::shared_ptr<PhysSpace<1,3,1,1>>,
+          std::shared_ptr<PhysSpace<1,1,1,2>>,
+          std::shared_ptr<PhysSpace<1,3,1,2>>,
+          std::shared_ptr<PhysSpace<2,1,1,0>>,
+          std::shared_ptr<PhysSpace<2,2,1,0>>,
+          std::shared_ptr<PhysSpace<2,1,1,1>>,
+          std::shared_ptr<PhysSpace<2,3,1,1>>,
+          std::shared_ptr<PhysSpace<3,1,1,0>>,
+          std::shared_ptr<PhysSpace<3,3,1,0>>,
+          std::shared_ptr<PhysSpace<1,2,1,0>>,
+          std::shared_ptr<PhysSpace<1,3,1,0>>,
+          std::shared_ptr<PhysSpace<2,3,1,0>>,
+          std::shared_ptr<PhysSpace<0,1,1,0>>,
+          std::shared_ptr<PhysSpace<0,2,1,0>>,
+          std::shared_ptr<PhysSpace<0,3,1,0>>> PhysSpacePtrs;
+
+  /** All function instantiations. */
+  typedef boost::fusion::vector<
+          std::shared_ptr<Function<0,0,0,1>>,
+          std::shared_ptr<Function<0,2,1,1>>,
+          std::shared_ptr<Function<0,1,1,1>>,
+          std::shared_ptr<Function<0,3,1,1>>,
+          std::shared_ptr<Function<0,2,3,1>>,
+          std::shared_ptr<Function<0,1,3,1>>,
+          std::shared_ptr<Function<0,2,2,1>>,
+          std::shared_ptr<Function<0,1,2,1>>,
+          std::shared_ptr<Function<0,3,3,1>>,
+          std::shared_ptr<Function<1,0,1,1>>,
+          std::shared_ptr<Function<1,1,1,1>>,
+          std::shared_ptr<Function<1,1,2,1>>,
+          std::shared_ptr<Function<1,1,3,1>>,
+          std::shared_ptr<Function<1,2,1,1>>,
+          std::shared_ptr<Function<1,2,3,1>>,
+          std::shared_ptr<Function<2,0,1,1>>,
+          std::shared_ptr<Function<2,0,2,1>>,
+          std::shared_ptr<Function<2,1,1,1>>,
+          std::shared_ptr<Function<2,1,3,1>>,
+          std::shared_ptr<Function<3,0,1,1>>,
+          std::shared_ptr<Function<3,0,3,1>>,
+          std::shared_ptr<Function<1,0,2,1>>,
+          std::shared_ptr<Function<1,0,3,1>>,
+          std::shared_ptr<Function<2,0,3,1>>,
+          std::shared_ptr<Function<0,0,1,1>>,
+          std::shared_ptr<Function<0,0,2,1>>,
+          std::shared_ptr<Function<0,0,3,1>>> FunctionPtrs;
+
+  /** Fusion map relating types and map of indices and shared pointers of the types. */
   typedef boost::fusion::map<
   boost::fusion::pair<Grid<0>, MapGridPtr<0>>,
   boost::fusion::pair<Grid<1>, MapGridPtr<1>>,
@@ -219,129 +337,8 @@ public:
   boost::fusion::pair<Function<2,0,3,1>, MapFunctionPtr<2,0,3,1>>,
   boost::fusion::pair<Function<0,0,1,1>, MapFunctionPtr<0,0,1,1>>,
   boost::fusion::pair<Function<0,0,2,1>, MapFunctionPtr<0,0,2,1>>,
-  boost::fusion::pair<Function<0,0,3,1>, MapFunctionPtr<0,0,3,1>>
-  > ObjectTypes;
+  boost::fusion::pair<Function<0,0,3,1>, MapFunctionPtr<0,0,3,1>>> ObjectTypes;
 
-  /**
-   * Valid Grid instantiations.
-   */
-  typedef boost::fusion::vector<std::shared_ptr<Grid<0>>,
-                                std::shared_ptr<Grid<1>>,
-                                std::shared_ptr<Grid<2>>,
-                                std::shared_ptr<Grid<3>>> ValidGridPtrs;
-
-  /**
-   * Valid Grid instantiations.
-   */
-  typedef boost::fusion::vector<
-          std::shared_ptr<SplineSpace<0,0,1>>,
-          std::shared_ptr<SplineSpace<0,1,1>>,
-          std::shared_ptr<SplineSpace<0,2,1>>,
-          std::shared_ptr<SplineSpace<0,3,1>>,
-          std::shared_ptr<SplineSpace<1,1,1>>,
-          std::shared_ptr<SplineSpace<1,2,1>>,
-          std::shared_ptr<SplineSpace<1,3,1>>,
-          std::shared_ptr<SplineSpace<2,1,1>>,
-          std::shared_ptr<SplineSpace<2,2,1>>,
-          std::shared_ptr<SplineSpace<2,3,1>>,
-          std::shared_ptr<SplineSpace<3,1,1>>,
-          std::shared_ptr<SplineSpace<3,3,1>>> ValidSplineSpacePtrs;
-
-  /**
-   * Valid GridFunction instantiations.
-   */
-  typedef boost::fusion::vector<
-          std::shared_ptr<GridFunction<0,0>>,
-          std::shared_ptr<GridFunction<0,1>>,
-          std::shared_ptr<GridFunction<0,2>>,
-          std::shared_ptr<GridFunction<0,3>>,
-          std::shared_ptr<GridFunction<1,1>>,
-          std::shared_ptr<GridFunction<1,2>>,
-          std::shared_ptr<GridFunction<1,3>>,
-          std::shared_ptr<GridFunction<2,1>>,
-          std::shared_ptr<GridFunction<2,2>>,
-          std::shared_ptr<GridFunction<2,3>>,
-          std::shared_ptr<GridFunction<3,1>>,
-          std::shared_ptr<GridFunction<3,3>>> ValidGridFunctionPtrs;
-
-  /**
-   * Valid Domain instantiations.
-   */
-  typedef boost::fusion::vector<
-          std::shared_ptr<Domain<0,0>>,
-          std::shared_ptr<Domain<0,1>>,
-          std::shared_ptr<Domain<0,2>>,
-          std::shared_ptr<Domain<0,3>>,
-          std::shared_ptr<Domain<1,0>>,
-          std::shared_ptr<Domain<1,1>>,
-          std::shared_ptr<Domain<1,2>>,
-          std::shared_ptr<Domain<2,0>>,
-          std::shared_ptr<Domain<2,1>>,
-          std::shared_ptr<Domain<3,0>>> ValidDomainPtrs;
-
-  /**
-   * Valid Physical Spaces instantiations.
-   */
-  typedef boost::fusion::vector<
-          std::shared_ptr<PhysSpace<0,0,1,0>>,
-          std::shared_ptr<PhysSpace<0,1,1,2>>,
-          std::shared_ptr<PhysSpace<0,1,1,1>>,
-          std::shared_ptr<PhysSpace<0,1,1,3>>,
-          std::shared_ptr<PhysSpace<0,3,1,2>>,
-          std::shared_ptr<PhysSpace<0,3,1,1>>,
-          std::shared_ptr<PhysSpace<0,2,1,2>>,
-          std::shared_ptr<PhysSpace<0,2,1,1>>,
-          std::shared_ptr<PhysSpace<0,3,1,3>>,
-          std::shared_ptr<PhysSpace<1,1,1,0>>,
-          std::shared_ptr<PhysSpace<1,1,1,1>>,
-          std::shared_ptr<PhysSpace<1,2,1,1>>,
-          std::shared_ptr<PhysSpace<1,3,1,1>>,
-          std::shared_ptr<PhysSpace<1,1,1,2>>,
-          std::shared_ptr<PhysSpace<1,3,1,2>>,
-          std::shared_ptr<PhysSpace<2,1,1,0>>,
-          std::shared_ptr<PhysSpace<2,2,1,0>>,
-          std::shared_ptr<PhysSpace<2,1,1,1>>,
-          std::shared_ptr<PhysSpace<2,3,1,1>>,
-          std::shared_ptr<PhysSpace<3,1,1,0>>,
-          std::shared_ptr<PhysSpace<3,3,1,0>>,
-          std::shared_ptr<PhysSpace<1,2,1,0>>,
-          std::shared_ptr<PhysSpace<1,3,1,0>>,
-          std::shared_ptr<PhysSpace<2,3,1,0>>,
-          std::shared_ptr<PhysSpace<0,1,1,0>>,
-          std::shared_ptr<PhysSpace<0,2,1,0>>,
-          std::shared_ptr<PhysSpace<0,3,1,0>>> ValidPhysSpacePtrs;
-
-  /**
-   * Valid Function instantiations.
-   */
-  typedef boost::fusion::vector<
-          std::shared_ptr<Function<0,0,0,1>>,
-          std::shared_ptr<Function<0,2,1,1>>,
-          std::shared_ptr<Function<0,1,1,1>>,
-          std::shared_ptr<Function<0,3,1,1>>,
-          std::shared_ptr<Function<0,2,3,1>>,
-          std::shared_ptr<Function<0,1,3,1>>,
-          std::shared_ptr<Function<0,2,2,1>>,
-          std::shared_ptr<Function<0,1,2,1>>,
-          std::shared_ptr<Function<0,3,3,1>>,
-          std::shared_ptr<Function<1,0,1,1>>,
-          std::shared_ptr<Function<1,1,1,1>>,
-          std::shared_ptr<Function<1,1,2,1>>,
-          std::shared_ptr<Function<1,1,3,1>>,
-          std::shared_ptr<Function<1,2,1,1>>,
-          std::shared_ptr<Function<1,2,3,1>>,
-          std::shared_ptr<Function<2,0,1,1>>,
-          std::shared_ptr<Function<2,0,2,1>>,
-          std::shared_ptr<Function<2,1,1,1>>,
-          std::shared_ptr<Function<2,1,3,1>>,
-          std::shared_ptr<Function<3,0,1,1>>,
-          std::shared_ptr<Function<3,0,3,1>>,
-          std::shared_ptr<Function<1,0,2,1>>,
-          std::shared_ptr<Function<1,0,3,1>>,
-          std::shared_ptr<Function<2,0,3,1>>,
-          std::shared_ptr<Function<0,0,1,1>>,
-          std::shared_ptr<Function<0,0,2,1>>,
-          std::shared_ptr<Function<0,0,3,1>>> ValidFunctionPtrs;
 };
 
 IGA_NAMESPACE_CLOSE
