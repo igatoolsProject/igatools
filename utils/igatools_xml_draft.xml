@@ -74,6 +74,14 @@
     -->
   </BSpline>
 
+  <IdentityGridFunction  IgaObjectId="11" Dim="2">
+    <Grid GetFromIgaObjectId="0"/>
+  </IdentityGridFunction>
+
+  <ConstantGridFunction  IgaObjectId="12" Dim="2" SpaceDim="2">
+    <Grid GetFromIgaObjectId="0"/>
+    <Values> 1.0 1.0 </Values>
+  </ConstantGridFunction>
 
   <IgGridFunction IgaObjectId="5" Dim="2" Spacedim="1">
     <ReferenceSpaceBasis GetFromIgaObjectId="4"/>
@@ -142,5 +150,10 @@
     <DofsProperty>active</DofsProperty>
   </IgFunction>
   -->
+
+  <ConstantFunction  IgaObjectId="12" Dim="2" Range="2" Rank="1" Codim="0">
+    <Domain GetFromIgaObjectId="0"/>
+    <Values> 1.0 1.0 </Values>
+  </ConstantFunction>
 
 </Igatools>
