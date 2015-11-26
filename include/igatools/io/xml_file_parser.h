@@ -64,6 +64,8 @@ class LogStream;
  *
  * @alert This class uses @p Xerces-c library.
  *
+ * @see XMLParserErrorHandler
+ *
  * @author P. Antolin
  * @date 2015
  */

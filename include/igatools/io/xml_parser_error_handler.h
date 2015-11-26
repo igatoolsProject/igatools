@@ -43,6 +43,8 @@ IGA_NAMESPACE_OPEN
  * @attention When an error or warning is thrown, an exception raises,
  * and the execution is automatically finished.
  *
+ * @see XMLFileParser
+ *
  * @author P. Antolin
  * @date 2015
  */
