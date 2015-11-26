@@ -60,7 +60,8 @@ cbegin(const PropId &prop) const
   auto elem = std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
               (
                 std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
-                id_elems_sub_grid_.begin(),
+				sup_func_->cbegin(),
+				id_elems_sub_grid_.begin(),
                 prop);
 
 //    elem->print_info(out);
@@ -82,6 +83,7 @@ cend(const PropId &prop) const
            std::move(std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
                      (
                        std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+					   sup_func_->cend(),
                        id_elems_sub_grid_.end(),
                        prop))
          );
