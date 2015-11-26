@@ -43,12 +43,8 @@ IGA_NAMESPACE_OPEN
 
 
 XMLFileParser::
-XMLFileParser(const string &file_path)
-  :
-  file_path_(file_path)
+XMLFileParser()
 {
-  this->check_file(file_path);
-
   try
   {
     xercesc::XMLPlatformUtils::Initialize();
@@ -67,9 +63,9 @@ XMLFileParser(const string &file_path)
 
 auto
 XMLFileParser::
-create(const string &file_path) -> SelfPtr_
+create() -> SelfPtr_
 {
-  return SelfPtr_(new Self_(file_path));
+  return SelfPtr_(new Self_());
 }
 
 
@@ -122,8 +118,9 @@ check_file(const string &file_path)
 
 std::shared_ptr<XMLElement>
 XMLFileParser::
-parse(const string &grammar_file)
+parse(const string &file_path, const string &grammar_file) const
 {
+  this->check_file(file_path);
   this->check_file(grammar_file);
 
   // Configuring DOM parser
@@ -137,29 +134,18 @@ parse(const string &grammar_file)
   parser_->setValidationSchemaFullChecking(true);
   parser_->setValidationConstraintFatal(true);
   parser_->useCachedGrammarInParse(true);
-//      parser_->setHandleMultipleImports(true);
+  // parser_->setHandleMultipleImports(true);
 
   parser_->loadGrammar(grammar_file.c_str(),
                       xercesc::Grammar::SchemaGrammarType, true);
 
-  parser_->parse(file_path_.c_str());
+  parser_->parse(file_path.c_str());
 
   // This pointer must not be freed, it is owned by the parent parser
   // object.
   xercesc::DOMDocument *dom_doc = parser_->getDocument();
   xercesc::DOMElement *dom_elem = dom_doc->getDocumentElement();
   return XMLElement::create(dom_elem);
-}
-
-
-
-void
-XMLFileParser::
-print_info(LogStream &out) const
-{
-    out.begin_item("XML file parser:");
-    out << "File path: " << file_path_ << std::endl;
-    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE

@@ -51,8 +51,8 @@ shared_ptr<ObjectsContainer>
 ObjectsContainerParser::
 parse(const string &file_path, const string &schema_file)
 {
-    const auto parser = XMLFileParser::create(file_path);
-    const auto xml_elem = parser->parse(schema_file);
+    const auto parser = XMLFileParser::create();
+    const auto xml_elem = parser->parse(file_path, schema_file);
     const auto container = ObjectsContainer::create();
 
     // Checking for repeated iga object ids.

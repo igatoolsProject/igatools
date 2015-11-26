@@ -47,7 +47,7 @@ class LogStream;
  *
  * This class provides the capability of creating a @p XercesDOMParser,
  * checking the validity of the input file (if it exists, it is corrupted,
- * etc), and retrieving a  @p XMLElement containing the XML document
+ * etc), and retrieving a  @p XMLElement wrapping the XML document
  * contained in the input file.
  *
  * This class uses a @ref XMLParserErrorHandler for managing the possible
@@ -78,25 +78,12 @@ private:
   ///@{
 
   /**
-   * @brief Constructor taking the path of the file to be parsed.
+   * @brief Constructor.
    *
-   * Constructor taking the path of the file to be parsed.
-   *
-   * Inside the constructor, the validity of the input file is checked by
-   * means @ref check_file, the XML platform is initialized and
-   * @ref parser_ is created.
-   *
-   * @param[in] file_path Path of the file to be parsed.
+   * This constructor initializes the @p Xerces-c utils and creates
+   * the XML parser.
    */
-  XMLFileParser(const std::string &file_path);
-
-  /**
-   * @brief Deleted default constructor.
-   *
-   * Default constructor.
-   * @note Deleted: not allowed.
-   */
-  XMLFileParser() = delete;
+  XMLFileParser();
 
   /**
    * @brief Deleted copy constructor.
@@ -147,41 +134,34 @@ public:
    * Builds and returns a new instance of the class wrapped into a
    * shared pointer. It uses the above defined constructor.
    *
-   * @param[in] file_path Path of the file to be parsed.
    * @return A shared pointer with a new instance of the class.
    */
-  static SelfPtr_ create(const std::string &file_path);
+  static SelfPtr_ create();
 
   ///@}
 
 private:
-
-  /** Path of the file to be parsed. */
-  const std::string file_path_;
 
   /** DOM parser. */
   xercesc::XercesDOMParser *parser_;
 
 public:
   /**
-   * @brief Parses the file and returns a XML document object.
+   * @brief Parses the input file and returns a XML document object.
    *
-   * Parses the file and returns a XML document object. Before parsing the file,
-   * all the required configuration flags are setup.
+   * Parses the input file and returns a XML document object.
+   * Before parsing the file, all the required configuration flags are
+   * setup and the validity of both files is checked.
    *
    * @attention If there is any problem parsing the input file, error messages
    * and exceptions will be thrown.
    *
+   * @param[in] file_path Path of the file to be parsed.
+   * @param[in] grammar_file File containing the schema to validate the XML document.
    * @return XML document object.
    */
-  std::shared_ptr<XMLElement> parse(const std::string &grammar_file);
-
-  /**
-   * Prints some internal information. Mostly used for testing and
-   * debugging purposes.
-   * @param[in] out Log stream for writing the output.
-   */
-  void print_info(LogStream &out) const;
+  std::shared_ptr<XMLElement> parse(const std::string &file_path,
+                                    const std::string &grammar_file) const;
 
 private:
   /**
@@ -189,6 +169,7 @@ private:
    *
    * Checks if the file can be read. It throws an error message
    * if the file can not be read properly.
+   *
    * @param[in] file_path Path of the file to be checked.
    */
   static void check_file(const std::string &file_path);
