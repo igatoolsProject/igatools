@@ -30,6 +30,10 @@ for dim in inst.domain_dims:
     output.add ('template class grid_functions::ConstantGridFunction<%d,1>;\n' % (dim) )
     output.add ('template class grid_functions::IdentityGridFunction<%d>;\n' % (dim) )
 
+for dim in inst.sub_domain_dims:
+    output.add ('template class grid_functions::ConstantGridFunction<%d,%d>;\n' % (dim,dim) )
+    output.add ('template class grid_functions::IdentityGridFunction<%d>;\n' % (dim) )
+
 
 output.add ('template class grid_functions::LinearGridFunction<0,0>;\n')
 for dim in inst.domain_dims:
