@@ -39,7 +39,22 @@ template <class T> class SafeSTLVector;
 class LogStream;
 
 /**
- * @todo To be documented.
+ * @brief Class for managing XML DOM elements of @p Xerces-c.
+ *
+ * This is wrapper class of the XML <tt>Xerces-c DOMElement</tt> class.
+ *
+ * It takes on pointer to a @p DOMElement as argument for the constructor
+ * and provides some functionalities for accessing data and querying
+ * information of the XML element.
+ *
+ * The class provides methods for extracting children elements
+ * of the element, that are wrapped inside new instances of the class
+ * and returned.
+ *
+ * @alert This class uses @p Xerces-c library.
+ * @alert The class is not in charge of freeing the @p DOMElement pointer.
+ *
+ * @see XMLFileParser
  *
  * @author P. Antolin
  * @date 2015
@@ -57,7 +72,7 @@ private:
   /** Type for a shared pointer of the current class. */
   typedef std::shared_ptr<Self_> SelfPtr_;
 
-  /** Type for a shared pointer of the current class. */
+  /** Type for a pointer of the Xerces-c DOM element class. */
   typedef xercesc::DOMElement * DOMElemPtr_;
 
   ///@}
@@ -66,7 +81,11 @@ private:
   ///@{
 
   /**
-   * @todo To be documented.
+   * Constructor.
+   *
+   * Constructs a new instance of the class by taking a pointer
+   * to a Xerces-c @p DOMElement.
+   *
    * @param[in] dom_elem Xerces-C XML element object.
    */
   XMLElement(const DOMElemPtr_ dom_elem);
@@ -136,8 +155,6 @@ public:
    */
   SafeSTLVector<SelfPtr_> get_children_elements() const;
 
-
-
   /**
    * @brief Returns all the first level children elements contained in
    * the current element with a given tag @p name.
@@ -150,9 +167,8 @@ public:
    */
   SafeSTLVector<SelfPtr_> get_children_elements(const std::string &name) const;
 
-
   /**
-   * @brief Checks if a certain attribute is the element.
+   * @brief Checks if a certain attribute is present the element.
    *
    * Checks if there exists at least one attribute in the element with
    * the given @p name.
@@ -160,9 +176,7 @@ public:
    * @param[in] name Name of the attribute to be checked.
    * @return @p true if the attribute is present, @p false elsewhere.
    */
-  bool
-  has_attribute(const std::string &name) const;
-
+  bool has_attribute(const std::string &name) const;
 
   /**
    * @brief Checks if a certain child element is the element.
@@ -173,8 +187,7 @@ public:
    * @param[in] name Name of the child element to be checked.
    * @return @p true if the child element is present, @p false elsewhere.
    */
-  bool
-  has_element(const std::string &name) const;
+  bool has_element(const std::string &name) const;
 
   /**
    * @brief Returns the tag @p name of the element.
@@ -185,30 +198,18 @@ public:
    */
   std::string get_name() const;
 
-
   /**
    * @brief Returns the value of the element.
    *
-   * Return the value of the element given the template type.
+   * Return the value of type @p T of the element.
    *
-   * @return Parsed value returned.
    * @tparam T Type of value returned.
+   * @return Parsed value returned.
+   *
+   * @note It throws an exception if the type of the value
+   * is not the specified one.
    */
   template <class T> T get_value() const;
-
-  /**
-   * @brief Returns the only one text child element contained in the
-   * element.
-   *
-   * Returns the only one text child element of type @p DOMText contained
-   * in the element.
-   *
-   * @return Single extracted element wrapped into a shared pointer.
-   *
-   * @warning In debug mode, if more than one children of type @p DOMText
-   * are present the element, or there is anyone, an error is thrown.
-   */
-  xercesc::DOMText *get_single_text_element() const;
 
   /**
    * @brief Returns the value of the attribute with the given @p name.
@@ -216,23 +217,25 @@ public:
    * Returns the value of type @p T of an attribute with the given @p name
    * in the element.
    *
+   * @tparam T Type of value returned.
    * @param[in] name Name of the attribute.
    * @return Value of the attribute.
    *
-   * @tparam T Type of value returned.
    * @note In debug mode, if the attribute is not present,
    * an error is thrown.
    */
   template <class T> T get_attribute(const std::string &name) const;
 
   /**
-   * @brief Returns a vector of numerical values contained in the element.
+   * @brief Returns a vector of values contained in the element.
    *
-   * Returns a vector of numerical values with type @p T that
+   * Returns a vector of values with type @p T that
    * are contained in the element.
    *
    * @tparam T Type of value returned in the vector.
    * @return Vector containing the extracted numerical values.
+   *
+   * @note It will throw an exception if is not able to parse the vector.
    */
   template <class T>
   SafeSTLVector<T> get_values_vector() const;
@@ -265,15 +268,30 @@ public:
   SelfPtr_ get_single_element(const std::string &name);
 
   /**
-   * Prints some internal information. Mostly used for testing and debugging purposes.
+   * Prints some internal information. Mostly used for testing and
+   * debugging purposes. Prints the XML element content.
+   * @param[in] out Log stream for printing information.
    */
   void print_info(LogStream &out) const;
 
 private:
-  /**
-   * @todo To be documented.
-   */
+
+  /** Xerces-C DOM element pointer. */
   const DOMElemPtr_ root_elem_;
+
+  /**
+   * @brief Returns the only one text child element contained in the
+   * element.
+   *
+   * Returns the only one text child element of type @p DOMText contained
+   * in the element.
+   *
+   * @return Single extracted element pointer.
+   *
+   * @warning In debug mode, if more than one children of type @p DOMText
+   * are present the element, or there is none, an error is thrown.
+   */
+  xercesc::DOMText *get_single_text_element() const;
 
 };
 
@@ -283,4 +301,3 @@ IGA_NAMESPACE_CLOSE
 #endif // XML_IO
 
 #endif // __XML_ELEMENT_H_
-

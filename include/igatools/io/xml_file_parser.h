@@ -62,6 +62,8 @@ class LogStream;
  * The destructor of the class is in charge of of deleting @ref parser_
  * and to shutdown all the @p Xerces-c active process.
  *
+ * @alert This class uses @p Xerces-c library.
+ *
  * @author P. Antolin
  * @date 2015
  */
