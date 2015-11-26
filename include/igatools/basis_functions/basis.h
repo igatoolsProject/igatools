@@ -185,12 +185,13 @@ public:
   ///@}
 
 
-  /**
-   * Create and element (defined on this space) with a given flat_index
-   */
-  virtual std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
-      create_element(const ListIt &index, const PropId &property) const = 0;
+  virtual
+  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  create_element_begin(const PropId &property) const = 0;
 
+  virtual
+  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  create_element_end(const PropId &property) const = 0;
 
 
   virtual std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_> >

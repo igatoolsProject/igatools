@@ -47,7 +47,7 @@ get_grid() const -> std::shared_ptr<const GridType>
   return grid_.get_ptr_const_data();
 }
 
-
+#if 0
 template<int dim_, int space_dim_>
 auto
 GridFunction<dim_, space_dim_>::
@@ -57,9 +57,34 @@ create_element(const ListIt &index, const PropId &prop) const
   using Elem = ElementAccessor;
   return std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
 }
+#endif
+
+template<int dim_, int space_dim_>
+auto
+GridFunction<dim_, space_dim_>::
+create_element_begin(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+
+//  const auto elem_it = grid_->get_elements_with_property(prop).cbegin();
+  return std::unique_ptr<Elem>(new
+  Elem(this->shared_from_this(),grid_->create_element_begin(prop)));
+}
 
 
+template<int dim_, int space_dim_>
+auto
+GridFunction<dim_, space_dim_>::
+create_element_end(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
 
+//  const auto elem_it = grid_->get_elements_with_property(prop).cend();
+  return std::unique_ptr<Elem>(new
+  Elem(this->shared_from_this(),grid_->create_element_end(prop)));
+}
 
 
 
@@ -90,8 +115,7 @@ GridFunction<dim_, space_dim_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
-           this->create_element(grid_->get_elements_with_property(prop).begin(),
-                                prop));
+           this->create_element_begin(prop));
 }
 
 
@@ -102,8 +126,7 @@ GridFunction<dim_, space_dim_>::
 cend(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
-           this->create_element(grid_->get_elements_with_property(prop).end(),
-                                prop));
+           this->create_element_end(prop));
 }
 
 

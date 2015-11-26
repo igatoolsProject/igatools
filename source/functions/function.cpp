@@ -59,7 +59,7 @@ create_cache_handler() const
 }
 
 
-
+#if 0
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
@@ -69,8 +69,32 @@ create_element(const ListIt &index, const PropId &prop) const
   using Elem = ElementAccessor;
   return std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
 }
+#endif
+
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+create_element_begin(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+  return std::unique_ptr<Elem>(new Elem(
+    this->shared_from_this(),
+    domain_->create_element_begin(prop)));
+}
 
 
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+create_element_end(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+  return std::unique_ptr<Elem>(new Elem(
+    this->shared_from_this(),
+    domain_->create_element_end(prop)));
+}
 
 #if 0
 template<int dim_, int codim_, int range_, int rank_>
@@ -122,10 +146,7 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 cbegin(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(
-           this->create_element(
-             domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).begin(),
-             prop));
+  return ElementIterator(this->create_element_begin(prop));
 }
 
 
@@ -135,10 +156,7 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 cend(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(
-           this->create_element(
-             domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).end(),
-             prop));
+  return ElementIterator(this->create_element_end(prop));
 }
 
 

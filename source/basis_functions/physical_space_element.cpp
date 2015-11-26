@@ -31,19 +31,14 @@ IGA_NAMESPACE_OPEN
 template<int dim_,int range_,int rank_,int codim_>
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> &phys_space,
-                     const ListIt &index,
-					 GridIterator<RefElemAccessor> &&ref_space_element,
-					 GridIterator<PhysDomainElem> &&phys_domain_element,
-                     const PropId &prop)
+                     GridIterator<RefElemAccessor> &&ref_space_element,
+                     GridIterator<PhysDomainElem> &&phys_domain_element)
   :
-  parent_t(phys_space,prop),
+  parent_t(phys_space),
   ref_space_element_(std::move(ref_space_element)),
   phys_domain_element_(std::move(phys_domain_element)),
   phys_space_(phys_space)
-{
-//    push_fwd_element_ = std::make_shared<PfElemAccessor>(phys_space->get_map_func(), index);
-//  Assert(phys_domain_element_ != nullptr, ExcNullPtr());
-}
+{}
 
 template<int dim_,int range_,int rank_,int codim_>
 auto

@@ -30,11 +30,9 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank>
 ReferenceElement<dim, range, rank>::
-ReferenceElement(const std::shared_ptr<ConstBasis> &basis,
-                 const ListIt &index,
-                 const PropId &prop)
+ReferenceElement(const std::shared_ptr<ConstBasis> &basis)
   :
-  parent_t(basis,prop),
+  parent_t(basis),
   basis_(basis)
 {
 //    Assert(this->get_space() != nullptr,ExcNullPtr());

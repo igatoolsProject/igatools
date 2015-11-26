@@ -175,19 +175,33 @@ public:
                const BasisEndBehaviour &end_b = BasisEndBehaviour::interpolatory);
 
   ///@}
-
+#if 0
   /**
    * Create an element (defined on this space) with a given @p index.
    */
   virtual std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
   create_element(const ListIt &index, const PropId &property) const override final;
+#endif
 
-  /**
-   * Create an element (defined on this space) with a given @p index.
-   */
+  virtual
+  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  create_element_begin(const PropId &property) const  override final;
+
+  virtual
+  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  create_element_end(const PropId &property) const  override final;
+
+#if 0
   virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
   create_ref_element(const ListIt &index, const PropId &property) const override final;
+#endif
 
+  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  create_ref_element_begin(const PropId &property) const override final;
+
+
+  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  create_ref_element_end(const PropId &property) const override final;
 
   /** Destructor. */
   virtual ~BSpline() = default;

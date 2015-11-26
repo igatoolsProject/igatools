@@ -106,7 +106,7 @@ get_this_basis() const -> std::shared_ptr<const self_t >
   return this_space;
 }
 
-
+#if 0
 template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
@@ -115,12 +115,36 @@ create_element(const ListIt &index, const PropId &prop) const
 {
   return std::unique_ptr<ElementAccessor>(
     new ElementAccessor(this->get_this_basis(),
-    		index,
-    		this->get_reference_basis()->create_ref_element(index,prop),
-			this->get_physical_domain()->create_element(index,prop),
-			prop));
+  index,
+  this->get_reference_basis()->create_ref_element(index,prop),
+  this->get_physical_domain()->create_element(index,prop),
+  prop));
+}
+#endif
+
+template <int dim_, int range_, int rank_, int codim_>
+auto
+PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+create_element_begin(const PropId &prop) const
+-> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+{
+  return std::unique_ptr<ElementAccessor>(
+    new ElementAccessor(this->get_this_basis(),
+  this->get_reference_basis()->create_ref_element_begin(prop),
+  this->get_physical_domain()->create_element_begin(prop)));
 }
 
+template <int dim_, int range_, int rank_, int codim_>
+auto
+PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+create_element_end(const PropId &prop) const
+-> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+{
+  return std::unique_ptr<ElementAccessor>(
+    new ElementAccessor(this->get_this_basis(),
+  this->get_reference_basis()->create_ref_element_end(prop),
+  this->get_physical_domain()->create_element_end(prop)));
+}
 
 
 template <int dim_, int range_, int rank_, int codim_>

@@ -83,9 +83,16 @@ public:
 
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const = 0;
-
+#if 0
   virtual std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
+#endif
+
+  virtual std::unique_ptr<ElementAccessor>
+  create_element_begin(const PropId &prop) const;
+
+  virtual std::unique_ptr<ElementAccessor>
+  create_element_end(const PropId &prop) const;
 
 
   ///@name Iterating of grid elements

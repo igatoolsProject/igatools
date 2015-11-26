@@ -86,10 +86,8 @@ public:
   PhysicalSpaceElement() = delete;
 
   PhysicalSpaceElement(const std::shared_ptr<ContainerType> &space,
-                       const ListIt &index,
-					   GridIterator<RefElemAccessor> &&ref_space_element,
-					   GridIterator<PhysDomainElem> &&phys_domain_element,
-                       const PropId &prop = ElementProperties::active);
+                       GridIterator<RefElemAccessor> &&ref_space_element,
+                       GridIterator<PhysDomainElem> &&phys_domain_element);
 
 
   /**

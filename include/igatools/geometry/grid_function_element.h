@@ -68,8 +68,7 @@ public:
    * flat index @p elem_index of the Function @p func.
    */
   GridFunctionElement(const std::shared_ptr<ContainerType> &grid_function,
-                      const ListIt &index,
-                      const PropId &prop = ElementProperties::active);
+                      std::unique_ptr<GridElem> &&grid_elem);
 
   /**
    * Copy constructor. Not allowed to be used.

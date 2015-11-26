@@ -26,30 +26,12 @@ IGA_NAMESPACE_OPEN
 template <int sdim,int dim,int space_dim>
 SubGridFunctionElement<sdim,dim,space_dim>::
 SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
-                       std::unique_ptr<GridFunctionElement<dim,space_dim>> &&sup_grid_func_element,
-                       const ListIt &sub_elem_index_iterator,
-                       const PropId &prop)
+                       std::unique_ptr<GridElement<sdim>> &&sub_grid_element,
+                       std::unique_ptr<GridFunctionElement<dim,space_dim>> &&sup_grid_func_element)
   :
-  parent_t(sub_grid_function,sub_elem_index_iterator,prop),
+  parent_t(sub_grid_function,std::move(sub_grid_element)),
   sup_grid_func_element_(std::move(sup_grid_func_element))
-//  sup_grid_func_element_(
-//   sub_grid_function->get_sup_grid_function()->create_element(
-//     sub_grid_function->get_id_elems_sup_grid().begin(),prop))
-{
-  /*
-  if (*sub_elem_index_iterator != *sub_grid_function->get_id_elems_sub_grid().end())
-  {
-    const auto &sup_elem_id = sub_grid_function->get_sup_element_id(*sub_elem_index_iterator);
-
-    sup_grid_func_element_->move_to(sup_elem_id);
-  }
-  else
-  {
-    sup_grid_func_element_->move_to(*(sub_grid_function->get_id_elems_sup_grid().rbegin()));
-  //    ++(*sup_grid_func_element_);
-  }
-  //*/
-}
+{}
 
 template <int sdim,int dim,int space_dim>
 bool

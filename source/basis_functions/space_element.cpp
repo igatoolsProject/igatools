@@ -30,10 +30,8 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_,int codim_,int range_,int rank_>
 SpaceElement<dim_,codim_,range_,rank_>::
-SpaceElement(const std::shared_ptr<Sp> &space_basis,
-             const PropId &prop)
+SpaceElement(const std::shared_ptr<Sp> &space_basis)
   :
-  Element(prop),
   space_basis_(space_basis)
 {}
 
