@@ -54,23 +54,14 @@ GridIterator<GridFunctionElement<sdim,space_dim> >
 SubGridFunction<sdim,dim,space_dim>::
 cbegin(const PropId &prop) const
 {
-//    LogStream out;
-//    out << "cbegin" <<std::endl;
-
-  auto elem = std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
-              (
-                std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
-				sup_func_->cbegin(),
-				id_elems_sub_grid_.begin(),
-                prop);
-
-//    elem->print_info(out);
-
-
-  //TODO: (martinelli, Nov 16,2015): the iterator is not using the property!
-  return GridIterator<GridFunctionElement<sdim,space_dim>>(
-           std::move(elem)
-         );
+  using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
+  using ElemIt = GridIterator<GridFunctionElement<sdim,space_dim> >;
+  return ElemIt(std::unique_ptr<Elem>(new Elem(
+                                        std::dynamic_pointer_cast<const self_t>(
+                                          this->shared_from_this()),
+                                        std::move(sup_func_->create_element(id_elems_sup_grid_.begin(),prop)),
+                                        id_elems_sub_grid_.begin(),
+                                        prop)));
 }
 
 template<int sdim,int dim,int space_dim>
@@ -79,14 +70,14 @@ SubGridFunction<sdim,dim,space_dim>::
 cend(const PropId &prop) const
 {
   //TODO: (martinelli, Nov 16,2015): the iterator is not using the property!
-  return GridIterator<GridFunctionElement<sdim,space_dim>>(
-           std::move(std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
-                     (
-                       std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
-					   sup_func_->cend(),
-                       id_elems_sub_grid_.end(),
-                       prop))
-         );
+  using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
+  using ElemIt = GridIterator<GridFunctionElement<sdim,space_dim> >;
+  return ElemIt(std::unique_ptr<Elem>(new Elem(
+                                        std::dynamic_pointer_cast<const self_t>(
+                                          this->shared_from_this()),
+                                        std::move(sup_func_->create_element(id_elems_sup_grid_.end(),prop)),
+                                        id_elems_sub_grid_.end(),
+                                        prop)));
 }
 
 
@@ -136,10 +127,15 @@ std::unique_ptr<GridFunctionElement<sdim,space_dim> >
 SubGridFunction<sdim,dim,space_dim>::
 create_element(const ListIt &index, const PropId &prop) const
 {
+#if 0
   using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
   return std::unique_ptr<Elem>(
            new Elem(std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
                     index, prop));
+#endif
+
+  Assert(false,ExcNotImplemented());
+  return nullptr;
 }
 
 

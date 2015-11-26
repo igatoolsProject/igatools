@@ -67,7 +67,7 @@ public:
    * flat index @p sub_elem_index_iterator of the Function @p sub_grid_function.
    */
   SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
-		  	  	  	  	 const std::unique_ptr<GridFunctionElement<dim,space_dim>> &sup_grid_func_element,
+                         std::unique_ptr<GridFunctionElement<dim,space_dim>> &&sup_grid_func_element,
                          const ListIt &sub_elem_index_iterator,
                          const PropId &prop = ElementProperties::active);
 

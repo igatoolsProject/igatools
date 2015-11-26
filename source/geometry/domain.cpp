@@ -200,8 +200,8 @@ Domain<dim_, codim_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
-		  this->create_element(grid_func_->get_elements_with_property(prop).begin(),
-		  prop));
+           this->create_element(grid_func_->get_elements_with_property(prop).begin(),
+                                prop));
 }
 
 
@@ -211,9 +211,9 @@ auto
 Domain<dim_, codim_>::
 cend(const PropId &prop) const -> ElementIterator
 {
-	  return ElementIterator(
-			  this->create_element(grid_func_->get_elements_with_property(prop).end(),
-			  prop));
+  return ElementIterator(
+           this->create_element(grid_func_->get_elements_with_property(prop).end(),
+                                prop));
 }
 
 

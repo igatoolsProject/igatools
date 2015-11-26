@@ -26,7 +26,7 @@ IGA_NAMESPACE_OPEN
 template <int sdim,int dim,int space_dim>
 SubGridFunctionElement<sdim,dim,space_dim>::
 SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
-					   const std::unique_ptr<GridFunctionElement<dim,space_dim>> &sup_grid_func_element,
+                       std::unique_ptr<GridFunctionElement<dim,space_dim>> &&sup_grid_func_element,
                        const ListIt &sub_elem_index_iterator,
                        const PropId &prop)
   :
@@ -46,7 +46,7 @@ SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
   else
   {
     sup_grid_func_element_->move_to(*(sub_grid_function->get_id_elems_sup_grid().rbegin()));
-//    ++(*sup_grid_func_element_);
+  //    ++(*sup_grid_func_element_);
   }
   //*/
 }
