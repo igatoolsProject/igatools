@@ -375,6 +375,11 @@ public:
 
   std::shared_ptr<const Grid<dim_> > get_grid() const;
 
+  /**
+   * Returns the unique identifier associated to each object instance.
+   */
+  Index get_object_id() const;
+
 
   const ComponentContainer<SafeSTLVector<TensorIndex<dim_> > > &
   get_dofs_tensor_id_elem_table() const;
@@ -406,6 +411,11 @@ private:
    * dofs of all the spaces.
    */
   std::shared_ptr<DofDistribution<dim_,range_,rank_> > dof_distribution_;
+
+  /**
+   * Unique identifier associated to each object instance.
+   */
+  const Index object_id_;
 
 
 

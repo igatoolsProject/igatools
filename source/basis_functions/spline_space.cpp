@@ -23,6 +23,7 @@
 #include <igatools/utils/vector_tools.h>
 #include <igatools/utils/multi_array_utils.h>
 #include <igatools/basis_functions/dof_distribution.h>
+#include <igatools/utils/unique_id_generator.h>
 
 
 using std::unique_ptr;
@@ -192,7 +193,8 @@ SplineSpace(const DegreeTable &deg,
   grid_(grid),
   interior_mult_(interior_mult),
   deg_(deg),
-  periodic_(periodic)
+  periodic_(periodic),
+  object_id_(UniqueIdGenerator::get_unique_id())
 {
   this->init();
 }
@@ -882,6 +884,16 @@ print_info(LogStream &out) const
   out.begin_item("Dimensionality Table:");
   space_dim_.print_info(out);
   out.end_item();
+}
+
+
+
+template<int dim_, int range_, int rank_>
+Index
+SplineSpace<dim_, range_, rank_>::
+get_object_id() const
+{
+  return object_id_;
 }
 
 
