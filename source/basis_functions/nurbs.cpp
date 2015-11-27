@@ -144,8 +144,8 @@ create_element_begin(const PropId &property) const
 
 //  const auto &id_elems_with_property = this->get_grid()->get_elements_with_property(property);
   return std::make_unique<Elem>(this->get_this_basis(),
-  std::move(bsp_basis_->create_ref_element_begin(property)),
-  std::move(weight_func_->create_element_begin(property)));
+  bsp_basis_->create_bspline_element_begin(property),
+  weight_func_->create_element_begin(property));
 }
 
 template<int dim_, int range_, int rank_>
@@ -158,8 +158,8 @@ create_element_end(const PropId &property) const
 
 //  const auto &id_elems_with_property = this->get_grid()->get_elements_with_property(property);
   return std::make_unique<Elem>(this->get_this_basis(),
-  std::move(bsp_basis_->create_ref_element_end(property)),
-  std::move(weight_func_->create_element_end(property)));
+  bsp_basis_->create_bspline_element_end(property),
+  weight_func_->create_element_end(property));
 }
 
 
@@ -172,8 +172,8 @@ create_ref_element_begin(const PropId &property) const
   using Elem = NURBSElement<dim_,range_,rank_>;
 
   return std::make_unique<Elem>(this->get_this_basis(),
-  std::move(bsp_basis_->create_ref_element_begin(property)),
-  std::move(weight_func_->create_element_begin(property)));
+  bsp_basis_->create_bspline_element_begin(property),
+  weight_func_->create_element_begin(property));
 }
 
 template<int dim_, int range_, int rank_>
@@ -185,8 +185,8 @@ create_ref_element_end(const PropId &property) const
   using Elem = NURBSElement<dim_,range_,rank_>;
 
   return std::make_unique<Elem>(this->get_this_basis(),
-  std::move(bsp_basis_->create_ref_element_end(property)),
-  std::move(weight_func_->create_element_end(property)));
+  bsp_basis_->create_bspline_element_end(property),
+  weight_func_->create_element_end(property));
 }
 
 template <int dim_, int range_, int rank_>

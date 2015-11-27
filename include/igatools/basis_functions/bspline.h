@@ -203,6 +203,14 @@ public:
   virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
   create_ref_element_end(const PropId &property) const override final;
 
+
+  std::unique_ptr<BSplineElement<dim_,range_,rank_> >
+  create_bspline_element_begin(const PropId &property) const;
+
+
+  std::unique_ptr<BSplineElement<dim_,range_,rank_> >
+  create_bspline_element_end(const PropId &property) const;
+
   /** Destructor. */
   virtual ~BSpline() = default;
 

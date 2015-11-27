@@ -213,7 +213,6 @@ create_ref_element_begin(const PropId &property) const
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
-//  const auto &id_elems_with_property = this->get_grid()->get_elements_with_property(property);
   return std::make_unique<Elem>(this->get_this_basis(),
   this->get_grid()->create_element_begin(property));
 }
@@ -231,6 +230,30 @@ create_ref_element_end(const PropId &property) const
   this->get_grid()->create_element_begin(property));
 }
 
+
+template<int dim_, int range_, int rank_>
+auto
+BSpline<dim_, range_, rank_>::
+create_bspline_element_begin(const PropId &property) const
+-> std::unique_ptr<BSplineElement<dim_,range_,rank_> >
+{
+  using Elem = BSplineElement<dim_,range_,rank_>;
+
+  return std::make_unique<Elem>(this->get_this_basis(),
+  this->get_grid()->create_element_begin(property));
+}
+
+template<int dim_, int range_, int rank_>
+auto
+BSpline<dim_, range_, rank_>::
+create_bspline_element_end(const PropId &property) const
+-> std::unique_ptr<BSplineElement<dim_,range_,rank_> >
+{
+  using Elem = BSplineElement<dim_,range_,rank_>;
+
+  return std::make_unique<Elem>(this->get_this_basis(),
+  this->get_grid()->create_element_begin(property));
+}
 
 template<int dim_, int range_, int rank_>
 template<int sdim>
