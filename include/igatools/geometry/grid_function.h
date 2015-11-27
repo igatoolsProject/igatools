@@ -127,6 +127,11 @@ public:
   virtual ElementIterator cend(const PropId &prop = ElementProperties::active) const;
   ///@}
 
+  /**
+   * Returns the unique identifier associated to each object instance.
+   */
+  Index get_object_id() const;
+
 
   virtual void print_info(LogStream &out) const = 0;
 
@@ -164,6 +169,11 @@ public:
 
 private:
   SharedPtrConstnessHandler<Grid<dim_>> grid_;
+
+  /**
+   * Unique identifier associated to each object instance.
+   */
+  const Index object_id_;
 
   friend class GridFunctionElement<dim_, space_dim_>;
 
