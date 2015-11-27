@@ -89,8 +89,8 @@ void insert_objects (const std::shared_ptr<ObjectsContainer> container,
   using GridFuncType = GridFunction<dim, range>;
   using DomainType = Domain<dim, codim>;
   using ConstGridFunc = grid_functions::ConstantGridFunction<dim, range>;
-  //  using ConstFuncType = functions::ConstantFunction<dim, codim, range, rank>;
-  //  using FuncType = Function<dim, codim, range, rank>;
+  using ConstFuncType = functions::ConstantFunction<dim, codim, range, rank>;
+  using FuncType = Function<dim, codim, range, rank>;
   using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
 
   auto grid = GridType::create(coord);
@@ -138,10 +138,10 @@ void insert_objects (const std::shared_ptr<ObjectsContainer> container,
   container->insert_object<PhysSpaceType>(phys_space, object_id);
   ++object_id;
 
-  //  Note: Ig function is not implemented.
-  //  const auto const_func = ConstFuncType::create(domain, val);
-  //  container->insert_object<FuncType>(const_func, object_id);
-  //  ++object_id;
+  // Note: Ig function is not implemented.
+  const auto const_func = ConstFuncType::create(domain, val);
+  container->insert_object<FuncType>(const_func, object_id);
+  ++object_id;
 }
 
 

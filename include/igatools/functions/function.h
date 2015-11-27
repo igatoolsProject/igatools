@@ -195,10 +195,7 @@ public:
   ElementIterator cend(const PropId &property = ElementProperties::active) const;
   ///@}
 
-  virtual void print_info(LogStream &out) const
-  {
-    Assert(false, ExcNotImplemented());
-  }
+  virtual void print_info(LogStream &out) const = 0;
 
 
   /**

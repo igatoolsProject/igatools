@@ -2087,7 +2087,13 @@ Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
 
 Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
 
-Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
+Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 1
+   Object Id : 12
+      ConstantFunction<2,0,2,1>
+         b:
+         [ 0 0 ] 
+      
+   
 
 Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
 

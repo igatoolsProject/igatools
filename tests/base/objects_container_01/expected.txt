@@ -25,7 +25,7 @@ Grid Dim : 1. Number of objects: 3
          
       
    
-   Object Id : 9
+   Object Id : 10
       Number of intervals per direction: [ 4 ]
       Knot coordinates:
          Direction 0: 
@@ -48,7 +48,7 @@ Grid Dim : 1. Number of objects: 3
          
       
    
-   Object Id : 18
+   Object Id : 20
       Number of intervals per direction: [ 4 ]
       Knot coordinates:
          Direction 0: 
@@ -73,7 +73,7 @@ Grid Dim : 1. Number of objects: 3
    
 
 Grid Dim : 2. Number of objects: 2
-   Object Id : 27
+   Object Id : 30
       Number of intervals per direction: [ 4 3 ]
       Knot coordinates:
          Direction 0: 
@@ -122,7 +122,7 @@ Grid Dim : 2. Number of objects: 2
          
       
    
-   Object Id : 36
+   Object Id : 40
       Number of intervals per direction: [ 4 3 ]
       Knot coordinates:
          Direction 0: 
@@ -173,7 +173,7 @@ Grid Dim : 2. Number of objects: 2
    
 
 Grid Dim : 3. Number of objects: 1
-   Object Id : 45
+   Object Id : 50
       Number of intervals per direction: [ 4 3 2 ]
       Knot coordinates:
          Direction 0: 
@@ -333,7 +333,7 @@ SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 1
    
 
 SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 1
-   Object Id : 10
+   Object Id : 11
       Knots without repetition:
          Number of intervals per direction: [ 4 ]
          Knot coordinates:
@@ -401,7 +401,7 @@ SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 1
    
 
 SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 1
-   Object Id : 19
+   Object Id : 21
       Knots without repetition:
          Number of intervals per direction: [ 4 ]
          Knot coordinates:
@@ -478,7 +478,7 @@ SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 1
 SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 0
 
 SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 1
-   Object Id : 28
+   Object Id : 31
       Knots without repetition:
          Number of intervals per direction: [ 4 3 ]
          Knot coordinates:
@@ -576,7 +576,7 @@ SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 1
    
 
 SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 1
-   Object Id : 37
+   Object Id : 41
       Knots without repetition:
          Number of intervals per direction: [ 4 3 ]
          Knot coordinates:
@@ -685,7 +685,7 @@ SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 1
 SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 0
 
 SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 1
-   Object Id : 46
+   Object Id : 51
       Knots without repetition:
          Number of intervals per direction: [ 4 3 2 ]
          Knot coordinates:
@@ -1304,7 +1304,7 @@ ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
          
       
    
-   Object Id : 12
+   Object Id : 13
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -1415,7 +1415,7 @@ ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
          [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
       
    
-   Object Id : 21
+   Object Id : 23
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -1528,7 +1528,7 @@ ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
    
 
 ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
-   Object Id : 11
+   Object Id : 12
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -1658,7 +1658,7 @@ ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
          [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
       
    
-   Object Id : 14
+   Object Id : 15
       BSpline Space:
          Spline Space:
             Knots without repetition:
@@ -1917,7 +1917,7 @@ ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
    
 
 ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
-   Object Id : 20
+   Object Id : 22
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -2066,7 +2066,7 @@ ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
          [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
       
    
-   Object Id : 23
+   Object Id : 25
       BSpline Space:
          Spline Space:
             Knots without repetition:
@@ -2344,7 +2344,7 @@ ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
    
 
 ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 2
-   Object Id : 30
+   Object Id : 33
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -2487,7 +2487,7 @@ ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 2
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
-   Object Id : 39
+   Object Id : 43
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -2632,7 +2632,7 @@ ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 2
    
 
 ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
-   Object Id : 29
+   Object Id : 32
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -2800,7 +2800,7 @@ ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
-   Object Id : 32
+   Object Id : 35
       BSpline Space:
          Spline Space:
             Knots without repetition:
@@ -3157,7 +3157,7 @@ ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
    
 
 ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
-   Object Id : 38
+   Object Id : 42
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -3350,7 +3350,7 @@ ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
-   Object Id : 41
+   Object Id : 45
       BSpline Space:
          Spline Space:
             Knots without repetition:
@@ -3732,7 +3732,7 @@ ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
    
 
 ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
-   Object Id : 48
+   Object Id : 53
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]
@@ -3920,7 +3920,7 @@ ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
    
 
 ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
-   Object Id : 47
+   Object Id : 52
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]
@@ -4166,7 +4166,7 @@ ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
          [2,2]((1.00000,0.00000),(0.00000,1.00000))
       
    
-   Object Id : 50
+   Object Id : 55
       BSpline Space:
          Spline Space:
             Knots without repetition:
@@ -4853,7 +4853,7 @@ GridFunction Dim : 1 Spacedim : 1. Number of objects: 4
          [ 0 ] 
       
    
-   Object Id : 13
+   Object Id : 14
       IgGridFunction<1,1>
          ReferenceSpaceBasis<1,1,1>:
             Spline Space:
@@ -4978,7 +4978,7 @@ GridFunction Dim : 1 Spacedim : 1. Number of objects: 4
          Dofs property: active
       
    
-   Object Id : 22
+   Object Id : 24
       IgGridFunction<1,1>
          ReferenceSpaceBasis<1,1,1>:
             Spline Space:
@@ -5105,7 +5105,7 @@ GridFunction Dim : 1 Spacedim : 1. Number of objects: 4
    
 
 GridFunction Dim : 1 Spacedim : 2. Number of objects: 1
-   Object Id : 15
+   Object Id : 16
       ConstantGridFunction<1,2>
          b:
          [ 0 0 ] 
@@ -5113,7 +5113,7 @@ GridFunction Dim : 1 Spacedim : 2. Number of objects: 1
    
 
 GridFunction Dim : 1 Spacedim : 3. Number of objects: 1
-   Object Id : 24
+   Object Id : 26
       ConstantGridFunction<1,3>
          b:
          [ 0 0 0 ] 
@@ -5121,7 +5121,7 @@ GridFunction Dim : 1 Spacedim : 3. Number of objects: 1
    
 
 GridFunction Dim : 2 Spacedim : 2. Number of objects: 1
-   Object Id : 33
+   Object Id : 36
       ConstantGridFunction<2,2>
          b:
          [ 0 0 ] 
@@ -5129,7 +5129,7 @@ GridFunction Dim : 2 Spacedim : 2. Number of objects: 1
    
 
 GridFunction Dim : 2 Spacedim : 1. Number of objects: 2
-   Object Id : 31
+   Object Id : 34
       IgGridFunction<2,1>
          ReferenceSpaceBasis<2,1,1>:
             Spline Space:
@@ -5314,7 +5314,7 @@ GridFunction Dim : 2 Spacedim : 1. Number of objects: 2
          Dofs property: active
       
    
-   Object Id : 40
+   Object Id : 44
       IgGridFunction<2,1>
          ReferenceSpaceBasis<2,1,1>:
             Spline Space:
@@ -5501,7 +5501,7 @@ GridFunction Dim : 2 Spacedim : 1. Number of objects: 2
    
 
 GridFunction Dim : 2 Spacedim : 3. Number of objects: 1
-   Object Id : 42
+   Object Id : 46
       ConstantGridFunction<2,3>
          b:
          [ 0 0 0 ] 
@@ -5509,7 +5509,7 @@ GridFunction Dim : 2 Spacedim : 3. Number of objects: 1
    
 
 GridFunction Dim : 3 Spacedim : 3. Number of objects: 1
-   Object Id : 51
+   Object Id : 56
       ConstantGridFunction<3,3>
          b:
          [ 0 0 0 ] 
@@ -5517,7 +5517,7 @@ GridFunction Dim : 3 Spacedim : 3. Number of objects: 1
    
 
 GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
-   Object Id : 49
+   Object Id : 54
       IgGridFunction<3,1>
          ReferenceSpaceBasis<3,1,1>:
             Spline Space:
@@ -5835,7 +5835,7 @@ Domain Dim : 1 Codim : 0. Number of objects: 1
    
 
 Domain Dim : 1 Codim : 1. Number of objects: 1
-   Object Id : 16
+   Object Id : 17
       GridFunction<1,2>
          ConstantGridFunction<1,2>
             b:
@@ -5845,7 +5845,7 @@ Domain Dim : 1 Codim : 1. Number of objects: 1
    
 
 Domain Dim : 1 Codim : 2. Number of objects: 1
-   Object Id : 25
+   Object Id : 27
       GridFunction<1,3>
          ConstantGridFunction<1,3>
             b:
@@ -5855,7 +5855,7 @@ Domain Dim : 1 Codim : 2. Number of objects: 1
    
 
 Domain Dim : 2 Codim : 0. Number of objects: 1
-   Object Id : 34
+   Object Id : 37
       GridFunction<2,2>
          ConstantGridFunction<2,2>
             b:
@@ -5865,7 +5865,7 @@ Domain Dim : 2 Codim : 0. Number of objects: 1
    
 
 Domain Dim : 2 Codim : 1. Number of objects: 1
-   Object Id : 43
+   Object Id : 47
       GridFunction<2,3>
          ConstantGridFunction<2,3>
             b:
@@ -5875,7 +5875,7 @@ Domain Dim : 2 Codim : 1. Number of objects: 1
    
 
 Domain Dim : 3 Codim : 0. Number of objects: 1
-   Object Id : 52
+   Object Id : 57
       GridFunction<3,3>
          ConstantGridFunction<3,3>
             b:
@@ -6155,7 +6155,7 @@ PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
 PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
 
 PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 1
-   Object Id : 17
+   Object Id : 18
       Reference space:
          BSpline Space:
             Spline Space:
@@ -6428,7 +6428,7 @@ PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
 PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
 
 PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 1
-   Object Id : 26
+   Object Id : 28
       Reference space:
          BSpline Space:
             Spline Space:
@@ -6718,7 +6718,7 @@ PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 1
 PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
 
 PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
-   Object Id : 35
+   Object Id : 38
       Reference space:
          BSpline Space:
             Spline Space:
@@ -7087,7 +7087,7 @@ PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
 PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
 
 PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 1
-   Object Id : 44
+   Object Id : 48
       Reference space:
          BSpline Space:
             Spline Space:
@@ -7481,7 +7481,7 @@ PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 1
 PhysicalSpaceBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
 
 PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
-   Object Id : 53
+   Object Id : 58
       Reference space:
          BSpline Space:
             Spline Space:
@@ -8050,29 +8050,65 @@ PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
 
 PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
 
-Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 1
+   Object Id : 9
+      ConstantFunction<1,0,1,1>
+         b:
+         [ 0 ] 
+      
+   
 
 Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
 
-Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 1
+   Object Id : 19
+      ConstantFunction<1,1,2,1>
+         b:
+         [ 0 0 ] 
+      
+   
 
 Function Dim : 1 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
 
 Function Dim : 1 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
 
-Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
+Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 1
+   Object Id : 29
+      ConstantFunction<1,2,3,1>
+         b:
+         [ 0 0 0 ] 
+      
+   
 
 Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
 
-Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
+Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 1
+   Object Id : 39
+      ConstantFunction<2,0,2,1>
+         b:
+         [ 0 0 ] 
+      
+   
 
 Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
 
-Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 1
+   Object Id : 49
+      ConstantFunction<2,1,3,1>
+         b:
+         [ 0 0 0 ] 
+      
+   
 
 Function Dim : 3 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
 
-Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 1
+   Object Id : 59
+      ConstantFunction<3,0,3,1>
+         b:
+         [ 0 0 0 ] 
+      
+   
 
 Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
 

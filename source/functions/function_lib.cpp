@@ -99,6 +99,26 @@ evaluate_2(const ValueVector<Point> &points,
 
 
 
+template<int dim, int codim, int range, int rank>
+void
+ConstantFunction<dim, codim, range, rank>::
+print_info(LogStream &out) const
+{
+  out.begin_item("ConstantFunction<"
+                 + std::to_string(dim) + ","
+                 + std::to_string(codim) + ","
+                 + std::to_string(range) + ","
+                 + std::to_string(rank) + ">");
+
+  out.begin_item("b:");
+  out << b_ ;
+  out.end_item();
+
+  out.end_item();
+}
+
+
+
 
 //------------------------------------------------------------------------------
 template<int dim, int codim, int range>
@@ -176,6 +196,29 @@ evaluate_2(const ValueVector<Point> &points,
 {
   for (auto &val : values)
     val = 0.;
+}
+
+
+
+template<int dim, int codim, int range>
+void
+LinearFunction<dim, codim, range>::
+print_info(LogStream &out) const
+{
+  out.begin_item("LinearFunction<"
+                 + std::to_string(dim) + ","
+                 + std::to_string(codim) + ","
+                 + std::to_string(range) + ">");
+
+  out.begin_item("A:");
+  out << A_ ;
+  out.end_item();
+
+  out.begin_item("b:");
+  out << b_ ;
+  out.end_item();
+
+  out.end_item();
 }
 
 
