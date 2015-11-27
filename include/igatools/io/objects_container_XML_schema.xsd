@@ -181,60 +181,60 @@
     <xs:list itemType="EndBehaviourType"/>
   </xs:simpleType>
 
-  <!-- Type with IgaObjectId attribute -->
-  <xs:complexType name="IgaObjectIdType">
-    <xs:attribute name="IgaObjectId" type="IdType" use="required"/>
+  <!-- Type with LocalObjectId attribute -->
+  <xs:complexType name="LocalObjectIdType">
+    <xs:attribute name="LocalObjectId" type="IdType" use="required"/>
   </xs:complexType>
 
-  <!-- Type with IgaObjectId and Dim attributes -->
-  <xs:complexType name="IgaObjectIdDimType">
+  <!-- Type with LocalObjectId and Dim attributes -->
+  <xs:complexType name="LocalObjectIdDimType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdType">
+      <xs:extension base="LocalObjectIdType">
         <xs:attribute name="Dim" type="DimType" use="required"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <!-- Type with IgaObjectId, Dim, Range and Rank attributes -->
-  <xs:complexType name="IgaObjectIdDimRangeRankType">
+  <!-- Type with LocalObjectId, Dim, Range and Rank attributes -->
+  <xs:complexType name="LocalObjectIdDimRangeRankType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimType">
+      <xs:extension base="LocalObjectIdDimType">
         <xs:attribute name="Range" type="RangeType" use="required"/>
         <xs:attribute name="Rank" type="RankType" use="required"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <!-- Type with IgaObjectId, Dim, Range, Rank and Codim attributes -->
-  <xs:complexType name="IgaObjectIdDimRangeRankCodimType">
+  <!-- Type with LocalObjectId, Dim, Range, Rank and Codim attributes -->
+  <xs:complexType name="LocalObjectIdDimRangeRankCodimType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimRangeRankType">
+      <xs:extension base="LocalObjectIdDimRangeRankType">
         <xs:attribute name="Codim" type="CodimType" use="required"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <!-- Type with IgaObjectId, Dim and Codim attributes -->
-  <xs:complexType name="IgaObjectIdDimCodimType">
+  <!-- Type with LocalObjectId, Dim and Codim attributes -->
+  <xs:complexType name="LocalObjectIdDimCodimType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimType">
+      <xs:extension base="LocalObjectIdDimType">
         <xs:attribute name="Codim" type="CodimType" use="required"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <!-- Type with IgaObjectId, Dim and Spacedim attributes -->
-  <xs:complexType name="IgaObjectIdDimSpacedimType">
+  <!-- Type with LocalObjectId, Dim and Spacedim attributes -->
+  <xs:complexType name="LocalObjectIdDimSpacedimType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimType">
+      <xs:extension base="LocalObjectIdDimType">
         <xs:attribute name="Spacedim" type="SpacedimType" use="required"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <!-- Type with GetFromIgaObjectId attribute -->
-  <xs:complexType name="GetFromIgaObjectIdType">
-    <xs:attribute name="GetFromIgaObjectId" type="IdType" use="required"/>
+  <!-- Type with GetFromLocalObjectId attribute -->
+  <xs:complexType name="GetFromLocalObjectIdType">
+    <xs:attribute name="GetFromLocalObjectId" type="IdType" use="required"/>
   </xs:complexType>
 
 
@@ -246,7 +246,7 @@
   <!-- Grid type -->
   <xs:complexType name="GridType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimType">
+      <xs:extension base="LocalObjectIdDimType">
         <xs:sequence>
           <xs:element name="Knots" minOccurs="0" maxOccurs="3" type="DoubleSizeDirectionListMin2Type"/>
         </xs:sequence>
@@ -257,10 +257,10 @@
   <!-- SplineSpace type -->
   <xs:complexType name="SplineSpaceType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimRangeRankType">
+      <xs:extension base="LocalObjectIdDimRangeRankType">
         <xs:all>
 
-          <xs:element name="Grid" type="GetFromIgaObjectIdType"/>
+          <xs:element name="Grid" type="GetFromLocalObjectIdType"/>
 
           <xs:element name="SplineSpaceComponents">
             <xs:complexType>
@@ -301,10 +301,10 @@
   <!-- BSpline type -->
   <xs:complexType name="BSplineType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimRangeRankType">
+      <xs:extension base="LocalObjectIdDimRangeRankType">
         <xs:all>
 
-          <xs:element name="SplineSpace" type="GetFromIgaObjectIdType"/>
+          <xs:element name="SplineSpace" type="GetFromLocalObjectIdType"/>
 
           <!-- Note that this tag is optional -->
           <xs:element name="EndBehaviour" minOccurs="0" maxOccurs="1">
@@ -331,9 +331,9 @@
   <!-- IdentityGridFunction type -->
   <xs:complexType name="IdentityGridFunctionType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimType">
+      <xs:extension base="LocalObjectIdDimType">
         <xs:all>
-          <xs:element name="Grid" type="GetFromIgaObjectIdType"/>
+          <xs:element name="Grid" type="GetFromLocalObjectIdType"/>
         </xs:all>
       </xs:extension>
     </xs:complexContent>
@@ -342,9 +342,9 @@
   <!-- ConstantGridFunction type -->
   <xs:complexType name="ConstantGridFunctionType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimSpacedimType">
+      <xs:extension base="LocalObjectIdDimSpacedimType">
         <xs:all>
-          <xs:element name="Grid" type="GetFromIgaObjectIdType"/>
+          <xs:element name="Grid" type="GetFromLocalObjectIdType"/>
           <xs:element name="Values" type="DoubleListType"/>
         </xs:all>
       </xs:extension>
@@ -363,9 +363,9 @@
   <!-- IgGridFunction type -->
   <xs:complexType name="IgGridFunctionType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimSpacedimType">
+      <xs:extension base="LocalObjectIdDimSpacedimType">
         <xs:all>
-          <xs:element name="ReferenceSpaceBasis" type="GetFromIgaObjectIdType"/>
+          <xs:element name="ReferenceSpaceBasis" type="GetFromLocalObjectIdType"/>
           <xs:element name="IgCoefficients" type="IgCoefficientsType"/>
           <!-- Note that this tag is optional -->
           <xs:element name="DofsProperty" type="xs:normalizedString" minOccurs="0" maxOccurs="1"/>
@@ -377,10 +377,10 @@
   <!-- NURBS type -->
   <xs:complexType name="NURBSType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimRangeRankType">
+      <xs:extension base="LocalObjectIdDimRangeRankType">
         <xs:all>
-          <xs:element name="BSpline" type="GetFromIgaObjectIdType"/>
-          <xs:element name="WeightFunction" type="GetFromIgaObjectIdType"/>
+          <xs:element name="BSpline" type="GetFromLocalObjectIdType"/>
+          <xs:element name="WeightFunction" type="GetFromLocalObjectIdType"/>
         </xs:all>
       </xs:extension>
     </xs:complexContent>
@@ -389,9 +389,9 @@
   <!-- Domain type -->
   <xs:complexType name="DomainType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimCodimType">
+      <xs:extension base="LocalObjectIdDimCodimType">
         <xs:all>
-          <xs:element name="GridFunction" type="GetFromIgaObjectIdType"/>
+          <xs:element name="GridFunction" type="GetFromLocalObjectIdType"/>
           <!-- Note that this tag is optional -->
           <xs:element name="Name" type="xs:normalizedString" minOccurs="0" maxOccurs="1"/>
         </xs:all>
@@ -402,10 +402,10 @@
   <!-- PhysicalSpaceBasis type -->
   <xs:complexType name="PhysicalSpaceBasisType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimRangeRankCodimType">
+      <xs:extension base="LocalObjectIdDimRangeRankCodimType">
         <xs:all>
-          <xs:element name="ReferenceSpaceBasis" type="GetFromIgaObjectIdType"/>
-          <xs:element name="Domain" type="GetFromIgaObjectIdType"/>
+          <xs:element name="ReferenceSpaceBasis" type="GetFromLocalObjectIdType"/>
+          <xs:element name="Domain" type="GetFromLocalObjectIdType"/>
           <!-- Note that this tag is optional -->
           <xs:element name="Transformation" type="TransformationType" minOccurs="0" maxOccurs="1"/>
         </xs:all>
@@ -416,9 +416,9 @@
   <!-- IgFunction type -->
   <xs:complexType name="IgFunctionType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimRangeRankCodimType">
+      <xs:extension base="LocalObjectIdDimRangeRankCodimType">
         <xs:all>
-          <xs:element name="PhysicalSpaceBasis" type="GetFromIgaObjectIdType"/>
+          <xs:element name="PhysicalSpaceBasis" type="GetFromLocalObjectIdType"/>
           <xs:element name="IgCoefficients" type="IgCoefficientsType"/>
           <!-- Note that this tag is optional -->
           <xs:element name="Name" type="xs:normalizedString" minOccurs="0" maxOccurs="1"/>
@@ -432,9 +432,9 @@
   <!-- ConstantFunction type -->
   <xs:complexType name="ConstantFunctionType">
     <xs:complexContent>
-      <xs:extension base="IgaObjectIdDimRangeRankCodimType">
+      <xs:extension base="LocalObjectIdDimRangeRankCodimType">
         <xs:all>
-          <xs:element name="Domain" type="GetFromIgaObjectIdType"/>
+          <xs:element name="Domain" type="GetFromLocalObjectIdType"/>
           <xs:element name="Values" type="DoubleListType"/>
         </xs:all>
       </xs:extension>

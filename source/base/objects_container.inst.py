@@ -80,12 +80,15 @@ valid_types = unique(valid_types)
 # Writing to file
 
 for tp in valid_types:
-    f.write('template bool ObjectsContainer::is_object<%s>(const Index&) const;\n' % (tp))
+    f.write('template bool ObjectsContainer::is_object_present<%s>(const Index&) const;\n' % (tp))
+    f.write('template bool ObjectsContainer::is_const_object_present<%s>(const Index&) const;\n' % (tp))
 f.write('\n')
 
 for tp in valid_types:
     f.write('template std::shared_ptr<%s> ObjectsContainer::get_object<%s>(const Index&) const;\n' % (tp, tp))
+    f.write('template std::shared_ptr<const %s> ObjectsContainer::get_const_object<%s>(const Index&) const;\n' % (tp, tp))
 f.write('\n')
 
 for tp in valid_types:
-    f.write('template void ObjectsContainer::insert_object<%s>(const std::shared_ptr<%s>, const Index&);\n' % (tp, tp))
+    f.write('template void ObjectsContainer::insert_object<%s>(const std::shared_ptr<%s>);\n' % (tp, tp))
+    f.write('template void ObjectsContainer::insert_const_object<%s>(const std::shared_ptr<const %s>);\n' % (tp, tp))

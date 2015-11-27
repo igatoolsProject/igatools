@@ -33,9 +33,17 @@
 int main()
 {
   const string file_name = "objects_container.xml";
-  const auto container = ObjectsContainerParser::parse(file_name);
   OUTSTART
+  const auto container = ObjectsContainerParser::parse(file_name);
+  out.begin_item("Non-const container");
   container->print_info(out);
+  out.end_item();
+
+  const auto container_const = ObjectsContainerParser::parse_const(file_name);
+  out.begin_item("Const container");
+  container_const->print_info(out);
+  out.end_item();
+
   OUTEND
 }
 
