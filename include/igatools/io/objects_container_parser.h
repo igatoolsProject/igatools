@@ -600,13 +600,14 @@ private:
    *             XML element document to produce richer error messages.
    * @param[in] space_global_dofs Global indices of the dofs of
    *            space to which the coefficients are associated to.
-   * @return IgCoefficients vector.
+   * @return IgCoefficients shared pointer vector.
    */
   // TODO: maybe this should be done with a shared pointer, in
   // order to avoid the copy.
-  static IgCoefficients parse_ig_coefficients(const std::shared_ptr<XMLElement> xml_elem,
-                                       const std::string &parsing_msg,
-                                       const std::set<Index> &space_global_dofs);
+  static std::shared_ptr<IgCoefficients>
+      parse_ig_coefficients(const std::shared_ptr<XMLElement> xml_elem,
+                            const std::string &parsing_msg,
+                            const std::set<Index> &space_global_dofs);
 
 };
 

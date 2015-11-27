@@ -1133,15 +1133,15 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
     const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
     const auto ig_coefs = parse_ig_coefficients(xml_elem, parsing_msg, global_dofs);
 
-    AssertThrow (rs->get_num_basis() == ig_coefs.size(),
+    AssertThrow (rs->get_num_basis() == ig_coefs->size(),
                  ExcMessage("Parsing " + parsing_msg + " the cardinality "
                             "of the ReferenceSpaceBasis (" +
                             to_string(rs->get_num_basis()) + ") is "
                             "different to the dimension of the "
-                            "IgCoefficients (" + to_string(ig_coefs.size())
+                            "IgCoefficients (" + to_string(ig_coefs->size())
                             + ")."));
 
-    const auto igf = IgGridFunctionType::create(rs, ig_coefs, dofs_property);
+    const auto igf = IgGridFunctionType::create(rs, *ig_coefs, dofs_property);
     container->insert_object<GridFunctionType>(igf, object_id);
 }
 
@@ -1351,15 +1351,15 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
     const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
     const auto ig_coefs = parse_ig_coefficients(xml_elem, parsing_msg, global_dofs);
 
-    AssertThrow (ps->get_num_basis() == ig_coefs.size(),
+    AssertThrow (ps->get_num_basis() == ig_coefs->size(),
                  ExcMessage("Parsing " + parsing_msg + " the cardinality "
                             "of the PhysicalSpaceBasis (" +
                             to_string(ps->get_num_basis()) + ") is "
                             "different to the dimension of the "
-                            "IgCoefficients (" + to_string(ig_coefs.size())
+                            "IgCoefficients (" + to_string(ig_coefs->size())
                             + ")."));
 
-    const auto igf = IgFunctionType::create(ps, ig_coefs, dofs_property, name);
+    const auto igf = IgFunctionType::create(ps, *ig_coefs, dofs_property, name);
     container->insert_object<FunctionType>(igf, object_id);
 }
 
@@ -1545,7 +1545,7 @@ get_type_id_string(const string &object_type,
 
 
 
-IgCoefficients
+shared_ptr<IgCoefficients>
 ObjectsContainerParser::
 parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
                       const string &parsing_msg,
@@ -1585,20 +1585,19 @@ parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
                             ", not valid indices vector parsed. Repeated "
                             "indices may found."));
 
-    IgCoefficients ig_coefs (indices);
+    const auto ig_coefs = shared_ptr<IgCoefficients>(new IgCoefficients (indices));
 
     // Checking if the parsed indices match with space_global_dofs and
     // filling the values of the ig coefficients vector.
     const auto end_dofs = space_global_dofs.cend();
+    auto &igc = *ig_coefs;
     auto ind_it = ig_coefs_ind_vec.cbegin();
-    auto val_it = ig_coefs_val_vec.cbegin();
-    auto val_end = ig_coefs_val_vec.cend();
-    for (; val_it != val_end; ++val_it, ++ind_it)
+    for (const auto &val : ig_coefs_val_vec)
     {
-        ig_coefs[*ind_it] = *val_it;
         AssertThrow (space_global_dofs.find(*ind_it) != end_dofs,
                  ExcMessage("Parsing IgCoefficients for " + parsing_msg +
                             ", " + to_string(*ind_it) + " is not a valid index."));
+        igc[*ind_it++] = val;
     }
 
     return ig_coefs;
