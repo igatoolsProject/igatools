@@ -80,7 +80,7 @@ valid_types = unique(valid_types)
 # Writing to file
 
 for tp in valid_types:
-    f.write('template bool ObjectsContainer::is_object<%s>(const Index&) const;\n' % (tp))
+    f.write('template bool ObjectsContainer::is_id_present<%s>(const Index&) const;\n' % (tp))
 f.write('\n')
 
 for tp in valid_types:
@@ -88,4 +88,4 @@ for tp in valid_types:
 f.write('\n')
 
 for tp in valid_types:
-    f.write('template void ObjectsContainer::insert_object<%s>(const std::shared_ptr<%s>, const Index&);\n' % (tp, tp))
+    f.write('template void ObjectsContainer::insert_object<%s>(const std::shared_ptr<%s>);\n' % (tp, tp))

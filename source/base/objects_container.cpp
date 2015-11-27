@@ -32,13 +32,6 @@ using boost::fusion::for_each;
 
 IGA_NAMESPACE_OPEN
 
-ObjectsContainer::
-ObjectsContainer()
-{
-};
-
-
-
 auto
 ObjectsContainer::
 create() -> shared_ptr<self_t>
@@ -48,27 +41,18 @@ create() -> shared_ptr<self_t>
 
 
 
-auto
-ObjectsContainer::
-const_create() -> shared_ptr<const self_t>
-{
-    return shared_ptr<const self_t> (new self_t());
-};
-
-
-
 template <class T>
 void
 ObjectsContainer::
-insert_object (const shared_ptr<T> object,
-               const Index &id)
+insert_object (const shared_ptr<T> object)
 {
     Assert (object != nullptr, ExcNullPtr());
-    Assert (!this->is_id_present(id), ExcMessage("Object id already defined."));
 
     auto &objects_T = at_key<T>(objects_);
+    Assert (std::find(objects_T.cbegin(), objects_T.cend(), object) == objects_T.cend(),
+            ExcNotUnique());
 
-    objects_T[id] = object;
+    objects_T.push_back(object);
 };
 
 
@@ -78,10 +62,13 @@ auto
 ObjectsContainer::
 get_object (const Index &id) const -> shared_ptr<T>
 {
-    Assert ((this->is_object<T>(id)),
-            ExcMessage("Object id does not correspond to an object of "
-                       "the given type."));
-    return at_key<T>(objects_).at(id);
+    auto &objects_T = at_key<T>(objects_);
+    const auto obj_it = std::find_if(objects_T.cbegin(), objects_T.cend(),
+             [id] (const auto obj) { return obj->get_object_id() == id; });
+
+    Assert (obj_it != objects_T.cend(), ExcNotFound());
+
+    return *obj_it;
 };
 
 
@@ -89,10 +76,14 @@ get_object (const Index &id) const -> shared_ptr<T>
 template <class T>
 bool
 ObjectsContainer::
-is_object (const Index &id) const
+is_id_present (const Index &id) const
 {
     const auto &objects_T = at_key<T>(objects_);
-    return objects_T.find(id) != objects_T.end();
+
+    return std::find_if(objects_T.cbegin(), objects_T.cend(),
+      [id] (const auto obj) { return obj->get_object_id() == id; }) != objects_T.cend();
+
+    return false;
 };
 
 
@@ -102,13 +93,14 @@ ObjectsContainer::
 is_id_present (const Index &id) const
 {
     bool found = false;
-    for_each(objects_, [&](const auto &objects_fusion_map)
+    for_each(objects_, [&](const auto &objects_vec)
     {
         if (found)
             return;
 
-        const auto &objects_map = objects_fusion_map.second;
-        found = objects_map.find(id) != objects_map.cend();
+        using Type = typename
+          std::remove_reference<decltype(objects_vec)>::type::first_type;
+        found = this->is_id_present<Type> (id);
     });
 
     return false;
@@ -120,8 +112,6 @@ void
 ObjectsContainer::
 print_info (LogStream &out) const
 {
-
-
     GridPtrs valid_grid_ptr_types;
     for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
     {
@@ -132,11 +122,7 @@ print_info (LogStream &out) const
                 " Dim : " + to_string(Type::dim) +
                 ". Number of objects: " + to_string(objects.size()));
         for (const auto &object : objects)
-        {
-            out.begin_item("Object Id : " + to_string(object.first));
-            object.second->print_info(out);
-            out.end_item();
-        }
+            object->print_info(out);
         out.end_item();
     });
 
@@ -154,11 +140,7 @@ print_info (LogStream &out) const
                 ". Number of objects: " + to_string(objects.size())
         );
         for (const auto &object : objects)
-        {
-            out.begin_item("Object Id : " + to_string(object.first));
-            object.second->print_info(out);
-            out.end_item();
-        }
+            object->print_info(out);
         out.end_item();
     });
 
@@ -176,11 +158,7 @@ print_info (LogStream &out) const
                 ". Number of objects: " + to_string(objects.size())
         );
         for (const auto &object : objects)
-        {
-            out.begin_item("Object Id : " + to_string(object.first));
-            object.second->print_info(out);
-            out.end_item();
-        }
+            object->print_info(out);
         out.end_item();
     });
 
@@ -196,11 +174,7 @@ print_info (LogStream &out) const
                 " Spacedim : " + to_string(Type::space_dim) +
                 ". Number of objects: " + to_string(objects.size()));
         for (const auto &object : objects)
-        {
-            out.begin_item("Object Id : " + to_string(object.first));
-            object.second->print_info(out);
-            out.end_item();
-        }
+            object->print_info(out);
         out.end_item();
     });
 
@@ -216,11 +190,7 @@ print_info (LogStream &out) const
                 " Codim : " + to_string(Type::space_dim - Type::dim) +
                 ". Number of objects: " + to_string(objects.size()));
         for (const auto &object : objects)
-        {
-            out.begin_item("Object Id : " + to_string(object.first));
-            object.second->print_info(out);
-            out.end_item();
-        }
+            object->print_info(out);
         out.end_item();
     });
 
@@ -238,11 +208,7 @@ print_info (LogStream &out) const
                 " Codim : " + to_string(Type::codim) +
                 ". Number of objects: " + to_string(objects.size()));
         for (const auto &object : objects)
-        {
-            out.begin_item("Object Id : " + to_string(object.first));
-            object.second->print_info(out);
-            out.end_item();
-        }
+            object->print_info(out);
         out.end_item();
     });
 
@@ -260,11 +226,7 @@ print_info (LogStream &out) const
                 " Rank : " + to_string(Type::rank) +
                 ". Number of objects: " + to_string(objects.size()));
         for (const auto &object : objects)
-        {
-            out.begin_item("Object Id : " + to_string(object.first));
-            object.second->print_info(out);
-            out.end_item();
-        }
+            object->print_info(out);
         out.end_item();
     });
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Igatools FormatVersion="2.0">
 
-  <Grid IgaObjectId="0" Dim="2">
+  <Grid LocalObjectId="0" Dim="2">
     <Knots Direction="0" Size="3">
       0.000000 0.500000 1.000000
     </Knots>
@@ -10,8 +10,8 @@
     </Knots>
   </Grid>
 
-  <SplineSpace IgaObjectId="1" Dim="2" Range="2" Rank="1">
-    <Grid GetFromIgaObjectId="0"/>
+  <SplineSpace LocalObjectId="1" Dim="2" Range="2" Rank="1">
+    <Grid GetFromLocalObjectId="0"/>
 
     <SplineSpaceComponents>
       <SplineSpaceComponent ComponentId="0">
@@ -39,8 +39,8 @@
 
   </SplineSpace>
 
-  <SplineSpace IgaObjectId="2" Dim="2" Range="1" Rank="1">
-    <Grid GetFromIgaObjectId="0"/>
+  <SplineSpace LocalObjectId="2" Dim="2" Range="1" Rank="1">
+    <Grid GetFromLocalObjectId="0"/>
 
     <SplineSpaceComponents>
       <SplineSpaceComponent ComponentId="0">
@@ -57,16 +57,16 @@
 
   </SplineSpace>
 
-  <BSpline IgaObjectId="3" Dim="2" Range="2" Rank="1">
-    <SplineSpace GetFromIgaObjectId="1"/>
+  <BSpline LocalObjectId="3" Dim="2" Range="2" Rank="1">
+    <SplineSpace GetFromLocalObjectId="1"/>
     <EndBehaviour>
       <EndBehaviour ComponentId="0">interpolatory interpolatory</EndBehaviour>
       <EndBehaviour ComponentId="1">interpolatory interpolatory</EndBehaviour>
     </EndBehaviour>
   </BSpline>
 
-  <BSpline IgaObjectId="4" Dim="2" Range="1" Rank="1">
-    <SplineSpace GetFromIgaObjectId="2"/>
+  <BSpline LocalObjectId="4" Dim="2" Range="1" Rank="1">
+    <SplineSpace GetFromLocalObjectId="2"/>
     <!--
     <EndBehaviour>
       <EndBehaviour ComponentId="0">interpolatory interpolatory</EndBehaviour>
@@ -75,8 +75,8 @@
   </BSpline>
 
 
-  <IgGridFunction IgaObjectId="5" Dim="2" Spacedim="1">
-    <ReferenceSpaceBasis GetFromIgaObjectId="4"/>
+  <IgGridFunction LocalObjectId="5" Dim="2" Spacedim="1">
+    <ReferenceSpaceBasis GetFromLocalObjectId="4"/>
     <IgCoefficients Size="12">
       <Indices>
         0 1 2 3 4 5 6 7 8 9 10 11
@@ -88,13 +88,13 @@
     <DofsProperty>active</DofsProperty>
   </IgGridFunction>
 
-  <NURBS IgaObjectId="6" Dim="2" Range="2" Rank="1">
-    <BSpline GetFromIgaObjectId="3"/>
-    <WeightFunction GetFromIgaObjectId="5"/>
+  <NURBS LocalObjectId="6" Dim="2" Range="2" Rank="1">
+    <BSpline GetFromLocalObjectId="3"/>
+    <WeightFunction GetFromLocalObjectId="5"/>
   </NURBS>
 
-  <IgGridFunction IgaObjectId="7" Dim="2" Spacedim="2">
-    <ReferenceSpaceBasis GetFromIgaObjectId="6"/>
+  <IgGridFunction LocalObjectId="7" Dim="2" Spacedim="2">
+    <ReferenceSpaceBasis GetFromLocalObjectId="6"/>
     <IgCoefficients Size="24">
       <Indices>
         0 1 2 3 4 5 6 7 8 9 10 11
@@ -110,38 +110,38 @@
     -->
   </IgGridFunction>
 
-  <IdentityGridFunction IgaObjectId="8" Dim="2">
-    <Grid GetFromIgaObjectId="0"/>
+  <IdentityGridFunction LocalObjectId="8" Dim="2">
+    <Grid GetFromLocalObjectId="0"/>
   </IdentityGridFunction>
 
-  <ConstantGridFunction IgaObjectId="9" Dim="2" Spacedim="2">
-    <Grid GetFromIgaObjectId="0"/>
+  <ConstantGridFunction LocalObjectId="9" Dim="2" Spacedim="2">
+    <Grid GetFromLocalObjectId="0"/>
     <Values> 0.0 0.0 </Values>
   </ConstantGridFunction>
 
-  <Domain IgaObjectId="10"  Dim="2" Codim="0">
-    <GridFunction GetFromIgaObjectId="7"/>
+  <Domain LocalObjectId="10"  Dim="2" Codim="0">
+    <GridFunction GetFromLocalObjectId="7"/>
     <!--
     <Name>my_domain</Name>
     -->
   </Domain>
 
-  <PhysicalSpaceBasis IgaObjectId="11" Dim="2" Range="2" Rank="1" Codim="0">
-    <ReferenceSpaceBasis GetFromIgaObjectId="6"/>
-    <Domain GetFromIgaObjectId="10"/>
+  <PhysicalSpaceBasis LocalObjectId="11" Dim="2" Range="2" Rank="1" Codim="0">
+    <ReferenceSpaceBasis GetFromLocalObjectId="6"/>
+    <Domain GetFromLocalObjectId="10"/>
     <!--
     <Transformation>h_grad</Transformation>
     -->
   </PhysicalSpaceBasis>
 
-  <ConstantFunction IgaObjectId="12" Dim="2" Range="2" Rank="1" Codim="0">
-    <Domain GetFromIgaObjectId="10"/>
+  <ConstantFunction LocalObjectId="12" Dim="2" Range="2" Rank="1" Codim="0">
+    <Domain GetFromLocalObjectId="10"/>
     <Values> 0.0 0.0 </Values>
   </ConstantFunction>
 
   <!--
-  <IgFunction IgaObjectId="13" Dim="2" Range="2" Rank="1" Codim="0">
-    <PhysicalSpaceBasis GetFromIgaObjectId="11"/>
+  <IgFunction LocalObjectId="13" Dim="2" Range="2" Rank="1" Codim="0">
+    <PhysicalSpaceBasis GetFromLocalObjectId="11"/>
     <IgCoefficients Size="24">
       <Indices>
         0 1 2 3 4 5 6 7 8 9 10 11

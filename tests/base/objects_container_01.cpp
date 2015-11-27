@@ -38,8 +38,7 @@
 #include <igatools/basis_functions/nurbs_element.h>
 
 template< int dim, int range, int rank = 1>
-void insert_objects (const std::shared_ptr<ObjectsContainer> container,
-                     Index &object_id)
+void insert_objects (const std::shared_ptr<ObjectsContainer> container)
 {
   using iga::SafeSTLVector;
   SafeSTLVector<Real> coord_x {0,1,2,3,4};
@@ -94,21 +93,17 @@ void insert_objects (const std::shared_ptr<ObjectsContainer> container,
   using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
 
   auto grid = GridType::create(coord);
-  container->insert_object<GridType>(grid, object_id);
-  ++object_id;
+  container->insert_object<GridType>(grid);
 
   auto ssp = SpSpaceType::create(degree,grid);
-  container->insert_object<SpSpaceType>(ssp, object_id);
-  ++object_id;
+  container->insert_object<SpSpaceType>(ssp);
 
   auto  bsp = BSplineType::create(ssp);
-  container->insert_object<RefSpaceType>(bsp, object_id);
-  ++object_id;
+  container->insert_object<RefSpaceType>(bsp);
 
-  auto scalar_space = ScalarBSplineType::create(ScalarSpSpaceType::create(degree,grid));
+  auto scalar_space = ScalarBSplineType::create(ScalarSpSpaceType::create(degree, grid));
 
-  container->insert_object<ScalarRefSpaceType>(scalar_space, object_id);
-  ++object_id;
+  container->insert_object<ScalarRefSpaceType>(scalar_space);
 
   const auto n_scalar_basis = scalar_space->get_num_basis();
 
@@ -118,30 +113,23 @@ void insert_objects (const std::shared_ptr<ObjectsContainer> container,
 
   const auto w_func = WeightFuncType::create(scalar_space,weights);
 
-  container->insert_object<ScalarGridFuncType>(w_func, object_id);
-  ++object_id;
+  container->insert_object<ScalarGridFuncType>(w_func);
 
   auto nurbs_space = NURBSType::create(bsp, w_func);
-  container->insert_object<RefSpaceType>(nurbs_space, object_id);
-  ++object_id;
+  container->insert_object<RefSpaceType>(nurbs_space);
 
   const Values<dim, range, 1> val;
   const auto const_grid_func = ConstGridFunc::create(grid, val);
-  container->insert_object<GridFuncType>(const_grid_func, object_id);
-  ++object_id;
+  container->insert_object<GridFuncType>(const_grid_func);
 
   const auto domain = DomainType::create (const_grid_func, "my_domain");
-  container->insert_object<DomainType>(domain, object_id);
-  ++object_id;
+  container->insert_object<DomainType>(domain);
 
   const auto phys_space = PhysSpaceType::create(nurbs_space, domain);
-  container->insert_object<PhysSpaceType>(phys_space, object_id);
-  ++object_id;
+  container->insert_object<PhysSpaceType>(phys_space);
 
-  // Note: Ig function is not implemented.
   const auto const_func = ConstFuncType::create(domain, val);
-  container->insert_object<FuncType>(const_func, object_id);
-  ++object_id;
+  container->insert_object<FuncType>(const_func);
 }
 
 
@@ -150,13 +138,12 @@ int main()
 
   const auto container = ObjectsContainer::create();
 
-  Index object_id = 0;
-  insert_objects<1, 1>(container, object_id);
-  insert_objects<1, 2>(container, object_id);
-  insert_objects<1, 3>(container, object_id);
-  insert_objects<2, 2>(container, object_id);
-  insert_objects<2, 3>(container, object_id);
-  insert_objects<3, 3>(container, object_id);
+  insert_objects<1, 1>(container);
+  insert_objects<1, 2>(container);
+  insert_objects<1, 3>(container);
+  insert_objects<2, 2>(container);
+  insert_objects<2, 3>(container);
+  insert_objects<3, 3>(container);
 
   OUTSTART
   container->print_info(out);
