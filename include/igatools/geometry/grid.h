@@ -187,7 +187,7 @@ public:
 
   using IndexType = ElementIndex<dim_>;
 
-  using PropertyList = PropertiesIdContainer<IndexType>;
+  using PropertyList = PropertiesElementID<dim_>;
   using List = typename PropertyList::List;
   using ListIt = typename PropertyList::List::iterator;
 

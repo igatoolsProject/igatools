@@ -404,7 +404,7 @@ private:
    *
    * The property name is the key of the std::map.
    */
-  PropertiesIdContainer<Index> properties_dofs_;
+  PropertiesDofs properties_dofs_;
 
 #ifdef SERIALIZATION
   /**

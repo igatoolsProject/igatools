@@ -25,9 +25,9 @@
 
 IGA_NAMESPACE_OPEN
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 bool
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 is_property_defined(const PropId &property) const
 {
   return (properties_id_.count(property) > 0) ? true : false;
@@ -35,9 +35,9 @@ is_property_defined(const PropId &property) const
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 bool
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 test_id_for_property(const IndexType id, const PropId &property) const
 {
   const auto &ids_same_property = (*this)[property];
@@ -46,9 +46,9 @@ test_id_for_property(const IndexType id, const PropId &property) const
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 void
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 add_property(const PropId &property)
 {
   Assert(!is_property_defined(property), ExcPropAlreadyDefined(property));
@@ -57,9 +57,9 @@ add_property(const PropId &property)
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 auto
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 operator[](const PropId &property) -> List &
 {
   Assert(is_property_defined(property), ExcPropNotDefined(property));
@@ -68,9 +68,9 @@ operator[](const PropId &property) -> List &
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 auto
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 operator[](const PropId &property) const
 -> const List &
 {
@@ -80,9 +80,9 @@ operator[](const PropId &property) const
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 void
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 set_property_status_for_id(const PropId &property,
                            const IndexType id,
                            const bool status)
@@ -101,9 +101,9 @@ set_property_status_for_id(const PropId &property,
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 void
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 set_property_status_for_ids(const PropId &property,
                             const List ids,
                             const bool status)
@@ -114,9 +114,9 @@ set_property_status_for_ids(const PropId &property,
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 auto
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 begin() -> iterator
 {
   return properties_id_.begin();
@@ -124,9 +124,9 @@ begin() -> iterator
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 auto
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 end() -> iterator
 {
   return properties_id_.end();
@@ -134,9 +134,9 @@ end() -> iterator
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 auto
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 begin() const -> const_iterator
 {
   return properties_id_.begin();
@@ -144,9 +144,9 @@ begin() const -> const_iterator
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 auto
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 end() const -> const_iterator
 {
   return properties_id_.end();
@@ -154,9 +154,9 @@ end() const -> const_iterator
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 SafeSTLVector<PropId>
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 get_properties() const
 {
   SafeSTLVector<PropId> properties;
@@ -170,9 +170,9 @@ get_properties() const
 
 
 
-//template <typename IndexType>
+//template <typename IndexType,template <class T> class STLContainer>
 //void
-//PropertiesIdContainer<IndexType>::
+//PropertiesIdContainer<IndexType,STLContainer>::
 //add_offset(const IndexType offset)
 //{
 //    for (auto &property_id : properties_id_)
@@ -189,9 +189,9 @@ get_properties() const
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 void
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 print_info(LogStream &out) const
 {
   for (const auto &entry : properties_id_)
@@ -204,9 +204,9 @@ print_info(LogStream &out) const
 
 
 
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer>
 bool
-PropertiesIdContainer<IndexType>::
+PropertiesIdContainer<IndexType,STLContainer>::
 empty() const noexcept
 {
   return properties_id_.empty();

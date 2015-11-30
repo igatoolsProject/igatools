@@ -42,11 +42,11 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer = SafeSTLSet>
 class PropertiesIdContainer
 {
 public:
-  using List = SafeSTLSet<IndexType>;
+  using List = STLContainer<IndexType>;
 private:
   using ContainerType = SafeSTLMap<PropId, List>;
   using iterator = typename ContainerType::iterator;
@@ -159,6 +159,17 @@ private:
 #endif //SERIALIZATION
 
 };
+
+
+
+class PropertiesDofs
+  : public PropertiesIdContainer<int,SafeSTLSet>
+{};
+
+template <int dim>
+class PropertiesElementID
+  : public PropertiesIdContainer<ElementIndex<dim>,SafeSTLSet>
+{};
 
 
 
