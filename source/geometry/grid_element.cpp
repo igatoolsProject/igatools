@@ -25,26 +25,8 @@
 
 IGA_NAMESPACE_OPEN
 
-Element::
-Element(const PropId &property)
-  :
-  property_(property)
-{}
 
 
-bool
-Element::
-has_property(const PropId &prop) const
-{
-  return prop == property_;
-}
-
-const PropId &
-Element::
-get_property() const
-{
-  return property_;
-}
 
 
 
@@ -54,13 +36,28 @@ GridElement(const std::shared_ptr<const Grid<dim>> &grid,
             const ListIt &index,
             const PropId &prop)
   :
-  Element(prop),
   grid_(grid),
-  index_it_(index)
+  index_it_(index),
+  property_(prop)
 {}
 
 
 
+template <int dim>
+bool
+GridElement<dim>::
+has_property(const PropId &prop) const
+{
+  return prop == property_;
+}
+
+template <int dim>
+const PropId &
+GridElement<dim>::
+get_property() const
+{
+  return property_;
+}
 
 
 template <int dim>
@@ -101,11 +98,10 @@ void
 GridElement<dim>::
 move_to(const IndexType &elem_id)
 {
-  const auto &property = this->get_property();
-  Assert(grid_->element_has_property(elem_id, property),
-         ExcMessage("The destination element has not the property \"" + property + "\""));
+  Assert(grid_->element_has_property(elem_id, property_),
+         ExcMessage("The destination element has not the property \"" + property_ + "\""));
 
-  const auto &list = grid_->elem_properties_[property];
+  const auto &list = grid_->elem_properties_[property_];
   index_it_ = std::find(list.begin(),list.end(),elem_id);
 }
 
@@ -303,7 +299,7 @@ GridElement<dim>::
 print_info(LogStream &out) const
 {
   out.begin_item("Property: ");
-  out << this->get_property() << std::endl;
+  out << property_ << std::endl;
   out.end_item();
   out.begin_item("Index:");
   index_it_->print_info(out);
