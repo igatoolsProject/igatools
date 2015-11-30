@@ -184,8 +184,8 @@ ElasticityProblem<dim>::ElasticityProblem(const TensorSize<dim> nel,
 //   METHODS
 // ----------------------------------------------------------------------------
 template<int dim> // assemble the system
-void ElasticityProblem<dim>::assemble(const Real lambda,
-                                      const Real mu,
+void ElasticityProblem<dim>::assemble(const Real lambdaa,
+                                      const Real muu,
                                       shared_ptr<const FormulaGridFunction<dim,dim>> source_term) const {
 
   //out << "Number of elements: " << grid->get_num_intervals() << endl;
@@ -219,9 +219,8 @@ void ElasticityProblem<dim>::assemble(const Real lambda,
   funct_handler->set_element_flags(function_element::Flags::D0);
   funct_handler->init_cache(funct_el,elem_quad);//*/
 
-  const auto l = lambda;
-  const auto m = 0.5*mu;
   // retrieving the last datum and then starting the loop
+  const auto m = 2.0 * mu;
   for (int iel=0; basis_el!=basis_eld; iel++, ++basis_el, ++funct_el) {
     basis_handler->fill_element_cache(basis_el);
     funct_handler->fill_element_cache(funct_el);
@@ -245,13 +244,14 @@ void ElasticityProblem<dim>::assemble(const Real lambda,
     //}
 
     // precomputing epsilon(v) = 0.5 * (\grad(v) + \grad(v)^T)
-    /*using Der = typename SpaceElement<dim,0,dim,1>::template Derivative<1>;
+    using Der = typename SpaceElement<dim,0,dim,1>::template Derivative<1>;
     ValueTable<Der> epsils(Nbf,Nqn);
     for (int ibf=0; ibf<Nbf; ibf++) {
       auto epsil = epsils.get_function_view(ibf);
       auto grad  = grads.get_function_view(ibf);
       for (int iqn=0; iqn<Nqn; iqn++) {
-        epsil[iqn] = grad[iqn] + transpose(co_tensor(grad[iqn]));
+        //epsil[iqn] = grad[iqn] + transpose(co_tensor(grad[iqn]));
+        epsil[iqn] = symmetric_tensor(grad[iqn]);
       }
     }
     
@@ -262,15 +262,16 @@ void ElasticityProblem<dim>::assemble(const Real lambda,
       const auto &eps_i = epsils.get_function_view(ibf); 
       for (int jbf=0; jbf<Nbf; jbf++) {
         const auto &div_j = divs.get_function_view(jbf); // view for the j-th basis function divergence
-	      const auto &eps_j = epsils.get_function_view(jbf);
+        const auto &eps_j = epsils.get_function_view(jbf);
         double part_1 = 0.0, part_2 = 0.0;
         for (int iqn=0; iqn<Nqn; iqn++) {
           // PART 1: assembling  lambda \int div(v_i)*div(v_j)
-          part_1 += scalar_product(div_i[iqn], div_j[iqn]) * w_meas[iqn];
+          //part_1 += scalar_product(div_i[iqn], div_j[iqn]) * w_meas[iqn];
           // PART 2: assembling  2mu \int eps(v_i):eps(v_j)
-          part_2 += scalar_product(eps_i[iqn],eps_j[iqn]) * w_meas[iqn];
+          part_2 += scalar_product(eps_i[iqn], eps_j[iqn]) * w_meas[iqn];
         }
-        loc_mat(ibf,jbf) = l*part_1 + m*part_2;
+        //loc_mat(ibf,jbf) = lambda*part_1 + mu*part_2;
+        loc_mat(ibf,jbf) = m * part_2;
       }
       // loop for the right hand side local vector
       //const auto &val_i = values.get_function_view(ibf); // view for the i-th basis function
@@ -278,13 +279,23 @@ void ElasticityProblem<dim>::assemble(const Real lambda,
         // PART 3: assembling \int v_i*1
         //loc_rhs(ibf) += scalar_product(val_i[iqn][0],fval[iqn]) * w_meas[iqn];
       //}
-    }*/
-    loc_mat = mu * basis_el->integrate_gradu_gradv();
+    }
+    auto loc_mat_bis = m * basis_el->integrate_gradu_gradv();
+    
+    /*for (int ibf=0; ibf<Nbf; ibf++) {
+      for (int jbf=0; jbf<Nbf; jbf++) {
+        if (fabs(loc_mat(ibf,jbf)-loc_mat_bis(ibf,jbf))>1e-10) {
+          cout << "houston, we have a problem with basis function ";
+          printf("%2d,%2d:  %1.3e != %1.3e\n",ibf,jbf,loc_mat(ibf,jbf),loc_mat_bis(ibf,jbf));
+	      }
+      }
+    }// */
+
     loc_rhs = basis_el->integrate_u_func(fval);
 
     // spatashing element matrix into the global matrix
     const auto loc_dofs = basis_el->get_local_to_global(DofProperties::active);
-    mat->add_block(loc_dofs,loc_dofs,loc_mat);
+    mat->add_block(loc_dofs,loc_dofs,loc_mat_bis);
     rhs->add_block(loc_dofs,loc_rhs);
   }
   mat->FillComplete();//*/

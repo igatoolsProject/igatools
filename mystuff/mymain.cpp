@@ -35,6 +35,8 @@ using namespace std;
 using namespace EpetraTools;
 LogStream out;
 
+const Real lambda = 0.0;
+const Real mu     = 0.38462;
 #include "poisson_problem.h"
 
 // ----------------------------------------------------------------------------
@@ -50,11 +52,9 @@ Values<3,3,1> u(Points<3> pts) {
   return x;
 }
 
-Real lambda = 0.0;
-Real mu     = 0.38462;
 Values<3,3,1> f(Points<3> pts) {
   Values<3,3,1> x = {0.0,0.0,-0.1};
-  x[2] = mu*PI*PI*0.4 * cos(2.0*PI*pts[0]);// * cos(2.0*PI*pts[1]);
+  x[2] = mu*PI*PI*0.8 * cos(2.0*PI*pts[0]);// * cos(2.0*PI*pts[1]);
   //for (int idim=0; idim<dim; idim++) {
   //  x *= sin(4.0 * pts[idim] * PI);
   //}
@@ -89,7 +89,7 @@ int main() {
   geometry.coefs[ 2] = 1.0;  geometry.coefs[ 8] = 1.0;
   geometry.coefs[ 3] = 2.0;  geometry.coefs[ 9] = 2.0;
   geometry.coefs[ 4] = 0.0;  geometry.coefs[10] = 1.0;
-  geometry.coefs[ 5] = 0.0;  geometry.coefs[11] = 2.0;//*/
+  geometry.coefs[ 5] = 0.0;  geometry.coefs[11] = 2.0;// */
 
   // linear elasticity problem creation
   TensorSize<dim>  nel;
@@ -107,7 +107,7 @@ int main() {
   problem.solve();
   //problem.check();
   auto exact_solution = CustomGridFunction<dim,dim>::const_create(grid,u);
-  problem.output(exact_solution);//*
+  problem.output(exact_solution);//*/
 
   /*auto grid    = Grid<dim>::create(3);
   auto space   = SplineSpace<dim,dim>::create(2,grid);
@@ -141,7 +141,7 @@ int main() {
         out << grad[iqn] << endl;
       }
     }
-  }//*/
+  }// */
 
 
   return 0;
