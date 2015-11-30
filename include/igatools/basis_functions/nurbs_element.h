@@ -75,6 +75,12 @@ public:
 
   using GridElem = GridElement<dim>;
 
+  using BSpBasis = typename Basis::BSpBasis;
+  using BSpElem = typename BSpBasis::ElementAccessor;
+
+  using WeightFunction = typename Basis::WeightFunction;
+  using WeightElem = typename WeightFunction::ElementAccessor;
+
 public:
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
@@ -97,8 +103,8 @@ public:
    * BSpline space.
    */
   NURBSElement(const std::shared_ptr<ContainerType> space,
-               const ListIt &index,
-               const PropId &prop = ElementProperties::active);
+               std::unique_ptr<BSpElem> &&bspline_elem,
+               std::unique_ptr<WeightElem> &&weight_elem);
 
 #if 0
   /**
@@ -157,12 +163,9 @@ public:
 
 private:
 
-  using BSpBasis = typename Basis::BSpBasis;
 
-  typename BSpBasis::ElementAccessor bspline_elem_;
+  std::unique_ptr<BSpElem> bspline_elem_;
 
-  using WeightFunction = typename Basis::WeightFunction;
-  using WeightElem = typename WeightFunction::ElementAccessor;
   std::unique_ptr<WeightElem> weight_elem_;
 
 public:

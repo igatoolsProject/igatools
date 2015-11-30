@@ -437,6 +437,7 @@ Grid<dim_>::create_cache_handler() const
   return std::unique_ptr<ElementHandler>(new ElementHandler(this->shared_from_this()));
 }
 
+#if 0
 template<int dim_>
 auto
 Grid<dim_>::
@@ -446,8 +447,29 @@ create_element(const ListIt &index, const PropId &prop) const
   using Elem = ElementAccessor;
   return std::unique_ptr<Elem>(new Elem(this->shared_from_this(),index,prop));
 }
+#endif
 
+template<int dim_>
+auto
+Grid<dim_>::
+create_element_begin(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+  auto elem_it = this->get_elements_with_property(prop).cbegin();
+  return std::unique_ptr<Elem>(new Elem(this->shared_from_this(),elem_it,prop));
+}
 
+template<int dim_>
+auto
+Grid<dim_>::
+create_element_end(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+  auto elem_it = this->get_elements_with_property(prop).cend();
+  return std::unique_ptr<Elem>(new Elem(this->shared_from_this(),elem_it,prop));
+}
 
 
 
@@ -478,8 +500,7 @@ auto
 Grid<dim_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(
-           this->create_element(elem_properties_[prop].begin(),prop));
+  return ElementIterator(this->create_element_begin(prop));
 }
 
 
@@ -489,8 +510,7 @@ auto
 Grid<dim_>::
 cend(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(
-           this->create_element(elem_properties_[prop].end(),prop));
+  return ElementIterator(this->create_element_end(prop));
 }
 
 

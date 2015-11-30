@@ -189,6 +189,7 @@ protected:
   GridIterator() = default;
 
 public:
+#if 0
   /**
    * Construct an iterator on the elements (with the specified <tt>property</tt>)
    * over a grid-type container.
@@ -196,9 +197,13 @@ public:
    * @warning If the <tt>index</tt> refers to an element that has not the given <tt>property</tt>
    * an assertion will be raised (in DEBUG mode).
    */
-  GridIterator(std::shared_ptr<ContainerType> grid,
+  GridIterator(const std::shared_ptr<ContainerType> &container,
                const ListIt &index,
-               const PropId &property);
+               const PropId &property)
+  :
+    elem_(std::move(container->create_element(index, property)))
+  {}
+#endif
 
   /**
    * Construct an iterator using the underlying element pointer.
@@ -206,7 +211,12 @@ public:
    * the given <tt>property</tt>
    * an assertion will be raised (in DEBUG mode).
    */
-  GridIterator(std::unique_ptr<Element> &&accessor_ptr);
+  GridIterator(std::unique_ptr<Element> &&elem)
+  :
+  elem_(std::move(elem))
+  {
+	Assert(elem_ != nullptr,ExcNullPtr());
+  }
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -245,13 +255,19 @@ public:
    * Compares for equality.
    * @note Internally uses the equality comparison operator implemented by the Element object.
    */
-  bool operator==(const GridIterator &) const;
+  bool operator==(const GridIterator &i) const
+  {
+    return *elem_ == *i.elem_;
+  }
 
   /**
    * Compares for inequality.
    * @note Internally uses the inequality comparison operator implemented by the Element object.
    */
-  bool operator!=(const GridIterator &) const;
+  bool operator!=(const GridIterator &i) const
+  {
+    return elem_->operator != (*(i.elem_));
+  }
   ///@}
 
 
@@ -261,7 +277,11 @@ public:
    *  the next element and returns
    *  a reference to <tt>*this</tt>.
    */
-  GridIterator<Element> &operator++();
+  GridIterator<Element> &operator++()
+  {
+    elem_->operator++();
+    return *this;
+  }
 
 
   /** @name Dereferencing operators */
@@ -270,25 +290,37 @@ public:
    *  Dereferencing operator, returns a
    *  reference to the Element object.
    */
-  Element &operator*();
+  Element &operator*()
+  {
+    return *this->elem_;
+  }
 
   /**
    *  Dereferencing operator, returns a
    *  pointer to the Element object.
    */
-  Element *operator->();
+  Element *operator->()
+  {
+    return this->elem_.get();
+  }
 
   /**
    *  Dereferencing operator, returns a
    *  const reference to the Element object.
    */
-  const Element &operator*() const ;
+  const Element &operator*() const
+  {
+    return *this->elem_;
+  }
 
   /**
    *  Dereferencing operator, returns a
    *  pointer to the const Element object.
    */
-  const Element *operator->() const;
+  const Element *operator->() const
+  {
+    return this->elem_.get();
+  }
   ///@}
 
 protected:

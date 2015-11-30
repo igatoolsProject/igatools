@@ -82,9 +82,8 @@ public:
    * Constructs an accessor to element number index of a
    * BSpline space.
    */
-  BSplineElement(const std::shared_ptr<ContainerType> space,
-                 const ListIt &index,
-                 const PropId &prop = ElementProperties::active);
+  BSplineElement(const std::shared_ptr<ContainerType> &space,
+                 std::unique_ptr<GridElement<dim>> &&grid_elem);
 
   /**
    * Copy constructor. Not allowed to be used.

@@ -177,9 +177,16 @@ public:
   get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
                 SubGridMap<sdim> &elem_map) const;
 
-
+#if 0
   virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
   create_ref_element(const typename base_t::ListIt &index, const PropId &property) const = 0;
+#endif
+
+  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  create_ref_element_begin(const PropId &property) const = 0;
+
+  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  create_ref_element_end(const PropId &property) const = 0;
 
 protected:
 

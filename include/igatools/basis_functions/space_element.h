@@ -47,7 +47,7 @@ IGA_NAMESPACE_OPEN
  * @ingroup elements
  */
 template<int dim_,int codim_,int range_,int rank_>
-class SpaceElement : public Element
+class SpaceElement
 {
 protected:
 
@@ -128,8 +128,7 @@ private:
 
 public:
 
-  SpaceElement(const std::shared_ptr<Sp> &space_basis,
-               const PropId &prop = ElementProperties::active);
+  SpaceElement(const std::shared_ptr<Sp> &space_basis);
 
 
 
@@ -164,6 +163,11 @@ public:
   bool has_same_basis_of(const self_t &elem) const;
   ///@}
 
+
+  /**
+   * \brief Move the element to the next one with the same property.
+   */
+  virtual void operator++() = 0;
 
   /**
    * \brief Move the element to the one specified by <tt>elem_id</tt>.
@@ -240,7 +244,7 @@ public:
   /**
    * \brief Returns the index of the element.
    */
-  const IndexType & get_index() const;
+  const IndexType &get_index() const;
 
 
   /**

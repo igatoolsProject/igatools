@@ -21,14 +21,14 @@
 # QA (pauletti, Jun 27, 2014):
 from init_instantiation_data import *
 
-include_files = []
+include_files = ['geometry/grid_iterator.h']
 
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
 
-elements = ['ReferenceElement<0,0,1>']
+elements = ['ReferenceElement<0,0,1>', 'ReferenceElement<0,1,1>']
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
@@ -39,6 +39,8 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 
 for elem in unique(elements):
     f.write('template class %s; \n' %elem)
+    f.write('template class GridIterator<%s>; \n' %elem)
+
 
 
 

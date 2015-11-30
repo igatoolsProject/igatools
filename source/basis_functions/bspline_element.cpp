@@ -274,12 +274,11 @@ private:
 
 template <int dim, int range, int rank>
 BSplineElement<dim, range, rank>::
-BSplineElement(const std::shared_ptr<ContainerType> space,
-               const ListIt &index,
-               const PropId &prop)
+BSplineElement(const std::shared_ptr<ContainerType> &space,
+               std::unique_ptr<GridElement<dim>> &&grid_elem)
   :
-  parent_t(space,index,prop),
-  grid_elem_(space->get_grid()->create_element(index,prop))
+  parent_t(space),
+  grid_elem_(std::move(grid_elem))
 {}
 
 

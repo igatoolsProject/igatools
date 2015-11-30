@@ -217,9 +217,9 @@ int main()
 {
   const int n_knots = 10;
   const int deg     = 1;
-  /*
-    PoissonProblem<1> poisson_1d(deg, {n_knots});
-    poisson_1d.run();
+
+  PoissonProblem<1> poisson_1d(deg, {n_knots});
+  poisson_1d.run();
   //*/
 
   PoissonProblem<2> poisson_2d(deg, {n_knots, n_knots});

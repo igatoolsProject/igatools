@@ -119,6 +119,7 @@ get_this_basis() const -> std::shared_ptr<const self_t >
   return nrb_space;
 }
 
+#if 0
 template<int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
@@ -129,18 +130,64 @@ create_element(const ListIt &index, const PropId &property) const
 
   return std::unique_ptr<Elem>(new Elem(this->get_this_basis(),index,property));
 }
+#endif
+
+
 
 template<int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
-create_ref_element(const ListIt &index, const PropId &property) const
+create_element_begin(const PropId &property) const
+-> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+{
+  using Elem = NURBSElement<dim_,range_,rank_>;
+
+//  const auto &id_elems_with_property = this->get_grid()->get_elements_with_property(property);
+  return std::make_unique<Elem>(this->get_this_basis(),
+  bsp_basis_->create_bspline_element_begin(property),
+  weight_func_->create_element_begin(property));
+}
+
+template<int dim_, int range_, int rank_>
+auto
+NURBS<dim_, range_, rank_>::
+create_element_end(const PropId &property) const
+-> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+{
+  using Elem = NURBSElement<dim_,range_,rank_>;
+
+//  const auto &id_elems_with_property = this->get_grid()->get_elements_with_property(property);
+  return std::make_unique<Elem>(this->get_this_basis(),
+  bsp_basis_->create_bspline_element_end(property),
+  weight_func_->create_element_end(property));
+}
+
+
+template<int dim_, int range_, int rank_>
+auto
+NURBS<dim_, range_, rank_>::
+create_ref_element_begin(const PropId &property) const
 -> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
 {
   using Elem = NURBSElement<dim_,range_,rank_>;
 
-  return std::unique_ptr<Elem>(new Elem(this->get_this_basis(),index,property));
+  return std::make_unique<Elem>(this->get_this_basis(),
+  bsp_basis_->create_bspline_element_begin(property),
+  weight_func_->create_element_begin(property));
 }
 
+template<int dim_, int range_, int rank_>
+auto
+NURBS<dim_, range_, rank_>::
+create_ref_element_end(const PropId &property) const
+-> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+{
+  using Elem = NURBSElement<dim_,range_,rank_>;
+
+  return std::make_unique<Elem>(this->get_this_basis(),
+  bsp_basis_->create_bspline_element_end(property),
+  weight_func_->create_element_end(property));
+}
 
 template <int dim_, int range_, int rank_>
 auto

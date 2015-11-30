@@ -26,11 +26,10 @@ IGA_NAMESPACE_OPEN
 template<int dim_,int codim_>
 DomainElement<dim_,codim_>::
 DomainElement(const std::shared_ptr<ContainerType> &domain,
-              const ListIt &index,
-              const PropId &prop)
+              std::unique_ptr<GridFuncElem> &&grid_func_elem)
   :
   domain_(domain),
-  grid_func_elem_(domain_->get_grid_function()->create_element(index,prop))
+  grid_func_elem_(std::move(grid_func_elem))
 {}
 
 

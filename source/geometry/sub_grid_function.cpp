@@ -50,26 +50,38 @@ SubGridFunction(const SharedPtrConstnessHandler<SupFunc> &sup_func,
 
 
 template<int sdim,int dim,int space_dim>
+auto
+SubGridFunction<sdim,dim,space_dim>::
+create_element_begin(const PropId &prop) const
+-> std::unique_ptr<GridFunctionElement<sdim,space_dim>>
+{
+  using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
+  return std::unique_ptr<Elem>(new Elem(
+    std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+    std::move(this->get_grid()->create_element_begin(prop)),
+    std::move(sup_func_->create_element_begin(prop))));
+}
+
+template<int sdim,int dim,int space_dim>
+auto
+SubGridFunction<sdim,dim,space_dim>::
+create_element_end(const PropId &prop) const
+-> std::unique_ptr<GridFunctionElement<sdim,space_dim>>
+{
+  using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
+  return std::unique_ptr<Elem>(new Elem(
+    std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+    std::move(this->get_grid()->create_element_end(prop)),
+    std::move(sup_func_->create_element_end(prop))));
+}
+
+template<int sdim,int dim,int space_dim>
 GridIterator<GridFunctionElement<sdim,space_dim> >
 SubGridFunction<sdim,dim,space_dim>::
 cbegin(const PropId &prop) const
 {
-//    LogStream out;
-//    out << "cbegin" <<std::endl;
-
-  auto elem = std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
-              (
-                std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
-                id_elems_sub_grid_.begin(),
-                prop);
-
-//    elem->print_info(out);
-
-
-  //TODO: (martinelli, Nov 16,2015): the iterator is not using the property!
-  return GridIterator<GridFunctionElement<sdim,space_dim>>(
-           std::move(elem)
-         );
+  using ElemIt = GridIterator<GridFunctionElement<sdim,space_dim> >;
+  return ElemIt(this->create_element_begin(prop));
 }
 
 template<int sdim,int dim,int space_dim>
@@ -77,14 +89,8 @@ GridIterator<GridFunctionElement<sdim,space_dim> >
 SubGridFunction<sdim,dim,space_dim>::
 cend(const PropId &prop) const
 {
-  //TODO: (martinelli, Nov 16,2015): the iterator is not using the property!
-  return GridIterator<GridFunctionElement<sdim,space_dim>>(
-           std::move(std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
-                     (
-                       std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
-                       id_elems_sub_grid_.end(),
-                       prop))
-         );
+  using ElemIt = GridIterator<GridFunctionElement<sdim,space_dim> >;
+  return ElemIt(this->create_element_end(prop));
 }
 
 
@@ -129,18 +135,25 @@ create_cache_handler() const
                       ));
 }
 
+#if 0
 template<int sdim,int dim,int space_dim>
 std::unique_ptr<GridFunctionElement<sdim,space_dim> >
 SubGridFunction<sdim,dim,space_dim>::
 create_element(const ListIt &index, const PropId &prop) const
 {
+#if 0
   using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
   return std::unique_ptr<Elem>(
            new Elem(std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
                     index, prop));
+#endif
+
+  Assert(false,ExcNotImplemented());
+  return nullptr;
 }
+#endif
 
-
+#ifdef MESH_REFINEMENT
 template<int sdim,int dim,int space_dim>
 void
 SubGridFunction<sdim,dim,space_dim>::
@@ -150,7 +163,7 @@ rebuild_after_insert_knots(
 {
   AssertThrow(false,ExcNotImplemented());
 }
-
+#endif
 
 
 template<int sdim,int dim,int space_dim>
