@@ -42,8 +42,8 @@ SubGridFunction(const SharedPtrConstnessHandler<SupFunc> &sup_func,
 //    LogStream out;
   for (const auto &elems_id : sub_grid_elem_map_)
   {
-    id_elems_sub_grid_.insert(elems_id.first);
-    id_elems_sup_grid_.insert(elems_id.second);
+    id_elems_sub_grid_.emplace_back(elems_id.first);
+    id_elems_sup_grid_.emplace_back(elems_id.second);
 //      out << "Sub elem ID: " << elems_id.first << "    Sup elem ID: " << elems_id.second << std::endl;
   }
 }
@@ -202,7 +202,7 @@ get_sup_grid_function() const -> std::shared_ptr<const SupFunc>
 
 
 template<int sdim,int dim,int space_dim>
-const SafeSTLSet<typename Grid<sdim>::IndexType> &
+const SafeSTLVector<typename Grid<sdim>::IndexType> &
 SubGridFunction<sdim,dim,space_dim>::
 get_id_elems_sub_grid() const
 {
@@ -210,7 +210,7 @@ get_id_elems_sub_grid() const
 }
 
 template<int sdim,int dim,int space_dim>
-const SafeSTLSet<typename Grid<dim>::IndexType> &
+const SafeSTLVector<typename Grid<dim>::IndexType> &
 SubGridFunction<sdim,dim,space_dim>::
 get_id_elems_sup_grid() const
 {
@@ -234,7 +234,7 @@ get_sub_grid_elem_map() const -> const SubGridMap &
 }
 
 template<int sdim,int dim,int space_dim>
-const SafeSTLSet<typename Grid<sdim>::IndexType> &
+const SafeSTLVector<typename Grid<sdim>::IndexType> &
 SubGridFunction<sdim,dim,space_dim>::
 get_elements_with_property(const PropId &elems_property) const
 {

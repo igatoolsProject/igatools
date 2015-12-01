@@ -194,7 +194,7 @@ protected:
 
 
 public:
-  virtual const SafeSTLSet<typename GridType::IndexType> &
+  virtual const SafeSTLVector<typename GridType::IndexType> &
   get_elements_with_property(const PropId &elems_property) const
   {
     return grid_->get_elements_with_property(elems_property);

@@ -168,7 +168,7 @@ public:
 
   const IndexType &get_index() const;
 
-  const typename List::iterator &get_index_iterator() const
+  const ListIt &get_index_iterator() const
   {
     return index_it_;
   }
@@ -306,7 +306,7 @@ protected:
 private:
 
   /** Index in the property list of the current element */
-  typename List::iterator index_it_;
+  ListIt index_it_;
 
   PropId property_;
 

@@ -189,7 +189,7 @@ public:
 
   using PropertyList = PropertiesElementID<dim_>;
   using List = typename PropertyList::List;
-  using ListIt = typename PropertyList::List::iterator;
+  using ListIt = typename PropertyList::List::const_iterator;
 
 
   /** Type for the vector of knot vectors */

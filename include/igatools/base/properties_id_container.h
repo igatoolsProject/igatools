@@ -168,7 +168,7 @@ class PropertiesDofs
 
 template <int dim>
 class PropertiesElementID
-  : public PropertiesIdContainer<ElementIndex<dim>,SafeSTLSet>
+  : public PropertiesIdContainer<ElementIndex<dim>,SafeSTLVector>
 {};
 
 

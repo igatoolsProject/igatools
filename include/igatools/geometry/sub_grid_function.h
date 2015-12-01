@@ -113,10 +113,10 @@ public:
   std::shared_ptr<const SupFunc> get_sup_grid_function() const;
 
 
-  const SafeSTLSet<typename Grid<sdim>::IndexType> &
+  const SafeSTLVector<typename Grid<sdim>::IndexType> &
   get_id_elems_sub_grid() const;
 
-  const SafeSTLSet<typename Grid<dim>::IndexType> &
+  const SafeSTLVector<typename Grid<dim>::IndexType> &
   get_id_elems_sup_grid() const;
 
   const typename Grid<dim>::IndexType &
@@ -124,7 +124,7 @@ public:
 
   const SubGridMap &get_sub_grid_elem_map() const;
 
-  virtual const SafeSTLSet<typename GridType::IndexType> &
+  virtual const SafeSTLVector<typename GridType::IndexType> &
   get_elements_with_property(const PropId &elems_property) const override;
 
 
@@ -138,8 +138,8 @@ private:
 
   const SubGridMap sub_grid_elem_map_;
 
-  SafeSTLSet<typename Grid<sdim>::IndexType> id_elems_sub_grid_;
-  SafeSTLSet<typename Grid< dim>::IndexType> id_elems_sup_grid_;
+  SafeSTLVector<typename Grid<sdim>::IndexType> id_elems_sub_grid_;
+  SafeSTLVector<typename Grid< dim>::IndexType> id_elems_sup_grid_;
 
 };
 

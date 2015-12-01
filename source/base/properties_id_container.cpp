@@ -90,12 +90,12 @@ set_property_status_for_id(const PropId &property,
   auto &list = (*this)[property];
   if (status)
   {
-    list.insert(id);
+    list.insert(list.cend(),id);
   }
   else
   {
     Assert(!list.empty(),ExcEmptyObject());
-    list.erase(id);
+    list.erase(std::find(list.cbegin(),list.cend(),id));
   }
 }
 

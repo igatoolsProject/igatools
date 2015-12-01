@@ -210,12 +210,12 @@ Grid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates)
     for (const auto &tensor_id : tensor_index_range)
     {
       const int flat_id = this->tensor_to_flat_element_id(tensor_id);
-      active_elements.emplace(ElementIndex<dim_>(flat_id,tensor_id));
+      active_elements.emplace_back(ElementIndex<dim_>(flat_id,tensor_id));
     }
   } // end if (dim_ > 0)
   else // if (dim_ == 0)
   {
-    active_elements.emplace(ElementIndex<dim_>(0,TensorIndex<dim_>()));
+    active_elements.emplace_back(ElementIndex<dim_>(0,TensorIndex<dim_>()));
   } // end if (dim_ == 0)
 
 #ifndef NDEBUG
@@ -749,12 +749,12 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
     for (const auto &tensor_id : tensor_index_range)
     {
       const int flat_id = this->tensor_to_flat_element_id(tensor_id);
-      active_elements.insert(ElementIndex<dim_>(flat_id,tensor_id));
+      active_elements.emplace_back(ElementIndex<dim_>(flat_id,tensor_id));
     }
   }
   else // if (dim_ == 0)
   {
-    active_elements.emplace(ElementIndex<dim_>(0,TensorIndex<dim_>()));
+    active_elements.emplace_back(ElementIndex<dim_>(0,TensorIndex<dim_>()));
   } // end if (dim_ == 0)
 
 
@@ -784,7 +784,8 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
       for (const auto &elem_id_coarse : elems_id_coarse_with_property)
       {
         const auto &elems_id_fine = coarse_to_fine_elems_id[elem_id_coarse];
-        elems_id_fine_with_property.insert(elems_id_fine.begin(),elems_id_fine.end());
+        for (const auto & elem_id_fine : elems_id_fine)
+          elems_id_fine_with_property.emplace_back(elem_id_fine);
       }
     }
   }
