@@ -21,6 +21,7 @@
 
 #include <igatools/geometry/grid_element.h>
 #include <igatools/geometry/unit_element.h>
+#include <igatools/utils/multi_array_utils.h>
 #include <algorithm>
 
 IGA_NAMESPACE_OPEN
@@ -148,8 +149,9 @@ vertex(const int i) const -> Point
   Assert(i < UnitElement<dim>::sub_elements_size[0],
          ExcIndexRange(i,0, UnitElement<dim>::sub_elements_size[0]));
 
-  TensorIndex<dim> index = get_index().get_tensor_index();
 
+  /*
+  TensorIndex<dim> index = get_index().get_tensor_index();
   auto all_elems = UnitElement<dim>::all_elems;
   const auto &vertex_id = std::get<0>(all_elems)[i];
 
@@ -158,6 +160,20 @@ vertex(const int i) const -> Point
   {
     index[j] += vertex_id.constant_values[j];
     vertex[j] = grid_->get_knot_coordinates(j)[index[j]];
+  }
+  //*/
+
+  const TensorIndex<dim> &vertex_id_origin = get_index().get_tensor_index();
+
+  TensorSize<dim> n_vertices_elem(2);
+  const auto w = MultiArrayUtils<dim>::compute_weight(n_vertices_elem);
+  auto vertex_id = MultiArrayUtils<dim>::flat_to_tensor_index(i,w);
+
+  Point vertex;
+  for (int j = 0 ; j < dim ; ++j)
+  {
+    vertex_id[j] += vertex_id_origin[j];
+    vertex[j] = grid_->get_knot_coordinates(j)[vertex_id[j]];
   }
 
   return vertex;

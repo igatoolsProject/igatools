@@ -36,7 +36,7 @@ SubGridFunction(const SharedPtrConstnessHandler<SupFunc> &sup_func,
   base_t(grid),
   sup_func_(sup_func),
   s_id_(s_id),
-  elems_property_("boundary"),
+//  elems_property_("boundary"),
   sub_grid_elem_map_(sub_grid_elem_map)
 {
 //    LogStream out;
@@ -180,6 +180,10 @@ print_info(LogStream &out) const
 
   out << "Sub-element topology ID: " << s_id_ << std::endl;
 
+  out.begin_item("Sub-Grid Element Map:");
+  sub_grid_elem_map_.print_info(out);
+  out.end_item();
+
   out.begin_item("Sub elements ID:");
   id_elems_sub_grid_.print_info(out);
   out.end_item();
@@ -222,7 +226,15 @@ const typename Grid<dim>::IndexType &
 SubGridFunction<sdim,dim,space_dim>::
 get_sup_element_id(const typename Grid<sdim>::IndexType &sub_elem_id) const
 {
-  return sub_grid_elem_map_.at(sub_elem_id);
+  const auto begin = id_elems_sub_grid_.cbegin();
+  const auto end   = id_elems_sub_grid_.cend();
+
+  const auto it = std::find(begin,end,sub_elem_id);
+  Assert(it != end,ExcMessage("Index not found."));
+
+  return id_elems_sup_grid_[it-begin];
+
+//  return sub_grid_elem_map_.at(sub_elem_id);
 }
 
 template<int sdim,int dim,int space_dim>
@@ -233,14 +245,6 @@ get_sub_grid_elem_map() const -> const SubGridMap &
   return sub_grid_elem_map_;
 }
 
-template<int sdim,int dim,int space_dim>
-const SafeSTLVector<typename Grid<sdim>::IndexType> &
-SubGridFunction<sdim,dim,space_dim>::
-get_elements_with_property(const PropId &elems_property) const
-{
-  //TODO: (martinelli, Nov 16,2015): the property is not used!
-  return id_elems_sub_grid_;
-}
 
 IGA_NAMESPACE_CLOSE
 

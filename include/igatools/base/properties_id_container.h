@@ -84,19 +84,6 @@ public:
    */
   const List &operator[](const PropId &property) const;
 
-  /**
-   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
-   */
-  void set_property_status_for_id(const PropId &property,
-                                  const IndexType id,
-                                  const bool status);
-
-  /**
-   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
-   */
-  void set_property_status_for_ids(const PropId &property,
-                                   const List ids,
-                                   const bool status);
 
   /**
    * Prints the contents of the class. Its use is intended for testing and debugging purposes.
@@ -164,12 +151,55 @@ private:
 
 class PropertiesDofs
   : public PropertiesIdContainer<int,SafeSTLSet>
-{};
+{
+  using base_t = PropertiesIdContainer<int,SafeSTLSet>;
+
+public:
+
+  using typename base_t::List;
+
+  /**
+   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
+   */
+  void set_property_status_for_id(const PropId &property,
+                                  const int id,
+                                  const bool status);
+
+  /**
+   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
+   */
+  void set_property_status_for_ids(const PropId &property,
+                                   const List &ids,
+                                   const bool status);
+
+};
 
 template <int dim>
 class PropertiesElementID
   : public PropertiesIdContainer<ElementIndex<dim>,SafeSTLVector>
-{};
+{
+  using base_t = PropertiesIdContainer<ElementIndex<dim>,SafeSTLVector>;
+
+public:
+
+  using typename base_t::List;
+
+  /**
+   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
+   *
+   */
+  void set_property_status_for_id(const PropId &property,
+                                  const ElementIndex<dim> &elem_id,
+                                  const bool status);
+
+  /**
+   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
+   */
+  void set_property_status_for_ids(const PropId &property,
+                                   const List &ids,
+                                   const bool status);
+
+};
 
 
 

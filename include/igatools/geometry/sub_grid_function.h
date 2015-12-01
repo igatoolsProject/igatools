@@ -124,16 +124,13 @@ public:
 
   const SubGridMap &get_sub_grid_elem_map() const;
 
-  virtual const SafeSTLVector<typename GridType::IndexType> &
-  get_elements_with_property(const PropId &elems_property) const override;
-
 
 
 private:
   SharedPtrConstnessHandler<SupFunc> sup_func_;
   const int s_id_;
 
-  const PropId elems_property_;
+//  const PropId elems_property_;
 
 
   const SubGridMap sub_grid_elem_map_;

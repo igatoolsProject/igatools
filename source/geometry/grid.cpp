@@ -756,7 +756,7 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
   {
     active_elements.emplace_back(ElementIndex<dim_>(0,TensorIndex<dim_>()));
   } // end if (dim_ == 0)
-
+  std::sort(active_elements.begin(),active_elements.end());
 
   const auto fine_to_coarse_elems_id = grid_tools::build_map_elements_id_between_grids(
                                          *this,*grid_pre_refinement_);
@@ -784,9 +784,10 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
       for (const auto &elem_id_coarse : elems_id_coarse_with_property)
       {
         const auto &elems_id_fine = coarse_to_fine_elems_id[elem_id_coarse];
-        for (const auto & elem_id_fine : elems_id_fine)
+        for (const auto &elem_id_fine : elems_id_fine)
           elems_id_fine_with_property.emplace_back(elem_id_fine);
       }
+      std::sort(elems_id_fine_with_property.begin(),elems_id_fine_with_property.end());
     }
   }
 
