@@ -1,52 +1,5 @@
-//#include<igatools/linear_algebra/epetra.h>
-
 #include "AztecOO_config.h"
 #include "AztecOO.h"
-#include "AztecOO_ConditionNumber.h"
-#include "Ifpack_PointRelaxation.h"
-
-template<int dim>
-class Geometry {
-  public:
-  TensorSize<dim>  nel;
-  TensorIndex<dim> deg;
-  IgCoefficients   coefs;
-  IgCoefficients   weights;
-  void load(const char* fname) {
-    FILE *fp;
-    int check;
-    fp=fopen(fname,"r");
-    if (fp==0) cout << "cannot open the .nurbs file!" <<endl;
-    else {
-      // checking dimension
-      fscanf(fp,"%d",&check);
-      if (check!=dim) cout << "wrong geometry dimension!" << endl;
-      else {
-        // reading degrees
-        for (int idim=0; idim<dim; idim++)
-          fscanf(fp,"%d",&deg[idim]);
-        // reading elements
-        for (int idim=0; idim<dim; idim++)
-          fscanf(fp,"%d",&nel[idim]);
-        // reading number of control points
-        int ncp;
-        fscanf(fp,"%d",&ncp);
-        // reading control points
-        double data;
-        for (int icp=0; icp<ncp*dim; icp++) {
-          fscanf(fp,"%lf",&data);
-          coefs[icp]=data;
-        }
-        // reading weights
-        for (int icp=0; icp<ncp; icp++) {
-          fscanf(fp,"%lf",&data);
-          weights[icp]=data;
-        }
-      }
-    fclose(fp);
-    }
-  }
-};
 
 template<int dim>
 class ElasticityProblem {
@@ -59,18 +12,17 @@ class ElasticityProblem {
                       const Geometry<dim> &geom);
     ElasticityProblem(const TensorSize<dim> nel,
                       const TensorIndex<dim> deg);
-  public:
+  private:
       // space data
     shared_ptr<Grid<dim>>                   grid;
     shared_ptr<Domain<dim>>                 domain;
     shared_ptr<Basis<dim,0,dim,1>>          basis;
-    shared_ptr<const QGauss<dim>>           elem_quad;
-    shared_ptr<const QGauss<dim-1>>         face_quad;
+    shared_ptr<const QGauss<dim>>           quad;
       // linear system data
     shared_ptr<Matrix> mat;
     shared_ptr<Vector> rhs;
     shared_ptr<Vector> sol;
-    bool is_grid;
+    void complete_construction();
 
   public:
     shared_ptr<Grid<dim>> get_grid() const {
@@ -109,7 +61,6 @@ std::set<Index> get_boundary_dofs_comp(shared_ptr<const DofDistribution<dim,rang
   std::set_intersection(comp_dofs.begin(), comp_dofs.end(),
                         bdr_dofs.begin(), bdr_dofs.end(),
                         std::insert_iterator<std::set<Index>>(bdr_dofs_comp,bdr_dofs_comp.begin()));
-
 
   /*cout << "FACE " << face << " COMP " << comp << endl;
   //auto all_dofs = dof_distribution->get_global_dofs();
@@ -156,7 +107,7 @@ ElasticityProblem<dim>::ElasticityProblem(const TensorSize<dim> nel,
   for (int idim=0; idim<dim; idim++) {
     num_knots[idim] = geom.nel[idim]+1;
   }
-  // base underlying grid for the geometry function
+  // underlying grid for the geometry function
   grid = Grid<dim>::create(num_knots);
   // B-spline vector field for the geometry function
   auto vect_space   = SplineSpace<dim,dim>::create(geom.deg, grid);
@@ -186,57 +137,72 @@ ElasticityProblem<dim>::ElasticityProblem(const TensorSize<dim> nel,
   auto reference_space   = SplineSpace<dim,dim>::create(deg, grid);
   auto reference_bspline = BSpline<dim,dim>::create(reference_space);
   // at last, the B-spline basis functions space in physical domain
-  //using grid_functions::IdentityGridFunction<dim>;
-  //auto trivial_domain = Domain<dim>::create(grid_functions::IdentityGridFunction<dim>::create(grid));
   basis = PhysicalSpaceBasis<dim,dim>::create(reference_bspline, domain);
 
-  // CREATING THE QUADRATURE RULES
-  TensorSize<dim> elem_num_quad;
-  for (int idim=0; idim<dim; idim++) {
-    elem_num_quad[idim] = deg[idim]+1;
-  }
-  elem_quad = QGauss<dim>::const_create(elem_num_quad);
-  TensorSize<dim-1> face_num_quad;
-  for (int idim=0; idim<dim-1; idim++) {
-    face_num_quad[idim] = deg[idim]+1;
-  }
-  face_quad = QGauss<dim-1>::const_create(face_num_quad);
+  // COMPLETING THE CONSTRUCTION
+  complete_construction();
 
-  // the basis functions in the physical domain
-  //basis    = PhysicalSpaceBasis<dim>::create(scal_bspline,domain);
-  // refine everything
-  //grid->print_info(out);
-  //out << endl;
-  // qudrature rule, linear system 
-  //quad  = QGauss<dim>::const_create(nqn);
+  // CREATING THE QUADRATURE RULES
+  /*TensorSize<dim> num_quad;
+  for (int idim=0; idim<dim; idim++) {
+    num_quad[idim] = deg[idim]+1;
+  }
+  quad = QGauss<dim>::const_create(num_quad);
+
   // CREATING THE LINEAR SYSTEM
   mat   = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
   rhs   = create_vector(mat->RangeMap());
-  sol   = create_vector(mat->DomainMap());
-  is_grid=false;
+  sol   = create_vector(mat->DomainMap());*/
 }
 
 template<int dim>
 ElasticityProblem<dim>::ElasticityProblem(const TensorSize<dim> nel,
                                           const TensorIndex<dim> deg) {
+  // CREATING THE TRIVIAL PHYSICAL DOMAIN
+  // computing the number of knots required
   TensorSize<dim> num_knots;
   for (int idim=0; idim<dim; idim++) {
     num_knots[idim] = nel[idim]+1;
   }
+  // underlying grid as physical space
   grid = Grid<dim>::create(num_knots);
+
+  // CREATING THE DISCRETE SPACE IN PARAMETRIC DOMAIN
+  // spline space for the basis
   auto space = SplineSpace<dim,dim>::create(deg,grid);
+  // B-spline space as basis space
   basis = BSpline<dim,dim>::create(space);
-  TensorSize<dim> elem_num_quad;
+  // trivial domain defined as imaage of the identity vector field
+  auto id_funct = grid_functions::IdentityGridFunction<dim>::create(grid);
+  domain = Domain<dim>::create(id_funct);
+
+  // COMPLETING THE CONSTRUCTION
+  complete_construction();
+  
+  /*TensorSize<dim> num_quad;
   for (int idim=0; idim<dim; idim++) {
-    elem_num_quad[idim] = deg[idim]+1;
+    num_quad[idim] = deg[idim]+1;
   }
-  elem_quad = QGauss<dim>::const_create(elem_num_quad);
-  is_grid=true;
+  quad = QGauss<dim>::const_create(num_quad);
   mat   = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
   rhs   = create_vector(mat->RangeMap());
   sol   = create_vector(mat->DomainMap());
   auto id_funct = grid_functions::IdentityGridFunction<dim>::create(grid);
-  domain = Domain<dim>::create(id_funct);
+  domain = Domain<dim>::create(id_funct);*/
+}
+
+template<int dim>
+void ElasticityProblem<dim>::complete_construction() {
+  // getting the degrees
+  auto deg = basis->get_spline_space()->get_degree_table();
+  TensorSize<dim> num_quad;
+  for (int idim=0; idim<dim; idim++) {
+    num_quad[idim] = deg[idim][0]+1;
+  }
+  quad = QGauss<dim>::const_create(num_quad);
+  mat   = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
+  rhs   = create_vector(mat->RangeMap());
+  sol   = create_vector(mat->DomainMap());
 }
 
 // ----------------------------------------------------------------------------
@@ -261,22 +227,22 @@ void ElasticityProblem<dim>::assemble(const Real lambdaa,
   auto flag = Flags::value | Flags::gradient | Flags::w_measure | Flags::divergence;
   basis_handler->set_element_flags(flag);
   // setting the quarature rule
-  auto Nqn = elem_quad->get_num_points();
-  basis_handler->init_element_cache(basis_el,elem_quad);
+  auto Nqn = quad->get_num_points();
+  basis_handler->init_element_cache(basis_el,quad);
 
   // ATTEMPT 1: GridFunction
   //auto source_term   = grid_functions::ConstantGridFunction<dim,dim>::const_create(grid,{0.0,0.0,-0.0001});
   auto funct_handler = source_term->create_cache_handler();
   auto funct_el      = source_term->begin();
   funct_handler->set_element_flags(grid_function_element::Flags::D0);
-  funct_handler->init_cache(funct_el,elem_quad);
+  funct_handler->init_cache(funct_el,quad);
 
   // ATTEMPT 2: Function
   /*auto source_term = functions::ConstantFunction<dim,0,dim>::const_create(domain,{0.0,0.0,-1.0});
   auto funct_handler = source_term->create_cache_handler();
   auto funct_el = source_term->begin();
   funct_handler->set_element_flags(function_element::Flags::D0);
-  funct_handler->init_cache(funct_el,elem_quad);//*/
+  funct_handler->init_cache(funct_el,quad);//*/
 
   // retrieving the last datum and then starting the loop
   const auto l = lambda;
@@ -448,22 +414,22 @@ Real ElasticityProblem<dim>::l2_error(std::shared_ptr<const GridFunction<dim,dim
   auto u_ds_handler = u_ds->create_cache_handler();
   auto u_ds_el = u_ds->begin();
   u_ds_handler->set_element_flags(grid_function_element::Flags::D0);
-  u_ds_handler->init_element_cache(u_ds_el,elem_quad);
+  u_ds_handler->init_element_cache(u_ds_el,quad);
 
   // cache for the exact solution
   auto u_ex_handler = u_ex->create_cache_handler();
   auto u_ex_el = u_ex->begin();
   u_ex_handler->set_element_flags(grid_function_element::Flags::D0);
-  u_ex_handler->init_element_cache(u_ex_el,elem_quad);
+  u_ex_handler->init_element_cache(u_ex_el,quad);
 
   // cache for the grid
   auto grid_handler = grid->create_cache_handler();
   auto grid_el = grid->begin();
   const auto grid_eld = grid->end();
   grid_handler->set_element_flags(grid_element::Flags::weight);
-  grid_handler->init_element_cache(grid_el,elem_quad);  
+  grid_handler->init_element_cache(grid_el,quad);  
 
-  const auto nqn = elem_quad->get_num_points();
+  const auto nqn = quad->get_num_points();
   Real err = 0.0;
   for (int iel=0; grid_el != grid_eld; ++grid_el, ++u_ex_el, ++u_ds_el, ++iel) {
     u_ds_handler->fill_element_cache(u_ds_el);

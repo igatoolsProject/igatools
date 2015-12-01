@@ -24,6 +24,7 @@
 //#include "my_formula_grid_function.h"
 #include "custom_grid_function.h"
 #include "custom_function.h"
+#include "geometry.h"
 
 // headers for Trilinos stuff
 #include <Teuchos_GlobalMPISession.hpp>
@@ -37,7 +38,7 @@ LogStream out;
 
 const Real lambda = 0.57692;
 const Real mu     = 0.38462;
-#include "poisson_problem.h"
+#include "elasticity_problem.h"
 
 // ----------------------------------------------------------------------------
 //   MY CUSTOM FUNCTION
@@ -74,12 +75,12 @@ Real eoc(Real e1, Real e2, Real h1, Real h2) {
 int main() {
 
   // problem dimension
-  const int dim = 3;
+  const int dim = 2;
 
   // geometry definition
   Geometry<dim> geometry;
-  //if (dim==2) geometry.load("../../../workspace/geometries/ring.nurbs");
-  //if (dim==3) geometry.load("../../../workspace/geometries/hose.nurbs");
+  if (dim==2) geometry.load("../../../workspace/geometries/ring.nurbs");
+  if (dim==3) geometry.load("../../../workspace/geometries/hose.nurbs");
 
   /*geometry.nel   = {1,1};
   geometry.deg   = {1,2};
@@ -99,17 +100,17 @@ int main() {
   geometry.coefs[ 5] = 0.0;  geometry.coefs[11] = 2.0;// */
 
   // linear elasticity problem creation
-  std::set<int> nels = {2,4,6,8,10,12,14,16};
-  std::set<int> degs = {1,2,3,4,5};
+  /*std::set<int> nels = {2,4,6,8,10,12,14,16};
+  std::set<int> degs = {1,2,3};
   //std::set<int> nels = {4};
   //std::set<int> degs = {2};
   std::map<int,Real> e1, e2;
   double h1, h2;
   printf("\n\n                     deg 1");
   printf("                           deg 2");
-  printf("                           deg 3");
-  printf("                           deg 4");
-  printf("                           deg 5\n");
+  printf("                           deg 3\n");
+  //printf("                           deg 4");
+  //printf("                           deg 5\n");
   for (set<int>::iterator iel=nels.begin(); iel!=nels.end(); iel++) {
     h2=1.0/(*iel);
     printf("nel %2d:   ",*iel);
@@ -131,28 +132,27 @@ int main() {
       auto exact_solution = CustomGridFunction<dim,dim>::const_create(grid,u);
       e2[*ideg] = problem.l2_error(exact_solution);
       printf("\terr = %1.2e\teoc = %1.2f",e2[*ideg],eoc(e1[*ideg],e2[*ideg],h1,h2));
-      problem.output(exact_solution);
-      //h1 = h2;
+      //problem.output(exact_solution);
       e1[*ideg] = e2[*ideg];
     }
     h1 = h2;
     printf("\n");
   }// */
 
-  /*TensorSize<dim>  nel;
+  TensorSize<dim>  nel;
   TensorIndex<dim> deg;
   for (int idim=0; idim<dim; idim++) {
-    nel[idim]=4;
+    nel[idim]=2;
     deg[idim]=1;
   }
   auto problem = ElasticityProblem<dim>(nel,deg);
   using namespace grid_functions;
   //auto source_term = ConstantGridFunction<dim,dim>::const_create(problem.get_grid(),{1.0,0.0});
   //auto source_term = ConstantGridFunction<dim,dim>::const_create(problem.get_grid(),{1.0,0.0,0.0});
-  auto source_term = CustomGridFunction<dim,dim>::const_create(problem.get_grid(),u);
+  auto source_term = CustomGridFunction<dim,dim>::const_create(problem.get_grid(),f);
   problem.assemble(lambda,mu,source_term);
   problem.solve();
-  problem.output();// */
+  //problem.output();// */
 
 
 
