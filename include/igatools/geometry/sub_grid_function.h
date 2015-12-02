@@ -130,10 +130,9 @@ private:
   SharedPtrConstnessHandler<SupFunc> sup_func_;
   const int s_id_;
 
-//  const PropId elems_property_;
 
 
-  const SubGridMap sub_grid_elem_map_;
+//  const SubGridMap sub_grid_elem_map_;
 
   SafeSTLVector<typename Grid<sdim>::IndexType> id_elems_sub_grid_;
   SafeSTLVector<typename Grid< dim>::IndexType> id_elems_sup_grid_;

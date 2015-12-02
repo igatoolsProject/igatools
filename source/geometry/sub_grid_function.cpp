@@ -35,12 +35,12 @@ SubGridFunction(const SharedPtrConstnessHandler<SupFunc> &sup_func,
   :
   base_t(grid),
   sup_func_(sup_func),
-  s_id_(s_id),
+  s_id_(s_id)//,
 //  elems_property_("boundary"),
-  sub_grid_elem_map_(sub_grid_elem_map)
+//  sub_grid_elem_map_(sub_grid_elem_map)
 {
 //    LogStream out;
-  for (const auto &elems_id : sub_grid_elem_map_)
+  for (const auto &elems_id : sub_grid_elem_map)
   {
     id_elems_sub_grid_.emplace_back(elems_id.first);
     id_elems_sup_grid_.emplace_back(elems_id.second);
@@ -179,11 +179,11 @@ print_info(LogStream &out) const
 
 
   out << "Sub-element topology ID: " << s_id_ << std::endl;
-
-  out.begin_item("Sub-Grid Element Map:");
-  sub_grid_elem_map_.print_info(out);
-  out.end_item();
-
+  /*
+    out.begin_item("Sub-Grid Element Map:");
+    sub_grid_elem_map_.print_info(out);
+    out.end_item();
+  //*/
   out.begin_item("Sub elements ID:");
   id_elems_sub_grid_.print_info(out);
   out.end_item();
@@ -237,6 +237,7 @@ get_sup_element_id(const typename Grid<sdim>::IndexType &sub_elem_id) const
 //  return sub_grid_elem_map_.at(sub_elem_id);
 }
 
+/*
 template<int sdim,int dim,int space_dim>
 auto
 SubGridFunction<sdim,dim,space_dim>::
@@ -244,7 +245,7 @@ get_sub_grid_elem_map() const -> const SubGridMap &
 {
   return sub_grid_elem_map_;
 }
-
+//*/
 
 IGA_NAMESPACE_CLOSE
 
