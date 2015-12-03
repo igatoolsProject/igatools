@@ -28,6 +28,14 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int space_dim_>
 GridFunction<dim_, space_dim_>::
+GridFunction()
+  :
+  object_id_(UniqueIdGenerator::get_unique_id())
+{}
+
+
+template<int dim_, int space_dim_>
+GridFunction<dim_, space_dim_>::
 GridFunction(const SharedPtrConstnessHandler<GridType> &grid)
   :
   grid_(grid),

@@ -65,10 +65,11 @@ public:
   ///@}
 
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * serialization mechanism.
+   * Default constructor. It sets the unique value for the object ID.
+   *
+   * @note  This constructor is needed for the serialization mechanism.
    */
-  GridFunction() = default;
+  GridFunction();
 
   GridFunction(const SharedPtrConstnessHandler<GridType> &grid);
 

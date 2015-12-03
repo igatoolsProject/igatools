@@ -209,14 +209,14 @@ IGA_NAMESPACE_CLOSE
 using MapStringSetIntAlias = iga::SafeSTLMap<std::string,iga::SafeSTLSet<int>>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetIntAlias,cereal::specialization::member_serialize);
 
-using MapStringSetElemIDAlias0 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<0>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias0,cereal::specialization::member_serialize);
-using MapStringSetElemIDAlias1 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<1>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias1,cereal::specialization::member_serialize);
-using MapStringSetElemIDAlias2 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<2>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias2,cereal::specialization::member_serialize);
-using MapStringSetElemIDAlias3 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<3>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias3,cereal::specialization::member_serialize);
+using MapStringVectorElemIDAlias0 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<0>>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringVectorElemIDAlias0,cereal::specialization::member_serialize);
+using MapStringVectorElemIDAlias1 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<1>>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringVectorElemIDAlias1,cereal::specialization::member_serialize);
+using MapStringVectorElemIDAlias2 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<2>>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringVectorElemIDAlias2,cereal::specialization::member_serialize);
+using MapStringVectorElemIDAlias3 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<3>>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringVectorElemIDAlias3,cereal::specialization::member_serialize);
 
 #if 0
 using PropertiesIdContainerElemIDAlias0 = iga::PropertiesIdContainer<iga::ElementIndex<0>>;

@@ -199,6 +199,12 @@ SplineSpace(const DegreeTable &deg,
   this->init();
 }
 
+template<int dim_, int range_, int rank_>
+SplineSpace<dim_, range_, rank_>::
+SplineSpace()
+  :
+  object_id_(UniqueIdGenerator::get_unique_id())
+{}
 
 
 

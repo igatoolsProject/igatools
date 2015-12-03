@@ -641,11 +641,11 @@ protected:
 
 private:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. It sets the unique value for the object ID.
+   *
+   * @note  This constructor is needed for the serialization mechanism.
    */
-  SplineSpace() = default;
+  SplineSpace();
 
 #ifdef SERIALIZATION
   /**
