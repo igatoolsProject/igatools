@@ -19,37 +19,31 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the SphereGridFunction class as a mapping
- *
- *  author: martinelli
- *  date: Nov 06, 2015
+ * Testing the objects container parser
+ * author: P. Antolin
+ * date: Nov 27, 2015
  *
  */
 
-#include "domain_values.h"
+#include "../tests.h"
+#include <igatools/io/objects_container_parser.h>
+#include <igatools/base/objects_container.h>
 
-
-template <int dim>
-std::shared_ptr<const Domain<dim,1> >
-create_sphere_domain()
-{
-  auto grid = Grid<dim>::const_create();
-
-  using Sph = grid_functions::SphereGridFunction<dim>;
-  return Domain<dim,1>::const_create(Sph::const_create(grid));
-}
 
 int main()
 {
-  out.depth_console(10);
-
-  out.begin_item("SphereGridFunction<1>");
-  domain_values<1,1>(*create_sphere_domain<1>(),QUniform<1>::create(3));
+  const string file_name = "objects_container.xml";
+  OUTSTART
+  const auto container = ObjectsContainerParser::parse(file_name);
+  out.begin_item("Non-const container");
+  container->print_info(out);
   out.end_item();
 
-  out.begin_item("SphereGridFunction<2>");
-  domain_values<2,1>(*create_sphere_domain<2>(),QUniform<2>::create(3));
+  const auto container_const = ObjectsContainerParser::parse_const(file_name);
+  out.begin_item("Const container");
+  container_const->print_info(out);
   out.end_item();
 
-  return 0;
+  OUTEND
 }
+

@@ -18,38 +18,4 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for the SphereGridFunction class as a mapping
- *
- *  author: martinelli
- *  date: Nov 06, 2015
- *
- */
-
-#include "domain_values.h"
-
-
-template <int dim>
-std::shared_ptr<const Domain<dim,1> >
-create_sphere_domain()
-{
-  auto grid = Grid<dim>::const_create();
-
-  using Sph = grid_functions::SphereGridFunction<dim>;
-  return Domain<dim,1>::const_create(Sph::const_create(grid));
-}
-
-int main()
-{
-  out.depth_console(10);
-
-  out.begin_item("SphereGridFunction<1>");
-  domain_values<1,1>(*create_sphere_domain<1>(),QUniform<1>::create(3));
-  out.end_item();
-
-  out.begin_item("SphereGridFunction<2>");
-  domain_values<2,1>(*create_sphere_domain<2>(),QUniform<2>::create(3));
-  out.end_item();
-
-  return 0;
-}
+#include <igatools/base/instantiated_types.inst>

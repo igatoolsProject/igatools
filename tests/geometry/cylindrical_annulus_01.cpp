@@ -45,10 +45,11 @@ int main()
   out.depth_console(10);
 
   auto cyl = create_cylinder_function();
+  auto domain = Domain<3>::const_create(cyl);
 
   auto quad = QGauss<3>::create(1);
 
-  domain_values<3,3>(cyl,quad);
+  domain_values<3,0>(*domain,quad);
 
   return 0;
 }

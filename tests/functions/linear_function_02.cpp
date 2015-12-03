@@ -33,33 +33,10 @@
 
 
 
-template<int dim, int codim, int range>
-void test(shared_ptr<Function<dim, codim, range>> F)
-{
-  using ElementIterator = typename  Function<dim, codim, range>::ElementIterator;
-  ElementIterator elem = F->begin();
-  ElementIterator end = F->end();
-
-  const auto topology = Topology<dim>();
-
-  F->init_cache(elem, topology);
-  for (; elem != end; ++elem)
-  {
-    F->fill_cache(elem, topology,0);
-    elem->get_points().print_info(out);
-    out << endl;
-    elem->template get_values<_Value, dim>(0).print_info(out);
-    out << endl;
-    elem->template get_values<_Gradient, dim>(0).print_info(out);
-    out << endl;
-    elem->template get_values<_Hessian, dim>(0).print_info(out);
-    out << endl;
-  }
-}
 
 
 template<int dim, int codim, int range>
-void create_fun()
+void test_linear_function()
 {
   using Function = functions::LinearFunction<dim, codim, range>;
 
@@ -74,13 +51,11 @@ void create_fun()
   }
 
 
-  auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
-              ValueFlags::hessian;
-  auto quad = QGauss<dim>(2);
   auto grid = Grid<dim>::create(3);
-  auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
-  F->reset(flag, quad);
-  test<dim, codim, range>(F);
+  auto grid_func = grid_functions::IdentityGridFunction<dim>::create(grid);
+  auto domain = Domain<dim>::create(grid_func);
+  auto F = Function::create(domain, A, b);
+  function_values(*func);
 }
 
 
@@ -88,7 +63,7 @@ void create_fun()
 
 int main()
 {
-  create_fun<2, 0, 2>();
+  test_linear_function<2, 0, 2>();
 
   return 0;
 }

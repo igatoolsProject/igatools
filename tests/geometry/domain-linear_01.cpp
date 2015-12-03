@@ -19,37 +19,58 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the SphereGridFunction class as a mapping
+ *  Test for a domain built using a LinearGridFunction
  *
- *  author: martinelli
- *  date: Nov 06, 2015
- *
+ *  author: pauletti
+ *  date: Oct 11, 2014
  */
+
+#if 0
+#include "../tests.h"
+
+#include <igatools/geometry/domain_element.h>
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/geometry/grid_function_lib.h>
+#endif
 
 #include "domain_values.h"
 
-
-template <int dim>
-std::shared_ptr<const Domain<dim,1> >
-create_sphere_domain()
+template<int dim, int codim>
+void test()
 {
-  auto grid = Grid<dim>::const_create();
+  using std::to_string;
+  out.begin_item("test<dim=" + to_string(dim) + ",codim=" + to_string(codim));
 
-  using Sph = grid_functions::SphereGridFunction<dim>;
-  return Domain<dim,1>::const_create(Sph::const_create(grid));
+  const int space_dim = dim + codim;
+  using F = grid_functions::LinearGridFunction<dim,space_dim>;
+
+  typename F::Value    b;
+  typename F::Gradient A;
+  for (int i=0; i<space_dim; i++)
+  {
+    for (int j=0; j<dim; j++)
+      if (j == i)
+        A[j][j] = 2.;
+    b[i] = i;
+  }
+
+  auto quad = QGauss<dim>::const_create(2);
+  auto grid = Grid<dim>::create(3);
+  auto grid_func = F::create(grid,A,b);
+  auto domain = Domain<dim,codim>::create(grid_func);
+
+
+  domain_values<dim,codim>(*domain,quad);
+
+  out.end_item();
 }
+
 
 int main()
 {
-  out.depth_console(10);
-
-  out.begin_item("SphereGridFunction<1>");
-  domain_values<1,1>(*create_sphere_domain<1>(),QUniform<1>::create(3));
-  out.end_item();
-
-  out.begin_item("SphereGridFunction<2>");
-  domain_values<2,1>(*create_sphere_domain<2>(),QUniform<2>::create(3));
-  out.end_item();
+  test<2,0>();
+//    test<3,3>();
 
   return 0;
 }
+

@@ -20,6 +20,7 @@
 
 #include <igatools/geometry/grid_function.h>
 #include <igatools/geometry/grid_function_element.h>
+#include <igatools/utils/unique_id_generator.h>
 
 using std::shared_ptr;
 
@@ -29,13 +30,11 @@ template<int dim_, int space_dim_>
 GridFunction<dim_, space_dim_>::
 GridFunction(const SharedPtrConstnessHandler<GridType> &grid)
   :
-  grid_(grid)
+  grid_(grid),
+  object_id_(UniqueIdGenerator::get_unique_id())
 {
 //  Assert(grid_ != nullptr, ExcNullPtr());
 }
-
-
-
 
 
 
@@ -47,17 +46,20 @@ get_grid() const -> std::shared_ptr<const GridType>
   return grid_.get_ptr_const_data();
 }
 
-#if 0
+
+
+
 template<int dim_, int space_dim_>
-auto
+Index
 GridFunction<dim_, space_dim_>::
-create_element(const ListIt &index, const PropId &prop) const
--> std::unique_ptr<ElementAccessor>
+get_object_id() const
 {
-  using Elem = ElementAccessor;
-  return std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
+  return object_id_;
 }
-#endif
+
+
+
+
 
 template<int dim_, int space_dim_>
 auto

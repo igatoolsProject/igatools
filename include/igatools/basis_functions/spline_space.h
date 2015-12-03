@@ -78,19 +78,23 @@ enum class InteriorReg
  *
  * @ingroup serializable
  */
-template<int dim, int range = 1, int rank = 1>
+template<int dim_, int range_= 1, int rank_ = 1>
 class SplineSpace
 {
 private:
-  using GridType = Grid<dim>;
+  using GridType = Grid<dim_>;
 
 public:
-  using self_t = SplineSpace<dim,range,rank>;
+  using self_t = SplineSpace<dim_,range_,rank_>;
+
+  static const int dim = dim_;
+  static const int range = range_;
+  static const int rank = rank_;
 
 
 public:
   /*
-  using Func = Function<dim, 0, range, rank>;
+  using Func = Function<dim_, 0, range_, rank_>;
   template <int order>
   using Derivative = typename Func::template Derivative<order>;
   using Point = typename Func::Point;
@@ -104,12 +108,12 @@ public:
   static const SafeSTLArray<Size, n_components> components;
 
 public:
-  using KnotCoordinates = SafeSTLArray<SafeSTLVector<Real>,dim>;
-  using BoundaryKnots = SafeSTLArray<CartesianProductArray<Real,2>, dim>;
-  using Degrees  = TensorIndex<dim>;
-  using Multiplicity = CartesianProductArray<Size, dim>;
-  using Periodicity = SafeSTLArray<bool, dim>;
-  using EndBehaviour = SafeSTLArray<BasisEndBehaviour, dim>;
+  using KnotCoordinates = SafeSTLArray<SafeSTLVector<Real>,dim_>;
+  using BoundaryKnots = SafeSTLArray<CartesianProductArray<Real,2>, dim_>;
+  using Degrees  = TensorIndex<dim_>;
+  using Multiplicity = CartesianProductArray<Size, dim_>;
+  using Periodicity = SafeSTLArray<bool, dim_>;
+  using EndBehaviour = SafeSTLArray<BasisEndBehaviour, dim_>;
 
   using DegreeTable = ComponentContainer<Degrees>;
   using MultiplicityTable = ComponentContainer<Multiplicity>;
@@ -121,10 +125,10 @@ public:
   /**
    * Component container holding tensor size
    */
-  class TensorSizeTable : public ComponentContainer<TensorSize<dim> >
+  class TensorSizeTable : public ComponentContainer<TensorSize<dim_> >
   {
   public:
-    using base_t = ComponentContainer<TensorSize<dim>>;
+    using base_t = ComponentContainer<TensorSize<dim_>>;
 
 
     TensorSizeTable() = default;
@@ -218,7 +222,7 @@ public:
   create(const DegreeTable &deg,
          const std::shared_ptr<GridType> &grid,
          const MultiplicityTable &interior_mult,
-         const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
+         const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim_>(false)));
 
   /**
    * Builds and returns a (const) SplineSpace
@@ -232,7 +236,7 @@ public:
   const_create(const DegreeTable &deg,
                const std::shared_ptr<const GridType> &grid,
                const MultiplicityTable &interior_mult,
-               const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
+               const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim_>(false)));
 
 
 private:
@@ -314,10 +318,10 @@ public:
   const TensorSizeTable &get_num_basis_table() const;
 
 
-  std::shared_ptr<const DofDistribution<dim,range,rank> >
+  std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
   get_dof_distribution() const;
 
-  std::shared_ptr<DofDistribution<dim,range,rank> >
+  std::shared_ptr<DofDistribution<dim_,range_,rank_> >
   get_dof_distribution();
   ///@}
 
@@ -327,7 +331,7 @@ public:
 
 
   template<int k>
-  using SubSpace = SplineSpace<k, range, rank>;
+  using SubSpace = SplineSpace<k, range_, rank_>;
 
   template<int k>
   typename SubSpace<k>::MultiplicityTable
@@ -364,20 +368,25 @@ public:
   MultiplicityTable
   get_multiplicity_from_regularity(const InteriorReg regularity,
                                    const DegreeTable &deg,
-                                   const TensorSize<dim> &n_elem);
+                                   const TensorSize<dim_> &n_elem);
 
 
   void print_info(LogStream &out) const;
 
-  std::shared_ptr<const Grid<dim> > get_grid() const;
+  std::shared_ptr<const Grid<dim_> > get_grid() const;
+
+  /**
+   * Returns the unique identifier associated to each object instance.
+   */
+  Index get_object_id() const;
 
 
-  const ComponentContainer<SafeSTLVector<TensorIndex<dim> > > &
+  const ComponentContainer<SafeSTLVector<TensorIndex<dim_> > > &
   get_dofs_tensor_id_elem_table() const;
 
 private:
 
-  SharedPtrConstnessHandler<Grid<dim> > grid_;
+  SharedPtrConstnessHandler<Grid<dim_> > grid_;
 
   MultiplicityTable interior_mult_;
 
@@ -393,7 +402,7 @@ private:
   /**
    * Lookup table for the local dofs id in each element component
    */
-  ComponentContainer<SafeSTLVector<TensorIndex<dim> > > dofs_tensor_id_elem_table_;
+  ComponentContainer<SafeSTLVector<TensorIndex<dim_> > > dofs_tensor_id_elem_table_;
 
 
   /**
@@ -401,7 +410,12 @@ private:
    * @note The concept of global indices refers to a global numbering of the
    * dofs of all the spaces.
    */
-  std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
+  std::shared_ptr<DofDistribution<dim_,range_,rank_> > dof_distribution_;
+
+  /**
+   * Unique identifier associated to each object instance.
+   */
+  const Index object_id_;
 
 
 
@@ -424,9 +438,9 @@ public:
    * @ingroup serializable
    */
   template<class T>
-  class ComponentContainer : public StaticMultiArray<T,range,rank>
+  class ComponentContainer : public StaticMultiArray<T,range_,rank_>
   {
-    using base_t = StaticMultiArray<T,range,rank>;
+    using base_t = StaticMultiArray<T,range_,rank_>;
     using self_t = ComponentContainer<T>;
   public:
     /** Type of the iterator. */
@@ -591,7 +605,7 @@ public:
 
 
 #ifdef MESH_REFINEMENT
-  std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_> > spline_space_previous_refinement_;
 
   /**
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
@@ -603,15 +617,15 @@ public:
    * @ingroup h_refinement
    */
   void rebuild_after_insert_knots(
-    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const Grid<dim> &old_grid);
+    const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
+    const Grid<dim_> &old_grid);
 
-  void create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> space);
+  void create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim_,range_,rank_>> space);
 
   void refine_h(const Size n_subdivisions);
 
 public:
-  std::shared_ptr<const SplineSpace<dim,range,rank> >
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
   get_spline_space_previous_refinement() const
   {
     return spline_space_previous_refinement_;
@@ -649,10 +663,10 @@ private:
 };
 
 
-template <class T, int dim>
+template <class T, int dim_>
 inline
 SafeSTLVector<T>
-unique_container(SafeSTLArray <T, dim> a)
+unique_container(SafeSTLArray <T, dim_> a)
 {
   auto it = std::unique(a.begin(), a.end());
   return SafeSTLVector<T>(a.begin(), it);
@@ -660,9 +674,9 @@ unique_container(SafeSTLArray <T, dim> a)
 
 
 
-template<int dim, int range, int rank>
+template<int dim_, int range_, int rank_>
 template<class T>
-SplineSpace<dim, range, rank>::
+SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map)
   :
@@ -681,9 +695,9 @@ ComponentContainer(const ComponentMap &comp_map)
 
 
 
-template<int dim, int range, int rank>
+template<int dim_, int range_, int rank_>
 template<class T>
-SplineSpace<dim, range, rank>::
+SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map, const T &val)
   :
@@ -705,9 +719,9 @@ ComponentContainer(const ComponentMap &comp_map, const T &val)
 
 
 
-template<int dim, int range, int rank>
+template<int dim_, int range_, int rank_>
 template<class T>
-SplineSpace<dim, range, rank>::
+SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 ComponentContainer(std::initializer_list<T> list)
   :
@@ -718,9 +732,9 @@ ComponentContainer(std::initializer_list<T> list)
 
 
 
-template<int dim, int range, int rank>
+template<int dim_, int range_, int rank_>
 template<class T>
-SplineSpace<dim, range, rank>::
+SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 ComponentContainer(const T &val)
   :
@@ -736,10 +750,10 @@ ComponentContainer(const T &val)
 
 
 
-template<int dim, int range, int rank>
+template<int dim_, int range_, int rank_>
 template<class T>
 bool
-SplineSpace<dim, range, rank>::
+SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 operator==(const self_t &table) const
 {
@@ -761,10 +775,10 @@ operator==(const self_t &table) const
 }
 
 
-template<int dim, int range, int rank>
+template<int dim_, int range_, int rank_>
 template<class T>
 T &
-SplineSpace<dim, range, rank>::
+SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 operator[](const Index i)
 {
@@ -772,10 +786,10 @@ operator[](const Index i)
 }
 
 
-template<int dim, int range, int rank>
+template<int dim_, int range_, int rank_>
 template<class T>
 const T &
-SplineSpace<dim, range, rank>::
+SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 operator[](const Index i) const
 {

@@ -130,6 +130,11 @@ public:
   virtual ElementIterator cend(const PropId &prop = ElementProperties::active) const;
   ///@}
 
+  /**
+   * Returns the unique identifier associated to each object instance.
+   */
+  Index get_object_id() const;
+
 
   virtual void print_info(LogStream &out) const = 0;
 
@@ -140,6 +145,7 @@ public:
     return grid_function_previous_refinement_;
   }
 
+private:
   /**
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
    *
@@ -152,6 +158,8 @@ public:
   virtual void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) = 0;
+
+public:
 
   /**
    *  Connect a slot (i.e. a function pointer) to the refinement signals
@@ -167,6 +175,11 @@ public:
 
 private:
   SharedPtrConstnessHandler<Grid<dim_>> grid_;
+
+  /**
+   * Unique identifier associated to each object instance.
+   */
+  const Index object_id_;
 
   friend class GridFunctionElement<dim_, space_dim_>;
 

@@ -18,51 +18,53 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/**
- *  @file
- *  @brief LinearFunction
- *  @author pauletti
- *  @date 2013-11-01
+/*
+ *  Test for Function class, as a prototype for an spline function
+ *  author: pauletti
+ *  date: Oct 11, 2014
  */
-#include <igatools/geometry/domain_lib.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
-
-#include <igatools/base/quadrature_lib.h>
 
 #include "../tests.h"
+
+#include <igatools/functions/ig_function.h>
+#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/functions/function_element.h>
+#include <igatools/basis_functions/bspline.h>
+#include <igatools/basis_functions/bspline_element.h>
+
+
 #include "function_test.h"
 
-using namespace functions;
-
-template<int dim, int codim, int range>
-void linear_func()
+template<int dim, int range>
+void test()
 {
+  auto grid = Grid<dim>::create(3);
+  const int deg = 2;
+  auto space = SplineSpace<dim,range>::create(deg, grid);
+  auto ref_basis = BSpline<dim,range>::create(space);
 
-  auto grid = Grid<dim>::const_create(3);
-  auto ball_func = grid_functions::BallGridFunction<dim>::const_create(grid);
-  auto ball_domain = Domain<dim,0>::const_create(ball_func);
+  auto grid_func = grid_functions::IdentityGridFunction<dim>::create(grid);
+  auto domain = Domain<dim>::create(grid_func);
 
-  using LinFunc = functions::LinearFunction<dim, codim, range>;
-  typename LinFunc::template Derivative<1> A;
-  typename LinFunc::Value b;
+  auto phys_basis = PhysicalSpaceBasis<dim,range>::create(ref_basis,domain);
 
 
-  for (int j=0; j<range; ++j)
-  {
-    b[j] = j;
-    for (int i=0; i<dim; ++i)
-      A[i][j] = i+j;
-  }
-  auto func = LinFunc::const_create(ball_domain, A, b);
+  Epetra_SerialComm comm;
+  auto map = EpetraTools::create_map(*phys_basis, "active", comm);
+  auto coeff = EpetraTools::create_vector(*map);
+  (*coeff)[0] = 1.;
+
+  auto func = IgFunction<dim,0,range,1>::create(phys_basis, *coeff);
 
   function_values(*func);
 }
 
+
 int main()
 {
-  linear_func<1,0,1>();
-  linear_func<2,0,2>();
+  test<2,1>();
+//    test<3,3>();
 
   return 0;
 }
