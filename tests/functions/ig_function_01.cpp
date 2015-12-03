@@ -39,7 +39,6 @@
 template<int dim, int range>
 void test()
 {
-  auto quad = QGauss<dim>::create(2);
   auto grid = Grid<dim>::create(3);
   const int deg = 2;
   auto space = SplineSpace<dim,range>::create(deg, grid);

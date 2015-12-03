@@ -30,9 +30,9 @@ IGA_NAMESPACE_OPEN
 
 auto
 XMLParserErrorHandler::
-create () -> SelfPtr_
+create() -> SelfPtr_
 {
-    return SelfPtr_ (new Self_());
+  return SelfPtr_(new Self_());
 }
 
 
@@ -41,7 +41,7 @@ XMLParserErrorHandler::
 warning(const SAXParseException &ex)
 {
   char *msg = XMLString::transcode(ex.getMessage());
-  AssertThrow (false, ExcXMLWarning (msg, ex.getLineNumber(), ex.getColumnNumber()));
+  AssertThrow(false, ExcXMLWarning(msg, ex.getLineNumber(), ex.getColumnNumber()));
   XMLString::release(&msg);
 }
 
@@ -52,7 +52,7 @@ XMLParserErrorHandler::
 error(const SAXParseException &ex)
 {
   char *msg = XMLString::transcode(ex.getMessage());
-  AssertThrow (false, ExcXMLError (msg, ex.getLineNumber(), ex.getColumnNumber()));
+  AssertThrow(false, ExcXMLError(msg, ex.getLineNumber(), ex.getColumnNumber()));
   XMLString::release(&msg);
 }
 
@@ -63,7 +63,7 @@ XMLParserErrorHandler::
 fatalError(const SAXParseException &ex)
 {
   char *msg = XMLString::transcode(ex.getMessage());
-  AssertThrow (false, ExcXMLError (msg, ex.getLineNumber(), ex.getColumnNumber()));
+  AssertThrow(false, ExcXMLError(msg, ex.getLineNumber(), ex.getColumnNumber()));
   XMLString::release(&msg);
 }
 

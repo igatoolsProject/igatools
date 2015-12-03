@@ -38,7 +38,7 @@ auto
 ObjectsContainer::
 create() -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t> (new self_t());
+  return shared_ptr<self_t> (new self_t());
 };
 
 
@@ -46,15 +46,15 @@ create() -> shared_ptr<self_t>
 template <class T>
 void
 ObjectsContainer::
-insert_object (const shared_ptr<T> object)
+insert_object(const shared_ptr<T> object)
 {
-    Assert (object != nullptr, ExcNullPtr());
+  Assert(object != nullptr, ExcNullPtr());
 
-    auto &objects_T = at_key<T>(objects_);
-    Assert (std::find(objects_T.cbegin(), objects_T.cend(), object) == objects_T.cend(),
-            ExcNotUnique());
+  auto &objects_T = at_key<T>(objects_);
+  Assert(std::find(objects_T.cbegin(), objects_T.cend(), object) == objects_T.cend(),
+         ExcNotUnique());
 
-    objects_T.push_back(object);
+  objects_T.push_back(object);
 };
 
 
@@ -62,15 +62,15 @@ insert_object (const shared_ptr<T> object)
 template <class T>
 void
 ObjectsContainer::
-insert_const_object (const shared_ptr<const T> object)
+insert_const_object(const shared_ptr<const T> object)
 {
-    Assert (object != nullptr, ExcNullPtr());
+  Assert(object != nullptr, ExcNullPtr());
 
-    auto &objects_T = at_key<const T>(objects_);
-    Assert (std::find(objects_T.cbegin(), objects_T.cend(), object) == objects_T.cend(),
-            ExcNotUnique());
+  auto &objects_T = at_key<const T>(objects_);
+  Assert(std::find(objects_T.cbegin(), objects_T.cend(), object) == objects_T.cend(),
+         ExcNotUnique());
 
-    objects_T.push_back(object);
+  objects_T.push_back(object);
 };
 
 
@@ -78,15 +78,18 @@ insert_const_object (const shared_ptr<const T> object)
 template <class T>
 auto
 ObjectsContainer::
-get_object (const Index &id) const -> shared_ptr<T>
+get_object(const Index &id) const -> shared_ptr<T>
 {
-    auto &objects_T = at_key<T>(objects_);
-    const auto obj_it = std::find_if(objects_T.cbegin(), objects_T.cend(),
-             [id] (const auto obj) { return obj->get_object_id() == id; });
+  auto &objects_T = at_key<T>(objects_);
+  const auto obj_it = std::find_if(objects_T.cbegin(), objects_T.cend(),
+  [id](const auto obj)
+  {
+    return obj->get_object_id() == id;
+  });
 
-    Assert (obj_it != objects_T.cend(), ExcNotFound());
+  Assert(obj_it != objects_T.cend(), ExcNotFound());
 
-    return *obj_it;
+  return *obj_it;
 };
 
 
@@ -94,15 +97,18 @@ get_object (const Index &id) const -> shared_ptr<T>
 template <class T>
 auto
 ObjectsContainer::
-get_const_object (const Index &id) const -> shared_ptr<const T>
+get_const_object(const Index &id) const -> shared_ptr<const T>
 {
-    auto &objects_T = at_key<const T>(objects_);
-    const auto obj_it = std::find_if(objects_T.cbegin(), objects_T.cend(),
-             [id] (const auto obj) { return obj->get_object_id() == id; });
+  auto &objects_T = at_key<const T>(objects_);
+  const auto obj_it = std::find_if(objects_T.cbegin(), objects_T.cend(),
+  [id](const auto obj)
+  {
+    return obj->get_object_id() == id;
+  });
 
-    Assert (obj_it != objects_T.cend(), ExcNotFound());
+  Assert(obj_it != objects_T.cend(), ExcNotFound());
 
-    return *obj_it;
+  return *obj_it;
 };
 
 
@@ -110,14 +116,17 @@ get_const_object (const Index &id) const -> shared_ptr<const T>
 template <class T>
 bool
 ObjectsContainer::
-is_object_present (const Index &id) const
+is_object_present(const Index &id) const
 {
-    const auto &objects_T = at_key<T>(objects_);
+  const auto &objects_T = at_key<T>(objects_);
 
-    return std::find_if(objects_T.cbegin(), objects_T.cend(),
-      [id] (const auto obj) { return obj->get_object_id() == id; }) != objects_T.cend();
+  return std::find_if(objects_T.cbegin(), objects_T.cend(),
+                      [id](const auto obj)
+  {
+    return obj->get_object_id() == id;
+  }) != objects_T.cend();
 
-    return false;
+  return false;
 };
 
 
@@ -125,272 +134,275 @@ is_object_present (const Index &id) const
 template <class T>
 bool
 ObjectsContainer::
-is_const_object_present (const Index &id) const
+is_const_object_present(const Index &id) const
 {
-    const auto &objects_T = at_key<const T>(objects_);
+  const auto &objects_T = at_key<const T>(objects_);
 
-    return std::find_if(objects_T.cbegin(), objects_T.cend(),
-      [id] (const auto obj) { return obj->get_object_id() == id; }) != objects_T.cend();
+  return std::find_if(objects_T.cbegin(), objects_T.cend(),
+                      [id](const auto obj)
+  {
+    return obj->get_object_id() == id;
+  }) != objects_T.cend();
 
-    return false;
+  return false;
 };
 
 
 
 void
 ObjectsContainer::
-print_info (LogStream &out) const
+print_info(LogStream &out) const
 {
-    GridPtrs valid_grid_ptr_types;
-    for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
+  GridPtrs valid_grid_ptr_types;
+  for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    const auto objects = at_key<Type>(objects_);
+
+    out.begin_item("Grid"
+                   " Dim : " + to_string(Type::dim) +
+                   ". Number of objects: " + to_string(objects.size()));
+    for (const auto &object : objects)
     {
-        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-        const auto objects = at_key<Type>(objects_);
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
 
-        out.begin_item("Grid"
-                " Dim : " + to_string(Type::dim) +
-                ". Number of objects: " + to_string(objects.size()));
-        for (const auto &object : objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
+    const auto const_objects = at_key<const Type>(objects_);
 
-        const auto const_objects = at_key<const Type>(objects_);
-
-        out.begin_item("const Grid"
-                " Dim : " + to_string(Type::dim) +
-                ". Number of objects: " + to_string(objects.size()));
-        for (const auto &object : const_objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
-    });
-
-    // Spline spaces
-    SpSpacePtrs valid_rsp_ptr_types;
-    for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
+    out.begin_item("const Grid"
+                   " Dim : " + to_string(Type::dim) +
+                   ". Number of objects: " + to_string(objects.size()));
+    for (const auto &object : const_objects)
     {
-        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-        const auto objects = at_key<Type>(objects_);
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+  });
 
-        out.begin_item("SplineSpace"
-                " Dim : " + to_string(Type::dim) +
-                " Range : " + to_string(Type::range) +
-                " Rank : "+ to_string(Type::rank) +
-                ". Number of objects: " + to_string(objects.size())
-        );
-        for (const auto &object : objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
+  // Spline spaces
+  SpSpacePtrs valid_rsp_ptr_types;
+  for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    const auto objects = at_key<Type>(objects_);
 
-        const auto const_objects = at_key<const Type>(objects_);
-
-        out.begin_item("const SplineSpace"
-                " Dim : " + to_string(Type::dim) +
-                " Range : " + to_string(Type::range) +
-                " Rank : "+ to_string(Type::rank) +
-                ". Number of objects: " + to_string(objects.size())
-        );
-        for (const auto &object : const_objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
-    });
-
-    // Reference space basis
-    for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
+    out.begin_item("SplineSpace"
+                   " Dim : " + to_string(Type::dim) +
+                   " Range : " + to_string(Type::range) +
+                   " Rank : "+ to_string(Type::rank) +
+                   ". Number of objects: " + to_string(objects.size())
+                  );
+    for (const auto &object : objects)
     {
-        using SSType = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-        using Type = ReferenceSpaceBasis<SSType::dim, SSType::range, SSType::rank>;
-        const auto objects = at_key<Type>(objects_);
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
 
-        out.begin_item("ReferenceSpaceBasis"
-                " Dim : " + to_string(Type::dim) +
-                " Range : " + to_string(Type::range) +
-                " Rank : "+ to_string(Type::rank) +
-                ". Number of objects: " + to_string(objects.size())
-        );
-        for (const auto &object : objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
+    const auto const_objects = at_key<const Type>(objects_);
 
-        const auto const_objects = at_key<const Type>(objects_);
-
-        out.begin_item("const ReferenceSpaceBasis"
-                " Dim : " + to_string(Type::dim) +
-                " Range : " + to_string(Type::range) +
-                " Rank : "+ to_string(Type::rank) +
-                ". Number of objects: " + to_string(objects.size())
-        );
-        for (const auto &object : const_objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
-    });
-
-    // Grid functions
-    GridFuncPtrs valid_gf_ptr_types;
-    for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
+    out.begin_item("const SplineSpace"
+                   " Dim : " + to_string(Type::dim) +
+                   " Range : " + to_string(Type::range) +
+                   " Rank : "+ to_string(Type::rank) +
+                   ". Number of objects: " + to_string(objects.size())
+                  );
+    for (const auto &object : const_objects)
     {
-        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-        const auto objects = at_key<Type>(objects_);
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+  });
 
-        out.begin_item("GridFunction"
-                " Dim : " + to_string(Type::dim) +
-                " Spacedim : " + to_string(Type::space_dim) +
-                ". Number of objects: " + to_string(objects.size()));
-        for (const auto &object : objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
+  // Reference space basis
+  for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
+  {
+    using SSType = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    using Type = ReferenceSpaceBasis<SSType::dim, SSType::range, SSType::rank>;
+    const auto objects = at_key<Type>(objects_);
 
-        const auto const_objects = at_key<const Type>(objects_);
-
-        out.begin_item("const GridFunction"
-                " Dim : " + to_string(Type::dim) +
-                " Spacedim : " + to_string(Type::space_dim) +
-                ". Number of objects: " + to_string(objects.size()));
-        for (const auto &object : const_objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
-    });
-
-    // Domains
-    DomainPtrs valid_dm_ptr_types;
-    for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
+    out.begin_item("ReferenceSpaceBasis"
+                   " Dim : " + to_string(Type::dim) +
+                   " Range : " + to_string(Type::range) +
+                   " Rank : "+ to_string(Type::rank) +
+                   ". Number of objects: " + to_string(objects.size())
+                  );
+    for (const auto &object : objects)
     {
-        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-        const auto objects = at_key<Type>(objects_);
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
 
-        out.begin_item("Domain"
-                " Dim : " + to_string(Type::dim) +
-                " Codim : " + to_string(Type::space_dim - Type::dim) +
-                ". Number of objects: " + to_string(objects.size()));
-        for (const auto &object : objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
+    const auto const_objects = at_key<const Type>(objects_);
 
-        const auto const_objects = at_key<const Type>(objects_);
-
-        out.begin_item("const Domain"
-                " Dim : " + to_string(Type::dim) +
-                " Codim : " + to_string(Type::space_dim - Type::dim) +
-                ". Number of objects: " + to_string(objects.size()));
-        for (const auto &object : const_objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
-    });
-
-    // Physical space basis
-    PhysSpacePtrs valid_ps_ptr_types;
-    for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
+    out.begin_item("const ReferenceSpaceBasis"
+                   " Dim : " + to_string(Type::dim) +
+                   " Range : " + to_string(Type::range) +
+                   " Rank : "+ to_string(Type::rank) +
+                   ". Number of objects: " + to_string(objects.size())
+                  );
+    for (const auto &object : const_objects)
     {
-        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-        const auto objects = at_key<Type>(objects_);
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+  });
 
-        out.begin_item("PhysicalSpaceBasis"
-                " Dim : " + to_string(Type::dim) +
-                " Range : " + to_string(Type::range) +
-                " Rank : " + to_string(Type::rank) +
-                " Codim : " + to_string(Type::codim) +
-                ". Number of objects: " + to_string(objects.size()));
-        for (const auto &object : objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
+  // Grid functions
+  GridFuncPtrs valid_gf_ptr_types;
+  for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    const auto objects = at_key<Type>(objects_);
 
-        const auto const_objects = at_key<const Type>(objects_);
-
-        out.begin_item("const PhysicalSpaceBasis"
-                " Dim : " + to_string(Type::dim) +
-                " Range : " + to_string(Type::range) +
-                " Rank : " + to_string(Type::rank) +
-                " Codim : " + to_string(Type::codim) +
-                ". Number of objects: " + to_string(objects.size()));
-        for (const auto &object : const_objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
-    });
-
-    // Function
-    FunctionPtrs valid_fn_ptr_types;
-    for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
+    out.begin_item("GridFunction"
+                   " Dim : " + to_string(Type::dim) +
+                   " Spacedim : " + to_string(Type::space_dim) +
+                   ". Number of objects: " + to_string(objects.size()));
+    for (const auto &object : objects)
     {
-        using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-        const auto objects = at_key<Type>(objects_);
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
 
-        out.begin_item("Function"
-                " Dim : " + to_string(Type::dim) +
-                " Codim : " + to_string(Type::codim) +
-                " Range : " + to_string(Type::range) +
-                " Rank : " + to_string(Type::rank) +
-                ". Number of objects: " + to_string(objects.size()));
-        for (const auto &object : objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
+    const auto const_objects = at_key<const Type>(objects_);
 
-        const auto const_objects = at_key<const Type>(objects_);
+    out.begin_item("const GridFunction"
+                   " Dim : " + to_string(Type::dim) +
+                   " Spacedim : " + to_string(Type::space_dim) +
+                   ". Number of objects: " + to_string(objects.size()));
+    for (const auto &object : const_objects)
+    {
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+  });
 
-        out.begin_item("const Function"
-                " Dim : " + to_string(Type::dim) +
-                " Codim : " + to_string(Type::codim) +
-                " Range : " + to_string(Type::range) +
-                " Rank : " + to_string(Type::rank) +
-                ". Number of objects: " + to_string(objects.size()));
-        for (const auto &object : const_objects)
-        {
-            out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-            object->print_info(out);
-            out.end_item();
-        }
-        out.end_item();
-    });
+  // Domains
+  DomainPtrs valid_dm_ptr_types;
+  for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    const auto objects = at_key<Type>(objects_);
+
+    out.begin_item("Domain"
+                   " Dim : " + to_string(Type::dim) +
+                   " Codim : " + to_string(Type::space_dim - Type::dim) +
+                   ". Number of objects: " + to_string(objects.size()));
+    for (const auto &object : objects)
+    {
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+
+    const auto const_objects = at_key<const Type>(objects_);
+
+    out.begin_item("const Domain"
+                   " Dim : " + to_string(Type::dim) +
+                   " Codim : " + to_string(Type::space_dim - Type::dim) +
+                   ". Number of objects: " + to_string(objects.size()));
+    for (const auto &object : const_objects)
+    {
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+  });
+
+  // Physical space basis
+  PhysSpacePtrs valid_ps_ptr_types;
+  for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    const auto objects = at_key<Type>(objects_);
+
+    out.begin_item("PhysicalSpaceBasis"
+                   " Dim : " + to_string(Type::dim) +
+                   " Range : " + to_string(Type::range) +
+                   " Rank : " + to_string(Type::rank) +
+                   " Codim : " + to_string(Type::codim) +
+                   ". Number of objects: " + to_string(objects.size()));
+    for (const auto &object : objects)
+    {
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+
+    const auto const_objects = at_key<const Type>(objects_);
+
+    out.begin_item("const PhysicalSpaceBasis"
+                   " Dim : " + to_string(Type::dim) +
+                   " Range : " + to_string(Type::range) +
+                   " Rank : " + to_string(Type::rank) +
+                   " Codim : " + to_string(Type::codim) +
+                   ". Number of objects: " + to_string(objects.size()));
+    for (const auto &object : const_objects)
+    {
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+  });
+
+  // Function
+  FunctionPtrs valid_fn_ptr_types;
+  for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    const auto objects = at_key<Type>(objects_);
+
+    out.begin_item("Function"
+                   " Dim : " + to_string(Type::dim) +
+                   " Codim : " + to_string(Type::codim) +
+                   " Range : " + to_string(Type::range) +
+                   " Rank : " + to_string(Type::rank) +
+                   ". Number of objects: " + to_string(objects.size()));
+    for (const auto &object : objects)
+    {
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+
+    const auto const_objects = at_key<const Type>(objects_);
+
+    out.begin_item("const Function"
+                   " Dim : " + to_string(Type::dim) +
+                   " Codim : " + to_string(Type::codim) +
+                   " Range : " + to_string(Type::range) +
+                   " Rank : " + to_string(Type::rank) +
+                   ". Number of objects: " + to_string(objects.size()));
+    for (const auto &object : const_objects)
+    {
+      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
+      object->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+  });
 }
 
 

@@ -47,10 +47,10 @@ IGA_NAMESPACE_OPEN
 
 XMLElement::
 XMLElement(const DOMElemPtr_ dom_elem)
-    :
-    root_elem_ (dom_elem)
+  :
+  root_elem_(dom_elem)
 {
-    Assert (root_elem_ != nullptr, ExcNullPtr());
+  Assert(root_elem_ != nullptr, ExcNullPtr());
 }
 
 
@@ -60,7 +60,7 @@ XMLElement::
 create(const DOMElemPtr_ dom_elem) ->
 SelfPtr_
 {
-    return SelfPtr_ (new XMLElement (dom_elem));
+  return SelfPtr_(new XMLElement(dom_elem));
 }
 
 
@@ -70,25 +70,25 @@ XMLElement::
 get_children_elements() const ->
 SafeSTLVector<SelfPtr_>
 {
-    DOMNodeList *elems = root_elem_->getChildNodes();
+  DOMNodeList *elems = root_elem_->getChildNodes();
 
-    const Size n_children = elems->getLength();
+  const Size n_children = elems->getLength();
 
-    SafeSTLVector<SelfPtr_> children;
-    for (int i = 0; i < n_children; ++i)
+  SafeSTLVector<SelfPtr_> children;
+  for (int i = 0; i < n_children; ++i)
+  {
+    DOMNode *n = elems->item(i);
+
+    if (n->getNodeType() && // true is not NULL
+    n->getNodeType() == DOMNode::ELEMENT_NODE)  // is element
     {
-        DOMNode *n = elems->item(i);
-
-        if (n->getNodeType() && // true is not NULL
-            n->getNodeType() == DOMNode::ELEMENT_NODE)  // is element
-        {
-            const auto elem_ptr = dynamic_cast<DOMElemPtr_>(n);
-            Assert (elem_ptr != nullptr, ExcNullPtr());
-            children.push_back(Self_::create(elem_ptr));
-        }
+      const auto elem_ptr = dynamic_cast<DOMElemPtr_>(n);
+      Assert(elem_ptr != nullptr, ExcNullPtr());
+      children.push_back(Self_::create(elem_ptr));
     }
+  }
 
-    return children;
+  return children;
 }
 
 
@@ -98,25 +98,25 @@ XMLElement::
 get_children_elements(const string &name) const ->
 SafeSTLVector<SelfPtr_>
 {
-    SafeSTLVector<SelfPtr_> children;
+  SafeSTLVector<SelfPtr_> children;
 
-    DOMNodeList *elems = root_elem_->getChildNodes();
-    const Size n_children = elems->getLength();
+  DOMNodeList *elems = root_elem_->getChildNodes();
+  const Size n_children = elems->getLength();
 
-    for (int i = 0; i < n_children; ++i)
+  for (int i = 0; i < n_children; ++i)
+  {
+    DOMNode *n = elems->item(i);
+    if (n->getNodeType() && // true is not NULL
+    XMLString::transcode(n->getNodeName()) == name &&
+    n->getNodeType() == DOMNode::ELEMENT_NODE)  // is element
     {
-        DOMNode *n = elems->item(i);
-        if (n->getNodeType() && // true is not NULL
-            XMLString::transcode(n->getNodeName()) == name &&
-            n->getNodeType() == DOMNode::ELEMENT_NODE)  // is element
-        {
-            const auto elem_ptr = dynamic_cast<DOMElemPtr_>(n);
-            Assert (elem_ptr != nullptr, ExcNullPtr());
-            children.push_back(Self_::create(elem_ptr));
-        }
+      const auto elem_ptr = dynamic_cast<DOMElemPtr_>(n);
+      Assert(elem_ptr != nullptr, ExcNullPtr());
+      children.push_back(Self_::create(elem_ptr));
     }
+  }
 
-    return children;
+  return children;
 }
 
 
@@ -158,38 +158,38 @@ DOMText *
 XMLElement::
 get_single_text_element() const
 {
-    DOMNodeList *elems = root_elem_->getChildNodes();
-    const Size n_children = elems->getLength();
+  DOMNodeList *elems = root_elem_->getChildNodes();
+  const Size n_children = elems->getLength();
 
-    DOMText *element;
+  DOMText *element;
 
-    for (int i = 0; i < n_children; ++i)
+  for (int i = 0; i < n_children; ++i)
+  {
+    DOMNode *n = elems->item(i);
+
+    if (n->getNodeType() && // true is not NULL
+        n->getNodeType() == DOMNode::TEXT_NODE)  // is element
     {
-        DOMNode *n = elems->item(i);
-
-        if (n->getNodeType() && // true is not NULL
-            n->getNodeType() == DOMNode::TEXT_NODE)  // is element
-        {
-            element = dynamic_cast<DOMText *>(n);
-            break;
-        }
+      element = dynamic_cast<DOMText *>(n);
+      break;
     }
+  }
 
   // if there is more than, or less than, one element, an error is thrown.
 #ifndef NDEBUG
-    Size n_elems = 0;
-    for (int i = 0; i < n_children; ++i)
-    {
-        DOMNode *n = elems->item(i);
+  Size n_elems = 0;
+  for (int i = 0; i < n_children; ++i)
+  {
+    DOMNode *n = elems->item(i);
 
-        if (n->getNodeType() && // true is not NULL
-            n->getNodeType() == DOMNode::TEXT_NODE) // is element
-            ++n_elems;
-    }
-    Assert(n_elems == 1, ExcDimensionMismatch(n_elems, 1));
+    if (n->getNodeType() && // true is not NULL
+        n->getNodeType() == DOMNode::TEXT_NODE) // is element
+      ++n_elems;
+  }
+  Assert(n_elems == 1, ExcDimensionMismatch(n_elems, 1));
 #endif
 
-    return element;
+  return element;
 }
 
 
@@ -198,7 +198,7 @@ get_single_text_element() const
 template <class T>
 T
 XMLElement::
-get_value () const
+get_value() const
 {
   try
   {
@@ -245,7 +245,7 @@ get_attribute<Index> (const string &name) const
 {
   Assert(this->has_attribute(name), ExcMessage("Attribute not present."));
   const string str = XMLString::transcode(
-          root_elem_->getAttribute(XMLString::transcode(name.c_str())));
+                       root_elem_->getAttribute(XMLString::transcode(name.c_str())));
 
   try
   {
@@ -268,7 +268,7 @@ get_attribute<Real> (const string &name) const
 {
   Assert(this->has_attribute(name), ExcMessage("Attribute not present."));
   const string str = XMLString::transcode(
-          root_elem_->getAttribute(XMLString::transcode(name.c_str())));
+                       root_elem_->getAttribute(XMLString::transcode(name.c_str())));
   try
   {
     return std::stod(str);
@@ -289,7 +289,7 @@ get_attribute<string> (const string &name) const
 {
   Assert(this->has_attribute(name), ExcMessage("Attribute not present."));
   return XMLString::transcode(
-          root_elem_->getAttribute(XMLString::transcode(name.c_str())));
+           root_elem_->getAttribute(XMLString::transcode(name.c_str())));
 }
 
 
@@ -301,7 +301,7 @@ get_attribute<bool> (const string &name) const
 {
   Assert(this->has_attribute(name), ExcMessage("Attribute not present."));
   string str = XMLString::transcode(
-          root_elem_->getAttribute(XMLString::transcode(name.c_str())));
+                 root_elem_->getAttribute(XMLString::transcode(name.c_str())));
 
   try
   {
@@ -445,7 +445,7 @@ get_single_element() -> SelfPtr_
     DOMNode *n = children->item(i);
 
     if (n->getNodeType() && // true is not NULL
-        n->getNodeType() == DOMNode::ELEMENT_NODE)  // is element
+    n->getNodeType() == DOMNode::ELEMENT_NODE)  // is element
     {
       element = Self_::create(dynamic_cast<DOMElemPtr_>(n));
       break;
@@ -484,12 +484,12 @@ get_single_element(const string &name) -> SelfPtr_
   SelfPtr_ element;
   for (int c = 0; c < n_children; ++c)
   {
-      auto *elem = dynamic_cast<DOMElemPtr_>(children->item(c));
-      if (elem != nullptr && XMLString::transcode(elem->getNodeName()) == name)
-      {
-          element = Self_::create(elem);
-          ++n_matching_childs;
-      }
+    auto *elem = dynamic_cast<DOMElemPtr_>(children->item(c));
+    if (elem != nullptr && XMLString::transcode(elem->getNodeName()) == name)
+    {
+      element = Self_::create(elem);
+      ++n_matching_childs;
+    }
   }
 
   Assert(n_matching_childs == 1, ExcDimensionMismatch(n_matching_childs, 1));
@@ -503,17 +503,17 @@ void
 XMLElement::
 print_info(LogStream &out) const
 {
-    xercesc::DOMImplementation *impl = xercesc::
-            DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
-    xercesc::DOMLSSerializer* writer = ((xercesc::DOMImplementationLS*)impl)->createLSSerializer();
-    const auto *xmlch_output = writer->writeToString(root_elem_);
-    const auto output_string = XMLString::transcode (xmlch_output);
-    out.begin_item("XMLElement:");
-    out << output_string;
-    out.end_item();
+  xercesc::DOMImplementation *impl = xercesc::
+                                     DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
+  xercesc::DOMLSSerializer *writer = ((xercesc::DOMImplementationLS *)impl)->createLSSerializer();
+  const auto *xmlch_output = writer->writeToString(root_elem_);
+  const auto output_string = XMLString::transcode(xmlch_output);
+  out.begin_item("XMLElement:");
+  out << output_string;
+  out.end_item();
 
-    delete xmlch_output;
-    delete writer;
+  delete xmlch_output;
+  delete writer;
 }
 
 IGA_NAMESPACE_CLOSE

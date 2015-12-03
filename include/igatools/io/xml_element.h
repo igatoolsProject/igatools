@@ -73,7 +73,7 @@ private:
   typedef std::shared_ptr<Self_> SelfPtr_;
 
   /** Type for a pointer of the Xerces-c DOM element class. */
-  typedef xercesc::DOMElement * DOMElemPtr_;
+  typedef xercesc::DOMElement *DOMElemPtr_;
 
   ///@}
 

@@ -44,8 +44,8 @@ IGA_NAMESPACE_OPEN
 
 XMLFileParser::
 XMLFileParser()
-    :
-    error_handler_(XMLParserErrorHandler::create())
+  :
+  error_handler_(XMLParserErrorHandler::create())
 {
   try
   {
@@ -54,7 +54,7 @@ XMLFileParser()
   catch (xercesc::XMLException &exception)
   {
     char *error_msg = xercesc::XMLString::transcode(exception.getMessage());
-    AssertThrow (false, ExcMessage(error_msg));
+    AssertThrow(false, ExcMessage(error_msg));
     xercesc::XMLString::release(&error_msg);
   }
 
@@ -95,7 +95,7 @@ XMLFileParser::
   catch (xercesc::XMLException &exception)
   {
     char *error_msg = xercesc::XMLString::transcode(exception.getMessage());
-    AssertThrow (false, ExcMessage(error_msg));
+    AssertThrow(false, ExcMessage(error_msg));
     xercesc::XMLString::release(&error_msg);
   }
 }
@@ -124,7 +124,7 @@ check_file(const string &file_path)
       error_msg += "File can not be read";
     else
       error_msg += "An unknown problem was encountered.";
-    AssertThrow (false, ExcXMLError(error_msg, 0, 0));
+    AssertThrow(false, ExcXMLError(error_msg, 0, 0));
   }
 }
 
@@ -141,7 +141,7 @@ parse(const string &file_path, const string &grammar_file) const
   parser_->setValidationScheme(xercesc::XercesDOMParser::Val_Always);
   // Loading grammar
   parser_->loadGrammar(grammar_file.c_str(),
-                      xercesc::Grammar::SchemaGrammarType, true);
+                       xercesc::Grammar::SchemaGrammarType, true);
 
   parser_->parse(file_path.c_str());
 

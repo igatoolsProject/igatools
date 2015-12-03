@@ -190,7 +190,7 @@ public:
 
   virtual void print_info(LogStream &out) const override final
   {
-      AssertThrow (false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
   };
 
 protected:
@@ -259,7 +259,7 @@ public:
 
   virtual void print_info(LogStream &out) const override final
   {
-      AssertThrow (false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
   };
 
 protected:
@@ -357,7 +357,7 @@ protected:
 
   virtual void print_info(LogStream &out) const override final
   {
-      AssertThrow (false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
   };
 
 private:

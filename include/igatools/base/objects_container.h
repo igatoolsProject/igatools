@@ -91,13 +91,13 @@ private:
   template< class T >
   struct as_fusion_vector_shared_ptr
   {
-      /**
-       * This functor transform a <tt>boost::mpl::vector</tt> of type into a
-       *  <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of the types.
-       */
+    /**
+     * This functor transform a <tt>boost::mpl::vector</tt> of type into a
+     *  <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of the types.
+     */
 
-      typedef typename boost::fusion::result_of::as_vector<
-        typename boost::mpl::transform<T, std::shared_ptr<boost::mpl::_1>>::type>::type type;
+    typedef typename boost::fusion::result_of::as_vector<
+    typename boost::mpl::transform<T, std::shared_ptr<boost::mpl::_1>>::type>::type type;
   };
 
   /** Alias for all instantiated grids. */
@@ -154,7 +154,7 @@ private:
           boost::mpl::back_inserter<boost::mpl::copy<Domains,
           boost::mpl::back_inserter<boost::mpl::copy<PhysSpaces,
           boost::mpl::back_inserter<Functions>
-      >::type> >::type> >::type> >::type> >::type> >::type JointTypes_;
+          >::type> >::type> >::type> >::type> >::type> >::type JointTypes_;
 
   /** @p JointTypes_ converted to constant types. */
   typedef boost::mpl::transform<JointTypes_,
@@ -167,19 +167,19 @@ private:
   template <class T>
   struct as_fusion_map
   {
-      /**
-       * This functor transform a sequence of types @p T into a
-       * <tt>boost::fusion::map</tt> composed of <tt>pair</tt>s of the form
-       * <tt>pair<T, SafeSTLVector<shared_ptr<T>></tt>.
-       */
+    /**
+     * This functor transform a sequence of types @p T into a
+     * <tt>boost::fusion::map</tt> composed of <tt>pair</tt>s of the form
+     * <tt>pair<T, SafeSTLVector<shared_ptr<T>></tt>.
+     */
 
   private:
-      template <class S>
-      using Pair_ = boost::fusion::pair<S, SafeSTLVector<std::shared_ptr<S>>>;
+    template <class S>
+    using Pair_ = boost::fusion::pair<S, SafeSTLVector<std::shared_ptr<S>>>;
 
   public:
-      typedef typename boost::fusion::result_of::as_map<
-        typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
+    typedef typename boost::fusion::result_of::as_map<
+    typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
   };
 
   /** Container for shared pointer of all the instantiated types. */
@@ -252,7 +252,7 @@ public:
    * @param[in] object Object to be inserted.
    */
   template <class T>
-  void insert_object (const std::shared_ptr<T> object);
+  void insert_object(const std::shared_ptr<T> object);
 
   /**
    * @brief Insert a pointer to a constant object into the container.
@@ -267,7 +267,7 @@ public:
    * @param[in] object Object to be inserted.
    */
   template <class T>
-  void insert_const_object (const std::shared_ptr<const T> object);
+  void insert_const_object(const std::shared_ptr<const T> object);
 
   /**
    * @brief Retrieves a pointer to an object from the container.
@@ -282,7 +282,7 @@ public:
    * @param[in] id Unique Id of the queried object.
    * @return Object retrieved.
    */
-  template <class T> std::shared_ptr<T> get_object (const Index &id) const;
+  template <class T> std::shared_ptr<T> get_object(const Index &id) const;
 
   /**
    * @brief Retrieves a pointer to a constant object from the container.
@@ -297,7 +297,7 @@ public:
    * @param[in] id Unique Id of the queried object.
    * @return Object retrieved.
    */
-  template <class T> std::shared_ptr<const T> get_const_object (const Index &id) const;
+  template <class T> std::shared_ptr<const T> get_const_object(const Index &id) const;
 
   /**
    * @brief Checks if the a object of the type @ref T
@@ -311,7 +311,7 @@ public:
    * @return @p true if there is an object with the given unique @ref id,
    *         @p false elsewhere.
    */
-  template <class T> bool is_object_present (const Index &id) const;
+  template <class T> bool is_object_present(const Index &id) const;
 
   /**
    * @brief Checks if the a constant object of the type @ref T
@@ -325,7 +325,7 @@ public:
    * @return @p true if there is an object with the given unique @ref id,
    *         @p false elsewhere.
    */
-  template <class T> bool is_const_object_present (const Index &id) const;
+  template <class T> bool is_const_object_present(const Index &id) const;
 
   /**
    * @brief Prints the objects contained inside.
@@ -336,7 +336,7 @@ public:
    *
    * @param[in] out Log stream for outputting the information.
    */
-  void print_info (LogStream &out) const;
+  void print_info(LogStream &out) const;
 
 private:
 

@@ -38,7 +38,7 @@
 #include <igatools/basis_functions/nurbs_element.h>
 
 template< int dim, int range, int rank = 1>
-void insert_objects (const std::shared_ptr<ObjectsContainer> container)
+void insert_objects(const std::shared_ptr<ObjectsContainer> container)
 {
   using iga::SafeSTLVector;
   SafeSTLVector<Real> coord_x {0,1,2,3,4};
@@ -122,7 +122,7 @@ void insert_objects (const std::shared_ptr<ObjectsContainer> container)
   const auto const_grid_func = ConstGridFunc::create(grid, val);
   container->insert_const_object<GridFuncType>(const_grid_func);
 
-  const auto domain = DomainType::create (const_grid_func, "my_domain");
+  const auto domain = DomainType::create(const_grid_func, "my_domain");
   container->insert_const_object<DomainType>(domain);
 
   const auto phys_space = PhysSpaceType::create(nurbs_space, domain);

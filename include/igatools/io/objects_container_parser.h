@@ -695,8 +695,8 @@ private:
    * @return String containing the object type and its id
    */
   static std::string get_type_id_string(const std::string &object_type,
-                                 const Index &object_id,
-                                 const SafeSTLVector<int> &dims);
+                                        const Index &object_id,
+                                        const SafeSTLVector<int> &dims);
 
   /**
    * @todo Parses an IgCoefficients vector.
@@ -716,9 +716,9 @@ private:
   // TODO: maybe this should be done with a shared pointer, in
   // order to avoid the copy.
   static std::shared_ptr<IgCoefficients>
-      parse_ig_coefficients(const std::shared_ptr<XMLElement> xml_elem,
-                            const std::string &parsing_msg,
-                            const std::set<Index> &space_global_dofs);
+  parse_ig_coefficients(const std::shared_ptr<XMLElement> xml_elem,
+                        const std::string &parsing_msg,
+                        const std::set<Index> &space_global_dofs);
 
 };
 

@@ -292,7 +292,7 @@ private:
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid)
   {
-	  AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
+    AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
   }
 
 public:

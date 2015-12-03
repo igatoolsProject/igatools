@@ -51,7 +51,7 @@ void constant_func()
     b[i] = i;
 
   auto func = Function::const_create(ball_domain, b);
-  function_values<dim, codim, range>(func);
+  function_values(*func);
 }
 
 int main()
