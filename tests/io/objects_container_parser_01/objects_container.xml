@@ -139,7 +139,6 @@
     <Values> 0.0 0.0 </Values>
   </ConstantFunction>
 
-  <!--
   <IgFunction LocalObjectId="13" Dim="2" Range="2" Rank="1" Codim="0">
     <PhysicalSpaceBasis GetFromLocalObjectId="11"/>
     <IgCoefficients Size="24">
@@ -155,6 +154,5 @@
     <Name>my_function</Name>
     <DofsProperty>active</DofsProperty>
   </IgFunction>
-  -->
 
 </Igatools>
