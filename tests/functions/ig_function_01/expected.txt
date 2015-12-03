@@ -1,0 +1,60 @@
+FunctionElement:
+   Flat ID: 0    Tensor ID: [0,0]
+   IgFunction Values:
+      ValueVector (num_points=4) :
+      [ [ 0.386895 ]  [ 0.0277778 ]  [ 0.0277778 ]  [ 0.00199435 ]  ]
+   
+   IgFunction Gradients:
+      ValueVector (num_points=4) :
+      [ [ [ -1.96225 ]  [ -1.96225 ]  ]  [ [ -0.525783 ]  [ -0.140883 ]  ]  [ [ -0.140883 ]  [ -0.525783 ]  ]  [ [ -0.0377496 ]  [ -0.0377496 ]  ]  ]
+   
+   IgFunction Hessians:
+      ValueVector (num_points=4) :
+      [ [ [ [ 4.97607 ]  [ 9.95214 ]  ]  [ [ 9.95214 ]  [ 4.97607 ]  ]  ]  [ [ [ 4.97607 ]  [ 2.66667 ]  ]  [ [ 2.66667 ]  [ 0.357266 ]  ]  ]  [ [ [ 0.357266 ]  [ 2.66667 ]  ]  [ [ 2.66667 ]  [ 4.97607 ]  ]  ]  [ [ [ 0.357266 ]  [ 0.714531 ]  ]  [ [ 0.714531 ]  [ 0.357266 ]  ]  ]  ]
+   
+
+FunctionElement:
+   Flat ID: 2    Tensor ID: [0,1]
+   IgFunction Values:
+      ValueVector (num_points=4) :
+      [ [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  ]
+   
+   IgFunction Gradients:
+      ValueVector (num_points=4) :
+      [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]
+   
+   IgFunction Hessians:
+      ValueVector (num_points=4) :
+      [ [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  ]
+   
+
+FunctionElement:
+   Flat ID: 1    Tensor ID: [1,0]
+   IgFunction Values:
+      ValueVector (num_points=4) :
+      [ [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  ]
+   
+   IgFunction Gradients:
+      ValueVector (num_points=4) :
+      [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]
+   
+   IgFunction Hessians:
+      ValueVector (num_points=4) :
+      [ [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  ]
+   
+
+FunctionElement:
+   Flat ID: 3    Tensor ID: [1,1]
+   IgFunction Values:
+      ValueVector (num_points=4) :
+      [ [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  ]
+   
+   IgFunction Gradients:
+      ValueVector (num_points=4) :
+      [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]
+   
+   IgFunction Hessians:
+      ValueVector (num_points=4) :
+      [ [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  ]
+   
+

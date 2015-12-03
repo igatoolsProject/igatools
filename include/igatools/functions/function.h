@@ -191,10 +191,7 @@ public:
   ElementIterator cend(const PropId &property = ElementProperties::active) const;
   ///@}
 
-  virtual void print_info(LogStream &out) const
-  {
-    Assert(false, ExcNotImplemented());
-  }
+  virtual void print_info(LogStream &out) const = 0;
 
 
   /**
@@ -280,7 +277,40 @@ public:
   {
     return function_previous_refinement_;
   }
+
+private:
+  /**
+   * Rebuild the internal state of the object after an insert_knots() function is invoked.
+   *
+   * @pre Before invoking this function, must be invoked the function grid_->insert_knots().
+   * @note This function is connected to the Grid's signal for the refinement, and
+   * it is necessary in order to avoid infinite loops in the insert_knots() function calls.
+   *
+   * @ingroup h_refinement
+   */
+  virtual void rebuild_after_insert_knots(
+    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+    const Grid<dim> &old_grid)
+  {
+	  AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
+  }
+
+public:
+
+  /**
+   *  Connect a slot (i.e. a function pointer) to the refinement signals
+   *  which will be
+   *  emitted whenever a insert_knots() function is called by the underlying
+   *  a Grid member.
+   */
+  boost::signals2::connection
+  connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber);
+
+  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &function);
+
 #endif // MESH_REFINEMENT
+
+
 
 #ifdef SERIALIZATION
 private:

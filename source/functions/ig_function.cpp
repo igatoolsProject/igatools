@@ -40,7 +40,8 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
   parent_t::Function(
    space.data_is_const() ?
    SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain()),
+   SharedPtrConstnessHandler<DomainType>(
+     std::const_pointer_cast<Domain<dim,codim>>(space.get_ptr_data()->get_physical_domain())),
    name),
   basis_(space),
   dofs_property_(dofs_property)
@@ -95,7 +96,7 @@ IgFunction<dim,codim,range,rank>::
 const_create(const std::shared_ptr<const PhysBasis> &space,
              const EpetraTools::Vector &coeff,
              const std::string &dofs_property,
-             const std::string &name) ->  std::shared_ptr<const parent_t>
+             const std::string &name) ->  std::shared_ptr<const self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
   coeff, dofs_property,name);
@@ -111,7 +112,7 @@ IgFunction<dim,codim,range,rank>::
 const_create(const std::shared_ptr<const PhysBasis> &space,
              const IgCoefficients &coeff,
              const std::string &dofs_property,
-             const std::string &name) ->  std::shared_ptr<const parent_t>
+             const std::string &name) ->  std::shared_ptr<const self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
   coeff, dofs_property,name);
@@ -127,7 +128,7 @@ IgFunction<dim,codim,range,rank>::
 create(const std::shared_ptr<PhysBasis> &space,
        const EpetraTools::Vector &coeff,
        const std::string &dofs_property,
-       const std::string &name) ->  std::shared_ptr<parent_t>
+       const std::string &name) ->  std::shared_ptr<self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
   coeff, dofs_property,name);
@@ -146,7 +147,7 @@ IgFunction<dim,codim,range,rank>::
 create(const std::shared_ptr<PhysBasis> &space,
        const IgCoefficients &coeff,
        const std::string &dofs_property,
-       const std::string &name) ->  std::shared_ptr<parent_t>
+       const std::string &name) ->  std::shared_ptr<self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
   coeff, dofs_property,name);
@@ -234,11 +235,11 @@ rebuild_after_insert_knots(
 
 //  this->coeffs_ = std::move(function_refined->coeffs_);
 }
-
+#if 0
 template<int dim,int codim,int range,int rank>
 void
 IgFunction<dim,codim,range,rank>::
-create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &ig_function)
 {
   Assert(ig_function != nullptr, ExcNullPtr());
   Assert(&(*ig_function) == &(*this), ExcMessage("Different objects."));
@@ -258,6 +259,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
   connect_insert_knots(SlotType(func_to_connect).track_foreign(ig_function));
 //  Assert(false,ExcNotImplemented());
 }
+#endif
 
 #endif // MESH_REFINEMENT
 

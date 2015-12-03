@@ -18,51 +18,32 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/**
- *  @file
- *  @brief LinearFunction
- *  @author pauletti
- *  @date 2013-11-01
+/*
+ * Testing the objects container parser
+ * author: P. Antolin
+ * date: Nov 27, 2015
+ *
  */
-#include <igatools/geometry/domain_lib.h>
-#include <igatools/functions/function_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
-
-#include <igatools/base/quadrature_lib.h>
 
 #include "../tests.h"
-#include "function_test.h"
+#include <igatools/io/objects_container_parser.h>
+#include <igatools/base/objects_container.h>
 
-using namespace functions;
-
-template<int dim, int codim, int range>
-void linear_func()
-{
-
-  auto grid = Grid<dim>::const_create(3);
-  auto ball_func = grid_functions::BallGridFunction<dim>::const_create(grid);
-  auto ball_domain = Domain<dim,0>::const_create(ball_func);
-
-  using LinFunc = functions::LinearFunction<dim, codim, range>;
-  typename LinFunc::template Derivative<1> A;
-  typename LinFunc::Value b;
-
-
-  for (int j=0; j<range; ++j)
-  {
-    b[j] = j;
-    for (int i=0; i<dim; ++i)
-      A[i][j] = i+j;
-  }
-  auto func = LinFunc::const_create(ball_domain, A, b);
-  function_values<dim, codim, range>(*func);
-}
 
 int main()
 {
-  linear_func<1,0,1>();
-  linear_func<2,0,2>();
+  const string file_name = "objects_container.xml";
+  OUTSTART
+  const auto container = ObjectsContainerParser::parse(file_name);
+  out.begin_item("Non-const container");
+  container->print_info(out);
+  out.end_item();
 
-  return 0;
+  const auto container_const = ObjectsContainerParser::parse_const(file_name);
+  out.begin_item("Const container");
+  container_const->print_info(out);
+  out.end_item();
+
+  OUTEND
 }
 

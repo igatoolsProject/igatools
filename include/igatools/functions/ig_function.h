@@ -131,25 +131,25 @@ public:
   create_cache_handler() const override final;
 
 
-  static std::shared_ptr<const parent_t>
+  static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const PhysBasis> &basis,
                const EpetraTools::Vector &coeff,
                const std::string &dofs_property = DofProperties::active,
                const std::string &name = "");
 
-  static std::shared_ptr<const parent_t>
+  static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const PhysBasis> &basis,
                const IgCoefficients &coeff,
                const std::string &dofs_property = DofProperties::active,
                const std::string &name = "");
 
-  static std::shared_ptr<parent_t>
+  static std::shared_ptr<self_t>
   create(const std::shared_ptr<PhysBasis> &basis,
          const EpetraTools::Vector &coeff,
          const std::string &dofs_property = DofProperties::active,
          const std::string &name = "");
 
-  static std::shared_ptr<parent_t>
+  static std::shared_ptr<self_t>
   create(const std::shared_ptr<PhysBasis> &basis,
          const IgCoefficients &coeff,
          const std::string &dofs_property = DofProperties::active,
@@ -228,11 +228,11 @@ private:
 
 #ifdef MESH_REFINEMENT
 
-  void create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function);
+//  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &ig_function);
 
   void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const Grid<dim> &old_grid);
+    const Grid<dim> &old_grid) override final;
 
 #endif // MESH_REFINEMENT
 
