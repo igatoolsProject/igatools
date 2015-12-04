@@ -22,6 +22,8 @@
 
 #ifdef XML_IO
 
+#include <igatools/io/objects_container_parser-XML_schema.h>
+
 #include <igatools/io/xml_file_parser.h>
 #include <igatools/io/xml_element.h>
 #include <igatools/base/objects_container.h>
@@ -53,13 +55,11 @@ ObjectsContainerParser::
 parse(const string &file_path)
 {
   const auto parser = XMLFileParser::create();
-  const string schema_file = IGATOOLS_OBJECTS_CONTAINER_XML_SCHEMA;
-  const auto xml_elem = parser->parse(file_path, schema_file);
+  const auto xml_elem = parser->parse(file_path, ObjectsContainerParser::XML_SCHEMA_);
   const auto container = ObjectsContainer::create();
 
   // Checking for repeated iga object ids.
   SafeSTLSet<Index> object_ids;
-  const auto kk = xml_elem->get_children_elements();
   for (const auto &el : xml_elem->get_children_elements())
   {
     const Index obj_id = el->get_attribute<Index>("LocalObjectId");
@@ -89,13 +89,11 @@ ObjectsContainerParser::
 parse_const(const string &file_path)
 {
   const auto parser = XMLFileParser::create();
-  const string schema_file = IGATOOLS_OBJECTS_CONTAINER_XML_SCHEMA;
-  const auto xml_elem = parser->parse(file_path, schema_file);
+  const auto xml_elem = parser->parse(file_path, ObjectsContainerParser::XML_SCHEMA_);
   const auto container = ObjectsContainer::create();
 
   // Checking for repeated iga object ids.
   SafeSTLSet<Index> object_ids;
-  const auto kk = xml_elem->get_children_elements();
   for (const auto &el : xml_elem->get_children_elements())
   {
     const Index obj_id = el->get_attribute<Index>("LocalObjectId");

@@ -158,18 +158,19 @@ public:
    * Before parsing the file the validity of both files is checked.
    *
    * This method validates the content of @p file_path against the
-   * XML schema defined in @p grammar_file
+   * XML schema defined in the @p grammar_definition string. This is a
+   * string containing the full definition of the grammar.
    *
    * @attention If there is any problem parsing the input file, error
    * messages and exceptions will be thrown.
    *
    * @param[in] file_path Path of the file to be parsed.
-   * @param[in] grammar_file Path of the file containing the schema to
-   *                         validate the XML document.
+   * @param[in] grammar_definition Definition of the XML schema
+   *                               contained into a string.
    * @return XML element containing the parsed document.
    */
   std::shared_ptr<XMLElement> parse(const std::string &file_path,
-                                    const std::string &grammar_file) const;
+                                    const std::string &grammar_definition) const;
 
   /**
    * @brief Parses the input file and returns a XML document object.

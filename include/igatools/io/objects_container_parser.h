@@ -99,6 +99,12 @@ private:
   /** Type for map between file local Id number and object unique Id. */
   typedef SafeSTLMap<Index, Index> IdMap_;
 
+  /**
+   * Statically defined string defining the XML schema for validating the
+   * input files.
+   */
+  static const std::string XML_SCHEMA_;
+
   ///@}
 
   /** @name Constructors, destructor, assignment operators and creators */

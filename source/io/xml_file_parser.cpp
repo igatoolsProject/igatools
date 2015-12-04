@@ -26,6 +26,7 @@
 
 #undef Assert
 #include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/framework/MemBufInputSource.hpp>
 
 #include <igatools/base/logstream.h>
 #include <igatools/io/xml_parser_error_handler.h>
@@ -132,17 +133,19 @@ check_file(const string &file_path)
 
 std::shared_ptr<XMLElement>
 XMLFileParser::
-parse(const string &file_path, const string &grammar_file) const
+parse(const string &file_path, const string &grammar_definition) const
 {
   this->check_file(file_path);
-  this->check_file(grammar_file);
 
   // Activation of the validation.
   parser_->setValidationScheme(xercesc::XercesDOMParser::Val_Always);
   // Loading grammar
-  parser_->loadGrammar(grammar_file.c_str(),
-                       xercesc::Grammar::SchemaGrammarType, true);
+  xercesc::MemBufInputSource grammar(
+    reinterpret_cast<const XMLByte *>(grammar_definition.c_str()),
+    grammar_definition.size(), "/igatools_xml_schema.xsd");
+  parser_->loadGrammar(grammar, xercesc::Grammar::SchemaGrammarType, true);
 
+  // Parsing the file.
   parser_->parse(file_path.c_str());
 
   // Deactivation of the validation.
