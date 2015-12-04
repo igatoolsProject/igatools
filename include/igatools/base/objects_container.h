@@ -21,9 +21,9 @@
 #ifndef __OBJECTS_CONTAINER_H_
 #define __OBJECTS_CONTAINER_H_
 
-#ifdef XML_IO
-
 #include <igatools/base/config.h>
+
+#ifdef XML_IO
 
 #include <igatools/base/instantiated_types.inst>
 #include <igatools/utils/safe_stl_vector.h>
