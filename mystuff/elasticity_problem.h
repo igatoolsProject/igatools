@@ -474,7 +474,7 @@ void ElasticityProblem<dim>::output() const
   writer.save(filename);
 }// */
 
-/*template<int dim>
+template<int dim>
 void ElasticityProblem<dim>::output(shared_ptr<const FormulaGridFunction<dim,dim>> exact_solution) const
 {
   const int num_plot_pts = 10;

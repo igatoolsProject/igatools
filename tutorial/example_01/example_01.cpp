@@ -20,15 +20,17 @@
 
 // [includes]
 #include <igatools/basis_functions/bspline.h>
+#include <igatools/base/logstream.h>
 // [includes]
-// [include_writer]
-#include <igatools/io/writer.h>
-// [include_writer]
 
 // [using]
 using namespace iga;
 using namespace std;
 // [using]
+
+// [logstream]
+LogStream out;
+// [logstream]
 
 int main()
 {
@@ -38,28 +40,35 @@ int main()
 
   // [grid]
   const int n_knots = 3;
-  cout << "Creating a " << dim << " dimensional cartesian grid" << endl;
-  auto grid = Grid<dim>::const_create(n_knots);
-  cout << "Number of elements: ";
-  cout << grid->get_num_all_elems() << endl;
+  shared_ptr<const Grid<dim>> grid = Grid<dim>::const_create(n_knots);
   // [grid]
 
-  // [plot_grid]
-  Writer<dim> output(grid);
-  output.save("grid_2D");
-  // [plot_grid]
+  // [grid_print]
+  out << "Grid: " << endl;
+  out << "  number of elements:  " << endl;
+  out << "    " << grid->get_num_all_elems(); 
+  out << " = " << grid->get_num_intervals() << endl;
+  out << "  knot vectors:  " << endl;
+  auto knots = grid->get_knots();
+  for (auto knot_vect=knots.begin(); knot_vect!=knots.end(); knot_vect++) {
+    out << "   ";
+    for (auto knot=(*knot_vect)->begin(); knot!=(*knot_vect)->end(); knot++) {
+      out << " " << *knot;
+    }
+    out << endl;
+  }
+  out << endl;
+  // [grid_print]
 
   // [space]
   const int degree = 2;
-  cout << "Creating a spline space of degree " << degree << endl;
   auto space = SplineSpace<dim>::const_create(degree, grid);
   // [space]
 
   // [basis]
-  cout << "Creating the basis for the spline space" << endl;
   auto basis = BSpline<dim>::const_create(space);
-  cout << "Number of basis functions: ";
-  cout << basis->get_num_basis() << endl;
+  basis->print_info(out);
+  out << endl;
   // [basis]
 
   return 0;
