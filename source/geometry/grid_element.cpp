@@ -167,18 +167,31 @@ vertex(const int i) const -> Point
 
   TensorSize<dim> n_vertices_elem(2);
   const auto w = MultiArrayUtils<dim>::compute_weight(n_vertices_elem);
-  auto vertex_id = MultiArrayUtils<dim>::flat_to_tensor_index(i,w);
+  const auto vertex_id = MultiArrayUtils<dim>::flat_to_tensor_index(i,w);
 
+  const auto n_knots_dir = grid_->get_num_knots_dim();
   Point vertex;
   for (int j = 0 ; j < dim ; ++j)
   {
-    vertex_id[j] += vertex_id_origin[j];
-    vertex[j] = grid_->get_knot_coordinates(j)[vertex_id[j]];
+    const auto v_id = vertex_id[j] + vertex_id_origin[j];
+//    Assert(v_id >= 0 && v_id < n_knots_dir[j],
+//        ExcIndexRange(v_id,0,n_knots_dir[j]));
+    vertex[j] = grid_->get_knot_coordinates(j)[v_id];
   }
 
   return vertex;
 }
 
+template <>
+auto
+GridElement<0>::
+vertex(const int i) const -> Point
+{
+  Assert(i < UnitElement<0>::sub_elements_size[0],
+         ExcIndexRange(i,0, UnitElement<0>::sub_elements_size[0]));
+  Point vertex;
+  return vertex;
+}
 
 
 template <int dim>
@@ -266,12 +279,15 @@ auto
 GridElement<dim>::
 get_side_lengths(const int s_id) const -> const Points<sdim>
 {
+  static_assert(dim > 0,"The dimension must be greater than zero.");
+  static_assert(sdim >= 0,"The sub-dimension cannot be negative.");
+  static_assert(sdim <= dim,"The sub-dimension cannot be greater than the dimension.");
   Points<sdim> lengths;
 
   auto &s_elem = UnitElement<dim>::template get_elem<sdim>(s_id);
 
   const auto &elem_tid = this->get_index().get_tensor_index();
-  int i=0;
+  int i = 0;
   for (const int active_dir : s_elem.active_directions)
   {
     const auto &knots_active_dir = grid_->get_knot_coordinates(active_dir);
@@ -279,6 +295,19 @@ get_side_lengths(const int s_id) const -> const Points<sdim>
     lengths[i] = knots_active_dir[j+1] - knots_active_dir[j];
     ++i;
   }
+
+  return lengths;
+}
+
+
+template <>
+template <int sdim>
+auto
+GridElement<0>::
+get_side_lengths(const int s_id) const -> const Points<sdim>
+{
+  static_assert(sdim == 0,"The sub-dimension must be zero.");
+  Points<sdim> lengths;
 
   return lengths;
 }

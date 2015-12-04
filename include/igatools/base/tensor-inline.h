@@ -27,6 +27,13 @@ IGA_NAMESPACE_OPEN
 
 inline
 Tdouble::
+Tdouble()
+  :
+  val_(0.0)
+{}
+
+inline
+Tdouble::
 Tdouble(const Real val)
 {
   Assert(!std::isnan(val),ExcNotANumber());
