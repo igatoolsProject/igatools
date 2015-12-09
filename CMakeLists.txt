@@ -25,7 +25,7 @@
 #TODO: Define the configure time variable for dimension compilation
 #TODO: upadate to cmake >= 3
 
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 3.1)
 
 project(iga CXX C)
 
