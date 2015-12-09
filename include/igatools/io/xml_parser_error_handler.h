@@ -37,11 +37,12 @@ IGA_NAMESPACE_OPEN
  * This class is in charge of managing the runtime errors than can
  * occurred during the parsing process of input files.
  *
- * The class derives from the @p xercesc class @ref ParserErrorHandler, in such
- * a way, it takes care of error messages thrown by @p xercesc parser.
+ * The class derives from the @p Xerces-c class @ref ParserErrorHandler,
+ * in such a way that it takes care of error messages thrown by
+ * @p Xerces-c parser.
  *
- * @attention When an error or warning is thrown, an exception raises,
- * and the execution is automatically finished.
+ * @warning When an error or warning is thrown, an exception raises,
+ * and, if not caught, the execution is automatically finished.
  *
  * @see XMLFileParser
  *
@@ -63,47 +64,36 @@ private:
 
   ///@}
 
-private:
   /** @name Constructors, destructor, assignment operators and creators */
   ///@{
 
   /**
-   * @brief Default constructor
-   *
-   * Default constructor.
+   * @brief Default constructor.
    * @return New instance of the class.
    */
   XMLParserErrorHandler() = default;
 
   /**
-   * @brief Deleted copy constructor.
-   *
-   * Copy constructor.
-   * @note Deleted: not allowed.
+   * @brief Copy constructor.
+   * @note Deleted, not allowe to be used.
    */
   XMLParserErrorHandler(const XMLParserErrorHandler &) = delete;
 
   /**
-   * @brief Deleted move constructor.
-   *
-  * Move constructor.
-  * @note Deleted: not allowed.
+   * @brief Move constructor.
+   * @note Deleted, not allowed to be used.
   */
   XMLParserErrorHandler(XMLParserErrorHandler &&) = delete;
 
   /**
-   * @brief Deleted copy assignment operator.
-   *
-   * Copy assignment operator.
-   * @note Deleted: not allowed.
+   * @brief Copy assignment operator.
+   * @note Deleted, not allowed to be used.
    */
   XMLParserErrorHandler &operator= (const XMLParserErrorHandler &) = delete;
 
   /**
-   * @brief Deleted move assignment operator.
-   *
-   * Move assignment operator.
-   * @note Deleted: not allowed.
+   * @brief Move assignment operator.
+   * @note Deleted, not allowed to be used.
    */
   XMLParserErrorHandler &operator= (XMLParserErrorHandler &&) = delete;
 
@@ -111,8 +101,7 @@ public:
   /**
    * @brief Returns a new instance wrapped into a shared pointer.
    *
-   * Builds and returns a new instance of the class wrapped into a
-   * shared pointer. It uses the above defined default constructor.
+   * It uses the above defined default constructor.
    *
    * @return A shared pointer with a new instance of the class.
    */
@@ -146,7 +135,7 @@ public:
    *                         exception.
    *
    * @note The documentation has been partially extracted from the parent
-   * <tt>xercesc ParserErrorHandler</tt> class.
+   * <tt>Xerces-c ParserErrorHandler</tt> class.
    */
   virtual void error(const xercesc::SAXParseException &ex) override final;
 
@@ -174,7 +163,7 @@ public:
    *                         exception.
    *
    * @note The documentation has been partially extracted from the parent
-   * <tt>xercesc ParserErrorHandler</tt> class.
+   * <tt>Xerces-c ParserErrorHandler</tt> class.
    */
   virtual void warning(const xercesc::SAXParseException &ex) override final;
 
@@ -201,8 +190,8 @@ public:
    *                          exception.
    *
    * @note The documentation has been partially extracted from the parent
-   * <tt>xercesc ParserErrorHandler</tt> class.
-   * @note This function is doing nothing currently.
+   * <tt>Xerces-c ParserErrorHandler</tt> class.
+   * @note Currently, this function is doing nothing.
    */
   virtual void fatalError(const xercesc::SAXParseException &ex) override final;
 
@@ -211,9 +200,6 @@ public:
    *
    * This method helps in reseting the Error handler object implementation
    * defaults each time the Error handler is begun.
-   *
-   * @note The documentation has been extracted from the parent
-   * <tt>xercesc ParserErrorHandler</tt> class.
    *
    * @note The documentation has been extracted from the parent
    * <tt>xercesc ParserErrorHandler</tt> class.

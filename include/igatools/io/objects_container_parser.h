@@ -43,8 +43,7 @@ template <class T1, class T2> class SafeSTLMap;
  * @brief Helper class for creating an @ref ObjectsContainer parsed from
  * a file.
  *
- * This is a helper class for creating an @ref ObjectsContainer parsed
- * from a file. It receives an input file that is parsed by means of
+ * It receives an input file that is parsed by means of
  * the @ref XMLFileParser for receiving a @ref XMLElement containing
  * all the information.
  *
@@ -53,26 +52,28 @@ template <class T1, class T2> class SafeSTLMap;
  * definition controls the main structure of the file: which elements
  * should be present, attributes, types, enumerations, etc.
  * But the schema is unable to control other questions, e.g. if a certain
- * @p Grid, used by a @ref SplineSpace, is defined in the file.
+ * @ref Grid, used by a @ref SplineSpace, is defined in the file.
+ * This schema is stored as a @ref std::string in the private member
+ * @ref XML_SCHEMA_.
  *
- * Currently, this class is able to parse:
+ * Currently, this class is able to parse the following classes:
  * - @ref Grid
  * - @ref SplineSpace
  * - @ref BSpline
  * - @ref NURBS
- * - @ref IdentityGridFunction
- * - @ref ConstantGridFunction
+ * - @ref grid_functions::IdentityGridFunction
+ * - @ref grid_functions::ConstantGridFunction
  * - @ref IgGridFunction
  * - @ref Domain
  * - @ref PhysicalSpaceBasis
- * - @ref ConstantFunction
+ * - @ref functions::ConstantFunction
  * - @ref IgFunction
  *
- * If any type different from the ones above is found an exception
+ * If any type different from the ones above is found, an exception
  * is thrown.
  *
- * @alert It could be unsafe to take a @ref XMLElement outside of
- * the class in order to be reused somewhere else. It could cause problem
+ * @warning It could be unsafe to take a @ref XMLElement outside of
+ * the class in order to be reused somewhere else. It could cause problems
  * with the @p Xerces-c memory deallocation. Not getter should be
  * provided for retrieving it.
  *
@@ -96,7 +97,8 @@ private:
   /** Type for a shared pointer of the current class. */
   typedef std::shared_ptr<Self_> SelfPtr_;
 
-  /** Type for map between file local Id number and object unique Id. */
+  /** Type for mapping between @p Id numbers local to the input file and
+   *  object unique @p Id. */
   typedef SafeSTLMap<Index, Index> IdMap_;
 
   /**
@@ -111,42 +113,32 @@ private:
   ///@{
 
   /**
-   * @brief Deleted default constructor.
-   *
-   * Default constructor.
-   * @note Deleted: not allowed.
+   * @brief Default constructor.
+   * @note Deleted, not allowed to be used.
    */
   ObjectsContainerParser() = delete;
 
   /**
-   * @brief Deleted copy constructor.
-   *
-   * Copy constructor.
-   * @note Deleted: not allowed.
+   * @brief Copy constructor.
+   * @note Deleted, not allowed to be used.
    */
   ObjectsContainerParser(const ObjectsContainerParser &) = delete;
 
   /**
-   * @brief Deleted move constructor.
-   *
-   * Move constructor.
-   * @note Deleted: not allowed.
+   * @brief Move constructor.
+   * @note Deleted, not allowed to be used.
    */
   ObjectsContainerParser(ObjectsContainerParser &&) = delete;
 
   /**
-   * @brief Deleted copy assignment operator.
-   *
-   * Copy assignment operator.
-   * @note Deleted: not allowed.
+   * @brief Copy assignment operator.
+   * @note Deleted, not allowed to be used.
    */
   ObjectsContainerParser &operator= (const ObjectsContainerParser &) = delete;
 
   /**
-   * @brief Deleted move assignment operator.
-   *
-   * Move assignment operator.
-   * @note Deleted: not allowed.
+   * @brief Move assignment operator.
+   * @note Deleted, not allowed to be used.
    */
   ObjectsContainerParser &operator= (ObjectsContainerParser &&) = delete;
 
@@ -155,10 +147,7 @@ private:
 public:
   /**
    * @brief Creates an @ref ObjectsContainer by reading the objects
-   * from a given file.
-   *
-   * Creates an @ref ObjectsContainer by reading the objects
-   * from a given @ref file_path and inserting them.
+   * from a given @p file_path and inserting them.
    *
    * @param[in] file_path Path of the file to be parsed.
    * @return Objects container with all the objects stored inside.
@@ -167,10 +156,7 @@ public:
 
   /**
    * @brief Creates an @ref ObjectsContainer by reading the objects
-   * from a given file and creating and storing them as constant.
-   *
-   * Creates an @ref ObjectsContainer by reading the objects
-   * from a given @ref file_path and creating and inserting them as
+   * from a given @p file_path and creating and inserting them as
    * constant.
    *
    * @param[in] file_path Path of the file to be parsed.
@@ -180,14 +166,14 @@ public:
 
 private:
   /**
-   * @brief Parses all the <tt>Grid</tt>s
-   * contained into the XML document and stores them into the container.
-   *
-   * Parses all the <tt>Grid</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
+   * @brief Parses all the @ref Grid contained into the XML document
+   * @p xml_elem and stores them into the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
+   *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
    */
@@ -197,15 +183,14 @@ private:
                           const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>SplineSpace</tt>s
-   * contained into the XML document and stores them into the container.
-   *
-   * Parses all the <tt>SplineSpace</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
+   * @brief Parses all the @ref SplineSpace
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -216,15 +201,14 @@ private:
                                   const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>BSpline</tt>s
-   * contained into the XML document and stores them into the container.
-   *
-   * Parses all the <tt>BSpline</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
+   * @brief Parses all the @ref BSpline
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -235,15 +219,14 @@ private:
                              const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>NURBS</tt>s
-   * contained into the XML document and stores them into the container.
-   *
-   * Parses all the <tt>NURBS</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
+   * @brief Parses all the @ref NURBS
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -254,18 +237,17 @@ private:
                           const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>GridFunction</tt>s and <tt>NURBS</tt>s
-   * contained into the XML document and stores them into the container.
+   * @brief Parses all the @ref GridFunction and @ref NURBS
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
    *
-   * Parses all the <tt>GridFunction</tt>s and <tt>NURBS</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
-   *
-   * They are parsed in proper order to avoid conflicts in the declaration
-   * of <tt>NURBS</tt>s that take <tt>IgGridFunction</tt>s as arguments.
+   * They are parsed in the proper order to avoid conflicts in the
+   * declaration of @ref NURBS that take @ref IgGridFunction as arguments.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -276,11 +258,13 @@ private:
                                              const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>IdentityGridFunction</tt>s
+   * @brief Parses all the @ref grid_functions::IdentityGridFunction
    * contained into the XML document and stores them into the container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -291,11 +275,13 @@ private:
                                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>ConstantGridFunction</tt>s
+   * @brief Parses all the @ref grid_functions::ConstantGridFunction
    * contained into the XML document and stores them into the container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -306,15 +292,14 @@ private:
                                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>IgGridFunction</tt>s
-   * contained into the XML document and stores them into the container.
-   *
-   * Parses all the <tt>IgGridFunction</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
+   * @brief Parses all the @ref IgGridFunction
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -326,15 +311,14 @@ private:
                                       const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>Domain</tt>s
-   * contained into the XML document and stores them into the container.
-   *
-   * Parses all the <tt>Domain</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
+   * @brief Parses all the @ref Domain
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -345,15 +329,14 @@ private:
                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>PhysicalSpaceBasis</tt>s
-   * contained into the XML document and stores them into the container.
-   *
-   * Parses all the <tt>PhysicalSpaceBasis</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
+   * @brief Parses all the @ref PhysicalSpaceBasis
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -364,15 +347,14 @@ private:
                                 const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>Function</tt>s
-   * contained into the XML document and stores them into the container.
-   *
-   * Parses all the <tt>Function</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
+   * @brief Parses all the @ref Function
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -383,15 +365,14 @@ private:
                               const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>IgFunction</tt>s
-   * contained into the XML document and stores them into the container.
-   *
-   * Parses all the <tt>IgFunction</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
+   * @brief Parses all the @ref IgFunction
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -402,15 +383,14 @@ private:
                                  const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the <tt>ConstantFunction</tt>s
-   * contained into the XML document and stores them into the container.
-   *
-   * Parses all the <tt>ConstantFunction</tt>s
-   * contained into the XML document @ref xml_elem and stores them into
-   * the @ref container.
+   * @brief Parses all the @ref functions::ConstantFunction
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
@@ -421,15 +401,14 @@ private:
                                        const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a <tt>Grid</tt> XML element and inserts
-   * it into the objects container.
-   *
-   * Parses a <tt>Grid</tt> XML element contained in
-   * @ref xml_elem and inserts it into the objects @ref container.
+   * @brief Parses a single @ref Grid XML element contained in
+   * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the Grid.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
@@ -441,17 +420,16 @@ private:
                          const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a <tt>SplineSpace</tt> XML element and inserts
-   * it into the objects container.
-   *
-   * Parses a <tt>SplineSpace</tt> XML element contained in
-   * @ref xml_elem and inserts it into the objects @ref container.
+   * @brief Parses a single @ref SplineSpace XML element contained in
+   * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the SplineSpace.
    * @tparam range Range of the SplineSpace.
    * @tparam rank Rank of the SplineSpace.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
@@ -463,17 +441,16 @@ private:
                                  const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a <tt>BSpline</tt> XML element and inserts
-   * it into the objects container.
-   *
-   * Parses a <tt>BSpline</tt> XML element contained in
-   * @ref xml_elem and inserts it into the objects @ref container.
+   * @brief Parses a single @ref BSpline XML element contained in
+   * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the BSpline space basis.
    * @tparam range Range of the BSpline space basis.
    * @tparam rank Rank of the BSpline space basis.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
@@ -485,17 +462,16 @@ private:
                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a <tt>NURBS</tt> XML element and inserts
-   * it into the objects container.
-   *
-   * Parses a <tt>NURBS</tt> XML element contained in
-   * @ref xml_elem and inserts it into the objects @ref container.
+   * @brief Parses a single @ref NURBS XML element contained in
+   * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the NURBS space basis.
    * @tparam range Range of the NURBS space basis.
    * @tparam rank Rank of the NURBS space basis.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
@@ -507,15 +483,15 @@ private:
                           const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a <tt>IdentityGridFunction</tt> XML element and inserts
-   * it into the objects container.
-   *
-   * Parses a <tt>IdentityGridFunction</tt> XML element contained in
-   * @ref xml_elem and inserts it into the objects @ref container.
+   * @brief Parses a single @ref grid_functions::IdentityGridFunction XML
+   * element contained in
+   * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the grid function.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
@@ -527,16 +503,16 @@ private:
                                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a <tt>ConstantGridFunction</tt> XML element and inserts
-   * it into the objects container.
-   *
-   * Parses a <tt>ConstantGridFunction</tt> XML element contained in
-   * @ref xml_elem and inserts it into the objects @ref container.
+   * @brief Parses a single @ref grid_functions::ConstantGridFunction XML
+   * element contained in
+   * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the grid function.
    * @tparam space_dim Space dimension of the grid function.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
@@ -548,22 +524,21 @@ private:
                                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a <tt>IgGridFunction</tt> XML element and inserts
-   * it into the objects container.
-   *
-   * Parses a <tt>IgGridFunction</tt> XML element contained in
-   * @ref xml_elem and inserts it into the objects @ref container.
+   * @brief Parses a single @ref IgGridFunction XML element contained in
+   * @p xml_elem and inserts it into the objects @p container.
    *
    * This function is called twice:
    * - During the first time (<tt>first_parsing == true</tt>) the
-   *   grid functions based on @p BSpline are parsed.
+   *   grid functions based on @ref BSpline are parsed.
    * - In the second time (<tt>first_parsing == false</tt>) the
-   *   grid functions based on @p NURBS are parsed.
+   *   grid functions based on @ref NURBS are parsed.
    *
    * @tparam dim Dimension of the grid function.
    * @tparam space_dim Space dimension of the grid function.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in] first_parsing Indicates if the function is called for
    *                          first time, or not.
@@ -578,16 +553,15 @@ private:
                                      const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a <tt>Domain</tt> XML element and inserts
-   * it into the objects container.
-   *
-   * Parses a <tt>Domain</tt> XML element contained in
-   * @ref xml_elem and inserts it into the objects @ref container.
+   * @brief Parses a single @ref Domain XML element contained in
+   * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the domain.
    * @tparam codim Codimension of the domain.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
@@ -599,18 +573,17 @@ private:
                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a <tt>PhysicalSpaceBasis</tt> XML element and inserts
-   * it into the objects container.
-   *
-   * Parses a <tt>PhysicalSpaceBasis</tt> XML element contained in
-   * @ref xml_elem and inserts it into the objects @ref container.
+   * @brief Parses a single @ref PhysicalSpaceBasis XML element contained
+   * in @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the physical space basis.
    * @tparam range Range of the physical space basis.
    * @tparam rank Rank of the physical space basis.
    * @tparam codim Codimension of the physical space basis.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
@@ -622,18 +595,17 @@ private:
                                const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses an <tt>IgFunction</tt> XML element and inserts it into
-   * the objects container.
-   *
-   * Parses an <tt>IgFunction</tt> XML element contained in @ref xml_elem
-   * and inserts it into the objects @ref container.
+   * @brief Parses an single @ref IgFunction XML element contained in
+   * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the function.
    * @tparam codim Codimension of the function.
    * @tparam range Range of the function.
    * @tparam rank Rank of the function.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
@@ -645,18 +617,17 @@ private:
                                 const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses an <tt>ConstantFunction</tt> XML element and inserts it into
-   * the objects container.
-   *
-   * Parses an <tt>ConstantFunction</tt> XML element contained in @ref xml_elem
-   * and inserts it into the objects @ref container.
+   * @brief Parses an single @ref functions::ConstantFunction XML element
+   * and inserts it into the objects container.
    *
    * @tparam dim Dimension of the function.
    * @tparam codim Codimension of the function.
    * @tparam range Range of the function.
    * @tparam rank Rank of the function.
    * @param[in] xml_elem XML element to be parsed.
-   * @param[in,out] Map between the local Ids of the input file and
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
@@ -668,8 +639,7 @@ private:
                                       const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a <tt>Name</tt> XML element.
-   * Parses a <tt>Name</tt> XML element contained in @ref xml_elem.
+   * @brief Parses a <tt>Name</tt> XML element contained in @p xml_elem.
    *
    * @param[in] xml_elem XML element to be parsed.
    * return Name string parsed.
@@ -677,8 +647,8 @@ private:
   static std::string parse_name(const std::shared_ptr<XMLElement> xml_elem);
 
   /**
-   * @brief Parses a <tt>DofsProperty</tt> XML element.
-   * Parses a <tt>DofsProperty</tt> XML element contained in @ref xml_elem.
+   * @brief Parses a <tt>DofsProperty</tt> XML element contained in
+   * @p xml_elem.
    *
    * @param[in] xml_elem XML element to be parsed.
    * return Dofs property string parsed.
@@ -689,10 +659,8 @@ private:
    * @brief Produces an string of the given type and dimensions and the
    * object id associated to it.
    *
-   * Produces an string of the given type and dimensions and the object
-   * id associated to it.
-   *
-   * It will produce a string like <tt>Type<X, Y, Z> (IgaObjectId (W))</tt>.
+   * It will produce a string like
+   * <tt>Type<X, Y, Z> (IgaObjectId (W))</tt>.
    * This is used for error messaging purposes.
    *
    * @param[in] object_type String with the object type.
@@ -705,9 +673,8 @@ private:
                                         const SafeSTLVector<int> &dims);
 
   /**
-   * @todo Parses an IgCoefficients vector.
-   *
-   * Parses an IgCoefficients vector from the given @p xml_elem
+   * @brief Parses a single @ref IgCoefficients vector from the given
+   * @p xml_elem.
    * The indices of the parsed coefficients are checked with
    * @p space_global_dofs, that are the global indices of the dofs
    * of the space associated to the coefficients.

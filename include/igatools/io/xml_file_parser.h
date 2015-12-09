@@ -43,13 +43,13 @@ class LogStream;
 /**
  * @brief Class for parsing XML input files.
  *
- * This is a class for parsing XML input files and optionally validate
- * them against XML Schema grammars.
- *
  * This class provides the capability of creating a @p XercesDOMParser,
  * checking the validity of the input file (if it exists, it is corrupted,
- * etc), and retrieving a  @p XMLElement wrapping the XML document
+ * etc), and retrieving a  @ref XMLElement wrapping the XML document
  * contained in the input file.
+ *
+ * Optionally, the parser validates the read XML document against a XML
+ * Schema grammar.
  *
  * Once the class is instantiated by means of the @ref create static
  * method, the file is parsed by calling the @ref parse method.
@@ -62,7 +62,7 @@ class LogStream;
  * The destructor of the class is in charge of of deleting @ref parser_
  * and to shutdown all the @p Xerces-c active process.
  *
- * @alert This class uses @p Xerces-c library.
+ * @note This class uses the @p Xerces-c library.
  *
  * @see XMLParserErrorHandler
  *
@@ -96,34 +96,26 @@ private:
   XMLFileParser();
 
   /**
-   * @brief Deleted copy constructor.
-   *
-   * Copy constructor.
-   * @note Deleted: not allowed.
+   * @brief Copy constructor.
+   * @note Deleted, not allowed to be used.
    */
   XMLFileParser(const XMLFileParser &) = delete;
 
   /**
-   * @brief Deleted move constructor.
-   *
-   * Move constructor.
-   * @note Deleted: not allowed.
+   * @brief Move constructor.
+   * @note Deleted, not allowed to be used.
    */
   XMLFileParser(XMLFileParser &&) = delete;
 
   /**
-   * @brief Deleted copy assignment operator.
-   *
-   * Copy assignment operator.
-   * @note Deleted: not allowed.
+   * @brief Copy assignment operator.
+   * @note Deleted, not allowed to be used.
    */
   XMLFileParser &operator= (const XMLFileParser &) = delete;
 
   /**
-   * @brief Deleted move assignment operator.
-   *
-   * Move assignment operator.
-   * @note Deleted: not allowed.
+   * @brief Move assignment operator.
+   * @note Deleted, not allowed to be used.
    */
   XMLFileParser &operator= (XMLFileParser &&) = delete;
 
@@ -133,16 +125,15 @@ public:
   /**
    * @brief Destructor.
    *
-   * Destructor: finalizes the parsing process: deletes the @ref parser_
+   * It finalizes the parsing process: deletes the @ref parser_
    * and terminates the platform utils.
    */
   ~XMLFileParser();
 
   /**
-   * @brief Returns a new instance wrapped into a shared pointer.
+   * @brief Build and returns a new instance wrapped into a shared pointer.
    *
-   * Builds and returns a new instance of the class wrapped into a
-   * shared pointer. It uses the above defined constructor.
+   * It uses the above defined constructor.
    *
    * @return A shared pointer with a new instance of the class.
    */
@@ -154,14 +145,14 @@ public:
   /**
    * @brief Parses the input file and returns a XML document object.
    *
-   * Parses the input file and returns a XML document object.
-   * Before parsing the file the validity of both files is checked.
+   * Before parsing the file of the input file is checked by means
+   * of the static method @ref check_file.
    *
    * This method validates the content of @p file_path against the
    * XML schema defined in the @p grammar_definition string. This is a
    * string containing the full definition of the grammar.
    *
-   * @attention If there is any problem parsing the input file, error
+   * @warning If there is any problem parsing the input file, error
    * messages and exceptions will be thrown.
    *
    * @param[in] file_path Path of the file to be parsed.
@@ -176,9 +167,10 @@ public:
    * @brief Parses the input file and returns a XML document object.
    *
    * Parses the input file and returns a XML document object.
-   * Before parsing the file the validity of the file is checked.
+   * Before parsing the file the validity of the file is checked by
+   * calling the static method @ref check_file.
    *
-   * @attention If there is any problem parsing the input file, error
+   * @warning If there is any problem parsing the input file, error
    * messages and exceptions will be thrown.
    *
    * @param[in] file_path Path of the file to be parsed.
@@ -197,8 +189,7 @@ private:
   /**
    * @brief Checks if the file can be read.
    *
-   * Checks if the file can be read. It throws an error message
-   * if the file can not be read properly.
+   * It throws an error message if the file can not be read properly.
    *
    * @param[in] file_path Path of the file to be checked.
    */

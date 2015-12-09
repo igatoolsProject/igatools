@@ -40,16 +40,14 @@ IGA_NAMESPACE_OPEN
 class LogStream;
 
 /**
- * @brief Container class for igatools objects.
+ * @brief Container class for high-level igatools objects.
  *
- * This class is a container for high-level igatools objects.
- *
- * The objects are stored inside wrapped into shared pointers, that is,
+ * The stored objects are wrapped into shared pointers, that is,
  * the container is actually storing shared pointers.
  * And they can be stored as shared pointer to constant o non constant
  * objects.
  *
- * The objects that can be stored inside are
+ * The objects that can be stored inside are:
  * - @ref Grid
  * - @ref SplineSpace
  * - @ref ReferenceSpaceBasis
@@ -59,24 +57,22 @@ class LogStream;
  * - @ref Function
 
  * All the instantiated dimensions of the above listed types can be
- * stored. In @ref InstantiatedTypes a list of the valid types is defined.
+ * stored. In @p InstantiatedTypes a list of the valid types is defined.
  *
- * To every single type (const or non constant) a @p vector of shared
- * pointer to (constant o non constant) object of the type is associated.
+ * To every single type (constant or non constant) a @ref SafeSTLVector of
+ * shared pointers to objects of the type is associated.
  *
  * The class provides methods for inserting and getting objects,
- * and also for querying if an object of a given type and given object
- * unique @p Id number is present.
+ * and also for querying if an object of a given type and unique
+ * object @p Id number is present.
  *
- * This container can be create void and filled by using the
- * @p insert_object method, or it can be parsed directly from an XML file
- * by using the class @ref ObjectsContainerParser.
+ * This container can be created void and filled after by using the
+ * @ref insert_object method, or it can be parsed directly from an XML
+ * file by using the class @ref ObjectsContainerParser.
  *
  * This class is not intended to provide multi-patch support, dofs
  * management, or similar features. It is just a container of pointers
  * for different types.
- *
- * @see InstantiatedTypes
  *
  * @author P. Antolin
  * @date 2015
@@ -92,8 +88,8 @@ private:
   struct as_fusion_vector_shared_ptr
   {
     /**
-     * This functor transform a <tt>boost::mpl::vector</tt> of type into a
-     *  <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of the types.
+     * This functor transform a <tt>boost::mpl::vector</tt> of types into a
+     *  <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt>s of the types.
      */
 
     typedef typename boost::fusion::result_of::as_vector<
@@ -101,52 +97,76 @@ private:
   };
 
   /** Alias for all instantiated grids. */
-  using Grids        = typename InstantiatedTypes::Grids;
+  using Grids = typename InstantiatedTypes::Grids;
 
   /** Alias for all instantiated spline spaces. */
   using SpSpaces = typename InstantiatedTypes::SplineSpaces;
 
-  /** Alias for all instantiated spline spaces. */
+  /** Alias for all instantiated reference space bases. */
   using RefSpaces = typename InstantiatedTypes::RefSpaceBases;
 
   /** Alias for all instantiated grids functions. */
-  using GridFunc     = typename InstantiatedTypes::GridFunctions;
+  using GridFunc = typename InstantiatedTypes::GridFunctions;
 
   /** Alias for all instantiated domains. */
-  using Domains      = typename InstantiatedTypes::Domains;
+  using Domains = typename InstantiatedTypes::Domains;
 
-  /** Alias for all instantiated physical space basis. */
-  using PhysSpaces   = typename InstantiatedTypes::PhysSpaces;
+  /** Alias for all instantiated physical space bases. */
+  using PhysSpaces = typename InstantiatedTypes::PhysSpaces;
 
   /** Alias for all instantiated  functions.*/
-  using Functions    = typename InstantiatedTypes::Functions;
+  using Functions = typename InstantiatedTypes::Functions;
 
 public:
 
-  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated grids. */
-  using GridPtrs      = as_fusion_vector_shared_ptr<Grids>::type;
+  /**
+   * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
+   * instantiated grids.
+   */
+  using GridPtrs = as_fusion_vector_shared_ptr<Grids>::type;
 
-  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated spline spaces. */
-  using SpSpacePtrs   = as_fusion_vector_shared_ptr<SpSpaces>::type;
+  /**
+   * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
+   * instantiated spline spaces.
+   */
+  using SpSpacePtrs = as_fusion_vector_shared_ptr<SpSpaces>::type;
 
-  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated reference spaces. */
-  using RefSpacePtrs   = as_fusion_vector_shared_ptr<RefSpaces>::type;
+  /**
+   * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
+   * instantiated reference space bases.
+   */
+  using RefSpacePtrs = as_fusion_vector_shared_ptr<RefSpaces>::type;
 
-  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated grid functions. */
-  using GridFuncPtrs  = as_fusion_vector_shared_ptr<GridFunc>::type;
+  /**
+   * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
+   * instantiated grid functions.
+   */
+  using GridFuncPtrs = as_fusion_vector_shared_ptr<GridFunc>::type;
 
-  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated domains. */
-  using DomainPtrs    = as_fusion_vector_shared_ptr<Domains>::type;
+  /**
+   * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
+   * instantiated domains.
+   */
+  using DomainPtrs = as_fusion_vector_shared_ptr<Domains>::type;
 
-  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated physical spaces. */
+  /**
+   * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
+   * instantiated physical spaces.
+   */
   using PhysSpacePtrs = as_fusion_vector_shared_ptr<PhysSpaces>::type;
 
-  /** <tt>fusion::vector</tt> of <tt>shared_ptr</tt> of all instantiated functions. */
-  using FunctionPtrs  = as_fusion_vector_shared_ptr<Functions>::type;
+  /**
+   * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
+   * instantiated functions.
+   */
+  using FunctionPtrs = as_fusion_vector_shared_ptr<Functions>::type;
 
 
 private:
-  /** <tt>mpl::vector</tt> containing all the instantiated types together. */
+  /**
+   * <tt>boost::mpl::vector</tt> containing all the instantiated types
+   * together.
+   */
   typedef boost::mpl::copy<Grids,
           boost::mpl::back_inserter<boost::mpl::copy<SpSpaces,
           boost::mpl::back_inserter<boost::mpl::copy<RefSpaces,
@@ -156,11 +176,14 @@ private:
           boost::mpl::back_inserter<Functions>
           >::type> >::type> >::type> >::type> >::type> >::type JointTypes_;
 
-  /** @p JointTypes_ converted to constant types. */
+  /** @ref JointTypes_ converted to constant types. */
   typedef boost::mpl::transform<JointTypes_,
           boost::add_const<boost::mpl::_1> >::type JointConstTypes_;
 
-  /** @p All types, const and not const, together in single <tt>mpl::vector</tt>. */
+  /**
+   * @ref JointTypes_ and @ref JointConstTypes_ together in single
+   * <tt>boost::mpl::vector</tt>.
+   */
   typedef boost::mpl::copy<JointTypes_,
           boost::mpl::back_inserter<JointConstTypes_>>::type AllTypes_;
 
@@ -168,7 +191,7 @@ private:
   struct as_fusion_map
   {
     /**
-     * This functor transform a sequence of types @p T into a
+     * This functor transform a sequence of types @ref T into a
      * <tt>boost::fusion::map</tt> composed of <tt>pair</tt>s of the form
      * <tt>pair<T, SafeSTLVector<shared_ptr<T>></tt>.
      */
@@ -182,7 +205,7 @@ private:
     typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
   };
 
-  /** Container for shared pointer of all the instantiated types. */
+  /** Container for shared pointers of all the instantiated types. */
   using ObjectMapTypes_ = as_fusion_map<AllTypes_>::type;
 
 
@@ -190,23 +213,17 @@ private:
 
   /** @name Constructors*/
   ///@{
-  /**
-   * @brief Default constructor.
-   *
-   * Default constructor.
-   */
+  /** Default constructor. */
   ObjectsContainer() = default;
 
-  /**
-   * Copy constructor.
-   */
+  /** Copy constructor. */
   ObjectsContainer(const self_t &container) = default;
 
-  /**  Move constructor */
+  /**  Move constructor. */
   ObjectsContainer(self_t &&container) = default;
 
 public:
-  /** Destructor */
+  /** Destructor. */
   ~ObjectsContainer() = default;
   ///@}
 
@@ -215,9 +232,7 @@ public:
    * @name Creators
    */
   ///@{
-  /**
-   * Creates a objects container (non-const).
-   */
+  /** Creates an objects container wrapped into a shared pointer. */
   static std::shared_ptr<self_t> create();
   ///@}
 
@@ -226,42 +241,34 @@ private:
    * @name Assignment operators
    */
   ///@{
-  /**
-   * Copy assignment operator.
-   */
+  /** Copy assignment operator. */
   self_t &operator=(const self_t &container) = default;
 
-  /**
-   * Move assignment operator.
-   */
+  /** Move assignment operator. */
   self_t &operator=(self_t &&container) = default;
   ///@}
 
 public:
 
   /**
-   * @brief Insert a pointer to an object into the container.
-   *
-   * Insert a @ref shared_ptr pointing to an object of type @ref T
+   * @brief Insert a @ref shared_ptr pointing to an object of type @p T
    * into the container.
    *
-   * In debug mode, before inserting it, it is checked that this object
-   * is not already present.
+   * @warning In debug mode, before inserting it, it is checked that this
+   * object is not already present.
    *
    * @tparam T Type of the object to be inserted.
-   * @param[in] object Object to be inserted.
+   * @param[in] object Shared pointer of the object to be inserted.
    */
   template <class T>
   void insert_object(const std::shared_ptr<T> object);
 
   /**
-   * @brief Insert a pointer to a constant object into the container.
+   * @brief Insert a @ref shared_ptr pointing to a constant object of
+   * type @p T into the container.
    *
-   * Insert a @ref shared_ptr pointing to a constant object of type @ref T
-   * into the container.
-   *
-   * In debug mode, before inserting it, it is checked that this object
-   * is not already present.
+   * @warning In debug mode, before inserting it, it is checked that this
+   * object is not already present.
    *
    * @tparam T Type of the object to be inserted.
    * @param[in] object Object to be inserted.
@@ -270,13 +277,11 @@ public:
   void insert_const_object(const std::shared_ptr<const T> object);
 
   /**
-   * @brief Retrieves a pointer to an object from the container.
+   * @brief Retrieves a pointer to an object of type @p T that has the
+   * given unique @p id number.
    *
-   * Retrieves a pointer to an object of type @ref T that has the
-   * given unique @ref id number.
-   *
-   * In debug mode, it there no exists an object of type @ref T
-   * with the given unique @ref id, an exception is thrown.
+   * @warning In debug mode, it there no exists an object of type @p T
+   * with the given unique @p id, an exception is thrown.
    *
    * @tparam T Type of the object to be retrieved.
    * @param[in] id Unique Id of the queried object.
@@ -285,13 +290,11 @@ public:
   template <class T> std::shared_ptr<T> get_object(const Index &id) const;
 
   /**
-   * @brief Retrieves a pointer to a constant object from the container.
+   * @brief Retrieves a pointer to a constant object of type @p T that
+   * has the given unique @p id number.
    *
-   * Retrieves a pointer to a constant object of type @ref T that has the
-   * given unique @ref id number.
-   *
-   * In debug mode, it there no exists a const object of type @ref T
-   * with the given unique @ref id, an exception is thrown.
+   * @warning In debug mode, it there no exists a const object of type
+   * @p T with the given unique @p id, an exception is thrown.
    *
    * @tparam T Type of the object to be retrieved.
    * @param[in] id Unique Id of the queried object.
@@ -300,29 +303,23 @@ public:
   template <class T> std::shared_ptr<const T> get_const_object(const Index &id) const;
 
   /**
-   * @brief Checks if the a object of the type @ref T
-   * with the given unique @ref id is contained inside.
-   *
-   * Checks if the a object of the type @ref T
-   * with the given unique @ref id is contained inside.
+   * @brief Checks if the a object of the type @p T
+   * with the given unique @p id is contained inside.
    *
    * @tparam T Type of the objects to be checked.
    * @param[in] id Unique id to checked.
-   * @return @p true if there is an object with the given unique @ref id,
+   * @return @p true if there is an object with the given unique @p id,
    *         @p false elsewhere.
    */
   template <class T> bool is_object_present(const Index &id) const;
 
   /**
-   * @brief Checks if the a constant object of the type @ref T
-   * with the given unique @ref id is contained inside.
-   *
-   * Checks if the a constant object of the type @ref T
-   * with the given unique @ref id is contained inside.
+   * @brief Checks if the a constant object of the type @p T
+   * with the given unique @p id is contained inside.
    *
    * @tparam T Type of the objects to be checked.
    * @param[in] id Unique id to checked.
-   * @return @p true if there is an object with the given unique @ref id,
+   * @return @p true if there is an object with the given unique @p id,
    *         @p false elsewhere.
    */
   template <class T> bool is_const_object_present(const Index &id) const;
