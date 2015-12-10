@@ -24,9 +24,7 @@
 
 #include <igatools/base/objects_container.h>
 #include <igatools/utils/safe_stl_set.h>
-//#include <igatools/io/objects_container_parser-XML_schema.h>
 //
-//#include <igatools/io/xml_file_parser.h>
 #include <igatools/io/xml_element.h>
 
 #include <igatools/geometry/grid.h>
@@ -43,12 +41,9 @@
 using std::string;
 //using std::to_string;
 using std::shared_ptr;
-//using std::set;
 using std::remove_reference;
 using std::dynamic_pointer_cast;
 using std::const_pointer_cast;
-//using std::copy;
-//using std::inserter;
 
 IGA_NAMESPACE_OPEN
 
@@ -90,22 +85,13 @@ write_grids (const shared_ptr<ObjectsContainer> container,
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
 
-    const auto non_const_ids = container->template get_object_ids<Type>();
+    for (const auto &id : container->template get_object_ids<Type>())
+        Self_::write_grid<Type>(container->template get_object<Type>(id),
+                                xml_elem);
 
-    for (const auto &id : non_const_ids)
-    {
-        const auto grid = container->template get_object<Type>(id);
-        Self_::write_grid<Type>(grid, xml_elem);
-    }
-
-
-    // Adding non-const objects.
-    const auto const_ids = container->template get_const_object_ids<Type>();
-    for (const auto &id : const_ids)
-    {
-        const auto grid = container->template get_const_object<Type>(id);
-        Self_::write_grid<const Type>(grid, xml_elem);
-    }
+    for (const auto &id : container->template get_const_object_ids<Type>())
+        Self_::write_grid<const Type>(container->template get_const_object<Type>(id),
+                                      xml_elem);
   });
 }
 
@@ -123,21 +109,13 @@ write_spline_spaces (const shared_ptr<ObjectsContainer> container,
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
 
-    const auto non_const_ids = container->template get_object_ids<Type>();
+    for (const auto &id : container->template get_object_ids<Type>())
+        Self_::write_spline_space<Type>(container->template get_object<Type>(id),
+                                        xml_elem);
 
-    for (const auto &id : non_const_ids)
-    {
-        const auto sp_space = container->template get_object<Type>(id);
-        Self_::write_spline_space<Type>(sp_space, xml_elem);
-    }
-
-
-    const auto const_ids = container->template get_const_object_ids<Type>();
-    for (const auto &id : const_ids)
-    {
-        const auto sp_space = container->template get_const_object<Type>(id);
-        Self_::write_spline_space<const Type>(sp_space, xml_elem);
-    }
+    for (const auto &id : container->template get_const_object_ids<Type>())
+        Self_::write_spline_space<const Type>(container->template get_const_object<Type>(id),
+                                              xml_elem);
   });
 }
 
@@ -159,12 +137,10 @@ write_reference_space_bases (const shared_ptr<ObjectsContainer> container,
     static const int range = Type::range;
     static const int rank = Type::rank;
 
-    using BSplineType = BSpline<dim, range, rank>;
     using NURBSType = NURBS<dim, range, rank>;
+    using BSplineType = typename NURBSType::BSpBasis;
 
-    const auto non_const_ids = container->template get_object_ids<Type>();
-
-    for (const auto &id : non_const_ids)
+    for (const auto &id : container->template get_object_ids<Type>())
     {
         const auto ref_space = container->template get_object<Type>(id);
 
@@ -180,9 +156,7 @@ write_reference_space_bases (const shared_ptr<ObjectsContainer> container,
             Self_::write_bspline<NURBSType>(nr_space, xml_elem);
     }
 
-
-    const auto const_ids = container->template get_const_object_ids<Type>();
-    for (const auto &id : const_ids)
+    for (const auto &id : container->template get_const_object_ids<Type>())
     {
         const auto ref_space = container->template get_const_object<Type>(id);
 
@@ -222,9 +196,7 @@ write_grid_functions (const shared_ptr<ObjectsContainer> container,
     using ConstantGridFunc = grid_functions::ConstantGridFunction<dim, space_dim>;
     using IgGridFunc = IgGridFunction<dim, space_dim>;
 
-    const auto non_const_ids = container->template get_object_ids<Type>();
-
-    for (const auto &id : non_const_ids)
+    for (const auto &id : container->template get_object_ids<Type>())
     {
         const auto grid_func = container->template get_object<Type>(id);
 
@@ -247,9 +219,7 @@ write_grid_functions (const shared_ptr<ObjectsContainer> container,
             Self_::write_ig_grid_function<IgGridFunc>(ig_f, xml_elem);
     }
 
-
-    const auto const_ids = container->template get_const_object_ids<Type>();
-    for (const auto &id : const_ids)
+    for (const auto &id : container->template get_const_object_ids<Type>())
     {
         const auto grid_func = container->template get_const_object<Type>(id);
 
@@ -288,21 +258,13 @@ write_domains (const shared_ptr<ObjectsContainer> container,
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
 
-    const auto non_const_ids = container->template get_object_ids<Type>();
+    for (const auto &id : container->template get_object_ids<Type>())
+        Self_::write_domain<Type>(container->template get_object<Type>(id),
+                                  xml_elem);
 
-    for (const auto &id : non_const_ids)
-    {
-        const auto domain = container->template get_object<Type>(id);
-        Self_::write_domain<Type>(domain, xml_elem);
-    }
-
-
-    const auto const_ids = container->template get_const_object_ids<Type>();
-    for (const auto &id : const_ids)
-    {
-        const auto domain = container->template get_const_object<Type>(id);
-        Self_::write_domain<const Type>(domain, xml_elem);
-    }
+    for (const auto &id : container->template get_const_object_ids<Type>())
+        Self_::write_domain<const Type>(container->template get_const_object<Type>(id),
+                                        xml_elem);
   });
 }
 
@@ -320,21 +282,13 @@ write_physical_space_bases (const shared_ptr<ObjectsContainer> container,
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
 
-    const auto non_const_ids = container->template get_object_ids<Type>();
+    for (const auto &id : container->template get_object_ids<Type>())
+        Self_::write_phys_space_basis<Type>(container->template get_object<Type>(id),
+                                            xml_elem);
 
-    for (const auto &id : non_const_ids)
-    {
-        const auto ps_space = container->template get_object<Type>(id);
-        Self_::write_phys_space_basis<Type>(ps_space, xml_elem);
-    }
-
-
-    const auto const_ids = container->template get_const_object_ids<Type>();
-    for (const auto &id : const_ids)
-    {
-        const auto ps_space = container->template get_const_object<Type>(id);
-        Self_::write_phys_space_basis<const Type>(ps_space, xml_elem);
-    }
+    for (const auto &id : container->template get_const_object_ids<Type>())
+        Self_::write_phys_space_basis<const Type>(container->template get_const_object<Type>(id),
+                                                  xml_elem);
   });
 }
 
@@ -361,9 +315,7 @@ write_functions (const shared_ptr<ObjectsContainer> container,
     using ConstantFunc = functions::ConstantFunction<dim, codim, range, rank>;
     using IgFunc = IgFunction<dim, codim, range, rank>;
 
-    const auto non_const_ids = container->template get_object_ids<Type>();
-
-    for (const auto &id : non_const_ids)
+    for (const auto &id : container->template get_object_ids<Type>())
     {
         const auto func = container->template get_object<Type>(id);
 
@@ -382,9 +334,7 @@ write_functions (const shared_ptr<ObjectsContainer> container,
             Self_::write_ig_function<IgFunc>(ig_f, xml_elem);
     }
 
-
-    const auto const_ids = container->template get_const_object_ids<Type>();
-    for (const auto &id : const_ids)
+    for (const auto &id : container->template get_const_object_ids<Type>())
     {
         const auto func = container->template get_const_object<Type>(id);
 
