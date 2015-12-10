@@ -95,5 +95,5 @@ for tp in valid_types:
 f.write('\n')
 
 for tp in valid_types:
-    f.write('template void ObjectsContainer::insert_object<%s>(const std::shared_ptr<%s>);\n' % (tp, tp))
-    f.write('template void ObjectsContainer::insert_const_object<%s>(const std::shared_ptr<const %s>);\n' % (tp, tp))
+    f.write('template void ObjectsContainer::insert_object<%s>(const std::shared_ptr<%s>, const bool);\n' % (tp, tp))
+    f.write('template void ObjectsContainer::insert_const_object<%s>(const std::shared_ptr<const %s>, const bool);\n' % (tp, tp))

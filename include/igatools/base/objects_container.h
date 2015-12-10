@@ -210,7 +210,7 @@ private:
   using ObjectMapTypes_ = as_fusion_map<AllTypes_>::type;
 
 
-private:
+public:
 
   /** @name Constructors*/
   ///@{
@@ -223,12 +223,10 @@ private:
   /**  Move constructor. */
   ObjectsContainer(self_t &&container) = default;
 
-public:
   /** Destructor. */
   ~ObjectsContainer() = default;
   ///@}
 
-public:
   /**
    * @name Creators
    */
@@ -255,27 +253,29 @@ public:
    * @brief Insert a @ref shared_ptr pointing to an object of type @p T
    * into the container.
    *
-   * @warning In debug mode, before inserting it, it is checked that this
-   * object is not already present.
-   *
    * @tparam T Type of the object to be inserted.
    * @param[in] object Shared pointer of the object to be inserted.
+   * @param[in] check_present If true, before inserting the object it is
+   *            checked if it has been already inserted, throwing an
+   *            assert it that case.
    */
   template <class T>
-  void insert_object(const std::shared_ptr<T> object);
+  void insert_object(const std::shared_ptr<T> object,
+                     const bool check_present = false);
 
   /**
    * @brief Insert a @ref shared_ptr pointing to a constant object of
    * type @p T into the container.
    *
-   * @warning In debug mode, before inserting it, it is checked that this
-   * object is not already present.
-   *
    * @tparam T Type of the object to be inserted.
    * @param[in] object Object to be inserted.
+   * @param[in] check_present If true, before inserting the object it is
+   *            checked if it has been already inserted, throwing an
+   *            assert it that case.
    */
   template <class T>
-  void insert_const_object(const std::shared_ptr<const T> object);
+  void insert_const_object(const std::shared_ptr<const T> object,
+                           const bool check_present = false);
 
   /**
    * @brief Retrieves a pointer to an object of type @p T that has the
@@ -346,6 +346,12 @@ public:
    *         @p false elsewhere.
    */
   template <class T> bool is_const_object_present(const Index &id) const;
+
+  /**
+   * @brief Check all the dependencies of the already inserted objects
+   * and insert them too.
+   */
+  void fill_not_inserted_dependencies();
 
   /**
    * @brief Prints the objects contained inside.

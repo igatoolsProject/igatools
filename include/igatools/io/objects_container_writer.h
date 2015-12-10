@@ -228,9 +228,6 @@ private:
   static void write_linear_function (const std::shared_ptr<LinearFunc> linear_func,
                                      XMLElement &xml_elem);
 
-  static std::shared_ptr<ObjectsContainer>
-  build_full_container(const std::shared_ptr<ObjectsContainer> container);
-
 };
 
 IGA_NAMESPACE_CLOSE
