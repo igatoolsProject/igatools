@@ -170,6 +170,7 @@ const std::array<ValueFlags, MAX_NUM_DERIVATIVES> DerivativeFlags =
 {{ValueFlags::value, ValueFlags::gradient,  ValueFlags::hessian}};
 #endif
 
+#if 0
 enum class TransformationFlags : std::int64_t
 {
   /** transform nothing */
@@ -184,6 +185,7 @@ enum class TransformationFlags : std::int64_t
   /** transform the second derivatives of basis functions */
   tran_hessian  =    1L << 3
 };
+#endif
 
 /**
  * Type of transformation for values and derivatives of basis functions.
@@ -379,12 +381,11 @@ constexpr int constexpr_factorial(int a)
 /**
  * Const expression binomial coefficient
  */
-constexpr Real constexpr_binomial_coefficient(int a, int b)
+constexpr int constexpr_binomial_coefficient(int a, int b)
 {
-  return Real(constexpr_factorial(a)) /
-         Real(constexpr_factorial(b) * constexpr_factorial(a-b));
+  return constexpr_factorial(a) /
+         (constexpr_factorial(b) * constexpr_factorial(a-b));
 }
-
 
 
 /**
@@ -395,7 +396,6 @@ namespace IteratorState
 static const int pass_the_end = -1;
 static const int invalid = -2;
 }
-
 
 
 
@@ -621,7 +621,7 @@ using QuadVariants = SubElemPtrVariants<Quadrature,dim>;
 
 
 
-
+#if 0
 #ifdef SERIALIZATION
 
 /**
@@ -644,7 +644,7 @@ using QuadVariants = SubElemPtrVariants<Quadrature,dim>;
   } \
   }}
 #endif // SERIALIZATION
-
+#endif
 
 
 IGA_NAMESPACE_CLOSE
