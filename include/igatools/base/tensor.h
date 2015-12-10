@@ -103,12 +103,19 @@ public:
 
   /** @name Constructors */
   ///@{
-  /** Default constructor */
-  Tdouble(const Real val = 0.);
+  /**
+   * Default constructor. Sets the internal value to 0.0;
+   */
+  Tdouble();
+
+  /**
+   * Default constructor. Sets the internal value to @p val.
+   */
+  Tdouble(const Real val);
 
   /**
    * Advance constructor to optimization when zero
-   * init is not necessary
+   * initialization is not necessary.
    */
   Tdouble(const bool non_init);
 
@@ -213,6 +220,7 @@ public:
 private:
   value_t val_;
 
+#if 0
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
@@ -229,7 +237,7 @@ private:
   };
   ///@}
 #endif // SERIALIZATION
-
+#endif
 };
 
 
@@ -436,8 +444,7 @@ public:
   /**
    * Default constructor. Sets all entries to 0.
    */
-  Tensor()
-  {};
+  Tensor() = default;
 
   /** Copy constructor */
   Tensor(const Tensor<dim_, rank_, tensor_type, value_type> &tensor) = default;
@@ -597,6 +604,7 @@ private :
 
   SubTensor<self_t> tensor_[num_sub_tensor];
 
+#if 0
   /**
    * @name Functions needed for boost::serialization
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -615,7 +623,7 @@ private :
     }
   };
   ///@}
-
+#endif
 };
 
 
@@ -1181,7 +1189,7 @@ EnableIf<(codim==1),SubTensor<Derivatives<dim, dim+codim, 1, 1> > >
 cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
 {
   SubTensor<Derivatives<dim, dim+codim, 1, 1>> res;
-  const SubTensor<Derivatives<dim, dim+1, 1, 1>> zero;
+  const auto zero = SubTensor<Derivatives<dim, dim+1, 1, 1>>();
   Derivatives<dim+1, dim+1, 1, 1> A;
   for (int i = 0; i < dim; ++i)
     A[i] = DF[i];

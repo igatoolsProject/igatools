@@ -29,13 +29,37 @@ template <int dim>
 class ElementIndex
 {
 public:
-#ifdef SERIALIZATION
-  ElementIndex() = default;
-#else
-  ElementIndex() = delete;
-#endif
+  /**
+   * Default constructor. Sets the element index to 0.
+   */
+  ElementIndex();
 
   ElementIndex(const int flat_id, const TensorIndex<dim> &tensor_id);
+
+  /**
+   * Copy constructor.
+   */
+  ElementIndex(const ElementIndex<dim> &elem_id) = default;
+
+  /**
+   * Move constructor.
+   */
+  ElementIndex(ElementIndex<dim> &&elem_id) = default;
+
+  /**
+   * Destructor.
+   */
+  ~ElementIndex() = default;
+
+  /**
+   * Copy assignment operator.
+   */
+  ElementIndex<dim> &operator=(const ElementIndex<dim> &elem_id) = delete;
+
+  /**
+   * Move assignment operator.
+   */
+  ElementIndex<dim> &operator=(ElementIndex<dim> &&elem_id) = default;
 
 
   const TensorIndex<dim> &

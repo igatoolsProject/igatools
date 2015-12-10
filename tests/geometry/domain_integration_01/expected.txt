@@ -1,6 +1,24 @@
 ========================================================================
 intregrate_on_sphere
 ========================================================================
+integrate_on_sphere<dim=1>(n_elems_1D=1)
+   Area: contribution from the elements
+      Key:
+         Flat ID: 0    Tensor ID: [0]
+      
+      Value:
+      [ 1.57080 ] 
+   
+   Area:
+      Exact      = 3.14159
+      Quadrature = [ 1.57080 ] 
+   
+
+========================================================================
+
+========================================================================
+intregrate_on_sphere
+========================================================================
 integrate_on_sphere<dim=2>(n_elems_1D=1)
    Area: contribution from the elements
       Key:
@@ -12,6 +30,29 @@ integrate_on_sphere<dim=2>(n_elems_1D=1)
    Area:
       Exact      = 1.57080
       Quadrature = [ 1.56840 ] 
+   
+
+========================================================================
+
+========================================================================
+intregrate_on_sphere
+========================================================================
+integrate_on_sphere<dim=1>(n_elems_1D=2)
+   Area: contribution from the elements
+      Key:
+         Flat ID: 0    Tensor ID: [0]
+      
+      Value:
+      [ 0.785398 ] 
+      Key:
+         Flat ID: 1    Tensor ID: [1]
+      
+      Value:
+      [ 0.785398 ] 
+   
+   Area:
+      Exact      = 3.14159
+      Quadrature = [ 1.57080 ] 
    
 
 ========================================================================
@@ -45,6 +86,34 @@ integrate_on_sphere<dim=2>(n_elems_1D=2)
    Area:
       Exact      = 1.57080
       Quadrature = [ 1.57066 ] 
+   
+
+========================================================================
+
+========================================================================
+intregrate_on_sphere
+========================================================================
+integrate_on_sphere<dim=1>(n_elems_1D=3)
+   Area: contribution from the elements
+      Key:
+         Flat ID: 0    Tensor ID: [0]
+      
+      Value:
+      [ 0.523599 ] 
+      Key:
+         Flat ID: 1    Tensor ID: [1]
+      
+      Value:
+      [ 0.523599 ] 
+      Key:
+         Flat ID: 2    Tensor ID: [2]
+      
+      Value:
+      [ 0.523599 ] 
+   
+   Area:
+      Exact      = 3.14159
+      Quadrature = [ 1.57080 ] 
    
 
 ========================================================================
@@ -103,6 +172,39 @@ integrate_on_sphere<dim=2>(n_elems_1D=3)
    Area:
       Exact      = 1.57080
       Quadrature = [ 1.57077 ] 
+   
+
+========================================================================
+
+========================================================================
+intregrate_on_sphere
+========================================================================
+integrate_on_sphere<dim=1>(n_elems_1D=4)
+   Area: contribution from the elements
+      Key:
+         Flat ID: 0    Tensor ID: [0]
+      
+      Value:
+      [ 0.392699 ] 
+      Key:
+         Flat ID: 1    Tensor ID: [1]
+      
+      Value:
+      [ 0.392699 ] 
+      Key:
+         Flat ID: 2    Tensor ID: [2]
+      
+      Value:
+      [ 0.392699 ] 
+      Key:
+         Flat ID: 3    Tensor ID: [3]
+      
+      Value:
+      [ 0.392699 ] 
+   
+   Area:
+      Exact      = 3.14159
+      Quadrature = [ 1.57080 ] 
    
 
 ========================================================================

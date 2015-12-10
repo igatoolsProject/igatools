@@ -98,7 +98,7 @@ int main()
 
   for (int n_knots = 2 ; n_knots <= 5 ; ++n_knots)
   {
-//  intregrate_on_sphere<1>(n_knots);
+    intregrate_on_sphere<1>(n_knots);
     intregrate_on_sphere<2>(n_knots);
   }
 
