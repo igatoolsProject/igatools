@@ -114,6 +114,32 @@ get_const_object(const Index &id) const -> shared_ptr<const T>
 
 
 template <class T>
+SafeSTLSet<Index>
+ObjectsContainer::
+get_object_ids() const
+{
+  SafeSTLSet<Index> ids;
+  for (const auto &obj : at_key<T>(objects_))
+      ids.insert(obj->get_object_id());
+  return ids;
+};
+
+
+
+template <class T>
+SafeSTLSet<Index>
+ObjectsContainer::
+get_const_object_ids() const
+{
+  SafeSTLSet<Index> ids;
+  for (const auto &obj : at_key<const T>(objects_))
+      ids.insert(obj->get_object_id());
+  return ids;
+};
+
+
+
+template <class T>
 bool
 ObjectsContainer::
 is_object_present(const Index &id) const

@@ -38,6 +38,7 @@
 IGA_NAMESPACE_OPEN
 
 class LogStream;
+template <class T> class SafeSTLSet;
 
 /**
  * @brief Container class for high-level igatools objects.
@@ -301,6 +302,28 @@ public:
    * @return Object retrieved.
    */
   template <class T> std::shared_ptr<const T> get_const_object(const Index &id) const;
+
+  /**
+   * @brief Retrieves a @ref SafeSTLSet with the ids of all the non
+   * constant objects contained of type @p T.
+   *
+   * If there is no object of the given type, it returns a void set.
+   *
+   * @tparam T Type of the object to be retrieved.
+   * @return Set of object ids of the given type.
+   */
+  template <class T> SafeSTLSet<Index> get_object_ids() const;
+
+  /**
+   * @brief Retrieves a @ref SafeSTLSet with the ids of all the constant
+   * objects contained of type @p T.
+   *
+   * If there is no object of the given type, it returns a void set.
+   *
+   * @tparam T Type of the object to be retrieved.
+   * @return Set of object ids of the given type.
+   */
+  template <class T> SafeSTLSet<Index> get_const_object_ids() const;
 
   /**
    * @brief Checks if the a object of the type @p T
