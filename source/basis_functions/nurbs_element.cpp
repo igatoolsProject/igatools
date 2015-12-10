@@ -31,16 +31,13 @@ IGA_NAMESPACE_OPEN
 template <int dim, int range, int rank>
 NURBSElement<dim, range, rank>::
 NURBSElement(const std::shared_ptr<ContainerType> space,
-             const ListIt &index,
-             const PropId &prop)
+             std::unique_ptr<BSpElem> &&bspline_elem,
+             std::unique_ptr<WeightElem> &&weight_elem)
   :
-  parent_t(space,index,prop),
-  bspline_elem_(space->get_bspline_basis(),index,prop),
-  weight_elem_(space->weight_func_->create_element(index,prop))
-{
-//    weight_elem_ =
-//        std::shared_ptr<WeightElem>(new WeightElem(space->weight_func_,index));
-}
+  parent_t(space),
+  bspline_elem_(std::move(bspline_elem)),
+  weight_elem_(std::move(weight_elem))
+{}
 
 
 
@@ -91,7 +88,7 @@ void
 NURBSElement<dim, range, rank>::
 operator++()
 {
-  ++bspline_elem_;
+  ++(*bspline_elem_);
   ++(*weight_elem_);
 }
 
@@ -100,7 +97,7 @@ void
 NURBSElement<dim, range, rank>::
 move_to(const IndexType &elem_id)
 {
-  bspline_elem_.move_to(elem_id);
+  bspline_elem_->move_to(elem_id);
   weight_elem_->move_to(elem_id);
 }
 
@@ -110,7 +107,7 @@ auto
 NURBSElement<dim, range, rank>::
 get_grid_element() -> GridElem &
 {
-  return bspline_elem_.get_grid_element();
+  return bspline_elem_->get_grid_element();
 }
 
 template <int dim, int range, int rank>
@@ -118,7 +115,7 @@ auto
 NURBSElement<dim, range, rank>::
 get_grid_element() const -> const GridElem &
 {
-  return bspline_elem_.get_grid_element();
+  return bspline_elem_->get_grid_element();
 }
 
 

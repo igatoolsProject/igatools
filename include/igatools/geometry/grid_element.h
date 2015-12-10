@@ -31,50 +31,6 @@
 
 IGA_NAMESPACE_OPEN
 
-/**
- * @brief This is the base class for all kind of elements.
- *
- * It a pure virtual class and contains the interfaces for the functions
- * that the derived classes must implement
- * (basically the advance/increment operator <tt>++</tt>).
- * Moreover it contains the element-property identifier and the associated getter.
- *
- * @ingroup elements
- *
- * @author martinelli, 2105
- *
- */
-class Element
-{
-public:
-
-  Element(const PropId &property);
-
-  virtual ~Element() = default;
-
-  virtual void operator++() = 0;
-
-
-  /**
-   * @name Functions for managing/querying the element properties.
-   */
-  ///@{
-  /**
-   * Tests if a certain element @p property is TRUE.
-   */
-  bool has_property(const PropId &property) const;
-
-  /**
-   * Returns the property of the element.
-   */
-  const PropId &get_property() const;
-  ///@}
-
-private:
-
-  PropId property_;
-
-};
 
 
 /**
@@ -95,7 +51,7 @@ private:
  *
  */
 template <int dim>
-class GridElement : public Element
+class GridElement
 {
 private:
   using self_t = GridElement<dim>;
@@ -169,7 +125,7 @@ public:
    * @note They should be called only by the GridIterator.
    */
   ///@{
-  void operator++() override;
+  virtual void operator++();
 
   /**
    * Move the element to the one specified by <tt>elem_id</tt>.
@@ -212,7 +168,7 @@ public:
 
   const IndexType &get_index() const;
 
-  const typename List::iterator &get_index_iterator() const
+  const ListIt &get_index_iterator() const
   {
     return index_it_;
   }
@@ -322,6 +278,22 @@ public:
   ///@}
 
 
+  /**
+   * @name Functions for managing/querying the element properties.
+   */
+  ///@{
+  /**
+   * Tests if a certain element @p property is TRUE.
+   */
+  bool has_property(const PropId &property) const;
+
+  /**
+   * Returns the property of the element.
+   */
+  const PropId &get_property() const;
+  ///@}
+
+
 private:
   template <class Accessor> friend class GridIteratorBase;
   friend class GridHandler<dim>;
@@ -334,7 +306,9 @@ protected:
 private:
 
   /** Index in the property list of the current element */
-  typename List::iterator index_it_;
+  ListIt index_it_;
+
+  PropId property_;
 
   /**
    * @name Types and data needed for the definition/use of the cache.

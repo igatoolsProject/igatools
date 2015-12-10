@@ -20,6 +20,7 @@
 
 #include <igatools/geometry/grid_function.h>
 #include <igatools/geometry/grid_function_element.h>
+#include <igatools/utils/unique_id_generator.h>
 
 using std::shared_ptr;
 
@@ -27,15 +28,21 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int space_dim_>
 GridFunction<dim_, space_dim_>::
+GridFunction()
+  :
+  object_id_(UniqueIdGenerator::get_unique_id())
+{}
+
+
+template<int dim_, int space_dim_>
+GridFunction<dim_, space_dim_>::
 GridFunction(const SharedPtrConstnessHandler<GridType> &grid)
   :
-  grid_(grid)
+  grid_(grid),
+  object_id_(UniqueIdGenerator::get_unique_id())
 {
 //  Assert(grid_ != nullptr, ExcNullPtr());
 }
-
-
-
 
 
 
@@ -48,18 +55,46 @@ get_grid() const -> std::shared_ptr<const GridType>
 }
 
 
+
+
 template<int dim_, int space_dim_>
-auto
+Index
 GridFunction<dim_, space_dim_>::
-create_element(const ListIt &index, const PropId &prop) const
--> std::unique_ptr<ElementAccessor>
+get_object_id() const
 {
-  using Elem = ElementAccessor;
-  return std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
+  return object_id_;
 }
 
 
 
+
+
+template<int dim_, int space_dim_>
+auto
+GridFunction<dim_, space_dim_>::
+create_element_begin(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+
+//  const auto elem_it = grid_->get_elements_with_property(prop).cbegin();
+  return std::unique_ptr<Elem>(new
+  Elem(this->shared_from_this(),grid_->create_element_begin(prop)));
+}
+
+
+template<int dim_, int space_dim_>
+auto
+GridFunction<dim_, space_dim_>::
+create_element_end(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+
+//  const auto elem_it = grid_->get_elements_with_property(prop).cend();
+  return std::unique_ptr<Elem>(new
+  Elem(this->shared_from_this(),grid_->create_element_end(prop)));
+}
 
 
 
@@ -89,9 +124,8 @@ auto
 GridFunction<dim_, space_dim_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-                         grid_->get_elements_with_property(prop).begin(),
-                         prop);
+  return ElementIterator(
+           this->create_element_begin(prop));
 }
 
 
@@ -101,9 +135,8 @@ auto
 GridFunction<dim_, space_dim_>::
 cend(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-                         grid_->get_elements_with_property(prop).end(),
-                         prop);
+  return ElementIterator(
+           this->create_element_end(prop));
 }
 
 

@@ -30,13 +30,13 @@
 
 
 template <int dim>
-std::shared_ptr<const GridFunction<dim,dim+1> >
-create_sphere_function()
+std::shared_ptr<const Domain<dim,1> >
+create_sphere_domain()
 {
   auto grid = Grid<dim>::const_create();
 
   using Sph = grid_functions::SphereGridFunction<dim>;
-  return Sph::const_create(grid);
+  return Domain<dim,1>::const_create(Sph::const_create(grid));
 }
 
 int main()
@@ -44,11 +44,11 @@ int main()
   out.depth_console(10);
 
   out.begin_item("SphereGridFunction<1>");
-  domain_values<1,2>(create_sphere_function<1>(),QUniform<1>::create(3));
+  domain_values<1,1>(*create_sphere_domain<1>(),QUniform<1>::create(3));
   out.end_item();
 
   out.begin_item("SphereGridFunction<2>");
-  domain_values<2,3>(create_sphere_function<2>(),QUniform<2>::create(3));
+  domain_values<2,1>(*create_sphere_domain<2>(),QUniform<2>::create(3));
   out.end_item();
 
   return 0;

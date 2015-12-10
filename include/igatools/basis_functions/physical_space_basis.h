@@ -136,14 +136,19 @@ public:
                const std::shared_ptr<const PhysDomain> &phys_domain,
                const Transformation &transformation_type = Transformation::h_grad);
 
+#if 0
   /**
    * Create an element (defined on this grid) with a given index.
    */
   std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
   create_element(const ListIt &index, const PropId &property) const override final;
+#endif
 
+  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  create_element_begin(const PropId &property) const override final;
 
-
+  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  create_element_end(const PropId &property) const override final;
 
 
   template <int k>

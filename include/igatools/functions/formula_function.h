@@ -71,6 +71,8 @@ public:
 
 
 
+  virtual void print_info(LogStream &out) const override = 0;
+
 #if 0
   struct FillCacheDispatcher : boost::static_visitor<void>
   {

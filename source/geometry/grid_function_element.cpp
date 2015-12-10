@@ -25,11 +25,10 @@ IGA_NAMESPACE_OPEN
 template<int dim_,int space_dim_>
 GridFunctionElement<dim_,space_dim_>::
 GridFunctionElement(const std::shared_ptr<ContainerType> &grid_function,
-                    const ListIt &index,
-                    const PropId &prop)
+                    std::unique_ptr<GridElem> &&grid_elem)
   :
   grid_function_(grid_function),
-  grid_elem_(grid_function_->get_grid()->create_element(index,prop))
+  grid_elem_(std::move(grid_elem))
 {}
 
 

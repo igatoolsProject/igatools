@@ -161,18 +161,55 @@ create_cache_handler() const
 }
 
 
-
+#if 0
 template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
 create_element(const ListIt &index, const PropId &prop) const
 -> std::unique_ptr<ElementAccessor>
 {
-  using Elem = ElementAccessor;
-  return std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
+  std::unique_ptr<ElementAccessor> elem;
+
+  const auto &elements_with_property =
+  this->get_grid_function()->get_grid()->get_elements_with_property(prop);
+
+  if (&(*index) != &(*elements_with_property.end()))
+  {
+    elem = this->create_element_begin(prop);
+    elem->move_to(*index);
+  }
+  else
+  {
+    elem = this->create_element_end(prop);
+  }
+
+  return std::move(elem);
+}
+#endif
+
+template<int dim_, int codim_>
+auto
+Domain<dim_, codim_>::
+create_element_begin(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = DomainElement<dim_,codim_>;
+  return std::make_unique<Elem>(
+    this->shared_from_this(),
+    grid_func_->create_element_begin(prop));
 }
 
-
+template<int dim_, int codim_>
+auto
+Domain<dim_, codim_>::
+create_element_end(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = DomainElement<dim_,codim_>;
+  return std::make_unique<Elem>(
+    this->shared_from_this(),
+    grid_func_->create_element_end(prop));
+}
 
 template<int dim_, int codim_>
 auto
@@ -199,9 +236,7 @@ auto
 Domain<dim_, codim_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-                         grid_func_->get_elements_with_property(prop).begin(),
-                         prop);
+  return ElementIterator(this->create_element_begin(prop));
 }
 
 
@@ -211,9 +246,7 @@ auto
 Domain<dim_, codim_>::
 cend(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-                         grid_func_->get_elements_with_property(prop).end(),
-                         prop);
+  return ElementIterator(this->create_element_end(prop));
 }
 
 

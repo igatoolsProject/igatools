@@ -35,41 +35,53 @@ SubGridFunction(const SharedPtrConstnessHandler<SupFunc> &sup_func,
   :
   base_t(grid),
   sup_func_(sup_func),
-  s_id_(s_id),
-  elems_property_("boundary"),
-  sub_grid_elem_map_(sub_grid_elem_map)
+  s_id_(s_id)//,
+//  elems_property_("boundary"),
+//  sub_grid_elem_map_(sub_grid_elem_map)
 {
 //    LogStream out;
-  for (const auto &elems_id : sub_grid_elem_map_)
+  for (const auto &elems_id : sub_grid_elem_map)
   {
-    id_elems_sub_grid_.insert(elems_id.first);
-    id_elems_sup_grid_.insert(elems_id.second);
+    id_elems_sub_grid_.emplace_back(elems_id.first);
+    id_elems_sup_grid_.emplace_back(elems_id.second);
 //      out << "Sub elem ID: " << elems_id.first << "    Sup elem ID: " << elems_id.second << std::endl;
   }
 }
 
 
 template<int sdim,int dim,int space_dim>
+auto
+SubGridFunction<sdim,dim,space_dim>::
+create_element_begin(const PropId &prop) const
+-> std::unique_ptr<GridFunctionElement<sdim,space_dim>>
+{
+  using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
+  return std::unique_ptr<Elem>(new Elem(
+    std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+    std::move(this->get_grid()->create_element_begin(prop)),
+    std::move(sup_func_->create_element_begin(prop))));
+}
+
+template<int sdim,int dim,int space_dim>
+auto
+SubGridFunction<sdim,dim,space_dim>::
+create_element_end(const PropId &prop) const
+-> std::unique_ptr<GridFunctionElement<sdim,space_dim>>
+{
+  using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
+  return std::unique_ptr<Elem>(new Elem(
+    std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+    std::move(this->get_grid()->create_element_end(prop)),
+    std::move(sup_func_->create_element_end(prop))));
+}
+
+template<int sdim,int dim,int space_dim>
 GridIterator<GridFunctionElement<sdim,space_dim> >
 SubGridFunction<sdim,dim,space_dim>::
 cbegin(const PropId &prop) const
 {
-//    LogStream out;
-//    out << "cbegin" <<std::endl;
-
-  auto elem = std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
-              (
-                std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
-                id_elems_sub_grid_.begin(),
-                prop);
-
-//    elem->print_info(out);
-
-
-  //TODO: (martinelli, Nov 16,2015): the iterator is not using the property!
-  return GridIterator<GridFunctionElement<sdim,space_dim>>(
-           std::move(elem)
-         );
+  using ElemIt = GridIterator<GridFunctionElement<sdim,space_dim> >;
+  return ElemIt(this->create_element_begin(prop));
 }
 
 template<int sdim,int dim,int space_dim>
@@ -77,14 +89,8 @@ GridIterator<GridFunctionElement<sdim,space_dim> >
 SubGridFunction<sdim,dim,space_dim>::
 cend(const PropId &prop) const
 {
-  //TODO: (martinelli, Nov 16,2015): the iterator is not using the property!
-  return GridIterator<GridFunctionElement<sdim,space_dim>>(
-           std::move(std::make_unique<SubGridFunctionElement<sdim,dim,space_dim>>
-                     (
-                       std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
-                       id_elems_sub_grid_.end(),
-                       prop))
-         );
+  using ElemIt = GridIterator<GridFunctionElement<sdim,space_dim> >;
+  return ElemIt(this->create_element_end(prop));
 }
 
 
@@ -129,17 +135,23 @@ create_cache_handler() const
                       ));
 }
 
+#if 0
 template<int sdim,int dim,int space_dim>
 std::unique_ptr<GridFunctionElement<sdim,space_dim> >
 SubGridFunction<sdim,dim,space_dim>::
 create_element(const ListIt &index, const PropId &prop) const
 {
+#if 0
   using Elem = SubGridFunctionElement<sdim,dim,space_dim>;
   return std::unique_ptr<Elem>(
            new Elem(std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
                     index, prop));
-}
+#endif
 
+  Assert(false,ExcNotImplemented());
+  return nullptr;
+}
+#endif
 
 #ifdef MESH_REFINEMENT
 template<int sdim,int dim,int space_dim>
@@ -167,7 +179,11 @@ print_info(LogStream &out) const
 
 
   out << "Sub-element topology ID: " << s_id_ << std::endl;
-
+  /*
+    out.begin_item("Sub-Grid Element Map:");
+    sub_grid_elem_map_.print_info(out);
+    out.end_item();
+  //*/
   out.begin_item("Sub elements ID:");
   id_elems_sub_grid_.print_info(out);
   out.end_item();
@@ -190,7 +206,7 @@ get_sup_grid_function() const -> std::shared_ptr<const SupFunc>
 
 
 template<int sdim,int dim,int space_dim>
-const SafeSTLSet<typename Grid<sdim>::IndexType> &
+const SafeSTLVector<typename Grid<sdim>::IndexType> &
 SubGridFunction<sdim,dim,space_dim>::
 get_id_elems_sub_grid() const
 {
@@ -198,7 +214,7 @@ get_id_elems_sub_grid() const
 }
 
 template<int sdim,int dim,int space_dim>
-const SafeSTLSet<typename Grid<dim>::IndexType> &
+const SafeSTLVector<typename Grid<dim>::IndexType> &
 SubGridFunction<sdim,dim,space_dim>::
 get_id_elems_sup_grid() const
 {
@@ -210,9 +226,18 @@ const typename Grid<dim>::IndexType &
 SubGridFunction<sdim,dim,space_dim>::
 get_sup_element_id(const typename Grid<sdim>::IndexType &sub_elem_id) const
 {
-  return sub_grid_elem_map_.at(sub_elem_id);
+  const auto begin = id_elems_sub_grid_.cbegin();
+  const auto end   = id_elems_sub_grid_.cend();
+
+  const auto it = std::find(begin,end,sub_elem_id);
+  Assert(it != end,ExcMessage("Index not found."));
+
+  return id_elems_sup_grid_[it-begin];
+
+//  return sub_grid_elem_map_.at(sub_elem_id);
 }
 
+/*
 template<int sdim,int dim,int space_dim>
 auto
 SubGridFunction<sdim,dim,space_dim>::
@@ -220,15 +245,7 @@ get_sub_grid_elem_map() const -> const SubGridMap &
 {
   return sub_grid_elem_map_;
 }
-
-template<int sdim,int dim,int space_dim>
-const SafeSTLSet<typename Grid<sdim>::IndexType> &
-SubGridFunction<sdim,dim,space_dim>::
-get_elements_with_property(const PropId &elems_property) const
-{
-  //TODO: (martinelli, Nov 16,2015): the property is not used!
-  return id_elems_sub_grid_;
-}
+//*/
 
 IGA_NAMESPACE_CLOSE
 

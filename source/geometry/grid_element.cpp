@@ -21,30 +21,13 @@
 
 #include <igatools/geometry/grid_element.h>
 #include <igatools/geometry/unit_element.h>
+#include <igatools/utils/multi_array_utils.h>
 #include <algorithm>
 
 IGA_NAMESPACE_OPEN
 
-Element::
-Element(const PropId &property)
-  :
-  property_(property)
-{}
 
 
-bool
-Element::
-has_property(const PropId &prop) const
-{
-  return prop == property_;
-}
-
-const PropId &
-Element::
-get_property() const
-{
-  return property_;
-}
 
 
 
@@ -54,13 +37,28 @@ GridElement(const std::shared_ptr<const Grid<dim>> &grid,
             const ListIt &index,
             const PropId &prop)
   :
-  Element(prop),
   grid_(grid),
-  index_it_(index)
+  index_it_(index),
+  property_(prop)
 {}
 
 
 
+template <int dim>
+bool
+GridElement<dim>::
+has_property(const PropId &prop) const
+{
+  return prop == property_;
+}
+
+template <int dim>
+const PropId &
+GridElement<dim>::
+get_property() const
+{
+  return property_;
+}
 
 
 template <int dim>
@@ -101,11 +99,10 @@ void
 GridElement<dim>::
 move_to(const IndexType &elem_id)
 {
-  const auto &property = this->get_property();
-  Assert(grid_->element_has_property(elem_id, property),
-         ExcMessage("The destination element has not the property \"" + property + "\""));
+  Assert(grid_->element_has_property(elem_id, property_),
+         ExcMessage("The destination element has not the property \"" + property_ + "\""));
 
-  const auto &list = grid_->elem_properties_[property];
+  const auto &list = grid_->elem_properties_[property_];
   index_it_ = std::find(list.begin(),list.end(),elem_id);
 }
 
@@ -152,8 +149,9 @@ vertex(const int i) const -> Point
   Assert(i < UnitElement<dim>::sub_elements_size[0],
          ExcIndexRange(i,0, UnitElement<dim>::sub_elements_size[0]));
 
-  TensorIndex<dim> index = get_index().get_tensor_index();
 
+  /*
+  TensorIndex<dim> index = get_index().get_tensor_index();
   auto all_elems = UnitElement<dim>::all_elems;
   const auto &vertex_id = std::get<0>(all_elems)[i];
 
@@ -163,10 +161,37 @@ vertex(const int i) const -> Point
     index[j] += vertex_id.constant_values[j];
     vertex[j] = grid_->get_knot_coordinates(j)[index[j]];
   }
+  //*/
+
+  const TensorIndex<dim> &vertex_id_origin = get_index().get_tensor_index();
+
+  TensorSize<dim> n_vertices_elem(2);
+  const auto w = MultiArrayUtils<dim>::compute_weight(n_vertices_elem);
+  const auto vertex_id = MultiArrayUtils<dim>::flat_to_tensor_index(i,w);
+
+  const auto n_knots_dir = grid_->get_num_knots_dim();
+  Point vertex;
+  for (int j = 0 ; j < dim ; ++j)
+  {
+    const auto v_id = vertex_id[j] + vertex_id_origin[j];
+//    Assert(v_id >= 0 && v_id < n_knots_dir[j],
+//        ExcIndexRange(v_id,0,n_knots_dir[j]));
+    vertex[j] = grid_->get_knot_coordinates(j)[v_id];
+  }
 
   return vertex;
 }
 
+template <>
+auto
+GridElement<0>::
+vertex(const int i) const -> Point
+{
+  Assert(i < UnitElement<0>::sub_elements_size[0],
+         ExcIndexRange(i,0, UnitElement<0>::sub_elements_size[0]));
+  Point vertex;
+  return vertex;
+}
 
 
 template <int dim>
@@ -254,12 +279,15 @@ auto
 GridElement<dim>::
 get_side_lengths(const int s_id) const -> const Points<sdim>
 {
+  static_assert(dim > 0,"The dimension must be greater than zero.");
+  static_assert(sdim >= 0,"The sub-dimension cannot be negative.");
+  static_assert(sdim <= dim,"The sub-dimension cannot be greater than the dimension.");
   Points<sdim> lengths;
 
   auto &s_elem = UnitElement<dim>::template get_elem<sdim>(s_id);
 
   const auto &elem_tid = this->get_index().get_tensor_index();
-  int i=0;
+  int i = 0;
   for (const int active_dir : s_elem.active_directions)
   {
     const auto &knots_active_dir = grid_->get_knot_coordinates(active_dir);
@@ -267,6 +295,19 @@ get_side_lengths(const int s_id) const -> const Points<sdim>
     lengths[i] = knots_active_dir[j+1] - knots_active_dir[j];
     ++i;
   }
+
+  return lengths;
+}
+
+
+template <>
+template <int sdim>
+auto
+GridElement<0>::
+get_side_lengths(const int s_id) const -> const Points<sdim>
+{
+  static_assert(sdim == 0,"The sub-dimension must be zero.");
+  Points<sdim> lengths;
 
   return lengths;
 }
@@ -303,7 +344,7 @@ GridElement<dim>::
 print_info(LogStream &out) const
 {
   out.begin_item("Property: ");
-  out << this->get_property() << std::endl;
+  out << property_ << std::endl;
   out.end_item();
   out.begin_item("Index:");
   index_it_->print_info(out);

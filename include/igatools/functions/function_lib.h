@@ -63,6 +63,8 @@ public:
 
   virtual ~ConstantFunction() = default;
 
+  virtual void print_info(LogStream &out) const override final;
+
 protected:
   ConstantFunction(const SharedPtrConstnessHandler<DomainType> &domain,
                    const Value &b,
@@ -120,6 +122,8 @@ public:
   LinearFunction(const self_t &) = default;
 
   virtual ~LinearFunction() = default;
+
+  virtual void print_info(LogStream &out) const override final;
 
 
 protected:
@@ -184,6 +188,11 @@ public:
   BallFunction(const self_t &) = default;
   virtual ~BallFunction() = default;
 
+  virtual void print_info(LogStream &out) const override final
+  {
+    AssertThrow(false, ExcNotImplemented());
+  };
+
 protected:
   BallFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
@@ -247,6 +256,11 @@ public:
 
   SphereFunction(const self_t &) = default;
   virtual ~SphereFunction() = default;
+
+  virtual void print_info(LogStream &out) const override final
+  {
+    AssertThrow(false, ExcNotImplemented());
+  };
 
 protected:
   SphereFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
@@ -340,6 +354,11 @@ protected:
                      const Real h1,
                      const Real theta0,
                      const Real theta1);
+
+  virtual void print_info(LogStream &out) const override final
+  {
+    AssertThrow(false, ExcNotImplemented());
+  };
 
 private:
   template<int order>

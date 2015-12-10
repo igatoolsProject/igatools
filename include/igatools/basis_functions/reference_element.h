@@ -75,9 +75,7 @@ public:
    * Constructs an accessor to element number index of a
    * ReferenceSpaceBasis basis.
    */
-  ReferenceElement(const std::shared_ptr<ConstBasis> &basis,
-                   const ListIt &index,
-                   const PropId &prop = ElementProperties::active);
+  ReferenceElement(const std::shared_ptr<ConstBasis> &basis);
 
 
   virtual ~ReferenceElement() = default;

@@ -719,7 +719,7 @@ project_boundary_values(
   const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
   std::map<Index, Real>  &boundary_values)
 {
-  static_assert(dim > 1,"The dimension must be > 1");
+  static_assert(dim >= 1,"The dimension must be > 0");
 
 
   const int sdim = dim - 1;

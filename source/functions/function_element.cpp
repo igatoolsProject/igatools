@@ -30,11 +30,10 @@ IGA_NAMESPACE_OPEN
 template<int dim,int codim,int range,int rank>
 FunctionElement<dim,codim,range,rank>::
 FunctionElement(const std::shared_ptr<ContainerType> &func,
-                const ListIt &index,
-                const PropId &prop)
+                std::unique_ptr<DomainElem> &&domain_elem)
   :
   func_(func),
-  domain_elem_(func->get_domain()->create_element(index,prop))
+  domain_elem_(std::move(domain_elem))
 {}
 
 

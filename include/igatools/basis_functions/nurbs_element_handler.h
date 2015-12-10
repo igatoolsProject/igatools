@@ -198,7 +198,7 @@ private:
 //      using NURBSElem = NURBSElement<dim_,range_,rank_>;
 //      auto &nrb_elem = dynamic_cast<NURBSElem &>(elem_);
 
-      auto &bsp_elem = nrb_elem_.bspline_elem_;
+      auto &bsp_elem = *nrb_elem_.bspline_elem_;
       nrb_handler_.bsp_elem_handler_->template init_cache<sdim>(bsp_elem,quad);
 
       auto &w_func_elem = *(nrb_elem_.weight_elem_);
@@ -240,7 +240,7 @@ private:
 //      static_assert(sdim == dim,"The case with sdim != dim is not implemented!");
       Assert(sdim == dim,ExcNotImplemented());
 
-      auto &bsp_elem = nrb_elem_.bspline_elem_;
+      auto &bsp_elem = *nrb_elem_.bspline_elem_;
       nrb_handler_.bsp_elem_handler_->template fill_cache<sdim>(bsp_elem,s_id_);
 
       auto &w_func_elem = *(nrb_elem_.weight_elem_);

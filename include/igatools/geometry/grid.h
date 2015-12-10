@@ -187,9 +187,9 @@ public:
 
   using IndexType = ElementIndex<dim_>;
 
-  using PropertyList = PropertiesIdContainer<IndexType>;
+  using PropertyList = PropertiesElementID<dim_>;
   using List = typename PropertyList::List;
-  using ListIt = typename PropertyList::List::iterator;
+  using ListIt = typename PropertyList::List::const_iterator;
 
 
   /** Type for the vector of knot vectors */
@@ -682,12 +682,25 @@ private:
   SubGridData<(dim_>0)? dim_-1 : 0> sub_grid_data_;
 
 public:
+#if 0
   /**
    * Create an element (defined on this grid) with a given index and the given property
    */
   std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &property) const;
+#endif
 
+  /**
+   * Create the first element (defined on this grid) with a given given @p property.
+   */
+  std::unique_ptr<ElementAccessor>
+  create_element_begin(const PropId &property) const;
+
+  /**
+   * Create the one-pass-the-end element (defined on this grid) with a given given @p property.
+   */
+  std::unique_ptr<ElementAccessor>
+  create_element_end(const PropId &property) const;
 
   /**
    * Returns the unique identifier associated to each object instance.

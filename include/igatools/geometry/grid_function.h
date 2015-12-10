@@ -65,10 +65,11 @@ public:
   ///@}
 
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * serialization mechanism.
+   * Default constructor. It sets the unique value for the object ID.
+   *
+   * @note  This constructor is needed for the serialization mechanism.
    */
-  GridFunction() = default;
+  GridFunction();
 
   GridFunction(const SharedPtrConstnessHandler<GridType> &grid);
 
@@ -83,9 +84,16 @@ public:
 
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const = 0;
-
+#if 0
   virtual std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
+#endif
+
+  virtual std::unique_ptr<ElementAccessor>
+  create_element_begin(const PropId &prop) const;
+
+  virtual std::unique_ptr<ElementAccessor>
+  create_element_end(const PropId &prop) const;
 
 
   ///@name Iterating of grid elements
@@ -123,6 +131,11 @@ public:
   virtual ElementIterator cend(const PropId &prop = ElementProperties::active) const;
   ///@}
 
+  /**
+   * Returns the unique identifier associated to each object instance.
+   */
+  Index get_object_id() const;
+
 
   virtual void print_info(LogStream &out) const = 0;
 
@@ -133,6 +146,7 @@ public:
     return grid_function_previous_refinement_;
   }
 
+private:
   /**
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
    *
@@ -145,6 +159,8 @@ public:
   virtual void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) = 0;
+
+public:
 
   /**
    *  Connect a slot (i.e. a function pointer) to the refinement signals
@@ -160,6 +176,11 @@ public:
 
 private:
   SharedPtrConstnessHandler<Grid<dim_>> grid_;
+
+  /**
+   * Unique identifier associated to each object instance.
+   */
+  const Index object_id_;
 
   friend class GridFunctionElement<dim_, space_dim_>;
 
@@ -187,7 +208,7 @@ protected:
 
 
 public:
-  virtual const SafeSTLSet<typename GridType::IndexType> &
+  virtual const SafeSTLVector<typename GridType::IndexType> &
   get_elements_with_property(const PropId &elems_property) const
   {
     return grid_->get_elements_with_property(elems_property);

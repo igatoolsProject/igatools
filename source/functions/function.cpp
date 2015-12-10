@@ -36,7 +36,9 @@ Function(const SharedPtrConstnessHandler<DomainType> &domain,
   domain_(domain),
   name_(name),
   object_id_(UniqueIdGenerator::get_unique_id())
-{}
+{
+
+}
 
 
 
@@ -59,7 +61,7 @@ create_cache_handler() const
 }
 
 
-
+#if 0
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
@@ -69,32 +71,32 @@ create_element(const ListIt &index, const PropId &prop) const
   using Elem = ElementAccessor;
   return std::unique_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
 }
-
-
-
-#if 0
-template<int dim_, int codim_, int range_, int rank_>
-auto
-Function<dim_, codim_, range_, rank_ >::
-begin(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(this->shared_from_this(),
-  domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).begin(),
-  prop);
-}
-
-
-
-template<int dim_, int codim_, int range_, int rank_>
-auto
-Function<dim_, codim_, range_, rank_ >::
-end(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(this->shared_from_this(),
-  domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).end(),
-  prop);
-}
 #endif
+
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+create_element_begin(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+  return std::unique_ptr<Elem>(new Elem(
+    this->shared_from_this(),
+    domain_->create_element_begin(prop)));
+}
+
+
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+create_element_end(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+  return std::unique_ptr<Elem>(new Elem(
+    this->shared_from_this(),
+    domain_->create_element_end(prop)));
+}
 
 
 template<int dim_, int codim_, int range_, int rank_>
@@ -122,9 +124,7 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 cbegin(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-                         domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).begin(),
-                         prop);
+  return ElementIterator(this->create_element_begin(prop));
 }
 
 
@@ -134,9 +134,7 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 cend(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-                         domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).end(),
-                         prop);
+  return ElementIterator(this->create_element_end(prop));
 }
 
 
@@ -164,6 +162,40 @@ get_object_id() const
 {
   return object_id_;
 }
+
+
+
+
+#ifdef MESH_REFINEMENT
+
+template<int dim_, int codim_, int range_, int rank_>
+boost::signals2::connection
+Function<dim_, codim_, range_, rank_ >::
+connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber)
+{
+  return domain_.get_ptr_data()->connect_insert_knots(subscriber);
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &function)
+{
+  Assert(function != nullptr, ExcNullPtr());
+  Assert(&(*function) == &(*this), ExcMessage("Different objects."));
+
+  auto func_to_connect =
+    std::bind(&self_t::rebuild_after_insert_knots,
+              function.get(),
+              std::placeholders::_1,
+              std::placeholders::_2);
+
+  using SlotType = typename Grid<dim_>::SignalInsertKnotsSlot;
+  this->connect_insert_knots(SlotType(func_to_connect).track_foreign(function));
+}
+
+
+#endif // MESH_REFINEMENT
 
 
 #if 0

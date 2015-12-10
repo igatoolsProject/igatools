@@ -29,13 +29,37 @@ template <int dim>
 class ElementIndex
 {
 public:
-#ifdef SERIALIZATION
-  ElementIndex() = default;
-#else
-  ElementIndex() = delete;
-#endif
+  /**
+   * Default constructor. Sets the element index to 0.
+   */
+  ElementIndex();
 
   ElementIndex(const int flat_id, const TensorIndex<dim> &tensor_id);
+
+  /**
+   * Copy constructor.
+   */
+  ElementIndex(const ElementIndex<dim> &elem_id) = default;
+
+  /**
+   * Move constructor.
+   */
+  ElementIndex(ElementIndex<dim> &&elem_id) = default;
+
+  /**
+   * Destructor.
+   */
+  ~ElementIndex() = default;
+
+  /**
+   * Copy assignment operator.
+   */
+  ElementIndex<dim> &operator=(const ElementIndex<dim> &elem_id) = delete;
+
+  /**
+   * Move assignment operator.
+   */
+  ElementIndex<dim> &operator=(ElementIndex<dim> &&elem_id) = default;
 
 
   const TensorIndex<dim> &
@@ -104,6 +128,17 @@ using ElementIndexAlias2 = iga::ElementIndex<2>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias2,cereal::specialization::member_serialize);
 using ElementIndexAlias3 = iga::ElementIndex<3>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias3,cereal::specialization::member_serialize);
+
+
+
+using SafeSTLVectorElementIndexAlias0 = iga::SafeSTLVector<iga::ElementIndex<0>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias0,cereal::specialization::member_serialize);
+using SafeSTLVectorElementIndexAlias1 = iga::SafeSTLVector<iga::ElementIndex<1>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias1,cereal::specialization::member_serialize);
+using SafeSTLVectorElementIndexAlias2 = iga::SafeSTLVector<iga::ElementIndex<2>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias2,cereal::specialization::member_serialize);
+using SafeSTLVectorElementIndexAlias3 = iga::SafeSTLVector<iga::ElementIndex<3>>;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias3,cereal::specialization::member_serialize);
 
 //#include <igatools/utils/element_index.serialization>
 #endif // SERIALIZATION

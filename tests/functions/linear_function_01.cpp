@@ -55,7 +55,8 @@ void linear_func()
       A[i][j] = i+j;
   }
   auto func = LinFunc::const_create(ball_domain, A, b);
-  function_values<dim, codim, range>(func);
+
+  function_values(*func);
 }
 
 int main()

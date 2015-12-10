@@ -49,12 +49,14 @@ void iterate(const int n_knots = 5)
   {
     if (elem.get_index().get_tensor_index() <= center)
     {
-      grid->get_elements_with_property(red).insert(elem.get_index());
+//      grid->set_property_status_for_id(red,elem.get_index(),true);
+      grid->get_elements_with_property(red).emplace_back(elem.get_index());
 //      elem.add_property(red);
     }
     else
     {
-      grid->get_elements_with_property(blue).insert(elem.get_index());
+//      grid->set_property_status_for_id(blue,elem.get_index(),true);
+      grid->get_elements_with_property(blue).emplace_back(elem.get_index());
 //      elem.add_property(blue);
     }
   }

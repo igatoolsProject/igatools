@@ -210,12 +210,12 @@ Grid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates)
     for (const auto &tensor_id : tensor_index_range)
     {
       const int flat_id = this->tensor_to_flat_element_id(tensor_id);
-      active_elements.emplace(ElementIndex<dim_>(flat_id,tensor_id));
+      active_elements.emplace_back(ElementIndex<dim_>(flat_id,tensor_id));
     }
   } // end if (dim_ > 0)
   else // if (dim_ == 0)
   {
-    active_elements.emplace(ElementIndex<dim_>(0,TensorIndex<dim_>()));
+    active_elements.emplace_back(ElementIndex<dim_>(0,TensorIndex<dim_>()));
   } // end if (dim_ == 0)
 
 #ifndef NDEBUG
@@ -437,6 +437,7 @@ Grid<dim_>::create_cache_handler() const
   return std::unique_ptr<ElementHandler>(new ElementHandler(this->shared_from_this()));
 }
 
+#if 0
 template<int dim_>
 auto
 Grid<dim_>::
@@ -446,8 +447,29 @@ create_element(const ListIt &index, const PropId &prop) const
   using Elem = ElementAccessor;
   return std::unique_ptr<Elem>(new Elem(this->shared_from_this(),index,prop));
 }
+#endif
 
+template<int dim_>
+auto
+Grid<dim_>::
+create_element_begin(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+  auto elem_it = this->get_elements_with_property(prop).cbegin();
+  return std::unique_ptr<Elem>(new Elem(this->shared_from_this(),elem_it,prop));
+}
 
+template<int dim_>
+auto
+Grid<dim_>::
+create_element_end(const PropId &prop) const
+-> std::unique_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+  auto elem_it = this->get_elements_with_property(prop).cend();
+  return std::unique_ptr<Elem>(new Elem(this->shared_from_this(),elem_it,prop));
+}
 
 
 
@@ -478,8 +500,7 @@ auto
 Grid<dim_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(
-           this->create_element(elem_properties_[prop].begin(),prop));
+  return ElementIterator(this->create_element_begin(prop));
 }
 
 
@@ -489,8 +510,7 @@ auto
 Grid<dim_>::
 cend(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(
-           this->create_element(elem_properties_[prop].end(),prop));
+  return ElementIterator(this->create_element_end(prop));
 }
 
 
@@ -729,14 +749,14 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
     for (const auto &tensor_id : tensor_index_range)
     {
       const int flat_id = this->tensor_to_flat_element_id(tensor_id);
-      active_elements.insert(ElementIndex<dim_>(flat_id,tensor_id));
+      active_elements.emplace_back(ElementIndex<dim_>(flat_id,tensor_id));
     }
   }
   else // if (dim_ == 0)
   {
-    active_elements.emplace(ElementIndex<dim_>(0,TensorIndex<dim_>()));
+    active_elements.emplace_back(ElementIndex<dim_>(0,TensorIndex<dim_>()));
   } // end if (dim_ == 0)
-
+  std::sort(active_elements.begin(),active_elements.end());
 
   const auto fine_to_coarse_elems_id = grid_tools::build_map_elements_id_between_grids(
                                          *this,*grid_pre_refinement_);
@@ -764,8 +784,10 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
       for (const auto &elem_id_coarse : elems_id_coarse_with_property)
       {
         const auto &elems_id_fine = coarse_to_fine_elems_id[elem_id_coarse];
-        elems_id_fine_with_property.insert(elems_id_fine.begin(),elems_id_fine.end());
+        for (const auto &elem_id_fine : elems_id_fine)
+          elems_id_fine_with_property.emplace_back(elem_id_fine);
       }
+      std::sort(elems_id_fine_with_property.begin(),elems_id_fine_with_property.end());
     }
   }
 
