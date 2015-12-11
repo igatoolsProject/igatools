@@ -43,7 +43,7 @@ sub_dim_members = \
  ['std::shared_ptr<const typename class::template NURBS<sdim,range,rank>> ' + 
   'class::get_sub_nurbs_space<sdim>(const int s_id, ' + 
   'InterSpaceMap<sdim> &dof_map, '+
-  'const std::shared_ptr<const Grid<sdim>> &sub_grid) const;'
+  'const std::shared_ptr<const Grid<sdim>> &sub_grid) const'
 #  ,
 #  'std::shared_ptr<typename class::template SubSpace<k>> ' + 
 #  'class::get_sub_space<k>(const int sub_elem_id, ' + 

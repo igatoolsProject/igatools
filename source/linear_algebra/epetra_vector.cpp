@@ -89,6 +89,6 @@ create_vector(const Map &map)
   return std::make_shared<Vector>(map);
 }
 
-};
+}
 
 IGA_NAMESPACE_CLOSE

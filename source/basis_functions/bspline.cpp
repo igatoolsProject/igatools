@@ -435,7 +435,7 @@ BSpline<dim_, range_, rank_>::
 get_end_behaviour_table() const -> const EndBehaviourTable &
 {
   return end_b_;
-};
+}
 
 
 template<int dim_, int range_, int rank_>

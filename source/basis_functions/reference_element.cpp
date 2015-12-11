@@ -64,7 +64,7 @@ ReferenceElement(const std::shared_ptr<ConstBasis> &basis)
       std::shared_ptr<Indexer>(new Indexer(this->n_basis_direction_[comp]));
   }
   //----------------------------------------------------------------
-};
+}
 
 
 

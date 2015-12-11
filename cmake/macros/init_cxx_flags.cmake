@@ -22,7 +22,7 @@
 # Compiler and compile flags
 macro(init_cxx_flags)
   # Initialize CXXFLAGS.
-  set(CMAKE_CXX_FLAGS                "-Wall  -ftemplate-depth=1024")
+  set(CMAKE_CXX_FLAGS                "-Wall -ftemplate-depth=1024")
   set(CMAKE_CXX_FLAGS_DEBUG          "-Wall -O0 -g -ftemplate-backtrace-limit=0")
   set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -mtune=native -DNDEBUG -g -p -pg")
@@ -36,7 +36,8 @@ macro(init_cxx_flags)
     if (NOT (GCC_VERSION VERSION_GREATER 5.3.0 OR GCC_VERSION VERSION_EQUAL 5.3.0))
       message(FATAL_ERROR "To compile igatools is required g++ version 5.3.0 or greater.")
     endif()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fuse-ld=gold")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fuse-ld=gold \
+     -Wdelete-non-virtual-dtor -Wnon-virtual-dtor -Wctor-dtor-privacy -Woverloaded-virtual -Wpedantic -Wextra")
   elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")

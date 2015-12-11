@@ -503,7 +503,7 @@ NURBS<dim_, range_, rank_>::
 get_end_behaviour_table() const -> const EndBehaviourTable &
 {
   return bsp_basis_->get_end_behaviour_table();
-};
+}
 
 
 template <int dim_, int range_, int rank_>

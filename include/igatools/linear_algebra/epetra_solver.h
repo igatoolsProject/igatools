@@ -40,7 +40,7 @@ create_solver(const Matrix &A, Vector &x, const Vector &b,
               const std::string &solver_type = "CG",
               const Real tolerance = 1.0e-8,
               const int max_num_iters = 400);
-};
+}
 
 IGA_NAMESPACE_CLOSE
 

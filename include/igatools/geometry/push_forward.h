@@ -102,7 +102,7 @@ public:
     if (transformation_type_ == Transformation::h_grad)
     {
       this->template hgrad_transform_0<range,rank,sdim>(
-        s_id,ref_elem,phys_domain_elem,phys_sub_elem_cache);
+        s_id,ref_elem,phys_sub_elem_cache);
     }
     else if (transformation_type_ == Transformation::h_div)
     {
@@ -187,7 +187,6 @@ private:
   void
   hgrad_transform_0(const int s_id,
                     const RefSpaceElem<range,rank> &ref_elem,
-                    const PhysDomainElem &phys_domain_elem,
                     typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
   {
     using PhysElem = PhysSpaceElem<range,rank>;
