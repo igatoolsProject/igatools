@@ -33,6 +33,7 @@ IGA_NAMESPACE_OPEN
 class XMLElement;
 class XMLDocument;
 class ObjectsContainer;
+class IgCoefficients;
 
 /**
  * @brief Helper class for creating an @ref ObjectsContainer parsed from
@@ -216,6 +217,9 @@ private:
   template <class LinearFunc>
   static void write_linear_function (const std::shared_ptr<LinearFunc> linear_func,
                                      const XMLDocPtr_ xml_doc);
+
+  static std::shared_ptr<XMLElement> create_ig_coefs_xml_element(const IgCoefficients &coefs,
+                                                                 const XMLDocPtr_ xml_doc);
 
 };
 

@@ -26,14 +26,14 @@
 #include <igatools/io/xml_parser_error_handler.h>
 
 #include <igatools/base/logstream.h>
-
-//#include <igatools/utils/safe_stl_vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 
 
 #undef Assert
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMNode.hpp>
+#include <xercesc/dom/DOMText.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMImplementationRegistry.hpp>
 #include <xercesc/dom/DOMLSSerializer.hpp>
@@ -53,6 +53,7 @@ using std::string;
 using xercesc::XMLString;
 using xercesc::DOMNode;
 using xercesc::DOMDocument;
+using xercesc::DOMText;
 
 IGA_NAMESPACE_OPEN
 
@@ -183,12 +184,9 @@ initialize_xml()
 XMLDocument::
 ~XMLDocument()
 {
-  xml_doc_->release();
-  delete xml_doc_;
-  delete dom_impl_;
-
   try
   {
+    xml_doc_->release();
     xercesc::XMLPlatformUtils::Terminate();
   }
   catch (xercesc::XMLException &exception)
@@ -249,6 +247,109 @@ create_new_element(const string &name) const
   const auto xml_elem = XMLElement::create(xml_doc_->createElement(name_ch));
   XMLString::release(&name_ch);
   return xml_elem;
+}
+
+
+
+shared_ptr<XMLElement>
+XMLDocument::
+create_new_text_element(const string &name,
+                        const string &text) const
+{
+  XMLCh* text_ch = XMLString::transcode(text.c_str());
+  DOMText *text_node = xml_doc_->createTextNode(text_ch);
+  XMLString::release(&text_ch);
+
+  const auto xml_elem = this->create_new_element(name);
+  xml_elem->root_elem_->appendChild(text_node);
+
+  return xml_elem;
+}
+
+
+
+template <>
+string
+XMLDocument::
+create_string_from_vector<Real> (const SafeSTLVector<Real> &vec)
+{
+    std::ostringstream oss;
+    for (const auto &v : vec)
+        oss << std::scientific << " " << v << " ";
+    return oss.str();
+}
+
+
+
+template <>
+string
+XMLDocument::
+create_string_from_vector<bool> (const SafeSTLVector<bool> &vec)
+{
+    std::ostringstream oss;
+    for (const auto &v : vec)
+    {
+        if (v)
+            oss << " true ";
+        else
+            oss << " false ";
+    }
+    return oss.str();
+}
+
+
+
+template <>
+string
+XMLDocument::
+create_string_from_vector<Index> (const SafeSTLVector<Index> &vec)
+{
+    std::ostringstream oss;
+    for (const auto &v : vec)
+        oss << " " << v << " ";
+    return oss.str();
+}
+
+
+
+template <>
+string
+XMLDocument::
+create_string_from_vector<string> (const SafeSTLVector<string> &vec)
+{
+    std::ostringstream oss;
+    for (const auto &v : vec)
+        oss << " " << v << " ";
+    return oss.str();
+}
+
+
+
+template <class T>
+shared_ptr<XMLElement>
+XMLDocument::
+create_vector_element (const std::string &name,
+                       const SafeSTLVector<T> &vec) const
+{
+    const auto vec_str = create_string_from_vector<T>(vec);
+    const auto new_elem = this->create_new_text_element(name, vec_str);
+    return new_elem;
+}
+
+
+
+template <class T>
+shared_ptr<XMLElement>
+XMLDocument::
+create_size_dir_vector_element (const std::string &name,
+                                const SafeSTLVector<T> &vec,
+                                const Index &dir) const
+{
+    const auto new_elem = this->create_vector_element<T>(name, vec);
+    new_elem->add_attribute("Direction", dir);
+    new_elem->add_attribute("Size", vec.size());
+
+    return new_elem;
 }
 
 
@@ -342,6 +443,16 @@ check_file(const string &file_path)
     AssertThrow(false, ExcXMLError(error_msg, 0, 0));
   }
 }
+
+
+template shared_ptr<XMLElement> XMLDocument::create_size_dir_vector_element<Real>
+    (const std::string &, const SafeSTLVector<Real> &, const Index &dir) const;
+template shared_ptr<XMLElement> XMLDocument::create_size_dir_vector_element<Index>
+    (const std::string &, const SafeSTLVector<Index> &, const Index &dir) const;
+template shared_ptr<XMLElement> XMLDocument::create_vector_element<bool>
+    (const std::string &, const SafeSTLVector<bool> &) const;
+template shared_ptr<XMLElement> XMLDocument::create_vector_element<string>
+    (const std::string &, const SafeSTLVector<string> &) const;
 
 IGA_NAMESPACE_CLOSE
 

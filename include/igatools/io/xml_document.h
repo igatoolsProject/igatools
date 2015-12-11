@@ -202,6 +202,39 @@ public:
   std::shared_ptr<XMLElement> create_new_element(const std::string &name) const;
 
   /**
+   * @brief Creates a new @ref XMLElement with the given @p name and
+   * a the @p text.
+   *
+   * @param[in] name Name of the new element created.
+   * @param[in] text Text contained in the element.
+   * @return XML element.
+   */
+  std::shared_ptr<XMLElement> create_new_text_element(const std::string &name,
+                                                      const std::string &text) const;
+
+  /**
+   * @brief Creates a new @ref XMLElement with the given name.
+   *
+   * @param[in] name Name of the new element created.
+   * @return XML element.
+   */
+  template <class T>
+  std::shared_ptr<XMLElement> create_size_dir_vector_element
+      (const std::string &name,
+       const SafeSTLVector<T> &vec,
+       const Index &dir) const;
+
+  /**
+   * @brief Creates a new @ref XMLElement with the given name.
+   *
+   * @param[in] name Name of the new element created.
+   * @return XML element.
+   */
+  template <class T>
+  std::shared_ptr<XMLElement> create_vector_element
+      (const std::string &name, const SafeSTLVector<T> &vec) const;
+
+  /**
    * @brief Prints the XML document content.
    *
    * Mostly used for testing and debugging purposes.
@@ -234,6 +267,10 @@ private:
   static void check_file(const std::string &file_path);
 
   void initialize_xml();
+
+public:
+  template <class T>
+  static std::string create_string_from_vector (const SafeSTLVector<T> &vec);
 
 };
 

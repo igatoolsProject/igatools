@@ -460,7 +460,7 @@ fill_not_inserted_dependencies()
     using IgFunctionType = IgFunction<Type::dim, Type::codim, Type::range, Type::rank>;
     using PhysBasisType = PhysicalSpaceBasis<Type::dim, Type::range, Type::rank, Type::codim>;
 
-    // Adding const objects.
+    // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
         // Inserting the function into the this.
@@ -485,6 +485,7 @@ fill_not_inserted_dependencies()
         }
     }
 
+    // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
         // Inserting the function into the this.
@@ -510,7 +511,7 @@ fill_not_inserted_dependencies()
     using DomainType = typename Type::PhysDomain;
     using RefBasisType = typename Type::RefBasis;
 
-    // Adding const objects.
+    // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
         // Inserting the physical space basis into the this.
@@ -528,7 +529,7 @@ fill_not_inserted_dependencies()
         this->template insert_object<RefBasisType> (ref_space);
     }
 
-    // Adding non-const objects.
+    // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
         // Inserting the physical space basis into the this.
@@ -551,7 +552,7 @@ fill_not_inserted_dependencies()
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
     using GridFuncType = typename Type::GridFuncType;
 
-    // Adding const objects.
+    // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
         // Inserting the domain into the this.
@@ -564,7 +565,7 @@ fill_not_inserted_dependencies()
         this->template insert_object<GridFuncType> (grid_func);
     }
 
-    // Adding non-const objects.
+    // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
         // Inserting the domain into the this.
@@ -586,7 +587,7 @@ fill_not_inserted_dependencies()
     using IgGridFuncType = IgGridFunction<Type::dim, Type::space_dim>;
     using RefBasisType = typename IgGridFuncType::RefBasis;
 
-    // Adding const objects.
+    // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
         // Inserting grid function into the this.
@@ -608,7 +609,7 @@ fill_not_inserted_dependencies()
         }
     }
 
-    // Adding non-const objects.
+    // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
         // Inserting grid function into the this.
@@ -643,7 +644,7 @@ fill_not_inserted_dependencies()
     using WeightFuncSpSpaceType = typename WeightFuncBasisType::SpSpace;
     using GridFuncType = GridFunction<WeightFuncType::dim, WeightFuncType::space_dim>;
 
-    // Adding const objects.
+    // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
         // Inserting reference space basis function into the this.
@@ -653,7 +654,7 @@ fill_not_inserted_dependencies()
         const auto nr = dynamic_pointer_cast<NURBSType>(obj);
         const auto bs = dynamic_pointer_cast<BSplineType>(obj);
 
-        Assert (bs != nullptr && nr != nullptr,
+        Assert (bs != nullptr || nr != nullptr,
                 ExcMessage("Invalid reference space basis type."));
 
         // If the reference space is a BSpline, the spline space is also inserted.
@@ -696,7 +697,7 @@ fill_not_inserted_dependencies()
         }
     }
 
-    // Adding non-const objects.
+    // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
         // Inserting reference space basis function into the this.
@@ -706,7 +707,7 @@ fill_not_inserted_dependencies()
         const auto nr = dynamic_pointer_cast<const NURBSType>(obj);
         const auto bs = dynamic_pointer_cast<const BSplineType>(obj);
 
-        Assert (bs != nullptr && nr != nullptr,
+        Assert (bs != nullptr || nr != nullptr,
                 ExcMessage("Invalid reference space basis type."));
 
         // If the reference space is a BSpline, the spline space is also inserted.
@@ -755,7 +756,7 @@ fill_not_inserted_dependencies()
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
     using GridType = Grid<Type::dim>;
 
-    // Adding const objects.
+    // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
         // Inserting spline space into the this.
@@ -767,7 +768,7 @@ fill_not_inserted_dependencies()
         this->template insert_object<GridType> (grid);
     }
 
-    // Adding non-const objects.
+    // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
         // Inserting spline space into the this.
@@ -785,7 +786,7 @@ fill_not_inserted_dependencies()
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
 
-    // Adding const objects.
+    // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
         // Inserting grid into the this.
@@ -793,7 +794,7 @@ fill_not_inserted_dependencies()
         this->template insert_object<Type> (obj);
     }
 
-    // Adding non-const objects.
+    // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
         // Inserting grid into the this.
