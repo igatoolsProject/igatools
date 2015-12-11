@@ -217,6 +217,11 @@ public:
    */
   static Size get_number_of_entries();
 
+  /**
+   * Return the value wrapped into a vector.
+   */
+  SafeSTLVector<value_t> get_flat_values() const noexcept;
+
 private:
   value_t val_;
 
@@ -598,6 +603,11 @@ public:
    * Return the total number of entries of the tensor.
    */
   static Size get_number_of_entries();
+
+  /**
+   * Return the value wrapped into a vector.
+   */
+  SafeSTLVector<typename Tdouble::value_t> get_flat_values() const noexcept;
 
 private :
   static const int num_sub_tensor = (dim_== 0? 1: dim_) ;

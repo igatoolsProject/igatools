@@ -229,6 +229,17 @@ get_number_of_entries()
 
 
 
+inline
+auto
+Tdouble::
+get_flat_values() const noexcept ->
+SafeSTLVector<value_t>
+{
+  return SafeSTLVector<value_t> ({val_});
+}
+
+
+
 
 /*------ Inline functions: Tensor<  dim_, rank_, tensor_type, value_type > ---*/
 
@@ -519,6 +530,25 @@ tensor_to_flat_index(const TensorIndex<rank_> &tensor_index) const noexcept
     flat_index += pow(dim_,i) * tensor_index[rank_-1-i];
 
   return flat_index;
+}
+
+
+
+template<int dim_, int rank_, class tensor_type, class value_type >
+inline
+auto
+Tensor< dim_, rank_, tensor_type, value_type >::
+get_flat_values() const noexcept ->
+SafeSTLVector<typename Tdouble::value_t>
+{
+  SafeSTLVector<typename Tdouble::value_t> values;
+  for (int i = 0; i < dim_; ++i)
+  {
+    const auto new_values= tensor_[i].get_flat_values();
+    values.insert(values.end(), new_values.cbegin(), new_values.cend());
+  }
+
+  return values;
 }
 
 
