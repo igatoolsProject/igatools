@@ -613,7 +613,14 @@ write_constant_grid_function (const shared_ptr<ConstGridFunc> const_func,
     obj_elem->add_attribute("Dim", dim);
     obj_elem->add_attribute("Spacedim", space_dim);
 
-    AssertThrow (false, ExcNotImplemented());
+    const auto grid_elem = xml_doc->create_new_element("Grid");
+    grid_elem->add_attribute("GetFromLocalObjectId",
+                            const_func->get_grid()->get_object_id());
+    obj_elem->append_child_element(grid_elem);
+
+    const auto values_vec = const_func->get_constant_value().get_flat_values();
+    const auto values_elem = xml_doc->create_vector_element("Values", values_vec);
+    obj_elem->append_child_element(values_elem);
 
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
@@ -832,7 +839,14 @@ write_constant_function (const shared_ptr<ConstantFunction> const_function,
     obj_elem->add_attribute("Rank", rank);
     obj_elem->add_attribute("Codim", codim);
 
-    AssertThrow (false, ExcNotImplemented());
+    const auto dm_elem = xml_doc->create_new_element("Domain");
+    dm_elem->add_attribute("GetFromLocalObjectId",
+                            const_function->get_domain()->get_object_id());
+    obj_elem->append_child_element(dm_elem);
+
+    const auto values_vec = const_function->get_constant_value().get_flat_values();
+    const auto values_elem = xml_doc->create_vector_element("Values", values_vec);
+    obj_elem->append_child_element(values_elem);
 
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
