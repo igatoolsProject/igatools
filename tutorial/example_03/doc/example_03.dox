@@ -1,54 +1,66 @@
 /**
 
-\page example_03 Example 3: traversing elements of a grid-like container (using values cache)
+\page example_03 Example 3: traversing elements
 \section Introduction
-In example \ref example_02 we accessed element information on grid-like containers
-that do not use a cache.
-igatools is a scientific computing library that aims for efficiency.
-Unfortunately, efficient and clear code are many times opposite and some sort
-of tradeoff is necessary.
-In igatools, in order to attain some effiency in the computation we have adopted
-a cache mechanism, that requires some minimal extra lines of codes,
-an initialization and a filling.
-The use of the cache, generally refered in igatools as the element values is
-associated to the computation of quantities coming from a quadrature scheme.
+So far we never accessed element-wise data inside an igatools object. In this example we will see how 
+to set up loops for traversing the data in an element-by-element fashion.
+
+As already shown, every class is built upon a grid. The grid structure determines not only the 
+reference domain but also the element subdivision that can be exploited to perform
+the typical tasks of a Finite %Element code. This is the only traversing method
+supported by igatools.
+
+There are two ways of setting up an element loop: with or without the use of the
+cache. Whenever only integer data are needed (for example dof connectivities or element
+indices), then non-cached element loops can be used. This basic element loop
+is shown in the body of the function <tt>grid_loop</tt>.
+
+If a quadrature scheme is used and floating point data are 
+needed (for example basis function evaluation or quadrature weights),
+then the cache mechanism must be set up. We will see this advanced loop in 
+the body of <tt>basis_loop_with_cache</tt>.
+
+The motivation of this cache machinery arises from computational efficiency,
+one of the main goal for igatools. Unfortunately, efficienct code and clear code 
+rarely coincide, thus some tradeoff between a readability and efficiency is necessary.
+There is no need to despair: few extra lines of code are needed in order to use the cache.
 
 \section code03 Description of the program
 
-This example contains two function bodies, plus the main():
-- one function (called loop_on_grid_with_cache()) iterates over the element in a Grid and compute/retrieves quadrature weights 
-for each element;
-- the second function (called loop_on_basis_with_cache()) iterates over the element in a BSpline basis and compute/retrieves the 
-values of the basis function that are non-zero on each element;
-
 Besides header files that have been already included in the
-previous examples we include a new one for quadrature schemes
-\snippet example_03.cpp quad include
+previous examples, we include few ones for elements and quadrature schemes:
+\snippet example_03.cpp includes
 
-For the first function,
-similarly to the previous example, we create a Grid and define the element iterators
-pointing to the begining and end of the container
-\snippet example_03.cpp loop_as_before
+We also declare a simple function for the creation of our ol' friend the quarter
+annulus (see \ref example_02):
+\snippet example_03.cpp quarter_annulus
+We will motivate later the grid as input parameter.
 
-In order to use the cache mechanism, we need to create the <b>cache handler</b>
-associated with the container we want to traverse (a Grid object in this case).
-\snippet example_03.cpp create_handler
+We can now start with a simple non-cached element loop over the grid:
+\snippet example_03.cpp grid_loop
+Each igatools object that can be traversed can be thought (and actually are) as data
+container, therefore we only need the element iterators pointing to the beginning
+and the end of the container. The associated element accessor <tt>grid_el</tt>
+is an instance of the GridElement class.
+Once the iterators are set, access to non-cached data follows straightforwardly.
+
+As already stated in the Introduction, few extra lines of code are needed in order
+to use the cache, the first of which is the declaration of the <b>chache handler</b>
+from the container we want to traverse (in this case a GridHandler from a Grid):
+\snippet example_03.cpp basis_loop_start
 The <b>cache handler</b> basically performs the following tasks:
-  - stores the information about which quantities are requested by the user. 
+  - stores the list of quantities requested by the user. 
     These quantities are always associated to evaluation points over the element;
-  - extracts from the container the data that are needed for the evaluation of the requested quantities;
+  - extracts from the container the data that are needed for the computation of the requested quantities;
   - organizes the computation in a way that if the same data is needed multiple times, the
-    data is reused and not recomputed; 
+    data is reused and not recomputed;
   - initialize/resize the cache stored in the element;
   - implements and runs the algorithms for the requested computation;
   - fills the cache in the elements.
 
-Once the <b>cache handler</b> is created we declare the quantity we are interested to 
-compute and retrieve. For example, let suppose we want to compute the quadrature weights 
-associated to the element (that are the quadrature weights on the \f$[0,1]^{dim}\f$ 
-<tt>dim</tt>-dimensional hypercube multiplied by the element measure), then we need to use the 
-<b>flag</b> grid_element::Flags::weight
-\snippet example_03.cpp set_cache
+Once the <b>cache handler</b> is created, we declare the quantity we need by
+passing the appropriate flags.
+\snippet example_03.cpp basis_loop_set
 
 \note
 <div class="row">
@@ -77,17 +89,15 @@ associated to the element (that are the quadrature weights on the \f$[0,1]^{dim}
   </div>
 </div>
 
-
-After the call of the function GridHandler::set_element_flags, 
-we need to communicate which is the element that we want to use and which is the Quadrature
-(i.e. the evaluation points scheme) we'll use on the element 
-(in the example is used the Gaussian quadrature with 2 point along each direction, 
-see the documnetation of the class QGauss). 
-This action will initialize/resize the cache in the element for all the 
-quantities that are needed for the computation.
-\snippet example_03.cpp init_cache
+After the call of the method GridHandler::set_element_flags, 
+we need to pass the element variable we we want to use (<tt>basis_el</tt>) and
+the Quadrature (i.e. the evaluation points scheme). In this example we set a simple
+one-point quadrature scheme. We refer to the QGauss class documentation for additional
+details. This lines will allocate or resize the cache in the element for all the 
+requested quantities.
+\snippet example_03.cpp basis_loop_init
 \note If the requested quantities or the quadrature points will not change from element to element,
-this function can be called only one time.
+this function can be called once for all.
 
 Inside the loop on an element, we call a function to fill the 
 the element values that are going to be requested. 

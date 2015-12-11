@@ -48,7 +48,7 @@ int main()
   out << "  number of elements:  " << endl;
   out << "    " << grid->get_num_all_elems(); 
   out << " = " << grid->get_num_intervals() << endl;
-  out << "  knot vectors:  " << endl;
+  out << "  knots:  " << endl;
   auto knots = grid->get_knots();
   for (auto knot_vect=knots.begin(); knot_vect!=knots.end(); knot_vect++) {
     out << "   ";

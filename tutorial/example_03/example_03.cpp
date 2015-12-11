@@ -18,129 +18,110 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/grid.h>
-#include <igatools/geometry/grid_element.h>
 #include <igatools/basis_functions/bspline.h>
+#include <igatools/base/logstream.h>
+
+#include <igatools/basis_functions/nurbs.h>
+#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/ig_function.h>
+#include <igatools/io/writer.h>
+
+// [includes]
+#include <igatools/geometry/grid_element.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
-// [quad include]
 #include <igatools/base/quadrature_lib.h>
-// [quad include]
-#include <igatools/base/logstream.h>
+// [includes]
 
 using namespace iga;
 using namespace std;
 
 LogStream out;
 
-// [func_grid]
+// [quarter_annulus]
+shared_ptr<const Domain<2>> quarter_annulus(shared_ptr<const Grid<2>> grid) {
+  using numbers::PI;
+  BBox<2> box;
+  box[0] = {{1.0,2.0}};
+  box[1] = {{0.0,PI/2}};
+  auto geom_funct = grid_functions::BallGridFunction<2>::const_create(grid);
+  return Domain<2>::const_create(geom_funct);
+}
+// [quarter_annulus]
+
+// [grid_loop]
 template <int dim>
-void loop_on_grid_with_cache()
-{
-  // [func_grid]
-  // [loop_as_before]
+void grid_loop(shared_ptr<const Grid<dim>> grid) {
+
+  auto grid_el     = grid->begin();
+  auto grid_el_end = grid->end();
+
   out << "Traversing the elements of a " << dim << "-dimensional grid." << endl;
-  const int n_knots = 3;
-  auto grid = Grid<dim>::const_create(n_knots);
-
-  auto elem = grid->begin();
-  const auto elem_end = grid->end();
-  // [loop_as_before]
-
-  // [create_handler]
-  auto cache_handler = grid->create_cache_handler();
-  // [create_handler]
-
-  // [set_cache]
-  const auto flag = grid_element::Flags::weight;
-  cache_handler->set_element_flags(flag);
-  // [set_cache]
-
-  // [init_cache]
-  auto quad = QGauss<dim>::create(2);
-  cache_handler->init_element_cache(elem,quad);
-  // [init_cache]
-
-  int elem_id = 0;
-  for (; elem != elem_end; ++elem)
-  {
-    // [fill_cache]
-    cache_handler->fill_element_cache(elem);
-    // [fill_cache]
-
-    out << "The tensor index of element: " << elem_id << " is: "<< elem->get_index() << endl;
-
-    // [get_meas]
-    const auto &w_meas = elem->get_element_weights();
-    out << "The weighted measure is: ";
-    w_meas.print_info(out);
-    // [get_meas]
-    out << endl;
-
-    ++elem_id;
+  for (; grid_el!=grid_el_end; ++grid_el) {
+    out << "The flat/tensor indices of the current element are:  " << grid_el->get_index() << endl;
   }
   out << endl;
 }
+// [grid_loop]
 
+// [basis_loop_start]
+template <int dim, int codim=0, int range=1, int rank=1>
+void basis_loop_with_cache(shared_ptr<const Basis<dim,codim,range,rank>> basis) {
 
-// [func_basis]
-template <int dim>
-void loop_on_basis_with_cache()
-{
-  // [func_basis]
-  out << "Traversing the elements of a " << dim << "-dimensional B-spline space." << endl;
-  const int n_knots = 3;
-  auto grid = Grid<dim>::const_create(n_knots);
-  const int degree = 2;
-  auto space = SplineSpace<dim>::const_create(degree, grid);
-  auto basis = BSpline<dim>::const_create(space);
-
-  auto elem_basis = basis->begin();
-  const auto elem_basis_end = basis->end();
-
-
+  auto basis_el      = basis->begin();
+  auto basis_el_end  = basis->end();
   auto cache_handler = basis->create_cache_handler();
+// [basis_loop_start]
 
-  // [set_basis_flags]
+// [basis_loop_set]
   auto flag = space_element::Flags::value;
   cache_handler->set_element_flags(flag);
-  // [set_basis_flags]
+// [basis_loop_set]
 
-
+// [basis_loop_init]
   auto quad = QGauss<dim>::create(1);
-  cache_handler->init_element_cache(elem_basis,quad);
+  cache_handler->init_element_cache(basis_el,quad);
+// [basis_loop_init]
 
-  for (; elem_basis != elem_basis_end; ++elem_basis)
-  {
-    cache_handler->fill_element_cache(elem_basis);
+// [basis_loop_loop]
+  for (; basis_el!=basis_el_end; ++basis_el) {
+    cache_handler->fill_element_cache(basis_el);
+// [basis_loop_loop]
 
-    out << "Element: " << elem_basis->get_index() << " has global basis: ";
-    elem_basis->get_local_to_global().print_info(out);
-    out << endl;
-
-    // [basis_values]
+// [basis_loop_view]
     out.begin_item("Basis values:");
-    elem_basis->get_element_values().print_info(out);
+    basis_el->get_element_values().print_info(out);
     out.end_item();
-    // [basis_values]
+// [basis_loop_view]
   }
-  out << endl;
 }
 
-
+// [main_trivial]
 int main()
 {
+  auto segment = Grid<1>::const_create(3);
+  grid_loop<1>(segment);
 
-  loop_on_grid_with_cache<1>();
-  loop_on_grid_with_cache<2>();
-  loop_on_grid_with_cache<3>();
+  auto square = Grid<2>::const_create(3);
+  grid_loop<2>(square);
 
-  loop_on_basis_with_cache<1>();
-  loop_on_basis_with_cache<2>();
-  loop_on_basis_with_cache<3>();
+  auto cube = Grid<3>::const_create(3);
+  grid_loop<3>(cube);
+// [main_trivial]
+
+// [main_basis_loop_ref]
+  auto space     = SplineSpace<2>::const_create(2,square);
+  auto ref_basis = BSpline<2>::const_create(space);
+  out << "Traversing basis functions on the reference domain:" << endl;
+  basis_loop_with_cache<2>(dynamic_pointer_cast<const Basis<2,0,1,1>>(ref_basis));
+// [main_basis_loop_ref]
+
+// [main_basis_loop_phy]
+  auto annulus   = quarter_annulus(square);
+  out << "Traversing basis functions on the annulus domain:" << endl;
+  auto phy_basis = PhysicalSpaceBasis<2>::const_create(ref_basis,annulus);
+  basis_loop_with_cache<2>(dynamic_pointer_cast<const Basis<2,0,1,1>>(phy_basis));
+// [main_basis_loop_phy]
 
   return 0;
 }
-
-
-

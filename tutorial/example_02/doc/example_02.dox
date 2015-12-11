@@ -3,7 +3,8 @@
 \page example_02 Example 2: creating domains and plots
 
 \section Introduction
-In this example we will create reference domains for each dimension of interest, and the
+In this example we will create reference domains for each dimension of interest, 
+\f$[0,1]^2\f$ and \f$[0,1]^3\f$, and the
 standard bidimensional domain in the Isogeoemtric Analysis literature, the quarter annulus:
 \f{equation}{
   \Omega = \left\{(x,y)\in\mathbb{R}^2| 1\leq x^2+y^2 \leq4,\,
@@ -18,19 +19,21 @@ over a grid of one single element. This means that \f$3\times 2\f$ control point
     <td>\f$i/j\f$</td>
     <td>1</td>
     <td>2</td> 
-    <td>3</td>
   </tr>
   <tr>
     <td>1</td>
     <td>(1,0)</td>
-    <td>(1,1)</td> 
-    <td>(0,1)</td>
+    <td>(2,0)</td> 
   </tr>
   <tr>
     <td>2</td>
-    <td>(2,0)</td>
+    <td>(1,1)</td>
     <td>(2,2)</td> 
-    <td>(0,2)</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>(0,1)</td>
+    <td>(0,2)</td> 
   </tr>
 </table>
 
@@ -40,24 +43,26 @@ and weights \f$\{w_{i,j}\}_{i,j=1}^{3,2}\subset\mathbb{R}\f$:
     <td>\f$i/j\f$</td>
     <td>1</td>
     <td>2</td> 
-    <td>3</td>
   </tr>
   <tr>
     <td>1</td>
     <td>1</td>
-    <td>\f$\sqrt{2}/2\f$</td> 
     <td>1</td>
   </tr>
   <tr>
     <td>2</td>
-    <td>1</td>
+    <td>\f$\sqrt{2}/2\f$</td>
     <td>\f$\sqrt{2}/2\f$</td> 
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>1</td>
     <td>1</td>
   </tr>
 </table>
 
 Once we have the domains, we will save them in a <tt>*.vtk</tt> file. For the quarter
-annulus domain, we will create a B-spline space over it and add to the <tt>*.vtk</tt> file
+annulus domain, we will create a B-spline physical space and add to the <tt>*.vtk</tt> file
  a data field of a sample basis function. Each domain, eventually with
 additional fields, can be visualized with Paraview.
 
@@ -68,7 +73,7 @@ functions and the class in charge of saving data for Paraview:
 \snippet example_02.cpp headers
 
 We then declare a simple templated function for the creation of trivial physical
-domains, i.e. the patch (or reference domain) itself:
+domains, i.e. the reference domain itself (or patch):
 \snippet example_02.cpp hypercube
 Despite the simplicity of this function, we notice that in igatools a physical
 domain is represented as image of a function defined over the grid, in consistency with
@@ -80,26 +85,33 @@ the mathematical definition:
 \f}
 Hence the creation of a trivial domain requires a trivial geometric function.
 The class GridFunction represents functions defined on the reference domain only,
-i. e. they are defined on Grid objects. As we will see later in this exercise, any other function with
-a different domain is represented by the Function class.
+i. e. they are defined on Grid objects. As we will see later in this exercise, a function defined
+over a generic domain is represented by the Function class.
 
-We now want to create the quarter annulus geometry with specfic instances of
-the templated classes it uses. As for the reference domain, we delegate a function
-for the creation:
+We now want to create the quarter annulus geometry. Being the annulus a 2D geometry,
+we need specfic instances of the templated classes required. As for the reference domain,
+we encapsulate the creation in the <tt>quarter_annulus</tt> function.
 \snippet example_02.cpp annulus_init
 The IgCoefficients is a class for spline coefficients storage. It can be thought
 as an <tt>std::map<Index,Real></tt> where Index is the global index of the degree
-of freedom and works as the map key. More interestingly, we notice that igatools
-adopts the following convention for index ordering of vector fields: first the component 
+of freedom and works as the map key.
+
+\note
+In igatools we
+adopt the following convention for index ordering of logically multidimensional
+vector fields: first the component 
 \f$x\f$, then the component \f$y\f$ and so on. Each component is listed
 with the same logical ordering: first the values along the \f$u\f$ axis, then
 the \f$v\f$ axis and so on. Each basis function, whether it is a B-spline or a
-%NURBS, accepts scalar coefficients only. As first step of the creation of the annulus, 
-we need a grid of 1 element, i.e. a grid of two knots.
+%NURBS, accepts scalar coefficients only.
 
+
+Once we have created the \f$1\times1\f$ element grid, the next step of the creation of the annulus is
+the creation of the geometric function \f$\mathbf{F}\f$.
 %NURBS-based geometric functions are linear combination of weighted B-splines and control
 points, divided by the so-called weight function. Hence, we first need
-a scalar BSpline space and then we can create the weight function:
+a scalar BSpline space and then we can create the weight function as an instance
+of the IgGridFunction class:
 \snippet example_02.cpp weight_funct
 \note
 In the current example (as in \ref example_01) we have created an instance of the SplineSpace class (and BSpline basis)
@@ -129,11 +141,11 @@ the codimension is the difference between the manifold dimension and the embeddi
 dimension.
 
 Now we can proceed with the construction of the NURBS vector space and the
-geometric IgGridFunction, with a more specific template declaration:
+geometric IgGridFunction, with the template parameters <tt><2,2></tt>:
 \snippet example_02.cpp geom_funct
 
-%A \f$1\times1\f$ element grid is elegant but too coarse for Finite %Element Analysis,
-therefore we proceed to refine and then we create the domain:
+%A \f$1\times1\f$ element grid is elegant but coarse for Finite %Element Analysis,
+therefore we proceed to refine the grid and then create the domain:
 \snippet example_02.cpp refinement
 By design choice, igatools objects belonging to the same conceptual group are all
 linked: spline spaces, B-spline basis, functions, grid functions or domains created
@@ -158,33 +170,57 @@ We want now to save the annulus domain with an example of a B-spline basis funct
 on it. In order to do so we need a PhysicalSpaceBasis on the annulus. Its creation
 follows the usual creation procedure: Grid, SplineSpace, BSpline, PhysicalSpaceBasis:
 \snippet example_02.cpp basis
+Notice here that we create a spline space of cubic B-splines. The degree of a basis
+in physical domain is independent from the degree of the geometry, whenever the 
+geometry is represented with a spline function.
+\note In order to use %NURBS basis functions of arbitrary degree 
+in physical domain, one must provide the appropriate \f$p\f$-refined weights.
+The igatools refinement mechanism does not provide \f$p\f$-refinement.
+
 
 In order to plot a single basis function, we create an IgFunction whose coefficients
 are all zero but the one associated to the basis function. We first get the DofDistribution
 class from the physical space. This class is responsible for indexes management.
-Now we can create another instance of IgCoefficients with the global indexes as
-keys given back from the method <tt>get_global_dofs()</tt>. By default, the values
+Now we can create another instance of IgCoefficients with the global indexes
+retrieved with the method <tt>get_global_dofs()</tt>. By default, the values
 are all zeroed. Setting to 1.0 the coefficient of the desired basis function is the
-only thing that remains before creating the IgFunction:
+only thing to do before creating the IgFunction:
 \snippet example_02.cpp basis_funct
 
 We are close to the end of the exercise: we need to construct a new Writer and
 then simply add via the <tt>add_field</tt> method the Function object we want to plot.
 \snippet example_02.cpp annulus_plot
+\note
+We underline that <tt>*_plot_points</tt> is the number of evaluation points
+per element per dimension, so that a tridimensional mesh with
+\f$4^3=64\f$ elements plotted with 10 points will results
+in \f$10^3\times64=64000\f$ total evaluation points. This means that it is
+very easy to obtain a huge amount of data if the Writer class is used with little
+care. Moreover, the Paraview visualization modes <tt>Surface With Edges</tt> or
+<tt>Wireframe</tt> plot the evaluation points and not the actual physical mesh.
 
-\section Exercise 
+\section Exercises
 <ol>
-<li> Modify the functions so that the degree and number of knots
-are passed as arguments, and test it with different grids, degrees, etc.
-<li> Check the documentation of GridElement and
-BSplineElement for other information (without use of cache)
-you can ask the element iterator for.
+<li> Create a spline space of vector-valued B-splines on the annulus domain.
 <div class="row">
  <a href="#hide21" class="hide" id="hide21">Show hint</a>
  <a href="#show21" class="show" id="show21">Hide hint</a>
  <div class="list">
+Substitute the template parameter <tt><2></tt> with <tt><2,2></tt> in the 
+appropriate function calls.
+ </div>
+ </div>
+<li> Use the BBox and BallGridFunction classes to create the annulus domain.
+<div class="row">
+ <a href="#hide22" class="hide" id="hide22">Show hint</a>
+ <a href="#show22" class="show" id="show22">Hide hint</a>
+ <div class="list">
 \code{.cpp}
-elem.is_boundary()
+using iga::numbers::PI;
+BBox<2> box;
+box[0] = {{1.0,2.0}};
+box[1] = {{0.0,PI/2}};
+auto geom_funct = grid_functions::BallGridFunction<2>::const_create(grid);
 \endcode
  </div>
  </div>

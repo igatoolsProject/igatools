@@ -36,7 +36,7 @@ LogStream out;
 // [hypercube]
 template <int dim>
 shared_ptr<const Domain<dim>> reference_domain(Size nel) {
-  auto grid = Grid<dim>::const_create(nel);
+  auto grid = Grid<dim>::const_create(nel+1);
   auto id_funct = grid_functions::IdentityGridFunction<dim>::const_create(grid);
   return Domain<dim>::const_create(id_funct);
 }
@@ -67,7 +67,7 @@ shared_ptr<Domain<2>> quarter_annulus(TensorSize<2> nel) {
   // [weight_funct]
   auto scal_space   = SplineSpace<2>::create(deg, grid);
   auto scal_bspline = BSpline<2>::create(scal_space);
-  auto weight_funct = IgGridFunction<2>::create(scal_bspline, weights);
+  auto weight_funct = IgGridFunction<2,1>::create(scal_bspline, weights);
   // [weight_funct]
 
   // [geom_funct]
@@ -88,12 +88,12 @@ int main()
 {
   auto square  = reference_domain<2>(8);
   auto cube    = reference_domain<3>(4);
-  auto annulus = quarter_annulus({6,4});
+  auto annulus = quarter_annulus({2,2});
   // [main]
 
   // [cube_plot]
-  int num_plot_points = 5;
-  Writer<3> writer_cube(cube,num_plot_points);
+  int cube_plot_points = 2;
+  Writer<3> writer_cube(cube,cube_plot_points);
   writer_cube.save("cube");
   // [cube_plot]
 
@@ -112,7 +112,8 @@ int main()
   // [basis_funct]
 
   // [annulus_plot]
-  Writer<2> writer_annulus(annulus,num_plot_points);
+  int annulus_plot_points = 10;
+  Writer<2> writer_annulus(annulus,annulus_plot_points);
   const string fieldname = "basis function 7";
   writer_annulus.add_field(*basis_funct,fieldname);
   writer_annulus.save("annulus");
