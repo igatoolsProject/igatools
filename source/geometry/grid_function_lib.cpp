@@ -130,6 +130,14 @@ print_info(LogStream &out) const
   out.end_item();
 }
 
+template<int dim, int space_dim>
+auto
+ConstantGridFunction<dim,space_dim>::
+get_constant_value() const -> const Value &
+{
+    return b_;
+}
+
 
 //------------------------------------------------------------------------------
 

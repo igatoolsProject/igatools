@@ -63,6 +63,8 @@ public:
 
   virtual void print_info(LogStream &out) const override final;
 
+  const Value &get_constant_value() const;
+
 protected:
   ConstantGridFunction(
     const SharedPtrConstnessHandler<GridType> &domain,

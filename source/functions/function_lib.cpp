@@ -119,6 +119,16 @@ print_info(LogStream &out) const
 
 
 
+template<int dim, int codim, int range, int rank>
+auto
+ConstantFunction<dim, codim, range, rank>::
+get_constant_value() const -> const Value &
+{
+  return b_;
+}
+
+
+
 
 //------------------------------------------------------------------------------
 template<int dim, int codim, int range>
