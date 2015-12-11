@@ -55,7 +55,7 @@ XMLFileParser()
   catch (xercesc::XMLException &exception)
   {
     char *error_msg = xercesc::XMLString::transcode(exception.getMessage());
-    AssertThrow(false, ExcMessage(error_msg));
+    AssertThrow(false, ExcXMLError(error_msg, 0, 0));
     xercesc::XMLString::release(&error_msg);
   }
 
@@ -96,7 +96,7 @@ XMLFileParser::
   catch (xercesc::XMLException &exception)
   {
     char *error_msg = xercesc::XMLString::transcode(exception.getMessage());
-    AssertThrow(false, ExcMessage(error_msg));
+    AssertThrow(false, ExcXMLError(error_msg, 0, 0));
     xercesc::XMLString::release(&error_msg);
   }
 }

@@ -499,6 +499,46 @@ get_single_element(const string &name) -> SelfPtr_
 }
 
 
+
+template <class T>
+void
+XMLElement::
+add_attribute(const string &name,
+              const T &value)
+{
+    XMLCh* name_ch = XMLString::transcode(name.c_str());
+    const auto value_str = std::to_string(value);
+    XMLCh* value_ch = XMLString::transcode(value_str.c_str());
+    root_elem_->setAttribute(name_ch, value_ch);
+    XMLString::release(&name_ch);
+    XMLString::release(&value_ch);
+}
+
+
+
+void
+XMLElement::
+add_attribute(const string &name,
+              const string &value)
+{
+    XMLCh* name_ch = XMLString::transcode(name.c_str());
+    XMLCh* value_ch = XMLString::transcode(value.c_str());
+    root_elem_->setAttribute(name_ch, value_ch);
+    XMLString::release(&name_ch);
+    XMLString::release(&value_ch);
+}
+
+
+
+void
+XMLElement::
+append_child_element (const SelfPtr_ xml_elem)
+{
+    root_elem_->appendChild(xml_elem->root_elem_);
+}
+
+
+
 void
 XMLElement::
 print_info(LogStream &out) const
@@ -515,6 +555,10 @@ print_info(LogStream &out) const
   delete xmlch_output;
   delete writer;
 }
+
+//template void XMLElement::add_attribute<string> (const string &, const string &);
+template void XMLElement::add_attribute<Index> (const string &, const Index &);
+template void XMLElement::add_attribute<Real> (const string &, const Real &);
 
 IGA_NAMESPACE_CLOSE
 

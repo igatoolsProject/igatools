@@ -27,6 +27,7 @@
 
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/dom/DOMElement.hpp>
+
 XERCES_CPP_NAMESPACE_BEGIN
 class DOMElement;
 class DOMText;
@@ -231,6 +232,35 @@ public:
    * the given @p name, an error is thrown.
    */
   SelfPtr_ get_single_element(const std::string &name);
+
+  /**
+   * @brief Add a new attribute to the present element with the given
+   * @p name and @p value of type @p T.
+   *
+   * @param[in] name Name of the attribute.
+   * @param[in] name Value of the attribute.
+   * @tparam T type of the value.
+   */
+  template <class T> void add_attribute(const std::string &name,
+                                        const T &value);
+
+  /**
+   * @brief Add a new attribute to the present element with the given
+   * @p name and @p string @p value.
+   *
+   * @param[in] name Name of the attribute.
+   * @param[in] name Value of the attribute.
+   */
+  void add_attribute(const std::string &name,
+                     const std::string &value);
+
+  /**
+   * @brief Appends child element under the current element.
+   *
+   * @param[in] xml_elem Child element to be appended.
+   */
+  void append_child_element (const SelfPtr_ xml_elem);
+
 
   /**
    * @brief Prints the XML element content.

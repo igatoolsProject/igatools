@@ -31,12 +31,8 @@
 IGA_NAMESPACE_OPEN
 
 class XMLElement;
+class XMLDocument;
 class ObjectsContainer;
-//template <int dim> class Grid;
-//template <class T> class SafeSTLVector;
-//class IgCoefficients;
-//class LogStream;
-//template <class T1, class T2> class SafeSTLMap;
 
 /**
  * @brief Helper class for creating an @ref ObjectsContainer parsed from
@@ -78,7 +74,7 @@ class ObjectsContainer;
  *
  * @see ObjectsContainer
  * @see XMLFileParser
- * @see XMLElement
+ * @see XMLDocument
  *
  * @author P. Antolin
  * @date 2015
@@ -96,15 +92,8 @@ private:
   /** Type for a shared pointer of the current class. */
   typedef std::shared_ptr<Self_> SelfPtr_;
 
-//  /** Type for mapping between @p Id numbers local to the input file and
-//   *  object unique @p Id. */
-//  typedef SafeSTLMap<Index, Index> IdMap_;
-
-//  /**
-//   * Statically defined string defining the XML schema for validating the
-//   * input files.
-//   */
-//  static const std::string XML_SCHEMA_;
+  /** Type for a shared pointer of @ref XMLDocument. */
+  typedef std::shared_ptr<XMLDocument> XMLDocPtr_;
 
   ///@}
 
@@ -156,77 +145,77 @@ public:
 
 private:
   static void write_grids (const std::shared_ptr<ObjectsContainer> container,
-                           XMLElement &xml_elem);
+                           const XMLDocPtr_ xml_doc);
 
   static void write_spline_spaces (const std::shared_ptr<ObjectsContainer> container,
-                                   XMLElement &xml_elem);
+                                   const XMLDocPtr_ xml_doc);
 
   static void write_reference_space_bases (const std::shared_ptr<ObjectsContainer> container,
-                                     XMLElement &xml_elem);
+                                     const XMLDocPtr_ xml_doc);
 
   static void write_grid_functions (const std::shared_ptr<ObjectsContainer> container,
-                                    XMLElement &xml_elem);
+                                    const XMLDocPtr_ xml_doc);
 
   static void write_domains (const std::shared_ptr<ObjectsContainer> container,
-                             XMLElement &xml_elem);
+                             const XMLDocPtr_ xml_doc);
 
   static void write_physical_space_bases (const std::shared_ptr<ObjectsContainer> container,
-                                          XMLElement &xml_elem);
+                                          const XMLDocPtr_ xml_doc);
 
   static void write_functions (const std::shared_ptr<ObjectsContainer> container,
-                               XMLElement &xml_elem);
+                               const XMLDocPtr_ xml_doc);
 
   template <class Grid>
   static void write_grid (const std::shared_ptr<Grid> grid,
-                          XMLElement &xml_elem);
+                          const XMLDocPtr_ xml_doc);
 
   template <class SpSpace>
   static void write_spline_space (const std::shared_ptr<SpSpace> spline_space,
-                                  XMLElement &xml_elem);
+                                  const XMLDocPtr_ xml_doc);
 
   template <class BSpline>
   static void write_bspline (const std::shared_ptr<BSpline> bspline,
-                             XMLElement &xml_elem);
+                             const XMLDocPtr_ xml_doc);
 
   template <class NURBS>
   static void write_nurbs (const std::shared_ptr<NURBS> nurbs,
-                           XMLElement &xml_elem);
+                           const XMLDocPtr_ xml_doc);
 
   template <class IdGridFunc>
   static void write_identity_grid_function (const std::shared_ptr<IdGridFunc> id_func,
-                                            XMLElement &xml_elem);
+                                            const XMLDocPtr_ xml_doc);
 
   template <class ConstGridFunc>
   static void write_constant_grid_function (const std::shared_ptr<ConstGridFunc> const_func,
-                                            XMLElement &xml_elem);
+                                            const XMLDocPtr_ xml_doc);
 
   template <class IgGridFunc>
   static void write_ig_grid_function (const std::shared_ptr<IgGridFunc> ig_func,
-                                      XMLElement &xml_elem);
+                                      const XMLDocPtr_ xml_doc);
 
   template <class LinearGridFunc>
   static void write_linear_grid_function (const std::shared_ptr<LinearGridFunc> linear_func,
-                                          XMLElement &xml_elem);
+                                          const XMLDocPtr_ xml_doc);
 
   template <class Domain>
   static void write_domain (const std::shared_ptr<Domain> domain,
-                            XMLElement &xml_elem);
+                            const XMLDocPtr_ xml_doc);
 
   template <class PhysSpaceBasis>
   static void write_phys_space_basis (const std::shared_ptr<PhysSpaceBasis> phys_space,
-                                      XMLElement &xml_elem);
+                                      const XMLDocPtr_ xml_doc);
 
   template <class IgFunction>
   static void write_ig_function (const std::shared_ptr<IgFunction> ig_function,
-                                 XMLElement &xml_elem);
+                                 const XMLDocPtr_ xml_doc);
 
   template <class ConstantFunction>
   static void write_constant_function (const std::shared_ptr<ConstantFunction> const_function,
-                                       XMLElement &xml_elem);
+                                       const XMLDocPtr_ xml_doc);
 
   template <class LinearFunc>
   static void write_linear_function (const std::shared_ptr<LinearFunc> linear_func,
-                                     XMLElement &xml_elem);
+                                     const XMLDocPtr_ xml_doc);
 
 };
 
