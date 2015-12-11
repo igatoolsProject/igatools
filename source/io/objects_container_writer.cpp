@@ -643,7 +643,18 @@ write_linear_grid_function (const shared_ptr<LinearGridFunc> linear_func,
     obj_elem->add_attribute("Dim", dim);
     obj_elem->add_attribute("Spacedim", space_dim);
 
-    AssertThrow (false, ExcNotImplemented());
+    const auto grid_elem = xml_doc->create_new_element("Grid");
+    grid_elem->add_attribute("GetFromLocalObjectId",
+                            linear_func->get_grid()->get_object_id());
+    obj_elem->append_child_element(grid_elem);
+
+    const auto A_vec = linear_func->get_A().get_flat_values();
+    const auto A_elem = xml_doc->create_vector_element("A", A_vec);
+    obj_elem->append_child_element(A_elem);
+
+    const auto b_vec = linear_func->get_b().get_flat_values();
+    const auto b_elem = xml_doc->create_vector_element("b", b_vec);
+    obj_elem->append_child_element(b_elem);
 
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
@@ -873,7 +884,18 @@ write_linear_function (const shared_ptr<LinearFunction> linear_function,
     obj_elem->add_attribute("Rank", rank);
     obj_elem->add_attribute("Codim", codim);
 
-    AssertThrow (false, ExcNotImplemented());
+    const auto dm_elem = xml_doc->create_new_element("Domain");
+    dm_elem->add_attribute("GetFromLocalObjectId",
+                            linear_function->get_domain()->get_object_id());
+    obj_elem->append_child_element(dm_elem);
+
+    const auto A_vec = linear_function->get_A().get_flat_values();
+    const auto A_elem = xml_doc->create_vector_element("A", A_vec);
+    obj_elem->append_child_element(A_elem);
+
+    const auto b_vec = linear_function->get_b().get_flat_values();
+    const auto b_elem = xml_doc->create_vector_element("b", b_vec);
+    obj_elem->append_child_element(b_elem);
 
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
@@ -888,14 +910,6 @@ create_ig_coefs_xml_element(const IgCoefficients &coefs,
 {
     const auto ic_elem = xml_doc->create_new_element("IgCoefficients");
     ic_elem->add_attribute("Size", coefs.size());
-//    <IgCoefficients Size="12">
-//      <Indices>
-//        0 1 2 3 4 5 6 7 8 9 10 11
-//      </Indices>
-//      <Values>
-//        1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
-//      </Values>
-//    </IgCoefficients>
 
     SafeSTLVector<Index> indices (coefs.size());
     SafeSTLVector<Real> values (coefs.size());

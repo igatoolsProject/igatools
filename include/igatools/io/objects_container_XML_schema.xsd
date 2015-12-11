@@ -351,6 +351,19 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <!-- LinearGridFunction type -->
+  <xs:complexType name="LinearGridFunctionType">
+    <xs:complexContent>
+      <xs:extension base="LocalObjectIdDimSpacedimType">
+        <xs:all>
+          <xs:element name="Grid" type="GetFromLocalObjectIdType"/>
+          <xs:element name="A" type="DoubleListType"/>
+          <xs:element name="b" type="DoubleListType"/>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <!-- IgCoefficients type -->
   <xs:complexType name="IgCoefficientsType">
     <xs:all>
@@ -441,6 +454,19 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <!-- LinearFunction type -->
+  <xs:complexType name="LinearFunctionType">
+    <xs:complexContent>
+      <xs:extension base="LocalObjectIdDimRangeRankCodimType">
+        <xs:all>
+          <xs:element name="Domain" type="GetFromLocalObjectIdType"/>
+          <xs:element name="A" type="DoubleListType"/>
+          <xs:element name="b" type="DoubleListType"/>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <!-- Main igatools XML element type -->
   <xs:element name="Igatools">
     <xs:complexType>
@@ -451,12 +477,14 @@
           <xs:element name="BSpline" type="BSplineType"/>
           <xs:element name="IdentityGridFunction" type="IdentityGridFunctionType"/>
           <xs:element name="ConstantGridFunction" type="ConstantGridFunctionType"/>
+          <xs:element name="LinearGridFunction" type="LinearGridFunctionType"/>
           <xs:element name="IgGridFunction" type="IgGridFunctionType"/>
           <xs:element name="NURBS" type="NURBSType"/>
           <xs:element name="Domain" type="DomainType"/>
           <xs:element name="PhysicalSpaceBasis" type="PhysicalSpaceBasisType"/>
           <xs:element name="IgFunction" type="IgFunctionType"/>
           <xs:element name="ConstantFunction" type="ConstantFunctionType"/>
+          <xs:element name="LinearFunction" type="LinearFunctionType"/>
         </xs:choice>
       </xs:sequence>
       <xs:attribute name="FormatVersion" type="xs:float" fixed="2.0" use="required"/>
