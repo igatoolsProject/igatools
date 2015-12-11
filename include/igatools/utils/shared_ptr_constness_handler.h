@@ -223,11 +223,14 @@ public:
 
 
   /**
-   * Pointer operator. Return a const pointer to the const data.
+   * Dereference operator. Return a pointer to the const data.
    */
-  const T *const operator->() const
+  PtrToConst operator->() const
   {
-    return this->get_ptr_const_data().get();
+    if (data_is_const())
+      return ptr_to_const_;
+    else
+      return ptr_;
   }
 
   /**

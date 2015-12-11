@@ -37,7 +37,7 @@ macro(init_cxx_flags)
       message(FATAL_ERROR "To compile igatools is required g++ version 5.3.0 or greater.")
     endif()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fuse-ld=gold \
-     -Wdelete-non-virtual-dtor -Wnon-virtual-dtor -Wctor-dtor-privacy -Woverloaded-virtual -Wpedantic -Wextra")
+     -Wdelete-non-virtual-dtor -Wnon-virtual-dtor -Wctor-dtor-privacy -Woverloaded-virtual -Wpedantic")
   elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")

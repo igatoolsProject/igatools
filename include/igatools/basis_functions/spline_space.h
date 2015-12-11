@@ -522,7 +522,7 @@ public:
      */
     const T &operator[](const Index i) const;
 
-    const Index active(const Index i) const
+    Index active(const Index i) const
     {
       return comp_map_[i];
     }
