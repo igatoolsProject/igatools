@@ -38,6 +38,7 @@ IGA_NAMESPACE_OPEN
 
 template <class T> class SafeSTLVector;
 class LogStream;
+class XMLDocument;
 
 /**
  * @brief Class for managing XML DOM elements of @p Xerces-c.
@@ -63,6 +64,8 @@ class LogStream;
 class XMLElement
 {
 private:
+
+  friend class XMLDocument;
 
   /** @name Types and static values */
   ///@{
@@ -121,7 +124,6 @@ private:
    */
   XMLElement &operator= (XMLElement &&) = delete;
 
-public:
   /**
    * @brief Builds and returns a new instance wrapped into a shared pointer.
    *
@@ -134,6 +136,7 @@ public:
 
   ///@}
 
+public:
   /**
    * @brief Returns a vector containing all the first level children nodes of
    * type element present in current element.

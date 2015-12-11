@@ -24,7 +24,7 @@
 
 #include <igatools/io/objects_container_parser-XML_schema.h>
 
-#include <igatools/io/xml_file_parser.h>
+#include <igatools/io/xml_document.h>
 #include <igatools/io/xml_element.h>
 #include <igatools/base/objects_container.h>
 
@@ -54,8 +54,10 @@ shared_ptr<ObjectsContainer>
 ObjectsContainerParser::
 parse(const string &file_path)
 {
-  const auto parser = XMLFileParser::create();
-  const auto xml_elem = parser->parse(file_path, ObjectsContainerParser::XML_SCHEMA_);
+  const auto xml_doc = XMLDocument::parse_from_file(file_path,
+                       ObjectsContainerParser::XML_SCHEMA_);
+  const auto xml_elem = xml_doc->get_document_element();
+
   const auto container = ObjectsContainer::create();
 
   // Checking for repeated iga object ids.
@@ -88,8 +90,10 @@ shared_ptr<ObjectsContainer>
 ObjectsContainerParser::
 parse_const(const string &file_path)
 {
-  const auto parser = XMLFileParser::create();
-  const auto xml_elem = parser->parse(file_path, ObjectsContainerParser::XML_SCHEMA_);
+  const auto xml_doc = XMLDocument::parse_from_file(file_path,
+                       ObjectsContainerParser::XML_SCHEMA_);
+  const auto xml_elem = xml_doc->get_document_element();
+
   const auto container = ObjectsContainer::create();
 
   // Checking for repeated iga object ids.

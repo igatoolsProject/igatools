@@ -509,7 +509,7 @@ template <class LinearFunction>
 void
 ObjectsContainerWriter::
 write_linear_function (const shared_ptr<LinearFunction> linear_function,
-                         const XMLDocPtr_ xml_doc)
+                       const XMLDocPtr_ xml_doc)
 {
     AssertThrow (false, ExcNotImplemented());
 }
