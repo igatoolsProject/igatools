@@ -258,6 +258,26 @@ print_info(LogStream &out) const
 }
 
 
+
+template<int dim, int space_dim>
+auto
+LinearGridFunction<dim,space_dim>::
+get_A () const -> const Derivative<1> &
+{
+    return A_;
+}
+
+
+
+template<int dim, int space_dim>
+auto
+LinearGridFunction<dim,space_dim>::
+get_b () const -> const Value &
+{
+    return b_;
+}
+
+
 //------------------------------------------------------------------------------
 
 

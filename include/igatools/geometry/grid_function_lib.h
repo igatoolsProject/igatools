@@ -135,6 +135,10 @@ public:
 
   virtual void print_info(LogStream &out) const override final;
 
+  const Derivative<1> &get_A() const;
+
+  const Value &get_b() const;
+
 protected:
   LinearGridFunction(
     const SharedPtrConstnessHandler<GridType> &domain,

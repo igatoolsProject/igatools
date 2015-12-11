@@ -127,6 +127,10 @@ public:
 
   virtual void print_info(LogStream &out) const override final;
 
+  const Derivative<1> &get_A() const;
+
+  const Value &get_b() const;
+
 
 protected:
   LinearFunction(const SharedPtrConstnessHandler<DomainType> &domain, const Derivative<1> &A,
