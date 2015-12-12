@@ -41,6 +41,13 @@ Tdouble(const Real val)
   val_ = val;
 }
 
+inline
+Tdouble::
+Tdouble(const SafeSTLArray<value_t, n_entries> &values)
+    :
+    Tdouble (values[0])
+{}
+
 
 
 inline
@@ -252,6 +259,23 @@ Tensor(std::initializer_list<value_type> list)
          ExcDimensionMismatch(list.size(),self_t::size)) ;
   for (int i = 0; i < self_t::size; ++i)
     tensor_[i] = list.begin()[i];
+}
+
+template<int dim_, int rank_, class tensor_type, class value_type >
+inline
+Tensor< dim_, rank_, tensor_type, value_type >::
+Tensor(const SafeSTLArray<typename Tdouble::value_t, n_entries> &values)
+{
+  static const int sub_tens_entries = value_type::n_entries;
+  using SubTensArray = SafeSTLArray<typename Tdouble::value_t, sub_tens_entries>;
+  for (int i = 0; i < self_t::size; ++i)
+  {
+    SubTensArray new_array;
+    std::copy (values.cbegin() + i * sub_tens_entries,
+               values.cbegin() + (i + 1) * sub_tens_entries,
+               new_array.begin());
+    tensor_[i] = value_type(new_array);
+  }
 }
 
 

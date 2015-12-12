@@ -117,6 +117,11 @@ public:
   Tdouble(const Real val);
 
   /**
+   * Constructor from a flat array of entries.
+   */
+  Tdouble(const SafeSTLArray<value_t, n_entries> &values);
+
+  /**
    * Advance constructor to optimization when zero
    * initialization is not necessary.
    */
@@ -456,6 +461,11 @@ public:
    * Default constructor. Sets all entries to 0.
    */
   Tensor() = default;
+
+  /**
+   * Constructor from a flat array of entries.
+   */
+  Tensor(const SafeSTLArray<typename Tdouble::value_t, n_entries> &values);
 
   /** Copy constructor */
   Tensor(const Tensor<dim_, rank_, tensor_type, value_type> &tensor) = default;
