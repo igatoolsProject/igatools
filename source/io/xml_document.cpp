@@ -110,7 +110,7 @@ XMLDocument(const string &file_path)
   parser->parse(file_path.c_str());
   xml_doc_ = parser->getDocument();
 
-  delete parser;
+//  delete parser;
 }
 
 
@@ -152,7 +152,7 @@ XMLDocument(const string &file_path,
 
   xml_doc_ = parser->getDocument();
 
-  delete parser;
+//  delete parser;
 }
 
 
