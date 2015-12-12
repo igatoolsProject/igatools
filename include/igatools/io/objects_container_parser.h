@@ -292,6 +292,23 @@ private:
                                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
+   * @brief Parses all the @ref grid_functions::LinearGridFunction
+   * contained into the XML document and stores them into the container.
+   *
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
+   *                the unique object Id.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
+   */
+  static void parse_linear_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
+                                          const bool parse_as_constant,
+                                          IdMap_ &id_map,
+                                          const std::shared_ptr<ObjectsContainer> container);
+
+  /**
    * @brief Parses all the @ref IgGridFunction
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
@@ -399,6 +416,24 @@ private:
                                        const bool parse_as_constant,
                                        IdMap_ &id_map,
                                        const std::shared_ptr<ObjectsContainer> container);
+
+  /**
+   * @brief Parses all the @ref functions::LinearFunction
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
+   *
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
+   *                the unique object Id.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
+   */
+  static void parse_linear_functions(const std::shared_ptr<XMLElement> xml_elem,
+                                     const bool parse_as_constant,
+                                     IdMap_ &id_map,
+                                     const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @brief Parses a single @ref Grid XML element contained in
@@ -524,6 +559,27 @@ private:
                                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
+   * @brief Parses a single @ref grid_functions::LinearGridFunction XML
+   * element contained in
+   * @p xml_elem and inserts it into the objects @p container.
+   *
+   * @tparam dim Dimension of the grid function.
+   * @tparam space_dim Space dimension of the grid function.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
+   *                the unique object Id.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
+   */
+  template <int dim, int space_dim>
+  static void parse_linear_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                                         const bool parse_as_constant,
+                                         IdMap_ &id_map,
+                                         const std::shared_ptr<ObjectsContainer> container);
+
+  /**
    * @brief Parses a single @ref IgGridFunction XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
@@ -637,6 +693,28 @@ private:
                                       const bool parse_as_constant,
                                       IdMap_ &id_map,
                                       const std::shared_ptr<ObjectsContainer> container);
+
+  /**
+   * @brief Parses an single @ref functions::LinearFunction XML element
+   * and inserts it into the objects container.
+   *
+   * @tparam dim Dimension of the function.
+   * @tparam codim Codimension of the function.
+   * @tparam range Range of the function.
+   * @tparam rank Rank of the function.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
+   *                the unique object Id.
+   * @param[in,out] container Container for inserting the object
+   *                and also retrieving other ones needed.
+   */
+  template <int dim, int codim, int range, int rank>
+  static void parse_linear_function(const std::shared_ptr<XMLElement> xml_elem,
+                                    const bool parse_as_constant,
+                                    IdMap_ &id_map,
+                                    const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @brief Parses a <tt>Name</tt> XML element contained in @p xml_elem.

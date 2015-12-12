@@ -223,6 +223,15 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <!-- Type with LocalObjectId, Dim, Codim and Range attributes -->
+  <xs:complexType name="LocalObjectIdDimCodimRangeType">
+    <xs:complexContent>
+      <xs:extension base="LocalObjectIdDimCodimType">
+        <xs:attribute name="Range" type="RangeType" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <!-- Type with LocalObjectId, Dim and Spacedim attributes -->
   <xs:complexType name="LocalObjectIdDimSpacedimType">
     <xs:complexContent>
@@ -457,7 +466,7 @@
   <!-- LinearFunction type -->
   <xs:complexType name="LinearFunctionType">
     <xs:complexContent>
-      <xs:extension base="LocalObjectIdDimRangeRankCodimType">
+      <xs:extension base="LocalObjectIdDimCodimRangeType">
         <xs:all>
           <xs:element name="Domain" type="GetFromLocalObjectIdType"/>
           <xs:element name="A" type="DoubleListType"/>

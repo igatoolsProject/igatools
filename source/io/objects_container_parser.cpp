@@ -396,6 +396,51 @@ parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
 
 void
 ObjectsContainerParser::
+parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
+                            const bool parse_as_constant,
+                            IdMap_ &id_map,
+                            const shared_ptr<ObjectsContainer> container)
+{
+  for (const auto &cgf : xml_elem->get_children_elements("LinearGridFunction"))
+  {
+    const int cgf_dim = cgf->get_attribute<int>("Dim");
+    const int cgf_space_dim = cgf->get_attribute<int>("Spacedim"); // This is going to change.
+
+    using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
+    GridFunctionPtrs valid_cgf_ptr_types;
+
+    bool found = false;
+    boost::fusion::for_each(valid_cgf_ptr_types, [&](const auto &cgf_ptr_type)
+    {
+      if (found)
+        return;
+
+      using GridFuncType = typename
+                           remove_reference<decltype(cgf_ptr_type)>::type::element_type;
+      static const int dim   = GridFuncType::dim;
+      static const int space_dim  = GridFuncType::space_dim;
+
+      if (cgf_dim == dim && cgf_space_dim == space_dim)
+      {
+        found = true;
+        parse_linear_grid_function<dim, space_dim>(cgf, parse_as_constant, id_map, container);
+      }
+    });
+
+    // LinearGridFunction dimensions not found
+    AssertThrow(found,
+                ExcMessage(Self_::get_type_id_string("LinearGridFunction",
+                                                     cgf->get_attribute<Index>("LocalObjectId"),
+    {{cgf_dim, cgf_space_dim}})
+    + " is not a valid type. Possibly the type was not "
+    "instantiated for the specified dimensions."));
+  }
+}
+
+
+
+void
+ObjectsContainerParser::
 parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
                         const bool parse_as_constant,
                         const bool &first_parsing,
@@ -461,6 +506,9 @@ parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
 
   // Parsing constant grid functions.
   parse_constant_grid_functions(xml_elem, parse_as_constant, id_map, container);
+
+  // Parsing linear grid functions.
+  parse_linear_grid_functions(xml_elem, parse_as_constant, id_map, container);
 
   // Parsing ig grid functions built upon a BSpline.
   bool first_parsing = true;
@@ -580,6 +628,7 @@ parse_functions(const shared_ptr<XMLElement> xml_elem,
 {
   parse_ig_functions(xml_elem, parse_as_constant, id_map, container);
   parse_constant_functions(xml_elem, parse_as_constant, id_map, container);
+  parse_linear_functions(xml_elem, parse_as_constant, id_map, container);
 }
 
 
@@ -673,6 +722,55 @@ parse_constant_functions(const shared_ptr<XMLElement> xml_elem,
     // Function dimensions not found
     AssertThrow(found,
                 ExcMessage(Self_::get_type_id_string("ConstantFunction",
+                                                     fn->get_attribute<Index>("LocalObjectId"),
+    {{fn_dim, fn_codim, fn_range, fn_rank}})
+    + " is not a valid type. Possibly the type was not "
+    "instantiated for the specified dimensions."));
+  }
+}
+
+
+
+void
+ObjectsContainerParser::
+parse_linear_functions(const shared_ptr<XMLElement> xml_elem,
+                       const bool parse_as_constant,
+                       IdMap_ &id_map,
+                       const shared_ptr<ObjectsContainer> container)
+{
+  for (const auto &fn : xml_elem->get_children_elements("LinearFunction"))
+  {
+    const int fn_dim = fn->get_attribute<int>("Dim");
+    const int fn_codim = fn->get_attribute<int>("Codim");
+    const int fn_range = fn->get_attribute<int>("Range");
+    const int fn_rank = fn->get_attribute<int>("Rank");
+
+    using FunctionPtrs = typename ObjectsContainer::FunctionPtrs;
+    FunctionPtrs valid_fn_ptr_types;
+
+    bool found = false;
+    boost::fusion::for_each(valid_fn_ptr_types, [&](const auto &fn_ptr_type)
+    {
+      if (found)
+        return;
+
+      using FunctionType = typename
+                           remove_reference<decltype(fn_ptr_type)>::type::element_type;
+      static const int dim = FunctionType::dim;
+      static const int range = FunctionType::range;
+      static const int rank = FunctionType::rank;
+      static const int codim = FunctionType::codim;
+
+      if (fn_dim == dim && fn_range == range && fn_rank == rank && fn_codim == codim)
+      {
+        found = true;
+        parse_linear_function<dim, codim, range, rank>(fn, parse_as_constant, id_map, container);
+      }
+    });
+
+    // Function dimensions not found
+    AssertThrow(found,
+                ExcMessage(Self_::get_type_id_string("LinearFunction",
                                                      fn->get_attribute<Index>("LocalObjectId"),
     {{fn_dim, fn_codim, fn_range, fn_rank}})
     + " is not a valid type. Possibly the type was not "
@@ -1220,16 +1318,16 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
                                                             SafeSTLVector<Index>(dim)) + "."));
 
   // Parsing values.
+  typename GridFunctionType::Value values;
   const auto vals_tag = xml_elem->get_single_element("Values");
 
   const auto vals_vec = vals_tag->get_values_vector<Real>();
-  AssertThrow(vals_vec.size() == space_dim,
+  AssertThrow(vals_vec.size() == values.get_number_of_entries(),
               ExcMessage("Parsing " + parsing_msg + ", the number of "
                          "components in Values XML does not match "
                          "with the number of components of the GridFunction."));
 
-  typename GridFunctionType::Value values;
-  for (int c = 0; c < space_dim; ++c)
+  for (int c = 0; c < values.get_number_of_entries(); ++c)
     values[c] = vals_vec[c];
 
 
@@ -1246,6 +1344,94 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
   {
     const auto grid = container->get_object<GridType>(id_map.at(local_gr_id));
     const auto cgf = ConstGridFunctionType::create(grid, values);
+    const auto unique_id = cgf->get_object_id();
+    id_map[local_object_id] = unique_id;
+
+    container->insert_object<GridFunctionType>(cgf);
+  }
+}
+
+
+
+template <int dim, int space_dim>
+void
+ObjectsContainerParser::
+parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
+                           const bool parse_as_constant,
+                           IdMap_ &id_map,
+                           const shared_ptr<ObjectsContainer> container)
+{
+  Assert(xml_elem->get_name() == "LinearGridFunction",
+         ExcMessage("Invalid XML tag."));
+
+  Assert(xml_elem->get_attribute<int>("Dim") == dim,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+  Assert(xml_elem->get_attribute<int>("Spacedim") == space_dim,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Spacedim"), space_dim));
+
+  using GridType = Grid<dim>;
+  using LinearGridFunctionType = grid_functions::LinearGridFunction<dim, space_dim>;
+  using GridFunctionType = GridFunction<dim, space_dim>;
+
+  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
+  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
+
+  const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
+  local_object_id, {{dim, space_dim}});
+
+  // Gettting grid.
+  const auto gr_tag = xml_elem->get_single_element("Grid");
+  const auto local_gr_id = gr_tag->get_attribute<Index>("GetFromLocalObjectId");
+
+  // Checking the grid with proper dimension and id exists.
+  AssertThrow(id_map.find(local_gr_id) != id_map.cend() &&
+              (parse_as_constant ?
+               container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
+               container->is_object_present<GridType> (id_map.at(local_gr_id))),
+              ExcMessage("Parsing " + parsing_msg + " not matching definition" +
+                         "for " + Self_::get_type_id_string("Grid", local_gr_id,
+                                                            SafeSTLVector<Index>(dim)) + "."));
+
+  // Parsing b.
+  const auto b_tag = xml_elem->get_single_element("b");
+
+  typename LinearGridFunctionType::Value b;
+  const auto b_vec = b_tag->get_values_vector<Real>();
+  AssertThrow(b_vec.size() == b.get_number_of_entries(),
+              ExcMessage("Parsing " + parsing_msg + ", the number of "
+                         "components in b does not match "
+                         "with the number of components of the GridFunction."));
+
+  for (int c = 0; c < b.get_number_of_entries(); ++c)
+    b[c] = b_vec[c];
+
+  // Parsing A.
+  const auto A_tag = xml_elem->get_single_element("A");
+
+  typename LinearGridFunctionType::template Derivative<1> A;
+  const auto A_vec = A_tag->get_values_vector<Real>();
+  AssertThrow(A_vec.size() == A.get_number_of_entries(),
+              ExcMessage("Parsing " + parsing_msg + ", the number of "
+                         "components in A does not match "
+                         "with the number of components of the GridFunction."));
+
+  for (int c = 0; c < A.get_number_of_entries(); ++c)
+    A[c] = A_vec[c];
+
+
+  if (parse_as_constant)
+  {
+    const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
+    const auto cgf = LinearGridFunctionType::const_create(grid, A, b);
+    const auto unique_id = cgf->get_object_id();
+    id_map[local_object_id] = unique_id;
+
+    container->insert_const_object<GridFunctionType>(cgf);
+  }
+  else
+  {
+    const auto grid = container->get_object<GridType>(id_map.at(local_gr_id));
+    const auto cgf = LinearGridFunctionType::create(grid, A, b);
     const auto unique_id = cgf->get_object_id();
     id_map[local_object_id] = unique_id;
 
@@ -1699,7 +1885,6 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
   using FunctionType = Function<dim, codim, range, rank>;
   using ConstFunctionType = functions::ConstantFunction<dim, codim, range, rank>;
   using Values = typename FunctionType::Value;
-  static const int n_components = Values::size;
 
   const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
@@ -1728,16 +1913,16 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
          (container->get_object<DomainType>(id_map.at(local_dm_id)));
 
   // Parsing values.
+  Values values;
   const auto vals_tag = xml_elem->get_single_element("Values");
 
   const auto vals_vec = vals_tag->get_values_vector<Real>();
-  AssertThrow(vals_vec.size() == n_components,
+  AssertThrow(vals_vec.size() == values.get_number_of_entries(),
               ExcMessage("Parsing " + parsing_msg + ", the number of "
                          "components in Values XML does not match "
                          "with the number of components of the Function."));
 
-  typename FunctionType::Value values;
-  for (int c = 0; c < n_components; ++c)
+  for (int c = 0; c < values.get_number_of_entries(); ++c)
     values[c] = vals_vec[c];
 
   const auto name = parse_name(xml_elem);
@@ -1753,6 +1938,104 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
   else
   {
     const auto cf = ConstFunctionType::create(dm.get_ptr_data(), values, name);
+    const auto unique_id = cf->get_object_id();
+    id_map[local_object_id] = unique_id;
+
+    container->insert_object<FunctionType>(cf);
+  }
+}
+
+
+
+template <int dim, int codim, int range, int rank>
+void
+ObjectsContainerParser::
+parse_linear_function(const shared_ptr<XMLElement> xml_elem,
+                      const bool parse_as_constant,
+                      IdMap_ &id_map,
+                      const shared_ptr<ObjectsContainer> container)
+{
+  Assert(xml_elem->get_name() == "LinearFunction",
+         ExcMessage("Invalid XML tag."));
+
+  Assert(xml_elem->get_attribute<int>("Dim") == dim,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
+  Assert(xml_elem->get_attribute<int>("Range") == range,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
+  Assert(xml_elem->get_attribute<int>("Codim") == codim,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
+
+  using DomainType = Domain<dim, codim>;
+  using FunctionType = Function<dim, codim, range, rank>;
+  using LinearFunctionType = functions::LinearFunction<dim, codim, range>;
+  using Values = typename FunctionType::Value;
+
+  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
+  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
+
+  const string parsing_msg = Self_::get_type_id_string("LinearFunction",
+  local_object_id, {{dim, codim, range, rank}});
+
+  const auto dm_tag = xml_elem->get_single_element("Domain");
+  const auto local_dm_id = dm_tag->get_attribute<Index>("GetFromLocalObjectId");
+
+  AssertThrow(id_map.find(local_dm_id) != id_map.cend() &&
+              (parse_as_constant ?
+               container->is_const_object_present<DomainType> (id_map.at(local_dm_id)) :
+               container->is_object_present<DomainType> (id_map.at(local_dm_id))),
+              ExcMessage("Parsing " + parsing_msg + " not matching "
+                         "definition for " +
+                         Self_::get_type_id_string("Domain", local_dm_id,
+  {{dim, codim}}) + "."));
+
+  SharedPtrConstnessHandler<DomainType> dm;
+  if (parse_as_constant)
+    dm = SharedPtrConstnessHandler<DomainType>
+         (container->get_const_object<DomainType>(id_map.at(local_dm_id)));
+  else
+    dm = SharedPtrConstnessHandler<DomainType>
+         (container->get_object<DomainType>(id_map.at(local_dm_id)));
+
+  // Parsing b.
+  const auto b_tag = xml_elem->get_single_element("b");
+
+  Values b;
+  const auto b_vec = b_tag->get_values_vector<Real>();
+  AssertThrow(b_vec.size() == b.get_number_of_entries(),
+              ExcMessage("Parsing " + parsing_msg + ", the number of "
+                         "components in b does not match "
+                         "with the number of components of the GridFunction."));
+
+  for (int c = 0; c < b.get_number_of_entries(); ++c)
+    b[c] = b_vec[c];
+
+  // Parsing A.
+  const auto A_tag = xml_elem->get_single_element("A");
+
+  typename LinearFunctionType::template Derivative<1> A;
+  const auto A_vec = A_tag->get_values_vector<Real>();
+  AssertThrow(A_vec.size() == A.get_number_of_entries(),
+              ExcMessage("Parsing " + parsing_msg + ", the number of "
+                         "components in A does not match "
+                         "with the number of components of the GridFunction."));
+
+  for (int c = 0; c < A.get_number_of_entries(); ++c)
+    A[c] = A_vec[c];
+
+
+  const auto name = parse_name(xml_elem);
+
+  if (parse_as_constant)
+  {
+    const auto cf = LinearFunctionType::const_create(dm.get_ptr_const_data(), A, b, name);
+    const auto unique_id = cf->get_object_id();
+    id_map[local_object_id] = unique_id;
+
+    container->insert_const_object<FunctionType>(cf);
+  }
+  else
+  {
+    const auto cf = LinearFunctionType::create(dm.get_ptr_data(), A, b, name);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
 

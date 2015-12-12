@@ -875,14 +875,12 @@ write_linear_function (const shared_ptr<LinearFunction> linear_function,
 
     static const int dim   = LinearFunction::dim;
     static const int range = LinearFunction::range;
-    static const int rank  = LinearFunction::rank;
     static const int codim = LinearFunction::codim;
 
     obj_elem->add_attribute("LocalObjectId", linear_function->get_object_id());
     obj_elem->add_attribute("Dim", dim);
-    obj_elem->add_attribute("Range", range);
-    obj_elem->add_attribute("Rank", rank);
     obj_elem->add_attribute("Codim", codim);
+    obj_elem->add_attribute("Range", range);
 
     const auto dm_elem = xml_doc->create_new_element("Domain");
     dm_elem->add_attribute("GetFromLocalObjectId",
