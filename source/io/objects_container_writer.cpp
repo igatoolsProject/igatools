@@ -618,7 +618,9 @@ write_constant_grid_function (const shared_ptr<ConstGridFunc> const_func,
                             const_func->get_grid()->get_object_id());
     obj_elem->append_child_element(grid_elem);
 
-    const auto values_vec = const_func->get_constant_value().get_flat_values();
+    const auto values_arr = const_func->get_constant_value().get_flat_values();
+    SafeSTLVector<Real> values_vec(values_arr.size());
+    std::copy(values_arr.cbegin(), values_arr.cend(), values_vec.begin());
     const auto values_elem = xml_doc->create_vector_element("Values", values_vec);
     obj_elem->append_child_element(values_elem);
 
@@ -648,11 +650,15 @@ write_linear_grid_function (const shared_ptr<LinearGridFunc> linear_func,
                             linear_func->get_grid()->get_object_id());
     obj_elem->append_child_element(grid_elem);
 
-    const auto A_vec = linear_func->get_A().get_flat_values();
+    const auto A_arr = linear_func->get_A().get_flat_values();
+    SafeSTLVector<Real> A_vec(A_arr.size());
+    std::copy(A_arr.cbegin(), A_arr.cend(), A_vec.begin());
     const auto A_elem = xml_doc->create_vector_element("A", A_vec);
     obj_elem->append_child_element(A_elem);
 
-    const auto b_vec = linear_func->get_b().get_flat_values();
+    const auto b_arr = linear_func->get_b().get_flat_values();
+    SafeSTLVector<Real> b_vec(b_arr.size());
+    std::copy(b_arr.cbegin(), b_arr.cend(), b_vec.begin());
     const auto b_elem = xml_doc->create_vector_element("b", b_vec);
     obj_elem->append_child_element(b_elem);
 
@@ -677,7 +683,7 @@ write_ig_grid_function (const shared_ptr<IgGridFunc> ig_func,
     obj_elem->add_attribute("Dim", dim);
     obj_elem->add_attribute("Spacedim", space_dim);
 
-    const auto rb_elem = xml_doc->create_new_element("SplineSpace");
+    const auto rb_elem = xml_doc->create_new_element("ReferenceSpaceBasis");
     rb_elem->add_attribute("GetFromLocalObjectId",
                             ig_func->get_basis()->get_object_id());
     obj_elem->append_child_element(rb_elem);
@@ -855,7 +861,9 @@ write_constant_function (const shared_ptr<ConstantFunction> const_function,
                             const_function->get_domain()->get_object_id());
     obj_elem->append_child_element(dm_elem);
 
-    const auto values_vec = const_function->get_constant_value().get_flat_values();
+    const auto values_arr = const_function->get_constant_value().get_flat_values();
+    SafeSTLVector<Real> values_vec(values_arr.size());
+    std::copy(values_arr.cbegin(), values_arr.cend(), values_vec.begin());
     const auto values_elem = xml_doc->create_vector_element("Values", values_vec);
     obj_elem->append_child_element(values_elem);
 
@@ -887,11 +895,15 @@ write_linear_function (const shared_ptr<LinearFunction> linear_function,
                             linear_function->get_domain()->get_object_id());
     obj_elem->append_child_element(dm_elem);
 
-    const auto A_vec = linear_function->get_A().get_flat_values();
+    const auto A_arr = linear_function->get_A().get_flat_values();
+    SafeSTLVector<Real> A_vec(A_arr.size());
+    std::copy(A_arr.cbegin(), A_arr.cend(), A_vec.begin());
     const auto A_elem = xml_doc->create_vector_element("A", A_vec);
     obj_elem->append_child_element(A_elem);
 
-    const auto b_vec = linear_function->get_b().get_flat_values();
+    const auto b_arr = linear_function->get_b().get_flat_values();
+    SafeSTLVector<Real> b_vec(b_arr.size());
+    std::copy(b_arr.cbegin(), b_arr.cend(), b_vec.begin());
     const auto b_elem = xml_doc->create_vector_element("b", b_vec);
     obj_elem->append_child_element(b_elem);
 

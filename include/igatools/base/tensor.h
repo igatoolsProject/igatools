@@ -97,6 +97,9 @@ public:
    * total number of components of type value_type */
   static const int size = 1; //iga::constexpr_pow(dim_, rank_);
 
+  /** Total number of scalar entries of the tensor. */
+  static const int n_entries = size;
+
   using self_t = Tdouble;
   using co_tensor_t = self_t;
   using value_t = Real;
@@ -218,9 +221,9 @@ public:
   static Size get_number_of_entries();
 
   /**
-   * Return the value wrapped into a vector.
+   * Return the value wrapped into an array.
    */
-  SafeSTLVector<value_t> get_flat_values() const noexcept;
+  SafeSTLArray<typename Tdouble::value_t, n_entries> get_flat_values() const noexcept;
 
 private:
   value_t val_;
@@ -434,6 +437,9 @@ public:
   /** Flat size of the tensor, i.e. total number of components of type value_type */
   static const int size = iga::constexpr_pow(dim_, rank_);
 
+  /** Total number of scalar entries of the tensor. */
+  static const int n_entries = size * value_type::size;
+
   using tensor_t = tensor_type;
 
   using value_t = value_type;
@@ -605,9 +611,9 @@ public:
   static Size get_number_of_entries();
 
   /**
-   * Return the value wrapped into a vector.
+   * Return the value wrapped into an array.
    */
-  SafeSTLVector<typename Tdouble::value_t> get_flat_values() const noexcept;
+  SafeSTLArray<typename Tdouble::value_t, n_entries> get_flat_values() const noexcept;
 
 private :
   static const int num_sub_tensor = (dim_== 0? 1: dim_) ;

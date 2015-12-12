@@ -233,9 +233,9 @@ inline
 auto
 Tdouble::
 get_flat_values() const noexcept ->
-SafeSTLVector<value_t>
+SafeSTLArray<value_t, n_entries>
 {
-  return SafeSTLVector<value_t> ({val_});
+  return SafeSTLArray<value_t, n_entries> ({val_});
 }
 
 
@@ -512,8 +512,6 @@ Size
 Tensor< dim_, rank_, tensor_type, value_type >::
 get_number_of_entries()
 {
-  Size n_entries = size;
-  n_entries *= value_type::get_number_of_entries();
   return n_entries;
 }
 
@@ -539,13 +537,14 @@ inline
 auto
 Tensor< dim_, rank_, tensor_type, value_type >::
 get_flat_values() const noexcept ->
-SafeSTLVector<typename Tdouble::value_t>
+SafeSTLArray<typename Tdouble::value_t, n_entries>
 {
-  SafeSTLVector<typename Tdouble::value_t> values;
+  SafeSTLArray<typename Tdouble::value_t, n_entries> values;
   for (int i = 0; i < dim_; ++i)
   {
     const auto new_values= tensor_[i].get_flat_values();
-    values.insert(values.end(), new_values.cbegin(), new_values.cend());
+    std::copy (new_values.cbegin(), new_values.cend(),
+               values.begin() + i * value_type::n_entries);
   }
 
   return values;
