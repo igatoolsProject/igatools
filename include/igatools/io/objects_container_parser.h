@@ -701,7 +701,6 @@ private:
    * @tparam dim Dimension of the function.
    * @tparam codim Codimension of the function.
    * @tparam range Range of the function.
-   * @tparam rank Rank of the function.
    * @param[in] xml_elem XML element to be parsed.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
@@ -710,7 +709,7 @@ private:
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
    */
-  template <int dim, int codim, int range, int rank>
+  template <int dim, int codim, int range>
   static void parse_linear_function(const std::shared_ptr<XMLElement> xml_elem,
                                     const bool parse_as_constant,
                                     IdMap_ &id_map,

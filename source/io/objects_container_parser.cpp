@@ -743,7 +743,6 @@ parse_linear_functions(const shared_ptr<XMLElement> xml_elem,
     const int fn_dim = fn->get_attribute<int>("Dim");
     const int fn_codim = fn->get_attribute<int>("Codim");
     const int fn_range = fn->get_attribute<int>("Range");
-    const int fn_rank = fn->get_attribute<int>("Rank");
 
     using FunctionPtrs = typename ObjectsContainer::FunctionPtrs;
     FunctionPtrs valid_fn_ptr_types;
@@ -758,13 +757,12 @@ parse_linear_functions(const shared_ptr<XMLElement> xml_elem,
                            remove_reference<decltype(fn_ptr_type)>::type::element_type;
       static const int dim = FunctionType::dim;
       static const int range = FunctionType::range;
-      static const int rank = FunctionType::rank;
       static const int codim = FunctionType::codim;
 
-      if (fn_dim == dim && fn_range == range && fn_rank == rank && fn_codim == codim)
+      if (fn_dim == dim && fn_range == range && fn_codim == codim)
       {
         found = true;
-        parse_linear_function<dim, codim, range, rank>(fn, parse_as_constant, id_map, container);
+        parse_linear_function<dim, codim, range>(fn, parse_as_constant, id_map, container);
       }
     });
 
@@ -772,7 +770,7 @@ parse_linear_functions(const shared_ptr<XMLElement> xml_elem,
     AssertThrow(found,
                 ExcMessage(Self_::get_type_id_string("LinearFunction",
                                                      fn->get_attribute<Index>("LocalObjectId"),
-    {{fn_dim, fn_codim, fn_range, fn_rank}})
+    {{fn_dim, fn_codim, fn_range}})
     + " is not a valid type. Possibly the type was not "
     "instantiated for the specified dimensions."));
   }
@@ -1297,6 +1295,7 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
   using GridType = Grid<dim>;
   using ConstGridFunctionType = grid_functions::ConstantGridFunction<dim, space_dim>;
   using GridFunctionType = GridFunction<dim, space_dim>;
+  using Values = typename GridFunctionType::Value;
 
   const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
@@ -1318,17 +1317,17 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
                                                             SafeSTLVector<Index>(dim)) + "."));
 
   // Parsing values.
-  typename GridFunctionType::Value values;
   const auto vals_tag = xml_elem->get_single_element("Values");
 
   const auto vals_vec = vals_tag->get_values_vector<Real>();
-  AssertThrow(vals_vec.size() == values.get_number_of_entries(),
+  AssertThrow(vals_vec.size() == Values::n_entries,
               ExcMessage("Parsing " + parsing_msg + ", the number of "
                          "components in Values XML does not match "
                          "with the number of components of the GridFunction."));
+  SafeSTLArray<Real, Values::n_entries> vals_arr;
+  std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
+  Values values (vals_arr);
 
-  for (int c = 0; c < values.get_number_of_entries(); ++c)
-    values[c] = vals_vec[c];
 
 
   if (parse_as_constant)
@@ -1372,6 +1371,8 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
   using GridType = Grid<dim>;
   using LinearGridFunctionType = grid_functions::LinearGridFunction<dim, space_dim>;
   using GridFunctionType = GridFunction<dim, space_dim>;
+  using Values = typename LinearGridFunctionType::Value;
+  using Ders = typename LinearGridFunctionType::template Derivative<1>;
 
   const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
@@ -1395,28 +1396,26 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
   // Parsing b.
   const auto b_tag = xml_elem->get_single_element("b");
 
-  typename LinearGridFunctionType::Value b;
   const auto b_vec = b_tag->get_values_vector<Real>();
-  AssertThrow(b_vec.size() == b.get_number_of_entries(),
+  AssertThrow(b_vec.size() == Values::n_entries,
               ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in b does not match "
+                         "components in Values XML does not match "
                          "with the number of components of the GridFunction."));
-
-  for (int c = 0; c < b.get_number_of_entries(); ++c)
-    b[c] = b_vec[c];
+  SafeSTLArray<Real, Values::n_entries> b_arr;
+  std::copy(b_vec.cbegin(), b_vec.cend(), b_arr.begin());
+  Values b (b_arr);
 
   // Parsing A.
   const auto A_tag = xml_elem->get_single_element("A");
 
-  typename LinearGridFunctionType::template Derivative<1> A;
   const auto A_vec = A_tag->get_values_vector<Real>();
-  AssertThrow(A_vec.size() == A.get_number_of_entries(),
+  AssertThrow(A_vec.size() == Ders::n_entries,
               ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in A does not match "
-                         "with the number of components of the GridFunction."));
-
-  for (int c = 0; c < A.get_number_of_entries(); ++c)
-    A[c] = A_vec[c];
+                         "components in Derivative<1> XML does not match "
+                         "with the number of components of the Function."));
+  SafeSTLArray<Real, Ders::n_entries> A_arr;
+  std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
+  Ders A (A_arr);
 
 
   if (parse_as_constant)
@@ -1913,17 +1912,16 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
          (container->get_object<DomainType>(id_map.at(local_dm_id)));
 
   // Parsing values.
-  Values values;
   const auto vals_tag = xml_elem->get_single_element("Values");
 
   const auto vals_vec = vals_tag->get_values_vector<Real>();
-  AssertThrow(vals_vec.size() == values.get_number_of_entries(),
+  AssertThrow(vals_vec.size() == Values::n_entries,
               ExcMessage("Parsing " + parsing_msg + ", the number of "
                          "components in Values XML does not match "
-                         "with the number of components of the Function."));
-
-  for (int c = 0; c < values.get_number_of_entries(); ++c)
-    values[c] = vals_vec[c];
+                         "with the number of components of the GridFunction."));
+  SafeSTLArray<Real, Values::n_entries> vals_arr;
+  std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
+  Values values (vals_arr);
 
   const auto name = parse_name(xml_elem);
 
@@ -1947,7 +1945,7 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
 
 
 
-template <int dim, int codim, int range, int rank>
+template <int dim, int codim, int range>
 void
 ObjectsContainerParser::
 parse_linear_function(const shared_ptr<XMLElement> xml_elem,
@@ -1965,10 +1963,12 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
   Assert(xml_elem->get_attribute<int>("Codim") == codim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
 
+  static const int rank = 1;
   using DomainType = Domain<dim, codim>;
   using FunctionType = Function<dim, codim, range, rank>;
   using LinearFunctionType = functions::LinearFunction<dim, codim, range>;
   using Values = typename FunctionType::Value;
+  using Ders = typename FunctionType::template Derivative<1>;
 
   const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
@@ -1999,29 +1999,26 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
   // Parsing b.
   const auto b_tag = xml_elem->get_single_element("b");
 
-  Values b;
   const auto b_vec = b_tag->get_values_vector<Real>();
-  AssertThrow(b_vec.size() == b.get_number_of_entries(),
+  AssertThrow(b_vec.size() == Values::n_entries,
               ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in b does not match "
-                         "with the number of components of the GridFunction."));
-
-  for (int c = 0; c < b.get_number_of_entries(); ++c)
-    b[c] = b_vec[c];
+                         "components in Values XML does not match "
+                         "with the number of components of the Function."));
+  SafeSTLArray<Real, Values::n_entries> b_arr;
+  std::copy(b_vec.cbegin(), b_vec.cend(), b_arr.begin());
+  Values b (b_arr);
 
   // Parsing A.
   const auto A_tag = xml_elem->get_single_element("A");
 
-  typename LinearFunctionType::template Derivative<1> A;
   const auto A_vec = A_tag->get_values_vector<Real>();
-  AssertThrow(A_vec.size() == A.get_number_of_entries(),
+  AssertThrow(A_vec.size() == Ders::n_entries,
               ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in A does not match "
-                         "with the number of components of the GridFunction."));
-
-  for (int c = 0; c < A.get_number_of_entries(); ++c)
-    A[c] = A_vec[c];
-
+                         "components in Derivative<1> XML does not match "
+                         "with the number of components of the Function."));
+  SafeSTLArray<Real, Ders::n_entries> A_arr;
+  std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
+  Ders A (A_arr);
 
   const auto name = parse_name(xml_elem);
 
