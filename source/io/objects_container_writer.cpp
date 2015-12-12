@@ -158,7 +158,7 @@ write_reference_space_bases (const shared_ptr<ObjectsContainer> container,
         if (bs_space != nullptr)
             Self_::write_bspline<BSplineType>(bs_space, xml_doc);
         else
-            Self_::write_bspline<NURBSType>(nr_space, xml_doc);
+            Self_::write_nurbs<NURBSType>(nr_space, xml_doc);
     }
 
     for (const auto &id : container->template get_const_object_ids<Type>())
@@ -176,7 +176,7 @@ write_reference_space_bases (const shared_ptr<ObjectsContainer> container,
         if (bs_space != nullptr)
             Self_::write_bspline<const BSplineType>(bs_space, xml_doc);
         else
-            Self_::write_bspline<const NURBSType>(nr_space, xml_doc);
+            Self_::write_nurbs<const NURBSType>(nr_space, xml_doc);
     }
   });
 }
