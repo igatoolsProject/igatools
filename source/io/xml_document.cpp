@@ -151,8 +151,6 @@ XMLDocument(const string &file_path)
 
   parser->parse(file_path.c_str());
   xml_doc_ = parser->getDocument();
-
-//  delete parser;
 }
 
 
