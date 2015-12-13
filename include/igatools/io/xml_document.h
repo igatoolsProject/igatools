@@ -27,6 +27,7 @@
 
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/dom/DOMDocument.hpp>
+#include <xercesc/sax/ErrorHandler.hpp>
 
 XERCES_CPP_NAMESPACE_BEGIN
 class DOMDocument;
@@ -40,6 +41,191 @@ IGA_NAMESPACE_OPEN
 template <class T> class SafeSTLVector;
 class LogStream;
 class XMLElement;
+
+
+/**
+ * @brief Manage runtime errors occurred during the parsing process of
+ * input files.
+ *
+ * This class is in charge of managing the runtime errors than can
+ * occurred during the parsing process of input files.
+ *
+ * The class derives from the @p Xerces-c class @ref ParserErrorHandler,
+ * in such a way that it takes care of error messages thrown by
+ * @p Xerces-c parser.
+ *
+ * @warning When an error or warning is thrown, an exception raises,
+ * and, if not caught, the execution is automatically finished.
+ *
+ * @see XMLFileParser
+ *
+ * @author P. Antolin
+ * @date 2015
+ */
+class XMLParserErrorHandler : public xercesc::ErrorHandler
+{
+private:
+
+  /** @name Types and static values */
+  ///@{
+
+  /** Type for the current class. */
+  typedef XMLParserErrorHandler Self_;
+
+  /** Type for a shared pointer of the current class. */
+  typedef std::shared_ptr<Self_> SelfPtr_;
+
+  ///@}
+
+  /** @name Constructors, destructor, assignment operators and creators */
+  ///@{
+
+  /**
+   * @brief Default constructor.
+   * @return New instance of the class.
+   */
+  XMLParserErrorHandler() = default;
+
+  /**
+   * @brief Copy constructor.
+   * @note Deleted, not allowe to be used.
+   */
+  XMLParserErrorHandler(const XMLParserErrorHandler &) = delete;
+
+  /**
+   * @brief Move constructor.
+   * @note Deleted, not allowed to be used.
+  */
+  XMLParserErrorHandler(XMLParserErrorHandler &&) = delete;
+
+  /**
+   * @brief Copy assignment operator.
+   * @note Deleted, not allowed to be used.
+   */
+  XMLParserErrorHandler &operator= (const XMLParserErrorHandler &) = delete;
+
+  /**
+   * @brief Move assignment operator.
+   * @note Deleted, not allowed to be used.
+   */
+  XMLParserErrorHandler &operator= (XMLParserErrorHandler &&) = delete;
+
+public:
+  /**
+   * @brief Returns a new instance wrapped into a shared pointer.
+   *
+   * It uses the above defined default constructor.
+   *
+   * @return A shared pointer with a new instance of the class.
+   */
+  static SelfPtr_ create();
+
+  ///@}
+
+  /** @name xercesc ParserErrorHandler pure virtual methods */
+  ///@{
+
+  /**
+   * @brief Receive notification of a recoverable error.
+   * This corresponds to the definition of "error" in section 1.2 of the
+   * W3C XML 1.0 Recommendation. For example, a validating parser would
+   * use this callback to report the violation of a validity constraint.
+   * The default behaviour is to take no action.
+   *
+   * The SAX parser must continue to provide normal parsing events after
+   * invoking this method: it should still be possible for the application
+   * to process the document through to the end. If the application cannot
+   * do so, then the parser should report a fatal error even if the XML
+   * 1.0 recommendation does not require it to do so.
+   *
+   * An error message is thrown containing additional information about
+   * the line and the column where it occurred.
+   *
+   * @param[in] ex The warning information encapsulated in a SAX parse
+   *               exception.
+   *
+   * @exception SAXException Any SAX exception, possibly wrapping another
+   *                         exception.
+   *
+   * @note The documentation has been partially extracted from the parent
+   * <tt>Xerces-c ParserErrorHandler</tt> class.
+   */
+  virtual void error(const xercesc::SAXParseException &ex) override final;
+
+  /**
+   * @brief Receive notification of a warning.
+   *
+   * SAX parsers will use this method to report conditions that are not
+   * errors or fatal errors as defined by the XML 1.0 recommendation.
+   * The default behaviour is to take no action.
+   * The SAX parser must continue to provide normal parsing events after
+   * invoking this method: it should still be possible for the application
+   * to process the document through to the end.
+   *
+   * \attention Currently the warning message is treated as an error
+   * message, i.e. the execution will be finished after throwing the
+   * message.
+   *
+   * An error message is thrown containing additional information about
+   * the line and the column where it occurred.
+   *
+   * @param[in] ex The warning information encapsulated in a SAX parse
+   *               exception.
+   *
+   * @exception SAXException Any SAX exception, possibly wrapping another
+   *                         exception.
+   *
+   * @note The documentation has been partially extracted from the parent
+   * <tt>Xerces-c ParserErrorHandler</tt> class.
+   */
+  virtual void warning(const xercesc::SAXParseException &ex) override final;
+
+  /**
+   * @brief Receive notification of a non-recoverable error.
+   *
+   * This corresponds to the definition of "fatal error" in section 1.2 of
+   * the W3C XML 1.0 Recommendation. For example, a parser would use this
+   * callback to report the violation of a well-formedness constraint.
+   *
+   * The application must assume that the document is unusable after the
+   * parser has invoked this method, and should continue (if at all) only
+   * for the sake of collecting addition error messages: in fact, SAX
+   * parsers are free to stop reporting any other events once this method
+   * has been invoked.
+   *
+   * An error message is thrown containing additional information about
+   * the line and the column where it occurred.
+   *
+   * @param[in] ex The error information encapsulated in a SAX parse
+   *               exception.
+   *
+   * @exception SAXException  Any SAX exception, possibly wrapping another
+   *                          exception.
+   *
+   * @note The documentation has been partially extracted from the parent
+   * <tt>Xerces-c ParserErrorHandler</tt> class.
+   * @note Currently, this function is doing nothing.
+   */
+  virtual void fatalError(const xercesc::SAXParseException &ex) override final;
+
+  /**
+   * @brief Reset the Error handler object on its reuse.
+   *
+   * This method helps in reseting the Error handler object implementation
+   * defaults each time the Error handler is begun.
+   *
+   * @note The documentation has been extracted from the parent
+   * <tt>xercesc ParserErrorHandler</tt> class.
+   *
+   * @note Currently, this function is doing nothing.
+   */
+  virtual void resetErrors() override final;
+
+  ///@}
+
+};
+
+
 
 /**
  * @brief Class for managing XML DOM elements of @p Xerces-c.

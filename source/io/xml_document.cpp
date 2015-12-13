@@ -23,13 +23,12 @@
 #ifdef XML_IO
 
 #include <igatools/io/xml_element.h>
-#include <igatools/io/xml_parser_error_handler.h>
 
 #include <igatools/base/logstream.h>
 #include <igatools/utils/safe_stl_vector.h>
 
-
 #undef Assert
+#include <xercesc/sax/HandlerBase.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMNode.hpp>
@@ -42,10 +41,6 @@
 #include <xercesc/dom/DOMLSOutput.hpp>
 #include <xercesc/util/OutOfMemoryException.hpp>
 
-
-//#include <xercesc/util/PlatformUtils.hpp>
-//#include <xercesc/dom/DOM.hpp>
-
 #include <sys/stat.h>
 
 using std::shared_ptr;
@@ -56,6 +51,53 @@ using xercesc::DOMDocument;
 using xercesc::DOMText;
 
 IGA_NAMESPACE_OPEN
+
+
+auto
+XMLParserErrorHandler::
+create() -> SelfPtr_
+{
+  return SelfPtr_(new Self_());
+}
+
+
+void
+XMLParserErrorHandler::
+warning(const xercesc::SAXParseException &ex)
+{
+  char *msg = XMLString::transcode(ex.getMessage());
+  AssertThrow(false, ExcXMLWarning(msg, ex.getLineNumber(), ex.getColumnNumber()));
+  XMLString::release(&msg);
+}
+
+
+
+void
+XMLParserErrorHandler::
+error(const xercesc::SAXParseException &ex)
+{
+  char *msg = XMLString::transcode(ex.getMessage());
+  AssertThrow(false, ExcXMLError(msg, ex.getLineNumber(), ex.getColumnNumber()));
+  XMLString::release(&msg);
+}
+
+
+
+void
+XMLParserErrorHandler::
+fatalError(const xercesc::SAXParseException &ex)
+{
+  char *msg = XMLString::transcode(ex.getMessage());
+  AssertThrow(false, ExcXMLError(msg, ex.getLineNumber(), ex.getColumnNumber()));
+  XMLString::release(&msg);
+}
+
+
+
+void
+XMLParserErrorHandler::
+resetErrors()
+{}
 
 
 XMLDocument::
