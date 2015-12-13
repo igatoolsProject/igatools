@@ -30,7 +30,6 @@
 
 IGA_NAMESPACE_OPEN
 
-class XMLFileParser;
 class XMLElement;
 class ObjectsContainer;
 template <int dim> class Grid;
@@ -43,14 +42,14 @@ template <class T1, class T2> class SafeSTLMap;
  * @brief Helper class for creating an @ref ObjectsContainer parsed from
  * a file.
  *
- * It receives an input file that is parsed by means of
- * the @ref XMLFileParser for receiving a @ref XMLElement containing
- * all the information.
+ * It receives an input file that is parsed by creating a
+ * @ref XMLDocument. This XML documents contains a main @ref XMLElement,
+ * with the tag name <tt>Igatools</tt>, that contains all the information.
  *
- * Before starting to parse the @ref XMLElement, the XML document
- * is validated against an XML schema definition. This schema
- * definition controls the main structure of the file: which elements
- * should be present, attributes, types, enumerations, etc.
+ * Before starting to parse the @ref XMLDocument, it is validated against
+ * an XML schema definition. This schema definition controls the main
+ * structure of the file: which elements should be present, attributes,
+ * types, enumerations, etc.
  * But the schema is unable to control other questions, e.g. if a certain
  * @ref Grid, used by a @ref SplineSpace, is defined in the file.
  * This schema is stored as a @ref std::string in the private member
@@ -63,22 +62,24 @@ template <class T1, class T2> class SafeSTLMap;
  * - @ref NURBS
  * - @ref grid_functions::IdentityGridFunction
  * - @ref grid_functions::ConstantGridFunction
+ * - @ref grid_functions::LinearGridFunction
  * - @ref IgGridFunction
  * - @ref Domain
  * - @ref PhysicalSpaceBasis
  * - @ref functions::ConstantFunction
+ * - @ref functions::LinearFunction
  * - @ref IgFunction
  *
  * If any type different from the ones above is found, an exception
  * is thrown.
  *
- * @warning It could be unsafe to take a @ref XMLElement outside of
- * the class in order to be reused somewhere else. It could cause problems
- * with the @p Xerces-c memory deallocation. Not getter should be
- * provided for retrieving it.
+ * @warning It could be unsafe to take a @ref XMLElement, contained
+ * inside in the @ref XMLDocument outside of the class in order to be
+ * reused somewhere else. It could cause problems with the @p Xerces-c
+ * memory deallocation. Not getter should be provided for retrieving it.
  *
  * @see ObjectsContainer
- * @see XMLFileParser
+ * @see XMLDocument
  * @see XMLElement
  *
  * @author P. Antolin
@@ -101,10 +102,7 @@ private:
    *  object unique @p Id. */
   typedef SafeSTLMap<Index, Index> IdMap_;
 
-  /**
-   * Statically defined string defining the XML schema for validating the
-   * input files.
-   */
+  /// Statically defined string defining the XML schema for validating the input files.
   static const std::string XML_SCHEMA_;
 
   ///@}
@@ -145,9 +143,13 @@ private:
   ///@}
 
 public:
+
+  /** @name Container parsers */
+  ///@{
+
   /**
    * @brief Creates an @ref ObjectsContainer by reading the objects
-   * from a given @p file_path and inserting them.
+   * from a given @p file_path and inserting them as non constant.
    *
    * @param[in] file_path Path of the file to be parsed.
    * @return Objects container with all the objects stored inside.
@@ -164,7 +166,14 @@ public:
    */
   static std::shared_ptr<ObjectsContainer> parse_const(const std::string &file_path);
 
+  ///@}
+
 private:
+
+
+  /** @name Methods for parsing all the objects. */
+  ///@{
+
   /**
    * @brief Parses all the @ref Grid contained into the XML document
    * @p xml_elem and stores them into the @p container.
@@ -715,6 +724,8 @@ private:
                                     IdMap_ &id_map,
                                     const std::shared_ptr<ObjectsContainer> container);
 
+  ///@}
+
   /**
    * @brief Parses a <tt>Name</tt> XML element contained in @p xml_elem.
    *
@@ -763,8 +774,6 @@ private:
    *            space to which the coefficients are associated to.
    * @return IgCoefficients shared pointer vector.
    */
-  // TODO: maybe this should be done with a shared pointer, in
-  // order to avoid the copy.
   static std::shared_ptr<IgCoefficients>
   parse_ig_coefficients(const std::shared_ptr<XMLElement> xml_elem,
                         const std::string &parsing_msg,
