@@ -169,7 +169,6 @@ vertex(const int i) const -> Point
   const auto w = MultiArrayUtils<dim>::compute_weight(n_vertices_elem);
   const auto vertex_id = MultiArrayUtils<dim>::flat_to_tensor_index(i,w);
 
-  const auto n_knots_dir = grid_->get_num_knots_dim();
   Point vertex;
   for (int j = 0 ; j < dim ; ++j)
   {
