@@ -69,7 +69,7 @@ template <class T> class SafeSTLSet;
  *
  * This container can be created void and filled after by using the
  * @ref insert_object method, or it can be parsed directly from an XML
- * file by using the class @ref ObjectsContainerParser.
+ * file by using the class @ref ObjectsContainerXMLParser.
  *
  * This class is not intended to provide multi-patch support, dofs
  * management, or similar features. It is just a container of pointers
