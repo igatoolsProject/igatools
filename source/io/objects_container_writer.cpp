@@ -22,6 +22,7 @@
 
 #ifdef XML_IO
 
+#include <igatools/io/objects_container_parser.h>
 #include <igatools/base/objects_container.h>
 #include <igatools/utils/safe_stl_set.h>
 
@@ -49,19 +50,21 @@ using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
+
 void
 ObjectsContainerWriter::
 write(const string &file_path,
-      const shared_ptr<ObjectsContainer> container)
+      const ContPtr_ container)
 {
     // Copying the objects container and filling it with all its dependencies.
-    const auto full_container = shared_ptr<ObjectsContainer>(new
+    const auto full_container = ContPtr_(new
       ObjectsContainer(*container));
     full_container->fill_not_inserted_dependencies();
 
     const auto xml_doc = XMLDocument::create_void_document("Igatools");
     const auto igatools_elem = xml_doc->get_document_element();
-    igatools_elem->add_attribute(string("FormatVersion"), string("2.0"));
+    igatools_elem->add_attribute(string("FormatVersion"),
+                                 ObjectsContainerParser::IGATOOLS_FILE_FORMAT_VERSION);
 
     Self_::write_grids(full_container, xml_doc);
     Self_::write_spline_spaces(full_container, xml_doc);
@@ -78,7 +81,7 @@ write(const string &file_path,
 
 void
 ObjectsContainerWriter::
-write_grids (const shared_ptr<ObjectsContainer> container,
+write_grids (const ContPtr_ container,
              const XMLDocPtr_ xml_doc)
 {
   using GridPtrs = typename ObjectsContainer::GridPtrs;
@@ -102,7 +105,7 @@ write_grids (const shared_ptr<ObjectsContainer> container,
 
 void
 ObjectsContainerWriter::
-write_spline_spaces (const shared_ptr<ObjectsContainer> container,
+write_spline_spaces (const ContPtr_ container,
              const XMLDocPtr_ xml_doc)
 {
   using SpSpacePtrs = typename ObjectsContainer::SpSpacePtrs;
@@ -126,7 +129,7 @@ write_spline_spaces (const shared_ptr<ObjectsContainer> container,
 
 void
 ObjectsContainerWriter::
-write_reference_space_bases (const shared_ptr<ObjectsContainer> container,
+write_reference_space_bases (const ContPtr_ container,
              const XMLDocPtr_ xml_doc)
 {
   using RefSpacePtrs = typename ObjectsContainer::RefSpacePtrs;
@@ -185,7 +188,7 @@ write_reference_space_bases (const shared_ptr<ObjectsContainer> container,
 
 void
 ObjectsContainerWriter::
-write_grid_functions (const shared_ptr<ObjectsContainer> container,
+write_grid_functions (const ContPtr_ container,
                       const XMLDocPtr_ xml_doc)
 {
   using GridFuncPtrs = typename ObjectsContainer::GridFuncPtrs;
@@ -259,7 +262,7 @@ write_grid_functions (const shared_ptr<ObjectsContainer> container,
 
 void
 ObjectsContainerWriter::
-write_domains (const shared_ptr<ObjectsContainer> container,
+write_domains (const ContPtr_ container,
                const XMLDocPtr_ xml_doc)
 {
   using DomainPtrs = typename ObjectsContainer::DomainPtrs;
@@ -283,7 +286,7 @@ write_domains (const shared_ptr<ObjectsContainer> container,
 
 void
 ObjectsContainerWriter::
-write_physical_space_bases (const shared_ptr<ObjectsContainer> container,
+write_physical_space_bases (const ContPtr_ container,
                             const XMLDocPtr_ xml_doc)
 {
   using PhysSpacePtrs = typename ObjectsContainer::PhysSpacePtrs;
@@ -307,7 +310,7 @@ write_physical_space_bases (const shared_ptr<ObjectsContainer> container,
 
 void
 ObjectsContainerWriter::
-write_functions (const shared_ptr<ObjectsContainer> container,
+write_functions (const ContPtr_ container,
                  const XMLDocPtr_ xml_doc)
 {
   using FuncPtrs = typename ObjectsContainer::FunctionPtrs;

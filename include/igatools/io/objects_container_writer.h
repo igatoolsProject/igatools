@@ -36,46 +36,41 @@ class ObjectsContainer;
 class IgCoefficients;
 
 /**
- * @brief Helper class for creating an @ref ObjectsContainer parsed from
- * a file.
+ * @brief Helper class for writing an @ref ObjectsContainer into
+ * a file with XML format.
  *
- * It receives an input file that is parsed by means of
- * the @ref XMLFileParser for receiving a @ref XMLElement containing
- * all the information.
+ * This class has a single public method, @ref write, that receives as
+ * argument the @ref ObjectsContainer to be written and the destination file.
  *
- * Before starting to parse the @ref XMLElement, the XML document
- * is validated against an XML schema definition. This schema
- * definition controls the main structure of the file: which elements
- * should be present, attributes, types, enumerations, etc.
- * But the schema is unable to control other questions, e.g. if a certain
- * @ref Grid, used by a @ref SplineSpace, is defined in the file.
- * This schema is stored as a @ref std::string in the private member
- * @ref XML_SCHEMA_.
- *
- * Currently, this class is able to parse the following classes:
+ * Currently, this class is able to write the following classes:
  * - @ref Grid
  * - @ref SplineSpace
  * - @ref BSpline
  * - @ref NURBS
  * - @ref grid_functions::IdentityGridFunction
  * - @ref grid_functions::ConstantGridFunction
+ * - @ref grid_functions::LinearGridFunction
  * - @ref IgGridFunction
  * - @ref Domain
  * - @ref PhysicalSpaceBasis
  * - @ref functions::ConstantFunction
+ * - @ref functions::LinearFunction
  * - @ref IgFunction
  *
  * If any type different from the ones above is found, an exception
  * is thrown.
  *
- * @warning It could be unsafe to take a @ref XMLElement outside of
- * the class in order to be reused somewhere else. It could cause problems
- * with the @p Xerces-c memory deallocation. Not getter should be
- * provided for retrieving it.
+ * The files written by using this class can be parsed with the
+ * @ref ObjectsContainerParser class.
+ *
+ * The current igatools file format version is specified by static
+ * variable @p IGATOOLS_FILE_FORMAT_VERSION of the class
+ * @ref ObjectsContainerParser.
  *
  * @see ObjectsContainer
- * @see XMLFileParser
+ * @see ObjectsContainerWriter
  * @see XMLDocument
+ * @see XMLElement
  *
  * @author P. Antolin
  * @date 2015
@@ -95,6 +90,9 @@ private:
 
   /** Type for a shared pointer of @ref XMLDocument. */
   typedef std::shared_ptr<XMLDocument> XMLDocPtr_;
+
+  /** Type for a shared pointer of @ref ObjectsContainer. */
+  typedef std::shared_ptr<ObjectsContainer> ContPtr_;
 
   ///@}
 
@@ -135,91 +133,245 @@ private:
 
 public:
   /**
-   * @brief Creates an @ref ObjectsContainer by reading the objects
-   * from a given @p file_path and inserting them.
+   * @brief Writes the @p container to a @p file_path with XML format.
    *
-   * @param[in] file_path Path of the file to be parsed.
-   * @return Objects container with all the objects stored inside.
+   * @param[in] file_path Path of the file to be written.
+   * @param[in] container Objects container to be written.
    */
   static void write(const std::string &file_path,
-                    const std::shared_ptr<ObjectsContainer> container);
+                    const ContPtr_ container);
 
 private:
-  static void write_grids (const std::shared_ptr<ObjectsContainer> container,
+
+  /** @name Methods for writting the objects into the XML document */
+  ///@{
+
+  /**
+   * @brief Appends all the @ref Grid
+   * present in the @p container to the XML Document @p xml_doc.
+   *
+   * @param[in] container Container of the objects to be added.
+   * @param[in] xml_doc XML Document where the objects are written to.
+   */
+  static void write_grids (const ContPtr_ container,
                            const XMLDocPtr_ xml_doc);
 
-  static void write_spline_spaces (const std::shared_ptr<ObjectsContainer> container,
+  /**
+   * @brief Appends all the @ref SplineSpace
+   * present in the @p container to the XML Document @p xml_doc.
+   *
+   * @param[in] container Container of the objects to be added.
+   * @param[in] xml_doc XML Document where the objects are written to.
+   */
+  static void write_spline_spaces (const ContPtr_ container,
                                    const XMLDocPtr_ xml_doc);
 
-  static void write_reference_space_bases (const std::shared_ptr<ObjectsContainer> container,
+  /**
+   * @brief Appends all the @ref ReferenceSpaceBasis
+   * present in the @p container to the XML Document @p xml_doc.
+   *
+   * @param[in] container Container of the objects to be added.
+   * @param[in] xml_doc XML Document where the objects are written to.
+   */
+  static void write_reference_space_bases (const ContPtr_ container,
                                      const XMLDocPtr_ xml_doc);
 
-  static void write_grid_functions (const std::shared_ptr<ObjectsContainer> container,
+  /**
+   * @brief Appends all the @ref GridFunction
+   * present in the @p container to the XML Document @p xml_doc.
+   *
+   * @param[in] container Container of the objects to be added.
+   * @param[in] xml_doc XML Document where the objects are written to.
+   */
+  static void write_grid_functions (const ContPtr_ container,
                                     const XMLDocPtr_ xml_doc);
 
-  static void write_domains (const std::shared_ptr<ObjectsContainer> container,
+  /**
+   * @brief Appends all the @ref Domain
+   * present in the @p container to the XML Document @p xml_doc.
+   *
+   * @param[in] container Container of the objects to be added.
+   * @param[in] xml_doc XML Document where the objects are written to.
+   */
+  static void write_domains (const ContPtr_ container,
                              const XMLDocPtr_ xml_doc);
 
-  static void write_physical_space_bases (const std::shared_ptr<ObjectsContainer> container,
+  /**
+   * @brief Appends all the @ref PhysicalSpaceBasis
+   * present in the @p container to the XML Document @p xml_doc.
+   *
+   * @param[in] container Container of the objects to be added.
+   * @param[in] xml_doc XML Document where the objects are written to.
+   */
+  static void write_physical_space_bases (const ContPtr_ container,
                                           const XMLDocPtr_ xml_doc);
 
-  static void write_functions (const std::shared_ptr<ObjectsContainer> container,
+  /**
+   * @brief Appends all the @ref Function
+   * present in the @p container to the XML Document @p xml_doc.
+   *
+   * @param[in] container Container of the objects to be added.
+   * @param[in] xml_doc XML Document where the objects are written to.
+   */
+  static void write_functions (const ContPtr_ container,
                                const XMLDocPtr_ xml_doc);
 
+
+  /**
+   * @brief Appends a single @ref Grid
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam Grid Type of the @ref Grid to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class Grid>
   static void write_grid (const std::shared_ptr<Grid> grid,
                           const XMLDocPtr_ xml_doc);
 
+  /**
+   * @brief Appends a single @ref SplineSpace
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam SpSpace Type of the @ref SplineSpace to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class SpSpace>
   static void write_spline_space (const std::shared_ptr<SpSpace> spline_space,
                                   const XMLDocPtr_ xml_doc);
 
+  /**
+   * @brief Appends a single @ref BSpline
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam BSpline Type of the @ref BSpline to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class BSpline>
   static void write_bspline (const std::shared_ptr<BSpline> bspline,
                              const XMLDocPtr_ xml_doc);
 
+  /**
+   * @brief Appends a single @ref NURBS
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam NURBS Type of the @ref NURBS to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class NURBS>
   static void write_nurbs (const std::shared_ptr<NURBS> nurbs,
                            const XMLDocPtr_ xml_doc);
 
+  /**
+   * @brief Appends a single @ref grid_functions::IdentityGridFunction
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam IdGridFunc Type of the @ref grid_functions::IdentityGridFunction to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class IdGridFunc>
   static void write_identity_grid_function (const std::shared_ptr<IdGridFunc> id_func,
                                             const XMLDocPtr_ xml_doc);
 
+  /**
+   * @brief Appends a single @ref grid_functions::ConstantGridFunction
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam ConstGridFunc Type of the @ref grid_functions::ConstantGridFunction to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class ConstGridFunc>
   static void write_constant_grid_function (const std::shared_ptr<ConstGridFunc> const_func,
                                             const XMLDocPtr_ xml_doc);
 
-  template <class IgGridFunc>
-  static void write_ig_grid_function (const std::shared_ptr<IgGridFunc> ig_func,
-                                      const XMLDocPtr_ xml_doc);
-
+  /**
+   * @brief Appends a single @ref grid_functions::LinearGridFunction
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam LinearGridFunc Type of the @ref grid_functions::LinearGridFunction to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class LinearGridFunc>
   static void write_linear_grid_function (const std::shared_ptr<LinearGridFunc> linear_func,
                                           const XMLDocPtr_ xml_doc);
 
+  /**
+   * @brief Appends a single @ref IgGridFunction
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam IgGridFunc Type of the @ref IgGridFunction to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
+  template <class IgGridFunc>
+  static void write_ig_grid_function (const std::shared_ptr<IgGridFunc> ig_func,
+                                      const XMLDocPtr_ xml_doc);
+
+  /**
+   * @brief Appends a single @ref Domain
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam Domain Type of the @ref Domain to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class Domain>
   static void write_domain (const std::shared_ptr<Domain> domain,
                             const XMLDocPtr_ xml_doc);
 
+  /**
+   * @brief Appends a single @ref PhysicalSpaceBasis
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam PhysSpaceBasis Type of the @ref PhysicalSpaceBasis to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class PhysSpaceBasis>
   static void write_phys_space_basis (const std::shared_ptr<PhysSpaceBasis> phys_space,
                                       const XMLDocPtr_ xml_doc);
 
-  template <class IgFunction>
-  static void write_ig_function (const std::shared_ptr<IgFunction> ig_function,
-                                 const XMLDocPtr_ xml_doc);
-
+  /**
+   * @brief Appends a single @ref functions::ConstantFunction
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam ConstantFunction Type of the @ref functions::ConstantFunction to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class ConstantFunction>
   static void write_constant_function (const std::shared_ptr<ConstantFunction> const_function,
                                        const XMLDocPtr_ xml_doc);
 
+  /**
+   * @brief Appends a single @ref functions::LinearFunction
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam LinearFunc Type of the @ref functions::LinearFunction to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
   template <class LinearFunc>
   static void write_linear_function (const std::shared_ptr<LinearFunc> linear_func,
                                      const XMLDocPtr_ xml_doc);
 
-  static std::shared_ptr<XMLElement> create_ig_coefs_xml_element(const IgCoefficients &coefs,
-                                                                 const XMLDocPtr_ xml_doc);
+  /**
+   * @brief Appends a single @ref IgFunction
+   * to the XML Document @p xml_doc.
+   *
+   * @tparam IgFunction Type of the @ref IgFunction to be appended.
+   * @param[in] xml_doc XML Document where the object is appended to.
+   */
+  template <class IgFunction>
+  static void write_ig_function (const std::shared_ptr<IgFunction> ig_function,
+                                 const XMLDocPtr_ xml_doc);
+
+  /**
+   * @brief Creates a new @ref XMLElement containing
+   * the passed @ref IgCoefficients.
+   *
+   * @param[in] coefs @ref IgCoefficients to the written into the element.
+   * @param[in] xml_doc XML Document from where the element is created.
+   */
+  static std::shared_ptr<XMLElement>
+  create_ig_coefs_xml_element(const IgCoefficients &coefs,
+                              const XMLDocPtr_ xml_doc);
+
+  ///@}
 
 };
 

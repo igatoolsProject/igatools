@@ -29,6 +29,8 @@
 
 IGA_NAMESPACE_OPEN
 
+const std::string ObjectsContainerParser::IGATOOLS_FILE_FORMAT_VERSION = "1.0";
+
 const std::string ObjectsContainerParser::XML_SCHEMA_ =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<xs:schema attributeFormDefault=\"unqualified\"\n"
@@ -528,7 +530,8 @@ const std::string ObjectsContainerParser::XML_SCHEMA_ =
 "          <xs:element name=\"LinearFunction\" type=\"LinearFunctionType\"/>\n"
 "        </xs:choice>\n"
 "      </xs:sequence>\n"
-"      <xs:attribute name=\"FormatVersion\" type=\"xs:float\" fixed=\"2.0\" use=\"required\"/>\n"
+"      <xs:attribute name=\"FormatVersion\" type=\"xs:float\" fixed=\"" +
+IGATOOLS_FILE_FORMAT_VERSION + "\" use=\"required\"/>\n"
 "    </xs:complexType>\n"
 "  </xs:element>\n"
 "\n"

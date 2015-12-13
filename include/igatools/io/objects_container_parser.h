@@ -40,7 +40,7 @@ template <class T1, class T2> class SafeSTLMap;
 
 /**
  * @brief Helper class for creating an @ref ObjectsContainer parsed from
- * a file.
+ * a XML file format.
  *
  * It receives an input file that is parsed by creating a
  * @ref XMLDocument. This XML documents contains a main @ref XMLElement,
@@ -54,6 +54,9 @@ template <class T1, class T2> class SafeSTLMap;
  * @ref Grid, used by a @ref SplineSpace, is defined in the file.
  * This schema is stored as a @ref std::string in the private member
  * @ref XML_SCHEMA_.
+ *
+ * The current igatools file format version is specified by static
+ * variable @ref IGATOOLS_FILE_FORMAT_VERSION.
  *
  * Currently, this class is able to parse the following classes:
  * - @ref Grid
@@ -73,12 +76,16 @@ template <class T1, class T2> class SafeSTLMap;
  * If any type different from the ones above is found, an exception
  * is thrown.
  *
+ * The @ref ObjectsContainerWriter class writes containers into files
+ * with the format that this class is expecting for being parsed.
+ *
  * @warning It could be unsafe to take a @ref XMLElement, contained
  * inside in the @ref XMLDocument outside of the class in order to be
  * reused somewhere else. It could cause problems with the @p Xerces-c
  * memory deallocation. Not getter should be provided for retrieving it.
  *
  * @see ObjectsContainer
+ * @see ObjectsContainerWriter
  * @see XMLDocument
  * @see XMLElement
  *
@@ -102,6 +109,11 @@ private:
    *  object unique @p Id. */
   typedef SafeSTLMap<Index, Index> IdMap_;
 
+public:
+  /// Current igatools file format version.
+  static const std::string IGATOOLS_FILE_FORMAT_VERSION;
+
+private:
   /// Statically defined string defining the XML schema for validating the input files.
   static const std::string XML_SCHEMA_;
 
