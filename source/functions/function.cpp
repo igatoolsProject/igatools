@@ -173,7 +173,10 @@ boost::signals2::connection
 Function<dim_, codim_, range_, rank_ >::
 connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber)
 {
-  return domain_.get_ptr_data()->connect_insert_knots(subscriber);
+  return domain_.data_is_const() ?
+      std::const_pointer_cast<DomainType>(domain_.get_ptr_const_data())
+              ->connect_insert_knots(subscriber) :
+      domain_.get_ptr_data()->connect_insert_knots(subscriber);
 }
 
 template<int dim_, int codim_, int range_, int rank_>
