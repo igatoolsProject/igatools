@@ -51,12 +51,16 @@ class XMLDocument;
  *
  * The class provides methods for extracting children elements
  * of the element, that are wrapped inside new instances of the class
- * and returned.
+ * and returned. And also methods for adding new children element and
+ * attributes.
+ *
+ * All the constructors of this class are private. Only @ref XMLDocument
+ * can (that is a friend class) can create new instances of the class.
  *
  * @note This class uses @p Xerces-c library.
  * @note The class is not in charge of freeing the @p DOMElement pointer.
  *
- * @see XMLFileParser
+ * @see XMLDocument
  *
  * @author P. Antolin
  * @date 2015
@@ -125,7 +129,8 @@ private:
   XMLElement &operator= (XMLElement &&) = delete;
 
   /**
-   * @brief Builds and returns a new instance wrapped into a shared pointer.
+   * @brief Builds and returns a new instance wrapped into a shared
+   * pointer.
    *
    * It uses the above defined constructor.
    *
@@ -137,17 +142,21 @@ private:
   ///@}
 
 public:
+
+  /** @name Methods for retrieving information */
+  ///@{
+
   /**
-   * @brief Returns a vector containing all the first level children nodes of
-   * type element present in current element.
+   * @brief Returns a vector containing all the first level children nodes
+   * of type element present in current element.
    *
    * @return Vector containing the children elements.
    */
   SafeSTLVector<SelfPtr_> get_children_elements() const;
 
   /**
-   * @brief Returns a vector containing all the first level children nodes of
-   * type element present in current element with a given tag @p name.
+   * @brief Returns a vector containing all the first level children nodes
+   * of type element present in current element with a given tag @p name.
    *
    * @param[in] name Name of the children elements to be extracted.
    * @return Vector containing the children elements.
@@ -209,7 +218,8 @@ public:
    * @tparam T Type of value returned in the vector.
    * @return Vector containing the extracted numerical values.
    *
-   * @warning It will throw an exception if is not able to parse the vector.
+   * @warning It will throw an exception if is not able to parse the
+   * vector.
    */
   template <class T>
   SafeSTLVector<T> get_values_vector() const;
@@ -237,12 +247,30 @@ public:
   SelfPtr_ get_single_element(const std::string &name);
 
   /**
+   * @brief Returns the only one text child element contained in the
+   * element.
+   *
+   * @return Single extracted element pointer.
+   *
+   * @warning In debug mode, if more than one children of type @p DOMText
+   * are present the element, or there is none, an error is thrown.
+   */
+  xercesc::DOMText *get_single_text_element() const;
+
+  ///@}
+
+public:
+
+  /** @name Methods for appending new XML data */
+  ///@{
+
+  /**
    * @brief Add a new attribute to the present element with the given
    * @p name and @p value of type @p T.
    *
+   * @tparam T type of the value.
    * @param[in] name Name of the attribute.
    * @param[in] name Value of the attribute.
-   * @tparam T type of the value.
    */
   template <class T> void add_attribute(const std::string &name,
                                         const T &value);
@@ -258,12 +286,13 @@ public:
                      const std::string &value);
 
   /**
-   * @brief Appends child element under the current element.
+   * @brief Append a child element under the current element.
    *
    * @param[in] xml_elem Child element to be appended.
    */
   void append_child_element (const SelfPtr_ xml_elem);
 
+  ///@}
 
   /**
    * @brief Prints the XML element content.
@@ -275,19 +304,8 @@ public:
 
 private:
 
-  /** @p Xerces-c DOM element pointer. */
+  /// @p Xerces-c DOM element pointer being wrapped.
   const DOMElemPtr_ root_elem_;
-
-  /**
-   * @brief Returns the only one text child element contained in the
-   * element.
-   *
-   * @return Single extracted element pointer.
-   *
-   * @warning In debug mode, if more than one children of type @p DOMText
-   * are present the element, or there is none, an error is thrown.
-   */
-  xercesc::DOMText *get_single_text_element() const;
 
 };
 

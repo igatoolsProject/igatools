@@ -544,10 +544,13 @@ XMLElement::
 print_info(LogStream &out) const
 {
   xercesc::DOMImplementation *impl = xercesc::
-                                     DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
-  xercesc::DOMLSSerializer *writer = ((xercesc::DOMImplementationLS *)impl)->createLSSerializer();
+    DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
+  xercesc::DOMLSSerializer *writer = ((xercesc::DOMImplementationLS *)impl)
+          ->createLSSerializer();
+
   const auto *xmlch_output = writer->writeToString(root_elem_);
   const auto output_string = XMLString::transcode(xmlch_output);
+
   out.begin_item("XMLElement:");
   out << output_string;
   out.end_item();
@@ -556,7 +559,6 @@ print_info(LogStream &out) const
   delete writer;
 }
 
-//template void XMLElement::add_attribute<string> (const string &, const string &);
 template void XMLElement::add_attribute<Index> (const string &, const Index &);
 template void XMLElement::add_attribute<Real> (const string &, const Real &);
 
