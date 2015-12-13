@@ -32,6 +32,7 @@
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMImplementationRegistry.hpp>
 #include <xercesc/dom/DOMLSSerializer.hpp>
+#include <xercesc/util/OutOfMemoryException.hpp>
 
 using std::string;
 using std::shared_ptr;
@@ -543,20 +544,51 @@ void
 XMLElement::
 print_info(LogStream &out) const
 {
-  xercesc::DOMImplementation *impl = xercesc::
-    DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
-  xercesc::DOMLSSerializer *writer = ((xercesc::DOMImplementationLS *)impl)
-          ->createLSSerializer();
 
-  const auto *xmlch_output = writer->writeToString(root_elem_);
-  const auto output_string = XMLString::transcode(xmlch_output);
+  // Creating XML writer and writing the DOM element.
+  try
+  {
+      xercesc::DOMImplementation *impl = xercesc::
+              DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
+      xercesc::DOMLSSerializer *writer = ((xercesc::DOMImplementationLS *)impl)
+                  ->createLSSerializer();
 
-  out.begin_item("XMLElement:");
-  out << output_string;
-  out.end_item();
+      const auto *xmlch_output = writer->writeToString(root_elem_);
+      const auto output_string = XMLString::transcode(xmlch_output);
 
-  delete xmlch_output;
-  delete writer;
+      out.begin_item("XMLElement:");
+      out << output_string;
+      out.end_item();
+
+      delete xmlch_output;
+      delete writer;
+  }
+  catch(const xercesc::XMLException &ex)
+  {
+      char *msg = XMLString::transcode(ex.getMessage());
+      AssertThrow(false, ExcXMLError("An Exception occurred when "
+              + string("writing element: ") + msg, 0, 0));
+      XMLString::release(&msg);
+  }
+  catch(const xercesc::DOMException &ex)
+  {
+      char *msg = XMLString::transcode(ex.getMessage());
+      AssertThrow(false, ExcXMLError("An Exception occurred when "
+              + string("writing element: ") + msg, 0, 0));
+      XMLString::release(&msg);
+  }
+  catch (const xercesc::OutOfMemoryException& ex)
+  {
+      char *msg = XMLString::transcode(ex.getMessage());
+      AssertThrow(false, ExcXMLError("An Exception occurred when "
+              + string("writing element: ") + msg, 0, 0));
+      XMLString::release(&msg);
+  }
+  catch (...)
+  {
+      AssertThrow(false, ExcXMLError("Unknown Exception occurred when "
+              "writing element.", 0, 0));
+  }
 }
 
 template void XMLElement::add_attribute<Index> (const string &, const Index &);

@@ -331,7 +331,7 @@ void
 XMLDocument::
 write_to_file(const string &file_path) const
 {
-    // Creating XML writer and writting the DOM document.
+    // Creating XML writer and writing the DOM document.
     try
     {
         xercesc::DOMLSOutput *xml_stream = dom_impl_->createLSOutput();
@@ -353,27 +353,27 @@ write_to_file(const string &file_path) const
     {
         char *msg = XMLString::transcode(ex.getMessage());
         AssertThrow(false, ExcXMLError("An Exception occurred when "
-                    "parsing file " + file_path + ": " + msg, 0, 0));
+                    "writing file " + file_path + ": " + msg, 0, 0));
         XMLString::release(&msg);
     }
     catch(const xercesc::DOMException &ex)
     {
         char *msg = XMLString::transcode(ex.getMessage());
         AssertThrow(false, ExcXMLError("An Exception occurred when "
-                    "parsing file " + file_path + ": " + msg, 0, 0));
+                    "writing file " + file_path + ": " + msg, 0, 0));
         XMLString::release(&msg);
     }
     catch (const xercesc::OutOfMemoryException& ex)
     {
         char *msg = XMLString::transcode(ex.getMessage());
         AssertThrow(false, ExcXMLError("An Exception occurred when "
-                    "parsing file " + file_path + ": " + msg, 0, 0));
+                    "writing file " + file_path + ": " + msg, 0, 0));
         XMLString::release(&msg);
     }
     catch (...)
     {
         AssertThrow(false, ExcXMLError("Unknown Exception occurred when "
-                    "parsing file " + file_path + ".", 0, 0));
+                    "writing file " + file_path + ".", 0, 0));
     }
 }
 
@@ -383,10 +383,54 @@ void
 XMLDocument::
 print_info(LogStream &out) const
 {
-  const auto root_elem = this->get_document_element();
-  out.begin_item("XMLDocument:");
-  root_elem->print_info(out);
-  out.end_item();
+  // Creating XML writer and writing the DOM document.
+  try
+  {
+      xercesc::DOMLSOutput *xml_stream = dom_impl_->createLSOutput();
+      xercesc::DOMLSSerializer *writer = dom_impl_->createLSSerializer();
+
+      xercesc::DOMConfiguration* dc = writer->getDomConfig();
+      dc->setParameter(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, true);
+
+      const auto *xmlch_output = writer->writeToString(xml_doc_);
+      const auto output_string = XMLString::transcode(xmlch_output);
+
+      out.begin_item("XMLDocument:");
+      out << output_string;
+      out.end_item();
+
+      writer->release();
+      xml_stream->release();
+
+      delete xmlch_output;
+      delete writer;
+  }
+  catch(const xercesc::XMLException &ex)
+  {
+      char *msg = XMLString::transcode(ex.getMessage());
+      AssertThrow(false, ExcXMLError("An Exception occurred when "
+              + string("writing document: ") + msg, 0, 0));
+      XMLString::release(&msg);
+  }
+  catch(const xercesc::DOMException &ex)
+  {
+      char *msg = XMLString::transcode(ex.getMessage());
+      AssertThrow(false, ExcXMLError("An Exception occurred when "
+              + string("writing document: ") + msg, 0, 0));
+      XMLString::release(&msg);
+  }
+  catch (const xercesc::OutOfMemoryException& ex)
+  {
+      char *msg = XMLString::transcode(ex.getMessage());
+      AssertThrow(false, ExcXMLError("An Exception occurred when "
+              + string("writing document: ") + msg, 0, 0));
+      XMLString::release(&msg);
+  }
+  catch (...)
+  {
+      AssertThrow(false, ExcXMLError("Unknown Exception occurred when "
+              "writing document.", 0, 0));
+  }
 }
 
 
