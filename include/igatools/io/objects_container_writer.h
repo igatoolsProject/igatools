@@ -67,6 +67,8 @@ class IgCoefficients;
  * variable @p IGATOOLS_FILE_FORMAT_VERSION of the class
  * @ref ObjectsContainerParser.
  *
+ * The XML format is detailed here @subpage in_out.
+ *
  * @see ObjectsContainer
  * @see ObjectsContainerWriter
  * @see XMLDocument

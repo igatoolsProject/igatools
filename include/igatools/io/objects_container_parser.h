@@ -79,6 +79,8 @@ template <class T1, class T2> class SafeSTLMap;
  * The @ref ObjectsContainerWriter class writes containers into files
  * with the format that this class is expecting for being parsed.
  *
+ * The XML format is detailed here @subpage in_out.
+ *
  * @warning It could be unsafe to take a @ref XMLElement, contained
  * inside in the @ref XMLDocument outside of the class in order to be
  * reused somewhere else. It could cause problems with the @p Xerces-c
