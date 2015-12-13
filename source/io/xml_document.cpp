@@ -23,7 +23,6 @@
 #ifdef XML_IO
 
 #include <igatools/io/xml_element.h>
-
 #include <igatools/base/logstream.h>
 #include <igatools/utils/safe_stl_vector.h>
 
@@ -51,54 +50,6 @@ using xercesc::DOMDocument;
 using xercesc::DOMText;
 
 IGA_NAMESPACE_OPEN
-
-
-auto
-XMLParserErrorHandler::
-create() -> SelfPtr_
-{
-  return SelfPtr_(new Self_());
-}
-
-
-void
-XMLParserErrorHandler::
-warning(const xercesc::SAXParseException &ex)
-{
-  char *msg = XMLString::transcode(ex.getMessage());
-  AssertThrow(false, ExcXMLWarning(msg, ex.getLineNumber(), ex.getColumnNumber()));
-  XMLString::release(&msg);
-}
-
-
-
-void
-XMLParserErrorHandler::
-error(const xercesc::SAXParseException &ex)
-{
-  char *msg = XMLString::transcode(ex.getMessage());
-  AssertThrow(false, ExcXMLError(msg, ex.getLineNumber(), ex.getColumnNumber()));
-  XMLString::release(&msg);
-}
-
-
-
-void
-XMLParserErrorHandler::
-fatalError(const xercesc::SAXParseException &ex)
-{
-  char *msg = XMLString::transcode(ex.getMessage());
-  AssertThrow(false, ExcXMLError(msg, ex.getLineNumber(), ex.getColumnNumber()));
-  XMLString::release(&msg);
-}
-
-
-
-void
-XMLParserErrorHandler::
-resetErrors()
-{}
-
 
 XMLDocument::
 XMLDocument(const char *name)
@@ -191,8 +142,6 @@ XMLDocument(const string &file_path,
   parser->parse(file_path.c_str());
 
   xml_doc_ = parser->getDocument();
-
-//  delete parser;
 }
 
 
@@ -270,18 +219,18 @@ SelfPtr_
 
 
 
-shared_ptr<XMLElement>
+auto
 XMLDocument::
-get_document_element () const
+get_document_element () const -> XMLElemPtr_
 {
   return XMLElement::create(xml_doc_->getDocumentElement());
 }
 
 
 
-shared_ptr<XMLElement>
+auto
 XMLDocument::
-create_new_element(const string &name) const
+create_new_element(const string &name) const -> XMLElemPtr_
 {
   XMLCh* name_ch = XMLString::transcode(name.c_str());
   const auto xml_elem = XMLElement::create(xml_doc_->createElement(name_ch));
@@ -291,10 +240,10 @@ create_new_element(const string &name) const
 
 
 
-shared_ptr<XMLElement>
+auto
 XMLDocument::
 create_new_text_element(const string &name,
-                        const string &text) const
+                        const string &text) const -> XMLElemPtr_
 {
   XMLCh* text_ch = XMLString::transcode(text.c_str());
   DOMText *text_node = xml_doc_->createTextNode(text_ch);
@@ -366,29 +315,13 @@ create_string_from_vector<string> (const SafeSTLVector<string> &vec)
 
 
 template <class T>
-shared_ptr<XMLElement>
+auto
 XMLDocument::
 create_vector_element (const std::string &name,
-                       const SafeSTLVector<T> &vec) const
+                       const SafeSTLVector<T> &vec) const -> XMLElemPtr_
 {
     const auto vec_str = create_string_from_vector<T>(vec);
     const auto new_elem = this->create_new_text_element(name, vec_str);
-    return new_elem;
-}
-
-
-
-template <class T>
-shared_ptr<XMLElement>
-XMLDocument::
-create_size_dir_vector_element (const std::string &name,
-                                const SafeSTLVector<T> &vec,
-                                const Index &dir) const
-{
-    const auto new_elem = this->create_vector_element<T>(name, vec);
-    new_elem->add_attribute("Direction", dir);
-    new_elem->add_attribute("Size", vec.size());
-
     return new_elem;
 }
 
@@ -485,14 +418,66 @@ check_file(const string &file_path)
 }
 
 
-template shared_ptr<XMLElement> XMLDocument::create_size_dir_vector_element<Real>
-    (const std::string &, const SafeSTLVector<Real> &, const Index &dir) const;
-template shared_ptr<XMLElement> XMLDocument::create_size_dir_vector_element<Index>
-    (const std::string &, const SafeSTLVector<Index> &, const Index &dir) const;
+auto
+XMLDocument::
+XMLParserErrorHandler::
+create() -> SelfPtr_
+{
+  return SelfPtr_(new Self_());
+}
+
+
+void
+XMLDocument::
+XMLParserErrorHandler::
+warning(const xercesc::SAXParseException &ex)
+{
+  char *msg = XMLString::transcode(ex.getMessage());
+  AssertThrow(false, ExcXMLWarning(msg, ex.getLineNumber(), ex.getColumnNumber()));
+  XMLString::release(&msg);
+}
+
+
+
+void
+XMLDocument::
+XMLParserErrorHandler::
+error(const xercesc::SAXParseException &ex)
+{
+  char *msg = XMLString::transcode(ex.getMessage());
+  AssertThrow(false, ExcXMLError(msg, ex.getLineNumber(), ex.getColumnNumber()));
+  XMLString::release(&msg);
+}
+
+
+
+void
+XMLDocument::
+XMLParserErrorHandler::
+fatalError(const xercesc::SAXParseException &ex)
+{
+  char *msg = XMLString::transcode(ex.getMessage());
+  AssertThrow(false, ExcXMLError(msg, ex.getLineNumber(), ex.getColumnNumber()));
+  XMLString::release(&msg);
+}
+
+
+
+void
+XMLDocument::
+XMLParserErrorHandler::
+resetErrors()
+{}
+
+
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<bool>
     (const std::string &, const SafeSTLVector<bool> &) const;
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<string>
     (const std::string &, const SafeSTLVector<string> &) const;
+template shared_ptr<XMLElement> XMLDocument::create_vector_element<Real>
+    (const std::string &, const SafeSTLVector<Real> &) const;
+template shared_ptr<XMLElement> XMLDocument::create_vector_element<Index>
+    (const std::string &, const SafeSTLVector<Index> &) const;
 
 IGA_NAMESPACE_CLOSE
 

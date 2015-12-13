@@ -388,8 +388,9 @@ write_grid (const shared_ptr<Grid> grid,
     for (int dir = 0; dir < dim; ++dir)
     {
         const auto &knt_coord = grid->get_knot_coordinates(dir);
-        const auto knot_elem = xml_doc->create_size_dir_vector_element(
-                "Knots", knt_coord, dir);
+        const auto knot_elem = xml_doc->create_vector_element("Knots", knt_coord);
+        knot_elem->add_attribute("Direction", dir);
+        knot_elem->add_attribute("Size", knt_coord.size());
         obj_elem->append_child_element(knot_elem);
     }
 
@@ -451,10 +452,12 @@ write_spline_space (const shared_ptr<SpSpace> spline_space,
         for (int dir = 0; dir < dim; ++dir)
         {
             const auto &mult_dir = mults.get_data_direction(dir);
-            const auto int_mult = xml_doc->
-                    create_size_dir_vector_element("InteriorMultiplicities",
-                                                   mult_dir, dir);
-            int_mults->append_child_element(int_mult);
+            const auto int_mult_elem =
+                    xml_doc->create_vector_element("InteriorMultiplicities",
+                                                   mult_dir);
+            int_mult_elem->add_attribute("Direction", dir);
+            int_mult_elem->add_attribute("Size", mult_dir.size());
+            int_mults->append_child_element(int_mult_elem);
         }
         ssp_comp->append_child_element(int_mults);
 
