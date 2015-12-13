@@ -18,11 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/io/objects_container_writer.h>
+#include <igatools/io/objects_container_xml_writer.h>
 
 #ifdef XML_IO
 
-#include <igatools/io/objects_container_parser.h>
+#include <igatools/io/objects_container_xml_parser.h>
 #include <igatools/base/objects_container.h>
 #include <igatools/utils/safe_stl_set.h>
 
@@ -52,7 +52,7 @@ IGA_NAMESPACE_OPEN
 
 
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write(const string &file_path,
       const ContPtr_ container)
 {
@@ -64,7 +64,7 @@ write(const string &file_path,
     const auto xml_doc = XMLDocument::create_void_document("Igatools");
     const auto igatools_elem = xml_doc->get_document_element();
     igatools_elem->add_attribute(string("FormatVersion"),
-                                 ObjectsContainerParser::IGATOOLS_FILE_FORMAT_VERSION);
+                                 ObjectsContainerXMLParser::IGATOOLS_FILE_FORMAT_VERSION);
 
     Self_::write_grids(full_container, xml_doc);
     Self_::write_spline_spaces(full_container, xml_doc);
@@ -80,7 +80,7 @@ write(const string &file_path,
 
 
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_grids (const ContPtr_ container,
              const XMLDocPtr_ xml_doc)
 {
@@ -104,7 +104,7 @@ write_grids (const ContPtr_ container,
 
 
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_spline_spaces (const ContPtr_ container,
              const XMLDocPtr_ xml_doc)
 {
@@ -128,7 +128,7 @@ write_spline_spaces (const ContPtr_ container,
 
 
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_reference_space_bases (const ContPtr_ container,
              const XMLDocPtr_ xml_doc)
 {
@@ -187,7 +187,7 @@ write_reference_space_bases (const ContPtr_ container,
 
 
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_grid_functions (const ContPtr_ container,
                       const XMLDocPtr_ xml_doc)
 {
@@ -261,7 +261,7 @@ write_grid_functions (const ContPtr_ container,
 
 
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_domains (const ContPtr_ container,
                const XMLDocPtr_ xml_doc)
 {
@@ -285,7 +285,7 @@ write_domains (const ContPtr_ container,
 
 
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_physical_space_bases (const ContPtr_ container,
                             const XMLDocPtr_ xml_doc)
 {
@@ -309,7 +309,7 @@ write_physical_space_bases (const ContPtr_ container,
 
 
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_functions (const ContPtr_ container,
                  const XMLDocPtr_ xml_doc)
 {
@@ -377,7 +377,7 @@ write_functions (const ContPtr_ container,
 
 template <class Grid>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_grid (const shared_ptr<Grid> grid,
             const XMLDocPtr_ xml_doc)
 {
@@ -405,7 +405,7 @@ write_grid (const shared_ptr<Grid> grid,
 
 template <class SpSpace>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_spline_space (const shared_ptr<SpSpace> spline_space,
                     const XMLDocPtr_ xml_doc)
 {
@@ -488,7 +488,7 @@ write_spline_space (const shared_ptr<SpSpace> spline_space,
 
 template <class BSpline>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_bspline (const shared_ptr<BSpline> bspline,
                const XMLDocPtr_ xml_doc)
 {
@@ -549,7 +549,7 @@ write_bspline (const shared_ptr<BSpline> bspline,
 
 template <class NURBS>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_nurbs (const shared_ptr<NURBS> nurbs,
              const XMLDocPtr_ xml_doc)
 {
@@ -582,7 +582,7 @@ write_nurbs (const shared_ptr<NURBS> nurbs,
 
 template <class IdGridFunc>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_identity_grid_function (const shared_ptr<IdGridFunc> id_func,
                               const XMLDocPtr_ xml_doc)
 {
@@ -606,7 +606,7 @@ write_identity_grid_function (const shared_ptr<IdGridFunc> id_func,
 
 template <class ConstGridFunc>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_constant_grid_function (const shared_ptr<ConstGridFunc> const_func,
                               const XMLDocPtr_ xml_doc)
 {
@@ -638,7 +638,7 @@ write_constant_grid_function (const shared_ptr<ConstGridFunc> const_func,
 
 template <class LinearGridFunc>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_linear_grid_function (const shared_ptr<LinearGridFunc> linear_func,
                             const XMLDocPtr_ xml_doc)
 {
@@ -676,7 +676,7 @@ write_linear_grid_function (const shared_ptr<LinearGridFunc> linear_func,
 
 template <class IgGridFunc>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_ig_grid_function (const shared_ptr<IgGridFunc> ig_func,
                         const XMLDocPtr_ xml_doc)
 {
@@ -710,7 +710,7 @@ write_ig_grid_function (const shared_ptr<IgGridFunc> ig_func,
 
 template <class Domain>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_domain (const shared_ptr<Domain> domain,
               const XMLDocPtr_ xml_doc)
 {
@@ -743,7 +743,7 @@ write_domain (const shared_ptr<Domain> domain,
 
 template <class PhysSpaceBasis>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_phys_space_basis (const shared_ptr<PhysSpaceBasis> phys_space,
                         const XMLDocPtr_ xml_doc)
 {
@@ -800,7 +800,7 @@ write_phys_space_basis (const shared_ptr<PhysSpaceBasis> phys_space,
 
 template <class IgFunction>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_ig_function (const shared_ptr<IgFunction> ig_function,
                    const XMLDocPtr_ xml_doc)
 {
@@ -845,7 +845,7 @@ write_ig_function (const shared_ptr<IgFunction> ig_function,
 
 template <class ConstantFunction>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_constant_function (const shared_ptr<ConstantFunction> const_function,
                          const XMLDocPtr_ xml_doc)
 {
@@ -881,7 +881,7 @@ write_constant_function (const shared_ptr<ConstantFunction> const_function,
 
 template <class LinearFunction>
 void
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 write_linear_function (const shared_ptr<LinearFunction> linear_function,
                        const XMLDocPtr_ xml_doc)
 {
@@ -920,7 +920,7 @@ write_linear_function (const shared_ptr<LinearFunction> linear_function,
 
 
 shared_ptr<XMLElement>
-ObjectsContainerWriter::
+ObjectsContainerXMLWriter::
 create_ig_coefs_xml_element(const IgCoefficients &coefs,
                             const XMLDocPtr_ xml_doc)
 {

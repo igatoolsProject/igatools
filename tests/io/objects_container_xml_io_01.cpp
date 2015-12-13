@@ -27,19 +27,14 @@
 
 #include "../tests.h"
 #include <igatools/base/objects_container.h>
-#include <igatools/io/objects_container_writer.h>
-#include <igatools/io/objects_container_parser.h>
-
-// #include <igatools/geometry/grid.h>
 #include <igatools/geometry/grid_function_lib.h>
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/function_lib.h>
-// #include <igatools/base/quadrature_lib.h>
-// #include <igatools/functions/function_element.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs.h>
-// #include <igatools/basis_functions/bspline_element.h>
+#include <igatools/io/objects_container_xml_parser.h>
+#include <igatools/io/objects_container_xml_writer.h>
 
 using namespace iga;
 using namespace std;
@@ -108,14 +103,14 @@ void write_container (const string &file_path)
   container->insert_object<Function<dim,codim,range,rank>>(ct_func_2);
   container->insert_object<Function<dim,codim,range,rank>>(li_func_2);
 
-  ObjectsContainerWriter::write(file_path, container);
+  ObjectsContainerXMLWriter::write(file_path, container);
 
 };
 
 
 void read_container (const string &file_path)
 {
-  const auto container = ObjectsContainerParser::parse(file_path);
+  const auto container = ObjectsContainerXMLParser::parse(file_path);
   container->print_info(out);
 }
 

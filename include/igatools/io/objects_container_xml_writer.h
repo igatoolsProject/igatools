@@ -61,23 +61,23 @@ class IgCoefficients;
  * is thrown.
  *
  * The files written by using this class can be parsed with the
- * @ref ObjectsContainerParser class.
+ * @ref ObjectsContainerXMLParser class.
  *
  * The current igatools file format version is specified by static
  * variable @p IGATOOLS_FILE_FORMAT_VERSION of the class
- * @ref ObjectsContainerParser.
+ * @ref ObjectsContainerXMLParser.
  *
  * The XML format is detailed here @subpage in_out.
  *
  * @see ObjectsContainer
- * @see ObjectsContainerWriter
+ * @see ObjectsContainerXMLWriter
  * @see XMLDocument
  * @see XMLElement
  *
  * @author P. Antolin
  * @date 2015
  */
-class ObjectsContainerWriter
+class ObjectsContainerXMLWriter
 {
 private:
 
@@ -85,7 +85,7 @@ private:
   ///@{
 
   /** Type for the current class. */
-  typedef ObjectsContainerWriter Self_;
+  typedef ObjectsContainerXMLWriter Self_;
 
   /** Type for a shared pointer of the current class. */
   typedef std::shared_ptr<Self_> SelfPtr_;
@@ -105,31 +105,31 @@ private:
    * @brief Default constructor.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerWriter() = delete;
+  ObjectsContainerXMLWriter() = delete;
 
   /**
    * @brief Copy constructor.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerWriter(const ObjectsContainerWriter &) = delete;
+  ObjectsContainerXMLWriter(const ObjectsContainerXMLWriter &) = delete;
 
   /**
    * @brief Move constructor.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerWriter(ObjectsContainerWriter &&) = delete;
+  ObjectsContainerXMLWriter(ObjectsContainerXMLWriter &&) = delete;
 
   /**
    * @brief Copy assignment operator.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerWriter &operator= (const ObjectsContainerWriter &) = delete;
+  ObjectsContainerXMLWriter &operator= (const ObjectsContainerXMLWriter &) = delete;
 
   /**
    * @brief Move assignment operator.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerWriter &operator= (ObjectsContainerWriter &&) = delete;
+  ObjectsContainerXMLWriter &operator= (ObjectsContainerXMLWriter &&) = delete;
 
   ///@}
 

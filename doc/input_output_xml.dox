@@ -16,10 +16,10 @@ Currently, the different class instances can be read/written throw the use
 of @ref ObjectsContainer.
 Thus, if the user wants to writes a bunch of instances to a file,
 these objects must be inserted into a @ref ObjectsContainer, and it
-can be written to a file by using the helper class @ref ObjectsContainerWriter.
+can be written to a file by using the helper class @ref ObjectsContainerXMLWriter.
 
 On the other hand, a bunch of classes instances defined in a XML file can be
-parsed using the class @ref ObjectsContainerParser. All the instances
+parsed using the class @ref ObjectsContainerXMLParser. All the instances
 will be returned contained into a single @ref ObjectsContainer.
 
 During the library developments, the input file format will change in order to adhere closely 

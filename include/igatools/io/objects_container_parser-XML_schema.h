@@ -25,13 +25,13 @@
 
 #ifdef XML_IO
 
-#include <igatools/io/objects_container_parser.h>
+#include <igatools/io/objects_container_xml_parser.h>
 
 IGA_NAMESPACE_OPEN
 
-const std::string ObjectsContainerParser::IGATOOLS_FILE_FORMAT_VERSION = "1.0";
+const std::string ObjectsContainerXMLParser::IGATOOLS_FILE_FORMAT_VERSION = "1.0";
 
-const std::string ObjectsContainerParser::XML_SCHEMA_ =
+const std::string ObjectsContainerXMLParser::XML_SCHEMA_ =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<xs:schema attributeFormDefault=\"unqualified\"\n"
 "           elementFormDefault=\"unqualified\"\n"

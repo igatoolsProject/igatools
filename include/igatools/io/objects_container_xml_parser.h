@@ -76,7 +76,7 @@ template <class T1, class T2> class SafeSTLMap;
  * If any type different from the ones above is found, an exception
  * is thrown.
  *
- * The @ref ObjectsContainerWriter class writes containers into files
+ * The @ref ObjectsContainerXMLWriter class writes containers into files
  * with the format that this class is expecting for being parsed.
  *
  * The XML format is detailed here @subpage in_out.
@@ -87,14 +87,14 @@ template <class T1, class T2> class SafeSTLMap;
  * memory deallocation. Not getter should be provided for retrieving it.
  *
  * @see ObjectsContainer
- * @see ObjectsContainerWriter
+ * @see ObjectsContainerXMLWriter
  * @see XMLDocument
  * @see XMLElement
  *
  * @author P. Antolin
  * @date 2015
  */
-class ObjectsContainerParser
+class ObjectsContainerXMLParser
 {
 private:
 
@@ -102,7 +102,7 @@ private:
   ///@{
 
   /** Type for the current class. */
-  typedef ObjectsContainerParser Self_;
+  typedef ObjectsContainerXMLParser Self_;
 
   /** Type for a shared pointer of the current class. */
   typedef std::shared_ptr<Self_> SelfPtr_;
@@ -128,31 +128,31 @@ private:
    * @brief Default constructor.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerParser() = delete;
+  ObjectsContainerXMLParser() = delete;
 
   /**
    * @brief Copy constructor.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerParser(const ObjectsContainerParser &) = delete;
+  ObjectsContainerXMLParser(const ObjectsContainerXMLParser &) = delete;
 
   /**
    * @brief Move constructor.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerParser(ObjectsContainerParser &&) = delete;
+  ObjectsContainerXMLParser(ObjectsContainerXMLParser &&) = delete;
 
   /**
    * @brief Copy assignment operator.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerParser &operator= (const ObjectsContainerParser &) = delete;
+  ObjectsContainerXMLParser &operator= (const ObjectsContainerXMLParser &) = delete;
 
   /**
    * @brief Move assignment operator.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerParser &operator= (ObjectsContainerParser &&) = delete;
+  ObjectsContainerXMLParser &operator= (ObjectsContainerXMLParser &&) = delete;
 
   ///@}
 
