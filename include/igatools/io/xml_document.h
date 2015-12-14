@@ -95,6 +95,9 @@ private:
   /** Type for a shared pointer of @ref XMLElement. */
   typedef std::shared_ptr<XMLElement> XMLElemPtr_;
 
+  /** Default precision for writing vectors of real numbers. */
+  static const int default_precision_;
+
   ///@}
 
   /** @name Constructors, destructor, assignment operators and creators */
@@ -261,7 +264,9 @@ public:
    */
   template <class T>
   XMLElemPtr_ create_vector_element (const std::string &name,
-                                     const SafeSTLVector<T> &vector) const;
+                                     const SafeSTLVector<T> &vector,
+                                     const int &precision = default_precision_,
+                                     const bool scientific_format = true) const;
 
   /**
    * @brief Prints the XML document content.
@@ -275,8 +280,11 @@ public:
    * @brief Writes the XML document content to the given @p file_path.
    *
    * @param[in] file_path File Path of the file.
+   * @param[in] pretty_print Flag indicating if the file must
+   * written with a pretty print format.
    */
-  void write_to_file(const std::string &file_path) const;
+  void write_to_file(const std::string &file_path,
+                     const bool pretty_print = false) const;
 
 private:
 
@@ -312,7 +320,9 @@ private:
    * @param[in] vector Vector to be written as string.
    */
   template <class T>
-  static std::string create_string_from_vector (const SafeSTLVector<T> &vector);
+  static std::string create_string_from_vector (const SafeSTLVector<T> &vector,
+                                     const int &precision = default_precision_,
+                                     const bool scientific_format = true);
 
 private:
 

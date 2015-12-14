@@ -286,6 +286,16 @@ public:
                      const std::string &value);
 
   /**
+   * @brief Add a new attribute to the present element with the given
+   * @p name and @p string @p value.
+   *
+   * @param[in] name Name of the attribute.
+   * @param[in] name Value of the attribute.
+   */
+  void add_attribute(const char *name,
+                     const char *value);
+
+  /**
    * @brief Append a child element under the current element.
    *
    * @param[in] xml_elem Child element to be appended.

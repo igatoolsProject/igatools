@@ -51,6 +51,8 @@ using xercesc::DOMText;
 
 IGA_NAMESPACE_OPEN
 
+const int XMLDocument::default_precision_ = 15;
+
 XMLDocument::
 XMLDocument(const char *name)
 {
@@ -260,11 +262,16 @@ create_new_text_element(const string &name,
 template <>
 string
 XMLDocument::
-create_string_from_vector<Real> (const SafeSTLVector<Real> &vec)
+create_string_from_vector<Real> (const SafeSTLVector<Real> &vec,
+                                 const int &precision,
+                                 const bool scientific_format)
 {
     std::ostringstream oss;
+    oss.precision(precision);
+    if (scientific_format)
+        oss << std::scientific;
     for (const auto &v : vec)
-        oss << std::scientific << " " << v << " ";
+        oss << " " << v << " ";
     return oss.str();
 }
 
@@ -273,7 +280,27 @@ create_string_from_vector<Real> (const SafeSTLVector<Real> &vec)
 template <>
 string
 XMLDocument::
-create_string_from_vector<bool> (const SafeSTLVector<bool> &vec)
+create_string_from_vector<float> (const SafeSTLVector<float> &vec,
+                                  const int &precision,
+                                  const bool scientific_format)
+{
+    std::ostringstream oss;
+    oss.precision(precision);
+    if (scientific_format)
+        oss << std::scientific;
+    for (const auto &v : vec)
+        oss << " " << v << " ";
+    return oss.str();
+}
+
+
+
+template <>
+string
+XMLDocument::
+create_string_from_vector<bool> (const SafeSTLVector<bool> &vec,
+                                 const int &precision,
+                                 const bool scientific_format)
 {
     std::ostringstream oss;
     for (const auto &v : vec)
@@ -291,7 +318,9 @@ create_string_from_vector<bool> (const SafeSTLVector<bool> &vec)
 template <>
 string
 XMLDocument::
-create_string_from_vector<Index> (const SafeSTLVector<Index> &vec)
+create_string_from_vector<Index> (const SafeSTLVector<Index> &vec,
+                                  const int &precision,
+                                  const bool scientific_format)
 {
     std::ostringstream oss;
     for (const auto &v : vec)
@@ -304,7 +333,9 @@ create_string_from_vector<Index> (const SafeSTLVector<Index> &vec)
 template <>
 string
 XMLDocument::
-create_string_from_vector<string> (const SafeSTLVector<string> &vec)
+create_string_from_vector<string> (const SafeSTLVector<string> &vec,
+                                   const int &precision,
+                                   const bool scientific_format)
 {
     std::ostringstream oss;
     for (const auto &v : vec)
@@ -318,9 +349,11 @@ template <class T>
 auto
 XMLDocument::
 create_vector_element (const std::string &name,
-                       const SafeSTLVector<T> &vec) const -> XMLElemPtr_
+                       const SafeSTLVector<T> &vec,
+                       const int &precision,
+                       const bool scientific_format) const -> XMLElemPtr_
 {
-    const auto vec_str = create_string_from_vector<T>(vec);
+    const auto vec_str = create_string_from_vector<T>(vec, precision, scientific_format);
     const auto new_elem = this->create_new_text_element(name, vec_str);
     return new_elem;
 }
@@ -329,7 +362,8 @@ create_vector_element (const std::string &name,
 
 void
 XMLDocument::
-write_to_file(const string &file_path) const
+write_to_file(const string &file_path,
+              const bool pretty_print) const
 {
     // Creating XML writer and writing the DOM document.
     try
@@ -342,7 +376,10 @@ write_to_file(const string &file_path) const
         xercesc::DOMLSSerializer *writer = dom_impl_->createLSSerializer();
 
         xercesc::DOMConfiguration* dc = writer->getDomConfig();
-        dc->setParameter(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, true);
+        if (pretty_print)
+            dc->setParameter(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, true);
+        else
+            dc->setParameter(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
         writer->write(xml_doc_, xml_stream);
 
@@ -402,8 +439,7 @@ print_info(LogStream &out) const
       writer->release();
       xml_stream->release();
 
-      delete xmlch_output;
-      delete writer;
+       delete xmlch_output;
   }
   catch(const xercesc::XMLException &ex)
   {
@@ -515,13 +551,15 @@ resetErrors()
 
 
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<bool>
-    (const std::string &, const SafeSTLVector<bool> &) const;
+    (const std::string &, const SafeSTLVector<bool> &, const int &, const bool) const;
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<string>
-    (const std::string &, const SafeSTLVector<string> &) const;
+    (const std::string &, const SafeSTLVector<string> &, const int &, const bool) const;
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<Real>
-    (const std::string &, const SafeSTLVector<Real> &) const;
+    (const std::string &, const SafeSTLVector<Real> &, const int &, const bool) const;
+template shared_ptr<XMLElement> XMLDocument::create_vector_element<float>
+    (const std::string &, const SafeSTLVector<float> &, const int &, const bool) const;
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<Index>
-    (const std::string &, const SafeSTLVector<Index> &) const;
+    (const std::string &, const SafeSTLVector<Index> &, const int &, const bool) const;
 
 IGA_NAMESPACE_CLOSE
 
