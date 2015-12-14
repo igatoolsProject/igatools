@@ -13,7 +13,7 @@ standard bidimensional domain in the Isogeoemtric Analysis literature, the quart
 It can be represented with appropriate %NURBS basis functions of degrees 2,1
 over a grid of one single element. This means that \f$3\times 2\f$ control points
 \f$\{C_{i,j}\}_{i,j=1}^{3,2}\subset\mathbb{R}^2\f$ are required:
-
+<center>
 <table>
   <tr>
     <td>\f$i/j\f$</td>
@@ -36,8 +36,9 @@ over a grid of one single element. This means that \f$3\times 2\f$ control point
     <td>(0,2)</td> 
   </tr>
 </table>
-
-and weights \f$\{w_{i,j}\}_{i,j=1}^{3,2}\subset\mathbb{R}\f$:
+</center>
+We also need the weights \f$\{w_{i,j}\}_{i,j=1}^{3,2}\subset\mathbb{R}\f$:
+<center>
 <table>
   <tr>
     <td>\f$i/j\f$</td>
@@ -60,16 +61,31 @@ and weights \f$\{w_{i,j}\}_{i,j=1}^{3,2}\subset\mathbb{R}\f$:
     <td>1</td>
   </tr>
 </table>
+</center>
 
-Once we have the domains, we will save them in a <tt>*.vtk</tt> file. For the quarter
-annulus domain, we will create a B-spline physical space and add to the <tt>*.vtk</tt> file
- a data field of a sample basis function. Each domain, eventually with
-additional fields, can be visualized with Paraview.
+Once we have the domains, we will save them in a <tt>*.vtu</tt> file. For the quarter
+annulus domain, we will create a B-spline physical space and add to the <tt>*.vtu</tt> file
+ a data field of a sample basis function.
+%A function \f$\hat{f} \in \hat{\mathbb{V}}_h(\hat{\Omega})\f$ can be expressed as
+linear combination of basis function:
+\f{equation}{
+	\hat{f} = \sum_{i=1}^{n_h} a_i(\hat{f}) \hat{\varphi}_i \label{eq:func_ref}
+\f} 
+where the real numbers \f$ a_1(\hat{f}),\dots, a_{n_h}(\hat{f}) \f$ are the coefficients of 
+\f$ \hat{f}\f$ in the basis \f$ \bigl\{ \hat{\varphi}_i \bigr\}_{i=1}^{n_h} \f$.
+This means that the basis function \f$ \hat{\varphi}_j \f$ can be expressed as
+\f$ \hat{\varphi}_j = \sum_{i=1}^{n_h} a_i(\hat{\varphi}_j) \hat{\varphi}_i \f$
+where  \f$ a_i(\hat{\varphi}_j) = \delta_{ij}\f$, i.e. is 0 if \f$ i\neq j \f$ 
+and is 1 if \f$ i= j \f$.
 
+This boring and verbose introduction is amied to introduce the Function class and
+its derived classes, one of which is the IgFunction. It represents linear combinations
+of splines and coeffcients as described above and it is particularly useful for
+the representation of linear system solutions.
 
 \section code02 Description of the program
 Along with the headers of the \ref example_01, we need headers for %NURBS spaces,
-functions and the class in charge of saving data for Paraview:
+functions and the class in charge of saving data for [Paraview](http://www.paraview.org):
 \snippet example_02.cpp headers
 
 We then declare a simple templated function for the creation of trivial physical
@@ -180,12 +196,16 @@ The igatools refinement mechanism does not provide \f$p\f$-refinement.
 
 In order to plot a single basis function, we create an IgFunction whose coefficients
 are all zero but the one associated to the basis function. We first get the DofDistribution
-class from the physical space. This class is responsible for indexes management.
+class from the physical space.
 Now we can create another instance of IgCoefficients with the global indexes
 retrieved with the method <tt>get_global_dofs()</tt>. By default, the values
-are all zeroed. Setting to 1.0 the coefficient of the desired basis function is the
-only thing to do before creating the IgFunction:
+are all zeroed.
 \snippet example_02.cpp basis_funct
+We select the basis function of tensor index [1,1] in an over-complicated manner to make clear the fact
+that spline coefficients are listed via flat global indices only. Tensor indices
+are hardcoded to the space, while flat indices depend on the ditribution policy
+of the degrees of freedom. The class DofDistribution is devoted to the distribution
+policy manegement.
 
 We are close to the end of the exercise: we need to construct a new Writer and
 then simply add via the <tt>add_field</tt> method the Function object we want to plot.

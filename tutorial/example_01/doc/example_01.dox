@@ -52,7 +52,7 @@ philosophy: in igatools, C++ constructors exist but are deprecated in favor of
 creators, static methods that return the desired object wrapped in a smart pointer
 (igatools makes an extensive use of smart pointers). We also notice that we don't want
 to modify the grid, hence we call the static method <tt>const_create</tt> instead 
-of the non-const version <tt>create</tt>.
+of the non-const version <tt>create</tt> (see \ref example_02 for more details).
 
 In the next lines we see some examples of how to access the data inside an igatools
 object:

@@ -107,14 +107,16 @@ int main()
   // [basis_funct]
   auto dof_distribution = phy_basis->get_dof_distribution();
   auto coefficients = IgCoefficients(dof_distribution->get_global_dofs());
-  coefficients[7]   = 1.0;
+  TensorIndex<2> tensor_id = {1,1};
+  auto flat_id = dof_distribution->get_global_dof_id(tensor_id,0);
+  coefficients[flat_id] = 1.0;
   auto basis_funct  = IgFunction<2,0,1,1>::const_create(phy_basis,coefficients);
   // [basis_funct]
 
   // [annulus_plot]
   int annulus_plot_points = 10;
   Writer<2> writer_annulus(annulus,annulus_plot_points);
-  const string fieldname = "basis function 7";
+  const string fieldname = "basis function sample";
   writer_annulus.add_field(*basis_funct,fieldname);
   writer_annulus.save("annulus");
 

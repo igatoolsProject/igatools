@@ -89,11 +89,13 @@ void basis_loop_with_cache(shared_ptr<const Basis<dim,codim,range,rank>> basis) 
 // [basis_loop_loop]
 
 // [basis_loop_view]
+    auto vals = basis_el->get_element_values();
+
     out.begin_item("Basis values:");
-    basis_el->get_element_values().print_info(out);
+    vals.print_info(out);
     out.end_item();
-// [basis_loop_view]
   }
+// [basis_loop_view]
 }
 
 // [main_trivial]
@@ -109,19 +111,17 @@ int main()
   grid_loop<3>(cube);
 // [main_trivial]
 
-// [main_basis_loop_ref]
+// [main_basis_loop]
   auto space     = SplineSpace<2>::const_create(2,square);
   auto ref_basis = BSpline<2>::const_create(space);
   out << "Traversing basis functions on the reference domain:" << endl;
   basis_loop_with_cache<2>(dynamic_pointer_cast<const Basis<2,0,1,1>>(ref_basis));
-// [main_basis_loop_ref]
 
-// [main_basis_loop_phy]
   auto annulus   = quarter_annulus(square);
   out << "Traversing basis functions on the annulus domain:" << endl;
   auto phy_basis = PhysicalSpaceBasis<2>::const_create(ref_basis,annulus);
   basis_loop_with_cache<2>(dynamic_pointer_cast<const Basis<2,0,1,1>>(phy_basis));
-// [main_basis_loop_phy]
+// [main_basis_loop]
 
   return 0;
 }

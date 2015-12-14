@@ -1,84 +1,165 @@
 /**
 
-\page example_04 Example 4: plotting a BSpline basis function
+\page example_04 Example 4: a trivial Poisson problem
 
 \section Introduction
 
-In this program we'll build (and save in a file for plotting) a basis function 
-\f$ \hat{\varphi}_j \colon \mathbb{R}^{dim} \to \mathbb{R} \f$ 
-of a given B-Spline space \f$ \hat{\mathbb{V}}_h(\hat{\Omega}) = 
-\text{span}\{ \hat{\varphi}_i \colon \hat{\Omega} \to \mathbb{R} \; , i = 1,\dots,n_h \}\f$, with 
-\f$\hat{\Omega} = [0,1]^{dim} \subset \mathbb{R}^{dim}\f$.
-
-A function \f$\hat{f} \in \hat{\mathbb{V}}_h(\hat{\Omega})\f$ can be expressed as
-linear combination of basis function:
+We should now have most of the tools for handling the simplest problem one can have:
+we are going to solve the \f$d\f$-dimensional Poisson problem on the reference domain with homogeneus Dirichlet boundary
+condition and constant source term \f$f\in\mathbb{R}\f$, or in mathematical language
 \f{equation}{
-	\hat{f} = \sum_{i=1}^{n_h} a_i(\hat{f}) \hat{\varphi}_i \label{eq:func_ref}
-\f} 
-where the real numbers \f$ a_1(\hat{f}),\dots, a_{n_h}(\hat{f}) \f$ are the coefficients of 
-\f$ \hat{f}\f$ in the basis \f$ \bigl\{ \hat{\varphi}_i \bigr\}_{i=1}^{n_h} \f$.
-This means that the basis function \f$ \hat{\varphi}_j \f$ can be expressed as
-\f$ \hat{\varphi}_j = \sum_{i=1}^{n_h} a_i(\hat{\varphi}_j) \hat{\varphi}_i \f$
-where  \f$ a_i(\hat{\varphi}_j) = \delta_{ij}\f$, i.e. is 0 if \f$ i\neq j \f$ 
-and is 1 if \f$ i= j \f$.
+  \left\{
+    \begin{aligned}
+      -\Delta u &= f \textrm{   in }{[0,1]^d}\\
+      u &= 0 \textrm{   on }\partial{[0,1]^d}\\
+    \end{aligned}
+  \right.
+\f}
+In variational form, the problem is finding \f$u\in H^1_0({[0,1]^d})\f$ such that
+\f{equation}{
+  a(u,v) = \int_{[0,1]^d} \nabla u\cdot\nabla v\,dx=\int_{[0,1]^d} fv\,dx = F(v)
+  \qquad\forall v\in H^1_0({[0,1]^d})
+\f}
+The discretized problem leads to \f$\mathbf{A}\mathbf{u}=\mathbf{f}\f$, where,
+given a quadrature rule \f$\{(p_i,w_i)\}_{i=1}^{n_{quad}}\f$ and a spline basis 
+\f$\{\phi_i\}_{i=1}^{n_{dof}}\f$, we have
+ - \f$\mathbf{A}\in\mathbb{R}^{n_{dof}\times n_{dof}}\f$ is the stiffness matrix 
+   with entries \f$ \mathbf{A}_{ij} = \int_{[0,1]^d} \nabla\phi_i \cdot \nabla \phi_j \,dx
+   \approx \sum_{k=1}^{n_{quad}} 
+   \nabla \phi_i(p_k) \cdot \nabla \phi_j(p_k) w_k \f$;
+ - \f$\mathbf{f}\in\mathbb{R}^{n_{dof}}\f$ is the right-hand side with entries
+   \f$ \mathbf{f}_{i} = \int_{[0,1]^d} f\phi_i\,dx \approx \sum_{k=1}^{n_{quad}} 
+    \phi_j(p_k) f(p_k) w_k \f$;
+ - \f$\mathbf{u}\in\mathbb{R}^{n_{dof}}\f$ is the discrete solution in terms of the
+   coefficients for the basis.
 
-Why this boring introduction? The fact is that in igatools there is a class (IgGridFunction)
-that represents functions that are linear combination of BSpline (or NURBS) basis function,
- as in eq.(1).
-
-Let's see how to use the IgGridFunction class in order to plot a basis function.
-
-
+The stiffness matrix assemble is based (surprisingly) on an element loop: we will
+compute local element contribution in local block matrices (or vectors for the right-hand
+side). The actual assemble and solving of the system is delegated to the
+[Trilinos](https://trilinos.org/) library.
    
 \section code04 Description of the program
-In the include list there is only one new header 
-with respect to the headers of \ref example_01, namely
-\snippet example_04.cpp new include
-where the IgGridFunction is declared
 
-We define a <tt>dim</tt>-templated function that creates a uniformly distributed
-maximum regularity open knot spline space of a given degree.
-To obtain at least one basis function that is not affected by the 
-boundary we consider deg+2 knots in each direction.
-\snippet example_04.cpp plot_function
-Then we use the grid to create the SplineSpace and the BSpline basis
-\snippet example_04.cpp create_basis
+We traditionally start with the new headers for boundary degrees of freedom management,
+matrix and vector storage and linear solvers:
+\snippet example_04.cpp include
 
-To store the coefficient of the linear combination, we use the class IgCoefficients
-that maps the global ids of the basis function with the associated coefficient. Then 
-we need to build an instance of the IgCoefficients class and initialize the coefficients associated to 
-the basis function to zero: in order to do so we need get the DofDistribution 
-(that contains the information about the dofs of the SplineSpace) and extract the global dofs
-to construct an IgCoefficients object
-\snippet example_04.cpp init_vec
+Since we have to deal with the external library Trilinos, another namespace is
+useful:
+\snippet example_04.cpp using
 
-To get the "central" basis function we address it by its tensor index, but
-the coefficient vector only knows about (global) flat indices.
-The tensor index is hardcoded to the space while the flat index depends on the
-the degree of freedom distribution policy (represented by the class DofDistribution):
-\snippet example_04.cpp tensor_to_flat
-Just to double check we print the vector on the screen
-\snippet example_04.cpp print_vector
+We create the class PoissonProblem for everything. Most of the variables and the constructor
+are self-explanatory (if one has read the previous Examples). The new concepts
+are about the objects related to the linear system, whose declaration is the
+following:
+\snippet example_04.cpp system
+The Matrix and Vector objects are simple derived classes from the Epetra objects
+Epetra_CrsMatrix and Epetra_Vector respectively. Here is their construction:
+\snippet example_04.cpp sys_create
+There is a flag system for the degrees of freedom (and other entities such as grid
+elements) in igatools: each of them can be associated or not to a particular 
+user-defined property. This permits to define loops or compute quantities just on 
+subsets of the DOFs and not the full set. There is only the DofProperties::active
+default property. We finally notice that we are using the default serial MPI
+communicator (i.e. containing only one process) implemented in Trilinos.
 
-Now we can build the object representing the selected basis function: for this we use the 
-object representing the BSpline basis and the coefficients of the function in that basis:
-\snippet example_04.cpp basis_to_plot
+We can now see how to assemble the linear system in the body of the method 
+<tt>assemble()</tt>. As it has been already explained in \ref example_03, we skip
+the set up for the cache handler and jump directly to the initialization of the
+element loop:
+\snippet example_04.cpp loop_init
+After having retrieved the number of quadrature points, the number of non-zero
+basis functions per element and assigned the constant value of the source term, 
+we initialize the loop and fill the cache. We then define a 
+DenseMatrix for the element matrices and a DenseVector for the element vectors.
+Lastly, we retrieve the ValueTable of each requested quantity.
 
-And we plot the basis function using <tt>n_plot_points</tt> for each element of the grid.
-\snippet example_04.cpp plot_basis
-If you run the code you should have the following <tt>.vtu</tt> files:
-- <tt>bspline_basis-2_1d.vtu</tt> that refers to <tt>dim==1</tt>
-- <tt>bspline_basis-12_2d.vtu</tt> that refers to <tt>dim==2</tt>
-- <tt>bspline_basis-62_3d.vtu</tt> that refers to <tt>dim==3</tt>
+\note
+The DenseMatrix and DenseVector classes are derived from the matrix and vector types in the 
+[Boost uBlas library](http://www.boost.org/doc/libs/1_59_0/libs/numeric/ublas/doc/index.html).
+Therefore they can be used as a boost::numeric::ublas::matrix<Real> or
+boost::numeric::ublas::vector<Real>.
 
-that can be visualized using [Paraview](http://www.paraview.org)
+The followings are the nested loops for the computation of the DenseMatrix
+<tt>loc_mat</tt>:
+\snippet example_04.cpp stiffness
+In order to compute the entries of <tt>loc_mat</tt>, we need to access to the data stored in <tt>grads</tt>. 
+We get into <tt>grd_i</tt> a pointer to a variable of type ValueContainer. This (aliased) class
+stores a specific quantity (such as the value or the gradient) of all non-zero 
+basis functions in the element on all quadrature point. It can be thought as a
+double array of tensors. 
+The user can get the pointer
+of basis functions quantities in a prescribed point or the quantities on all points
+of a prescribed function. In this case we need the values of the \f$i\f$-th and
+\f$j\f$-th basis functions in each point.
+See the documentation of the ValueTable class for more
+details. Once we have a view for the basis function \f$i\f$ and one for \f$j\f$,
+the innermost loop traverses the quadrature points and sums the local contribution.
 
-\section Exercises 
--# test with other degrees
--# modify the function plot_basis(const int deg) so that it plots all
-   basis functions of the space
+There is not much to say about the computation of the local vectors, apart from
+the fact that due to implementation constraints for tensor data structures, the direct
+access of the values inside <tt>vals</tt> requires an extra <tt>[0]</tt>:
+\snippet example_04.cpp rhs
+Here is the assemble:
+\snippet example_04.cpp add_block
+As already stated, the actual assemble is delegated to Trilinos, hence we just
+need to extract the local-to-global connectivity and pass the local matrix and
+local vector to the Trilinos routines. As final requirement, we complete the
+assemble via a mandatory call of <tt>FillComplete</tt>.
+
+We are almost done with the assemble. The last step is applying the homogeneous
+Dirichlet boudnary condition. We will implement this with brutal force: the
+boundary DOFs will be manually set to 0 and th system matrix properly updated.
+Here is the code:
+\snippet example_04.cpp boundary
+After the usual recovery of the <tt>dof_distribution</tt>, we declare an
+<tt>std::map</tt> to collect the index-value pairs for the boundary DOFs. We 
+set up a loop on the \f$2dim\f$ faces in order to gather the boundary indeces face
+by face (with the get_boundary_dofs methd). Once the indeces (and their associated
+values 0.0) are collected from each face, we call <tt>apply_boundary_values</tt>
+to impose the boundary condition.
+
+\note
+In igatools the following convention on face numbering is adopted: in a 
+\f$d\f$-dimensional grid with axes \f$\xi_0,...\xi_{d-1}\f$, then we have
+<center>
+<table>
+  <tr>
+    <td>0</td>
+    <td>1</td>
+    <td>2</td>
+    <td>3</td>
+    <td>4</td>
+    <td>5</td>
+    <td>...</td>
+    <td>2i</td>
+    <td>2i+1</td>
+  </tr>
+  <tr>
+    <td>\f$\{\xi_0=0\}\f$</td>
+    <td>\f$\{\xi_0=1\}\f$</td>
+    <td>\f$\{\xi_1=0\}\f$</td>
+    <td>\f$\{\xi_1=1\}\f$</td>
+    <td>\f$\{\xi_2=0\}\f$</td>
+    <td>\f$\{\xi_2=1\}\f$</td>
+    <td>...</td>
+    <td>\f$\{\xi_i=0\}\f$</td>
+    <td>\f$\{\xi_i=1\}\f$</td>
+  </tr>
+</table>
+</center>
+Faces in physical domain are the push-forward of the grid faces and hence ordered
+in a similar fashion.
+
+The last part of the Description is about the solving, saving the results 
+in a <tt>*.vtu</tt> being 
+already explained in \ref example_02:
+\snippet example_04.cpp solve
+We only remark again that Matrix and Vector objects can be used directly in more
+sophisticated Trilinos code as they are derived classes of Epetra objects.
+We leave to the reader the pleausure of having a glance of the remaining code.
+
 \section fcode04 The full program
 \include example_04_no_tag.cpp
- 
-  
+
 */
