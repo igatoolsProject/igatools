@@ -37,8 +37,7 @@ test()
   Writer<dim> writer(grid);
 
   string filename = "grid" + to_string(dim);
-  writer.save(filename);
-  writer.save(filename,"appended");
+  writer.save(filename, true);
   writer.print_info(out);
 }
 

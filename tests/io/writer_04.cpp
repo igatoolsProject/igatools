@@ -74,8 +74,7 @@ test()
   writer.add_point_data(dim * dim, "tensor", data_tensor, "tensor field");
 
   string filename = "grid_field" + to_string(dim);
-  writer.save(filename);
-  writer.save(filename,"appended");
+  writer.save(filename, true);
   writer.print_info(out);
 }
 
