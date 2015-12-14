@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+
+
 from init_instantiation_data import *
 
 include_files = []
@@ -76,23 +78,21 @@ for dims in inst.all_function_dims:
 
 valid_types = unique(valid_types)
 
-# Writing to file
 
-for tp in valid_types:
-    f.write('template bool ObjectsContainer::is_object_present<%s>(const Index&) const;\n' % (tp))
-    f.write('template bool ObjectsContainer::is_const_object_present<%s>(const Index&) const;\n' % (tp))
-f.write('\n')
+         
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
 
-for tp in valid_types:
-    f.write('template std::shared_ptr<%s> ObjectsContainer::get_object<%s>(const Index&) const;\n' % (tp, tp))
-    f.write('template std::shared_ptr<const %s> ObjectsContainer::get_const_object<%s>(const Index&) const;\n' % (tp, tp))
-f.write('\n')
+f.write('#ifdef SERIALIZATION\n')
 
-for tp in valid_types:
-    f.write('template SafeSTLSet<Index> ObjectsContainer::get_object_ids<%s>() const;\n' % (tp))
-    f.write('template SafeSTLSet<Index> ObjectsContainer::get_const_object_ids<%s>() const;\n' % (tp))
-f.write('\n')
+i = 0
+for vt in valid_types:
+  f.write('using Alias%d = iga::SafeSTLVector<std::shared_ptr<iga::%s>>;\n' % (i, vt));
+  f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Alias%d,cereal::specialization::member_serialize);\n' % (i));
+  i += 1
 
-for tp in valid_types:
-    f.write('template void ObjectsContainer::insert_object<%s>(const std::shared_ptr<%s>, const bool);\n' % (tp, tp))
-    f.write('template void ObjectsContainer::insert_const_object<%s>(const std::shared_ptr<const %s>, const bool);\n' % (tp, tp))
+f.write('#endif // SERIALIZATION\n')
+
+#   
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

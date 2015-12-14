@@ -393,6 +393,10 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+#ifdef SERIALIZATION
+#include <igatools/base/objects_container.serial>
+#endif // SERIALIZATION
+
 #endif // XML_IO
 
 #endif /*__OBJECTS_CONTAINER_H_ */

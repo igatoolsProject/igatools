@@ -819,19 +819,14 @@ serialize(Archive &ar)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
-    for (auto &object : at_key<Type>(objects_))
-    {
-      const string name = "grid_"  + to_string(Type::dim) + "_id_" +
-                          to_string(object->get_object_id());
-      ar &make_nvp(name, object);
-    }
+    const string name = "grid_"  + to_string(Type::dim);
 
-    for (auto &object : at_key<const Type>(objects_))
-    {
-      const string name = "const_grid_"  + to_string(Type::dim) + "_id_" +
-                          to_string(object->get_object_id());
-      ar &make_nvp(name, std::const_pointer_cast<Type>(object));
-    }
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : at_key<const Type>(objects_))
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    ar &make_nvp("const_" + name, tmp_objects);
   });
 
   // Serializing spline spaces
@@ -840,25 +835,17 @@ serialize(Archive &ar)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
-    for (auto &object : at_key<Type>(objects_))
-    {
-      const string name = "spline_space_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::range) + "_"
-                          + to_string(Type::rank) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, object);
-    }
+    const string name = "spline_space_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::range) + "_"
+            + to_string(Type::rank);
 
-    for (auto &object : at_key<const Type>(objects_))
-    {
-      const string name = "const_spline_space_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::range) + "_"
-                          + to_string(Type::rank) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, std::const_pointer_cast<Type>(object));
-    }
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : at_key<const Type>(objects_))
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    ar &make_nvp("const_" + name, tmp_objects);
   });
 
   // Serializing reference space basis
@@ -867,25 +854,17 @@ serialize(Archive &ar)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
-    for (auto &object : at_key<Type>(objects_))
-    {
-      const string name = "reference_space_basis_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::range) + "_"
-                          + to_string(Type::rank) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, object);
-    }
+    const string name = "reference_space_basis_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::range) + "_"
+            + to_string(Type::rank);
 
-    for (auto &object : at_key<const Type>(objects_))
-    {
-      const string name = "reference_space_basis_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::range) + "_"
-                          + to_string(Type::rank) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, std::const_pointer_cast<Type>(object));
-    }
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : at_key<const Type>(objects_))
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    ar &make_nvp("const_" + name, tmp_objects);
   });
 
   // Grid functions
@@ -894,23 +873,16 @@ serialize(Archive &ar)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
-    for (auto &object : at_key<Type>(objects_))
-    {
-      const string name = "grid_funcion_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::space_dim) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, object);
-    }
+    const string name = "grid_funcion_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::space_dim);
 
-    for (auto &object : at_key<const Type>(objects_))
-    {
-      const string name = "const_grid_funcion_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::space_dim) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, std::const_pointer_cast<Type>(object));
-    }
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : at_key<const Type>(objects_))
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    ar &make_nvp("const_" + name, tmp_objects);
   });
 
   // Domains
@@ -919,23 +891,16 @@ serialize(Archive &ar)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
-    for (auto &object : at_key<Type>(objects_))
-    {
-      const string name = "domain_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::space_dim) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, object);
-    }
+    const string name = "domain_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::space_dim);
 
-    for (auto &object : at_key<const Type>(objects_))
-    {
-      const string name = "const_domain_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::space_dim) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, std::const_pointer_cast<Type>(object));
-    }
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : at_key<const Type>(objects_))
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    ar &make_nvp("const_" + name, tmp_objects);
   });
 
   // Physical space basis
@@ -944,27 +909,18 @@ serialize(Archive &ar)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
-    for (auto &object : at_key<Type>(objects_))
-    {
-      const string name = "physical_space_basis_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::range) + "_"
-                          + to_string(Type::rank) + "_"
-                          + to_string(Type::codim) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, object);
-    }
+    const string name = "physical_space_basis_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::range) + "_"
+            + to_string(Type::rank) + "_"
+            + to_string(Type::codim);
 
-    for (auto &object : at_key<const Type>(objects_))
-    {
-      const string name = "const_physical_space_basis_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::range) + "_"
-                          + to_string(Type::rank) + "_"
-                          + to_string(Type::codim) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, std::const_pointer_cast<Type>(object));
-    }
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : at_key<const Type>(objects_))
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    ar &make_nvp("const_" + name, tmp_objects);
   });
 
   // Function
@@ -973,27 +929,18 @@ serialize(Archive &ar)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
-    for (auto &object : at_key<Type>(objects_))
-    {
-      const string name = "function_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::codim) + "_"
-                          + to_string(Type::range) + "_"
-                          + to_string(Type::rank) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, object);
-    }
+    const string name = "function_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::codim) + "_"
+            + to_string(Type::range) + "_"
+            + to_string(Type::rank);
 
-    for (auto &object : at_key<const Type>(objects_))
-    {
-      const string name = "const_function_"
-                          + to_string(Type::dim) + "_"
-                          + to_string(Type::codim) + "_"
-                          + to_string(Type::range) + "_"
-                          + to_string(Type::rank) + "_id_"
-                          + to_string(object->get_object_id());
-      ar &make_nvp(name, std::const_pointer_cast<Type>(object));
-    }
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : at_key<const Type>(objects_))
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    ar &make_nvp("const_" + name, tmp_objects);
   });
 
 
