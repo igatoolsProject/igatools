@@ -73,19 +73,6 @@ set(IGATOOLS_VERSION
 #-------------------------------------------------------------------------------
 
 
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Compiler and compile flags
-
-if(CMAKE_BUILD_TYPE MATCHES Release)
-	message("-- IGATOOLS build type: RELEASE")
-else ()
-	message("-- IGATOOLS build type: DEBUG")
-endif()
-
-init_cxx_flags()
-#
-#-------------------------------------------------------------------------------
-
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Find Required programs
@@ -102,6 +89,7 @@ find_doxygen()
 # Optional features for building  igatools
 #
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
 
 option(USE_NURBS "Enable NURBS support" ON)
@@ -110,36 +98,54 @@ if (USE_NURBS)
 else(USE_NURBS)
     message("-- NURBS support is not enabled.")    
 endif(USE_NURBS)
+#-------------------------------------------------------------------------------
 
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
 if (REAL_IS_LONG_DOUBLE)
     message("-- Quadruple precision support (EXPERIMENTAL) is enabled.")
 else(REAL_IS_LONG_DOUBLE)
     message("-- Quadruple precision support (EXPERIMENTAL) is not enabled.")    
 endif(REAL_IS_LONG_DOUBLE)
+#-------------------------------------------------------------------------------
 
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(MPATCH "Enable multipatch features of the library (experimental)" OFF)
 if (MPATCH)
     message("-- Multipatch features (EXPERIMENTAL) are enabled.")
 else(MPATCH)
     message("-- Multipatch features (EXPERIMENTAL) are not enabled.")    
 endif(MPATCH)
+#-------------------------------------------------------------------------------
 
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(HIERARCHICAL "Enable Hierarchical splines support (experimental)" OFF)
 if (HIERARCHICAL)
     message("-- Hierarchical splines support (EXPERIMENTAL) is enabled.")
 else(HIERARCHICAL)
     message("-- Hierarchical splines support (EXPERIMENTAL) is not enabled.")    
 endif(HIERARCHICAL)
+#-------------------------------------------------------------------------------
 
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(MESH_REFINEMENT "Enable mesh refinement support" ON)
 if (MESH_REFINEMENT)
     message("-- Mesh refinement support (EXPERIMENTAL) is enabled.")
 else(MESH_REFINEMENT)
     message("-- Mesh refinement support (EXPERIMENTAL) is not enabled.")    
 endif(MESH_REFINEMENT)
+#-------------------------------------------------------------------------------
 
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(SERIALIZATION "Enable serialization support" OFF)
 option(USE_CEREAL "Use the Cereal serialization library" ON)
 if (SERIALIZATION)
@@ -154,11 +160,11 @@ if (SERIALIZATION)
 else(SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) is not enabled.")    
 endif(SERIALIZATION)
+#-------------------------------------------------------------------------------
 
 
 
-
-
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" ON)
 if (PARAVIEW_PLUGIN)
     if (NOT SERIALIZATION)
@@ -170,7 +176,11 @@ if (PARAVIEW_PLUGIN)
 else(PARAVIEW_PLUGIN)
     message("-- Paraview plugin building (EXPERIMENTAL) is not enabled.")
 endif(PARAVIEW_PLUGIN)
+#-------------------------------------------------------------------------------
 
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(XML_IO "Enable XML I/O support" OFF)
 if (XML_IO)
 		find_xercesc()
@@ -183,6 +193,39 @@ if (XML_IO)
 else(XML_IO)
     message("-- XML I/O support (EXPERIMENTAL) is not enabled.")    
 endif(XML_IO)
+#-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+option(USE_VTK "Enable VTK support" ON)
+if (USE_VTK)
+		find_package(VTK REQUIRED)
+    if (VTK_FOUND)
+      include(${VTK_USE_FILE})
+      message("-- VTK support (EXPERIMENTAL) is enabled.")
+    else(VTK_FOUND)
+      message(FATAL_ERROR "VTK support (EXPERIMENTAL) is enabled but the VTK library is NOT FOUND.")
+    endif(VTK_FOUND)
+else(USE_VTK)
+    message("-- VTK support (EXPERIMENTAL) is not enabled.")    
+endif(USE_VTK)
+#-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+option(USE_CGAL "Enable CGAL support" ON)
+if (USE_CGAL)
+		find_cgal()
+    if (CGAL_FOUND)
+#      include(${CGAL_USE_FILE})
+      message("-- CGAL support (EXPERIMENTAL) is enabled.")
+    else(CGAL_FOUND)
+      message(FATAL_ERROR "CGAL support (EXPERIMENTAL) is enabled but the CGAL library is NOT FOUND.")
+    endif(CGAL_FOUND)
+else(USE_CGAL)
+    message("-- CGAL support (EXPERIMENTAL) is not enabled.")    
+endif(USE_CGAL)
+#-------------------------------------------------------------------------------
 
 
 option(use_other_templates "Enable a mechanism to use uninstantiated templates" ON)
@@ -208,6 +251,22 @@ if (USE_TRILINOS)
 endif()
 
 #-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Compiler and compile flags
+
+if(CMAKE_BUILD_TYPE MATCHES Release)
+	message("-- IGATOOLS build type: RELEASE")
+else ()
+	message("-- IGATOOLS build type: DEBUG")
+endif()
+
+init_cxx_flags()
+#
+#-------------------------------------------------------------------------------
+
+
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -257,7 +316,9 @@ target_link_libraries(${lib_name}
   ${Trilinos_LIBRARIES} 
   ${Petsc_LIBRARIES} 
   ${XERCESC_LIBRARIES}
-  ${Boost_LIBRARIES})
+  ${Boost_LIBRARIES}
+  ${VTK_LIBRARIES}
+  ${CGAL_LIBRARIES})
 set_property(TARGET ${lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})
 
 
