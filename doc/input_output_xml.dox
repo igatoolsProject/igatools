@@ -145,6 +145,7 @@ Description of the @ref SplineSpace XML format:
 
 </SplineSpace>
 @endcode
+By default, if <tt>Periodicity</tt> is not defined, it is set to <tt>false</tt>.
 
 Description of the @ref BSpline XML format:
 @code{.xml}
@@ -157,6 +158,13 @@ Description of the @ref BSpline XML format:
   </EndBehaviour>
 </BSpline>
 @endcode
+By default, if <tt>EndBehaviour</tt> is not defined,
+it is set to <tt>interpolatory</tt> for all the compnents and directions.
+Its value must match with the specified <tt>Periodicity</tt>
+in the definition of the referenced @ref SplineSpace.
+
+Other possible values for <tt>EndBehaviour</tt> are
+<tt>periodic</tt> and <tt>end_knots</tt>.
 
 Description of the @ref NURBS XML format:
 @code{.xml}
@@ -208,6 +216,8 @@ Description of the @ref IgGridFunction XML format:
   <DofsProperty>active</DofsProperty>
 </IgGridFunction>
 @endcode
+By default, if <tt>DofsProperty</tt> is not defined,
+it is set to <tt>active</tt>.
 
 Description of the @ref Domain XML format:
 @code{.xml}
@@ -217,6 +227,7 @@ Description of the @ref Domain XML format:
   <Name>my_domain</Name>
 </Domain>
 @endcode
+By default, if the <tt>Name</tt> is not defined, it is set to a void string.
 
 Description of the @ref PhysicalSpaceBasis XML format:
 @code{.xml}
@@ -227,6 +238,10 @@ Description of the @ref PhysicalSpaceBasis XML format:
   <Transformation>h_grad</Transformation>
 </PhysicalSpaceBasis>
 @endcode
+By default, if <tt>Transformation</tt> is not defined,
+it is set to <tt>h_grad</tt>.
+Other possible values for <tt>Transformation</tt> are
+<tt>h_div</tt>, <tt>h_curl</tt> and <tt>l_2</tt>.
 
 Description of the @ref functions::ConstantFunction XML format:
 @code{.xml}
@@ -264,6 +279,9 @@ Description of the @ref IgFunction XML format:
   <DofsProperty>active</DofsProperty>
 </IgFunction>
 @endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+By default, if <tt>DofsProperty</tt> is not defined,
+it is set to <tt>active</tt>.
 
 */
 /** @}*/ //end of group input_v1
