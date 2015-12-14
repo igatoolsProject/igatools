@@ -18,11 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- * Testing the objects container writer and parser
- * author: P. Antolin
- * date: Nov 27, 2015
- *
+/**
+ *  @file
+ *  @brief  Testing the objects container writer and parser
+ *  @author P. Antolin
+ *  @date 2015
  */
 
 #include "../tests.h"
@@ -92,8 +92,8 @@ void write_container (const string &file_path)
   typename functions::ConstantFunction<dim, codim, range, rank>::Value b2;
   const auto ct_func_2 = functions::ConstantFunction<dim, codim, range, rank>::create(domain, b2);
 
-   typename functions::LinearFunction<dim, codim, range>::template Derivative<1> A2;
-   const auto li_func_2 = functions::LinearFunction<dim, codim, range>::create(domain, A2, b2);
+  typename functions::LinearFunction<dim, codim, range>::template Derivative<1> A2;
+  const auto li_func_2 = functions::LinearFunction<dim, codim, range>::create(domain, A2, b2);
 
   const auto container = ObjectsContainer::create();
   container->insert_object<Function<dim,0,range,1>>(func);

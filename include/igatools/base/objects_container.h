@@ -75,6 +75,10 @@ template <class T> class SafeSTLSet;
  * management, or similar features. It is just a container of pointers
  * for different types.
  *
+ * @ingroup serializable
+ * @see ObjectsContainerXMLParser
+ * @see ObjectsContainerXMLWriter
+ *
  * @author P. Antolin
  * @date 2015
  */
@@ -369,7 +373,23 @@ private:
   /** Container for the objects. */
   ObjectMapTypes_ objects_;
 
+
+#ifdef SERIALIZATION
+  /**
+   * @name Functions needed for serialization
+   * @see <a href="http://uscilab.github.io/cereal/index.html">Cereal serialization library</a>
+   */
+  ///@{
+  friend class cereal::access;
+
+  template<class Archive>
+  void serialize(Archive &ar);
+
+  ///@}
+#endif // SERIALIZATION
+
 };
+
 
 IGA_NAMESPACE_CLOSE
 
