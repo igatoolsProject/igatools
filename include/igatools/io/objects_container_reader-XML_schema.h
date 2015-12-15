@@ -424,6 +424,8 @@ const std::string ObjectsContainerXMLReader::XML_SCHEMA_ =
 "          <xs:element name=\"ReferenceSpaceBasis\" type=\"GetFromLocalObjectIdType\"/>\n"
 "          <xs:element name=\"IgCoefficients\" type=\"IgCoefficientsType\"/>\n"
 "          <!-- Note that this tag is optional -->\n"
+"          <xs:element name=\"Name\" type=\"xs:normalizedString\" minOccurs=\"0\" maxOccurs=\"1\"/>\n"
+"          <!-- Note that this tag is optional -->\n"
 "          <xs:element name=\"DofsProperty\" type=\"xs:normalizedString\" minOccurs=\"0\" maxOccurs=\"1\"/>\n"
 "        </xs:all>\n"
 "      </xs:extension>\n"

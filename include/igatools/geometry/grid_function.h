@@ -69,9 +69,10 @@ public:
    *
    * @note  This constructor is needed for the serialization mechanism.
    */
-  GridFunction();
+  GridFunction(const std::string &name = "");
 
-  GridFunction(const SharedPtrConstnessHandler<GridType> &grid);
+  GridFunction(const SharedPtrConstnessHandler<GridType> &grid,
+               const std::string &name = "");
 
 
   virtual ~GridFunction() = default;
@@ -132,6 +133,16 @@ public:
   ///@}
 
   /**
+   * Get the name associated to the object instance.
+   */
+  const std::string &get_name() const;
+
+  /**
+   * Set the name associated to the object instance.
+   */
+  void set_name(const std::string &name);
+
+  /**
    * Returns the unique identifier associated to each object instance.
    */
   Index get_object_id() const;
@@ -176,6 +187,9 @@ public:
 
 private:
   SharedPtrConstnessHandler<Grid<dim_>> grid_;
+
+  /// Name.
+  std::string name_;
 
   /**
    * Unique identifier associated to each object instance.

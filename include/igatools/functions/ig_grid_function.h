@@ -65,11 +65,13 @@ public:
 protected:
   IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                  const IgCoefficients &coeffs,
-                 const std::string &dofs_property);
+                 const std::string &dofs_property,
+                 const std::string &name);
 
   IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                  const EpetraTools::Vector &coeff,
-                 const std::string &dofs_property);
+                 const std::string &dofs_property,
+                 const std::string &name);
 
 public:
   std::unique_ptr<ElementHandler>
@@ -78,22 +80,26 @@ public:
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const RefBasis> &ref_basis,
                const IgCoefficients &coeffs,
-               const std::string &dofs_property = DofProperties::active);
+               const std::string &dofs_property = DofProperties::active,
+               const std::string &name = "");
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<RefBasis> &ref_basis,
          const IgCoefficients &coeffs,
-         const std::string &dofs_property = DofProperties::active);
+         const std::string &dofs_property = DofProperties::active,
+         const std::string &name = "");
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const RefBasis> &ref_basis,
                const EpetraTools::Vector &coeffs,
-               const std::string &dofs_property = DofProperties::active);
+               const std::string &dofs_property = DofProperties::active,
+               const std::string &name = "");
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<RefBasis> &ref_basis,
          const EpetraTools::Vector &coeffs,
-         const std::string &dofs_property = DofProperties::active);
+         const std::string &dofs_property = DofProperties::active,
+         const std::string &name = "");
 
 
   virtual void print_info(LogStream &out) const override final;

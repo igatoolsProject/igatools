@@ -347,6 +347,26 @@ operator==(const Grid<dim_> &grid) const
 
 
 template<int dim_>
+const std::string &
+Grid<dim_>::
+get_name() const
+{
+  return name_;
+}
+
+
+
+template<int dim_>
+void
+Grid<dim_>::
+set_name(const std::string &name)
+{
+  name_ = name;
+}
+
+
+
+template<int dim_>
 Index Grid<dim_>::get_object_id() const
 {
   return object_id_;

@@ -1515,6 +1515,8 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
     rs = SharedPtrConstnessHandler<RefSpaceType>
          (container->get_object<RefSpaceType>(id_map.at(local_rs_id)));
 
+  const auto name = parse_name(xml_elem);
+
   const string dofs_property = parse_dofs_property(xml_elem);
   const auto dof_distribution = rs->get_spline_space()->get_dof_distribution();
   AssertThrow(dof_distribution->is_property_defined(dofs_property),
@@ -1537,7 +1539,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
   if (parse_as_constant)
   {
     const auto igf = IgGridFunctionType::const_create
-                     (rs.get_ptr_const_data(), *ig_coefs, dofs_property);
+                     (rs.get_ptr_const_data(), *ig_coefs, dofs_property, name);
     const auto unique_id = igf->get_object_id();
     id_map[local_object_id] = unique_id;
 
@@ -1545,7 +1547,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
   }
   else
   {
-    const auto igf = IgGridFunctionType::create(rs.get_ptr_data(), *ig_coefs, dofs_property);
+    const auto igf = IgGridFunctionType::create(rs.get_ptr_data(), *ig_coefs, dofs_property, name);
     const auto unique_id = igf->get_object_id();
     id_map[local_object_id] = unique_id;
 

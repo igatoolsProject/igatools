@@ -28,17 +28,20 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int space_dim_>
 GridFunction<dim_, space_dim_>::
-GridFunction()
+GridFunction(const std::string &name)
   :
+  name_(name),
   object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
 
 template<int dim_, int space_dim_>
 GridFunction<dim_, space_dim_>::
-GridFunction(const SharedPtrConstnessHandler<GridType> &grid)
+GridFunction(const SharedPtrConstnessHandler<GridType> &grid,
+             const std::string &name)
   :
   grid_(grid),
+  name_(name),
   object_id_(UniqueIdGenerator::get_unique_id())
 {
 //  Assert(grid_ != nullptr, ExcNullPtr());
@@ -54,6 +57,25 @@ get_grid() const -> std::shared_ptr<const GridType>
   return grid_.get_ptr_const_data();
 }
 
+
+
+template<int dim_, int space_dim_>
+const std::string &
+GridFunction<dim_, space_dim_>::
+get_name() const
+{
+  return name_;
+}
+
+
+
+template<int dim_, int space_dim_>
+void
+GridFunction<dim_, space_dim_>::
+set_name(const std::string &name)
+{
+  name_ = name;
+}
 
 
 

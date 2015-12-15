@@ -182,6 +182,7 @@ public:
 private:
   SharedPtrConstnessHandler<GridFunction<dim, space_dim>> grid_func_;
 
+  /// Name.
   std::string name_;
 
   /**

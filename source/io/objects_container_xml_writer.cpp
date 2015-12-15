@@ -698,6 +698,13 @@ write_ig_grid_function (const shared_ptr<IgGridFunc> ig_func,
     const auto coefs_elem = Self_::create_ig_coefs_xml_element(coefs, xml_doc);
     obj_elem->append_child_element(coefs_elem);
 
+    const auto &name = ig_func->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
+
     const auto &dofs_prop = ig_func->get_dofs_property();
     const auto dofs_prop_elem = xml_doc->create_new_text_element("DofsProperty", dofs_prop);
     obj_elem->append_child_element(dofs_prop_elem);

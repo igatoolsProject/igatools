@@ -30,12 +30,14 @@ template<int dim,int space_dim>
 IgGridFunction<dim,space_dim>::
 IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                const EpetraTools::Vector &coeff,
-               const std::string &dofs_property)
+               const std::string &dofs_property,
+               const std::string &name)
   :
   parent_t(
    ref_basis.data_is_const() ?
    SharedPtrConstnessHandler<GridType>(ref_basis->get_grid()) :
-   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid()))),
+   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid())),
+   name),
   ref_basis_(ref_basis),
   dofs_property_(dofs_property)
 {
@@ -58,12 +60,14 @@ template<int dim,int space_dim>
 IgGridFunction<dim,space_dim>::
 IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                const IgCoefficients &coeffs,
-               const std::string &dofs_property)
+               const std::string &dofs_property,
+               const std::string &name)
   :
   parent_t(
    ref_basis.data_is_const() ?
    SharedPtrConstnessHandler<GridType>(ref_basis->get_grid()) :
-   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid()))),
+   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid())),
+   name),
   ref_basis_(ref_basis),
   dofs_property_(dofs_property)
 {
@@ -77,7 +81,6 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
   coeffs_ = coeffs;
 #endif
 }
-
 
 
 
@@ -126,10 +129,11 @@ auto
 IgGridFunction<dim,space_dim>::
 const_create(const std::shared_ptr<const RefBasis> &ref_basis,
              const IgCoefficients &coeffs,
-             const std::string &dofs_property) -> std::shared_ptr<const self_t>
+             const std::string &dofs_property,
+             const std::string &name) -> std::shared_ptr<const self_t>
 {
   return std::shared_ptr<self_t>(new IgGridFunction(
-    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
+    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property,name));
 }
 
 template<int dim,int space_dim>
@@ -137,10 +141,11 @@ auto
 IgGridFunction<dim,space_dim>::
 create(const std::shared_ptr<RefBasis> &ref_basis,
        const IgCoefficients &coeffs,
-       const std::string &dofs_property) -> std::shared_ptr<self_t>
+       const std::string &dofs_property,
+       const std::string &name) -> std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(new IgGridFunction(
-    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
+    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property,name));
 
 #ifdef MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
@@ -155,10 +160,11 @@ auto
 IgGridFunction<dim,space_dim>::
 const_create(const std::shared_ptr<const RefBasis> &ref_basis,
              const EpetraTools::Vector &coeffs,
-             const std::string &dofs_property) -> std::shared_ptr<const self_t>
+             const std::string &dofs_property,
+             const std::string &name) -> std::shared_ptr<const self_t>
 {
   return std::shared_ptr<self_t>(new IgGridFunction(
-    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
+    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property,name));
 }
 
 template<int dim,int space_dim>
@@ -166,10 +172,11 @@ auto
 IgGridFunction<dim,space_dim>::
 create(const std::shared_ptr<RefBasis> &ref_basis,
        const EpetraTools::Vector &coeffs,
-       const std::string &dofs_property) -> std::shared_ptr<self_t>
+       const std::string &dofs_property,
+       const std::string &name) -> std::shared_ptr<self_t>
 {
   return std::shared_ptr<self_t>(new IgGridFunction(
-    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
+    SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property,name));
 }
 
 
