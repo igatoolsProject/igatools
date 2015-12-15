@@ -113,11 +113,13 @@ public:
    */
   Tdouble(const Real val);
 
+#if 0
   /**
    * Advance constructor to optimization when zero
    * initialization is not necessary.
    */
   Tdouble(const bool non_init);
+#endif
 
   /** Copy constructor */
   Tdouble(const Tdouble &td) = default;

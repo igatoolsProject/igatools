@@ -35,19 +35,20 @@ Tdouble()
 inline
 Tdouble::
 Tdouble(const Real val)
+  :
+  val_(val)
 {
-  Assert(!std::isnan(val),ExcNotANumber());
-  Assert(!std::isinf(val),ExcNumberNotFinite());
-  val_ = val;
+  Assert(!std::isnan(val_),ExcNotANumber());
+  Assert(!std::isinf(val_),ExcNumberNotFinite());
 }
 
 
-
+#if 0
 inline
 Tdouble::
 Tdouble(const bool non_init)
 {}
-
+#endif
 
 
 inline
@@ -67,6 +68,7 @@ inline
 auto
 Tdouble::operator[](const int i) noexcept -> value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -77,6 +79,7 @@ auto
 Tdouble::
 operator[](const int i) const noexcept -> const value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -127,10 +130,10 @@ Tdouble &
 Tdouble::
 operator+=(const Real val) noexcept
 {
-  Assert(!std::isnan(val),ExcNotANumber());
-  Assert(!std::isinf(val),ExcNumberNotFinite());
-
   val_ += val;
+
+  Assert(!std::isnan(val_),ExcNotANumber());
+  Assert(!std::isinf(val_),ExcNumberNotFinite());
   return *this;
 }
 
@@ -141,10 +144,10 @@ Tdouble &
 Tdouble::
 operator-=(const Real val) noexcept
 {
-  Assert(!std::isnan(val),ExcNotANumber());
-  Assert(!std::isinf(val),ExcNumberNotFinite());
-
   val_ -= val;
+
+  Assert(!std::isnan(val_),ExcNotANumber());
+  Assert(!std::isinf(val_),ExcNumberNotFinite());
   return *this;
 }
 
@@ -155,10 +158,10 @@ Tdouble &
 Tdouble::
 operator*=(const Real val) noexcept
 {
-  Assert(!std::isnan(val),ExcNotANumber());
-  Assert(!std::isinf(val),ExcNumberNotFinite());
-
   val_ *= val;
+
+  Assert(!std::isnan(val_),ExcNotANumber());
+  Assert(!std::isinf(val_),ExcNumberNotFinite());
   return *this;
 }
 
@@ -169,11 +172,11 @@ Tdouble &
 Tdouble::
 operator/=(const Real val) noexcept
 {
-  Assert(!std::isnan(val),ExcNotANumber());
-  Assert(!std::isinf(val),ExcNumberNotFinite());
   Assert(val != Real(0.0),ExcDivideByZero());
 
   val_ /= val;
+  Assert(!std::isnan(val_),ExcNotANumber());
+  Assert(!std::isinf(val_),ExcNumberNotFinite());
   return *this;
 }
 

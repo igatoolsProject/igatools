@@ -27,6 +27,7 @@
 
 
 #include <vtkXMLUnstructuredGridReader.h>
+#include <vtkXMLUnstructuredGridWriter.h>
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
 
@@ -51,15 +52,21 @@ void domain()
   names[0] = "domain_A";
   names[1] = "domain_B";
 
-#if 0
+//#if 0
   SafeSTLArray<int,dim> n_knots;
   n_knots[0] = 3;
   n_knots[1] = 2;
 
   {
-    auto grid_a = Grid<dim>::const_create(3);
-    auto func_a = IdentityFunc::const_create(grid_a);
-    auto domain_a = Domain<dim,codim>::const_create(func_a);
+    auto grid_a = Grid<dim>::create(n_knots[0]);
+
+    typename LinearFunc::template Derivative<1> A;
+    typename LinearFunc::Value b;
+    for (int i = 0 ; i < dim ; ++i)
+      A[i][i] = 1.0 - 1.0e-1;
+
+    auto func_a = LinearFunc::create(grid_a,A,b);
+    auto domain_a = Domain<dim,codim>::create(func_a);
 
     Writer<dim,codim> writer(domain_a,n_pts_dir);
     writer.save(names[0]);
@@ -67,14 +74,14 @@ void domain()
 
 
   {
-    auto grid_b = Grid<dim>::const_create();
-    auto func_b = IdentityFunc::const_create(grid_b);
-    auto domain_b = Domain<dim,codim>::const_create(func_b);
+    auto grid_b = Grid<dim>::create(n_knots[1]);
+    auto func_b = IdentityFunc::create(grid_b);
+    auto domain_b = Domain<dim,codim>::create(func_b);
 
     Writer<dim,codim> writer(domain_b,n_pts_dir);
     writer.save(names[1]);
   }
-#endif
+//#endif
 
 
   using std::cout;
@@ -99,13 +106,31 @@ void domain()
   }
 
 
-  auto grid_slave = unstruct_grids[1];
-  auto grid_master = unstruct_grids[0];
+  auto grid_slave = unstruct_grids[0];
+  auto grid_master = unstruct_grids[1];
 
   const double mesh_distance = 0.0;
   const bool partial_overlay = true;
+  cout << "Computing overlay...";
   VTKUGridPtr mesh_intersection =
     vtkUnstructuredGridOverlay_3(grid_slave, grid_master, mesh_distance, partial_overlay, false);
+  int n_elems = mesh_intersection->GetNumberOfCells();
+  cout << "done (n_elements = " << n_elems << ")" << endl;
+
+  /*
+  //This compute the "parent" vertices. Useful in Numea to avoid multiple interpolation
+  cout << "BuildParentVertices...";
+  BuildParentVertices(res, ugA.GetPointer(), ugB.GetPointer(), 0.0000001);
+  cout << "done" << endl;
+  //*/
+
+  // Write the unstructured grid (different treatment for .vtk and .vtk file)
+  std::string outputname = "intersection_" + names[0] + "_" + names[1] + ".vtu";
+  auto writer = vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();
+  writer->SetDataModeToAscii();
+  writer->SetFileName(outputname.c_str());
+  writer->SetInputData(mesh_intersection);
+  writer->Write();
 
   OUTEND
 }
