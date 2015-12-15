@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __OBJECTS_CONTAINER_PARSER_H_
-#define __OBJECTS_CONTAINER_PARSER_H_
+#ifndef __OBJECTS_CONTAINER_READER_H_
+#define __OBJECTS_CONTAINER_READER_H_
 
 #include <igatools/base/config.h>
 
@@ -94,7 +94,7 @@ template <class T1, class T2> class SafeSTLMap;
  * @author P. Antolin
  * @date 2015
  */
-class ObjectsContainerXMLParser
+class ObjectsContainerXMLReader
 {
 private:
 
@@ -102,7 +102,7 @@ private:
   ///@{
 
   /** Type for the current class. */
-  typedef ObjectsContainerXMLParser Self_;
+  typedef ObjectsContainerXMLReader Self_;
 
   /** Type for a shared pointer of the current class. */
   typedef std::shared_ptr<Self_> SelfPtr_;
@@ -128,31 +128,31 @@ private:
    * @brief Default constructor.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerXMLParser() = delete;
+  ObjectsContainerXMLReader() = delete;
 
   /**
    * @brief Copy constructor.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerXMLParser(const ObjectsContainerXMLParser &) = delete;
+  ObjectsContainerXMLReader(const ObjectsContainerXMLReader &) = delete;
 
   /**
    * @brief Move constructor.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerXMLParser(ObjectsContainerXMLParser &&) = delete;
+  ObjectsContainerXMLReader(ObjectsContainerXMLReader &&) = delete;
 
   /**
    * @brief Copy assignment operator.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerXMLParser &operator= (const ObjectsContainerXMLParser &) = delete;
+  ObjectsContainerXMLReader &operator= (const ObjectsContainerXMLReader &) = delete;
 
   /**
    * @brief Move assignment operator.
    * @note Deleted, not allowed to be used.
    */
-  ObjectsContainerXMLParser &operator= (ObjectsContainerXMLParser &&) = delete;
+  ObjectsContainerXMLReader &operator= (ObjectsContainerXMLReader &&) = delete;
 
   ///@}
 
@@ -189,7 +189,7 @@ private:
   ///@{
 
   /**
-   * @brief Parses all the @ref Grid contained into the XML document
+   * @brief Reads all the @ref Grid contained into the XML document
    * @p xml_elem and stores them into the @p container.
    *
    * @param[in] xml_elem XML element to be parsed.
@@ -206,7 +206,7 @@ private:
                           const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref SplineSpace
+   * @brief Reads all the @ref SplineSpace
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -224,7 +224,7 @@ private:
                                   const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref BSpline
+   * @brief Reads all the @ref BSpline
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -242,7 +242,7 @@ private:
                              const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref NURBS
+   * @brief Reads all the @ref NURBS
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -260,7 +260,7 @@ private:
                           const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref GridFunction and @ref NURBS
+   * @brief Reads all the @ref GridFunction and @ref NURBS
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -281,7 +281,7 @@ private:
                                              const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref grid_functions::IdentityGridFunction
+   * @brief Reads all the @ref grid_functions::IdentityGridFunction
    * contained into the XML document and stores them into the container.
    *
    * @param[in] xml_elem XML element to be parsed.
@@ -298,7 +298,7 @@ private:
                                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref grid_functions::ConstantGridFunction
+   * @brief Reads all the @ref grid_functions::ConstantGridFunction
    * contained into the XML document and stores them into the container.
    *
    * @param[in] xml_elem XML element to be parsed.
@@ -315,7 +315,7 @@ private:
                                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref grid_functions::LinearGridFunction
+   * @brief Reads all the @ref grid_functions::LinearGridFunction
    * contained into the XML document and stores them into the container.
    *
    * @param[in] xml_elem XML element to be parsed.
@@ -332,7 +332,7 @@ private:
                                           const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref IgGridFunction
+   * @brief Reads all the @ref IgGridFunction
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -351,7 +351,7 @@ private:
                                       const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref Domain
+   * @brief Reads all the @ref Domain
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -369,7 +369,7 @@ private:
                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref PhysicalSpaceBasis
+   * @brief Reads all the @ref PhysicalSpaceBasis
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -387,7 +387,7 @@ private:
                                 const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref Function
+   * @brief Reads all the @ref Function
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -405,7 +405,7 @@ private:
                               const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref IgFunction
+   * @brief Reads all the @ref IgFunction
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -423,7 +423,7 @@ private:
                                  const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref functions::ConstantFunction
+   * @brief Reads all the @ref functions::ConstantFunction
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -441,7 +441,7 @@ private:
                                        const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses all the @ref functions::LinearFunction
+   * @brief Reads all the @ref functions::LinearFunction
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -459,7 +459,7 @@ private:
                                      const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a single @ref Grid XML element contained in
+   * @brief Reads a single @ref Grid XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the Grid.
@@ -478,7 +478,7 @@ private:
                          const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a single @ref SplineSpace XML element contained in
+   * @brief Reads a single @ref SplineSpace XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the SplineSpace.
@@ -499,7 +499,7 @@ private:
                                  const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a single @ref BSpline XML element contained in
+   * @brief Reads a single @ref BSpline XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the BSpline space basis.
@@ -520,7 +520,7 @@ private:
                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a single @ref NURBS XML element contained in
+   * @brief Reads a single @ref NURBS XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the NURBS space basis.
@@ -541,7 +541,7 @@ private:
                           const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a single @ref grid_functions::IdentityGridFunction XML
+   * @brief Reads a single @ref grid_functions::IdentityGridFunction XML
    * element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
@@ -561,7 +561,7 @@ private:
                                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a single @ref grid_functions::ConstantGridFunction XML
+   * @brief Reads a single @ref grid_functions::ConstantGridFunction XML
    * element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
@@ -582,7 +582,7 @@ private:
                                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a single @ref grid_functions::LinearGridFunction XML
+   * @brief Reads a single @ref grid_functions::LinearGridFunction XML
    * element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
@@ -603,7 +603,7 @@ private:
                                          const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a single @ref IgGridFunction XML element contained in
+   * @brief Reads a single @ref IgGridFunction XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
    * This function is called twice:
@@ -632,7 +632,7 @@ private:
                                      const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a single @ref Domain XML element contained in
+   * @brief Reads a single @ref Domain XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the domain.
@@ -652,7 +652,7 @@ private:
                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses a single @ref PhysicalSpaceBasis XML element contained
+   * @brief Reads a single @ref PhysicalSpaceBasis XML element contained
    * in @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the physical space basis.
@@ -674,7 +674,7 @@ private:
                                const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses an single @ref IgFunction XML element contained in
+   * @brief Reads an single @ref IgFunction XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the function.
@@ -696,7 +696,7 @@ private:
                                 const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses an single @ref functions::ConstantFunction XML element
+   * @brief Reads an single @ref functions::ConstantFunction XML element
    * and inserts it into the objects container.
    *
    * @tparam dim Dimension of the function.
@@ -718,7 +718,7 @@ private:
                                       const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Parses an single @ref functions::LinearFunction XML element
+   * @brief Reads an single @ref functions::LinearFunction XML element
    * and inserts it into the objects container.
    *
    * @tparam dim Dimension of the function.
@@ -741,7 +741,7 @@ private:
   ///@}
 
   /**
-   * @brief Parses a <tt>Name</tt> XML element contained in @p xml_elem.
+   * @brief Reads a <tt>Name</tt> XML element contained in @p xml_elem.
    *
    * @param[in] xml_elem XML element to be parsed.
    * return Name string parsed.
@@ -749,7 +749,7 @@ private:
   static std::string parse_name(const std::shared_ptr<XMLElement> xml_elem);
 
   /**
-   * @brief Parses a <tt>DofsProperty</tt> XML element contained in
+   * @brief Reads a <tt>DofsProperty</tt> XML element contained in
    * @p xml_elem.
    *
    * @param[in] xml_elem XML element to be parsed.
@@ -775,7 +775,7 @@ private:
                                         const SafeSTLVector<int> &dims);
 
   /**
-   * @brief Parses a single @ref IgCoefficients vector from the given
+   * @brief Reads a single @ref IgCoefficients vector from the given
    * @p xml_elem.
    * The indices of the parsed coefficients are checked with
    * @p space_global_dofs, that are the global indices of the dofs
@@ -799,4 +799,4 @@ IGA_NAMESPACE_CLOSE
 
 #endif // XML_IO
 
-#endif // __OBJECTS_CONTAINER_PARSER_H_
+#endif // __OBJECTS_CONTAINER_READER_H_

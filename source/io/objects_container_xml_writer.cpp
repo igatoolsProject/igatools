@@ -22,7 +22,7 @@
 
 #ifdef XML_IO
 
-#include <igatools/io/objects_container_xml_parser.h>
+#include <igatools/io/objects_container_xml_reader.h>
 #include <igatools/base/objects_container.h>
 #include <igatools/utils/safe_stl_set.h>
 
@@ -64,7 +64,7 @@ write(const string &file_path,
     const auto xml_doc = XMLDocument::create_void_document("Igatools");
     const auto igatools_elem = xml_doc->get_document_element();
     igatools_elem->add_attribute(string("FormatVersion"),
-                                 ObjectsContainerXMLParser::IGATOOLS_FILE_FORMAT_VERSION);
+                                 ObjectsContainerXMLReader::IGATOOLS_FILE_FORMAT_VERSION);
 
     Self_::write_grids(full_container, xml_doc);
     Self_::write_spline_spaces(full_container, xml_doc);

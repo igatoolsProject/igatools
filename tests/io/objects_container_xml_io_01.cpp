@@ -20,7 +20,7 @@
 
 /**
  *  @file
- *  @brief  Testing the objects container writer and parser
+ *  @brief  Testing the objects container writer and reader
  *  @author P. Antolin
  *  @date 2015
  */
@@ -33,7 +33,7 @@
 #include <igatools/functions/function_lib.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/io/objects_container_xml_parser.h>
+#include <igatools/io/objects_container_xml_reader.h>
 #include <igatools/io/objects_container_xml_writer.h>
 
 using namespace iga;
@@ -110,7 +110,7 @@ void write_container (const string &file_path)
 
 void read_container (const string &file_path)
 {
-  const auto container = ObjectsContainerXMLParser::parse(file_path);
+  const auto container = ObjectsContainerXMLReader::parse(file_path);
   container->print_info(out);
 }
 
