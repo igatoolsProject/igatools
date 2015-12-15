@@ -134,13 +134,13 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 using TensorSizeAlias0 = iga::TensorSize<0>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias0,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias0,cereal::specialization::member_serialize)
 using TensorSizeAlias1 = iga::TensorSize<1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias1,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias1,cereal::specialization::member_serialize)
 using TensorSizeAlias2 = iga::TensorSize<2>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias2,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias2,cereal::specialization::member_serialize)
 using TensorSizeAlias3 = iga::TensorSize<3>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias3,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias3,cereal::specialization::member_serialize)
 
 //#include <igatools/utils/tensor_size.serialization>
 #endif // SERIALIZATION

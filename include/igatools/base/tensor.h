@@ -108,6 +108,7 @@ public:
    */
   Tdouble();
 
+
   /**
    * Default constructor. Sets the internal value to @p val.
    */
@@ -1189,7 +1190,7 @@ EnableIf<(codim==1),SubTensor<Derivatives<dim, dim+codim, 1, 1> > >
 cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
 {
   SubTensor<Derivatives<dim, dim+codim, 1, 1>> res;
-  const SubTensor<Derivatives<dim, dim+1, 1, 1>> zero;
+  SubTensor<Derivatives<dim, dim+1, 1, 1>> zero;
   Derivatives<dim+1, dim+1, 1, 1> A;
   for (int i = 0; i < dim; ++i)
     A[i] = DF[i];
@@ -1203,7 +1204,7 @@ cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
   }
 
   if (dim % 2 == 1)
-    res *= -1;
+    res *= -1.0;
   return res;
 
 }

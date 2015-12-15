@@ -73,7 +73,7 @@ for arr_t_id in unique(arrays):
                                                  .replace('CartesianProductArray','iga::CartesianProductArray')
                                                  .replace('SafeSTLArray','iga::SafeSTLArray')
                                                  .replace('SafeSTLVector','iga::SafeSTLVector')));
-    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %alias);
+    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize)\n' %alias);
     id += 1 
 
 
