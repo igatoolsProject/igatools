@@ -123,17 +123,17 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
 
   auto grid = GridType::create(coord);
-  container->insert_object<GridType>(grid);
+  container->insert_const_object<GridType>(grid);
 
   auto ssp = SpSpaceType::create(degree,grid);
-  container->insert_object<SpSpaceType>(ssp);
+  container->insert_const_object<SpSpaceType>(ssp);
 
   auto  bsp = BSplineType::create(ssp);
-  container->insert_object<RefSpaceType>(bsp);
+  container->insert_const_object<RefSpaceType>(bsp);
 
   auto scalar_space = ScalarBSplineType::create(ScalarSpSpaceType::create(degree, grid));
 
-  container->insert_object<ScalarRefSpaceType>(scalar_space);
+  container->insert_const_object<ScalarRefSpaceType>(scalar_space);
 
   const auto n_scalar_basis = scalar_space->get_num_basis();
 
@@ -143,29 +143,29 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
 
   const auto w_func = WeightFuncType::create(scalar_space,weights);
 
-  container->insert_object<ScalarGridFuncType>(w_func);
+  container->insert_const_object<ScalarGridFuncType>(w_func);
 
   auto nurbs_space = NURBSType::create(bsp, w_func);
-  container->insert_object<RefSpaceType>(nurbs_space);
+  container->insert_const_object<RefSpaceType>(nurbs_space);
 
   Epetra_SerialComm comm;
   auto map = EpetraTools::create_map(*nurbs_space, "active", comm);
   const auto pts = EpetraTools::create_vector(*map);
   (*pts)[0] = 1.;
   auto ig_grid_func = IgGridFunc::create(nurbs_space, *pts, "active");
-  container->insert_object<GridFuncType>(ig_grid_func);
+  container->insert_const_object<GridFuncType>(ig_grid_func);
 
   const auto domain = DomainType::create(ig_grid_func, "my_domain");
-  container->insert_object<DomainType>(domain);
+  container->insert_const_object<DomainType>(domain);
 
   const auto phys_space = PhysSpaceType::create(nurbs_space, domain);
-  container->insert_object<PhysSpaceType>(phys_space);
+  container->insert_const_object<PhysSpaceType>(phys_space);
 
   auto map_2 = EpetraTools::create_map(*phys_space, "active", comm);
   auto coeff = EpetraTools::create_vector(*map_2);
   (*coeff)[0] = 2.;
   auto ig_func = IgFuncType::create(phys_space, *coeff);
-  container->insert_object<FuncType>(ig_func);
+  container->insert_const_object<FuncType>(ig_func);
 
 
 }

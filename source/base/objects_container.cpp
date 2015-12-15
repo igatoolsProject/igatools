@@ -823,10 +823,17 @@ serialize(Archive &ar)
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
+    auto &const_objects = at_key<const Type>(objects_);
+
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : at_key<const Type>(objects_))
+    for (auto & obj : const_objects)
         tmp_objects.push_back(const_pointer_cast<Type>(obj));
-    ar &make_nvp("const_" + name, tmp_objects);
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
   });
 
   // Serializing spline spaces
@@ -841,11 +848,6 @@ serialize(Archive &ar)
             + to_string(Type::rank);
 
     ar &make_nvp(name, at_key<Type>(objects_));
-
-    SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : at_key<const Type>(objects_))
-        tmp_objects.push_back(const_pointer_cast<Type>(obj));
-    ar &make_nvp("const_" + name, tmp_objects);
   });
 
   // Serializing reference space basis
@@ -861,10 +863,17 @@ serialize(Archive &ar)
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
+    auto &const_objects = at_key<const Type>(objects_);
+
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : at_key<const Type>(objects_))
+    for (auto & obj : const_objects)
         tmp_objects.push_back(const_pointer_cast<Type>(obj));
-    ar &make_nvp("const_" + name, tmp_objects);
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
   });
 
   // Grid functions
@@ -879,10 +888,17 @@ serialize(Archive &ar)
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
+    auto &const_objects = at_key<const Type>(objects_);
+
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : at_key<const Type>(objects_))
+    for (auto & obj : const_objects)
         tmp_objects.push_back(const_pointer_cast<Type>(obj));
-    ar &make_nvp("const_" + name, tmp_objects);
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
   });
 
   // Domains
@@ -897,10 +913,17 @@ serialize(Archive &ar)
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
+    auto &const_objects = at_key<const Type>(objects_);
+
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : at_key<const Type>(objects_))
+    for (auto & obj : const_objects)
         tmp_objects.push_back(const_pointer_cast<Type>(obj));
-    ar &make_nvp("const_" + name, tmp_objects);
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
   });
 
   // Physical space basis
@@ -917,10 +940,17 @@ serialize(Archive &ar)
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
+    auto &const_objects = at_key<const Type>(objects_);
+
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : at_key<const Type>(objects_))
+    for (auto & obj : const_objects)
         tmp_objects.push_back(const_pointer_cast<Type>(obj));
-    ar &make_nvp("const_" + name, tmp_objects);
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
   });
 
   // Function
@@ -937,10 +967,17 @@ serialize(Archive &ar)
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
+    auto &const_objects = at_key<const Type>(objects_);
+
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : at_key<const Type>(objects_))
+    for (auto & obj : const_objects)
         tmp_objects.push_back(const_pointer_cast<Type>(obj));
-    ar &make_nvp("const_" + name, tmp_objects);
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
   });
 
 

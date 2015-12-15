@@ -2,7 +2,9 @@
 main
 ========================================================================
 Original ObjectsContainer.
-   Grid Dim : 1. Number of objects: 1
+   Grid Dim : 1. Number of objects: 0
+   
+   const Grid Dim : 1. Number of objects: 0
       Object Id: 0
          Number of intervals per direction: [ 4 ]
          Knot coordinates:
@@ -27,9 +29,9 @@ Original ObjectsContainer.
          
       
    
-   const Grid Dim : 1. Number of objects: 1
+   Grid Dim : 2. Number of objects: 0
    
-   Grid Dim : 2. Number of objects: 1
+   const Grid Dim : 2. Number of objects: 0
       Object Id: 11
          Number of intervals per direction: [ 4 3 ]
          Knot coordinates:
@@ -80,9 +82,9 @@ Original ObjectsContainer.
          
       
    
-   const Grid Dim : 2. Number of objects: 1
+   Grid Dim : 3. Number of objects: 0
    
-   Grid Dim : 3. Number of objects: 1
+   const Grid Dim : 3. Number of objects: 0
       Object Id: 22
          Number of intervals per direction: [ 4 3 2 ]
          Knot coordinates:
@@ -171,8 +173,6 @@ Original ObjectsContainer.
          
       
    
-   const Grid Dim : 3. Number of objects: 1
-   
    Grid Dim : 0. Number of objects: 0
    
    const Grid Dim : 0. Number of objects: 0
@@ -193,7 +193,9 @@ Original ObjectsContainer.
    
    const SplineSpace Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 1
+   SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   const SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
       Object Id: 1
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -254,8 +256,6 @@ Original ObjectsContainer.
          
       
    
-   const SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 1
-   
    SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
    const SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
@@ -268,7 +268,9 @@ Original ObjectsContainer.
    
    const SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 0
    
-   SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 1
+   SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 0
+   
+   const SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 0
       Object Id: 12
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -366,8 +368,6 @@ Original ObjectsContainer.
          
       
    
-   const SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 1
-   
    SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
    const SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
@@ -376,7 +376,9 @@ Original ObjectsContainer.
    
    const SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 0
    
-   SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 1
+   SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 0
+   
+   const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 0
       Object Id: 23
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]
@@ -527,8 +529,6 @@ Original ObjectsContainer.
          
       
    
-   const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 1
-   
    ReferenceSpaceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
    const ReferenceSpaceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
@@ -545,7 +545,9 @@ Original ObjectsContainer.
    
    const ReferenceSpaceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 3
+   ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
       Object Id: 2
          Spline Space:
             Knots without repetition:
@@ -1007,8 +1009,6 @@ Original ObjectsContainer.
          
       
    
-   const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 3
-   
    ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
    const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
@@ -1017,7 +1017,9 @@ Original ObjectsContainer.
    
    const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 1
+   ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
+   
+   const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
       Object Id: 15
          Spline Space:
             Knots without repetition:
@@ -1162,9 +1164,9 @@ Original ObjectsContainer.
          
       
    
-   const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 1
+   ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
+   const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
       Object Id: 13
          Spline Space:
             Knots without repetition:
@@ -1689,13 +1691,13 @@ Original ObjectsContainer.
          
       
    
-   const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
-   
    ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
    const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
+   ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
       Object Id: 26
          Spline Space:
             Knots without repetition:
@@ -1883,9 +1885,9 @@ Original ObjectsContainer.
          
       
    
-   const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
+   ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
+   const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
       Object Id: 24
          Spline Space:
             Knots without repetition:
@@ -2679,8 +2681,6 @@ Original ObjectsContainer.
          
       
    
-   const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
-   
    GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
    
    const GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
@@ -2697,7 +2697,9 @@ Original ObjectsContainer.
    
    const GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
    
-   GridFunction Dim : 1 Spacedim : 1. Number of objects: 2
+   GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
+   
+   const GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
       Object Id: 5
          IgGridFunction<1,1>
             ReferenceSpaceBasis<1,1,1>:
@@ -3076,8 +3078,6 @@ Original ObjectsContainer.
          
       
    
-   const GridFunction Dim : 1 Spacedim : 1. Number of objects: 2
-   
    GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
    
    const GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
@@ -3086,7 +3086,9 @@ Original ObjectsContainer.
    
    const GridFunction Dim : 1 Spacedim : 3. Number of objects: 0
    
-   GridFunction Dim : 2 Spacedim : 2. Number of objects: 1
+   GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
+   
+   const GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
       Object Id: 18
          IgGridFunction<2,2>
             ReferenceSpaceBasis<2,1,2>:
@@ -3520,9 +3522,9 @@ Original ObjectsContainer.
          
       
    
-   const GridFunction Dim : 2 Spacedim : 2. Number of objects: 1
+   GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
    
-   GridFunction Dim : 2 Spacedim : 1. Number of objects: 1
+   const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
       Object Id: 16
          IgGridFunction<2,1>
             ReferenceSpaceBasis<2,1,1>:
@@ -3709,13 +3711,13 @@ Original ObjectsContainer.
          
       
    
-   const GridFunction Dim : 2 Spacedim : 1. Number of objects: 1
-   
    GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
    
    const GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
    
-   GridFunction Dim : 3 Spacedim : 3. Number of objects: 1
+   GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
+   
+   const GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
       Object Id: 29
          IgGridFunction<3,3>
             ReferenceSpaceBasis<3,1,3>:
@@ -4585,9 +4587,9 @@ Original ObjectsContainer.
          
       
    
-   const GridFunction Dim : 3 Spacedim : 3. Number of objects: 1
+   GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
    
-   GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
+   const GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
       Object Id: 27
          IgGridFunction<3,1>
             ReferenceSpaceBasis<3,1,1>:
@@ -4887,8 +4889,6 @@ Original ObjectsContainer.
          
       
    
-   const GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
-   
    Domain Dim : 0 Codim : 1. Number of objects: 0
    
    const Domain Dim : 0 Codim : 1. Number of objects: 0
@@ -4905,7 +4905,9 @@ Original ObjectsContainer.
    
    const Domain Dim : 0 Codim : 2. Number of objects: 0
    
-   Domain Dim : 1 Codim : 0. Number of objects: 1
+   Domain Dim : 1 Codim : 0. Number of objects: 0
+   
+   const Domain Dim : 1 Codim : 0. Number of objects: 0
       Object Id: 8
          GridFunction<1,1>
             IgGridFunction<1,1>
@@ -5161,8 +5163,6 @@ Original ObjectsContainer.
          
       
    
-   const Domain Dim : 1 Codim : 0. Number of objects: 1
-   
    Domain Dim : 1 Codim : 1. Number of objects: 0
    
    const Domain Dim : 1 Codim : 1. Number of objects: 0
@@ -5171,7 +5171,9 @@ Original ObjectsContainer.
    
    const Domain Dim : 1 Codim : 2. Number of objects: 0
    
-   Domain Dim : 2 Codim : 0. Number of objects: 1
+   Domain Dim : 2 Codim : 0. Number of objects: 0
+   
+   const Domain Dim : 2 Codim : 0. Number of objects: 0
       Object Id: 19
          GridFunction<2,2>
             IgGridFunction<2,2>
@@ -5607,13 +5609,13 @@ Original ObjectsContainer.
          
       
    
-   const Domain Dim : 2 Codim : 0. Number of objects: 1
-   
    Domain Dim : 2 Codim : 1. Number of objects: 0
    
    const Domain Dim : 2 Codim : 1. Number of objects: 0
    
-   Domain Dim : 3 Codim : 0. Number of objects: 1
+   Domain Dim : 3 Codim : 0. Number of objects: 0
+   
+   const Domain Dim : 3 Codim : 0. Number of objects: 0
       Object Id: 30
          GridFunction<3,3>
             IgGridFunction<3,3>
@@ -6485,8 +6487,6 @@ Original ObjectsContainer.
          
       
    
-   const Domain Dim : 3 Codim : 0. Number of objects: 1
-   
    PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
@@ -6523,7 +6523,9 @@ Original ObjectsContainer.
    
    const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
+   PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
       Object Id: 9
          Reference space:
             BSpline Space:
@@ -7019,8 +7021,6 @@ Original ObjectsContainer.
          
       
    
-   const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
-   
    PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
@@ -7045,7 +7045,9 @@ Original ObjectsContainer.
    
    const PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
+   PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
       Object Id: 20
          Reference space:
             BSpline Space:
@@ -7838,8 +7840,6 @@ Original ObjectsContainer.
          
       
    
-   const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
-   
    PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
@@ -7852,7 +7852,9 @@ Original ObjectsContainer.
    
    const PhysicalSpaceBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
+   PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
       Object Id: 31
          Reference space:
             BSpline Space:
@@ -9272,8 +9274,6 @@ Original ObjectsContainer.
          
       
    
-   const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
-   
    PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
@@ -9298,7 +9298,9 @@ Original ObjectsContainer.
    
    const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 1
+   Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
       Object Id: 10
          IgFunction<1,0,1,1>
             PhysicalSpaceBasis<1,1,1,0>
@@ -9808,8 +9810,6 @@ Original ObjectsContainer.
          
       
    
-   const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 1
-   
    Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
    const Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
@@ -9834,7 +9834,9 @@ Original ObjectsContainer.
    
    const Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 1
+   Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
       Object Id: 21
          IgFunction<2,0,2,1>
             PhysicalSpaceBasis<2,2,1,0>
@@ -10704,8 +10706,6 @@ Original ObjectsContainer.
          
       
    
-   const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 1
-   
    Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
    const Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
@@ -10718,7 +10718,9 @@ Original ObjectsContainer.
    
    const Function Dim : 3 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 1
+   Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
       Object Id: 32
          IgFunction<3,0,3,1>
             PhysicalSpaceBasis<3,3,1,0>
@@ -12460,8 +12462,6 @@ Original ObjectsContainer.
          
       
    
-   const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 1
-   
    Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
    
    const Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
@@ -12524,7 +12524,9 @@ Original ObjectsContainer.
    
 
 ObjectsContainer after serialize-deserialize.
-   Grid Dim : 1. Number of objects: 1
+   Grid Dim : 1. Number of objects: 0
+   
+   const Grid Dim : 1. Number of objects: 0
       Object Id: 0
          Number of intervals per direction: [ 4 ]
          Knot coordinates:
@@ -12549,9 +12551,9 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const Grid Dim : 1. Number of objects: 1
+   Grid Dim : 2. Number of objects: 0
    
-   Grid Dim : 2. Number of objects: 1
+   const Grid Dim : 2. Number of objects: 0
       Object Id: 11
          Number of intervals per direction: [ 4 3 ]
          Knot coordinates:
@@ -12602,9 +12604,9 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const Grid Dim : 2. Number of objects: 1
+   Grid Dim : 3. Number of objects: 0
    
-   Grid Dim : 3. Number of objects: 1
+   const Grid Dim : 3. Number of objects: 0
       Object Id: 22
          Number of intervals per direction: [ 4 3 2 ]
          Knot coordinates:
@@ -12693,8 +12695,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const Grid Dim : 3. Number of objects: 1
-   
    Grid Dim : 0. Number of objects: 0
    
    const Grid Dim : 0. Number of objects: 0
@@ -12715,68 +12715,9 @@ ObjectsContainer after serialize-deserialize.
    
    const SplineSpace Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 1
-      Object Id: 36
-         Knots without repetition:
-            Number of intervals per direction: [ 4 ]
-            Knot coordinates:
-               Direction 0: 
-               [ 0 1.00000 2.00000 3.00000 4.00000 ]
-            
-            Element properties:
-               IDs with property "active":
-                  Entry id: 0
-                     Flat ID: 0    Tensor ID: [0]
-                  
-                  Entry id: 1
-                     Flat ID: 1    Tensor ID: [1]
-                  
-                  Entry id: 2
-                     Flat ID: 2    Tensor ID: [2]
-                  
-                  Entry id: 3
-                     Flat ID: 3    Tensor ID: [3]
-                  
-               
-            
-         
-         Degrees:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
-         
-         Interior multiplicities:
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
-            [ 1 1 1 ]
-         
-         Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
-            Scalar components dimensions:
-            [ 7 ]
-            Total Dimension: 7
-         
-      
+   SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   const SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 1
+   const SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
    
    SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
@@ -12790,105 +12731,9 @@ ObjectsContainer after serialize-deserialize.
    
    const SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 0
    
-   SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 1
-      Object Id: 37
-         Knots without repetition:
-            Number of intervals per direction: [ 4 3 ]
-            Knot coordinates:
-               Direction 0: 
-               [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction 1: 
-               [ 5.00000 6.00000 7.00000 8.00000 ]
-            
-            Element properties:
-               IDs with property "active":
-                  Entry id: 0
-                     Flat ID: 0    Tensor ID: [0,0]
-                  
-                  Entry id: 1
-                     Flat ID: 4    Tensor ID: [0,1]
-                  
-                  Entry id: 2
-                     Flat ID: 8    Tensor ID: [0,2]
-                  
-                  Entry id: 3
-                     Flat ID: 1    Tensor ID: [1,0]
-                  
-                  Entry id: 4
-                     Flat ID: 5    Tensor ID: [1,1]
-                  
-                  Entry id: 5
-                     Flat ID: 9    Tensor ID: [1,2]
-                  
-                  Entry id: 6
-                     Flat ID: 2    Tensor ID: [2,0]
-                  
-                  Entry id: 7
-                     Flat ID: 6    Tensor ID: [2,1]
-                  
-                  Entry id: 8
-                     Flat ID: 10    Tensor ID: [2,2]
-                  
-                  Entry id: 9
-                     Flat ID: 3    Tensor ID: [3,0]
-                  
-                  Entry id: 10
-                     Flat ID: 7    Tensor ID: [3,1]
-                  
-                  Entry id: 11
-                     Flat ID: 11    Tensor ID: [3,2]
-                  
-               
-            
-         
-         Degrees:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 3 2 ]
-               Entry id: 1
-               [ 0 0 ]
-            
-            Components map: 
-            [ 0 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ 1 ]
-         
-         Interior multiplicities:
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
-            [ 1 1 1 ]
-            Direction: 1
-            [ 1 1 ]
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
-            [ 1 1 1 ]
-            Direction: 1
-            [ 1 1 ]
-         
-         Dimensionality Table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
-            Scalar components dimensions:
-            [ 35 35 ]
-            Total Dimension: 70
-         
-      
+   SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   const SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 1
+   const SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
    SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
@@ -12898,158 +12743,9 @@ ObjectsContainer after serialize-deserialize.
    
    const SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 0
    
-   SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 1
-      Object Id: 38
-         Knots without repetition:
-            Number of intervals per direction: [ 4 3 2 ]
-            Knot coordinates:
-               Direction 0: 
-               [ 0 1.00000 2.00000 3.00000 4.00000 ]
-               Direction 1: 
-               [ 5.00000 6.00000 7.00000 8.00000 ]
-               Direction 2: 
-               [ 9.00000 10.0000 11.0000 ]
-            
-            Element properties:
-               IDs with property "active":
-                  Entry id: 0
-                     Flat ID: 0    Tensor ID: [0,0,0]
-                  
-                  Entry id: 1
-                     Flat ID: 12    Tensor ID: [0,0,1]
-                  
-                  Entry id: 2
-                     Flat ID: 4    Tensor ID: [0,1,0]
-                  
-                  Entry id: 3
-                     Flat ID: 16    Tensor ID: [0,1,1]
-                  
-                  Entry id: 4
-                     Flat ID: 8    Tensor ID: [0,2,0]
-                  
-                  Entry id: 5
-                     Flat ID: 20    Tensor ID: [0,2,1]
-                  
-                  Entry id: 6
-                     Flat ID: 1    Tensor ID: [1,0,0]
-                  
-                  Entry id: 7
-                     Flat ID: 13    Tensor ID: [1,0,1]
-                  
-                  Entry id: 8
-                     Flat ID: 5    Tensor ID: [1,1,0]
-                  
-                  Entry id: 9
-                     Flat ID: 17    Tensor ID: [1,1,1]
-                  
-                  Entry id: 10
-                     Flat ID: 9    Tensor ID: [1,2,0]
-                  
-                  Entry id: 11
-                     Flat ID: 21    Tensor ID: [1,2,1]
-                  
-                  Entry id: 12
-                     Flat ID: 2    Tensor ID: [2,0,0]
-                  
-                  Entry id: 13
-                     Flat ID: 14    Tensor ID: [2,0,1]
-                  
-                  Entry id: 14
-                     Flat ID: 6    Tensor ID: [2,1,0]
-                  
-                  Entry id: 15
-                     Flat ID: 18    Tensor ID: [2,1,1]
-                  
-                  Entry id: 16
-                     Flat ID: 10    Tensor ID: [2,2,0]
-                  
-                  Entry id: 17
-                     Flat ID: 22    Tensor ID: [2,2,1]
-                  
-                  Entry id: 18
-                     Flat ID: 3    Tensor ID: [3,0,0]
-                  
-                  Entry id: 19
-                     Flat ID: 15    Tensor ID: [3,0,1]
-                  
-                  Entry id: 20
-                     Flat ID: 7    Tensor ID: [3,1,0]
-                  
-                  Entry id: 21
-                     Flat ID: 19    Tensor ID: [3,1,1]
-                  
-                  Entry id: 22
-                     Flat ID: 11    Tensor ID: [3,2,0]
-                  
-                  Entry id: 23
-                     Flat ID: 23    Tensor ID: [3,2,1]
-                  
-               
-            
-         
-         Degrees:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 3 2 1 ]
-               Entry id: 1
-               [ 0 0 0 ]
-               Entry id: 2
-               [ 0 0 0 ]
-            
-            Components map: 
-            [ 0 0 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ 1 2 ]
-         
-         Interior multiplicities:
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
-            [ 1 1 1 ]
-            Direction: 1
-            [ 1 1 ]
-            Direction: 2
-            [ 1 ]
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
-            [ 1 1 1 ]
-            Direction: 1
-            [ 1 1 ]
-            Direction: 2
-            [ 1 ]
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
-            [ 1 1 1 ]
-            Direction: 1
-            [ 1 1 ]
-            Direction: 2
-            [ 1 ]
-         
-         Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
-            Scalar components dimensions:
-            [ 105 105 105 ]
-            Total Dimension: 315
-         
-      
+   SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 1
+   const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
    ReferenceSpaceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
@@ -13067,7 +12763,9 @@ ObjectsContainer after serialize-deserialize.
    
    const ReferenceSpaceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 3
+   ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
       Object Id: 2
          Spline Space:
             Knots without repetition:
@@ -13529,8 +13227,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 3
-   
    ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
    const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
@@ -13539,7 +13235,9 @@ ObjectsContainer after serialize-deserialize.
    
    const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 1
+   ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
+   
+   const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
       Object Id: 15
          Spline Space:
             Knots without repetition:
@@ -13684,9 +13382,9 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 1
+   ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
+   const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
       Object Id: 13
          Spline Space:
             Knots without repetition:
@@ -14211,13 +13909,13 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
-   
    ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
    const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
+   ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
       Object Id: 26
          Spline Space:
             Knots without repetition:
@@ -14405,9 +14103,9 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
+   ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
+   const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
       Object Id: 24
          Spline Space:
             Knots without repetition:
@@ -15201,8 +14899,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
-   
    GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
    
    const GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
@@ -15219,8 +14915,10 @@ ObjectsContainer after serialize-deserialize.
    
    const GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
    
-   GridFunction Dim : 1 Spacedim : 1. Number of objects: 2
-      Object Id: 43
+   GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
+   
+   const GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
+      Object Id: 41
          IgGridFunction<1,1>
             ReferenceSpaceBasis<1,1,1>:
                Spline Space:
@@ -15598,8 +15296,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const GridFunction Dim : 1 Spacedim : 1. Number of objects: 2
-   
    GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
    
    const GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
@@ -15608,7 +15304,9 @@ ObjectsContainer after serialize-deserialize.
    
    const GridFunction Dim : 1 Spacedim : 3. Number of objects: 0
    
-   GridFunction Dim : 2 Spacedim : 2. Number of objects: 1
+   GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
+   
+   const GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
       Object Id: 55
          IgGridFunction<2,2>
             ReferenceSpaceBasis<2,1,2>:
@@ -16042,10 +15740,10 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const GridFunction Dim : 2 Spacedim : 2. Number of objects: 1
+   GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
    
-   GridFunction Dim : 2 Spacedim : 1. Number of objects: 1
-      Object Id: 48
+   const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
+      Object Id: 47
          IgGridFunction<2,1>
             ReferenceSpaceBasis<2,1,1>:
                Spline Space:
@@ -16231,13 +15929,13 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const GridFunction Dim : 2 Spacedim : 1. Number of objects: 1
-   
    GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
    
    const GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
    
-   GridFunction Dim : 3 Spacedim : 3. Number of objects: 1
+   GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
+   
+   const GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
       Object Id: 56
          IgGridFunction<3,3>
             ReferenceSpaceBasis<3,1,3>:
@@ -17107,9 +16805,9 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const GridFunction Dim : 3 Spacedim : 3. Number of objects: 1
+   GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
    
-   GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
+   const GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
       Object Id: 53
          IgGridFunction<3,1>
             ReferenceSpaceBasis<3,1,1>:
@@ -17409,8 +17107,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
-   
    Domain Dim : 0 Codim : 1. Number of objects: 0
    
    const Domain Dim : 0 Codim : 1. Number of objects: 0
@@ -17427,7 +17123,9 @@ ObjectsContainer after serialize-deserialize.
    
    const Domain Dim : 0 Codim : 2. Number of objects: 0
    
-   Domain Dim : 1 Codim : 0. Number of objects: 1
+   Domain Dim : 1 Codim : 0. Number of objects: 0
+   
+   const Domain Dim : 1 Codim : 0. Number of objects: 0
       Object Id: 8
          GridFunction<1,1>
             IgGridFunction<1,1>
@@ -17683,8 +17381,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const Domain Dim : 1 Codim : 0. Number of objects: 1
-   
    Domain Dim : 1 Codim : 1. Number of objects: 0
    
    const Domain Dim : 1 Codim : 1. Number of objects: 0
@@ -17693,7 +17389,9 @@ ObjectsContainer after serialize-deserialize.
    
    const Domain Dim : 1 Codim : 2. Number of objects: 0
    
-   Domain Dim : 2 Codim : 0. Number of objects: 1
+   Domain Dim : 2 Codim : 0. Number of objects: 0
+   
+   const Domain Dim : 2 Codim : 0. Number of objects: 0
       Object Id: 19
          GridFunction<2,2>
             IgGridFunction<2,2>
@@ -18129,13 +17827,13 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const Domain Dim : 2 Codim : 0. Number of objects: 1
-   
    Domain Dim : 2 Codim : 1. Number of objects: 0
    
    const Domain Dim : 2 Codim : 1. Number of objects: 0
    
-   Domain Dim : 3 Codim : 0. Number of objects: 1
+   Domain Dim : 3 Codim : 0. Number of objects: 0
+   
+   const Domain Dim : 3 Codim : 0. Number of objects: 0
       Object Id: 30
          GridFunction<3,3>
             IgGridFunction<3,3>
@@ -19007,8 +18705,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const Domain Dim : 3 Codim : 0. Number of objects: 1
-   
    PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
@@ -19045,7 +18741,9 @@ ObjectsContainer after serialize-deserialize.
    
    const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
+   PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
       Object Id: 9
          Reference space:
             BSpline Space:
@@ -19541,8 +19239,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
-   
    PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
@@ -19567,7 +19263,9 @@ ObjectsContainer after serialize-deserialize.
    
    const PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
+   PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
       Object Id: 20
          Reference space:
             BSpline Space:
@@ -20360,8 +20058,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
-   
    PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
@@ -20374,7 +20070,9 @@ ObjectsContainer after serialize-deserialize.
    
    const PhysicalSpaceBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
+   PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
       Object Id: 31
          Reference space:
             BSpline Space:
@@ -21794,8 +21492,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
-   
    PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
@@ -21820,7 +21516,9 @@ ObjectsContainer after serialize-deserialize.
    
    const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 1
+   Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
       Object Id: 10
          IgFunction<1,0,1,1>
             PhysicalSpaceBasis<1,1,1,0>
@@ -22330,8 +22028,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 1
-   
    Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
    const Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
@@ -22356,7 +22052,9 @@ ObjectsContainer after serialize-deserialize.
    
    const Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 1
+   Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
       Object Id: 21
          IgFunction<2,0,2,1>
             PhysicalSpaceBasis<2,2,1,0>
@@ -23226,8 +22924,6 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 1
-   
    Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
    const Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
@@ -23240,7 +22936,9 @@ ObjectsContainer after serialize-deserialize.
    
    const Function Dim : 3 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 1
+   Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
       Object Id: 32
          IgFunction<3,0,3,1>
             PhysicalSpaceBasis<3,3,1,0>
@@ -24981,8 +24679,6 @@ ObjectsContainer after serialize-deserialize.
             Dofs property: active
          
       
-   
-   const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 1
    
    Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
    
