@@ -26,7 +26,7 @@
 #include <CGAL/HalfedgeDS_face_max_base_with_id.h>
 #include <CGAL/HalfedgeDS_vertex_max_base_with_id.h>
 #include <CGAL/HalfedgeDS_halfedge_max_base_with_id.h>
-#include <CGAL/Polyhedron_simplex_type.h>
+#include "../Polyhedron_simplex_type.h"
 #include <CGAL/array.h>
 
 #include<set>

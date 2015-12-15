@@ -308,7 +308,6 @@ else (USE_CEREAL)
                        ${CMAKE_CURRENT_BINARY_DIR}/include)
 endif(USE_CEREAL)
 
-
 # the igatools library target
 add_library(${lib_name} SHARED  ${source_files})
 target_link_libraries(${lib_name} 

@@ -16,13 +16,13 @@
 // $Id$
 //
 //
-// Author(s)     : Sébastien Loriot
+// Author(s)     : Sebastien Loriot
 
 #ifndef CGAL_WALK_ON_POLYHEDRON_H
 #define CGAL_WALK_ON_POLYHEDRON_H
 
 #include <CGAL/assertions.h>
-#include <CGAL/Polyhedron_simplex_type.h>
+#include "Polyhedron_simplex_type.h"
 #include <boost/optional.hpp>
 #include <boost/variant.hpp>
 #include <set>

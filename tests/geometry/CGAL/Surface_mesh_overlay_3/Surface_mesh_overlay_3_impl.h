@@ -23,16 +23,16 @@
 #include "Polyhedron_utils.h"
 #include "Polyhedron_refinement_modifier_3.h"
 #include "Constructions.h"
-#include <CGAL/Walk_on_polyhedron.h>
-#include <CGAL/Surface_mesh_overlay_3/Walk_on_polyhedron_visitor.h>
+#include "../Walk_on_polyhedron.h"
+#include "Walk_on_polyhedron_visitor.h"
 
 #include <CGAL/Polygon_mesh_processing/compute_normal.h>
 #include <CGAL/AABB_tree.h>
 #include <CGAL/AABB_face_graph_triangle_primitive.h>
-#include <CGAL/Surface_mesh_overlay_3/AABB_traits.h>
+#include "AABB_traits.h"
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/AABB_halfedge_graph_segment_primitive.h>
-#include <CGAL/Polyhedron_simplex_type.h>
+#include "../Polyhedron_simplex_type.h"
 #include <CGAL/property_map.h>
 #include <CGAL/Default.h>
 #include <CGAL/tuple.h>

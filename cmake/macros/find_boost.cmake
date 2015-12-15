@@ -22,19 +22,22 @@
 # Find Boost library (Required)
 #-------------------------------------------------------------------------------
 macro(find_boost)
-  if (SERIALIZATION)
+
+  if (USE_CGAL)
   
-    find_package(Boost 1.54.0 REQUIRED COMPONENTS serialization)
+    find_package(Boost 1.54.0 REQUIRED COMPONENTS system thread)
 
     include_directories(${Boost_INCLUDE_DIRS})
-    set(Boost_LIBRARIES "${Boost_SERIALIZATION_LIBRARIES}")
     
-  else (SERIALIZATION)
+    set(Boost_LIBRARIES "${Boost_SYSTEM_LIBRARIES};${Boost_THREAD_LIBRARIES}")
+    message("--   Boost_LIBRARIES =  ${Boost_LIBRARIES}")
+    
+  else (USE_CGAL)
   
     find_package(Boost 1.54.0 REQUIRED)
 
     include_directories(${Boost_INCLUDE_DIRS})
 
-  endif (SERIALIZATION)
+  endif (USE_CGAL)
   
 endmacro(find_boost)

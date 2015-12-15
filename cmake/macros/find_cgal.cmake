@@ -21,10 +21,16 @@
 # Find CGAL library (Optional)
 #-------------------------------------------------------------------------------
 macro(find_cgal)
-  set(CGAL_PREFIX $ENV{CGAL_DIR} CACHE LOCATION 
-    "Location where CGAL library is installed")
-  find_package(CGAL REQUIRED PATHS ${CGAL_PREFIX})
+  set(CGAL_PREFIX $ENV{CGAL_DIR} CACHE LOCATION  "Location where CGAL library is installed")
+
+#  find_package(CGAL REQUIRED PATHS ${CGAL_PREFIX})
+  find_package(CGAL REQUIRED COMPENENTS Core)
+  
   message(STATUS "Found CGAL:  version ${CGAL_VERSION}.")
+
+  set(CGAL_LIBRARIES "${CGAL_LIBRARY};${CGAL_Core_LIBRARY};${GMP_LIBRARIES};${MPFR_LIBRARIES}")
+  
+  message("--   CGAL_LIBRARIES = ${CGAL_LIBRARIES}")
 
   # add the location of CGAL headers to the include directories
   include_directories(${CGAL_INCLUDE_DIRS})

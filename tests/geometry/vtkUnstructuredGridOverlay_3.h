@@ -5,12 +5,13 @@
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include "CGAL/Surface_mesh_overlay_3.h"
+
 #ifdef OVERLAY_WITH_DEBUG_INFO
 #include <fstream>
 #include <CGAL/IO/Polyhedron_iostream.h>
 #endif
 
-#include <CGAL/vtkUnstructuredGrid_to_Polyhedron_3.h
+#include "CGAL/vtkUnstructuredGrid_to_Polyhedron_3.h"
 #include <vtkUnstructuredGrid.h>
 #include <vtkSmartPointer.h>
 #include <vtkIntArray.h>
@@ -215,7 +216,9 @@ vtkUnstructuredGridOverlay_3(
     }
     for (std::size_t i=0; i<facets.size(); ++i)
     {
+#if 0 // commented by martinelli, Dec 15, 2015
       CGAL_assertion(is_valid_edge_split<K>(facets[i]->halfedge()));
+#endif
       P1.split_facet(
         facets[i]->halfedge(),
         facets[i]->halfedge()->next()->next());
@@ -233,7 +236,9 @@ vtkUnstructuredGridOverlay_3(
     }
     for (std::size_t i=0; i<facets.size(); ++i)
     {
+#if 0 // commented by martinelli, Dec 15, 2015
       CGAL_assertion(is_valid_edge_split<K>(facets[i]->halfedge()));
+#endif
       P2.split_facet(
         facets[i]->halfedge(),
         facets[i]->halfedge()->next()->next());

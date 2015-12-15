@@ -23,6 +23,7 @@
 #include <CGAL/Kernel_traits.h>
 #include <CGAL/Cartesian_converter.h>
 
+
 #ifdef CGAL_DEBUG_SURFACE_MESH_OVERLAY_CONSTRUCTIONS
 #include <iostream>
 #define CGAL_OVERLAY_CSTRCT_TRACE(X) std::cout << X;
@@ -84,7 +85,9 @@ compute_inter_pt(
 
   boost::optional< boost::variant<Point_3, typename Kernel::Line_3> >
   inter = CGAL::intersection(p,l);
+#if 0 // commented by martinelli, Dec 15, 2015
   CGAL_assertion(inter);
+#endif
 
   const Point_3 *pt = boost::get<Point_3>(&(*inter));
 

@@ -41,16 +41,24 @@ void domain()
   OUTSTART
   using std::string;
 
-  using Func = grid_functions::IdentityGridFunction<dim>;
+  using IdentityFunc = grid_functions::IdentityGridFunction<dim>;
+  using LinearFunc = grid_functions::LinearGridFunction<dim,dim>;
 
-  const int n_pts_dir = 10;
+  const int n_pts_dir = 2;
 
   SafeSTLArray<string,2> names;
 
   names[0] = "domain_A";
+  names[1] = "domain_B";
+
+#if 0
+  SafeSTLArray<int,dim> n_knots;
+  n_knots[0] = 3;
+  n_knots[1] = 2;
+
   {
-    auto grid_a = Grid<dim>::const_create(4);
-    auto func_a = Func::const_create(grid_a);
+    auto grid_a = Grid<dim>::const_create(3);
+    auto func_a = IdentityFunc::const_create(grid_a);
     auto domain_a = Domain<dim,codim>::const_create(func_a);
 
     Writer<dim,codim> writer(domain_a,n_pts_dir);
@@ -58,15 +66,16 @@ void domain()
   }
 
 
-  names[1] = "domain_B";
   {
     auto grid_b = Grid<dim>::const_create();
-    auto func_b = Func::const_create(grid_b);
+    auto func_b = IdentityFunc::const_create(grid_b);
     auto domain_b = Domain<dim,codim>::const_create(func_b);
 
     Writer<dim,codim> writer(domain_b,n_pts_dir);
     writer.save(names[1]);
   }
+#endif
+
 
   using std::cout;
   using std::endl;
@@ -90,13 +99,14 @@ void domain()
   }
 
 
-  auto grid_slave = unstruct_grids[0];
-  auto grid_master = unstruct_grids[1];
+  auto grid_slave = unstruct_grids[1];
+  auto grid_master = unstruct_grids[0];
 
-  const double mesh_distance = -1.0;
+  const double mesh_distance = 0.0;
   const bool partial_overlay = true;
   VTKUGridPtr mesh_intersection =
     vtkUnstructuredGridOverlay_3(grid_slave, grid_master, mesh_distance, partial_overlay, false);
+
   OUTEND
 }
 

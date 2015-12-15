@@ -20,7 +20,7 @@
 #ifndef CGAL_SURFACE_MESH_OVERLAY_3_POLYHEDRON_REFINEMENT_MODIFIER_3_H
 #define CGAL_SURFACE_MESH_OVERLAY_3_POLYHEDRON_REFINEMENT_MODIFIER_3_H
 
-#include <CGAL/Surface_mesh_overlay_3/Polyhedron_utils.h>
+#include "Polyhedron_utils.h"
 
 #include <CGAL/HalfedgeDS_decorator.h>
 #include <CGAL/Modifier_base.h>
@@ -733,7 +733,9 @@ public:
           {
             boost::optional< boost::variant<Exact_point_3, Exact_segment_3> > res =
               CGAL::intersection(s1,s2);
+#if 0 // commented by martinelli, Dec 15, 2015
             CGAL_assertion(res);
+#endif
             if (const Exact_point_3 *pt_ptr = get<Exact_point_3>(&(*res)))
             {
               std::pair<
@@ -1020,10 +1022,10 @@ public:
       m_P2_edge_to_P1_edges[h_P2->opposite()->id()].push_back(h_P1->opposite());
     }
 
-/// \todo comment l'overlap partiel d'arete est influencé par handle_intersection_of_constraints?
-///       il faudrait probablement mettre à jour les paires en function des intersections...
-///       un truc simple et de regarder si on trouve pas une arete, alors ça veut dire qu'un
-///       point a été ajouté et donc il faut ajouter les points au milieu (mais il faut appeler
+/// \todo comment l'overlap partiel d'arete est influence par handle_intersection_of_constraints?
+///       il faudrait probablement mettre  jour les paires en function des intersections...
+///       un truc simple et de regarder si on trouve pas une arete, alors a veut dire qu'un
+///       point a  ajout et donc il faut ajouter les points au milieu (mais il faut appeler
 ///       cette fonction la ligne d'avant)
     if (AllowPathIntersections) handle_intersection_of_constraints(decorator);
 
