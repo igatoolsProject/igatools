@@ -37,25 +37,16 @@ for dim in inst.domain_dims:
 f.write('IGA_NAMESPACE_CLOSE\n')
 
 
-
-f.write('#ifdef SERIALIZATION\n')
 archives = ['OArchive','IArchive']
 
 id = 0 
-for grid in unique(grids):
-    alias = 'GridAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, grid))
-#    f.write('CEREAL_REGISTER_TYPE(%s);\n' %(alias))
+for dim in unique(inst.sub_domain_dims + inst.domain_dims):
+    alias = 'ArrayPtrVectorRealAlias%d' %(id)
+    f.write('using %s = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,%d>;\n' % (alias,dim))
     for ar in archives:
-        f.write('template void %s::serialize(%s&);\n' %(alias,ar))
-#    
-#    f.write('ALLOW_SHARED_THIS(%s)\n' %alias )
-#    
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+        f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,%s,cereal::specialization::member_serialize)\n' % (ar,alias));
+
     id += 1 
-f.write('#endif // SERIALIZATION\n')
 #   
 f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------

@@ -46,19 +46,16 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
 
-
-f.write('#ifdef SERIALIZATION\n')
+archives = ['IArchive','OArchive']
 
 id = 0 
 for arr in unique(arrays):
     alias = 'Array_DMA_int_Alias%d' %(id)
     f.write('using %s = %s;\n' % (alias, arr.replace('DynamicMultiArray','iga::DynamicMultiArray')
                                             .replace('SafeSTLArray','iga::SafeSTLArray')));
-    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %alias);
+    for ar in archives:
+        f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,%s,cereal::specialization::member_serialize);\n' %(ar,alias));
     id += 1 
-
-
-f.write('#endif // SERIALIZATION\n')
 
 #   
 f.write('IGA_NAMESPACE_OPEN\n')

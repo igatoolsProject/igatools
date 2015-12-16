@@ -320,20 +320,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    using std::to_string;
-    const std::string base_name = "ReferenceSpaceBasis_" +
-                                  to_string(dim_) + "_" +
-                                  to_string(0) + "_" +
-                                  to_string(range_) + "_" +
-                                  to_string(rank_);
-
-    ar &make_nvp(base_name,base_class<BaseSpace>(this));
-    ar &make_nvp("bsp_basis_",bsp_basis_);
-
-    ar &make_nvp("weight_func_",weight_func_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };

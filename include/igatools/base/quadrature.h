@@ -363,8 +363,7 @@ private:
 
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * @name Functions needed for the serialization
    */
   ///@{
   friend class serialization_access;

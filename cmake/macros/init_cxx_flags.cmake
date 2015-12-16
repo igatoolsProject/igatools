@@ -23,7 +23,7 @@
 macro(init_cxx_flags)
   # Initialize CXXFLAGS.
   set(CMAKE_CXX_FLAGS                "-Wall  -ftemplate-depth=1024")
-  set(CMAKE_CXX_FLAGS_DEBUG          "-Wall -O0 -g -ftemplate-backtrace-limit=0")
+  set(CMAKE_CXX_FLAGS_DEBUG          "-Wall -O0 -g -ftemplate-backtrace-limit=1")
   set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -mtune=native -DNDEBUG -g -p -pg")
 

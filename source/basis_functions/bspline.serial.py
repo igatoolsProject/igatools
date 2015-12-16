@@ -65,12 +65,12 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 f.write('IGA_NAMESPACE_CLOSE\n')
 
 
-f.write('#ifdef SERIALIZATION\n')
 #archives = ['OArchive','IArchive']
 
 
 f.write('using VecBernstOp = iga::SafeSTLVector<iga::BernsteinOperator>;\n');
-f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(VecBernstOp,cereal::specialization::member_serialize);\n');
+f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,VecBernstOp,cereal::specialization::member_serialize);\n');
+f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,VecBernstOp,cereal::specialization::member_serialize);\n');
 
 id = 0 
 for space in unique(spaces):
@@ -92,7 +92,6 @@ for arr in unique(arrays):
     f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %(alias));
     id += 1
 
-f.write('#endif // SERIALIZATION\n')
 
 #   
 f.write('IGA_NAMESPACE_OPEN\n')

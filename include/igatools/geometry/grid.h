@@ -808,17 +808,8 @@ private:
 IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
-
-using ArrayPtrVectorRealAlias0 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,0>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias0,cereal::specialization::member_serialize);
-using ArrayPtrVectorRealAlias1 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias1,cereal::specialization::member_serialize);
-using ArrayPtrVectorRealAlias2 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,2>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias2,cereal::specialization::member_serialize);
-using ArrayPtrVectorRealAlias3 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,3>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias3,cereal::specialization::member_serialize);
-
+#include <igatools/geometry/grid.serial>
 #endif //SERIALIZATION
-//#include <igatools/geometry/grid.serial>
+
 
 #endif /* CARTESIAN_GRID_H_ */

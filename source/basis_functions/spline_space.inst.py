@@ -29,6 +29,9 @@ sub_dim_members = \
   'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;',
   'typename class::template SubSpace<k>::PeriodicityTable class::get_sub_space_periodicity<k>(const Index s_id) const;']         
 
+
+
+
 spaces = ['SplineSpace<0,0,1>']
 templated_funcs = []
 
@@ -51,9 +54,40 @@ for x in inst.ref_sp_dims:
             s = fun.replace('class', space).replace('k', '%d' % (k));
             templated_funcs.append(s)
 
-            
+
+
+#member_types = ['DegreeTable',  
+#  'MultiplicityTable',
+#  'BoundaryKnotsTable',
+#  'KnotsTable',
+#  'PeriodicityTable',
+#  'EndBehaviourTable']
+
+
 for space in unique(spaces):
     f.write('template class %s ;\n' %space)
+    f.write('template class %s::template ComponentContainer<int>;\n' %(space))
+    f.write('template class %s::template ComponentContainer<std::pair<Real,Real>>;\n' %(space))
+    dim = '%s::dim' %(space)
+    t0 = 'TensorSize<%s>' %(dim)
+    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t0))
+    t1 = 'CartesianProductArray<int,%s>' %(dim)
+#    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t1))
+    t2 = 'SafeSTLArray<bool,%s>' %(dim)
+    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t2))
+    t3 = 'SafeSTLArray<BasisEndBehaviour,%s>' %(dim)
+    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t3))
+    t4 = 'SafeSTLArray<std::pair<Real,Real>,%s>' %(dim)
+    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t4))
+    t5 = 'SafeSTLArray<SafeSTLVector<Real>,%s>' %(dim)
+    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t5))
+    t6 = 'SafeSTLArray<CartesianProductArray<double,2>,%s>' % (dim) 
+    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t6))
+    t7 = 'unique_ptr<const TensorProductFunctionEvaluator<%s>>'%(dim)
+    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t7))
+    t8 = 'SafeSTLArray<BasisValues1d,%s>' % (dim)
+    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t8))
+        
 
 for func in unique(templated_funcs):
     f.write('template %s ;\n' %func)
