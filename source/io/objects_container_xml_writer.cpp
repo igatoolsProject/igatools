@@ -388,13 +388,23 @@ write_grid (const shared_ptr<Grid> grid,
     obj_elem->add_attribute("LocalObjectId", grid->get_object_id());
     obj_elem->add_attribute("Dim", dim);
 
+    const auto knots_elem = xml_doc->create_new_element("Knots");
+
     for (int dir = 0; dir < dim; ++dir)
     {
         const auto &knt_coord = grid->get_knot_coordinates(dir);
         const auto knot_elem = xml_doc->create_vector_element("Knots", knt_coord);
         knot_elem->add_attribute("Direction", dir);
         knot_elem->add_attribute("Size", knt_coord.size());
-        obj_elem->append_child_element(knot_elem);
+        knots_elem->append_child_element(knot_elem);
+    }
+    obj_elem->append_child_element(knots_elem);
+
+    const auto &name = grid->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
     }
 
     const auto igt_elem = xml_doc->get_document_element();
@@ -598,6 +608,13 @@ write_identity_grid_function (const shared_ptr<IdGridFunc> id_func,
                             id_func->get_grid()->get_object_id());
     obj_elem->append_child_element(grid_elem);
 
+    const auto &name = id_func->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
+
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
 }
@@ -629,6 +646,13 @@ write_constant_grid_function (const shared_ptr<ConstGridFunc> const_func,
     std::copy(values_arr.cbegin(), values_arr.cend(), values_vec.begin());
     const auto values_elem = xml_doc->create_vector_element("Values", values_vec);
     obj_elem->append_child_element(values_elem);
+
+    const auto &name = const_func->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
 
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
@@ -667,6 +691,13 @@ write_linear_grid_function (const shared_ptr<LinearGridFunc> linear_func,
     std::copy(b_arr.cbegin(), b_arr.cend(), b_vec.begin());
     const auto b_elem = xml_doc->create_vector_element("b", b_vec);
     obj_elem->append_child_element(b_elem);
+
+    const auto &name = linear_func->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
 
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
@@ -880,6 +911,13 @@ write_constant_function (const shared_ptr<ConstantFunction> const_function,
     const auto values_elem = xml_doc->create_vector_element("Values", values_vec);
     obj_elem->append_child_element(values_elem);
 
+    const auto &name = const_function->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
+
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
 }
@@ -919,6 +957,13 @@ write_linear_function (const shared_ptr<LinearFunction> linear_function,
     std::copy(b_arr.cbegin(), b_arr.cend(), b_vec.begin());
     const auto b_elem = xml_doc->create_vector_element("b", b_vec);
     obj_elem->append_child_element(b_elem);
+
+    const auto &name = linear_function->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
 
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);

@@ -263,6 +263,10 @@ print_info(LogStream &out) const
                  +">");
   grid_func_->print_info(out);
   out.end_item();
+
+  if (this->name_.size() > 0)
+      out << "Name: " << this->name_ << std::endl;
+
 //    AssertThrow(false,ExcNotImplemented());
 }
 

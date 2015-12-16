@@ -46,6 +46,7 @@ void write_container (const string &file_path)
 
   // Creating grid
   auto grid = Grid<dim>::create(4);
+  grid->set_name("grid_" + std::to_string(dim));
   const int deg = 2;
 
   // Creating spline spaces
@@ -61,6 +62,7 @@ void write_container (const string &file_path)
   const auto w = EpetraTools::create_vector(*map_1);
   (*w)[0] = 1.;
   auto wf = IgGridFunction<dim, 1>::create(ref_basis_2, *w, "active");
+  wf->set_name("weights_" + std::to_string(dim));
   auto ref_basis_3 = NURBS<dim,range,rank>::create(ref_basis_1, wf);
 
   // Creating domain
@@ -68,6 +70,7 @@ void write_container (const string &file_path)
   const auto pts = EpetraTools::create_vector(*map_2);
   (*pts)[0] = 2.;
   auto grid_func = IgGridFunction<dim, dim+codim>::create(ref_basis_3, *pts, "active");
+  grid_func->set_name("grid_func_" + std::to_string(dim));
   auto domain = Domain<dim>::create(grid_func, "my_domain");
 
   // Creating phys space
@@ -77,23 +80,29 @@ void write_container (const string &file_path)
   auto coeff = EpetraTools::create_vector(*map_3);
   (*coeff)[0] = 3.;
   auto func = IgFunction<dim,codim,range,rank>::create(phys_basis, *coeff);
+  func->set_name("my_ig_function");
 
 
   // Adding grid functions
   const auto id_func = grid_functions::IdentityGridFunction<dim>::create(grid);
+  id_func->set_name("id_grid_func_" + std::to_string(dim));
 
   typename grid_functions::ConstantGridFunction<dim, range>::Value b;
   const auto ct_func = grid_functions::ConstantGridFunction<dim, range>::create(grid, b);
+  ct_func->set_name("ct_grid_func_" + std::to_string(dim));
 
-   typename grid_functions::LinearGridFunction<dim, range>::template Derivative<1> A;
-   const auto li_func = grid_functions::LinearGridFunction<dim, range>::create(grid, A, b);
+  typename grid_functions::LinearGridFunction<dim, range>::template Derivative<1> A;
+  const auto li_func = grid_functions::LinearGridFunction<dim, range>::create(grid, A, b);
+  li_func->set_name("li_grid_func_" + std::to_string(dim));
 
   // Adding functions
   typename functions::ConstantFunction<dim, codim, range, rank>::Value b2;
   const auto ct_func_2 = functions::ConstantFunction<dim, codim, range, rank>::create(domain, b2);
+  ct_func_2->set_name("ct_func_" + std::to_string(dim));
 
   typename functions::LinearFunction<dim, codim, range>::template Derivative<1> A2;
   const auto li_func_2 = functions::LinearFunction<dim, codim, range>::create(domain, A2, b2);
+  li_func_2->set_name("li_func_" + std::to_string(dim));
 
   const auto container = ObjectsContainer::create();
   container->insert_object<Function<dim,0,range,1>>(func);

@@ -290,6 +290,9 @@ print_info(LogStream &out) const
 
   out << "Dofs property: " << dofs_property_ << std::endl;
 
+  if (this->name_.size() > 0)
+      out << "Name: " << this->name_ << std::endl;
+
   out.end_item();
 }
 

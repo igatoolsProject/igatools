@@ -47,6 +47,7 @@ using std::remove_reference;
 using std::dynamic_pointer_cast;
 using std::copy;
 using std::inserter;
+using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
@@ -799,7 +800,9 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
   const string parsing_msg = Self_::get_type_id_string("Grid", local_object_id,
                                                        SafeSTLVector<int>(1, dim));
 
-  const auto knots_children = xml_elem->get_children_elements("Knots");
+  const auto knots_vector_children = xml_elem->get_single_element("Knots");
+
+  const auto knots_children = knots_vector_children->get_children_elements("Knots");
   // Checking the number of knot vector match with the dimension.
   AssertThrow(dim == knots_children.size(),
               ExcMessage("Parsing " + parsing_msg + ", the number of "
@@ -834,11 +837,15 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
                            "with the vector size."));
   }
 
+  const auto name = parse_name(xml_elem);
+
   if (parse_as_constant)
   {
     const auto grid = GridType::const_create(knots);
     const auto unique_id = grid->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<GridType>(grid)->set_name(name);
 
     container->insert_const_object<GridType>(grid);
   }
@@ -847,6 +854,8 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
     const auto grid = GridType::create(knots);
     const auto unique_id = grid->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    grid->set_name(name);
 
     container->insert_object<GridType>(grid);
 
@@ -1254,12 +1263,16 @@ parse_identity_grid_function(const shared_ptr<XMLElement> xml_elem,
                          "for " + Self_::get_type_id_string("Grid", local_gr_id,
                                                             SafeSTLVector<Index>(dim)) + "."));
 
+  const auto name = parse_name(xml_elem);
+
   if (parse_as_constant)
   {
     const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
     const auto id_func = IdentityGridFunctionType::const_create(grid);
     const auto unique_id = id_func->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<IdentityGridFunctionType>(id_func)->set_name(name);
 
     container->insert_const_object<GridFunctionType>(id_func);
   }
@@ -1269,6 +1282,8 @@ parse_identity_grid_function(const shared_ptr<XMLElement> xml_elem,
     const auto id_func = IdentityGridFunctionType::create(grid);
     const auto unique_id = id_func->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    id_func->set_name(name);
 
     container->insert_object<GridFunctionType>(id_func);
   }
@@ -1328,7 +1343,7 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
   std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
   Values values (vals_arr);
 
-
+  const auto name = parse_name(xml_elem);
 
   if (parse_as_constant)
   {
@@ -1336,6 +1351,8 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
     const auto cgf = ConstGridFunctionType::const_create(grid, values);
     const auto unique_id = cgf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<ConstGridFunctionType>(cgf)->set_name(name);
 
     container->insert_const_object<GridFunctionType>(cgf);
   }
@@ -1345,6 +1362,8 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
     const auto cgf = ConstGridFunctionType::create(grid, values);
     const auto unique_id = cgf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    cgf->set_name(name);
 
     container->insert_object<GridFunctionType>(cgf);
   }
@@ -1417,24 +1436,28 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
   std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
   Ders A (A_arr);
 
+  const auto name = parse_name(xml_elem);
 
   if (parse_as_constant)
   {
     const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
-    const auto cgf = LinearGridFunctionType::const_create(grid, A, b);
-    const auto unique_id = cgf->get_object_id();
+    const auto lgf = LinearGridFunctionType::const_create(grid, A, b);
+    const auto unique_id = lgf->get_object_id();
     id_map[local_object_id] = unique_id;
 
-    container->insert_const_object<GridFunctionType>(cgf);
+    const_pointer_cast<LinearGridFunctionType>(lgf)->set_name(name);
+
+    container->insert_const_object<GridFunctionType>(lgf);
   }
   else
   {
     const auto grid = container->get_object<GridType>(id_map.at(local_gr_id));
-    const auto cgf = LinearGridFunctionType::create(grid, A, b);
-    const auto unique_id = cgf->get_object_id();
+    const auto lgf = LinearGridFunctionType::create(grid, A, b);
+    const auto unique_id = lgf->get_object_id();
     id_map[local_object_id] = unique_id;
+    lgf->set_name(name);
 
-    container->insert_object<GridFunctionType>(cgf);
+    container->insert_object<GridFunctionType>(lgf);
   }
 }
 
@@ -1933,6 +1956,8 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
 
+    const_pointer_cast<ConstFunctionType>(cf)->set_name(name);
+
     container->insert_const_object<FunctionType>(cf);
   }
   else
@@ -1940,6 +1965,8 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
     const auto cf = ConstFunctionType::create(dm.get_ptr_data(), values, name);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    cf->set_name(name);
 
     container->insert_object<FunctionType>(cf);
   }
@@ -2030,6 +2057,8 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
 
+    const_pointer_cast<LinearFunctionType>(cf)->set_name(name);
+
     container->insert_const_object<FunctionType>(cf);
   }
   else
@@ -2037,6 +2066,8 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
     const auto cf = LinearFunctionType::create(dm.get_ptr_data(), A, b, name);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    cf->set_name(name);
 
     container->insert_object<FunctionType>(cf);
   }

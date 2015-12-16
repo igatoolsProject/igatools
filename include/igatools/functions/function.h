@@ -258,7 +258,6 @@ public:
 protected:
   SharedPtrConstnessHandler<DomainType> domain_;
 
-private:
   /**
    * Name associated to the object instance.
    */
@@ -270,6 +269,7 @@ private:
   Index object_id_;
 
 
+private:
   friend class FunctionElement<dim_, codim_, range_, rank_>;
 
 
