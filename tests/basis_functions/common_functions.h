@@ -330,11 +330,13 @@ private:
     Assert(false,ExcNotImplemented());
   }
 
+#ifdef MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
   {
     Assert(false,ExcNotImplemented());
   }
+#endif
 
 };
 
@@ -388,7 +390,7 @@ private:
     auto pt = points.begin();
     for (auto &val : values)
     {
-      val = std::pow(pt->norm_square(), p_/2.);
+      val = std::pow((*pt).norm_square(), p_/2.);
       ++pt;
     }
   }
@@ -420,11 +422,13 @@ private:
     Assert(false,ExcNotImplemented());
   }
 
+#ifdef MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
   {
     Assert(false,ExcNotImplemented());
   }
+#endif
 
   const Real p_;
 };
