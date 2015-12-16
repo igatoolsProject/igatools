@@ -51,7 +51,7 @@ void values_of_F(Function<dim, codim, range> &F)
 //        elem->get_points().print_info(out);
 //        out << endl;
     out.begin_item("Value ");
-    elem->template get_values<_Value, dim>(0).print_info(out);
+    elem->template get_values<_Values, dim>(0).print_info(out);
     out.end_item();
 //        elem->template get_values<1>().print_info(out);
 //        out << endl;

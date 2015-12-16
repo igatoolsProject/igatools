@@ -61,7 +61,7 @@ void do_test(const int p, const int num_knots = 10)
 
   auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
   out.begin_item("Boundary Domain");
-  bndry_domain->prin_info(out);
+  bndry_domain->print_info(out);
   out.end_item();
 
   using BndFunc = Function<dim-1,1,range,1>;
