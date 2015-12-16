@@ -304,20 +304,11 @@ get_sub_bspline_space(const int s_id,
 
   // Creating the mapping between the space degrees of freedom
   const int n_dir = k_elem.constant_directions.size();
-#ifndef NDEBUG
-  for (int comp : end_b_.get_active_components_id())
-    for (int j=0; j<n_dir; ++j)
-      Assert(end_b_[comp][k_elem.constant_directions[j]] ==
-      BasisEndBehaviour::interpolatory,
-      ExcNotImplemented());
-#endif
-
-
   TensorIndex<dim> tensor_index;
   int comp_i = 0;
   dof_map.resize(sub_basis->get_num_basis());
   const auto &sub_space_index_table = sub_basis->get_spline_space()->get_dof_distribution()->get_index_table();
-  const auto     &space_index_table = this->get_spline_space()->get_dof_distribution()->get_index_table();
+  const auto &space_index_table = this->get_spline_space()->get_dof_distribution()->get_index_table();
   const auto &sub_dof_distribution = *sub_basis->get_spline_space()->get_dof_distribution();
   const auto &dof_distribution = *this->get_spline_space()->get_dof_distribution();
   for (auto comp : SpSpace::components)
