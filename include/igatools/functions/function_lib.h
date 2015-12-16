@@ -51,13 +51,11 @@ public:
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<DomainType> &domain,
-         const Value &b,
-         const std::string &name = "");
+         const Value &b);
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const DomainType> &domain,
-               const Value &b,
-               const std::string &name = "");
+               const Value &b);
 
   ConstantFunction(const self_t &) = delete;
 
@@ -69,8 +67,7 @@ public:
 
 protected:
   ConstantFunction(const SharedPtrConstnessHandler<DomainType> &domain,
-                   const Value &b,
-                   const std::string &name);
+                   const Value &b);
 
 private:
   void evaluate_0(const ValueVector<Point> &points,
@@ -112,14 +109,12 @@ public:
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<DomainType> &domain,
          const Derivative<1> &A,
-         const Value &b,
-         const std::string &name = "");
+         const Value &b);
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const DomainType> &domain,
                const Derivative<1> &A,
-               const Value &b,
-               const std::string &name = "");
+               const Value &b);
 
   LinearFunction(const self_t &) = default;
 
@@ -134,8 +129,7 @@ public:
 
 protected:
   LinearFunction(const SharedPtrConstnessHandler<DomainType> &domain, const Derivative<1> &A,
-                 const Value &b,
-                 const std::string &name);
+                 const Value &b);
 
 private:
   void evaluate_0(const ValueVector<Point> &points,

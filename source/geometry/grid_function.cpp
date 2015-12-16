@@ -28,20 +28,17 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int space_dim_>
 GridFunction<dim_, space_dim_>::
-GridFunction(const std::string &name)
+GridFunction()
   :
-  name_(name),
   object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
 
 template<int dim_, int space_dim_>
 GridFunction<dim_, space_dim_>::
-GridFunction(const SharedPtrConstnessHandler<GridType> &grid,
-             const std::string &name)
+GridFunction(const SharedPtrConstnessHandler<GridType> &grid)
   :
   grid_(grid),
-  name_(name),
   object_id_(UniqueIdGenerator::get_unique_id())
 {
 //  Assert(grid_ != nullptr, ExcNullPtr());
@@ -89,8 +86,6 @@ get_object_id() const
 
 
 
-
-
 template<int dim_, int space_dim_>
 auto
 GridFunction<dim_, space_dim_>::
@@ -105,6 +100,7 @@ create_element_begin(const PropId &prop) const
 }
 
 
+
 template<int dim_, int space_dim_>
 auto
 GridFunction<dim_, space_dim_>::
@@ -117,7 +113,6 @@ create_element_end(const PropId &prop) const
   return std::unique_ptr<Elem>(new
   Elem(this->shared_from_this(),grid_->create_element_end(prop)));
 }
-
 
 
 
@@ -171,6 +166,8 @@ connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscribe
   return grid_.get_ptr_data()->connect_insert_knots(subscriber);
 }
 
+
+
 template<int dim_, int space_dim_>
 void
 GridFunction<dim_,space_dim_>::
@@ -191,7 +188,6 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function)
 
 
 #endif // MESH_REFINEMENT
-
 
 IGA_NAMESPACE_CLOSE
 

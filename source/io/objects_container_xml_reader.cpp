@@ -1562,17 +1562,21 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
   if (parse_as_constant)
   {
     const auto igf = IgGridFunctionType::const_create
-                     (rs.get_ptr_const_data(), *ig_coefs, dofs_property, name);
+                     (rs.get_ptr_const_data(), *ig_coefs, dofs_property);
     const auto unique_id = igf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<IgGridFunctionType>(igf)->set_name(name);
 
     container->insert_const_object<GridFunctionType>(igf);
   }
   else
   {
-    const auto igf = IgGridFunctionType::create(rs.get_ptr_data(), *ig_coefs, dofs_property, name);
+    const auto igf = IgGridFunctionType::create(rs.get_ptr_data(), *ig_coefs, dofs_property);
     const auto unique_id = igf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    igf->set_name(name);
 
     container->insert_object<GridFunctionType>(igf);
   }
@@ -1774,18 +1778,22 @@ parse_domain(const shared_ptr<XMLElement> xml_elem,
   if (parse_as_constant)
   {
     const auto gf = container->get_const_object<GridFuncType>(id_map.at(local_gf_id));
-    const auto domain = DomainType::const_create(gf, name);
+    const auto domain = DomainType::const_create(gf);
     const auto unique_id = domain->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<DomainType>(domain)->set_name(name);
 
     container->insert_const_object<DomainType>(domain);
   }
   else
   {
     const auto gf = container->get_object<GridFuncType>(id_map.at(local_gf_id));
-    const auto domain = DomainType::create(gf, name);
+    const auto domain = DomainType::create(gf);
     const auto unique_id = domain->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    domain->set_name(name);
 
     container->insert_object<DomainType>(domain);
   }
@@ -1867,17 +1875,21 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
 
   if (parse_as_constant)
   {
-    const auto igf = IgFunctionType::const_create(ps.get_ptr_const_data(), *ig_coefs, dofs_property, name);
+    const auto igf = IgFunctionType::const_create(ps.get_ptr_const_data(), *ig_coefs, dofs_property);
     const auto unique_id = igf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<IgFunctionType>(igf)->set_name(name);
 
     container->insert_const_object<FunctionType>(igf);
   }
   else
   {
-    const auto igf = IgFunctionType::create(ps.get_ptr_data(), *ig_coefs, dofs_property, name);
+    const auto igf = IgFunctionType::create(ps.get_ptr_data(), *ig_coefs, dofs_property);
     const auto unique_id = igf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    igf->set_name(name);
 
     container->insert_object<FunctionType>(igf);
   }
@@ -1952,7 +1964,7 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
 
   if (parse_as_constant)
   {
-    const auto cf = ConstFunctionType::const_create(dm.get_ptr_const_data(), values, name);
+    const auto cf = ConstFunctionType::const_create(dm.get_ptr_const_data(), values);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
 
@@ -1962,7 +1974,7 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
   }
   else
   {
-    const auto cf = ConstFunctionType::create(dm.get_ptr_data(), values, name);
+    const auto cf = ConstFunctionType::create(dm.get_ptr_data(), values);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
 
@@ -2053,7 +2065,7 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
 
   if (parse_as_constant)
   {
-    const auto cf = LinearFunctionType::const_create(dm.get_ptr_const_data(), A, b, name);
+    const auto cf = LinearFunctionType::const_create(dm.get_ptr_const_data(), A, b);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
 
@@ -2063,7 +2075,7 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
   }
   else
   {
-    const auto cf = LinearFunctionType::create(dm.get_ptr_data(), A, b, name);
+    const auto cf = LinearFunctionType::create(dm.get_ptr_data(), A, b);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
 

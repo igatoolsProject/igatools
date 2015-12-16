@@ -899,8 +899,7 @@ print_info(LogStream &out) const
   }
   //-------------------------------------------------------
 
-  if (name_.size() > 0)
-      out << "Name: " << name_ << std::endl;
+   out << "Name: " << name_ << std::endl;
 }
 
 
