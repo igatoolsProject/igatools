@@ -160,8 +160,6 @@ private:
     ar &make_nvp("coeffs_",coeffs_);
 
     ar &make_nvp("dofs_property_",dofs_property_);
-
-    ar &make_nvp("name_", name_);
   }
   ///@}
 #endif // SERIALIZATION

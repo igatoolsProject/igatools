@@ -17,6 +17,7 @@ Knots without repetition:
          
       
    
+   Name: 
 
 Degrees:
    Raw components: 
@@ -101,6 +102,7 @@ Knots without repetition:
          
       
    
+   Name: 
 
 Degrees:
    Raw components: 
@@ -240,6 +242,7 @@ Knots without repetition:
          
       
    
+   Name: 
 
 Degrees:
    Raw components: 
@@ -332,6 +335,7 @@ Knots without repetition:
          
       
    
+   Name: 
 
 Degrees:
    Raw components: 

@@ -25,6 +25,7 @@ BSpline Space:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -138,6 +139,7 @@ Weight function :
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -235,6 +237,7 @@ Weight function :
          Coef[loc_id=6 , glob_id=6] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ========================================================================
@@ -266,6 +269,7 @@ BSpline Space:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -398,6 +402,7 @@ Weight function :
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -495,6 +500,7 @@ Weight function :
          Coef[loc_id=6 , glob_id=6] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ========================================================================
@@ -526,6 +532,7 @@ BSpline Space:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -677,6 +684,7 @@ Weight function :
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -774,6 +782,7 @@ Weight function :
          Coef[loc_id=6 , glob_id=6] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ========================================================================
@@ -831,6 +840,7 @@ BSpline Space:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -976,6 +986,7 @@ Weight function :
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -1107,6 +1118,7 @@ Weight function :
          Coef[loc_id=34 , glob_id=34] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ========================================================================
@@ -1164,6 +1176,7 @@ BSpline Space:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1334,6 +1347,7 @@ Weight function :
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -1465,6 +1479,7 @@ Weight function :
          Coef[loc_id=34 , glob_id=34] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ========================================================================
@@ -1522,6 +1537,7 @@ BSpline Space:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1717,6 +1733,7 @@ Weight function :
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -1848,6 +1865,7 @@ Weight function :
          Coef[loc_id=34 , glob_id=34] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ========================================================================
@@ -1943,6 +1961,7 @@ BSpline Space:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -2131,6 +2150,7 @@ Weight function :
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -2337,6 +2357,7 @@ Weight function :
          Coef[loc_id=104 , glob_id=104] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ========================================================================
@@ -2432,6 +2453,7 @@ BSpline Space:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -2680,6 +2702,7 @@ Weight function :
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -2886,6 +2909,7 @@ Weight function :
          Coef[loc_id=104 , glob_id=104] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ========================================================================

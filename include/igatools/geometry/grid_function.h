@@ -211,6 +211,7 @@ private:
   serialize(Archive &ar)
   {
     ar &make_nvp("grid_",grid_);
+    ar &make_nvp("name_",name_);
   }
   ///@}
 #endif // SERIALIZATION

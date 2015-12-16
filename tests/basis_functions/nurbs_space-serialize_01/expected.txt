@@ -26,6 +26,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -139,6 +140,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -236,6 +238,7 @@ Original NURBS:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -264,6 +267,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -377,6 +381,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -474,6 +479,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -507,6 +513,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -639,6 +646,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -736,6 +744,7 @@ Original NURBS:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -764,6 +773,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -896,6 +906,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -993,6 +1004,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -1026,6 +1038,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1177,6 +1190,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -1274,6 +1288,7 @@ Original NURBS:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -1302,6 +1317,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1453,6 +1469,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -1550,6 +1567,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -1609,6 +1627,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1754,6 +1773,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -1885,6 +1905,7 @@ Original NURBS:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -1939,6 +1960,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -2084,6 +2106,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -2215,6 +2238,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -2274,6 +2298,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -2444,6 +2469,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -2575,6 +2601,7 @@ Original NURBS:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -2629,6 +2656,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -2799,6 +2827,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -2930,6 +2959,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -2989,6 +3019,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -3184,6 +3215,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -3315,6 +3347,7 @@ Original NURBS:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -3369,6 +3402,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -3564,6 +3598,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -3695,6 +3730,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -3792,6 +3828,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -3980,6 +4017,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -4186,6 +4224,7 @@ Original NURBS:
             Coef[loc_id=104 , glob_id=104] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -4278,6 +4317,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -4466,6 +4506,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -4672,6 +4713,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=104 , glob_id=104] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -4769,6 +4811,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -5017,6 +5060,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -5223,6 +5267,7 @@ Original NURBS:
             Coef[loc_id=104 , glob_id=104] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -5315,6 +5360,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -5563,6 +5609,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -5769,6 +5816,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=104 , glob_id=104] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 

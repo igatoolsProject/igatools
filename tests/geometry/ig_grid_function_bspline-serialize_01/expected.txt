@@ -18,6 +18,7 @@ Original IgGridFunction:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -107,6 +108,7 @@ Original IgGridFunction:
          Coef[loc_id=1 , glob_id=1] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 IgGridFunction after serialize-deserialize:
@@ -126,6 +128,7 @@ IgGridFunction after serialize-deserialize:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -215,6 +218,7 @@ IgGridFunction after serialize-deserialize:
          Coef[loc_id=1 , glob_id=1] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ig_grid_function_bspline<1>
@@ -257,6 +261,7 @@ Original IgGridFunction:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -376,6 +381,7 @@ Original IgGridFunction:
          Coef[loc_id=7 , glob_id=7] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 IgGridFunction after serialize-deserialize:
@@ -397,6 +403,7 @@ IgGridFunction after serialize-deserialize:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -516,6 +523,7 @@ IgGridFunction after serialize-deserialize:
          Coef[loc_id=7 , glob_id=7] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ig_grid_function_bspline<2>
@@ -560,6 +568,7 @@ Original IgGridFunction:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -727,6 +736,7 @@ Original IgGridFunction:
          Coef[loc_id=23 , glob_id=23] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 IgGridFunction after serialize-deserialize:
@@ -750,6 +760,7 @@ IgGridFunction after serialize-deserialize:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -917,6 +928,7 @@ IgGridFunction after serialize-deserialize:
          Coef[loc_id=23 , glob_id=23] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ig_grid_function_bspline<3>

@@ -41,6 +41,7 @@ IgGridFunction<1,1>
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -148,6 +149,7 @@ IgGridFunction<1,1>
       Coef[loc_id=11 , glob_id=11] = 0.999875
    
    Dofs property: active
+   Name: 
 
 ========================================================================
 
@@ -412,6 +414,7 @@ IgGridFunction<2,1>
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -663,6 +666,7 @@ IgGridFunction<2,1>
       Coef[loc_id=143 , glob_id=143] = 0.999751
    
    Dofs property: active
+   Name: 
 
 ========================================================================
 
@@ -2873,6 +2877,7 @@ IgGridFunction<3,1>
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -3992,6 +3997,7 @@ IgGridFunction<3,1>
       Coef[loc_id=999 , glob_id=999] = 1.12889
    
    Dofs property: active
+   Name: 
 
 ========================================================================
 

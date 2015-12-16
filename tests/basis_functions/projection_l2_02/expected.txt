@@ -257,6 +257,7 @@ IgFunction<2,0,1,1>
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -368,8 +369,10 @@ IgFunction<2,0,1,1>
                [ [ 1.00000 0 ]  [ 0 2.00000 ]  ] 
                b:
                [ 0 0 ] 
+               Name: 
             
          
+         Name: 
       
    
    IgCoefficients:
@@ -519,4 +522,5 @@ IgFunction<2,0,1,1>
       Coef[loc_id=143 , glob_id=143] = 0.994169
    
    Dofs property: active
+   Name: 
 

@@ -46,6 +46,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                
             
          
+         Name: grid_2
       
    
    const Grid Dim : 2. Number of objects: 1
@@ -127,6 +128,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                   
                
             
+            Name: grid_2
          
          Degrees:
             Raw components: 
@@ -209,6 +211,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                   
                
             
+            Name: grid_2
          
          Degrees:
             Raw components: 
@@ -341,6 +344,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                      
                   
                
+               Name: grid_2
             
             Degrees:
                Raw components: 
@@ -478,6 +482,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                      
                   
                
+               Name: grid_2
             
             Degrees:
                Raw components: 
@@ -636,6 +641,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                         
                      
                   
+                  Name: grid_2
                
                Degrees:
                   Raw components: 
@@ -795,6 +801,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                               
                            
                         
+                        Name: grid_2
                      
                      Degrees:
                         Raw components: 
@@ -915,6 +922,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                   Coef[loc_id=24 , glob_id=24] = 0
                
                Dofs property: active
+               Name: weights_2
             
          
       
@@ -965,11 +973,13 @@ Parsing writing/reading filetest_2_0_2_1.xml
       Object Id: 21
          IdentityGridFunction<2>
          
+         Name: id_grid_func_2
       
       Object Id: 22
          ConstantGridFunction<2,2>
             b:
             [ 0 0 ] 
+            Name: ct_grid_func_2
          
       
       Object Id: 23
@@ -978,6 +988,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
             [ [ 0 0 ]  [ 0 0 ]  ] 
             b:
             [ 0 0 ] 
+            Name: li_grid_func_2
          
       
       Object Id: 26
@@ -1024,6 +1035,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                               
                            
                         
+                        Name: grid_2
                      
                      Degrees:
                         Raw components: 
@@ -1183,6 +1195,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                     
                                  
                               
+                              Name: grid_2
                            
                            Degrees:
                               Raw components: 
@@ -1303,6 +1316,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                         Coef[loc_id=24 , glob_id=24] = 0
                      
                      Dofs property: active
+                     Name: weights_2
                   
                
             
@@ -1359,6 +1373,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                Coef[loc_id=49 , glob_id=49] = 0
             
             Dofs property: active
+            Name: grid_func_2
          
       
    
@@ -1408,6 +1423,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                            
                         
                      
+                     Name: grid_2
                   
                   Degrees:
                      Raw components: 
@@ -1528,6 +1544,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                Coef[loc_id=24 , glob_id=24] = 0
             
             Dofs property: active
+            Name: weights_2
          
       
    
@@ -1619,6 +1636,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                  
                               
                            
+                           Name: grid_2
                         
                         Degrees:
                            Raw components: 
@@ -1778,6 +1796,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                        
                                     
                                  
+                                 Name: grid_2
                               
                               Degrees:
                                  Raw components: 
@@ -1898,6 +1917,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                            Coef[loc_id=24 , glob_id=24] = 0
                         
                         Dofs property: active
+                        Name: weights_2
                      
                   
                
@@ -1954,8 +1974,10 @@ Parsing writing/reading filetest_2_0_2_1.xml
                   Coef[loc_id=49 , glob_id=49] = 0
                
                Dofs property: active
+               Name: grid_func_2
             
          
+         Name: my_domain
       
    
    const Domain Dim : 2 Codim : 0. Number of objects: 1
@@ -2076,6 +2098,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                            
                         
                      
+                     Name: grid_2
                   
                   Degrees:
                      Raw components: 
@@ -2235,6 +2258,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                  
                               
                            
+                           Name: grid_2
                         
                         Degrees:
                            Raw components: 
@@ -2355,6 +2379,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                      Coef[loc_id=24 , glob_id=24] = 0
                   
                   Dofs property: active
+                  Name: weights_2
                
             
          
@@ -2403,6 +2428,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                     
                                  
                               
+                              Name: grid_2
                            
                            Degrees:
                               Raw components: 
@@ -2562,6 +2588,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                           
                                        
                                     
+                                    Name: grid_2
                                  
                                  Degrees:
                                     Raw components: 
@@ -2682,6 +2709,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                               Coef[loc_id=24 , glob_id=24] = 0
                            
                            Dofs property: active
+                           Name: weights_2
                         
                      
                   
@@ -2738,8 +2766,10 @@ Parsing writing/reading filetest_2_0_2_1.xml
                      Coef[loc_id=49 , glob_id=49] = 0
                   
                   Dofs property: active
+                  Name: grid_func_2
                
             
+            Name: my_domain
          
       
    
@@ -2859,6 +2889,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                  
                               
                            
+                           Name: grid_2
                         
                         Degrees:
                            Raw components: 
@@ -3018,6 +3049,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                        
                                     
                                  
+                                 Name: grid_2
                               
                               Degrees:
                                  Raw components: 
@@ -3138,6 +3170,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                            Coef[loc_id=24 , glob_id=24] = 0
                         
                         Dofs property: active
+                        Name: weights_2
                      
                   
                
@@ -3186,6 +3219,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                           
                                        
                                     
+                                    Name: grid_2
                                  
                                  Degrees:
                                     Raw components: 
@@ -3345,6 +3379,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                                 
                                              
                                           
+                                          Name: grid_2
                                        
                                        Degrees:
                                           Raw components: 
@@ -3465,6 +3500,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
                                     Coef[loc_id=24 , glob_id=24] = 0
                                  
                                  Dofs property: active
+                                 Name: weights_2
                               
                            
                         
@@ -3521,8 +3557,10 @@ Parsing writing/reading filetest_2_0_2_1.xml
                            Coef[loc_id=49 , glob_id=49] = 0
                         
                         Dofs property: active
+                        Name: grid_func_2
                      
                   
+                  Name: my_domain
                
             
             IgCoefficients:
@@ -3578,12 +3616,14 @@ Parsing writing/reading filetest_2_0_2_1.xml
                Coef[loc_id=49 , glob_id=49] = 0
             
             Dofs property: active
+            Name: my_ig_function
          
       
       Object Id: 30
          ConstantFunction<2,0,2,1>
             b:
             [ 0 0 ] 
+            Name: ct_func_2
          
       
       Object Id: 31
@@ -3592,6 +3632,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
             [ [ 0 0 ]  [ 0 0 ]  ] 
             b:
             [ 0 0 ] 
+            Name: li_func_2
          
       
    
@@ -3784,6 +3825,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                
             
          
+         Name: grid_3
       
    
    const Grid Dim : 3. Number of objects: 1
@@ -3929,6 +3971,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                   
                
             
+            Name: grid_3
          
          Degrees:
             Raw components: 
@@ -4069,6 +4112,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                   
                
             
+            Name: grid_3
          
          Degrees:
             Raw components: 
@@ -4272,6 +4316,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                      
                   
                
+               Name: grid_3
             
             Degrees:
                Raw components: 
@@ -4471,6 +4516,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                      
                   
                
+               Name: grid_3
             
             Degrees:
                Raw components: 
@@ -4727,6 +4773,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                         
                      
                   
+                  Name: grid_3
                
                Degrees:
                   Raw components: 
@@ -4984,6 +5031,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                               
                            
                         
+                        Name: grid_3
                      
                      Degrees:
                         Raw components: 
@@ -5210,6 +5258,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                   Coef[loc_id=124 , glob_id=124] = 0
                
                Dofs property: active
+               Name: weights_3
             
          
       
@@ -5260,11 +5309,13 @@ Parsing writing/reading filetest_3_0_3_1.xml
       Object Id: 53
          IdentityGridFunction<3>
          
+         Name: id_grid_func_3
       
       Object Id: 54
          ConstantGridFunction<3,3>
             b:
             [ 0 0 0 ] 
+            Name: ct_grid_func_3
          
       
       Object Id: 55
@@ -5273,6 +5324,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
             [ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 
             b:
             [ 0 0 0 ] 
+            Name: li_grid_func_3
          
       
       Object Id: 58
@@ -5375,6 +5427,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                               
                            
                         
+                        Name: grid_3
                      
                      Degrees:
                         Raw components: 
@@ -5632,6 +5685,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                     
                                  
                               
+                              Name: grid_3
                            
                            Degrees:
                               Raw components: 
@@ -5858,6 +5912,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                         Coef[loc_id=124 , glob_id=124] = 0
                      
                      Dofs property: active
+                     Name: weights_3
                   
                
             
@@ -6239,6 +6294,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                Coef[loc_id=374 , glob_id=374] = 0
             
             Dofs property: active
+            Name: grid_func_3
          
       
    
@@ -6344,6 +6400,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                            
                         
                      
+                     Name: grid_3
                   
                   Degrees:
                      Raw components: 
@@ -6570,6 +6627,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                Coef[loc_id=124 , glob_id=124] = 0
             
             Dofs property: active
+            Name: weights_3
          
       
    
@@ -6713,6 +6771,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                  
                               
                            
+                           Name: grid_3
                         
                         Degrees:
                            Raw components: 
@@ -6970,6 +7029,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                        
                                     
                                  
+                                 Name: grid_3
                               
                               Degrees:
                                  Raw components: 
@@ -7196,6 +7256,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                            Coef[loc_id=124 , glob_id=124] = 0
                         
                         Dofs property: active
+                        Name: weights_3
                      
                   
                
@@ -7577,8 +7638,10 @@ Parsing writing/reading filetest_3_0_3_1.xml
                   Coef[loc_id=374 , glob_id=374] = 0
                
                Dofs property: active
+               Name: grid_func_3
             
          
+         Name: my_domain
       
    
    const Domain Dim : 3 Codim : 0. Number of objects: 1
@@ -7763,6 +7826,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                            
                         
                      
+                     Name: grid_3
                   
                   Degrees:
                      Raw components: 
@@ -8020,6 +8084,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                  
                               
                            
+                           Name: grid_3
                         
                         Degrees:
                            Raw components: 
@@ -8246,6 +8311,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                      Coef[loc_id=124 , glob_id=124] = 0
                   
                   Dofs property: active
+                  Name: weights_3
                
             
          
@@ -8350,6 +8416,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                     
                                  
                               
+                              Name: grid_3
                            
                            Degrees:
                               Raw components: 
@@ -8607,6 +8674,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                           
                                        
                                     
+                                    Name: grid_3
                                  
                                  Degrees:
                                     Raw components: 
@@ -8833,6 +8901,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                               Coef[loc_id=124 , glob_id=124] = 0
                            
                            Dofs property: active
+                           Name: weights_3
                         
                      
                   
@@ -9214,8 +9283,10 @@ Parsing writing/reading filetest_3_0_3_1.xml
                      Coef[loc_id=374 , glob_id=374] = 0
                   
                   Dofs property: active
+                  Name: grid_func_3
                
             
+            Name: my_domain
          
       
    
@@ -9391,6 +9462,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                  
                               
                            
+                           Name: grid_3
                         
                         Degrees:
                            Raw components: 
@@ -9648,6 +9720,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                        
                                     
                                  
+                                 Name: grid_3
                               
                               Degrees:
                                  Raw components: 
@@ -9874,6 +9947,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                            Coef[loc_id=124 , glob_id=124] = 0
                         
                         Dofs property: active
+                        Name: weights_3
                      
                   
                
@@ -9978,6 +10052,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                           
                                        
                                     
+                                    Name: grid_3
                                  
                                  Degrees:
                                     Raw components: 
@@ -10235,6 +10310,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                                 
                                              
                                           
+                                          Name: grid_3
                                        
                                        Degrees:
                                           Raw components: 
@@ -10461,6 +10537,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
                                     Coef[loc_id=124 , glob_id=124] = 0
                                  
                                  Dofs property: active
+                                 Name: weights_3
                               
                            
                         
@@ -10842,8 +10919,10 @@ Parsing writing/reading filetest_3_0_3_1.xml
                            Coef[loc_id=374 , glob_id=374] = 0
                         
                         Dofs property: active
+                        Name: grid_func_3
                      
                   
+                  Name: my_domain
                
             
             IgCoefficients:
@@ -11224,12 +11303,14 @@ Parsing writing/reading filetest_3_0_3_1.xml
                Coef[loc_id=374 , glob_id=374] = 0
             
             Dofs property: active
+            Name: my_ig_function
          
       
       Object Id: 62
          ConstantFunction<3,0,3,1>
             b:
             [ 0 0 0 ] 
+            Name: ct_func_3
          
       
       Object Id: 63
@@ -11238,6 +11319,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
             [ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 
             b:
             [ 0 0 0 ] 
+            Name: li_func_3
          
       
    

@@ -155,7 +155,8 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   auto ig_grid_func = IgGridFunc::create(nurbs_space, *pts, "active");
   container->insert_const_object<GridFuncType>(ig_grid_func);
 
-  const auto domain = DomainType::create(ig_grid_func, "my_domain");
+  const auto domain = DomainType::create(ig_grid_func);
+  domain->set_name("my_domain");
   container->insert_const_object<DomainType>(domain);
 
   const auto phys_space = PhysSpaceType::create(nurbs_space, domain);
@@ -165,6 +166,7 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   auto coeff = EpetraTools::create_vector(*map_2);
   (*coeff)[0] = 2.;
   auto ig_func = IgFuncType::create(phys_space, *coeff);
+  ig_func->set_name("my_function");
   container->insert_const_object<FuncType>(ig_func);
 
 

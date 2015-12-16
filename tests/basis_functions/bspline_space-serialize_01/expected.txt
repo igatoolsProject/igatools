@@ -14,6 +14,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -107,6 +108,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -207,6 +209,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -306,6 +309,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -412,6 +416,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -517,6 +522,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -629,6 +635,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -740,6 +747,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -850,6 +858,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -943,6 +952,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1043,6 +1053,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1142,6 +1153,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1248,6 +1260,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1353,6 +1366,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1465,6 +1479,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1576,6 +1591,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 

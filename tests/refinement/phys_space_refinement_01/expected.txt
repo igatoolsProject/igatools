@@ -21,6 +21,7 @@ O R I G I N A L     S P A C E
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -110,7 +111,9 @@ O R I G I N A L     S P A C E
       GridFunction<1,1>
          IdentityGridFunction<1>
          
+         Name: 
       
+      Name: 
    
 
 ===============================================================
@@ -141,6 +144,7 @@ R E F I N E D     S P A C E
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -232,7 +236,9 @@ R E F I N E D     S P A C E
       GridFunction<1,1>
          IdentityGridFunction<1>
          
+         Name: 
       
+      Name: 
    
 
 ===============================================================
@@ -269,6 +275,7 @@ O R I G I N A L     S P A C E
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -363,7 +370,9 @@ O R I G I N A L     S P A C E
       GridFunction<2,2>
          IdentityGridFunction<2>
          
+         Name: 
       
+      Name: 
    
 
 ===============================================================
@@ -432,6 +441,7 @@ R E F I N E D     S P A C E
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -530,7 +540,9 @@ R E F I N E D     S P A C E
       GridFunction<2,2>
          IdentityGridFunction<2>
          
+         Name: 
       
+      Name: 
    
 
 ===============================================================
@@ -581,6 +593,7 @@ O R I G I N A L     S P A C E
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -680,7 +693,9 @@ O R I G I N A L     S P A C E
       GridFunction<3,3>
          IdentityGridFunction<3>
          
+         Name: 
       
+      Name: 
    
 
 ===============================================================
@@ -895,6 +910,7 @@ R E F I N E D     S P A C E
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1000,7 +1016,9 @@ R E F I N E D     S P A C E
       GridFunction<3,3>
          IdentityGridFunction<3>
          
+         Name: 
       
+      Name: 
    
 
 ===============================================================

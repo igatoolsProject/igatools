@@ -86,6 +86,7 @@ Spline Space:
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -751,6 +752,7 @@ Spline Space:
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 

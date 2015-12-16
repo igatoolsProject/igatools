@@ -71,7 +71,8 @@ void write_container (const string &file_path)
   (*pts)[0] = 2.;
   auto grid_func = IgGridFunction<dim, dim+codim>::create(ref_basis_3, *pts, "active");
   grid_func->set_name("grid_func_" + std::to_string(dim));
-  auto domain = Domain<dim>::create(grid_func, "my_domain");
+  auto domain = Domain<dim>::create(grid_func);
+  domain->set_name("my_domain");
 
   // Creating phys space
   auto phys_basis = PhysicalSpaceBasis<dim,range>::create(ref_basis_3, domain);
