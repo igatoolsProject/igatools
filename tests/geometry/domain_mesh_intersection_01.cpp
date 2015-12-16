@@ -18,13 +18,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-//#include <igatools/base/quadrature_lib.h>
+
+#define USE_IGATOOLS
+
+#ifdef USE_IGATOOLS
 #include <igatools/geometry/domain.h>
-//#include <igatools/geometry/domain_element.h>
-//#include <igatools/geometry/domain_handler.h>
 #include <igatools/geometry/grid_function_lib.h>
 #include <igatools/io/writer.h>
-
+#include "../tests.h"
+#endif
 
 #include <vtkXMLUnstructuredGridReader.h>
 #include <vtkXMLUnstructuredGridWriter.h>
@@ -33,42 +35,35 @@
 
 #include "vtkUnstructuredGridOverlay_3.h"
 
-#include "../tests.h"
 
+using std::string;
+using std::to_string;
 
-template<int dim, int codim>
-void domain()
+#ifdef USE_IGATOOLS
+template <int dim>
+void create_grid_files(const std::array<string,2> &names,const std::array<int,dim> &n_knots)
 {
-  OUTSTART
-  using std::string;
-
   using IdentityFunc = grid_functions::IdentityGridFunction<dim>;
   using LinearFunc = grid_functions::LinearGridFunction<dim,dim>;
 
   const int n_pts_dir = 2;
-
-  SafeSTLArray<string,2> names;
-
-  names[0] = "domain_A";
-  names[1] = "domain_B";
-
-//#if 0
-  SafeSTLArray<int,dim> n_knots;
-  n_knots[0] = 3;
-  n_knots[1] = 2;
 
   {
     auto grid_a = Grid<dim>::create(n_knots[0]);
 
     typename LinearFunc::template Derivative<1> A;
     typename LinearFunc::Value b;
+    const Real eps = 0.1;
     for (int i = 0 ; i < dim ; ++i)
-      A[i][i] = 1.0 - 1.0e-1;
+    {
+      A[i][i] = 1.0 - 2.0 * eps;
+      b[i] = eps;
+    }
 
     auto func_a = LinearFunc::create(grid_a,A,b);
-    auto domain_a = Domain<dim,codim>::create(func_a);
+    auto domain_a = Domain<dim,0>::create(func_a);
 
-    Writer<dim,codim> writer(domain_a,n_pts_dir);
+    Writer<dim,0> writer(domain_a,n_pts_dir);
     writer.save(names[0]);
   }
 
@@ -76,22 +71,36 @@ void domain()
   {
     auto grid_b = Grid<dim>::create(n_knots[1]);
     auto func_b = IdentityFunc::create(grid_b);
-    auto domain_b = Domain<dim,codim>::create(func_b);
+    auto domain_b = Domain<dim,0>::create(func_b);
 
-    Writer<dim,codim> writer(domain_b,n_pts_dir);
+    Writer<dim,0> writer(domain_b,n_pts_dir);
     writer.save(names[1]);
   }
-//#endif
+}
+#endif
+
+template<int dim>
+void test_overlay()
+{
+  std::array<int,dim> n_knots;
+  n_knots[0] = 2;
+  n_knots[1] = 3;
+
+  std::array<string,2> names;
+  names[0] = "domain_to_proj_" + to_string(n_knots[0]-1) + "_elems";
+  names[1] = "domain_support_" + to_string(n_knots[1]-1) + "_elems";
+
+  create_grid_files<dim>(names,n_knots);
 
 
   using std::cout;
   using std::endl;
 
-  //read all the data from the file
+  //read all the data from the files
   using ReaderVTU = vtkXMLUnstructuredGridReader;
 
   using VTKUGridPtr = vtkSmartPointer<vtkUnstructuredGrid>;
-  SafeSTLArray<VTKUGridPtr,2> unstruct_grids;
+  std::array<VTKUGridPtr,2> unstruct_grids;
 
   for (int i = 0 ; i <= 1 ; ++i)
   {
@@ -106,15 +115,15 @@ void domain()
   }
 
 
-  auto grid_slave = unstruct_grids[0];
-  auto grid_master = unstruct_grids[1];
+  auto grid_to_project = unstruct_grids[0];
+  auto grid_support = unstruct_grids[1];
 
-  const double mesh_distance = 0.0;
+  const double mesh_distance = -1.0;
   const bool partial_overlay = true;
   cout << "Computing overlay...";
-  VTKUGridPtr mesh_intersection =
-    vtkUnstructuredGridOverlay_3(grid_slave, grid_master, mesh_distance, partial_overlay, false);
-  int n_elems = mesh_intersection->GetNumberOfCells();
+  VTKUGridPtr overlay =
+    vtkUnstructuredGridOverlay_3(grid_support, grid_to_project, mesh_distance, partial_overlay, false);
+  int n_elems = overlay->GetNumberOfCells();
   cout << "done (n_elements = " << n_elems << ")" << endl;
 
   /*
@@ -125,22 +134,21 @@ void domain()
   //*/
 
   // Write the unstructured grid (different treatment for .vtk and .vtk file)
-  std::string outputname = "intersection_" + names[0] + "_" + names[1] + ".vtu";
+  std::string outputname = "overlay_" + names[0] + "_" + names[1] + ".vtu";
   auto writer = vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();
   writer->SetDataModeToAscii();
   writer->SetFileName(outputname.c_str());
-  writer->SetInputData(mesh_intersection);
+  writer->SetInputData(overlay);
   writer->Write();
 
-  OUTEND
 }
 
 
 int main()
 {
-//  domain<1,0>();
-  domain<2,0>();
-//  domain<3,0>();
+//  test_overlay<1>();
+  test_overlay<2>();
+//  test_overlay<3>();
 
   return 0;
 }
