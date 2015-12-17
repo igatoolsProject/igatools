@@ -25,9 +25,9 @@ f = data.file_output
 inst = data.inst
 
 sub_dim_members = \
- ['typename class::template SubSpace<k>::MultiplicityTable class::get_sub_space_mult<k>(const Index s_id) const;', 
-  'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;',
-  'typename class::template SubSpace<k>::PeriodicityTable class::get_sub_space_periodicity<k>(const Index s_id) const;']         
+ ['typename class::template SubSpace<k>::MultiplicityTable class::get_sub_space_mult<k>(const Index s_id) const', 
+  'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const',
+  'typename class::template SubSpace<k>::PeriodicityTable class::get_sub_space_periodicity<k>(const Index s_id) const']
 
 
 
@@ -42,7 +42,8 @@ for x in inst.sub_ref_sp_dims:
         for k in range(0,max(x.dim-1,0)+1):
 #        k = x.dim
             s = fun.replace('class', space).replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')
+            templated_funcs.append(s)
+#            f.write('template ' + s + '\n')
     
 
 for x in inst.ref_sp_dims:
@@ -104,10 +105,9 @@ for space in unique(spaces):
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t12))
     f.write('template %s::template ComponentContainer<%s>::template ComponentContainer<%s>(const %s &,void *);\n' %(space,t12,t12,t12))
     f.write('template %s::template ComponentContainer<%s>::template ComponentContainer<%s>(std::initializer_list<%s>,void *);\n' %(space,t12,t12,t12))
-        
 
 for func in unique(templated_funcs):
-    f.write('template %s ;\n' %func)
+    f.write('template %s;\n' %func)
 
 
 

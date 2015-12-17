@@ -643,7 +643,7 @@ private:
 
     auto &data_same_domain = data_same_dim_codim.get_domain_data(dom);
     data_same_domain.set_domain(domain);
-  };
+  }
 
 public:
   /**
