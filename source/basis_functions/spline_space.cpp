@@ -25,6 +25,8 @@
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/utils/unique_id_generator.h>
 #include <igatools/basis_functions/values1d_const_view.h>
+#include <igatools/basis_functions/bernstein_extraction.h>
+#include <igatools/utils/cartesian_product_indexer.h>
 
 using std::unique_ptr;
 using std::shared_ptr;
@@ -90,7 +92,6 @@ ComponentContainer(const ComponentMap &comp_map, const T1 &val, EnableIf<(std::i
 }
 
 
-
 template<int dim_, int range_, int rank_>
 template<class T>
 template<class T1>
@@ -121,7 +122,6 @@ ComponentContainer(const T &val,EnableIf<(std::is_copy_assignable<T1>::value)> *
 
   base_t::operator[](0) = val;
 }
-
 
 
 template<int dim_, int range_, int rank_>

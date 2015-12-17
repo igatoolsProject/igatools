@@ -151,6 +151,28 @@ public:
    */
   bool is_symmetric() const;
 
+  bool operator==(const DenseMatrix &in) const
+  {
+    bool is_equal = (this == &in);
+    if (!is_equal)
+    {
+      bool equal_size = (this->get_num_rows() == in.get_num_rows() &&
+                         this->get_num_cols() == in.get_num_cols());
+      if (equal_size)
+      {
+        const auto &this_data_begin = this->data().begin();
+        const auto &this_data_end   = this->data().end();
+        const auto &in_data_begin = in.data().begin();
+        is_equal = std::equal(this_data_begin,this_data_end,in_data_begin);
+      }
+      else
+      {
+        is_equal = false;
+      }
+    }
+    return is_equal;
+  }
+
 private:
 
 #ifdef SERIALIZATION

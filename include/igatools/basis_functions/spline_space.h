@@ -27,8 +27,8 @@
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/shared_ptr_constness_handler.h>
-//#include <igatools/basis_functions/basis.h>
 #include <igatools/geometry/grid.h>
+
 
 IGA_NAMESPACE_OPEN
 
@@ -73,6 +73,16 @@ LogStream &
 operator<<(LogStream &out,const std::pair<Real,Real> &pair)
 {
   out << "[ " << pair.first << " , " << pair.second << "]";
+  return out;
+}
+
+
+template <class T>
+inline
+LogStream &
+operator<<(LogStream &out,const std::unique_ptr<T> &ptr)
+{
+  out << "[ " << *ptr << "]";
   return out;
 }
 
@@ -500,7 +510,7 @@ public:
     ComponentContainer(const T &val,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
 
     template <class T1 = T>
-    ComponentContainer(std::initializer_list<T> list,EnableIf<(std::is_copy_assignable<T1>::value)> *);
+    ComponentContainer(std::initializer_list<T> list,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
 
     ComponentContainer(const self_t &in) = default;
     ComponentContainer(self_t &&in) = default;
