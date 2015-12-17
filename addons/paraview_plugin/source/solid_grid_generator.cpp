@@ -33,9 +33,10 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain_element.h>
-#include <igatools/functions/functions_container.h>
+#include <igatools/base/objects_container.h>
 #include <igatools/utils/multi_array_utils.h>
 #include <paraview_plugin/grid_information.h>
+
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
@@ -44,14 +45,15 @@ template <int dim, int codim>
 VtkIgaSolidGridGenerator<dim, codim>::
 VtkIgaSolidGridGenerator(const DomainPtr_ domain,
                          const GridInfoPtr_ grid_info,
-                         const FunContPtr_t_ func_container)
+                         const ObjContPtr_t_ objs_container)
   :
   domain_(domain),
   grid_info_(grid_info),
-  funcs_container_(func_container)
+  objs_container_ (objs_container)
 {
   Assert(domain_ != nullptr, ExcNullPtr());
   Assert(grid_info_ != nullptr, ExcNullPtr());
+  Assert(objs_container_ != nullptr, ExcNullPtr());
 
   this->init_points_info();
 }
@@ -63,9 +65,9 @@ auto
 VtkIgaSolidGridGenerator<dim, codim>::
 get_grid(const DomainPtr_ domain,
          const GridInfoPtr_ grid_info,
-         const FunContPtr_t_ func_container) -> VtkGridPtr_
+         const ObjContPtr_t_ objs_container) -> VtkGridPtr_
 {
-  VtkIgaSolidGridGenerator generator(domain, grid_info, func_container);
+  VtkIgaSolidGridGenerator generator(domain, grid_info, objs_container);
   return generator.create_grid();
 }
 
@@ -806,7 +808,9 @@ void
 VtkIgaSolidGridGenerator<dim, codim>::
 create_point_data(vtkPointData *const point_data) const
 {
+    AssertThrow (false, ExcNotImplemented());
 
+#if 0
   // Getting the functions associated with the map.
   const auto &funcs_map =
     funcs_container_->
@@ -856,11 +860,12 @@ create_point_data(vtkPointData *const point_data) const
 
     point_data->AddArray(arr.Get());
   }
-
+#endif
 }
 
 
 
+#if 0
 template <int dim, int codim>
 void
 VtkIgaSolidGridGenerator<dim, codim>::
@@ -892,6 +897,7 @@ tensor_to_tuple(const Tensor &t, Real *const tuple) const
   int pos = 0;
   tensor_to_tuple(t, tuple, pos);
 }
+#endif
 
 
 template class VtkIgaSolidGridGenerator<1, 0>;

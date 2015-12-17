@@ -38,20 +38,19 @@ IGA_NAMESPACE_OPEN
 
 
 VtkIgaGridGeneratorContBase::
-VtkIgaGridGeneratorContBase(const FunContPtr_ funcs_container,
+VtkIgaGridGeneratorContBase(const ObjContPtr_ objs_container,
                             const GridInfoPtr_ solid_info,
                             const GridInfoPtr_ knot_info,
                             const ControlGridInfoPtr_ control_info)
   :
-  funcs_container_(funcs_container),
+  objs_container_(objs_container),
   solid_info_(solid_info),
   knot_info_(knot_info),
   control_info_(control_info)
 {
-  Assert(funcs_container_ != nullptr, ExcNullPtr());
+  Assert(objs_container_ != nullptr, ExcNullPtr());
   Assert(solid_info_ != nullptr, ExcNullPtr());
   Assert(knot_info_ != nullptr, ExcNullPtr());
-
 }
 
 
@@ -265,11 +264,11 @@ set_knot_grids(vtkMultiBlockDataSet *const mb)
 
 
 VtkIgaGridGeneratorContParm::
-VtkIgaGridGeneratorContParm(const FunContPtr_ funcs_container,
+VtkIgaGridGeneratorContParm(const ObjContPtr_ objs_container,
                             const GridInfoPtr_ solid_info,
                             const GridInfoPtr_ knot_info)
   :
-  Base_(funcs_container, solid_info, knot_info, nullptr)
+  Base_(objs_container, solid_info, knot_info, nullptr)
 {
   this->fill_generators();
 }
@@ -278,11 +277,11 @@ VtkIgaGridGeneratorContParm(const FunContPtr_ funcs_container,
 
 auto
 VtkIgaGridGeneratorContParm::
-create(const FunContPtr_ funcs_container,
+create(const ObjContPtr_ objs_container,
        const GridInfoPtr_ solid_info,
        const GridInfoPtr_ knot_info) -> SelfPtr_
 {
-  return SelfPtr_(new Self_(funcs_container, solid_info, knot_info));
+  return SelfPtr_(new Self_(objs_container, solid_info, knot_info));
 }
 
 
@@ -377,18 +376,18 @@ insert_generator(const DomainPtr_<dim, codim> domain)
          ExcMessage("Key already introduced."));
 
   generators[map_id] = VtkIgaGridGeneratorParm<dim, codim>::create
-                       (domain, solid_info_, knot_info_, funcs_container_);
+                       (domain, solid_info_, knot_info_, objs_container_);
 }
 #endif
 
 
 VtkIgaGridGeneratorContPhys::
-VtkIgaGridGeneratorContPhys(const FunContPtr_ funcs_container,
+VtkIgaGridGeneratorContPhys(const ObjContPtr_ objs_container,
                             const GridInfoPtr_ solid_info,
                             const GridInfoPtr_ knot_info,
                             const ControlGridInfoPtr_ control_info)
   :
-  Base_(funcs_container, solid_info, knot_info,control_info)
+  Base_(objs_container, solid_info, knot_info,control_info)
 {
   Assert(control_info != nullptr, ExcNullPtr())
   this->fill_generators();
@@ -398,12 +397,12 @@ VtkIgaGridGeneratorContPhys(const FunContPtr_ funcs_container,
 
 auto
 VtkIgaGridGeneratorContPhys::
-create(const FunContPtr_ funcs_container,
+create(const ObjContPtr_ objs_container,
        const GridInfoPtr_ solid_info,
        const GridInfoPtr_ knot_info,
        const ControlGridInfoPtr_ control_info) -> SelfPtr_
 {
-  return SelfPtr_(new Self_(funcs_container, solid_info, knot_info, control_info));
+  return SelfPtr_(new Self_(objs_container, solid_info, knot_info, control_info));
 }
 
 
@@ -451,6 +450,7 @@ void
 VtkIgaGridGeneratorContPhys::
 set_control_grids(vtkMultiBlockDataSet *const mb)
 {
+#if 0
   Assert(this->get_number_active_grids_ig() > 0, ExcEmptyObject());
 
   mb->SetNumberOfBlocks(this->get_number_active_grids_ig());
@@ -502,6 +502,7 @@ set_control_grids(vtkMultiBlockDataSet *const mb)
 
   } // end lambda function on dim
                          ); // for_each (data_varying_dim_
+#endif
 }
 
 
@@ -524,6 +525,7 @@ void
 VtkIgaGridGeneratorContBase::
 fill_generators()
 {
+#if 0
   // Iterating over all the functions in the container for building the generators
   // and setting up the numbering for them.
 
@@ -552,6 +554,7 @@ fill_generators()
 
   } // end lambda function on dim
   ); // for_each (data_varying_dim_
+#endif
 }
 
 
@@ -584,7 +587,7 @@ insert_generator(const DomainPtr_<dim, codim> domain)
            ExcMessage("Key already introduced."));
 
     generators[map_id] = VtkIgaGridGeneratorPhys<dim, codim>::create
-                         (domain, solid_info_, knot_info_, control_info_, funcs_container_);
+                         (domain, solid_info_, knot_info_, control_info_, objs_container_);
 
   }
   else
@@ -602,7 +605,7 @@ insert_generator(const DomainPtr_<dim, codim> domain)
            ExcMessage("Key already introduced."));
 
     generators[map_id] = VtkIgaGridGeneratorParm<dim, codim>::create
-                         (domain, solid_info_, knot_info_, funcs_container_);
+                         (domain, solid_info_, knot_info_, objs_container_);
   }
 }
 

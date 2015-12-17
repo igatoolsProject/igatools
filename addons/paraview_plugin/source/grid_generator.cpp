@@ -33,19 +33,19 @@ VtkIgaGridGenerator<dim, codim>::
 VtkIgaGridGenerator(const DomainPtr_ domain,
                     const GridInfoPtr_ solid_grid_info,
                     const GridInfoPtr_ knot_grid_info,
-                    const FunContPtr_ func_container)
+                    const ObjContPtr_ obj_container)
   :
   domain_(domain),
   solid_grid_info_(solid_grid_info),
   knot_grid_info_(knot_grid_info),
-  funcs_container_(func_container),
+  objs_container_(obj_container),
   recompute_solid_(true),
   recompute_knot_(true)
 {
-  Assert(domain != nullptr, ExcNullPtr());
+  Assert(domain_ != nullptr, ExcNullPtr());
   Assert(solid_grid_info_ != nullptr, ExcNullPtr());
   Assert(knot_grid_info_ != nullptr, ExcNullPtr());
-  Assert(func_container != nullptr, ExcNullPtr());
+  Assert(objs_container_ != nullptr, ExcNullPtr());
 }
 
 
@@ -57,7 +57,7 @@ get_solid_grid() -> VtkGridPtr_
   if (recompute_solid_)
   {
     solid_grid_ = VtkIgaSolidGridGenerator<dim, codim>::
-    get_grid(domain_, solid_grid_info_, funcs_container_);
+    get_grid(domain_, solid_grid_info_, objs_container_);
 
     recompute_solid_ = false;
   }

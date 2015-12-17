@@ -30,7 +30,7 @@ class vtkMultiBlockDataSet;
 
 IGA_NAMESPACE_OPEN
 
-class FunctionsContainer;
+class ObjectsContainer;
 
 
 class VtkIgaGridGeneratorContBase
@@ -85,9 +85,9 @@ protected:
   typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
 
   /**
-   * Functions container shared pointer type.
+   * Objects container shared pointer type.
    */
-  typedef std::shared_ptr<FunctionsContainer> FunContPtr_;
+  typedef std::shared_ptr<ObjectsContainer> ObjContPtr_;
 
 
   /**
@@ -98,7 +98,7 @@ protected:
   /**
    * Constructor.
    */
-  VtkIgaGridGeneratorContBase(const FunContPtr_ funcs_container,
+  VtkIgaGridGeneratorContBase(const ObjContPtr_ objs_container,
                               const GridInfoPtr_ solid_info,
                               const GridInfoPtr_ knot_info,
                               const ControlGridInfoPtr_ control_info);
@@ -243,9 +243,9 @@ protected:
   get_data_dim_codim();
 
   /**
-   * Functions container.
+   * Objects container.
    */
-  FunContPtr_ funcs_container_;
+  ObjContPtr_ objs_container_;
 
   /**
    * Grids information for the solid mesh.
@@ -350,9 +350,9 @@ private:
   typedef VtkIgaGridGeneratorContBase Base_;
 
   /**
-   * Functions container shared pointer type.
+   * Objects container shared pointer type.
    */
-  typedef typename Base_::FunContPtr_ FunContPtr_;
+  typedef typename Base_::ObjContPtr_ ObjContPtr_;
 
 
   /**
@@ -363,7 +363,7 @@ private:
   /**
    * Constructor.
    */
-  VtkIgaGridGeneratorContParm(const FunContPtr_ funcs_container,
+  VtkIgaGridGeneratorContParm(const ObjContPtr_ objs_container,
                               const GridInfoPtr_ solid_info,
                               const GridInfoPtr_ knot_info);
 
@@ -387,7 +387,7 @@ public:
   /**
    * TODO:
    */
-  static SelfPtr_ create(const FunContPtr_ funcs_container,
+  static SelfPtr_ create(const ObjContPtr_ objs_container,
                          const GridInfoPtr_ solid_info,
                          const GridInfoPtr_ knot_info);
 
@@ -425,9 +425,9 @@ private:
   typedef VtkIgaGridGeneratorContBase Base_;
 
   /**
-   * Functions container shared pointer type.
+   * Objects container shared pointer type.
    */
-  typedef typename Base_::FunContPtr_ FunContPtr_;
+  typedef typename Base_::ObjContPtr_ ObjContPtr_;
 
 
   /**
@@ -439,27 +439,21 @@ private:
   /**
    * Constructor.
    */
-  VtkIgaGridGeneratorContPhys(const FunContPtr_ funcs_container,
+  VtkIgaGridGeneratorContPhys(const ObjContPtr_ objs_container,
                               const GridInfoPtr_ solid_info,
                               const GridInfoPtr_ knot_info,
                               const ControlGridInfoPtr_ control_info);
-
 
 public:
   /**
    * TODO:
    */
-  static SelfPtr_ create(const FunContPtr_ funcs_container,
+  static SelfPtr_ create(const ObjContPtr_ objs_container,
                          const GridInfoPtr_ solid_info,
                          const GridInfoPtr_ knot_info,
                          const ControlGridInfoPtr_ control_info);
 
-
 private:
-
-
-
-
 
   /**
    * TODO: to document.

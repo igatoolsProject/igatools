@@ -26,8 +26,8 @@
 #include <vtkMultiBlockDataSet.h>
 #include <vtkSmartPointer.h>
 
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/functions_container.h>
+#include <igatools/io/xml_document.h>
+#include <igatools/base/objects_container.h>
 #include <paraview_plugin/grid_generator_container.h>
 #include <paraview_plugin/grid_information.h>
 
@@ -57,8 +57,7 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
 #endif
 
   this->SetNumberOfInputPorts(0); // No vtk input, this is not a filter.
-  this->SetNumberOfOutputPorts(1); // Just one output.
-
+  this->SetNumberOfOutputPorts(1); // Just one output, a multi block.
 }
 
 
@@ -66,29 +65,17 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
 int IgatoolsParaViewReader::RequestInformation(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),
-  vtkInformationVector *outputVector)
+  vtkInformationVector *output_vec)
 {
-  vtkInformation *info = outputVector->GetInformationObject(0);
+  vtkInformation *info = output_vec->GetInformationObject(0);
 
-  vtkDataObject *output = info->Get(vtkDataObject::DATA_OBJECT());
-  vtkMultiBlockDataSet *mb =  vtkMultiBlockDataSet::SafeDownCast(output);
-
-  if (!mb)
+  if (!vtkMultiBlockDataSet::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT())))
     return 0;
 
+  // If the file is not parse, it is parsed now.
   if (parse_file_)
     return this->parse_file();
 
-
-  return 1;
-}
-
-
-
-int IgatoolsParaViewReader::FillOutputPortInformation(int port, vtkInformation *info)
-{
-
-  info->Set(vtkDataObject::DATA_TYPE_NAME(), "vtkMultiBlockDataSet");
   return 1;
 }
 
@@ -99,20 +86,19 @@ int IgatoolsParaViewReader::FillOutputPortInformation(int port, vtkInformation *
 int IgatoolsParaViewReader::RequestData(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),
-  vtkInformationVector *outputVector)
+  vtkInformationVector *output_vec)
 {
-
-
-  vtkInformation *info = outputVector->GetInformationObject(0);
-  vtkDataObject *output = info->Get(vtkDataObject::DATA_OBJECT());
-  vtkMultiBlockDataSet *mb =  vtkMultiBlockDataSet::SafeDownCast(output);
+  vtkInformation *info = output_vec->GetInformationObject(0);
+  vtkMultiBlockDataSet *output =
+          vtkMultiBlockDataSet::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT()));
 
   this->SetProgressText("Generating igatools geometries.");
 
   this->UpdateProgress(0.0);
 
   this->update_grid_info();
-  return this->create_grids(mb);
+  return this->create_grids(output);
+  return 1;
 
 }
 
@@ -132,33 +118,24 @@ int
 IgatoolsParaViewReader::
 CanReadFile(const char *name)
 {
-  // TODO: it should be also determined here it the file is suitable,
-  // and what kind of file it is.
-
-  // Checking if the file exists.
-  errno = 0;
-  struct stat buffer;
-  if (stat(name, &buffer) == -1) // ==0 ok; ==-1 error
+  // TODO this can be done if XML_IO is active
+  try
   {
-    string error_msg = string("Parsing file path ") + string(name) + string(" : ");
-    if (errno == ENOENT)       // errno declared by include file errno.h
-      error_msg += string("Path file does not exist, or path is an empty string.");
-    else if (errno == ENOTDIR)
-      error_msg += string("A component of the path is not a directory.");
-    else if (errno == ELOOP)
-      error_msg += string("Too many symbolic links encountered while traversing the path.");
-    else if (errno == EACCES)
-      error_msg += string("Permission denied.");
-    else if (errno == ENAMETOOLONG)
-      error_msg += string("File can not be read");
-    else
-      error_msg += string("An unknown problem was encountered.");
-    vtkErrorMacro(<< error_msg);
-
+    XMLDocument::check_file(name);
+    return 1;
+  }
+  catch (ExceptionBase& exc)
+  {
+    std::ostringstream stream;
+    exc.print_exc_data(stream);
+    vtkErrorMacro(<< stream.str());
     return 0;
   }
-  else
-    return 1;
+  catch (...)
+  {
+    vtkErrorMacro(<< "Impossible to read IGA file " << name << ".");
+    return 0;
+  }
 }
 
 
@@ -174,9 +151,7 @@ parse_file()
 
   phys_gen_.reset();
   parm_gen_.reset();
-  funcs_container_.reset();
-
-//  Assert(false,ExcNotImplemented());
+  objs_container_.reset();
 
   try
   {
@@ -190,11 +165,10 @@ parse_file()
     //   xml_istream.close();
     //   Assert here if funcs_container_ is void.
 
-    funcs_container_ = std::make_shared <FunctionsContainer> ();
+//    funcs_container_ = std::make_shared <FunctionsContainer> ();
+    // TODO: to fix.
+    objs_container_ = ObjectsContainer::create();
 
-    this->template create_geometries<1>();
-    this->template create_geometries<2>();
-    this->template create_geometries<3>();
     //*/
 
     // Physical solid grid.
@@ -210,7 +184,7 @@ parse_file()
                           (phys_ctr_grid_type_ == vtkGridType::Structured);
 
     phys_gen_ = VtkIgaGridGeneratorContPhys::create
-                (funcs_container_, phys_sol, phys_knt, phys_ctr);
+                (objs_container_, phys_sol, phys_knt, phys_ctr);
 
 
     // Parametric solid grid.
@@ -223,9 +197,11 @@ parse_file()
                           (n_vis_elem_parm_knot_, parm_knt_grid_type_);
 
     parm_gen_ = VtkIgaGridGeneratorContParm::create
-                (funcs_container_, parm_sol, parm_knt);
+                (objs_container_, parm_sol, parm_knt);
 
     parse_file_ = false;
+
+    return 1;
   }
   catch (std::exception &e)
   {
@@ -233,23 +209,21 @@ parse_file()
 
     phys_gen_.reset();
     parm_gen_.reset();
-    funcs_container_.reset();
+    objs_container_.reset();
 
     return 0;
   }
   catch (...)
   {
     vtkErrorMacro(<< "An exception occurred when parsing file "
-                  << "\"" << file_name_str << "\"");
+                  << file_name_str << ".");
 
     phys_gen_.reset();
     parm_gen_.reset();
-    funcs_container_.reset();
+    objs_container_.reset();
 
     return 0;
   }
-
-  return 1;
 }
 
 
@@ -315,7 +289,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
   {
     if (num_phys_blocks == 0)
     {
-      vtkWarningMacro(<< "Physical geometries set active, but none grid type "
+      vtkWarningMacro(<< "Physical geometries set active, but no grid type "
                       "(solid, knot, control) has been selected");
     }
     else
@@ -335,7 +309,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
   {
     if (num_parm_blocks == 0)
     {
-      vtkWarningMacro(<< "Parametric geometries set active, but none grid type "
+      vtkWarningMacro(<< "Parametric geometries set active, but no grid type "
                       "(solid, knot) has been selected");
     }
     else
@@ -350,7 +324,6 @@ create_grids(vtkMultiBlockDataSet *const mb)
   }
 
   if (num_blocks == 0)
-
     return 1;
 
 
@@ -359,7 +332,6 @@ create_grids(vtkMultiBlockDataSet *const mb)
   // Creating blocks for the physical and parametric geometries.
   for (unsigned int i = 0; i < num_blocks; ++i)
     mb->SetBlock(i, vtkSmartPointer<vtkMultiBlockDataSet>::New());
-
 
   Size total_number_blocks = 0;
   if (new_create_physical_mesh)
@@ -382,7 +354,6 @@ create_grids(vtkMultiBlockDataSet *const mb)
 
   Index progress_index = 0;
 
-
   unsigned int block_index = 0;
   if (new_create_physical_mesh)
   {
@@ -394,7 +365,6 @@ create_grids(vtkMultiBlockDataSet *const mb)
 
     phys_block->SetNumberOfBlocks(num_phys_blocks);
 
-
     Index subblock_index = 0;
 
     if (create_sol_mesh_phys_)
@@ -405,7 +375,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
                                                    "Solid mesh");
       phys_gen_->set_solid_grids(solid_block);
 
-      this->UpdateProgress((++progress_index) / double (total_number_blocks));
+      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
 
       ++subblock_index;
     }
@@ -418,7 +388,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
                                                    "Knot mesh");
       phys_gen_->set_knot_grids(knot_block);
 
-      this->UpdateProgress((++progress_index) / double (total_number_blocks));
+      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
 
       ++subblock_index;
     }
@@ -431,9 +401,8 @@ create_grids(vtkMultiBlockDataSet *const mb)
                                                    "Control mesh");
       phys_gen_->set_control_grids(control_block);
 
-      this->UpdateProgress((++progress_index) / double (total_number_blocks));
+      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
     }
-
 
     ++block_index;
   } // create_physical_mesh
@@ -443,13 +412,10 @@ create_grids(vtkMultiBlockDataSet *const mb)
   {
     mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Parametric mesh");
 
-
-
     vtkMultiBlockDataSet *const parm_block =
       vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
 
     parm_block->SetNumberOfBlocks(num_parm_blocks);
-
 
     Index subblock_index = 0;
 
@@ -461,7 +427,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
                                                    "Solid mesh");
       parm_gen_->set_solid_grids(solid_block);
 
-      this->UpdateProgress((++progress_index) / double (total_number_blocks));
+      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
 
       ++subblock_index;
     }
@@ -474,7 +440,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
                                                    "Knot mesh");
       parm_gen_->set_knot_grids(knot_block);
 
-      this->UpdateProgress((++progress_index) / double (total_number_blocks));
+      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
     }
   } // create_parametric_mesh
 
@@ -907,289 +873,4 @@ SetParmGeomArrayStatus(const char *name, int en)
       this->Modified();
     }
   }
-}
-
-
-#include <igatools/io/reader.h>
-#include <igatools/linear_algebra/epetra_vector.h>
-
-template <int dim>
-void
-IgatoolsParaViewReader::
-create_geometries()
-{
-  using std::dynamic_pointer_cast;
-  using std::const_pointer_cast;
-
-  static const int codim = dim == 1 ? 1 : 0;
-  static const int space_dim = dim + codim;
-  static const int range = space_dim;
-  static const int rank = 1;
-  static const Transformation transf = Transformation::h_grad;
-
-//  using Fun_ = Function<dim, 0, range, rank>;
-  using FunPhys_ = Function<dim, codim, range, rank>;
-//  using IgFun_ = IgFunction<dim, 0, range, rank>;
-  using IgFunPhys_ = IgFunction<dim, codim, range, rank>;
-  using PhysSpace_ = PhysicalSpaceBasis<dim, range, rank, codim>;
-//  using RefSpace_ = ReferenceSpace<dim, range, rank>;
-//  using IdFun_ = IdentityFunction<dim, dim>;
-  using Map = Domain<dim,codim>;
-//  using Space_ = Space<dim, 0, space_dim, 1>;
-  using Grid_ = Grid<dim>;
-
-  // File names;
-  const string dir_name = "/home/martinelli/tmp/paraview_plugin/";
-  const string fname_0 = dir_name + "patch_0_" + std::to_string(dim) + "D.xml";
-  const string fname_1 = dir_name + "patch_1_" + std::to_string(dim) + "D.xml";
-  const string fname_2 = dir_name + "patch_2_" + std::to_string(dim) + "D.xml";
-  const string fname_3 = dir_name + "patch_3_" + std::to_string(dim) + "D.xml";
-
-  // Reading maps
-  const shared_ptr <Map> map_0 =
-    get_mapping_from_file <dim, codim> (fname_0);
-  const shared_ptr <Map> map_1 =
-    get_mapping_from_file <dim, codim> (fname_1);
-  const shared_ptr <Map> map_2 =
-    get_mapping_from_file <dim, codim> (fname_2);
-  const shared_ptr <Map> map_3 =
-    get_mapping_from_file <dim, codim> (fname_3);
-
-  funcs_container_->insert_domain(map_0);
-  funcs_container_->insert_domain(map_1);
-  funcs_container_->insert_domain(map_2);
-  funcs_container_->insert_domain(map_3);
-
-//  Assert(false,ExcNotImplemented());
-
-#if 0
-  // Getting ig spaces.
-  shared_ptr <const Space_> space_0 =
-    dynamic_pointer_cast <IgFun_> (map_0)->get_ig_space();
-  shared_ptr <const Space_> space_1 =
-    dynamic_pointer_cast <IgFun_> (map_1)->get_ig_space();
-  shared_ptr <const Space_> space_2 =
-    dynamic_pointer_cast <IgFun_> (map_2)->get_ig_space();
-  shared_ptr <const Space_> space_3 =
-    dynamic_pointer_cast <IgFun_> (map_3)->get_ig_space();
-
-  // Getting reference spaces.
-  const shared_ptr <RefSpace_> ref_space_0 =
-    const_pointer_cast <RefSpace_> (
-      dynamic_pointer_cast <const RefSpace_> (space_0));
-  const shared_ptr <RefSpace_> ref_space_1 =
-    const_pointer_cast <RefSpace_> (
-      dynamic_pointer_cast <const RefSpace_> (space_1));
-  const shared_ptr <RefSpace_> ref_space_2 =
-    const_pointer_cast <RefSpace_> (
-      dynamic_pointer_cast <const RefSpace_> (space_2));
-  const shared_ptr <RefSpace_> ref_space_3 =
-    const_pointer_cast <RefSpace_> (
-      dynamic_pointer_cast <const RefSpace_> (space_3));
-
-  // Building physical spaces.
-  const shared_ptr <const PhysSpace_> phys_space_0 = PhysSpace_::create(
-                                                       ref_space_0, map_0);
-  const shared_ptr <const PhysSpace_> phys_space_1 = PhysSpace_::create(
-                                                       ref_space_1, map_1);
-  const shared_ptr <const PhysSpace_> phys_space_2 = PhysSpace_::create(
-                                                       ref_space_2, map_2);
-  const shared_ptr <const PhysSpace_> phys_space_3 = PhysSpace_::create(
-                                                       ref_space_3, map_3);
-
-  // Getting grids;
-  const shared_ptr <Grid_> grid_0 = ref_space_0->get_ptr_grid();
-  const shared_ptr <Grid_> grid_1 = ref_space_1->get_ptr_grid();
-  const shared_ptr <Grid_> grid_2 = ref_space_2->get_ptr_grid();
-  const shared_ptr <Grid_> grid_3 = ref_space_3->get_ptr_grid();
-
-  // Creating identity functions.
-  const auto id_map_0 = IdFun_::create(grid_0);
-  const auto id_map_1 = IdFun_::create(grid_1);
-  const auto id_map_2 = IdFun_::create(grid_2);
-  const auto id_map_3 = IdFun_::create(grid_3);
-
-  Epetra_SerialComm comm;
-
-  // Creating coefficients for ig physical space functions.
-  auto phys_coeff_0 = EpetraTools::create_vector(*phys_space_0, "active",
-                                                 comm);
-  const auto dofs_dist_0 = space_0->get_ptr_const_dof_distribution();
-  const Real val0 = 10.0;
-  Index counter = 0;
-  for (const auto &d : dofs_dist_0->get_dofs_const_view())
-  {
-    double val = (counter++) * 1.5 + val0;
-    phys_coeff_0->ReplaceGlobalValues(1, &val, &d);
-  }
-
-  auto phys_coeff_1 = EpetraTools::create_vector(*phys_space_1, "active",
-                                                 comm);
-  const auto dofs_dist_1 = space_1->get_ptr_const_dof_distribution();
-  const Real val1 = 11.0;
-  counter = 0;
-  for (const auto &d : dofs_dist_1->get_dofs_const_view())
-  {
-    double val = (counter++) * 1.5 + val1;
-    phys_coeff_1->ReplaceGlobalValues(1, &val, &d);
-  }
-
-  auto phys_coeff_2 = EpetraTools::create_vector(*phys_space_2, "active",
-                                                 comm);
-  const auto dofs_dist_2 = space_2->get_ptr_const_dof_distribution();
-  const Real val2 = 12.0;
-  counter = 0;
-  for (const auto &d : dofs_dist_2->get_dofs_const_view())
-  {
-    double val = (counter++) * 1.5 + val2;
-    phys_coeff_2->ReplaceGlobalValues(1, &val, &d);
-  }
-
-  auto phys_coeff_3 = EpetraTools::create_vector(*phys_space_3, "active",
-                                                 comm);
-  const auto dofs_dist_3 = space_3->get_ptr_const_dof_distribution();
-  const Real val3 = 13.0;
-  counter = 0;
-  for (const auto &d : dofs_dist_3->get_dofs_const_view())
-  {
-    double val = (counter++) * 1.5 + val3;
-    phys_coeff_3->ReplaceGlobalValues(1, &val, &d);
-  }
-
-  // Creating coefficients for ig reference space functions.
-  auto ref_coeff_0 = EpetraTools::create_vector(*ref_space_0, "active",
-                                                comm);
-  const Real ref_val0 = 20.0;
-  counter = 0;
-  for (const auto &d : dofs_dist_0->get_dofs_const_view())
-  {
-    double val = (counter++) * 1.5 + ref_val0;
-    ref_coeff_0->ReplaceGlobalValues(1, &val, &d);
-  }
-
-  auto ref_coeff_1 = EpetraTools::create_vector(*ref_space_1, "active",
-                                                comm);
-  const Real ref_val1 = 21.0;
-  counter = 0;
-  for (const auto &d : dofs_dist_1->get_dofs_const_view())
-  {
-    double val = (counter++) * 1.5 + ref_val1;
-    ref_coeff_1->ReplaceGlobalValues(1, &val, &d);
-  }
-
-  auto ref_coeff_2 = EpetraTools::create_vector(*ref_space_2, "active",
-                                                comm);
-  const Real ref_val2 = 22.0;
-  counter = 0;
-  for (const auto &d : dofs_dist_2->get_dofs_const_view())
-  {
-    double val = (counter++) * 1.5 + ref_val2;
-    ref_coeff_2->ReplaceGlobalValues(1, &val, &d);
-  }
-
-  auto ref_coeff_3 = EpetraTools::create_vector(*ref_space_3, "active",
-                                                comm);
-  const Real ref_val3 = 23.0;
-  counter = 0;
-  for (const auto &d : dofs_dist_3->get_dofs_const_view())
-  {
-    double val = (counter++) * 1.5 + ref_val3;
-    ref_coeff_3->ReplaceGlobalValues(1, &val, &d);
-  }
-
-  // Creating ig functions for physical spaces.
-  auto ps_func_0 = dynamic_pointer_cast <FunPhys_> (
-                     IgFunPhys_::create(phys_space_0, phys_coeff_0));
-  auto ps_func_1 = dynamic_pointer_cast <FunPhys_> (
-                     IgFunPhys_::create(phys_space_1, phys_coeff_1));
-  auto ps_func_2 = dynamic_pointer_cast <FunPhys_> (
-                     IgFunPhys_::create(phys_space_2, phys_coeff_2));
-  auto ps_func_3 = dynamic_pointer_cast <FunPhys_> (
-                     IgFunPhys_::create(phys_space_3, phys_coeff_3));
-
-  // Creating ig functions for reference spaces.
-  auto rf_func_0 = dynamic_pointer_cast <Fun_> (
-                     IgFun_::create(ref_space_0, ref_coeff_0));
-  auto rf_func_1 = dynamic_pointer_cast <Fun_> (
-                     IgFun_::create(ref_space_1, ref_coeff_1));
-  auto rf_func_2 = dynamic_pointer_cast <Fun_> (
-                     IgFun_::create(ref_space_2, ref_coeff_2));
-  auto rf_func_3 = dynamic_pointer_cast <Fun_> (
-                     IgFun_::create(ref_space_3, ref_coeff_3));
-
-  // Adding all the stuff to the functions container.
-
-  // Inserting geometries.
-  const string map_name_0 = "map_0_" + std::to_string(dim) + "D";
-  const string map_name_1 = "map_1_" + std::to_string(dim) + "D";
-  const string map_name_2 = "map_2_" + std::to_string(dim) + "D";
-  const string map_name_3 = "map_3_" + std::to_string(dim) + "D";
-  funcs_container_->insert_domain(
-    const_pointer_cast <Map> (
-      phys_space_0->get_ptr_const_map_func()),
-    map_name_0);
-  funcs_container_->insert_domain(
-    const_pointer_cast <Map> (
-      phys_space_1->get_ptr_const_map_func()),
-    map_name_1);
-  funcs_container_->insert_domain(
-    const_pointer_cast <Map> (
-      phys_space_2->get_ptr_const_map_func()),
-    map_name_2);
-  funcs_container_->insert_domain(
-    const_pointer_cast <Map> (
-      phys_space_3->get_ptr_const_map_func()),
-    map_name_3);
-  /*
-    const string id_map_name_0 = "id_map_0_" + std::to_string(dim) + "D";
-    const string id_map_name_1 = "id_map_1_" + std::to_string(dim) + "D";
-    const string id_map_name_2 = "id_map_2_" + std::to_string(dim) + "D";
-    const string id_map_name_3 = "id_map_3_" + std::to_string(dim) + "D";
-    funcs_container_->insert_domain(id_map_0, id_map_name_0);
-    funcs_container_->insert_domain(id_map_1, id_map_name_1);
-    funcs_container_->insert_domain(id_map_2, id_map_name_2);
-    funcs_container_->insert_domain(id_map_3, id_map_name_3);
-  //*/
-
-  // Inserting associated functions.
-  const string fun_map_name_0 = "phys_func_0_" + std::to_string(dim)
-                                + "D";
-  const string fun_map_name_1 = "phys_func_1_" + std::to_string(dim)
-                                + "D";
-  const string fun_map_name_2 = "phys_func_2_" + std::to_string(dim)
-                                + "D";
-  const string fun_map_name_3 = "phys_func_3_" + std::to_string(dim)
-                                + "D";
-
-  funcs_container_->insert_function(
-    const_pointer_cast <Map> (
-      phys_space_0->get_ptr_const_map_func()),
-    ps_func_0, fun_map_name_0);
-  funcs_container_->insert_function(
-    const_pointer_cast <Map> (
-      phys_space_1->get_ptr_const_map_func()),
-    ps_func_1, fun_map_name_1);
-  funcs_container_->insert_function(
-    const_pointer_cast <Map> (
-      phys_space_2->get_ptr_const_map_func()),
-    ps_func_2, fun_map_name_2);
-  funcs_container_->insert_function(
-    const_pointer_cast <Map> (
-      phys_space_3->get_ptr_const_map_func()),
-    ps_func_3, fun_map_name_3);
-#endif
-
-
-
-
-#if 0 // The combination dim=1, codim=1, range=2, rank=1 is not instantiated.
-  const string id_fun_map_name_0 = "ref_func_0_" + std::to_string(dim) + "D";
-  const string id_fun_map_name_1 = "ref_func_1_" + std::to_string(dim) + "D";
-  const string id_fun_map_name_2 = "ref_func_2_" + std::to_string(dim) + "D";
-  const string id_fun_map_name_3 = "ref_func_3_" + std::to_string(dim) + "D";
-  funcs_container_->insert_function(id_map_0, rf_func_0, id_fun_map_name_0);
-  funcs_container_->insert_function(id_map_1, rf_func_1, id_fun_map_name_1);
-  funcs_container_->insert_function(id_map_2, rf_func_2, id_fun_map_name_2);
-  funcs_container_->insert_function(id_map_3, rf_func_3, id_fun_map_name_3);
-#endif
 }

@@ -32,7 +32,7 @@ class vtkPointSet;
 IGA_NAMESPACE_OPEN
 
 template <class T, int d> class SafeSTLArray;
-class FunctionsContainer;
+class ObjectsContainer;
 template <int dim> class TensorSize;
 template <int dim, int codim> class Domain;
 template <int dim, int codim, int range, int rank> class Function;
@@ -81,7 +81,7 @@ protected:
   /**
    * Functions container shared pointer type.
    */
-  typedef std::shared_ptr<FunctionsContainer> FunContPtr_;
+  typedef std::shared_ptr<ObjectsContainer> ObjContPtr_;
 
   /**
    * Vtk solid grid generator type.
@@ -92,11 +92,6 @@ protected:
    * Vtk knot grid generator type.
    */
   typedef std::shared_ptr<VtkIgaKnotGridGenerator<dim, codim>> KntGeneratorPtr_;
-
-
-
-
-
 
 
   /**
@@ -116,7 +111,7 @@ public:
   VtkIgaGridGenerator(const DomainPtr_ domain,
                       const GridInfoPtr_ solid_grid_info,
                       const GridInfoPtr_ knot_grid_info,
-                      const FunContPtr_ func_container);
+                      const ObjContPtr_ obj_container);
 
 
   /**
@@ -169,7 +164,7 @@ protected:
   /**
    * Container for the domain and field functions.
    */
-  const FunContPtr_ funcs_container_;
+  const ObjContPtr_ objs_container_;
 
 //    /**
 //     * Number of visualization vtk cells in each direction for every Bezier
@@ -245,7 +240,7 @@ public:
 
   using typename Base_::DomainPtr_;
   using typename Base_::GridInfoPtr_;
-  using typename Base_::FunContPtr_;
+  using typename Base_::ObjContPtr_;
   using typename Base_::VtkGridPtr_;
 
   /**
@@ -257,9 +252,10 @@ public:
   static SelfPtr_ create(const DomainPtr_ domain,
                          const GridInfoPtr_ solid_grid_info,
                          const GridInfoPtr_ knot_grid_info,
-                         const FunContPtr_ func_container)
+                         const ObjContPtr_ obj_container)
   {
-    return std::make_shared<Self_>(domain,solid_grid_info,knot_grid_info,func_container);
+    return std::make_shared<Self_>(domain,solid_grid_info, knot_grid_info,
+                                   obj_container);
   }
 
   /**
@@ -293,7 +289,7 @@ public:
 
   using typename Base_::DomainPtr_;
   using typename Base_::GridInfoPtr_;
-  using typename Base_::FunContPtr_;
+  using typename Base_::ObjContPtr_;
   using typename Base_::VtkGridPtr_;
 
 
@@ -316,9 +312,9 @@ public:
                           const GridInfoPtr_ solid_grid_info,
                           const GridInfoPtr_ knot_grid_info,
                           const ControlGridInfoPtr_ control_grid_info,
-                          const FunContPtr_ func_container)
+                          const ObjContPtr_ obj_container)
     :
-    Base_(domain,solid_grid_info,knot_grid_info,func_container),
+    Base_(domain,solid_grid_info, knot_grid_info, obj_container),
     control_grid_info_(control_grid_info),
     recompute_control_(true)
   {
@@ -344,9 +340,10 @@ public:
                          const GridInfoPtr_ solid_grid_info,
                          const GridInfoPtr_ knot_grid_info,
                          const ControlGridInfoPtr_ control_grid_info,
-                         const FunContPtr_ func_container)
+                         const ObjContPtr_ obj_container)
   {
-    return std::make_shared<Self_>(domain,solid_grid_info,knot_grid_info,control_grid_info,func_container);
+    return std::make_shared<Self_>(domain, solid_grid_info, knot_grid_info,
+                                   control_grid_info, obj_container);
   }
 
 

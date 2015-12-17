@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef VTK_SOLID_GRID_GENERATOR_H_
-#define VTK_SOLID_GRID_GENERATOR_H_
+#ifndef __VTK_SOLID_GRID_GENERATOR_H_
+#define __VTK_SOLID_GRID_GENERATOR_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
@@ -35,7 +35,7 @@ template<class T> class vtkSmartPointer;
 
 IGA_NAMESPACE_OPEN
 
-class FunctionsContainer;
+class ObjectsContainer;
 template <int dim> class Quadrature;
 template <int dim, int codim> class Domain;
 struct VtkGridInformation;
@@ -63,7 +63,7 @@ private:
   /**
    * Alias for a shared pointer of a domain type.
    */
-  typedef std::shared_ptr<const Domain<dim,codim>> DomainPtr_;
+  typedef std::shared_ptr<const Domain<dim, codim>> DomainPtr_;
 
   /**
    * Alias for mesh grid information shared pointer.
@@ -83,14 +83,14 @@ private:
   /**
    * Functions container shared pointer type.
    */
-  typedef typename std::shared_ptr<FunctionsContainer> FunContPtr_t_;
+  typedef typename std::shared_ptr<ObjectsContainer> ObjContPtr_t_;
 
   /**
    * Constructor.
    */
   VtkIgaSolidGridGenerator(const DomainPtr_ domain,
                            const GridInfoPtr_ grid_info,
-                           const FunContPtr_t_ func_container);
+                           const ObjContPtr_t_ obj_container);
 
   /**
    * Constructor, copy and assignment operators not allowed to be used.
@@ -109,7 +109,7 @@ public:
    */
   static VtkGridPtr_ get_grid(const DomainPtr_ domain,
                               const GridInfoPtr_ grid_info,
-                              const FunContPtr_t_ func_container);
+                              const ObjContPtr_t_ obj_container);
 
 private:
 
@@ -132,7 +132,7 @@ private:
   /**
    * Shared pointer of the function container.
    */
-  const FunContPtr_t_ funcs_container_;
+  const ObjContPtr_t_ objs_container_;
 
   /**
    * Number of vtk cells per direction in each Bezier element.
@@ -248,6 +248,7 @@ private:
                               typename std::enable_if_t<!(aux_dim == 1 && aux_codim == 0)>* = 0) const;
 
 
+#if 0
   /**
    * Copies data from a igatools tensor to a vtk tuple like structure.
    */
@@ -264,9 +265,10 @@ private:
    */
   template <class Tensor>
   void tensor_to_tuple(const Tensor &t, Real *const tuple) const;
+#endif
 
 };
 
 IGA_NAMESPACE_CLOSE
 
-#endif // VTK_SOLID_GRID_GENERATOR_H_
+#endif // __VTK_SOLID_GRID_GENERATOR_H_
