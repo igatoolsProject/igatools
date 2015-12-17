@@ -250,7 +250,7 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(iga::DenseMatrix,cereal::specialization::member_load_save);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(iga::DenseMatrix,cereal::specialization::member_load_save)
 
 #endif // SERIALIZATION
 

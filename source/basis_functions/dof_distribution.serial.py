@@ -54,7 +54,7 @@ for arr in unique(arrays):
     f.write('using %s = %s;\n' % (alias, arr.replace('DynamicMultiArray','iga::DynamicMultiArray')
                                             .replace('SafeSTLArray','iga::SafeSTLArray')));
     for ar in archives:
-        f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,%s,cereal::specialization::member_serialize);\n' %(ar,alias));
+        f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,%s,cereal::specialization::member_serialize)\n' %(ar,alias));
     id += 1 
 
 #   

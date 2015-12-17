@@ -377,7 +377,7 @@ private:
     ar &make_nvp("map_point_id_to_coords_id_",map_point_id_to_coords_id_);
     ar &make_nvp("is_tensor_product_",is_tensor_product_);
     ar &make_nvp("bounding_box_",bounding_box_);
-  };
+  }
 
   ///@}
 #endif // SERIALIZATION

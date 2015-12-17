@@ -18,44 +18,32 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
+# QA (pauletti, Jun 6, 2014):
 from init_instantiation_data import *
-include_files = []
 
-data = Instantiation(include_files)
-
+data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
+classes = ['BernsteinExtraction<%d,%d,%d>' %(x.dim, x.range, x.rank)  
+          for x in inst.all_ref_sp_dims]
 
-funcs = ['IgFunction<0,0,0,1>']
+classes.append('BernsteinExtraction<0,0,1>')
 
 
-for x in inst.all_phy_sp_dims:
-    func = 'IgFunction<%d,%d,%d,%d>' %(x.dim,x.codim,x.range,x.rank)
-    funcs.append(func)
 
-for x in inst.all_ref_sp_dims:
-    func = 'IgFunction<%d,0,%d,%d>' %(x.dim,x.range,x.rank)
-    funcs.append(func)
-    
-
- 
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
 
-
-f.write('#ifdef SERIALIZATION\n')
+archives = ['OArchive','IArchive']
 
 id = 0 
-for cl in unique(funcs):
-    alias = 'IgFunctionAlias%d' %(id)
-    f.write('using %s = iga::%s;\n' % (alias, cl));
-    f.write('CEREAL_REGISTER_TYPE(%s)\n' %alias);
+for c in unique(classes):
+    alias = 'BernsteinExtractionAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, c))
+    for ar in archives:
+        f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,%s,cereal::specialization::member_serialize)\n' %(ar,alias))
+
     id += 1 
-
-
-f.write('#endif // SERIALIZATION\n')
-
-#   
+    
 f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
-  
