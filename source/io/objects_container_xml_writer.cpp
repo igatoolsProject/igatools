@@ -22,7 +22,7 @@
 
 #ifdef XML_IO
 
-#include <igatools/io/objects_container_xml_parser.h>
+#include <igatools/io/objects_container_xml_reader.h>
 #include <igatools/base/objects_container.h>
 #include <igatools/utils/safe_stl_set.h>
 
@@ -64,7 +64,7 @@ write(const string &file_path,
     const auto xml_doc = XMLDocument::create_void_document("Igatools");
     const auto igatools_elem = xml_doc->get_document_element();
     igatools_elem->add_attribute(string("FormatVersion"),
-                                 ObjectsContainerXMLParser::IGATOOLS_FILE_FORMAT_VERSION);
+                                 ObjectsContainerXMLReader::IGATOOLS_FILE_FORMAT_VERSION);
 
     Self_::write_grids(full_container, xml_doc);
     Self_::write_spline_spaces(full_container, xml_doc);
@@ -388,13 +388,23 @@ write_grid (const shared_ptr<Grid> grid,
     obj_elem->add_attribute("LocalObjectId", grid->get_object_id());
     obj_elem->add_attribute("Dim", dim);
 
+    const auto knots_elem = xml_doc->create_new_element("Knots");
+
     for (int dir = 0; dir < dim; ++dir)
     {
         const auto &knt_coord = grid->get_knot_coordinates(dir);
         const auto knot_elem = xml_doc->create_vector_element("Knots", knt_coord);
         knot_elem->add_attribute("Direction", dir);
         knot_elem->add_attribute("Size", knt_coord.size());
-        obj_elem->append_child_element(knot_elem);
+        knots_elem->append_child_element(knot_elem);
+    }
+    obj_elem->append_child_element(knots_elem);
+
+    const auto &name = grid->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
     }
 
     const auto igt_elem = xml_doc->get_document_element();
@@ -598,6 +608,13 @@ write_identity_grid_function (const shared_ptr<IdGridFunc> id_func,
                             id_func->get_grid()->get_object_id());
     obj_elem->append_child_element(grid_elem);
 
+    const auto &name = id_func->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
+
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
 }
@@ -629,6 +646,13 @@ write_constant_grid_function (const shared_ptr<ConstGridFunc> const_func,
     std::copy(values_arr.cbegin(), values_arr.cend(), values_vec.begin());
     const auto values_elem = xml_doc->create_vector_element("Values", values_vec);
     obj_elem->append_child_element(values_elem);
+
+    const auto &name = const_func->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
 
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
@@ -668,6 +692,13 @@ write_linear_grid_function (const shared_ptr<LinearGridFunc> linear_func,
     const auto b_elem = xml_doc->create_vector_element("b", b_vec);
     obj_elem->append_child_element(b_elem);
 
+    const auto &name = linear_func->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
+
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
 }
@@ -697,6 +728,13 @@ write_ig_grid_function (const shared_ptr<IgGridFunc> ig_func,
     const auto &coefs = ig_func->get_coefficients();
     const auto coefs_elem = Self_::create_ig_coefs_xml_element(coefs, xml_doc);
     obj_elem->append_child_element(coefs_elem);
+
+    const auto &name = ig_func->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
 
     const auto &dofs_prop = ig_func->get_dofs_property();
     const auto dofs_prop_elem = xml_doc->create_new_text_element("DofsProperty", dofs_prop);
@@ -873,6 +911,13 @@ write_constant_function (const shared_ptr<ConstantFunction> const_function,
     const auto values_elem = xml_doc->create_vector_element("Values", values_vec);
     obj_elem->append_child_element(values_elem);
 
+    const auto &name = const_function->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
+
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);
 }
@@ -912,6 +957,13 @@ write_linear_function (const shared_ptr<LinearFunction> linear_function,
     std::copy(b_arr.cbegin(), b_arr.cend(), b_vec.begin());
     const auto b_elem = xml_doc->create_vector_element("b", b_vec);
     obj_elem->append_child_element(b_elem);
+
+    const auto &name = linear_function->get_name();
+    if (name.size() > 0)
+    {
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        obj_elem->append_child_element(name_elem);
+    }
 
     const auto igt_elem = xml_doc->get_document_element();
     igt_elem->append_child_element(obj_elem);

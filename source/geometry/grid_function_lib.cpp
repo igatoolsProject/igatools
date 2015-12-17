@@ -127,6 +127,8 @@ print_info(LogStream &out) const
   out << b_ ;
   out.end_item();
 
+  out << "Name: " << this->name_ << std::endl;
+
   out.end_item();
 }
 
@@ -254,6 +256,8 @@ print_info(LogStream &out) const
   out << b_ ;
   out.end_item();
 
+  out << "Name: " << this->name_ << std::endl;
+
   out.end_item();
 }
 
@@ -380,6 +384,8 @@ print_info(LogStream &out) const
   out.begin_item("IdentityGridFunction<"
                  + std::to_string(dim) + ">");
   out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
 }
 
 
@@ -642,6 +648,8 @@ print_info(LogStream &out) const
 {
   out.begin_item("BallGridFunction<" + std::to_string(dim) +">");
   out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -903,6 +911,8 @@ print_info(LogStream &out) const
 {
   out.begin_item("SphereGridFunction<" + std::to_string(dim) +">");
   out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -1118,6 +1128,8 @@ print_info(LogStream &out) const
   out << "theta0 = " << theta0_ << endl;
   out << "theta1 = " << theta1_ << endl;
   out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
 }
 
 //------------------------------------------------------------------------------

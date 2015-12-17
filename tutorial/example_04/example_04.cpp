@@ -73,7 +73,7 @@ void plot_basis(const int deg)
   output.template add_field(*central_basis, func_name);
 
   string file_name = "bspline_basis-" + to_string(j) + "_" + to_string(dim) + "d";
-  output.save(file_name);
+  output.save(file_name, true);
   // [plot_basis]
 }
 

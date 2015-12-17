@@ -309,6 +309,7 @@ Grid(const self_t &grid,const CopyPolicy &copy_policy)
   knot_coordinates_(grid.knot_coordinates_),
   boundary_id_(grid.boundary_id_),
   elem_properties_(grid.elem_properties_),
+  name_ (grid.get_name()),
   object_id_(UniqueIdGenerator::get_unique_id()),
   elems_size_(grid.elems_size_)
 {
@@ -342,6 +343,26 @@ operator==(const Grid<dim_> &grid) const
     same_knots_coordinates = same_knots_coordinates && (knots_a == knots_b);
   }
   return same_knots_coordinates;
+}
+
+
+
+template<int dim_>
+const std::string &
+Grid<dim_>::
+get_name() const
+{
+  return name_;
+}
+
+
+
+template<int dim_>
+void
+Grid<dim_>::
+set_name(const std::string &name)
+{
+  name_ = name;
 }
 
 
@@ -877,6 +898,8 @@ print_info(LogStream &out) const
     out.end_item();
   }
   //-------------------------------------------------------
+
+   out << "Name: " << name_ << std::endl;
 }
 
 
@@ -1208,6 +1231,7 @@ serialize(Archive &ar)
   ar &make_nvp("boundary_id_",boundary_id_);
   ar &make_nvp("properties_elements_id_",elem_properties_);
   ar &make_nvp("object_id_",object_id_);
+  ar &make_nvp("name_",name_);
   ar &make_nvp("elems_size_",elems_size_);
 #ifdef MESH_REFINEMENT
   ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);

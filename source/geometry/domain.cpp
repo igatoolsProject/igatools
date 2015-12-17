@@ -29,11 +29,9 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
 Domain<dim_, codim_>::
-Domain(const SharedPtrConstnessHandler<GridFuncType> &func,
-       const std::string &name)
+Domain(const SharedPtrConstnessHandler<GridFuncType> &func)
   :
   grid_func_(func),
-  name_(name),
   object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
@@ -42,12 +40,11 @@ Domain(const SharedPtrConstnessHandler<GridFuncType> &func,
 template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
-create(const std::shared_ptr<GridFuncType> &func,
-       const std::string &name)
+create(const std::shared_ptr<GridFuncType> &func)
 -> std::shared_ptr<self_t>
 {
   auto domain = std::shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<GridFuncType>(func),name));
+    new self_t(SharedPtrConstnessHandler<GridFuncType>(func)));
 
 #ifdef MESH_REFINEMENT
   domain->create_connection_for_insert_knots(domain);
@@ -60,12 +57,11 @@ create(const std::shared_ptr<GridFuncType> &func,
 template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
-const_create(const std::shared_ptr<const GridFuncType> &func,
-             const std::string &name)
+const_create(const std::shared_ptr<const GridFuncType> &func)
 -> std::shared_ptr<const self_t>
 {
   return std::shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<GridFuncType>(func),name));
+    new self_t(SharedPtrConstnessHandler<GridFuncType>(func)));
 }
 
 
@@ -263,7 +259,8 @@ print_info(LogStream &out) const
                  +">");
   grid_func_->print_info(out);
   out.end_item();
-//    AssertThrow(false,ExcNotImplemented());
+
+  out << "Name: " << this->name_ << std::endl;
 }
 
 

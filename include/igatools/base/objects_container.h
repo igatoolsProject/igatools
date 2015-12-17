@@ -69,11 +69,15 @@ template <class T> class SafeSTLSet;
  *
  * This container can be created void and filled after by using the
  * @ref insert_object method, or it can be parsed directly from an XML
- * file by using the class @ref ObjectsContainerParser.
+ * file by using the class @ref ObjectsContainerXMLParser.
  *
  * This class is not intended to provide multi-patch support, dofs
  * management, or similar features. It is just a container of pointers
  * for different types.
+ *
+ * @ingroup serializable
+ * @see ObjectsContainerXMLParser
+ * @see ObjectsContainerXMLWriter
  *
  * @author P. Antolin
  * @date 2015
@@ -369,9 +373,29 @@ private:
   /** Container for the objects. */
   ObjectMapTypes_ objects_;
 
+
+#ifdef SERIALIZATION
+  /**
+   * @name Functions needed for serialization
+   * @see <a href="http://uscilab.github.io/cereal/index.html">Cereal serialization library</a>
+   */
+  ///@{
+  friend class cereal::access;
+
+  template<class Archive>
+  void serialize(Archive &ar);
+
+  ///@}
+#endif // SERIALIZATION
+
 };
 
+
 IGA_NAMESPACE_CLOSE
+
+#ifdef SERIALIZATION
+#include <igatools/base/objects_container.serial>
+#endif // SERIALIZATION
 
 #endif // XML_IO
 

@@ -59,7 +59,9 @@ public:
 public:
   TestGridFunction(const SharedPtrConstnessHandler<Grid<dim>> &grid)
     : parent_t(grid)
-  {}
+  {
+    this->set_name("TestGridFunction");
+  }
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const Grid<dim>> &grid)
@@ -132,8 +134,10 @@ public:
 
 public:
   TestFunction(const SharedPtrConstnessHandler<Domain<dim,0>> &domain)
-    : parent_t(domain,"TestFunction")
-  {}
+    : parent_t(domain)
+  {
+    this->set_name("TestFunction");
+  }
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const Domain<dim,0>> &domain)
@@ -203,8 +207,10 @@ public:
 
 public:
   TestBoundaryFunction(const SharedPtrConstnessHandler<Domain<dim,1>> &domain)
-    : parent_t(domain,"TestBoundaryFunction")
-  {}
+    : parent_t(domain)
+  {
+    this->set_name("TestBoundaryFunction");
+  }
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const Domain<dim,1>> &domain)

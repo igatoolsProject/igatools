@@ -533,6 +533,20 @@ add_attribute(const string &name,
 
 void
 XMLElement::
+add_attribute(const char *name,
+              const char *value)
+{
+    XMLCh* name_ch = XMLString::transcode(name);
+    XMLCh* value_ch = XMLString::transcode(value);
+    root_elem_->setAttribute(name_ch, value_ch);
+    XMLString::release(&name_ch);
+    XMLString::release(&value_ch);
+}
+
+
+
+void
+XMLElement::
 append_child_element (const SelfPtr_ xml_elem)
 {
     root_elem_->appendChild(xml_elem->root_elem_);

@@ -18,20 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __OBJECTS_CONTAINER_PARSER_XML_SCHEMA_H_
-#define __OBJECTS_CONTAINER_PARSER_XML_SCHEMA_H_
+#ifndef __OBJECTS_CONTAINER_READER_XML_SCHEMA_H_
+#define __OBJECTS_CONTAINER_READER_XML_SCHEMA_H_
 
 #include <igatools/base/config.h>
 
 #ifdef XML_IO
 
-#include <igatools/io/objects_container_xml_parser.h>
+#include <igatools/io/objects_container_xml_reader.h>
 
 IGA_NAMESPACE_OPEN
 
-const std::string ObjectsContainerXMLParser::IGATOOLS_FILE_FORMAT_VERSION = "1.0";
+const std::string ObjectsContainerXMLReader::IGATOOLS_FILE_FORMAT_VERSION = "1.0";
 
-const std::string ObjectsContainerXMLParser::XML_SCHEMA_ =
+const std::string ObjectsContainerXMLReader::XML_SCHEMA_ =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<xs:schema attributeFormDefault=\"unqualified\"\n"
 "           elementFormDefault=\"unqualified\"\n"
@@ -290,9 +290,17 @@ const std::string ObjectsContainerXMLParser::XML_SCHEMA_ =
 "  <xs:complexType name=\"GridType\">\n"
 "    <xs:complexContent>\n"
 "      <xs:extension base=\"LocalObjectIdDimType\">\n"
-"        <xs:sequence>\n"
-"          <xs:element name=\"Knots\" minOccurs=\"0\" maxOccurs=\"3\" type=\"DoubleSizeDirectionListMin2Type\"/>\n"
-"        </xs:sequence>\n"
+"        <xs:all>\n"
+"          <xs:element name=\"Knots\" minOccurs=\"1\" maxOccurs=\"1\">\n"
+"            <xs:complexType>\n"
+"              <xs:sequence>\n"
+"                <xs:element name=\"Knots\" minOccurs=\"0\" maxOccurs=\"3\" type=\"DoubleSizeDirectionListMin2Type\"/>\n"
+"              </xs:sequence>\n"
+"            </xs:complexType>\n"
+"          </xs:element>\n"
+"          <!-- Note that this tag is optional -->\n"
+"          <xs:element name=\"Name\" type=\"xs:normalizedString\" minOccurs=\"0\" maxOccurs=\"1\"/>\n"
+"        </xs:all>\n"
 "      </xs:extension>\n"
 "    </xs:complexContent>\n"
 "  </xs:complexType>\n"
@@ -377,6 +385,8 @@ const std::string ObjectsContainerXMLParser::XML_SCHEMA_ =
 "      <xs:extension base=\"LocalObjectIdDimType\">\n"
 "        <xs:all>\n"
 "          <xs:element name=\"Grid\" type=\"GetFromLocalObjectIdType\"/>\n"
+"          <!-- Note that this tag is optional -->\n"
+"          <xs:element name=\"Name\" type=\"xs:normalizedString\" minOccurs=\"0\" maxOccurs=\"1\"/>\n"
 "        </xs:all>\n"
 "      </xs:extension>\n"
 "    </xs:complexContent>\n"
@@ -389,6 +399,8 @@ const std::string ObjectsContainerXMLParser::XML_SCHEMA_ =
 "        <xs:all>\n"
 "          <xs:element name=\"Grid\" type=\"GetFromLocalObjectIdType\"/>\n"
 "          <xs:element name=\"Values\" type=\"DoubleListType\"/>\n"
+"          <!-- Note that this tag is optional -->\n"
+"          <xs:element name=\"Name\" type=\"xs:normalizedString\" minOccurs=\"0\" maxOccurs=\"1\"/>\n"
 "        </xs:all>\n"
 "      </xs:extension>\n"
 "    </xs:complexContent>\n"
@@ -402,6 +414,8 @@ const std::string ObjectsContainerXMLParser::XML_SCHEMA_ =
 "          <xs:element name=\"Grid\" type=\"GetFromLocalObjectIdType\"/>\n"
 "          <xs:element name=\"A\" type=\"DoubleListType\"/>\n"
 "          <xs:element name=\"b\" type=\"DoubleListType\"/>\n"
+"          <!-- Note that this tag is optional -->\n"
+"          <xs:element name=\"Name\" type=\"xs:normalizedString\" minOccurs=\"0\" maxOccurs=\"1\"/>\n"
 "        </xs:all>\n"
 "      </xs:extension>\n"
 "    </xs:complexContent>\n"
@@ -423,6 +437,8 @@ const std::string ObjectsContainerXMLParser::XML_SCHEMA_ =
 "        <xs:all>\n"
 "          <xs:element name=\"ReferenceSpaceBasis\" type=\"GetFromLocalObjectIdType\"/>\n"
 "          <xs:element name=\"IgCoefficients\" type=\"IgCoefficientsType\"/>\n"
+"          <!-- Note that this tag is optional -->\n"
+"          <xs:element name=\"Name\" type=\"xs:normalizedString\" minOccurs=\"0\" maxOccurs=\"1\"/>\n"
 "          <!-- Note that this tag is optional -->\n"
 "          <xs:element name=\"DofsProperty\" type=\"xs:normalizedString\" minOccurs=\"0\" maxOccurs=\"1\"/>\n"
 "        </xs:all>\n"
@@ -492,6 +508,8 @@ const std::string ObjectsContainerXMLParser::XML_SCHEMA_ =
 "        <xs:all>\n"
 "          <xs:element name=\"Domain\" type=\"GetFromLocalObjectIdType\"/>\n"
 "          <xs:element name=\"Values\" type=\"DoubleListType\"/>\n"
+"          <!-- Note that this tag is optional -->\n"
+"          <xs:element name=\"Name\" type=\"xs:normalizedString\" minOccurs=\"0\" maxOccurs=\"1\"/>\n"
 "        </xs:all>\n"
 "      </xs:extension>\n"
 "    </xs:complexContent>\n"
@@ -505,6 +523,8 @@ const std::string ObjectsContainerXMLParser::XML_SCHEMA_ =
 "          <xs:element name=\"Domain\" type=\"GetFromLocalObjectIdType\"/>\n"
 "          <xs:element name=\"A\" type=\"DoubleListType\"/>\n"
 "          <xs:element name=\"b\" type=\"DoubleListType\"/>\n"
+"          <!-- Note that this tag is optional -->\n"
+"          <xs:element name=\"Name\" type=\"xs:normalizedString\" minOccurs=\"0\" maxOccurs=\"1\"/>\n"
 "        </xs:all>\n"
 "      </xs:extension>\n"
 "    </xs:complexContent>\n"
@@ -541,4 +561,4 @@ IGA_NAMESPACE_CLOSE
 
 #endif // XML_IO
 
-#endif // __OBJECTS_CONTAINER_PARSER_XML_SCHEMA_H_
+#endif // __OBJECTS_CONTAINER_READER_XML_SCHEMA_H_

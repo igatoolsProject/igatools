@@ -21,6 +21,7 @@ Original SplineSpace<1,1,1>
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -77,6 +78,7 @@ SplineSpace<1,1,1> after serialize-deserialize.
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -164,6 +166,7 @@ Original SplineSpace<2,1,1>
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -239,6 +242,7 @@ SplineSpace<2,1,1> after serialize-deserialize.
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -385,6 +389,7 @@ Original SplineSpace<3,1,1>
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -512,6 +517,7 @@ SplineSpace<3,1,1> after serialize-deserialize.
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -611,6 +617,7 @@ Original SplineSpace<2,2,1>
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -689,6 +696,7 @@ SplineSpace<2,2,1> after serialize-deserialize.
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 

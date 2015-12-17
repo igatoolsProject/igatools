@@ -16,6 +16,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -103,8 +104,10 @@ sub_space
                [ ] 
                b:
                [ 0 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -125,6 +128,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -212,8 +216,10 @@ sub_space
                [ ] 
                b:
                [ 1.00000 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -244,6 +250,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -336,8 +343,10 @@ sub_space
                [ [ 0 1.00000 ]  ] 
                b:
                [ 0 0 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -363,6 +372,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -455,8 +465,10 @@ sub_space
                [ [ 0 1.00000 ]  ] 
                b:
                [ 1.00000 0 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -479,6 +491,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -570,8 +583,10 @@ sub_space
                [ [ 1.00000 0 ]  ] 
                b:
                [ 0 0 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -594,6 +609,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -685,8 +701,10 @@ sub_space
                [ [ 1.00000 0 ]  ] 
                b:
                [ 0 1.00000 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -731,6 +749,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -829,8 +848,10 @@ sub_space
                [ [ 0 1.00000 0 ]  [ 0 0 1.00000 ]  ] 
                b:
                [ 0 0 0 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -870,6 +891,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -968,8 +990,10 @@ sub_space
                [ [ 0 1.00000 0 ]  [ 0 0 1.00000 ]  ] 
                b:
                [ 1.00000 0 0 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -1000,6 +1024,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -1097,8 +1122,10 @@ sub_space
                [ [ 1.00000 0 0 ]  [ 0 0 1.00000 ]  ] 
                b:
                [ 0 0 0 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -1129,6 +1156,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -1226,8 +1254,10 @@ sub_space
                [ [ 1.00000 0 0 ]  [ 0 0 1.00000 ]  ] 
                b:
                [ 0 1.00000 0 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -1255,6 +1285,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -1351,8 +1382,10 @@ sub_space
                [ [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  ] 
                b:
                [ 0 0 0 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:
@@ -1380,6 +1413,7 @@ sub_space
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -1476,8 +1510,10 @@ sub_space
                [ [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  ] 
                b:
                [ 0 0 1.00000 ] 
+               Name: 
             
          
+         Name: 
       
    
    Dofs sub element to basis mapping:

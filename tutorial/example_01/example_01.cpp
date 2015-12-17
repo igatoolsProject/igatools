@@ -46,7 +46,7 @@ int main()
 
   // [plot_grid]
   Writer<dim> output(grid);
-  output.save("grid_2D");
+  output.save("grid_2D", true);
   // [plot_grid]
 
   // [space]

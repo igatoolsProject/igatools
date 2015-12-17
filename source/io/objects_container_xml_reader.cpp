@@ -18,11 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/io/objects_container_xml_parser.h>
+#include <igatools/io/objects_container_xml_reader.h>
 
 #ifdef XML_IO
 
-#include <igatools/io/objects_container_parser-XML_schema.h>
+#include <igatools/io/objects_container_reader-XML_schema.h>
 
 #include <igatools/io/xml_document.h>
 #include <igatools/io/xml_element.h>
@@ -47,15 +47,16 @@ using std::remove_reference;
 using std::dynamic_pointer_cast;
 using std::copy;
 using std::inserter;
+using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
 shared_ptr<ObjectsContainer>
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse(const string &file_path)
 {
   const auto xml_doc = XMLDocument::parse_from_file(file_path,
-                       ObjectsContainerXMLParser::XML_SCHEMA_);
+                       ObjectsContainerXMLReader::XML_SCHEMA_);
   const auto xml_elem = xml_doc->get_document_element();
 
   const auto container = ObjectsContainer::create();
@@ -87,11 +88,11 @@ parse(const string &file_path)
 
 
 shared_ptr<ObjectsContainer>
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_const(const string &file_path)
 {
   const auto xml_doc = XMLDocument::parse_from_file(file_path,
-                       ObjectsContainerXMLParser::XML_SCHEMA_);
+                       ObjectsContainerXMLReader::XML_SCHEMA_);
   const auto xml_elem = xml_doc->get_document_element();
 
   const auto container = ObjectsContainer::create();
@@ -123,7 +124,7 @@ parse_const(const string &file_path)
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_grids(const shared_ptr<XMLElement> xml_elem,
             const bool parse_as_constant,
             IdMap_ &id_map,
@@ -166,7 +167,7 @@ parse_grids(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
                     const bool parse_as_constant,
                     IdMap_ &id_map,
@@ -213,7 +214,7 @@ parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_bsplines(const shared_ptr<XMLElement> xml_elem,
                const bool parse_as_constant,
                IdMap_ &id_map,
@@ -260,7 +261,7 @@ parse_bsplines(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_nurbs(const shared_ptr<XMLElement> xml_elem,
             const bool parse_as_constant,
             IdMap_ &id_map,
@@ -307,7 +308,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_identity_grid_functions(const shared_ptr<XMLElement> xml_elem,
                               const bool parse_as_constant,
                               IdMap_ &id_map,
@@ -350,7 +351,7 @@ parse_identity_grid_functions(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
                               const bool parse_as_constant,
                               IdMap_ &id_map,
@@ -395,7 +396,7 @@ parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
                             const bool parse_as_constant,
                             IdMap_ &id_map,
@@ -440,7 +441,7 @@ parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
                         const bool parse_as_constant,
                         const bool &first_parsing,
@@ -486,7 +487,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
                                const bool parse_as_constant,
                                IdMap_ &id_map,
@@ -525,7 +526,7 @@ parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_domains(const shared_ptr<XMLElement> xml_elem,
               const bool parse_as_constant,
               IdMap_ &id_map,
@@ -571,7 +572,7 @@ parse_domains(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
                   const bool parse_as_constant,
                   IdMap_ &id_map,
@@ -620,7 +621,7 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_functions(const shared_ptr<XMLElement> xml_elem,
                 const bool parse_as_constant,
                 IdMap_ &id_map,
@@ -634,7 +635,7 @@ parse_functions(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_ig_functions(const shared_ptr<XMLElement> xml_elem,
                    const bool parse_as_constant,
                    IdMap_ &id_map,
@@ -683,7 +684,7 @@ parse_ig_functions(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_constant_functions(const shared_ptr<XMLElement> xml_elem,
                          const bool parse_as_constant,
                          IdMap_ &id_map,
@@ -732,7 +733,7 @@ parse_constant_functions(const shared_ptr<XMLElement> xml_elem,
 
 
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_linear_functions(const shared_ptr<XMLElement> xml_elem,
                        const bool parse_as_constant,
                        IdMap_ &id_map,
@@ -780,7 +781,7 @@ parse_linear_functions(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_grid(const shared_ptr<XMLElement> xml_elem,
            const bool parse_as_constant,
            IdMap_ &id_map,
@@ -799,7 +800,9 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
   const string parsing_msg = Self_::get_type_id_string("Grid", local_object_id,
                                                        SafeSTLVector<int>(1, dim));
 
-  const auto knots_children = xml_elem->get_children_elements("Knots");
+  const auto knots_vector_children = xml_elem->get_single_element("Knots");
+
+  const auto knots_children = knots_vector_children->get_children_elements("Knots");
   // Checking the number of knot vector match with the dimension.
   AssertThrow(dim == knots_children.size(),
               ExcMessage("Parsing " + parsing_msg + ", the number of "
@@ -834,11 +837,15 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
                            "with the vector size."));
   }
 
+  const auto name = parse_name(xml_elem);
+
   if (parse_as_constant)
   {
     const auto grid = GridType::const_create(knots);
     const auto unique_id = grid->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<GridType>(grid)->set_name(name);
 
     container->insert_const_object<GridType>(grid);
   }
@@ -847,6 +854,8 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
     const auto grid = GridType::create(knots);
     const auto unique_id = grid->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    grid->set_name(name);
 
     container->insert_object<GridType>(grid);
 
@@ -857,7 +866,7 @@ parse_grid(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int range, int rank>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_spline_space(const shared_ptr<XMLElement> xml_elem,
                    const bool parse_as_constant,
                    IdMap_ &id_map,
@@ -1056,7 +1065,7 @@ parse_spline_space(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int range, int rank>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_bspline(const shared_ptr<XMLElement> xml_elem,
               const bool parse_as_constant,
               IdMap_ &id_map,
@@ -1220,7 +1229,7 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_identity_grid_function(const shared_ptr<XMLElement> xml_elem,
                              const bool parse_as_constant,
                              IdMap_ &id_map,
@@ -1254,12 +1263,16 @@ parse_identity_grid_function(const shared_ptr<XMLElement> xml_elem,
                          "for " + Self_::get_type_id_string("Grid", local_gr_id,
                                                             SafeSTLVector<Index>(dim)) + "."));
 
+  const auto name = parse_name(xml_elem);
+
   if (parse_as_constant)
   {
     const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
     const auto id_func = IdentityGridFunctionType::const_create(grid);
     const auto unique_id = id_func->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<IdentityGridFunctionType>(id_func)->set_name(name);
 
     container->insert_const_object<GridFunctionType>(id_func);
   }
@@ -1270,6 +1283,8 @@ parse_identity_grid_function(const shared_ptr<XMLElement> xml_elem,
     const auto unique_id = id_func->get_object_id();
     id_map[local_object_id] = unique_id;
 
+    id_func->set_name(name);
+
     container->insert_object<GridFunctionType>(id_func);
   }
 }
@@ -1278,7 +1293,7 @@ parse_identity_grid_function(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int space_dim>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
                              const bool parse_as_constant,
                              IdMap_ &id_map,
@@ -1328,7 +1343,7 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
   std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
   Values values (vals_arr);
 
-
+  const auto name = parse_name(xml_elem);
 
   if (parse_as_constant)
   {
@@ -1336,6 +1351,8 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
     const auto cgf = ConstGridFunctionType::const_create(grid, values);
     const auto unique_id = cgf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<ConstGridFunctionType>(cgf)->set_name(name);
 
     container->insert_const_object<GridFunctionType>(cgf);
   }
@@ -1346,6 +1363,8 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
     const auto unique_id = cgf->get_object_id();
     id_map[local_object_id] = unique_id;
 
+    cgf->set_name(name);
+
     container->insert_object<GridFunctionType>(cgf);
   }
 }
@@ -1354,7 +1373,7 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int space_dim>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
                            const bool parse_as_constant,
                            IdMap_ &id_map,
@@ -1417,24 +1436,28 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
   std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
   Ders A (A_arr);
 
+  const auto name = parse_name(xml_elem);
 
   if (parse_as_constant)
   {
     const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
-    const auto cgf = LinearGridFunctionType::const_create(grid, A, b);
-    const auto unique_id = cgf->get_object_id();
+    const auto lgf = LinearGridFunctionType::const_create(grid, A, b);
+    const auto unique_id = lgf->get_object_id();
     id_map[local_object_id] = unique_id;
 
-    container->insert_const_object<GridFunctionType>(cgf);
+    const_pointer_cast<LinearGridFunctionType>(lgf)->set_name(name);
+
+    container->insert_const_object<GridFunctionType>(lgf);
   }
   else
   {
     const auto grid = container->get_object<GridType>(id_map.at(local_gr_id));
-    const auto cgf = LinearGridFunctionType::create(grid, A, b);
-    const auto unique_id = cgf->get_object_id();
+    const auto lgf = LinearGridFunctionType::create(grid, A, b);
+    const auto unique_id = lgf->get_object_id();
     id_map[local_object_id] = unique_id;
+    lgf->set_name(name);
 
-    container->insert_object<GridFunctionType>(cgf);
+    container->insert_object<GridFunctionType>(lgf);
   }
 }
 
@@ -1442,7 +1465,7 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int space_dim>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
                        const bool parse_as_constant,
                        const bool &first_parsing,
@@ -1515,6 +1538,8 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
     rs = SharedPtrConstnessHandler<RefSpaceType>
          (container->get_object<RefSpaceType>(id_map.at(local_rs_id)));
 
+  const auto name = parse_name(xml_elem);
+
   const string dofs_property = parse_dofs_property(xml_elem);
   const auto dof_distribution = rs->get_spline_space()->get_dof_distribution();
   AssertThrow(dof_distribution->is_property_defined(dofs_property),
@@ -1541,6 +1566,8 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
     const auto unique_id = igf->get_object_id();
     id_map[local_object_id] = unique_id;
 
+    const_pointer_cast<IgGridFunctionType>(igf)->set_name(name);
+
     container->insert_const_object<GridFunctionType>(igf);
   }
   else
@@ -1548,6 +1575,8 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
     const auto igf = IgGridFunctionType::create(rs.get_ptr_data(), *ig_coefs, dofs_property);
     const auto unique_id = igf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    igf->set_name(name);
 
     container->insert_object<GridFunctionType>(igf);
   }
@@ -1557,7 +1586,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int range, int rank>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_nurbs(const shared_ptr<XMLElement> xml_elem,
             const bool parse_as_constant,
             IdMap_ &id_map,
@@ -1708,7 +1737,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int codim>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_domain(const shared_ptr<XMLElement> xml_elem,
              const bool parse_as_constant,
              IdMap_ &id_map,
@@ -1749,18 +1778,22 @@ parse_domain(const shared_ptr<XMLElement> xml_elem,
   if (parse_as_constant)
   {
     const auto gf = container->get_const_object<GridFuncType>(id_map.at(local_gf_id));
-    const auto domain = DomainType::const_create(gf, name);
+    const auto domain = DomainType::const_create(gf);
     const auto unique_id = domain->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<DomainType>(domain)->set_name(name);
 
     container->insert_const_object<DomainType>(domain);
   }
   else
   {
     const auto gf = container->get_object<GridFuncType>(id_map.at(local_gf_id));
-    const auto domain = DomainType::create(gf, name);
+    const auto domain = DomainType::create(gf);
     const auto unique_id = domain->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    domain->set_name(name);
 
     container->insert_object<DomainType>(domain);
   }
@@ -1770,7 +1803,7 @@ parse_domain(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int codim, int range, int rank>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_ig_function(const shared_ptr<XMLElement> xml_elem,
                   const bool parse_as_constant,
                   IdMap_ &id_map,
@@ -1842,17 +1875,21 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
 
   if (parse_as_constant)
   {
-    const auto igf = IgFunctionType::const_create(ps.get_ptr_const_data(), *ig_coefs, dofs_property, name);
+    const auto igf = IgFunctionType::const_create(ps.get_ptr_const_data(), *ig_coefs, dofs_property);
     const auto unique_id = igf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<IgFunctionType>(igf)->set_name(name);
 
     container->insert_const_object<FunctionType>(igf);
   }
   else
   {
-    const auto igf = IgFunctionType::create(ps.get_ptr_data(), *ig_coefs, dofs_property, name);
+    const auto igf = IgFunctionType::create(ps.get_ptr_data(), *ig_coefs, dofs_property);
     const auto unique_id = igf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    igf->set_name(name);
 
     container->insert_object<FunctionType>(igf);
   }
@@ -1862,7 +1899,7 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int codim, int range, int rank>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_constant_function(const shared_ptr<XMLElement> xml_elem,
                         const bool parse_as_constant,
                         IdMap_ &id_map,
@@ -1927,17 +1964,21 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
 
   if (parse_as_constant)
   {
-    const auto cf = ConstFunctionType::const_create(dm.get_ptr_const_data(), values, name);
+    const auto cf = ConstFunctionType::const_create(dm.get_ptr_const_data(), values);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<ConstFunctionType>(cf)->set_name(name);
 
     container->insert_const_object<FunctionType>(cf);
   }
   else
   {
-    const auto cf = ConstFunctionType::create(dm.get_ptr_data(), values, name);
+    const auto cf = ConstFunctionType::create(dm.get_ptr_data(), values);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    cf->set_name(name);
 
     container->insert_object<FunctionType>(cf);
   }
@@ -1947,7 +1988,7 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int codim, int range>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_linear_function(const shared_ptr<XMLElement> xml_elem,
                       const bool parse_as_constant,
                       IdMap_ &id_map,
@@ -2024,17 +2065,21 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
 
   if (parse_as_constant)
   {
-    const auto cf = LinearFunctionType::const_create(dm.get_ptr_const_data(), A, b, name);
+    const auto cf = LinearFunctionType::const_create(dm.get_ptr_const_data(), A, b);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    const_pointer_cast<LinearFunctionType>(cf)->set_name(name);
 
     container->insert_const_object<FunctionType>(cf);
   }
   else
   {
-    const auto cf = LinearFunctionType::create(dm.get_ptr_data(), A, b, name);
+    const auto cf = LinearFunctionType::create(dm.get_ptr_data(), A, b);
     const auto unique_id = cf->get_object_id();
     id_map[local_object_id] = unique_id;
+
+    cf->set_name(name);
 
     container->insert_object<FunctionType>(cf);
   }
@@ -2044,7 +2089,7 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
 
 template <int dim, int codim, int range, int rank>
 void
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_phys_space(const shared_ptr<XMLElement> xml_elem,
                  const bool parse_as_constant,
                  IdMap_ &id_map,
@@ -2154,7 +2199,7 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
 
 
 string
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_name(const shared_ptr<XMLElement> xml_elem)
 {
   if (xml_elem->has_element("Name"))
@@ -2166,7 +2211,7 @@ parse_name(const shared_ptr<XMLElement> xml_elem)
 
 
 string
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_dofs_property(const shared_ptr<XMLElement> xml_elem)
 {
   if (xml_elem->has_element("DofsProperty"))
@@ -2178,7 +2223,7 @@ parse_dofs_property(const shared_ptr<XMLElement> xml_elem)
 
 
 string
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 get_type_id_string(const string &object_type,
                    const Index &local_object_id,
                    const SafeSTLVector<int> &dims)
@@ -2194,7 +2239,7 @@ get_type_id_string(const string &object_type,
 
 
 shared_ptr<IgCoefficients>
-ObjectsContainerXMLParser::
+ObjectsContainerXMLReader::
 parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
                       const string &parsing_msg,
                       const set<Index> &space_global_dofs)

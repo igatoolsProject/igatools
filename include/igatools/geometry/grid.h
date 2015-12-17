@@ -657,6 +657,9 @@ private:
    */
   PropertyList elem_properties_;
 
+  /// Name.
+  std::string name_;
+
   /**
    * Unique identifier associated to each object instance.
    */
@@ -701,6 +704,16 @@ public:
    */
   std::unique_ptr<ElementAccessor>
   create_element_end(const PropId &property) const;
+
+  /**
+   * Get the name associated to the object instance.
+   */
+  const std::string &get_name() const;
+
+  /**
+   * Set the name associated to the object instance.
+   */
+  void set_name(const std::string &name);
 
   /**
    * Returns the unique identifier associated to each object instance.

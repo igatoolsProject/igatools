@@ -62,7 +62,7 @@ void analytical_geometry()
   const int n_plot_points = 11;
   Writer<dim> writer(map, n_plot_points);
   string filename = "ball_geometry-" + to_string(dim) + "d" ;
-  writer.save(filename);
+  writer.save(filename, true);
 }
 // [an geometry]
 
@@ -113,7 +113,7 @@ void nurb_geometry()
   const int n_plot_points = 11;
   Writer<dim> writer(F, n_plot_points);
   string filename = "nurb_geometry-" + to_string(dim) + "d" ;
-  writer.save(filename);
+  writer.save(filename, true);
 }
 // [bspline geometry]
 
@@ -129,7 +129,7 @@ void nurb_geometry_from_file()
   const int n_plot_points = 11;
   Writer<dim> writer(map, n_plot_points);
   string filename = "nurb_geometry_from_file-" + to_string(dim) + "d" ;
-  writer.save(filename);
+  writer.save(filename, true);
 }
 
 

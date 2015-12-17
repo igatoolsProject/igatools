@@ -112,8 +112,7 @@ public:
 
 protected:
   /** Constructor */
-  Function(const SharedPtrConstnessHandler<DomainType> &domain,
-           const std::string &name);
+  Function(const SharedPtrConstnessHandler<DomainType> &domain);
 
 
 public:
@@ -123,20 +122,18 @@ public:
 
 #if 0
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<DomainType> domain,
-         const std::string &name)
+  create(std::shared_ptr<DomainType> domain)
   {
     return std::shared_ptr<self_t>(new
-                                   self_t(SharedPtrConstnessHandler<DomainType>(domain),name));
+                                   self_t(SharedPtrConstnessHandler<DomainType>(domain)));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<const DomainType> domain,
-               const std::string &name)
+  const_create(std::shared_ptr<const DomainType> domain)
   {
     return std::shared_ptr<self_t>(new self_t(
-                                     SharedPtrConstnessHandler<DomainType>(domain),name));
+                                     SharedPtrConstnessHandler<DomainType>(domain)));
   }
 #endif
 
@@ -258,7 +255,6 @@ public:
 protected:
   SharedPtrConstnessHandler<DomainType> domain_;
 
-private:
   /**
    * Name associated to the object instance.
    */
@@ -270,6 +266,7 @@ private:
   Index object_id_;
 
 
+private:
   friend class FunctionElement<dim_, codim_, range_, rank_>;
 
 

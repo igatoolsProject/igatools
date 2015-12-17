@@ -132,6 +132,16 @@ public:
   ///@}
 
   /**
+   * Get the name associated to the object instance.
+   */
+  const std::string &get_name() const;
+
+  /**
+   * Set the name associated to the object instance.
+   */
+  void set_name(const std::string &name);
+
+  /**
    * Returns the unique identifier associated to each object instance.
    */
   Index get_object_id() const;
@@ -177,6 +187,11 @@ public:
 private:
   SharedPtrConstnessHandler<Grid<dim_>> grid_;
 
+protected:
+  /// Name.
+  std::string name_;
+
+private:
   /**
    * Unique identifier associated to each object instance.
    */
@@ -196,6 +211,7 @@ private:
   serialize(Archive &ar)
   {
     ar &make_nvp("grid_",grid_);
+    ar &make_nvp("name_",name_);
   }
   ///@}
 #endif // SERIALIZATION

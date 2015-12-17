@@ -40,7 +40,6 @@ reason we plan to provide input file convertes from a given file version to a ne
 /**
 @defgroup input_v1 Input file format ver. 1.0
 @ingroup in_out
-@brief Input file format ver. 1.0
 
 All the XML files must be have the following structure.
 @code{.xml}
@@ -106,15 +105,20 @@ Below, the XML format for the above listed objects is detailed:
 
 Description of the @ref Grid XML format:
 @code{.xml}
-  <Grid LocalObjectId="0" Dim="2">
+<Grid LocalObjectId="0" Dim="2">
+  <Knots>
     <Knots Direction="0" Size="3">
       0.000000 0.500000 1.000000
     </Knots>
     <Knots Direction="1" Size="2">
       0.000000 1.000000
     </Knots>
-  </Grid>
+  </Knots>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+</Grid>
 @endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
 
 Description of the @ref SplineSpace XML format:
 @code{.xml}
@@ -145,6 +149,7 @@ Description of the @ref SplineSpace XML format:
 
 </SplineSpace>
 @endcode
+By default, if <tt>Periodicity</tt> is not defined, it is set to <tt>false</tt>.
 
 Description of the @ref BSpline XML format:
 @code{.xml}
@@ -157,6 +162,13 @@ Description of the @ref BSpline XML format:
   </EndBehaviour>
 </BSpline>
 @endcode
+By default, if <tt>EndBehaviour</tt> is not defined,
+it is set to <tt>interpolatory</tt> for all the compnents and directions.
+Its value must match with the specified <tt>Periodicity</tt>
+in the definition of the referenced @ref SplineSpace.
+
+Other possible values for <tt>EndBehaviour</tt> are
+<tt>periodic</tt> and <tt>end_knots</tt>.
 
 Description of the @ref NURBS XML format:
 @code{.xml}
@@ -170,16 +182,22 @@ Description of the @ref grid_functions::IdentityGridFunction XML format:
 @code{.xml}
 <IdentityGridFunction LocalObjectId="11" Dim="2">
   <Grid GetFromLocalObjectId="0"/>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
 </IdentityGridFunction>
 @endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
 
 Description of the @ref grid_functions::ConstantGridFunction XML format:
 @code{.xml}
 <ConstantGridFunction LocalObjectId="12" Dim="2" SpaceDim="2">
   <Grid GetFromLocalObjectId="0"/>
   <Values> 1.0 1.0 </Values>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
 </ConstantGridFunction>
 @endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
 
 Description of the @ref grid_functions::LinearGridFunction XML format:
 @code{.xml}
@@ -187,8 +205,11 @@ Description of the @ref grid_functions::LinearGridFunction XML format:
   <Grid GetFromLocalObjectId="0"/>
   <A> 1.0 0.0 0.0 1.0 </A>
   <b> 1.0 2.0 </b>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
 </LinearGridFunction>
 @endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
 
 Description of the @ref IgGridFunction XML format:
 @code{.xml}
@@ -205,18 +226,24 @@ Description of the @ref IgGridFunction XML format:
     </Values>
   </IgCoefficients>
   <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+  <!-- The following entry is optional. -->
   <DofsProperty>active</DofsProperty>
 </IgGridFunction>
 @endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+By default, if <tt>DofsProperty</tt> is not defined,
+it is set to <tt>active</tt>.
 
 Description of the @ref Domain XML format:
 @code{.xml}
 <Domain LocalObjectId="8"  Dim="2" Codim="0">
   <GridFunction GetFromLocalObjectId="7"/>
   <!-- The following entry is optional. -->
-  <Name>my_domain</Name>
+  <Name>my_name</Name>
 </Domain>
 @endcode
+By default, if the <tt>Name</tt> is not defined, it is set to a void string.
 
 Description of the @ref PhysicalSpaceBasis XML format:
 @code{.xml}
@@ -227,22 +254,32 @@ Description of the @ref PhysicalSpaceBasis XML format:
   <Transformation>h_grad</Transformation>
 </PhysicalSpaceBasis>
 @endcode
+By default, if <tt>Transformation</tt> is not defined,
+it is set to <tt>h_grad</tt>.
+Other possible values for <tt>Transformation</tt> are
+<tt>h_div</tt>, <tt>h_curl</tt> and <tt>l_2</tt>.
 
 Description of the @ref functions::ConstantFunction XML format:
 @code{.xml}
 <ConstantFunction LocalObjectId="12" Dim="2" Range="2" Rank="1" Codim="0">
   <Domain GetFromLocalObjectId="0"/>
   <Values> 1.0 1.0 </Values>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
 </ConstantFunction>
 @endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
 
 Description of the @ref functions::LinearFunction XML format:
 @code{.xml}
 <LinearFunction LocalObjectId="12" Dim="2" Range="2" Rank="1" Codim="0">
   <A> 1.0 0.0 0.0 1.0 </A>
   <b> 1.0 2.0 </b>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
 </LinearFunction>
 @endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
 
 Description of the @ref IgFunction XML format:
 @code{.xml}
@@ -259,11 +296,14 @@ Description of the @ref IgFunction XML format:
     </Values>
   </IgCoefficients>
   <!-- The following entry is optional. -->
-  <Name>my_function</Name>
+  <Name>my_name</Name>
   <!-- The following entry is optional. -->
   <DofsProperty>active</DofsProperty>
 </IgFunction>
 @endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+By default, if <tt>DofsProperty</tt> is not defined,
+it is set to <tt>active</tt>.
 
 */
 /** @}*/ //end of group input_v1

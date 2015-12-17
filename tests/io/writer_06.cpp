@@ -47,7 +47,7 @@ void write_sphere()
 
   const int codim = 1;
   Writer<dim, codim> writer(F, 4);
-  writer.save("sphere_dim" + std::to_string(dim));
+  writer.save("sphere_dim" + std::to_string(dim), true);
   writer.print_info(out);
 
   OUTEND

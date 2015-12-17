@@ -198,7 +198,7 @@ void PoissonProblem<dim>::output()
   writer.template add_field<1,1>(*solution_function, "solution");
 
   string filename = "poisson_problem-" + to_string(dim) + "d" ;
-  writer.save(filename);
+  writer.save(filename, true);
 }
 
 

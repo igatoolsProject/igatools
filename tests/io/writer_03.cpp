@@ -47,8 +47,7 @@ test()
   writer.add_element_data(cell_data, "chess board");
 
   string filename = "grid_dim" + to_string(dim);
-  writer.save(filename);
-  writer.save(filename,"appended");
+  writer.save(filename, true);
   writer.print_info(out);
 }
 

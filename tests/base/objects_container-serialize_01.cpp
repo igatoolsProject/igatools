@@ -20,7 +20,7 @@
 
 /**
  *  @file
- *  @brief  Test for Objects container
+ *  @brief  Test for Objects container serialization
  *  @author P. Antolin
  *  @date 2015
  */
@@ -30,13 +30,42 @@
 #include <igatools/base/objects_container.h>
 #include <igatools/geometry/grid.h>
 
-#include <igatools/geometry/grid_function_lib.h>
-#include <igatools/functions/function_lib.h>
 #include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
+#include <igatools/functions/ig_function.h>
 
-template< int dim, int range, int rank = 1>
+void serialize_deserialize(const ObjectsContainer &container)
+{
+  out.begin_item("Original ObjectsContainer.");
+  container.print_info(out);
+  out.end_item();
+
+
+  // serialize the ObjectsContainer to a xml file
+  std::string filename = "objects_container.xml";
+  // serialize the ObjectsContainer to an xml file
+  {
+    std::ofstream xml_ostream(filename);
+    OArchive xml_out(xml_ostream);
+    xml_out << container;
+  }
+
+  // de-serialize the ObjectsContainer from a xml file
+  ObjectsContainer container_new;
+  {
+    std::ifstream xml_istream(filename);
+    IArchive xml_in(xml_istream);
+    xml_in >> container_new;
+  }
+
+  out.begin_item("ObjectsContainer after serialize-deserialize.");
+  container_new.print_info(out);
+  out.end_item();
+  //*/
+}
+
+template< int dim>
 void insert_objects(const std::shared_ptr<ObjectsContainer> container)
 {
   using iga::SafeSTLVector;
@@ -73,7 +102,9 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   }
 
   // Defining used types.
+  static const int range = dim;
   static const int codim = range - dim;
+  static const int rank = 1;
   using GridType = Grid<dim>;
   using SpSpaceType = SplineSpace<dim, range, rank>;
   using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
@@ -86,8 +117,8 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   using ScalarGridFuncType = GridFunction<dim, 1>;
   using GridFuncType = GridFunction<dim, range>;
   using DomainType = Domain<dim, codim>;
-  using ConstGridFunc = grid_functions::ConstantGridFunction<dim, range>;
-  using ConstFuncType = functions::ConstantFunction<dim, codim, range, rank>;
+  using IgGridFunc = IgGridFunction<dim, dim+codim>;
+  using IgFuncType = IgFunction<dim, codim, range, rank>;
   using FuncType = Function<dim, codim, range, rank>;
   using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
 
@@ -111,28 +142,34 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
     weights[dof] = 1.0;
 
   const auto w_func = WeightFuncType::create(scalar_space,weights);
-  w_func->set_name("my_weight_function");
 
   container->insert_const_object<ScalarGridFuncType>(w_func);
 
   auto nurbs_space = NURBSType::create(bsp, w_func);
   container->insert_const_object<RefSpaceType>(nurbs_space);
 
-  Values<dim, range, 1> val;
-  const auto const_grid_func = ConstGridFunc::create(grid, val);
-  container->insert_const_object<GridFuncType>(const_grid_func);
-  const_grid_func->set_name("my_const_grid_function");
+  Epetra_SerialComm comm;
+  auto map = EpetraTools::create_map(*nurbs_space, "active", comm);
+  const auto pts = EpetraTools::create_vector(*map);
+  (*pts)[0] = 1.;
+  auto ig_grid_func = IgGridFunc::create(nurbs_space, *pts, "active");
+  container->insert_const_object<GridFuncType>(ig_grid_func);
 
-  const auto domain = DomainType::create(const_grid_func);
+  const auto domain = DomainType::create(ig_grid_func);
   domain->set_name("my_domain");
   container->insert_const_object<DomainType>(domain);
 
   const auto phys_space = PhysSpaceType::create(nurbs_space, domain);
   container->insert_const_object<PhysSpaceType>(phys_space);
 
-  const auto const_func = ConstFuncType::create(domain, val);
-  container->insert_const_object<FuncType>(const_func);
-  const_func->set_name("my_const_function");
+  auto map_2 = EpetraTools::create_map(*phys_space, "active", comm);
+  auto coeff = EpetraTools::create_vector(*map_2);
+  (*coeff)[0] = 2.;
+  auto ig_func = IgFuncType::create(phys_space, *coeff);
+  ig_func->set_name("my_function");
+  container->insert_const_object<FuncType>(ig_func);
+
+
 }
 
 
@@ -141,15 +178,12 @@ int main()
 
   const auto container = ObjectsContainer::create();
 
-  insert_objects<1, 1>(container);
-  insert_objects<1, 2>(container);
-  insert_objects<1, 3>(container);
-  insert_objects<2, 2>(container);
-  insert_objects<2, 3>(container);
-  insert_objects<3, 3>(container);
+  insert_objects<1>(container);
+  insert_objects<2>(container);
+  insert_objects<3>(container);
 
   OUTSTART
-  container->print_info(out);
+  serialize_deserialize(*container);
   OUTEND
 
   return 0;

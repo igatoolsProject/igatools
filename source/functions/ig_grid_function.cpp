@@ -80,7 +80,6 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
 
 
 
-
 #ifdef MESH_REFINEMENT
 
 template<int dim,int space_dim>
@@ -219,6 +218,8 @@ print_info(LogStream &out) const
   out.end_item();
 
   out << "Dofs property: " << dofs_property_ << std::endl;
+
+  out << "Name: " << this->name_ << std::endl;
 
   out.end_item();
 }

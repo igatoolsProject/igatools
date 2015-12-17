@@ -26,6 +26,7 @@ const Grid Dim : 1. Number of objects: 0
             
          
       
+      Name: 
    
    Object Id: 11
       Number of intervals per direction: [ 4 ]
@@ -49,6 +50,7 @@ const Grid Dim : 1. Number of objects: 0
             
          
       
+      Name: 
    
    Object Id: 22
       Number of intervals per direction: [ 4 ]
@@ -72,6 +74,7 @@ const Grid Dim : 1. Number of objects: 0
             
          
       
+      Name: 
    
 
 Grid Dim : 2. Number of objects: 0
@@ -125,6 +128,7 @@ const Grid Dim : 2. Number of objects: 0
             
          
       
+      Name: 
    
    Object Id: 44
       Number of intervals per direction: [ 4 3 ]
@@ -174,6 +178,7 @@ const Grid Dim : 2. Number of objects: 0
             
          
       
+      Name: 
    
 
 Grid Dim : 3. Number of objects: 0
@@ -265,6 +270,7 @@ const Grid Dim : 3. Number of objects: 0
             
          
       
+      Name: 
    
 
 Grid Dim : 0. Number of objects: 0
@@ -313,6 +319,7 @@ const SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -376,6 +383,7 @@ const SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -446,6 +454,7 @@ const SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 0
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -553,6 +562,7 @@ const SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 0
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -653,6 +663,7 @@ const SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -804,6 +815,7 @@ const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 0
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -910,6 +922,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1021,6 +1034,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1133,6 +1147,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -1246,6 +1261,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
                            
                         
                      
+                     Name: 
                   
                   Degrees:
                      Raw components: 
@@ -1343,6 +1359,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
                Coef[loc_id=6 , glob_id=6] = 1.00000
             
             Dofs property: active
+            Name: my_weight_function
          
       
    
@@ -1370,6 +1387,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1481,6 +1499,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1596,6 +1615,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1727,6 +1747,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -1859,6 +1880,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
                            
                         
                      
+                     Name: 
                   
                   Degrees:
                      Raw components: 
@@ -1956,6 +1978,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
                Coef[loc_id=6 , glob_id=6] = 1.00000
             
             Dofs property: active
+            Name: my_weight_function
          
       
    
@@ -1987,6 +2010,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -2137,6 +2161,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -2288,6 +2313,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
                            
                         
                      
+                     Name: 
                   
                   Degrees:
                      Raw components: 
@@ -2385,6 +2411,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
                Coef[loc_id=6 , glob_id=6] = 1.00000
             
             Dofs property: active
+            Name: my_weight_function
          
       
    
@@ -2442,6 +2469,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -2585,6 +2613,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -2732,6 +2761,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -2901,6 +2931,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -3071,6 +3102,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
                            
                         
                      
+                     Name: 
                   
                   Degrees:
                      Raw components: 
@@ -3202,6 +3234,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
                Coef[loc_id=34 , glob_id=34] = 1.00000
             
             Dofs property: active
+            Name: my_weight_function
          
       
    
@@ -3259,6 +3292,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -3453,6 +3487,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -3648,6 +3683,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
                            
                         
                      
+                     Name: 
                   
                   Degrees:
                      Raw components: 
@@ -3779,6 +3815,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
                Coef[loc_id=34 , glob_id=34] = 1.00000
             
             Dofs property: active
+            Name: my_weight_function
          
       
    
@@ -3874,6 +3911,7 @@ const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -4064,6 +4102,7 @@ const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -4311,6 +4350,7 @@ const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -4559,6 +4599,7 @@ const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
                            
                         
                      
+                     Name: 
                   
                   Degrees:
                      Raw components: 
@@ -4765,6 +4806,7 @@ const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
                Coef[loc_id=104 , glob_id=104] = 1.00000
             
             Dofs property: active
+            Name: my_weight_function
          
       
    
@@ -4814,6 +4856,7 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -4911,12 +4954,14 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: my_weight_function
       
    
    Object Id: 7
       ConstantGridFunction<1,1>
          b:
          [ 0 ] 
+         Name: my_const_grid_function
       
    
    Object Id: 16
@@ -4945,6 +4990,7 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -5042,6 +5088,7 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: my_weight_function
       
    
    Object Id: 27
@@ -5070,6 +5117,7 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -5167,6 +5215,7 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: my_weight_function
       
    
 
@@ -5177,6 +5226,7 @@ const GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
       ConstantGridFunction<1,2>
          b:
          [ 0 0 ] 
+         Name: my_const_grid_function
       
    
 
@@ -5187,6 +5237,7 @@ const GridFunction Dim : 1 Spacedim : 3. Number of objects: 0
       ConstantGridFunction<1,3>
          b:
          [ 0 0 0 ] 
+         Name: my_const_grid_function
       
    
 
@@ -5197,6 +5248,7 @@ const GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
       ConstantGridFunction<2,2>
          b:
          [ 0 0 ] 
+         Name: my_const_grid_function
       
    
 
@@ -5255,6 +5307,7 @@ const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -5386,6 +5439,7 @@ const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: my_weight_function
       
    
    Object Id: 49
@@ -5440,6 +5494,7 @@ const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -5571,6 +5626,7 @@ const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: my_weight_function
       
    
 
@@ -5581,6 +5637,7 @@ const GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
       ConstantGridFunction<2,3>
          b:
          [ 0 0 0 ] 
+         Name: my_const_grid_function
       
    
 
@@ -5591,6 +5648,7 @@ const GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
       ConstantGridFunction<3,3>
          b:
          [ 0 0 0 ] 
+         Name: my_const_grid_function
       
    
 
@@ -5687,6 +5745,7 @@ const GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -5893,6 +5952,7 @@ const GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
             Coef[loc_id=104 , glob_id=104] = 1.00000
          
          Dofs property: active
+         Name: my_weight_function
       
    
 
@@ -5920,8 +5980,10 @@ const Domain Dim : 1 Codim : 0. Number of objects: 0
          ConstantGridFunction<1,1>
             b:
             [ 0 ] 
+            Name: my_const_grid_function
          
       
+      Name: my_domain
    
 
 Domain Dim : 1 Codim : 1. Number of objects: 0
@@ -5932,8 +5994,10 @@ const Domain Dim : 1 Codim : 1. Number of objects: 0
          ConstantGridFunction<1,2>
             b:
             [ 0 0 ] 
+            Name: my_const_grid_function
          
       
+      Name: my_domain
    
 
 Domain Dim : 1 Codim : 2. Number of objects: 0
@@ -5944,8 +6008,10 @@ const Domain Dim : 1 Codim : 2. Number of objects: 0
          ConstantGridFunction<1,3>
             b:
             [ 0 0 0 ] 
+            Name: my_const_grid_function
          
       
+      Name: my_domain
    
 
 Domain Dim : 2 Codim : 0. Number of objects: 0
@@ -5956,8 +6022,10 @@ const Domain Dim : 2 Codim : 0. Number of objects: 0
          ConstantGridFunction<2,2>
             b:
             [ 0 0 ] 
+            Name: my_const_grid_function
          
       
+      Name: my_domain
    
 
 Domain Dim : 2 Codim : 1. Number of objects: 0
@@ -5968,8 +6036,10 @@ const Domain Dim : 2 Codim : 1. Number of objects: 0
          ConstantGridFunction<2,3>
             b:
             [ 0 0 0 ] 
+            Name: my_const_grid_function
          
       
+      Name: my_domain
    
 
 Domain Dim : 3 Codim : 0. Number of objects: 0
@@ -5980,8 +6050,10 @@ const Domain Dim : 3 Codim : 0. Number of objects: 0
          ConstantGridFunction<3,3>
             b:
             [ 0 0 0 ] 
+            Name: my_const_grid_function
          
       
+      Name: my_domain
    
 
 PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
@@ -6049,6 +6121,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -6162,6 +6235,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects
                               
                            
                         
+                        Name: 
                      
                      Degrees:
                         Raw components: 
@@ -6259,6 +6333,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects
                   Coef[loc_id=6 , glob_id=6] = 1.00000
                
                Dofs property: active
+               Name: my_weight_function
             
          
       
@@ -6267,8 +6342,10 @@ const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects
             ConstantGridFunction<1,1>
                b:
                [ 0 ] 
+               Name: my_const_grid_function
             
          
+         Name: my_domain
       
    
 
@@ -6305,6 +6382,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -6437,6 +6515,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects
                               
                            
                         
+                        Name: 
                      
                      Degrees:
                         Raw components: 
@@ -6534,6 +6613,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects
                   Coef[loc_id=6 , glob_id=6] = 1.00000
                
                Dofs property: active
+               Name: my_weight_function
             
          
       
@@ -6542,8 +6622,10 @@ const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects
             ConstantGridFunction<1,2>
                b:
                [ 0 0 ] 
+               Name: my_const_grid_function
             
          
+         Name: my_domain
       
    
 
@@ -6584,6 +6666,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -6735,6 +6818,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects
                               
                            
                         
+                        Name: 
                      
                      Degrees:
                         Raw components: 
@@ -6832,6 +6916,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects
                   Coef[loc_id=6 , glob_id=6] = 1.00000
                
                Dofs property: active
+               Name: my_weight_function
             
          
       
@@ -6840,8 +6925,10 @@ const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects
             ConstantGridFunction<1,3>
                b:
                [ 0 0 0 ] 
+               Name: my_const_grid_function
             
          
+         Name: my_domain
       
    
 
@@ -6904,6 +6991,7 @@ const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -7074,6 +7162,7 @@ const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects
                               
                            
                         
+                        Name: 
                      
                      Degrees:
                         Raw components: 
@@ -7205,6 +7294,7 @@ const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects
                   Coef[loc_id=34 , glob_id=34] = 1.00000
                
                Dofs property: active
+               Name: my_weight_function
             
          
       
@@ -7213,8 +7303,10 @@ const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects
             ConstantGridFunction<2,2>
                b:
                [ 0 0 ] 
+               Name: my_const_grid_function
             
          
+         Name: my_domain
       
    
 
@@ -7277,6 +7369,7 @@ const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -7472,6 +7565,7 @@ const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects
                               
                            
                         
+                        Name: 
                      
                      Degrees:
                         Raw components: 
@@ -7603,6 +7697,7 @@ const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects
                   Coef[loc_id=34 , glob_id=34] = 1.00000
                
                Dofs property: active
+               Name: my_weight_function
             
          
       
@@ -7611,8 +7706,10 @@ const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects
             ConstantGridFunction<2,3>
                b:
                [ 0 0 0 ] 
+               Name: my_const_grid_function
             
          
+         Name: my_domain
       
    
 
@@ -7713,6 +7810,7 @@ const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -7961,6 +8059,7 @@ const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects
                               
                            
                         
+                        Name: 
                      
                      Degrees:
                         Raw components: 
@@ -8167,6 +8266,7 @@ const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects
                   Coef[loc_id=104 , glob_id=104] = 1.00000
                
                Dofs property: active
+               Name: my_weight_function
             
          
       
@@ -8175,8 +8275,10 @@ const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects
             ConstantGridFunction<3,3>
                b:
                [ 0 0 0 ] 
+               Name: my_const_grid_function
             
          
+         Name: my_domain
       
    
 
@@ -8211,6 +8313,7 @@ const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
       ConstantFunction<1,0,1,1>
          b:
          [ 0 ] 
+         Name: my_const_function
       
    
 
@@ -8225,6 +8328,7 @@ const Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
       ConstantFunction<1,1,2,1>
          b:
          [ 0 0 ] 
+         Name: my_const_function
       
    
 
@@ -8243,6 +8347,7 @@ const Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
       ConstantFunction<1,2,3,1>
          b:
          [ 0 0 0 ] 
+         Name: my_const_function
       
    
 
@@ -8257,6 +8362,7 @@ const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
       ConstantFunction<2,0,2,1>
          b:
          [ 0 0 ] 
+         Name: my_const_function
       
    
 
@@ -8271,6 +8377,7 @@ const Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
       ConstantFunction<2,1,3,1>
          b:
          [ 0 0 0 ] 
+         Name: my_const_function
       
    
 
@@ -8285,6 +8392,7 @@ const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
       ConstantFunction<3,0,3,1>
          b:
          [ 0 0 0 ] 
+         Name: my_const_function
       
    
 

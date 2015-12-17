@@ -29,6 +29,7 @@
 
 
 using std::shared_ptr;
+using std::string;
 using std::to_string;
 using namespace boost::fusion;
 using boost::fusion::for_each;
@@ -225,8 +226,8 @@ print_info(LogStream &out) const
   });
 
   // Spline spaces
-  SpSpacePtrs valid_rsp_ptr_types;
-  for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
+  SpSpacePtrs valid_ssp_ptr_types;
+  for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     const auto objects = at_key<Type>(objects_);
@@ -263,6 +264,7 @@ print_info(LogStream &out) const
   });
 
   // Reference space basis
+  RefSpacePtrs valid_rsp_ptr_types;
   for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
   {
     using SSType = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
@@ -804,9 +806,194 @@ fill_not_inserted_dependencies()
   });
 }
 
+#ifdef SERIALIZATION
+
+template<class Archive>
+void
+ObjectsContainer::
+serialize(Archive &ar)
+{
+  // Serializing grids.
+  GridPtrs valid_grid_ptr_types;
+  for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+
+    const string name = "grid_"  + to_string(Type::dim);
+
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    auto &const_objects = at_key<const Type>(objects_);
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : const_objects)
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
+  });
+
+  // Serializing spline spaces
+  SpSpacePtrs valid_ssp_ptr_types;
+  for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+
+    const string name = "spline_space_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::range) + "_"
+            + to_string(Type::rank);
+
+    ar &make_nvp(name, at_key<Type>(objects_));
+  });
+
+  // Serializing reference space basis
+  RefSpacePtrs valid_rsp_ptr_types;
+  for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+
+    const string name = "reference_space_basis_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::range) + "_"
+            + to_string(Type::rank);
+
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    auto &const_objects = at_key<const Type>(objects_);
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : const_objects)
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
+  });
+
+  // Grid functions
+  GridFuncPtrs valid_gf_ptr_types;
+  for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+
+    const string name = "grid_funcion_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::space_dim);
+
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    auto &const_objects = at_key<const Type>(objects_);
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : const_objects)
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
+  });
+
+  // Domains
+  DomainPtrs valid_dm_ptr_types;
+  for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+
+    const string name = "domain_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::space_dim);
+
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    auto &const_objects = at_key<const Type>(objects_);
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : const_objects)
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
+  });
+
+  // Physical space basis
+  PhysSpacePtrs valid_ps_ptr_types;
+  for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+
+    const string name = "physical_space_basis_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::range) + "_"
+            + to_string(Type::rank) + "_"
+            + to_string(Type::codim);
+
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    auto &const_objects = at_key<const Type>(objects_);
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : const_objects)
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
+  });
+
+  // Function
+  FunctionPtrs valid_fn_ptr_types;
+  for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
+  {
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+
+    const string name = "function_"
+            + to_string(Type::dim) + "_"
+            + to_string(Type::codim) + "_"
+            + to_string(Type::range) + "_"
+            + to_string(Type::rank);
+
+    ar &make_nvp(name, at_key<Type>(objects_));
+
+    auto &const_objects = at_key<const Type>(objects_);
+
+    SafeSTLVector<shared_ptr<Type>> tmp_objects;
+    for (auto & obj : const_objects)
+        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+
+     ar &make_nvp("const_" + name, tmp_objects);
+
+     if (const_objects.empty())
+         for (const auto &obj : tmp_objects)
+             const_objects.push_back(obj);
+  });
+
+
+
+}
+#endif // SERIALIZATION
+
 
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/base/objects_container.inst>
+
+
+#ifdef SERIALIZATION
+template void iga::ObjectsContainer::serialize(OArchive&);
+template void iga::ObjectsContainer::serialize(IArchive&);
+#endif // SERIALIZATION
 
 #endif // XML_IO
