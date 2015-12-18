@@ -25,9 +25,9 @@ f = data.file_output
 inst = data.inst
 
 sub_dim_members = \
- ['typename class::template SubSpace<k>::MultiplicityTable class::get_sub_space_mult<k>(const Index s_id) const;', 
-  'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;',
-  'typename class::template SubSpace<k>::PeriodicityTable class::get_sub_space_periodicity<k>(const Index s_id) const;']         
+ ['typename class::template SubSpace<k>::MultiplicityTable class::get_sub_space_mult<k>(const Index s_id) const', 
+  'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const',
+  'typename class::template SubSpace<k>::PeriodicityTable class::get_sub_space_periodicity<k>(const Index s_id) const']
 
 
 
@@ -42,7 +42,8 @@ for x in inst.sub_ref_sp_dims:
         for k in range(0,max(x.dim-1,0)+1):
 #        k = x.dim
             s = fun.replace('class', space).replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')
+            templated_funcs.append(s)
+#            f.write('template ' + s + '\n')
     
 
 for x in inst.ref_sp_dims:
@@ -74,22 +75,22 @@ for space in unique(spaces):
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t0))
     t1 = 'CartesianProductArray<int,%s>' %(dim)
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t1))
-    f.write('template %s::template ComponentContainer<%s>::template ComponentContainer<%s>(std::initializer_list<%s>,void *);\n' %(space,t1,t1,t1))
+    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(std::initializer_list<%s>,void *);\n' %(space,t1,t1))
     t2 = 'SafeSTLArray<bool,%s>' %(dim)
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t2))
-    f.write('template %s::template ComponentContainer<%s>::template ComponentContainer<%s>(const %s &,void *);\n' %(space,t2,t2,t2))
+    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(const %s &,void *);\n' %(space,t2,t2))
     t3 = 'SafeSTLArray<BasisEndBehaviour,%s>' %(dim)
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t3))
-    f.write('template %s::template ComponentContainer<%s>::template ComponentContainer<%s>(const %s &,void *);\n' %(space,t3,t3,t3))
-    f.write('template %s::template ComponentContainer<%s>::template ComponentContainer<%s>(const SafeSTLArray<int,%s> &,const %s &,void *);\n' %(space,t3,t3,n_components,t3))
-    f.write('template %s::template ComponentContainer<%s>::template ComponentContainer<%s>(std::initializer_list<%s>,void *);\n' %(space,t3,t3,t3))
+    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(const %s &,void *);\n' %(space,t3,t3))
+    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(const SafeSTLArray<int,%s> &,const %s &,void *);\n' %(space,t3,n_components,t3))
+    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(std::initializer_list<%s>,void *);\n' %(space,t3,t3))
     t4 = 'SafeSTLArray<std::pair<Real,Real>,%s>' %(dim)
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t4))
     t5 = 'SafeSTLArray<SafeSTLVector<Real>,%s>' %(dim)
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t5))
     t6 = 'SafeSTLArray<CartesianProductArray<double,2>,%s>' % (dim) 
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t6))
-    f.write('template %s::template ComponentContainer<%s>::template ComponentContainer<%s>(std::initializer_list<%s>,void *);\n' %(space,t6,t6,t6))
+    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(std::initializer_list<%s>,void *);\n' %(space,t6,t6))
     t7 = 'unique_ptr<const TensorProductFunctionEvaluator<%s>>'%(dim)
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t7))
     t8 = 'SafeSTLArray<BasisValues1d,%s>' % (dim)
@@ -102,12 +103,11 @@ for space in unique(spaces):
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t11))
     t12 = 'TensorIndex<%s>' %(dim)
     f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t12))
-    f.write('template %s::template ComponentContainer<%s>::template ComponentContainer<%s>(const %s &,void *);\n' %(space,t12,t12,t12))
-    f.write('template %s::template ComponentContainer<%s>::template ComponentContainer<%s>(std::initializer_list<%s>,void *);\n' %(space,t12,t12,t12))
-        
+    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(const %s &,void *);\n' %(space,t12,t12))
+    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(std::initializer_list<%s>,void *);\n' %(space,t12,t12))
 
 for func in unique(templated_funcs):
-    f.write('template %s ;\n' %func)
+    f.write('template %s;\n' %func)
 
 
 

@@ -65,18 +65,18 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 f.write('IGA_NAMESPACE_CLOSE\n')
 
 
-#archives = ['OArchive','IArchive']
+archives = ['OArchive','IArchive']
 
 
 f.write('using VecBernstOp = iga::SafeSTLVector<iga::BernsteinOperator>;\n');
-f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,VecBernstOp,cereal::specialization::member_serialize);\n');
-f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,VecBernstOp,cereal::specialization::member_serialize);\n');
+for ar in archives:
+    f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,VecBernstOp,cereal::specialization::member_serialize)\n' %(ar));
 
 id = 0 
 for space in unique(spaces):
     sp_alias = 'BSplineAlias%d' %(id)
     f.write('using %s = iga::%s;\n' % (sp_alias, space));
-    f.write('CEREAL_REGISTER_TYPE(%s);\n' %sp_alias);
+    f.write('CEREAL_REGISTER_TYPE(%s)\n' %sp_alias);
     id += 1 
 
 
@@ -89,7 +89,8 @@ for arr in unique(arrays):
                                      .replace('CartesianProductArray','iga::CartesianProductArray')
                                      .replace('BernsteinOperator','iga::BernsteinOperator')
                                      .replace('Real','iga::Real')));
-    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %(alias));
+    for ar in archives:
+        f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,%s,cereal::specialization::member_serialize)\n' %(ar,alias));
     id += 1
 
 

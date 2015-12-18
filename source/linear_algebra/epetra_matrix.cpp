@@ -84,7 +84,7 @@ create_matrix(const Graph &graph)
 }
 
 
-};
+}
 
 IGA_NAMESPACE_CLOSE
 

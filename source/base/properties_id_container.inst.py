@@ -38,7 +38,7 @@ obj = 'PropertiesIdContainer<int>'
 containers.append(obj)
 
 for obj in unique(containers):
-    f.write('template class %s; \n' %(obj))
+    f.write('template class %s;\n' %(obj))
 
 
 f.write('IGA_NAMESPACE_CLOSE\n')

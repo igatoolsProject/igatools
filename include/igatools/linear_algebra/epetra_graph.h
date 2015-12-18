@@ -69,7 +69,7 @@ create_graph(const RowSpace &row_space, const std::string &row_property,
   return create_graph(dofs_connectivity,comm);
 }
 
-};
+}
 
 IGA_NAMESPACE_CLOSE
 

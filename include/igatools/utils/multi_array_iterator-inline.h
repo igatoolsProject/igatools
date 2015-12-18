@@ -154,23 +154,23 @@ template <class Container>
 inline
 auto
 MultiArrayIteratorBase<Container>::
-operator->() const -> const value_type *const
+operator->() const -> const reference
 {
   Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
   Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
 //    return &container_->get_data()[id_];
-  return &(*container_)[id_];
+  return (*container_)[id_];
 }
 
 template <class Container>
 inline
 auto
 MultiArrayIteratorBase<Container>::
-operator->() -> value_type *
+operator->() -> reference
 {
   Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
   Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-  return &(*container_)[id_];
+  return (*container_)[id_];
 }
 
 template <class Container>

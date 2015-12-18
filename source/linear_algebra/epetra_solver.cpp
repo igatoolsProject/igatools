@@ -61,7 +61,7 @@ SolverPtr create_solver(const Matrix &A, Vector &x, const Vector &b,
   return solver;
 }
 
-};
+}
 
 IGA_NAMESPACE_CLOSE
 

@@ -40,7 +40,7 @@ activate::FlagsToCache activate::grid =
   {Flags::weight, Flags::weight}
 };
 //---------------------------------------------------------------------
-};
+}
 
 
 //---------------------------------------------------------------------
@@ -158,7 +158,7 @@ activate::FlagsToGrid activate::grid =
   {Flags::ext_normal_D1, grid_element::Flags::none}
 };
 
-};
+}
 //---------------------------------------------------------------------
 
 
@@ -206,7 +206,7 @@ activate::FlagsToGrid activate::grid =
   {Flags::D3, grid_element::Flags::none}
 };
 
-};
+}
 //---------------------------------------------------------------------
 
 
@@ -242,7 +242,7 @@ function_element::activate::FlagsToDomain activate::domain =
   {Flags::w_measure, domain_element::Flags::w_measure}
 };
 
-};
+}
 //---------------------------------------------------------------------
 
 
@@ -292,7 +292,7 @@ activate::SpaceCacheToDomainFlags activate::phys_space_cache_to_domain_flags =
 };
 #endif
 
-};
+}
 //---------------------------------------------------------------------
 
 IGA_NAMESPACE_CLOSE

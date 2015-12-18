@@ -70,7 +70,7 @@ create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
   return domain;
 }
 
-};
+}
 
 
 
@@ -505,15 +505,15 @@ save_xml(const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_ig
   piece_elem->add_attribute("NumberOfCells", n_vtk_elements_);
   const auto pts_elem = xml_doc->create_new_element("Points");
 
-  SafeSTLVector<T> pt_coords (3 * n_iga_elements_ * n_points_per_iga_element_);
+  SafeSTLVector<T> pt_coords(3 * n_iga_elements_ * n_points_per_iga_element_);
 
   Index i = 0;
   for (const auto &point_in_iga_element : points_in_iga_elements)
     for (const auto &point : point_in_iga_element)
     {
-        pt_coords[i++] = point[0];
-        pt_coords[i++] = point[1];
-        pt_coords[i++] = point[2];
+      pt_coords[i++] = point[0];
+      pt_coords[i++] = point[1];
+      pt_coords[i++] = point[2];
     }
   const auto data1 = xml_doc->create_vector_element("DataArray", pt_coords, precision_);
   data1->add_attribute("type", string_Real_);
@@ -529,9 +529,9 @@ save_xml(const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_ig
   const auto cells_elem = xml_doc->create_new_element("Cells");
 
   // Writing connectivity
-  SafeSTLVector<int> conn_vec (n_iga_elements_ *
-                               n_vtk_elements_per_iga_element_ *
-                               n_vertices_per_vtk_element_);
+  SafeSTLVector<int> conn_vec(n_iga_elements_ *
+                              n_vtk_elements_per_iga_element_ *
+                              n_vertices_per_vtk_element_);
   i = 0;
   for (const auto &iga_elem_connectivity : vtk_elements_connectivity)
     for (const auto &vtk_elem_connectivity : iga_elem_connectivity)
@@ -547,7 +547,7 @@ save_xml(const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_ig
 
   // Writing offsets
   i = 0;
-  SafeSTLVector<int> offsets_vec (n_vtk_elements_);
+  SafeSTLVector<int> offsets_vec(n_vtk_elements_);
   for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
     offsets_vec[i++] = n_vertices_per_vtk_element_ * vtk_elem_id;
   const auto data3 = xml_doc->create_vector_element("DataArray", offsets_vec, precision_);
@@ -559,7 +559,7 @@ save_xml(const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_ig
 
   // Writing types
   i = 0;
-  SafeSTLVector<int> types_vec (n_vtk_elements_);
+  SafeSTLVector<int> types_vec(n_vtk_elements_);
   for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
     types_vec[i++] = static_cast<int>(vtk_element_type_);
   const auto data4 = xml_doc->create_vector_element("DataArray", types_vec, precision_);
@@ -601,12 +601,12 @@ save_xml(const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_ig
 
   for (const auto &point_data : fields_)
   {
-      const auto data = xml_doc->create_vector_element("DataArray", *(point_data.values_), precision_);
-      data->add_attribute("Name", point_data.name_);
-      data->add_attribute("NumberOfComponents", point_data.num_components_);
-      data->add_attribute("type", string_Real_);
-      data->add_attribute("format", "ascii");
-      pt_data_elem->append_child_element(data);
+    const auto data = xml_doc->create_vector_element("DataArray", *(point_data.values_), precision_);
+    data->add_attribute("Name", point_data.name_);
+    data->add_attribute("NumberOfComponents", point_data.num_components_);
+    data->add_attribute("type", string_Real_);
+    data->add_attribute("format", "ascii");
+    pt_data_elem->append_child_element(data);
   }
   piece_elem->append_child_element(pt_data_elem);
   //--------------------------------------------------------------------------
@@ -639,22 +639,22 @@ save_xml(const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_ig
 
   for (const auto &cell_data : cell_data_double_)
   {
-      const auto data = xml_doc->create_vector_element("DataArray", *(cell_data.values_), precision_);
-      data->add_attribute("Name", cell_data.name_);
-      data->add_attribute("NumberOfComponents", cell_data.num_components_);
-      data->add_attribute("type", string_Real_);
-      data->add_attribute("format", "ascii");
-      pt_data_elem->append_child_element(data);
+    const auto data = xml_doc->create_vector_element("DataArray", *(cell_data.values_), precision_);
+    data->add_attribute("Name", cell_data.name_);
+    data->add_attribute("NumberOfComponents", cell_data.num_components_);
+    data->add_attribute("type", string_Real_);
+    data->add_attribute("format", "ascii");
+    pt_data_elem->append_child_element(data);
   }
 
   for (const auto &cell_data : cell_data_int_)
   {
-      const auto data = xml_doc->create_vector_element("DataArray", *(cell_data.values_), precision_);
-      data->add_attribute("Name", cell_data.name_);
-      data->add_attribute("NumberOfComponents", cell_data.num_components_);
-      data->add_attribute("type", string_int_);
-      data->add_attribute("format", "ascii");
-      pt_data_elem->append_child_element(data);
+    const auto data = xml_doc->create_vector_element("DataArray", *(cell_data.values_), precision_);
+    data->add_attribute("Name", cell_data.name_);
+    data->add_attribute("NumberOfComponents", cell_data.num_components_);
+    data->add_attribute("type", string_int_);
+    data->add_attribute("format", "ascii");
+    pt_data_elem->append_child_element(data);
   }
   piece_elem->append_child_element(cell_data_elem);
   //--------------------------------------------------------------------------

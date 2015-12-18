@@ -67,7 +67,7 @@ MapPtr create_map(const Basis &space,
 }
 
 
-};
+}
 
 IGA_NAMESPACE_CLOSE
 

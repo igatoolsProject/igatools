@@ -67,7 +67,7 @@ create_vector(const Basis &space, const std::string &prop,const Comm &comm)
   return create_vector(*create_map(space, prop, comm));
 }
 
-};
+}
 
 IGA_NAMESPACE_CLOSE
 

@@ -48,34 +48,34 @@ foreach(dir ${test_dirs})
   file(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/*.cpp")
   foreach(filename ${files})
     get_filename_component(name ${filename} NAME_WE)
+    set(tg_name ${dir}-${name})
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${dir}/${name})
-    add_executable(${dir}/${name}.exe EXCLUDE_FROM_ALL ${dir}/${name}.cpp)
-    target_link_libraries (${dir}/${name}.exe  ${IGATOOLS_LIBRARIES} )
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/${name}
+      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${dir}/
+      FILES_MATCHING PATTERN "*.xml")
+    add_executable(${tg_name} EXCLUDE_FROM_ALL ${dir}/${name}.cpp)
+    target_link_libraries (${tg_name}  ${IGATOOLS_LIBRARIES} )
   endforeach()
 endforeach()
 #--------------------------------------------------------------
 
 
 
-# Create the tests 
+# Adding the tests
 if (submit_test)
   include(CTest)
 endif()
 enable_testing()
 foreach(dir ${test_dirs})
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${dir})
   file(GLOB files "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/*.cpp")
   foreach(filename ${files})
     get_filename_component(name ${filename} NAME_WE)
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${dir}/${name}/)
-    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/${name}
-      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${dir}/
-      FILES_MATCHING PATTERN "*.xml")
+    set(tg_name ${dir}-${name})
     add_test(
-      NAME ${dir}-${name}
+      NAME ${tg_name}
       COMMAND ${CMAKE_COMMAND}
-      -DEXE_TARGET=${dir}/${name}.exe
-      -DTEST_PROG=${CMAKE_CURRENT_BINARY_DIR}/${dir}/${name}.exe
+      -DEXE_TARGET=${tg_name}
+      -DTEST_PROG=${CMAKE_CURRENT_BINARY_DIR}/${tg_name}
       -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/${dir}/${name}
       -DWORK_DIR=${CMAKE_CURRENT_BINARY_DIR}/${dir}/${name}
       -P ${CMAKE_CURRENT_SOURCE_DIR}/runtest.cmake)
