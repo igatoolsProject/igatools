@@ -123,7 +123,6 @@ private:
   using Functions = typename InstantiatedTypes::Functions;
 
 public:
-
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated grids.

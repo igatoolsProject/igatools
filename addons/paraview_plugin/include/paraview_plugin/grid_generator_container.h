@@ -23,14 +23,34 @@
 
 #include <igatools/base/config.h>
 
+#include <igatools/base/objects_container.h>
+#include <igatools/geometry/grid.h>
+#include <igatools/geometry/domain.h>
+
 #include <igatools/base/tuple_utils.h>
 #include <paraview_plugin/grid_generator.h>
+
+#include <boost/fusion/container/vector.hpp>
+#include <boost/fusion/container/map.hpp>
+
+#include <boost/fusion/algorithm/transformation/transform.hpp>
+#include <boost/fusion/include/transform.hpp>
+#include <boost/mpl/copy.hpp>
+#include <boost/mpl/lambda.hpp>
+#include <boost/mpl/remove_if.hpp>
+#include <boost/mpl/arg.hpp>
+#include <boost/mpl/vector_c.hpp>
+
 
 class vtkMultiBlockDataSet;
 
 IGA_NAMESPACE_OPEN
 
-class ObjectsContainer;
+template <class Domain>
+struct GridGen
+{
+
+};
 
 
 class VtkIgaGridGeneratorContBase
@@ -52,6 +72,107 @@ private:
    */
   template <int dim, int codim>
   using GridGen_ = VtkIgaGridGenerator<dim, codim>;
+
+  template <class T>
+  struct IsInValidDim :
+          boost::mpl::or_<
+          boost::mpl::bool_<(T::dim < 1)>,
+          boost::mpl::bool_<(T::dim > 3)>>
+          {};
+
+  template <class T>
+  struct IsInValidSpaceDim :
+          boost::mpl::or_<
+          boost::mpl::bool_<(T::space_dim < 1)>,
+          boost::mpl::bool_<(T::space_dim > 3)>>
+          {};
+
+  template <class T>
+  struct IsInValidDomain :
+          boost::mpl::or_<
+          IsInValidDim<T>,
+          IsInValidSpaceDim<T>>
+          {};
+
+  /**
+   * Valid domains.
+   */
+  using ValidDomains_ = boost::mpl::remove_if<
+      InstantiatedTypes::Domains,
+      boost::mpl::lambda< IsInValidDomain< boost::mpl::_1 > >::type
+      >::type;
+
+  /**
+   * Valid grids.
+   */
+  using ValidGrids_ = boost::mpl::remove_if<
+      InstantiatedTypes::Grids,
+      boost::mpl::lambda< IsInValidDim< boost::mpl::_1 > >::type
+      >::type;
+
+  /**
+   * Valid grid generators.
+   */
+  typedef boost::mpl::vector<
+          GridGen_<1, 0>,
+          GridGen_<1, 1>,
+          GridGen_<1, 2>,
+          GridGen_<2, 0>,
+          GridGen_<2, 1>,
+          GridGen_<3, 0> > ValidGridGens_;
+
+//  template< class T >
+//  struct as_fusion_vector_const_shared_ptr
+//  {
+//    /**
+//     * This functor transform a <tt>boost::mpl::vector</tt> of types into a
+//     * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt>s of the
+//     * <tt>const</tt> types.
+//     */
+//
+//    typedef typename boost::fusion::result_of::as_vector<
+//    typename boost::mpl::transform<T,
+//        std::shared_ptr<boost::add_const<boost::mpl::_1>>>::type>::type type;
+//  };
+
+  template< class T >
+  struct as_fusion_vector_const_shared_ptr
+  {
+    /**
+     * This functor transform a <tt>boost::mpl::vector</tt> of types into a
+     * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt>s of the
+     * <tt>const</tt> types.
+     */
+
+    typedef typename boost::fusion::result_of::as_vector<
+//    typename boost::mpl::transform<T,
+//        std::map<Index, SafeSTLVector<
+//        std::shared_ptr<boost::mpl::_1>>>>::type>::type type;
+    typename boost::mpl::transform<T,
+        SafeSTLVector<std::shared_ptr<boost::mpl::_1>>>::type>::type type;
+  };
+//  template <class T>
+//  struct as_fusion_map
+//  {
+//    /**
+//     * This functor transform a sequence of types @ref T into a
+//     * <tt>boost::fusion::map</tt> composed of <tt>pair</tt>s of the form
+//     * <tt>pair<T, SafeSTLVector<shared_ptr<T>></tt>.
+//     */
+//
+//  private:
+//    template <class S>
+//    using Pair_ = boost::fusion::pair<S, SafeSTLVector<std::shared_ptr<S>>>;
+//
+//  public:
+//    typedef typename boost::fusion::result_of::as_map<
+//    typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
+//  };
+
+  /**
+   * Basic container for grid generators.
+   */
+  using GridGensContainer_ = as_fusion_vector_const_shared_ptr<ValidGridGens_>::type;
 
   /**
    * Shared pointer type of the grid generator.
@@ -78,7 +199,6 @@ protected:
   template <int dim, int codim>
   using DomainPtr_ = std::shared_ptr<const Domain<dim, codim>>;
 
-
   /**
    * Grid information shared pointer type.
    */
@@ -103,29 +223,23 @@ protected:
                               const GridInfoPtr_ knot_info,
                               const ControlGridInfoPtr_ control_info);
 
-  virtual ~VtkIgaGridGeneratorContBase() = default;
-
-
 public:
   /**
-   * TODO:
+   * TODO: to document.
    */
-  void update(
-    const GridInfoPtr_ solid_info,
-    const GridInfoPtr_ knot_info,
-    const ControlGridInfoPtr_ control_info);
-
+  void update(const GridInfoPtr_ solid_info,
+              const GridInfoPtr_ knot_info,
+              const ControlGridInfoPtr_ control_info);
 
 protected:
   void fill_generators();
-
 
 private:
 
   template <int dim, int codim>
   void insert_generator(const DomainPtr_<dim, codim> domain);
 
-
+#if 0
   template <int dim>
   class VtkGridGeneratorContBaseSameDim
   {
@@ -135,12 +249,9 @@ private:
     class VtkGridGeneratorContBaseSameDimCodim
     {
 
-
     public:
 
       const GenMap_<dim, codim> &get_generators() const;
-
-      GenMap_<dim, codim> &get_generators();
 
     private:
       GenMap_<dim, codim> grid_generators_;
@@ -182,8 +293,6 @@ private:
       return data_varying_codim_;
     }
 
-
-
     /**
      * All the data in the VtkGridGeneratorContBaseSameDim class, organized by
      * the @p codim index (starting from 0 to @p dim - 1)
@@ -191,10 +300,12 @@ private:
     DataVaryingId<VtkGridGeneratorContBaseSameDimCodim, 0, 4-dim> data_varying_codim_;
 
   };
+#endif
 
 
 protected:
 
+#if 0
   /**
    * Same dim and codim Vtk grid generator.
    */
@@ -208,15 +319,6 @@ protected:
    */
   template <int dim>
   const VtkGridGeneratorContBaseSameDim<dim> &get_data_dim() const
-  {
-    return boost::fusion::at_key<Topology<dim>>(data_varying_dim_);
-  };
-
-  /**
-   * Returns a reference to the data identified by the index @p dim.
-   */
-  template <int dim>
-  VtkGridGeneratorContBaseSameDim<dim> &get_data_dim()
   {
     return boost::fusion::at_key<Topology<dim>>(data_varying_dim_);
   };
@@ -241,6 +343,7 @@ protected:
   template <int dim,int codim>
   VtkGridGenContSameCodim_<dim, codim> &
   get_data_dim_codim();
+#endif
 
   /**
    * Objects container.
@@ -257,20 +360,24 @@ protected:
    */
   const GridInfoPtr_ knot_info_;
 
-
+#if 0
   /**
    * All the data in the VtkGridGeneratorContBase class, organized by the
    *  @p dim index (starting from 1 to 3)
    */
   DataVaryingId<VtkGridGeneratorContBaseSameDim, 1, 3> data_varying_dim_;
+#endif
+
+  /// Collection of generators.
+  GridGensContainer_ generators_;
 
   /**
    * Container for numbering the generators included in the container.
    * Each entry of the vector is a tuple, whose components are:
-   *   - 1st: global id of mapping function (global in the igatools framework).
-   *   - 2nd: name associated to the mapping function.
+   *   - 1st: global id of domain (global in the igatools framework).
+   *   - 2nd: name associated to the domain function.
    *   - 3rd: flag for indicating if it is active or not.
-   *   - 4rd: flag for indicating if it is an ig mapping or not.
+   *   - 4rd: flag for indicating if it is an ig grid function or not.
    */
   SafeSTLVector<std::tuple<Index, std::string, bool, bool>> generators_numbering_;
 
@@ -324,7 +431,6 @@ protected:
    * Grids information for the control mesh.
    */
   const ControlGridInfoPtr_ control_info_;
-
 };
 
 
@@ -367,13 +473,11 @@ private:
                               const GridInfoPtr_ solid_info,
                               const GridInfoPtr_ knot_info);
 
-#if 0
   void fill_generators();
 
   template <int dim, int codim>
   void
   insert_generator(const DomainPtr_<dim, codim> domain);
-#endif
 
   /**
    * TODO: to document.
@@ -391,13 +495,11 @@ public:
                          const GridInfoPtr_ solid_info,
                          const GridInfoPtr_ knot_info);
 
-#if 0
   /**
    * TODO:
    */
   void update_parametric(const GridInfoPtr_ solid_info,
                          const GridInfoPtr_ knot_info);
-#endif
 
 
 
