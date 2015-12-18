@@ -311,7 +311,7 @@ Grid(const self_t &grid,const CopyPolicy &copy_policy)
   knot_coordinates_(grid.knot_coordinates_),
   boundary_id_(grid.boundary_id_),
   elem_properties_(grid.elem_properties_),
-  name_ (grid.get_name()),
+  name_(grid.get_name()),
   object_id_(UniqueIdGenerator::get_unique_id()),
   elems_size_(grid.elems_size_)
 {
@@ -901,7 +901,7 @@ print_info(LogStream &out) const
   }
   //-------------------------------------------------------
 
-   out << "Name: " << name_ << std::endl;
+  out << "Name: " << name_ << std::endl;
 }
 
 
