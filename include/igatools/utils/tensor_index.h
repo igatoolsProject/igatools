@@ -265,13 +265,13 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 using TensorIndexAlias0 = iga::TensorIndex<0>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias0,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias0,cereal::specialization::member_serialize)
 using TensorIndexAlias1 = iga::TensorIndex<1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias1,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias1,cereal::specialization::member_serialize)
 using TensorIndexAlias2 = iga::TensorIndex<2>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias2,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias2,cereal::specialization::member_serialize)
 using TensorIndexAlias3 = iga::TensorIndex<3>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias3,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorIndexAlias3,cereal::specialization::member_serialize)
 
 //#include <igatools/utils/tensor_index.serialization>
 #endif // SERIALIZATION

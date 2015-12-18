@@ -25,7 +25,7 @@
 #TODO: Define the configure time variable for dimension compilation
 #TODO: upadate to cmake >= 3
 
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 3.1)
 
 project(iga CXX C)
 
@@ -93,7 +93,6 @@ init_cxx_flags()
 find_sed()
 find_python()
 find_doxygen()
-find_xercesc()
 #
 #-------------------------------------------------------------------------------
 
@@ -174,6 +173,7 @@ endif(PARAVIEW_PLUGIN)
 
 option(XML_IO "Enable XML I/O support" OFF)
 if (XML_IO)
+		find_xercesc()
     if (XERCESC_FOUND)
       message("-- XML I/O support (EXPERIMENTAL) is enabled.")
     else(XERCESC_FOUND)

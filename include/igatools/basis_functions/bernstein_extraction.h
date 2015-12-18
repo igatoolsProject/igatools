@@ -149,12 +149,7 @@ private:
   ///@{
   friend class cereal::access;
   template<class Archive>
-  void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("ext_operators_",ext_operators_);
-  }
-
+  void serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };
@@ -165,7 +160,9 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(iga::BernsteinOperator,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(iga::BernsteinOperator,cereal::specialization::member_serialize)
+
+//#include <igatools/basis_functions/bernstein_extraction.serial>
 
 #endif // SERIALIZATION
 

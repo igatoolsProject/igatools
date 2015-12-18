@@ -33,6 +33,6 @@ create_map(const std::set<Index> &dofs,
   return std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
 }
 
-};
+}
 
 IGA_NAMESPACE_CLOSE

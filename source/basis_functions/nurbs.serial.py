@@ -58,7 +58,7 @@ id = 0
 for space in unique(spaces):
     sp_alias = 'NURBSAlias%d' %(id)
     f.write('using %s = iga::%s;\n' % (sp_alias, space));
-    f.write('CEREAL_REGISTER_TYPE(%s);\n' %sp_alias);
+    f.write('CEREAL_REGISTER_TYPE(%s)\n' %sp_alias);
     id += 1 
 
 

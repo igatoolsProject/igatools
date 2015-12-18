@@ -503,7 +503,7 @@ NURBS<dim_, range_, rank_>::
 get_end_behaviour_table() const -> const EndBehaviourTable &
 {
   return bsp_basis_->get_end_behaviour_table();
-};
+}
 
 
 template <int dim_, int range_, int rank_>
@@ -562,6 +562,29 @@ rebuild_after_insert_knots(
 #endif //MESH_REFINEMENT
 
 
+#ifdef SERIALIZATION
+
+template<int dim_, int range_, int rank_>
+template<class Archive>
+void
+NURBS<dim_, range_, rank_>::
+serialize(Archive &ar)
+{
+  using std::to_string;
+  const std::string base_name = "ReferenceSpaceBasis_" +
+                                to_string(dim_) + "_" +
+                                to_string(0) + "_" +
+                                to_string(range_) + "_" +
+                                to_string(rank_);
+
+  ar &make_nvp(base_name,base_class<BaseSpace>(this));
+  ar &make_nvp("bsp_basis_",bsp_basis_);
+
+  ar &make_nvp("weight_func_",weight_func_);
+}
+///@}
+
+#endif // SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

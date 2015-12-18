@@ -255,7 +255,7 @@ void uniform_quadrature(const int n,
   }
 }
 
-} ; // end anonymous namespace
+} // end anonymous namespace
 
 
 //--------------------------------------------------------------------------------------------------
