@@ -68,23 +68,7 @@ operator<<(LogStream &out,const BasisEndBehaviour &end_b)
   return out;
 }
 
-inline
-LogStream &
-operator<<(LogStream &out,const std::pair<Real,Real> &pair)
-{
-  out << "[ " << pair.first << " , " << pair.second << "]";
-  return out;
-}
 
-
-template <class T>
-inline
-LogStream &
-operator<<(LogStream &out,const std::unique_ptr<T> &ptr)
-{
-  out << "[ " << *ptr << "]";
-  return out;
-}
 
 // For the interior multiplicities
 // maximum regularity

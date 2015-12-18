@@ -53,25 +53,6 @@ public:
   }
 
 
-  /**
-   * Returns a reference to the <tt>n</tt>-th entry of the container.
-   * @note In Debug mode the value of <tt>n</tt> is checked if within the valid bounds of the container.
-   */
-  typename STLContainer::reference operator[](Size n)
-  {
-    Assert(n < size(), ExcIndexRange(n, 0, size()));
-    return STLContainer::operator[](n);
-  }
-
-  /**
-   * Returns a const-reference to the <tt>n</tt>-th entry of the container.
-   * @note In Debug mode the value of <tt>n</tt> is checked if within the valid bounds of the container.
-   */
-  typename STLContainer::const_reference operator[](Size n) const
-  {
-    Assert(n < size(), ExcIndexRange(n, 0, size()));
-    return STLContainer::operator[](n);
-  }
 
 
   /**
@@ -79,6 +60,21 @@ public:
    */
   ///@{
 private:
+
+  template <class T = STLContainer>
+  EnableIf<!std::is_pointer<T>::value, const T &>
+  get_ref_base_container() const
+  {
+    return (*this);
+  }
+
+  template <class T = STLContainer>
+  EnableIf<!std::is_pointer<T>::value, const typename std::remove_pointer<T>::type &>
+  get_ref_base_container() const
+  {
+    return *(*this);
+  }
+
   template <class A>
   EnableIf<has_print_info<A>(0), void>
   t_print_info(LogStream &out) const

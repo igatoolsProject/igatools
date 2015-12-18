@@ -18,43 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __PRINT_INFO_UTILS_H_
-#define __PRINT_INFO_UTILS_H_
 
-#include <igatools/base/config.h>
-#include <igatools/base/logstream.h>
-#include <type_traits>
+#include <igatools/utils/safe_stl_set.h>
+
 
 IGA_NAMESPACE_OPEN
-#if 0
-/**
- * Type traits to determine if a class provides
- * a print_info function
- */
-template<class T>
-using print_info_type =
-  decltype(std::declval<T>().print_info(std::declval<LogStream &>()));
-
-
-template<class T>
-constexpr
-EnableIf<std::is_void<print_info_type<T>>::value, bool >
-                                       has_print_info(int)
-{
-  return true;
-}
-
-template<class T>
-constexpr bool
-has_print_info(long)
-{
-  return false;
-}
-#endif
-
 
 
 
 IGA_NAMESPACE_CLOSE
 
-#endif
+#include <igatools/utils/safe_stl_set.inst>
