@@ -57,9 +57,11 @@ filled_progression(const BBox<dim_> &end_points, const TensorSize<dim_> &n_knots
 
     knots_1d.resize(n_i);
 
-    const Real h=(end_points[i][1] - end_points[i][0]) /(n_i-1);
+    const auto &end_points_i = end_points[i];
 
-    knots_1d[0] = end_points[i][0];
+    const auto h = (end_points_i[1] - end_points_i[0]) /(n_i-1);
+
+    knots_1d[0] = end_points_i[0];
     for (int j = 1; j < n_i; ++j)
       knots_1d[ j ] = knots_1d[ j-1 ] + h;
 

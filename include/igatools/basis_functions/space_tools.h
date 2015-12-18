@@ -1301,7 +1301,7 @@ Real inf_norm_difference(const GridFunction<dim,range> &f,
   return err;
 }
 
-};
+}
 
 IGA_NAMESPACE_CLOSE
 

@@ -104,28 +104,28 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 using SafeSTLArrayAliasInt0 = iga::SafeSTLArray<int,0>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt0,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt0,cereal::specialization::member_serialize)
 using SafeSTLArrayAliasInt1 = iga::SafeSTLArray<int,1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt1,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt1,cereal::specialization::member_serialize)
 using SafeSTLArrayAliasInt2 = iga::SafeSTLArray<int,2>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt2,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt2,cereal::specialization::member_serialize)
 using SafeSTLArrayAliasInt3 = iga::SafeSTLArray<int,3>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt3,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt3,cereal::specialization::member_serialize)
 using SafeSTLArrayAliasInt4 = iga::SafeSTLArray<int,4>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt4,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt4,cereal::specialization::member_serialize)
 using SafeSTLArrayAliasInt6 = iga::SafeSTLArray<int,6>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt6,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayAliasInt6,cereal::specialization::member_serialize)
 
 
 using VecReal = iga::SafeSTLVector<iga::Real>;
 using SafeSTLArrayVecRealAlias0 = iga::SafeSTLArray<VecReal,0>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecRealAlias0,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecRealAlias0,cereal::specialization::member_serialize)
 using SafeSTLArrayVecRealAlias1 = iga::SafeSTLArray<VecReal,1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecRealAlias1,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecRealAlias1,cereal::specialization::member_serialize)
 using SafeSTLArrayVecRealAlias2 = iga::SafeSTLArray<VecReal,2>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecRealAlias2,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecRealAlias2,cereal::specialization::member_serialize)
 using SafeSTLArrayVecRealAlias3 = iga::SafeSTLArray<VecReal,3>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecRealAlias3,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLArrayVecRealAlias3,cereal::specialization::member_serialize)
 
 
 

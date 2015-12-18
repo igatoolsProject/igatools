@@ -18,14 +18,32 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
 from init_instantiation_data import *
 
-include_files = ['geometry/mapping_element_accessor.h']
-data = Instantiation(include_files)
+data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-# maps = ['template class MappingSlice<%d,%d> ;\n' %(row.dim, row.codim) 
-#         for row in inst.face_phy_sp_dims]
-# for map in unique(maps): 
-#     f.write(map)
+         
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+
+archives = ['OArchive','IArchive']
+
+
+id = 0 
+for dim in unique(inst.sub_domain_dims + inst.domain_dims):
+    alias = 'ElementIndexAlias%d' %(id)
+    f.write('using %s = iga::ElementIndex<%d>;\n' % (alias,dim))
+    for ar in archives:
+        f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,%s,cereal::specialization::member_serialize)\n' % (ar,alias));
+
+    alias = 'SafeSTLVectorElementIndexAlias%d' %(id)
+    f.write('using %s = iga::SafeSTLVector<iga::ElementIndex<%d>>;\n' % (alias,dim))
+    for ar in archives:
+        f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,%s,cereal::specialization::member_serialize)\n' % (ar,alias));
+
+    id += 1 
+#   
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

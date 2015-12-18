@@ -161,6 +161,19 @@ public:
   operator=(CartesianProductArray<T,rank> &&product_array) = default;
   ///@}
 
+
+  bool operator==(const CartesianProductArray<T,rank> &in) const
+  {
+    //TODO (martinelli, Dec 15, 2015): implement this function
+    Assert(false,ExcNotImplemented());
+    bool is_equal = (this == &in);
+    if (!is_equal)
+    {
+//      is_equal = (data_ == in.data_);
+    }
+    return is_equal;
+  }
+
 private:
   /**
    * Type traits magic to return different types where T is an arithmetic type

@@ -65,7 +65,7 @@ create_matrix(const Basis &space, const std::string &prop, const Epetra_SerialCo
   return create_matrix(*create_graph(space, prop, space, prop, comm));
 }
 
-};
+}
 
 IGA_NAMESPACE_CLOSE
 

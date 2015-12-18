@@ -93,13 +93,13 @@ SafeSTLVector<Real> DenseMatrix::eigen_values() const
   SafeSTLVector<Real> e_values_im(n);
   double e_v[6];
   int info;
-  double ws[3*n];
+  SafeSTLVector<double> ws(3*n);
 //    lapack.SYEV('V','U', n, &(A.data()[0]), n, &(e_values[0]),
 //                ws, 3*n-1, &info);
   lapack.GEEV('N','N', n, &(A.data()[0]), n,
               &(e_values_re[0]), &(e_values_im[0]),
               e_v, n, e_v, n,
-              ws, 3*n, &info);
+              ws.data(), 3*n, &info);
 
   Assert(info == 0, ExcMessage("e-values not found."));
 
@@ -344,7 +344,7 @@ void eig_dense_matrix(const DenseMatrix &A,
   int info;
 
   const int workspace_size = 4*n; // this should be >= 3*n (higher values gives better performances)
-  double workspace[workspace_size];
+  SafeSTLVector<double> workspace(workspace_size);
 
   double dummy;
 
@@ -366,7 +366,7 @@ void eig_dense_matrix(const DenseMatrix &A,
               eigenvalues_imag.data(),
               &dummy,1,
               &(eigenvectors_trans.data()[0]),n,
-              workspace,
+              workspace.data(),
               workspace_size,
               &info);
   if (info > 0)
@@ -438,7 +438,7 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
 
   const int n = n_rows;
   const int workspace_size = 10*n; // thsi should be >= 3*n (higher values gives better performances)
-  double workspace[workspace_size];
+  SafeSTLVector<double> workspace(workspace_size);
 
   // The Lapack SYEV routine assumes that the matrix entries are sorted column-wise
   // (i.e. using the Fortran way), but in C/C++ the matrix entries are sorted row-wise,
@@ -452,7 +452,7 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
               const_cast<Real *>(&(eigenvectors_trans.data()[0])),
               n,
               eigenvalues.data(),
-              workspace,
+              workspace.data(),
               workspace_size,
               &info);
   if (info > 0)

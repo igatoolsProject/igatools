@@ -120,27 +120,7 @@ IGA_NAMESPACE_CLOSE
 
 
 #ifdef SERIALIZATION
-using ElementIndexAlias0 = iga::ElementIndex<0>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias0,cereal::specialization::member_serialize);
-using ElementIndexAlias1 = iga::ElementIndex<1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias1,cereal::specialization::member_serialize);
-using ElementIndexAlias2 = iga::ElementIndex<2>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias2,cereal::specialization::member_serialize);
-using ElementIndexAlias3 = iga::ElementIndex<3>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias3,cereal::specialization::member_serialize);
-
-
-
-using SafeSTLVectorElementIndexAlias0 = iga::SafeSTLVector<iga::ElementIndex<0>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias0,cereal::specialization::member_serialize);
-using SafeSTLVectorElementIndexAlias1 = iga::SafeSTLVector<iga::ElementIndex<1>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias1,cereal::specialization::member_serialize);
-using SafeSTLVectorElementIndexAlias2 = iga::SafeSTLVector<iga::ElementIndex<2>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias2,cereal::specialization::member_serialize);
-using SafeSTLVectorElementIndexAlias3 = iga::SafeSTLVector<iga::ElementIndex<3>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias3,cereal::specialization::member_serialize);
-
-//#include <igatools/utils/element_index.serialization>
+#include <igatools/utils/element_index.serial>
 #endif // SERIALIZATION
 
 

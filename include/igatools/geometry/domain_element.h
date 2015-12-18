@@ -284,7 +284,7 @@ private:
       std::is_same<ValueType,_Curvature>::value ||
       std::is_same<ValueType,_FirstFundamentalForm>::value ||
       std::is_same<ValueType,_SecondFundamentalForm>::value ||
-      std::is_same<ValueType,_ExtNormalD1>::value;;
+      std::is_same<ValueType,_ExtNormalD1>::value;
   };
 
   using CType = boost::fusion::map<

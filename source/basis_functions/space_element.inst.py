@@ -29,11 +29,11 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = \
- ['ValueVector<Real> elem::get_w_measures<k>(const int) const;']
+ ['ValueVector<Real> elem::get_w_measures<k>(const int) const']
 
 
 elements = ['SpaceElement<0,0,0,1>']
-templated_funcs = ['ValueVector<Real> SpaceElement<0,0,0,1>::get_w_measures<0>(const int) const;']
+templated_funcs = ['ValueVector<Real> SpaceElement<0,0,0,1>::get_w_measures<0>(const int) const']
 
 
 
@@ -93,6 +93,6 @@ for elem in unique(elements):
         f.write('template class %s; \n' %iterator)
 
 for func in unique(templated_funcs):
-    f.write('template %s ;\n' %func)
+    f.write('template %s;\n' %func)
 #---------------------------------------------------
 

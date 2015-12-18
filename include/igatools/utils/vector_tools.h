@@ -54,7 +54,7 @@ count_and_remove_duplicates(
   SafeSTLVector<T> &vec_without_duplicates,
   SafeSTLVector<int> &multiplicities) ;
 
-} ;
+}
 
 
 IGA_NAMESPACE_CLOSE

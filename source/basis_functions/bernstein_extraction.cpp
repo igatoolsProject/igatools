@@ -214,18 +214,18 @@ BernsteinExtraction(const Space &space_data,
                      space_data.get_degree_table())
 {}
 
-#if 0
 #ifdef SERIALIZATION
+
 template<int dim, int range, int rank>
 template<class Archive>
 void
 BernsteinExtraction<dim, range, rank>::
-serialize(Archive &ar, const unsigned int version)
+serialize(Archive &ar)
 {
-  ar &boost::serialization::make_nvp("ext_operators_",ext_operators_);
+  ar &make_nvp("ext_operators_",ext_operators_);
 }
+
 #endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 

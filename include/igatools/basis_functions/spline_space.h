@@ -27,8 +27,8 @@
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/utils/shared_ptr_constness_handler.h>
-//#include <igatools/basis_functions/basis.h>
 #include <igatools/geometry/grid.h>
+
 
 IGA_NAMESPACE_OPEN
 
@@ -37,7 +37,7 @@ template <int,int,int>
 class DofDistribution;
 
 
-enum class BasisEndBehaviour
+enum class BasisEndBehaviour : int
 {
   /**
    * Interpolatory basis functions at knots boundary (i.e. open knot vector).
@@ -48,6 +48,43 @@ enum class BasisEndBehaviour
 
   periodic
 };
+
+inline
+LogStream &
+operator<<(LogStream &out,const BasisEndBehaviour &end_b)
+{
+  switch (end_b)
+  {
+    case (BasisEndBehaviour::interpolatory):
+      out << "interpolatory";
+      break;
+    case (BasisEndBehaviour::end_knots):
+      out << "end_knots";
+      break;
+    case (BasisEndBehaviour::periodic):
+      out << "periodic";
+      break;
+  }
+  return out;
+}
+
+inline
+LogStream &
+operator<<(LogStream &out,const std::pair<Real,Real> &pair)
+{
+  out << "[ " << pair.first << " , " << pair.second << "]";
+  return out;
+}
+
+
+template <class T>
+inline
+LogStream &
+operator<<(LogStream &out,const std::unique_ptr<T> &ptr)
+{
+  out << "[ " << *ptr << "]";
+  return out;
+}
 
 // For the interior multiplicities
 // maximum regularity
@@ -456,18 +493,24 @@ public:
     ComponentContainer(const ComponentMap &comp_map =
                          sequence<n_entries>());
 
-    ComponentContainer(const ComponentMap &comp_map, const T &val);
+    template <class T1 = T>
+    ComponentContainer(const ComponentMap &comp_map, const T1 &val,
+                       EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
 
-    ComponentContainer(bool uniform, const T &val)
+    template <class T1 = T>
+    ComponentContainer(bool uniform, const T1 &val,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr)
       : ComponentContainer(ComponentMap(0), val)
     {}
 
     /**
      * Construct a homogenous range table with val value
      */
-    ComponentContainer(const T &val);
 
-    ComponentContainer(std::initializer_list<T> list);
+    template <class T1 = T>
+    ComponentContainer(const T &val,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
+
+    template <class T1 = T>
+    ComponentContainer(std::initializer_list<T> list,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
 
     ComponentContainer(const self_t &in) = default;
     ComponentContainer(self_t &&in) = default;
@@ -522,7 +565,7 @@ public:
      */
     const T &operator[](const Index i) const;
 
-    const Index active(const Index i) const
+    Index active(const Index i) const
     {
       return comp_map_[i];
     }
@@ -662,139 +705,6 @@ private:
 #endif // SERIALIZATION
 };
 
-
-template <class T, int dim_>
-inline
-SafeSTLVector<T>
-unique_container(SafeSTLArray <T, dim_> a)
-{
-  auto it = std::unique(a.begin(), a.end());
-  return SafeSTLVector<T>(a.begin(), it);
-}
-
-
-
-template<int dim_, int range_, int rank_>
-template<class T>
-SplineSpace<dim_, range_, rank_>::
-ComponentContainer<T>::
-ComponentContainer(const ComponentMap &comp_map)
-  :
-  base_t(),
-  comp_map_(comp_map),
-  active_components_id_(unique_container<Index, n_entries>(comp_map)),
-  inactive_components_id_(n_entries)
-{
-  auto all = sequence<n_entries>();
-  auto it=std::set_difference(all.begin(), all.end(),
-                              active_components_id_.begin(),active_components_id_.end(),
-                              inactive_components_id_.begin());
-
-  inactive_components_id_.resize(it-inactive_components_id_.begin());
-}
-
-
-
-template<int dim_, int range_, int rank_>
-template<class T>
-SplineSpace<dim_, range_, rank_>::
-ComponentContainer<T>::
-ComponentContainer(const ComponentMap &comp_map, const T &val)
-  :
-  base_t(),
-  comp_map_(comp_map),
-  active_components_id_(unique_container<Index, n_entries>(comp_map)),
-  inactive_components_id_(n_entries)
-{
-  auto all = sequence<n_entries>();
-  auto it=std::set_difference(all.begin(), all.end(),
-                              active_components_id_.begin(),active_components_id_.end(),
-                              inactive_components_id_.begin());
-
-  inactive_components_id_.resize(it-inactive_components_id_.begin());
-
-  for (auto i : active_components_id_)
-    base_t::operator[](i) = val;
-}
-
-
-
-template<int dim_, int range_, int rank_>
-template<class T>
-SplineSpace<dim_, range_, rank_>::
-ComponentContainer<T>::
-ComponentContainer(std::initializer_list<T> list)
-  :
-  base_t(list),
-  comp_map_(sequence<n_entries>()),
-  active_components_id_(unique_container<Index, n_entries>(comp_map_))
-{}
-
-
-
-template<int dim_, int range_, int rank_>
-template<class T>
-SplineSpace<dim_, range_, rank_>::
-ComponentContainer<T>::
-ComponentContainer(const T &val)
-  :
-  comp_map_(0),
-  active_components_id_(1,0),
-  inactive_components_id_(n_entries-1)
-{
-  for (int i=1; i<n_entries; ++i)
-    inactive_components_id_[i-1] = i;
-
-  base_t::operator[](0) = val;
-}
-
-
-
-template<int dim_, int range_, int rank_>
-template<class T>
-bool
-SplineSpace<dim_, range_, rank_>::
-ComponentContainer<T>::
-operator==(const self_t &table) const
-{
-  const bool same_comp_map = (comp_map_ == table.comp_map_);
-
-  const bool same_active_components_id = (active_components_id_ == table.active_components_id_);
-
-  const bool same_inactive_components_id = (inactive_components_id_ == table.inactive_components_id_);
-
-  bool same_data = false;
-  if (same_comp_map && same_active_components_id && same_inactive_components_id)
-  {
-    same_data = true;
-    for (const auto comp : active_components_id_)
-      same_data = same_data && (base_t::operator[](comp) == table[comp]);
-  }
-
-  return same_data;
-}
-
-
-template<int dim_, int range_, int rank_>
-template<class T>
-T &
-SplineSpace<dim_, range_, rank_>::
-ComponentContainer<T>::
-operator[](const Index i)
-{
-  return base_t::operator[](comp_map_[i]);
-}
-
-
-template<int dim_, int range_, int rank_>
-template<class T>
-const T &
-SplineSpace<dim_, range_, rank_>::
-ComponentContainer<T>::
-operator[](const Index i) const
-{
-  return base_t::operator[](comp_map_[i]);
-}
 
 IGA_NAMESPACE_CLOSE
 

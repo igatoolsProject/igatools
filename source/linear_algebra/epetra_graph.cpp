@@ -66,6 +66,6 @@ create_graph(const std::map<Index,std::set<Index>> &dofs_connectivity,
 
   return graph;
 }
-};
+}
 
 IGA_NAMESPACE_CLOSE

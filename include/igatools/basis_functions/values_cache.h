@@ -52,10 +52,10 @@ auto
 make_fusion_map_cache_all_sub_elems(std::index_sequence<I...>)
 {
   return boost::fusion::map<boost::fusion::pair<
-		  Topology<(dim>I) ? dim-I : 0>,
-		  ValuesCacheAllSubElems<ValuesCache,dim,(dim>I) ? dim-I : 0> > ...>(
-				  boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,
-				  		  ValuesCacheAllSubElems<ValuesCache,dim,(dim>I) ? dim-I : 0> >() ...);
+         Topology<(dim>I) ? dim-I : 0>,
+         ValuesCacheAllSubElems<ValuesCache,dim,(dim>I) ? dim-I : 0> > ...>(
+           boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,
+           ValuesCacheAllSubElems<ValuesCache,dim,(dim>I) ? dim-I : 0> >() ...);
 }
 
 
@@ -70,7 +70,7 @@ make_fusion_map_cache_all_sub_elems(std::index_sequence<I...>)
  */
 template <class ValuesCache,int dim>
 using DataCacheAllSubElems = decltype(make_fusion_map_cache_all_sub_elems<ValuesCache,dim>(
-        std::make_index_sequence<dim+1>()));
+                                        std::make_index_sequence<dim+1>()));
 //                                        std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>()));
 
 
@@ -150,7 +150,7 @@ extract_sub_elements_data(FusionContainer &data)
 
 
 
-}; // end namespace cacheutils
+} // end namespace cacheutils
 
 
 /**

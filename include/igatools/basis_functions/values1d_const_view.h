@@ -60,6 +60,16 @@ public:
   const DenseMatrix &get_derivative(const int order) const;
 
 
+  bool operator==(const BasisValues1d &in) const
+  {
+    bool is_equal = (this == &in);
+    if (!is_equal)
+    {
+      is_equal = (values_ == in.values_);
+    }
+    return is_equal;
+  }
+
 private:
   SafeSTLArray<DenseMatrix,MAX_NUM_DERIVATIVES> values_;
 
@@ -172,15 +182,38 @@ public:
   }
 #endif
 
+
+  void print_info(LogStream &out) const
+  {
+    out.begin_item("Values 1D:");
+    values_1D_.print_info(out);
+    out.end_item();
+
+    out.begin_item("Flat-to-Tensor ID (Points):");
+    points_flat_to_tensor_id_.print_info(out);
+    out.end_item();
+
+    out.begin_item("Flat-to-Tensor ID (Functions):");
+    funcs_flat_to_tensor_id_.print_info(out);
+    out.end_item();
+  }
+
 private:
   const ElemFuncValues<dim> &values_1D_;
 
   const SafeSTLVector<TensorIndex<dim>> &points_flat_to_tensor_id_;
 
-  SafeSTLVector<TensorIndex<dim>>  funcs_flat_to_tensor_id_;
+  SafeSTLVector<TensorIndex<dim>> funcs_flat_to_tensor_id_;
 };
 
-
+template<int dim>
+inline
+LogStream &
+operator<<(LogStream &out, const TensorProductFunctionEvaluator<dim> &in)
+{
+  in.print_info(out);
+  return out;
+}
 
 /**
  * @brief Const view to one-dimensional BSpline function over an interval.
