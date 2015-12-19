@@ -38,8 +38,7 @@ struct VtkControlGridInformation;
 
 class ObjectsContainer;
 
-class VtkIgaGridGeneratorContParm;
-class VtkIgaGridGeneratorContPhys;
+class VtkIgaGridGeneratorContainer;
 }
 
 /**
@@ -86,17 +85,15 @@ private:
   /** Type of the class itself. */
   typedef IgatoolsParaViewReader Self_;
 
-  /** Type for shared pointer of \ref vtkGridInformation.  */
+  /** Type for shared pointer of @ref vtkGridInformation.  */
   typedef std::shared_ptr<iga::VtkGridInformation> GridInfoPtr_;
 
-  /** Type for shared pointer of \ref vtkControlGridInformation.  */
+  /** Type for shared pointer of @ref vtkControlGridInformation.  */
   typedef std::shared_ptr<iga::VtkControlGridInformation> ControlGridInfoPtr_;
 
-  /** Type for shared pointer of \ref VtkGridGeneratorContPhys.  */
-  typedef std::shared_ptr<iga::VtkIgaGridGeneratorContPhys> PhysGenPtr_;
+  /** Type for shared pointer of @ref VtkGridGeneratorContainer.  */
+  typedef std::shared_ptr<iga::VtkIgaGridGeneratorContainer> GridGenPtr_;
 
-  /** Type for shared pointer of \ref VtkGridGeneratorContParm.  */
-  typedef std::shared_ptr<iga::VtkIgaGridGeneratorContParm> ParmGenPtr_;
 
   ///@}
 
@@ -562,16 +559,9 @@ private:
 
 
   /**
-   * Generator for creating physical mappings (and associated field
-   * data) representations throw a tree of vtkMultiBlockDataSet.
+   * @todo to document.
    */
-  PhysGenPtr_ phys_gen_;
-
-  /**
-   * Generator for creating parametric mappings (and associated field
-   * data) representations throw a tree of vtkMultiBlockDataSet.
-   */
-  ParmGenPtr_ parm_gen_;
+  GridGenPtr_ grid_gen_;
 
   /**
    * Parses the input file.

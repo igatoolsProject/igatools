@@ -39,41 +39,21 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, int codim>
-VtkIgaKnotGridGenerator<dim, codim>::
-VtkIgaKnotGridGenerator(const DomainPtr_ domain,
-                        const GridInfoPtr_ grid_info)
-  :
-  domain_(domain),
-  grid_info_(grid_info)
-{
-  Assert(domain_ != nullptr, ExcNullPtr());
-  Assert(grid_info != nullptr, ExcNullPtr());
-}
-template <int dim, int codim>
+template <class Domain>
 auto
-VtkIgaKnotGridGenerator<dim, codim>::
-get_grid(const DomainPtr_ domain,
-         const GridInfoPtr_ grid_info) -> VtkGridPtr_
+VtkIgaKnotGridGenerator<Domain>::
+create_grid(const DomainPtr_ domain,
+            const GridInfoPtr_ grid_info) -> VtkGridPtr_
 {
-  VtkIgaKnotGridGenerator generator(domain, grid_info);
-  return generator.create_grid<dim>();
-}
+    Assert (domain != nullptr, ExcNullPtr());
 
 
 
-template <int dim, int codim>
-template<int aux_dim>
-auto
-VtkIgaKnotGridGenerator<dim, codim>::
-create_grid() const ->
-EnableIf<aux_dim == 1, VtkGridPtr_>
-{
   // Implementation for 1D case.
   // In this case the grid consists on a set of points corresponding
   // to the knots.
 
-  const auto cartesian_grid = domain_->get_grid_function()->get_grid();
+  const auto cartesian_grid = domain->get_grid_function()->get_grid();
   const auto &n_intervals = cartesian_grid->get_num_intervals();
 
   const auto quad = QUniform<dim>::create(2);
@@ -89,13 +69,13 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
   vtk_cell_ids->SetNumberOfComponents(tuple_size);
   vtk_cell_ids->SetNumberOfTuples(n_vtk_cells);
 
-  auto elem = domain_->cbegin();
-  const auto end = domain_->cend();
+  auto elem = domain->cbegin();
+  const auto end = domain->cend();
 
   double point_tmp[3] = { 0.0, 0.0, 0.0 };
   vtkIdType tuple[2]  = { 1, 0 };
 
-  auto domain_cache_handler = domain_->create_cache_handler();
+  auto domain_cache_handler = domain->create_cache_handler();
   domain_cache_handler->template set_flags<dim>(domain_element::Flags::point);
   domain_cache_handler->init_cache(elem, quad);
 
@@ -138,17 +118,18 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
 
 
 
-template <int dim, int codim>
+template <class Domain>
 template<int aux_dim>
 auto
-VtkIgaKnotGridGenerator<dim, codim>::
-create_grid() const ->
+VtkIgaKnotGridGenerator<Domain>::
+create_grid(const DomainPtr_ domain,
+            const GridInfoPtr_ grid_info) ->
 EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
 {
   // Implementation for 2D and 3D cases.
 
   const auto &num_visualization_elements =
-    grid_info_->get_num_cells_per_element();
+    grid_info->get_num_cells_per_element();
 
   TensorSize <dim> n_vis_elements;
   for (int dir = 0; dir < dim; ++dir)
@@ -158,12 +139,12 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
            ExcMessage("The number of visualization elements must be > 0."))
   }
 
-  const auto cartesian_grid = domain_->get_grid_function()->get_grid();
+  const auto cartesian_grid = domain->get_grid_function()->get_grid();
   const auto &n_intervals = cartesian_grid->get_num_intervals();
 
-  const Size n_points_per_single_cell = grid_info_->is_quadratic() ? 3 : 2;
+  const Size n_points_per_single_cell = grid_info->is_quadratic() ? 3 : 2;
   const SafeSTLVector <int> vtk_line_connectivity =
-    grid_info_->is_quadratic() ?
+    grid_info->is_quadratic() ?
   SafeSTLVector <int> ({{ 0, 2, 1 } }) :
     SafeSTLVector <int> ({{ 0, 1 } });
 
@@ -173,7 +154,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
     quadratures[dir] = QUniform<1>::create(
                          n_vis_elements[dir] * (n_points_per_single_cell - 1) + 1);
 
-  const Size n_pts_per_cell_dir = grid_info_->is_quadratic() ? 3 : 2;
+  const Size n_pts_per_cell_dir = grid_info->is_quadratic() ? 3 : 2;
   TensorSize <aux_dim> n_points;
   for (int dir = 0; dir < aux_dim; ++dir)
     n_points[dir] = n_vis_elements[dir] * (n_pts_per_cell_dir - 1) + 1;
@@ -250,8 +231,8 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
       dir, quad_dir->get_coords_direction(0));
 
     // Iterating along every knot coordinates of the face
-    auto grid = domain_->get_grid_function()->get_grid();
-    auto elem = domain_->cbegin();
+    auto grid = domain->get_grid_function()->get_grid();
+    auto elem = domain->cbegin();
 
 
     TensorIndex<dim> elem_t_id(0);
@@ -276,7 +257,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
       }
       const auto quad = Quadrature<dim>::create(quad_points_1d,quad_weights_1d,BBox<dim>());
 
-      auto domain_cache_handler = domain_->create_cache_handler();
+      auto domain_cache_handler = domain->create_cache_handler();
       domain_cache_handler->template set_flags<dim>(domain_element::Flags::point);
       domain_cache_handler->init_cache(elem, quad);
 
@@ -333,18 +314,18 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
   grid->SetPoints(vtk_points);
   grid->Allocate(vtk_cells->GetNumberOfCells(), 0);
   const int vtk_enum_type =
-    grid_info_->is_quadratic() ? VTK_QUADRATIC_EDGE : VTK_LINE;
+    grid_info->is_quadratic() ? VTK_QUADRATIC_EDGE : VTK_LINE;
   grid->SetCells(vtk_enum_type, vtk_cells);
 
   return grid;
 }
 
-template class VtkIgaKnotGridGenerator<1, 0>;
-template class VtkIgaKnotGridGenerator<1, 1>;
-template class VtkIgaKnotGridGenerator<1, 2>;
-template class VtkIgaKnotGridGenerator<2, 0>;
-template class VtkIgaKnotGridGenerator<2, 1>;
-template class VtkIgaKnotGridGenerator<3, 0>;
+template class VtkIgaKnotGridGenerator<Domain<1, 0>>;
+template class VtkIgaKnotGridGenerator<Domain<1, 1>>;
+template class VtkIgaKnotGridGenerator<Domain<1, 2>>;
+template class VtkIgaKnotGridGenerator<Domain<2, 0>>;
+template class VtkIgaKnotGridGenerator<Domain<2, 1>>;
+template class VtkIgaKnotGridGenerator<Domain<3, 0>>;
 
 
 

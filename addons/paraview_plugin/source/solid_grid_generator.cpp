@@ -41,8 +41,8 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, int codim>
-VtkIgaSolidGridGenerator<dim, codim>::
+template <class Domain>
+VtkIgaSolidGridGenerator<Domain>::
 VtkIgaSolidGridGenerator(const DomainPtr_ domain,
                          const GridInfoPtr_ grid_info,
                          const ObjContPtr_t_ objs_container)
@@ -60,10 +60,10 @@ VtkIgaSolidGridGenerator(const DomainPtr_ domain,
 
 
 
-template <int dim, int codim>
+template <class Domain>
 auto
-VtkIgaSolidGridGenerator<dim, codim>::
-get_grid(const DomainPtr_ domain,
+VtkIgaSolidGridGenerator<Domain>::
+create_grid(const DomainPtr_ domain,
          const GridInfoPtr_ grid_info,
          const ObjContPtr_t_ objs_container) -> VtkGridPtr_
 {
@@ -73,9 +73,9 @@ get_grid(const DomainPtr_ domain,
 
 
 
-template <int dim, int codim>
+template <class Domain>
 auto
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_grid() const -> VtkGridPtr_
 {
   VtkGridPtr_ grid;
@@ -86,16 +86,16 @@ create_grid() const -> VtkGridPtr_
   else // VTK structured grid.
     grid = this->create_grid_vts();
 
-  this->create_point_data_dim_codim<dim, codim> (grid->GetPointData());
+  this->create_point_data_dim_codim<dim, space_dim - dim> (grid->GetPointData());
 
   return grid;
 }
 
 
 
-template <int dim, int codim>
+template <class Domain>
 auto
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_grid_vts() const ->
 VtkGridPtr_
 {
@@ -118,9 +118,9 @@ VtkGridPtr_
 
 
 
-template <int dim, int codim>
+template <class Domain>
 auto
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_grid_vtu() const ->VtkGridPtr_
 {
   const bool quad_cells = grid_info_->is_quadratic();
@@ -186,9 +186,9 @@ create_grid_vtu() const ->VtkGridPtr_
 
 
 
-template <int dim, int codim>
+template <class Domain>
 vtkSmartPointer<vtkPoints>
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_points() const
 {
   const auto points = vtkSmartPointer <vtkPoints>::New();
@@ -225,11 +225,12 @@ create_points() const
 
 
 
-template <int dim, int codim>
+template <class Domain>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 init_points_info()
 {
+  // Filling n_vis_elements
   const auto &num_visualization_elements =
     grid_info_->get_num_cells_per_element();
 
@@ -240,8 +241,10 @@ init_points_info()
            ExcMessage("The number of visualization elements must be > 0."))
   }
 
+  // Creating quadrature for visualization
   this->create_visualization_quadrature();
 
+  // Points map and mask
   points_map_.clear();
   points_mask_.clear();
 
@@ -392,9 +395,9 @@ init_points_info()
 
 
 
-template <int dim, int codim>
+template <class Domain>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_visualization_quadrature()
 {
   const Size n_pts_per_cell_dir =  grid_info_->is_quadratic() ? 3 : 2;
@@ -444,9 +447,9 @@ create_visualization_quadrature()
 
 
 
-template <int dim, int codim>
+template <class Domain>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_linear_element_connectivity()
 {
   // Number of vertices in a dim-dimensional square.
@@ -525,10 +528,10 @@ create_linear_element_connectivity()
 
 
 
-template <int dim, int codim>
+template <class Domain>
 template <int aux_dim>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_quadratic_element_connectivity(
   typename std::enable_if_t<aux_dim == 1> *)
 {
@@ -551,10 +554,11 @@ create_quadratic_element_connectivity(
 }
 
 
-template <int dim, int codim>
+
+template <class Domain>
 template <int aux_dim>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_quadratic_element_connectivity(
   typename std::enable_if_t<aux_dim == 2> *)
 {
@@ -635,10 +639,10 @@ create_quadratic_element_connectivity(
 
 
 
-template <int dim, int codim>
+template <class Domain>
 template <int aux_dim>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_quadratic_element_connectivity(
   typename std::enable_if_t<aux_dim == 3> *)
 {
@@ -778,10 +782,11 @@ create_quadratic_element_connectivity(
 }
 
 
-template <int dim, int codim>
+
+template <class Domain>
 template <int aux_dim, int aux_codim>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_point_data_dim_codim(vtkPointData *const point_data,
                             typename std::enable_if_t <(aux_dim == 1 && aux_codim == 0)>*) const
 {
@@ -790,22 +795,23 @@ create_point_data_dim_codim(vtkPointData *const point_data,
 
 
 
-template <int dim, int codim>
+template <class Domain>
 template <int aux_dim, int aux_codim>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_point_data_dim_codim(vtkPointData *const point_data,
                             typename std::enable_if_t <!(aux_dim == 1 && aux_codim == 0)>*) const
 {
   this->template create_point_data <1, 1> (point_data);
-  this->template create_point_data <dim + codim, 1> (point_data);
+  this->template create_point_data <space_dim, 1> (point_data);
 }
 
 
-template <int dim, int codim>
+
+template <class Domain>
 template <int range, int rank>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 create_point_data(vtkPointData *const point_data) const
 {
     AssertThrow (false, ExcNotImplemented());
@@ -866,9 +872,9 @@ create_point_data(vtkPointData *const point_data) const
 
 
 #if 0
-template <int dim, int codim>
+template <class Domain>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 tensor_to_tuple(const Tdouble t, Real *const tuple, int &pos) const
 {
   *(tuple + pos++) = t;
@@ -876,10 +882,10 @@ tensor_to_tuple(const Tdouble t, Real *const tuple, int &pos) const
 
 
 
-template <int dim, int codim>
+template <class Domain>
 template <class Tensor>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 tensor_to_tuple(const Tensor &t, Real *const tuple, int &pos) const
 {
   for (int i = 0; i < Tensor::size; ++i)
@@ -888,10 +894,10 @@ tensor_to_tuple(const Tensor &t, Real *const tuple, int &pos) const
 
 
 
-template <int dim, int codim>
+template <class Domain>
 template <class Tensor>
 void
-VtkIgaSolidGridGenerator<dim, codim>::
+VtkIgaSolidGridGenerator<Domain>::
 tensor_to_tuple(const Tensor &t, Real *const tuple) const
 {
   int pos = 0;
@@ -900,12 +906,12 @@ tensor_to_tuple(const Tensor &t, Real *const tuple) const
 #endif
 
 
-template class VtkIgaSolidGridGenerator<1, 0>;
-template class VtkIgaSolidGridGenerator<1, 1>;
-template class VtkIgaSolidGridGenerator<1, 2>;
-template class VtkIgaSolidGridGenerator<2, 0>;
-template class VtkIgaSolidGridGenerator<2, 1>;
-template class VtkIgaSolidGridGenerator<3, 0>;
+template class VtkIgaSolidGridGenerator<Domain<1, 0>>;
+template class VtkIgaSolidGridGenerator<Domain<1, 1>>;
+template class VtkIgaSolidGridGenerator<Domain<1, 2>>;
+template class VtkIgaSolidGridGenerator<Domain<2, 0>>;
+template class VtkIgaSolidGridGenerator<Domain<2, 1>>;
+template class VtkIgaSolidGridGenerator<Domain<3, 0>>;
 
 
 IGA_NAMESPACE_CLOSE

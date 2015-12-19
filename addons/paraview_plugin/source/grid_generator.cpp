@@ -20,44 +20,84 @@
 
 #include <paraview_plugin/grid_generator.h>
 
-#include <paraview_plugin/control_grid_generator.h>
+#include <igatools/geometry/domain.h>
+
 #include <paraview_plugin/grid_information.h>
 #include <paraview_plugin/knot_grid_generator.h>
 #include <paraview_plugin/solid_grid_generator.h>
+#include <paraview_plugin/control_grid_generator.h>
 
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, int codim>
-VtkIgaGridGenerator<dim, codim>::
+template <class Domain>
+VtkIgaGridGenerator<Domain>::
 VtkIgaGridGenerator(const DomainPtr_ domain,
                     const GridInfoPtr_ solid_grid_info,
                     const GridInfoPtr_ knot_grid_info,
-                    const ObjContPtr_ obj_container)
+                    const ControlGridInfoPtr_ control_grid_info,
+                    const ObjContPtr_ obj_container,
+                    const bool is_physical)
   :
   domain_(domain),
   solid_grid_info_(solid_grid_info),
   knot_grid_info_(knot_grid_info),
+  control_grid_info_(control_grid_info),
   objs_container_(obj_container),
+  solid_grid_(VtkGridPtr_()),
+  knot_grid_(VtkGridPtr_()),
+  control_grid_(VtkGridPtr_()),
   recompute_solid_(true),
-  recompute_knot_(true)
+  recompute_knot_(true),
+  recompute_control_(is_physical ? true : false),
+  is_physical_ (is_physical)
 {
   Assert(domain_ != nullptr, ExcNullPtr());
   Assert(solid_grid_info_ != nullptr, ExcNullPtr());
   Assert(knot_grid_info_ != nullptr, ExcNullPtr());
+  Assert(control_grid_info_ != nullptr, ExcNullPtr());
   Assert(objs_container_ != nullptr, ExcNullPtr());
 }
 
 
-template <int dim, int codim>
+
+template <class Domain>
 auto
-VtkIgaGridGenerator<dim, codim>::
+VtkIgaGridGenerator<Domain>::
+create(const DomainPtr_ domain,
+       const GridInfoPtr_ solid_grid_info,
+       const GridInfoPtr_ knot_grid_info,
+       const ControlGridInfoPtr_ control_grid_info,
+       const ObjContPtr_ obj_container,
+       const bool is_physical) -> SelfPtr_
+{
+    return SelfPtr_ (new Self_(domain, solid_grid_info, knot_grid_info,
+                               control_grid_info, obj_container,
+                               is_physical));
+}
+
+
+
+template <class Domain>
+bool
+VtkIgaGridGenerator<Domain>::
+is_physical() const
+{
+    return is_physical_;
+}
+
+
+
+template <class Domain>
+auto
+VtkIgaGridGenerator<Domain>::
 get_solid_grid() -> VtkGridPtr_
 {
   if (recompute_solid_)
   {
-    solid_grid_ = VtkIgaSolidGridGenerator<dim, codim>::
-    get_grid(domain_, solid_grid_info_, objs_container_);
+    // Recomputing solid grid.
+    solid_grid_ = VtkIgaSolidGridGenerator<Domain>::
+            create_grid(domain_, solid_grid_info_, objs_container_);
 
     recompute_solid_ = false;
   }
@@ -68,15 +108,16 @@ get_solid_grid() -> VtkGridPtr_
 
 
 
-template <int dim, int codim>
+template <class Domain>
 auto
-VtkIgaGridGenerator<dim, codim>::
+VtkIgaGridGenerator<Domain>::
 get_knot_grid() -> VtkGridPtr_
 {
   if (recompute_knot_)
   {
-    knot_grid_ = VtkIgaKnotGridGenerator<dim, codim>::
-    get_grid(domain_, knot_grid_info_);
+    // Recomputing knot grid.
+    knot_grid_ = VtkIgaKnotGridGenerator<Domain>::
+            create_grid(domain_, knot_grid_info_);
 
     recompute_knot_ = false;
   }
@@ -87,51 +128,20 @@ get_knot_grid() -> VtkGridPtr_
 
 
 
-template <int dim, int codim>
-void
-VtkIgaGridGeneratorPhys<dim, codim>::
-update(const bool solid_updated,
-       const bool knot_updated,
-       const bool control_updated)
-{
-  if (!this->recompute_solid_)
-    this->recompute_solid_ = solid_updated;
-
-  if (!this->recompute_knot_)
-    this->recompute_knot_ = knot_updated;
-
-  if (!this->recompute_control_)
-    this->recompute_control_ = control_updated;
-}
-
-
-template <int dim, int codim>
-void
-VtkIgaGridGeneratorParm<dim, codim>::
-update(const bool solid_updated,
-       const bool knot_updated,
-       const bool control_updated)
-{
-  if (!this->recompute_solid_)
-    this->recompute_solid_ = solid_updated;
-
-  if (!this->recompute_knot_)
-    this->recompute_knot_ = knot_updated;
-}
-
-
-
-
-
-template <int dim, int codim>
+template <class Domain>
 auto
-VtkIgaGridGeneratorPhys<dim, codim>::
+VtkIgaGridGenerator<Domain>::
 get_control_grid() -> VtkGridPtr_
 {
+  Assert (!is_physical_,
+          ExcMessage("Control mesh cannot be retrieved for a parametric "
+                     "mesh."));
+
   if (recompute_control_)
   {
-    control_grid_ = VtkIgaControlGridGenerator<dim,codim>::
-    get_grid(this->domain_, control_grid_info_);
+    // Recomputing control grid.
+    control_grid_ = VtkIgaControlGridGenerator<Domain>::
+            create_grid(this->domain_, control_grid_info_);
 
     recompute_control_ = false;
   }
@@ -142,29 +152,33 @@ get_control_grid() -> VtkGridPtr_
 
 
 
-template class VtkIgaGridGenerator<1, 0>;
-template class VtkIgaGridGenerator<1, 1>;
-template class VtkIgaGridGenerator<1, 2>;
-template class VtkIgaGridGenerator<2, 0>;
-template class VtkIgaGridGenerator<2, 1>;
-template class VtkIgaGridGenerator<3, 0>;
+template <class Domain>
+void
+VtkIgaGridGenerator<Domain>::
+update(const bool solid_updated,
+       const bool knot_updated,
+       const bool control_updated)
+{
+  if (!this->recompute_solid_)
+    this->recompute_solid_ = solid_updated;
+
+  if (!this->recompute_knot_)
+    this->recompute_knot_ = knot_updated;
+
+  Assert (is_physical_ || !control_updated,
+          ExcMessage("Control mesh cannot be updated for a parametric "
+                     "mesh."));
+  if (!this->recompute_control_ && is_physical_)
+    this->recompute_control_ = control_updated;
+}
 
 
-template class VtkIgaGridGeneratorParm<1, 0>;
-template class VtkIgaGridGeneratorParm<1, 1>;
-template class VtkIgaGridGeneratorParm<1, 2>;
-template class VtkIgaGridGeneratorParm<2, 0>;
-template class VtkIgaGridGeneratorParm<2, 1>;
-template class VtkIgaGridGeneratorParm<3, 0>;
-
-
-template class VtkIgaGridGeneratorPhys<1, 0>;
-template class VtkIgaGridGeneratorPhys<1, 1>;
-template class VtkIgaGridGeneratorPhys<1, 2>;
-template class VtkIgaGridGeneratorPhys<2, 0>;
-template class VtkIgaGridGeneratorPhys<2, 1>;
-template class VtkIgaGridGeneratorPhys<3, 0>;
-
+template class VtkIgaGridGenerator<Domain<1, 0>>;
+template class VtkIgaGridGenerator<Domain<1, 1>>;
+template class VtkIgaGridGenerator<Domain<1, 2>>;
+template class VtkIgaGridGenerator<Domain<2, 0>>;
+template class VtkIgaGridGenerator<Domain<2, 1>>;
+template class VtkIgaGridGenerator<Domain<3, 0>>;
 
 
 IGA_NAMESPACE_CLOSE

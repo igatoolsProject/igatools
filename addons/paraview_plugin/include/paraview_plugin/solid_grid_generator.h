@@ -41,14 +41,20 @@ template <int dim, int codim> class Domain;
 struct VtkGridInformation;
 
 
-template <int dim, int codim>
+template <class Domain>
 class VtkIgaSolidGridGenerator
 {
 private:
+
+  /**
+   * Dimension.
+   */
+  static const int dim = Domain::dim;
+
   /**
    * Space dimension.
    */
-  static const int space_dim = dim + codim;
+  static const int space_dim = Domain::space_dim;
 
   /**
    * Self type.
@@ -63,7 +69,7 @@ private:
   /**
    * Alias for a shared pointer of a domain type.
    */
-  typedef std::shared_ptr<const Domain<dim, codim>> DomainPtr_;
+  typedef std::shared_ptr<const Domain> DomainPtr_;
 
   /**
    * Alias for mesh grid information shared pointer.
@@ -107,9 +113,9 @@ public:
   /**
    * Creates and returns the vtk grid for the visualization.
    */
-  static VtkGridPtr_ get_grid(const DomainPtr_ domain,
-                              const GridInfoPtr_ grid_info,
-                              const ObjContPtr_t_ obj_container);
+  static VtkGridPtr_ create_grid(const DomainPtr_ domain,
+                                 const GridInfoPtr_ grid_info,
+                                 const ObjContPtr_t_ obj_container);
 
 private:
 
@@ -163,7 +169,6 @@ private:
    * Total number of points in the visualization.
    */
   Size n_total_points_;
-
 
   /**
    * Creates and returns the structured vtk grid for the visualization.

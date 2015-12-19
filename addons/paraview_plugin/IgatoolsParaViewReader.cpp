@@ -47,8 +47,7 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
   n_vis_elem_parm_solid_(1),
   n_vis_elem_phys_knot_(1),
   n_vis_elem_parm_knot_(1),
-  phys_gen_(PhysGenPtr_()),
-  parm_gen_(ParmGenPtr_())
+  grid_gen_ (GridGenPtr_())
 {
 #ifndef NDEBUG
   this->DebugOn();
@@ -149,8 +148,7 @@ parse_file()
 
   const auto file_name_str = string(file_name_);
 
-  phys_gen_.reset();
-  parm_gen_.reset();
+  grid_gen_.reset();
   objs_container_.reset();
 
   try
@@ -183,10 +181,6 @@ parse_file()
     const auto phys_ctr = VtkControlGridInformation::create
                           (phys_ctr_grid_type_ == vtkGridType::Structured);
 
-    phys_gen_ = VtkIgaGridGeneratorContPhys::create
-                (objs_container_, phys_sol, phys_knt, phys_ctr);
-
-
     // Parametric solid grid.
     const auto parm_sol = VtkGridInformation::create
                           (n_vis_elem_parm_solid_, parm_sol_grid_type_);
@@ -196,8 +190,9 @@ parse_file()
     const auto parm_knt = VtkGridInformation::create
                           (n_vis_elem_parm_knot_, parm_knt_grid_type_);
 
-    parm_gen_ = VtkIgaGridGeneratorContParm::create
-                (objs_container_, parm_sol, parm_knt);
+    grid_gen_ = VtkIgaGridGeneratorContainer::create
+                (objs_container_, phys_sol, phys_knt, phys_ctr,
+                 parm_sol, parm_knt);
 
     parse_file_ = false;
 
@@ -207,8 +202,7 @@ parse_file()
   {
     vtkErrorMacro(<< e.what());
 
-    phys_gen_.reset();
-    parm_gen_.reset();
+    grid_gen_.reset();
     objs_container_.reset();
 
     return 0;
@@ -218,8 +212,7 @@ parse_file()
     vtkErrorMacro(<< "An exception occurred when parsing file "
                   << file_name_str << ".");
 
-    phys_gen_.reset();
-    parm_gen_.reset();
+    grid_gen_.reset();
     objs_container_.reset();
 
     return 0;
@@ -244,9 +237,6 @@ update_grid_info()
   const auto phys_ctr = VtkControlGridInformation::create
                         (phys_ctr_grid_type_ == vtkGridType::Structured);
 
-  phys_gen_->update(phys_sol, phys_knt, phys_ctr);
-
-
   // Parametric solid grid.
   const auto parm_sol = VtkGridInformation::create
                         (n_vis_elem_parm_solid_, parm_sol_grid_type_);
@@ -256,7 +246,8 @@ update_grid_info()
   const auto parm_knt = VtkGridInformation::create
                         (n_vis_elem_parm_knot_, parm_knt_grid_type_);
 
-  parm_gen_->update(parm_sol, parm_knt,nullptr);
+  grid_gen_->update(phys_sol, phys_knt, phys_ctr,
+                    parm_sol, parm_knt);
 }
 
 
@@ -281,8 +272,8 @@ create_grids(vtkMultiBlockDataSet *const mb)
   const unsigned int num_parm_blocks =
     create_sol_mesh_parm_ + create_knt_mesh_parm_;
 
-  const auto num_active_phys = phys_gen_->get_number_active_grids();
-  const auto num_active_parm = parm_gen_->get_number_active_grids();
+  const auto num_active_phys = grid_gen_->get_number_active_physical_grids();
+  const auto num_active_parm = grid_gen_->get_number_active_parametric_grids();
 
   bool new_create_physical_mesh = create_physical_mesh_;
   if (create_physical_mesh_ && (num_phys_blocks == 0 || num_active_phys == 0))
@@ -373,7 +364,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
       phys_block->SetBlock(subblock_index, solid_block);
       phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
                                                    "Solid mesh");
-      phys_gen_->set_solid_grids(solid_block);
+      grid_gen_->set_physical_solid_grids(solid_block);
 
       this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
 
@@ -386,7 +377,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
       phys_block->SetBlock(subblock_index, knot_block);
       phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
                                                    "Knot mesh");
-      phys_gen_->set_knot_grids(knot_block);
+      grid_gen_->set_physical_knot_grids(knot_block);
 
       this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
 
@@ -399,7 +390,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
       phys_block->SetBlock(subblock_index, control_block);
       phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
                                                    "Control mesh");
-      phys_gen_->set_control_grids(control_block);
+      grid_gen_->set_physical_control_grids(control_block);
 
       this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
     }
@@ -425,7 +416,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
       parm_block->SetBlock(subblock_index, solid_block);
       parm_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
                                                    "Solid mesh");
-      parm_gen_->set_solid_grids(solid_block);
+      grid_gen_->set_parametric_solid_grids(solid_block);
 
       this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
 
@@ -438,7 +429,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
       parm_block->SetBlock(subblock_index, knot_block);
       parm_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
                                                    "Knot mesh");
-      parm_gen_->set_knot_grids(knot_block);
+      grid_gen_->set_parametric_knot_grids(knot_block);
 
       this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
     }
@@ -779,8 +770,8 @@ int
 IgatoolsParaViewReader::
 GetNumberOfPhysGeomArrays()
 {
-  Assert(phys_gen_ != nullptr, ExcNullPtr());
-  return phys_gen_->get_number_grids();
+  Assert(grid_gen_ != nullptr, ExcNullPtr());
+  return grid_gen_->get_number_physical_grids();
 }
 
 
@@ -789,8 +780,8 @@ const char *
 IgatoolsParaViewReader::
 GetPhysGeomArrayName(int index)
 {
-  Assert(phys_gen_ != nullptr, ExcNullPtr());
-  const string &name = phys_gen_->get_grid_name(index);
+  Assert(grid_gen_ != nullptr, ExcNullPtr());
+  const string &name = grid_gen_->get_physical_grid_name(index);
   return name.c_str();
 }
 
@@ -800,8 +791,8 @@ int
 IgatoolsParaViewReader::
 GetPhysGeomArrayStatus(const char *name)
 {
-  Assert(phys_gen_ != nullptr, ExcNullPtr());
-  return phys_gen_->get_grid_status(string(name));
+  Assert(grid_gen_ != nullptr, ExcNullPtr());
+  return grid_gen_->get_physical_grid_status(string(name));
 }
 
 
@@ -813,12 +804,12 @@ SetPhysGeomArrayStatus(const char *name, int en)
   // Note: sometimes this function is called before parsing and
   // names gotten from Previous ParaView session are parsed.
   // The if is introduced for fixing this problem.
-  if (phys_gen_ != nullptr)
+  if (grid_gen_ != nullptr)
   {
     const auto name_str = string(name);
-    if (phys_gen_->get_grid_status(name_str) != en)
+    if (grid_gen_->get_physical_grid_status(name_str) != en)
     {
-      phys_gen_->set_grid_status(name_str, en);
+      grid_gen_->set_physical_grid_status(name_str, en);
       this->Modified();
     }
   }
@@ -830,8 +821,8 @@ int
 IgatoolsParaViewReader::
 GetNumberOfParmGeomArrays()
 {
-  Assert(parm_gen_ != nullptr, ExcNullPtr());
-  return parm_gen_->get_number_grids();
+  Assert(grid_gen_ != nullptr, ExcNullPtr());
+  return grid_gen_->get_number_parametric_grids();
 }
 
 
@@ -840,8 +831,8 @@ const char *
 IgatoolsParaViewReader::
 GetParmGeomArrayName(int index)
 {
-  Assert(parm_gen_ != nullptr, ExcNullPtr());
-  const string &name = parm_gen_->get_grid_name(index);
+  Assert(grid_gen_ != nullptr, ExcNullPtr());
+  const string &name = grid_gen_->get_parametric_grid_name(index);
   return name.c_str();
 }
 
@@ -851,8 +842,8 @@ int
 IgatoolsParaViewReader::
 GetParmGeomArrayStatus(const char *name)
 {
-  Assert(parm_gen_ != nullptr, ExcNullPtr());
-  return parm_gen_->get_grid_status(string(name));
+  Assert(grid_gen_ != nullptr, ExcNullPtr());
+  return grid_gen_->get_parametric_grid_status(string(name));
 }
 
 
@@ -864,12 +855,12 @@ SetParmGeomArrayStatus(const char *name, int en)
   // Note: sometimes this function is called before parsing and
   // names gotten from Previous ParaView session are parsed.
   // The if is introduced for fixing this problem.
-  if (parm_gen_ != nullptr)
+  if (grid_gen_ != nullptr)
   {
     const auto name_str = string(name);
-    if (parm_gen_->get_grid_status(name_str) != en)
+    if (grid_gen_->get_parametric_grid_status(name_str) != en)
     {
-      parm_gen_->set_grid_status(name_str, en);
+      grid_gen_->set_parametric_grid_status(name_str, en);
       this->Modified();
     }
   }

@@ -18,63 +18,40 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
-#include <vtkStructuredGrid.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkSmartPointer.h>
-#include <vtkCellArray.h>
-#include <vtkPolyLine.h>
-#include <vtkPolyVertex.h>
-//*/
 #include <paraview_plugin/control_grid_generator.h>
 
 #include <paraview_plugin/grid_information.h>
 
-#include <boost/range/irange.hpp>
-
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/geometry/domain.h>
-#include <igatools/basis_functions/space_element.h>
 #include <igatools/basis_functions/dof_distribution.h>
+
+#include <vtkSmartPointer.h>
+#include <vtkStructuredGrid.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkPolyVertex.h>
+#include <vtkCellArray.h>
+#include <vtkPolyLine.h>
 
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, int codim>
-VtkIgaControlGridGenerator<dim, codim>::
-VtkIgaControlGridGenerator(const DomainPtr_ domain,
-                           const ControlGridInfoPtr_ grid_info)
-  :
-  ig_grid_fun_(std::dynamic_pointer_cast<const IgGridFun_>(domain->get_grid_function())),
-  grid_info_(grid_info)
+template <class Domain>
+auto
+VtkIgaControlGridGenerator<Domain>::
+create_grid(const DomainPtr_ domain,
+            const ControlGridInfoPtr_ grid_info) -> VtkGridPtr_
 {
   Assert(domain != nullptr, ExcNullPtr());
-  Assert(ig_grid_fun_ != nullptr, ExcNullPtr());
   Assert(grid_info != nullptr, ExcNullPtr());
 
-  // TODO: include assert here to verify that all the components share the
-  // same space.
-}
-template <int dim, int codim>
-auto
-VtkIgaControlGridGenerator<dim, codim>::
-get_grid(const DomainPtr_ domain,
-         const ControlGridInfoPtr_ grid_info) -> VtkGridPtr_
-{
-  VtkIgaControlGridGenerator generator(domain, grid_info);
-  return generator.create_grid();
-}
+  const auto ig_grid_fun = std::dynamic_pointer_cast<const IgGridFun_>
+      (domain->get_grid_function());
+  Assert(ig_grid_fun != nullptr, ExcNullPtr());
 
+  const auto &coefs = ig_grid_fun->get_coefficients();
 
-
-template <int dim, int codim>
-auto
-VtkIgaControlGridGenerator<dim, codim>::
-create_grid() const -> VtkGridPtr_
-{
-  const auto &coefs = ig_grid_fun_->get_coefficients();
-
-  const auto &dofs = ig_grid_fun_->get_basis()->get_dof_distribution();
+  const auto &dofs = ig_grid_fun->get_basis()->get_dof_distribution();
   const auto &dofs_table = dofs->get_num_dofs_table();
 
   const Size n_total_pts = dofs_table.get_component_size(0);
@@ -102,28 +79,26 @@ create_grid() const -> VtkGridPtr_
     points->SetPoint(local_id, point_tmp);
   }
 
-  if (!grid_info_->is_structured() || dim == 1)  // Unstructured grid
-    return this->create_grid_vtu(points);
+  if (!grid_info->is_structured() || dim == 1)  // Unstructured grid
+    return Self_::create_grid_vtu(ig_grid_fun, points);
   else // Structured grid
-    return this->create_grid_vts(points);
+    return Self_::create_grid_vts(ig_grid_fun, points);
 }
 
 
 
-
-
-
-template <int dim, int codim>
+template <class Domain>
 auto
-VtkIgaControlGridGenerator<dim, codim>::
-create_grid_vts(const vtkSmartPointer<vtkPoints> points) const -> VtkGridPtr_
+VtkIgaControlGridGenerator<Domain>::
+create_grid_vts(const IgGridFunPtr_ ig_grid_fun,
+                const vtkSmartPointer<vtkPoints> points) -> VtkGridPtr_
 {
-  const auto &dofs = ig_grid_fun_->get_basis()->get_dof_distribution();
+  const auto &dofs = ig_grid_fun->get_basis()->get_dof_distribution();
   const auto &dofs_table = dofs->get_num_dofs_table();
   const auto n_pts_dir = dofs_table[0];
 
   auto grid_dim = TensorSize <3> (1);
-  for (const auto &dir : boost::irange(0, dim))
+  for (int dir = 0; dir < dim; ++dir)
     grid_dim[dir] = n_pts_dir[dir];
 
   auto grid = vtkSmartPointer <vtkStructuredGrid>::New();
@@ -135,12 +110,13 @@ create_grid_vts(const vtkSmartPointer<vtkPoints> points) const -> VtkGridPtr_
 
 
 
-template <int dim, int codim>
+template <class Domain>
 auto
-VtkIgaControlGridGenerator<dim, codim>::
-create_grid_vtu(const vtkSmartPointer<vtkPoints> points) const -> VtkGridPtr_
+VtkIgaControlGridGenerator<Domain>::
+create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
+                const vtkSmartPointer<vtkPoints> points) -> VtkGridPtr_
 {
-  const auto &dofs = ig_grid_fun_->get_basis()->get_dof_distribution();
+  const auto &dofs = ig_grid_fun->get_basis()->get_dof_distribution();
   const auto &dofs_table = dofs->get_num_dofs_table();
   const auto n_pts_dir = dofs_table[0];
 
@@ -154,7 +130,7 @@ create_grid_vtu(const vtkSmartPointer<vtkPoints> points) const -> VtkGridPtr_
   const Size n_points = points->GetNumberOfPoints();
   auto vertex_points = vertices->GetPointIds();
   vertex_points->SetNumberOfIds(n_points);
-  for (const auto &i_pt : boost::irange(0, n_points))
+  for (int i_pt = 0; i_pt < n_points; ++i_pt)
     vertex_points->SetId(i_pt, i_pt);
 
   // Create a cell array to store the lines and vertices,
@@ -193,7 +169,7 @@ create_grid_vtu(const vtkSmartPointer<vtkPoints> points) const -> VtkGridPtr_
       offset *= n_pts_dir[dir2];
 
     tid[dir] = 0;
-    for (const auto &l_id : boost::irange(0, ids_face.flat_size()))
+    for (int l_id = 0; l_id < ids_face.flat_size(); ++l_id)
     {
       // Getting the flat index of the initial point of the line.
       const auto fid = ids_face.flat_to_tensor(l_id);
@@ -229,13 +205,11 @@ create_grid_vtu(const vtkSmartPointer<vtkPoints> points) const -> VtkGridPtr_
   return grid;
 }
 
-template class VtkIgaControlGridGenerator<1, 0>;
-template class VtkIgaControlGridGenerator<1, 1>;
-template class VtkIgaControlGridGenerator<1, 2>;
-template class VtkIgaControlGridGenerator<2, 0>;
-template class VtkIgaControlGridGenerator<2, 1>;
-template class VtkIgaControlGridGenerator<3, 0>;
-
-
+template class VtkIgaControlGridGenerator<Domain<1, 0>>;
+template class VtkIgaControlGridGenerator<Domain<1, 1>>;
+template class VtkIgaControlGridGenerator<Domain<1, 2>>;
+template class VtkIgaControlGridGenerator<Domain<2, 0>>;
+template class VtkIgaControlGridGenerator<Domain<2, 1>>;
+template class VtkIgaControlGridGenerator<Domain<3, 0>>;
 
 IGA_NAMESPACE_CLOSE
