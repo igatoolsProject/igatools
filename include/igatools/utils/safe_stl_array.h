@@ -80,21 +80,13 @@ public :
    * Returns a reference to the <tt>n</tt>-th entry of the container.
    * @note In Debug mode the value of <tt>n</tt> is checked if within the valid bounds of the container.
    */
-  T &operator[](Size n)
-  {
-    Assert(n < this->size(), ExcIndexRange(n, 0, this->size()));
-    return std::array<T,N>::operator[](n);
-  }
+  T &operator[](Size n);
 
   /**
    * Returns a const-reference to the <tt>n</tt>-th entry of the container.
    * @note In Debug mode the value of <tt>n</tt> is checked if within the valid bounds of the container.
    */
-  const T &operator[](Size n) const
-  {
-    Assert(n < this->size(), ExcIndexRange(n, 0, this->size()));
-    return std::array<T,N>::operator[](n);
-  }
+  const T &operator[](Size n) const;
 
 private:
 

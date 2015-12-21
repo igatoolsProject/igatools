@@ -24,8 +24,24 @@
 
 IGA_NAMESPACE_OPEN
 
+template<class T,int N>
+T &
+SafeSTLArray<T,N>::
+operator[](Size n)
+{
+  Assert(n < this->size(), ExcIndexRange(n, 0, this->size()));
+  return std::array<T,N>::operator[](n);
+}
 
+template<class T,int N>
+const T &
+SafeSTLArray<T,N>::
+operator[](Size n) const
+{
+  Assert(n < this->size(), ExcIndexRange(n, 0, this->size()));
+  return std::array<T,N>::operator[](n);
+}
 
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/utils/safe_stl_array.inst>
+#include <igatools/utils/safe_stl_array.inst>

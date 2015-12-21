@@ -425,3 +425,18 @@ class Instantiation:
         self.file_output.write('IGA_NAMESPACE_CLOSE\n')
         self.file_output.close() 
         
+
+
+#-------------------------------------------------
+def skel_size(dim,sdim):
+  res = 0
+  if dim == sdim:
+    res = 1
+  elif ((sdim < dim) and (sdim >= 0)):
+    if sdim > 0:
+      res = 2 * skel_size(dim-1, sdim) + skel_size(dim-1, sdim-1)
+    else:
+      res = 2**dim
+
+  return res;
+#-------------------------------------------------

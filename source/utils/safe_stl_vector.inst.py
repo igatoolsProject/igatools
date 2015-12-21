@@ -75,12 +75,7 @@ for div in inst.divs:
 
 
 for dims in inst.dims_list:
-#    (dim, rng, rank) = (dims.dim, dims.range, dims.rank)
-#    if order == 0:
-#        (dim, order) = (1,1)
-#        deriv ='Tensor<%d, %d, tensor::covariant, Tensor<%d, %d, tensor::contravariant, Tdouble>>' % (dim, order, range, rank)
     value ='Tensor<%d, %d, tensor::contravariant, Tdouble>' % (dims.range,dims.rank)
-#        div   ='Tensor<%d, %d, tensor::contravariant, Tdouble>' % (range, rank - 1)
     for k in range(0,dims.range+1):
         classes.append('SafeSTLArray<%s,%d>' % (value,k))
 
