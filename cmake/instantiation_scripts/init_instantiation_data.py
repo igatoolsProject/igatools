@@ -358,13 +358,13 @@ class InstantiationInfo:
           
       inv_func = unique([FunctionRow([x.space_dim,  0, x.dim, 1]) 
                               for x in self.all_mapping_dims] )
-      dims_list = unique (self.all_function_dims + inv_func)
+      self.dims_list = unique (self.all_function_dims + inv_func)
 
       deriv_list=[]
       value_list=[]
       div_list=[]
       for order in self.deriv_order:
-         for dims in dims_list:
+         for dims in self.dims_list:
             (dim, range, rank) = (dims.dim, dims.range, dims.rank)
             if order == 0:
                (dim, order) = (1,1)

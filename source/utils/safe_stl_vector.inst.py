@@ -19,19 +19,73 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-include_files = []
+include_files = ['utils/tensor_index.h',
+                 'utils/element_index.h',
+                 'basis_functions/bernstein_extraction.h',
+                 'basis_functions/values1d_const_view.h',
+                 'utils/concatenated_iterator.h']
 data = Instantiation(include_files)
 f = data.file_output
 inst = data.inst
 
+classes = []
 
-#for deriv in inst.derivatives + inst.values + inst.divs:
-#    value_vectors.append('ValueVector<%s>' % (deriv))
 
-#for row in set (value_vectors):
-#    f.write('template class %s; \n' % (row))
-#    f.write("template %s operator*(const Real, const %s &) ;\n" % (row,row))
-#    f.write("template %s operator*(const %s &, const Real) ;\n" % (row,row))
+
+classes.append('int');
+classes.append('Real');
+classes.append('SafeSTLVector<Real>');
+classes.append('ContainerView<SafeSTLVector<int>>');
+classes.append('ConstContainerView<SafeSTLVector<int>>');
+classes.append('BernsteinOperator');
+classes.append('const BernsteinOperator *');
+classes.append('SafeSTLVector<BernsteinOperator>');
+classes.append('const SafeSTLVector<BernsteinOperator> *');
+for dim in inst.all_domain_dims:
+    classes.append('TensorIndex<%d>' %(dim))
+    classes.append('ElementIndex<%d>' %(dim))
+    classes.append('SafeSTLArray<Real,%d>' %(dim))
+    classes.append('SafeSTLArray<SafeSTLArray<Real,%d>,%d>' %(dim,dim))
+    classes.append('SafeSTLArray<BernsteinOperator,%d>' %(dim))
+    classes.append('SafeSTLArray<const BernsteinOperator *,%d>' %(dim))
+    classes.append('SafeSTLArray<SafeSTLVector<BernsteinOperator>,%d>' %(dim));
+    classes.append('SafeSTLArray<SafeSTLVector<const BernsteinOperator *>,%d>' %(dim));
+    classes.append('SafeSTLArray<const SafeSTLVector<BernsteinOperator> *,%d>' %(dim));
+
+vec_int = 'SafeSTLVector<int>'
+t = 'ConstView<ConcatenatedIterator<ContainerView<%s>>,ConcatenatedConstIterator<ContainerView<%s>,ConstContainerView<%s>>>' %(vec_int,vec_int,vec_int)
+classes.append('%s' % (t))
+
+
+space = 'SplineSpace<0,0,1>'
+classes.append('typename %s::template ComponentContainer<SafeSTLArray<BasisValues1d,0>>' % (space));
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
+    space = 'SplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    classes.append('typename %s::template ComponentContainer<SafeSTLArray<BasisValues1d,%d>>' %(space,x.dim));
     
-#for row in set (normals + curvatures):
-#      f.write('template class ValueVector<%s>; \n' % (row))
+
+for val in inst.values:
+    classes.append('%s' % val)
+
+for der in inst.derivatives:
+    classes.append('%s' % der)
+
+for div in inst.divs:
+    classes.append('%s' % div)
+
+
+for dims in inst.dims_list:
+#    (dim, rng, rank) = (dims.dim, dims.range, dims.rank)
+#    if order == 0:
+#        (dim, order) = (1,1)
+#        deriv ='Tensor<%d, %d, tensor::covariant, Tensor<%d, %d, tensor::contravariant, Tdouble>>' % (dim, order, range, rank)
+    value ='Tensor<%d, %d, tensor::contravariant, Tdouble>' % (dims.range,dims.rank)
+#        div   ='Tensor<%d, %d, tensor::contravariant, Tdouble>' % (range, rank - 1)
+    for k in range(0,dims.range+1):
+        classes.append('SafeSTLArray<%s,%d>' % (value,k))
+
+
+
+
+for c in unique(classes):
+      f.write('template class SafeSTLVector<%s>; \n' % (c))

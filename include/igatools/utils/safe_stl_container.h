@@ -54,7 +54,6 @@ public:
 
 
 
-
   /**
    * @name Printing info
    */
@@ -97,25 +96,6 @@ private:
       out << entry << " ";
     out << "]";
   }
-
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void serialize(Archive &ar, const unsigned int version)
-  {
-    ar &boost::serialization::make_nvp("STLContainer",
-                                       boost::serialization::base_object<STLContainer>(*this));
-  }
-  ///@}
-#endif // SERIALIZATION
-#endif
 
 public:
 

@@ -24,6 +24,25 @@
 IGA_NAMESPACE_OPEN
 
 
+template<class T>
+T &
+SafeSTLVector<T>::
+operator[](Size n)
+{
+  Assert(n < this->size(), ExcIndexRange(n, 0, this->size()));
+  return std::vector<T>::operator[](n);
+}
+
+template<class T>
+const T &
+SafeSTLVector<T>::
+operator[](Size n) const
+{
+  Assert(n < this->size(), ExcIndexRange(n, 0, this->size()));
+  return std::vector<T>::operator[](n);
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/utils/safe_stl_vector.inst>
