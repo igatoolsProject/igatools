@@ -61,7 +61,7 @@ class PoissonProblem {
 // [system]
 
   public:
-    PoissonProblem(const int nel, const int deg) {
+    PoissonProblem(const Size nel, const Index deg) {
       grid  = Grid<dim>::const_create(nel+1);
       space = SplineSpace<dim>::const_create(deg,grid);
       basis = BSpline<dim>::const_create(space);
@@ -78,7 +78,6 @@ class PoissonProblem {
     void save();
     void run();
 };
-
 
 template<int dim>
 void PoissonProblem<dim>::assemble() {

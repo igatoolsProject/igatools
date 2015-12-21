@@ -32,7 +32,7 @@ previous examples, we include few ones for elements and quadrature schemes:
 \snippet example_03.cpp includes
 
 We also declare a simple function for the creation of our ol' friend the quarter
-annulus (see \ref example_02):
+annulus (for the laziest, also the solution of one Excercise of \ref example_02):
 \snippet example_03.cpp quarter_annulus
 
 We can now start with a simple non-cached element loop over the grid:
@@ -88,6 +88,10 @@ passing the appropriate flags.
   </div>
 </div>
 
+\warning
+Each call of the method <tt>set_element_flags()</tt> resets previously set flags,
+hence the user must use the bitwise operator | in order to set multiple flags.
+
 After the call of the method <tt>set_element_flags()</tt>, 
 we need to pass the element variable we we want to use (<tt>basis_el</tt>) and
 the Quadrature (i.e. the evaluation points scheme). In this example we set a simple
@@ -112,20 +116,20 @@ the LogStream class is shown:
 The <tt>main</tt> body is kept minimal as usual:
 \snippet example_03.cpp main_trivial
 
-The next lines are perhaps more interesting: we give an example
-of the basis loop for B-splines on reference domain and B-splines on physical domain:
-\snippet example_03.cpp main_basis_loop
+The next lines are perhaps more interesting. we give an example
+of the basis loop initialization for B-splines on reference domain:
+\snippet example_03.cpp main_basis_loop_ref
+and B-splines on physical domain:
+\snippet example_03.cpp main_basis_loop_phy
 As one can notice, <tt>basis_loop_with_cache()</tt> works (via an appropriate
 cast of the shared pointer) with both reference and physical basis.
 Any basis in igatools is derived from the pure abstract Basis class, and every
 method for element loops (the set/init/fill trio) are virtually implemented therein.
 
-\note
-For the basis loop in the annulus domain we construct the basis from the 
-<tt>ref_basis</tt>, which comes from <tt>square</tt>. If we create the
-annulus domain starting from a brand-new grid, and then create a physical
-basis from <tt>ref_basis</tt> and the annulus, an exception would be thrown.
-This motivates the input parameter in the <tt>quarter_annulus</tt> function.
+As last remark, please notice the difference between the construction of a 
+ReferenceSpaceBasis (derived with the class BSpline) and PhysicalSpaceBasis: 
+the former is simply built upon a Grid and then a SplineSpace, while the latter 
+requires for the last step a Domain and a ReferenceSpaceBasis.
 
 \section Exercises
 <ol>
@@ -143,19 +147,21 @@ auto grads = basis_el->get_element_gradients();
 \endcode
  </div>
  </div>
-<li> What happens if you request an unitiliazied data? And if you don't fill the data?
-<li> What happens if you create the annulus from a brand new grid instead of <tt>square</tt>?
+<li> Implement a Domain element loop.
 <div class="row">
  <a href="#hide32" class="hide" id="hide32">Show hint</a>
  <a href="#show32" class="show" id="show32">Hide hint</a>
  <div class="list">
-For the basis loop in the annulus domain we construct the basis from the 
-<tt>ref_basis</tt>, which comes from <tt>square</tt>. If we create the
-annulus domain starting from a brand-new grid, and then create a physical
-basis from <tt>ref_basis</tt> and the annulus, an exception would be thrown, as
-the grids of different object in the same group must match.
+If the reader is not affected by OCD, variables names can be kept so that the 
+only difference is the following line:
+\code{.cpp}
+void grid_loop(shared_ptr<const Domain<dim>> domain) {
+\endcode
  </div>
  </div>
+<li> What happens if you request an unitiliazied data? And if you don't fill the data?
+<li> Why it is not possible to use the variable <tt>basis</tt> as a reference basis for
+the physical one <tt>phy_basis</tt>?
 </ol>
 
 \section fcode03 The full program

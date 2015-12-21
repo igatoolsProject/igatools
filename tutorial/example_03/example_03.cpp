@@ -39,11 +39,12 @@ using namespace std;
 LogStream out;
 
 // [quarter_annulus]
-shared_ptr<const Domain<2>> quarter_annulus(shared_ptr<const Grid<2>> grid) {
+shared_ptr<const Domain<2>> quarter_annulus(const Size nel) {
   using numbers::PI;
   BBox<2> box;
   box[0] = {{1.0,2.0}};
   box[1] = {{0.0,PI/2}};
+  auto grid       = Grid<2>::const_create(box,nel+1);
   auto geom_funct = grid_functions::BallGridFunction<2>::const_create(grid);
   return Domain<2>::const_create(geom_funct);
 }
@@ -111,17 +112,24 @@ int main()
   grid_loop<3>(cube);
 // [main_trivial]
 
-// [main_basis_loop]
-  auto space     = SplineSpace<2>::const_create(2,square);
-  auto ref_basis = BSpline<2>::const_create(space);
-  out << "Traversing basis functions on the reference domain:" << endl;
-  basis_loop_with_cache<2>(dynamic_pointer_cast<const Basis<2,0,1,1>>(ref_basis));
+// [main_basis_loop_ref]
+  auto space = SplineSpace<2>::const_create(2,square);
+  auto basis = BSpline<2>::const_create(space);
 
-  auto annulus   = quarter_annulus(square);
-  out << "Traversing basis functions on the annulus domain:" << endl;
+  out << "Traversing basis functions on the reference domain:" << endl;
+  basis_loop_with_cache<2>(dynamic_pointer_cast<const Basis<2,0,1,1>>(basis));
+// [main_basis_loop_ref]
+
+// [main_basis_loop_phy]
+  auto annulus   = quarter_annulus(2);
+  auto grid      = annulus->get_grid_function()->get_grid();
+  auto ref_space = SplineSpace<2>::const_create(2,grid);
+  auto ref_basis = BSpline<2>::const_create(ref_space);
   auto phy_basis = PhysicalSpaceBasis<2>::const_create(ref_basis,annulus);
+
+  out << "Traversing basis functions on the annulus domain:" << endl;
   basis_loop_with_cache<2>(dynamic_pointer_cast<const Basis<2,0,1,1>>(phy_basis));
-// [main_basis_loop]
+// [main_basis_loop_phy]
 
   return 0;
 }

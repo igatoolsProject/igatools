@@ -240,6 +240,7 @@ using iga::numbers::PI;
 BBox<2> box;
 box[0] = {{1.0,2.0}};
 box[1] = {{0.0,PI/2}};
+auto grid       = Grid<2>::const_create(box,nel+1);
 auto geom_funct = grid_functions::BallGridFunction<2>::const_create(grid);
 \endcode
  </div>
