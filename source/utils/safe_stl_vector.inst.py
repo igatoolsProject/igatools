@@ -23,6 +23,7 @@ include_files = ['utils/tensor_index.h',
                  'utils/element_index.h',
                  'basis_functions/bernstein_extraction.h',
                  'basis_functions/values1d_const_view.h',
+                 'basis_functions/nurbs.h',
                  'utils/concatenated_iterator.h']
 data = Instantiation(include_files)
 f = data.file_output
@@ -64,6 +65,23 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     classes.append('typename %s::template ComponentContainer<SafeSTLArray<BasisValues1d,%d>>' %(space,x.dim));
     
 
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
+    bspline = 'std::shared_ptr<BSpline<%d,%d,%d>>' %(x.dim, x.range, x.rank)
+    classes.append('%s' %(bspline))
+    nurbs = 'std::shared_ptr<NURBS<%d,%d,%d>>' %(x.dim, x.range, x.rank)
+    classes.append('%s' %(nurbs))
+    vec = 'SafeSTLVector<int>'
+    classes.append('ConstView<MultiArrayIterator<MultiArray<%s,%d>>,MultiArrayConstIterator<MultiArray<%s,%d>>>' %(vec,x.dim,vec,x.dim))
+
+
+
+
+classes.append('ConstView<std::vector<int>::iterator,std::vector<int>::const_iterator>')
+classes.append('ConstView<std::vector<int>::iterator,std::vector<int>::iterator>')
+classes.append('NonConstView<std::vector<int>::iterator,std::vector<int>::const_iterator>')
+
+
+
 for val in inst.values:
     classes.append('%s' % val)
 
@@ -81,6 +99,38 @@ for dims in inst.dims_list:
 
 
 
-
+vectors = []
 for c in unique(classes):
-      f.write('template class SafeSTLVector<%s>; \n' % (c))
+    v = 'SafeSTLVector<%s>' %(c)
+    vectors.append('%s' %(v))
+    f.write('template class %s;\n' % (v))
+
+
+
+
+
+
+#---------------------------------------------------
+#f.write('IGA_NAMESPACE_CLOSE\n')
+#
+#f.write('#ifdef SERIALIZATION\n')
+#
+#archives = ['OArchive','IArchive']
+#
+#id = 0 
+#for v in unique(vectors):
+#    alias = 'SafeSTLVectorAlias%d' %(id)
+#    f.write('using %s = %s;\n' %(alias,v))
+#    for ar in archives:
+#        f.write('template void %s::serialize(%s&);\n' %(alias,ar))
+#    id += 1 
+#f.write('#endif // SERIALIZATION\n')
+#    
+#f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------
+
+
+
+
+
+

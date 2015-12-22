@@ -323,6 +323,15 @@ public:
 
 private:
 
+  /**
+   * The purpose of this struct is to set (at compile time) the static boolean IsInCache::value
+   * depending on the fact that the values associated to the template argument <tt>ValueType</tt>
+   * is in the element's cache or not.
+   *
+   * @note The valid <tt>ValueType</tt> for the GridElement's cache are:
+   * - grid_element::_Point for the <b>points</b> in the parametric domain
+   * - grid_element::_Weight for the <b>weights</b> associated to the points in the parametric domain
+   */
   template <class ValueType>
   struct IsInCache
   {

@@ -34,20 +34,13 @@ for c in classes:
 
 
 #---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
+f.write('#ifdef SERIALIZATION\n')
 
 archives = ['OArchive','IArchive']
 
-f.write('#ifdef SERIALIZATION\n')
-id = 0 
+classes.append('BernsteinOperator')
 for c in unique(classes):
-    alias = 'BernsteinExtractionAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, c))
     for ar in archives:
-        f.write('template void %s::serialize(%s&);\n' %(alias,ar))
-        
-    id += 1 
+        f.write('template void %s::serialize(%s&);\n' %(c,ar))
 f.write('#endif // SERIALIZATION\n')
-    
-f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------

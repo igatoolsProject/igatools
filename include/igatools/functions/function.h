@@ -326,18 +326,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("domain_",domain_);
-    ar &make_nvp("name_",name_);
-    ar &make_nvp("object_id_",object_id_);
-
-#ifdef MESH_REFINEMENT
-    auto tmp = std::const_pointer_cast<self_t>(function_previous_refinement_);
-    ar &make_nvp("function_previous_refinement_",tmp);
-    function_previous_refinement_ = tmp;
-#endif // MESH_REFINEMENT
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };

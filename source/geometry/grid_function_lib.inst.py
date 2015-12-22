@@ -22,35 +22,45 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-output = set ()
+funcs = set ()
 
 for dim in inst.domain_dims:
-    output.add ('template class grid_functions::BallGridFunction<%d>;\n' % (dim) )    
-    output.add ('template class grid_functions::ConstantGridFunction<%d,%d>;\n' % (dim,dim) )
-    output.add ('template class grid_functions::ConstantGridFunction<%d,1>;\n' % (dim) )
-    output.add ('template class grid_functions::IdentityGridFunction<%d>;\n' % (dim) )
+    funcs.add ('grid_functions::BallGridFunction<%d>' % (dim) )    
+    funcs.add ('grid_functions::ConstantGridFunction<%d,%d>' % (dim,dim) )
+    funcs.add ('grid_functions::ConstantGridFunction<%d,1>' % (dim) )
+    funcs.add ('grid_functions::IdentityGridFunction<%d>' % (dim) )
 
 for dim in inst.sub_domain_dims:
-    output.add ('template class grid_functions::ConstantGridFunction<%d,%d>;\n' % (dim,dim) )
-    output.add ('template class grid_functions::IdentityGridFunction<%d>;\n' % (dim) )
+    funcs.add ('grid_functions::ConstantGridFunction<%d,%d>' % (dim,dim) )
+    funcs.add ('grid_functions::IdentityGridFunction<%d>' % (dim) )
 
 
-output.add ('template class grid_functions::LinearGridFunction<0,0>;\n')
+funcs.add ('grid_functions::LinearGridFunction<0,0>')
 for dim in inst.domain_dims:
-    output.add ('template class grid_functions::LinearGridFunction<%d,1>;\n' % (dim) )
-    output.add ('template class grid_functions::ConstantGridFunction<%d,1>;\n' % (dim) )
+    funcs.add ('grid_functions::LinearGridFunction<%d,1>' % (dim) )
+    funcs.add ('grid_functions::ConstantGridFunction<%d,1>' % (dim) )
     for sub_dim in range(0,dim+1):
-        output.add ('template class grid_functions::LinearGridFunction<%d,%d>;\n' % (sub_dim,dim) )
-        output.add ('template class grid_functions::ConstantGridFunction<%d,%d>;\n' % (sub_dim,dim) )
+        funcs.add ('grid_functions::LinearGridFunction<%d,%d>' % (sub_dim,dim) )
+        funcs.add ('grid_functions::ConstantGridFunction<%d,%d>' % (sub_dim,dim) )
 
 
+funcs.add('grid_functions::SphereGridFunction<1>')
+funcs.add('grid_functions::SphereGridFunction<2>')
 
-for s in output:
-  f.write(s)
+
+for func in funcs:
+    f.write('template class %s;\n' %(func))
 
 
-s = ('template class grid_functions::SphereGridFunction<%d>;\n' %1 )
-f.write(s)
-s = ('template class grid_functions::SphereGridFunction<%d>;\n' %2 )
-f.write(s)
+#---------------------------------------------------
+#f.write('#ifdef SERIALIZATION\n')
+#archives = ['OArchive','IArchive']
+#
+#for func in unique(funcs):
+#    for ar in archives:
+#        f.write('template void %s::serialize(%s&);\n' %(func,ar))
+#f.write('#endif // SERIALIZATION\n')
+#---------------------------------------------------
+
+
 

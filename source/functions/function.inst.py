@@ -26,32 +26,22 @@ data = Instantiation(include_files)
 
 (f, inst) = (data.file_output, data.inst)
 
-functions = []
+funcs = set()
 
 for row in inst.all_function_dims:
-    dims = '<%d, %d, %d, %d>' %(row.dim, row.codim, row.range, row.rank)
+    dims = '<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank)
     func = 'Function%s' %(dims) 
-    functions.append(func)
+    funcs.add(func)
     f.write('template class %s ;\n' %(func))
 
 
 
 #---------------------------------------------------
-#f.write('IGA_NAMESPACE_CLOSE\n')
-#  
-#f.write('#ifdef SERIALIZATION\n')
-#id = 0 
-#for func in unique(functions):
-#    alias = 'FunctionAlias%d' %(id)
-#    f.write('using %s = iga::%s; \n' % (alias, func))
-#    
-#    f.write('ALLOW_SHARED_THIS(%s)\n' %alias )
-#
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-#    id += 1 
-#f.write('#endif // SERIALIZATION\n')
-#      
-#f.write('IGA_NAMESPACE_OPEN\n')
+f.write('#ifdef SERIALIZATION\n')
+archives = ['OArchive','IArchive']
+
+for func in funcs:
+    for ar in archives:
+        f.write('template void %s::serialize(%s&);\n' %(func,ar))
+f.write('#endif // SERIALIZATION\n')
 #---------------------------------------------------

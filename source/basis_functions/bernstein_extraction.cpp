@@ -38,6 +38,17 @@ scale_action(const Real scale, const Values &b_values) const -> Values
   return scale * prec_prod(*this, b_values);
 }
 
+#ifdef SERIALIZATION
+template<class Archive>
+void
+BernsteinOperator::
+serialize(Archive &ar)
+{
+  ar &make_nvp("DenseMatrix",base_class<DenseMatrix>(this));
+}
+#endif // SERIALIZATION
+
+
 
 template<int dim, int range, int rank>
 auto

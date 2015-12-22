@@ -71,6 +71,7 @@ class PhysicalSpaceElement;
 
 
 /**
+ * @brief Function built as linear combination of basis functions from PhysicalSpaceBasis
  *
  * @ingroup serializable
  */
@@ -239,21 +240,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    using std::to_string;
-    const std::string base_name = "Function_" +
-                                  to_string(dim) + "_" +
-                                  to_string(codim) + "_" +
-                                  to_string(range) + "_" +
-                                  to_string(rank);
-
-    ar &make_nvp(base_name,base_class<base_t>(this));
-
-    ar &make_nvp("basis_",basis_);
-    ar &make_nvp("coeffs_",coeffs_);
-    ar &make_nvp("dofs_property_",dofs_property_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };

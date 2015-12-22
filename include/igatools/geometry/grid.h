@@ -184,6 +184,7 @@ public:
 
 
   using Point = Points<dim_>;
+  using Weight = Real;
 
   using IndexType = ElementIndex<dim_>;
 

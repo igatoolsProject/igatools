@@ -47,12 +47,7 @@ private:
   friend class cereal::access;
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-//    Assert(false,ExcNotImplemented());
-    ar &make_nvp("DenseMatrix",base_class<DenseMatrix>(this));
-  }
-
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 

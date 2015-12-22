@@ -24,6 +24,7 @@
 
 IGA_NAMESPACE_OPEN
 
+#if 0
 template<class T,int N>
 T &
 SafeSTLArray<T,N>::
@@ -41,6 +42,7 @@ operator[](Size n) const
   Assert(n < this->size(), ExcIndexRange(n, 0, this->size()));
   return std::array<T,N>::operator[](n);
 }
+#endif
 
 IGA_NAMESPACE_CLOSE
 

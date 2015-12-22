@@ -146,21 +146,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    using std::to_string;
-    const std::string base_name =
-      "GridFunction_" + to_string(dim) + "_" +
-      to_string(space_dim);
-
-    ar &make_nvp(base_name,base_class<parent_t>(this));
-
-    ar &make_nvp("ref_basis_",ref_basis_);
-
-    ar &make_nvp("coeffs_",coeffs_);
-
-    ar &make_nvp("dofs_property_",dofs_property_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 

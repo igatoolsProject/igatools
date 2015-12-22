@@ -157,6 +157,17 @@ public:
 
 private:
 
+
+  /**
+   * The purpose of this struct is to set (at compile time) the static boolean IsInCache::value
+   * depending on the fact that the values associated to the template argument <tt>ValueType</tt>
+   * is in the element's cache or not.
+   *
+   * @note The valid <tt>ValueType</tt> for the GridFunctionElement's cache are:
+   * - grid_function_element::_D<0> for the <b>values</b>
+   * - grid_function_element::_D<1> for the <b>gradients</b>
+   * - grid_function_element::_D<2> for the <b>hessians</b>
+   */
   template <class ValueType>
   struct IsInCache
   {
@@ -174,6 +185,9 @@ private:
 
 public:
 
+  /**
+   * Container for the admissible values (associated to the evaluation points) in the element's cache.
+   */
   using Cache = PointValuesCache<dim_,CType>;
 
   using CacheType = AllSubElementsCache<Cache>;
@@ -184,6 +198,9 @@ protected:
   std::unique_ptr<GridElem> grid_elem_;
 
 private:
+  /**
+   * @brief The cache.
+   */
   CacheType local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;

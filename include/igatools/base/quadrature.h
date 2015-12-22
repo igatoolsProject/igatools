@@ -75,7 +75,6 @@ IGA_NAMESPACE_OPEN
  * \f}
  *
  * @ingroup eval_pts_scheme
- * @ingroup serializable
  *
  * @author M. Martinelli, pauletti
  * @date 2014, 2015
@@ -359,29 +358,6 @@ private:
    * Bounding box in which the points are located.
    */
   BBox<dim_> bounding_box_;
-
-
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for the serialization
-   */
-  ///@{
-  friend class serialization_access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    ar &make_nvp("points_1d_",points_1d_);
-    ar &make_nvp("weights_1d_",weights_1d_);
-    ar &make_nvp("map_point_id_to_coords_id_",map_point_id_to_coords_id_);
-    ar &make_nvp("is_tensor_product_",is_tensor_product_);
-    ar &make_nvp("bounding_box_",bounding_box_);
-  }
-
-  ///@}
-#endif // SERIALIZATION
-
 };
 
 /**
