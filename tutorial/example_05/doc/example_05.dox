@@ -1,77 +1,95 @@
 /**
 
-\page example_05 Example 5: Poisson problem: assembling the local contributions
+\page example_05 Example 5: non-homogeneous Dirichlet conditions
 
 \section Introduction
-In the next 2 program we'll solve a Poisson problem (in weak form) using the BSpline basis function.
 
-The typical example in a Galerkin method is the Poisson problem:
-find  \f$u:\Omega\subset\mathbb{R}^d\to\mathbb{R}\f$ such that
-\f[
--\Delta u = f \text{ in } \Omega, \quad u=g \text{ on }
-  \partial\Omega.\f]
+In this Example we consider a Poisson problem on the quarter annulus domain with a non-constant 
+source term and non-homogeneous boundary conditions:
+\f{equation}{
+  \left\{
+    \begin{aligned}
+      -\Delta u &= f \textrm{   in }\Omega\\
+      u &= g \textrm{   on }\partial\Omega\\
+    \end{aligned}
+  \right.
+\f}
+We provide an exact strong solution so that the \f$L^2\f$-norm error can be computed. The exact solution is:
+\f{equation}{
+  u(x,y) = \sin\left(2\pi\left(x^2+y^2\right)\right)+\sqrt(x^2+y^2),
+\f}
+From \f$u\f$ the source term can be computed:
+\f{equation}{
+  \begin{align}
+    f(x,y) = &-8\pi\cos\left(2\pi\left(x^2+y^2\right)\right)+\\
+             &+16\pi^2\left(x^2+y^2\right)\sin\left(2\pi\left(x^2+y^2\right)\right)+\\
+             &-\frac{1}{\left(x^2+y^2\right)}.
+  \end{align}
+\f}
+For the non-homogeneous boundary conidition, we split the boundary in the four edges \f$\Gamma_i\f$ and assign
+boundary functions \f$g_i\f$ to each of them. The edges and boundary functions indexing (i.e. \f$i=0,...,3\f$) agrees with the face indexing
+convention described in \ref example_04. We have:
+\f{equation}{
+  \begin{align}
+    g_0 &= 1,\\
+    g_1 &= 2,\\
+    g_2 &= \sin\left(2\pi\left(x^2+y^2\right)\right)+x,\\
+    g_3 &= \sin\left(2\pi\left(x^2+y^2\right)\right)+y.
+  \end{align}
+\f}
 
-It can be rewritten in weak form as: find \f$u\in H^1_0(\Omega) \oplus g\f$ 
-such that
-\f$a(u,v) = b(v) \text{ for all } v \in   H^1_0(\Omega)\f$, where 
-\f$a(u,v) = \int_\Omega \nabla u \cdot \nabla v\f$
-and 
-\f$ b(v)  = \int_\Omega f  v\f$.
-
-The isogeometric method for this problem requires:
--# the definition of the isogeometric space;
--# the assembling of the stiffness matrix \f$\mathbf{A}\f$
-   and right hand side  \f$\mathbf{b}\f$ by adding the element contributions;
--# the solving of the linear system \f$\mathbf{A} \mathbf{u} = \mathbf{b}\f$
-
-This example shows how to program the assembling of local contributions
-(matrix and vector) for the Poisson problem, this being a basic ingredient
-that we will use for solving the problem in
-\ref example_05 and \ref example_07.
-
-In here we want to assemble:
-- the local matrices \f$ K^{e}_{ij} = \int_{\Omega^e} \nabla \phi_i \cdot \nabla \phi_j 
-  \approx \sum_{qp} \nabla \phi_i(qp) \cdot \nabla \phi_j(qp) w_{qp} |\hat{\Omega}_e|\det(DF)\f$
-- the local rhs \f$ F^{e}_{i} = \int_{\Omega^e} \phi_i \cdot f
-  \approx \sum_{qp} \phi_i(qp) \cdot f(qp) w_{qp} |\hat{\Omega}_e|\det(DF) \f$
-taking \f$f\f$ to be identically 1. 
-
-We also introduce the use of a class (instead of functions) to 
-approach the problem.
-
+For the implementation of this problem, the main difficulties rely on the creation of
+the boundary functions, while their actual application to the problem requires just three lines of code.
+In order to create a custom Function for \f$g_2\f$ and \f$g_3\f$, we need to create a derived class
+of FormulaFunction.
 
 \section code05 Description of the program
 
-Besides the headers that were already included in the previous examples,
-we include two new headers for the classes to hold the local matrix and
-vector
-\snippet example_05.cpp new includes
+Ahead of everything there are the new self-explanatory headers:
+\snippet example_05 headers
 
-We declare the PoissonPreparation class with its constructor and the public
-member function local_assemble
-\snippet example_05.cpp class declaration
+We can proceed with the declaration of the derived class CustomFunction:
+\snippet example_05 custom_declaration
+As one can notice, we may want to derive the class in the most general way for what concerns the template
+parameters. We then declare some type aliases for practical reasons. Notice that we use the Point type
+for the evaluation points and the Value type for the result. The only variable we need is a function pointer. In this variable
+the user-provided function will be stored. The user-provided function is defined point-wise: it takes a Point
+and gives back a Value.
 
-The constructor takes care of initializing (creating) the private members
-grid and space
-\snippet example_05.cpp constructor
+We provide two constructor:
+\snippet example_05 custom_constructor
+The first one is the default constructor and requires only the domain (it is a mandatory derivation of
+the Function class), while the other takes also the function pointer as input parameter. Notice that
+the constructors are private, as we will define and use the familiar <tt>const_create()</tt> methods.
 
-The main public function is the local_assemble
-\snippet example_05.cpp assemble function
+The actual method that perfmorms the element-wise computation is <tt>evaluate_0</tt>:
+\snippet example_05 custom_evaluator
+It just implements a point-loop where each evaluation is a call of the user-provided function stored in
+<tt>funct_D0</tt>.
 
-First we define the local matrix and right hand side vector
-\snippet example_05.cpp local matrix
+The class FormulaFunction is abstract and needs two other derived methods for derivatives,
+in this example lazily implemented as not used at all:
+\snippet example_05 custom_not_implemented
 
-Then we iterate as we have done in \ref example_03
-\snippet example_05.cpp iterate as before
+At last, the public methods: the promised <tt>const_create</tt> and the mandatory <tt>print_info</tt> that
+prints some useful informations. We inspect here only the <tt>const_create</tt>, so that the reader
+can notice the usage of the SharedPtrConstnessHandler class, for which we refer to the documentation. Here
+is the creator:
+\snippet example_05 custom_public
 
-and get the values that we need in the assembling
-\snippet example_05.cpp get the values
+We have a class for the implementation of custom functions. We will use the <tt>quarter_annulus</tt> function for
+the construction of the reference domain (see previous examples). The class PoissonProblem is devoted to
+the creation of spline spaces, the system assemble, solving, computing the \f$L^2\f$-error and saving the results.
+It is a templated class on the problem dimension, as there is no need of implementing it for a specific dimension.
+Here is the declaration along with the class variables:
+\snippet example_05 poisson_declaration
+Most of the variables should be familiar to the reader. The two new entries are a quadrature rule <tt>face_quad</tt> for
+the integration on the boundary (notice the template parameter) and the container <tt>dirichlet_cond</tt>. We will explain
+the creation and usage of the container later.
 
-with the values we can proceed to the actual assembling
-\snippet example_05.cpp assemble
 
-and we finally show the assembled matrix and right hand side
-\snippet example_05.cpp print info
+
+
 \section Exercises
 -# Using a coefficient
 -# Using a coefficient matrix

@@ -75,8 +75,8 @@ where the real numbers \f$ a_1(\hat{f}),\dots, a_{n_h}(\hat{f}) \f$ are the coef
 \f$ \hat{f}\f$ in the basis \f$ \bigl\{ \hat{\varphi}_i \bigr\}_{i=1}^{n_h} \f$.
 This means that the basis function \f$ \hat{\varphi}_j \f$ can be expressed as
 \f$ \hat{\varphi}_j = \sum_{i=1}^{n_h} a_i(\hat{\varphi}_j) \hat{\varphi}_i \f$
-where  \f$ a_i(\hat{\varphi}_j) = \delta_{ij}\f$, i.e. is 0 if \f$ i\neq j \f$ 
-and is 1 if \f$ i= j \f$.
+where  \f$ a_i(\hat{\varphi}_j) = \delta_{ij}\f$, (with \f$ \delta_{ij}\f$ the usual
+[Kronecker delta](https://en.wikipedia.org/wiki/Kronecker_delta)).
 
 This boring and verbose introduction is amied to introduce the Function class and
 its derived classes, one of which is the IgFunction. It represents linear combinations
@@ -85,7 +85,8 @@ the representation of linear system solutions.
 
 \section code02 Description of the program
 Along with the headers of the \ref example_01, we need headers for %NURBS spaces,
-functions and the class in charge of saving data for [Paraview](http://www.paraview.org):
+functions and the class in charge of saving data for [Paraview](http://www.paraview.org),
+the Writer:
 \snippet example_02.cpp headers
 
 We then declare a simple templated function for the creation of trivial physical
@@ -105,7 +106,7 @@ i. e. they are defined on Grid objects. As we will see later in this exercise, a
 over a generic domain is represented by the Function class.
 
 We now want to create the quarter annulus geometry. Being the annulus a 2D geometry,
-we need specfic instances of the templated classes required. As for the reference domain,
+we need specfic instances of the required templated classes. As for the reference domain,
 we encapsulate the creation in the <tt>quarter_annulus</tt> function.
 \snippet example_02.cpp annulus_init
 The IgCoefficients is a class for spline coefficients storage. It can be thought

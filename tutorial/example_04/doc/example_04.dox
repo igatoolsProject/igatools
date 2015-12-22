@@ -54,7 +54,10 @@ are about the objects related to the linear system, whose declaration is the
 following:
 \snippet example_04.cpp system
 The Matrix and Vector objects are simple derived classes from the Epetra objects
-Epetra_CrsMatrix and Epetra_Vector respectively. Here is their construction:
+Epetra_CrsMatrix and Epetra_Vector respectively. We refer to the 
+[doxygen documentation](https://trilinos.org/docs/dev/packages/epetra/doc/html/index.html)
+of the Epetra package for further informations about these classes.
+Here is their construction:
 \snippet example_04.cpp sys_create
 There is a flag system for the degrees of freedom (and other entities such as grid
 elements) in igatools: each of them can be associated or not to a particular 

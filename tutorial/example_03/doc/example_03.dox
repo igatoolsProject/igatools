@@ -100,9 +100,9 @@ details. This lines will allocate or resize the cache in the element for all the
 requested quantities.
 \snippet example_03.cpp basis_loop_init
 \note If the requested quantities or the quadrature points will not change from element to element,
-this function can be called once for all.
+this function can be called only once.
 
-Once the cache is set and initialized, we can declare the element loop as in the
+After the cache is set and initialized, we can declare the element loop as in the
 non-cached example (see above). In order to update the Element with the desired
 data, the method <tt>fill_element_cache()</tt> must be called. This is the
 function that actually performs the heavy computations.
