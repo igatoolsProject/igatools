@@ -273,7 +273,9 @@ public:
 
 private:
 
-  void fill_generators();
+  void fill_objects_container(const ObjContPtr_ objs_container);
+
+  void set_names();
 
   template <class Domain>
   void insert_generator(const std::shared_ptr<const Domain> domain);
