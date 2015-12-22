@@ -18,14 +18,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#include <paraview_plugin/grid_generator_container.h>
+
+#include <paraview_plugin/grid_generator.h>
+#include <paraview_plugin/grid_information.h>
+
+#include <igatools/geometry/grid_function_lib.h>
+
 #include <vtkMultiBlockDataSet.h>
 #include <vtkInformation.h>
 #include <vtkPointSet.h>
 
-#include <paraview_plugin/grid_generator_container.h>
-
-#include <igatools/functions/functions_container.h>
-#include <paraview_plugin/grid_information.h>
 
 using namespace boost::fusion;
 
@@ -62,6 +65,7 @@ VtkIgaGridGeneratorContainer(const ObjContPtr_ objs_container,
 
   this->fill_objects_container(objs_container);
   this->set_names();
+  this->build_generators();
 }
 
 
@@ -83,17 +87,65 @@ create(const ObjContPtr_ objs_container,
 
 void
 VtkIgaGridGeneratorContainer::
+build_generators()
+{
+  Index domain_id = 0;
+  DomainPtrs_ valid_d_ptr_types;
+  for_each(valid_d_ptr_types, [&](const auto &ptr_type)
+  {
+    using DomainType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+
+    for (const auto &id : objs_container_->template get_const_object_ids<DomainType>())
+    {
+        const auto domain = objs_container_->template get_const_object<DomainType>(id);
+
+        const bool is_active = true;
+
+        const auto gg = VtkIgaGridGenerator<DomainType>::create(domain,  domain_id, phys_solid_info_,
+                                                          phys_knot_info_, phys_control_info_,
+                                                          objs_container_, is_active, true);
+
+        ++domain_id;
+    }
+  });
+
+  domain_id = 0;
+  GridPtrs_ valid_g_ptr_types;
+  for_each(valid_g_ptr_types, [&](const auto &ptr_type)
+  {
+    using GridType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+    static const int dim = GridType::dim;
+
+    for (const auto &id : objs_container_->template get_const_object_ids<GridType>())
+    {
+        const auto grid = objs_container_->template get_const_object<GridType>(id);
+
+        const bool is_active = true;
+
+        using DomainType = Domain<dim, 0>;
+        const auto id_func = grid_functions::IdentityGridFunction<dim>::const_create(grid);
+        const auto domain = DomainType::const_create(id_func);
+        const_pointer_cast<DomainType>(domain)->set_name(grid->get_name());
+
+        const auto gg = VtkIgaGridGenerator<DomainType>::create(domain,  domain_id, parm_solid_info_,
+                                                          parm_knot_info_, phys_control_info_,
+                                                          objs_container_, is_active, false);
+
+        ++domain_id;
+    }
+  });
+}
+
+
+
+void
+VtkIgaGridGeneratorContainer::
 fill_objects_container(const ObjContPtr_ objs_container_old)
 {
-  using FunctionPtrs = typename ObjectsContainer::FunctionPtrs;
-  using DomainPtrs = typename ObjectsContainer::DomainPtrs;
-  using GridFuncPtrs = typename ObjectsContainer::GridFuncPtrs;
-  using GridPtrs = typename ObjectsContainer::GridPtrs;
-
   // Adding all the constant and non constant functions to the new container.
   // It is checked if its domains are present in the container.
   // If not, they are included in the new container.
-  FunctionPtrs valid_f_ptr_types;
+  FunctionPtrs_ valid_f_ptr_types;
   for_each(valid_f_ptr_types, [&](const auto &ptr_type)
   {
     using FunctionType = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -131,7 +183,7 @@ fill_objects_container(const ObjContPtr_ objs_container_old)
   // Adding all the constant and non constant domains to the new container.
   // It is checked if its grid functions are present in the container.
   // If not, they are included in the new container.
-  DomainPtrs valid_d_ptr_types;
+  DomainPtrs_ valid_d_ptr_types;
   for_each(valid_d_ptr_types, [&](const auto &ptr_type)
   {
     using DomainType = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -180,7 +232,7 @@ fill_objects_container(const ObjContPtr_ objs_container_old)
   // Adding all the constant and non constant grid functions to the new container.
   // It is checked if its grids are present in the container. If not,
   // they are included in the new container.
-  GridFuncPtrs valid_gf_ptr_types;
+  GridFuncPtrs_ valid_gf_ptr_types;
   for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
   {
     using GridFuncType = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -227,7 +279,7 @@ fill_objects_container(const ObjContPtr_ objs_container_old)
 
 
   // Adding all the constant and non constant grids to the new container.
-  GridPtrs valid_g_ptr_types;
+  GridPtrs_ valid_g_ptr_types;
   for_each(valid_g_ptr_types, [&](const auto &ptr_type)
   {
     using GridType = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -248,12 +300,7 @@ void
 VtkIgaGridGeneratorContainer::
 set_names()
 {
-  using FunctionPtrs = typename ObjectsContainer::FunctionPtrs;
-  using DomainPtrs = typename ObjectsContainer::DomainPtrs;
-  using GridFuncPtrs = typename ObjectsContainer::GridFuncPtrs;
-  using GridPtrs = typename ObjectsContainer::GridPtrs;
-
-  FunctionPtrs valid_f_ptr_types;
+  FunctionPtrs_ valid_f_ptr_types;
   for_each(valid_f_ptr_types, [&](const auto &ptr_type)
   {
     using FunctionType = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -289,7 +336,7 @@ set_names()
     }
   });
 
-  DomainPtrs valid_d_ptr_types;
+  DomainPtrs_ valid_d_ptr_types;
   for_each(valid_d_ptr_types, [&](const auto &ptr_type)
   {
     using DomainType = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -315,7 +362,7 @@ set_names()
     }
   });
 
-  GridFuncPtrs valid_gf_ptr_types;
+  GridFuncPtrs_ valid_gf_ptr_types;
   for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
   {
     using GridFuncType = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -335,7 +382,7 @@ set_names()
     }
   });
 
-  GridPtrs valid_g_ptr_types;
+  GridPtrs_ valid_g_ptr_types;
   for_each(valid_g_ptr_types, [&](const auto &ptr_type)
   {
     using GridType = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -370,8 +417,8 @@ update(const GridInfoPtr_ phys_solid_info,
   // Updating physical generators.
   boost::fusion::for_each(phys_generators_, [&](const auto &gen_vec)
   {
-      for (const auto &gen_pair : gen_vec)
-          gen_pair.second->update(phys_solid_updated, phys_knot_updated,
+      for (const auto gen : gen_vec)
+          gen->update(phys_solid_updated, phys_knot_updated,
                                   phys_control_updated);
   });
 
@@ -381,8 +428,8 @@ update(const GridInfoPtr_ phys_solid_info,
   // Updating parametric generators.
   boost::fusion::for_each(parm_generators_, [&](const auto &gen_vec)
   {
-      for (const auto &gen_pair : gen_vec)
-          gen_pair.second->update(parm_solid_updated, parm_knot_updated,
+      for (const auto &gen : gen_vec)
+          gen->update(parm_solid_updated, parm_knot_updated,
                                   false);
   });
 
@@ -425,9 +472,9 @@ get_number_active_physical_grids() const
   Size counter = 0;
   boost::fusion::for_each(phys_generators_, [&](const auto &gen_vec)
   {
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          if (gp.first.is_active())
+          if (gen->is_active())
               ++counter;
       }
   });
@@ -443,9 +490,9 @@ get_number_active_parametric_grids() const
   Size counter = 0;
   boost::fusion::for_each(parm_generators_, [&](const auto &gen_vec)
   {
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          if (gp.first.is_active())
+          if (gen->is_active())
               ++counter;
       }
   });
@@ -461,9 +508,9 @@ get_number_active_ig_grids() const
   Size counter = 0;
   boost::fusion::for_each(phys_generators_, [&](const auto &gen_vec)
   {
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          if (gp.first.is_active() && gp.first.is_ig_grid_func())
+          if (gen->is_active() && gen->is_ig_grid_func())
               ++counter;
       }
   });
@@ -483,12 +530,12 @@ get_physical_grid_name(const Index &id) const
       if (found)
           return;
 
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          if (gp.first.get_id() == id)
+          if (gen->get_id() == id)
           {
               found = true;
-              name = gp.first.get_name();
+              name = gen->get_name();
               return;
           }
       }
@@ -512,12 +559,12 @@ get_parametric_grid_name(const Index &id) const
       if (found)
           return;
 
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          if (gp.first.get_id() == id)
+          if (gen->get_id() == id)
           {
               found = true;
-              name = gp.first.get_name();
+              name = gen->get_name();
               return;
           }
       }
@@ -541,12 +588,12 @@ get_physical_grid_status(const std::string &name) const
       if (found)
           return;
 
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          if (gp.first.get_name() == name)
+          if (gen->get_name() == name)
           {
               found = true;
-              status = gp.first.is_active();
+              status = gen->is_active();
               return;
           }
       }
@@ -570,12 +617,12 @@ get_parametric_grid_status(const std::string &name) const
       if (found)
           return;
 
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          if (gp.first.get_name() == name)
+          if (gen->get_name() == name)
           {
               found = true;
-              status = gp.first.is_active();
+              status = gen->is_active();
               return;
           }
       }
@@ -598,13 +645,12 @@ set_physical_grid_status(const std::string &name, const bool status)
       if (found)
           return;
 
-      for (auto &gp : gen_vec)
+      for (auto gen : gen_vec)
       {
-          GridInfo &grid_info = gp.first;
-          if (grid_info.get_name() == name)
+          if (gen->get_name() == name)
           {
               found = true;
-              grid_info.set_status(status);
+              gen->set_status(status);
           }
       }
   });
@@ -624,13 +670,12 @@ set_parametric_grid_status(const std::string &name, const bool status)
       if (found)
           return;
 
-      for (auto &gp : gen_vec)
+      for (auto gen : gen_vec)
       {
-          GridInfo &grid_info = gp.first;
-          if (grid_info.get_name() == name)
+          if (gen->get_name() == name)
           {
               found = true;
-              grid_info.set_status(status);
+              gen->set_status(status);
           }
       }
   });
@@ -652,16 +697,14 @@ set_physical_solid_grids(vtkMultiBlockDataSet *const mb)
   unsigned int block_index = 0;
   boost::fusion::for_each(phys_generators_, [&](const auto &gen_vec)
   {
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          const auto &grid_info = gp.first;
-
-          if (grid_info.is_active())
+          if (gen->is_active())
           {
-              const auto &name = grid_info.get_name();
+              const auto &name = gen->get_name();
 
               mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-              mb->SetBlock(block_index, gp.second->get_solid_grid());
+              mb->SetBlock(block_index, gen->get_solid_grid());
               ++block_index;
           }
       }
@@ -682,16 +725,14 @@ set_physical_knot_grids(vtkMultiBlockDataSet *const mb)
   unsigned int block_index = 0;
   boost::fusion::for_each(phys_generators_, [&](const auto &gen_vec)
   {
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          const auto &grid_info = gp.first;
-
-          if (grid_info.is_active())
+          if (gen->is_active())
           {
-              const auto &name = grid_info.get_name();
+              const auto &name = gen->get_name();
 
               mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-              mb->SetBlock(block_index, gp.second->get_knot_grid());
+              mb->SetBlock(block_index, gen->get_knot_grid());
               ++block_index;
           }
       }
@@ -712,16 +753,14 @@ set_physical_control_grids(vtkMultiBlockDataSet *const mb)
   unsigned int block_index = 0;
   boost::fusion::for_each(phys_generators_, [&](const auto &gen_vec)
   {
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          const auto &grid_info = gp.first;
-
-          if (grid_info.is_active() && grid_info.is_ig_grid_func())
+          if (gen->is_active() && gen->is_ig_grid_func())
           {
-              const auto &name = grid_info.get_name();
+              const auto &name = gen->get_name();
 
               mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-              mb->SetBlock(block_index, gp.second->get_control_grid());
+              mb->SetBlock(block_index, gen->get_control_grid());
               ++block_index;
           }
       }
@@ -742,16 +781,14 @@ set_parametric_solid_grids(vtkMultiBlockDataSet *const mb)
   unsigned int block_index = 0;
   boost::fusion::for_each(parm_generators_, [&](const auto &gen_vec)
   {
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          const auto &grid_info = gp.first;
-
-          if (grid_info.is_active())
+          if (gen->is_active())
           {
-              const auto &name = grid_info.get_name();
+              const auto &name = gen->get_name();
 
               mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-              mb->SetBlock(block_index, gp.second->get_solid_grid());
+              mb->SetBlock(block_index, gen->get_control_grid());
               ++block_index;
           }
       }
@@ -772,16 +809,14 @@ set_parametric_knot_grids(vtkMultiBlockDataSet *const mb)
   unsigned int block_index = 0;
   boost::fusion::for_each(parm_generators_, [&](const auto &gen_vec)
   {
-      for (const auto &gp : gen_vec)
+      for (const auto gen : gen_vec)
       {
-          const auto &grid_info = gp.first;
-
-          if (grid_info.is_active())
+          if (gen->is_active())
           {
-              const auto &name = grid_info.get_name();
+              const auto &name = gen->get_name();
 
               mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-              mb->SetBlock(block_index, gp.second->get_knot_grid());
+              mb->SetBlock(block_index, gen->get_knot_grid());
               ++block_index;
           }
       }

@@ -25,7 +25,9 @@
 
 #include <igatools/base/objects_container.h>
 #include <igatools/geometry/grid.h>
+#include <igatools/geometry/grid_function.h>
 #include <igatools/geometry/domain.h>
+#include <igatools/functions/function.h>
 
 #include <igatools/base/tuple_utils.h>
 #include <paraview_plugin/grid_generator.h>
@@ -45,55 +47,6 @@
 class vtkMultiBlockDataSet;
 
 IGA_NAMESPACE_OPEN
-
-class GridInfo
-{
-    GridInfo (const Index &id,
-              const std::string &name,
-              const bool is_active,
-              const bool is_ig_grid_func)
-    :
-     id_ (id),
-     name_ (name),
-     is_active_ (is_active),
-     is_ig_grid_func_ (is_ig_grid_func)
-     {};
-
-private:
-
-    const Index id_;
-    const std::string name_;
-    bool is_active_;
-    bool is_ig_grid_func_;
-
-public:
-
-    bool is_active () const
-    {
-        return is_active_;
-    }
-
-    bool is_ig_grid_func () const
-    {
-        return is_ig_grid_func_;
-    }
-
-    void set_status (const bool status)
-    {
-        is_active_ = status;
-    }
-
-    Index get_id () const
-    {
-        return id_;
-    }
-
-    const std::string get_name() const
-    {
-        return name_;
-    }
-};
-
 
 class VtkIgaGridGeneratorContainer
 {
@@ -136,6 +89,25 @@ private:
           IsInValidSpaceDim<T>>
           {};
 
+  template <class T>
+  struct IsInValidFunction :
+          boost::mpl::or_<
+          IsInValidDim<T>,
+          IsInValidSpaceDim<T>>
+          {};
+
+  template< class T >
+  struct as_fusion_vector_shared_ptr
+  {
+    /**
+     * This functor transform a <tt>boost::mpl::vector</tt> of types into a
+     *  <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt>s of the types.
+     */
+
+    typedef typename boost::fusion::result_of::as_vector<
+    typename boost::mpl::transform<T, std::shared_ptr<boost::mpl::_1>>::type>::type type;
+  };
+
   /**
    * Valid domains.
    */
@@ -151,6 +123,27 @@ private:
       InstantiatedTypes::Grids,
       boost::mpl::lambda< IsInValidDim< boost::mpl::_1 > >::type
       >::type;
+
+  /**
+   * Valid grids functions.
+   */
+  using ValidGridFuncs_ = boost::mpl::remove_if<
+      InstantiatedTypes::GridFunctions,
+      boost::mpl::lambda< IsInValidDim< boost::mpl::_1 > >::type
+      >::type;
+
+  /**
+   * Valid functions.
+   */
+  using ValidFunctions_ = boost::mpl::remove_if<
+      InstantiatedTypes::Functions,
+      boost::mpl::lambda< IsInValidDomain< boost::mpl::_1 > >::type
+      >::type;
+
+  using GridPtrs_ = as_fusion_vector_shared_ptr<ValidGrids_>::type;
+  using GridFuncPtrs_ = as_fusion_vector_shared_ptr<ValidGridFuncs_>::type;
+  using DomainPtrs_ = as_fusion_vector_shared_ptr<ValidDomains_>::type;
+  using FunctionPtrs_ = as_fusion_vector_shared_ptr<ValidFunctions_>::type;
 
 //  /**
 //   * Valid grid generators.
@@ -192,7 +185,7 @@ private:
 
     typedef typename boost::fusion::result_of::as_vector<
     typename boost::mpl::transform<T,
-        SafeSTLVector<std::pair<GridInfo, GridGenPtr_<boost::mpl::_1> >>>::type>::type type;
+        SafeSTLVector<GridGenPtr_<boost::mpl::_1> >>::type>::type type;
   };
 //  template <class T>
 //  struct as_fusion_map
@@ -276,6 +269,8 @@ private:
   void fill_objects_container(const ObjContPtr_ objs_container);
 
   void set_names();
+
+  void build_generators();
 
   template <class Domain>
   void insert_generator(const std::shared_ptr<const Domain> domain);

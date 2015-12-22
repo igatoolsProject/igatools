@@ -34,6 +34,7 @@ class ObjectsContainer;
 struct VtkGridInformation;
 struct VtkControlGridInformation;
 
+template <int dim, int space_dim> class IgGridFunction;
 template <class Domain> class VtkIgaSolidGridGenerator;
 template <class Domain> class VtkIgaKnotGridGenerator;
 template <class Domain> class VtkIgaControlGridGenerator;
@@ -64,6 +65,9 @@ private:
 
   /// Alias for mesh grid information shared pointer.
   typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
+
+  /// Alias for Ig grid function of a physical grid.
+  typedef IgGridFunction<Domain::dim, Domain::space_dim> IgGridFunc_;
 
   /**
    * Alias for vtk grid object for visualization.
@@ -103,10 +107,12 @@ private:
    * Constructor for grids.
    */
   VtkIgaGridGenerator(const DomainPtr_ domain,
+                      const Index &id,
                       const GridInfoPtr_ solid_grid_info,
                       const GridInfoPtr_ knot_grid_info,
                       const ControlGridInfoPtr_ control_grid_info,
                       const ObjContPtr_ obj_container,
+                      const bool is_active,
                       const bool is_physical);
 
 public:
@@ -115,10 +121,12 @@ public:
    * TODO: to document.
    */
   static SelfPtr_ create(const DomainPtr_ domain,
+                         const Index &id,
                          const GridInfoPtr_ solid_grid_info,
                          const GridInfoPtr_ knot_grid_info,
                          const ControlGridInfoPtr_ control_grid_info,
                          const ObjContPtr_ obj_container,
+                         const bool is_active,
                          const bool is_physical);
 
   /**
@@ -148,6 +156,25 @@ public:
    */
   VtkGridPtr_ get_control_grid();
 
+  /**
+   * Retrieves the domain name.
+   */
+  const std::string &get_name() const;
+
+  /**
+   * Retrieves the id.
+   */
+  const Index &get_id() const;
+
+  /// Checks if the grid is active.
+  bool is_active() const;
+
+  /// Set is_active flag.
+  void set_status(const bool status_flag);
+
+  /// Checks if the grid corresponds to an ig grid funciton.
+  bool is_ig_grid_func() const;
+
 
 protected:
 
@@ -155,6 +182,9 @@ protected:
    * Mapping function for which the grids are built.
    */
   const DomainPtr_ domain_;
+
+  /// Id of the Vtk grid.
+  const Index id_;
 
   /**
    * Grids information for the solid grid.
@@ -194,8 +224,14 @@ protected:
   /// Flag for indicating if the vtk control grid must be recomputed.
   bool recompute_control_;
 
+  /// Flag for indicating if grid is active, or not.
+  bool is_active_;
+
   /// Flag for indicating if the generator corresponds to physical grids.
   const bool is_physical_;
+
+  /// Flag for indicating if the generator corresponds to an ig grid func.
+  const bool is_ig_grid_func_;
 
 };
 

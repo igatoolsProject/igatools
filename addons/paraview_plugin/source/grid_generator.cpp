@@ -33,13 +33,16 @@ IGA_NAMESPACE_OPEN
 template <class Domain>
 VtkIgaGridGenerator<Domain>::
 VtkIgaGridGenerator(const DomainPtr_ domain,
+                    const Index &id,
                     const GridInfoPtr_ solid_grid_info,
                     const GridInfoPtr_ knot_grid_info,
                     const ControlGridInfoPtr_ control_grid_info,
                     const ObjContPtr_ obj_container,
+                    const bool is_active,
                     const bool is_physical)
   :
   domain_(domain),
+  id_ (id),
   solid_grid_info_(solid_grid_info),
   knot_grid_info_(knot_grid_info),
   control_grid_info_(control_grid_info),
@@ -50,7 +53,9 @@ VtkIgaGridGenerator(const DomainPtr_ domain,
   recompute_solid_(true),
   recompute_knot_(true),
   recompute_control_(is_physical ? true : false),
-  is_physical_ (is_physical)
+  is_active_ (is_active),
+  is_physical_ (is_physical),
+  is_ig_grid_func_ (is_physical ? std::dynamic_pointer_cast<const IgGridFunc_>(domain->get_grid_function()) != nullptr  : false)
 {
   Assert(domain_ != nullptr, ExcNullPtr());
   Assert(solid_grid_info_ != nullptr, ExcNullPtr());
@@ -65,15 +70,67 @@ template <class Domain>
 auto
 VtkIgaGridGenerator<Domain>::
 create(const DomainPtr_ domain,
+       const Index &id,
        const GridInfoPtr_ solid_grid_info,
        const GridInfoPtr_ knot_grid_info,
        const ControlGridInfoPtr_ control_grid_info,
        const ObjContPtr_ obj_container,
+       const bool is_active,
        const bool is_physical) -> SelfPtr_
 {
-    return SelfPtr_ (new Self_(domain, solid_grid_info, knot_grid_info,
-                               control_grid_info, obj_container,
-                               is_physical));
+    return SelfPtr_ (new Self_(domain, id, solid_grid_info,
+                               knot_grid_info, control_grid_info,
+                               obj_container, is_active, is_physical));
+}
+
+
+
+template <class Domain>
+const Index &
+VtkIgaGridGenerator<Domain>::
+get_id() const
+{
+    return id_;
+}
+
+
+
+template <class Domain>
+const std::string &
+VtkIgaGridGenerator<Domain>::
+get_name() const
+{
+    return domain_->get_name();
+}
+
+
+
+template <class Domain>
+bool
+VtkIgaGridGenerator<Domain>::
+is_active() const
+{
+    return is_active_;
+}
+
+
+
+template <class Domain>
+void
+VtkIgaGridGenerator<Domain>::
+set_status(const bool status_flag)
+{
+    is_active_ = status_flag;
+}
+
+
+
+template <class Domain>
+bool
+VtkIgaGridGenerator<Domain>::
+is_ig_grid_func() const
+{
+    return is_ig_grid_func_;
 }
 
 
