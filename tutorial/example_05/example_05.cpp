@@ -70,7 +70,7 @@ private:
     : FormulaFunction<dim,codim,range,rank>(domain,""), funct_D0(f_D0) {};
 // [custom_constructor]
     
-// [custom_evaluaror]
+// [custom_evaluator]
   void evaluate_0(const ValueVector<Point> &points, ValueVector<Value> &values) const {
     auto point = points.begin();
     for (auto &val : values ) {

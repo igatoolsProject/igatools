@@ -16,26 +16,26 @@ source term and non-homogeneous boundary conditions:
 \f}
 We provide an exact strong solution so that the \f$L^2\f$-norm error can be computed. The exact solution is:
 \f{equation}{
-  u(x,y) = \sin\left(2\pi\left(x^2+y^2\right)\right)+\sqrt(x^2+y^2),
+  u(x,y) = \sin\left(2\pi\left(x^2+y^2\right)\right)+\sqrt{x^2+y^2},
 \f}
 From \f$u\f$ the source term can be computed:
 \f{equation}{
-  \begin{align}
+  \begin{aligned}
     f(x,y) = &-8\pi\cos\left(2\pi\left(x^2+y^2\right)\right)+\\
              &+16\pi^2\left(x^2+y^2\right)\sin\left(2\pi\left(x^2+y^2\right)\right)+\\
-             &-\frac{1}{\left(x^2+y^2\right)}.
-  \end{align}
+             &-\frac{1}{\sqrt{x^2+y^2}}.
+  \end{aligned}
 \f}
 For the non-homogeneous boundary conidition, we split the boundary in the four edges \f$\Gamma_i\f$ and assign
 boundary functions \f$g_i\f$ to each of them. The edges and boundary functions indexing (i.e. \f$i=0,...,3\f$) agrees with the face indexing
 convention described in \ref example_04. We have:
 \f{equation}{
-  \begin{align}
-    g_0 &= 1,\\
-    g_1 &= 2,\\
-    g_2 &= \sin\left(2\pi\left(x^2+y^2\right)\right)+x,\\
-    g_3 &= \sin\left(2\pi\left(x^2+y^2\right)\right)+y.
-  \end{align}
+  \begin{aligned}
+    g_0:\Gamma_0\longrightarrow\mathbb{R},\quad g_0(x,y) &= 1,\\
+    g_1:\Gamma_1\longrightarrow\mathbb{R},\quad g_1(x,y) &= 2,\\
+    g_2:\Gamma_2\longrightarrow\mathbb{R},\quad g_2(x,y) &= \sin\left(2\pi\left(x^2+y^2\right)\right)+x,\\
+    g_3:\Gamma_3\longrightarrow\mathbb{R},\quad g_3(x,y) &= \sin\left(2\pi\left(x^2+y^2\right)\right)+y.
+  \end{aligned}
 \f}
 
 For the implementation of this problem, the main difficulties rely on the creation of
@@ -46,10 +46,10 @@ of FormulaFunction.
 \section code05 Description of the program
 
 Ahead of everything there are the new self-explanatory headers:
-\snippet example_05 headers
+\snippet example_05.cpp include
 
 We can proceed with the declaration of the derived class CustomFunction:
-\snippet example_05 custom_declaration
+\snippet example_05.cpp custom_declaration
 As one can notice, we may want to derive the class in the most general way for what concerns the template
 parameters. We then declare some type aliases for practical reasons. Notice that we use the Point type
 for the evaluation points and the Value type for the result. The only variable we need is a function pointer. In this variable
@@ -57,38 +57,51 @@ the user-provided function will be stored. The user-provided function is defined
 and gives back a Value.
 
 We provide two constructor:
-\snippet example_05 custom_constructor
+\snippet example_05.cpp custom_constructor
 The first one is the default constructor and requires only the domain (it is a mandatory derivation of
 the Function class), while the other takes also the function pointer as input parameter. Notice that
 the constructors are private, as we will define and use the familiar <tt>const_create()</tt> methods.
 
 The actual method that perfmorms the element-wise computation is <tt>evaluate_0</tt>:
-\snippet example_05 custom_evaluator
+\snippet example_05.cpp custom_evaluator
 It just implements a point-loop where each evaluation is a call of the user-provided function stored in
 <tt>funct_D0</tt>.
 
 The class FormulaFunction is abstract and needs two other derived methods for derivatives,
 in this example lazily implemented as not used at all:
-\snippet example_05 custom_not_implemented
+\snippet example_05.cpp custom_not_implemented
 
 At last, the public methods: the promised <tt>const_create</tt> and the mandatory <tt>print_info</tt> that
 prints some useful informations. We inspect here only the <tt>const_create</tt>, so that the reader
 can notice the usage of the SharedPtrConstnessHandler class, for which we refer to the documentation. Here
 is the creator:
-\snippet example_05 custom_public
+\snippet example_05.cpp custom_public
 
 We have a class for the implementation of custom functions. We will use the <tt>quarter_annulus</tt> function for
 the construction of the reference domain (see previous examples). The class PoissonProblem is devoted to
 the creation of spline spaces, the system assemble, solving, computing the \f$L^2\f$-error and saving the results.
 It is a templated class on the problem dimension, as there is no need of implementing it for a specific dimension.
 Here is the declaration along with the class variables:
-\snippet example_05 poisson_declaration
-Most of the variables should be familiar to the reader. The two new entries are a quadrature rule <tt>face_quad</tt> for
+\snippet example_05.cpp poisson_declaration
+The reader is supposed to be familiar with most of the variables. The two new entries are a quadrature rule <tt>face_quad</tt> for
 the integration on the boundary (notice the template parameter) and the container <tt>dirichlet_cond</tt>. We will explain
 the creation and usage of the container later.
 
+The constructor is self-explanatory:
+\snippet example_05.cpp poisson_constructor
+as much as the public methods:
+\snippet example_05.cpp poisson_methods
 
+The system assemble is almost the same of \ref example_04. We show it again so that that the user can meet two
+useful methods of the SpaceElement class, <tt>integrate_gradu_gradv</tt> and <tt>integrate_u_func</tt>:
+\snippet example_05.cpp poisson_assemble
 
+One of the variables of the class is the <tt>std::map</tt> container <tt>dirichlet_cond</tt>, which stores Functions
+and the face id as keymap. The container is passed directly to <tt>project_boundary_values</tt> (along with the
+basis we are using and the another container <tt>dirichlet_vals</tt> for the results). This function
+implements the \f$L^2\f$-projection of the boundary functions on the restriction to the edge of the boundary functions.
+Notice the input parameter <tt>face_quad</tt>.
+Lastly, <tt>apply_boundary_Values</tt> applies the boundary values.
 
 \section Exercises
 -# Using a coefficient
