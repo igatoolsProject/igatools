@@ -272,7 +272,6 @@ end() -> iterator
   return iterator(*this,IteratorState::pass_the_end);
 }
 
-
 template<int dim_, int range_, int rank_>
 template<class T>
 void
@@ -1360,9 +1359,11 @@ template<int dim_, int range_, int rank_>
 auto
 SplineSpace<dim_, range_, rank_>::
 TensorSizeTable::
-get_offset() const -> ComponentContainer<Size>
+get_offset() const -> SafeSTLArray<int,n_components>
+//get_offset() const -> ComponentContainer<Size>
 {
-  ComponentContainer<Size> offset;
+  SafeSTLArray<int,n_components> offset;
+//  ComponentContainer<Size> offset;
   offset[0] = 0;
   for (int comp = 1; comp < n_components; ++comp)
     offset[comp] = offset[comp-1] + this->get_component_size(comp-1);

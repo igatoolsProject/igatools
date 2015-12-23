@@ -32,34 +32,37 @@ template <int, int> class GridFunctionElement;
 template <int, int> class GridFunctionHandler;
 
 /**
+ * @brief Base class for function mapping the reference (or parametric) domain
+ * \f$ \hat{\Omega} \subset \mathbb{R}^{dim} \f$ (represented by Grid) to \f$\mathbb{R}^{range}\f$.
  *
+ * @ingroup serializable
  */
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 class GridFunction :
-  public std::enable_shared_from_this<GridFunction<dim_,space_dim_> >
+  public std::enable_shared_from_this<GridFunction<dim_,range_> >
 {
 private:
-  using self_t = GridFunction<dim_, space_dim_>;
+  using self_t = GridFunction<dim_, range_>;
 
 public:
-  static const int space_dim = space_dim_;
   static const int dim = dim_;
+  static const int range = range_;
 
   using GridType = Grid<dim_>;
 
-  using ElementAccessor = GridFunctionElement<dim_, space_dim_>;
+  using ElementAccessor = GridFunctionElement<dim_,range_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
-  using ElementHandler = GridFunctionHandler<dim_, space_dim_>;
+  using ElementHandler = GridFunctionHandler<dim_,range_>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
 
 public:
   using GridPoint = typename GridType::Point;
-  using Value = Values<dim, space_dim, 1>;
+  using Value = Values<dim,range, 1>;
   template <int order>
-  using Derivative = Derivatives<dim, space_dim, 1, order>;
+  using Derivative = Derivatives<dim,range,1,order>;
 
   using Gradient = Derivative<1>;
   ///@}
@@ -84,10 +87,6 @@ public:
 
   virtual std::unique_ptr<ElementHandler>
   create_cache_handler() const = 0;
-#if 0
-  virtual std::unique_ptr<ElementAccessor>
-  create_element(const ListIt &index, const PropId &prop) const;
-#endif
 
   virtual std::unique_ptr<ElementAccessor>
   create_element_begin(const PropId &prop) const;
@@ -151,10 +150,7 @@ public:
 
 #ifdef MESH_REFINEMENT
   std::shared_ptr<const self_t>
-  get_grid_function_previous_refinement() const
-  {
-    return grid_function_previous_refinement_;
-  }
+  get_grid_function_previous_refinement() const;
 
 private:
   /**
@@ -197,7 +193,7 @@ private:
    */
   const Index object_id_;
 
-  friend class GridFunctionElement<dim_, space_dim_>;
+  friend class GridFunctionElement<dim_, range_>;
 
 #ifdef SERIALIZATION
   /**
@@ -208,11 +204,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("grid_",grid_);
-    ar &make_nvp("name_",name_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 

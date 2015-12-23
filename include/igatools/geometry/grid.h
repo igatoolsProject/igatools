@@ -472,14 +472,14 @@ public:
   void set_boundary_id(const int face, const boundary_id id);
 
   template<int sdim>
-  using BoundaryNormal = SafeSTLArray<Points<dim_>, dim_-sdim>;
+  using BoundaryNormals = SafeSTLArray<Points<dim_>, dim_-sdim>;
 
   /**
    * Returns the outward pointing
-   * unit normal vector space to the element of sub dim_ k.
+   * unit normal vector space to the element <tt>s_id</tt> of sub-dimension <tt>sdim</tt>.
    */
   template<int sdim>
-  BoundaryNormal<sdim> get_boundary_normals(const int s_id) const;
+  BoundaryNormals<sdim> get_boundary_normals(const int s_id) const;
 
   template<int sdim>
   using SubGridMap =

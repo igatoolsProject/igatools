@@ -40,17 +40,8 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-   Raw components: 
-      Size: [ 1 ]  Weights: [1]
-      Entry id: 0
-      [ 4 ]
-   
-   Components map: 
-   [ 0 ]
-   Active components ids: 
-   [ 0 ]
-   Inactive components ids: 
-   [ ]
+   Entry id: 0
+   [ 4 ]
    Scalar components dimensions:
    [ 4 ]
    Total Dimension: 4
@@ -102,19 +93,10 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-   Raw components: 
-      Size: [ 2 ]  Weights: [2]
-      Entry id: 0
-      [ 4 ]
-      Entry id: 1
-      [ 4 ]
-   
-   Components map: 
-   [ 0 1 ]
-   Active components ids: 
-   [ 0 1 ]
-   Inactive components ids: 
-   [ ]
+   Entry id: 0
+   [ 4 ]
+   Entry id: 1
+   [ 4 ]
    Scalar components dimensions:
    [ 4 4 ]
    Total Dimension: 8
@@ -190,19 +172,10 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-   Raw components: 
-      Size: [ 2 ]  Weights: [2]
-      Entry id: 0
-      [ 6 6 ]
-      Entry id: 1
-      [ 6 6 ]
-   
-   Components map: 
-   [ 0 1 ]
-   Active components ids: 
-   [ 0 1 ]
-   Inactive components ids: 
-   [ ]
+   Entry id: 0
+   [ 6 6 ]
+   Entry id: 1
+   [ 6 6 ]
    Scalar components dimensions:
    [ 36 36 ]
    Total Dimension: 72
@@ -278,19 +251,10 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-   Raw components: 
-      Size: [ 2 ]  Weights: [2]
-      Entry id: 0
-      [ 5 5 ]
-      Entry id: 1
-      [ 5 5 ]
-   
-   Components map: 
-   [ 0 1 ]
-   Active components ids: 
-   [ 0 1 ]
-   Inactive components ids: 
-   [ ]
+   Entry id: 0
+   [ 5 5 ]
+   Entry id: 1
+   [ 5 5 ]
    Scalar components dimensions:
    [ 25 25 ]
    Total Dimension: 50

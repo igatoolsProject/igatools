@@ -24,7 +24,7 @@ include_files = ['geometry/grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = ['Grid<dim>::template BoundaryNormal<k> ' +
+sub_dim_members = ['Grid<dim>::template BoundaryNormals<k> ' +
                    'Grid<dim>::get_boundary_normals<k>(const int s_id) const;',
                    'std::shared_ptr<Grid<k>> Grid<dim>::'+
                    'get_sub_grid<k>(const int sub_elem_id, typename Grid<dim>::template SubGridMap<k> &elem_map) const;']

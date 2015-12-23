@@ -39,43 +39,35 @@ arrays = set()
 
 
 
+#-----------------------------------------------
 for dim in unique(inst.sub_domain_dims + inst.domain_dims):
     arrays.add('iga::SafeSTLArray<int,%d>' %(dim))
 
     arrays.add('iga::SafeSTLArray<int,%d>' %(2*dim)) #this is for Grid::boundary_id_
     
     arrays.add('iga::SafeSTLArray<iga::SafeSTLVector<iga::Real>,%d>' % (dim))
+#-----------------------------------------------
 
 
 
+#-----------------------------------------------
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
+    space = 'SplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    n_components = x.dim**x.rank
+    arrays.add('iga::SafeSTLArray<iga::TensorSize<%d>,%d>' % (x.dim,n_components))
+#-----------------------------------------------
+
+
+#-----------------------------------------------
 id = 0
 for array in arrays:
     alias = 'SafeSTLArrayAlias%d' %(id)
     aliases.add(alias)
     f.write('using %s = %s;\n' %(alias,array))
     id += 1 
-    
-    
-    
-#for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-#    space = 'SplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
-#    n_components = x.dim**x.rank
-#
-#    alias = 'SafeSTLArrayAlias%d' %(id)
-#    aliases.add(alias)
-#    array = 'iga::SafeSTLArray<iga::BasisValues1d,%d>' %(x.dim)
-#    f.write('using %s = iga::SafeSTLArray<%s,%d>;\n' %(alias,array,n_components));
-#    id += 1 
-# 
-#    alias = 'SafeSTLArrayAlias%d' %(id)
-#    aliases.add(alias)    
-#    array = 'iga::SafeSTLArray<iga::SafeSTLArray<iga::BasisEndBehaviour,%d>,%d>' %(x.dim,n_components)
-#    f.write('using %s = %s;\n' %(alias,array));
-#    id += 1 
 #-----------------------------------------------
-
     
-
+    
     
     
 for alias in aliases:

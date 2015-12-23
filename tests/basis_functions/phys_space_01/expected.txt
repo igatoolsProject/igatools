@@ -38,17 +38,8 @@ PhysicalSpaceBasis<1,1,1,0,Transformation::h_grad>
             [ ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 3 ]
             Scalar components dimensions:
             [ 3 ]
             Total Dimension: 3
@@ -56,33 +47,15 @@ PhysicalSpaceBasis<1,1,1,0,Transformation::h_grad>
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 3 ]
             Scalar components dimensions:
             [ 3 ]
             Total Dimension: 3
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 3 ]
             Scalar components dimensions:
             [ 3 ]
             Total Dimension: 3

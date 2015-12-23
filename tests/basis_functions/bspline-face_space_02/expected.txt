@@ -35,16 +35,7 @@ sub_space
                Size: [ ]  Weights: []
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
+               Entry id: 0
                [ ]
                Scalar components dimensions:
                [ 1 ]
@@ -53,32 +44,14 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
+               Entry id: 0
                [ ]
                Scalar components dimensions:
                [ 1 ]
                Total Dimension: 1
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
+               Entry id: 0
                [ ]
                Scalar components dimensions:
                [ 1 ]
@@ -147,16 +120,7 @@ sub_space
                Size: [ ]  Weights: []
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
+               Entry id: 0
                [ ]
                Scalar components dimensions:
                [ 1 ]
@@ -165,32 +129,14 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
+               Entry id: 0
                [ ]
                Scalar components dimensions:
                [ 1 ]
                Total Dimension: 1
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
+               Entry id: 0
                [ ]
                Scalar components dimensions:
                [ 1 ]
@@ -271,17 +217,8 @@ sub_space
                [ 1 ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 ]
                Scalar components dimensions:
                [ 3 ]
                Total Dimension: 3
@@ -289,33 +226,15 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 ]
                Scalar components dimensions:
                [ 3 ]
                Total Dimension: 3
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 ]
                Scalar components dimensions:
                [ 3 ]
                Total Dimension: 3
@@ -393,17 +312,8 @@ sub_space
                [ 1 ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 ]
                Scalar components dimensions:
                [ 3 ]
                Total Dimension: 3
@@ -411,33 +321,15 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 ]
                Scalar components dimensions:
                [ 3 ]
                Total Dimension: 3
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 ]
                Scalar components dimensions:
                [ 3 ]
                Total Dimension: 3
@@ -512,17 +404,8 @@ sub_space
                [ ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
@@ -530,33 +413,15 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
@@ -630,17 +495,8 @@ sub_space
                [ ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
@@ -648,33 +504,15 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
@@ -772,17 +610,8 @@ sub_space
                [ 1 1 ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 4 ]
                Scalar components dimensions:
                [ 12 ]
                Total Dimension: 12
@@ -790,33 +619,15 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 4 ]
                Scalar components dimensions:
                [ 12 ]
                Total Dimension: 12
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 4 ]
                Scalar components dimensions:
                [ 12 ]
                Total Dimension: 12
@@ -914,17 +725,8 @@ sub_space
                [ 1 1 ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 4 ]
                Scalar components dimensions:
                [ 12 ]
                Total Dimension: 12
@@ -932,33 +734,15 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 4 ]
                Scalar components dimensions:
                [ 12 ]
                Total Dimension: 12
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 3 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 3 4 ]
                Scalar components dimensions:
                [ 12 ]
                Total Dimension: 12
@@ -1047,17 +831,8 @@ sub_space
                [ 1 1 ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 4 ]
                Scalar components dimensions:
                [ 8 ]
                Total Dimension: 8
@@ -1065,33 +840,15 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 4 ]
                Scalar components dimensions:
                [ 8 ]
                Total Dimension: 8
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 4 ]
                Scalar components dimensions:
                [ 8 ]
                Total Dimension: 8
@@ -1179,17 +936,8 @@ sub_space
                [ 1 1 ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 4 ]
                Scalar components dimensions:
                [ 8 ]
                Total Dimension: 8
@@ -1197,33 +945,15 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 4 ]
                Scalar components dimensions:
                [ 8 ]
                Total Dimension: 8
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 4 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 4 ]
                Scalar components dimensions:
                [ 8 ]
                Total Dimension: 8
@@ -1308,17 +1038,8 @@ sub_space
                [ 1 ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 3 ]
                Scalar components dimensions:
                [ 6 ]
                Total Dimension: 6
@@ -1326,33 +1047,15 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 3 ]
                Scalar components dimensions:
                [ 6 ]
                Total Dimension: 6
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 3 ]
                Scalar components dimensions:
                [ 6 ]
                Total Dimension: 6
@@ -1436,17 +1139,8 @@ sub_space
                [ 1 ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 3 ]
                Scalar components dimensions:
                [ 6 ]
                Total Dimension: 6
@@ -1454,33 +1148,15 @@ sub_space
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 3 ]
                Scalar components dimensions:
                [ 6 ]
                Total Dimension: 6
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 3 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 3 ]
                Scalar components dimensions:
                [ 6 ]
                Total Dimension: 6

@@ -2,33 +2,15 @@
 test1
 ========================================================================
 Num dofs table:
-   Raw components: 
-      Size: [ 1 ]  Weights: [1]
-      Entry id: 0
-      [ 7 ]
-   
-   Components map: 
-   [ 0 ]
-   Active components ids: 
-   [ 0 ]
-   Inactive components ids: 
-   [ ]
+   Entry id: 0
+   [ 7 ]
    Scalar components dimensions:
    [ 7 ]
    Total Dimension: 7
 
 Index table size:
-   Raw components: 
-      Size: [ 1 ]  Weights: [1]
-      Entry id: 0
-      [ 7 ]
-   
-   Components map: 
-   [ 0 ]
-   Active components ids: 
-   [ 0 ]
-   Inactive components ids: 
-   [ ]
+   Entry id: 0
+   [ 7 ]
    Scalar components dimensions:
    [ 7 ]
    Total Dimension: 7
@@ -47,33 +29,15 @@ Dof properties:
 test2
 ========================================================================
 Num dofs table:
-   Raw components: 
-      Size: [ 1 ]  Weights: [1]
-      Entry id: 0
-      [ 4 4 ]
-   
-   Components map: 
-   [ 0 ]
-   Active components ids: 
-   [ 0 ]
-   Inactive components ids: 
-   [ ]
+   Entry id: 0
+   [ 4 4 ]
    Scalar components dimensions:
    [ 16 ]
    Total Dimension: 16
 
 Index table size:
-   Raw components: 
-      Size: [ 1 ]  Weights: [1]
-      Entry id: 0
-      [ 4 4 ]
-   
-   Components map: 
-   [ 0 ]
-   Active components ids: 
-   [ 0 ]
-   Inactive components ids: 
-   [ ]
+   Entry id: 0
+   [ 4 4 ]
    Scalar components dimensions:
    [ 16 ]
    Total Dimension: 16

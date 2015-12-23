@@ -62,17 +62,8 @@ IgGridFunction<1,1>
             [ 1 1 1 1 1 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 12 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 12 ]
             Scalar components dimensions:
             [ 12 ]
             Total Dimension: 12
@@ -80,33 +71,15 @@ IgGridFunction<1,1>
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 12 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 12 ]
             Scalar components dimensions:
             [ 12 ]
             Total Dimension: 12
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 12 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 12 ]
             Scalar components dimensions:
             [ 12 ]
             Total Dimension: 12
@@ -437,17 +410,8 @@ IgGridFunction<2,1>
             [ 1 1 1 1 1 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 12 12 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 12 12 ]
             Scalar components dimensions:
             [ 144 ]
             Total Dimension: 144
@@ -455,33 +419,15 @@ IgGridFunction<2,1>
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 12 12 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 12 12 ]
             Scalar components dimensions:
             [ 144 ]
             Total Dimension: 144
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 12 12 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 12 12 ]
             Scalar components dimensions:
             [ 144 ]
             Total Dimension: 144
@@ -2902,17 +2848,8 @@ IgGridFunction<3,1>
             [ 1 1 1 1 1 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 10 10 10 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 10 10 10 ]
             Scalar components dimensions:
             [ 1000 ]
             Total Dimension: 1000
@@ -2920,33 +2857,15 @@ IgGridFunction<3,1>
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 10 10 10 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 10 10 10 ]
             Scalar components dimensions:
             [ 1000 ]
             Total Dimension: 1000
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 10 10 10 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 10 10 10 ]
             Scalar components dimensions:
             [ 1000 ]
             Total Dimension: 1000

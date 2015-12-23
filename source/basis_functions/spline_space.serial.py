@@ -36,7 +36,8 @@ range = 0
 rank = 1
 n_components = range ** rank
 arrays.append('SafeSTLArray<TensorIndex<%d>,%d>' %(dim,n_components))
-arrays.append('SafeSTLArray<TensorSize<%d>,%d>' %(dim,n_components))
+arrays.append('typename SplineSpace<%d,%d,%d>::TensorSizeTable' %(dim,range,rank))
+#arrays.append('SafeSTLArray<TensorSize<%d>,%d>' %(dim,n_components))
 arr_bool = 'SafeSTLArray<bool,%d>' %(dim)
 arrays.append(arr_bool)
 arr_arr_bool = 'SafeSTLArray<%s,%d>' %(arr_bool,n_components)
@@ -52,7 +53,8 @@ arrays.append('SafeSTLVector<BernsteinOperator>')
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     n_components = x.range ** x.rank
     arrays.append('SafeSTLArray<TensorIndex<%d>,%d>' %(x.dim,n_components))
-    arrays.append('SafeSTLArray<TensorSize<%d>,%d>' %(x.dim,n_components))
+    arrays.append('typename SplineSpace<%d,%d,%d>::TensorSizeTable' %(x.dim,x.range,x.rank))
+#    arrays.append('SafeSTLArray<TensorSize<%d>,%d>' %(x.dim,n_components))
     arr_bool = 'SafeSTLArray<bool,%d>' %(x.dim)
     arrays.append(arr_bool)
     arr_arr_bool = 'SafeSTLArray<%s,%d>' %(arr_bool,n_components)
@@ -71,23 +73,21 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 f.write('IGA_NAMESPACE_CLOSE\n')
 
 
-f.write('#ifdef SERIALIZATION\n')
 
 
 id = 0 
 for arr_t_id in unique(arrays):
     alias = 'Array_T_%d' %(id)
     f.write('using %s = %s;\n' % (alias, arr_t_id.replace('TensorIndex','iga::TensorIndex')
-                                                 .replace('TensorSize','iga::TensorSize')
+#                                                 .replace('TensorSize','iga::TensorSize')
                                                  .replace('CartesianProductArray','iga::CartesianProductArray')
                                                  .replace('BernsteinOperator','iga::BernsteinOperator')
                                                  .replace('SafeSTLArray','iga::SafeSTLArray')
-                                                 .replace('SafeSTLVector','iga::SafeSTLVector')));
+                                                 .replace('SafeSTLVector','iga::SafeSTLVector')
+                                                 .replace('SplineSpace','iga::SplineSpace')));
     f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize)\n' %alias);
     id += 1 
 
-
-f.write('#endif // SERIALIZATION\n')
 
 #   
 f.write('IGA_NAMESPACE_OPEN\n')

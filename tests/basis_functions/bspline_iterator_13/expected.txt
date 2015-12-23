@@ -5,17 +5,8 @@ ReferenceElement<1,1,1>
    Element global connectivity (property="active"):
    [ 0 1 ]
    Number of element basis: 
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 2 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 2 ]
       Scalar components dimensions:
       [ 2 ]
       Total Dimension: 2
@@ -195,17 +186,8 @@ ReferenceElement<1,1,1>
    Element global connectivity (property="active"):
    [ 0 1 ]
    Number of element basis: 
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 2 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 2 ]
       Scalar components dimensions:
       [ 2 ]
       Total Dimension: 2
@@ -385,17 +367,8 @@ ReferenceElement<1,1,1>
    Element global connectivity (property="active"):
    [ 0 1 ]
    Number of element basis: 
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 2 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 2 ]
       Scalar components dimensions:
       [ 2 ]
       Total Dimension: 2

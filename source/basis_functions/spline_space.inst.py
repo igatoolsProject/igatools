@@ -71,8 +71,9 @@ for x in inst.ref_sp_dims:
 
 for space in unique(spaces):
     f.write('template class %s ;\n' %space)
-    comp_container = '%s::template ComponentContainer<int>' %(space)
-    comp_containers.append('%s' %(comp_container))
+    
+#    comp_container = '%s::template ComponentContainer<int>' %(space)
+#    comp_containers.append('%s' %(comp_container))
     
     comp_container = '%s::template ComponentContainer<std::pair<Real,Real>>' %(space)
     comp_containers.append('%s' %(comp_container))

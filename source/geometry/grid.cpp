@@ -580,15 +580,14 @@ template<int dim_>
 template<int sdim>
 auto
 Grid<dim_>::
-get_boundary_normals(const int s_id) const -> BoundaryNormal<sdim>
+get_boundary_normals(const int s_id) const -> BoundaryNormals<sdim>
 {
-  auto all_elems = UnitElement<dim_>::all_elems;
-  auto element = std::get<sdim>(all_elems)[s_id];
+  const auto &element = UnitElement<dim_>::template get_elem<sdim>(s_id);
 
-  BoundaryNormal<sdim> normals;
-  for (int i=0; i<dim_-sdim; ++i)
+  BoundaryNormals<sdim> normals;
+  for (int i = 0; i < dim_-sdim; ++i)
   {
-    auto val = 2*element.constant_values[i]-1;
+    const auto val = 2 * element.constant_values[i] - 1;
     normals[i][element.constant_directions[i]] = val;
   }
 

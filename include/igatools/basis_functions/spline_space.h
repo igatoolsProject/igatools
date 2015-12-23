@@ -144,12 +144,15 @@ public:
   using EndBehaviourTable = ComponentContainer<EndBehaviour>;
 
   /**
-   * Component container holding tensor size
+   * This class is used to store the TensorSize of each component of the SplineSpace.
    */
-  class TensorSizeTable : public ComponentContainer<TensorSize<dim_> >
+  class TensorSizeTable
+    : public SafeSTLArray<TensorSize<dim_>,n_components>
+//  : public ComponentContainer<TensorSize<dim_> >
   {
   public:
-    using base_t = ComponentContainer<TensorSize<dim_>>;
+    using base_t = SafeSTLArray<TensorSize<dim_>,n_components>;
+//    using base_t = ComponentContainer<TensorSize<dim_>>;
 
 
     TensorSizeTable() = default;
@@ -172,7 +175,8 @@ public:
 
     Size total_dimension() const;
 
-    ComponentContainer<Size> get_offset() const;
+//    ComponentContainer<Size> get_offset() const;
+    SafeSTLArray<int,n_components> get_offset() const;
 
     void print_info(LogStream &out) const;
 

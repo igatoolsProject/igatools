@@ -26,16 +26,16 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template<int dim_, int space_dim_>
-GridFunction<dim_, space_dim_>::
+template<int dim_, int range_>
+GridFunction<dim_, range_>::
 GridFunction()
   :
   object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
 
-template<int dim_, int space_dim_>
-GridFunction<dim_, space_dim_>::
+template<int dim_, int range_>
+GridFunction<dim_, range_>::
 GridFunction(const SharedPtrConstnessHandler<GridType> &grid)
   :
   grid_(grid),
@@ -46,9 +46,9 @@ GridFunction(const SharedPtrConstnessHandler<GridType> &grid)
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 get_grid() const -> std::shared_ptr<const GridType>
 {
   return grid_.get_ptr_const_data();
@@ -56,9 +56,9 @@ get_grid() const -> std::shared_ptr<const GridType>
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 const std::string &
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 get_name() const
 {
   return name_;
@@ -66,9 +66,9 @@ get_name() const
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 void
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 set_name(const std::string &name)
 {
   name_ = name;
@@ -76,9 +76,9 @@ set_name(const std::string &name)
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 Index
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 get_object_id() const
 {
   return object_id_;
@@ -86,9 +86,9 @@ get_object_id() const
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 create_element_begin(const PropId &prop) const
 -> std::unique_ptr<ElementAccessor>
 {
@@ -101,9 +101,9 @@ create_element_begin(const PropId &prop) const
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 create_element_end(const PropId &prop) const
 -> std::unique_ptr<ElementAccessor>
 {
@@ -116,9 +116,9 @@ create_element_end(const PropId &prop) const
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 begin(const PropId &prop) const -> ElementIterator
 {
   return this->cbegin(prop);
@@ -126,9 +126,9 @@ begin(const PropId &prop) const -> ElementIterator
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 end(const PropId &prop) const -> ElementIterator
 {
   return this->cend(prop);
@@ -136,9 +136,9 @@ end(const PropId &prop) const -> ElementIterator
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 cbegin(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
@@ -147,9 +147,9 @@ cbegin(const PropId &prop) const -> ElementIterator
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 cend(const PropId &prop) const -> ElementIterator
 {
   return ElementIterator(
@@ -158,9 +158,9 @@ cend(const PropId &prop) const -> ElementIterator
 
 
 #ifdef MESH_REFINEMENT
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 boost::signals2::connection
-GridFunction<dim_, space_dim_>::
+GridFunction<dim_, range_>::
 connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber)
 {
   return grid_.get_ptr_data()->connect_insert_knots(subscriber);
@@ -168,9 +168,9 @@ connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscribe
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 void
-GridFunction<dim_,space_dim_>::
+GridFunction<dim_,range_>::
 create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function)
 {
   Assert(grid_function != nullptr, ExcNullPtr());
@@ -186,8 +186,37 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function)
   this->connect_insert_knots(SlotType(func_to_connect).track_foreign(grid_function));
 }
 
+template<int dim_, int range_>
+auto
+GridFunction<dim_,range_>::
+get_grid_function_previous_refinement() const -> std::shared_ptr<const self_t>
+{
+  return grid_function_previous_refinement_;
+}
+
 
 #endif // MESH_REFINEMENT
+
+
+#ifdef SERIALIZATION
+template<int dim_, int range_>
+template<class Archive>
+void
+GridFunction<dim_,range_>::
+serialize(Archive &ar)
+{
+  ar &make_nvp("grid_",grid_);
+
+  ar &make_nvp("name_",name_);
+
+
+#ifdef MESH_REFINEMENT
+  auto tmp = std::const_pointer_cast<self_t>(grid_function_previous_refinement_);
+  ar &make_nvp("grid_function_previous_refinement_",tmp);
+  grid_function_previous_refinement_ = tmp;
+#endif
+}
+#endif // SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

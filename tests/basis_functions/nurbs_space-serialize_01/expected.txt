@@ -47,17 +47,8 @@ Original NURBS:
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
@@ -65,33 +56,15 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
@@ -161,17 +134,8 @@ Original NURBS:
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -179,33 +143,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -288,17 +234,8 @@ NURBS after serialize-deserialize:
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
@@ -306,33 +243,15 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
@@ -402,17 +321,8 @@ NURBS after serialize-deserialize:
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -420,33 +330,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -539,19 +431,10 @@ Original NURBS:
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
@@ -559,37 +442,19 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
          
          Index table size:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
@@ -667,17 +532,8 @@ Original NURBS:
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -685,33 +541,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -799,19 +637,10 @@ NURBS after serialize-deserialize:
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
@@ -819,37 +648,19 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
          
          Index table size:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
@@ -927,17 +738,8 @@ NURBS after serialize-deserialize:
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -945,33 +747,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -1069,21 +853,12 @@ Original NURBS:
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
@@ -1091,41 +866,23 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
@@ -1211,17 +968,8 @@ Original NURBS:
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -1229,33 +977,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -1348,21 +1078,12 @@ NURBS after serialize-deserialize:
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
@@ -1370,41 +1091,23 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
@@ -1490,17 +1193,8 @@ NURBS after serialize-deserialize:
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -1508,33 +1202,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -1650,17 +1326,8 @@ Original NURBS:
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
@@ -1668,33 +1335,15 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
@@ -1796,17 +1445,8 @@ Original NURBS:
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -1814,33 +1454,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -1983,17 +1605,8 @@ NURBS after serialize-deserialize:
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
@@ -2001,33 +1614,15 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
@@ -2129,17 +1724,8 @@ NURBS after serialize-deserialize:
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2147,33 +1733,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2328,19 +1896,10 @@ Original NURBS:
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
@@ -2348,37 +1907,19 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
          
          Index table size:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
@@ -2492,17 +2033,8 @@ Original NURBS:
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2510,33 +2042,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2686,19 +2200,10 @@ NURBS after serialize-deserialize:
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
@@ -2706,37 +2211,19 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
          
          Index table size:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
@@ -2850,17 +2337,8 @@ NURBS after serialize-deserialize:
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2868,33 +2346,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -3056,21 +2516,12 @@ Original NURBS:
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
@@ -3078,41 +2529,23 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
@@ -3238,17 +2671,8 @@ Original NURBS:
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -3256,33 +2680,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -3439,21 +2845,12 @@ NURBS after serialize-deserialize:
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
@@ -3461,41 +2858,23 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
@@ -3621,17 +3000,8 @@ NURBS after serialize-deserialize:
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -3639,33 +3009,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -3853,17 +3205,8 @@ Original NURBS:
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
@@ -3871,33 +3214,15 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
@@ -4042,17 +3367,8 @@ Original NURBS:
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -4060,33 +3376,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -4342,17 +3640,8 @@ NURBS after serialize-deserialize:
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
@@ -4360,33 +3649,15 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
@@ -4531,17 +3802,8 @@ NURBS after serialize-deserialize:
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -4549,33 +3811,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -4854,21 +4098,12 @@ Original NURBS:
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
@@ -4876,41 +4111,23 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
@@ -5085,17 +4302,8 @@ Original NURBS:
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -5103,33 +4311,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -5403,21 +4593,12 @@ NURBS after serialize-deserialize:
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
@@ -5425,41 +4606,23 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
@@ -5634,17 +4797,8 @@ NURBS after serialize-deserialize:
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -5652,33 +4806,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105

@@ -58,7 +58,8 @@ public:
   using DegreeTable = typename Space::DegreeTable;
   using PeriodicityTable = typename Space::PeriodicityTable;
   using TensorSizeTable = typename Space::TensorSizeTable;
-  using OffsetTable = typename Space::template ComponentContainer<Size>;
+//  using OffsetTable = typename Space::template ComponentContainer<Size>;
+  using OffsetTable = SafeSTLArray<int,Space::n_components>;
   using IndexDistributionTable =
     StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
 
@@ -89,9 +90,7 @@ public:
   /** @name Constructors */
   ///@{
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. It does nothing but it is needed for the serialization.
    */
   DofDistribution() = default;
 
@@ -408,7 +407,7 @@ private:
 
 #ifdef SERIALIZATION
   /**
-   * @name Functions needed for boost::serialization
+   * @name Functions needed for serialization.
    * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
    */
   ///@{

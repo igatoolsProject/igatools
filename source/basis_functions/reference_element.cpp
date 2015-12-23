@@ -39,11 +39,8 @@ ReferenceElement(const std::shared_ptr<ConstBasis> &basis)
 
   //-------------------------------------------------
   const auto &degree_table = basis->get_spline_space()->get_degree_table();
-  TensorSizeTable n_basis(degree_table.get_comp_map());
-  for (auto comp : degree_table.get_active_components_id())
-    n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
-
-  n_basis_direction_ = n_basis;
+  for (int comp = 0; comp < Basis::n_components; ++comp)
+    n_basis_direction_[comp] = TensorSize<dim>(degree_table[comp]+1);
   //-------------------------------------------------
 
 
