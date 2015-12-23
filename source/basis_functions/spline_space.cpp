@@ -555,13 +555,15 @@ init()
 
   //------------------------------------------------------------------------------
   // Determine the dimensionality of the spline space --- begin
-  typename TensorSizeTable::base_t n_basis;
+//  typename TensorSizeTable::base_t n_basis;
   for (const auto comp : components)
   {
-    const auto &deg_comp =              deg_[comp];
+    const auto &deg_comp = deg_[comp];
     const auto &mult_comp = interior_mult_[comp];
 
     const auto &periodic_comp = periodic_[comp];
+
+    auto &n_basis_comp = space_dim_[comp];
 
     for (const auto dir : UnitElement<dim_>::active_directions)
     {
@@ -581,21 +583,21 @@ init()
       }
 #endif
 
-      n_basis[comp][dir] = std::accumulate(
-                             mult.begin(),
-                             mult.end(),
-                             periodic_comp[dir] ? 0 : order);
+      n_basis_comp[dir] = std::accumulate(
+                            mult.begin(),
+                            mult.end(),
+                            periodic_comp[dir] ? 0 : order);
 
 #ifndef NDEBUG
       if (periodic_comp[dir])
-        Assert(n_basis[comp][dir] > order,
+        Assert(n_basis_comp[dir] > order,
                ExcMessage("Not enough basis functions"));
 #endif
 
     } // end loop dir
   } // end loop comp
 
-  space_dim_ = n_basis;
+//  space_dim_ = n_basis;
   // Determine the dimensionality of the spline space --- end
   //------------------------------------------------------------------------------
 
@@ -1218,6 +1220,8 @@ auto
 SplineSpace<dim_, range_, rank_>::
 get_active_components_id() const -> const SafeSTLVector<Index> &
 {
+  //TODO (martinelli, Dec 23, 2015) : it is better to store a unique array for active_components_id inside the space
+  // and avoid to use the ComponentContainer class
   return interior_mult_.get_active_components_id();
 }
 
