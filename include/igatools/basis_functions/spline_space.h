@@ -406,8 +406,8 @@ public:
   Index get_object_id() const;
 
 
-  const ComponentContainer<SafeSTLVector<TensorIndex<dim_> > > &
-  get_dofs_tensor_id_elem_table() const;
+  const SafeSTLArray<SafeSTLVector<TensorIndex<dim_>>,n_components> &
+                                                   get_dofs_tensor_id_elem_table() const;
 
 private:
 
@@ -427,7 +427,7 @@ private:
   /**
    * Lookup table for the local dofs id in each element component
    */
-  ComponentContainer<SafeSTLVector<TensorIndex<dim_> > > dofs_tensor_id_elem_table_;
+  SafeSTLArray<SafeSTLVector<TensorIndex<dim_>>,n_components> dofs_tensor_id_elem_table_;
 
 
   /**

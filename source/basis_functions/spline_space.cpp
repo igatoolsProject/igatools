@@ -1275,7 +1275,7 @@ template<int dim_, int range_, int rank_>
 auto
 SplineSpace<dim_, range_, rank_>::
 get_dofs_tensor_id_elem_table() const
--> const ComponentContainer<SafeSTLVector<TensorIndex<dim_> > > &
+-> const SafeSTLArray<SafeSTLVector<TensorIndex<dim_>>,n_components> &
 {
   return dofs_tensor_id_elem_table_;
 }
