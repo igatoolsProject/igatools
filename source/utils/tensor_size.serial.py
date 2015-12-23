@@ -18,34 +18,25 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
+
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
-
-class_list = []
-
-class_name = 'TensorIndex'
-
-for dim in inst.all_domain_dims:
-    c = '%s<%d>' %(class_name,dim)
-    class_list.append(c)
-
-
 
 
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
 
-f.write('#ifdef SERIALIZATION\n')
+archives = ['OArchive','IArchive']
 
 id = 0 
-for cls in unique(class_list):
-    alias = '%sAlias%d' %(class_name,id)
-    f.write('using %s = iga::%s; \n' % (alias, cls))
-    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %(alias))
-    id += 1 
-f.write('#endif // SERIALIZATION\n')
+for dim in unique(inst.all_domain_dims):
+    alias = 'TensorSizeAlias%d' %(id)
+    f.write('using %s = iga::TensorSize<%d>;\n' % (alias,dim))
+    for ar in archives:
+        f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,%s,cereal::specialization::member_serialize)\n' % (ar,alias));
 
+    id += 1 
+#   
 f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------

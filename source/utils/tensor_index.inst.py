@@ -32,3 +32,12 @@ for row in index_list:
     f.write('template %s operator-(const %s &, const Index); \n' % (row,row))
 
 
+#---------------------------------------------------
+#f.write('#ifdef SERIALIZATION\n')
+#archives = ['OArchive','IArchive']
+#
+#for id in unique(index_list):
+#    for ar in archives:
+#        f.write('template void %s::serialize(%s&);\n' %(id,ar))
+#f.write('#endif // SERIALIZATION\n')
+#---------------------------------------------------

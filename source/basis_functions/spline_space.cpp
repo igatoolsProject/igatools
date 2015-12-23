@@ -172,6 +172,154 @@ operator[](const Index i) const
 
 
 template<int dim_, int range_, int rank_>
+template<class T>
+Index
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+active(const Index i) const
+{
+  return comp_map_[i];
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+const SafeSTLVector<Index> &
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+get_active_components_id() const
+{
+  return active_components_id_;
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+const SafeSTLVector<Index> &
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+get_inactive_components_id() const
+{
+  return inactive_components_id_;
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+get_comp_map() const -> const SafeSTLArray <Index,n_entries> &
+{
+  return comp_map_;
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+cbegin() const -> const_iterator
+{
+  return const_iterator(*this,0);
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+cend() const -> const_iterator
+{
+  return const_iterator(*this,IteratorState::pass_the_end);
+}
+
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+begin() const -> const_iterator
+{
+  return cbegin();
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+end() const -> const_iterator
+{
+  return cend();
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+begin() -> iterator
+{
+  return iterator(*this,0);
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+end() -> iterator
+{
+  return iterator(*this,IteratorState::pass_the_end);
+}
+
+
+template<int dim_, int range_, int rank_>
+template<class T>
+void
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+print_info(LogStream &out) const
+{
+  out.begin_item("Raw components: ");
+  base_t::print_info(out);
+  out.end_item();
+
+  out.begin_item("Components map: ");
+  comp_map_.print_info(out);
+  out.end_item();
+
+  out.begin_item("Active components ids: ");
+  active_components_id_.print_info(out);
+  out.end_item();
+
+  out.begin_item("Inactive components ids: ");
+  inactive_components_id_.print_info(out);
+  out.end_item();
+}
+
+#if 0
+#if SERIALIZATION
+template<int dim_, int range_, int rank_>
+template<class T>
+template<class Archive>
+void
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+serialize(Archive &ar)
+{
+  ar &make_nvp("ComponentContainer_base_t",base_class<base_t>(this));
+
+  ar &make_nvp("comp_map_",comp_map_);
+
+  ar &make_nvp("active_components_id_", active_components_id_);
+
+  ar &make_nvp("inactive_components_id_", inactive_components_id_);
+}
+#endif
+#endif
+// SERIALIZATION
+
+template<int dim_, int range_, int rank_>
 const Size SplineSpace<dim_, range_, rank_>::n_components;
 
 

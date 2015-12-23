@@ -231,12 +231,12 @@ public:
   /**
    * Return a const reference of the DomainElement.
    */
-  const PhysDomainElem &get_physical_domain_element() const;
+  const PhysDomainElem &get_domain_element() const;
 
   /**
    * Return a non-const reference of the DomainElement.
    */
-  PhysDomainElem &get_physical_domain_element();
+  PhysDomainElem &get_domain_element();
 
 public:
   using parent_t::get_num_basis;

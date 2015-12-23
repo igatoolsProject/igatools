@@ -215,24 +215,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    using std::to_string;
-    const std::string base_name = "Space_" +
-                                  to_string(dim_) + "_" +
-                                  to_string(0) + "_" +
-                                  to_string(range_) + "_" +
-                                  to_string(rank_) + "_hgrad";
-
-    ar &make_nvp(base_name,base_class<base_t>(this));
-
-#ifdef MESH_REFINEMENT
-    auto tmp = std::const_pointer_cast<RefBasis>(ref_basis_previous_refinement_);
-    ar &make_nvp("ref_basis_previous_refinement_",tmp);
-    ref_basis_previous_refinement_ = std::const_pointer_cast<const RefBasis>(tmp);
-#endif
-  }
-
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };

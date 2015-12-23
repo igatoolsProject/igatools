@@ -86,24 +86,6 @@ public:
    * each direction.
    */
   Size flat_size() const noexcept ;
-
-private:
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for serialization
-   * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
-   */
-  ///@{
-  friend class cereal::access;
-
-  template<class Archive>
-  void serialize(Archive &ar)
-  {
-    ar &make_nvp("TensorIndex",
-                 base_class<TensorIndex<rank>>(this));
-  }
-  ///@}
-#endif // SERIALIZATION
 };
 
 
@@ -133,6 +115,7 @@ IGA_NAMESPACE_CLOSE
 
 
 #ifdef SERIALIZATION
+#if 0
 using TensorSizeAlias0 = iga::TensorSize<0>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias0,cereal::specialization::member_serialize)
 using TensorSizeAlias1 = iga::TensorSize<1>;
@@ -141,8 +124,9 @@ using TensorSizeAlias2 = iga::TensorSize<2>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias2,cereal::specialization::member_serialize)
 using TensorSizeAlias3 = iga::TensorSize<3>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias3,cereal::specialization::member_serialize)
+#endif
 
-//#include <igatools/utils/tensor_size.serialization>
+#include <igatools/utils/tensor_size.serial>
 #endif // SERIALIZATION
 
 

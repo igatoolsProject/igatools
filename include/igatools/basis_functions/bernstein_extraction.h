@@ -28,6 +28,10 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ *
+ * @ingroup serializable
+ */
 class BernsteinOperator : public DenseMatrix
 {
 public:
@@ -86,9 +90,7 @@ private:
 
 public:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. It does nothing but it is needed for the srialization.
    */
   BernsteinExtraction() = default;
 

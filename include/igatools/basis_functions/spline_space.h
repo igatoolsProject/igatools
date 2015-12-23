@@ -503,41 +503,22 @@ public:
     self_t &operator=(self_t &&in) = default;
 
     const_iterator
-    cbegin() const
-    {
-      return const_iterator(*this,0);
-    }
+    cbegin() const;
 
     const_iterator
-    cend() const
-    {
-      return const_iterator(*this,IteratorState::pass_the_end);
-    }
-
+    cend() const;
 
     const_iterator
-    begin() const
-    {
-      return cbegin();
-    }
+    begin() const;
 
     const_iterator
-    end() const
-    {
-      return cend();
-    }
+    end() const;
 
     iterator
-    begin()
-    {
-      return iterator(*this,0);
-    }
+    begin();
 
     iterator
-    end()
-    {
-      return iterator(*this,IteratorState::pass_the_end);
-    }
+    end();
 
     /**
      *  Flat index access operator (non-const version).
@@ -549,45 +530,16 @@ public:
      */
     const T &operator[](const Index i) const;
 
-    Index active(const Index i) const
-    {
-      return comp_map_[i];
-    }
+    Index active(const Index i) const;
 
-    const SafeSTLVector<Index> &get_active_components_id() const
-    {
-      return active_components_id_;
-    }
+    const SafeSTLVector<Index> &get_active_components_id() const;
 
-    const SafeSTLVector<Index> &get_inactive_components_id() const
-    {
-      return inactive_components_id_;
-    }
+    const SafeSTLVector<Index> &get_inactive_components_id() const;
 
     void
-    print_info(LogStream &out) const
-    {
-      out.begin_item("Raw components: ");
-      base_t::print_info(out);
-      out.end_item();
+    print_info(LogStream &out) const;
 
-      out.begin_item("Components map: ");
-      comp_map_.print_info(out);
-      out.end_item();
-
-      out.begin_item("Active components ids: ");
-      active_components_id_.print_info(out);
-      out.end_item();
-
-      out.begin_item("Inactive components ids: ");
-      inactive_components_id_.print_info(out);
-      out.end_item();
-    }
-
-    const SafeSTLArray <Index, n_entries> &get_comp_map() const
-    {
-      return comp_map_;
-    }
+    const SafeSTLArray <Index, n_entries> &get_comp_map() const;
 
     /**
      * Equality comparison operator.

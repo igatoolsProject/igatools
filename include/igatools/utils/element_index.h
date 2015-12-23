@@ -25,6 +25,15 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * @brief This class represent the index of an element of dimension <b>dim</b>.
+ *
+ * It stores the <tt>tensor</tt> and <tt>flat</tt> representation.
+ *
+ * @ingroup serializable
+ *
+ * @author M. Martinelli, 2015
+ */
 template <int dim>
 class ElementIndex
 {
@@ -93,11 +102,7 @@ private:
   friend class cereal::access;
 
   template<class Archive>
-  void serialize(Archive &ar)
-  {
-    ar &make_nvp("flat_id_",flat_id_);
-    ar &make_nvp("tensor_id_",tensor_id_);
-  }
+  void serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 

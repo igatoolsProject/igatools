@@ -122,6 +122,18 @@ print_info(LogStream &out) const
 }
 
 
+#ifdef SERIALIZATION
+template <int dim>
+template<class Archive>
+void
+ElementIndex<dim>::
+serialize(Archive &ar)
+{
+  ar &make_nvp("flat_id_",flat_id_);
+  ar &make_nvp("tensor_id_",tensor_id_);
+}
+#endif
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/utils/element_index.inst>

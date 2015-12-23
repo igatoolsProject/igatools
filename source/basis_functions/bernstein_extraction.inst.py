@@ -29,7 +29,7 @@ classes = ['BernsteinExtraction<%d,%d,%d>' %(x.dim, x.range, x.rank)
 
 classes.append('BernsteinExtraction<0,0,1>')
 
-for c in classes:
+for c in unique(classes):
    f.write('template class %s ;\n' %c)
 
 
@@ -44,3 +44,4 @@ for c in unique(classes):
         f.write('template void %s::serialize(%s&);\n' %(c,ar))
 f.write('#endif // SERIALIZATION\n')
 #---------------------------------------------------
+

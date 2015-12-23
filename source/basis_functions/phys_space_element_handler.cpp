@@ -39,7 +39,7 @@ PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
   :
   base_t(space),
   ref_space_handler_(space->get_reference_basis()->create_cache_handler()),
-  phys_domain_handler_(space->get_physical_domain()->create_cache_handler()),
+  phys_domain_handler_(space->get_domain()->create_cache_handler()),
   phys_space_(space)
 {}
 

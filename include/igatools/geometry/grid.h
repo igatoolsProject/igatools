@@ -649,7 +649,11 @@ private:
    */
   KnotCoordinates knot_coordinates_;
 
-  /** Boundary ids, one id per face */
+  /**
+   * Boundary ids, one id per face
+   *
+   * TODO (martinelli dec 23, 2015): discuss about the usefulness of this member variable
+   */
   SafeSTLArray<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
 
   /**

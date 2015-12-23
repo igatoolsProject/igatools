@@ -165,6 +165,14 @@ get_object_id() const
 
 
 #ifdef MESH_REFINEMENT
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+get_function_previous_refinement() const -> const std::shared_ptr<const self_t> &
+{
+  return function_previous_refinement_;
+}
+
 
 template<int dim_, int codim_, int range_, int rank_>
 boost::signals2::connection

@@ -277,10 +277,7 @@ protected:
   std::shared_ptr<const self_t> function_previous_refinement_;
 
 public:
-  const std::shared_ptr<const self_t> &get_function_previous_refinement() const
-  {
-    return function_previous_refinement_;
-  }
+  const std::shared_ptr<const self_t> &get_function_previous_refinement() const;
 
 private:
   /**

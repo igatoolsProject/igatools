@@ -38,9 +38,9 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
   :
   parent_t::Function(
    space.data_is_const() ?
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_domain()) :
    SharedPtrConstnessHandler<DomainType>(
-     std::const_pointer_cast<Domain<dim,codim>>(space.get_ptr_data()->get_physical_domain()))),
+     std::const_pointer_cast<Domain<dim,codim>>(space.get_ptr_data()->get_domain()))),
   basis_(space),
   dofs_property_(dofs_property)
 {
@@ -67,8 +67,8 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
   :
   parent_t::Function(
    space.data_is_const() ?
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain())),
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_domain()) :
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_domain())),
   basis_(space),
   dofs_property_(dofs_property)
 {

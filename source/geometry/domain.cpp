@@ -246,6 +246,8 @@ cend(const PropId &prop) const -> ElementIterator
 }
 
 
+
+
 template<int dim_, int codim_>
 void
 Domain<dim_, codim_>::
@@ -263,6 +265,26 @@ print_info(LogStream &out) const
   out << "Name: " << this->name_ << std::endl;
 }
 
+
+#ifdef SERIALIZATION
+template<int dim_, int codim_>
+template<class Archive>
+void
+Domain<dim_, codim_>::
+serialize(Archive &ar)
+{
+  ar &make_nvp("grid_func_",grid_func_);
+  ar &make_nvp("name_",name_);
+  ar &make_nvp("object_id_",object_id_);
+
+#ifdef MESH_REFINEMENT
+  auto tmp = std::const_pointer_cast<self_t>(domain_previous_refinement_);
+  ar &make_nvp("grid_pre_refinement_",tmp);
+  domain_previous_refinement_ = tmp;
+#endif
+}
+
+#endif
 
 IGA_NAMESPACE_CLOSE
 
