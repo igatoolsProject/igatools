@@ -307,7 +307,7 @@ public:
 
   const SafeSTLArray<Index,n_components> &get_components_map() const;
 
-  const SafeSTLVector<Index> &get_active_components_id() const;
+  SafeSTLVector<Index> get_active_components_id() const;
 
   void get_element_dofs(
     const typename GridType::IndexType &elem_id,

@@ -1218,11 +1218,24 @@ get_components_map() const -> const SafeSTLArray<Index,n_components> &
 template<int dim_, int range_, int rank_>
 auto
 SplineSpace<dim_, range_, rank_>::
-get_active_components_id() const -> const SafeSTLVector<Index> &
+get_active_components_id() const -> SafeSTLVector<Index>
 {
+  SafeSTLSet<int> tmp;
+  tmp.insert(interior_mult_.get_active_components_id().begin(),
+		     interior_mult_.get_active_components_id().end());
+  tmp.insert(deg_.get_active_components_id().begin(),
+		     deg_.get_active_components_id().end());
+  tmp.insert(periodic_.get_active_components_id().begin(),
+		     periodic_.get_active_components_id().end());
+
+  SafeSTLVector<int> active_components_id(tmp.begin(),tmp.end());
+  return active_components_id;
+
+#if 0
   //TODO (martinelli, Dec 23, 2015) : it is better to store a unique array for active_components_id inside the space
   // and avoid to use the ComponentContainer class
   return interior_mult_.get_active_components_id();
+#endif
 }
 
 template<int dim_, int range_, int rank_>
