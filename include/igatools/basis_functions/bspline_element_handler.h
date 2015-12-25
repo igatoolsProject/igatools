@@ -52,11 +52,11 @@ class BSplineElementHandler
   template<class T>
   using ComponentContainer = typename Basis::template ComponentContainer<T>;
 
-  template<class T>
-  using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim_>>;
+//  template<class T>
+//  using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim_>>;
 
-  template<class T>
-  using ComponentDirectionContainer = ComponentContainer<SafeSTLArray<T,dim_>>;
+//  template<class T>
+//  using ComponentDirectionContainer = ComponentContainer<SafeSTLArray<T,dim_>>;
 
 
   template <int order>

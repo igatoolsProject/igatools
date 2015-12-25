@@ -167,18 +167,6 @@ BSplineElementHandler(shared_ptr<const Basis> space)
 {}
 
 
-#if 0
-template<int dim_, int range_ , int rank_>
-auto
-BSplineElementHandler<dim_, range_, rank_>::
-create(std::shared_ptr<const Basis> space) -> std::unique_ptr<self_t>
-{
-  auto handler = std::unique_ptr<self_t>(new self_t(space));
-  Assert(handler != nullptr, ExcNullPtr());
-  return handler;
-}
-#endif
-
 
 template<int dim_, int range_ , int rank_>
 template<int sdim>

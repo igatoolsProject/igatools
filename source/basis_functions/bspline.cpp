@@ -77,23 +77,6 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   //------------------------------------------------------------------------------
 }
 
-#if 0
-template<int dim_, int range_, int rank_>
-BSpline<dim_, range_, rank_>::
-BSpline(const DegreeTable &deg,
-        const SharedPtrConstnessHandler<GridType> &grid,
-        const MultiplicityTable &interior_mult,
-        const PeriodicityTable &periodic,
-        const EndBehaviourTable &end_b)
-  :
-  BSpline(
-   grid.data_is_const() ?
-   SharedPtrConstnessHandler<SpSpace>(SpSpace::const_create(deg, grid.get_ptr_const_data(), interior_mult, periodic)) :
-   SharedPtrConstnessHandler<SpSpace>(SpSpace::create(deg, grid.get_ptr_data(), interior_mult, periodic)),
-   end_b)
-{}
-#endif
-
 
 
 template<int dim_, int range_, int rank_>
@@ -162,19 +145,6 @@ get_this_basis() const -> shared_ptr<const self_t>
 
   return bsp_space;
 }
-
-#if 0
-template<int dim_, int range_, int rank_>
-auto
-BSpline<dim_, range_, rank_>::
-create_element(const ListIt &index, const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
-{
-  using Elem = BSplineElement<dim_,range_,rank_>;
-
-  return std::make_unique<Elem>(this->get_this_basis(),index,property);
-}
-#endif
 
 template<int dim_, int range_, int rank_>
 auto
