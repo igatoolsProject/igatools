@@ -75,8 +75,8 @@ for space in unique(spaces):
 #    comp_container = '%s::template ComponentContainer<int>' %(space)
 #    comp_containers.append('%s' %(comp_container))
     
-    comp_container = '%s::template ComponentContainer<std::pair<Real,Real>>' %(space)
-    comp_containers.append('%s' %(comp_container))
+#    comp_container = '%s::template ComponentContainer<std::pair<Real,Real>>' %(space)
+#    comp_containers.append('%s' %(comp_container))
 #    comp_containers_serializable.append('%s' %(comp_container))
 
     
@@ -127,7 +127,7 @@ for space in unique(spaces):
     comp_container = '%s::template ComponentContainer<%s>' %(space,t8)
     comp_containers.append('%s' %(comp_container))
     
-    t9 = 'CartesianProductArray<BernsteinOperator,%s>' % (dim)
+    t9 = 'SafeSTLArray<SafeSTLVector<BernsteinOperator>,%s>' % (dim)
     comp_container = '%s::template ComponentContainer<%s>' %(space,t9)
     comp_containers.append('%s' %(comp_container))
     

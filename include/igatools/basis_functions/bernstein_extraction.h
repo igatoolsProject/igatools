@@ -85,7 +85,7 @@ public:
   using ElemOper = SafeSTLArray<Operator const *, dim>;
   using ElemOperTable = typename Space::template ComponentContainer<ElemOper>;
 private:
-  using Operators = CartesianProductArray<Operator, dim>;
+  using Operators = SafeSTLArray<SafeSTLVector<Operator>,dim>;
   using OperatorsTable = typename Space::template ComponentContainer<Operators>;
 
 public:
