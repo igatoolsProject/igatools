@@ -130,7 +130,7 @@ public:
 
 public:
   using KnotCoordinates = SafeSTLArray<SafeSTLVector<Real>,dim_>;
-  using BoundaryKnots = SafeSTLArray<CartesianProductArray<Real,2>, dim_>;
+  using BoundaryKnots = SafeSTLArray<SafeSTLArray<SafeSTLVector<Real>,2>, dim_>;
   using Degrees  = TensorIndex<dim_>;
   using Multiplicity = CartesianProductArray<Size, dim_>;
   using Periodicity = SafeSTLArray<bool, dim_>;

@@ -74,7 +74,7 @@ public:
     {
       for (int i=0; i<dim; ++i)
         (*val)[i] = (*pt)[i];
-      (*val)[dim] = pt->norm_square();
+      (*val)[dim] = (*pt).norm_square();
     }
   }
 

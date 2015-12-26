@@ -114,7 +114,7 @@ for space in unique(spaces):
     comp_container = '%s::template ComponentContainer<%s>' %(space,t5)
     comp_containers.append('%s' %(comp_container))
     
-    t6 = 'SafeSTLArray<CartesianProductArray<double,2>,%s>' % (dim) 
+    t6 = 'SafeSTLArray<SafeSTLArray<SafeSTLVector<Real>,2>,%s>' % (dim) 
     comp_container = '%s::template ComponentContainer<%s>' %(space,t6)
     comp_containers.append('%s' %(comp_container))
     templated_funcs.append('%s::ComponentContainer(std::initializer_list<%s>,void *)' %(comp_container,t6))

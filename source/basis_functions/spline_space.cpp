@@ -823,10 +823,11 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 #ifndef NDEBUG
   for (auto iComp : components)
   {
+	const auto &bndry_knots_comp = boundary_knots[iComp];
     for (const int j : UnitElement<dim_>::active_directions)
     {
-      const auto &l_knots = boundary_knots[iComp][j].get_data_direction(0);
-      const auto &r_knots = boundary_knots[iComp][j].get_data_direction(1);
+      const auto &l_knots = bndry_knots_comp[j][0];
+      const auto &r_knots = bndry_knots_comp[j][1];
 
       if (periodic_[iComp][j])
       {
@@ -930,8 +931,8 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
           break;
           case BasisEndBehaviour::end_knots:
           {
-            const auto &left_knts = boundary_knots[comp][dir].get_data_direction(0);
-            const auto &right_knts = boundary_knots[comp][dir].get_data_direction(1);
+            const auto &left_knts = boundary_knots[comp][dir][0];
+            const auto &right_knts = boundary_knots[comp][dir][1];
 
             for (int i=0; i<m; ++i)
             {

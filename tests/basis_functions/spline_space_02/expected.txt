@@ -45,10 +45,9 @@ Dimensionality Table:
    Total Dimension: 5
 
 Boundary knots:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 0 ]
-Direction: 1
+Entry id: 1
 [ 1.10000 1.20000 1.30000 ]
 Repeated knots:
 Entry id: 0
@@ -123,15 +122,13 @@ Dimensionality Table:
    Total Dimension: 21
 
 Boundary knots:
-Size: [ 2 2 ]  Weights: [2,4]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 ]
-Direction: 1
+Entry id: 1
 [ 1.20000 1.30000 ]
-Size: [ 4 4 ]  Weights: [4,16]
-Direction: 0
+Entry id: 0
 [ -0.600000 0 0 0 ]
-Direction: 1
+Entry id: 1
 [ 1.00000 1.10000 1.60000 1.60000 ]
 Repeated knots:
 Entry id: 0
@@ -256,20 +253,17 @@ Dimensionality Table:
    Total Dimension: 72
 
 Boundary knots:
-Size: [ 2 2 ]  Weights: [2,4]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 ]
-Direction: 1
+Entry id: 1
 [ 1.20000 1.30000 ]
-Size: [ 4 4 ]  Weights: [4,16]
-Direction: 0
+Entry id: 0
 [ -0.600000 0 0 0 ]
-Direction: 1
+Entry id: 1
 [ 1.00000 1.00000 1.60000 1.60000 ]
-Size: [ 1 1 ]  Weights: [1,1]
-Direction: 0
+Entry id: 0
 [ -0.600000 ]
-Direction: 1
+Entry id: 1
 [ 1.60000 ]
 Repeated knots:
 Entry id: 0
@@ -347,25 +341,21 @@ Dimensionality Table:
    Total Dimension: 38
 
 Boundary knots:
-Size: [ 2 2 ]  Weights: [2,4]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 ]
-Direction: 1
+Entry id: 1
 [ 1.20000 1.30000 ]
-Size: [ 4 4 ]  Weights: [4,16]
-Direction: 0
+Entry id: 0
 [ -0.600000 0 0 0 ]
-Direction: 1
+Entry id: 1
 [ 1.00000 1.00000 1.60000 1.60000 ]
-Size: [ 4 4 ]  Weights: [4,16]
-Direction: 0
+Entry id: 0
 [ -0.600000 0 0 0 ]
-Direction: 1
+Entry id: 1
 [ 1.00000 1.00000 1.60000 1.60000 ]
-Size: [ 2 2 ]  Weights: [2,4]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 ]
-Direction: 1
+Entry id: 1
 [ 1.20000 1.30000 ]
 Repeated knots:
 Entry id: 0
