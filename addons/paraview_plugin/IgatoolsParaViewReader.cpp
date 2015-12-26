@@ -27,6 +27,7 @@
 #include <vtkSmartPointer.h>
 
 #include <igatools/io/xml_document.h>
+#include <igatools/io/objects_container_xml_reader.h>
 #include <igatools/base/objects_container.h>
 #include <paraview_plugin/grid_generator_container.h>
 #include <paraview_plugin/grid_information.h>
@@ -163,11 +164,12 @@ parse_file()
     //   xml_istream.close();
     //   Assert here if funcs_container_ is void.
 
-//    funcs_container_ = std::make_shared <FunctionsContainer> ();
-    // TODO: to fix.
-    objs_container_ = ObjectsContainer::create();
+    // Check here the type of file:
+    //   - XML human readable
+    //   - Serialization XML
+    //   - Serialization binary
 
-    //*/
+    objs_container_ = ObjectsContainerXMLReader::parse_const(file_name_str);
 
     // Physical solid grid.
     const auto phys_sol = VtkGridInformation::create

@@ -408,8 +408,6 @@ update(const GridInfoPtr_ phys_solid_info,
        const GridInfoPtr_ parm_solid_info,
        const GridInfoPtr_ parm_knot_info)
 {
-  AssertThrow (false, ExcNotImplemented());
-
   const bool phys_solid_updated = phys_solid_info_->update(phys_solid_info);
   const bool phys_knot_updated  = phys_knot_info_->update(phys_knot_info);
   const bool phys_control_updated  = phys_control_info_->update(phys_control_info);
