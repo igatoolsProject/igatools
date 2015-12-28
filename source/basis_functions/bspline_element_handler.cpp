@@ -100,34 +100,36 @@ public:
     auto uni_indices = partition<dim>(order);
     std::copy(uni_indices.begin(), uni_indices.end(), univariate_order.begin());
 
+    TensorIndex<order> ti;
 
+    auto ind = sequence<order>();
+//    auto next_perm_result = std::next_permutation(ind.begin(),ind.end());
 
-    for (int j=0; j<num_entries_eval; ++j)
+    for (int j = 0 ; j < num_entries_eval ; ++j)
     {
-      auto &der_ind = eval_indices[j];
-      int s=0;
-      for (int dir=0; dir<dim; ++dir)
+      const auto &uni_indices_j = uni_indices[j];
+
+      auto &eval_indices_j = eval_indices[j];
+
+      int s = 0;
+      for (int dir = 0 ; dir < dim ; ++dir)
       {
-        for (int l=0; l<uni_indices[j][dir]; ++l)
-          der_ind[s+l] = dir;
-        s += uni_indices[j][dir];
+        for (int l = 0 ; l < uni_indices_j[dir] ; ++l)
+          eval_indices_j[s+l] = dir;
+        s += uni_indices_j[dir];
       }
 
-      auto ind = sequence<order>();
-      SafeSTLVector<TensorIndex<order>> v;
+      auto &copy_indices_j = copy_indices[j];
       do
       {
-        TensorIndex<order> ti;
-        for (int i=0; i<order; ++i)
-          ti[i] = eval_indices[j][ind[i]];
-        v.push_back(ti);
+        for (int i = 0 ; i < order ; ++i)
+          ti[i] = eval_indices_j[ind[i]];
+        copy_indices_j.push_back(ti);
       }
       while (std::next_permutation(ind.begin(),ind.end()));
 
-      auto it = std::unique(v.begin(), v.end());
-      v.resize(std::distance(v.begin(),it));
-
-      copy_indices[j] = v;
+      auto it = std::unique(copy_indices_j.begin(), copy_indices_j.end());
+      copy_indices_j.resize(std::distance(copy_indices_j.begin(),it));
     }
   }
 
@@ -560,13 +562,13 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
 
     for (auto comp : active_components_id)
     {
-      const auto &end_interval_comp = end_interval[comp];
+      const auto &end_interval_comp_dir = end_interval[comp][dir];
 
       if (interval_id == 0) // processing the leftmost interval
       {
         // first interval (i.e. left-most interval)
 
-        alpha = end_interval_comp[dir][0];
+        alpha = end_interval_comp_dir[0];
         const Real one_minus_alpha = 1. - alpha;
 
         for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
@@ -579,7 +581,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
       {
         // last interval (i.e. right-most interval)
 
-        alpha = end_interval_comp[dir][1];
+        alpha = end_interval_comp_dir[1];
 
         for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
           pt_coords_boundary[ipt] = pt_coords_internal[ipt] *
