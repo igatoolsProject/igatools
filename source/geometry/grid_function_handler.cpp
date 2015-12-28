@@ -86,6 +86,17 @@ set_flags(const topology_variant &sdim,
   boost::apply_visitor(disp, sdim);
 }
 
+
+template<int dim_, int space_dim_>
+template <int sdim>
+void
+GridFunctionHandler<dim_, space_dim_>::
+set_flags(const Flags &flag)
+{
+  this->set_flags(Topology<sdim>(), flag);
+}
+
+
 template<int dim_, int space_dim_>
 void
 GridFunctionHandler<dim_, space_dim_>::
@@ -159,6 +170,27 @@ fill_cache(const topology_variant &sdim,
 }
 
 template<int dim_, int space_dim_>
+template <int sdim>
+void
+GridFunctionHandler<dim_, space_dim_>::
+fill_cache(ElementIterator &elem,
+                const int s_id) const
+{
+  this->fill_cache(Topology<sdim>(), elem, s_id);
+}
+
+template<int dim_, int space_dim_>
+template <int sdim>
+void
+GridFunctionHandler<dim_, space_dim_>::
+fill_cache(ElementAccessor &elem,
+                const int s_id) const
+{
+  this->fill_cache(Topology<sdim>(), elem, s_id);
+}
+
+
+template<int dim_, int space_dim_>
 void
 GridFunctionHandler<dim_, space_dim_>::
 fill_element_cache(ElementAccessor &elem) const
@@ -173,6 +205,29 @@ fill_element_cache(ElementIterator &elem) const
 {
   this->fill_cache(Topology<dim_>(), elem,0);
 }
+
+
+template<int dim_, int space_dim_>
+GridFunctionHandler<dim_, space_dim_>::
+SetFlagsDispatcher::
+SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
+  :
+  flag_(flag),
+  flags_(flags)
+{}
+
+
+template<int dim_, int space_dim_>
+GridFunctionHandler<dim_, space_dim_>::
+InitCacheDispatcher::
+InitCacheDispatcher(const self_t &grid_function_handler,
+                    ElementAccessor &elem,
+                    const FlagsArray &flags)
+  :
+  grid_function_handler_(grid_function_handler),
+  elem_(elem),
+  flags_(flags)
+{}
 
 IGA_NAMESPACE_CLOSE
 

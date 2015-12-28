@@ -27,40 +27,31 @@ data = Instantiation(include_files)
 
 
  
- 
-sub_dim_members = \
-['void elhandler::FillCacheDispatcher::operator()(const Topology<k> &);' ,
- 'void elhandler::InitCacheDispatcher::operator()(const Topology<k> &);']
 
 
+handlers = set()
+handlers.add('PhysSpaceElementHandler<0,0,1,0>')
 
-handlers = ['PhysSpaceElementHandler<0,0,1,0>']
-handler_templated_funcs = []
+handler_funcs = set()
 
-for space in inst.SubPhysSpaces:
+for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
     handler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    handlers.append(handler)
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
-#            handler_templated_funcs.append(s)
+    handlers.add(handler)
+    for k in range(0,x.dim+1):
+        func = 'void %s::SetFlagDispatcher::operator()(const Topology<%d> &)' %(handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' %(handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &)' %(handler,k)
+        handler_funcs.add(func)
 
 
-for space in inst.PhysSpaces:
-    x = space.spec
-    handler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    handlers.append(handler)
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
-#                handler_templated_funcs.append(s)
 
+for handler in handlers:
+    f.write('template class %s;\n' %handler)
 
-for handler in unique(handlers):
-    f.write('template class %s; \n' %handler)
-
-for func in unique(handler_templated_funcs):        
-    f.write('template %s; \n' %func)
+for func in handler_funcs:        
+    f.write('template %s;\n' %func)
 
       

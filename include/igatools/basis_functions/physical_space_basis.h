@@ -136,14 +136,6 @@ public:
                const std::shared_ptr<const PhysDomain> &phys_domain,
                const Transformation &transformation_type = Transformation::h_grad);
 
-#if 0
-  /**
-   * Create an element (defined on this grid) with a given index.
-   */
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
-  create_element(const ListIt &index, const PropId &property) const override final;
-#endif
-
   std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
   create_element_begin(const PropId &property) const override final;
 
@@ -182,13 +174,6 @@ public:
   std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_> >
   create_cache_handler() const override final;
 
-
-#if 0
-  /**
-   * Return the maximum value of the polynomial degree, for each component, for each direction;
-   */
-  virtual int get_max_degree() const override final;
-#endif
 
   std::shared_ptr<const Domain<dim_,codim_>> get_domain() const;
 

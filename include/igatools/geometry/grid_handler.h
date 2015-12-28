@@ -121,38 +121,34 @@ public:
 
   template <int sdim>
   void init_cache(ElementAccessor &elem,
-                  std::shared_ptr<const Quadrature<sdim>> quad) const;
+                  const std::shared_ptr<const Quadrature<sdim>> &quad) const;
+
+  template <int sdim>
+  void init_cache(ElementIterator &elem,
+                  const std::shared_ptr<const Quadrature<sdim>> &quad) const;
 
   void init_cache(ElementAccessor &elem,
                   const eval_pts_variant &quad) const;
 
-  template <int sdim>
-  void init_cache(ElementIterator &elem,
-                  std::shared_ptr<const Quadrature<sdim>> quad) const
-  {
-    init_cache<sdim>(*elem, quad);
-  }
 
 
   void init_element_cache(ElementIterator &elem,
-                          std::shared_ptr<const Quadrature<dim>> quad) const;
+                          const std::shared_ptr<const Quadrature<dim>> &quad) const;
 
   void init_face_cache(ElementIterator &elem,
-                       std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const;
+                       const std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> &quad) const;
 
   template <int sdim>
   void fill_cache(ElementAccessor &elem, const int s_id) const;
+
+  template <int sdim>
+  void fill_cache(ElementIterator &elem, const int s_id) const;
 
   void fill_cache(const topology_variant &sdim,
                   ElementAccessor &elem,
                   const int s_id) const;
 
 
-  template <int sdim>
-  void fill_cache(ElementIterator &elem, const int s_id) const
-  {
-    fill_cache<sdim>(*elem, s_id);
-  }
 
 
 
@@ -185,11 +181,7 @@ private:
 
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const Flags flag, self_t &grid_handler)
-      :
-      flag_(flag),
-      grid_handler_(grid_handler)
-    {}
+    SetFlagsDispatcher(const Flags flag, self_t &grid_handler);
 
     template<int sdim>
     void operator()(const Topology<sdim> &s_el)
@@ -205,11 +197,7 @@ private:
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
     InitCacheDispatcher(const self_t &grid_handler,
-                        ElementAccessor &elem)
-      :
-      grid_handler_(grid_handler),
-      elem_(elem)
-    {}
+                        ElementAccessor &elem);
 
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
@@ -223,18 +211,11 @@ private:
   };
 
 
-
-
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
     FillCacheDispatcher(const self_t &grid_handler,
                         ElementAccessor &elem,
-                        const int s_id)
-      :
-      grid_handler_(grid_handler),
-      elem_(elem),
-      s_id_(s_id)
-    {}
+                        const int s_id);
 
     template<int sdim>
     void operator()(const Topology<sdim> &)
@@ -245,7 +226,6 @@ private:
     const self_t &grid_handler_;
     ElementAccessor &elem_;
     int s_id_;
-
   };
 
 };

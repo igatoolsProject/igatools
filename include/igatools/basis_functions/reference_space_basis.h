@@ -133,20 +133,6 @@ public:
 
   virtual bool is_bspline() const = 0;
 
-#if 0
-  /**
-   * Returns the degree of the BSpline space for each component and for each coordinate direction.
-   * \return The degree of the BSpline space for each component and for each coordinate direction.
-   * The first index of the returned object is the component id, the second index is the direction id.
-   */
-  virtual const DegreeTable &get_degree_table() const = 0;
-
-  /**
-   * Return the maximum value of the polynomial degree, for each component of the space
-   * along each direction;
-   */
-  virtual int get_max_degree() const override final;
-#endif
 
 
 
@@ -156,10 +142,6 @@ public:
    */
   virtual const EndBehaviourTable &get_end_behaviour_table() const = 0;
 
-
-#if 0
-  virtual const PeriodicityTable &get_periodicity() const = 0;
-#endif
 
 
 
@@ -177,10 +159,6 @@ public:
   get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
                 SubGridMap<sdim> &elem_map) const;
 
-#if 0
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
-  create_ref_element(const typename base_t::ListIt &index, const PropId &property) const = 0;
-#endif
 
   virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
   create_ref_element_begin(const PropId &property) const = 0;

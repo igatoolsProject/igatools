@@ -40,6 +40,17 @@ ReferenceElementHandler(const shared_ptr<const Basis> &space)
 {}
 
 
+/*
+template<int dim, int range , int rank>
+template <int sdim>
+int
+ReferenceElementHandler<dim, range, rank>::
+get_num_points() const
+{
+  return grid_handler_.template get_num_points<sdim>();
+}
+//*/
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/reference_element_handler.inst>

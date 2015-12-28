@@ -85,10 +85,7 @@ public:
                          const Flags &flag);
 
   template <int sdim>
-  void set_flags(const Flags &flag)
-  {
-    this->set_flags(Topology<sdim>(), flag);
-  }
+  void set_flags(const Flags &flag);
 
   void set_element_flags(const Flags &flag);
 
@@ -114,17 +111,11 @@ public:
 
   template <int sdim>
   void fill_cache(ElementIterator &elem,
-                  const int s_id) const
-  {
-    this->fill_cache(Topology<sdim>(), elem, s_id);
-  }
+                  const int s_id) const;
 
   template <int sdim>
   void fill_cache(ElementAccessor &elem,
-                  const int s_id) const
-  {
-    this->fill_cache(Topology<sdim>(), elem, s_id);
-  }
+                  const int s_id) const;
 
   void fill_element_cache(ElementAccessor &elem) const;
 
@@ -153,11 +144,7 @@ private:
    */
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
-      :
-      flag_(flag),
-      flags_(flags)
-    {}
+    SetFlagsDispatcher(const Flags flag, FlagsArray &flags);
 
     template<int sdim>
     void operator()(const Topology<sdim> &)
@@ -175,12 +162,7 @@ private:
   {
     InitCacheDispatcher(const self_t &grid_function_handler,
                         ElementAccessor &elem,
-                        const FlagsArray &flags)
-      :
-      grid_function_handler_(grid_function_handler),
-      elem_(elem),
-      flags_(flags)
-    {}
+                        const FlagsArray &flags);
 
 
     template<int sdim>
