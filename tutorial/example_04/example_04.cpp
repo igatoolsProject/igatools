@@ -19,75 +19,175 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline.h>
+#include <igatools/base/logstream.h>
+
+#include <igatools/basis_functions/nurbs.h>
+#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/ig_function.h>
 #include <igatools/io/writer.h>
-// [new include]
-#include <igatools/functions/ig_grid_function.h>
-// [new include]
+
+#include <igatools/geometry/grid_element.h>
+#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/base/quadrature_lib.h>
+
+// [include]
+#include <igatools/linear_algebra/dof_tools.h>
+#include <igatools/linear_algebra/epetra_matrix.h>
+#include <igatools/linear_algebra/epetra_vector.h>
+#include <igatools/linear_algebra/epetra_solver.h>
+// [include]
 
 using namespace iga;
-using std::endl;
-using std::to_string;
+using namespace std;
+// [using]
+using namespace EpetraTools;
+// [using]
 
 LogStream out;
 
-// [plot_function]
-template <int dim>
-void plot_basis(const int deg)
-{
-  const int n_knots = deg + 2;
-  const auto grid = Grid<dim>::const_create(n_knots);
-// [plot_function]
+template<int dim>
+class PoissonProblem {
 
-// [create_basis]
-  const auto space = SplineSpace<dim>::const_create(deg, grid);
-  const auto basis = BSpline<dim>::const_create(space);
-// [create_basis]
+  private:
+    shared_ptr<const Grid<dim>>        grid;
+    shared_ptr<const SplineSpace<dim>> space;
+    shared_ptr<const BSpline<dim>>     basis;
+    shared_ptr<const QGauss<dim>>      quad;
+// [system]
+    shared_ptr<Matrix> mat;
+    shared_ptr<Vector> rhs;
+    shared_ptr<Vector> sol;
+// [system]
 
-  // [init_vec]
-  const auto dof_distribution = space->get_dof_distribution();
-  IgCoefficients coeffs(dof_distribution->get_global_dofs());
-  // [init_vec]
+  public:
+    PoissonProblem(const Size nel, const Index deg) {
+      grid  = Grid<dim>::const_create(nel+1);
+      space = SplineSpace<dim>::const_create(deg,grid);
+      basis = BSpline<dim>::const_create(space);
+      quad  = QGauss<dim>::const_create(deg+1);
+// [sys_create]
+      mat   = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
+      rhs   = create_vector(mat->RangeMap());
+      sol   = create_vector(mat->DomainMap());
+// [sys_create]
+    };
 
-  //[tensor_to_flat]
-  TensorIndex<dim> basis_t_index(deg);
-  const auto j = dof_distribution->get_global_dof_id(basis_t_index, 0);
-  coeffs[j] = 1.0;
-  // [tensor_to_flat]
+    void assemble();
+    void solve();
+    void save();
+    void run();
+};
 
-  // [print_vector]
-  out << "IgCoefficient for: " << j << "-th basis" << endl;
-  coeffs.print_info(out);
-  out << endl;
-  // [print_vector]
+template<int dim>
+void PoissonProblem<dim>::assemble() {
 
-  // [basis_to_plot]
-  auto central_basis = IgGridFunction<dim,1>::const_create(basis,coeffs);
-  // [basis_to_plot]
+  auto basis_el      = basis->begin();
+  auto basis_el_end  = basis->end();
+  auto cache_handler = basis->create_cache_handler();
+  auto flag = space_element::Flags::value |
+              space_element::Flags::gradient |
+              space_element::Flags::w_measure;
+  cache_handler->set_element_flags(flag);
+  cache_handler->init_element_cache(basis_el,quad);
 
-  // [plot_basis]
-  out << "Saving basis plot" << endl;
-  const int n_plot_points = 10;
-  Writer<dim> output(grid,n_plot_points);
+// [loop_init]
+  const auto num_quad  = quad->get_num_points();
+  const auto num_basis = basis_el->get_num_basis(DofProperties::active);
+  const auto source = 1.0;
+  for (; basis_el!=basis_el_end; ++basis_el) {
+    cache_handler->fill_element_cache(basis_el);
 
-  string func_name = "basis " + to_string(j);
-  output.template add_field(*central_basis, func_name);
+    DenseMatrix loc_mat(num_basis,num_basis); loc_mat = 0.0;
+    DenseVector loc_rhs(num_basis);           loc_rhs = 0.0;
 
-  string file_name = "bspline_basis-" + to_string(j) + "_" + to_string(dim) + "d";
-  output.save(file_name, true);
-  // [plot_basis]
+    auto values = basis_el->get_element_values();
+    auto grads  = basis_el->get_element_gradients();
+    auto w_meas = basis_el->get_element_w_measures();
+// [loop_init]
+
+// [stiffness]
+    for (int i=0; i<num_basis; i++) {
+      const auto &grd_i = grads.get_function_view(i);
+      for (int j=0; j<num_basis; j++) {
+        const auto &grd_j = grads.get_function_view(j);
+        for (int q=0; q<num_quad; q++) {
+          loc_mat(i,j) += scalar_product(grd_i[q], grd_j[q]) * w_meas[q];
+        }
+      }
+    }
+// [stiffness]
+
+// [rhs]
+    for (int i=0; i<num_basis; i++) {
+      const auto &vals = values.get_function_view(i);
+      for (int q=0; q<num_quad; q++) {
+        loc_rhs(i) += source * vals[q][0] * w_meas[q];
+      }
+    }
+// [rhs]
+
+// [add_block]
+    const auto loc_dofs = basis_el->get_local_to_global();
+    mat->add_block(loc_dofs, loc_dofs,loc_mat);
+    rhs->add_block(loc_dofs, loc_rhs);  
+  }
+  mat->FillComplete();
+// [add_block]
+
+// [boundary]
+  auto dof_distribution = basis->get_dof_distribution();
+  Topology<dim-1> sub_elem_topology;
+  std::map<Index,Real> bdr_vals;
+
+  for (int face=0; face<2*dim; face++) {
+    auto bdr_dofs = dof_distribution->get_boundary_dofs(face,sub_elem_topology);
+    
+    for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
+      bdr_vals.insert(std::pair<Index,Real>(*it,0.0));
+    }
+  }
+  dof_tools::apply_boundary_values(bdr_vals,*mat,*rhs,*sol);
+}
+// [boundary]
+
+// [solve]
+template<int dim>
+void PoissonProblem<dim>::solve() {
+  auto solver = create_solver(*mat,*sol,*rhs);
+  solver->solve();
+}
+// [solve]
+
+template<int dim>
+void PoissonProblem<dim>::save() {
+  Writer<dim> writer(grid,5);
+  auto solution = IgGridFunction<dim,1>::const_create(basis, *sol);
+  writer.add_field(*solution, "solution");
+  string filename = "problem_" + to_string(dim) + "d" ;
+  writer.save(filename);
 }
 
+template<int dim>
+void PoissonProblem<dim>::run() {
+  assemble();
+  solve();
+  save();
+}
 
 int main()
 {
+  const int nel = 4;
   const int deg = 2;
 
-  plot_basis<1>(deg);
-  plot_basis<2>(deg);
-  plot_basis<3>(deg);
+  PoissonProblem<1> problem_1d(nel,deg);
+  problem_1d.run();
+
+  PoissonProblem<2> problem_2d(nel,deg);
+  problem_2d.run();
+
+  PoissonProblem<3> problem_3d(nel,deg);
+  problem_3d.run();
 
   return 0;
 }
-
-
-
