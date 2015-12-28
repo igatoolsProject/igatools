@@ -47,15 +47,13 @@ Reference space:
             [ 1 ]
          
          Interior multiplicities:
-            Size: [ 1 1 ]  Weights: [1,1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 ]
-            Size: [ 1 1 ]  Weights: [1,1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 ]
          
          Dimensionality Table:
@@ -159,10 +157,9 @@ Reference space:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 1 1 ]  Weights: [1,1]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 ]
                
                Dimensionality Table:
@@ -278,15 +275,13 @@ Physical domain:
                      [ 1 ]
                   
                   Interior multiplicities:
-                     Size: [ 1 1 ]  Weights: [1,1]
-                     Direction: 0
+                     Entry id: 0
                      [ 1 ]
-                     Direction: 1
+                     Entry id: 1
                      [ 1 ]
-                     Size: [ 1 1 ]  Weights: [1,1]
-                     Direction: 0
+                     Entry id: 0
                      [ 1 ]
-                     Direction: 1
+                     Entry id: 1
                      [ 1 ]
                   
                   Dimensionality Table:
@@ -390,10 +385,9 @@ Physical domain:
                            [ ]
                         
                         Interior multiplicities:
-                           Size: [ 1 1 ]  Weights: [1,1]
-                           Direction: 0
+                           Entry id: 0
                            [ 1 ]
-                           Direction: 1
+                           Entry id: 1
                            [ 1 ]
                         
                         Dimensionality Table:
@@ -586,15 +580,13 @@ Reference space:
             [ 1 ]
          
          Interior multiplicities:
-            Size: [ 3 3 ]  Weights: [3,9]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 1 ]
-            Size: [ 3 3 ]  Weights: [3,9]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 1 ]
          
          Dimensionality Table:
@@ -742,10 +734,9 @@ Reference space:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 3 ]  Weights: [3,9]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 1 ]
                
                Dimensionality Table:
@@ -921,15 +912,13 @@ Physical domain:
                      [ 1 ]
                   
                   Interior multiplicities:
-                     Size: [ 3 3 ]  Weights: [3,9]
-                     Direction: 0
+                     Entry id: 0
                      [ 1 1 1 ]
-                     Direction: 1
+                     Entry id: 1
                      [ 1 1 1 ]
-                     Size: [ 3 3 ]  Weights: [3,9]
-                     Direction: 0
+                     Entry id: 0
                      [ 1 1 1 ]
-                     Direction: 1
+                     Entry id: 1
                      [ 1 1 1 ]
                   
                   Dimensionality Table:
@@ -1077,10 +1066,9 @@ Physical domain:
                            [ ]
                         
                         Interior multiplicities:
-                           Size: [ 3 3 ]  Weights: [3,9]
-                           Direction: 0
+                           Entry id: 0
                            [ 1 1 1 ]
-                           Direction: 1
+                           Entry id: 1
                            [ 1 1 1 ]
                         
                         Dimensionality Table:
@@ -1721,15 +1709,13 @@ Reference space:
             [ 1 ]
          
          Interior multiplicities:
-            Size: [ 11 11 ]  Weights: [11,121]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 1 1 1 1 1 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 1 1 1 1 1 1 1 1 1 ]
-            Size: [ 11 11 ]  Weights: [11,121]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 1 1 1 1 1 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 1 1 1 1 1 1 1 1 1 ]
          
          Dimensionality Table:
@@ -2293,10 +2279,9 @@ Reference space:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 11 11 ]  Weights: [11,121]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 1 1 1 1 1 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 1 1 1 1 1 1 1 1 1 ]
                
                Dimensionality Table:
@@ -3032,15 +3017,13 @@ Physical domain:
                      [ 1 ]
                   
                   Interior multiplicities:
-                     Size: [ 11 11 ]  Weights: [11,121]
-                     Direction: 0
+                     Entry id: 0
                      [ 1 1 1 1 1 1 1 1 1 1 1 ]
-                     Direction: 1
+                     Entry id: 1
                      [ 1 1 1 1 1 1 1 1 1 1 1 ]
-                     Size: [ 11 11 ]  Weights: [11,121]
-                     Direction: 0
+                     Entry id: 0
                      [ 1 1 1 1 1 1 1 1 1 1 1 ]
-                     Direction: 1
+                     Entry id: 1
                      [ 1 1 1 1 1 1 1 1 1 1 1 ]
                   
                   Dimensionality Table:
@@ -3604,10 +3587,9 @@ Physical domain:
                            [ ]
                         
                         Interior multiplicities:
-                           Size: [ 11 11 ]  Weights: [11,121]
-                           Direction: 0
+                           Entry id: 0
                            [ 1 1 1 1 1 1 1 1 1 1 1 ]
-                           Direction: 1
+                           Entry id: 1
                            [ 1 1 1 1 1 1 1 1 1 1 1 ]
                         
                         Dimensionality Table:

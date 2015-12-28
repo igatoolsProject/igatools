@@ -34,8 +34,7 @@ Dim: 1     Sub-Dim: 0
                [ ]
             
             Interior multiplicities:
-               Size: [ 0 ]  Weights: [0]
-               Direction: 0
+               Entry id: 0
                [ ]
             
             Dimensionality Table:
@@ -109,8 +108,7 @@ Dim: 1     Sub-Dim: 0
                      [ ]
                   
                   Interior multiplicities:
-                     Size: [ 0 ]  Weights: [0]
-                     Direction: 0
+                     Entry id: 0
                      [ ]
                   
                   Dimensionality Table:
@@ -192,7 +190,6 @@ Dim: 1     Sub-Dim: 0
                      [ ]
                   
                   Interior multiplicities:
-                     Size: [ ]  Weights: []
                   
                   Dimensionality Table:
                      Entry id: 0
@@ -261,7 +258,6 @@ Dim: 1     Sub-Dim: 0
                            [ ]
                         
                         Interior multiplicities:
-                           Size: [ ]  Weights: []
                         
                         Dimensionality Table:
                            Entry id: 0
@@ -352,7 +348,6 @@ Dim: 1     Sub-Dim: 0
                         [ ]
                      
                      Interior multiplicities:
-                        Size: [ ]  Weights: []
                      
                      Dimensionality Table:
                         Entry id: 0
@@ -421,7 +416,6 @@ Dim: 1     Sub-Dim: 0
                               [ ]
                            
                            Interior multiplicities:
-                              Size: [ ]  Weights: []
                            
                            Dimensionality Table:
                               Entry id: 0
@@ -524,10 +518,9 @@ Dim: 1     Sub-Dim: 0
                      [ ]
                   
                   Interior multiplicities:
-                     Size: [ 0 1 ]  Weights: [0,0]
-                     Direction: 0
+                     Entry id: 0
                      [ ]
-                     Direction: 1
+                     Entry id: 1
                      [ 1 ]
                   
                   Dimensionality Table:
@@ -609,10 +602,9 @@ Dim: 1     Sub-Dim: 0
                            [ ]
                         
                         Interior multiplicities:
-                           Size: [ 0 1 ]  Weights: [0,0]
-                           Direction: 0
+                           Entry id: 0
                            [ ]
-                           Direction: 1
+                           Entry id: 1
                            [ 1 ]
                         
                         Dimensionality Table:
@@ -706,8 +698,7 @@ Dim: 1     Sub-Dim: 0
                            [ ]
                         
                         Interior multiplicities:
-                           Size: [ 1 ]  Weights: [1]
-                           Direction: 0
+                           Entry id: 0
                            [ 1 ]
                         
                         Dimensionality Table:
@@ -785,8 +776,7 @@ Dim: 1     Sub-Dim: 0
                                  [ ]
                               
                               Interior multiplicities:
-                                 Size: [ 1 ]  Weights: [1]
-                                 Direction: 0
+                                 Entry id: 0
                                  [ 1 ]
                               
                               Dimensionality Table:
@@ -888,8 +878,7 @@ Dim: 1     Sub-Dim: 0
                               [ ]
                            
                            Interior multiplicities:
-                              Size: [ 1 ]  Weights: [1]
-                              Direction: 0
+                              Entry id: 0
                               [ 1 ]
                            
                            Dimensionality Table:
@@ -967,8 +956,7 @@ Dim: 1     Sub-Dim: 0
                                     [ ]
                                  
                                  Interior multiplicities:
-                                    Size: [ 1 ]  Weights: [1]
-                                    Direction: 0
+                                    Entry id: 0
                                     [ 1 ]
                                  
                                  Dimensionality Table:
@@ -1067,8 +1055,7 @@ Dim: 1     Sub-Dim: 0
                                  [ ]
                               
                               Interior multiplicities:
-                                 Size: [ 0 ]  Weights: [0]
-                                 Direction: 0
+                                 Entry id: 0
                                  [ ]
                               
                               Dimensionality Table:
@@ -1142,8 +1129,7 @@ Dim: 1     Sub-Dim: 0
                                        [ ]
                                     
                                     Interior multiplicities:
-                                       Size: [ 0 ]  Weights: [0]
-                                       Direction: 0
+                                       Entry id: 0
                                        [ ]
                                     
                                     Dimensionality Table:
@@ -1240,8 +1226,7 @@ Dim: 1     Sub-Dim: 0
                                     [ ]
                                  
                                  Interior multiplicities:
-                                    Size: [ 0 ]  Weights: [0]
-                                    Direction: 0
+                                    Entry id: 0
                                     [ ]
                                  
                                  Dimensionality Table:
@@ -1315,8 +1300,7 @@ Dim: 1     Sub-Dim: 0
                                           [ ]
                                        
                                        Interior multiplicities:
-                                          Size: [ 0 ]  Weights: [0]
-                                          Direction: 0
+                                          Entry id: 0
                                           [ ]
                                        
                                        Dimensionality Table:
@@ -1437,12 +1421,11 @@ Dim: 1     Sub-Dim: 0
                                  [ ]
                               
                               Interior multiplicities:
-                                 Size: [ 0 1 2 ]  Weights: [0,0,0]
-                                 Direction: 0
+                                 Entry id: 0
                                  [ ]
-                                 Direction: 1
+                                 Entry id: 1
                                  [ 1 ]
-                                 Direction: 2
+                                 Entry id: 2
                                  [ 1 1 ]
                               
                               Dimensionality Table:
@@ -1542,12 +1525,11 @@ Dim: 1     Sub-Dim: 0
                                        [ ]
                                     
                                     Interior multiplicities:
-                                       Size: [ 0 1 2 ]  Weights: [0,0,0]
-                                       Direction: 0
+                                       Entry id: 0
                                        [ ]
-                                       Direction: 1
+                                       Entry id: 1
                                        [ 1 ]
-                                       Direction: 2
+                                       Entry id: 2
                                        [ 1 1 ]
                                     
                                     Dimensionality Table:
@@ -1677,10 +1659,9 @@ Dim: 1     Sub-Dim: 0
                                        [ ]
                                     
                                     Interior multiplicities:
-                                       Size: [ 1 2 ]  Weights: [1,2]
-                                       Direction: 0
+                                       Entry id: 0
                                        [ 1 ]
-                                       Direction: 1
+                                       Entry id: 1
                                        [ 1 1 ]
                                     
                                     Dimensionality Table:
@@ -1776,10 +1757,9 @@ Dim: 1     Sub-Dim: 0
                                              [ ]
                                           
                                           Interior multiplicities:
-                                             Size: [ 1 2 ]  Weights: [1,2]
-                                             Direction: 0
+                                             Entry id: 0
                                              [ 1 ]
-                                             Direction: 1
+                                             Entry id: 1
                                              [ 1 1 ]
                                           
                                           Dimensionality Table:
@@ -1908,10 +1888,9 @@ Dim: 1     Sub-Dim: 0
                                           [ ]
                                        
                                        Interior multiplicities:
-                                          Size: [ 1 2 ]  Weights: [1,2]
-                                          Direction: 0
+                                          Entry id: 0
                                           [ 1 ]
-                                          Direction: 1
+                                          Entry id: 1
                                           [ 1 1 ]
                                        
                                        Dimensionality Table:
@@ -2007,10 +1986,9 @@ Dim: 1     Sub-Dim: 0
                                                 [ ]
                                              
                                              Interior multiplicities:
-                                                Size: [ 1 2 ]  Weights: [1,2]
-                                                Direction: 0
+                                                Entry id: 0
                                                 [ 1 ]
-                                                Direction: 1
+                                                Entry id: 1
                                                 [ 1 1 ]
                                              
                                              Dimensionality Table:
@@ -2130,10 +2108,9 @@ Dim: 1     Sub-Dim: 0
                                              [ ]
                                           
                                           Interior multiplicities:
-                                             Size: [ 0 2 ]  Weights: [0,0]
-                                             Direction: 0
+                                             Entry id: 0
                                              [ ]
-                                             Direction: 1
+                                             Entry id: 1
                                              [ 1 1 ]
                                           
                                           Dimensionality Table:
@@ -2219,10 +2196,9 @@ Dim: 1     Sub-Dim: 0
                                                    [ ]
                                                 
                                                 Interior multiplicities:
-                                                   Size: [ 0 2 ]  Weights: [0,0]
-                                                   Direction: 0
+                                                   Entry id: 0
                                                    [ ]
-                                                   Direction: 1
+                                                   Entry id: 1
                                                    [ 1 1 ]
                                                 
                                                 Dimensionality Table:
@@ -2337,10 +2313,9 @@ Dim: 1     Sub-Dim: 0
                                                 [ ]
                                              
                                              Interior multiplicities:
-                                                Size: [ 0 2 ]  Weights: [0,0]
-                                                Direction: 0
+                                                Entry id: 0
                                                 [ ]
-                                                Direction: 1
+                                                Entry id: 1
                                                 [ 1 1 ]
                                              
                                              Dimensionality Table:
@@ -2426,10 +2401,9 @@ Dim: 1     Sub-Dim: 0
                                                       [ ]
                                                    
                                                    Interior multiplicities:
-                                                      Size: [ 0 2 ]  Weights: [0,0]
-                                                      Direction: 0
+                                                      Entry id: 0
                                                       [ ]
-                                                      Direction: 1
+                                                      Entry id: 1
                                                       [ 1 1 ]
                                                    
                                                    Dimensionality Table:
@@ -2541,10 +2515,9 @@ Dim: 1     Sub-Dim: 0
                                                    [ ]
                                                 
                                                 Interior multiplicities:
-                                                   Size: [ 0 1 ]  Weights: [0,0]
-                                                   Direction: 0
+                                                   Entry id: 0
                                                    [ ]
-                                                   Direction: 1
+                                                   Entry id: 1
                                                    [ 1 ]
                                                 
                                                 Dimensionality Table:
@@ -2626,10 +2599,9 @@ Dim: 1     Sub-Dim: 0
                                                          [ ]
                                                       
                                                       Interior multiplicities:
-                                                         Size: [ 0 1 ]  Weights: [0,0]
-                                                         Direction: 0
+                                                         Entry id: 0
                                                          [ ]
-                                                         Direction: 1
+                                                         Entry id: 1
                                                          [ 1 ]
                                                       
                                                       Dimensionality Table:
@@ -2738,10 +2710,9 @@ Dim: 1     Sub-Dim: 0
                                                       [ ]
                                                    
                                                    Interior multiplicities:
-                                                      Size: [ 0 1 ]  Weights: [0,0]
-                                                      Direction: 0
+                                                      Entry id: 0
                                                       [ ]
-                                                      Direction: 1
+                                                      Entry id: 1
                                                       [ 1 ]
                                                    
                                                    Dimensionality Table:
@@ -2823,10 +2794,9 @@ Dim: 1     Sub-Dim: 0
                                                             [ ]
                                                          
                                                          Interior multiplicities:
-                                                            Size: [ 0 1 ]  Weights: [0,0]
-                                                            Direction: 0
+                                                            Entry id: 0
                                                             [ ]
-                                                            Direction: 1
+                                                            Entry id: 1
                                                             [ 1 ]
                                                          
                                                          Dimensionality Table:

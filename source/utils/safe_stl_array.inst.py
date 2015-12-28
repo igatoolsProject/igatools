@@ -54,7 +54,7 @@ types = ['int',
          'BasisValues1d',
          'DenseMatrix',
          'SafeSTLArray<Real,2>',
-         'std::pair<Real,Real>',
+#         'std::pair<Real,Real>',
          'BasisEndBehaviour']
 
 flags = ['grid_element::Flags',
@@ -115,7 +115,7 @@ space = 'SplineSpace<0,0,1>'
 array_list.append('%s::template ComponentContainer<SafeSTLArray<BasisValues1d,0>>' % (space));
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     space = 'SplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    n_components = x.dim**x.rank
+    n_components = x.range**x.rank
     array = 'SafeSTLArray<BasisValues1d,%d>' %(x.dim)
     array_list.append('SafeSTLArray<%s,%d>' %(array,n_components));
 #    array_list.append('%s::template ComponentContainer<%s>' %(space,array));

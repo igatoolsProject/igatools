@@ -33,8 +33,7 @@ Degrees:
    [ ]
 
 Interior multiplicities:
-   Size: [ 2 ]  Weights: [2]
-   Direction: 0
+   Entry id: 0
    [ 1 1 ]
 
 Dimensionality Table:
@@ -108,10 +107,9 @@ Degrees:
    [ ]
 
 Interior multiplicities:
-   Size: [ 1 3 ]  Weights: [1,3]
-   Direction: 0
+   Entry id: 0
    [ 1 ]
-   Direction: 1
+   Entry id: 1
    [ 1 1 1 ]
 
 Dimensionality Table:
@@ -237,12 +235,11 @@ Degrees:
    [ ]
 
 Interior multiplicities:
-   Size: [ 1 2 3 ]  Weights: [1,2,6]
-   Direction: 0
+   Entry id: 0
    [ 1 ]
-   Direction: 1
+   Entry id: 1
    [ 1 1 ]
-   Direction: 2
+   Entry id: 2
    [ 1 1 1 ]
 
 Dimensionality Table:
@@ -320,15 +317,13 @@ Degrees:
    [ ]
 
 Interior multiplicities:
-   Size: [ 1 2 ]  Weights: [1,2]
-   Direction: 0
+   Entry id: 0
    [ 1 ]
-   Direction: 1
+   Entry id: 1
    [ 1 1 ]
-   Size: [ 1 2 ]  Weights: [1,2]
-   Direction: 0
+   Entry id: 0
    [ 1 ]
-   Direction: 1
+   Entry id: 1
    [ 1 1 ]
 
 Dimensionality Table:

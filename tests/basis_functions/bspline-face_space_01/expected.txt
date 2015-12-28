@@ -31,7 +31,6 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ ]  Weights: []
          
          Dimensionality Table:
             Entry id: 0
@@ -102,7 +101,6 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ ]  Weights: []
          
          Dimensionality Table:
             Entry id: 0
@@ -183,8 +181,7 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ 1 ]  Weights: [1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
          
          Dimensionality Table:
@@ -264,8 +261,7 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ 1 ]  Weights: [1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
          
          Dimensionality Table:
@@ -342,8 +338,7 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ 0 ]  Weights: [0]
-            Direction: 0
+            Entry id: 0
             [ ]
          
          Dimensionality Table:
@@ -419,8 +414,7 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ 0 ]  Weights: [0]
-            Direction: 0
+            Entry id: 0
             [ ]
          
          Dimensionality Table:
@@ -518,10 +512,9 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ 1 2 ]  Weights: [1,2]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
@@ -619,10 +612,9 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ 1 2 ]  Weights: [1,2]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
@@ -711,10 +703,9 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ 0 2 ]  Weights: [0,0]
-            Direction: 0
+            Entry id: 0
             [ ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
@@ -802,10 +793,9 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ 0 2 ]  Weights: [0,0]
-            Direction: 0
+            Entry id: 0
             [ ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
@@ -890,10 +880,9 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ 0 1 ]  Weights: [0,0]
-            Direction: 0
+            Entry id: 0
             [ ]
-            Direction: 1
+            Entry id: 1
             [ 1 ]
          
          Dimensionality Table:
@@ -977,10 +966,9 @@ sub_ref_space
             [ ]
          
          Interior multiplicities:
-            Size: [ 0 1 ]  Weights: [0,0]
-            Direction: 0
+            Entry id: 0
             [ ]
-            Direction: 1
+            Entry id: 1
             [ 1 ]
          
          Dimensionality Table:

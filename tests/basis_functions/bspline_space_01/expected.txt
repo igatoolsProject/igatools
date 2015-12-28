@@ -29,7 +29,6 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ ]  Weights: []
    
    Dimensionality Table:
       Entry id: 0
@@ -101,8 +100,7 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ 0 ]  Weights: [0]
-      Direction: 0
+      Entry id: 0
       [ ]
    
    Dimensionality Table:
@@ -179,10 +177,9 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ 0 0 ]  Weights: [0,0]
-      Direction: 0
+      Entry id: 0
       [ ]
-      Direction: 1
+      Entry id: 1
       [ ]
    
    Dimensionality Table:
@@ -263,12 +260,11 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ 0 0 0 ]  Weights: [0,0,0]
-      Direction: 0
+      Entry id: 0
       [ ]
-      Direction: 1
+      Entry id: 1
       [ ]
-      Direction: 2
+      Entry id: 2
       [ ]
    
    Dimensionality Table:
@@ -345,7 +341,6 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ ]  Weights: []
    
    Dimensionality Table:
       Entry id: 0
@@ -417,8 +412,7 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ 0 ]  Weights: [0]
-      Direction: 0
+      Entry id: 0
       [ ]
    
    Dimensionality Table:
@@ -495,10 +489,9 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ 0 0 ]  Weights: [0,0]
-      Direction: 0
+      Entry id: 0
       [ ]
-      Direction: 1
+      Entry id: 1
       [ ]
    
    Dimensionality Table:
@@ -579,12 +572,11 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ 0 0 0 ]  Weights: [0,0,0]
-      Direction: 0
+      Entry id: 0
       [ ]
-      Direction: 1
+      Entry id: 1
       [ ]
-      Direction: 2
+      Entry id: 2
       [ ]
    
    Dimensionality Table:

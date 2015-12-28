@@ -30,7 +30,6 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ ]  Weights: []
       
       Dimensionality Table:
          Entry id: 0
@@ -97,7 +96,6 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ ]  Weights: []
       
       Dimensionality Table:
          Entry id: 0
@@ -171,8 +169,7 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 ]  Weights: [0]
-         Direction: 0
+         Entry id: 0
          [ ]
       
       Dimensionality Table:
@@ -244,8 +241,7 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 ]  Weights: [0]
-         Direction: 0
+         Entry id: 0
          [ ]
       
       Dimensionality Table:
@@ -324,10 +320,9 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 ]  Weights: [0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
       
       Dimensionality Table:
@@ -403,10 +398,9 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 ]  Weights: [0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
       
       Dimensionality Table:
@@ -489,12 +483,11 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 0 ]  Weights: [0,0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
-         Direction: 2
+         Entry id: 2
          [ ]
       
       Dimensionality Table:
@@ -574,12 +567,11 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 0 ]  Weights: [0,0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
-         Direction: 2
+         Entry id: 2
          [ ]
       
       Dimensionality Table:
@@ -658,7 +650,6 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ ]  Weights: []
       
       Dimensionality Table:
          Entry id: 0
@@ -725,7 +716,6 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ ]  Weights: []
       
       Dimensionality Table:
          Entry id: 0
@@ -799,8 +789,7 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 ]  Weights: [0]
-         Direction: 0
+         Entry id: 0
          [ ]
       
       Dimensionality Table:
@@ -872,8 +861,7 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 ]  Weights: [0]
-         Direction: 0
+         Entry id: 0
          [ ]
       
       Dimensionality Table:
@@ -952,10 +940,9 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 ]  Weights: [0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
       
       Dimensionality Table:
@@ -1031,10 +1018,9 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 ]  Weights: [0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
       
       Dimensionality Table:
@@ -1117,12 +1103,11 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 0 ]  Weights: [0,0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
-         Direction: 2
+         Entry id: 2
          [ ]
       
       Dimensionality Table:
@@ -1202,12 +1187,11 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 0 ]  Weights: [0,0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
-         Direction: 2
+         Entry id: 2
          [ ]
       
       Dimensionality Table:

@@ -216,7 +216,7 @@ BernsteinExtraction(const Grid<dim> &grid,
         fill_extraction(m,
                         grid.get_knot_coordinates(j),
                         rep_knots_i[j],
-                        acum_mult_i.get_data_direction(j));
+                        acum_mult_i[j]);
 //      ext_operators_i[j] = opers;
     }
   }

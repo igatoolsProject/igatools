@@ -57,8 +57,7 @@ IgGridFunction<1,1>
             [ ]
          
          Interior multiplicities:
-            Size: [ 8 ]  Weights: [8]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 1 1 1 1 1 ]
          
          Dimensionality Table:
@@ -403,10 +402,9 @@ IgGridFunction<2,1>
             [ ]
          
          Interior multiplicities:
-            Size: [ 8 8 ]  Weights: [8,64]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 1 1 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 1 1 1 1 1 1 ]
          
          Dimensionality Table:
@@ -2839,12 +2837,11 @@ IgGridFunction<3,1>
             [ ]
          
          Interior multiplicities:
-            Size: [ 8 8 8 ]  Weights: [8,64,512]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 1 1 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 1 1 1 1 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 1 1 1 1 1 1 1 ]
          
          Dimensionality Table:

@@ -560,11 +560,13 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
 
     for (auto comp : active_components_id)
     {
+      const auto &end_interval_comp = end_interval[comp];
+
       if (interval_id == 0) // processing the leftmost interval
       {
         // first interval (i.e. left-most interval)
 
-        alpha = end_interval[comp][dir].first;
+        alpha = end_interval_comp[dir][0];
         const Real one_minus_alpha = 1. - alpha;
 
         for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
@@ -577,7 +579,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
       {
         // last interval (i.e. right-most interval)
 
-        alpha = end_interval[comp][dir].second;
+        alpha = end_interval_comp[dir][1];
 
         for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
           pt_coords_boundary[ipt] = pt_coords_internal[ipt] *

@@ -33,8 +33,7 @@ PhysicalSpaceBasis<1,1,1,0,Transformation::h_grad>
             [ ]
          
          Interior multiplicities:
-            Size: [ 0 ]  Weights: [0]
-            Direction: 0
+            Entry id: 0
             [ ]
          
          Dimensionality Table:

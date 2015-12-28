@@ -273,10 +273,9 @@ IgFunction<2,0,1,1>
                [ ]
             
             Interior multiplicities:
-               Size: [ 8 8 ]  Weights: [8,64]
-               Direction: 0
+               Entry id: 0
                [ 1 1 1 1 1 1 1 1 ]
-               Direction: 1
+               Entry id: 1
                [ 1 1 1 1 1 1 1 1 ]
             
             Dimensionality Table:

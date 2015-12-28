@@ -568,7 +568,7 @@ init()
     for (const auto dir : UnitElement<dim_>::active_directions)
     {
       const auto &deg =  deg_comp[dir];
-      const auto &mult = mult_comp.get_data_direction(dir);
+      const auto &mult = mult_comp[dir];
 
       const auto order = deg + 1;
 
@@ -728,7 +728,7 @@ rebuild_after_insert_knots(
     for (const auto dir : UnitElement<dim_>::active_directions)
     {
       const auto &old_unique_knots_dir = *old_unique_knots[dir];
-      const auto &interior_mult_comp_dir = interior_mult_comp.get_data_direction(dir);
+      const auto &interior_mult_comp_dir = interior_mult_comp[dir];
 
       const int n_internal_knots_old = old_unique_knots_dir.size() - 2;
       Assert(n_internal_knots_old == interior_mult_comp_dir.size(),
@@ -779,7 +779,7 @@ rebuild_after_insert_knots(
         //---------------------------------------------------------------------------------------
 #endif
 
-        interior_mult_[comp].copy_data_direction(dir,new_internal_mult_dir);
+        interior_mult_[comp][dir] = new_internal_mult_dir;
     }
   }
   // build the new internal knots with repetitions --- end
@@ -882,7 +882,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
       const auto deg = degree_comp[dir];
       const auto order = deg + 1;
       const auto &knots = grid_->get_knot_coordinates(dir);
-      const auto &mult  = mult_comp.get_data_direction(dir);
+      const auto &mult  = mult_comp[dir];
 
       const int m = order;
       const int K = std::accumulate(mult.begin(),mult.end(),0);
@@ -971,8 +971,9 @@ get_sub_space_mult(const Index sub_elem_id) const
   auto sub_mult = SubMultT(v_mult.get_comp_map());
   for (int comp : sub_mult.get_active_components_id())
   {
+	const auto &v_mult_comp = v_mult[comp];
     for (int j=0; j<k; ++j)
-      sub_mult[comp].copy_data_direction(j, v_mult[comp].get_data_direction(active_dirs[j]));
+      sub_mult[comp][j] = v_mult_comp[active_dirs[j]];
   }
   return sub_mult;
 }
@@ -1035,7 +1036,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
     for (const auto j : UnitElement<dim_>::active_directions)
     {
       // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
-      const auto &mult = mult_comp.get_data_direction(j);
+      const auto &mult = mult_comp[j];
 
       SafeSTLVector<Size> accum_mult;
       const int size = mult.size();
@@ -1044,7 +1045,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
       for (int i = 0; i < size; ++i)
         accum_mult.push_back(accum_mult[i] + mult[i]);
 
-      result[comp].copy_data_direction(j, accum_mult);
+      result[comp][j] = accum_mult;
 
       //TODO(pauletti, May 3, 2014): write some post assertions
     }
@@ -1083,7 +1084,7 @@ get_multiplicity_from_regularity(const InteriorReg reg,
 
       SafeSTLVector<Size> mult(size);
       if (size>0)
-        res[comp].copy_data_direction(dir, SafeSTLVector<Size>(size, val));
+        res[comp][dir] = SafeSTLVector<Size>(size, val);
     }
   return res;
 }
@@ -1111,12 +1112,16 @@ get_element_dofs(
 
   const auto &elem_t_id = elem_id.get_tensor_index();
 
+  TensorIndex<dim_> dof_t_origin;
+
   Index dof_loc_to_elem = 0;
   for (const auto comp : components)
   {
     const auto &index_table_comp = index_table[comp];
 
-    const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_t_id);
+//    const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_t_id);
+    for (int i = 0 ; i < dim_ ; ++i)
+      dof_t_origin[i] = accum_mult[comp][i][elem_t_id[i]];
 
     const auto &elem_comp_dof_t_id = this->get_dofs_tensor_id_elem_table()[comp];
 

@@ -34,8 +34,7 @@ Original IgGridFunction:
                [ ]
             
             Interior multiplicities:
-               Size: [ 0 ]  Weights: [0]
-               Direction: 0
+               Entry id: 0
                [ ]
             
             Dimensionality Table:
@@ -117,8 +116,7 @@ IgGridFunction after serialize-deserialize:
                [ ]
             
             Interior multiplicities:
-               Size: [ 0 ]  Weights: [0]
-               Direction: 0
+               Entry id: 0
                [ ]
             
             Dimensionality Table:
@@ -225,15 +223,13 @@ Original IgGridFunction:
                [ 1 ]
             
             Interior multiplicities:
-               Size: [ 0 0 ]  Weights: [0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Size: [ 0 0 ]  Weights: [0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
             
             Dimensionality Table:
@@ -340,15 +336,13 @@ IgGridFunction after serialize-deserialize:
                [ 1 ]
             
             Interior multiplicities:
-               Size: [ 0 0 ]  Weights: [0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Size: [ 0 0 ]  Weights: [0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
             
             Dimensionality Table:
@@ -480,26 +474,23 @@ Original IgGridFunction:
                [ 1 2 ]
             
             Interior multiplicities:
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
             
             Dimensionality Table:
@@ -645,26 +636,23 @@ IgGridFunction after serialize-deserialize:
                [ 1 2 ]
             
             Interior multiplicities:
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
             
             Dimensionality Table:

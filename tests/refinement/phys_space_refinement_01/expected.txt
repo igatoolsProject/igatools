@@ -37,8 +37,7 @@ O R I G I N A L     S P A C E
             [ ]
          
          Interior multiplicities:
-            Size: [ 1 ]  Weights: [1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
          
          Dimensionality Table:
@@ -133,8 +132,7 @@ R E F I N E D     S P A C E
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
          
          Dimensionality Table:
@@ -237,10 +235,9 @@ O R I G I N A L     S P A C E
             [ ]
          
          Interior multiplicities:
-            Size: [ 1 1 ]  Weights: [1,1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 ]
          
          Dimensionality Table:
@@ -376,10 +373,9 @@ R E F I N E D     S P A C E
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 3 ]  Weights: [3,9]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 1 ]
          
          Dimensionality Table:
@@ -501,12 +497,11 @@ O R I G I N A L     S P A C E
             [ ]
          
          Interior multiplicities:
-            Size: [ 1 1 1 ]  Weights: [1,1,1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 ]
          
          Dimensionality Table:
@@ -791,12 +786,11 @@ R E F I N E D     S P A C E
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 3 3 ]  Weights: [3,9,27]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 1 1 ]
          
          Dimensionality Table:

@@ -48,8 +48,8 @@ for dim in inst.all_domain_dims:
     containers.append('std::array<%s,%d>' % (t3,dim))
     t4 = 'int'
     containers.append('std::array<%s,%d>' % (t4,dim))
-    t5 = 'std::pair<Real,Real>'
-    containers.append('std::array<%s,%d>' % (t5,dim))
+#    t5 = 'std::pair<Real,Real>'
+#    containers.append('std::array<%s,%d>' % (t5,dim))
 
 
 

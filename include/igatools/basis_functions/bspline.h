@@ -303,7 +303,7 @@ private:
 
   /** If end knots are not in the repeated knot vector */
   using EndIntervalTable = typename BaseSpace::template
-                           ComponentContainer<SafeSTLArray<std::pair<Real,Real>, dim>>;
+                           ComponentContainer<SafeSTLArray<SafeSTLArray<Real,2>,dim>>;
   EndIntervalTable end_interval_;
 
 

@@ -41,8 +41,7 @@ BSpline Space:
          [ ]
       
       Interior multiplicities:
-         Size: [ 3 ]  Weights: [3]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
       
       Dimensionality Table:
@@ -128,8 +127,7 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Size: [ 3 ]  Weights: [3]
-               Direction: 0
+               Entry id: 0
                [ 1 1 1 ]
             
             Dimensionality Table:
@@ -233,11 +231,9 @@ BSpline Space:
          [ 1 ]
       
       Interior multiplicities:
-         Size: [ 3 ]  Weights: [3]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Size: [ 3 ]  Weights: [3]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
       
       Dimensionality Table:
@@ -337,8 +333,7 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Size: [ 3 ]  Weights: [3]
-               Direction: 0
+               Entry id: 0
                [ 1 1 1 ]
             
             Dimensionality Table:
@@ -444,14 +439,11 @@ BSpline Space:
          [ 1 2 ]
       
       Interior multiplicities:
-         Size: [ 3 ]  Weights: [3]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Size: [ 3 ]  Weights: [3]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Size: [ 3 ]  Weights: [3]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
       
       Dimensionality Table:
@@ -565,8 +557,7 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Size: [ 3 ]  Weights: [3]
-               Direction: 0
+               Entry id: 0
                [ 1 1 1 ]
             
             Dimensionality Table:
@@ -694,10 +685,9 @@ BSpline Space:
          [ ]
       
       Interior multiplicities:
-         Size: [ 3 2 ]  Weights: [3,6]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Direction: 1
+         Entry id: 1
          [ 1 1 ]
       
       Dimensionality Table:
@@ -813,10 +803,9 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Size: [ 3 2 ]  Weights: [3,6]
-               Direction: 0
+               Entry id: 0
                [ 1 1 1 ]
-               Direction: 1
+               Entry id: 1
                [ 1 1 ]
             
             Dimensionality Table:
@@ -978,15 +967,13 @@ BSpline Space:
          [ 1 ]
       
       Interior multiplicities:
-         Size: [ 3 2 ]  Weights: [3,6]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Direction: 1
+         Entry id: 1
          [ 1 1 ]
-         Size: [ 3 2 ]  Weights: [3,6]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Direction: 1
+         Entry id: 1
          [ 1 1 ]
       
       Dimensionality Table:
@@ -1120,10 +1107,9 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Size: [ 3 2 ]  Weights: [3,6]
-               Direction: 0
+               Entry id: 0
                [ 1 1 1 ]
-               Direction: 1
+               Entry id: 1
                [ 1 1 ]
             
             Dimensionality Table:
@@ -1287,20 +1273,17 @@ BSpline Space:
          [ 1 2 ]
       
       Interior multiplicities:
-         Size: [ 3 2 ]  Weights: [3,6]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Direction: 1
+         Entry id: 1
          [ 1 1 ]
-         Size: [ 3 2 ]  Weights: [3,6]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Direction: 1
+         Entry id: 1
          [ 1 1 ]
-         Size: [ 3 2 ]  Weights: [3,6]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Direction: 1
+         Entry id: 1
          [ 1 1 ]
       
       Dimensionality Table:
@@ -1452,10 +1435,9 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Size: [ 3 2 ]  Weights: [3,6]
-               Direction: 0
+               Entry id: 0
                [ 1 1 1 ]
-               Direction: 1
+               Entry id: 1
                [ 1 1 ]
             
             Dimensionality Table:
@@ -1653,12 +1635,11 @@ BSpline Space:
          [ ]
       
       Interior multiplicities:
-         Size: [ 3 2 1 ]  Weights: [3,6,6]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Direction: 1
+         Entry id: 1
          [ 1 1 ]
-         Direction: 2
+         Entry id: 2
          [ 1 ]
       
       Dimensionality Table:
@@ -1815,12 +1796,11 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Size: [ 3 2 1 ]  Weights: [3,6,6]
-               Direction: 0
+               Entry id: 0
                [ 1 1 1 ]
-               Direction: 1
+               Entry id: 1
                [ 1 1 ]
-               Direction: 2
+               Entry id: 2
                [ 1 ]
             
             Dimensionality Table:
@@ -2095,26 +2075,23 @@ BSpline Space:
          [ 1 2 ]
       
       Interior multiplicities:
-         Size: [ 3 2 1 ]  Weights: [3,6,6]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Direction: 1
+         Entry id: 1
          [ 1 1 ]
-         Direction: 2
+         Entry id: 2
          [ 1 ]
-         Size: [ 3 2 1 ]  Weights: [3,6,6]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Direction: 1
+         Entry id: 1
          [ 1 1 ]
-         Direction: 2
+         Entry id: 2
          [ 1 ]
-         Size: [ 3 2 1 ]  Weights: [3,6,6]
-         Direction: 0
+         Entry id: 0
          [ 1 1 1 ]
-         Direction: 1
+         Entry id: 1
          [ 1 1 ]
-         Direction: 2
+         Entry id: 2
          [ 1 ]
       
       Dimensionality Table:
@@ -2313,12 +2290,11 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Size: [ 3 2 1 ]  Weights: [3,6,6]
-               Direction: 0
+               Entry id: 0
                [ 1 1 1 ]
-               Direction: 1
+               Entry id: 1
                [ 1 1 ]
-               Direction: 2
+               Entry id: 2
                [ 1 ]
             
             Dimensionality Table:

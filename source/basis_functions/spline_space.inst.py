@@ -75,10 +75,6 @@ for space in unique(spaces):
 #    comp_container = '%s::template ComponentContainer<int>' %(space)
 #    comp_containers.append('%s' %(comp_container))
     
-#    comp_container = '%s::template ComponentContainer<std::pair<Real,Real>>' %(space)
-#    comp_containers.append('%s' %(comp_container))
-#    comp_containers_serializable.append('%s' %(comp_container))
-
     
     dim = '%s::dim' %(space)
     n_components = '%s::n_components' %(space)
@@ -87,7 +83,7 @@ for space in unique(spaces):
     comp_container = '%s::template ComponentContainer<%s>' %(space,t0)
     comp_containers.append('%s' %(comp_container))
 
-    t1 = 'CartesianProductArray<int,%s>' %(dim)
+    t1 = 'SafeSTLArray<SafeSTLVector<int>,%s>' %(dim)
     comp_container = '%s::template ComponentContainer<%s>' %(space,t1)
     comp_containers.append('%s' %(comp_container))
     templated_funcs.append('%s::ComponentContainer(std::initializer_list<%s>,void *)' %(comp_container,t1))
@@ -105,7 +101,7 @@ for space in unique(spaces):
     templated_funcs.append('%s::ComponentContainer(const SafeSTLArray<int,%s> &,const %s &,void *)' %(comp_container,n_components,t3))
     templated_funcs.append('%s::ComponentContainer(std::initializer_list<%s>,void *)' %(comp_container,t3))
 
-    t4 = 'SafeSTLArray<std::pair<Real,Real>,%s>' %(dim)
+    t4 = 'SafeSTLArray<SafeSTLArray<Real,2>,%s>' %(dim)
     comp_container = '%s::template ComponentContainer<%s>' %(space,t4)
 #    comp_containers_serializable.append('%s' %(comp_container))
     comp_containers.append('%s' %(comp_container))

@@ -26,7 +26,7 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-types = ['BasisEndBehaviour','std::pair<Real,Real>']
+types = ['BasisEndBehaviour']
 
 spaces = []
 arrays = [] 

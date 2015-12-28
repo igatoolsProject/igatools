@@ -642,6 +642,7 @@ operator<< (LogStream &log, const std::unique_ptr<T> &t)
   return log;
 }
 
+/*
 template<>
 inline
 LogStream &
@@ -650,7 +651,7 @@ operator<< <std::pair<Real,Real> >(LogStream &out,const std::pair<Real,Real> &pa
   out << "[ " << pair.first << " , " << pair.second << "]";
   return out;
 }
-
+//*/
 
 
 inline
