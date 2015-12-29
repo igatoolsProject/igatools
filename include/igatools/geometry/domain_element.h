@@ -134,37 +134,19 @@ public:
 
 
   template<int sdim>
-  const ValueVector<Point> &get_points(const int s_id) const
-  {
-    return grid_func_elem_->template
-           get_values_from_cache<grid_function_element::_D<0>, sdim>(s_id);
-  }
+  const ValueVector<Point> &get_points(const int s_id) const;
 
   template<int sdim>
-  const ValueVector<Jacobian> &get_jacobians(const int s_id) const
-  {
-    return grid_func_elem_->template
-           get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id);
-  }
+  const ValueVector<Jacobian> &get_jacobians(const int s_id) const;
 
   template<int sdim>
-  const ValueVector<Hessian> &get_hessians(const int s_id) const
-  {
-    return grid_func_elem_->template
-           get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id);
-  }
+  const ValueVector<Hessian> &get_hessians(const int s_id) const;
 
   template<int sdim>
-  const ValueVector<Real> &get_measures(const int s_id) const
-  {
-    return get_values_from_cache<_Measure,sdim>(s_id);
-  }
+  const ValueVector<Real> &get_measures(const int s_id) const;
 
   template<int sdim>
-  const ValueVector<Real> &get_w_measures(const int s_id) const
-  {
-    return get_values_from_cache<_W_Measure,sdim>(s_id);
-  }
+  const ValueVector<Real> &get_w_measures(const int s_id) const;
 
 
   const ValueVector<SafeSTLArray<Point, codim_> > &
@@ -175,11 +157,7 @@ public:
 
   template <int sdim>
   const ValueVector<Points<dim_+codim_> > &
-  get_boundary_normals(const int s_id, EnableIf<(sdim >= 0)> * = nullptr) const
-  {
-    Assert(dim_ == sdim+1, ExcNotImplemented());
-    return get_values_from_cache<_BoundaryNormal,sdim>(s_id);
-  }
+  get_boundary_normals(const int s_id, EnableIf<(sdim >= 0)> * = nullptr) const;
 
 
   const ValueVector<Point> &get_element_points() const;

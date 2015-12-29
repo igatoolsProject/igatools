@@ -174,7 +174,7 @@ template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-SetFlagDispatcher::
+SetFlagsDispatcher::
 operator()(const Topology<sdim> &topology)
 {
   using GridFlags = grid_element::Flags;
@@ -198,7 +198,7 @@ set_flags_impl(const topology_variant &topology,
     elem_flags |= space_element::Flags::gradient;
 
 
-  auto set_flag_dispatcher = SetFlagDispatcher(elem_flags,this->grid_handler_,this->flags_);
+  auto set_flag_dispatcher = SetFlagsDispatcher(elem_flags,this->grid_handler_,this->flags_);
   boost::apply_visitor(set_flag_dispatcher,topology);
 }
 

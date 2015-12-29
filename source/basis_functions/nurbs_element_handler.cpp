@@ -77,7 +77,7 @@ set_flags_impl(const topology_variant &sdim,
   bsp_elem_handler_->set_flags_impl(sdim,bsp_elem_flags);
   w_func_elem_handler_->set_flags(sdim,w_func_elem_flags);
 
-  auto set_flag_dispatcher = SetFlagDispatcher(nrb_elem_flags,*this);
+  auto set_flag_dispatcher = SetFlagsDispatcher(nrb_elem_flags,*this);
   boost::apply_visitor(set_flag_dispatcher,sdim);
 }
 
@@ -143,8 +143,8 @@ print_info(LogStream &out) const
 
 template<int dim_, int range_ , int rank_>
 NURBSElementHandler<dim_, range_, rank_>::
-SetFlagDispatcher::
-SetFlagDispatcher(const typename space_element::Flags nrb_flag,
+SetFlagsDispatcher::
+SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
                   self_t &nrb_handler)
   :
   nrb_flag_(nrb_flag),

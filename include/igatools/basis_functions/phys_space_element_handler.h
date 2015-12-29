@@ -239,9 +239,9 @@ private:
   virtual void set_flags_impl(const topology_variant &topology,
                               const typename space_element::Flags &flag) override final;
 
-  struct SetFlagDispatcher : boost::static_visitor<void>
+  struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagDispatcher(const typename space_element::Flags phys_elem_flag,
+    SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
                       const Transformation &transformation_type,
                       RefElemHandler &ref_space_handler,
                       PhysDomainHandler &phys_domain_handler,

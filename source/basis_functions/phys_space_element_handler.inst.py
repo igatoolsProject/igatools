@@ -39,7 +39,7 @@ for space in inst.SubPhysSpaces + inst.PhysSpaces:
     handler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
     handlers.add(handler)
     for k in range(0,x.dim+1):
-        func = 'void %s::SetFlagDispatcher::operator()(const Topology<%d> &)' %(handler,k)
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' %(handler,k)
         handler_funcs.add(func)
         func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' %(handler,k)
         handler_funcs.add(func)

@@ -60,8 +60,8 @@ print_info(LogStream &out) const -> void
 
 template<int dim_,int range_,int rank_,int codim_>
 PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
-SetFlagDispatcher::
-SetFlagDispatcher(const typename space_element::Flags phys_elem_flag,
+SetFlagsDispatcher::
+SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
                   const Transformation &transformation_type,
                   RefElemHandler &ref_space_handler,
                   PhysDomainHandler &phys_domain_handler,
@@ -79,7 +79,7 @@ template<int dim_,int range_,int rank_,int codim_>
 template<int sdim>
 void
 PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
-SetFlagDispatcher::
+SetFlagsDispatcher::
 operator()(const Topology<sdim> &topology)
 {
   ref_space_handler_.template set_flags<sdim>(
@@ -226,7 +226,7 @@ PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
 set_flags_impl(const topology_variant &topology,
                const typename space_element::Flags &flag)
 {
-  auto set_flag_dispatcher = SetFlagDispatcher(
+  auto set_flag_dispatcher = SetFlagsDispatcher(
                                flag,
                                phys_space_->get_transformation_type(),
                                *ref_space_handler_,

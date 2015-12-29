@@ -33,6 +33,10 @@ for x in inst.sub_mapping_dims + inst.mapping_dims:
     handler = 'GridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
     handlers.add(handler)
     for k in range(0,x.dim+1):
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' % (handler,k)
+        handler_funcs.add(func)
         func = 'void %s::set_flags<%d>(const Flags &)' % (handler,k)
         handler_funcs.add(func)
         func = 'void %s::fill_cache<%d>(ElementAccessor &,const int) const' % (handler,k)
@@ -45,6 +49,10 @@ for x in inst.sub_mapping_dims + inst.mapping_dims:
     handler = 'GridFunctionHandler<%d,1>' %(x.dim)
     handlers.add(handler)
     for k in range(0,x.dim+1):
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' % (handler,k)
+        handler_funcs.add(func)
         func = 'void %s::set_flags<%d>(const Flags &)' % (handler,k)
         handler_funcs.add(func)
         func = 'void %s::fill_cache<%d>(ElementAccessor &,const int) const' % (handler,k)

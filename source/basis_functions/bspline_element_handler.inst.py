@@ -26,7 +26,7 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-sub_dim_members = ['void elhandler::SetFlagDispatcher::operator()(const Topology<k> &)',
+sub_dim_members = ['void elhandler::SetFlagsDispatcher::operator()(const Topology<k> &)',
                    'void elhandler::InitCacheDispatcher::operator()(const shared_ptr<const Quadrature<k>> &)',
                    'void elhandler::FillCacheDispatcherNoGlobalCache::operator()(const Topology<k> &)']
 

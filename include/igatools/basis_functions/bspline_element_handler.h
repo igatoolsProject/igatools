@@ -127,9 +127,9 @@ public:
                               const typename space_element::Flags &flag) override final;
 
 private:
-  struct SetFlagDispatcher : boost::static_visitor<void>
+  struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagDispatcher(const typename space_element::Flags flag_in,
+    SetFlagsDispatcher(const typename space_element::Flags flag_in,
                       GridHandler<dim_> &grid_handler,
                       SafeSTLArray<typename space_element::Flags, dim+1> &flags)
       :

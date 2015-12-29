@@ -66,6 +66,16 @@ get_grid_handler() -> GridHandler &
 template<int dim_, int space_dim_>
 auto
 GridFunctionHandler<dim_, space_dim_>::
+get_element_cache(ElementAccessor &elem) const
+-> typename ElementAccessor::CacheType &
+{
+  return  elem.local_cache_;
+}
+
+
+template<int dim_, int space_dim_>
+auto
+GridFunctionHandler<dim_, space_dim_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
@@ -218,6 +228,17 @@ SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
 
 
 template<int dim_, int space_dim_>
+template<int sdim>
+void
+GridFunctionHandler<dim_, space_dim_>::
+SetFlagsDispatcher::
+operator()(const Topology<sdim> &)
+{
+  flags_[sdim] |= flag_;
+}
+
+
+template<int dim_, int space_dim_>
 GridFunctionHandler<dim_, space_dim_>::
 InitCacheDispatcher::
 InitCacheDispatcher(const self_t &grid_function_handler,
@@ -228,6 +249,25 @@ InitCacheDispatcher(const self_t &grid_function_handler,
   elem_(elem),
   flags_(flags)
 {}
+
+template<int dim_, int space_dim_>
+template<int sdim>
+void
+GridFunctionHandler<dim_, space_dim_>::
+InitCacheDispatcher::
+operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
+{
+  auto &cache = grid_function_handler_.get_element_cache(elem_);
+
+  const auto n_points = elem_.get_grid_element().template get_quad<sdim>()
+                        ->get_num_points();
+  for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
+  {
+    auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
+    s_cache.resize(flags_[sdim], n_points);
+  }
+}
+
 
 IGA_NAMESPACE_CLOSE
 

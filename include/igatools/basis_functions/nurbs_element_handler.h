@@ -169,9 +169,9 @@ private:
 
 
 
-  struct SetFlagDispatcher : boost::static_visitor<void>
+  struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagDispatcher(const typename space_element::Flags nrb_flag,
+    SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
                       self_t &nrb_handler);
 
     template<int sdim>

@@ -131,10 +131,7 @@ public:
 
 protected:
   typename ElementAccessor::CacheType &
-  get_element_cache(ElementAccessor &elem) const
-  {
-    return  elem.local_cache_;
-  }
+  get_element_cache(ElementAccessor &elem) const;
 //*/
 
 private:
@@ -147,10 +144,7 @@ private:
     SetFlagsDispatcher(const Flags flag, FlagsArray &flags);
 
     template<int sdim>
-    void operator()(const Topology<sdim> &)
-    {
-      flags_[sdim] |= flag_;
-    }
+    void operator()(const Topology<sdim> &);
 
     const Flags flag_;
     FlagsArray &flags_;
@@ -166,18 +160,7 @@ private:
 
 
     template<int sdim>
-    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
-    {
-      auto &cache = grid_function_handler_.get_element_cache(elem_);
-
-      const auto n_points = elem_.get_grid_element().template get_quad<sdim>()
-                            ->get_num_points();
-      for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
-      {
-        auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
-        s_cache.resize(flags_[sdim], n_points);
-      }
-    }
+    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
 
     const self_t &grid_function_handler_;
     ElementAccessor &elem_;
