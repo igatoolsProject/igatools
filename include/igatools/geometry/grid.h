@@ -690,13 +690,6 @@ private:
   SubGridData<(dim_>0)? dim_-1 : 0> sub_grid_data_;
 
 public:
-#if 0
-  /**
-   * Create an element (defined on this grid) with a given index and the given property
-   */
-  std::unique_ptr<ElementAccessor>
-  create_element(const ListIt &index, const PropId &property) const;
-#endif
 
   /**
    * Create the first element (defined on this grid) with a given given @p property.

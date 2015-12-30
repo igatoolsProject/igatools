@@ -184,10 +184,7 @@ private:
     SetFlagsDispatcher(const Flags flag, self_t &grid_handler);
 
     template<int sdim>
-    void operator()(const Topology<sdim> &s_el)
-    {
-      grid_handler_.template set_flags<sdim>(flag_);
-    }
+    void operator()(const Topology<sdim> &s_el);
 
     const Flags flag_;
     self_t &grid_handler_;
@@ -200,10 +197,7 @@ private:
                         ElementAccessor &elem);
 
     template<int sdim>
-    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
-    {
-      grid_handler_.template init_cache<sdim>(elem_, quad);
-    }
+    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
 
     const self_t &grid_handler_;
     ElementAccessor &elem_;
@@ -218,10 +212,7 @@ private:
                         const int s_id);
 
     template<int sdim>
-    void operator()(const Topology<sdim> &)
-    {
-      grid_handler_.template fill_cache<sdim>(elem_, s_id_);
-    }
+    void operator()(const Topology<sdim> &);
 
     const self_t &grid_handler_;
     ElementAccessor &elem_;

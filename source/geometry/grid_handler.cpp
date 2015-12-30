@@ -52,6 +52,7 @@ set_flags(const Flags &flag)
 
 
 
+
 template <int dim>
 void
 GridHandler<dim>::
@@ -251,6 +252,15 @@ SetFlagsDispatcher(const Flags flag, self_t &grid_handler)
     grid_handler_(grid_handler)
 {}
 
+template <int dim>
+template<int sdim>
+void
+GridHandler<dim>::
+SetFlagsDispatcher::
+operator()(const Topology<sdim> &s_el)
+{
+  grid_handler_.template set_flags<sdim>(flag_);
+}
 
 
 template <int dim>
@@ -265,6 +275,17 @@ InitCacheDispatcher(const self_t &grid_handler,
 
 
 template <int dim>
+template<int sdim>
+void
+GridHandler<dim>::
+InitCacheDispatcher::
+operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
+{
+  grid_handler_.template init_cache<sdim>(elem_, quad);
+}
+
+
+template <int dim>
 GridHandler<dim>::
 FillCacheDispatcher::
 FillCacheDispatcher(const self_t &grid_handler,
@@ -275,6 +296,17 @@ FillCacheDispatcher(const self_t &grid_handler,
   elem_(elem),
   s_id_(s_id)
 {}
+
+
+template <int dim>
+template<int sdim>
+void
+GridHandler<dim>::
+FillCacheDispatcher::
+operator()(const Topology<sdim> &)
+{
+  grid_handler_.template fill_cache<sdim>(elem_, s_id_);
+}
 
 
 IGA_NAMESPACE_CLOSE

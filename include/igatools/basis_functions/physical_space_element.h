@@ -137,19 +137,13 @@ public:
    * multiplied by the weights of the quadrature.
    */
   template <int k>
-  const ValueVector<Real> get_w_measures(const int j) const
-  {
-    return phys_domain_element_->template get_w_measures<k>(j);
-  }
+  const ValueVector<Real> get_w_measures(const int j) const;
 
   /**
    * Returns the gradient determinant of the map at the dilated quadrature points.
    */
   template <int k>
-  const ValueVector<Real> &get_measures(const int j) const
-  {
-    return phys_domain_element_->template get_measures<k>(j);
-  }
+  const ValueVector<Real> &get_measures(const int j) const;
 
   const ValueVector<Real> get_element_w_measures() const;
 
@@ -158,12 +152,9 @@ public:
 
   const ValueVector<PhysPoint> get_element_points() const;
 
-  template<int sub_dim>
+  template<int k>
   const ValueVector<Points<space_dim> > &
-  get_boundary_normals(const int s_id) const
-  {
-    return phys_domain_element_->template get_boundary_normals<sub_dim>(s_id);
-  }
+  get_boundary_normals(const int s_id) const;
 
 
   /**

@@ -175,11 +175,7 @@ private:
                       self_t &nrb_handler);
 
     template<int sdim>
-    void operator()(const Topology<sdim> &topology)
-    {
-      nrb_handler_.flags_[sdim] = nrb_flag_;
-    }
-
+    void operator()(const Topology<sdim> &topology);
 
   private:
     const typename space_element::Flags nrb_flag_;
@@ -193,34 +189,7 @@ private:
                         SpaceElement<dim_,0,range_,rank_> &elem);
 
     template<int sdim>
-    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
-    {
-//      using NURBSElem = NURBSElement<dim_,range_,rank_>;
-//      auto &nrb_elem = dynamic_cast<NURBSElem &>(elem_);
-
-      auto &bsp_elem = *nrb_elem_.bspline_elem_;
-      nrb_handler_.bsp_elem_handler_->template init_cache<sdim>(bsp_elem,quad);
-
-      auto &w_func_elem = *(nrb_elem_.weight_elem_);
-      nrb_handler_.w_func_elem_handler_->init_cache(w_func_elem,quad);
-
-      auto &cache = nrb_handler_.get_element_cache(nrb_elem_);
-
-      const auto n_basis = nrb_elem_.get_num_basis(DofProperties::active);
-
-      Assert(quad == nrb_elem_.get_grid_element().template get_quad<sdim>(),
-             ExcMessage("Different quadratures."));
-      const auto n_pts = quad->get_num_points();
-
-      const auto flag = nrb_handler_.flags_[sdim];
-
-      for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
-      {
-        auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
-        s_cache.resize(flag, n_pts, n_basis);
-      }
-    }
-
+    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
 
   private:
     const self_t &nrb_handler_;
@@ -235,74 +204,8 @@ private:
                         const int s_id);
 
     template<int sdim>
-    void operator()(const Topology<sdim> &topology)
-    {
-//      static_assert(sdim == dim,"The case with sdim != dim is not implemented!");
-      Assert(sdim == dim,ExcNotImplemented());
+    void operator()(const Topology<sdim> &topology);
 
-      auto &bsp_elem = *nrb_elem_.bspline_elem_;
-      nrb_handler_.bsp_elem_handler_->template fill_cache<sdim>(bsp_elem,s_id_);
-
-      auto &w_func_elem = *(nrb_elem_.weight_elem_);
-      nrb_handler_.w_func_elem_handler_->fill_cache(topology,w_func_elem,s_id_);
-
-      auto &cache =
-        nrb_handler_.get_element_cache(nrb_elem_).template get_sub_elem_cache<sdim>(s_id_);
-
-      using space_element::_Value;
-      using space_element::_Gradient;
-      using space_element::_Hessian;
-      using _D0 = grid_function_element::template _D<0>;
-      using _D1 = grid_function_element::template _D<1>;
-      using _D2 = grid_function_element::template _D<2>;
-
-      const auto bsp_local_to_patch = bsp_elem.get_local_to_patch(DofProperties::active);
-
-      const auto &w_coefs =
-        nrb_handler_.w_func_elem_handler_->get_ig_grid_function()->get_coefficients();
-
-      if (cache.template status_fill<_Value>())
-      {
-        const auto &P = bsp_elem.template get_basis_data<_Value,sdim>(s_id_,DofProperties::active);
-        const auto &Q = w_func_elem.template get_values_from_cache<_D0,sdim>(s_id_);
-
-        auto &values = cache.template get_data<_Value>();
-        evaluate_nurbs_values_from_bspline(bsp_elem,bsp_local_to_patch,P,w_coefs,Q,values);
-      }
-
-      if (cache.template status_fill<_Gradient>())
-      {
-        const auto &P = bsp_elem.template get_basis_data<_Value,sdim>(s_id_,DofProperties::active);
-        const auto &dP = bsp_elem.template get_basis_data<_Gradient,sdim>(s_id_,DofProperties::active);
-        const auto &Q = w_func_elem.template get_values_from_cache<_D0,sdim>(s_id_);
-        const auto &dQ = w_func_elem.template get_values_from_cache<_D1,sdim>(s_id_);
-
-        auto &gradients = cache.template get_data<_Gradient>();
-        evaluate_nurbs_gradients_from_bspline(bsp_elem,bsp_local_to_patch,P,dP,w_coefs,Q,dQ,gradients);
-      }
-
-      if (cache.template status_fill<_Hessian>())
-      {
-        const auto &P = bsp_elem.template get_basis_data<_Value,sdim>(s_id_,DofProperties::active);
-        const auto &dP = bsp_elem.template get_basis_data<_Gradient,sdim>(s_id_,DofProperties::active);
-        const auto &d2P = bsp_elem.template get_basis_data<_Hessian,sdim>(s_id_,DofProperties::active);
-        const auto &Q = w_func_elem.template get_values_from_cache<_D0,sdim>(s_id_);
-        const auto &dQ = w_func_elem.template get_values_from_cache<_D1,sdim>(s_id_);
-        const auto &d2Q = w_func_elem.template get_values_from_cache<_D2,sdim>(s_id_);
-        auto &hessians = cache.template get_data<_Hessian>();
-        evaluate_nurbs_hessians_from_bspline(bsp_elem,bsp_local_to_patch,P,dP,d2P,w_coefs,Q,dQ,d2Q, hessians);
-      }
-
-      using space_element::_Divergence;
-      if (cache.template status_fill<_Divergence>())
-      {
-        const auto &gradient = cache.template get_data<_Gradient>();
-        auto &divergence = cache.template get_data<_Divergence>();
-        eval_divergences_from_gradients(gradient,divergence);
-        divergence.set_status_filled(true);
-      }
-      cache.set_filled(true);
-    }
 
   private:
     const self_t &nrb_handler_;

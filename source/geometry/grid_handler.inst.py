@@ -34,6 +34,12 @@ for dim in inst.sub_domain_dims + inst.domain_dims:
     handler = 'GridHandler<%d>' %(dim)
     handlers.add(handler)
     for k in range(0,dim+1):
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
         func = 'void %s::set_flags<%d>(const Flags &)' % (handler,k)
         handler_funcs.add(func)
         func = 'void %s::init_cache<%d>(ElementAccessor &,const std::shared_ptr<const Quadrature<%d>> &) const' % (handler,k,k)

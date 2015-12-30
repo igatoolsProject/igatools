@@ -169,6 +169,17 @@ BSplineElementHandler(shared_ptr<const Basis> space)
 {}
 
 
+template<int dim_, int range_ , int rank_>
+BSplineElementHandler<dim_, range_, rank_>::
+SetFlagsDispatcher::
+SetFlagsDispatcher(const typename space_element::Flags flag_in,
+                  GridHandler<dim_> &grid_handler,
+                  SafeSTLArray<typename space_element::Flags, dim+1> &flags)
+  :
+  flag_in_(flag_in),
+  grid_handler_(grid_handler),
+  flags_(flags)
+{}
 
 template<int dim_, int range_ , int rank_>
 template<int sdim>
@@ -202,6 +213,18 @@ set_flags_impl(const topology_variant &topology,
   boost::apply_visitor(set_flag_dispatcher,topology);
 }
 
+
+template<int dim_, int range_ , int rank_>
+BSplineElementHandler<dim_, range_, rank_>::
+InitCacheDispatcher::
+InitCacheDispatcher(const GridHandler<dim_> &grid_handler,
+                    const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
+                    BSplineElem &elem)
+  :
+  grid_handler_(grid_handler),
+  flags_(flags),
+  bsp_elem_(elem)
+{}
 
 template<int dim_, int range_ , int rank_>
 template<int sdim>
@@ -301,6 +324,18 @@ init_cache_impl(BaseElem &elem,
 }
 
 
+
+template <int dim_, int range_, int rank_>
+BSplineElementHandler<dim_, range_, rank_>::
+FillCacheDispatcherNoGlobalCache::
+FillCacheDispatcherNoGlobalCache(const int s_id,
+                                 const GridHandler<dim_> &grid_handler,
+                                 BSplineElem &elem)
+  :
+  s_id_(s_id),
+  grid_handler_(grid_handler),
+  bsp_elem_(elem)
+{}
 
 template <int dim, int range, int rank>
 void
