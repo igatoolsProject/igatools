@@ -155,6 +155,26 @@ parse_file()
   grid_gen_.reset();
   objs_container_.reset();
 
+  // Physical solid grid.
+  const auto phys_sol = VtkGridInformation::create
+          (n_vis_elem_phys_solid_, phys_sol_grid_type_);
+
+  // Physical knot grid.
+  const auto phys_knt = VtkGridInformation::create
+          (n_vis_elem_phys_knot_, phys_knt_grid_type_);
+
+  // Physical control grid.
+  const auto phys_ctr = VtkControlGridInformation::create
+          (phys_ctr_grid_type_ == vtkGridType::Structured);
+
+  // Parametric solid grid.
+  const auto parm_sol = VtkGridInformation::create
+          (n_vis_elem_parm_solid_, parm_sol_grid_type_);
+
+  // Parametric knot grid.
+  const auto parm_knt = VtkGridInformation::create
+          (n_vis_elem_parm_knot_, parm_knt_grid_type_);
+
   try
   {
     this->SetProgressText("Parsing igatools file.");
@@ -199,27 +219,6 @@ parse_file()
     }
 #endif
 
-    // Physical solid grid.
-    const auto phys_sol = VtkGridInformation::create
-                          (n_vis_elem_phys_solid_, phys_sol_grid_type_);
-
-    // Physical knot grid.
-    const auto phys_knt = VtkGridInformation::create
-                          (n_vis_elem_phys_knot_, phys_knt_grid_type_);
-
-    // Physical control grid.
-    const auto phys_ctr = VtkControlGridInformation::create
-                          (phys_ctr_grid_type_ == vtkGridType::Structured);
-
-    // Parametric solid grid.
-    const auto parm_sol = VtkGridInformation::create
-                          (n_vis_elem_parm_solid_, parm_sol_grid_type_);
-
-
-    // Parametric knot grid.
-    const auto parm_knt = VtkGridInformation::create
-                          (n_vis_elem_parm_knot_, parm_knt_grid_type_);
-
     grid_gen_ = VtkIgaGridGeneratorContainer::create
                 (objs_container_, phys_sol, phys_knt, phys_ctr,
                  parm_sol, parm_knt);
@@ -230,8 +229,10 @@ parse_file()
   {
     vtkErrorMacro(<< e.what());
 
-    grid_gen_.reset();
-    objs_container_.reset();
+    objs_container_ = ObjectsContainer::create();
+    grid_gen_ = VtkIgaGridGeneratorContainer::create
+                (objs_container_, phys_sol, phys_knt, phys_ctr,
+                 parm_sol, parm_knt);
 
     return 0;
   }
@@ -240,8 +241,10 @@ parse_file()
     vtkErrorMacro(<< "An exception occurred when parsing file "
                   << file_name_str << ".");
 
-    grid_gen_.reset();
-    objs_container_.reset();
+    objs_container_ = ObjectsContainer::create();
+    grid_gen_ = VtkIgaGridGeneratorContainer::create
+                (objs_container_, phys_sol, phys_knt, phys_ctr,
+                 parm_sol, parm_knt);
 
     return 0;
   }
@@ -801,7 +804,8 @@ int
 IgatoolsParaViewReader::
 GetNumberOfPhysGeomArrays()
 {
-  Assert(grid_gen_ != nullptr, ExcNullPtr());
+  if (grid_gen_ != nullptr)
+      return 0;
   return grid_gen_->get_number_physical_grids();
 }
 
@@ -852,7 +856,8 @@ int
 IgatoolsParaViewReader::
 GetNumberOfParmGeomArrays()
 {
-  Assert(grid_gen_ != nullptr, ExcNullPtr());
+  if (grid_gen_ != nullptr)
+      return 0;
   return grid_gen_->get_number_parametric_grids();
 }
 
@@ -862,6 +867,7 @@ const char *
 IgatoolsParaViewReader::
 GetParmGeomArrayName(int index)
 {
+    std::cout << "get name" << std::endl;
   Assert(grid_gen_ != nullptr, ExcNullPtr());
   const char *name = grid_gen_->get_parametric_grid_name(index);
   return name;
@@ -873,6 +879,7 @@ int
 IgatoolsParaViewReader::
 GetParmGeomArrayStatus(const char *name)
 {
+    std::cout << "get status" << std::endl;
   Assert(grid_gen_ != nullptr, ExcNullPtr());
   return grid_gen_->get_parametric_grid_status(string(name));
 }
@@ -883,6 +890,7 @@ void
 IgatoolsParaViewReader::
 SetParmGeomArrayStatus(const char *name, int enable)
 {
+    std::cout << "set status" << std::endl;
   // Note: sometimes this function is called before parsing and
   // names gotten from Previous ParaView session are parsed.
   // The if is introduced for fixing this problem.
