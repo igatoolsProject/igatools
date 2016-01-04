@@ -804,7 +804,7 @@ int
 IgatoolsParaViewReader::
 GetNumberOfPhysGeomArrays()
 {
-  if (grid_gen_ != nullptr)
+  if (grid_gen_ == nullptr)
       return 0;
   return grid_gen_->get_number_physical_grids();
 }
@@ -856,7 +856,7 @@ int
 IgatoolsParaViewReader::
 GetNumberOfParmGeomArrays()
 {
-  if (grid_gen_ != nullptr)
+  if (grid_gen_ == nullptr)
       return 0;
   return grid_gen_->get_number_parametric_grids();
 }
@@ -867,7 +867,6 @@ const char *
 IgatoolsParaViewReader::
 GetParmGeomArrayName(int index)
 {
-    std::cout << "get name" << std::endl;
   Assert(grid_gen_ != nullptr, ExcNullPtr());
   const char *name = grid_gen_->get_parametric_grid_name(index);
   return name;
@@ -879,7 +878,6 @@ int
 IgatoolsParaViewReader::
 GetParmGeomArrayStatus(const char *name)
 {
-    std::cout << "get status" << std::endl;
   Assert(grid_gen_ != nullptr, ExcNullPtr());
   return grid_gen_->get_parametric_grid_status(string(name));
 }
@@ -890,7 +888,6 @@ void
 IgatoolsParaViewReader::
 SetParmGeomArrayStatus(const char *name, int enable)
 {
-    std::cout << "set status" << std::endl;
   // Note: sometimes this function is called before parsing and
   // names gotten from Previous ParaView session are parsed.
   // The if is introduced for fixing this problem.

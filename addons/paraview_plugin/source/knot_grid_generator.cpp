@@ -58,11 +58,12 @@ create_grid(const DomainPtr_ domain,
             const GridInfoPtr_ grid_info) ->
 EnableIf<aux_dim == 1, VtkGridPtr_>
 {
-  Assert (domain != nullptr, ExcNullPtr());
-
   // Implementation for 1D case.
   // In this case the grid consists on a set of points corresponding
   // to the knots.
+
+  Assert (domain != nullptr, ExcNullPtr());
+  Assert (grid_info != nullptr, ExcNullPtr());
 
   const auto cartesian_grid = domain->get_grid_function()->get_grid();
   const auto &n_intervals = cartesian_grid->get_num_intervals();
@@ -91,7 +92,8 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
   domain_cache_handler->init_cache(elem, quad);
 
   Index pt_id = 0;
-  for (; elem != end; ++elem)
+  // Adding first point of every element.
+  for (; elem != end; ++elem, ++pt_id)
   {
     domain_cache_handler->template fill_cache<dim>(elem, 0);
     const auto points = elem->template get_points<dim>(0);
@@ -101,17 +103,16 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
     vtk_points->SetPoint(pt_id, point_tmp);
     tuple[1] = pt_id;
     vtk_cell_ids->SetTupleValue(pt_id, tuple);
-    ++pt_id;
   }
-  /*
-    auto points = elem->template get_points<dim>(0);
-    const auto &pp = points[1];
-    for (const auto &dir : boost::irange(0, space_dim))
-      point_tmp[dir] = pp[dir];
-    tuple[1] = pt_id;
-    vtk_cell_ids->SetTupleValue(pt_id, tuple);
-    vtk_points->SetPoint(pt_id, point_tmp);
-  //*/
+
+  // Adding last point of the last element.
+  const auto points = elem->template get_points<dim>(0);
+  const auto &pp = points[1];
+  for (const auto &dir : boost::irange(0, space_dim))
+    point_tmp[dir] = pp[dir];
+  vtk_points->SetPoint(pt_id, point_tmp);
+  tuple[1] = pt_id;
+  vtk_cell_ids->SetTupleValue(pt_id, tuple);
 
   // Creating grid.
   auto grid = vtkSmartPointer <vtkUnstructuredGrid>::New();
