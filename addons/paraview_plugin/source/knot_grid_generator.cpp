@@ -22,15 +22,6 @@
 
 #include <boost/range/irange.hpp>
 
-/*
-#include <vtkStructuredGrid.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkSmartPointer.h>
-#include <vtkPoints.h>
-#include <vtkIdTypeArray.h>
-#include <vtkCellArray.h>
-//*/
-
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain_element.h>
 #include <paraview_plugin/grid_information.h>
