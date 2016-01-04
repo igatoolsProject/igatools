@@ -97,6 +97,11 @@ public:
    */
   const NumCellsContainer_ &get_num_cells_per_element() const;
 
+  /**
+   * Prints the information of the class for debuggin purposes.
+   */
+  void print_info(LogStream &out) const;
+
 private:
 
   /**
@@ -174,6 +179,11 @@ public:
    * Retrieves the grid type.
    */
   const vtkGridType &get_grid_type() const;
+
+  /**
+   * Prints the information of the class for debuggin purposes.
+   */
+  void print_info(LogStream &out) const;
 
 private:
   /**

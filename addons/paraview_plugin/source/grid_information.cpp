@@ -112,6 +112,33 @@ const NumCellsContainer_ &
 
 
 
+void
+VtkGridInformation::
+print_info (LogStream &out) const
+{
+    out.begin_item("VtkGridInformation");
+    out << "VTK grid type: ";
+    switch (grid_type_)
+    {
+        case vtkGridType::Structured:
+            out << "Structured Grid";
+            break;
+        case vtkGridType::UnstructuredLinear:
+            out << "Unstructured Linear Grid";
+            break;
+        case vtkGridType::UnstructuredQuadratic:
+            out << "Unstructured Quadratic Grid";
+            break;
+        default:
+            break;
+    }
+    out << std::endl;
+    out << "Number of VTK cells per Bezier element: " << cells_per_element_ << std::endl;
+    out.end_item();
+};
+
+
+
 VtkControlGridInformation::
 VtkControlGridInformation(const bool structured)
   :
@@ -160,6 +187,32 @@ VtkControlGridInformation::
 get_grid_type() const
 {
   return grid_type_;
+};
+
+
+
+void
+VtkControlGridInformation::
+print_info (LogStream &out) const
+{
+    out.begin_item("VtkControlGridInformation");
+    out << "VTK grid type: ";
+    switch (grid_type_)
+    {
+        case vtkGridType::Structured:
+            out << "Structured Grid";
+            break;
+        case vtkGridType::UnstructuredLinear:
+            out << "Unstructured Linear Grid";
+            break;
+        case vtkGridType::UnstructuredQuadratic:
+            out << "Unstructured Quadratic Grid";
+            break;
+        default:
+            break;
+    }
+    out << std::endl;
+    out.end_item();
 };
 
 IGA_NAMESPACE_CLOSE
