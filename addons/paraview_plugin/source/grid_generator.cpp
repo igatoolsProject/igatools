@@ -190,7 +190,7 @@ auto
 VtkIgaGridGenerator<Domain>::
 get_control_grid() -> VtkGridPtr_
 {
-  Assert (!is_physical_,
+  Assert (is_physical_,
           ExcMessage("Control mesh cannot be retrieved for a parametric "
                      "mesh."));
 

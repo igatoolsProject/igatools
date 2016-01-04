@@ -451,7 +451,6 @@ update(const GridInfoPtr_ phys_solid_info,
           gen->update(parm_solid_updated, parm_knot_updated,
                       parm_control_updated);
   });
-
 }
 
 
