@@ -367,6 +367,13 @@ public:
    */
   void print_info(LogStream &out) const;
 
+  /**
+   * @brief Checks if the container is void.
+   *
+   * @return True if the container is void, false elsewhere.
+   */
+  bool is_void () const;
+
 private:
 
   /** Container for the objects. */
