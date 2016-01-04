@@ -42,6 +42,13 @@ using namespace iga;
 
 vtkStandardNewMacro(IgatoolsParaViewReader);
 
+
+#ifndef SERIALIZATION
+#ifndef XML_IO
+    static_assert (true, "Neither serialization nor XML capabilities are active.");
+#endif
+#endif
+
 IgatoolsParaViewReader::IgatoolsParaViewReader()
   :
   n_vis_elem_phys_solid_(1),
@@ -81,8 +88,6 @@ int IgatoolsParaViewReader::RequestInformation(
 
 
 
-
-
 int IgatoolsParaViewReader::RequestData(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),
@@ -98,15 +103,13 @@ int IgatoolsParaViewReader::RequestData(
 
   this->update_grid_info();
   return this->create_grids(output);
-  return 1;
-
 }
 
 
 
 void IgatoolsParaViewReader::PrintSelf(ostream &os, vtkIndent indent)
 {
-  this->Superclass::PrintSelf(os,indent);
+  this->Superclass::PrintSelf(os, indent);
 
   os << indent << "File Name: "
      << (this->file_name_ ? this->file_name_ : "(none)") << "\n";
@@ -154,22 +157,47 @@ parse_file()
 
   try
   {
-
     this->SetProgressText("Parsing igatools file.");
 
-    // TODO: this is a temporary solution for avoiding runtime error in deserialization.
-    //   ifstream xml_istream(file_name_);
-    //   IArchive xml_in(xml_istream);
-    //   xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
-    //   xml_istream.close();
-    //   Assert here if funcs_container_ is void.
+#ifdef XML_IO
 
-    // Check here the type of file:
-    //   - XML human readable
-    //   - Serialization XML
-    //   - Serialization binary
+    // TODO: before parsing the hole file (that can be big),
+    // it is checked if the file has the expected structure (at least
+    // the header) for knowing if it is an XML human readable or
+    // a serialized file.
 
-    objs_container_ = ObjectsContainerXMLReader::parse_const(file_name_str);
+    // Check here if the file is of type XML human readable
+    const bool xml_human_readable = true;
+    if (xml_human_readable)
+    {
+        objs_container_ = ObjectsContainerXMLReader::parse_const(file_name_str);
+        AssertThrow (!objs_container_->is_void(),
+                     ExcMessage("No objects defined in the input file: "
+                                + file_name_str + "."));
+        parse_file_ = false;
+    }
+
+#endif
+
+#ifdef SERIALIZATION
+    if (parse_file_)
+    {
+        ObjectsContainer container_new;
+        {
+            std::ifstream xml_istream(file_name_str);
+            IArchive xml_in(xml_istream);
+            xml_in >> container_new;
+            xml_in.close();
+        }
+        objs_container_ = container_new;
+
+        AssertThrow (!objs_container_->is_void(),
+                     ExcMessage("No objects defined in the input file or "
+                                "serialization file not properly defined."
+                                " File name: " + file_name_str + "."));
+        parse_file_ = false;
+    }
+#endif
 
     // Physical solid grid.
     const auto phys_sol = VtkGridInformation::create
@@ -195,8 +223,6 @@ parse_file()
     grid_gen_ = VtkIgaGridGeneratorContainer::create
                 (objs_container_, phys_sol, phys_knt, phys_ctr,
                  parm_sol, parm_knt);
-
-    parse_file_ = false;
 
     return 1;
   }
@@ -248,8 +274,7 @@ update_grid_info()
   const auto parm_knt = VtkGridInformation::create
                         (n_vis_elem_parm_knot_, parm_knt_grid_type_);
 
-  grid_gen_->update(phys_sol, phys_knt, phys_ctr,
-                    parm_sol, parm_knt);
+  grid_gen_->update(phys_sol, phys_knt, phys_ctr, parm_sol, parm_knt);
 }
 
 
@@ -317,12 +342,16 @@ create_grids(vtkMultiBlockDataSet *const mb)
   }
 
   if (num_blocks == 0)
+  {
+    vtkWarningMacro(<< "Neither physical nor parametric geometries are "
+                       "active. No output produced.");
+
     return 1;
+  }
 
-
-  mb->SetNumberOfBlocks(num_blocks);
 
   // Creating blocks for the physical and parametric geometries.
+  mb->SetNumberOfBlocks(num_blocks);
   for (unsigned int i = 0; i < num_blocks; ++i)
     mb->SetBlock(i, vtkSmartPointer<vtkMultiBlockDataSet>::New());
 
@@ -351,7 +380,6 @@ create_grids(vtkMultiBlockDataSet *const mb)
   if (new_create_physical_mesh)
   {
     mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Physical mesh");
-
 
     vtkMultiBlockDataSet *const phys_block =
       vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
@@ -507,12 +535,13 @@ set_num_vis_elements(int arg1, int arg2, int arg3,
     if (arg2 < 2) arr[1] = 1;
     if (arg3 < 2) arr[2] = 1;
 
-    vtkWarningMacro(<< "In IgatoolsParaViewReader invalid specified number of visualization elements "
-                    << "per Bezier element for the " << mesh_type << " mesh("
-                    << arg1 << ", " << arg2 << ", " << arg3 << "). "
-                    << "All the values must be >= 1.\n"
-                    << "The number of elements was automatically set to ("
-                    << arr[0] << ", " << arr[1] << ", " << arr[2] << ").\n");
+    vtkWarningMacro(<< "In IgatoolsParaViewReader invalid specified "
+                    << "number of visualization elements per Bezier "
+                    << "for the " << mesh_type << " mesh(" << arg1
+                    << ", " << arg2 << ", " << arg3 << "). All the values"
+                    << " must be >= 1.\nThe number of elements was "
+                    << "automatically set to (" << arr[0] << ", "
+                    << arr[1] << ", " << arr[2] << ").\n");
   }
 }
 
@@ -801,7 +830,7 @@ GetPhysGeomArrayStatus(const char *name)
 
 void
 IgatoolsParaViewReader::
-SetPhysGeomArrayStatus(const char *name, int en)
+SetPhysGeomArrayStatus(const char *name, int enable)
 {
   // Note: sometimes this function is called before parsing and
   // names gotten from Previous ParaView session are parsed.
@@ -809,9 +838,9 @@ SetPhysGeomArrayStatus(const char *name, int en)
   if (grid_gen_ != nullptr)
   {
     const auto name_str = string(name);
-    if (grid_gen_->get_physical_grid_status(name_str) != en)
+    if (grid_gen_->get_physical_grid_status(name_str) != enable)
     {
-      grid_gen_->set_physical_grid_status(name_str, en);
+      grid_gen_->set_physical_grid_status(name_str, enable);
       this->Modified();
     }
   }
@@ -852,7 +881,7 @@ GetParmGeomArrayStatus(const char *name)
 
 void
 IgatoolsParaViewReader::
-SetParmGeomArrayStatus(const char *name, int en)
+SetParmGeomArrayStatus(const char *name, int enable)
 {
   // Note: sometimes this function is called before parsing and
   // names gotten from Previous ParaView session are parsed.
@@ -860,9 +889,9 @@ SetParmGeomArrayStatus(const char *name, int en)
   if (grid_gen_ != nullptr)
   {
     const auto name_str = string(name);
-    if (grid_gen_->get_parametric_grid_status(name_str) != en)
+    if (grid_gen_->get_parametric_grid_status(name_str) != enable)
     {
-      grid_gen_->set_parametric_grid_status(name_str, en);
+      grid_gen_->set_parametric_grid_status(name_str, enable);
       this->Modified();
     }
   }
