@@ -64,8 +64,8 @@ template <class Domain>
 auto
 VtkIgaSolidGridGenerator<Domain>::
 create_grid(const DomainPtr_ domain,
-         const GridInfoPtr_ grid_info,
-         const ObjContPtr_t_ objs_container) -> VtkGridPtr_
+            const GridInfoPtr_ grid_info,
+            const ObjContPtr_t_ objs_container) -> VtkGridPtr_
 {
   VtkIgaSolidGridGenerator generator(domain, grid_info, objs_container);
   return generator.create_grid();
@@ -86,7 +86,7 @@ create_grid() const -> VtkGridPtr_
   else // VTK structured grid.
     grid = this->create_grid_vts();
 
-  this->create_point_data_dim_codim<dim, space_dim - dim> (grid->GetPointData());
+//  this->create_point_data_dim_codim<dim, space_dim - dim> (grid->GetPointData());
 
   return grid;
 }

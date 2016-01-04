@@ -145,83 +145,23 @@ private:
   using DomainPtrs_ = as_fusion_vector_shared_ptr<ValidDomains_>::type;
   using FunctionPtrs_ = as_fusion_vector_shared_ptr<ValidFunctions_>::type;
 
-//  /**
-//   * Valid grid generators.
-//   */
-//  typedef boost::mpl::vector<
-//          GridGen_<1, 0>,
-//          GridGen_<1, 1>,
-//          GridGen_<1, 2>,
-//          GridGen_<2, 0>,
-//          GridGen_<2, 1>,
-//          GridGen_<3, 0> > ValidGridGens_;
-
-//  template< class T >
-//  struct as_fusion_vector_const_shared_ptr
-//  {
-//    /**
-//     * This functor transform a <tt>boost::mpl::vector</tt> of types into a
-//     * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt>s of the
-//     * <tt>const</tt> types.
-//     */
-//
-//    typedef typename boost::fusion::result_of::as_vector<
-//    typename boost::mpl::transform<T,
-//        std::shared_ptr<boost::add_const<boost::mpl::_1>>>::type>::type type;
-//  };
 
   template< class T >
   struct as_fusion_vector_const_shared_ptr
   {
-    /**
-     * This functor transform a <tt>boost::mpl::vector</tt> of types into a
-     * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt>s of the
-     * <tt>const</tt> types.
-     */
+  private:
+      template <class S>
+      using Pair_ = boost::fusion::pair<S, SafeSTLVector<GridGenPtr_<S>>>;
 
-//    typedef typename boost::fusion::result_of::as_vector<
-//    typename boost::mpl::transform<T,
-//        SafeSTLVector<GridGenPtr_<boost::mpl::_1> >>::type>::type type;
-
-    typedef typename boost::fusion::result_of::as_vector<
-    typename boost::mpl::transform<T,
-        SafeSTLVector<GridGenPtr_<boost::mpl::_1> >>::type>::type type;
+  public:
+      typedef typename boost::fusion::result_of::as_map<
+              typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
   };
-//  template <class T>
-//  struct as_fusion_map
-//  {
-//    /**
-//     * This functor transform a sequence of types @ref T into a
-//     * <tt>boost::fusion::map</tt> composed of <tt>pair</tt>s of the form
-//     * <tt>pair<T, SafeSTLVector<shared_ptr<T>></tt>.
-//     */
-//
-//  private:
-//    template <class S>
-//    using Pair_ = boost::fusion::pair<S, SafeSTLVector<std::shared_ptr<S>>>;
-//
-//  public:
-//    typedef typename boost::fusion::result_of::as_map<
-//    typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
-//  };
 
   /**
    * Basic container for grid generators.
    */
   using GridGensContainer_ = as_fusion_vector_const_shared_ptr<ValidDomains_>::type;
-
-//  /**
-//   * Shared pointer type of the grid generator.
-//   */
-//  template <int dim, int codim>
-//  using GridGenPtr_ = std::shared_ptr<GridGen_<dim, codim>>;
-//
-//  /**
-//   * Type for the map containing the grid generators.
-//   */
-//  template <int dim, int codim>
-//  using GenMap_ = std::map<Index, GridGenPtr_<dim, codim>>;
-
 
   /// Grid information shared pointer type.
   typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
@@ -341,12 +281,12 @@ public:
   /**
    * Returns the name of the @p id physical grid.
    * */
-  std::string get_physical_grid_name(const Index &id) const;
+  const char * get_physical_grid_name(const Index &id) const;
 
   /**
    * Returns the name of the @p id parametric grid.
    */
-  std::string get_parametric_grid_name(const Index &id) const;
+  const char * get_parametric_grid_name(const Index &id) const;
 
   /**
    * Returns the status (active/inactive) of the physical grid named
@@ -398,6 +338,49 @@ public:
    * TODO: to document.
    */
   void set_parametric_knot_grids(vtkMultiBlockDataSet *const mb);
+
+
+private:
+  /**
+   * TODO: to document.
+   */
+  static Size get_number_grids(const GridGensContainer_ generators);
+
+  /**
+   * TODO: to document.
+   */
+  static Size get_number_active_grids(const GridGensContainer_ generators);
+
+  /**
+   * TODO: to document.
+   */
+  static const char *get_grid_name(const GridGensContainer_ generators,
+                                   const Index &id);
+
+  /**
+   * TODO: to document.
+   */
+  static bool get_grid_status(const GridGensContainer_ generators,
+                              const std::string &name);
+
+  /**
+   * TODO: to document.
+   */
+  static void set_grid_status(const GridGensContainer_ generators,
+                              const std::string &name,
+                              const bool status);
+
+  /**
+   * TODO: to document.
+   */
+  static void set_solid_grids(const GridGensContainer_ generators,
+                              vtkMultiBlockDataSet *const mb);
+
+  /**
+   * TODO: to document.
+   */
+  static void set_knot_grids(const GridGensContainer_ generators,
+                             vtkMultiBlockDataSet *const mb);
 
 };
 

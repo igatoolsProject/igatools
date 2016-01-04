@@ -812,8 +812,8 @@ IgatoolsParaViewReader::
 GetPhysGeomArrayName(int index)
 {
   Assert(grid_gen_ != nullptr, ExcNullPtr());
-  const string &name = grid_gen_->get_physical_grid_name(index);
-  return name.c_str();
+  const char *name = grid_gen_->get_physical_grid_name(index);
+  return name;
 }
 
 
@@ -863,8 +863,8 @@ IgatoolsParaViewReader::
 GetParmGeomArrayName(int index)
 {
   Assert(grid_gen_ != nullptr, ExcNullPtr());
-  const string &name = grid_gen_->get_parametric_grid_name(index);
-  return name.c_str();
+  const char *name = grid_gen_->get_parametric_grid_name(index);
+  return name;
 }
 
 

@@ -45,9 +45,20 @@ VtkIgaKnotGridGenerator<Domain>::
 create_grid(const DomainPtr_ domain,
             const GridInfoPtr_ grid_info) -> VtkGridPtr_
 {
-    Assert (domain != nullptr, ExcNullPtr());
+    return Self_::create_grid<Domain::dim>(domain, grid_info);
+}
 
 
+
+template <class Domain>
+template<int aux_dim>
+auto
+VtkIgaKnotGridGenerator<Domain>::
+create_grid(const DomainPtr_ domain,
+            const GridInfoPtr_ grid_info) ->
+EnableIf<aux_dim == 1, VtkGridPtr_>
+{
+  Assert (domain != nullptr, ExcNullPtr());
 
   // Implementation for 1D case.
   // In this case the grid consists on a set of points corresponding
