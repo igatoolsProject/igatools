@@ -272,7 +272,8 @@ By default, if <tt>Name</tt> is not defined, it is set to a void string.
 
 Description of the @ref functions::LinearFunction XML format:
 @code{.xml}
-<LinearFunction LocalObjectId="12" Dim="2" Range="2" Rank="1" Codim="0">
+<LinearFunction LocalObjectId="12" Dim="2" Range="2" Codim="0">
+  <Domain GetFromLocalObjectId="0"/>
   <A> 1.0 0.0 0.0 1.0 </A>
   <b> 1.0 2.0 </b>
   <!-- The following entry is optional. -->
