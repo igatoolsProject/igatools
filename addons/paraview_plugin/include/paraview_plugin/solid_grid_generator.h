@@ -26,6 +26,13 @@
 #include <igatools/utils/safe_stl_vector.h>
 #include <igatools/utils/tensor_size.h>
 
+#include <igatools/base/objects_container.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/functions/function.h>
+
+#include <boost/mpl/lambda.hpp>
+#include <boost/mpl/remove_if.hpp>
+
 class vtkPointSet;
 class vtkPoints;
 class vtkPointData;
@@ -91,6 +98,40 @@ private:
    */
   typedef typename std::shared_ptr<ObjectsContainer> ObjContPtr_t_;
 
+  template <class T>
+  struct IsInValidFunction :
+          boost::mpl::or_<
+          boost::mpl::bool_<(T::dim != Domain::dim)>,
+          boost::mpl::bool_<(T::space_dim != Domain::space_dim)>>
+          {};
+
+  template <class T>
+  struct IsInValidGridFunction :
+          boost::mpl::or_<
+          boost::mpl::bool_<(T::dim != Domain::dim)>,
+          boost::mpl::bool_<(Domain::space_dim != Domain::dim)>>
+          {};
+
+  /**
+   * Valid functions.
+   */
+  using ValidFuncs_ = typename boost::fusion::result_of::as_vector<
+          typename boost::mpl::transform<
+            typename boost::mpl::remove_if<
+              InstantiatedTypes::Functions,
+              typename boost::mpl::lambda< IsInValidFunction< boost::mpl::_1 > >::type>::type,
+            std::shared_ptr<boost::mpl::_1>>::type>::type;
+
+  /**
+   * Valid grid functions.
+   */
+  using ValidGridFuncs_ = typename boost::fusion::result_of::as_vector<
+          typename boost::mpl::transform<
+            typename boost::mpl::remove_if<
+              InstantiatedTypes::GridFunctions,
+              typename boost::mpl::lambda< IsInValidGridFunction< boost::mpl::_1 > >::type>::type,
+            std::shared_ptr<boost::mpl::_1>>::type>::type;
+
   /**
    * Constructor.
    */
@@ -114,6 +155,7 @@ public:
    * Creates and returns the vtk grid for the visualization.
    */
   static VtkGridPtr_ create_grid(const DomainPtr_ domain,
+                                 const bool is_physical,
                                  const GridInfoPtr_ grid_info,
                                  const ObjContPtr_t_ obj_container);
 
@@ -122,7 +164,7 @@ private:
   /**
    * Creates and returns the vtk grid for the visualization.
    */
-  VtkGridPtr_ create_grid() const;
+  VtkGridPtr_ create_grid(const bool is_physical) const;
 
   /**
    * Shared pointer of the domain (i.e. the geometry).
@@ -230,47 +272,15 @@ private:
 
   /**
    * Creates the point data associated to the mapping.
+   * TODO: to document.
    */
-  template <int range, int rank>
-  void create_point_data(vtkPointData *const point_data) const;
+  void create_point_data_physical(vtkPointData *const point_data) const;
 
   /**
-   * Auxiliar method for creating the point data associated to the mapping
-   * for dim = 1 and codim = 0.
+   * Creates the point data associated to the mapping.
+   * TODO: to document.
    */
-  template <int aux_dim, int aux_codim>
-  void
-  create_point_data_dim_codim(vtkPointData *const data,
-                              typename std::enable_if_t<(aux_dim == 1 && aux_codim == 0)>* = 0) const;
-
-  /**
-   * Auxiliar method for creating the point data associated to the mapping
-   * for the cases that are not dim = 1 and codim = 0.
-   */
-  template <int aux_dim, int aux_codim>
-  void
-  create_point_data_dim_codim(vtkPointData *const data,
-                              typename std::enable_if_t<!(aux_dim == 1 && aux_codim == 0)>* = 0) const;
-
-
-#if 0
-  /**
-   * Copies data from a igatools tensor to a vtk tuple like structure.
-   */
-  void tensor_to_tuple(const Tdouble t, Real *const tuple, int &pos) const;
-
-  /**
-   * Copies data from a igatools tensor to a vtk tuple like structure.
-   */
-  template <class Tensor>
-  void tensor_to_tuple(const Tensor &t, Real *const tuple, int &pos) const;
-
-  /**
-   * Copies data from a igatools tensor to a vtk tuple like structure.
-   */
-  template <class Tensor>
-  void tensor_to_tuple(const Tensor &t, Real *const tuple) const;
-#endif
+  void create_point_data_parametric(vtkPointData *const point_data) const;
 
 };
 

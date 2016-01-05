@@ -29,15 +29,18 @@
 
 #include <paraview_plugin/solid_grid_generator.h>
 
-#include <boost/range/irange.hpp>
-
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain_element.h>
-#include <igatools/base/objects_container.h>
 #include <igatools/utils/multi_array_utils.h>
 #include <paraview_plugin/grid_information.h>
 
+#include <igatools/functions/function_handler.h>
+#include <igatools/functions/function_element.h>
+
 using std::shared_ptr;
+using namespace boost::fusion;
+
+using std::remove_reference;
 
 IGA_NAMESPACE_OPEN
 
@@ -64,11 +67,12 @@ template <class Domain>
 auto
 VtkIgaSolidGridGenerator<Domain>::
 create_grid(const DomainPtr_ domain,
+            const bool is_physical,
             const GridInfoPtr_ grid_info,
             const ObjContPtr_t_ objs_container) -> VtkGridPtr_
 {
   VtkIgaSolidGridGenerator generator(domain, grid_info, objs_container);
-  return generator.create_grid();
+  return generator.create_grid(is_physical);
 }
 
 
@@ -76,7 +80,7 @@ create_grid(const DomainPtr_ domain,
 template <class Domain>
 auto
 VtkIgaSolidGridGenerator<Domain>::
-create_grid() const -> VtkGridPtr_
+create_grid(const bool is_physical) const -> VtkGridPtr_
 {
   VtkGridPtr_ grid;
 
@@ -86,7 +90,10 @@ create_grid() const -> VtkGridPtr_
   else // VTK structured grid.
     grid = this->create_grid_vts();
 
-//  this->create_point_data_dim_codim<dim, space_dim - dim> (grid->GetPointData());
+  if (is_physical)
+      this->create_point_data_physical(grid->GetPointData());
+  else
+      this->create_point_data_parametric(grid->GetPointData());
 
   return grid;
 }
@@ -107,7 +114,7 @@ VtkGridPtr_
 
   const auto n_intervals = domain_->get_grid_function()->get_grid()->get_num_intervals();
   int grid_dim[3] = { 1, 1, 1 };
-  for (const auto &dir : boost::irange(0, dim))
+  for (int dir = 0; dir < dim; ++dir)
     grid_dim[dir] = (n_vis_elements_[dir] + 1) * n_intervals[dir];
   vts_grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
 
@@ -203,7 +210,7 @@ create_points() const
   auto elem = domain_->cbegin();
   const auto end = domain_->cend();
 
-  domain_cache_handler->init_cache(elem,quad_);
+  domain_cache_handler->init_cache(elem, quad_);
 
   for (auto pm_el = points_map_.cbegin(); elem != end; ++elem, ++pm_el)
   {
@@ -214,7 +221,7 @@ create_points() const
     for (const auto &mask : points_mask_)
     {
       const auto &point = element_vertices_tmp[mask];
-      for (const auto &dir : boost::irange(0, space_dim))
+      for (int dir = 0; dir < space_dim; ++dir)
         point_tmp[dir] = point[dir];
       points->SetPoint(*pm++, point_tmp);
     }
@@ -277,7 +284,7 @@ init_points_info()
         // For the case 1D, this conditions is never fulfilled, no
         // points will be removed (this is what is desired).
         Size n_odd_values = 0;
-        for (const auto &dir : boost::irange(0, dim))
+        for (int dir = 0; dir < dim; ++dir)
           n_odd_values += tensor_id[dir] % 2;
 
         if (n_odd_values < 2) // It's on an edge.
@@ -340,7 +347,7 @@ init_points_info()
     TensorSize <dim> n_pts_per_mesh; // Number of points per direction of
     // VTK structured grid.
     const auto n_intervals = cartesian_grid.get_num_intervals();
-    for (const auto &dir : boost::irange(0, dim))
+    for (int dir = 0; dir < dim; ++dir)
       n_pts_per_mesh[dir] = n_intervals[dir]
                             * n_pts_dir_per_bezier_elem[dir];
 
@@ -367,7 +374,7 @@ init_points_info()
       const auto &elem_t_id = elem.get_index().get_tensor_index();
 
       // Computing the tensor index of the first point of the element.
-      for (const auto &dir : boost::irange(0, dim))
+      for (int dir = 0; dir < dim; ++dir)
         pt_mesh_t_offset[dir] = elem_t_id[dir]
                                 * n_pts_dir_per_bezier_elem[dir];
 
@@ -381,7 +388,7 @@ init_points_info()
 
         // Computing the tensor index of the point referred to the number
         // of points into the whole mesh.
-        for (const auto &dir : boost::irange(0, dim))
+        for (int dir = 0; dir < dim; ++dir)
           pt_mesh_t_id[dir] = pt_mesh_t_offset[dir]
                               + pt_elem_t_id[dir];
 
@@ -402,7 +409,7 @@ create_visualization_quadrature()
 {
   const Size n_pts_per_cell_dir =  grid_info_->is_quadratic() ? 3 : 2;
   TensorSize <dim> n_points;
-  for (const auto &dir : boost::irange(0, dim))
+  for (int dir = 0; dir < dim; ++dir)
     n_points[dir] = n_vis_elements_[dir] * (n_pts_per_cell_dir - 1) + 1;
 
   quad_ = QUniform <dim>::create(n_points);
@@ -457,7 +464,7 @@ create_linear_element_connectivity()
     UnitElement <dim>::template num_elem <0> ();
 
   TensorSize <dim> n_elem_bound_per_dir;
-  for (const auto &dir : boost::irange(0, dim))
+  for (int dir = 0; dir < dim; ++dir)
     n_elem_bound_per_dir[dir] = n_vis_elements_[dir] + 1;
 
   // This grid is going to help in building the connectivity.
@@ -784,30 +791,128 @@ create_quadratic_element_connectivity(
 
 
 template <class Domain>
-template <int aux_dim, int aux_codim>
 void
 VtkIgaSolidGridGenerator<Domain>::
-create_point_data_dim_codim(vtkPointData *const point_data,
-                            typename std::enable_if_t <(aux_dim == 1 && aux_codim == 0)>*) const
+create_point_data_physical(vtkPointData *const point_data) const
 {
-  this->template create_point_data <1, 1> (point_data);
+  ValidFuncs_ valid_f_ptr_types;
+  for_each(valid_f_ptr_types, [&](const auto &ptr_type)
+  {
+    using FunctionType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+
+
+    // Constant functions from the objects container.
+    for (const auto &id : objs_container_->template get_const_object_ids<FunctionType>())
+    {
+        const auto func = objs_container_->template get_const_object<FunctionType>(id);
+
+        // Checking if func corresponds to the domain of the generator.
+        if (func->get_domain() == domain_)
+        {
+            using Value = typename FunctionType::Value;
+            using _D0 = typename function_element::template _D<0>;
+            using Flags = function_element::Flags;
+
+            const int n_bezier_elements = points_map_.size();
+            const vtkIdType n_tuples = n_bezier_elements * points_mask_.size();
+
+            auto arr = vtkSmartPointer <vtkDoubleArray>::New();
+
+            arr->SetName(func->get_name().c_str());
+            arr->SetNumberOfComponents(Value::size);
+            arr->SetNumberOfTuples(n_tuples);
+
+            auto func_handler = func->create_cache_handler();
+            func_handler->set_element_flags(Flags::D0);
+
+            auto elem = func->cbegin();
+            const auto end = func->cend();
+
+            func_handler->init_cache(*elem, quad_);
+
+            auto pnm_it = points_map_.cbegin();
+            for (; elem != end; ++elem, ++pnm_it)
+            {
+                func_handler->fill_element_cache(*elem);
+
+                auto pnm = pnm_it->cbegin();
+                auto values = elem->template get_values_from_cache<_D0, dim>(0);
+                for (const auto &pm : points_mask_)
+                    arr->SetTuple(*pnm++, values[pm].get_flat_values().data());
+            }
+
+            point_data->AddArray(arr.Get());
+
+        }
+    }
+  });
+
 }
 
 
 
 template <class Domain>
-template <int aux_dim, int aux_codim>
 void
 VtkIgaSolidGridGenerator<Domain>::
-create_point_data_dim_codim(vtkPointData *const point_data,
-                            typename std::enable_if_t <!(aux_dim == 1 && aux_codim == 0)>*) const
+create_point_data_parametric(vtkPointData *const point_data) const
 {
-  this->template create_point_data <1, 1> (point_data);
-  this->template create_point_data <space_dim, 1> (point_data);
+  ValidGridFuncs_ valid_gf_ptr_types;
+  for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
+  {
+    using GridFunctionType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+
+
+    // Constant functions from the objects container.
+    for (const auto &id : objs_container_->template get_const_object_ids<GridFunctionType>())
+    {
+        const auto grid_func = objs_container_->template get_const_object<GridFunctionType>(id);
+        const auto grid = domain_->get_grid_function()->get_grid();
+
+        // Checking if func corresponds to the domain of the generator.
+        if (grid_func->get_grid() == grid)
+        {
+            using Value = typename GridFunctionType::Value;
+            using _D0 = typename grid_function_element::template _D<0>;
+            using Flags = grid_function_element::Flags;
+
+            const int n_bezier_elements = points_map_.size();
+            const vtkIdType n_tuples = n_bezier_elements * points_mask_.size();
+
+            auto arr = vtkSmartPointer <vtkDoubleArray>::New();
+
+            arr->SetName(grid_func->get_name().c_str());
+            arr->SetNumberOfComponents(Value::size);
+            arr->SetNumberOfTuples(n_tuples);
+
+            auto grid_func_handler = grid_func->create_cache_handler();
+            grid_func_handler->set_element_flags(Flags::D0);
+
+            auto elem = grid_func->cbegin();
+            const auto end = grid_func->cend();
+
+            grid_func_handler->init_cache(*elem, quad_);
+
+            auto pnm_it = points_map_.cbegin();
+            for (; elem != end; ++elem, ++pnm_it)
+            {
+                grid_func_handler->fill_element_cache(*elem);
+
+                auto pnm = pnm_it->cbegin();
+                auto values = elem->template get_values_from_cache<_D0, dim>(0);
+                for (const auto &pm : points_mask_)
+                    arr->SetTuple(*pnm++, values[pm].get_flat_values().data());
+            }
+
+            point_data->AddArray(arr.Get());
+        }
+    }
+  });
+
 }
 
 
 
+#if 0
 template <class Domain>
 template <int range, int rank>
 void
@@ -816,7 +921,6 @@ create_point_data(vtkPointData *const point_data) const
 {
     AssertThrow (false, ExcNotImplemented());
 
-#if 0
   // Getting the functions associated with the map.
   const auto &funcs_map =
     funcs_container_->
@@ -866,42 +970,6 @@ create_point_data(vtkPointData *const point_data) const
 
     point_data->AddArray(arr.Get());
   }
-#endif
-}
-
-
-
-#if 0
-template <class Domain>
-void
-VtkIgaSolidGridGenerator<Domain>::
-tensor_to_tuple(const Tdouble t, Real *const tuple, int &pos) const
-{
-  *(tuple + pos++) = t;
-}
-
-
-
-template <class Domain>
-template <class Tensor>
-void
-VtkIgaSolidGridGenerator<Domain>::
-tensor_to_tuple(const Tensor &t, Real *const tuple, int &pos) const
-{
-  for (int i = 0; i < Tensor::size; ++i)
-    tensor_to_tuple(t[i], tuple, pos);
-}
-
-
-
-template <class Domain>
-template <class Tensor>
-void
-VtkIgaSolidGridGenerator<Domain>::
-tensor_to_tuple(const Tensor &t, Real *const tuple) const
-{
-  int pos = 0;
-  tensor_to_tuple(t, tuple, pos);
 }
 #endif
 

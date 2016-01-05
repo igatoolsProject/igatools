@@ -127,17 +127,17 @@ private:
   /**
    * Valid grids functions.
    */
-  using ValidGridFuncs_ = boost::mpl::remove_if<
+  using ValidGridFuncs_ = typename boost::mpl::remove_if<
       InstantiatedTypes::GridFunctions,
-      boost::mpl::lambda< IsInValidDim< boost::mpl::_1 > >::type
+      typename boost::mpl::lambda< IsInValidDim< boost::mpl::_1 > >::type
       >::type;
 
   /**
    * Valid functions.
    */
-  using ValidFunctions_ = boost::mpl::remove_if<
+  using ValidFunctions_ = typename boost::mpl::remove_if<
       InstantiatedTypes::Functions,
-      boost::mpl::lambda< IsInValidDomain< boost::mpl::_1 > >::type
+      typename boost::mpl::lambda< IsInValidDomain< boost::mpl::_1 > >::type
       >::type;
 
   using GridPtrs_ = as_fusion_vector_shared_ptr<ValidGrids_>::type;

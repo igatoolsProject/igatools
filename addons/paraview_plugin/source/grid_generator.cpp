@@ -154,7 +154,7 @@ get_solid_grid() -> VtkGridPtr_
   {
     // Recomputing solid grid.
     solid_grid_ = VtkIgaSolidGridGenerator<Domain>::
-            create_grid(domain_, solid_grid_info_, objs_container_);
+            create_grid(domain_, is_physical_, solid_grid_info_, objs_container_);
 
     recompute_solid_ = false;
   }
