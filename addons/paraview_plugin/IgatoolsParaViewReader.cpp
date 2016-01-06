@@ -29,10 +29,9 @@
 #include <igatools/io/xml_document.h>
 #include <igatools/io/objects_container_xml_reader.h>
 #include <igatools/base/objects_container.h>
-#include <paraview_plugin/grid_generator_container.h>
-#include <paraview_plugin/grid_information.h>
-
 #include <sys/stat.h>
+#include "include/paraview_plugin/vtk_iga_grid_container.h"
+#include "include/paraview_plugin/vtk_iga_grid_information.h"
 
 
 using std::get;
@@ -165,7 +164,7 @@ parse_file()
 
   // Physical control grid.
   const auto phys_ctr = VtkControlGridInformation::create
-          (phys_ctr_grid_type_ == vtkGridType::Structured);
+          (phys_ctr_grid_type_ == VtkGridType::Structured);
 
   // Parametric solid grid.
   const auto parm_sol = VtkGridInformation::create
@@ -219,7 +218,7 @@ parse_file()
     }
 #endif
 
-    grid_gen_ = VtkIgaGridGeneratorContainer::create
+    grid_gen_ = VtkIgaGridContainer::create
                 (objs_container_, phys_sol, phys_knt, phys_ctr,
                  parm_sol, parm_knt);
 
@@ -230,7 +229,7 @@ parse_file()
     vtkErrorMacro(<< e.what());
 
     objs_container_ = ObjectsContainer::create();
-    grid_gen_ = VtkIgaGridGeneratorContainer::create
+    grid_gen_ = VtkIgaGridContainer::create
                 (objs_container_, phys_sol, phys_knt, phys_ctr,
                  parm_sol, parm_knt);
 
@@ -242,7 +241,7 @@ parse_file()
                   << file_name_str << ".");
 
     objs_container_ = ObjectsContainer::create();
-    grid_gen_ = VtkIgaGridGeneratorContainer::create
+    grid_gen_ = VtkIgaGridContainer::create
                 (objs_container_, phys_sol, phys_knt, phys_ctr,
                  parm_sol, parm_knt);
 
@@ -266,7 +265,7 @@ update_grid_info()
 
   // Physical control grid.
   const auto phys_ctr = VtkControlGridInformation::create
-                        (phys_ctr_grid_type_ == vtkGridType::Structured);
+                        (phys_ctr_grid_type_ == VtkGridType::Structured);
 
   // Parametric solid grid.
   const auto parm_sol = VtkGridInformation::create
@@ -478,7 +477,7 @@ void
 IgatoolsParaViewReader::
 set_grid_type(int arg,
               const char *const name,
-              vtkGridType &type)
+              VtkGridType &type)
 {
 
   vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
@@ -487,23 +486,23 @@ set_grid_type(int arg,
   switch (arg)
   {
     case 0:
-      if (type != vtkGridType::UnstructuredQuadratic)
+      if (type != VtkGridType::UnstructuredQuadratic)
       {
-        type = vtkGridType::UnstructuredQuadratic;
+        type = VtkGridType::UnstructuredQuadratic;
         this->Modified();
       }
       break;
     case 1:
-      if (type != vtkGridType::UnstructuredLinear)
+      if (type != VtkGridType::UnstructuredLinear)
       {
-        type = vtkGridType::UnstructuredLinear;
+        type = VtkGridType::UnstructuredLinear;
         this->Modified();
       }
       break;
     case 2:
-      if (type != vtkGridType::Structured)
+      if (type != VtkGridType::Structured)
       {
-        type = vtkGridType::Structured;
+        type = VtkGridType::Structured;
         this->Modified();
       }
       break;
@@ -612,7 +611,7 @@ IgatoolsParaViewReader::
 SetGridTypePhysicalKnot(int arg)
 {
   this->set_grid_type(arg, "GridTypePhysicalKnot", phys_knt_grid_type_);
-  Assert(phys_knt_grid_type_ != vtkGridType::Structured,
+  Assert(phys_knt_grid_type_ != VtkGridType::Structured,
          ExcMessage("Knot mesh must be unstructured."));
 }
 
@@ -623,7 +622,7 @@ IgatoolsParaViewReader::
 SetGridTypePhysicalControl(int arg)
 {
   this->set_grid_type(arg, "GridTypePhysicalControl", phys_ctr_grid_type_);
-  Assert(phys_ctr_grid_type_ != vtkGridType::UnstructuredQuadratic,
+  Assert(phys_ctr_grid_type_ != VtkGridType::UnstructuredQuadratic,
          ExcMessage("Control mesh cannot be quadratic."));
 }
 
@@ -643,7 +642,7 @@ IgatoolsParaViewReader::
 SetGridTypeParametricKnot(int arg)
 {
   this->set_grid_type(arg, "GridTypeParametricKnot", parm_knt_grid_type_);
-  Assert(parm_knt_grid_type_ != vtkGridType::Structured,
+  Assert(parm_knt_grid_type_ != VtkGridType::Structured,
          ExcMessage("Knot mesh must be unstructured."));
 }
 

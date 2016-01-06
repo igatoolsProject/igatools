@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef VTK_GRID_GENERATOR_H_
-#define VTK_GRID_GENERATOR_H_
+#ifndef __VTK_IGA_GRID_H_
+#define __VTK_IGA_GRID_H_
 
 #include <vtkSmartPointer.h>
 
@@ -35,13 +35,10 @@ struct VtkGridInformation;
 struct VtkControlGridInformation;
 
 template <int dim, int space_dim> class IgGridFunction;
-template <class Domain> class VtkIgaSolidGridGenerator;
-template <class Domain> class VtkIgaKnotGridGenerator;
-template <class Domain> class VtkIgaControlGridGenerator;
 
 
 template <class Domain>
-class VtkIgaGridGenerator
+class VtkIgaGrid
 {
 private:
 
@@ -55,7 +52,7 @@ private:
   static const int codim = space_dim - dim;
 
   /// Self type.
-  typedef VtkIgaGridGenerator Self_;
+  typedef VtkIgaGrid Self_;
 
   /// Self shared pointer type.
   typedef std::shared_ptr<Self_> SelfPtr_;
@@ -80,16 +77,6 @@ private:
   typedef std::shared_ptr<ObjectsContainer> ObjContPtr_;
 
   /**
-   * Vtk solid grid generator type.
-   */
-  typedef std::shared_ptr<VtkIgaSolidGridGenerator<Domain>> SolGeneratorPtr_;
-
-  /**
-   * Vtk knot grid generator type.
-   */
-  typedef std::shared_ptr<VtkIgaKnotGridGenerator<Domain>> KntGeneratorPtr_;
-
-  /**
    * Alias for control mesh grid information shared pointer.
    */
   using ControlGridInfoPtr_ = std::shared_ptr<VtkControlGridInformation>;
@@ -97,16 +84,16 @@ private:
   /**
    * Constructor, copy and assignment operators not allowed to be used.
    */
-  VtkIgaGridGenerator() = delete;
-  VtkIgaGridGenerator(const Self_ &) = delete;
-  VtkIgaGridGenerator(const Self_ &&) = delete;
+  VtkIgaGrid() = delete;
+  VtkIgaGrid(const Self_ &) = delete;
+  VtkIgaGrid(const Self_ &&) = delete;
   Self_ &operator=(const Self_ &) = delete;
   Self_ &operator=(const Self_ &&) = delete;
 
   /**
    * Constructor for grids.
    */
-  VtkIgaGridGenerator(const DomainPtr_ domain,
+  VtkIgaGrid(const DomainPtr_ domain,
                       const Index &id,
                       const GridInfoPtr_ solid_grid_info,
                       const GridInfoPtr_ knot_grid_info,
@@ -237,4 +224,4 @@ protected:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // VTK_GRID_GENERATOR_H_
+#endif // __VTK_IGA_GRID_H_

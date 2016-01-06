@@ -18,16 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <paraview_plugin/grid_generator_container.h>
-
-#include <paraview_plugin/grid_generator.h>
-#include <paraview_plugin/grid_information.h>
-
+#include <paraview_plugin/vtk_iga_grid.h>
 #include <igatools/geometry/grid_function_lib.h>
 
 #include <vtkMultiBlockDataSet.h>
 #include <vtkInformation.h>
 #include <vtkPointSet.h>
+#include "../include/paraview_plugin/vtk_iga_grid_container.h"
+#include "../include/paraview_plugin/vtk_iga_grid_information.h"
 
 
 using namespace boost::fusion;
@@ -40,8 +38,8 @@ using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
-VtkIgaGridGeneratorContainer::
-VtkIgaGridGeneratorContainer(const ObjContPtr_ objs_container,
+VtkIgaGridContainer::
+VtkIgaGridContainer(const ObjContPtr_ objs_container,
                              const GridInfoPtr_ phys_solid_info,
                              const GridInfoPtr_ phys_knot_info,
                              const ControlGridInfoPtr_ phys_control_info,
@@ -71,7 +69,7 @@ VtkIgaGridGeneratorContainer(const ObjContPtr_ objs_container,
 
 
 auto
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 create(const ObjContPtr_ objs_container,
        const GridInfoPtr_ phys_solid_info,
        const GridInfoPtr_ phys_knot_info,
@@ -86,7 +84,7 @@ create(const ObjContPtr_ objs_container,
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 fill_objects_container(const ObjContPtr_ objs_container_old)
 {
   // Adding all the constant and non constant functions to the new container.
@@ -250,7 +248,7 @@ fill_objects_container(const ObjContPtr_ objs_container_old)
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_names()
 {
   FunctionPtrs_ valid_f_ptr_types;
@@ -354,7 +352,7 @@ set_names()
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 build_generators()
 {
   // Building physical generators.
@@ -372,7 +370,7 @@ build_generators()
 
         const bool is_active = true;
 
-        const auto gg = VtkIgaGridGenerator<DomainType>::
+        const auto gg = VtkIgaGrid<DomainType>::
                 create(domain,  domain_id, phys_solid_info_,
                        phys_knot_info_, phys_control_info_,
                        objs_container_, is_active, is_physical);
@@ -406,7 +404,7 @@ build_generators()
         const auto domain = DomainType::const_create(id_func);
         const_pointer_cast<DomainType>(domain)->set_name(grid->get_name());
 
-        const auto gg = VtkIgaGridGenerator<DomainType>::
+        const auto gg = VtkIgaGrid<DomainType>::
                 create(domain, domain_id, parm_solid_info_,
                        parm_knot_info_, phys_control_info_,
                        objs_container_, is_active, is_physical);
@@ -421,7 +419,7 @@ build_generators()
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 update(const GridInfoPtr_ phys_solid_info,
        const GridInfoPtr_ phys_knot_info,
        const ControlGridInfoPtr_ phys_control_info,
@@ -456,7 +454,7 @@ update(const GridInfoPtr_ phys_solid_info,
 
 
 Size
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_number_physical_grids() const
 {
   return Self_::get_number_grids(phys_generators_);
@@ -465,7 +463,7 @@ get_number_physical_grids() const
 
 
 Size
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_number_parametric_grids() const
 {
   return Self_::get_number_grids(parm_generators_);
@@ -474,7 +472,7 @@ get_number_parametric_grids() const
 
 
 Size
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_number_active_physical_grids() const
 {
   return Self_::get_number_active_grids(phys_generators_);
@@ -483,7 +481,7 @@ get_number_active_physical_grids() const
 
 
 Size
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_number_active_parametric_grids() const
 {
   return Self_::get_number_active_grids(parm_generators_);
@@ -492,7 +490,7 @@ get_number_active_parametric_grids() const
 
 
 Size
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_number_active_ig_grids() const
 {
   Size counter = 0;
@@ -507,7 +505,7 @@ get_number_active_ig_grids() const
 
 
 const char *
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_physical_grid_name(const Index &id) const
 {
     return Self_::get_grid_name(phys_generators_, id);
@@ -516,7 +514,7 @@ get_physical_grid_name(const Index &id) const
 
 
 const char *
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_parametric_grid_name(const Index &id) const
 {
     return Self_::get_grid_name(parm_generators_, id);
@@ -525,7 +523,7 @@ get_parametric_grid_name(const Index &id) const
 
 
 bool
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_physical_grid_status(const std::string &name) const
 {
     return Self_::get_grid_status(phys_generators_, name);
@@ -534,7 +532,7 @@ get_physical_grid_status(const std::string &name) const
 
 
 bool
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_parametric_grid_status(const std::string &name) const
 {
     return Self_::get_grid_status(parm_generators_, name);
@@ -543,7 +541,7 @@ get_parametric_grid_status(const std::string &name) const
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_physical_grid_status(const std::string &name, const bool status)
 {
     Self_::set_grid_status(phys_generators_, name, status);
@@ -552,7 +550,7 @@ set_physical_grid_status(const std::string &name, const bool status)
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_parametric_grid_status(const std::string &name, const bool status)
 {
     Self_::set_grid_status(parm_generators_, name, status);
@@ -561,7 +559,7 @@ set_parametric_grid_status(const std::string &name, const bool status)
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_physical_solid_grids(vtkMultiBlockDataSet *const mb)
 {
   Self_::set_solid_grids(phys_generators_, mb);
@@ -570,7 +568,7 @@ set_physical_solid_grids(vtkMultiBlockDataSet *const mb)
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_physical_knot_grids(vtkMultiBlockDataSet *const mb)
 {
   Self_::set_knot_grids(phys_generators_, mb);
@@ -579,7 +577,7 @@ set_physical_knot_grids(vtkMultiBlockDataSet *const mb)
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_physical_control_grids(vtkMultiBlockDataSet *const mb)
 {
   const auto active_grids = this->get_number_active_ig_grids();
@@ -607,7 +605,7 @@ set_physical_control_grids(vtkMultiBlockDataSet *const mb)
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_parametric_solid_grids(vtkMultiBlockDataSet *const mb)
 {
   Self_::set_solid_grids(parm_generators_, mb);
@@ -616,7 +614,7 @@ set_parametric_solid_grids(vtkMultiBlockDataSet *const mb)
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_parametric_knot_grids(vtkMultiBlockDataSet *const mb)
 {
   Self_::set_knot_grids(parm_generators_, mb);
@@ -625,7 +623,7 @@ set_parametric_knot_grids(vtkMultiBlockDataSet *const mb)
 
 
 Size
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_number_grids(const GridGensContainer_ generators)
 {
   Size counter = 0;
@@ -639,7 +637,7 @@ get_number_grids(const GridGensContainer_ generators)
 
 
 Size
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_number_active_grids(const GridGensContainer_ generators)
 {
   Size counter = 0;
@@ -655,7 +653,7 @@ get_number_active_grids(const GridGensContainer_ generators)
 
 
 const char *
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_grid_name(const GridGensContainer_ generators,
               const Index &id)
 {
@@ -687,7 +685,7 @@ get_grid_name(const GridGensContainer_ generators,
 
 
 bool
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 get_grid_status(const GridGensContainer_ generators,
                 const std::string &name)
 {
@@ -718,7 +716,7 @@ get_grid_status(const GridGensContainer_ generators,
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_grid_status(const GridGensContainer_ generators,
                 const std::string &name,
                 const bool status)
@@ -745,7 +743,7 @@ set_grid_status(const GridGensContainer_ generators,
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_solid_grids(const GridGensContainer_ generators,
                 vtkMultiBlockDataSet *const mb)
 {
@@ -775,7 +773,7 @@ set_solid_grids(const GridGensContainer_ generators,
 
 
 void
-VtkIgaGridGeneratorContainer::
+VtkIgaGridContainer::
 set_knot_grids(const GridGensContainer_ generators,
                vtkMultiBlockDataSet *const mb)
 {

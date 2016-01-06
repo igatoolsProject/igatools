@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __VTK_GRID_GENERATOR_CONTAINER_H_
-#define __VTK_GRID_GENERATOR_CONTAINER_H_
+#ifndef __VTK_IGA_GRID_CONTAINER_H_
+#define __VTK_IGA_GRID_CONTAINER_H_
 
 #include <igatools/base/config.h>
 
@@ -30,8 +30,6 @@
 #include <igatools/functions/function.h>
 
 #include <igatools/base/tuple_utils.h>
-#include <paraview_plugin/grid_generator.h>
-
 #include <boost/fusion/container/vector.hpp>
 #include <boost/fusion/container/map.hpp>
 
@@ -43,19 +41,21 @@
 #include <boost/mpl/arg.hpp>
 #include <boost/mpl/vector_c.hpp>
 
+#include "vtk_iga_grid.h"
+
 
 class vtkMultiBlockDataSet;
 
 IGA_NAMESPACE_OPEN
 
-class VtkIgaGridGeneratorContainer
+class VtkIgaGridContainer
 {
 private:
 
   /**
    * Self type.
    */
-  typedef VtkIgaGridGeneratorContainer Self_;
+  typedef VtkIgaGridContainer Self_;
 
   /**
    * Self shared pointer type.
@@ -66,7 +66,7 @@ private:
    * Grid generator type for @p dim and @p codim.
    */
   template <class Dmn>
-  using GridGenPtr_ = std::shared_ptr<VtkIgaGridGenerator<Dmn>>;
+  using GridGenPtr_ = std::shared_ptr<VtkIgaGrid<Dmn>>;
 
   template <class T>
   struct IsInValidDim :
@@ -176,7 +176,7 @@ private:
   /**
    * Constructor.
    */
-  VtkIgaGridGeneratorContainer(const ObjContPtr_ objs_container,
+  VtkIgaGridContainer(const ObjContPtr_ objs_container,
                                const GridInfoPtr_ phys_solid_info,
                                const GridInfoPtr_ phys_knot_info,
                                const ControlGridInfoPtr_ phys_control_info,
@@ -386,4 +386,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // __VTK_GRID_GENERATOR_CONTAINER_H_
+#endif // __VTK_IGA_GRID_CONTAINER_H_

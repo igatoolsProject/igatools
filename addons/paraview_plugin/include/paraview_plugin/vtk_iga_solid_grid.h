@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __VTK_SOLID_GRID_GENERATOR_H_
-#define __VTK_SOLID_GRID_GENERATOR_H_
+#ifndef __VTK_IGA_SOLID_GRID_H_
+#define __VTK_IGA_SOLID_GRID_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
@@ -49,7 +49,7 @@ struct VtkGridInformation;
 
 
 template <class Domain>
-class VtkIgaSolidGridGenerator
+class VtkIgaSolidGrid
 {
 private:
 
@@ -217,7 +217,7 @@ private:
   /**
    * Self type.
    */
-  typedef VtkIgaSolidGridGenerator Self_;
+  typedef VtkIgaSolidGrid Self_;
 
   /**
    * Self shared poitner type.
@@ -286,11 +286,11 @@ private:
   /**
    * Constructor, copy and assignment operators not allowed to be used.
    */
-  VtkIgaSolidGridGenerator() = delete;
-  VtkIgaSolidGridGenerator(const VtkIgaSolidGridGenerator &) = delete;
-  VtkIgaSolidGridGenerator(const VtkIgaSolidGridGenerator &&) = delete;
-  void operator=(const VtkIgaSolidGridGenerator &) = delete;
-  void operator=(const VtkIgaSolidGridGenerator &&) = delete;
+  VtkIgaSolidGrid() = delete;
+  VtkIgaSolidGrid(const VtkIgaSolidGrid &) = delete;
+  VtkIgaSolidGrid(const VtkIgaSolidGrid &&) = delete;
+  void operator=(const VtkIgaSolidGrid &) = delete;
+  void operator=(const VtkIgaSolidGrid &&) = delete;
 
 
 public:
@@ -350,4 +350,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // __VTK_SOLID_GRID_GENERATOR_H_
+#endif // __VTK_IGA_SOLID_GRID_H_

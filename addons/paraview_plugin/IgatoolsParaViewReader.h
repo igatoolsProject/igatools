@@ -26,7 +26,7 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_size.h>
 
-#include <paraview_plugin/types.h>
+#include "include/paraview_plugin/vtk_iga_types.h"
 
 /** Forward declarations. */
 
@@ -38,7 +38,7 @@ struct VtkControlGridInformation;
 
 class ObjectsContainer;
 
-class VtkIgaGridGeneratorContainer;
+class VtkIgaGridContainer;
 }
 
 /**
@@ -92,7 +92,7 @@ private:
   typedef std::shared_ptr<iga::VtkControlGridInformation> ControlGridInfoPtr_;
 
   /** Type for shared pointer of @ref VtkGridGeneratorContainer.  */
-  typedef std::shared_ptr<iga::VtkIgaGridGeneratorContainer> GridGenPtr_;
+  typedef std::shared_ptr<iga::VtkIgaGridContainer> GridGenPtr_;
 
 
   ///@}
@@ -423,22 +423,22 @@ private:
    */
   void set_grid_type(int arg1,
                      const char *const name,
-                     iga::vtkGridType &type);
+                     iga::VtkGridType &type);
 
   /** vtkGridType for the solid representation of the physical mappings. */
-  iga::vtkGridType phys_sol_grid_type_ = iga::vtkGridType::None;
+  iga::VtkGridType phys_sol_grid_type_ = iga::VtkGridType::None;
 
   /** vtkGridType for the solid representation of the parametric mappings. */
-  iga::vtkGridType parm_sol_grid_type_ = iga::vtkGridType::None;
+  iga::VtkGridType parm_sol_grid_type_ = iga::VtkGridType::None;
 
   /** vtkGridType for the knot mesh representation of the physical mappings. */
-  iga::vtkGridType phys_knt_grid_type_ = iga::vtkGridType::None;
+  iga::VtkGridType phys_knt_grid_type_ = iga::VtkGridType::None;
 
   /** vtkGridType for the knot mesh representation of the parametric mappings. */
-  iga::vtkGridType parm_knt_grid_type_ = iga::vtkGridType::None;
+  iga::VtkGridType parm_knt_grid_type_ = iga::VtkGridType::None;
 
   /** vtkGridType for the control mesh representation of the physical mappings. */
-  iga::vtkGridType phys_ctr_grid_type_ = iga::vtkGridType::None;
+  iga::VtkGridType phys_ctr_grid_type_ = iga::VtkGridType::None;
 
   /**
    *  Flag for determining if the solid representation of the physical

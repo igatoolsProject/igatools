@@ -18,13 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <paraview_plugin/knot_grid_generator.h>
+#include "../include/paraview_plugin/vtk_iga_knot_grid.h"
 
 #include <boost/range/irange.hpp>
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain_element.h>
-#include <paraview_plugin/grid_information.h>
+
+#include "../include/paraview_plugin/vtk_iga_grid_information.h"
 
 using std::shared_ptr;
 
@@ -32,7 +33,7 @@ IGA_NAMESPACE_OPEN
 
 template <class Domain>
 auto
-VtkIgaKnotGridGenerator<Domain>::
+VtkIgaKnotGrid<Domain>::
 create(const DomainPtr_ domain,
        const GridInfoPtr_ grid_info) -> VtkGridPtr_
 {
@@ -44,7 +45,7 @@ create(const DomainPtr_ domain,
 template <class Domain>
 template<int aux_dim>
 auto
-VtkIgaKnotGridGenerator<Domain>::
+VtkIgaKnotGrid<Domain>::
 create_grid(const DomainPtr_ domain,
             const GridInfoPtr_ grid_info) ->
 EnableIf<aux_dim == 1, VtkGridPtr_>
@@ -124,7 +125,7 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
 template <class Domain>
 template<int aux_dim>
 auto
-VtkIgaKnotGridGenerator<Domain>::
+VtkIgaKnotGrid<Domain>::
 create_grid(const DomainPtr_ domain,
             const GridInfoPtr_ grid_info) ->
 EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
@@ -323,12 +324,12 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
   return grid;
 }
 
-template class VtkIgaKnotGridGenerator<Domain<1, 0>>;
-template class VtkIgaKnotGridGenerator<Domain<1, 1>>;
-template class VtkIgaKnotGridGenerator<Domain<1, 2>>;
-template class VtkIgaKnotGridGenerator<Domain<2, 0>>;
-template class VtkIgaKnotGridGenerator<Domain<2, 1>>;
-template class VtkIgaKnotGridGenerator<Domain<3, 0>>;
+template class VtkIgaKnotGrid<Domain<1, 0>>;
+template class VtkIgaKnotGrid<Domain<1, 1>>;
+template class VtkIgaKnotGrid<Domain<1, 2>>;
+template class VtkIgaKnotGrid<Domain<2, 0>>;
+template class VtkIgaKnotGrid<Domain<2, 1>>;
+template class VtkIgaKnotGrid<Domain<3, 0>>;
 
 
 

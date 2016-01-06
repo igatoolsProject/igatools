@@ -18,14 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <paraview_plugin/grid_information.h>
+#include "../include/paraview_plugin/vtk_iga_grid_information.h"
 
 
 IGA_NAMESPACE_OPEN
 
 VtkGridInformation::
 VtkGridInformation(const NumCellsContainer_ &num_cells,
-                   const vtkGridType &grid_type)
+                   const VtkGridType &grid_type)
   :
   grid_type_(grid_type),
   cells_per_element_(num_cells)
@@ -42,7 +42,7 @@ VtkGridInformation(const NumCellsContainer_ &num_cells,
 auto
 VtkGridInformation::
 create(const NumCellsContainer_ &num_cells,
-       const vtkGridType &grid_type) -> SelfPtr_
+       const VtkGridType &grid_type) -> SelfPtr_
 {
   return SelfPtr_(new Self_(num_cells, grid_type));
 }
@@ -75,7 +75,7 @@ update(SelfPtr_ grid_info)
 
 
 
-const vtkGridType &
+const VtkGridType &
 VtkGridInformation::
 get_grid_type() const
 {
@@ -88,7 +88,7 @@ bool
 VtkGridInformation::
 is_structured() const
 {
-  return grid_type_ == vtkGridType::Structured;
+  return grid_type_ == VtkGridType::Structured;
 };
 
 
@@ -97,7 +97,7 @@ bool
 VtkGridInformation::
 is_quadratic() const
 {
-  return grid_type_ == vtkGridType::UnstructuredQuadratic;
+  return grid_type_ == VtkGridType::UnstructuredQuadratic;
 };
 
 
@@ -123,13 +123,13 @@ print_info (LogStream &out) const
     out << "VTK grid type: ";
     switch (grid_type_)
     {
-        case vtkGridType::Structured:
+        case VtkGridType::Structured:
             out << "Structured Grid";
             break;
-        case vtkGridType::UnstructuredLinear:
+        case VtkGridType::UnstructuredLinear:
             out << "Unstructured Linear Grid";
             break;
-        case vtkGridType::UnstructuredQuadratic:
+        case VtkGridType::UnstructuredQuadratic:
             out << "Unstructured Quadratic Grid";
             break;
         default:
@@ -145,8 +145,8 @@ print_info (LogStream &out) const
 VtkControlGridInformation::
 VtkControlGridInformation(const bool structured)
   :
-  grid_type_(structured ? vtkGridType::Structured :
-            vtkGridType::UnstructuredLinear)
+  grid_type_(structured ? VtkGridType::Structured :
+            VtkGridType::UnstructuredLinear)
 {}
 
 
@@ -179,13 +179,13 @@ bool
 VtkControlGridInformation::
 is_structured() const
 {
-  return grid_type_ == vtkGridType::Structured;
+  return grid_type_ == VtkGridType::Structured;
 }
 
 
 
 
-const vtkGridType &
+const VtkGridType &
 VtkControlGridInformation::
 get_grid_type() const
 {
@@ -202,13 +202,13 @@ print_info (LogStream &out) const
     out << "VTK grid type: ";
     switch (grid_type_)
     {
-        case vtkGridType::Structured:
+        case VtkGridType::Structured:
             out << "Structured Grid";
             break;
-        case vtkGridType::UnstructuredLinear:
+        case VtkGridType::UnstructuredLinear:
             out << "Unstructured Linear Grid";
             break;
-        case vtkGridType::UnstructuredQuadratic:
+        case VtkGridType::UnstructuredQuadratic:
             out << "Unstructured Quadratic Grid";
             break;
         default:

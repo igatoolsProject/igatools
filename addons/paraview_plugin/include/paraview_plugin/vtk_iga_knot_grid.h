@@ -18,26 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __VTK_CONTROL_GRID_GENERATOR_H_
-#define __VTK_CONTROL_GRID_GENERATOR_H_
+#ifndef __VTK_IGA_KNOT_GRID_H_
+#define __VTK_IGA_KNOT_GRID_H_
+
+#include <vtkStructuredGrid.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkSmartPointer.h>
+#include <vtkPoints.h>
+#include <vtkIdTypeArray.h>
+#include <vtkCellArray.h>
 
 #include <igatools/base/config.h>
-
+/*
 class vtkPoints;
 class vtkPointSet;
 template<class T> class vtkSmartPointer;
+//*/
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, int space_dim> class IgGridFunction;
 template <int dim, int codim> class Domain;
-struct VtkControlGridInformation;
+struct VtkGridInformation;
 
 
 template <class Domain>
-class VtkIgaControlGridGenerator
+class VtkIgaKnotGrid
 {
 private:
+
   /// Dimension.
   static const int dim = Domain::dim;
 
@@ -47,22 +55,22 @@ private:
   /**
    * Self type.
    */
-  typedef VtkIgaControlGridGenerator Self_;
+  typedef VtkIgaKnotGrid Self_;
 
   /**
-   * Self shared poitner type.
+   * Self shared pointer type.
    */
   typedef std::shared_ptr<Self_> SelfPtr_;
 
   /**
-   * Alias for a shared pointer of a map function type.
+   * Alias for a shared pointer of a domain type.
    */
   typedef std::shared_ptr<const Domain> DomainPtr_;
 
   /**
    * Alias for mesh grid information shared pointer.
    */
-  typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
+  typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
 
   /**
    * Alias for vtk grid object for visualization.
@@ -70,23 +78,13 @@ private:
   typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
 
   /**
-   * Alias for a ig function type.
-   */
-  typedef IgGridFunction<dim, space_dim> IgGridFun_;
-
-  /**
-   * Alias for a shared pointer of a ig function type.
-   */
-  typedef std::shared_ptr<const IgGridFun_> IgGridFunPtr_;
-
-  /**
    * Constructor, copy and assignment operators not allowed to be used.
    */
-  VtkIgaControlGridGenerator() = delete;
-  VtkIgaControlGridGenerator(const VtkIgaControlGridGenerator &) = delete;
-  VtkIgaControlGridGenerator(const VtkIgaControlGridGenerator &&) = delete;
-  void operator=(const VtkIgaControlGridGenerator &) = delete;
-  void operator=(const VtkIgaControlGridGenerator &&) = delete;
+  VtkIgaKnotGrid() = delete;
+  VtkIgaKnotGrid(const VtkIgaKnotGrid &) = delete;
+  VtkIgaKnotGrid(const VtkIgaKnotGrid &&) = delete;
+  void operator=(const VtkIgaKnotGrid &) = delete;
+  void operator=(const VtkIgaKnotGrid &&) = delete;
 
 
 public:
@@ -95,24 +93,29 @@ public:
    * Creates and returns the vtk grid for the visualization.
    */
   static VtkGridPtr_ create(const DomainPtr_ domain,
-                            const ControlGridInfoPtr_ grid_info);
+                            const GridInfoPtr_ grid_info);
 
 private:
 
   /**
-   * Creates and returns the vtk structured grid for the visualization.
+   * Creates and returns the vtk grid for the visualization for 1D mappings.
    */
-  static VtkGridPtr_ create_grid_vts(const IgGridFunPtr_ ig_grid_fun,
-                                     const vtkSmartPointer<vtkPoints> points);
+  template<int aux_dim>
+  static EnableIf<aux_dim == 1, VtkGridPtr_>
+      create_grid(const DomainPtr_ domain,
+                  const GridInfoPtr_ grid_info);
 
   /**
-   * Creates and returns the vtk unstructured grid for the visualization.
+   * Creates and returns the vtk grid for the visualization for 2D and 3D
+   *  mappings.
    */
-  static VtkGridPtr_ create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
-                                     const vtkSmartPointer<vtkPoints> points);
+  template<int aux_dim>
+  static EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
+      create_grid(const DomainPtr_ domain,
+                  const GridInfoPtr_ grid_info);
 
 };
 
 IGA_NAMESPACE_CLOSE
 
-#endif // __VTK_CONTROL_GRID_GENERATOR_H_
+#endif // __VTK_IGA_KNOT_GRID_H_

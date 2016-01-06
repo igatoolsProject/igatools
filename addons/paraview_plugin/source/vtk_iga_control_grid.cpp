@@ -18,9 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <paraview_plugin/control_grid_generator.h>
-
-#include <paraview_plugin/grid_information.h>
+#include "../include/paraview_plugin/vtk_iga_control_grid.h"
 
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/geometry/domain.h>
@@ -32,13 +30,14 @@
 #include <vtkPolyVertex.h>
 #include <vtkCellArray.h>
 #include <vtkPolyLine.h>
+#include "../include/paraview_plugin/vtk_iga_grid_information.h"
 
 
 IGA_NAMESPACE_OPEN
 
 template <class Domain>
 auto
-VtkIgaControlGridGenerator<Domain>::
+VtkIgaControlGrid<Domain>::
 create(const DomainPtr_ domain,
        const ControlGridInfoPtr_ grid_info) -> VtkGridPtr_
 {
@@ -89,7 +88,7 @@ create(const DomainPtr_ domain,
 
 template <class Domain>
 auto
-VtkIgaControlGridGenerator<Domain>::
+VtkIgaControlGrid<Domain>::
 create_grid_vts(const IgGridFunPtr_ ig_grid_fun,
                 const vtkSmartPointer<vtkPoints> points) -> VtkGridPtr_
 {
@@ -112,7 +111,7 @@ create_grid_vts(const IgGridFunPtr_ ig_grid_fun,
 
 template <class Domain>
 auto
-VtkIgaControlGridGenerator<Domain>::
+VtkIgaControlGrid<Domain>::
 create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
                 const vtkSmartPointer<vtkPoints> points) -> VtkGridPtr_
 {
@@ -205,11 +204,11 @@ create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
   return grid;
 }
 
-template class VtkIgaControlGridGenerator<Domain<1, 0>>;
-template class VtkIgaControlGridGenerator<Domain<1, 1>>;
-template class VtkIgaControlGridGenerator<Domain<1, 2>>;
-template class VtkIgaControlGridGenerator<Domain<2, 0>>;
-template class VtkIgaControlGridGenerator<Domain<2, 1>>;
-template class VtkIgaControlGridGenerator<Domain<3, 0>>;
+template class VtkIgaControlGrid<Domain<1, 0>>;
+template class VtkIgaControlGrid<Domain<1, 1>>;
+template class VtkIgaControlGrid<Domain<1, 2>>;
+template class VtkIgaControlGrid<Domain<2, 0>>;
+template class VtkIgaControlGrid<Domain<2, 1>>;
+template class VtkIgaControlGrid<Domain<3, 0>>;
 
 IGA_NAMESPACE_CLOSE

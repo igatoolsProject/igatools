@@ -19,6 +19,8 @@
 //-+--------------------------------------------------------------------
 
 
+#include "../include/paraview_plugin/vtk_iga_solid_grid.h"
+
 #include <vtkStructuredGrid.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkSmartPointer.h>
@@ -27,15 +29,12 @@
 #include <vtkDoubleArray.h>
 #include <vtkPointData.h>
 
-#include <paraview_plugin/solid_grid_generator.h>
-
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain_element.h>
 #include <igatools/utils/multi_array_utils.h>
-#include <paraview_plugin/grid_information.h>
-
 #include <igatools/functions/function_handler.h>
 #include <igatools/functions/function_element.h>
+#include "../include/paraview_plugin/vtk_iga_grid_information.h"
 
 using std::shared_ptr;
 using namespace boost::fusion;
@@ -45,7 +44,7 @@ using std::remove_reference;
 IGA_NAMESPACE_OPEN
 
 template <class Domain>
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 PointsTopology(const std::shared_ptr<const Grid<dim>> cartesian_grid,
            const GridInfoPtr_ grid_info)
@@ -64,7 +63,7 @@ PointsTopology(const std::shared_ptr<const Grid<dim>> cartesian_grid,
 
 template <class Domain>
 void
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 fill_points_map_mask(const std::shared_ptr<const Grid<dim>> cartesian_grid,
                      const GridInfoPtr_ grid_info)
@@ -218,7 +217,7 @@ fill_points_map_mask(const std::shared_ptr<const Grid<dim>> cartesian_grid,
 
 template <class Domain>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_element_connectivity(const GridInfoPtr_ grid_info) -> Connectivity_
 {
@@ -239,7 +238,7 @@ create_element_connectivity(const GridInfoPtr_ grid_info) -> Connectivity_
 
 template <class Domain>
 Size
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_num_pts_per_bezier_elem() const
 {
@@ -250,7 +249,7 @@ get_num_pts_per_bezier_elem() const
 
 template <class Domain>
 Size
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_num_bezier_elems() const
 {
@@ -261,7 +260,7 @@ get_num_bezier_elems() const
 
 template <class Domain>
 Size
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_flat_num_cells_per_bezier_elem() const
 {
@@ -272,7 +271,7 @@ get_flat_num_cells_per_bezier_elem() const
 
 template <class Domain>
 Size
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_num_total_pts() const
 {
@@ -283,7 +282,7 @@ get_num_total_pts() const
 
 template <class Domain>
 Size
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_num_pts_per_single_vtk_cell() const
 {
@@ -294,7 +293,7 @@ get_num_pts_per_single_vtk_cell() const
 
 template <class Domain>
 Size
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_num_vtk_cells_per_bezier_elem (const Index &dir) const
 {
@@ -306,7 +305,7 @@ get_num_vtk_cells_per_bezier_elem (const Index &dir) const
 
 template <class Domain>
 const SafeSTLVector<Index> &
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_mask() const
 {
@@ -317,7 +316,7 @@ get_mask() const
 
 template <class Domain>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_connectivity() const -> const Connectivity_ &
 {
@@ -328,7 +327,7 @@ get_connectivity() const -> const Connectivity_ &
 
 template <class Domain>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 map_cbegin() const -> Map_::const_iterator
 {
@@ -339,7 +338,7 @@ map_cbegin() const -> Map_::const_iterator
 
 template <class Domain>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_quadrature() const ->QuadPtr_
 {
@@ -351,7 +350,7 @@ get_quadrature() const ->QuadPtr_
 
 template <class Domain>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_linear_element_connectivity(const GridInfoPtr_ grid_info) -> Connectivity_
 {
@@ -439,7 +438,7 @@ create_linear_element_connectivity(const GridInfoPtr_ grid_info) -> Connectivity
 template <class Domain>
 template <int aux_dim>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
   typename std::enable_if_t<aux_dim == 1> *) -> Connectivity_
@@ -473,7 +472,7 @@ create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
 template <class Domain>
 template <int aux_dim>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
   typename std::enable_if_t<aux_dim == 2> *) -> Connectivity_
@@ -565,7 +564,7 @@ create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
 template <class Domain>
 template <int aux_dim>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
   typename std::enable_if_t<aux_dim == 3> *) -> Connectivity_
@@ -716,7 +715,7 @@ create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
 
 template <class Domain>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_visualization_quadrature(const GridInfoPtr_ grid_info) ->
 QuadPtr_
@@ -773,7 +772,7 @@ QuadPtr_
 
 template <class Domain>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 create(const DomainPtr_ domain,
        const ObjContPtr_t_ objs_container,
        const GridInfoPtr_ grid_info,
@@ -796,7 +795,7 @@ create(const DomainPtr_ domain,
 
 template <class Domain>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 create_grid_vts(const DomainPtr_ domain,
                 const ObjContPtr_t_ objs_container,
                 const GridInfoPtr_ grid_info,
@@ -837,7 +836,7 @@ VtkGridPtr_
 
 template <class Domain>
 auto
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 create_grid_vtu(const DomainPtr_ domain,
                 const ObjContPtr_t_ objs_container,
                 const GridInfoPtr_ grid_info,
@@ -917,7 +916,7 @@ VtkGridPtr_
 
 template <class Domain>
 vtkSmartPointer<vtkPoints>
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 create_points(const DomainPtr_ domain,
               const PointsTopology &points_top)
 {
@@ -959,7 +958,7 @@ create_points(const DomainPtr_ domain,
 
 template <class Domain>
 void
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 create_point_data_physical(const DomainPtr_ domain,
                            const ObjContPtr_t_ objs_container,
                            const PointsTopology &points_top,
@@ -1028,7 +1027,7 @@ create_point_data_physical(const DomainPtr_ domain,
 
 template <class Domain>
 void
-VtkIgaSolidGridGenerator<Domain>::
+VtkIgaSolidGrid<Domain>::
 create_point_data_parametric(const DomainPtr_ domain,
                              const ObjContPtr_t_ objs_container,
                              const PointsTopology &points_top,
@@ -1093,12 +1092,12 @@ create_point_data_parametric(const DomainPtr_ domain,
 }
 
 
-template class VtkIgaSolidGridGenerator<Domain<1, 0>>;
-template class VtkIgaSolidGridGenerator<Domain<1, 1>>;
-template class VtkIgaSolidGridGenerator<Domain<1, 2>>;
-template class VtkIgaSolidGridGenerator<Domain<2, 0>>;
-template class VtkIgaSolidGridGenerator<Domain<2, 1>>;
-template class VtkIgaSolidGridGenerator<Domain<3, 0>>;
+template class VtkIgaSolidGrid<Domain<1, 0>>;
+template class VtkIgaSolidGrid<Domain<1, 1>>;
+template class VtkIgaSolidGrid<Domain<1, 2>>;
+template class VtkIgaSolidGrid<Domain<2, 0>>;
+template class VtkIgaSolidGrid<Domain<2, 1>>;
+template class VtkIgaSolidGrid<Domain<3, 0>>;
 
 
 IGA_NAMESPACE_CLOSE

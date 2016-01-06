@@ -18,21 +18,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <paraview_plugin/grid_generator.h>
+#include "../include/paraview_plugin/vtk_iga_grid.h"
 
 #include <igatools/geometry/domain.h>
 
-#include <paraview_plugin/grid_information.h>
-#include <paraview_plugin/knot_grid_generator.h>
-#include <paraview_plugin/solid_grid_generator.h>
-#include <paraview_plugin/control_grid_generator.h>
+#include "../include/paraview_plugin/vtk_iga_control_grid.h"
+#include "../include/paraview_plugin/vtk_iga_grid_information.h"
+#include "../include/paraview_plugin/vtk_iga_knot_grid.h"
+#include "../include/paraview_plugin/vtk_iga_solid_grid.h"
 
 
 IGA_NAMESPACE_OPEN
 
 template <class Domain>
-VtkIgaGridGenerator<Domain>::
-VtkIgaGridGenerator(const DomainPtr_ domain,
+VtkIgaGrid<Domain>::
+VtkIgaGrid(const DomainPtr_ domain,
                     const Index &id,
                     const GridInfoPtr_ solid_grid_info,
                     const GridInfoPtr_ knot_grid_info,
@@ -68,7 +68,7 @@ VtkIgaGridGenerator(const DomainPtr_ domain,
 
 template <class Domain>
 auto
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 create(const DomainPtr_ domain,
        const Index &id,
        const GridInfoPtr_ solid_grid_info,
@@ -87,7 +87,7 @@ create(const DomainPtr_ domain,
 
 template <class Domain>
 const Index &
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 get_id() const
 {
     return id_;
@@ -97,7 +97,7 @@ get_id() const
 
 template <class Domain>
 const std::string &
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 get_name() const
 {
     return domain_->get_name();
@@ -107,7 +107,7 @@ get_name() const
 
 template <class Domain>
 bool
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 is_active() const
 {
     return is_active_;
@@ -117,7 +117,7 @@ is_active() const
 
 template <class Domain>
 void
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 set_status(const bool status_flag)
 {
     is_active_ = status_flag;
@@ -127,7 +127,7 @@ set_status(const bool status_flag)
 
 template <class Domain>
 bool
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 is_ig_grid_func() const
 {
     return is_ig_grid_func_;
@@ -137,7 +137,7 @@ is_ig_grid_func() const
 
 template <class Domain>
 bool
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 is_physical() const
 {
     return is_physical_;
@@ -147,13 +147,13 @@ is_physical() const
 
 template <class Domain>
 auto
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 get_solid_grid() -> VtkGridPtr_
 {
   if (recompute_solid_)
   {
     // Recomputing solid grid.
-    solid_grid_ = VtkIgaSolidGridGenerator<Domain>::
+    solid_grid_ = VtkIgaSolidGrid<Domain>::
             create(domain_, objs_container_, solid_grid_info_, is_physical_);
 
     recompute_solid_ = false;
@@ -167,14 +167,13 @@ get_solid_grid() -> VtkGridPtr_
 
 template <class Domain>
 auto
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 get_knot_grid() -> VtkGridPtr_
 {
   if (recompute_knot_)
   {
     // Recomputing knot grid.
-    knot_grid_ = VtkIgaKnotGridGenerator<Domain>::
-            create(domain_, knot_grid_info_);
+    knot_grid_ = VtkIgaKnotGrid<Domain>::create(domain_, knot_grid_info_);
 
     recompute_knot_ = false;
   }
@@ -187,7 +186,7 @@ get_knot_grid() -> VtkGridPtr_
 
 template <class Domain>
 auto
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 get_control_grid() -> VtkGridPtr_
 {
   Assert (is_physical_,
@@ -197,7 +196,7 @@ get_control_grid() -> VtkGridPtr_
   if (recompute_control_)
   {
     // Recomputing control grid.
-    control_grid_ = VtkIgaControlGridGenerator<Domain>::
+    control_grid_ = VtkIgaControlGrid<Domain>::
             create(this->domain_, control_grid_info_);
 
     recompute_control_ = false;
@@ -211,7 +210,7 @@ get_control_grid() -> VtkGridPtr_
 
 template <class Domain>
 void
-VtkIgaGridGenerator<Domain>::
+VtkIgaGrid<Domain>::
 update(const bool solid_updated,
        const bool knot_updated,
        const bool control_updated)
@@ -230,12 +229,12 @@ update(const bool solid_updated,
 }
 
 
-template class VtkIgaGridGenerator<Domain<1, 0>>;
-template class VtkIgaGridGenerator<Domain<1, 1>>;
-template class VtkIgaGridGenerator<Domain<1, 2>>;
-template class VtkIgaGridGenerator<Domain<2, 0>>;
-template class VtkIgaGridGenerator<Domain<2, 1>>;
-template class VtkIgaGridGenerator<Domain<3, 0>>;
+template class VtkIgaGrid<Domain<1, 0>>;
+template class VtkIgaGrid<Domain<1, 1>>;
+template class VtkIgaGrid<Domain<1, 2>>;
+template class VtkIgaGrid<Domain<2, 0>>;
+template class VtkIgaGrid<Domain<2, 1>>;
+template class VtkIgaGrid<Domain<3, 0>>;
 
 
 IGA_NAMESPACE_CLOSE
