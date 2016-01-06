@@ -23,26 +23,12 @@
 
 #include <igatools/base/config.h>
 
+#include <paraview_plugin/vtk_iga_grid.h>
 #include <igatools/base/objects_container.h>
 #include <igatools/geometry/grid.h>
 #include <igatools/geometry/grid_function.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/functions/function.h>
-
-#include <igatools/base/tuple_utils.h>
-#include <boost/fusion/container/vector.hpp>
-#include <boost/fusion/container/map.hpp>
-
-#include <boost/fusion/algorithm/transformation/transform.hpp>
-#include <boost/fusion/include/transform.hpp>
-#include <boost/mpl/copy.hpp>
-#include <boost/mpl/lambda.hpp>
-#include <boost/mpl/remove_if.hpp>
-#include <boost/mpl/arg.hpp>
-#include <boost/mpl/vector_c.hpp>
-
-#include "vtk_iga_grid.h"
-
 
 class vtkMultiBlockDataSet;
 

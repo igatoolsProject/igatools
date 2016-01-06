@@ -23,10 +23,10 @@
 
 #include <vtkMultiBlockDataSetAlgorithm.h>
 
+#include <paraview_plugin/vtk_iga_types.h>
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_size.h>
 
-#include "include/paraview_plugin/vtk_iga_types.h"
 
 /** Forward declarations. */
 

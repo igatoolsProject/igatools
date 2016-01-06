@@ -18,14 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include "../include/paraview_plugin/vtk_iga_grid.h"
+#include <paraview_plugin/vtk_iga_grid.h>
+
+#include <paraview_plugin/vtk_iga_control_grid.h>
+#include <paraview_plugin/vtk_iga_grid_information.h>
+#include <paraview_plugin/vtk_iga_knot_grid.h>
+#include <paraview_plugin/vtk_iga_solid_grid.h>
 
 #include <igatools/geometry/domain.h>
-
-#include "../include/paraview_plugin/vtk_iga_control_grid.h"
-#include "../include/paraview_plugin/vtk_iga_grid_information.h"
-#include "../include/paraview_plugin/vtk_iga_knot_grid.h"
-#include "../include/paraview_plugin/vtk_iga_solid_grid.h"
 
 
 IGA_NAMESPACE_OPEN

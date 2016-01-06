@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include "../include/paraview_plugin/vtk_iga_solid_grid.h"
+#include <paraview_plugin/vtk_iga_solid_grid.h>
 
 #include <vtkStructuredGrid.h>
 #include <vtkUnstructuredGrid.h>
@@ -34,7 +34,7 @@
 #include <igatools/utils/multi_array_utils.h>
 #include <igatools/functions/function_handler.h>
 #include <igatools/functions/function_element.h>
-#include "../include/paraview_plugin/vtk_iga_grid_information.h"
+#include <paraview_plugin/vtk_iga_grid_information.h>
 
 using std::shared_ptr;
 using namespace boost::fusion;

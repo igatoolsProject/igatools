@@ -21,11 +21,12 @@
 #include <paraview_plugin/vtk_iga_grid.h>
 #include <igatools/geometry/grid_function_lib.h>
 
+#include <paraview_plugin/vtk_iga_grid_container.h>
+#include <paraview_plugin/vtk_iga_grid_information.h>
+
 #include <vtkMultiBlockDataSet.h>
 #include <vtkInformation.h>
 #include <vtkPointSet.h>
-#include "../include/paraview_plugin/vtk_iga_grid_container.h"
-#include "../include/paraview_plugin/vtk_iga_grid_information.h"
 
 
 using namespace boost::fusion;
@@ -40,11 +41,11 @@ IGA_NAMESPACE_OPEN
 
 VtkIgaGridContainer::
 VtkIgaGridContainer(const ObjContPtr_ objs_container,
-                             const GridInfoPtr_ phys_solid_info,
-                             const GridInfoPtr_ phys_knot_info,
-                             const ControlGridInfoPtr_ phys_control_info,
-                             const GridInfoPtr_ parm_solid_info,
-                             const GridInfoPtr_ parm_knot_info)
+                    const GridInfoPtr_ phys_solid_info,
+                    const GridInfoPtr_ phys_knot_info,
+                    const ControlGridInfoPtr_ phys_control_info,
+                    const GridInfoPtr_ parm_solid_info,
+                    const GridInfoPtr_ parm_knot_info)
   :
   objs_container_(ObjectsContainer::create()),
   phys_solid_info_(phys_solid_info),

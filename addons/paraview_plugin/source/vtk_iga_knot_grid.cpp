@@ -18,14 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include "../include/paraview_plugin/vtk_iga_knot_grid.h"
+#include <paraview_plugin/vtk_iga_knot_grid.h>
 
 #include <boost/range/irange.hpp>
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain_element.h>
 
-#include "../include/paraview_plugin/vtk_iga_grid_information.h"
+#include <paraview_plugin/vtk_iga_grid_information.h>
 
 using std::shared_ptr;
 

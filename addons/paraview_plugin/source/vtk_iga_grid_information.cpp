@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include "../include/paraview_plugin/vtk_iga_grid_information.h"
+#include <paraview_plugin/vtk_iga_grid_information.h>
 
 
 IGA_NAMESPACE_OPEN

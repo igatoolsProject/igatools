@@ -29,9 +29,10 @@
 #include <igatools/io/xml_document.h>
 #include <igatools/io/objects_container_xml_reader.h>
 #include <igatools/base/objects_container.h>
+#include <paraview_plugin/vtk_iga_grid_container.h>
+#include <paraview_plugin/vtk_iga_grid_information.h>
+
 #include <sys/stat.h>
-#include "include/paraview_plugin/vtk_iga_grid_container.h"
-#include "include/paraview_plugin/vtk_iga_grid_information.h"
 
 
 using std::get;
