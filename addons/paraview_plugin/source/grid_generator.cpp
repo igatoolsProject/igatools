@@ -154,7 +154,7 @@ get_solid_grid() -> VtkGridPtr_
   {
     // Recomputing solid grid.
     solid_grid_ = VtkIgaSolidGridGenerator<Domain>::
-            create_grid(domain_, is_physical_, solid_grid_info_, objs_container_);
+            create(domain_, objs_container_, solid_grid_info_, is_physical_);
 
     recompute_solid_ = false;
   }
@@ -174,7 +174,7 @@ get_knot_grid() -> VtkGridPtr_
   {
     // Recomputing knot grid.
     knot_grid_ = VtkIgaKnotGridGenerator<Domain>::
-            create_grid(domain_, knot_grid_info_);
+            create(domain_, knot_grid_info_);
 
     recompute_knot_ = false;
   }
@@ -198,7 +198,7 @@ get_control_grid() -> VtkGridPtr_
   {
     // Recomputing control grid.
     control_grid_ = VtkIgaControlGridGenerator<Domain>::
-            create_grid(this->domain_, control_grid_info_);
+            create(this->domain_, control_grid_info_);
 
     recompute_control_ = false;
   }

@@ -298,10 +298,10 @@ public:
   /**
    * Creates and returns the vtk grid for the visualization.
    */
-  static VtkGridPtr_ create_grid(const DomainPtr_ domain,
-                                 const bool is_physical,
-                                 const GridInfoPtr_ grid_info,
-                                 const ObjContPtr_t_ obj_container);
+  static VtkGridPtr_ create(const DomainPtr_ domain,
+                            const ObjContPtr_t_ obj_container,
+                            const GridInfoPtr_ grid_info,
+                            const bool is_physical);
 
 private:
 

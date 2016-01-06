@@ -39,8 +39,8 @@ IGA_NAMESPACE_OPEN
 template <class Domain>
 auto
 VtkIgaControlGridGenerator<Domain>::
-create_grid(const DomainPtr_ domain,
-            const ControlGridInfoPtr_ grid_info) -> VtkGridPtr_
+create(const DomainPtr_ domain,
+       const ControlGridInfoPtr_ grid_info) -> VtkGridPtr_
 {
   Assert(domain != nullptr, ExcNullPtr());
   Assert(grid_info != nullptr, ExcNullPtr());

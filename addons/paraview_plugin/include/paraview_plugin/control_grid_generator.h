@@ -94,8 +94,8 @@ public:
   /**
    * Creates and returns the vtk grid for the visualization.
    */
-  static VtkGridPtr_ create_grid(const DomainPtr_ domain,
-                                 const ControlGridInfoPtr_ grid_info);
+  static VtkGridPtr_ create(const DomainPtr_ domain,
+                            const ControlGridInfoPtr_ grid_info);
 
 private:
 

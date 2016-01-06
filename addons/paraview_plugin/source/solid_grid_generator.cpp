@@ -774,10 +774,10 @@ QuadPtr_
 template <class Domain>
 auto
 VtkIgaSolidGridGenerator<Domain>::
-create_grid(const DomainPtr_ domain,
-            const bool is_physical,
-            const GridInfoPtr_ grid_info,
-            const ObjContPtr_t_ objs_container) -> VtkGridPtr_
+create(const DomainPtr_ domain,
+       const ObjContPtr_t_ objs_container,
+       const GridInfoPtr_ grid_info,
+       const bool is_physical) -> VtkGridPtr_
 {
   Assert (domain != nullptr, ExcNullPtr());
   Assert (grid_info != nullptr, ExcNullPtr());

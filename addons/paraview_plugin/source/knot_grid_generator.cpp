@@ -33,8 +33,8 @@ IGA_NAMESPACE_OPEN
 template <class Domain>
 auto
 VtkIgaKnotGridGenerator<Domain>::
-create_grid(const DomainPtr_ domain,
-            const GridInfoPtr_ grid_info) -> VtkGridPtr_
+create(const DomainPtr_ domain,
+       const GridInfoPtr_ grid_info) -> VtkGridPtr_
 {
     return Self_::create_grid<Domain::dim>(domain, grid_info);
 }
