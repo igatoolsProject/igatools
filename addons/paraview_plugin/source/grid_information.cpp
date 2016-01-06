@@ -59,7 +59,7 @@ update(SelfPtr_ grid_info)
     return true;
   }
 
-  const auto &n_cells = grid_info->get_num_cells_per_element();
+  const auto &n_cells = grid_info->cells_per_element_;
   for (int dir = 0; dir < 3; ++dir)
   {
     if (n_cells[dir] != cells_per_element_[dir])
@@ -102,13 +102,16 @@ is_quadratic() const
 
 
 
-auto
+template <int dim>
+TensorSize <dim>
 VtkGridInformation::
-get_num_cells_per_element() const ->
-const NumCellsContainer_ &
+get_num_cells_per_element() const
 {
-  return cells_per_element_;
-};
+  TensorSize <dim> n_vis_elements;
+  for (int dir = 0; dir < dim; ++dir)
+    n_vis_elements[dir] = cells_per_element_[dir];
+  return n_vis_elements;
+}
 
 
 
@@ -214,5 +217,10 @@ print_info (LogStream &out) const
     out << std::endl;
     out.end_item();
 };
+
+// TODO: to instantiate properly.
+template TensorSize<1> VtkGridInformation::get_num_cells_per_element<1>() const;
+template TensorSize<2> VtkGridInformation::get_num_cells_per_element<2>() const;
+template TensorSize<3> VtkGridInformation::get_num_cells_per_element<3>() const;
 
 IGA_NAMESPACE_CLOSE

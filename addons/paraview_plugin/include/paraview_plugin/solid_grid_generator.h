@@ -58,6 +58,157 @@ private:
    */
   static const int dim = Domain::dim;
 
+  struct PointsTopology
+  {
+  private:
+      /// Alias for mesh grid information shared pointer.
+      typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
+
+      /// Quadrature container shared pointer type.
+      typedef std::shared_ptr<Quadrature<dim>>  QuadPtr_;
+
+      /// Connectivity container.
+      typedef SafeSTLVector<SafeSTLVector<Index>>  Connectivity_;
+
+      /// Points map container.
+      typedef SafeSTLVector <SafeSTLVector <Index>>  Map_;
+
+      /// Self type;
+      typedef PointsTopology Self_;
+
+      PointsTopology() = delete;
+      PointsTopology(const PointsTopology &) = delete;
+      PointsTopology(const PointsTopology &&) = delete;
+      void operator=(const PointsTopology &) = delete;
+      void operator=(const PointsTopology &&) = delete;
+
+  public:
+      PointsTopology(const std::shared_ptr<const Grid<dim>> cartesian_grid,
+                     const GridInfoPtr_ grid_info);
+
+  private:
+      /// Connectivity for the vtk cells of a single Bezier element.
+      const Connectivity_ connectivity_;
+
+      /// Visualization quadrature.
+      const QuadPtr_ quad_;
+
+      /// Number of vtk cells per direction in each Bezier element.
+      const TensorSize <dim> n_vis_elements_;
+
+      /// Points map.
+      Map_ map_;
+
+      /// Points mask.
+      SafeSTLVector <Index> mask_;
+
+      /// Total number of points in the visualization.
+      Size n_total_points_;
+
+  public:
+      /**
+       * TODO: DOCUMENT.
+       */
+      Size get_num_pts_per_bezier_elem() const;
+
+      /**
+       * TODO: DOCUMENT.
+       */
+      Size get_num_bezier_elems() const;
+
+      /**
+       * TODO: DOCUMENT.
+       */
+      Size get_flat_num_cells_per_bezier_elem() const;
+
+      /**
+       * TODO: DOCUMENT.
+       */
+      Size get_num_total_pts() const;
+
+      /**
+       * TODO: DOCUMENT.
+       */
+      Size get_num_pts_per_single_vtk_cell() const;
+
+      /**
+       * TODO: DOCUMENT.
+       */
+      const SafeSTLVector<Index> &get_mask() const;
+
+      /**
+       * TODO: DOCUMENT.
+       */
+      const Connectivity_ &get_connectivity() const;
+
+      /**
+       * TODO: DOCUMENT.
+       */
+      Size get_num_vtk_cells_per_bezier_elem (const Index &dir) const;
+
+      /**
+       * TODO: DOCUMENT.
+       */
+      Map_::const_iterator map_cbegin() const;
+
+      /**
+       * TODO: DOCUMENT.
+       */
+      QuadPtr_ get_quadrature() const;
+
+  private:
+      /**
+       * Todo: to document
+       */
+      void fill_points_map_mask(const std::shared_ptr<const Grid<dim>> cartesian_grid,
+                                const GridInfoPtr_ grid_info);
+
+      /**
+       * Creates the connectivity of the VTK cells for a single
+       * Bezier element.
+       */
+      static Connectivity_ create_element_connectivity(const GridInfoPtr_ grid_info);
+
+      /**
+       * Creates the connectivity of the VTK linear cells for a single
+       * Bezier element.
+       */
+      static Connectivity_ create_linear_element_connectivity
+      (const GridInfoPtr_ grid_info);
+
+      /**
+       * Creates the connectivity of the VTK quadratic cells for a single
+       * Bezier element. For the 1D case.
+       */
+      template <int aux_dim>
+      static Connectivity_ create_quadratic_element_connectivity
+      (const GridInfoPtr_ grid_info,
+       typename std::enable_if_t<aux_dim == 1> * = 0);
+
+      /**
+       * Creates the connectivity of the VTK quadratic cells for a single
+       * Bezier element. For the 2D case.
+       */
+      template <int aux_dim>
+      static Connectivity_ create_quadratic_element_connectivity
+      (const GridInfoPtr_ grid_info,
+       typename std::enable_if_t<aux_dim == 2> * = 0);
+
+      /**
+       * Creates the connectivity of the VTK quadratic cells for a single
+       * Bezier element. For the 3D case.
+       */
+      template <int aux_dim>
+      static Connectivity_ create_quadratic_element_connectivity
+      (const GridInfoPtr_ grid_info,
+       typename std::enable_if_t<aux_dim == 3> * = 0);
+
+      /**
+       * Creates the quadrature needed for the visualization.
+       */
+      static QuadPtr_ create_visualization_quadrature(const GridInfoPtr_ grid_info);
+  };
+
   /**
    * Space dimension.
    */
@@ -133,13 +284,6 @@ private:
             std::shared_ptr<boost::mpl::_1>>::type>::type;
 
   /**
-   * Constructor.
-   */
-  VtkIgaSolidGridGenerator(const DomainPtr_ domain,
-                           const GridInfoPtr_ grid_info,
-                           const ObjContPtr_t_ obj_container);
-
-  /**
    * Constructor, copy and assignment operators not allowed to be used.
    */
   VtkIgaSolidGridGenerator() = delete;
@@ -162,125 +306,45 @@ public:
 private:
 
   /**
-   * Creates and returns the vtk grid for the visualization.
-   */
-  VtkGridPtr_ create_grid(const bool is_physical) const;
-
-  /**
-   * Shared pointer of the domain (i.e. the geometry).
-   */
-  const DomainPtr_ domain_;
-
-  /**
-   * Shared pointer of the control grid information for representing the
-   * geometry.
-   */
-  const GridInfoPtr_ grid_info_;
-
-  /**
-   * Shared pointer of the function container.
-   */
-  const ObjContPtr_t_ objs_container_;
-
-  /**
-   * Number of vtk cells per direction in each Bezier element.
-   */
-  TensorSize <dim> n_vis_elements_;
-
-  /**
-   * Visualization quadrature.
-   */
-  QuadPtr_t_ quad_;
-
-  /**
-   * Points map.
-   */
-  SafeSTLVector <SafeSTLVector <Index>> points_map_;
-
-  /**
-   * Points mask.
-   */
-  SafeSTLVector <Index> points_mask_;
-
-  /**
-   * Connectivity for the vtk cells of a single Bezier element.
-   */
-  SafeSTLVector<SafeSTLVector<Index>> connectivity_;
-
-  /**
-   * Total number of points in the visualization.
-   */
-  Size n_total_points_;
-
-  /**
    * Creates and returns the structured vtk grid for the visualization.
    */
-  VtkGridPtr_ create_grid_vts() const;
+  static VtkGridPtr_ create_grid_vts(const DomainPtr_ domain,
+                                     const ObjContPtr_t_ objs_container,
+                                     const GridInfoPtr_ grid_info,
+                                     const bool is_physical);
 
   /**
    * Creates and returns the unstructured vtk grid for the visualization
    */
-  VtkGridPtr_
-  create_grid_vtu() const;
+  static VtkGridPtr_ create_grid_vtu(const DomainPtr_ domain,
+                                     const ObjContPtr_t_ objs_container,
+                                     const GridInfoPtr_ grid_info,
+                                     const bool is_physical);
 
   /**
    * Creates the points for the visualization grids.
    * (Both, structured and unstructured).
    */
-  vtkSmartPointer<vtkPoints> create_points() const;
-
-  /**
-   * Initializes the points map and mask, and the total number of points in
-   * the visualization.
-   */
-  void init_points_info();
-
-  /**
-   * Creates the connectivity of the VTK linear cells for a single
-   * Bezier element.
-   */
-  void create_linear_element_connectivity();
-
-  /**
-   * Creates the connectivity of the VTK quadratic cells for a single
-   * Bezier element. For the 1D case.
-   */
-  template <int aux_dim>
-  void create_quadratic_element_connectivity
-  (typename std::enable_if_t<aux_dim == 1> * = 0);
-
-  /**
-   * Creates the connectivity of the VTK quadratic cells for a single
-   * Bezier element. For the 2D case.
-   */
-  template <int aux_dim>
-  void create_quadratic_element_connectivity
-  (typename std::enable_if_t<aux_dim == 2> * = 0);
-
-  /**
-   * Creates the connectivity of the VTK quadratic cells for a single
-   * Bezier element. For the 3D case.
-   */
-  template <int aux_dim>
-  void create_quadratic_element_connectivity
-  (typename std::enable_if_t<aux_dim == 3> * = 0);
-
-  /**
-   * Creates the quadrature needed for the visualization.
-   */
-  void create_visualization_quadrature();
+  static vtkSmartPointer<vtkPoints> create_points(const DomainPtr_ domain,
+                                                  const PointsTopology &points_top);
 
   /**
    * Creates the point data associated to the mapping.
    * TODO: to document.
    */
-  void create_point_data_physical(vtkPointData *const point_data) const;
+  static void create_point_data_physical(const DomainPtr_ domain,
+                                         const ObjContPtr_t_ objs_container,
+                                         const PointsTopology &points_top,
+                                         const VtkGridPtr_ vtk_grid);
 
   /**
    * Creates the point data associated to the mapping.
    * TODO: to document.
    */
-  void create_point_data_parametric(vtkPointData *const point_data) const;
+  static void create_point_data_parametric(const DomainPtr_ domain,
+                                           const ObjContPtr_t_ objs_container,
+                                           const PointsTopology &points_top,
+                                           const VtkGridPtr_ vtk_grid);
 
 };
 

@@ -131,8 +131,8 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
 {
   // Implementation for 2D and 3D cases.
 
-  const auto &num_visualization_elements =
-    grid_info->get_num_cells_per_element();
+  const auto num_visualization_elements =
+    grid_info->get_num_cells_per_element<dim>();
 
   TensorSize <dim> n_vis_elements;
   for (int dir = 0; dir < dim; ++dir)
