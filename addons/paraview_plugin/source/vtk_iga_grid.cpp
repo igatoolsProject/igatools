@@ -33,16 +33,16 @@ IGA_NAMESPACE_OPEN
 template <class Domain>
 VtkIgaGrid<Domain>::
 VtkIgaGrid(const DomainPtr_ domain,
-                    const Index &id,
-                    const GridInfoPtr_ solid_grid_info,
-                    const GridInfoPtr_ knot_grid_info,
-                    const ControlGridInfoPtr_ control_grid_info,
-                    const ObjContPtr_ obj_container,
-                    const bool is_active,
-                    const bool is_physical)
+           const Index &id,
+           const GridInfoPtr_ solid_grid_info,
+           const GridInfoPtr_ knot_grid_info,
+           const ControlGridInfoPtr_ control_grid_info,
+           const ObjContPtr_ obj_container,
+           const bool is_active,
+           const bool is_physical)
   :
   domain_(domain),
-  id_ (id),
+  id_(id),
   solid_grid_info_(solid_grid_info),
   knot_grid_info_(knot_grid_info),
   control_grid_info_(control_grid_info),
@@ -53,9 +53,9 @@ VtkIgaGrid(const DomainPtr_ domain,
   recompute_solid_(true),
   recompute_knot_(true),
   recompute_control_(is_physical ? true : false),
-  is_active_ (is_active),
-  is_physical_ (is_physical),
-  is_ig_grid_func_ (is_physical ? std::dynamic_pointer_cast<const IgGridFunc_>(domain->get_grid_function()) != nullptr  : false)
+  is_active_(is_active),
+  is_physical_(is_physical),
+  is_ig_grid_func_(is_physical ? std::dynamic_pointer_cast<const IgGridFunc_>(domain->get_grid_function()) != nullptr  : false)
 {
   Assert(domain_ != nullptr, ExcNullPtr());
   Assert(solid_grid_info_ != nullptr, ExcNullPtr());
@@ -78,9 +78,9 @@ create(const DomainPtr_ domain,
        const bool is_active,
        const bool is_physical) -> SelfPtr_
 {
-    return SelfPtr_ (new Self_(domain, id, solid_grid_info,
-                               knot_grid_info, control_grid_info,
-                               obj_container, is_active, is_physical));
+  return SelfPtr_(new Self_(domain, id, solid_grid_info,
+  knot_grid_info, control_grid_info,
+  obj_container, is_active, is_physical));
 }
 
 
@@ -90,7 +90,7 @@ const Index &
 VtkIgaGrid<Domain>::
 get_id() const
 {
-    return id_;
+  return id_;
 }
 
 
@@ -100,7 +100,7 @@ const std::string &
 VtkIgaGrid<Domain>::
 get_name() const
 {
-    return domain_->get_name();
+  return domain_->get_name();
 }
 
 
@@ -110,7 +110,7 @@ bool
 VtkIgaGrid<Domain>::
 is_active() const
 {
-    return is_active_;
+  return is_active_;
 }
 
 
@@ -120,7 +120,7 @@ void
 VtkIgaGrid<Domain>::
 set_status(const bool status_flag)
 {
-    is_active_ = status_flag;
+  is_active_ = status_flag;
 }
 
 
@@ -130,7 +130,7 @@ bool
 VtkIgaGrid<Domain>::
 is_ig_grid_func() const
 {
-    return is_ig_grid_func_;
+  return is_ig_grid_func_;
 }
 
 
@@ -140,7 +140,7 @@ bool
 VtkIgaGrid<Domain>::
 is_physical() const
 {
-    return is_physical_;
+  return is_physical_;
 }
 
 
@@ -154,7 +154,7 @@ get_solid_grid() -> VtkGridPtr_
   {
     // Recomputing solid grid.
     solid_grid_ = VtkIgaSolidGrid<Domain>::
-            create(domain_, objs_container_, solid_grid_info_, is_physical_);
+    create(domain_, objs_container_, solid_grid_info_, is_physical_);
 
     recompute_solid_ = false;
   }
@@ -189,15 +189,15 @@ auto
 VtkIgaGrid<Domain>::
 get_control_grid() -> VtkGridPtr_
 {
-  Assert (is_physical_,
-          ExcMessage("Control mesh cannot be retrieved for a parametric "
-                     "mesh."));
+  Assert(is_physical_,
+  ExcMessage("Control mesh cannot be retrieved for a parametric "
+  "mesh."));
 
   if (recompute_control_)
   {
     // Recomputing control grid.
     control_grid_ = VtkIgaControlGrid<Domain>::
-            create(this->domain_, control_grid_info_);
+    create(this->domain_, control_grid_info_);
 
     recompute_control_ = false;
   }
@@ -221,9 +221,9 @@ update(const bool solid_updated,
   if (!this->recompute_knot_)
     this->recompute_knot_ = knot_updated;
 
-  Assert (is_physical_ || !control_updated,
-          ExcMessage("Control mesh cannot be updated for a parametric "
-                     "mesh."));
+  Assert(is_physical_ || !control_updated,
+         ExcMessage("Control mesh cannot be updated for a parametric "
+                    "mesh."));
   if (!this->recompute_control_ && is_physical_)
     this->recompute_control_ = control_updated;
 }

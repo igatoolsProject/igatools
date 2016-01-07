@@ -56,7 +56,7 @@ ObjectsContainerXMLReader::
 parse(const string &file_path)
 {
   const auto xml_doc = XMLDocument::parse_from_file(file_path,
-                       ObjectsContainerXMLReader::XML_SCHEMA_);
+                                                    ObjectsContainerXMLReader::XML_SCHEMA_);
   const auto xml_elem = xml_doc->get_document_element();
 
   const auto container = ObjectsContainer::create();
@@ -92,7 +92,7 @@ ObjectsContainerXMLReader::
 parse_const(const string &file_path)
 {
   const auto xml_doc = XMLDocument::parse_from_file(file_path,
-                       ObjectsContainerXMLReader::XML_SCHEMA_);
+                                                    ObjectsContainerXMLReader::XML_SCHEMA_);
   const auto xml_elem = xml_doc->get_document_element();
 
   const auto container = ObjectsContainer::create();
@@ -1341,7 +1341,7 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the GridFunction."));
   SafeSTLArray<Real, Values::n_entries> vals_arr;
   std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
-  Values values (vals_arr);
+  Values values(vals_arr);
 
   const auto name = parse_name(xml_elem);
 
@@ -1422,7 +1422,7 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the GridFunction."));
   SafeSTLArray<Real, Values::n_entries> b_arr;
   std::copy(b_vec.cbegin(), b_vec.cend(), b_arr.begin());
-  Values b (b_arr);
+  Values b(b_arr);
 
   // Parsing A.
   const auto A_tag = xml_elem->get_single_element("A");
@@ -1434,7 +1434,7 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the Function."));
   SafeSTLArray<Real, Ders::n_entries> A_arr;
   std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
-  Ders A (A_arr);
+  Ders A(A_arr);
 
   const auto name = parse_name(xml_elem);
 
@@ -1958,7 +1958,7 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the GridFunction."));
   SafeSTLArray<Real, Values::n_entries> vals_arr;
   std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
-  Values values (vals_arr);
+  Values values(vals_arr);
 
   const auto name = parse_name(xml_elem);
 
@@ -2047,7 +2047,7 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the Function."));
   SafeSTLArray<Real, Values::n_entries> b_arr;
   std::copy(b_vec.cbegin(), b_vec.cend(), b_arr.begin());
-  Values b (b_arr);
+  Values b(b_arr);
 
   // Parsing A.
   const auto A_tag = xml_elem->get_single_element("A");
@@ -2059,7 +2059,7 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the Function."));
   SafeSTLArray<Real, Ders::n_entries> A_arr;
   std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
-  Ders A (A_arr);
+  Ders A(A_arr);
 
   const auto name = parse_name(xml_elem);
 

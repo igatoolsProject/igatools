@@ -459,20 +459,20 @@ is_void() const
   for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Spline spaces
@@ -480,20 +480,20 @@ is_void() const
   for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Reference space basis
@@ -501,20 +501,20 @@ is_void() const
   for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Grid functions
@@ -522,20 +522,20 @@ is_void() const
   for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Domains
@@ -543,20 +543,20 @@ is_void() const
   for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Physical space basis
@@ -564,20 +564,20 @@ is_void() const
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Function
@@ -585,22 +585,22 @@ is_void() const
   for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
   else
-      return true;
+    return true;
 
 }
 

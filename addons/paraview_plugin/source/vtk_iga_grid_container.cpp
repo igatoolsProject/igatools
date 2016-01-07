@@ -78,8 +78,8 @@ create(const ObjContPtr_ objs_container,
        const GridInfoPtr_ parm_solid_info,
        const GridInfoPtr_ parm_knot_info) -> SelfPtr_
 {
-  return SelfPtr_ (new Self_(objs_container, phys_solid_info, phys_knot_info,
-                             phys_control_info, parm_solid_info, parm_knot_info));
+  return SelfPtr_(new Self_(objs_container, phys_solid_info, phys_knot_info,
+  phys_control_info, parm_solid_info, parm_knot_info));
 }
 
 
@@ -107,27 +107,27 @@ fill_objects_container(const ObjContPtr_ objs_container_old)
     // Non constant functions from the old container.
     for (const auto &id : objs_container_old->template get_object_ids<FunctionType>())
     {
-        const auto func = objs_container_old->template get_object<FunctionType>(id);
-        objs_container_->template insert_const_object<FunctionType> (func);
+      const auto func = objs_container_old->template get_object<FunctionType>(id);
+      objs_container_->template insert_const_object<FunctionType> (func);
 
-        const auto domain = func->get_domain();
-        const auto dom_id = domain->get_object_id();
-        if (!objs_container_old->template is_const_object_present<DomainType>(dom_id) &&
-            !objs_container_old->template is_object_present<DomainType>(dom_id))
-            objs_container_->template insert_const_object<DomainType> (domain);
+      const auto domain = func->get_domain();
+      const auto dom_id = domain->get_object_id();
+      if (!objs_container_old->template is_const_object_present<DomainType>(dom_id) &&
+          !objs_container_old->template is_object_present<DomainType>(dom_id))
+        objs_container_->template insert_const_object<DomainType> (domain);
     }
 
     // Constant functions from the old container.
     for (const auto &id : objs_container_old->template get_const_object_ids<FunctionType>())
     {
-        const auto func = objs_container_old->template get_const_object<FunctionType>(id);
-        objs_container_->template insert_const_object<FunctionType> (func);
+      const auto func = objs_container_old->template get_const_object<FunctionType>(id);
+      objs_container_->template insert_const_object<FunctionType> (func);
 
-        const auto domain = func->get_domain();
-        const auto dom_id = domain->get_object_id();
-        if (!objs_container_old->template is_const_object_present<DomainType>(dom_id) &&
-            !objs_container_old->template is_object_present<DomainType>(dom_id))
-            objs_container_->template insert_const_object<DomainType> (domain);
+      const auto domain = func->get_domain();
+      const auto dom_id = domain->get_object_id();
+      if (!objs_container_old->template is_const_object_present<DomainType>(dom_id) &&
+          !objs_container_old->template is_object_present<DomainType>(dom_id))
+        objs_container_->template insert_const_object<DomainType> (domain);
     }
   });
 
@@ -144,39 +144,39 @@ fill_objects_container(const ObjContPtr_ objs_container_old)
     // Inserting grid functions from the previously inserted domains.
     for (const auto &id : objs_container_->template get_const_object_ids<DomainType>())
     {
-        const auto domain = objs_container_->template get_const_object<DomainType>(id);
+      const auto domain = objs_container_->template get_const_object<DomainType>(id);
 
-        const auto grid_func = domain->get_grid_function();
-        const auto gf_id = grid_func->get_object_id();
-        if (!objs_container_old->template is_const_object_present<GridFuncType>(gf_id) &&
-            !objs_container_old->template is_object_present<GridFuncType>(gf_id))
-            objs_container_->template insert_const_object<GridFuncType> (grid_func);
+      const auto grid_func = domain->get_grid_function();
+      const auto gf_id = grid_func->get_object_id();
+      if (!objs_container_old->template is_const_object_present<GridFuncType>(gf_id) &&
+          !objs_container_old->template is_object_present<GridFuncType>(gf_id))
+        objs_container_->template insert_const_object<GridFuncType> (grid_func);
     }
 
     // Non constant domains from the old container.
     for (const auto &id : objs_container_old->template get_object_ids<DomainType>())
     {
-        const auto domain = objs_container_old->template get_object<DomainType>(id);
-        objs_container_->template insert_const_object<DomainType> (domain);
+      const auto domain = objs_container_old->template get_object<DomainType>(id);
+      objs_container_->template insert_const_object<DomainType> (domain);
 
-        const auto grid_func = domain->get_grid_function();
-        const auto gf_id = grid_func->get_object_id();
-        if (!objs_container_old->template is_const_object_present<GridFuncType>(gf_id) &&
-            !objs_container_old->template is_object_present<GridFuncType>(gf_id))
-            objs_container_->template insert_const_object<GridFuncType> (grid_func);
+      const auto grid_func = domain->get_grid_function();
+      const auto gf_id = grid_func->get_object_id();
+      if (!objs_container_old->template is_const_object_present<GridFuncType>(gf_id) &&
+          !objs_container_old->template is_object_present<GridFuncType>(gf_id))
+        objs_container_->template insert_const_object<GridFuncType> (grid_func);
     }
 
     // Constant domains from the old container.
     for (const auto &id : objs_container_old->template get_const_object_ids<DomainType>())
     {
-        const auto domain = objs_container_old->template get_const_object<DomainType>(id);
-        objs_container_->template insert_const_object<DomainType> (domain);
+      const auto domain = objs_container_old->template get_const_object<DomainType>(id);
+      objs_container_->template insert_const_object<DomainType> (domain);
 
-        const auto grid_func = domain->get_grid_function();
-        const auto gf_id = grid_func->get_object_id();
-        if (!objs_container_old->template is_const_object_present<GridFuncType>(gf_id) &&
-            !objs_container_old->template is_object_present<GridFuncType>(gf_id))
-            objs_container_->template insert_const_object<GridFuncType> (grid_func);
+      const auto grid_func = domain->get_grid_function();
+      const auto gf_id = grid_func->get_object_id();
+      if (!objs_container_old->template is_const_object_present<GridFuncType>(gf_id) &&
+          !objs_container_old->template is_object_present<GridFuncType>(gf_id))
+        objs_container_->template insert_const_object<GridFuncType> (grid_func);
     }
   });
 
@@ -193,39 +193,39 @@ fill_objects_container(const ObjContPtr_ objs_container_old)
     // Inserting grids from the previously inserted grid functions.
     for (const auto &id : objs_container_->template get_const_object_ids<GridFuncType>())
     {
-        const auto grid_func = objs_container_->template get_const_object<GridFuncType>(id);
+      const auto grid_func = objs_container_->template get_const_object<GridFuncType>(id);
 
-        const auto grid = grid_func->get_grid();
-        const auto g_id = grid->get_object_id();
-        if (!objs_container_old->template is_const_object_present<GridType>(g_id) &&
-            !objs_container_old->template is_object_present<GridType>(g_id))
-            objs_container_->template insert_const_object<GridType> (grid);
+      const auto grid = grid_func->get_grid();
+      const auto g_id = grid->get_object_id();
+      if (!objs_container_old->template is_const_object_present<GridType>(g_id) &&
+          !objs_container_old->template is_object_present<GridType>(g_id))
+        objs_container_->template insert_const_object<GridType> (grid);
     }
 
     // Non constant grid functions from the old container.
     for (const auto &id : objs_container_old->template get_object_ids<GridFuncType>())
     {
-        const auto grid_func = objs_container_old->template get_object<GridFuncType>(id);
-        objs_container_->template insert_const_object<GridFuncType> (grid_func);
+      const auto grid_func = objs_container_old->template get_object<GridFuncType>(id);
+      objs_container_->template insert_const_object<GridFuncType> (grid_func);
 
-        const auto grid = grid_func->get_grid();
-        const auto g_id = grid->get_object_id();
-        if (!objs_container_old->template is_const_object_present<GridType>(g_id) &&
-            !objs_container_old->template is_object_present<GridType>(g_id))
-            objs_container_->template insert_const_object<GridType> (grid);
+      const auto grid = grid_func->get_grid();
+      const auto g_id = grid->get_object_id();
+      if (!objs_container_old->template is_const_object_present<GridType>(g_id) &&
+          !objs_container_old->template is_object_present<GridType>(g_id))
+        objs_container_->template insert_const_object<GridType> (grid);
     }
 
     // Constant grid functions from the old container.
     for (const auto &id : objs_container_old->template get_const_object_ids<GridFuncType>())
     {
-        const auto grid_func = objs_container_old->template get_const_object<GridFuncType>(id);
-        objs_container_->template insert_const_object<GridFuncType> (grid_func);
+      const auto grid_func = objs_container_old->template get_const_object<GridFuncType>(id);
+      objs_container_->template insert_const_object<GridFuncType> (grid_func);
 
-        const auto grid = grid_func->get_grid();
-        const auto g_id = grid->get_object_id();
-        if (!objs_container_old->template is_const_object_present<GridType>(g_id) &&
-            !objs_container_old->template is_object_present<GridType>(g_id))
-            objs_container_->template insert_const_object<GridType> (grid);
+      const auto grid = grid_func->get_grid();
+      const auto g_id = grid->get_object_id();
+      if (!objs_container_old->template is_const_object_present<GridType>(g_id) &&
+          !objs_container_old->template is_object_present<GridType>(g_id))
+        objs_container_->template insert_const_object<GridType> (grid);
     }
   });
 
@@ -238,11 +238,11 @@ fill_objects_container(const ObjContPtr_ objs_container_old)
 
     // Non-const objects.
     for (const auto &id : objs_container_old->template get_object_ids<GridType>())
-        objs_container_->template insert_const_object<GridType> (objs_container_old->template get_object<GridType>(id));
+      objs_container_->template insert_const_object<GridType> (objs_container_old->template get_object<GridType>(id));
 
     // Const objects.
     for (const auto &id : objs_container_old->template get_const_object_ids<GridType>())
-        objs_container_->template insert_const_object<GridType> (objs_container_old->template get_const_object<GridType>(id));
+      objs_container_->template insert_const_object<GridType> (objs_container_old->template get_const_object<GridType>(id));
   });
 }
 
@@ -268,29 +268,29 @@ set_names()
 
     for (const auto &id : objs_container_->template get_const_object_ids<FunctionType>())
     {
-        const auto func = const_pointer_cast<FunctionType>(
-                objs_container_->template get_const_object<FunctionType>(id));
+      const auto func = const_pointer_cast<FunctionType>(
+                          objs_container_->template get_const_object<FunctionType>(id));
 
-        if (func->get_name() == "")
-            func->set_name("Function Id=" + to_string(func->get_object_id()));
+      if (func->get_name() == "")
+        func->set_name("Function Id=" + to_string(func->get_object_id()));
 
-        const auto domain = const_pointer_cast<DomainType>(func->get_domain());
-        const auto grid_func = const_pointer_cast<GridFuncType>(domain->get_grid_function());
-        const auto grid = const_pointer_cast<GridType>(grid_func->get_grid());
+      const auto domain = const_pointer_cast<DomainType>(func->get_domain());
+      const auto grid_func = const_pointer_cast<GridFuncType>(domain->get_grid_function());
+      const auto grid = const_pointer_cast<GridType>(grid_func->get_grid());
 
-        if (domain->get_name() == "")
-        {
-            if (grid_func->get_name() == "")
-                domain->set_name("Domain of Function \"" + func->get_name() + "\"");
-            else
-                domain->set_name("Domain with GridFunction \"" + grid_func->get_name() + "\"");
-        }
-
+      if (domain->get_name() == "")
+      {
         if (grid_func->get_name() == "")
-            grid_func->set_name("GridFunction of the Domain \"" + domain->get_name() + "\"");
+          domain->set_name("Domain of Function \"" + func->get_name() + "\"");
+        else
+          domain->set_name("Domain with GridFunction \"" + grid_func->get_name() + "\"");
+      }
 
-        if (grid->get_name() == "")
-            grid->set_name("Grid of the Domain \"" + domain->get_name() + "\"");
+      if (grid_func->get_name() == "")
+        grid_func->set_name("GridFunction of the Domain \"" + domain->get_name() + "\"");
+
+      if (grid->get_name() == "")
+        grid->set_name("Grid of the Domain \"" + domain->get_name() + "\"");
     }
   });
 
@@ -308,64 +308,64 @@ set_names()
 
     for (const auto &id : objs_container_->template get_const_object_ids<DomainType>())
     {
-        const auto domain = const_pointer_cast<DomainType>(objs_container_->template get_const_object<DomainType>(id));
+      const auto domain = const_pointer_cast<DomainType>(objs_container_->template get_const_object<DomainType>(id));
 
-        if (domain->get_name() == "")
-            domain->set_name("Domain Id=" + to_string(domain->get_object_id()));
+      if (domain->get_name() == "")
+        domain->set_name("Domain Id=" + to_string(domain->get_object_id()));
 
-        if (domain_names.find(domain->get_name()) != domain_names.cend())
+      if (domain_names.find(domain->get_name()) != domain_names.cend())
+      {
+        Index i = 1;
+        string name = domain->get_name() + " (" + to_string(++i) + ")";
+        while (domain_names.find(name) != domain_names.cend())
         {
-            Index i = 1;
-            string name = domain->get_name() + " (" + to_string(++i) + ")";
-            while(domain_names.find(name) != domain_names.cend())
+          name = domain->get_name() + " (" + to_string(++i) + ")";
+        }
+        domain->set_name(name);
+      }
+
+      domain_names.insert(domain->get_name());
+
+      const auto grid_func = const_pointer_cast<GridFuncType>(domain->get_grid_function());
+      const auto grid = const_pointer_cast<GridType>(grid_func->get_grid());
+
+      if (grid_func->get_name() == "")
+        grid_func->set_name("GridFunction of the Domain \"" + domain->get_name() + "\"");
+
+      if (grid->get_name() == "")
+        grid->set_name("Grid of the Domain \"" + domain->get_name() + "\"");
+
+      // Checking for repeated function names associated to this domain.
+      std::set<string> function_names;
+
+      for_each(valid_fd_ptr_types, [&](const auto &f_ptr_type)
+      {
+        using FunctionType = typename remove_reference<decltype(f_ptr_type)>::type::element_type;
+
+        for (const auto &f_id : objs_container_->template get_const_object_ids<FunctionType>())
+        {
+          const auto function = const_pointer_cast<FunctionType>(objs_container_->template get_const_object<FunctionType>(f_id));
+          const auto &name = function->get_name();
+
+          if (function->get_domain() == domain)
+          {
+            if (function_names.find(name) != function_names.cend())
             {
-                name = domain->get_name() + " (" + to_string(++i) + ")";
+              Index i = 1;
+              string new_name = name + " (" + to_string(++i) + ")";
+              while (function_names.find(new_name) != function_names.cend())
+              {
+                new_name = name + " (" + to_string(++i) + ")";
+              }
+
+              function->set_name(new_name);
             }
-            domain->set_name(name);
+
+            function_names.insert(function->get_name());
+          }
         }
 
-        domain_names.insert(domain->get_name());
-
-        const auto grid_func = const_pointer_cast<GridFuncType>(domain->get_grid_function());
-        const auto grid = const_pointer_cast<GridType>(grid_func->get_grid());
-
-        if (grid_func->get_name() == "")
-            grid_func->set_name("GridFunction of the Domain \"" + domain->get_name() + "\"");
-
-        if (grid->get_name() == "")
-            grid->set_name("Grid of the Domain \"" + domain->get_name() + "\"");
-
-        // Checking for repeated function names associated to this domain.
-        std::set<string> function_names;
-
-        for_each(valid_fd_ptr_types, [&](const auto &f_ptr_type)
-        {
-            using FunctionType = typename remove_reference<decltype(f_ptr_type)>::type::element_type;
-
-            for (const auto &f_id : objs_container_->template get_const_object_ids<FunctionType>())
-            {
-                const auto function = const_pointer_cast<FunctionType>(objs_container_->template get_const_object<FunctionType>(f_id));
-                const auto &name = function->get_name();
-
-                if (function->get_domain() == domain)
-                {
-                    if (function_names.find(name) != function_names.cend())
-                    {
-                        Index i = 1;
-                        string new_name = name + " (" + to_string(++i) + ")";
-                        while (function_names.find(new_name) != function_names.cend())
-                        {
-                            new_name = name + " (" + to_string(++i) + ")";
-                        }
-
-                        function->set_name(new_name);
-                    }
-
-                    function_names.insert(function->get_name());
-                }
-            }
-
-        });
+      });
 
     }
   });
@@ -377,15 +377,15 @@ set_names()
 
     for (const auto &id : objs_container_->template get_const_object_ids<GridFuncType>())
     {
-        const auto grid_func = const_pointer_cast<GridFuncType>(
-                objs_container_->template get_const_object<GridFuncType>(id));
+      const auto grid_func = const_pointer_cast<GridFuncType>(
+                               objs_container_->template get_const_object<GridFuncType>(id));
 
-        if (grid_func->get_name() == "")
-            grid_func->set_name("GridFunction Id=" + to_string(grid_func->get_object_id()));
+      if (grid_func->get_name() == "")
+        grid_func->set_name("GridFunction Id=" + to_string(grid_func->get_object_id()));
 
-        const auto grid = const_pointer_cast<GridType>(grid_func->get_grid());
-        if (grid->get_name() == "")
-            grid->set_name("Grid of the GridFunction \"" + grid_func->get_name() + "\"");
+      const auto grid = const_pointer_cast<GridType>(grid_func->get_grid());
+      if (grid->get_name() == "")
+        grid->set_name("Grid of the GridFunction \"" + grid_func->get_name() + "\"");
     }
   });
 
@@ -401,56 +401,56 @@ set_names()
 
     for (const auto &id : objs_container_->template get_const_object_ids<GridType>())
     {
-        const auto grid = const_pointer_cast<GridType>(
-                objs_container_->template get_const_object<GridType>(id));
+      const auto grid = const_pointer_cast<GridType>(
+                          objs_container_->template get_const_object<GridType>(id));
 
-        if (grid->get_name() == "")
-            grid->set_name("Grid Id=" + to_string(grid->get_object_id()));
+      if (grid->get_name() == "")
+        grid->set_name("Grid Id=" + to_string(grid->get_object_id()));
 
-        if (grid_names.find(grid->get_name()) != grid_names.cend())
+      if (grid_names.find(grid->get_name()) != grid_names.cend())
+      {
+        Index i = 1;
+        string name = grid->get_name() + " (" + to_string(++i) + ")";
+        while (grid_names.find(name) != grid_names.cend())
         {
-            Index i = 1;
-            string name = grid->get_name() + " (" + to_string(++i) + ")";
-            while (grid_names.find(name) != grid_names.cend())
+          name = grid->get_name() + " (" + to_string(++i) + ")";
+        }
+        grid->set_name(name);
+      }
+
+      grid_names.insert(grid->get_name());
+
+      // Checking for repeated function names associated to this grid.
+      std::set<string> grid_func_names;
+
+      for_each(valid_gfd_ptr_types, [&](const auto &f_ptr_type)
+      {
+        using GridFuncType = typename remove_reference<decltype(f_ptr_type)>::type::element_type;
+
+        for (const auto &gf_id : objs_container_->template get_const_object_ids<GridFuncType>())
+        {
+          const auto grid_func = const_pointer_cast<GridFuncType>(objs_container_->template get_const_object<GridFuncType>(gf_id));
+          const auto &name = grid_func->get_name();
+
+          if (grid_func->get_grid() == grid)
+          {
+            if (grid_func_names.find(name) != grid_func_names.cend())
             {
-                name = grid->get_name() + " (" + to_string(++i) + ")";
+              Index i = 1;
+              string new_name = name + " (" + to_string(++i) + ")";
+              while (grid_func_names.find(new_name) != grid_func_names.cend())
+              {
+                new_name = name + " (" + to_string(++i) + ")";
+              }
+
+              grid_func->set_name(new_name);
             }
-            grid->set_name(name);
+
+            grid_func_names.insert(grid_func->get_name());
+          }
         }
 
-        grid_names.insert(grid->get_name());
-
-        // Checking for repeated function names associated to this grid.
-        std::set<string> grid_func_names;
-
-        for_each(valid_gfd_ptr_types, [&](const auto &f_ptr_type)
-        {
-            using GridFuncType = typename remove_reference<decltype(f_ptr_type)>::type::element_type;
-
-            for (const auto &gf_id : objs_container_->template get_const_object_ids<GridFuncType>())
-            {
-                const auto grid_func = const_pointer_cast<GridFuncType>(objs_container_->template get_const_object<GridFuncType>(gf_id));
-                const auto &name = grid_func->get_name();
-
-                if (grid_func->get_grid() == grid)
-                {
-                    if (grid_func_names.find(name) != grid_func_names.cend())
-                    {
-                        Index i = 1;
-                        string new_name = name + " (" + to_string(++i) + ")";
-                        while (grid_func_names.find(new_name) != grid_func_names.cend())
-                        {
-                            new_name = name + " (" + to_string(++i) + ")";
-                        }
-
-                        grid_func->set_name(new_name);
-                    }
-
-                    grid_func_names.insert(grid_func->get_name());
-                }
-            }
-
-        });
+      });
     }
   });
 }
@@ -472,18 +472,18 @@ build_generators()
 
     for (const auto &id : objs_container_->template get_const_object_ids<DomainType>())
     {
-        const auto domain = objs_container_->template get_const_object<DomainType>(id);
+      const auto domain = objs_container_->template get_const_object<DomainType>(id);
 
-        const bool is_active = true;
+      const bool is_active = true;
 
-        const auto gg = VtkIgaGrid<DomainType>::
-                create(domain,  domain_id, phys_solid_info_,
-                       phys_knot_info_, phys_control_info_,
-                       objs_container_, is_active, is_physical);
+      const auto gg = VtkIgaGrid<DomainType>::
+                      create(domain,  domain_id, phys_solid_info_,
+                             phys_knot_info_, phys_control_info_,
+                             objs_container_, is_active, is_physical);
 
-        at_key<DomainType>(phys_generators_).push_back(gg);
+      at_key<DomainType>(phys_generators_).push_back(gg);
 
-        ++domain_id;
+      ++domain_id;
     }
   });
 
@@ -501,23 +501,23 @@ build_generators()
 
     for (const auto &id : objs_container_->template get_const_object_ids<GridType>())
     {
-        const auto grid = objs_container_->template get_const_object<GridType>(id);
+      const auto grid = objs_container_->template get_const_object<GridType>(id);
 
-        const bool is_active = true;
+      const bool is_active = true;
 
-        // Creating an identity domain for the grid.
-        const auto id_func = grid_functions::IdentityGridFunction<dim>::const_create(grid);
-        const auto domain = DomainType::const_create(id_func);
-        const_pointer_cast<DomainType>(domain)->set_name(grid->get_name());
+      // Creating an identity domain for the grid.
+      const auto id_func = grid_functions::IdentityGridFunction<dim>::const_create(grid);
+      const auto domain = DomainType::const_create(id_func);
+      const_pointer_cast<DomainType>(domain)->set_name(grid->get_name());
 
-        const auto gg = VtkIgaGrid<DomainType>::
-                create(domain, domain_id, parm_solid_info_,
-                       parm_knot_info_, phys_control_info_,
-                       objs_container_, is_active, is_physical);
+      const auto gg = VtkIgaGrid<DomainType>::
+                      create(domain, domain_id, parm_solid_info_,
+                             parm_knot_info_, phys_control_info_,
+                             objs_container_, is_active, is_physical);
 
-        at_key<DomainType>(parm_generators_).push_back(gg);
+      at_key<DomainType>(parm_generators_).push_back(gg);
 
-        ++domain_id;
+      ++domain_id;
     }
   });
 }
@@ -542,18 +542,18 @@ update(const GridInfoPtr_ phys_solid_info,
   // Updating physical generators.
   boost::fusion::for_each(phys_generators_, [&](const auto &gen_pair)
   {
-      for (const auto gen : gen_pair.second)
-          gen->update(phys_solid_updated, phys_knot_updated,
-                      phys_control_updated);
+    for (const auto gen : gen_pair.second)
+      gen->update(phys_solid_updated, phys_knot_updated,
+                  phys_control_updated);
   });
 
 
   // Updating parametric generators.
   boost::fusion::for_each(parm_generators_, [&](const auto &gen_pair)
   {
-      for (const auto &gen : gen_pair.second)
-          gen->update(parm_solid_updated, parm_knot_updated,
-                      parm_control_updated);
+    for (const auto &gen : gen_pair.second)
+      gen->update(parm_solid_updated, parm_knot_updated,
+                  parm_control_updated);
   });
 }
 
@@ -602,8 +602,8 @@ get_number_active_ig_grids() const
   Size counter = 0;
   boost::fusion::for_each(phys_generators_, [&](const auto &gen_pair)
   {
-      for (const auto gen : gen_pair.second)
-          counter += (gen->is_active() && gen->is_ig_grid_func());
+    for (const auto gen : gen_pair.second)
+      counter += (gen->is_active() && gen->is_ig_grid_func());
   });
   return counter;
 }
@@ -614,7 +614,7 @@ const char *
 VtkIgaGridContainer::
 get_physical_grid_name(const Index &id) const
 {
-    return Self_::get_grid_name(phys_generators_, id);
+  return Self_::get_grid_name(phys_generators_, id);
 }
 
 
@@ -623,7 +623,7 @@ const char *
 VtkIgaGridContainer::
 get_parametric_grid_name(const Index &id) const
 {
-    return Self_::get_grid_name(parm_generators_, id);
+  return Self_::get_grid_name(parm_generators_, id);
 }
 
 
@@ -632,7 +632,7 @@ bool
 VtkIgaGridContainer::
 get_physical_grid_status(const std::string &name) const
 {
-    return Self_::get_grid_status(phys_generators_, name);
+  return Self_::get_grid_status(phys_generators_, name);
 }
 
 
@@ -641,7 +641,7 @@ bool
 VtkIgaGridContainer::
 get_parametric_grid_status(const std::string &name) const
 {
-    return Self_::get_grid_status(parm_generators_, name);
+  return Self_::get_grid_status(parm_generators_, name);
 }
 
 
@@ -650,7 +650,7 @@ void
 VtkIgaGridContainer::
 set_physical_grid_status(const std::string &name, const bool status)
 {
-    Self_::set_grid_status(phys_generators_, name, status);
+  Self_::set_grid_status(phys_generators_, name, status);
 }
 
 
@@ -659,7 +659,7 @@ void
 VtkIgaGridContainer::
 set_parametric_grid_status(const std::string &name, const bool status)
 {
-    Self_::set_grid_status(parm_generators_, name, status);
+  Self_::set_grid_status(parm_generators_, name, status);
 }
 
 
@@ -694,17 +694,17 @@ set_physical_control_grids(vtkMultiBlockDataSet *const mb)
   unsigned int block_index = 0;
   boost::fusion::for_each(phys_generators_, [&](const auto &gen_pair)
   {
-      for (const auto gen : gen_pair.second)
+    for (const auto gen : gen_pair.second)
+    {
+      if (gen->is_active() && gen->is_ig_grid_func())
       {
-          if (gen->is_active() && gen->is_ig_grid_func())
-          {
-              const auto &name = gen->get_name();
+        const auto &name = gen->get_name();
 
-              mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-              mb->SetBlock(block_index, gen->get_control_grid());
-              ++block_index;
-          }
+        mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+        mb->SetBlock(block_index, gen->get_control_grid());
+        ++block_index;
       }
+    }
   });
 }
 
@@ -735,7 +735,7 @@ get_number_grids(const GridGensContainer_ generators)
   Size counter = 0;
   boost::fusion::for_each(generators, [&](const auto &gen_pair)
   {
-      counter += gen_pair.second.size();
+    counter += gen_pair.second.size();
   });
   return counter;
 }
@@ -749,8 +749,8 @@ get_number_active_grids(const GridGensContainer_ generators)
   Size counter = 0;
   boost::fusion::for_each(generators, [&](const auto &gen_pair)
   {
-      for (const auto gen : gen_pair.second)
-          counter += gen->is_active();
+    for (const auto gen : gen_pair.second)
+      counter += gen->is_active();
   });
   return counter;
 
@@ -767,22 +767,22 @@ get_grid_name(const GridGensContainer_ generators,
   bool found = false;
   boost::fusion::for_each(generators, [&](const auto &gen_pair)
   {
-      if (found)
-          return;
+    if (found)
+      return;
 
-      for (const auto gen : gen_pair.second)
+    for (const auto gen : gen_pair.second)
+    {
+      if (gen->get_id() == id)
       {
-          if (gen->get_id() == id)
-          {
-              found = true;
-              const string &name_str = gen->get_name();
-              name = name_str.c_str();
-              return;
-          }
+        found = true;
+        const string &name_str = gen->get_name();
+        name = name_str.c_str();
+        return;
       }
+    }
   });
 
-  Assert (found, ExcMessage("Not present id."));
+  Assert(found, ExcMessage("Not present id."));
 
   return name;
 
@@ -799,21 +799,21 @@ get_grid_status(const GridGensContainer_ generators,
   bool found = false;
   boost::fusion::for_each(generators, [&](const auto &gen_pair)
   {
-      if (found)
-          return;
+    if (found)
+      return;
 
-      for (const auto gen : gen_pair.second)
+    for (const auto gen : gen_pair.second)
+    {
+      if (gen->get_name() == name)
       {
-          if (gen->get_name() == name)
-          {
-              found = true;
-              status = gen->is_active();
-              return;
-          }
+        found = true;
+        status = gen->is_active();
+        return;
       }
+    }
   });
 
-  Assert (found, ExcMessage("Not present name."));
+  Assert(found, ExcMessage("Not present name."));
 
   return status;
 
@@ -830,20 +830,20 @@ set_grid_status(const GridGensContainer_ generators,
   bool found = false;
   boost::fusion::for_each(generators, [&](auto &gen_pair)
   {
-      if (found)
-          return;
+    if (found)
+      return;
 
-      for (auto gen : gen_pair.second)
+    for (auto gen : gen_pair.second)
+    {
+      if (gen->get_name() == name)
       {
-          if (gen->get_name() == name)
-          {
-              found = true;
-              gen->set_status(status);
-          }
+        found = true;
+        gen->set_status(status);
       }
+    }
   });
 
-  Assert (found, ExcMessage("Not present name."));
+  Assert(found, ExcMessage("Not present name."));
 }
 
 
@@ -861,17 +861,17 @@ set_solid_grids(const GridGensContainer_ generators,
   unsigned int block_index = 0;
   boost::fusion::for_each(generators, [&](const auto &gen_pair)
   {
-      for (const auto gen : gen_pair.second)
+    for (const auto gen : gen_pair.second)
+    {
+      if (gen->is_active())
       {
-          if (gen->is_active())
-          {
-              const auto &name = gen->get_name();
+        const auto &name = gen->get_name();
 
-              mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-              mb->SetBlock(block_index, gen->get_solid_grid());
-              ++block_index;
-          }
+        mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+        mb->SetBlock(block_index, gen->get_solid_grid());
+        ++block_index;
       }
+    }
   });
 
 }
@@ -891,17 +891,17 @@ set_knot_grids(const GridGensContainer_ generators,
   unsigned int block_index = 0;
   boost::fusion::for_each(generators, [&](const auto &gen_pair)
   {
-      for (const auto gen : gen_pair.second)
+    for (const auto gen : gen_pair.second)
+    {
+      if (gen->is_active())
       {
-          if (gen->is_active())
-          {
-              const auto &name = gen->get_name();
+        const auto &name = gen->get_name();
 
-              mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-              mb->SetBlock(block_index, gen->get_knot_grid());
-              ++block_index;
-          }
+        mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+        mb->SetBlock(block_index, gen->get_knot_grid());
+        ++block_index;
       }
+    }
   });
 
 }

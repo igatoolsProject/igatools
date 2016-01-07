@@ -666,38 +666,38 @@ ObjectsContainerXMLWriter::
 write_linear_grid_function(const shared_ptr<LinearGridFunc> linear_func,
                            const XMLDocPtr_ xml_doc)
 {
-    const auto obj_elem = xml_doc->create_new_element("LinearGridFunction");
+  const auto obj_elem = xml_doc->create_new_element("LinearGridFunction");
 
-    static const int dim         = LinearGridFunc::dim;
-    static const int space_dim   = LinearGridFunc::space_dim;
+  static const int dim         = LinearGridFunc::dim;
+  static const int space_dim   = LinearGridFunc::space_dim;
 
-    obj_elem->add_attribute("LocalObjectId", linear_func->get_object_id());
-    obj_elem->add_attribute("Dim", dim);
-    obj_elem->add_attribute("SpaceDim", space_dim);
+  obj_elem->add_attribute("LocalObjectId", linear_func->get_object_id());
+  obj_elem->add_attribute("Dim", dim);
+  obj_elem->add_attribute("SpaceDim", space_dim);
 
-    const auto grid_elem = xml_doc->create_new_element("Grid");
-    grid_elem->add_attribute("GetFromLocalObjectId",
-                            linear_func->get_grid()->get_object_id());
-    obj_elem->append_child_element(grid_elem);
+  const auto grid_elem = xml_doc->create_new_element("Grid");
+  grid_elem->add_attribute("GetFromLocalObjectId",
+                           linear_func->get_grid()->get_object_id());
+  obj_elem->append_child_element(grid_elem);
 
-    const auto A_arr = linear_func->get_A().get_flat_values();
-    SafeSTLVector<Real> A_vec(A_arr.size());
-    std::copy(A_arr.cbegin(), A_arr.cend(), A_vec.begin());
-    const auto A_elem = xml_doc->create_vector_element("A", A_vec);
-    obj_elem->append_child_element(A_elem);
+  const auto A_arr = linear_func->get_A().get_flat_values();
+  SafeSTLVector<Real> A_vec(A_arr.size());
+  std::copy(A_arr.cbegin(), A_arr.cend(), A_vec.begin());
+  const auto A_elem = xml_doc->create_vector_element("A", A_vec);
+  obj_elem->append_child_element(A_elem);
 
-    const auto b_arr = linear_func->get_b().get_flat_values();
-    SafeSTLVector<Real> b_vec(b_arr.size());
-    std::copy(b_arr.cbegin(), b_arr.cend(), b_vec.begin());
-    const auto b_elem = xml_doc->create_vector_element("b", b_vec);
-    obj_elem->append_child_element(b_elem);
+  const auto b_arr = linear_func->get_b().get_flat_values();
+  SafeSTLVector<Real> b_vec(b_arr.size());
+  std::copy(b_arr.cbegin(), b_arr.cend(), b_vec.begin());
+  const auto b_elem = xml_doc->create_vector_element("b", b_vec);
+  obj_elem->append_child_element(b_elem);
 
-    const auto &name = linear_func->get_name();
-    if (name.size() > 0)
-    {
-        const auto name_elem = xml_doc->create_new_text_element("Name", name);
-        obj_elem->append_child_element(name_elem);
-    }
+  const auto &name = linear_func->get_name();
+  if (name.size() > 0)
+  {
+    const auto name_elem = xml_doc->create_new_text_element("Name", name);
+    obj_elem->append_child_element(name_elem);
+  }
 
   const auto igt_elem = xml_doc->get_document_element();
   igt_elem->append_child_element(obj_elem);
@@ -716,9 +716,9 @@ write_ig_grid_function(const shared_ptr<IgGridFunc> ig_func,
   static const int dim         = IgGridFunc::dim;
   static const int space_dim   = IgGridFunc::space_dim;
 
-    obj_elem->add_attribute("LocalObjectId", ig_func->get_object_id());
-    obj_elem->add_attribute("Dim", dim);
-    obj_elem->add_attribute("SpaceDim", space_dim);
+  obj_elem->add_attribute("LocalObjectId", ig_func->get_object_id());
+  obj_elem->add_attribute("Dim", dim);
+  obj_elem->add_attribute("SpaceDim", space_dim);
 
   const auto rb_elem = xml_doc->create_new_element("ReferenceSpaceBasis");
   rb_elem->add_attribute("GetFromLocalObjectId",

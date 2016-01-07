@@ -45,7 +45,7 @@ vtkStandardNewMacro(IgatoolsParaViewReader);
 
 #ifndef SERIALIZATION
 #ifndef XML_IO
-    static_assert (true, "Neither serialization nor XML capabilities are active.");
+static_assert(true, "Neither serialization nor XML capabilities are active.");
 #endif
 #endif
 
@@ -55,7 +55,7 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
   n_vis_elem_parm_solid_(1),
   n_vis_elem_phys_knot_(1),
   n_vis_elem_parm_knot_(1),
-  grid_gen_ (GridGenPtr_())
+  grid_gen_(GridGenPtr_())
 {
 #ifndef NDEBUG
   this->DebugOn();
@@ -95,7 +95,7 @@ int IgatoolsParaViewReader::RequestData(
 {
   vtkInformation *info = output_vec->GetInformationObject(0);
   vtkMultiBlockDataSet *output =
-          vtkMultiBlockDataSet::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT()));
+    vtkMultiBlockDataSet::SafeDownCast(info->Get(vtkDataObject::DATA_OBJECT()));
 
   this->SetProgressText("Generating igatools geometries.");
 
@@ -127,7 +127,7 @@ CanReadFile(const char *name)
     XMLDocument::check_file(name);
     return 1;
   }
-  catch (ExceptionBase& exc)
+  catch (ExceptionBase &exc)
   {
     std::ostringstream stream;
     exc.print_exc_data(stream);
@@ -157,23 +157,23 @@ parse_file()
 
   // Physical solid grid.
   const auto phys_sol = VtkGridInformation::create
-          (n_vis_elem_phys_solid_, phys_sol_grid_type_);
+                        (n_vis_elem_phys_solid_, phys_sol_grid_type_);
 
   // Physical knot grid.
   const auto phys_knt = VtkGridInformation::create
-          (n_vis_elem_phys_knot_, phys_knt_grid_type_);
+                        (n_vis_elem_phys_knot_, phys_knt_grid_type_);
 
   // Physical control grid.
   const auto phys_ctr = VtkControlGridInformation::create
-          (phys_ctr_grid_type_ == VtkGridType::Structured);
+                        (phys_ctr_grid_type_ == VtkGridType::Structured);
 
   // Parametric solid grid.
   const auto parm_sol = VtkGridInformation::create
-          (n_vis_elem_parm_solid_, parm_sol_grid_type_);
+                        (n_vis_elem_parm_solid_, parm_sol_grid_type_);
 
   // Parametric knot grid.
   const auto parm_knt = VtkGridInformation::create
-          (n_vis_elem_parm_knot_, parm_knt_grid_type_);
+                        (n_vis_elem_parm_knot_, parm_knt_grid_type_);
 
   try
   {
@@ -190,11 +190,11 @@ parse_file()
     const bool xml_human_readable = true;
     if (xml_human_readable)
     {
-        objs_container_ = ObjectsContainerXMLReader::parse_const(file_name_str);
-        AssertThrow (!objs_container_->is_void(),
-                     ExcMessage("No objects defined in the input file: "
-                                + file_name_str + "."));
-        parse_file_ = false;
+      objs_container_ = ObjectsContainerXMLReader::parse_const(file_name_str);
+      AssertThrow(!objs_container_->is_void(),
+                  ExcMessage("No objects defined in the input file: "
+                             + file_name_str + "."));
+      parse_file_ = false;
     }
 
 #endif
@@ -202,20 +202,20 @@ parse_file()
 #ifdef SERIALIZATION
     if (parse_file_)
     {
-        ObjectsContainer container_new;
-        {
-            std::ifstream xml_istream(file_name_str);
-            IArchive xml_in(xml_istream);
-            xml_in >> container_new;
-            xml_in.close();
-        }
-        objs_container_ = container_new;
+      ObjectsContainer container_new;
+      {
+        std::ifstream xml_istream(file_name_str);
+        IArchive xml_in(xml_istream);
+        xml_in >> container_new;
+        xml_in.close();
+      }
+      objs_container_ = container_new;
 
-        AssertThrow (!objs_container_->is_void(),
-                     ExcMessage("No objects defined in the input file or "
-                                "serialization file not properly defined."
-                                " File name: " + file_name_str + "."));
-        parse_file_ = false;
+      AssertThrow(!objs_container_->is_void(),
+                  ExcMessage("No objects defined in the input file or "
+                             "serialization file not properly defined."
+                             " File name: " + file_name_str + "."));
+      parse_file_ = false;
     }
 #endif
 
@@ -347,7 +347,7 @@ create_grids(vtkMultiBlockDataSet *const mb)
   if (num_blocks == 0)
   {
     vtkWarningMacro(<< "Neither physical nor parametric geometries are "
-                       "active. No output produced.");
+                    "active. No output produced.");
 
     return 1;
   }
@@ -805,7 +805,7 @@ IgatoolsParaViewReader::
 GetNumberOfPhysGeomArrays()
 {
   if (grid_gen_ == nullptr)
-      return 0;
+    return 0;
   return grid_gen_->get_number_physical_grids();
 }
 
@@ -857,7 +857,7 @@ IgatoolsParaViewReader::
 GetNumberOfParmGeomArrays()
 {
   if (grid_gen_ == nullptr)
-      return 0;
+    return 0;
   return grid_gen_->get_number_parametric_grids();
 }
 

@@ -94,13 +94,13 @@ private:
    * Constructor for grids.
    */
   VtkIgaGrid(const DomainPtr_ domain,
-                      const Index &id,
-                      const GridInfoPtr_ solid_grid_info,
-                      const GridInfoPtr_ knot_grid_info,
-                      const ControlGridInfoPtr_ control_grid_info,
-                      const ObjContPtr_ obj_container,
-                      const bool is_active,
-                      const bool is_physical);
+             const Index &id,
+             const GridInfoPtr_ solid_grid_info,
+             const GridInfoPtr_ knot_grid_info,
+             const ControlGridInfoPtr_ control_grid_info,
+             const ObjContPtr_ obj_container,
+             const bool is_active,
+             const bool is_physical);
 
 public:
 
