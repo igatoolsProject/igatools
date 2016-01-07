@@ -49,7 +49,7 @@ set(IGATOOLS_LIBRARY_DIR
 
 # libraries
 set(IGATOOLS_LIBRARIES 
-  @lib_name@
+  @iga_lib_name@
   @Boost_LIBRARIES@
   @Petsc_LIBRARIES@
   @Trilinos_LIBRARIES@

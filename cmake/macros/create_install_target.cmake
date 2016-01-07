@@ -21,7 +21,7 @@
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Create the install target
 macro(create_install_target use_other_templates)
-  install(TARGETS   ${lib_name}
+  install(TARGETS   ${iga_lib_name}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
     LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
   install(DIRECTORY   ${PROJECT_SOURCE_DIR}/include/
@@ -35,9 +35,9 @@ macro(create_install_target use_other_templates)
       PATTERN "*.inst" EXCLUDE
       PATTERN "*.serialization" EXCLUDE)
   endif(${use_other_templates})
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h 
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${lib_name}/base)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake 
-    ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}ConfigVersion.cmake
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${iga_lib_name}/base/config.h 
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${iga_lib_name}/base)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${iga_lib_name}Config.cmake 
+    ${CMAKE_CURRENT_BINARY_DIR}/${iga_lib_name}ConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 endmacro(create_install_target)

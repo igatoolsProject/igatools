@@ -28,11 +28,11 @@ macro(generate_instantiations)
   ${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/init_instantiation_data.py)
   
   foreach(dir ${source_dirs})
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir})
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${iga_lib_name}/${dir})
     file(GLOB files ${PROJECT_SOURCE_DIR}/source/${dir}/*.inst.py)
     foreach(py_file ${files})
       get_filename_component(name ${py_file} NAME_WE)
-      set (inst_file ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir}/${name}.inst)
+      set (inst_file ${CMAKE_CURRENT_BINARY_DIR}/include/${iga_lib_name}/${dir}/${name}.inst)
       add_custom_command(
         OUTPUT ${inst_file}
         COMMAND PYTHONPATH=${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts
@@ -44,7 +44,7 @@ macro(generate_instantiations)
         ${inst_script} 
         ${CMAKE_CURRENT_BINARY_DIR}/instantiation_table.txt
         ${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/generate_inst_table.py
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${iga_lib_name}/${dir}
         COMMENT "Generating file ${dir}/${name}.inst")
         set_property(SOURCE ${PROJECT_SOURCE_DIR}/source/${dir}/${name}.cpp 
         PROPERTY OBJECT_DEPENDS ${inst_file})
@@ -68,7 +68,7 @@ macro(generate_serial)
     file(GLOB files ${PROJECT_SOURCE_DIR}/source/${dir}/*.serial.py)
     foreach(py_file ${files})
       get_filename_component(name ${py_file} NAME_WE)
-      set (serial_file ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir}/${name}.serial)
+      set (serial_file ${CMAKE_CURRENT_BINARY_DIR}/include/${iga_lib_name}/${dir}/${name}.serial)
       add_custom_command(
         OUTPUT ${serial_file}
         COMMAND PYTHONPATH=${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts
@@ -80,7 +80,7 @@ macro(generate_serial)
         ${inst_script} 
         ${CMAKE_CURRENT_BINARY_DIR}/instantiation_table.txt
         ${PROJECT_SOURCE_DIR}/cmake/instantiation_scripts/generate_inst_table.py
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/${dir}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${iga_lib_name}/${dir}
         COMMENT "Generating file ${dir}/${name}.serial")
         set_property(SOURCE ${PROJECT_SOURCE_DIR}/source/${dir}/${name}.cpp 
         APPEND PROPERTY OBJECT_DEPENDS ${serial_file})

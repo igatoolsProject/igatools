@@ -226,7 +226,7 @@ set(num_sub_elem 1 CACHE STRINGS "number of sub element to consider 1 for faces"
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Configuration of the library 
 #
-set(lib_name igatools)
+set(iga_lib_name igatools)
 
 # igatools source files
 #set (source_dirs base utils geometry basis_functions linear_algebra io contrib functions)
@@ -250,27 +250,27 @@ endif(USE_CEREAL)
 
 
 # the igatools library target
-add_library(${lib_name} SHARED  ${source_files})
-target_link_libraries(${lib_name} 
+add_library(${iga_lib_name} SHARED  ${source_files})
+target_link_libraries(${iga_lib_name} 
   ${Trilinos_TPL_LIBRARIES} 
   ${Trilinos_LIBRARIES} 
   ${Petsc_LIBRARIES} 
   ${XERCESC_LIBRARIES}
   ${Boost_LIBRARIES})
-set_property(TARGET ${lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})
+set_property(TARGET ${iga_lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Generate configure dependent source files (in the build directory)
 configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/include/${lib_name}/base/config.h.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h")
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/${iga_lib_name}/base/config.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/${iga_lib_name}/base/config.h")
 configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${lib_name}Config.cmake.in 
-  ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake @ONLY)
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${iga_lib_name}Config.cmake.in 
+  ${CMAKE_CURRENT_BINARY_DIR}/${iga_lib_name}Config.cmake @ONLY)
 configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${lib_name}ConfigVersion.cmake.in 
-  ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}ConfigVersion.cmake @ONLY)
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${iga_lib_name}ConfigVersion.cmake.in 
+  ${CMAKE_CURRENT_BINARY_DIR}/${iga_lib_name}ConfigVersion.cmake @ONLY)
 
 
 # Create the instantiation files
