@@ -566,7 +566,7 @@ private:
    * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the grid function.
-   * @tparam space_dim Space dimension of the grid function.
+   * @tparam range Range of the grid function.
    * @param[in] xml_elem XML element to be parsed.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
@@ -575,7 +575,7 @@ private:
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
    */
-  template <int dim, int space_dim>
+  template <int dim, int range>
   static void parse_constant_grid_function(const std::shared_ptr<XMLElement> xml_elem,
                                            const bool parse_as_constant,
                                            IdMap_ &id_map,
@@ -587,7 +587,7 @@ private:
    * @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the grid function.
-   * @tparam space_dim Space dimension of the grid function.
+   * @tparam range Range of the grid function.
    * @param[in] xml_elem XML element to be parsed.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
@@ -596,7 +596,7 @@ private:
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
    */
-  template <int dim, int space_dim>
+  template <int dim, int range>
   static void parse_linear_grid_function(const std::shared_ptr<XMLElement> xml_elem,
                                          const bool parse_as_constant,
                                          IdMap_ &id_map,
@@ -613,7 +613,7 @@ private:
    *   grid functions based on @ref NURBS are parsed.
    *
    * @tparam dim Dimension of the grid function.
-   * @tparam space_dim Space dimension of the grid function.
+   * @tparam range Range of the grid function.
    * @param[in] xml_elem XML element to be parsed.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
@@ -624,7 +624,7 @@ private:
    * @param[in,out] container Container for inserting the object
    *                and also retrieving other ones needed.
    */
-  template <int dim, int space_dim>
+  template <int dim, int rang>
   static void parse_ig_grid_function(const std::shared_ptr<XMLElement> xml_elem,
                                      const bool parse_as_constant,
                                      const bool &first_parsing,

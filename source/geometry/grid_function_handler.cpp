@@ -66,6 +66,16 @@ get_grid_handler() -> GridHandler &
 template<int dim_, int space_dim_>
 auto
 GridFunctionHandler<dim_, space_dim_>::
+get_element_cache(ElementAccessor &elem) const
+-> typename ElementAccessor::CacheType &
+{
+  return  elem.local_cache_;
+}
+
+
+template<int dim_, int space_dim_>
+auto
+GridFunctionHandler<dim_, space_dim_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
@@ -85,6 +95,17 @@ set_flags(const topology_variant &sdim,
   auto disp = SetFlagsDispatcher(dom_flag, flags_);
   boost::apply_visitor(disp, sdim);
 }
+
+
+template<int dim_, int space_dim_>
+template <int sdim>
+void
+GridFunctionHandler<dim_, space_dim_>::
+set_flags(const Flags &flag)
+{
+  this->set_flags(Topology<sdim>(), flag);
+}
+
 
 template<int dim_, int space_dim_>
 void
@@ -159,6 +180,27 @@ fill_cache(const topology_variant &sdim,
 }
 
 template<int dim_, int space_dim_>
+template <int sdim>
+void
+GridFunctionHandler<dim_, space_dim_>::
+fill_cache(ElementIterator &elem,
+                const int s_id) const
+{
+  this->fill_cache(Topology<sdim>(), elem, s_id);
+}
+
+template<int dim_, int space_dim_>
+template <int sdim>
+void
+GridFunctionHandler<dim_, space_dim_>::
+fill_cache(ElementAccessor &elem,
+                const int s_id) const
+{
+  this->fill_cache(Topology<sdim>(), elem, s_id);
+}
+
+
+template<int dim_, int space_dim_>
 void
 GridFunctionHandler<dim_, space_dim_>::
 fill_element_cache(ElementAccessor &elem) const
@@ -173,6 +215,59 @@ fill_element_cache(ElementIterator &elem) const
 {
   this->fill_cache(Topology<dim_>(), elem,0);
 }
+
+
+template<int dim_, int space_dim_>
+GridFunctionHandler<dim_, space_dim_>::
+SetFlagsDispatcher::
+SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
+  :
+  flag_(flag),
+  flags_(flags)
+{}
+
+
+template<int dim_, int space_dim_>
+template<int sdim>
+void
+GridFunctionHandler<dim_, space_dim_>::
+SetFlagsDispatcher::
+operator()(const Topology<sdim> &)
+{
+  flags_[sdim] |= flag_;
+}
+
+
+template<int dim_, int space_dim_>
+GridFunctionHandler<dim_, space_dim_>::
+InitCacheDispatcher::
+InitCacheDispatcher(const self_t &grid_function_handler,
+                    ElementAccessor &elem,
+                    const FlagsArray &flags)
+  :
+  grid_function_handler_(grid_function_handler),
+  elem_(elem),
+  flags_(flags)
+{}
+
+template<int dim_, int space_dim_>
+template<int sdim>
+void
+GridFunctionHandler<dim_, space_dim_>::
+InitCacheDispatcher::
+operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
+{
+  auto &cache = grid_function_handler_.get_element_cache(elem_);
+
+  const auto n_points = elem_.get_grid_element().template get_quad<sdim>()
+                        ->get_num_points();
+  for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
+  {
+    auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
+    s_cache.resize(flags_[sdim], n_points);
+  }
+}
+
 
 IGA_NAMESPACE_CLOSE
 

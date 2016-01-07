@@ -206,14 +206,8 @@ private:
   SafeSTLVector<TensorIndex<dim>> funcs_flat_to_tensor_id_;
 };
 
-template<int dim>
-inline
-LogStream &
-operator<<(LogStream &out, const TensorProductFunctionEvaluator<dim> &in)
-{
-  in.print_info(out);
-  return out;
-}
+
+
 
 /**
  * @brief Const view to one-dimensional BSpline function over an interval.

@@ -60,3 +60,20 @@ for cl in unique(classes):
 
 for func in unique(templated_functions):
     f.write('template ' + func + '\n')
+
+
+
+
+
+#---------------------------------------------------
+f.write('#ifdef SERIALIZATION\n')
+
+archives = ['OArchive','IArchive']
+
+for c in unique(classes):
+    for ar in archives:
+        f.write('template void %s::serialize(%s&);\n' %(c,ar))
+f.write('#endif // SERIALIZATION\n')
+#---------------------------------------------------
+
+

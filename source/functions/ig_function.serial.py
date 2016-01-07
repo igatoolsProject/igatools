@@ -51,11 +51,10 @@ for cl in unique(funcs):
     f.write('using %s = iga::%s;\n' % (alias, cl));
     f.write('CEREAL_REGISTER_TYPE(%s)\n' %alias);
     id += 1 
-
-
 f.write('#endif // SERIALIZATION\n')
 
 #   
 f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
   
+

@@ -283,8 +283,8 @@ because:
 @ingroup design
 @{
 @brief Classes that implements and use the 
-<a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a> library.
-@see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+<a href="http://uscilab.github.io/cereal/">Cereal serialization library</a>
+@see <a href="http://uscilab.github.io/cereal/">Cereal serialization library</a>
 */
 
 /** @}*/ //end of group serializable

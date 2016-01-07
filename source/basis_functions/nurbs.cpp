@@ -119,18 +119,6 @@ get_this_basis() const -> std::shared_ptr<const self_t >
   return nrb_space;
 }
 
-#if 0
-template<int dim_, int range_, int rank_>
-auto
-NURBS<dim_, range_, rank_>::
-create_element(const ListIt &index, const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
-{
-  using Elem = NURBSElement<dim_,range_,rank_>;
-
-  return std::unique_ptr<Elem>(new Elem(this->get_this_basis(),index,property));
-}
-#endif
 
 
 

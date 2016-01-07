@@ -56,31 +56,31 @@ private:
 
   template <class T>
   struct IsInValidDim :
-          boost::mpl::or_<
-          boost::mpl::bool_<(T::dim < 1)>,
-          boost::mpl::bool_<(T::dim > 3)>>
-          {};
+    boost::mpl::or_<
+  boost::mpl::bool_<(T::dim < 1)>,
+  boost::mpl::bool_<(T::dim > 3)>>
+                                {};
 
   template <class T>
   struct IsInValidSpaceDim :
-          boost::mpl::or_<
-          boost::mpl::bool_<(T::space_dim < 1)>,
-          boost::mpl::bool_<(T::space_dim > 3)>>
-          {};
+    boost::mpl::or_<
+  boost::mpl::bool_<(T::space_dim < 1)>,
+  boost::mpl::bool_<(T::space_dim > 3)>>
+                                      {};
 
   template <class T>
   struct IsInValidDomain :
-          boost::mpl::or_<
-          IsInValidDim<T>,
-          IsInValidSpaceDim<T>>
-          {};
+    boost::mpl::or_<
+    IsInValidDim<T>,
+    IsInValidSpaceDim<T>>
+  {};
 
   template <class T>
   struct IsInValidFunction :
-          boost::mpl::or_<
-          IsInValidDim<T>,
-          IsInValidSpaceDim<T>>
-          {};
+    boost::mpl::or_<
+    IsInValidDim<T>,
+    IsInValidSpaceDim<T>>
+  {};
 
   template< class T >
   struct as_fusion_vector_shared_ptr
@@ -98,33 +98,33 @@ private:
    * Valid domains.
    */
   using ValidDomains_ = boost::mpl::remove_if<
-      InstantiatedTypes::Domains,
-      boost::mpl::lambda< IsInValidDomain< boost::mpl::_1 > >::type
-      >::type;
+                        InstantiatedTypes::Domains,
+                        boost::mpl::lambda< IsInValidDomain< boost::mpl::_1 > >::type
+                        >::type;
 
   /**
    * Valid grids.
    */
   using ValidGrids_ = boost::mpl::remove_if<
-      InstantiatedTypes::Grids,
-      boost::mpl::lambda< IsInValidDim< boost::mpl::_1 > >::type
-      >::type;
+                      InstantiatedTypes::Grids,
+                      boost::mpl::lambda< IsInValidDim< boost::mpl::_1 > >::type
+                      >::type;
 
   /**
    * Valid grids functions.
    */
   using ValidGridFuncs_ = typename boost::mpl::remove_if<
-      InstantiatedTypes::GridFunctions,
-      typename boost::mpl::lambda< IsInValidDim< boost::mpl::_1 > >::type
-      >::type;
+                          InstantiatedTypes::GridFunctions,
+                          typename boost::mpl::lambda< IsInValidDim< boost::mpl::_1 > >::type
+                          >::type;
 
   /**
    * Valid functions.
    */
   using ValidFunctions_ = typename boost::mpl::remove_if<
-      InstantiatedTypes::Functions,
-      typename boost::mpl::lambda< IsInValidDomain< boost::mpl::_1 > >::type
-      >::type;
+                          InstantiatedTypes::Functions,
+                          typename boost::mpl::lambda< IsInValidDomain< boost::mpl::_1 > >::type
+                          >::type;
 
   using GridPtrs_ = as_fusion_vector_shared_ptr<ValidGrids_>::type;
   using GridFuncPtrs_ = as_fusion_vector_shared_ptr<ValidGridFuncs_>::type;
@@ -136,29 +136,29 @@ private:
   struct as_fusion_vector_const_shared_ptr
   {
   private:
-      template <class S>
-      using Pair_ = boost::fusion::pair<S, SafeSTLVector<GridGenPtr_<S>>>;
+    template <class S>
+    using Pair_ = boost::fusion::pair<S, SafeSTLVector<GridGenPtr_<S>>>;
 
   public:
-      typedef typename boost::fusion::result_of::as_map<
-              typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
+    typedef typename boost::fusion::result_of::as_map<
+    typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
   };
 
 
 
   template <class T, class Domain>
   struct IsInValidFunctionForDomain_ :
-          boost::mpl::or_<
-          boost::mpl::bool_<(T::dim != Domain::dim)>,
-          boost::mpl::bool_<(T::space_dim != Domain::space_dim)>>
-          {};
+    boost::mpl::or_<
+  boost::mpl::bool_<(T::dim != Domain::dim)>,
+  boost::mpl::bool_<(T::space_dim != Domain::space_dim)>>
+                                                       {};
 
   template <class T, class Domain>
   struct IsInValidGridFunctionForDomain_ :
-          boost::mpl::or_<
-          boost::mpl::bool_<(T::dim != Domain::dim)>,
-          boost::mpl::bool_<(Domain::space_dim != Domain::dim)>>
-          {};
+    boost::mpl::or_<
+  boost::mpl::bool_<(T::dim != Domain::dim)>,
+  boost::mpl::bool_<(Domain::space_dim != Domain::dim)>>
+                                                      {};
 
 public:
   /**
@@ -166,22 +166,22 @@ public:
    */
   template <class Domain>
   using ValidFuncsForDomain = typename boost::fusion::result_of::as_vector<
-          typename boost::mpl::transform<
-            typename boost::mpl::remove_if<
-              InstantiatedTypes::Functions,
-              typename boost::mpl::lambda< IsInValidFunctionForDomain_< boost::mpl::_1, Domain > >::type>::type,
-            std::shared_ptr<boost::mpl::_1>>::type>::type;
+                              typename boost::mpl::transform<
+                              typename boost::mpl::remove_if<
+                              InstantiatedTypes::Functions,
+                              typename boost::mpl::lambda< IsInValidFunctionForDomain_< boost::mpl::_1, Domain > >::type>::type,
+                              std::shared_ptr<boost::mpl::_1>>::type>::type;
 
   /**
    * Valid grid functions for a given domain.
    */
   template <class Domain>
   using ValidGridFuncsForDomain = typename boost::fusion::result_of::as_vector<
-          typename boost::mpl::transform<
-            typename boost::mpl::remove_if<
-              InstantiatedTypes::GridFunctions,
-              typename boost::mpl::lambda< IsInValidGridFunctionForDomain_< boost::mpl::_1, Domain > >::type>::type,
-            std::shared_ptr<boost::mpl::_1>>::type>::type;
+                                  typename boost::mpl::transform<
+                                  typename boost::mpl::remove_if<
+                                  InstantiatedTypes::GridFunctions,
+                                  typename boost::mpl::lambda< IsInValidGridFunctionForDomain_< boost::mpl::_1, Domain > >::type>::type,
+                                  std::shared_ptr<boost::mpl::_1>>::type>::type;
 
 private:
 
@@ -205,11 +205,11 @@ private:
    * Constructor.
    */
   VtkIgaGridContainer(const ObjContPtr_ objs_container,
-                               const GridInfoPtr_ phys_solid_info,
-                               const GridInfoPtr_ phys_knot_info,
-                               const ControlGridInfoPtr_ phys_control_info,
-                               const GridInfoPtr_ parm_solid_info,
-                               const GridInfoPtr_ parm_knot_info);
+                      const GridInfoPtr_ phys_solid_info,
+                      const GridInfoPtr_ phys_knot_info,
+                      const ControlGridInfoPtr_ phys_control_info,
+                      const GridInfoPtr_ parm_solid_info,
+                      const GridInfoPtr_ parm_knot_info);
 
 public:
 
@@ -309,12 +309,12 @@ public:
   /**
    * Returns the name of the @p id physical grid.
    * */
-  const char * get_physical_grid_name(const Index &id) const;
+  const char *get_physical_grid_name(const Index &id) const;
 
   /**
    * Returns the name of the @p id parametric grid.
    */
-  const char * get_parametric_grid_name(const Index &id) const;
+  const char *get_parametric_grid_name(const Index &id) const;
 
   /**
    * Returns the status (active/inactive) of the physical grid named

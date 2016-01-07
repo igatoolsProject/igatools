@@ -65,7 +65,7 @@ void test_1d()
   auto int_mult = MultiplicityTable({ {{1,3}} });
   auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
-  CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
+  SafeSTLArray<SafeSTLVector<Real>,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
 
   print_boundary_and_repeated_knots(sp_spec,bdry_knots);
@@ -89,8 +89,8 @@ void test_2d()
 
   auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
-  iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
-  iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
+  SafeSTLArray<SafeSTLVector<Real>,2> bk_x {{-0.5, 0}, {1.2, 1.3}};
+  SafeSTLArray<SafeSTLVector<Real>,2> bk_y {{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y} };
 
   print_boundary_and_repeated_knots(sp_spec,bdry_knots);
@@ -112,9 +112,9 @@ void test_3d()
 
   auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
-  iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
-  iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
-  iga::CartesianProductArray<double, 2> bk_z {{-0.6}, {1.6}};
+  SafeSTLArray<SafeSTLVector<Real>,2> bk_x {{-0.5, 0}, {1.2, 1.3}};
+  SafeSTLArray<SafeSTLVector<Real>,2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
+  SafeSTLArray<SafeSTLVector<Real>,2> bk_z {{-0.6}, {1.6}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y, bk_z} };
 
   print_boundary_and_repeated_knots(sp_spec,bdry_knots);
@@ -138,8 +138,8 @@ void test_2d_2()
 
   auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
-  iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
-  iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
+  SafeSTLArray<SafeSTLVector<Real>,2> bk_x {{-0.5, 0}, {1.2, 1.3}};
+  SafeSTLArray<SafeSTLVector<Real>,2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
 
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y}, {bk_y, bk_x} };
 

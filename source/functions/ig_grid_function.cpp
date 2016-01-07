@@ -225,6 +225,29 @@ print_info(LogStream &out) const
 }
 
 
+#ifdef SERIALIZATION
+template<int dim,int space_dim>
+template<class Archive>
+void
+IgGridFunction<dim,space_dim>::
+serialize(Archive &ar)
+{
+  using std::to_string;
+  const std::string base_name =
+    "GridFunction_" + to_string(dim) + "_" +
+    to_string(space_dim);
+
+  ar &make_nvp(base_name,base_class<parent_t>(this));
+
+  ar &make_nvp("ref_basis_",ref_basis_);
+
+  ar &make_nvp("coeffs_",coeffs_);
+
+  ar &make_nvp("dofs_property_",dofs_property_);
+}
+#endif
+
+
 IGA_NAMESPACE_CLOSE
 
 

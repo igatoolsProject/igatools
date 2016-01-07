@@ -38,9 +38,9 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
   :
   parent_t::Function(
    space.data_is_const() ?
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_domain()) :
    SharedPtrConstnessHandler<DomainType>(
-     std::const_pointer_cast<Domain<dim,codim>>(space.get_ptr_data()->get_physical_domain()))),
+     std::const_pointer_cast<Domain<dim,codim>>(space.get_ptr_data()->get_domain()))),
   basis_(space),
   dofs_property_(dofs_property)
 {
@@ -67,8 +67,8 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
   :
   parent_t::Function(
    space.data_is_const() ?
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain())),
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_domain()) :
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_domain())),
   basis_(space),
   dofs_property_(dofs_property)
 {
@@ -297,47 +297,29 @@ get_dofs_property() const
   return dofs_property_;
 }
 
-#if 0
+
 #ifdef SERIALIZATION
 template<int dim,int codim,int range,int rank>
 template<class Archive>
 void
 IgFunction<dim,codim,range,rank>::
-serialize(Archive &ar, const unsigned int version)
+serialize(Archive &ar)
 {
-  ar &boost::serialization::make_nvp("IgFunction_base_t",
-                                     boost::serialization::base_object<base_t>(*this));
+  using std::to_string;
+  const std::string base_name = "Function_" +
+                                to_string(dim) + "_" +
+                                to_string(codim) + "_" +
+                                to_string(range) + "_" +
+                                to_string(rank);
 
-  ar.template register_type<BSpline<dim,range,rank>>();
+  ar &make_nvp(base_name,base_class<base_t>(this));
 
-#ifdef USE_NURBS
-  ar.template register_type<NURBS<dim,range,rank>>();
-#endif // NURBS
-
-  ar.template register_type<PhysicalSpaceBasis<dim,range,rank,codim>>();
-  auto non_nonst_space = std::const_pointer_cast<Basis<dim,codim,range,rank>>(basis_);
-  ar &boost::serialization::make_nvp("basis_",non_nonst_space);
-  basis_ = non_nonst_space;
-  Assert(basis_ != nullptr,ExcNullPtr());
-
-  ar &boost::serialization::make_nvp("coeffs_",coeffs_);
-
-  ar &boost::serialization::make_nvp("dofs_property_",const_cast<std::string &>(dofs_property_));
-
-  ar.template register_type<BSplineElement<dim,range,rank>>();
-  ar.template register_type<NURBSElement<dim,range,rank>>();
-  ar.template register_type<PhysicalSpaceElement<dim,range,rank,codim>>();
-  ar &boost::serialization::make_nvp("space_elem_",space_elem_);
-
-
-  ar.template register_type<BSplineElementHandler<dim,range,rank>>();
-  ar.template register_type<NURBSElementHandler<dim,range,rank>>();
-  ar.template register_type<PhysSpaceElementHandler<dim,range,rank,codim>>();
-  ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
-  Assert(space_elem_handler_ != nullptr,ExcNullPtr());
+  ar &make_nvp("basis_",basis_);
+  ar &make_nvp("coeffs_",coeffs_);
+  ar &make_nvp("dofs_property_",dofs_property_);
 }
+
 #endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 

@@ -25,32 +25,27 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = []
 
-classes = []
+classes = set()
 
-templated_functions = []
 
-for x in inst.sub_mapping_dims:
+for x in inst.sub_mapping_dims + inst.mapping_dims:
     for sdim in range(0,x.dim):
         cl = 'SubGridFunction<%d,%d,%d>' %(sdim,x.dim,x.space_dim)
-        classes.append(cl)
+        classes.add(cl)
 
-for x in inst.mapping_dims:
-    for sdim in range(0,x.dim):
-        cl = 'SubGridFunction<%d,%d,%d>' %(sdim,x.dim,x.space_dim)
-        classes.append(cl)
+#for x in inst.mapping_dims:
+#    for sdim in range(0,x.dim):
+#        cl = 'SubGridFunction<%d,%d,%d>' %(sdim,x.dim,x.space_dim)
+#        classes.append(cl)
 
     #the next classes are needed by NURBS
         cl = 'SubGridFunction<%d,%d,1>' %(sdim,x.dim)
-        classes.append(cl)
+        classes.add(cl)
 
  
 
 
-for cl in unique(classes):
-    f.write('template class %s ;\n' %(cl))
+for cl in classes:
+    f.write('template class %s;\n' %(cl))
 
-
-for func in unique(templated_functions):
-    f.write('template ' + func + '\n')

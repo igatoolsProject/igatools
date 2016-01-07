@@ -172,6 +172,153 @@ operator[](const Index i) const
 
 
 template<int dim_, int range_, int rank_>
+template<class T>
+Index
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+active(const Index i) const
+{
+  return comp_map_[i];
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+const SafeSTLVector<Index> &
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+get_active_components_id() const
+{
+  return active_components_id_;
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+const SafeSTLVector<Index> &
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+get_inactive_components_id() const
+{
+  return inactive_components_id_;
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+get_comp_map() const -> const ComponentMap &
+{
+  return comp_map_;
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+cbegin() const -> const_iterator
+{
+  return const_iterator(*this,0);
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+cend() const -> const_iterator
+{
+  return const_iterator(*this,IteratorState::pass_the_end);
+}
+
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+begin() const -> const_iterator
+{
+  return cbegin();
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+end() const -> const_iterator
+{
+  return cend();
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+begin() -> iterator
+{
+  return iterator(*this,0);
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+auto
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+end() -> iterator
+{
+  return iterator(*this,IteratorState::pass_the_end);
+}
+
+template<int dim_, int range_, int rank_>
+template<class T>
+void
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+print_info(LogStream &out) const
+{
+  out.begin_item("Raw components: ");
+  base_t::print_info(out);
+  out.end_item();
+
+  out.begin_item("Components map: ");
+  comp_map_.print_info(out);
+  out.end_item();
+
+  out.begin_item("Active components ids: ");
+  active_components_id_.print_info(out);
+  out.end_item();
+
+  out.begin_item("Inactive components ids: ");
+  inactive_components_id_.print_info(out);
+  out.end_item();
+}
+
+#if 0
+#if SERIALIZATION
+template<int dim_, int range_, int rank_>
+template<class T>
+template<class Archive>
+void
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+serialize(Archive &ar)
+{
+  ar &make_nvp("ComponentContainer_base_t",base_class<base_t>(this));
+
+  ar &make_nvp("comp_map_",comp_map_);
+
+  ar &make_nvp("active_components_id_", active_components_id_);
+
+  ar &make_nvp("inactive_components_id_", inactive_components_id_);
+}
+#endif
+#endif
+// SERIALIZATION
+
+template<int dim_, int range_, int rank_>
 const Size SplineSpace<dim_, range_, rank_>::n_components;
 
 
@@ -408,18 +555,20 @@ init()
 
   //------------------------------------------------------------------------------
   // Determine the dimensionality of the spline space --- begin
-  typename TensorSizeTable::base_t n_basis;
+//  typename TensorSizeTable::base_t n_basis;
   for (const auto comp : components)
   {
-    const auto &deg_comp =              deg_[comp];
+    const auto &deg_comp = deg_[comp];
     const auto &mult_comp = interior_mult_[comp];
 
     const auto &periodic_comp = periodic_[comp];
 
+    auto &n_basis_comp = space_dim_[comp];
+
     for (const auto dir : UnitElement<dim_>::active_directions)
     {
       const auto &deg =  deg_comp[dir];
-      const auto &mult = mult_comp.get_data_direction(dir);
+      const auto &mult = mult_comp[dir];
 
       const auto order = deg + 1;
 
@@ -434,21 +583,21 @@ init()
       }
 #endif
 
-      n_basis[comp][dir] = std::accumulate(
-                             mult.begin(),
-                             mult.end(),
-                             periodic_comp[dir] ? 0 : order);
+      n_basis_comp[dir] = std::accumulate(
+                            mult.begin(),
+                            mult.end(),
+                            periodic_comp[dir] ? 0 : order);
 
 #ifndef NDEBUG
       if (periodic_comp[dir])
-        Assert(n_basis[comp][dir] > order,
+        Assert(n_basis_comp[dir] > order,
                ExcMessage("Not enough basis functions"));
 #endif
 
     } // end loop dir
   } // end loop comp
 
-  space_dim_ = n_basis;
+//  space_dim_ = n_basis;
   // Determine the dimensionality of the spline space --- end
   //------------------------------------------------------------------------------
 
@@ -579,7 +728,7 @@ rebuild_after_insert_knots(
     for (const auto dir : UnitElement<dim_>::active_directions)
     {
       const auto &old_unique_knots_dir = *old_unique_knots[dir];
-      const auto &interior_mult_comp_dir = interior_mult_comp.get_data_direction(dir);
+      const auto &interior_mult_comp_dir = interior_mult_comp[dir];
 
       const int n_internal_knots_old = old_unique_knots_dir.size() - 2;
       Assert(n_internal_knots_old == interior_mult_comp_dir.size(),
@@ -630,7 +779,7 @@ rebuild_after_insert_knots(
         //---------------------------------------------------------------------------------------
 #endif
 
-        interior_mult_[comp].copy_data_direction(dir,new_internal_mult_dir);
+        interior_mult_[comp][dir] = new_internal_mult_dir;
     }
   }
   // build the new internal knots with repetitions --- end
@@ -674,10 +823,11 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 #ifndef NDEBUG
   for (auto iComp : components)
   {
+    const auto &bndry_knots_comp = boundary_knots[iComp];
     for (const int j : UnitElement<dim_>::active_directions)
     {
-      const auto &l_knots = boundary_knots[iComp][j].get_data_direction(0);
-      const auto &r_knots = boundary_knots[iComp][j].get_data_direction(1);
+      const auto &l_knots = bndry_knots_comp[j][0];
+      const auto &r_knots = bndry_knots_comp[j][1];
 
       if (periodic_[iComp][j])
       {
@@ -732,7 +882,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
       const auto deg = degree_comp[dir];
       const auto order = deg + 1;
       const auto &knots = grid_->get_knot_coordinates(dir);
-      const auto &mult  = mult_comp.get_data_direction(dir);
+      const auto &mult  = mult_comp[dir];
 
       const int m = order;
       const int K = std::accumulate(mult.begin(),mult.end(),0);
@@ -781,8 +931,8 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
           break;
           case BasisEndBehaviour::end_knots:
           {
-            const auto &left_knts = boundary_knots[comp][dir].get_data_direction(0);
-            const auto &right_knts = boundary_knots[comp][dir].get_data_direction(1);
+            const auto &left_knts = boundary_knots[comp][dir][0];
+            const auto &right_knts = boundary_knots[comp][dir][1];
 
             for (int i=0; i<m; ++i)
             {
@@ -821,8 +971,9 @@ get_sub_space_mult(const Index sub_elem_id) const
   auto sub_mult = SubMultT(v_mult.get_comp_map());
   for (int comp : sub_mult.get_active_components_id())
   {
+    const auto &v_mult_comp = v_mult[comp];
     for (int j=0; j<k; ++j)
-      sub_mult[comp].copy_data_direction(j, v_mult[comp].get_data_direction(active_dirs[j]));
+      sub_mult[comp][j] = v_mult_comp[active_dirs[j]];
   }
   return sub_mult;
 }
@@ -885,7 +1036,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
     for (const auto j : UnitElement<dim_>::active_directions)
     {
       // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
-      const auto &mult = mult_comp.get_data_direction(j);
+      const auto &mult = mult_comp[j];
 
       SafeSTLVector<Size> accum_mult;
       const int size = mult.size();
@@ -894,7 +1045,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
       for (int i = 0; i < size; ++i)
         accum_mult.push_back(accum_mult[i] + mult[i]);
 
-      result[comp].copy_data_direction(j, accum_mult);
+      result[comp][j] = accum_mult;
 
       //TODO(pauletti, May 3, 2014): write some post assertions
     }
@@ -933,7 +1084,7 @@ get_multiplicity_from_regularity(const InteriorReg reg,
 
       SafeSTLVector<Size> mult(size);
       if (size>0)
-        res[comp].copy_data_direction(dir, SafeSTLVector<Size>(size, val));
+        res[comp][dir] = SafeSTLVector<Size>(size, val);
     }
   return res;
 }
@@ -961,12 +1112,16 @@ get_element_dofs(
 
   const auto &elem_t_id = elem_id.get_tensor_index();
 
+  TensorIndex<dim_> dof_t_origin;
+
   Index dof_loc_to_elem = 0;
   for (const auto comp : components)
   {
     const auto &index_table_comp = index_table[comp];
 
-    const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_t_id);
+//    const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_t_id);
+    for (int i = 0 ; i < dim_ ; ++i)
+      dof_t_origin[i] = accum_mult[comp][i][elem_t_id[i]];
 
     const auto &elem_comp_dof_t_id = this->get_dofs_tensor_id_elem_table()[comp];
 
@@ -1069,9 +1224,24 @@ get_components_map() const -> const SafeSTLArray<Index,n_components> &
 template<int dim_, int range_, int rank_>
 auto
 SplineSpace<dim_, range_, rank_>::
-get_active_components_id() const -> const SafeSTLVector<Index> &
+get_active_components_id() const -> SafeSTLVector<Index>
 {
+  SafeSTLSet<int> tmp;
+  tmp.insert(interior_mult_.get_active_components_id().begin(),
+  interior_mult_.get_active_components_id().end());
+  tmp.insert(deg_.get_active_components_id().begin(),
+  deg_.get_active_components_id().end());
+  tmp.insert(periodic_.get_active_components_id().begin(),
+  periodic_.get_active_components_id().end());
+
+  SafeSTLVector<int> active_components_id(tmp.begin(),tmp.end());
+  return active_components_id;
+
+#if 0
+  //TODO (martinelli, Dec 23, 2015) : it is better to store a unique array for active_components_id inside the space
+  // and avoid to use the ComponentContainer class
   return interior_mult_.get_active_components_id();
+#endif
 }
 
 template<int dim_, int range_, int rank_>
@@ -1128,7 +1298,7 @@ template<int dim_, int range_, int rank_>
 auto
 SplineSpace<dim_, range_, rank_>::
 get_dofs_tensor_id_elem_table() const
--> const ComponentContainer<SafeSTLVector<TensorIndex<dim_> > > &
+-> const SafeSTLArray<SafeSTLVector<TensorIndex<dim_>>,n_components> &
 {
   return dofs_tensor_id_elem_table_;
 }
@@ -1212,9 +1382,11 @@ template<int dim_, int range_, int rank_>
 auto
 SplineSpace<dim_, range_, rank_>::
 TensorSizeTable::
-get_offset() const -> ComponentContainer<Size>
+get_offset() const -> SafeSTLArray<int,n_components>
+//get_offset() const -> ComponentContainer<Size>
 {
-  ComponentContainer<Size> offset;
+  SafeSTLArray<int,n_components> offset;
+//  ComponentContainer<Size> offset;
   offset[0] = 0;
   for (int comp = 1; comp < n_components; ++comp)
     offset[comp] = offset[comp-1] + this->get_component_size(comp-1);

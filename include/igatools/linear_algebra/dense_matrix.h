@@ -184,33 +184,11 @@ private:
 
   template <class Archive>
   void
-  save(Archive &ar) const
-  {
-    auto rows = this->get_num_rows();
-    auto cols = this->get_num_cols();
-    ar(make_nvp("n_rows",rows));
-    ar(make_nvp("n_cols",cols));
-
-    const auto &data = this->data();
-    for (const Real &v : data)
-      ar(v);
-  }
+  save(Archive &ar) const;
 
   template <class Archive>
   void
-  load(Archive &ar)
-  {
-    int rows;
-    int cols;
-    ar(rows);
-    ar(cols);
-
-    this->resize(rows, cols);
-
-    auto &data = this->data();
-    for (Real &v : data)
-      ar(v);
-  }
+  load(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };

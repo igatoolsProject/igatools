@@ -168,10 +168,8 @@ public:
 
   const IndexType &get_index() const;
 
-  const ListIt &get_index_iterator() const
-  {
-    return index_it_;
-  }
+  const ListIt &get_index_iterator() const;
+
 
   /** Return the Grid from which the element belongs.*/
   std::shared_ptr<const Grid<dim>> get_grid() const;
@@ -267,10 +265,7 @@ public:
    * s_id-th sub-element.
    */
   template <int sdim>
-  std::shared_ptr<const Quadrature<sdim>> get_quad() const
-  {
-    return quad_list_.template get_quad<sdim>();
-  }
+  std::shared_ptr<const Quadrature<sdim>> get_quad() const;
 
 
   void print_cache_info(LogStream &out) const;
@@ -323,6 +318,15 @@ public:
 
 private:
 
+  /**
+   * The purpose of this struct is to set (at compile time) the static boolean IsInCache::value
+   * depending on the fact that the values associated to the template argument <tt>ValueType</tt>
+   * is in the element's cache or not.
+   *
+   * @note The valid <tt>ValueType</tt> for the GridElement's cache are:
+   * - grid_element::_Point for the <b>points</b> in the parametric domain
+   * - grid_element::_Weight for the <b>weights</b> associated to the points in the parametric domain
+   */
   template <class ValueType>
   struct IsInCache
   {

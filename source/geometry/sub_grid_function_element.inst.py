@@ -25,32 +25,26 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = []
 
-classes = []
+elements = set()
 
-templated_functions = []
-
-for x in inst.sub_mapping_dims:
+for x in inst.sub_mapping_dims + inst.mapping_dims:
     for sdim in range(0,x.dim):
-        cl = 'SubGridFunctionElement<%d,%d,%d>' %(sdim,x.dim,x.space_dim)
-        classes.append(cl)
+        elem = 'SubGridFunctionElement<%d,%d,%d>' %(sdim,x.dim,x.space_dim)
+        elements.add(elem)
 
-for x in inst.mapping_dims:
-    for sdim in range(0,x.dim):
-        cl = 'SubGridFunctionElement<%d,%d,%d>' %(sdim,x.dim,x.space_dim)
-        classes.append(cl)
+#for x in inst.mapping_dims:
+#    for sdim in range(0,x.dim):
+#        cl = 'SubGridFunctionElement<%d,%d,%d>' %(sdim,x.dim,x.space_dim)
+#        classes.append(cl)
 
     #the next classes are needed by NURBS
-        cl = 'SubGridFunctionElement<%d,%d,1>' %(sdim,x.dim)
-        classes.append(cl)
+        elem = 'SubGridFunctionElement<%d,%d,1>' %(sdim,x.dim)
+        elements.add(elem)
 
  
 
 
-for cl in unique(classes):
-    f.write('template class %s ;\n' %(cl))
+for elem in elements:
+    f.write('template class %s;\n' %(elem))
 
-
-for func in unique(templated_functions):
-    f.write('template ' + func + '\n')

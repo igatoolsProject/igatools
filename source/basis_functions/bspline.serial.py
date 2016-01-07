@@ -26,7 +26,7 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-types = ['BasisEndBehaviour','std::pair<Real,Real>']
+types = ['BasisEndBehaviour']
 
 spaces = []
 arrays = [] 
@@ -44,7 +44,7 @@ for t in types:
     arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
     arrays.append(arr_arr)
 arrays.append('SafeSTLArray<VecBernstOp,%d>' %(dim))
-arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(dim,n_components))
+#arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(dim,n_components))
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
@@ -57,7 +57,7 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
         arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
         arrays.append(arr_arr)
     arrays.append('SafeSTLArray<VecBernstOp,%d>' %(x.dim))
-    arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(x.dim,n_components))
+#    arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(x.dim,n_components))
 
 
          

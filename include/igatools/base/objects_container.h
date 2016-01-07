@@ -372,7 +372,7 @@ public:
    *
    * @return True if the container is void, false elsewhere.
    */
-  bool is_void () const;
+  bool is_void() const;
 
 private:
 

@@ -198,12 +198,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("grid_func_",grid_func_);
-    ar &make_nvp("name_",name_);
-    ar &make_nvp("object_id_",object_id_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 

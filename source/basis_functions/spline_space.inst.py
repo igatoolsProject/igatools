@@ -33,6 +33,10 @@ sub_dim_members = \
 
 
 spaces = ['SplineSpace<0,0,1>']
+
+comp_containers = []
+comp_containers_serializable = []
+
 templated_funcs = []
 
 for x in inst.sub_ref_sp_dims:
@@ -67,64 +71,97 @@ for x in inst.ref_sp_dims:
 
 for space in unique(spaces):
     f.write('template class %s ;\n' %space)
-    f.write('template class %s::template ComponentContainer<int>;\n' %(space))
-    f.write('template class %s::template ComponentContainer<std::pair<Real,Real>>;\n' %(space))
+    
+#    comp_container = '%s::template ComponentContainer<int>' %(space)
+#    comp_containers.append('%s' %(comp_container))
+    
+    
     dim = '%s::dim' %(space)
     n_components = '%s::n_components' %(space)
+
     t0 = 'TensorSize<%s>' %(dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t0))
-    t1 = 'CartesianProductArray<int,%s>' %(dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t1))
-    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(std::initializer_list<%s>,void *);\n' %(space,t1,t1))
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t0)
+    comp_containers.append('%s' %(comp_container))
+
+    t1 = 'SafeSTLArray<SafeSTLVector<int>,%s>' %(dim)
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t1)
+    comp_containers.append('%s' %(comp_container))
+    templated_funcs.append('%s::ComponentContainer(std::initializer_list<%s>,void *)' %(comp_container,t1))
+
     t2 = 'SafeSTLArray<bool,%s>' %(dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t2))
-    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(const %s &,void *);\n' %(space,t2,t2))
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t2)
+    comp_containers.append('%s' %(comp_container))
+    templated_funcs.append('%s::ComponentContainer(const %s &,void *);\n' %(comp_container,t2))
+
     t3 = 'SafeSTLArray<BasisEndBehaviour,%s>' %(dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t3))
-    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(const %s &,void *);\n' %(space,t3,t3))
-    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(const SafeSTLArray<int,%s> &,const %s &,void *);\n' %(space,t3,n_components,t3))
-    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(std::initializer_list<%s>,void *);\n' %(space,t3,t3))
-    t4 = 'SafeSTLArray<std::pair<Real,Real>,%s>' %(dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t4))
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t3)
+    comp_containers.append('%s' %(comp_container))
+#    comp_containers_serializable.append('%s' %(comp_container))
+    templated_funcs.append('%s::ComponentContainer(const %s &,void *);\n' %(comp_container,t3))
+    templated_funcs.append('%s::ComponentContainer(const SafeSTLArray<int,%s> &,const %s &,void *)' %(comp_container,n_components,t3))
+    templated_funcs.append('%s::ComponentContainer(std::initializer_list<%s>,void *)' %(comp_container,t3))
+
+    t4 = 'SafeSTLArray<SafeSTLArray<Real,2>,%s>' %(dim)
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t4)
+#    comp_containers_serializable.append('%s' %(comp_container))
+    comp_containers.append('%s' %(comp_container))
+    
     t5 = 'SafeSTLArray<SafeSTLVector<Real>,%s>' %(dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t5))
-    t6 = 'SafeSTLArray<CartesianProductArray<double,2>,%s>' % (dim) 
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t6))
-    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(std::initializer_list<%s>,void *);\n' %(space,t6,t6))
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t5)
+    comp_containers.append('%s' %(comp_container))
+    
+    t6 = 'SafeSTLArray<SafeSTLArray<SafeSTLVector<Real>,2>,%s>' % (dim) 
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t6)
+    comp_containers.append('%s' %(comp_container))
+    templated_funcs.append('%s::ComponentContainer(std::initializer_list<%s>,void *)' %(comp_container,t6))
+    
     t7 = 'unique_ptr<const TensorProductFunctionEvaluator<%s>>'%(dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t7))
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t7)
+    comp_containers.append('%s' %(comp_container))
+    
     t8 = 'SafeSTLArray<BasisValues1d,%s>' % (dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t8))
-    t9 = 'CartesianProductArray<BernsteinOperator,%s>' % (dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t9))
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t8)
+    comp_containers.append('%s' %(comp_container))
+    
+    t9 = 'SafeSTLArray<SafeSTLVector<BernsteinOperator>,%s>' % (dim)
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t9)
+    comp_containers.append('%s' %(comp_container))
+    
     t10 = 'std::shared_ptr<CartesianProductIndexer<%s>>' % (dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t10))
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t10)
+    comp_containers.append('%s' %(comp_container))
+    
     t11 = 'SafeSTLArray<const BernsteinOperator *,%s>' % (dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t11))
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t11)
+    comp_containers.append('%s' %(comp_container))
+    
     t12 = 'TensorIndex<%s>' %(dim)
-    f.write('template class %s::template ComponentContainer<%s>;\n' %(space,t12))
-    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(const %s &,void *);\n' %(space,t12,t12))
-    f.write('template %s::template ComponentContainer<%s>::ComponentContainer(std::initializer_list<%s>,void *);\n' %(space,t12,t12))
+    comp_container = '%s::template ComponentContainer<%s>' %(space,t12)
+    comp_containers.append('%s' %(comp_container))
+    templated_funcs.append('%s::ComponentContainer(const %s &,void *);\n' %(comp_container,t12))
+    templated_funcs.append('%s::ComponentContainer(std::initializer_list<%s>,void *)' %(comp_container,t12))
+
+
+for comp_container in unique(comp_containers):
+    f.write('template class %s;\n' %(comp_container))
+
 
 for func in unique(templated_funcs):
     f.write('template %s;\n' %func)
 
 
 
+
 #---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
+f.write('#ifdef SERIALIZATION\n')
 
 archives = ['OArchive','IArchive']
 
-f.write('#ifdef SERIALIZATION\n')
-id = 0 
-for space in unique(spaces):
-    alias = 'SplineSpaceAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, space))
-    for ar in archives:
-        f.write('template void %s::serialize(%s&);\n' %(alias,ar))
-    id += 1 
+for ar in archives:
+    for space in unique(spaces):
+        f.write('template void %s::serialize(%s&);\n' %(space,ar))
+    for comp_container in unique(comp_containers_serializable):
+        f.write('template void %s::serialize(%s&);\n' %(comp_container,ar))
 f.write('#endif // SERIALIZATION\n')
-    
-f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
+

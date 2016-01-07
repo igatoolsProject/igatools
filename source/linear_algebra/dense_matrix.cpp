@@ -318,7 +318,40 @@ print_info(LogStream &out) const
   out << ')';
 }
 
+#ifdef SERIALIZATION
+template <class Archive>
+void
+DenseMatrix::
+save(Archive &ar) const
+{
+  auto rows = this->get_num_rows();
+  auto cols = this->get_num_cols();
+  ar(make_nvp("n_rows",rows));
+  ar(make_nvp("n_cols",cols));
 
+  const auto &data = this->data();
+  for (const Real &v : data)
+    ar(v);
+}
+
+template <class Archive>
+void
+DenseMatrix::
+load(Archive &ar)
+{
+  int rows;
+  int cols;
+  ar(rows);
+  ar(cols);
+
+  this->resize(rows, cols);
+
+  auto &data = this->data();
+  for (Real &v : data)
+    ar(v);
+}
+
+#endif //SERIALIZATION
 
 void eig_dense_matrix(const DenseMatrix &A,
                       SafeSTLVector<Real> &eigenvalues_real,
@@ -497,6 +530,13 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
     }
   }
 }
+
+#ifdef SERIALIZATION
+
+template void DenseMatrix::load(IArchive &);
+template void DenseMatrix::save(OArchive &) const;
+
+#endif // SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

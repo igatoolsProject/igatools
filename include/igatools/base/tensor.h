@@ -80,7 +80,6 @@ struct raw
  * All functions are inlined so in principle there should be no difference
  * in performance.
  *
- * @ingroup serializable
  */
 class Tdouble
 {
@@ -234,24 +233,6 @@ public:
 private:
   value_t val_;
 
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    ar &boost::serialization::make_nvp("val_",val_);
-  };
-  ///@}
-#endif // SERIALIZATION
-#endif
 };
 
 
@@ -421,11 +402,10 @@ using ActionTensor = Conditional<
  * - if rank == 1, SubTensor<Tensor<dim,rank,tensor_type,value_type>> is value_type
  *
  *
- * @author Martinelli 2012, 2013, 2014
+ * @author Martinelli 2012, 2013, 2014, 2015
  * @author Cavallini 2012
  * @author Pauletti 2012, 2013, 2014
  *
- * @ingroup serializable
  */
 template<int dim_, int rank_, class tensor_type, class value_type>
 class Tensor
@@ -631,26 +611,6 @@ private :
 
   SubTensor<self_t> tensor_[num_sub_tensor];
 
-#if 0
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    for (int i = 0 ; i < num_sub_tensor ; ++i)
-    {
-      const std::string tag_name = "sub_tensor_" + std::to_string(i);
-      ar &boost::serialization::make_nvp(tag_name.c_str(),tensor_[i]);
-    }
-  };
-  ///@}
-#endif
 };
 
 

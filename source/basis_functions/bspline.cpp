@@ -57,42 +57,31 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   {
     const auto &rep_knots_i = rep_knots[i];
 
+    auto & end_interval_i = end_interval_[i];
+
     for (int dir=0; dir<dim; ++dir)
     {
       const auto p = degree_table[i][dir];
 
       const auto &knots_coord_dir = *knots_coord[dir];
 
+      const auto & rep_knots_i_dir = rep_knots_i[dir];
+
+      auto & end_interval_i_dir = end_interval_i[dir];
+
       const auto x1 = knots_coord_dir[1];
       const auto a = knots_coord_dir[0];
-      const auto x0 = rep_knots_i[dir][p];
-      end_interval_[i][dir].first = (x1-a) / (x1-x0);
+      const auto x0 = rep_knots_i_dir[p];
+      end_interval_i_dir[0] = (x1-a) / (x1-x0);
 
       const auto xk= *(knots_coord_dir.end()-2);
       const auto b = *(knots_coord_dir.end()-1);
-      const auto xk1 = *(rep_knots_i[dir].end() - (p+1));
-      end_interval_[i][dir].second = (b-xk) / (xk1-xk);
+      const auto xk1 = *(rep_knots_i_dir.end() - (p+1));
+      end_interval_i_dir[1] = (b-xk) / (xk1-xk);
     } // end loop dir
   } // end loop i
   //------------------------------------------------------------------------------
 }
-
-#if 0
-template<int dim_, int range_, int rank_>
-BSpline<dim_, range_, rank_>::
-BSpline(const DegreeTable &deg,
-        const SharedPtrConstnessHandler<GridType> &grid,
-        const MultiplicityTable &interior_mult,
-        const PeriodicityTable &periodic,
-        const EndBehaviourTable &end_b)
-  :
-  BSpline(
-   grid.data_is_const() ?
-   SharedPtrConstnessHandler<SpSpace>(SpSpace::const_create(deg, grid.get_ptr_const_data(), interior_mult, periodic)) :
-   SharedPtrConstnessHandler<SpSpace>(SpSpace::create(deg, grid.get_ptr_data(), interior_mult, periodic)),
-   end_b)
-{}
-#endif
 
 
 
@@ -162,19 +151,6 @@ get_this_basis() const -> shared_ptr<const self_t>
 
   return bsp_space;
 }
-
-#if 0
-template<int dim_, int range_, int rank_>
-auto
-BSpline<dim_, range_, rank_>::
-create_element(const ListIt &index, const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
-{
-  using Elem = BSplineElement<dim_,range_,rank_>;
-
-  return std::make_unique<Elem>(this->get_this_basis(),index,property);
-}
-#endif
 
 template<int dim_, int range_, int rank_>
 auto

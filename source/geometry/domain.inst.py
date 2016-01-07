@@ -25,21 +25,40 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
+
+domains = set()
 sub_dim_members = []
 
 for x in inst.sub_mapping_dims:
-    mapping = 'Domain<%d,%d>' %(x.dim, x.codim)
-    f.write('template class %s ;\n' %(mapping))
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+    domain = 'Domain<%d,%d>' %(x.dim, x.codim)
+    domains.add(domain)
+#    for fun in sub_dim_members:
+#        k = x.dim
+#        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
+#        f.write('template ' + s + '\n')
 
 for x in inst.mapping_dims:
-    mapping = 'Domain<%d,%d>' %(x.dim, x.codim)
-    f.write('template class %s ;\n' %(mapping))
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-            f.write('template ' + s + '\n')
+    domain = 'Domain<%d,%d>' %(x.dim, x.codim)
+    domains.add(domain)
+#    for fun in sub_dim_members:
+#        for k in inst.sub_dims(x.dim):
+#            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
+#            f.write('template ' + s + '\n')
  
+
+
+for domain in domains:
+    f.write('template class %s;\n' %(domain))
+
+
+
+#---------------------------------------------------
+f.write('#ifdef SERIALIZATION\n')
+archives = ['OArchive','IArchive']
+
+for domain in domains:
+    for ar in archives:
+        f.write('template void %s::serialize(%s&);\n' %(domain,ar))
+f.write('#endif // SERIALIZATION\n')
+#---------------------------------------------------
+    

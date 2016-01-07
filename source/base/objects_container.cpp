@@ -135,7 +135,7 @@ get_object_ids() const
 {
   SafeSTLSet<Index> ids;
   for (const auto &obj : at_key<T>(objects_))
-      ids.insert(obj->get_object_id());
+    ids.insert(obj->get_object_id());
   return ids;
 };
 
@@ -148,7 +148,7 @@ get_const_object_ids() const
 {
   SafeSTLSet<Index> ids;
   for (const auto &obj : at_key<const T>(objects_))
-      ids.insert(obj->get_object_id());
+    ids.insert(obj->get_object_id());
   return ids;
 };
 
@@ -311,7 +311,7 @@ print_info(LogStream &out) const
 
     out.begin_item("GridFunction"
                    " Dim : " + to_string(Type::dim) +
-                   " Spacedim : " + to_string(Type::space_dim) +
+                   " Spacedim : " + to_string(Type::range) +
                    ". Number of objects: " + to_string(objects.size()));
     for (const auto &object : objects)
     {
@@ -325,7 +325,7 @@ print_info(LogStream &out) const
 
     out.begin_item("const GridFunction"
                    " Dim : " + to_string(Type::dim) +
-                   " Spacedim : " + to_string(Type::space_dim) +
+                   " Spacedim : " + to_string(Type::range) +
                    ". Number of objects: " + to_string(objects.size()));
     for (const auto &object : const_objects)
     {
@@ -459,20 +459,20 @@ is_void() const
   for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Spline spaces
@@ -480,20 +480,20 @@ is_void() const
   for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Reference space basis
@@ -501,20 +501,20 @@ is_void() const
   for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Grid functions
@@ -522,20 +522,20 @@ is_void() const
   for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Domains
@@ -543,20 +543,20 @@ is_void() const
   for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Physical space basis
@@ -564,20 +564,20 @@ is_void() const
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
 
 
   // Function
@@ -585,22 +585,22 @@ is_void() const
   for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
   {
     if (is_container_not_void)
-        return;
+      return;
 
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     is_container_not_void = at_key<Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
 
     is_container_not_void = at_key<const Type>(objects_).size() > 0;
     if (is_container_not_void)
-        return;
+      return;
   });
 
   if (is_container_not_void)
-      return false;
+    return false;
   else
-      return true;
+    return true;
 
 }
 
@@ -622,42 +622,42 @@ fill_not_inserted_dependencies()
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
-        // Inserting the function into the this.
-        const auto obj = this->template get_object<Type>(id);
-        this->template insert_object<Type> (obj);
+      // Inserting the function into the this.
+      const auto obj = this->template get_object<Type>(id);
+      this->template insert_object<Type> (obj);
 
-        // Inserting the domain of the function into the this.
-        const auto domain = const_pointer_cast<DomainType>(obj->get_domain());
-        Assert (domain != nullptr, ExcNullPtr());
-        this->template insert_object<DomainType> (domain);
+      // Inserting the domain of the function into the this.
+      const auto domain = const_pointer_cast<DomainType>(obj->get_domain());
+      Assert(domain != nullptr, ExcNullPtr());
+      this->template insert_object<DomainType> (domain);
 
-        // If the function is an ig function, its physical space basis is also inserted.
-        const auto const_ig_func = dynamic_pointer_cast<IgFunctionType>(obj);
-        if (const_ig_func != nullptr)
-        {
-            const auto ig_func = const_pointer_cast<IgFunctionType>(const_ig_func);
-            Assert (ig_func != nullptr, ExcNullPtr());
+      // If the function is an ig function, its physical space basis is also inserted.
+      const auto const_ig_func = dynamic_pointer_cast<IgFunctionType>(obj);
+      if (const_ig_func != nullptr)
+      {
+        const auto ig_func = const_pointer_cast<IgFunctionType>(const_ig_func);
+        Assert(ig_func != nullptr, ExcNullPtr());
 
-            const auto phys_space = const_pointer_cast<PhysBasisType>(ig_func->get_basis());
-            Assert (phys_space != nullptr, ExcNullPtr());
-            this->template insert_object<PhysBasisType> (phys_space);
-        }
+        const auto phys_space = const_pointer_cast<PhysBasisType>(ig_func->get_basis());
+        Assert(phys_space != nullptr, ExcNullPtr());
+        this->template insert_object<PhysBasisType> (phys_space);
+      }
     }
 
     // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
-        // Inserting the function into the this.
-        const auto obj = this->template get_const_object<Type>(id);
-        this->insert_const_object<Type> (obj);
+      // Inserting the function into the this.
+      const auto obj = this->template get_const_object<Type>(id);
+      this->insert_const_object<Type> (obj);
 
-        // Inserting the domain of the function into the this.
-        this->insert_const_object<DomainType> (obj->get_domain());
+      // Inserting the domain of the function into the this.
+      this->insert_const_object<DomainType> (obj->get_domain());
 
-        // If the function is an ig function, its physical space basis is also inserted.
-        const auto ig_func = dynamic_pointer_cast<const IgFunctionType>(obj);
-        if (ig_func != nullptr)
-            this->insert_const_object<PhysBasisType> (ig_func->get_basis());
+      // If the function is an ig function, its physical space basis is also inserted.
+      const auto ig_func = dynamic_pointer_cast<const IgFunctionType>(obj);
+      if (ig_func != nullptr)
+        this->insert_const_object<PhysBasisType> (ig_func->get_basis());
     }
   });
 
@@ -673,33 +673,33 @@ fill_not_inserted_dependencies()
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
-        // Inserting the physical space basis into the this.
-        const auto obj = this->template get_object<Type>(id);
-        this->template insert_object<Type> (obj);
+      // Inserting the physical space basis into the this.
+      const auto obj = this->template get_object<Type>(id);
+      this->template insert_object<Type> (obj);
 
-        // Inserting the domain of the physical space basis into the this.
-        const auto domain = const_pointer_cast<DomainType>(obj->get_physical_domain());
-        Assert (domain != nullptr, ExcNullPtr());
-        this->template insert_object<DomainType> (domain);
+      // Inserting the domain of the physical space basis into the this.
+      const auto domain = const_pointer_cast<DomainType>(obj->get_domain());
+      Assert(domain != nullptr, ExcNullPtr());
+      this->template insert_object<DomainType> (domain);
 
-        // Inserting the reference space basis of the physical space basis into the this.
-        const auto ref_space = const_pointer_cast<RefBasisType>(obj->get_reference_basis());
-        Assert (ref_space != nullptr, ExcNullPtr());
-        this->template insert_object<RefBasisType> (ref_space);
+      // Inserting the reference space basis of the physical space basis into the this.
+      const auto ref_space = const_pointer_cast<RefBasisType>(obj->get_reference_basis());
+      Assert(ref_space != nullptr, ExcNullPtr());
+      this->template insert_object<RefBasisType> (ref_space);
     }
 
     // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
-        // Inserting the physical space basis into the this.
-        const auto obj = this->template get_const_object<Type>(id);
-        this->insert_const_object<Type> (obj);
+      // Inserting the physical space basis into the this.
+      const auto obj = this->template get_const_object<Type>(id);
+      this->insert_const_object<Type> (obj);
 
-        // Inserting the domain of the physical space basis into the this.
-        this->insert_const_object<DomainType> (obj->get_physical_domain());
+      // Inserting the domain of the physical space basis into the this.
+      this->insert_const_object<DomainType> (obj->get_domain());
 
-        // Inserting the reference space basis of the physical space basis into the this.
-        this->insert_const_object<RefBasisType> (obj->get_reference_basis());
+      // Inserting the reference space basis of the physical space basis into the this.
+      this->insert_const_object<RefBasisType> (obj->get_reference_basis());
     }
   });
 
@@ -714,25 +714,25 @@ fill_not_inserted_dependencies()
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
-        // Inserting the domain into the this.
-        const auto obj = this->template get_object<Type>(id);
-        this->template insert_object<Type> (obj);
+      // Inserting the domain into the this.
+      const auto obj = this->template get_object<Type>(id);
+      this->template insert_object<Type> (obj);
 
-        // Inserting the grid function of the domain into the this.
-        const auto grid_func = const_pointer_cast<GridFuncType>(obj->get_grid_function());
-        Assert (grid_func != nullptr, ExcNullPtr());
-        this->template insert_object<GridFuncType> (grid_func);
+      // Inserting the grid function of the domain into the this.
+      const auto grid_func = const_pointer_cast<GridFuncType>(obj->get_grid_function());
+      Assert(grid_func != nullptr, ExcNullPtr());
+      this->template insert_object<GridFuncType> (grid_func);
     }
 
     // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
-        // Inserting the domain into the this.
-        const auto obj = this->template get_const_object<Type>(id);
-        this->insert_const_object<Type> (obj);
+      // Inserting the domain into the this.
+      const auto obj = this->template get_const_object<Type>(id);
+      this->insert_const_object<Type> (obj);
 
-        // Inserting the grid function of the domain into the this.
-        this->insert_const_object<GridFuncType> (obj->get_grid_function());
+      // Inserting the grid function of the domain into the this.
+      this->insert_const_object<GridFuncType> (obj->get_grid_function());
     }
   });
 
@@ -743,46 +743,46 @@ fill_not_inserted_dependencies()
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
     using GridType = typename Type::GridType;
-    using IgGridFuncType = IgGridFunction<Type::dim, Type::space_dim>;
+    using IgGridFuncType = IgGridFunction<Type::dim, Type::range>;
     using RefBasisType = typename IgGridFuncType::RefBasis;
 
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
-        // Inserting grid function into the this.
-        const auto obj = this->template get_object<Type>(id);
-        this->template insert_object<Type> (obj);
+      // Inserting grid function into the this.
+      const auto obj = this->template get_object<Type>(id);
+      this->template insert_object<Type> (obj);
 
-        // Inserting the grid of the grid function into the this.
-        const auto grid = const_pointer_cast<GridType>(obj->get_grid());
-        this->template insert_object<GridType> (grid);
+      // Inserting the grid of the grid function into the this.
+      const auto grid = const_pointer_cast<GridType>(obj->get_grid());
+      this->template insert_object<GridType> (grid);
 
-        // If the grid function is an ig grid function, its
-        // reference space basis is also inserted.
-        const auto ig_g_f = dynamic_pointer_cast<IgGridFuncType>(obj);
-        if (ig_g_f != nullptr)
-        {
-            const auto ref_space = const_pointer_cast<RefBasisType> (ig_g_f->get_basis());
-            Assert (ref_space != nullptr, ExcNullPtr());
-            this->template insert_object<RefBasisType> (ref_space);
-        }
+      // If the grid function is an ig grid function, its
+      // reference space basis is also inserted.
+      const auto ig_g_f = dynamic_pointer_cast<IgGridFuncType>(obj);
+      if (ig_g_f != nullptr)
+      {
+        const auto ref_space = const_pointer_cast<RefBasisType> (ig_g_f->get_basis());
+        Assert(ref_space != nullptr, ExcNullPtr());
+        this->template insert_object<RefBasisType> (ref_space);
+      }
     }
 
     // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
-        // Inserting grid function into the this.
-        const auto obj = this->template get_const_object<Type>(id);
-        this->insert_const_object<Type> (obj);
+      // Inserting grid function into the this.
+      const auto obj = this->template get_const_object<Type>(id);
+      this->insert_const_object<Type> (obj);
 
-        // Inserting the grid of the grid function into the this.
-        this->insert_const_object<GridType> (obj->get_grid());
+      // Inserting the grid of the grid function into the this.
+      this->insert_const_object<GridType> (obj->get_grid());
 
-        // If the grid function is an ig grid function, its
-        // reference space basis is also inserted.
-        const auto ig_g_f = dynamic_pointer_cast<const IgGridFuncType>(obj);
-        if (ig_g_f != nullptr)
-            this->insert_const_object<RefBasisType> (ig_g_f->get_basis());
+      // If the grid function is an ig grid function, its
+      // reference space basis is also inserted.
+      const auto ig_g_f = dynamic_pointer_cast<const IgGridFuncType>(obj);
+      if (ig_g_f != nullptr)
+        this->insert_const_object<RefBasisType> (ig_g_f->get_basis());
     }
   });
 
@@ -801,109 +801,109 @@ fill_not_inserted_dependencies()
     using WeightFuncType = typename NURBSType::WeightFunction;
     using WeightFuncBasisType = typename WeightFuncType::RefBasis;
     using WeightFuncSpSpaceType = typename WeightFuncBasisType::SpSpace;
-    using GridFuncType = GridFunction<WeightFuncType::dim, WeightFuncType::space_dim>;
+    using GridFuncType = GridFunction<WeightFuncType::dim, WeightFuncType::range>;
 
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
-        // Inserting reference space basis function into the this.
-        const auto obj = this->template get_object<Type>(id);
-        this->template insert_object<Type> (obj);
+      // Inserting reference space basis function into the this.
+      const auto obj = this->template get_object<Type>(id);
+      this->template insert_object<Type> (obj);
 
-        const auto nr = dynamic_pointer_cast<NURBSType>(obj);
-        const auto bs = dynamic_pointer_cast<BSplineType>(obj);
+      const auto nr = dynamic_pointer_cast<NURBSType>(obj);
+      const auto bs = dynamic_pointer_cast<BSplineType>(obj);
 
-        Assert (bs != nullptr || nr != nullptr,
-                ExcMessage("Invalid reference space basis type."));
+      Assert(bs != nullptr || nr != nullptr,
+             ExcMessage("Invalid reference space basis type."));
 
-        // If the reference space is a BSpline, the spline space is also inserted.
-        if (bs != nullptr) // BSpline
-        {
-            // Inserting spline space into the this.
-            const auto ss = const_pointer_cast<SpSpaceType> (bs->get_spline_space());
-            this->template insert_object<SpSpaceType> (ss);
-        }
-        // If the reference space is a NURBS, its BSpline space, the
-        // spline space, the weight grid function, the reference space of
-        // the weights and spline space space of the weights are also
-        // inserted.
-        else // NURBS
-        {
-            // Inserting spline space into the this.
-            const auto ss = const_pointer_cast<SpSpaceType> (nr->get_spline_space());
-            this->template insert_object<SpSpaceType> (ss);
+      // If the reference space is a BSpline, the spline space is also inserted.
+      if (bs != nullptr) // BSpline
+      {
+        // Inserting spline space into the this.
+        const auto ss = const_pointer_cast<SpSpaceType> (bs->get_spline_space());
+        this->template insert_object<SpSpaceType> (ss);
+      }
+      // If the reference space is a NURBS, its BSpline space, the
+      // spline space, the weight grid function, the reference space of
+      // the weights and spline space space of the weights are also
+      // inserted.
+      else // NURBS
+      {
+        // Inserting spline space into the this.
+        const auto ss = const_pointer_cast<SpSpaceType> (nr->get_spline_space());
+        this->template insert_object<SpSpaceType> (ss);
 
-            // Inserting the BSpline space of the NURBS into the this.
-            const auto nr_bs = const_pointer_cast<BSplineType> (nr->get_bspline_basis());
-            this->template insert_object<Type> (nr_bs);
+        // Inserting the BSpline space of the NURBS into the this.
+        const auto nr_bs = const_pointer_cast<BSplineType> (nr->get_bspline_basis());
+        this->template insert_object<Type> (nr_bs);
 
-            // Adding the weight related quantities: grid function,
-            // reference space basis and its spline space.
+        // Adding the weight related quantities: grid function,
+        // reference space basis and its spline space.
 
-            // Inserting the grid function of the weights.
-            const auto wf = const_pointer_cast<WeightFuncType>(nr->get_weight_func());
-            Assert (wf != nullptr, ExcNullPtr());
-            this->template insert_object<GridFuncType>(wf);
+        // Inserting the grid function of the weights.
+        const auto wf = const_pointer_cast<WeightFuncType>(nr->get_weight_func());
+        Assert(wf != nullptr, ExcNullPtr());
+        this->template insert_object<GridFuncType>(wf);
 
-            // Inserting the reference space basis of the weights.
-            const auto rs = const_pointer_cast<WeightFuncBasisType>(wf->get_basis());
-            Assert (rs != nullptr, ExcNullPtr());
-            this->template insert_object<WeightFuncBasisType>(rs);
+        // Inserting the reference space basis of the weights.
+        const auto rs = const_pointer_cast<WeightFuncBasisType>(wf->get_basis());
+        Assert(rs != nullptr, ExcNullPtr());
+        this->template insert_object<WeightFuncBasisType>(rs);
 
-            // Inserting the spline space basis of the weights.
-            const auto rs_ss = const_pointer_cast<WeightFuncSpSpaceType>(rs->get_spline_space());
-            this->template insert_object<WeightFuncSpSpaceType>(rs_ss);
-        }
+        // Inserting the spline space basis of the weights.
+        const auto rs_ss = const_pointer_cast<WeightFuncSpSpaceType>(rs->get_spline_space());
+        this->template insert_object<WeightFuncSpSpaceType>(rs_ss);
+      }
     }
 
     // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
-        // Inserting reference space basis function into the this.
-        const auto obj = this->template get_const_object<Type>(id);
-        this->insert_const_object<Type> (obj);
+      // Inserting reference space basis function into the this.
+      const auto obj = this->template get_const_object<Type>(id);
+      this->insert_const_object<Type> (obj);
 
-        const auto nr = dynamic_pointer_cast<const NURBSType>(obj);
-        const auto bs = dynamic_pointer_cast<const BSplineType>(obj);
+      const auto nr = dynamic_pointer_cast<const NURBSType>(obj);
+      const auto bs = dynamic_pointer_cast<const BSplineType>(obj);
 
-        Assert (bs != nullptr || nr != nullptr,
-                ExcMessage("Invalid reference space basis type."));
+      Assert(bs != nullptr || nr != nullptr,
+             ExcMessage("Invalid reference space basis type."));
 
-        // If the reference space is a BSpline, the spline space is also inserted.
-        if (bs != nullptr) // BSpline
-        {
-            // Inserting spline space into the this.
-            this->insert_const_object<SpSpaceType> (bs->get_spline_space());
-        }
-        // If the reference space is a NURBS, its BSpline space, the
-        // spline space, the weight grid function, the reference space of
-        // the weights and spline space space of the weights are also
-        // inserted.
-        else // NURBS
-        {
-            // Inserting spline space into the this.
-            this->insert_const_object<SpSpaceType> (nr->get_spline_space());
+      // If the reference space is a BSpline, the spline space is also inserted.
+      if (bs != nullptr) // BSpline
+      {
+        // Inserting spline space into the this.
+        this->insert_const_object<SpSpaceType> (bs->get_spline_space());
+      }
+      // If the reference space is a NURBS, its BSpline space, the
+      // spline space, the weight grid function, the reference space of
+      // the weights and spline space space of the weights are also
+      // inserted.
+      else // NURBS
+      {
+        // Inserting spline space into the this.
+        this->insert_const_object<SpSpaceType> (nr->get_spline_space());
 
-            // Inserting the BSpline space of the NURBS into the this.
-            this->insert_const_object<Type> (nr->get_bspline_basis());
+        // Inserting the BSpline space of the NURBS into the this.
+        this->insert_const_object<Type> (nr->get_bspline_basis());
 
-            // Adding the weight related quantities: grid function,
-            // reference space basis and its spline space.
+        // Adding the weight related quantities: grid function,
+        // reference space basis and its spline space.
 
-            const auto wf = nr->get_weight_func();
-            const auto rs = wf->get_basis();
-            const auto gf = dynamic_pointer_cast<const GridFuncType> (wf);
-            Assert (gf != nullptr, ExcNullPtr());
+        const auto wf = nr->get_weight_func();
+        const auto rs = wf->get_basis();
+        const auto gf = dynamic_pointer_cast<const GridFuncType> (wf);
+        Assert(gf != nullptr, ExcNullPtr());
 
-            // Inserting the grid function of the weights.
-            this->insert_const_object<GridFuncType>(gf);
+        // Inserting the grid function of the weights.
+        this->insert_const_object<GridFuncType>(gf);
 
-            // Inserting the reference space basis of the weights.
-            this->insert_const_object<WeightFuncBasisType>(rs);
+        // Inserting the reference space basis of the weights.
+        this->insert_const_object<WeightFuncBasisType>(rs);
 
-            // Inserting the spline space basis of the weights.
-            this->insert_const_object<WeightFuncSpSpaceType>(rs->get_spline_space());
-        }
+        // Inserting the spline space basis of the weights.
+        this->insert_const_object<WeightFuncSpSpaceType>(rs->get_spline_space());
+      }
     }
   });
 
@@ -918,24 +918,24 @@ fill_not_inserted_dependencies()
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
-        // Inserting spline space into the this.
-        const auto obj = this->template get_object<Type>(id);
-        this->template insert_object<Type> (obj);
+      // Inserting spline space into the this.
+      const auto obj = this->template get_object<Type>(id);
+      this->template insert_object<Type> (obj);
 
-        // Inserting the grid of the spline space into the this.
-        const auto grid = const_pointer_cast<GridType>(obj->get_grid());
-        this->template insert_object<GridType> (grid);
+      // Inserting the grid of the spline space into the this.
+      const auto grid = const_pointer_cast<GridType>(obj->get_grid());
+      this->template insert_object<GridType> (grid);
     }
 
     // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
-        // Inserting spline space into the this.
-        const auto obj = this->template get_const_object<Type>(id);
-        this->insert_const_object<Type> (obj);
+      // Inserting spline space into the this.
+      const auto obj = this->template get_const_object<Type>(id);
+      this->insert_const_object<Type> (obj);
 
-        // Inserting the grid of the spline space into the this.
-        this->insert_const_object<GridType> (obj->get_grid());
+      // Inserting the grid of the spline space into the this.
+      this->insert_const_object<GridType> (obj->get_grid());
     }
   });
 
@@ -948,17 +948,17 @@ fill_not_inserted_dependencies()
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
-        // Inserting grid into the this.
-        const auto obj = this->template get_object<Type>(id);
-        this->template insert_object<Type> (obj);
+      // Inserting grid into the this.
+      const auto obj = this->template get_object<Type>(id);
+      this->template insert_object<Type> (obj);
     }
 
     // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
-        // Inserting grid into the this.
-        const auto obj = this->template get_const_object<Type>(id);
-        this->insert_const_object<Type> (obj);
+      // Inserting grid into the this.
+      const auto obj = this->template get_const_object<Type>(id);
+      this->insert_const_object<Type> (obj);
     }
   });
 }
@@ -983,14 +983,14 @@ serialize(Archive &ar)
     auto &const_objects = at_key<const Type>(objects_);
 
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : const_objects)
-        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    for (auto &obj : const_objects)
+      tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-     ar &make_nvp("const_" + name, tmp_objects);
+    ar &make_nvp("const_" + name, tmp_objects);
 
-     if (const_objects.empty())
-         for (const auto &obj : tmp_objects)
-             const_objects.push_back(obj);
+    if (const_objects.empty())
+      for (const auto &obj : tmp_objects)
+        const_objects.push_back(obj);
   });
 
   // Serializing spline spaces
@@ -1000,9 +1000,9 @@ serialize(Archive &ar)
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
     const string name = "spline_space_"
-            + to_string(Type::dim) + "_"
-            + to_string(Type::range) + "_"
-            + to_string(Type::rank);
+                        + to_string(Type::dim) + "_"
+                        + to_string(Type::range) + "_"
+                        + to_string(Type::rank);
 
     ar &make_nvp(name, at_key<Type>(objects_));
   });
@@ -1014,23 +1014,23 @@ serialize(Archive &ar)
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
     const string name = "reference_space_basis_"
-            + to_string(Type::dim) + "_"
-            + to_string(Type::range) + "_"
-            + to_string(Type::rank);
+                        + to_string(Type::dim) + "_"
+                        + to_string(Type::range) + "_"
+                        + to_string(Type::rank);
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
     auto &const_objects = at_key<const Type>(objects_);
 
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : const_objects)
-        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    for (auto &obj : const_objects)
+      tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-     ar &make_nvp("const_" + name, tmp_objects);
+    ar &make_nvp("const_" + name, tmp_objects);
 
-     if (const_objects.empty())
-         for (const auto &obj : tmp_objects)
-             const_objects.push_back(obj);
+    if (const_objects.empty())
+      for (const auto &obj : tmp_objects)
+        const_objects.push_back(obj);
   });
 
   // Grid functions
@@ -1040,22 +1040,22 @@ serialize(Archive &ar)
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
     const string name = "grid_funcion_"
-            + to_string(Type::dim) + "_"
-            + to_string(Type::space_dim);
+                        + to_string(Type::dim) + "_"
+                        + to_string(Type::range);
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
     auto &const_objects = at_key<const Type>(objects_);
 
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : const_objects)
-        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    for (auto &obj : const_objects)
+      tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-     ar &make_nvp("const_" + name, tmp_objects);
+    ar &make_nvp("const_" + name, tmp_objects);
 
-     if (const_objects.empty())
-         for (const auto &obj : tmp_objects)
-             const_objects.push_back(obj);
+    if (const_objects.empty())
+      for (const auto &obj : tmp_objects)
+        const_objects.push_back(obj);
   });
 
   // Domains
@@ -1065,22 +1065,22 @@ serialize(Archive &ar)
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
     const string name = "domain_"
-            + to_string(Type::dim) + "_"
-            + to_string(Type::space_dim);
+                        + to_string(Type::dim) + "_"
+                        + to_string(Type::space_dim);
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
     auto &const_objects = at_key<const Type>(objects_);
 
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : const_objects)
-        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    for (auto &obj : const_objects)
+      tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-     ar &make_nvp("const_" + name, tmp_objects);
+    ar &make_nvp("const_" + name, tmp_objects);
 
-     if (const_objects.empty())
-         for (const auto &obj : tmp_objects)
-             const_objects.push_back(obj);
+    if (const_objects.empty())
+      for (const auto &obj : tmp_objects)
+        const_objects.push_back(obj);
   });
 
   // Physical space basis
@@ -1090,24 +1090,24 @@ serialize(Archive &ar)
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
     const string name = "physical_space_basis_"
-            + to_string(Type::dim) + "_"
-            + to_string(Type::range) + "_"
-            + to_string(Type::rank) + "_"
-            + to_string(Type::codim);
+                        + to_string(Type::dim) + "_"
+                        + to_string(Type::range) + "_"
+                        + to_string(Type::rank) + "_"
+                        + to_string(Type::codim);
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
     auto &const_objects = at_key<const Type>(objects_);
 
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : const_objects)
-        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    for (auto &obj : const_objects)
+      tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-     ar &make_nvp("const_" + name, tmp_objects);
+    ar &make_nvp("const_" + name, tmp_objects);
 
-     if (const_objects.empty())
-         for (const auto &obj : tmp_objects)
-             const_objects.push_back(obj);
+    if (const_objects.empty())
+      for (const auto &obj : tmp_objects)
+        const_objects.push_back(obj);
   });
 
   // Function
@@ -1117,24 +1117,24 @@ serialize(Archive &ar)
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
     const string name = "function_"
-            + to_string(Type::dim) + "_"
-            + to_string(Type::codim) + "_"
-            + to_string(Type::range) + "_"
-            + to_string(Type::rank);
+                        + to_string(Type::dim) + "_"
+                        + to_string(Type::codim) + "_"
+                        + to_string(Type::range) + "_"
+                        + to_string(Type::rank);
 
     ar &make_nvp(name, at_key<Type>(objects_));
 
     auto &const_objects = at_key<const Type>(objects_);
 
     SafeSTLVector<shared_ptr<Type>> tmp_objects;
-    for (auto & obj : const_objects)
-        tmp_objects.push_back(const_pointer_cast<Type>(obj));
+    for (auto &obj : const_objects)
+      tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-     ar &make_nvp("const_" + name, tmp_objects);
+    ar &make_nvp("const_" + name, tmp_objects);
 
-     if (const_objects.empty())
-         for (const auto &obj : tmp_objects)
-             const_objects.push_back(obj);
+    if (const_objects.empty())
+      for (const auto &obj : tmp_objects)
+        const_objects.push_back(obj);
   });
 
 
@@ -1149,8 +1149,8 @@ IGA_NAMESPACE_CLOSE
 
 
 #ifdef SERIALIZATION
-template void iga::ObjectsContainer::serialize(OArchive&);
-template void iga::ObjectsContainer::serialize(IArchive&);
+template void iga::ObjectsContainer::serialize(OArchive &);
+template void iga::ObjectsContainer::serialize(IArchive &);
 #endif // SERIALIZATION
 
 #endif // XML_IO

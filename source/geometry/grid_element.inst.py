@@ -30,54 +30,26 @@ sub_dim_members = [
              'const Points<k> Element::get_side_lengths<k>(const int j) const;',
              'const ValueVector<typename Element::Point> & Element::get_points<k>(const int j) const;',
              'bool Element::is_boundary<k>(const Index sub_elem_id) const;',
-             'bool Element::is_boundary<k>() const;']
+             'bool Element::is_boundary<k>() const;',
+             'std::shared_ptr<const Quadrature<k>> Element::get_quad<k>() const']
 
-elems = []
+elements = set()
+element_funcs = set()
 
-for dim in inst.domain_dims:
-    acc = 'GridElement<%d>' %(dim)
-    f.write('template class %s; \n' %(acc))
-    elems.append(acc)
-    for fun in sub_dim_members:
-#        for k in inst.sub_dims(dim):
-        for k in range(0,dim+1):
-          s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
-          f.write('template ' + s + '\n')
-        
-for dim in inst.sub_domain_dims:
-    acc = 'GridElement<%d>' %(dim)
-    f.write('template class %s; \n' %(acc))
-    elems.append(acc)
+for dim in inst.domain_dims + inst.sub_domain_dims:
+    elem = 'GridElement<%d>' %(dim)
+    elements.add(elem)
     for fun in sub_dim_members:
         for k in range(0,dim+1):
-            s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
-            f.write('template ' + s + '\n')
+          s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (elem));
+          element_funcs.add(s)
 
-#accs1 =  ['GridElement',       'ConstGridElement']
-#for dim in inst.sub_domain_dims+inst.domain_dims: 
-#  for acc in accs1: 
-#      f.write('template class ' + acc + '<%d>' %(dim) + ';\n')
+ 
 
-accs=   ['GridElement']
-iters = ['GridIterator']
-for dim in inst.sub_domain_dims+inst.domain_dims:
-  for i in range(len(accs)):
-    acc = iters[i] + '<' + accs[i] + '<%d>' %(dim) + '>' 
-    f.write('template class %s; \n' %(acc))
+for elem in elements:
+    f.write('template class %s;\n' %(elem))
+    f.write('template class GridIterator<%s>;\n' %(elem))
+
+for func in element_funcs:
+    f.write('template %s;\n' %(func))
   
-#---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
-
-#f.write('#ifdef SERIALIZATION\n')
-#id = 0 
-#for elem in unique(elems):
-#    alias = 'GridElementBaseAlias%d' %(id)
-#    f.write('using %s = iga::%s; \n' % (alias, elem))
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-#    id += 1 
-#f.write('#endif // SERIALIZATION\n')
-    
-f.write('IGA_NAMESPACE_OPEN\n')
-#---------------------------------------------------

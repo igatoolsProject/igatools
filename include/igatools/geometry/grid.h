@@ -184,6 +184,7 @@ public:
 
 
   using Point = Points<dim_>;
+  using Weight = Real;
 
   using IndexType = ElementIndex<dim_>;
 
@@ -471,14 +472,14 @@ public:
   void set_boundary_id(const int face, const boundary_id id);
 
   template<int sdim>
-  using BoundaryNormal = SafeSTLArray<Points<dim_>, dim_-sdim>;
+  using BoundaryNormals = SafeSTLArray<Points<dim_>, dim_-sdim>;
 
   /**
    * Returns the outward pointing
-   * unit normal vector space to the element of sub dim_ k.
+   * unit normal vector space to the element <tt>s_id</tt> of sub-dimension <tt>sdim</tt>.
    */
   template<int sdim>
-  BoundaryNormal<sdim> get_boundary_normals(const int s_id) const;
+  BoundaryNormals<sdim> get_boundary_normals(const int s_id) const;
 
   template<int sdim>
   using SubGridMap =
@@ -648,7 +649,11 @@ private:
    */
   KnotCoordinates knot_coordinates_;
 
-  /** Boundary ids, one id per face */
+  /**
+   * Boundary ids, one id per face
+   *
+   * TODO (martinelli dec 23, 2015): discuss about the usefulness of this member variable
+   */
   SafeSTLArray<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
 
   /**
@@ -685,13 +690,6 @@ private:
   SubGridData<(dim_>0)? dim_-1 : 0> sub_grid_data_;
 
 public:
-#if 0
-  /**
-   * Create an element (defined on this grid) with a given index and the given property
-   */
-  std::unique_ptr<ElementAccessor>
-  create_element(const ListIt &index, const PropId &property) const;
-#endif
 
   /**
    * Create the first element (defined on this grid) with a given given @p property.

@@ -38,22 +38,12 @@ Reference space:
             [ ]
          
          Interior multiplicities:
-            Size: [ 1 ]  Weights: [1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 4 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 ]
             Scalar components dimensions:
             [ 4 ]
             Total Dimension: 4
@@ -61,33 +51,15 @@ Reference space:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 4 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 ]
             Scalar components dimensions:
             [ 4 ]
             Total Dimension: 4
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 4 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 ]
             Scalar components dimensions:
             [ 4 ]
             Total Dimension: 4
@@ -104,8 +76,8 @@ Reference space:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -144,22 +116,12 @@ Reference space:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 1 ]  Weights: [1]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 4 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 4 ]
                   Scalar components dimensions:
                   [ 4 ]
                   Total Dimension: 4
@@ -167,33 +129,15 @@ Reference space:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 4 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 4 ]
                   Scalar components dimensions:
                   [ 4 ]
                   Total Dimension: 4
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 4 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 4 ]
                   Scalar components dimensions:
                   [ 4 ]
                   Total Dimension: 4
@@ -210,8 +154,8 @@ Reference space:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -278,22 +222,12 @@ Reference space:
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 6 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 6 ]
             Scalar components dimensions:
             [ 6 ]
             Total Dimension: 6
@@ -301,33 +235,15 @@ Reference space:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 6 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 6 ]
             Scalar components dimensions:
             [ 6 ]
             Total Dimension: 6
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 6 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 6 ]
             Scalar components dimensions:
             [ 6 ]
             Total Dimension: 6
@@ -344,10 +260,10 @@ Reference space:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -392,22 +308,12 @@ Reference space:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 ]  Weights: [3]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 6 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 6 ]
                   Scalar components dimensions:
                   [ 6 ]
                   Total Dimension: 6
@@ -415,33 +321,15 @@ Reference space:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 6 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 6 ]
                   Scalar components dimensions:
                   [ 6 ]
                   Total Dimension: 6
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 6 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 6 ]
                   Scalar components dimensions:
                   [ 6 ]
                   Total Dimension: 6
@@ -458,10 +346,10 @@ Reference space:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -536,24 +424,14 @@ Reference space:
             [ ]
          
          Interior multiplicities:
-            Size: [ 1 1 ]  Weights: [1,1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 4 4 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 4 ]
             Scalar components dimensions:
             [ 16 ]
             Total Dimension: 16
@@ -561,33 +439,15 @@ Reference space:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 4 4 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 4 ]
             Scalar components dimensions:
             [ 16 ]
             Total Dimension: 16
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 4 4 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 4 ]
             Scalar components dimensions:
             [ 16 ]
             Total Dimension: 16
@@ -604,11 +464,11 @@ Reference space:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -655,24 +515,14 @@ Reference space:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 1 1 ]  Weights: [1,1]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 4 4 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 4 4 ]
                   Scalar components dimensions:
                   [ 16 ]
                   Total Dimension: 16
@@ -680,33 +530,15 @@ Reference space:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 4 4 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 4 4 ]
                   Scalar components dimensions:
                   [ 16 ]
                   Total Dimension: 16
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 4 4 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 4 4 ]
                   Scalar components dimensions:
                   [ 16 ]
                   Total Dimension: 16
@@ -723,11 +555,11 @@ Reference space:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -844,24 +676,14 @@ Reference space:
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 3 ]  Weights: [3,9]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 6 6 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 6 6 ]
             Scalar components dimensions:
             [ 36 ]
             Total Dimension: 36
@@ -869,33 +691,15 @@ Reference space:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 6 6 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 6 6 ]
             Scalar components dimensions:
             [ 36 ]
             Total Dimension: 36
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 6 6 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 6 6 ]
             Scalar components dimensions:
             [ 36 ]
             Total Dimension: 36
@@ -912,15 +716,15 @@ Reference space:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -1003,24 +807,14 @@ Reference space:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 3 ]  Weights: [3,9]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 6 6 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 6 6 ]
                   Scalar components dimensions:
                   [ 36 ]
                   Total Dimension: 36
@@ -1028,33 +822,15 @@ Reference space:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 6 6 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 6 6 ]
                   Scalar components dimensions:
                   [ 36 ]
                   Total Dimension: 36
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 6 6 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 6 6 ]
                   Scalar components dimensions:
                   [ 36 ]
                   Total Dimension: 36
@@ -1071,15 +847,15 @@ Reference space:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -1198,26 +974,16 @@ Reference space:
             [ ]
          
          Interior multiplicities:
-            Size: [ 1 1 1 ]  Weights: [1,1,1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 4 4 4 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 4 4 ]
             Scalar components dimensions:
             [ 64 ]
             Total Dimension: 64
@@ -1225,33 +991,15 @@ Reference space:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 4 4 4 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 4 4 ]
             Scalar components dimensions:
             [ 64 ]
             Total Dimension: 64
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 4 4 4 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 4 4 ]
             Scalar components dimensions:
             [ 64 ]
             Total Dimension: 64
@@ -1268,14 +1016,14 @@ Reference space:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[2]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -1336,26 +1084,16 @@ Reference space:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 1 1 1 ]  Weights: [1,1,1]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 ]
-                  Direction: 2
+                  Entry id: 2
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 4 4 4 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 4 4 4 ]
                   Scalar components dimensions:
                   [ 64 ]
                   Total Dimension: 64
@@ -1363,33 +1101,15 @@ Reference space:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 4 4 4 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 4 4 4 ]
                   Scalar components dimensions:
                   [ 64 ]
                   Total Dimension: 64
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 4 4 4 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 4 4 4 ]
                   Scalar components dimensions:
                   [ 64 ]
                   Total Dimension: 64
@@ -1406,14 +1126,14 @@ Reference space:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
                Direction[2]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -1724,26 +1444,16 @@ Reference space:
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 3 3 ]  Weights: [3,9,27]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 6 6 6 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 6 6 6 ]
             Scalar components dimensions:
             [ 216 ]
             Total Dimension: 216
@@ -1751,33 +1461,15 @@ Reference space:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 6 6 6 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 6 6 6 ]
             Scalar components dimensions:
             [ 216 ]
             Total Dimension: 216
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 6 6 6 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 6 6 6 ]
             Scalar components dimensions:
             [ 216 ]
             Total Dimension: 216
@@ -1794,20 +1486,20 @@ Reference space:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[2]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -2036,26 +1728,16 @@ Reference space:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 3 3 ]  Weights: [3,9,27]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 1 ]
-                  Direction: 2
+                  Entry id: 2
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 6 6 6 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 6 6 6 ]
                   Scalar components dimensions:
                   [ 216 ]
                   Total Dimension: 216
@@ -2063,33 +1745,15 @@ Reference space:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 6 6 6 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 6 6 6 ]
                   Scalar components dimensions:
                   [ 216 ]
                   Total Dimension: 216
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 6 6 6 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 6 6 6 ]
                   Scalar components dimensions:
                   [ 216 ]
                   Total Dimension: 216
@@ -2106,20 +1770,20 @@ Reference space:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
                Direction[2]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:

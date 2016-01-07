@@ -31,10 +31,14 @@ data = Instantiation(include_files)
 elements = ['ReferenceElement<0,0,1>', 'ReferenceElement<0,1,1>']
 
 
+member_functions = set()
+
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     elem = 'ReferenceElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
     elements.append(elem)
-
+    for k in range(0,x.dim+1):
+        member_func = 'ValueVector<Real> %s::get_w_measures<%d>(const int s_id) const' % (elem,k)
+        member_functions.add(member_func)
 
 
 for elem in unique(elements):
@@ -42,21 +46,11 @@ for elem in unique(elements):
     f.write('template class GridIterator<%s>; \n' %elem)
 
 
+for func in member_functions:
+    f.write('template %s;\n' %(func))
+
 
 
 #---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
- 
-#f.write('#ifdef SERIALIZATION\n')
-#id = 0 
-#for elem in unique(elements):
-#    alias = 'ReferenceElementAlias%d' %(id)
-#    f.write('using %s = iga::%s; \n' % (alias, elem))
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-#    id += 1 
-#f.write('#endif // SERIALIZATION\n')
-     
-f.write('IGA_NAMESPACE_OPEN\n')
-#---------------------------------------------------
+
+

@@ -85,10 +85,7 @@ public:
    * multiplied by the weights of the quadrature on the unit element.
    */
   template <int sdim>
-  ValueVector<Real> get_w_measures(const int s_id) const
-  {
-    return this->get_grid_element().template get_weights<sdim>(s_id);
-  }
+  ValueVector<Real> get_w_measures(const int s_id) const;
 
   /**
    * Returns the gradient determinant of the identity map at the dilated quadrature points.
@@ -141,11 +138,6 @@ public:
   int get_num_basis_comp(const int i) const;
 
   virtual void print_info(LogStream &out) const override;
-
-
-#if 0
-  std::shared_ptr<const Basis> get_ig_space() const;
-#endif
 };
 
 IGA_NAMESPACE_CLOSE

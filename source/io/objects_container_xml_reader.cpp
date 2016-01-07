@@ -56,7 +56,7 @@ ObjectsContainerXMLReader::
 parse(const string &file_path)
 {
   const auto xml_doc = XMLDocument::parse_from_file(file_path,
-                       ObjectsContainerXMLReader::XML_SCHEMA_);
+                                                    ObjectsContainerXMLReader::XML_SCHEMA_);
   const auto xml_elem = xml_doc->get_document_element();
 
   const auto container = ObjectsContainer::create();
@@ -92,7 +92,7 @@ ObjectsContainerXMLReader::
 parse_const(const string &file_path)
 {
   const auto xml_doc = XMLDocument::parse_from_file(file_path,
-                       ObjectsContainerXMLReader::XML_SCHEMA_);
+                                                    ObjectsContainerXMLReader::XML_SCHEMA_);
   const auto xml_elem = xml_doc->get_document_element();
 
   const auto container = ObjectsContainer::create();
@@ -360,7 +360,7 @@ parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
   for (const auto &cgf : xml_elem->get_children_elements("ConstantGridFunction"))
   {
     const int cgf_dim = cgf->get_attribute<int>("Dim");
-    const int cgf_space_dim = cgf->get_attribute<int>("SpaceDim"); // This is going to change.
+    const int cgf_range = cgf->get_attribute<int>("Range");
 
     using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
     GridFunctionPtrs valid_cgf_ptr_types;
@@ -374,12 +374,12 @@ parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
       using GridFuncType = typename
                            remove_reference<decltype(cgf_ptr_type)>::type::element_type;
       static const int dim   = GridFuncType::dim;
-      static const int space_dim  = GridFuncType::space_dim;
+      static const int range  = GridFuncType::range;
 
-      if (cgf_dim == dim && cgf_space_dim == space_dim)
+      if (cgf_dim == dim && cgf_range == range)
       {
         found = true;
-        parse_constant_grid_function<dim, space_dim>(cgf, parse_as_constant, id_map, container);
+        parse_constant_grid_function<dim, range>(cgf, parse_as_constant, id_map, container);
       }
     });
 
@@ -387,7 +387,7 @@ parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
     AssertThrow(found,
                 ExcMessage(Self_::get_type_id_string("ConstantGridFunction",
                                                      cgf->get_attribute<Index>("LocalObjectId"),
-    {{cgf_dim, cgf_space_dim}})
+    {{cgf_dim, cgf_range}})
     + " is not a valid type. Possibly the type was not "
     "instantiated for the specified dimensions."));
   }
@@ -405,7 +405,7 @@ parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
   for (const auto &cgf : xml_elem->get_children_elements("LinearGridFunction"))
   {
     const int cgf_dim = cgf->get_attribute<int>("Dim");
-    const int cgf_space_dim = cgf->get_attribute<int>("SpaceDim"); // This is going to change.
+    const int cgf_range = cgf->get_attribute<int>("Range");
 
     using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
     GridFunctionPtrs valid_cgf_ptr_types;
@@ -419,12 +419,12 @@ parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
       using GridFuncType = typename
                            remove_reference<decltype(cgf_ptr_type)>::type::element_type;
       static const int dim   = GridFuncType::dim;
-      static const int space_dim  = GridFuncType::space_dim;
+      static const int range  = GridFuncType::range;
 
-      if (cgf_dim == dim && cgf_space_dim == space_dim)
+      if (cgf_dim == dim && cgf_range == range)
       {
         found = true;
-        parse_linear_grid_function<dim, space_dim>(cgf, parse_as_constant, id_map, container);
+        parse_linear_grid_function<dim, range>(cgf, parse_as_constant, id_map, container);
       }
     });
 
@@ -432,7 +432,7 @@ parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
     AssertThrow(found,
                 ExcMessage(Self_::get_type_id_string("LinearGridFunction",
                                                      cgf->get_attribute<Index>("LocalObjectId"),
-    {{cgf_dim, cgf_space_dim}})
+    {{cgf_dim, cgf_range}})
     + " is not a valid type. Possibly the type was not "
     "instantiated for the specified dimensions."));
   }
@@ -451,7 +451,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
   for (const auto &gf : xml_elem->get_children_elements("IgGridFunction"))
   {
     const int gf_dim = gf->get_attribute<int>("Dim");
-    const int gf_space_dim = gf->get_attribute<int>("SpaceDim"); // This is going to change.
+    const int gf_range = gf->get_attribute<int>("Range");
 
     using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
     GridFunctionPtrs valid_gf_ptr_types;
@@ -465,12 +465,12 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
       using GridFuncType = typename
                            remove_reference<decltype(gf_ptr_type)>::type::element_type;
       static const int dim   = GridFuncType::dim;
-      static const int space_dim   = GridFuncType::space_dim;
+      static const int range = GridFuncType::range;
 
-      if (gf_dim == dim && gf_space_dim == space_dim)
+      if (gf_dim == dim && gf_range == range)
       {
         found = true;
-        parse_ig_grid_function<dim, space_dim>(gf, parse_as_constant, first_parsing, id_map, container);
+        parse_ig_grid_function<dim, range>(gf, parse_as_constant, first_parsing, id_map, container);
       }
     });
 
@@ -478,7 +478,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
     AssertThrow(found,
                 ExcMessage(Self_::get_type_id_string("IgGridFunction",
                                                      gf->get_attribute<Index>("LocalObjectId"),
-    {{gf_dim, gf_space_dim}})
+    {{gf_dim, gf_range}})
     + " is not a valid type. Possibly the type was not "
     "instantiated for the specified dimensions."));
   }
@@ -996,8 +996,8 @@ parse_spline_space(const shared_ptr<XMLElement> xml_elem,
                              to_string(dir) + " defined more than once."));
       parsed_dirs.insert(dir);
 
-      const auto mults = im->get_values_vector<Index>();
-      mult_table[comp_id].copy_data_direction(dir, mults);
+      auto &mults = mult_table[comp_id][dir];
+      mults = im->get_values_vector<Index>();
       const auto size = im->get_attribute<int>("Size");
 
       // Checking that the specified size matches with the actual vector size.
@@ -1291,7 +1291,7 @@ parse_identity_grid_function(const shared_ptr<XMLElement> xml_elem,
 
 
 
-template <int dim, int space_dim>
+template <int dim, int range>
 void
 ObjectsContainerXMLReader::
 parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
@@ -1304,19 +1304,19 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
 
   Assert(xml_elem->get_attribute<int>("Dim") == dim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("SpaceDim") == space_dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("SpaceDim"), space_dim));
+  Assert(xml_elem->get_attribute<int>("Range") == range,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
 
   using GridType = Grid<dim>;
-  using ConstGridFunctionType = grid_functions::ConstantGridFunction<dim, space_dim>;
-  using GridFunctionType = GridFunction<dim, space_dim>;
+  using ConstGridFunctionType = grid_functions::ConstantGridFunction<dim,range>;
+  using GridFunctionType = GridFunction<dim,range>;
   using Values = typename GridFunctionType::Value;
 
   const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
-  local_object_id, {{dim, space_dim}});
+  local_object_id, {{dim, range}});
 
   // Gettting grid.
   const auto gr_tag = xml_elem->get_single_element("Grid");
@@ -1341,7 +1341,7 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the GridFunction."));
   SafeSTLArray<Real, Values::n_entries> vals_arr;
   std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
-  Values values (vals_arr);
+  Values values(vals_arr);
 
   const auto name = parse_name(xml_elem);
 
@@ -1371,7 +1371,7 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
 
 
 
-template <int dim, int space_dim>
+template <int dim, int range>
 void
 ObjectsContainerXMLReader::
 parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
@@ -1384,12 +1384,12 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
 
   Assert(xml_elem->get_attribute<int>("Dim") == dim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("SpaceDim") == space_dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("SpaceDim"), space_dim));
+  Assert(xml_elem->get_attribute<int>("Range") == range,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
 
   using GridType = Grid<dim>;
-  using LinearGridFunctionType = grid_functions::LinearGridFunction<dim, space_dim>;
-  using GridFunctionType = GridFunction<dim, space_dim>;
+  using LinearGridFunctionType = grid_functions::LinearGridFunction<dim,range>;
+  using GridFunctionType = GridFunction<dim,range>;
   using Values = typename LinearGridFunctionType::Value;
   using Ders = typename LinearGridFunctionType::template Derivative<1>;
 
@@ -1397,7 +1397,7 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
-  local_object_id, {{dim, space_dim}});
+  local_object_id, {{dim, range}});
 
   // Gettting grid.
   const auto gr_tag = xml_elem->get_single_element("Grid");
@@ -1422,7 +1422,7 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the GridFunction."));
   SafeSTLArray<Real, Values::n_entries> b_arr;
   std::copy(b_vec.cbegin(), b_vec.cend(), b_arr.begin());
-  Values b (b_arr);
+  Values b(b_arr);
 
   // Parsing A.
   const auto A_tag = xml_elem->get_single_element("A");
@@ -1434,7 +1434,7 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the Function."));
   SafeSTLArray<Real, Ders::n_entries> A_arr;
   std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
-  Ders A (A_arr);
+  Ders A(A_arr);
 
   const auto name = parse_name(xml_elem);
 
@@ -1463,7 +1463,7 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
 
 
 
-template <int dim, int space_dim>
+template <int dim, int range>
 void
 ObjectsContainerXMLReader::
 parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
@@ -1477,13 +1477,13 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
 
   Assert(xml_elem->get_attribute<int>("Dim") == dim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("SpaceDim") == space_dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("SpaceDim"), space_dim));
+  Assert(xml_elem->get_attribute<int>("Range") == range,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
 
   static const int rank = 1;
-  using IgGridFunctionType = IgGridFunction<dim, space_dim>;
-  using GridFunctionType = GridFunction<dim, space_dim>;
-  using RefSpaceType     = ReferenceSpaceBasis<dim, space_dim, rank>;
+  using IgGridFunctionType = IgGridFunction<dim, range>;
+  using GridFunctionType = GridFunction<dim, range>;
+  using RefSpaceType     = ReferenceSpaceBasis<dim, range, rank>;
 
   const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
 
@@ -1499,7 +1499,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
-  local_object_id, {{dim, space_dim}});
+  local_object_id, {{dim, range}});
 
   const auto rs_tag = xml_elem->get_single_element("ReferenceSpaceBasis");
   const auto local_rs_id = rs_tag->get_attribute<Index>("GetFromLocalObjectId");
@@ -1526,7 +1526,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
                   ExcMessage("Parsing " + parsing_msg + " not matching "
                              "definition for " +
                              Self_::get_type_id_string("ReferenceSpaceBasis", local_rs_id,
-    {{dim, space_dim, rank}}) + "."));
+    {{dim, range, rank}}) + "."));
 
   }
 
@@ -1546,7 +1546,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
               ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
                          dofs_property + "\" not defined for " +
                          Self_::get_type_id_string("ReferenceSpaceBasis", local_rs_id,
-  {{dim, space_dim, rank}}) + "."));
+  {{dim, range, rank}}) + "."));
 
   const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
   const auto ig_coefs = parse_ig_coefficients(xml_elem, parsing_msg, global_dofs);
@@ -1958,7 +1958,7 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the GridFunction."));
   SafeSTLArray<Real, Values::n_entries> vals_arr;
   std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
-  Values values (vals_arr);
+  Values values(vals_arr);
 
   const auto name = parse_name(xml_elem);
 
@@ -2047,7 +2047,7 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the Function."));
   SafeSTLArray<Real, Values::n_entries> b_arr;
   std::copy(b_vec.cbegin(), b_vec.cend(), b_arr.begin());
-  Values b (b_arr);
+  Values b(b_arr);
 
   // Parsing A.
   const auto A_tag = xml_elem->get_single_element("A");
@@ -2059,7 +2059,7 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
                          "with the number of components of the Function."));
   SafeSTLArray<Real, Ders::n_entries> A_arr;
   std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
-  Ders A (A_arr);
+  Ders A(A_arr);
 
   const auto name = parse_name(xml_elem);
 

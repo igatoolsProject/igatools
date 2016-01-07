@@ -53,7 +53,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_grid_element() -> GridElement<dim_> &
 {
-  return get_physical_domain_element().get_grid_function_element().get_grid_element();
+  return get_domain_element().get_grid_function_element().get_grid_element();
 }
 
 template<int dim_,int range_,int rank_,int codim_>
@@ -61,7 +61,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_grid_element() const -> const GridElement<dim_> &
 {
-  return get_physical_domain_element().get_grid_function_element().get_grid_element();
+  return get_domain_element().get_grid_function_element().get_grid_element();
 }
 
 
@@ -190,7 +190,7 @@ get_grid() const -> const std::shared_ptr<const Grid<dim> >
 template<int dim_,int range_,int rank_,int codim_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
-get_physical_domain_element() const -> const PhysDomainElem &
+get_domain_element() const -> const PhysDomainElem &
 {
   return *phys_domain_element_;
 }
@@ -198,7 +198,7 @@ get_physical_domain_element() const -> const PhysDomainElem &
 template<int dim_,int range_,int rank_,int codim_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
-get_physical_domain_element() -> PhysDomainElem &
+get_domain_element() -> PhysDomainElem &
 {
   return *phys_domain_element_;
 }
@@ -296,6 +296,37 @@ is_comparable_with(const self_t &elem) const
 {
   return (this->get_space_basis() == elem.get_space_basis());
 }
+
+
+template<int dim_,int range_,int rank_,int codim_>
+template <int k>
+auto
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+get_w_measures(const int j) const -> const ValueVector<Real>
+{
+  return phys_domain_element_->template get_w_measures<k>(j);
+}
+
+template<int dim_,int range_,int rank_,int codim_>
+template <int k>
+auto
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+get_measures(const int j) const -> const ValueVector<Real> &
+{
+  return phys_domain_element_->template get_measures<k>(j);
+}
+
+
+template<int dim_,int range_,int rank_,int codim_>
+template <int k>
+auto
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+get_boundary_normals(const int s_id) const
+-> const ValueVector<Points<space_dim> > &
+{
+  return phys_domain_element_->template get_boundary_normals<k>(s_id);
+}
+
 
 IGA_NAMESPACE_CLOSE
 

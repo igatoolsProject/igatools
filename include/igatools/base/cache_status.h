@@ -39,7 +39,6 @@ IGA_NAMESPACE_OPEN
  * - <b>filled_once</b>, true if the cache is filled exactly one time and ready to be used;
  * - <b>copied</b>, true if the cache is copied from another object.
  *
- * @ingroup serializable
  * @ingroup cache
  * @author martinelli
  * @date 2013, 2015
