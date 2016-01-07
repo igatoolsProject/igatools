@@ -33,13 +33,13 @@ IGA_NAMESPACE_OPEN
 template <class Domain>
 VtkIgaGrid<Domain>::
 VtkIgaGrid(const DomainPtr_ domain,
-                    const Index &id,
-                    const GridInfoPtr_ solid_grid_info,
-                    const GridInfoPtr_ knot_grid_info,
-                    const ControlGridInfoPtr_ control_grid_info,
-                    const ObjContPtr_ obj_container,
-                    const bool is_active,
-                    const bool is_physical)
+           const Index &id,
+           const GridInfoPtr_ solid_grid_info,
+           const GridInfoPtr_ knot_grid_info,
+           const ControlGridInfoPtr_ control_grid_info,
+           const ObjContPtr_ obj_container,
+           const bool is_active,
+           const bool is_physical)
   :
   domain_(domain),
   id_ (id),
@@ -47,15 +47,12 @@ VtkIgaGrid(const DomainPtr_ domain,
   knot_grid_info_(knot_grid_info),
   control_grid_info_(control_grid_info),
   objs_container_(obj_container),
-  solid_grid_(VtkGridPtr_()),
-  knot_grid_(VtkGridPtr_()),
-  control_grid_(VtkGridPtr_()),
-  recompute_solid_(true),
-  recompute_knot_(true),
   recompute_control_(is_physical ? true : false),
   is_active_ (is_active),
   is_physical_ (is_physical),
-  is_ig_grid_func_ (is_physical ? std::dynamic_pointer_cast<const IgGridFunc_>(domain->get_grid_function()) != nullptr  : false)
+  is_ig_grid_func_ (is_physical ?
+              std::dynamic_pointer_cast<const IgGridFunc_>(domain->get_grid_function()) != nullptr :
+              false)
 {
   Assert(domain_ != nullptr, ExcNullPtr());
   Assert(solid_grid_info_ != nullptr, ExcNullPtr());
@@ -229,6 +226,7 @@ update(const bool solid_updated,
 }
 
 
+// TODO: to instantiate properly.
 template class VtkIgaGrid<Domain<1, 0>>;
 template class VtkIgaGrid<Domain<1, 1>>;
 template class VtkIgaGrid<Domain<1, 2>>;

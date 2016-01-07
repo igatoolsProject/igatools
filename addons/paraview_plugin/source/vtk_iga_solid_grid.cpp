@@ -363,14 +363,17 @@ create_linear_element_connectivity(const GridInfoPtr_ grid_info) -> Connectivity
 
   const auto n_vis_elems = grid_info->get_num_cells_per_element<dim>();
   TensorSize <dim> n_elem_bound_per_dir;
+  Size n_cells_per_bezier = 1;
   for (int dir = 0; dir < dim; ++dir)
+  {
     n_elem_bound_per_dir[dir] = n_vis_elems[dir] + 1;
+    n_cells_per_bezier *= n_vis_elems[dir];
+  }
 
   // This grid is going to help in building the connectivity.
   // Every element of the grid refers to a cell.
   const auto cells_grid = Grid<dim>::const_create(n_elem_bound_per_dir);
 
-  const Size n_cells_per_bezier = n_vis_elems.flat_size();
   conn.resize(n_cells_per_bezier);
 
   const Size n_points_per_single_cell = n_vertices;
@@ -452,7 +455,10 @@ create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
   //         0 -- 2 -- 1
 
   // Number of cells per Bezier element.
-  const Size n_cells_per_bezier = grid_info->get_num_cells_per_element<dim>().flat_size();
+  Size n_cells_per_bezier = 1;
+  const auto n_vis_elems = grid_info->get_num_cells_per_element<dim>();
+  for (int dir = 0; dir < dim; ++dir)
+      n_cells_per_bezier *= n_vis_elems[dir];
 
   conn.clear();
   conn.resize(n_cells_per_bezier);
@@ -491,7 +497,9 @@ create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
 
   // Number of cells per Bezier element.
   const auto n_vis_elems = grid_info->get_num_cells_per_element<dim>();
-  const Size n_cells_per_bezier = n_vis_elems.flat_size();
+  Size n_cells_per_bezier = 1;
+  for (int dir = 0; dir < dim; ++dir)
+      n_cells_per_bezier *= n_vis_elems[dir];
 
   conn.clear();
   conn.resize(n_cells_per_bezier);
@@ -586,7 +594,9 @@ create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
 
   // Number of cells per Bezier element.
   const auto n_vis_elems = grid_info->get_num_cells_per_element<dim>();
-  const Size n_cells_per_bezier = n_vis_elems.flat_size();
+  Size n_cells_per_bezier = 1;
+  for (int dir = 0; dir < dim; ++dir)
+      n_cells_per_bezier *= n_vis_elems[dir];
 
   conn.clear();
   conn.resize(n_cells_per_bezier);
@@ -1092,6 +1102,7 @@ create_point_data_parametric(const DomainPtr_ domain,
 }
 
 
+// TODO: to instantiate properly.
 template class VtkIgaSolidGrid<Domain<1, 0>>;
 template class VtkIgaSolidGrid<Domain<1, 1>>;
 template class VtkIgaSolidGrid<Domain<1, 2>>;
