@@ -123,7 +123,6 @@ private:
   using Functions = typename InstantiatedTypes::Functions;
 
 public:
-
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated grids.
@@ -367,6 +366,13 @@ public:
    * @param[in] out Log stream for outputting the information.
    */
   void print_info(LogStream &out) const;
+
+  /**
+   * @brief Checks if the container is void.
+   *
+   * @return True if the container is void, false elsewhere.
+   */
+  bool is_void () const;
 
 private:
 

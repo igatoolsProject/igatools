@@ -286,14 +286,6 @@ public:
   void write_to_file(const std::string &file_path,
                      const bool pretty_print = false) const;
 
-private:
-
-  /// @p Xerces-c DOM document pointer.
-  DOMDocPtr_ xml_doc_;
-
-  /// @p Xerces-c DOM implementation pointer.
-  xercesc::DOMImplementation *dom_impl_;
-
   /**
    * @brief Checks if the file can be read.
    *
@@ -302,6 +294,14 @@ private:
    * @param[in] file_path Path of the file to be checked.
    */
   static void check_file(const std::string &file_path);
+
+private:
+
+  /// @p Xerces-c DOM document pointer.
+  DOMDocPtr_ xml_doc_;
+
+  /// @p Xerces-c DOM implementation pointer.
+  xercesc::DOMImplementation *dom_impl_;
 
   /**
    * @brief Method for initializing all the @p Xerces-c processes.

@@ -18,14 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <paraview_plugin/grid_information.h>
+#include <paraview_plugin/vtk_iga_grid_information.h>
 
 
 IGA_NAMESPACE_OPEN
 
 VtkGridInformation::
 VtkGridInformation(const NumCellsContainer_ &num_cells,
-                   const vtkGridType &grid_type)
+                   const VtkGridType &grid_type)
   :
   grid_type_(grid_type),
   cells_per_element_(num_cells)
@@ -42,7 +42,7 @@ VtkGridInformation(const NumCellsContainer_ &num_cells,
 auto
 VtkGridInformation::
 create(const NumCellsContainer_ &num_cells,
-       const vtkGridType &grid_type) -> SelfPtr_
+       const VtkGridType &grid_type) -> SelfPtr_
 {
   return SelfPtr_(new Self_(num_cells, grid_type));
 }
@@ -59,7 +59,7 @@ update(SelfPtr_ grid_info)
     return true;
   }
 
-  const auto &n_cells = grid_info->get_num_cells_per_element();
+  const auto &n_cells = grid_info->cells_per_element_;
   for (int dir = 0; dir < 3; ++dir)
   {
     if (n_cells[dir] != cells_per_element_[dir])
@@ -75,7 +75,7 @@ update(SelfPtr_ grid_info)
 
 
 
-const vtkGridType &
+const VtkGridType &
 VtkGridInformation::
 get_grid_type() const
 {
@@ -88,7 +88,7 @@ bool
 VtkGridInformation::
 is_structured() const
 {
-  return grid_type_ == vtkGridType::Structured;
+  return grid_type_ == VtkGridType::Structured;
 };
 
 
@@ -97,17 +97,47 @@ bool
 VtkGridInformation::
 is_quadratic() const
 {
-  return grid_type_ == vtkGridType::UnstructuredQuadratic;
+  return grid_type_ == VtkGridType::UnstructuredQuadratic;
 };
 
 
 
-auto
+template <int dim>
+TensorSize <dim>
 VtkGridInformation::
-get_num_cells_per_element() const ->
-const NumCellsContainer_ &
+get_num_cells_per_element() const
 {
-  return cells_per_element_;
+  TensorSize <dim> n_vis_elements;
+  for (int dir = 0; dir < dim; ++dir)
+    n_vis_elements[dir] = cells_per_element_[dir];
+  return n_vis_elements;
+}
+
+
+
+void
+VtkGridInformation::
+print_info (LogStream &out) const
+{
+    out.begin_item("VtkGridInformation");
+    out << "VTK grid type: ";
+    switch (grid_type_)
+    {
+        case VtkGridType::Structured:
+            out << "Structured Grid";
+            break;
+        case VtkGridType::UnstructuredLinear:
+            out << "Unstructured Linear Grid";
+            break;
+        case VtkGridType::UnstructuredQuadratic:
+            out << "Unstructured Quadratic Grid";
+            break;
+        default:
+            break;
+    }
+    out << std::endl;
+    out << "Number of VTK cells per Bezier element: " << cells_per_element_ << std::endl;
+    out.end_item();
 };
 
 
@@ -115,8 +145,8 @@ const NumCellsContainer_ &
 VtkControlGridInformation::
 VtkControlGridInformation(const bool structured)
   :
-  grid_type_(structured ? vtkGridType::Structured :
-            vtkGridType::UnstructuredLinear)
+  grid_type_(structured ? VtkGridType::Structured :
+            VtkGridType::UnstructuredLinear)
 {}
 
 
@@ -149,17 +179,48 @@ bool
 VtkControlGridInformation::
 is_structured() const
 {
-  return grid_type_ == vtkGridType::Structured;
+  return grid_type_ == VtkGridType::Structured;
 }
 
 
 
 
-const vtkGridType &
+const VtkGridType &
 VtkControlGridInformation::
 get_grid_type() const
 {
   return grid_type_;
 };
+
+
+
+void
+VtkControlGridInformation::
+print_info (LogStream &out) const
+{
+    out.begin_item("VtkControlGridInformation");
+    out << "VTK grid type: ";
+    switch (grid_type_)
+    {
+        case VtkGridType::Structured:
+            out << "Structured Grid";
+            break;
+        case VtkGridType::UnstructuredLinear:
+            out << "Unstructured Linear Grid";
+            break;
+        case VtkGridType::UnstructuredQuadratic:
+            out << "Unstructured Quadratic Grid";
+            break;
+        default:
+            break;
+    }
+    out << std::endl;
+    out.end_item();
+};
+
+// TODO: to instantiate properly.
+template TensorSize<1> VtkGridInformation::get_num_cells_per_element<1>() const;
+template TensorSize<2> VtkGridInformation::get_num_cells_per_element<2>() const;
+template TensorSize<3> VtkGridInformation::get_num_cells_per_element<3>() const;
 
 IGA_NAMESPACE_CLOSE

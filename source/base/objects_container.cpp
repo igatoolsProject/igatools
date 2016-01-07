@@ -449,6 +449,163 @@ print_info(LogStream &out) const
 
 
 
+bool
+ObjectsContainer::
+is_void() const
+{
+  bool is_container_not_void = false;
+
+  GridPtrs valid_grid_ptr_types;
+  for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+        return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+  });
+
+  if (is_container_not_void)
+      return false;
+
+
+  // Spline spaces
+  SpSpacePtrs valid_ssp_ptr_types;
+  for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+        return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+  });
+
+  if (is_container_not_void)
+      return false;
+
+
+  // Reference space basis
+  RefSpacePtrs valid_rsp_ptr_types;
+  for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+        return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+  });
+
+  if (is_container_not_void)
+      return false;
+
+
+  // Grid functions
+  GridFuncPtrs valid_gf_ptr_types;
+  for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+        return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+  });
+
+  if (is_container_not_void)
+      return false;
+
+
+  // Domains
+  DomainPtrs valid_dm_ptr_types;
+  for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+        return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+  });
+
+  if (is_container_not_void)
+      return false;
+
+
+  // Physical space basis
+  PhysSpacePtrs valid_ps_ptr_types;
+  for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+        return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+  });
+
+  if (is_container_not_void)
+      return false;
+
+
+  // Function
+  FunctionPtrs valid_fn_ptr_types;
+  for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+        return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+        return;
+  });
+
+  if (is_container_not_void)
+      return false;
+  else
+      return true;
+
+}
+
+
+
 void
 ObjectsContainer::
 fill_not_inserted_dependencies()

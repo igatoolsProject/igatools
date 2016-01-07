@@ -18,13 +18,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef VTK_GRID_INFORMATION_H_
-#define VTK_GRID_INFORMATION_H_
+#ifndef __VTK_IGA_GRID_INFORMATION_H_
+#define __VTK_IGA_GRID_INFORMATION_H_
 
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_size.h>
 
-#include <paraview_plugin/types.h>
+#include "vtk_iga_types.h"
 
 IGA_NAMESPACE_OPEN
 
@@ -51,7 +51,7 @@ private:
    * Constructor.
    */
   VtkGridInformation(const NumCellsContainer_ &num_cells,
-                     const vtkGridType &grid_type);
+                     const VtkGridType &grid_type);
 
   /**
    * Default and move constructor and move assignment operators not allowed to be used.
@@ -68,7 +68,7 @@ public:
    * Creates and returns a shared pointer with a new instance of the class.
    */
   static SelfPtr_ create(const NumCellsContainer_ &num_cells,
-                         const vtkGridType &grid_type);
+                         const VtkGridType &grid_type);
 
   /**
    * Updates the informations.
@@ -80,7 +80,7 @@ public:
   /**
    * Retrieves the grid type.
    */
-  const vtkGridType &get_grid_type() const;
+  const VtkGridType &get_grid_type() const;
 
   /**
    * Returns true is the grid type is structured, false elsewhere.
@@ -93,16 +93,23 @@ public:
   bool is_quadratic() const;
 
   /**
+   * TODO: to document.
    * Returns the number of cells per element.
    */
-  const NumCellsContainer_ &get_num_cells_per_element() const;
+  template <int dim>
+  TensorSize <dim> get_num_cells_per_element() const;
+
+  /**
+   * Prints the information of the class for debuggin purposes.
+   */
+  void print_info(LogStream &out) const;
 
 private:
 
   /**
    * Vtk grid type.
    */
-  vtkGridType grid_type_;
+  VtkGridType grid_type_;
 
   /**
    * Number of cells by Bezier element.
@@ -173,13 +180,18 @@ public:
   /**
    * Retrieves the grid type.
    */
-  const vtkGridType &get_grid_type() const;
+  const VtkGridType &get_grid_type() const;
+
+  /**
+   * Prints the information of the class for debuggin purposes.
+   */
+  void print_info(LogStream &out) const;
 
 private:
   /**
    * Vtk grid type.
    */
-  vtkGridType grid_type_;
+  VtkGridType grid_type_;
 
 };
 
@@ -187,4 +199,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // VTK_GRID_INFORMATION_H_
+#endif // __VTK_IGA_GRID_INFORMATION_H_
