@@ -25,8 +25,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim_, int space_dim_>
-IgGridFunctionHandler<dim_, space_dim_>::
+template<int dim_, int range_>
+IgGridFunctionHandler<dim_, range_>::
 IgGridFunctionHandler(const std::shared_ptr<GridFunctionType> &ig_grid_function)
   :
   parent_t(ig_grid_function),
@@ -35,9 +35,9 @@ IgGridFunctionHandler(const std::shared_ptr<GridFunctionType> &ig_grid_function)
 {}
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-IgGridFunctionHandler<dim_, space_dim_>::
+IgGridFunctionHandler<dim_, range_>::
 get_ig_grid_function() const -> std::shared_ptr<GridFunctionType>
 {
   return ig_grid_function_;
@@ -45,9 +45,9 @@ get_ig_grid_function() const -> std::shared_ptr<GridFunctionType>
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-IgGridFunctionHandler<dim_, space_dim_>::
+IgGridFunctionHandler<dim_, range_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
@@ -71,9 +71,9 @@ set_flags(const topology_variant &sdim,
 
 
 #if 0
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 void
-IgGridFunctionHandler<dim_, space_dim_>::
+IgGridFunctionHandler<dim_, range_>::
 init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
@@ -88,9 +88,9 @@ init_cache(ElementAccessor &elem,
 #endif
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-IgGridFunctionHandler<dim_, space_dim_>::
+IgGridFunctionHandler<dim_, range_>::
 fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
            const int s_id) const-> void
@@ -107,10 +107,10 @@ fill_cache(const topology_variant &sdim,
 }
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 template<int sdim>
 void
-IgGridFunctionHandler<dim_, space_dim_>::
+IgGridFunctionHandler<dim_, range_>::
 FillCacheDispatcher::
 operator()(const Topology<sdim> &sub_elem)
 {
@@ -119,7 +119,7 @@ operator()(const Topology<sdim> &sub_elem)
 
 
   const auto &ig_grid_function =
-    *(std::dynamic_pointer_cast<const IgGridFunction<dim_,space_dim_>>(ig_grid_function_handler_.get_grid_function()));
+    *(std::dynamic_pointer_cast<const IgGridFunction<dim_,range_>>(ig_grid_function_handler_.get_grid_function()));
 
   auto &local_cache = ig_grid_function_handler_.get_element_cache(ig_grid_function_elem_);
   auto &cache = local_cache.template get_sub_elem_cache<sdim>(s_id_);

@@ -22,8 +22,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim_,int space_dim_>
-GridFunctionElement<dim_,space_dim_>::
+template<int dim_,int range_>
+GridFunctionElement<dim_,range_>::
 GridFunctionElement(const std::shared_ptr<ContainerType> &grid_function,
                     std::unique_ptr<GridElem> &&grid_elem)
   :
@@ -32,18 +32,18 @@ GridFunctionElement(const std::shared_ptr<ContainerType> &grid_function,
 {}
 
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 bool
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 same_grid_function_of(const self_t &elem) const
 {
   return (grid_function_ == elem.grid_function_);
 }
 
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 bool
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 operator ==(const self_t &elem) const
 {
   Assert(this->same_grid_function_of(elem),
@@ -53,9 +53,9 @@ operator ==(const self_t &elem) const
 
 
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 bool
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 operator !=(const self_t &elem) const
 {
   Assert(this->same_grid_function_of(elem),
@@ -67,62 +67,62 @@ operator !=(const self_t &elem) const
 
 
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 void
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 operator++()
 {
   ++(*grid_elem_);
 }
 
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 void
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 move_to(const IndexType &elem_id)
 {
   grid_elem_->move_to(elem_id);
 }
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 auto
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 get_grid_element() const -> const GridElem &
 {
   return *grid_elem_;
 }
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 auto
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 get_grid_element() -> GridElem &
 {
   return *grid_elem_;
 }
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 auto
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 get_index() const -> const IndexType &
 {
   return grid_elem_->get_index();
 }
 
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 void
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 print_info(LogStream &out) const
 {
   using std::to_string;
-  out.begin_item("GridElement<" + to_string(dim_) + "," + to_string(space_dim_) +">");
+  out.begin_item("GridElement<" + to_string(dim_) + "," + to_string(range_) +">");
   grid_elem_->print_info(out);
   out.end_item();
 }
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 void
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 print_cache_info(LogStream &out) const
 {
   out.begin_item("GridElement's cache");
@@ -133,27 +133,27 @@ print_cache_info(LogStream &out) const
 }
 
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 auto
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 get_element_values_D0() const -> const ValueVector<Value> &
 {
   using _D0 = grid_function_element::_D<0>;
   return this->template get_values_from_cache<_D0,dim_>(0);
 }
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 auto
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 get_element_values_D1() const -> const ValueVector<Derivative<1>> &
 {
   using _D1 = grid_function_element::_D<1>;
   return this->template get_values_from_cache<_D1,dim_>(0);
 }
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 auto
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 get_element_values_D2() const -> const ValueVector<Derivative<2>> &
 {
   using _D2 = grid_function_element::_D<2>;
@@ -161,39 +161,39 @@ get_element_values_D2() const -> const ValueVector<Derivative<2>> &
 }
 
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 const ValueVector<Real> &
-GridFunctionElement<dim_,space_dim_>::
+GridFunctionElement<dim_,range_>::
 get_element_weights() const
 {
   return grid_elem_->get_element_weights();
 }
 
-template<int dim_,int space_dim_>
+template<int dim_,int range_>
 const ValueVector<Points<dim_>> &
-                             GridFunctionElement<dim_,space_dim_>::
+                             GridFunctionElement<dim_,range_>::
                              get_element_points() const
 {
   return grid_elem_->get_element_points();
 }
 
 #if 0
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-GridFunctionElement<dim_, space_dim_>::
-get_exterior_normals() const -> ValueVector<SafeSTLArray<Value, space_dim_> >
+GridFunctionElement<dim_, range_>::
+get_exterior_normals() const -> ValueVector<SafeSTLArray<Value, range_> >
 {
   const int sdim = dim_;
   const int s_id = 0;
-  Assert(space_dim_ == 1, ExcNotImplemented());
-  ValueVector<SafeSTLArray<Value, space_dim_>> res;
+  Assert(range_ == 1, ExcNotImplemented());
+  ValueVector<SafeSTLArray<Value, range_>> res;
   const auto &DF = this->template get_values_from_cache<_Gradient, sdim>(s_id);
   const auto n_points = DF.get_num_points();
   res.resize(n_points);
 
   for (int pt = 0; pt < n_points; ++pt)
   {
-    res[0][pt] = cross_product<dim_, space_dim_>(DF[pt]);
+    res[0][pt] = cross_product<dim_, range_>(DF[pt]);
     res[0][pt] /= res[0][pt].norm();
   }
 

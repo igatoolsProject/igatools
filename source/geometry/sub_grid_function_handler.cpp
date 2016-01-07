@@ -24,8 +24,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int sdim,int dim, int space_dim>
-SubGridFunctionHandler<sdim,dim,space_dim>::
+template<int sdim,int dim, int range>
+SubGridFunctionHandler<sdim,dim,range>::
 SubGridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function)
   :
   parent_t(grid_function),
@@ -33,9 +33,9 @@ SubGridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function)
 {}
 
 
-template<int sdim,int dim, int space_dim>
+template<int sdim,int dim, int range>
 void
-SubGridFunctionHandler<sdim,dim,space_dim>::
+SubGridFunctionHandler<sdim,dim,range>::
 set_flags(const topology_variant &topology,
           const Flags &flag)
 {
@@ -44,32 +44,32 @@ set_flags(const topology_variant &topology,
   sup_grid_func_handler_->set_flags(topology,flag);
 }
 
-template<int sdim,int dim, int space_dim>
+template<int sdim,int dim, int range>
 void
-SubGridFunctionHandler<sdim,dim,space_dim>::
-init_cache(GridFunctionElement<sdim,space_dim> &sub_grid_func_elem,
+SubGridFunctionHandler<sdim,dim,range>::
+init_cache(GridFunctionElement<sdim,range> &sub_grid_func_elem,
            const eval_pts_variant &quad) const
 {
   parent_t::init_cache(sub_grid_func_elem,quad);
 
   auto &as_sub_grid_func_elem =
-    dynamic_cast<SubGridFunctionElement<sdim,dim,space_dim> &>(sub_grid_func_elem);
+    dynamic_cast<SubGridFunctionElement<sdim,dim,range> &>(sub_grid_func_elem);
 
   this->sup_grid_func_handler_->init_cache(as_sub_grid_func_elem.get_sup_grid_function_element(),quad);
 }
 
 
-template<int sdim,int dim, int space_dim>
+template<int sdim,int dim, int range>
 void
-SubGridFunctionHandler<sdim,dim,space_dim>::
+SubGridFunctionHandler<sdim,dim,range>::
 fill_cache(const topology_variant &topology,
-           GridFunctionElement<sdim,space_dim> &sub_grid_func_elem,
+           GridFunctionElement<sdim,range> &sub_grid_func_elem,
            const int s_id) const
 {
   this->grid_handler_->fill_cache(topology, sub_grid_func_elem.get_grid_element(), s_id);
 
   auto &as_sub_grid_func_elem =
-    dynamic_cast<SubGridFunctionElement<sdim,dim,space_dim> &>(sub_grid_func_elem);
+    dynamic_cast<SubGridFunctionElement<sdim,dim,range> &>(sub_grid_func_elem);
 
   this->sup_grid_func_handler_->fill_cache(topology,as_sub_grid_func_elem.get_sup_grid_function_element(),s_id);
 
@@ -81,11 +81,11 @@ fill_cache(const topology_variant &topology,
 }
 
 
-template<int sdim,int dim, int space_dim>
-SubGridFunctionHandler<sdim,dim,space_dim>::
+template<int sdim,int dim, int range>
+SubGridFunctionHandler<sdim,dim,range>::
 FillCacheDispatcher::
-FillCacheDispatcher(const SubGridFunctionHandler<sdim,dim,space_dim> &sub_grid_func_handler,
-                    SubGridFunctionElement<sdim,dim,space_dim> &sub_grid_func_elem,
+FillCacheDispatcher(const SubGridFunctionHandler<sdim,dim,range> &sub_grid_func_handler,
+                    SubGridFunctionElement<sdim,dim,range> &sub_grid_func_elem,
                     const int s_id)
   :
   sub_grid_func_handler_(sub_grid_func_handler),
@@ -94,10 +94,10 @@ FillCacheDispatcher(const SubGridFunctionHandler<sdim,dim,space_dim> &sub_grid_f
 {}
 
 
-template<int sdim,int dim, int space_dim>
+template<int sdim,int dim, int range>
 template<int k>
 void
-SubGridFunctionHandler<sdim,dim,space_dim>::
+SubGridFunctionHandler<sdim,dim,range>::
 FillCacheDispatcher::
 operator()(const Topology<k> &topology)
 {

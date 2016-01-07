@@ -31,14 +31,14 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup elements
  */
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 class GridFunctionElement
 {
 private:
-  using self_t  = GridFunctionElement<dim_, space_dim_>;
+  using self_t  = GridFunctionElement<dim_, range_>;
 
 public:
-  using ContainerType = const GridFunction<dim_,space_dim_>;
+  using ContainerType = const GridFunction<dim_,range_>;
   using GridElem = typename ContainerType::GridType::ElementAccessor;
   using ListIt = typename ContainerType::ListIt;
 
@@ -204,7 +204,7 @@ private:
   CacheType local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
-  friend class GridFunctionHandler<dim_, space_dim_>;
+  friend class GridFunctionHandler<dim_, range_>;
 
 
 public:
