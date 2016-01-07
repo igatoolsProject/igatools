@@ -88,6 +88,8 @@ for dims in inst.dims_list:
     classes.append('SafeSTLArray<int,%d>' % (dims.dim))
     classes.append('SafeSTLVector<SafeSTLArray<int,%d>>' % (pow(2, dims.dim)))
     classes.append('SafeSTLVector<SafeSTLArray<int,%d>>' % (dims.dim))
+    
+classes.append('SafeSTLVector<int>')
 
 for x in inst.mapping_dims:
     writer_types = ['double']
