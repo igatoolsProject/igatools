@@ -360,7 +360,7 @@ parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
   for (const auto &cgf : xml_elem->get_children_elements("ConstantGridFunction"))
   {
     const int cgf_dim = cgf->get_attribute<int>("Dim");
-    const int cgf_space_dim = cgf->get_attribute<int>("Spacedim"); // This is going to change.
+    const int cgf_space_dim = cgf->get_attribute<int>("SpaceDim"); // This is going to change.
 
     using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
     GridFunctionPtrs valid_cgf_ptr_types;
@@ -405,7 +405,7 @@ parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
   for (const auto &cgf : xml_elem->get_children_elements("LinearGridFunction"))
   {
     const int cgf_dim = cgf->get_attribute<int>("Dim");
-    const int cgf_space_dim = cgf->get_attribute<int>("Spacedim"); // This is going to change.
+    const int cgf_space_dim = cgf->get_attribute<int>("SpaceDim"); // This is going to change.
 
     using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
     GridFunctionPtrs valid_cgf_ptr_types;
@@ -451,7 +451,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
   for (const auto &gf : xml_elem->get_children_elements("IgGridFunction"))
   {
     const int gf_dim = gf->get_attribute<int>("Dim");
-    const int gf_space_dim = gf->get_attribute<int>("Spacedim"); // This is going to change.
+    const int gf_space_dim = gf->get_attribute<int>("SpaceDim"); // This is going to change.
 
     using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
     GridFunctionPtrs valid_gf_ptr_types;
@@ -1304,8 +1304,8 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
 
   Assert(xml_elem->get_attribute<int>("Dim") == dim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Spacedim") == space_dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Spacedim"), space_dim));
+  Assert(xml_elem->get_attribute<int>("SpaceDim") == space_dim,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("SpaceDim"), space_dim));
 
   using GridType = Grid<dim>;
   using ConstGridFunctionType = grid_functions::ConstantGridFunction<dim, space_dim>;
@@ -1384,8 +1384,8 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
 
   Assert(xml_elem->get_attribute<int>("Dim") == dim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Spacedim") == space_dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Spacedim"), space_dim));
+  Assert(xml_elem->get_attribute<int>("SpaceDim") == space_dim,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("SpaceDim"), space_dim));
 
   using GridType = Grid<dim>;
   using LinearGridFunctionType = grid_functions::LinearGridFunction<dim, space_dim>;
@@ -1477,8 +1477,8 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
 
   Assert(xml_elem->get_attribute<int>("Dim") == dim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Spacedim") == space_dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Spacedim"), space_dim));
+  Assert(xml_elem->get_attribute<int>("SpaceDim") == space_dim,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("SpaceDim"), space_dim));
 
   static const int rank = 1;
   using IgGridFunctionType = IgGridFunction<dim, space_dim>;

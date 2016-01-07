@@ -634,7 +634,7 @@ write_constant_grid_function (const shared_ptr<ConstGridFunc> const_func,
 
     obj_elem->add_attribute("LocalObjectId", const_func->get_object_id());
     obj_elem->add_attribute("Dim", dim);
-    obj_elem->add_attribute("Spacedim", space_dim);
+    obj_elem->add_attribute("SpaceDim", space_dim);
 
     const auto grid_elem = xml_doc->create_new_element("Grid");
     grid_elem->add_attribute("GetFromLocalObjectId",
@@ -673,7 +673,7 @@ write_linear_grid_function (const shared_ptr<LinearGridFunc> linear_func,
 
     obj_elem->add_attribute("LocalObjectId", linear_func->get_object_id());
     obj_elem->add_attribute("Dim", dim);
-    obj_elem->add_attribute("Spacedim", space_dim);
+    obj_elem->add_attribute("SpaceDim", space_dim);
 
     const auto grid_elem = xml_doc->create_new_element("Grid");
     grid_elem->add_attribute("GetFromLocalObjectId",
@@ -718,7 +718,7 @@ write_ig_grid_function (const shared_ptr<IgGridFunc> ig_func,
 
     obj_elem->add_attribute("LocalObjectId", ig_func->get_object_id());
     obj_elem->add_attribute("Dim", dim);
-    obj_elem->add_attribute("Spacedim", space_dim);
+    obj_elem->add_attribute("SpaceDim", space_dim);
 
     const auto rb_elem = xml_doc->create_new_element("ReferenceSpaceBasis");
     rb_elem->add_attribute("GetFromLocalObjectId",
