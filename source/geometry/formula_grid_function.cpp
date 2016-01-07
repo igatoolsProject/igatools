@@ -23,8 +23,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, int space_dim>
-FormulaGridFunction<dim, space_dim>::
+template<int dim, int range>
+FormulaGridFunction<dim, range>::
 FormulaGridFunction(const SharedPtrConstnessHandler<GridType> &grid)
   :
   parent_t::GridFunction(grid)
@@ -32,9 +32,9 @@ FormulaGridFunction(const SharedPtrConstnessHandler<GridType> &grid)
 
 
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-FormulaGridFunction<dim, space_dim>::
+FormulaGridFunction<dim, range>::
 create_cache_handler() const
 -> std::unique_ptr<typename parent_t::ElementHandler>
 {

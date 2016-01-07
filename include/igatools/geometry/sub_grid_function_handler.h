@@ -30,18 +30,18 @@ IGA_NAMESPACE_OPEN
 
 
 
-template<int sdim,int dim, int space_dim>
+template<int sdim,int dim, int range>
 class SubGridFunctionHandler
-  : public GridFunctionHandler<sdim,space_dim>
+  : public GridFunctionHandler<sdim,range>
 {
 private:
-  using parent_t = GridFunctionHandler<sdim,space_dim>;
-  using self_t = SubGridFunctionHandler<sdim,dim,space_dim>;
+  using parent_t = GridFunctionHandler<sdim,range>;
+  using self_t = SubGridFunctionHandler<sdim,dim,range>;
 
 public:
-  using GridFunctionType = const SubGridFunction<sdim,dim,space_dim>;
+  using GridFunctionType = const SubGridFunction<sdim,dim,range>;
 
-  using ElementAccessor = SubGridFunctionElement<sdim,dim,space_dim>;
+  using ElementAccessor = SubGridFunctionElement<sdim,dim,range>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
 
@@ -72,12 +72,12 @@ public:
   virtual void set_flags(const topology_variant &topology,
                          const Flags &flag) override;
 
-  virtual void init_cache(GridFunctionElement<sdim,space_dim> &sub_grid_func_elem,
+  virtual void init_cache(GridFunctionElement<sdim,range> &sub_grid_func_elem,
                           const eval_pts_variant &quad) const override;
 
 
   virtual void fill_cache(const topology_variant &topology,
-                          GridFunctionElement<sdim,space_dim> &sub_grid_func_elem,
+                          GridFunctionElement<sdim,range> &sub_grid_func_elem,
                           const int s_id) const override;
 
 
@@ -86,22 +86,22 @@ private:
 
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
-    FillCacheDispatcher(const SubGridFunctionHandler<sdim,dim,space_dim> &sub_grid_func_handler,
-                        SubGridFunctionElement<sdim,dim,space_dim> &sub_grid_func_elem,
+    FillCacheDispatcher(const SubGridFunctionHandler<sdim,dim,range> &sub_grid_func_handler,
+                        SubGridFunctionElement<sdim,dim,range> &sub_grid_func_elem,
                         const int s_id);
 
     template<int k>
     void operator()(const Topology<k> &topology);
 
 
-    const SubGridFunctionHandler<sdim,dim,space_dim> &sub_grid_func_handler_;
-    SubGridFunctionElement<sdim,dim,space_dim> &sub_grid_func_elem_;
+    const SubGridFunctionHandler<sdim,dim,range> &sub_grid_func_handler_;
+    SubGridFunctionElement<sdim,dim,range> &sub_grid_func_elem_;
     const int s_id_;
   };
 
 private:
 
-  std::unique_ptr<GridFunctionHandler<dim,space_dim>> sup_grid_func_handler_;
+  std::unique_ptr<GridFunctionHandler<dim,range>> sup_grid_func_handler_;
 };
 
 

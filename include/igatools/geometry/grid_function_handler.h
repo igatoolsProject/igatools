@@ -34,23 +34,23 @@ template <int, int> class GridFunctionElement;
  *
  * @ingroup handlers
  */
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 class GridFunctionHandler
 //    :
-//  public std::enable_shared_from_this<GridFunctionHandler<dim_,space_dim_> >
+//  public std::enable_shared_from_this<GridFunctionHandler<dim_,range_> >
 {
 private:
-  using self_t = GridFunctionHandler<dim_, space_dim_>;
+  using self_t = GridFunctionHandler<dim_, range_>;
 
 public:
-  static const int space_dim = space_dim_;
+  static const int range = range_;
   static const int dim = dim_;
 
-  using GridFunctionType = const GridFunction<dim_, space_dim_>;
+  using GridFunctionType = const GridFunction<dim_, range_>;
   using GridType = const Grid<dim_>;
   using GridHandler = typename GridType::ElementHandler;
 
-  using ElementAccessor = GridFunctionElement<dim_, space_dim_>;
+  using ElementAccessor = GridFunctionElement<dim_, range_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
 

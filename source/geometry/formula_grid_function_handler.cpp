@@ -22,8 +22,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, int space_dim>
-FormulaGridFunctionHandler<dim, space_dim>::
+template<int dim, int range>
+FormulaGridFunctionHandler<dim, range>::
 FormulaGridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function)
   :
   parent_t::GridFunctionHandler(grid_function)
@@ -31,9 +31,9 @@ FormulaGridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_functio
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-FormulaGridFunctionHandler<dim_, space_dim_>::
+FormulaGridFunctionHandler<dim_, range_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
@@ -42,8 +42,8 @@ set_flags(const topology_variant &sdim,
 }
 
 
-template<int dim, int space_dim>
-FormulaGridFunctionHandler<dim, space_dim>::
+template<int dim, int range>
+FormulaGridFunctionHandler<dim, range>::
 FillCacheDispatcher::
 FillCacheDispatcher(const self_t &grid_function_handler,
                     ElementAccessor &elem,
@@ -55,9 +55,9 @@ FillCacheDispatcher(const self_t &grid_function_handler,
 {}
 
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-FormulaGridFunctionHandler<dim, space_dim>::
+FormulaGridFunctionHandler<dim, range>::
 fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
            const int s_id) const  -> void
@@ -76,10 +76,10 @@ fill_cache(const topology_variant &sdim,
 
 
 
-template<int dim, int space_dim>
+template<int dim, int range>
 template<int sdim>
 void
-FormulaGridFunctionHandler<dim, space_dim>::
+FormulaGridFunctionHandler<dim, range>::
 FillCacheDispatcher::
 operator()(const Topology<sdim> &sub_elem)
 {

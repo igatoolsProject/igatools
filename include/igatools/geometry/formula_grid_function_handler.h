@@ -30,17 +30,17 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup handlers
  */
-template<int dim, int space_dim>
+template<int dim, int range>
 class FormulaGridFunctionHandler :
-  public GridFunctionHandler<dim, space_dim>
+  public GridFunctionHandler<dim, range>
 {
 private:
-  using parent_t = GridFunctionHandler<dim, space_dim>;
-  using self_t = FormulaGridFunctionHandler<dim, space_dim>;
+  using parent_t = GridFunctionHandler<dim, range>;
+  using self_t = FormulaGridFunctionHandler<dim, range>;
 protected:
   using typename parent_t::GridType;
 public:
-  using GridFunctionType =  const FormulaGridFunction<dim, space_dim>;
+  using GridFunctionType =  const FormulaGridFunction<dim, range>;
   using typename parent_t::ElementAccessor;
   using typename parent_t::Flags;
   using typename parent_t::topology_variant;

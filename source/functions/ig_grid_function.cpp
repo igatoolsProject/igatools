@@ -26,8 +26,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim,int space_dim>
-IgGridFunction<dim,space_dim>::
+template<int dim,int range>
+IgGridFunction<dim,range>::
 IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                const EpetraTools::Vector &coeff,
                const std::string &dofs_property)
@@ -54,8 +54,8 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
 }
 
 
-template<int dim,int space_dim>
-IgGridFunction<dim,space_dim>::
+template<int dim,int range>
+IgGridFunction<dim,range>::
 IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                const IgCoefficients &coeffs,
                const std::string &dofs_property)
@@ -82,9 +82,9 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
 
 #ifdef MESH_REFINEMENT
 
-template<int dim,int space_dim>
+template<int dim,int range>
 void
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
@@ -99,7 +99,7 @@ rebuild_after_insert_knots(
 
   const int max_degree = ref_basis.get_spline_space()->get_max_degree();
 
-  coeffs_ = space_tools::projection_l2_grid_function<dim,space_dim>(
+  coeffs_ = space_tools::projection_l2_grid_function<dim,range>(
               *ig_grid_function_pre_refinement,
               ref_basis,
               QGauss<dim>::create(max_degree+1),
@@ -108,21 +108,21 @@ rebuild_after_insert_knots(
 
 #endif // MESH_REFINEMENT
 
-template<int dim,int space_dim>
+template<int dim,int range>
 auto
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 create_cache_handler() const
 -> std::unique_ptr<ElementHandler>
 {
-  using Handler = IgGridFunctionHandler<dim,space_dim>;
+  using Handler = IgGridFunctionHandler<dim,range>;
   return std::unique_ptr<Handler>(new Handler(
     std::dynamic_pointer_cast<const self_t>(this->shared_from_this())));
 }
 
 
-template<int dim,int space_dim>
+template<int dim,int range>
 auto
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 const_create(const std::shared_ptr<const RefBasis> &ref_basis,
              const IgCoefficients &coeffs,
              const std::string &dofs_property) -> std::shared_ptr<const self_t>
@@ -131,9 +131,9 @@ const_create(const std::shared_ptr<const RefBasis> &ref_basis,
     SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
 }
 
-template<int dim,int space_dim>
+template<int dim,int range>
 auto
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 create(const std::shared_ptr<RefBasis> &ref_basis,
        const IgCoefficients &coeffs,
        const std::string &dofs_property) -> std::shared_ptr<self_t>
@@ -149,9 +149,9 @@ create(const std::shared_ptr<RefBasis> &ref_basis,
 }
 
 
-template<int dim,int space_dim>
+template<int dim,int range>
 auto
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 const_create(const std::shared_ptr<const RefBasis> &ref_basis,
              const EpetraTools::Vector &coeffs,
              const std::string &dofs_property) -> std::shared_ptr<const self_t>
@@ -160,9 +160,9 @@ const_create(const std::shared_ptr<const RefBasis> &ref_basis,
     SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
 }
 
-template<int dim,int space_dim>
+template<int dim,int range>
 auto
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 create(const std::shared_ptr<RefBasis> &ref_basis,
        const EpetraTools::Vector &coeffs,
        const std::string &dofs_property) -> std::shared_ptr<self_t>
@@ -173,43 +173,43 @@ create(const std::shared_ptr<RefBasis> &ref_basis,
 
 
 
-template<int dim,int space_dim>
+template<int dim,int range>
 auto
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 get_basis() const -> std::shared_ptr<const RefBasis>
 {
   return ref_basis_.get_ptr_const_data();
 }
 
-template<int dim,int space_dim>
+template<int dim,int range>
 const IgCoefficients &
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 get_coefficients() const
 {
   return coeffs_;
 }
 
-template<int dim,int space_dim>
+template<int dim,int range>
 const std::string &
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 get_dofs_property() const
 {
   return dofs_property_;
 }
 
-template<int dim,int space_dim>
+template<int dim,int range>
 void
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 print_info(LogStream &out) const
 {
   using std::to_string;
   out.begin_item("IgGridFunction<" +
                  to_string(dim) + "," +
-                 to_string(space_dim) + ">");
+                 to_string(range) + ">");
 
   out.begin_item("ReferenceSpaceBasis<" +
                  to_string(dim) + ",1," +
-                 to_string(space_dim) + ">:");
+                 to_string(range) + ">:");
   ref_basis_->print_info(out);
   out.end_item();
 
@@ -226,16 +226,16 @@ print_info(LogStream &out) const
 
 
 #ifdef SERIALIZATION
-template<int dim,int space_dim>
+template<int dim,int range>
 template<class Archive>
 void
-IgGridFunction<dim,space_dim>::
+IgGridFunction<dim,range>::
 serialize(Archive &ar)
 {
   using std::to_string;
   const std::string base_name =
     "GridFunction_" + to_string(dim) + "_" +
-    to_string(space_dim);
+    to_string(range);
 
   ar &make_nvp(base_name,base_class<parent_t>(this));
 

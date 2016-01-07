@@ -31,24 +31,24 @@ IGA_NAMESPACE_OPEN
 template <int,int,int> class SubGridFunctionElement;
 template <int,int,int> class SubGridFunctionHandler;
 
-template<int sdim,int dim,int space_dim>
+template<int sdim,int dim,int range>
 class SubGridFunction :
-  public GridFunction<sdim,space_dim>
+  public GridFunction<sdim,range>
 {
 private:
-  using self_t = SubGridFunction<sdim,dim,space_dim>;
+  using self_t = SubGridFunction<sdim,dim,range>;
 
 
 public:
-  using base_t  = GridFunction<sdim,space_dim>;
-  using SupFunc = GridFunction<dim,space_dim>;
+  using base_t  = GridFunction<sdim,range>;
+  using SupFunc = GridFunction<dim,range>;
 
   using GridType = Grid<sdim>;
   using SuperGrid = Grid<dim>;
 
-  using ElementAccessor = SubGridFunctionElement<sdim,dim,space_dim>;
+  using ElementAccessor = SubGridFunctionElement<sdim,dim,range>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ElementHandler = SubGridFunctionHandler<sdim,dim,space_dim>;
+  using ElementHandler = SubGridFunctionHandler<sdim,dim,range>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
@@ -67,10 +67,10 @@ public:
 
   virtual ~SubGridFunction() = default;
 
-  virtual GridIterator<GridFunctionElement<sdim,space_dim> >
+  virtual GridIterator<GridFunctionElement<sdim,range> >
   cbegin(const PropId &prop) const override;
 
-  virtual GridIterator<GridFunctionElement<sdim,space_dim> >
+  virtual GridIterator<GridFunctionElement<sdim,range> >
   cend(const PropId &prop) const override;
 
 
@@ -86,18 +86,18 @@ public:
          const SubGridMap &sub_grid_elem_map,
          const std::shared_ptr<GridType> &grid);
 
-  virtual std::unique_ptr<GridFunctionHandler<sdim,space_dim> >
+  virtual std::unique_ptr<GridFunctionHandler<sdim,range> >
   create_cache_handler() const override;
 
 #if 0
-  virtual std::unique_ptr<GridFunctionElement<sdim,space_dim> >
+  virtual std::unique_ptr<GridFunctionElement<sdim,range> >
   create_element(const ListIt &index, const PropId &prop) const override final;
 #endif
 
-  virtual std::unique_ptr<GridFunctionElement<sdim,space_dim>>
+  virtual std::unique_ptr<GridFunctionElement<sdim,range>>
                                                             create_element_begin(const PropId &prop) const override final;
 
-  virtual std::unique_ptr<GridFunctionElement<sdim,space_dim>>
+  virtual std::unique_ptr<GridFunctionElement<sdim,range>>
                                                             create_element_end(const PropId &prop) const override final;
 
 

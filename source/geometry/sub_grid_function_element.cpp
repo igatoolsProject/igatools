@@ -23,19 +23,19 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int sdim,int dim,int space_dim>
-SubGridFunctionElement<sdim,dim,space_dim>::
+template <int sdim,int dim,int range>
+SubGridFunctionElement<sdim,dim,range>::
 SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
                        std::unique_ptr<GridElement<sdim>> &&sub_grid_element,
-                       std::unique_ptr<GridFunctionElement<dim,space_dim>> &&sup_grid_func_element)
+                       std::unique_ptr<GridFunctionElement<dim,range>> &&sup_grid_func_element)
   :
   parent_t(sub_grid_function,std::move(sub_grid_element)),
   sup_grid_func_element_(std::move(sup_grid_func_element))
 {}
 
-template <int sdim,int dim,int space_dim>
+template <int sdim,int dim,int range>
 bool
-SubGridFunctionElement<sdim,dim,space_dim>::
+SubGridFunctionElement<sdim,dim,range>::
 operator==(const parent_t &elem) const
 {
   const self_t &sub_elem = dynamic_cast<const self_t &>(elem);
@@ -46,9 +46,9 @@ operator==(const parent_t &elem) const
   return this->parent_t::operator==(elem);
 }
 
-template <int sdim,int dim,int space_dim>
+template <int sdim,int dim,int range>
 bool
-SubGridFunctionElement<sdim,dim,space_dim>::
+SubGridFunctionElement<sdim,dim,range>::
 operator!=(const parent_t &elem) const
 {
   const self_t &sub_elem = dynamic_cast<const self_t &>(elem);
@@ -60,14 +60,14 @@ operator!=(const parent_t &elem) const
 
 
 
-template <int sdim,int dim,int space_dim>
+template <int sdim,int dim,int range>
 void
-SubGridFunctionElement<sdim,dim,space_dim>::
+SubGridFunctionElement<sdim,dim,range>::
 operator++()
 {
   parent_t::operator++();
 
-  using SubGridFunc = SubGridFunction<sdim,dim,space_dim>;
+  using SubGridFunc = SubGridFunction<sdim,dim,range>;
   const auto grid_func =
     std::dynamic_pointer_cast<const SubGridFunc>(this->grid_function_);
 
@@ -106,14 +106,14 @@ operator++()
 }
 
 
-template <int sdim,int dim,int space_dim>
+template <int sdim,int dim,int range>
 void
-SubGridFunctionElement<sdim,dim,space_dim>::
+SubGridFunctionElement<sdim,dim,range>::
 move_to(const IndexType &elem_id)
 {
   parent_t::move_to(elem_id);
 
-  using SubGridFunc = SubGridFunction<sdim,dim,space_dim>;
+  using SubGridFunc = SubGridFunction<sdim,dim,range>;
   const auto grid_func =
     std::dynamic_pointer_cast<const SubGridFunc>(this->grid_function_);
 
@@ -133,22 +133,22 @@ move_to(const IndexType &elem_id)
 
 
 
-template <int sdim,int dim,int space_dim>
+template <int sdim,int dim,int range>
 void
-SubGridFunctionElement<sdim,dim,space_dim>::
+SubGridFunctionElement<sdim,dim,range>::
 print_info(LogStream &out) const
 {
   using std::to_string;
   out.begin_item("SubGridFunctionElement<" +
                  to_string(sdim) + "," +
                  to_string(dim) + "," +
-                 to_string(space_dim) + ">");
+                 to_string(range) + ">");
 
-  out.begin_item("GridFunctionElement<" + to_string(sdim) + "," + to_string(space_dim) + ">");
+  out.begin_item("GridFunctionElement<" + to_string(sdim) + "," + to_string(range) + ">");
   parent_t::print_info(out);
   out.end_item();
 
-  out.begin_item("Sup-GridFunctionElement<" + to_string(dim) + "," + to_string(space_dim) + ">");
+  out.begin_item("Sup-GridFunctionElement<" + to_string(dim) + "," + to_string(range) + ">");
   sup_grid_func_element_->print_info(out);
   out.end_item();
 
@@ -157,9 +157,9 @@ print_info(LogStream &out) const
 
 
 
-template <int sdim,int dim,int space_dim>
-GridFunctionElement<dim,space_dim> &
-SubGridFunctionElement<sdim,dim,space_dim>::
+template <int sdim,int dim,int range>
+GridFunctionElement<dim,range> &
+SubGridFunctionElement<sdim,dim,range>::
 get_sup_grid_function_element()
 {
   return *sup_grid_func_element_;
