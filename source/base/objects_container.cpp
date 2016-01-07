@@ -311,7 +311,7 @@ print_info(LogStream &out) const
 
     out.begin_item("GridFunction"
                    " Dim : " + to_string(Type::dim) +
-                   " Spacedim : " + to_string(Type::space_dim) +
+                   " Spacedim : " + to_string(Type::range) +
                    ". Number of objects: " + to_string(objects.size()));
     for (const auto &object : objects)
     {
@@ -325,7 +325,7 @@ print_info(LogStream &out) const
 
     out.begin_item("const GridFunction"
                    " Dim : " + to_string(Type::dim) +
-                   " Spacedim : " + to_string(Type::space_dim) +
+                   " Spacedim : " + to_string(Type::range) +
                    ". Number of objects: " + to_string(objects.size()));
     for (const auto &object : const_objects)
     {
@@ -743,7 +743,7 @@ fill_not_inserted_dependencies()
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
     using GridType = typename Type::GridType;
-    using IgGridFuncType = IgGridFunction<Type::dim, Type::space_dim>;
+    using IgGridFuncType = IgGridFunction<Type::dim, Type::range>;
     using RefBasisType = typename IgGridFuncType::RefBasis;
 
     // Adding non-const objects.
@@ -801,7 +801,7 @@ fill_not_inserted_dependencies()
     using WeightFuncType = typename NURBSType::WeightFunction;
     using WeightFuncBasisType = typename WeightFuncType::RefBasis;
     using WeightFuncSpSpaceType = typename WeightFuncBasisType::SpSpace;
-    using GridFuncType = GridFunction<WeightFuncType::dim, WeightFuncType::space_dim>;
+    using GridFuncType = GridFunction<WeightFuncType::dim, WeightFuncType::range>;
 
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
@@ -1041,7 +1041,7 @@ serialize(Archive &ar)
 
     const string name = "grid_funcion_"
                         + to_string(Type::dim) + "_"
-                        + to_string(Type::space_dim);
+                        + to_string(Type::range);
 
     ar &make_nvp(name, at_key<Type>(objects_));
 

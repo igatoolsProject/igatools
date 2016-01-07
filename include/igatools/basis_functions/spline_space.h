@@ -476,7 +476,7 @@ public:
   public:
     using base_t::n_entries;
 
-    using  ComponentMap = SafeSTLArray<Index, n_entries>;
+    using ComponentMap = SafeSTLArray<Index,n_entries>;
 
     ComponentContainer(const ComponentMap &comp_map =
                          sequence<n_entries>());
@@ -543,7 +543,7 @@ public:
     void
     print_info(LogStream &out) const;
 
-    const SafeSTLArray <Index, n_entries> &get_comp_map() const;
+    const ComponentMap &get_comp_map() const;
 
     /**
      * Equality comparison operator.
@@ -553,7 +553,7 @@ public:
 
   private:
     /** For each component return the index of the active component */
-    SafeSTLArray<Index, n_entries> comp_map_;
+    ComponentMap comp_map_;
 
     /** list of the active components */
     SafeSTLVector<Index> active_components_id_;

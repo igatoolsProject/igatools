@@ -374,12 +374,12 @@ parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
       using GridFuncType = typename
                            remove_reference<decltype(cgf_ptr_type)>::type::element_type;
       static const int dim   = GridFuncType::dim;
-      static const int space_dim  = GridFuncType::space_dim;
+      static const int range  = GridFuncType::range;
 
-      if (cgf_dim == dim && cgf_space_dim == space_dim)
+      if (cgf_dim == dim && cgf_space_dim == range)
       {
         found = true;
-        parse_constant_grid_function<dim, space_dim>(cgf, parse_as_constant, id_map, container);
+        parse_constant_grid_function<dim, range>(cgf, parse_as_constant, id_map, container);
       }
     });
 
@@ -419,12 +419,12 @@ parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
       using GridFuncType = typename
                            remove_reference<decltype(cgf_ptr_type)>::type::element_type;
       static const int dim   = GridFuncType::dim;
-      static const int space_dim  = GridFuncType::space_dim;
+      static const int range  = GridFuncType::range;
 
-      if (cgf_dim == dim && cgf_space_dim == space_dim)
+      if (cgf_dim == dim && cgf_space_dim == range)
       {
         found = true;
-        parse_linear_grid_function<dim, space_dim>(cgf, parse_as_constant, id_map, container);
+        parse_linear_grid_function<dim, range>(cgf, parse_as_constant, id_map, container);
       }
     });
 
@@ -465,12 +465,12 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
       using GridFuncType = typename
                            remove_reference<decltype(gf_ptr_type)>::type::element_type;
       static const int dim   = GridFuncType::dim;
-      static const int space_dim   = GridFuncType::space_dim;
+      static const int range = GridFuncType::range;
 
-      if (gf_dim == dim && gf_space_dim == space_dim)
+      if (gf_dim == dim && gf_space_dim == range)
       {
         found = true;
-        parse_ig_grid_function<dim, space_dim>(gf, parse_as_constant, first_parsing, id_map, container);
+        parse_ig_grid_function<dim, range>(gf, parse_as_constant, first_parsing, id_map, container);
       }
     });
 
@@ -996,8 +996,8 @@ parse_spline_space(const shared_ptr<XMLElement> xml_elem,
                              to_string(dir) + " defined more than once."));
       parsed_dirs.insert(dir);
 
-      const auto mults = im->get_values_vector<Index>();
-      mult_table[comp_id].copy_data_direction(dir, mults);
+      auto &mults = mult_table[comp_id][dir];
+      mults = im->get_values_vector<Index>();
       const auto size = im->get_attribute<int>("Size");
 
       // Checking that the specified size matches with the actual vector size.

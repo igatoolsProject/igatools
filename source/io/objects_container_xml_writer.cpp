@@ -199,12 +199,12 @@ write_grid_functions(const ContPtr_ container,
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
 
     static const int dim = Type::dim;
-    static const int space_dim = Type::space_dim;
+    static const int range = Type::range;
 
     using IdGridFunc = grid_functions::IdentityGridFunction<dim>;
-    using LinearGridFunc = grid_functions::LinearGridFunction<dim, space_dim>;
-    using ConstantGridFunc = grid_functions::ConstantGridFunction<dim, space_dim>;
-    using IgGridFunc = IgGridFunction<dim, space_dim>;
+    using LinearGridFunc = grid_functions::LinearGridFunction<dim, range>;
+    using ConstantGridFunc = grid_functions::ConstantGridFunction<dim, range>;
+    using IgGridFunc = IgGridFunction<dim, range>;
 
     for (const auto &id : container->template get_object_ids<Type>())
     {
@@ -464,7 +464,7 @@ write_spline_space(const shared_ptr<SpSpace> spline_space,
     const auto int_mults = xml_doc->create_new_element("InteriorMultiplicities");
     for (int dir = 0; dir < dim; ++dir)
     {
-      const auto &mult_dir = mults.get_data_direction(dir);
+      const auto &mult_dir = mults[dir];
       const auto int_mult_elem =
         xml_doc->create_vector_element("InteriorMultiplicities",
                                        mult_dir);
@@ -629,12 +629,12 @@ write_constant_grid_function(const shared_ptr<ConstGridFunc> const_func,
 {
   const auto obj_elem = xml_doc->create_new_element("ConstantGridFunction");
 
-  static const int dim         = ConstGridFunc::dim;
-  static const int space_dim   = ConstGridFunc::space_dim;
+  static const int dim     = ConstGridFunc::dim;
+  static const int range   = ConstGridFunc::range;
 
   obj_elem->add_attribute("LocalObjectId", const_func->get_object_id());
   obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("SpaceDim", space_dim);
+  obj_elem->add_attribute("SpaceDim", range);
 
   const auto grid_elem = xml_doc->create_new_element("Grid");
   grid_elem->add_attribute("GetFromLocalObjectId",
@@ -668,12 +668,12 @@ write_linear_grid_function(const shared_ptr<LinearGridFunc> linear_func,
 {
   const auto obj_elem = xml_doc->create_new_element("LinearGridFunction");
 
-  static const int dim         = LinearGridFunc::dim;
-  static const int space_dim   = LinearGridFunc::space_dim;
+  static const int dim     = LinearGridFunc::dim;
+  static const int range   = LinearGridFunc::range;
 
   obj_elem->add_attribute("LocalObjectId", linear_func->get_object_id());
   obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("SpaceDim", space_dim);
+  obj_elem->add_attribute("SpaceDim", range);
 
   const auto grid_elem = xml_doc->create_new_element("Grid");
   grid_elem->add_attribute("GetFromLocalObjectId",
@@ -713,12 +713,12 @@ write_ig_grid_function(const shared_ptr<IgGridFunc> ig_func,
 {
   const auto obj_elem = xml_doc->create_new_element("IgGridFunction");
 
-  static const int dim         = IgGridFunc::dim;
-  static const int space_dim   = IgGridFunc::space_dim;
+  static const int dim     = IgGridFunc::dim;
+  static const int range   = IgGridFunc::range;
 
   obj_elem->add_attribute("LocalObjectId", ig_func->get_object_id());
   obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("SpaceDim", space_dim);
+  obj_elem->add_attribute("SpaceDim", range);
 
   const auto rb_elem = xml_doc->create_new_element("ReferenceSpaceBasis");
   rb_elem->add_attribute("GetFromLocalObjectId",

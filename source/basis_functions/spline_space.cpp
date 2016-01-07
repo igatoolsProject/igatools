@@ -206,7 +206,7 @@ template<class T>
 auto
 SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
-get_comp_map() const -> const SafeSTLArray <Index,n_entries> &
+get_comp_map() const -> const ComponentMap &
 {
   return comp_map_;
 }
@@ -823,7 +823,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 #ifndef NDEBUG
   for (auto iComp : components)
   {
-	const auto &bndry_knots_comp = boundary_knots[iComp];
+    const auto &bndry_knots_comp = boundary_knots[iComp];
     for (const int j : UnitElement<dim_>::active_directions)
     {
       const auto &l_knots = bndry_knots_comp[j][0];
@@ -971,7 +971,7 @@ get_sub_space_mult(const Index sub_elem_id) const
   auto sub_mult = SubMultT(v_mult.get_comp_map());
   for (int comp : sub_mult.get_active_components_id())
   {
-	const auto &v_mult_comp = v_mult[comp];
+    const auto &v_mult_comp = v_mult[comp];
     for (int j=0; j<k; ++j)
       sub_mult[comp][j] = v_mult_comp[active_dirs[j]];
   }
@@ -1228,11 +1228,11 @@ get_active_components_id() const -> SafeSTLVector<Index>
 {
   SafeSTLSet<int> tmp;
   tmp.insert(interior_mult_.get_active_components_id().begin(),
-		     interior_mult_.get_active_components_id().end());
+  interior_mult_.get_active_components_id().end());
   tmp.insert(deg_.get_active_components_id().begin(),
-		     deg_.get_active_components_id().end());
+  deg_.get_active_components_id().end());
   tmp.insert(periodic_.get_active_components_id().begin(),
-		     periodic_.get_active_components_id().end());
+  periodic_.get_active_components_id().end());
 
   SafeSTLVector<int> active_components_id(tmp.begin(),tmp.end());
   return active_components_id;
