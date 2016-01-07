@@ -1291,7 +1291,7 @@ parse_identity_grid_function(const shared_ptr<XMLElement> xml_elem,
 
 
 
-template <int dim, int space_dim>
+template <int dim, int range>
 void
 ObjectsContainerXMLReader::
 parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
@@ -1304,19 +1304,19 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
 
   Assert(xml_elem->get_attribute<int>("Dim") == dim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("SpaceDim") == space_dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("SpaceDim"), space_dim));
+  Assert(xml_elem->get_attribute<int>("Range") == range,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
 
   using GridType = Grid<dim>;
-  using ConstGridFunctionType = grid_functions::ConstantGridFunction<dim, space_dim>;
-  using GridFunctionType = GridFunction<dim, space_dim>;
+  using ConstGridFunctionType = grid_functions::ConstantGridFunction<dim,range>;
+  using GridFunctionType = GridFunction<dim,range>;
   using Values = typename GridFunctionType::Value;
 
   const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
-  local_object_id, {{dim, space_dim}});
+  local_object_id, {{dim, range}});
 
   // Gettting grid.
   const auto gr_tag = xml_elem->get_single_element("Grid");
@@ -1371,7 +1371,7 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
 
 
 
-template <int dim, int space_dim>
+template <int dim, int range>
 void
 ObjectsContainerXMLReader::
 parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
@@ -1384,12 +1384,12 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
 
   Assert(xml_elem->get_attribute<int>("Dim") == dim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("SpaceDim") == space_dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("SpaceDim"), space_dim));
+  Assert(xml_elem->get_attribute<int>("Range") == range,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
 
   using GridType = Grid<dim>;
-  using LinearGridFunctionType = grid_functions::LinearGridFunction<dim, space_dim>;
-  using GridFunctionType = GridFunction<dim, space_dim>;
+  using LinearGridFunctionType = grid_functions::LinearGridFunction<dim,range>;
+  using GridFunctionType = GridFunction<dim,range>;
   using Values = typename LinearGridFunctionType::Value;
   using Ders = typename LinearGridFunctionType::template Derivative<1>;
 
@@ -1397,7 +1397,7 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
-  local_object_id, {{dim, space_dim}});
+  local_object_id, {{dim, range}});
 
   // Gettting grid.
   const auto gr_tag = xml_elem->get_single_element("Grid");
@@ -1463,7 +1463,7 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
 
 
 
-template <int dim, int space_dim>
+template <int dim, int range>
 void
 ObjectsContainerXMLReader::
 parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
@@ -1477,13 +1477,13 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
 
   Assert(xml_elem->get_attribute<int>("Dim") == dim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("SpaceDim") == space_dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("SpaceDim"), space_dim));
+  Assert(xml_elem->get_attribute<int>("Range") == range,
+         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
 
   static const int rank = 1;
-  using IgGridFunctionType = IgGridFunction<dim, space_dim>;
-  using GridFunctionType = GridFunction<dim, space_dim>;
-  using RefSpaceType     = ReferenceSpaceBasis<dim, space_dim, rank>;
+  using IgGridFunctionType = IgGridFunction<dim, range>;
+  using GridFunctionType = GridFunction<dim, range>;
+  using RefSpaceType     = ReferenceSpaceBasis<dim, range, rank>;
 
   const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
 
@@ -1499,7 +1499,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
-  local_object_id, {{dim, space_dim}});
+  local_object_id, {{dim, range}});
 
   const auto rs_tag = xml_elem->get_single_element("ReferenceSpaceBasis");
   const auto local_rs_id = rs_tag->get_attribute<Index>("GetFromLocalObjectId");
@@ -1526,7 +1526,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
                   ExcMessage("Parsing " + parsing_msg + " not matching "
                              "definition for " +
                              Self_::get_type_id_string("ReferenceSpaceBasis", local_rs_id,
-    {{dim, space_dim, rank}}) + "."));
+    {{dim, range, rank}}) + "."));
 
   }
 
@@ -1546,7 +1546,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
               ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
                          dofs_property + "\" not defined for " +
                          Self_::get_type_id_string("ReferenceSpaceBasis", local_rs_id,
-  {{dim, space_dim, rank}}) + "."));
+  {{dim, range, rank}}) + "."));
 
   const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
   const auto ig_coefs = parse_ig_coefficients(xml_elem, parsing_msg, global_dofs);
