@@ -144,6 +144,48 @@ private:
               typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
   };
 
+
+
+  template <class T, class Domain>
+  struct IsInValidFunctionForDomain_ :
+          boost::mpl::or_<
+          boost::mpl::bool_<(T::dim != Domain::dim)>,
+          boost::mpl::bool_<(T::space_dim != Domain::space_dim)>>
+          {};
+
+  template <class T, class Domain>
+  struct IsInValidGridFunctionForDomain_ :
+          boost::mpl::or_<
+          boost::mpl::bool_<(T::dim != Domain::dim)>,
+          boost::mpl::bool_<(Domain::space_dim != Domain::dim)>>
+          {};
+
+public:
+  /**
+   * Valid functions for a given domain.
+   */
+  template <class Domain>
+  using ValidFuncsForDomain = typename boost::fusion::result_of::as_vector<
+          typename boost::mpl::transform<
+            typename boost::mpl::remove_if<
+              InstantiatedTypes::Functions,
+              typename boost::mpl::lambda< IsInValidFunctionForDomain_< boost::mpl::_1, Domain > >::type>::type,
+            std::shared_ptr<boost::mpl::_1>>::type>::type;
+
+  /**
+   * Valid grid functions for a given domain.
+   */
+  template <class Domain>
+  using ValidGridFuncsForDomain = typename boost::fusion::result_of::as_vector<
+          typename boost::mpl::transform<
+            typename boost::mpl::remove_if<
+              InstantiatedTypes::GridFunctions,
+              typename boost::mpl::lambda< IsInValidGridFunctionForDomain_< boost::mpl::_1, Domain > >::type>::type,
+            std::shared_ptr<boost::mpl::_1>>::type>::type;
+
+private:
+
+
   /**
    * Basic container for grid generators.
    */

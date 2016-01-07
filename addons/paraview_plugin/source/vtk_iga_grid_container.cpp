@@ -252,7 +252,13 @@ void
 VtkIgaGridContainer::
 set_names()
 {
+  // Dummy objects, just for iterate dynamically over all the types.
   FunctionPtrs_ valid_f_ptr_types;
+  DomainPtrs_ valid_d_ptr_types;
+  GridFuncPtrs_ valid_gf_ptr_types;
+  GridPtrs_ valid_g_ptr_types;
+
+
   for_each(valid_f_ptr_types, [&](const auto &ptr_type)
   {
     using FunctionType = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -288,27 +294,30 @@ set_names()
     }
   });
 
+
   std::set<string> domain_names;
 
-  DomainPtrs_ valid_d_ptr_types;
   for_each(valid_d_ptr_types, [&](const auto &ptr_type)
   {
     using DomainType = typename remove_reference<decltype(ptr_type)>::type::element_type;
     using GridFuncType = typename DomainType::GridFuncType;
     using GridType = typename GridFuncType::GridType;
+    using ValidFuncPtrs_ = ValidFuncsForDomain<DomainType>;
+
+    ValidFuncPtrs_ valid_fd_ptr_types;
 
     for (const auto &id : objs_container_->template get_const_object_ids<DomainType>())
     {
-        const auto domain = const_pointer_cast<DomainType>(
-                objs_container_->template get_const_object<DomainType>(id));
+        const auto domain = const_pointer_cast<DomainType>(objs_container_->template get_const_object<DomainType>(id));
 
         if (domain->get_name() == "")
             domain->set_name("Domain Id=" + to_string(domain->get_object_id()));
-        else if (domain_names.count(domain->get_name()) > 0)
+
+        if (domain_names.find(domain->get_name()) != domain_names.cend())
         {
             Index i = 1;
             string name = domain->get_name() + " (" + to_string(++i) + ")";
-            while (domain_names.count(name) > 0)
+            while(domain_names.find(name) != domain_names.cend())
             {
                 name = domain->get_name() + " (" + to_string(++i) + ")";
             }
@@ -325,10 +334,42 @@ set_names()
 
         if (grid->get_name() == "")
             grid->set_name("Grid of the Domain \"" + domain->get_name() + "\"");
+
+        // Checking for repeated function names associated to this domain.
+        std::set<string> function_names;
+
+        for_each(valid_fd_ptr_types, [&](const auto &f_ptr_type)
+        {
+            using FunctionType = typename remove_reference<decltype(f_ptr_type)>::type::element_type;
+
+            for (const auto &f_id : objs_container_->template get_const_object_ids<FunctionType>())
+            {
+                const auto function = const_pointer_cast<FunctionType>(objs_container_->template get_const_object<FunctionType>(f_id));
+                const auto &name = function->get_name();
+
+                if (function->get_domain() == domain)
+                {
+                    if (function_names.find(name) != function_names.cend())
+                    {
+                        Index i = 1;
+                        string new_name = name + " (" + to_string(++i) + ")";
+                        while (function_names.find(new_name) != function_names.cend())
+                        {
+                            new_name = name + " (" + to_string(++i) + ")";
+                        }
+
+                        function->set_name(new_name);
+                    }
+
+                    function_names.insert(function->get_name());
+                }
+            }
+
+        });
+
     }
   });
 
-  GridFuncPtrs_ valid_gf_ptr_types;
   for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
   {
     using GridFuncType = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -348,12 +389,15 @@ set_names()
     }
   });
 
+
   std::set<string> grid_names;
 
-  GridPtrs_ valid_g_ptr_types;
   for_each(valid_g_ptr_types, [&](const auto &ptr_type)
   {
     using GridType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+    using ValidGridFuncPtrs_ = ValidGridFuncsForDomain<Domain<GridType::dim, 0>>;
+
+    ValidGridFuncPtrs_ valid_gfd_ptr_types;
 
     for (const auto &id : objs_container_->template get_const_object_ids<GridType>())
     {
@@ -362,11 +406,12 @@ set_names()
 
         if (grid->get_name() == "")
             grid->set_name("Grid Id=" + to_string(grid->get_object_id()));
-        else if (grid_names.count(grid->get_name()) > 0)
+
+        if (grid_names.find(grid->get_name()) != grid_names.cend())
         {
             Index i = 1;
             string name = grid->get_name() + " (" + to_string(++i) + ")";
-            while (grid_names.count(name) > 0)
+            while (grid_names.find(name) != grid_names.cend())
             {
                 name = grid->get_name() + " (" + to_string(++i) + ")";
             }
@@ -374,6 +419,38 @@ set_names()
         }
 
         grid_names.insert(grid->get_name());
+
+        // Checking for repeated function names associated to this grid.
+        std::set<string> grid_func_names;
+
+        for_each(valid_gfd_ptr_types, [&](const auto &f_ptr_type)
+        {
+            using GridFuncType = typename remove_reference<decltype(f_ptr_type)>::type::element_type;
+
+            for (const auto &gf_id : objs_container_->template get_const_object_ids<GridFuncType>())
+            {
+                const auto grid_func = const_pointer_cast<GridFuncType>(objs_container_->template get_const_object<GridFuncType>(gf_id));
+                const auto &name = grid_func->get_name();
+
+                if (grid_func->get_grid() == grid)
+                {
+                    if (grid_func_names.find(name) != grid_func_names.cend())
+                    {
+                        Index i = 1;
+                        string new_name = name + " (" + to_string(++i) + ")";
+                        while (grid_func_names.find(new_name) != grid_func_names.cend())
+                        {
+                            new_name = name + " (" + to_string(++i) + ")";
+                        }
+
+                        grid_func->set_name(new_name);
+                    }
+
+                    grid_func_names.insert(grid_func->get_name());
+                }
+            }
+
+        });
     }
   });
 }

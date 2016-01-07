@@ -25,13 +25,11 @@
 #include <igatools/base/tensor.h>
 #include <igatools/utils/safe_stl_vector.h>
 #include <igatools/utils/tensor_size.h>
+#include <paraview_plugin/vtk_iga_grid_container.h>
 
 #include <igatools/base/objects_container.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/functions/function.h>
-
-#include <boost/mpl/lambda.hpp>
-#include <boost/mpl/remove_if.hpp>
 
 class vtkPointSet;
 class vtkPoints;
@@ -249,39 +247,15 @@ private:
    */
   typedef typename std::shared_ptr<ObjectsContainer> ObjContPtr_t_;
 
-  template <class T>
-  struct IsInValidFunction :
-          boost::mpl::or_<
-          boost::mpl::bool_<(T::dim != Domain::dim)>,
-          boost::mpl::bool_<(T::space_dim != Domain::space_dim)>>
-          {};
-
-  template <class T>
-  struct IsInValidGridFunction :
-          boost::mpl::or_<
-          boost::mpl::bool_<(T::dim != Domain::dim)>,
-          boost::mpl::bool_<(Domain::space_dim != Domain::dim)>>
-          {};
-
   /**
    * Valid functions.
    */
-  using ValidFuncs_ = typename boost::fusion::result_of::as_vector<
-          typename boost::mpl::transform<
-            typename boost::mpl::remove_if<
-              InstantiatedTypes::Functions,
-              typename boost::mpl::lambda< IsInValidFunction< boost::mpl::_1 > >::type>::type,
-            std::shared_ptr<boost::mpl::_1>>::type>::type;
+  using ValidFuncs_ = VtkIgaGridContainer::ValidFuncsForDomain<Domain>;
 
   /**
    * Valid grid functions.
    */
-  using ValidGridFuncs_ = typename boost::fusion::result_of::as_vector<
-          typename boost::mpl::transform<
-            typename boost::mpl::remove_if<
-              InstantiatedTypes::GridFunctions,
-              typename boost::mpl::lambda< IsInValidGridFunction< boost::mpl::_1 > >::type>::type,
-            std::shared_ptr<boost::mpl::_1>>::type>::type;
+  using ValidGridFuncs_ = VtkIgaGridContainer::ValidGridFuncsForDomain<Domain>;
 
   /**
    * Constructor, copy and assignment operators not allowed to be used.
