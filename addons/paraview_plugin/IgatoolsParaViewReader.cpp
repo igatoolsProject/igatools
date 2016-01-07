@@ -207,9 +207,8 @@ parse_file()
         std::ifstream xml_istream(file_name_str);
         IArchive xml_in(xml_istream);
         xml_in >> container_new;
-        xml_in.close();
       }
-      objs_container_ = container_new;
+      objs_container_ = std::make_shared<ObjectsContainer>(container_new);
 
       AssertThrow(!objs_container_->is_void(),
                   ExcMessage("No objects defined in the input file or "
