@@ -69,6 +69,68 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
 
 
 
+const char *
+IgatoolsParaViewReader::
+GetClassNameInternal() const
+{
+    return "IgatoolsParaViewReader";
+}
+
+
+
+int
+IgatoolsParaViewReader::
+IsTypeOf(const char *type)
+{
+    if ( !strcmp("IgatoolsParaViewReader", type) )
+    {
+        return 1;
+    }
+    return vtkMultiBlockDataSetAlgorithm::IsTypeOf(type);
+}
+
+
+
+int
+IgatoolsParaViewReader::
+IsA(const char *type)
+{
+    return this->IgatoolsParaViewReader::IsTypeOf(type);
+}
+
+
+
+IgatoolsParaViewReader *
+IgatoolsParaViewReader::
+SafeDownCast(vtkObjectBase *o)
+{
+    if ( o && o->IsA("IgatoolsParaViewReader") )
+    {
+        return static_cast<IgatoolsParaViewReader *>(o); \
+    }
+    return NULL;
+}
+
+
+
+IgatoolsParaViewReader *
+IgatoolsParaViewReader::
+NewInstance() const
+{
+    return IgatoolsParaViewReader::SafeDownCast(this->NewInstanceInternal());
+}
+
+
+
+vtkObjectBase *
+IgatoolsParaViewReader::
+NewInstanceInternal() const
+{
+    return IgatoolsParaViewReader::New();
+}
+
+
+
 int IgatoolsParaViewReader::RequestInformation(
   vtkInformation *vtkNotUsed(request),
   vtkInformationVector **vtkNotUsed(inputVector),

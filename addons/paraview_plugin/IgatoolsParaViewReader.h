@@ -27,6 +27,7 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_size.h>
 
+class vtkObjectBase;
 
 /** Forward declarations. */
 
@@ -185,7 +186,54 @@ public:
   static IgatoolsParaViewReader *New();
 
   /** Required by the ParaView plugin. */
-  vtkTypeMacro(IgatoolsParaViewReader, vtkMultiBlockDataSetAlgorithm);
+
+private:
+  /**
+   * Retrieves the class name.
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  virtual const char *GetClassNameInternal() const override final;
+
+public:
+  /**
+   * Returns true if the class is of the given type.
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  static int IsTypeOf(const char *type);
+
+  /**
+   * Returns true if the class is of the given type.
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  virtual int IsA(const char *type) override final;
+
+  /**
+   * Performs a safe down cast from a @ref vtkObjectBase to the current
+   * type.
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  static IgatoolsParaViewReader* SafeDownCast(vtkObjectBase *o);
+
+
+  /**
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  IgatoolsParaViewReader *NewInstance() const;
+
+protected:
+
+  /**
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  virtual vtkObjectBase *NewInstanceInternal() const override final;
+
+public:
 
   /**
    * Prints the information of the class in the stream @p using the
