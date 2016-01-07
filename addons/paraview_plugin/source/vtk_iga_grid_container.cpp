@@ -288,6 +288,8 @@ set_names()
     }
   });
 
+  std::set<string> domain_names;
+
   DomainPtrs_ valid_d_ptr_types;
   for_each(valid_d_ptr_types, [&](const auto &ptr_type)
   {
@@ -302,6 +304,18 @@ set_names()
 
         if (domain->get_name() == "")
             domain->set_name("Domain Id=" + to_string(domain->get_object_id()));
+        else if (domain_names.count(domain->get_name()) > 0)
+        {
+            Index i = 1;
+            string name = domain->get_name() + " (" + to_string(++i) + ")";
+            while (domain_names.count(name) > 0)
+            {
+                name = domain->get_name() + " (" + to_string(++i) + ")";
+            }
+            domain->set_name(name);
+        }
+
+        domain_names.insert(domain->get_name());
 
         const auto grid_func = const_pointer_cast<GridFuncType>(domain->get_grid_function());
         const auto grid = const_pointer_cast<GridType>(grid_func->get_grid());
@@ -334,6 +348,8 @@ set_names()
     }
   });
 
+  std::set<string> grid_names;
+
   GridPtrs_ valid_g_ptr_types;
   for_each(valid_g_ptr_types, [&](const auto &ptr_type)
   {
@@ -346,6 +362,18 @@ set_names()
 
         if (grid->get_name() == "")
             grid->set_name("Grid Id=" + to_string(grid->get_object_id()));
+        else if (grid_names.count(grid->get_name()) > 0)
+        {
+            Index i = 1;
+            string name = grid->get_name() + " (" + to_string(++i) + ")";
+            while (grid_names.count(name) > 0)
+            {
+                name = grid->get_name() + " (" + to_string(++i) + ")";
+            }
+            grid->set_name(name);
+        }
+
+        grid_names.insert(grid->get_name());
     }
   });
 }
