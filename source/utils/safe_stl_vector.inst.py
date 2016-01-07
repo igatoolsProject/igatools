@@ -24,7 +24,8 @@ include_files = ['utils/tensor_index.h',
                  'basis_functions/bernstein_extraction.h',
                  'basis_functions/values1d_const_view.h',
                  'basis_functions/nurbs.h',
-                 'utils/concatenated_iterator.h']
+                 'utils/concatenated_iterator.h',
+                 'io/writer.h']
 data = Instantiation(include_files)
 f = data.file_output
 inst = data.inst
@@ -79,6 +80,30 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 classes.append('ConstView<std::vector<int>::iterator,std::vector<int>::const_iterator>')
 classes.append('ConstView<std::vector<int>::iterator,std::vector<int>::iterator>')
 classes.append('NonConstView<std::vector<int>::iterator,std::vector<int>::const_iterator>')
+
+# Needed for writer --------------------------------------------------------------#
+
+for dims in inst.dims_list:
+    classes.append('SafeSTLArray<int,%d>' % (pow(2, dims.dim)))
+    classes.append('SafeSTLArray<int,%d>' % (dims.dim))
+    classes.append('SafeSTLVector<SafeSTLArray<int,%d>>' % (pow(2, dims.dim)))
+    classes.append('SafeSTLVector<SafeSTLArray<int,%d>>' % (dims.dim))
+
+for x in inst.mapping_dims:
+    writer_types = ['double']
+    for writer_t in writer_types:
+        classes.append('Writer<%d,%d,%s>::PointData' % (x.dim, x.codim, writer_t))
+        for writer_t_2 in writer_types + ['int']:
+          classes.append('Writer<%d,%d,%s>::CellData<%s>' % (x.dim, x.codim, writer_t, writer_t_2))
+
+classes.append('SafeSTLVector<SafeSTLArray<double,3>>')
+# classes.append('float')
+# classes.append('SafeSTLArray<float,3>')
+# classes.append('SafeSTLVector<SafeSTLArray<float,3>>')
+classes.append('SafeSTLVector<SafeSTLVector<double>>')
+#----------------------------------------------------------------------------------#
+
+classes.append('std::string')
 
 
 

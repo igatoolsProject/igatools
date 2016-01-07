@@ -126,7 +126,8 @@ test()
 //    writer.add_field(tensor_function,"tensor_function");
 
   string filename = "grid_dim" + to_string(dim);
-  writer.save(filename, true);
+  writer.save(filename, "ascii");
+  writer.save(filename + "_bin", "appended");
   writer.print_info(out);
 
   out.end_item();

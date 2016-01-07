@@ -22,9 +22,6 @@
 #define WRITER_H_
 
 #include <igatools/base/config.h>
-
-#ifdef XML_IO
-
 #include <igatools/geometry/grid.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/unit_element.h>
@@ -37,8 +34,6 @@
 #include <string>
 
 IGA_NAMESPACE_OPEN
-
-class XMLDocument;
 
 
 template <int dim_, int range_, int rank_ , int codim_>
@@ -97,12 +92,11 @@ public:
   /**
    * Save the data on a .vtu file.
    * \param[in] filename - Output file name.
-   * @param[in] pretty_print Flag indicating if the file must
-   * written with a pretty print format.
+   * \param[in] format - Output format. It can be "ascii" or "appended".
    * \note The .vtu extension should NOT part of the file name.
    */
   void save(const std::string &filename,
-            const bool pretty_print = false) const;
+            const std::string &format = "ascii") const;
 
 
   /**
@@ -335,16 +329,21 @@ private:
     SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
     SafeSTLVector< SafeSTLArray<T,3> > &points_phys_iga_element) const;
 
-  /**
-   * Writes the VTK output document wrapped into a @ref XMLDocument.
-   * @param[in] points_in_iga_elements Coordinates of the points of the VTK grid.
-   * @param[in] vtk_elements_connectivity Connectivity of VTK grid.
-   * @return XML document containing the VTK grid.
-   */
-  std::shared_ptr<XMLDocument>
-      save_xml(const SafeSTLVector<SafeSTLVector<SafeSTLArray<T,3> > > &points_in_iga_elements,
-               const SafeSTLVector<SafeSTLVector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
-               &vtk_elements_connectivity) const;
+
+
+  template<class Out>
+  void save_ascii(Out &file,
+                  const SafeSTLVector<SafeSTLVector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+                  const SafeSTLVector<SafeSTLVector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
+                  &vtk_elements_connectivity) const;
+
+
+  void save_appended(const std::string &filename,
+                     const SafeSTLVector<SafeSTLVector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+                     const SafeSTLVector<SafeSTLVector<SafeSTLArray< int,n_vertices_per_vtk_element_> > >
+                     &vtk_elements_connectivity) const;
+
+
 
 };
 
@@ -546,7 +545,5 @@ add_field(const GridFunction<dim,range> &func,
 
 
 IGA_NAMESPACE_CLOSE
-
-#endif /* XML_IO */
 
 #endif /* WRITER_H_ */

@@ -1025,7 +1025,7 @@ parse_spline_space(const shared_ptr<XMLElement> xml_elem,
     if (comp_elem->has_element("Periodicity"))
     {
       const auto periodic_vector = comp_elem->
-                                   get_single_element("Periodicity")->get_values_vector<bool>();
+                                   get_single_element("Periodicity")->get_boolean_vector();
 
       // Checking the dimensions of the periodicities vector.
       AssertThrow(periodic_vector.size() == dim,
