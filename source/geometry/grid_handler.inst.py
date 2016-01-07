@@ -26,45 +26,35 @@ data = Instantiation(include_files)
 
 
 
-sub_dim_members = [
-                   'void GridHandler<dim>::fill_cache<k>(ElementAccessor &elem, const int j) const;',
-             'void GridHandler<dim>::init_cache<k>(ElementAccessor &elem,std::shared_ptr<const Quadrature<k>> quad) const;',
-             'void GridHandler<dim>::set_flags<k>(const Flags &flag);']
 
-handlers = []
-for dim in inst.sub_domain_dims:
-    gh = 'GridHandler<%d>' %(dim)
-    handlers.append(gh)
-    f.write('template class %s; \n' %(gh))
-    for fun in sub_dim_members:
-        for k in range(0,dim+1):
-            s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
-            f.write('template ' + s + '\n')
+handlers = set()
+handler_funcs = set()
 
-for dim in inst.domain_dims:
-    gh = 'GridHandler<%d>' %(dim) 
-    handlers.append(gh)
-    f.write('template class %s; \n' %(gh))
-    for fun in sub_dim_members:
-        for k in range(0,dim+1):
-            s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
-            f.write('template ' + s + '\n')
+for dim in inst.sub_domain_dims + inst.domain_dims:
+    handler = 'GridHandler<%d>' %(dim)
+    handlers.add(handler)
+    for k in range(0,dim+1):
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::set_flags<%d>(const Flags &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::init_cache<%d>(ElementAccessor &,const std::shared_ptr<const Quadrature<%d>> &) const' % (handler,k,k)
+        handler_funcs.add(func)
+        func = 'void %s::init_cache<%d>(ElementIterator &,const std::shared_ptr<const Quadrature<%d>> &) const' % (handler,k,k)
+        handler_funcs.add(func)
+        func = 'void %s::fill_cache<%d>(ElementAccessor &,const int) const' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::fill_cache<%d>(ElementIterator &,const int) const' % (handler,k)
+        handler_funcs.add(func)
 
 
 
-#---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
- 
-#f.write('#ifdef SERIALIZATION\n')
-#id = 0 
-#for gh in unique(handlers):
-#    alias = 'GridHandlerAlias%d' %(id)
-#    f.write('using %s = iga::%s; \n' % (alias, gh))
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-#    id += 1 
-#f.write('#endif // SERIALIZATION\n')
-     
-f.write('IGA_NAMESPACE_OPEN\n')
-#---------------------------------------------------
+for handler in handlers:
+    f.write('template class %s;\n' %(handler))
+    
+for func in handler_funcs:
+    f.write('template %s;\n' %(func))

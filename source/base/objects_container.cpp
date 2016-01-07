@@ -311,7 +311,7 @@ print_info(LogStream &out) const
 
     out.begin_item("GridFunction"
                    " Dim : " + to_string(Type::dim) +
-                   " Spacedim : " + to_string(Type::space_dim) +
+                   " Spacedim : " + to_string(Type::range) +
                    ". Number of objects: " + to_string(objects.size()));
     for (const auto &object : objects)
     {
@@ -325,7 +325,7 @@ print_info(LogStream &out) const
 
     out.begin_item("const GridFunction"
                    " Dim : " + to_string(Type::dim) +
-                   " Spacedim : " + to_string(Type::space_dim) +
+                   " Spacedim : " + to_string(Type::range) +
                    ". Number of objects: " + to_string(objects.size()));
     for (const auto &object : const_objects)
     {
@@ -445,6 +445,163 @@ print_info(LogStream &out) const
     }
     out.end_item();
   });
+}
+
+
+
+bool
+ObjectsContainer::
+is_void() const
+{
+  bool is_container_not_void = false;
+
+  GridPtrs valid_grid_ptr_types;
+  for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+      return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+  });
+
+  if (is_container_not_void)
+    return false;
+
+
+  // Spline spaces
+  SpSpacePtrs valid_ssp_ptr_types;
+  for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+      return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+  });
+
+  if (is_container_not_void)
+    return false;
+
+
+  // Reference space basis
+  RefSpacePtrs valid_rsp_ptr_types;
+  for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+      return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+  });
+
+  if (is_container_not_void)
+    return false;
+
+
+  // Grid functions
+  GridFuncPtrs valid_gf_ptr_types;
+  for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+      return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+  });
+
+  if (is_container_not_void)
+    return false;
+
+
+  // Domains
+  DomainPtrs valid_dm_ptr_types;
+  for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+      return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+  });
+
+  if (is_container_not_void)
+    return false;
+
+
+  // Physical space basis
+  PhysSpacePtrs valid_ps_ptr_types;
+  for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+      return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+  });
+
+  if (is_container_not_void)
+    return false;
+
+
+  // Function
+  FunctionPtrs valid_fn_ptr_types;
+  for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
+  {
+    if (is_container_not_void)
+      return;
+
+    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    is_container_not_void = at_key<Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+
+    is_container_not_void = at_key<const Type>(objects_).size() > 0;
+    if (is_container_not_void)
+      return;
+  });
+
+  if (is_container_not_void)
+    return false;
+  else
+    return true;
+
 }
 
 
@@ -586,7 +743,7 @@ fill_not_inserted_dependencies()
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
     using GridType = typename Type::GridType;
-    using IgGridFuncType = IgGridFunction<Type::dim, Type::space_dim>;
+    using IgGridFuncType = IgGridFunction<Type::dim, Type::range>;
     using RefBasisType = typename IgGridFuncType::RefBasis;
 
     // Adding non-const objects.
@@ -644,7 +801,7 @@ fill_not_inserted_dependencies()
     using WeightFuncType = typename NURBSType::WeightFunction;
     using WeightFuncBasisType = typename WeightFuncType::RefBasis;
     using WeightFuncSpSpaceType = typename WeightFuncBasisType::SpSpace;
-    using GridFuncType = GridFunction<WeightFuncType::dim, WeightFuncType::space_dim>;
+    using GridFuncType = GridFunction<WeightFuncType::dim, WeightFuncType::range>;
 
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
@@ -884,7 +1041,7 @@ serialize(Archive &ar)
 
     const string name = "grid_funcion_"
                         + to_string(Type::dim) + "_"
-                        + to_string(Type::space_dim);
+                        + to_string(Type::range);
 
     ar &make_nvp(name, at_key<Type>(objects_));
 

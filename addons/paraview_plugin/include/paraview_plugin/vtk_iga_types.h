@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef TYPES_H_
-#define TYPES_H_
+#ifndef __VTK_IGA_TYPES_H_
+#define __VTK_IGA_TYPES_H_
 
 #include <igatools/base/config.h>
 
@@ -28,15 +28,15 @@ IGA_NAMESPACE_OPEN
 /**
 * Bit field flags for specifying which VTK grid type must be used.
 */
-enum class vtkGridType : std::int64_t
+enum class VtkGridType : std::int64_t
 {
   /** VTK structured grid */
-  Structured          =    1 << 0,
+  Structured             = 1 << 0,
 
-  /** VTK unstructure grid with linear cells */
-  UnstructuredLinear  =    1 << 1,
+  /** VTK unstructured grid with linear cells */
+  UnstructuredLinear     = 1 << 1,
 
-  /** VTK unstructure grid with quadratic cells */
+  /** VTK unstructured grid with quadratic cells */
   UnstructuredQuadratic  = 1 << 2,
 
   /** None */
@@ -45,4 +45,4 @@ enum class vtkGridType : std::int64_t
 
 IGA_NAMESPACE_CLOSE
 
-#endif // TYPES_H_
+#endif // __VTK_IGA_TYPES_H_

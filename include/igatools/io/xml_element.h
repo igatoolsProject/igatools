@@ -27,6 +27,7 @@
 
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/dom/DOMElement.hpp>
+#include <vector>
 
 XERCES_CPP_NAMESPACE_BEGIN
 class DOMElement;
@@ -223,6 +224,17 @@ public:
    */
   template <class T>
   SafeSTLVector<T> get_values_vector() const;
+
+  /**
+   * @brief Returns a vector of values with type @p bool that are contained
+   * in the element.
+   *
+   * @return Vector containing the extracted numerical values.
+   *
+   * @warning It will throw an exception if is not able to parse the
+   * vector.
+   */
+  std::vector<bool> get_boolean_vector() const;
 
   /**
    * @brief Returns the only one child element contained in the element.

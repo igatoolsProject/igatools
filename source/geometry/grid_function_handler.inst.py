@@ -25,40 +25,50 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = []
 
-classes = []
-templated_functions = []
+handlers = set()
+handler_funcs = set()
 
-for x in inst.sub_mapping_dims:
-    cl = 'GridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
-    classes.append(cl)
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-        templated_functions.append(s)
+for x in inst.sub_mapping_dims + inst.mapping_dims:
+    handler = 'GridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
+    handlers.add(handler)
+    for k in range(0,x.dim+1):
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::set_flags<%d>(const Flags &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::fill_cache<%d>(ElementAccessor &,const int) const' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::fill_cache<%d>(ElementIterator &,const int) const' % (handler,k)
+        handler_funcs.add(func)
 
-for x in inst.mapping_dims:
-    cl = 'GridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
-    classes.append(cl)
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-            templated_functions.append(s)
 
     #the next classes are needed by NURBS
-    cl = 'GridFunctionHandler<%d,1>' %(x.dim)
-    classes.append(cl)
+    handler = 'GridFunctionHandler<%d,1>' %(x.dim)
+    handlers.add(handler)
+    for k in range(0,x.dim+1):
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::set_flags<%d>(const Flags &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::fill_cache<%d>(ElementAccessor &,const int) const' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::fill_cache<%d>(ElementIterator &,const int) const' % (handler,k)
+        handler_funcs.add(func)
             
             
             
             
 
-for cl in unique(classes):
-    f.write('template class %s ;\n' %(cl))
+for handler in handlers:
+    f.write('template class %s;\n' %(handler))
 
 
-for func in unique(templated_functions):
-    f.write('template ' + func + '\n')
+for func in handler_funcs:
+    f.write('template %s;\n' %(func))
  
 

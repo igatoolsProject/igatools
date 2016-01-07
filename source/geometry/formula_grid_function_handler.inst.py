@@ -25,35 +25,31 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = []
 
-mappings = []
+handlers = set()
+handler_funcs = set()
 
+for x in inst.sub_mapping_dims + inst.mapping_dims:
+    handler = 'FormulaGridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
+    handlers.add(handler)
+    for k in range(0,x.dim+1):
+        func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &sub_elem)' % (handler,k)
+        handler_funcs.add(func)
+        
+    handler = 'FormulaGridFunctionHandler<%d,1>' %(x.dim)
+    handlers.add(handler)
+    for k in range(0,x.dim+1):
+        func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &sub_elem)' % (handler,k)
+        handler_funcs.add(func)
 
-for x in inst.sub_mapping_dims:
-    mapping = 'FormulaGridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
-    mappings.append(mapping)
-#    for fun in sub_dim_members:
-#        k = x.dim
-#        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-#        f.write('template ' + s + '\n')
-    mapping = 'FormulaGridFunctionHandler<%d,1>' %(x.dim)
-    mappings.append(mapping)
-
-
-for x in inst.mapping_dims:
-    mapping = 'FormulaGridFunctionHandler<%d,%d>' %(x.dim, x.space_dim)
-    mappings.append(mapping)
-#    for fun in sub_dim_members:
-#        for k in inst.sub_dims(x.dim):
-#            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-#            f.write('template ' + s + '\n')
-    mapping = 'FormulaGridFunctionHandler<%d,1>' %(x.dim)
-    mappings.append(mapping)
  
  
  
  
 
-for mapping in unique(mappings):
-    f.write('template class %s ;\n' %(mapping))
+for handler in handlers:
+    f.write('template class %s;\n' %(handler))
+
+
+for func in handler_funcs:
+    f.write('template %s;\n' %(func))

@@ -26,55 +26,26 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-sub_dim_members = []
-
-       
 handlers = ['ReferenceElementHandler<0,0,1>']
-handler_templated_funcs = []
+handler_funcs = set()
 
 
-for x in inst.sub_ref_sp_dims:
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     handler = 'ReferenceElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.append(handler)
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
-        handler_templated_funcs.append(s)
+#    for k in range(0,x.dim+1):
+#        func = 'int %s::get_num_points<%d>() const;' % (handler,k)
+#        handler_funcs.add(func)
 
-
-for x in inst.ref_sp_dims:
-    handler = 'ReferenceElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    handlers.append(handler)
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
-            handler_templated_funcs.append(s)
         
                 
     
 for handler in unique(handlers):
-    f.write('template class %s; \n' %handler)
+    f.write('template class %s;\n' %handler)
 
-for func in unique(handler_templated_funcs):        
-    f.write('template %s; \n' %func)        
+for func in handler_funcs:        
+    f.write('template %s;\n' %func)        
    
 
 
-
-#---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
- 
-#f.write('#ifdef SERIALIZATION\n')
-#id = 0 
-#for handler in unique(handlers):
-#    alias = 'ReferenceElementHandlerAlias%d' %(id)
-#    f.write('using %s = iga::%s; \n' % (alias, handler))
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-#    id += 1 
-#f.write('#endif // SERIALIZATION\n')
-     
-f.write('IGA_NAMESPACE_OPEN\n')
-#---------------------------------------------------
 

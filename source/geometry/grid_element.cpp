@@ -367,6 +367,23 @@ print_cache_info(LogStream &out) const
 }
 
 
+template <int dim>
+template <int sdim>
+auto
+GridElement<dim>::
+get_quad() const -> std::shared_ptr<const Quadrature<sdim>>
+{
+  return quad_list_.template get_quad<sdim>();
+}
+
+
+template <int dim>
+auto
+GridElement<dim>::
+get_index_iterator() const -> const ListIt &
+{
+  return index_it_;
+}
 
 #if 0
 template <int dim>

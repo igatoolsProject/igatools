@@ -30,36 +30,42 @@ data = Instantiation(include_files)
 sub_dim_members = \
 []
 
-handlers = []
-handler_methods = []
+handlers = set()
+handler_methods = set()
 
 handler = 'SpaceElementHandler<0,0,0,1>'
-handlers.append(handler)
+handlers.add(handler)
 
-handler_method = 'void %s::init_cache<0>(ElementAccessor &)' % (handler)
-#handler_methods.append(handler_method)
-handler_method = 'void %s::fill_cache<0>(ElementAccessor &, const int)' % (handler)
-#handler_methods.append(handler_method)
+handler_method = 'void %s::set_flags<0>(const typename space_element::Flags &flag)' % (handler)
+handler_methods.add(handler_method)
+handler_method = 'void %s::init_cache<0>(ElementAccessor &elem,const std::shared_ptr<const Quadrature<0>> &quad) const' % (handler)
+handler_methods.add(handler_method)
+handler_method = 'void %s::init_cache<0>(ElementIterator &elem,const std::shared_ptr<const Quadrature<0>> &quad) const' % (handler)
+handler_methods.add(handler_method)
+handler_method = 'void %s::fill_cache<0>(ElementAccessor &elem, const int s_id) const' % (handler)
+handler_methods.add(handler_method)
+handler_method = 'void %s::fill_cache<0>(ElementIterator &elem, const int s_id) const' % (handler)
+handler_methods.add(handler_method)
+
 
 #--------------------------------------------------------------------------------------
 # SpaceElement used by ReferenceSpaceBasisElement 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     handler = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
-    handlers.append(handler)
-    for k in inst.sub_dims(x.dim):
-        handler_method = 'void %s::init_cache<%d>(ElementAccessor &)' % (handler, k)
-#          handler_methods.append(handler_method)
-        handler_method = 'void %s::fill_cache<%d>(ElementAccessor &, const int)' % (handler, k)
-#            handler_methods.append(handler_method)
+    handlers.add(handler)
+    for k in range(0,x.dim+1):
+        handler_method = 'void %s::set_flags<%d>(const typename space_element::Flags &flag)' % (handler,k)
+        handler_methods.add(handler_method)
 
-for x in inst.ref_sp_dims:
-    handler = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
-    handlers.append(handler)
-    for k in inst.sub_dims(x.dim):
-        handler_method = 'void %s::init_cache<%d>(ElementAccessor &)' % (handler, k)
-#        handler_methods.append(handler_method)
-        handler_method = 'void %s::fill_cache<%d>(ElementAccessor &, const int)' % (handler, k)
-#            handler_methods.append(handler_method)
+        handler_method = 'void %s::init_cache<%d>(ElementAccessor &elem,const std::shared_ptr<const Quadrature<%d>> &quad) const' % (handler,k,k)
+        handler_methods.add(handler_method)
+        handler_method = 'void %s::init_cache<%d>(ElementIterator &elem,const std::shared_ptr<const Quadrature<%d>> &quad) const' % (handler,k,k)
+        handler_methods.add(handler_method)
+        
+        handler_method = 'void %s::fill_cache<%d>(ElementAccessor &elem, const int s_id) const' % (handler,k)
+        handler_methods.add(handler_method)
+        handler_method = 'void %s::fill_cache<%d>(ElementIterator &elem, const int s_id) const' % (handler,k)
+        handler_methods.add(handler_method)
 #--------------------------------------------------------------------------------------
 
 
@@ -68,32 +74,30 @@ for x in inst.ref_sp_dims:
 for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
     handler = 'SpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
-    handlers.append(handler)
-    for k in inst.sub_dims(x.dim):
-        handler_method = 'void %s::init_cache<%d>(ElementAccessor &)' % (handler, k)
-#            handler_methods.append(handler_method)
-        handler_method = 'void %s::fill_cache<%d>(ElementAccessor &, const int)' % (handler, k)
-#            handler_methods.append(handler_method)
+    handlers.add(handler)
+    for k in range(0,x.dim+1):
+        handler_method = 'void %s::set_flags<%d>(const typename space_element::Flags &flag)' % (handler,k)
+        handler_methods.add(handler_method)
 
-for space in inst.PhysSpaces:
-    x = space.spec
-    handler = 'SpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
-    handlers.append(handler)
-    for k in inst.sub_dims(x.dim):
-        handler_method = 'void %s::init_cache<%d>(ElementAccessor &)' % (handler, k)
-#            handler_methods.append(handler_method)
-        handler_method = 'void %s::fill_cache<%d>(ElementAccessor &, const int)' % (handler, k)
-#            handler_methods.append(handler_method)
+        handler_method = 'void %s::init_cache<%d>(ElementAccessor &elem,const std::shared_ptr<const Quadrature<%d>> &quad) const' % (handler,k,k)
+        handler_methods.add(handler_method)
+        handler_method = 'void %s::init_cache<%d>(ElementIterator &elem,const std::shared_ptr<const Quadrature<%d>> &quad) const' % (handler,k,k)
+        handler_methods.add(handler_method)
+        
+        handler_method = 'void %s::fill_cache<%d>(ElementAccessor &elem, const int s_id) const' % (handler,k)
+        handler_methods.add(handler_method)
+        handler_method = 'void %s::fill_cache<%d>(ElementIterator &elem, const int s_id) const' % (handler,k)
+        handler_methods.add(handler_method)
 #--------------------------------------------------------------------------------------
 
 
 
 #---------------------------------------------------
-for handler in unique(handlers):
-    f.write('template class %s ;\n' %handler)
+for handler in handlers:
+    f.write('template class %s;\n' %handler)
 
-for handler_method in unique(handler_methods):
-    f.write('template %s ;\n' % handler_method)
+for handler_method in handler_methods:
+    f.write('template %s;\n' % handler_method)
 
 
 

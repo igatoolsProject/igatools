@@ -534,7 +534,7 @@
       </PropertyGroup>
 
 
-      <PropertyGroup label="Physical mesh">
+      <PropertyGroup label="Parametric mesh">
         <Property name="ParmGeomArrayStatus" />
       </PropertyGroup>
 

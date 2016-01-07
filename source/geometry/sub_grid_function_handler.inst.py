@@ -25,32 +25,32 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = []
 
-classes = []
+handlers = set()
 
-templated_functions = []
+handler_funcs = set()
 
-for x in inst.sub_mapping_dims:
+for x in inst.sub_mapping_dims + inst.mapping_dims:
     for sdim in range(0,x.dim):
         cl = 'SubGridFunctionHandler<%d,%d,%d>' %(sdim,x.dim,x.space_dim)
-        classes.append(cl)
+        handlers.add(cl)
+        for k in range(0,sdim+1):
+            func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &)' % (cl,k)
+            handler_funcs.add(func)
 
-for x in inst.mapping_dims:
-    for sdim in range(0,x.dim):
-        cl = 'SubGridFunctionHandler<%d,%d,%d>' %(sdim,x.dim,x.space_dim)
-        classes.append(cl)
 
     #the next classes are needed by NURBS
         cl = 'SubGridFunctionHandler<%d,%d,1>' %(sdim,x.dim)
-        classes.append(cl)
+        handlers.add(cl)
+        for k in range(0,sdim+1):
+            func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &)' % (cl,k)
+            handler_funcs.add(func)
 
  
 
 
-for cl in unique(classes):
-    f.write('template class %s ;\n' %(cl))
+for handler in handlers:
+    f.write('template class %s;\n' %(handler))
 
-
-for func in unique(templated_functions):
-    f.write('template ' + func + '\n')
+for func in handler_funcs:
+    f.write('template %s;\n' %(func))

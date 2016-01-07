@@ -19,17 +19,11 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/io/writer.h>
-
-#ifdef XML_IO
-
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/utils/multi_array_utils.h>
 //#include <igatools/functions/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/grid_function_lib.h>
-
-#include <igatools/io/xml_document.h>
-#include <igatools/io/xml_element.h>
 
 
 #include <fstream>
@@ -70,7 +64,7 @@ create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
   return domain;
 }
 
-}
+};
 
 
 
@@ -465,8 +459,12 @@ add_point_data(const int n_values_per_point,
 
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
-save(const string &filename, const bool pretty_print) const
+save(const string &filename, const string &format) const
 {
+  //--------------------------------------------------------------------------
+  Assert(format == "ascii" || format == "appended",
+         ExcMessage("Unsupported format."));
+  //--------------------------------------------------------------------------
 
   SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > >
   points_in_iga_elements(n_iga_elements_, SafeSTLVector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
@@ -479,198 +477,427 @@ save(const string &filename, const bool pretty_print) const
   this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
 
   const string vtu_filename = filename + ".vtu";
-  const auto xml_doc = this->save_xml(points_in_iga_elements, vtk_elements_connectivity);
-  xml_doc->write_to_file(vtu_filename, pretty_print);
+
+
+  if (format == "ascii")
+  {
+    ofstream file(vtu_filename);
+    file.setf(ios::scientific);
+    file.precision(precision_);
+    this->save_ascii(file, points_in_iga_elements, vtk_elements_connectivity);
+  }
+  else if (format == "appended")
+  {
+    this->save_appended(vtu_filename, points_in_iga_elements, vtk_elements_connectivity);
+  }
 }
 
 
 
 template<int dim, int codim, class T>
-shared_ptr<XMLDocument>
-Writer<dim, codim, T>::
-save_xml(const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_iga_elements,
-         const SafeSTLVector< SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_> > >
-         &vtk_elements_connectivity) const
+template<class Out>
+void Writer<dim, codim, T>::
+save_ascii(Out &file,
+           const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_iga_elements,
+           const SafeSTLVector< SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_> > >
+           &vtk_elements_connectivity) const
 {
-  const auto xml_doc = XMLDocument::create_void_document("VTKFile");
+  const string tab1("\t");
+  const string tab2 = tab1 + tab1;
+  const string tab3 = tab2 + tab1;
+  const string tab4 = tab3 + tab1;
+  const string tab5 = tab4 + tab1;
 
-  const auto xml_elem = xml_doc->get_document_element();
-  xml_elem->add_attribute("type", "UnstructuredGrid");
-  // xml_elem->add_attribute("type_order", byte_order_);
+  file << "<?xml version=\"1.0\"?>" << endl;
+  file << "<VTKFile type=\"UnstructuredGrid\" byte_order=\"" << byte_order_ << "\">" << endl;
 
-  const auto vtu_elem = xml_doc->create_new_element("UnstructuredGrid");
+  file << tab1 << "<UnstructuredGrid>" << endl;
 
-  const auto piece_elem = xml_doc->create_new_element("Piece");
-  piece_elem->add_attribute("NumberOfPoints", n_vtk_points_);
-  piece_elem->add_attribute("NumberOfCells", n_vtk_elements_);
-  const auto pts_elem = xml_doc->create_new_element("Points");
+  file << tab2 << "<Piece NumberOfPoints=\"" << to_string(n_vtk_points_) << "\" NumberOfCells=\""<< to_string(n_vtk_elements_) << "\">" << endl;
 
-  SafeSTLVector<T> pt_coords(3 * n_iga_elements_ * n_points_per_iga_element_);
+  file << tab3 << "<Points>" << endl;
+  file << tab4 << "<DataArray type=\"" << string_Real_ << "\" NumberOfComponents=\"3\" format=\"ascii\">" << endl;
 
-  Index i = 0;
   for (const auto &point_in_iga_element : points_in_iga_elements)
     for (const auto &point : point_in_iga_element)
-    {
-      pt_coords[i++] = point[0];
-      pt_coords[i++] = point[1];
-      pt_coords[i++] = point[2];
-    }
-  const auto data1 = xml_doc->create_vector_element("DataArray", pt_coords, precision_);
-  data1->add_attribute("type", string_Real_);
-  data1->add_attribute("NumberOfComponents", 3);
-  data1->add_attribute("format", "ascii");
-  pts_elem->append_child_element(data1);
+      file << tab5 << point[0] << " " << point[1] << " " << point[2] << endl;
 
-  piece_elem->append_child_element(pts_elem);
-  //--------------------------------------------------------------------------
+  file << tab4 << "</DataArray>" << endl;
+  file << tab3 << "</Points>" << endl;
 
-  //--------------------------------------------------------------------------
-  // writing the <Cells> section
-  const auto cells_elem = xml_doc->create_new_element("Cells");
-
-  // Writing connectivity
-  SafeSTLVector<int> conn_vec(n_iga_elements_ *
-                              n_vtk_elements_per_iga_element_ *
-                              n_vertices_per_vtk_element_);
-  i = 0;
+  file << tab3 << "<Cells>" << endl;
+  file << tab4 << "<DataArray Name=\"connectivity\" type=\"" << string_int_ << "\" format=\"ascii\">" << endl;
+  file << tab5;
   for (const auto &iga_elem_connectivity : vtk_elements_connectivity)
     for (const auto &vtk_elem_connectivity : iga_elem_connectivity)
       for (const auto &point_id : vtk_elem_connectivity)
-        conn_vec[i++] = point_id;
+        file << point_id << " ";
+  file << endl;
+  file << tab4 << "</DataArray>" << endl;
 
-  const auto data2 = xml_doc->create_vector_element("DataArray", conn_vec, precision_);
-  data2->add_attribute("Name", "connectivity");
-  data2->add_attribute("type", string_int_);
-  data2->add_attribute("format", "ascii");
-  cells_elem->append_child_element(data2);
-
-
-  // Writing offsets
-  i = 0;
-  SafeSTLVector<int> offsets_vec(n_vtk_elements_);
+  file << tab4 << "<DataArray Name=\"offsets\" type=\"" << string_int_ << "\" format=\"ascii\">" << endl;
+  file << tab5;
   for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
-    offsets_vec[i++] = n_vertices_per_vtk_element_ * vtk_elem_id;
-  const auto data3 = xml_doc->create_vector_element("DataArray", offsets_vec, precision_);
-  data3->add_attribute("Name", "offsets");
-  data3->add_attribute("type", string_int_);
-  data3->add_attribute("format", "ascii");
-  cells_elem->append_child_element(data3);
+    file << n_vertices_per_vtk_element_ * vtk_elem_id << " ";
+  file << endl;
+  file << tab4 << "</DataArray>" << endl;
 
-
-  // Writing types
-  i = 0;
-  SafeSTLVector<int> types_vec(n_vtk_elements_);
+  file << tab4 << "<DataArray Name=\"types\" type=\"" << string_uchar_ << "\" format=\"ascii\">" << endl;
+  file << tab5;
   for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
-    types_vec[i++] = static_cast<int>(vtk_element_type_);
-  const auto data4 = xml_doc->create_vector_element("DataArray", types_vec, precision_);
-  data4->add_attribute("Name", "types");
-  data4->add_attribute("type", string_uchar_);
-  data4->add_attribute("format", "ascii");
-  cells_elem->append_child_element(data4);
+    file << static_cast<int>(vtk_element_type_) << " ";
+  file << endl;
+  file << tab4 << "</DataArray>" << endl;
+  file << tab3 << "</Cells>" << endl;
 
-  piece_elem->append_child_element(cells_elem);
-  //--------------------------------------------------------------------------
 
   //--------------------------------------------------------------------------
-  // writing the <PointData> section
-  const auto pt_data_elem = xml_doc->create_new_element("PointData");
-
   // writing the <PointData> section
   string point_data_optional_attr;
   if (!names_point_data_scalar_.empty())
   {
-    string attr = "";
+    point_data_optional_attr += " Scalars=\"";
     for (const string &name : names_point_data_scalar_)
-      attr += name + " ";
-    pt_data_elem->add_attribute("Scalars", attr);
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
   }
   if (!names_point_data_vector_.empty())
   {
-    string attr = "";
+    point_data_optional_attr += " Vectors=\"";
     for (const string &name : names_point_data_vector_)
-      attr += name + " ";
-    pt_data_elem->add_attribute("Vectors", attr);
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
   }
   if (!names_point_data_tensor_.empty())
   {
-    string attr = "";
+    point_data_optional_attr += " Tensors=\"";
     for (const string &name : names_point_data_tensor_)
-      attr += name + " ";
-    pt_data_elem->add_attribute("Tensors", attr);
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
   }
 
+  file << tab3 << "<PointData" << point_data_optional_attr << ">" << endl;
   for (const auto &point_data : fields_)
   {
-    const auto data = xml_doc->create_vector_element("DataArray", *(point_data.values_), precision_);
-    data->add_attribute("Name", point_data.name_);
-    data->add_attribute("NumberOfComponents", point_data.num_components_);
-    data->add_attribute("type", string_Real_);
-    data->add_attribute("format", "ascii");
-    pt_data_elem->append_child_element(data);
+    file << tab4 << "<DataArray Name=\"" << point_data.name_
+         << "\" type=\"" << string_Real_
+         << "\" NumberOfComponents=\""<< point_data.num_components_
+         << "\" format=\"ascii\">" << endl;
+
+    file << tab5;
+    for (const auto &v : *point_data.values_)
+      file << v << " ";
+    file << endl;
+
+    file << tab4 << "</DataArray>" << endl;
   }
-  piece_elem->append_child_element(pt_data_elem);
+  file << tab3 << "</PointData>" << endl;
   //--------------------------------------------------------------------------
+
 
   //--------------------------------------------------------------------------
   // writing the <CellData> section
-  const auto cell_data_elem = xml_doc->create_new_element("CellData");
-
+  string cell_data_optional_attr;
   if (!names_cell_data_scalar_.empty())
   {
-    string attr = "";
+    cell_data_optional_attr += " Scalars=\"";
     for (const string &name : names_cell_data_scalar_)
-      attr += name + " ";
-    cell_data_elem->add_attribute("Scalars", attr);
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
   }
   if (!names_cell_data_vector_.empty())
   {
-    string attr = "";
+    cell_data_optional_attr += " Vectors=\"";
     for (const string &name : names_cell_data_vector_)
-      attr += name + " ";
-    cell_data_elem->add_attribute("Vectors", attr);
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
   }
   if (!names_cell_data_tensor_.empty())
   {
-    string attr = "";
+    cell_data_optional_attr += " Tensors=\"";
     for (const string &name : names_cell_data_tensor_)
-      attr += name + " ";
-    cell_data_elem->add_attribute("Tensors", attr);
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
   }
 
+  file << tab3 << "<CellData" << cell_data_optional_attr << ">" << endl;
   for (const auto &cell_data : cell_data_double_)
   {
-    const auto data = xml_doc->create_vector_element("DataArray", *(cell_data.values_), precision_);
-    data->add_attribute("Name", cell_data.name_);
-    data->add_attribute("NumberOfComponents", cell_data.num_components_);
-    data->add_attribute("type", string_Real_);
-    data->add_attribute("format", "ascii");
-    pt_data_elem->append_child_element(data);
+    file << tab4 << "<DataArray Name=\"" << cell_data.name_
+         << "\" type=\"" << string_Real_
+         << "\" NumberOfComponents=\""<< cell_data.num_components_
+         << "\" format=\"ascii\">" << endl;
+    file << tab5;
+    for (const double &v : *cell_data.values_)
+      file << v << " ";
+    file << endl;
+    file << tab4 << "</DataArray>" << endl;
   }
-
   for (const auto &cell_data : cell_data_int_)
   {
-    const auto data = xml_doc->create_vector_element("DataArray", *(cell_data.values_), precision_);
-    data->add_attribute("Name", cell_data.name_);
-    data->add_attribute("NumberOfComponents", cell_data.num_components_);
-    data->add_attribute("type", string_int_);
-    data->add_attribute("format", "ascii");
-    pt_data_elem->append_child_element(data);
+    file << tab4 << "<DataArray Name=\"" << cell_data.name_
+         << "\" type=\"" << string_int_
+         << "\" NumberOfComponents=\""<< cell_data.num_components_
+         << "\" format=\"ascii\">" << endl;
+    file << tab5;
+    for (const int &v : *cell_data.values_)
+      file << v << " ";
+    file << endl;
+    file << tab4 << "</DataArray>" << endl;
   }
-  piece_elem->append_child_element(cell_data_elem);
+  file << tab3 << "</CellData>" << endl;
   //--------------------------------------------------------------------------
 
-  vtu_elem->append_child_element(piece_elem);
-  xml_elem->append_child_element(vtu_elem);
-
-  return xml_doc;
+  file << tab2 << "</Piece>" << endl;
+  file << tab1 << "</UnstructuredGrid>" << endl;
+  file << "</VTKFile>";
 }
 
 
 
 template<int dim, int codim, class T>
-void
-Writer<dim, codim, T>::
-print_info(LogStream &out) const
+void Writer<dim, codim, T>::
+save_appended(const string &filename,
+              const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_iga_elements,
+              const SafeSTLVector< SafeSTLVector< SafeSTLArray< int,n_vertices_per_vtk_element_> > >
+              &vtk_elements_connectivity) const
+{
+  ofstream file(filename);
+  file.setf(ios::scientific);
+  file.precision(precision_);
+
+  const string tab1("\t");
+  const string tab2 = tab1 + tab1;
+  const string tab3 = tab2 + tab1;
+  const string tab4 = tab3 + tab1;
+  const string tab5 = tab4 + tab1;
+
+  int offset = 0;
+
+
+  file << "<?xml version=\"1.0\"?>" << endl;
+  file << "<VTKFile type=\"UnstructuredGrid\" byte_order=\"" << byte_order_ << "\">" << endl;
+
+  file << tab1 << "<UnstructuredGrid>" << endl;
+
+  file << tab2 << "<Piece NumberOfPoints=\"" << to_string(n_vtk_points_) << "\" NumberOfCells=\""<< to_string(n_vtk_elements_) << "\">" << endl;
+
+  file << tab3 << "<Points>" << endl;
+  file << tab4 << "<DataArray type=\"" << string_Real_ << "\" NumberOfComponents=\"3\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+  const int n_bytes_points = n_vtk_points_ * 3 * sizeof_Real_;
+  offset += sizeof_int_ + n_bytes_points;
+  file << tab3 << "</Points>" << endl;
+
+
+  file << tab3 << "<Cells>" << endl;
+  file << tab4 << "<DataArray Name=\"connectivity\" type=\"" << string_int_ << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+  const int n_bytes_connectivity = n_vtk_elements_ * n_vertices_per_vtk_element_ * sizeof_int_;
+  offset += sizeof_int_ + n_bytes_connectivity;
+
+
+  file << tab4 << "<DataArray Name=\"offsets\" type=\"" << string_int_ << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+  const int n_bytes_offsets = n_vtk_elements_ * sizeof_int_;
+  offset += sizeof_int_ + n_bytes_offsets;
+
+
+  file << tab4 << "<DataArray Name=\"types\" type=\"" << string_uchar_ << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+  const int n_bytes_types = n_vtk_elements_ * sizeof_uchar_;
+  offset += sizeof_int_ + n_bytes_types;
+  file << tab3 << "</Cells>" << endl;
+
+
+  //--------------------------------------------------------------------------
+  // writing the <PointData> section
+  string point_data_optional_attr;
+  if (!names_point_data_scalar_.empty())
+  {
+    point_data_optional_attr += " Scalars=\"";
+    for (const string &name : names_point_data_scalar_)
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
+  }
+  if (!names_point_data_vector_.empty())
+  {
+    point_data_optional_attr += " Vectors=\"";
+    for (const string &name : names_point_data_vector_)
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
+  }
+  if (!names_point_data_tensor_.empty())
+  {
+    point_data_optional_attr += " Tensors=\"";
+    for (const string &name : names_point_data_tensor_)
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
+  }
+
+  SafeSTLVector<int> n_bytes_point_data;
+  file << tab3 << "<PointData" << point_data_optional_attr << ">" << endl;
+  for (const auto &point_data : fields_)
+  {
+
+    file << tab4 << "<DataArray Name=\"" << point_data.name_
+         << "\" type=\"" << string_Real_
+         << "\" NumberOfComponents=\""<< point_data.num_components_
+         << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+
+    n_bytes_point_data.emplace_back(point_data.values_->size() * sizeof_Real_);
+    offset += sizeof_int_ + n_bytes_point_data.back();
+  }
+  file << tab3 << "</PointData>" << endl;
+  //--------------------------------------------------------------------------
+
+
+  //--------------------------------------------------------------------------
+  // writing the <CellData> section
+  string cell_data_optional_attr;
+  if (!names_cell_data_scalar_.empty())
+  {
+    cell_data_optional_attr += " Scalars=\"";
+    for (const string &name : names_cell_data_scalar_)
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
+  }
+  if (!names_cell_data_vector_.empty())
+  {
+    cell_data_optional_attr += " Vectors=\"";
+    for (const string &name : names_cell_data_vector_)
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
+  }
+  if (!names_cell_data_tensor_.empty())
+  {
+    cell_data_optional_attr += " Tensors=\"";
+    for (const string &name : names_cell_data_tensor_)
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
+  }
+
+  file << tab3 << "<CellData" << cell_data_optional_attr << ">" << endl;
+
+  SafeSTLVector<int> n_bytes_cell_data_double;
+  for (const auto &cell_data : cell_data_double_)
+  {
+    file << tab4 << "<DataArray Name=\"" << cell_data.name_
+         << "\" type=\"" << string_Real_
+         << "\" NumberOfComponents=\""<< cell_data.num_components_
+         << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+
+    n_bytes_cell_data_double.emplace_back(cell_data.values_->size() * sizeof_Real_);
+    offset += sizeof_int_ + n_bytes_cell_data_double.back();
+  }
+
+  SafeSTLVector<int> n_bytes_cell_data_int;
+  for (const auto &cell_data : cell_data_int_)
+  {
+    file << tab4 << "<DataArray Name=\"" << cell_data.name_
+         << "\" type=\"" << string_int_
+         << "\" NumberOfComponents=\""<< cell_data.num_components_
+         << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+
+    n_bytes_cell_data_int.emplace_back(cell_data.values_->size() * sizeof_int_);
+    offset += sizeof_int_ + n_bytes_cell_data_int.back();
+  }
+  file << tab3 << "</CellData>" << endl;
+  //--------------------------------------------------------------------------
+
+
+
+  file << tab2 << "</Piece>" << endl;
+
+  file << tab1 << "</UnstructuredGrid>" << endl;
+
+
+  file << tab1 << "<AppendedData encoding=\"raw\">" << endl;
+  file << tab2 << "_";
+
+  //--------------------------------------------------------------------------
+  // writing the points coordinate
+  file.write((char *) &n_bytes_points, sizeof_int_);
+  for (const auto &point_in_iga_element : points_in_iga_elements)
+    for (const auto &point : point_in_iga_element)
+      file.write((char *) &point[0], 3 * sizeof_Real_);
+  //--------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------------
+  // writing the element connectivity
+  file.write((char *) &n_bytes_connectivity, sizeof_int_);
+  for (const auto &iga_elem_connectivity : vtk_elements_connectivity)
+    for (const auto &vtk_elem_connectivity : iga_elem_connectivity)
+      file.write((char *) vtk_elem_connectivity.data(), n_vertices_per_vtk_element_ * sizeof_int_);
+  //--------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------------
+  // writing the element offsets
+  file.write((char *) &n_bytes_offsets, sizeof_int_);
+  for (int i = 1; i <= n_vtk_elements_; ++i)
+  {
+    const int tmp = i * n_vertices_per_vtk_element_;
+    file.write((char *) &tmp, sizeof_int_);
+  }
+  //--------------------------------------------------------------------------
+
+
+  //--------------------------------------------------------------------------
+  // writing the element types
+  file.write((char *) &n_bytes_types, sizeof_int_);
+  for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
+    file.write((char *) &vtk_element_type_, sizeof_uchar_);
+  //--------------------------------------------------------------------------
+
+
+
+  //--------------------------------------------------------------------------
+  // writing the point data
+  const int n_point_data = fields_.size();
+  for (int i = 0; i < n_point_data; ++i)
+  {
+    file.write((char *) &n_bytes_point_data[i], sizeof_int_);
+    file.write((char *) fields_[i].values_->data(), n_bytes_point_data[i]);
+  }
+  //--------------------------------------------------------------------------
+
+
+
+  //--------------------------------------------------------------------------
+  // writing the cell data (double)
+  const int n_cell_data_double = cell_data_double_.size();
+  for (int i = 0; i < n_cell_data_double; ++i)
+  {
+    file.write((char *) &n_bytes_cell_data_double[i], sizeof_int_);
+
+    const int n_values = cell_data_double_[i].values_->size();
+    //here we convert the type double in CellData.values_ to type T
+    SafeSTLVector<T> buffer(n_values);
+    for (int j = 0; j < n_values; ++j)
+      buffer[j] = (*cell_data_double_[i].values_)[j];
+
+    file.write((char *) buffer.data(), n_bytes_cell_data_double[i]);
+  }
+  //--------------------------------------------------------------------------
+
+
+  //--------------------------------------------------------------------------
+  // writing the cell data (int)
+  const int n_cell_data_int = cell_data_int_.size();
+  for (int i = 0; i < n_cell_data_int; ++i)
+  {
+    file.write((char *) &n_bytes_cell_data_int[i], sizeof_int_);
+    file.write((char *) cell_data_int_[i].values_->data(), n_bytes_cell_data_int[i]);
+  }
+  //--------------------------------------------------------------------------
+
+
+  file << endl;
+  file << tab1 << "</AppendedData>" << endl;
+
+  file << "</VTKFile>";
+}
+
+
+
+template<int dim, int codim, class T>
+void Writer<dim, codim, T>::print_info(LogStream &out) const
 {
   SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > >
   points_in_iga_elements(n_iga_elements_, SafeSTLVector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
@@ -682,8 +909,7 @@ print_info(LogStream &out) const
 
   this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
 
-  const auto xml_doc = save_xml(points_in_iga_elements, vtk_elements_connectivity);
-  xml_doc->print_info(out);
+  this->save_ascii(out, points_in_iga_elements, vtk_elements_connectivity);
 }
 
 
@@ -726,9 +952,9 @@ get_num_vtk_elements() const
 }
 
 
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/io/writer.inst>
-
-#endif // XML_IO
 

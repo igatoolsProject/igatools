@@ -101,6 +101,14 @@ print_info(LogStream &out) const
 }
 
 
+template <int dim, int range, int rank>
+template <int sdim>
+ValueVector<Real>
+ReferenceElement<dim, range, rank>::
+get_w_measures(const int s_id) const
+{
+  return this->get_grid_element().template get_weights<sdim>(s_id);
+}
 
 
 
