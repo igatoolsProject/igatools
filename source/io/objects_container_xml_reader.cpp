@@ -360,7 +360,7 @@ parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
   for (const auto &cgf : xml_elem->get_children_elements("ConstantGridFunction"))
   {
     const int cgf_dim = cgf->get_attribute<int>("Dim");
-    const int cgf_space_dim = cgf->get_attribute<int>("SpaceDim"); // This is going to change.
+    const int cgf_range = cgf->get_attribute<int>("Range");
 
     using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
     GridFunctionPtrs valid_cgf_ptr_types;
@@ -376,7 +376,7 @@ parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
       static const int dim   = GridFuncType::dim;
       static const int range  = GridFuncType::range;
 
-      if (cgf_dim == dim && cgf_space_dim == range)
+      if (cgf_dim == dim && cgf_range == range)
       {
         found = true;
         parse_constant_grid_function<dim, range>(cgf, parse_as_constant, id_map, container);
@@ -387,7 +387,7 @@ parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
     AssertThrow(found,
                 ExcMessage(Self_::get_type_id_string("ConstantGridFunction",
                                                      cgf->get_attribute<Index>("LocalObjectId"),
-    {{cgf_dim, cgf_space_dim}})
+    {{cgf_dim, cgf_range}})
     + " is not a valid type. Possibly the type was not "
     "instantiated for the specified dimensions."));
   }
@@ -405,7 +405,7 @@ parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
   for (const auto &cgf : xml_elem->get_children_elements("LinearGridFunction"))
   {
     const int cgf_dim = cgf->get_attribute<int>("Dim");
-    const int cgf_space_dim = cgf->get_attribute<int>("SpaceDim"); // This is going to change.
+    const int cgf_range = cgf->get_attribute<int>("Range");
 
     using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
     GridFunctionPtrs valid_cgf_ptr_types;
@@ -421,7 +421,7 @@ parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
       static const int dim   = GridFuncType::dim;
       static const int range  = GridFuncType::range;
 
-      if (cgf_dim == dim && cgf_space_dim == range)
+      if (cgf_dim == dim && cgf_range == range)
       {
         found = true;
         parse_linear_grid_function<dim, range>(cgf, parse_as_constant, id_map, container);
@@ -432,7 +432,7 @@ parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
     AssertThrow(found,
                 ExcMessage(Self_::get_type_id_string("LinearGridFunction",
                                                      cgf->get_attribute<Index>("LocalObjectId"),
-    {{cgf_dim, cgf_space_dim}})
+    {{cgf_dim, cgf_range}})
     + " is not a valid type. Possibly the type was not "
     "instantiated for the specified dimensions."));
   }
@@ -451,7 +451,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
   for (const auto &gf : xml_elem->get_children_elements("IgGridFunction"))
   {
     const int gf_dim = gf->get_attribute<int>("Dim");
-    const int gf_space_dim = gf->get_attribute<int>("SpaceDim"); // This is going to change.
+    const int gf_range = gf->get_attribute<int>("Range");
 
     using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
     GridFunctionPtrs valid_gf_ptr_types;
@@ -467,7 +467,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
       static const int dim   = GridFuncType::dim;
       static const int range = GridFuncType::range;
 
-      if (gf_dim == dim && gf_space_dim == range)
+      if (gf_dim == dim && gf_range == range)
       {
         found = true;
         parse_ig_grid_function<dim, range>(gf, parse_as_constant, first_parsing, id_map, container);
@@ -478,7 +478,7 @@ parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
     AssertThrow(found,
                 ExcMessage(Self_::get_type_id_string("IgGridFunction",
                                                      gf->get_attribute<Index>("LocalObjectId"),
-    {{gf_dim, gf_space_dim}})
+    {{gf_dim, gf_range}})
     + " is not a valid type. Possibly the type was not "
     "instantiated for the specified dimensions."));
   }
@@ -1025,7 +1025,7 @@ parse_spline_space(const shared_ptr<XMLElement> xml_elem,
     if (comp_elem->has_element("Periodicity"))
     {
       const auto periodic_vector = comp_elem->
-                                   get_single_element("Periodicity")->get_values_vector<bool>();
+                                   get_single_element("Periodicity")->get_boolean_vector();
 
       // Checking the dimensions of the periodicities vector.
       AssertThrow(periodic_vector.size() == dim,

@@ -377,12 +377,11 @@ get_values_vector() const
 
 
 
-template <>
-SafeSTLVector<bool>
+std::vector<bool>
 XMLElement::
-get_values_vector() const
+get_boolean_vector() const
 {
-  SafeSTLVector<bool> data;
+  std::vector<bool> data;
   const auto text_elem = this->get_single_text_element();
 
   const string str = XMLString::transcode(text_elem->getWholeText());

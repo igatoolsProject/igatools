@@ -324,6 +324,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
   return grid;
 }
 
+// TODO: to instantiate properly.
 template class VtkIgaKnotGrid<Domain<1, 0>>;
 template class VtkIgaKnotGrid<Domain<1, 1>>;
 template class VtkIgaKnotGrid<Domain<1, 2>>;

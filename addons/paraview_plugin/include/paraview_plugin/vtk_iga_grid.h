@@ -194,19 +194,19 @@ protected:
   const ObjContPtr_ objs_container_;
 
   /// Vtk solid grid smart pointer.
-  VtkGridPtr_ solid_grid_;
+  VtkGridPtr_ solid_grid_ = VtkGridPtr_();
 
   /// Vtk knot grid smart pointer.
-  VtkGridPtr_ knot_grid_;
+  VtkGridPtr_ knot_grid_ = VtkGridPtr_();
 
   /// Vtk control grid smart pointer.
-  VtkGridPtr_ control_grid_;
+  VtkGridPtr_ control_grid_ = VtkGridPtr_();
 
   /// Flag for indicating if the vtk solid grid must be recomputed.
-  bool recompute_solid_;
+  bool recompute_solid_ = true;
 
   /// Flag for indicating if the vtk knot grid must be recomputed.
-  bool recompute_knot_;
+  bool recompute_knot_ = true;
 
   /// Flag for indicating if the vtk control grid must be recomputed.
   bool recompute_control_;

@@ -97,7 +97,7 @@ public:
    * Returns the number of cells per element.
    */
   template <int dim>
-  TensorSize <dim> get_num_cells_per_element() const;
+  SafeSTLArray <Size, dim> get_num_cells_per_element() const;
 
   /**
    * Prints the information of the class for debuggin purposes.
