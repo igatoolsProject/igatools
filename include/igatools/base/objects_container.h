@@ -383,11 +383,11 @@ public:
   void print_info(LogStream &out) const;
 
   /**
-   * @brief Checks if the container is void.
+   * @brief Checks if the container is empty.
    *
-   * @return True if the container is void, false elsewhere.
+   * @return True if the container is empty, false elsewhere.
    */
-  bool is_void() const;
+  bool is_empty() const;
 
 private:
 
