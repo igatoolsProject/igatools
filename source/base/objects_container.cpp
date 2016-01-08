@@ -694,9 +694,10 @@ serialize(Archive &ar)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
-    const string name = "grid_"  + to_string(Type::dim);
+//    const string name = "grid_"  + to_string(Type::dim);
+//    ar &make_nvp(name, at_key<Type>(objects_));
 
-    ar &make_nvp(name, at_key<Type>(objects_));
+    ar &at_key<Type>(objects_);
 
     auto &const_objects = at_key<const Type>(objects_);
 
@@ -704,7 +705,8 @@ serialize(Archive &ar)
     for (auto &obj : const_objects)
       tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-    ar &make_nvp("const_" + name, tmp_objects);
+//    ar &make_nvp("const_" + name, tmp_objects);
+    ar &tmp_objects;
 
     if (const_objects.empty())
       for (const auto &obj : tmp_objects)
@@ -716,13 +718,15 @@ serialize(Archive &ar)
   for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    /*
+        const string name = "spline_space_"
+                            + to_string(Type::dim) + "_"
+                            + to_string(Type::range) + "_"
+                            + to_string(Type::rank);
 
-    const string name = "spline_space_"
-                        + to_string(Type::dim) + "_"
-                        + to_string(Type::range) + "_"
-                        + to_string(Type::rank);
-
-    ar &make_nvp(name, at_key<Type>(objects_));
+        ar &make_nvp(name, at_key<Type>(objects_));
+    //*/
+    ar &at_key<Type>(objects_);
   });
 
   // Serializing reference space basis
@@ -730,13 +734,15 @@ serialize(Archive &ar)
   for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    /*
+        const string name = "reference_space_basis_"
+                            + to_string(Type::dim) + "_"
+                            + to_string(Type::range) + "_"
+                            + to_string(Type::rank);
 
-    const string name = "reference_space_basis_"
-                        + to_string(Type::dim) + "_"
-                        + to_string(Type::range) + "_"
-                        + to_string(Type::rank);
-
-    ar &make_nvp(name, at_key<Type>(objects_));
+        ar &make_nvp(name, at_key<Type>(objects_));
+    //*/
+    ar &at_key<Type>(objects_);
 
     auto &const_objects = at_key<const Type>(objects_);
 
@@ -744,7 +750,8 @@ serialize(Archive &ar)
     for (auto &obj : const_objects)
       tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-    ar &make_nvp("const_" + name, tmp_objects);
+//    ar &make_nvp("const_" + name, tmp_objects);
+    ar &tmp_objects;
 
     if (const_objects.empty())
       for (const auto &obj : tmp_objects)
@@ -756,12 +763,14 @@ serialize(Archive &ar)
   for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    /*
+        const string name = "grid_funcion_"
+                            + to_string(Type::dim) + "_"
+                            + to_string(Type::range);
 
-    const string name = "grid_funcion_"
-                        + to_string(Type::dim) + "_"
-                        + to_string(Type::range);
-
-    ar &make_nvp(name, at_key<Type>(objects_));
+        ar &make_nvp(name, at_key<Type>(objects_));
+    //*/
+    ar &at_key<Type>(objects_);
 
     auto &const_objects = at_key<const Type>(objects_);
 
@@ -769,7 +778,8 @@ serialize(Archive &ar)
     for (auto &obj : const_objects)
       tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-    ar &make_nvp("const_" + name, tmp_objects);
+//    ar &make_nvp("const_" + name, tmp_objects);
+    ar &tmp_objects;
 
     if (const_objects.empty())
       for (const auto &obj : tmp_objects)
@@ -781,12 +791,14 @@ serialize(Archive &ar)
   for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    /*
+        const string name = "domain_"
+                            + to_string(Type::dim) + "_"
+                            + to_string(Type::space_dim);
 
-    const string name = "domain_"
-                        + to_string(Type::dim) + "_"
-                        + to_string(Type::space_dim);
-
-    ar &make_nvp(name, at_key<Type>(objects_));
+        ar &make_nvp(name, at_key<Type>(objects_));
+    //*/
+    ar &at_key<Type>(objects_);
 
     auto &const_objects = at_key<const Type>(objects_);
 
@@ -794,7 +806,8 @@ serialize(Archive &ar)
     for (auto &obj : const_objects)
       tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-    ar &make_nvp("const_" + name, tmp_objects);
+//    ar &make_nvp("const_" + name, tmp_objects);
+    ar &tmp_objects;
 
     if (const_objects.empty())
       for (const auto &obj : tmp_objects)
@@ -806,14 +819,16 @@ serialize(Archive &ar)
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    /*
+        const string name = "physical_space_basis_"
+                            + to_string(Type::dim) + "_"
+                            + to_string(Type::range) + "_"
+                            + to_string(Type::rank) + "_"
+                            + to_string(Type::codim);
 
-    const string name = "physical_space_basis_"
-                        + to_string(Type::dim) + "_"
-                        + to_string(Type::range) + "_"
-                        + to_string(Type::rank) + "_"
-                        + to_string(Type::codim);
-
-    ar &make_nvp(name, at_key<Type>(objects_));
+        ar &make_nvp(name, at_key<Type>(objects_));
+    //*/
+    ar &at_key<Type>(objects_);
 
     auto &const_objects = at_key<const Type>(objects_);
 
@@ -821,7 +836,8 @@ serialize(Archive &ar)
     for (auto &obj : const_objects)
       tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-    ar &make_nvp("const_" + name, tmp_objects);
+//    ar &make_nvp("const_" + name, tmp_objects);
+    ar &tmp_objects;
 
     if (const_objects.empty())
       for (const auto &obj : tmp_objects)
@@ -833,14 +849,16 @@ serialize(Archive &ar)
   for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
+    /*
+        const string name = "function_"
+                            + to_string(Type::dim) + "_"
+                            + to_string(Type::codim) + "_"
+                            + to_string(Type::range) + "_"
+                            + to_string(Type::rank);
 
-    const string name = "function_"
-                        + to_string(Type::dim) + "_"
-                        + to_string(Type::codim) + "_"
-                        + to_string(Type::range) + "_"
-                        + to_string(Type::rank);
-
-    ar &make_nvp(name, at_key<Type>(objects_));
+        ar &make_nvp(name, at_key<Type>(objects_));
+    //*/
+    ar &at_key<Type>(objects_);
 
     auto &const_objects = at_key<const Type>(objects_);
 
@@ -848,7 +866,8 @@ serialize(Archive &ar)
     for (auto &obj : const_objects)
       tmp_objects.push_back(const_pointer_cast<Type>(obj));
 
-    ar &make_nvp("const_" + name, tmp_objects);
+//    ar &make_nvp("const_" + name, tmp_objects);
+    ar &tmp_objects;
 
     if (const_objects.empty())
       for (const auto &obj : tmp_objects)
