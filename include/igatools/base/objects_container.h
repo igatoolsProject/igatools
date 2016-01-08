@@ -69,14 +69,14 @@ template <class T> class SafeSTLSet;
  *
  * This container can be created void and filled after by using the
  * @ref insert_object method, or it can be parsed directly from an XML
- * file by using the class @ref ObjectsContainerXMLParser.
+ * file by using the class @ref ObjectsContainerXMLReader.
  *
  * This class is not intended to provide multi-patch support, dofs
  * management, or similar features. It is just a container of pointers
  * for different types.
  *
  * @ingroup serializable
- * @see ObjectsContainerXMLParser
+ * @see ObjectsContainerXMLReader
  * @see ObjectsContainerXMLWriter
  *
  * @author P. Antolin
@@ -86,20 +86,32 @@ class ObjectsContainer
 {
 private:
 
+  /**
+   * Template-alias used to simplify the type definitions.
+   */
+  template <class A,class B>
+  using boost_mpl_transform_t = typename boost::mpl::transform<A,B>::type;
+
+  /**
+   * Alias used to simplify the type definitions.
+   */
+  using boost_mpl_1 = typename boost::mpl::_1;
+
+
   /** Type for current class. */
   using self_t = ObjectsContainer;
 
-  template< class T >
-  struct as_fusion_vector_shared_ptr
-  {
-    /**
-     * This functor transform a <tt>boost::mpl::vector</tt> of types into a
-     *  <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt>s of the types.
-     */
 
-    typedef typename boost::fusion::result_of::as_vector<
-    typename boost::mpl::transform<T, std::shared_ptr<boost::mpl::_1>>::type>::type type;
-  };
+  /**
+   * This template-alias behaves like a functor and transforms a
+   * <tt>boost::mpl::vector</tt> of types into a
+   * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt>s of the types <tt>T</tt>.
+   */
+  template< class T >
+  using as_fusion_vector_shared_ptr_t =
+    typename boost::fusion::result_of::as_vector<
+    boost_mpl_transform_t<T,std::shared_ptr<boost_mpl_1>> >::type;
+
 
   /** Alias for all instantiated grids. */
   using Grids = typename InstantiatedTypes::Grids;
@@ -127,90 +139,93 @@ public:
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated grids.
    */
-  using GridPtrs = as_fusion_vector_shared_ptr<Grids>::type;
+  using GridPtrs = as_fusion_vector_shared_ptr_t<Grids>;
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated spline spaces.
    */
-  using SpSpacePtrs = as_fusion_vector_shared_ptr<SpSpaces>::type;
+  using SpSpacePtrs = as_fusion_vector_shared_ptr_t<SpSpaces>;
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated reference space bases.
    */
-  using RefSpacePtrs = as_fusion_vector_shared_ptr<RefSpaces>::type;
+  using RefSpacePtrs = as_fusion_vector_shared_ptr_t<RefSpaces>;
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated grid functions.
    */
-  using GridFuncPtrs = as_fusion_vector_shared_ptr<GridFunc>::type;
+  using GridFuncPtrs = as_fusion_vector_shared_ptr_t<GridFunc>;
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated domains.
    */
-  using DomainPtrs = as_fusion_vector_shared_ptr<Domains>::type;
+  using DomainPtrs = as_fusion_vector_shared_ptr_t<Domains>;
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated physical spaces.
    */
-  using PhysSpacePtrs = as_fusion_vector_shared_ptr<PhysSpaces>::type;
+  using PhysSpacePtrs = as_fusion_vector_shared_ptr_t<PhysSpaces>;
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated functions.
    */
-  using FunctionPtrs = as_fusion_vector_shared_ptr<Functions>::type;
+  using FunctionPtrs = as_fusion_vector_shared_ptr_t<Functions>;
 
 
 private:
+
+
+  /**
+   * Template-alias used to simplify the type definitions.
+   */
+  template <class A,class B>
+  using boost_mpl_copy_t = typename boost::mpl::copy<A,boost::mpl::back_inserter<B>>::type;
+
+
   /**
    * <tt>boost::mpl::vector</tt> containing all the instantiated types
    * together.
    */
-  typedef boost::mpl::copy<Grids,
-          boost::mpl::back_inserter<boost::mpl::copy<SpSpaces,
-          boost::mpl::back_inserter<boost::mpl::copy<RefSpaces,
-          boost::mpl::back_inserter<boost::mpl::copy<GridFunc,
-          boost::mpl::back_inserter<boost::mpl::copy<Domains,
-          boost::mpl::back_inserter<boost::mpl::copy<PhysSpaces,
-          boost::mpl::back_inserter<Functions>
-          >::type> >::type> >::type> >::type> >::type> >::type JointTypes_;
+  typedef boost_mpl_copy_t<Grids,
+          boost_mpl_copy_t<SpSpaces,
+          boost_mpl_copy_t<RefSpaces,
+          boost_mpl_copy_t<GridFunc,
+          boost_mpl_copy_t<Domains,
+          boost_mpl_copy_t<PhysSpaces,Functions>
+          > > > > > JointTypes_;
 
   /** @ref JointTypes_ converted to constant types. */
-  typedef boost::mpl::transform<JointTypes_,
-          boost::add_const<boost::mpl::_1> >::type JointConstTypes_;
+  using JointConstTypes_ = boost_mpl_transform_t<JointTypes_,boost::add_const<boost_mpl_1> >;
 
   /**
    * @ref JointTypes_ and @ref JointConstTypes_ together in single
    * <tt>boost::mpl::vector</tt>.
    */
-  typedef boost::mpl::copy<JointTypes_,
-          boost::mpl::back_inserter<JointConstTypes_>>::type AllTypes_;
+  using AllTypes_ = boost_mpl_copy_t<JointTypes_,JointConstTypes_>;
 
+
+  template <class S>
+  using Pair_ = boost::fusion::pair<S,SafeSTLVector<std::shared_ptr<S>>>;
+
+  /**
+   * This template-alias beahves like a functor and transforms
+   * a sequence of types @ref T into a
+   * <tt>boost::fusion::map</tt> composed of <tt>boost::fusion::pair</tt>s of the form
+   * <tt>boost::fusion::pair<T, SafeSTLVector<shared_ptr<T>></tt>.
+   */
   template <class T>
-  struct as_fusion_map
-  {
-    /**
-     * This functor transform a sequence of types @ref T into a
-     * <tt>boost::fusion::map</tt> composed of <tt>pair</tt>s of the form
-     * <tt>pair<T, SafeSTLVector<shared_ptr<T>></tt>.
-     */
-
-  private:
-    template <class S>
-    using Pair_ = boost::fusion::pair<S, SafeSTLVector<std::shared_ptr<S>>>;
-
-  public:
-    typedef typename boost::fusion::result_of::as_map<
-    typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
-  };
+  using as_fusion_map_t =
+    typename boost::fusion::result_of::as_map<
+    boost_mpl_transform_t<T,Pair_<boost_mpl_1> > >::type;
 
   /** Container for shared pointers of all the instantiated types. */
-  using ObjectMapTypes_ = as_fusion_map<AllTypes_>::type;
+  using ObjectMapTypes_ = as_fusion_map_t<AllTypes_>;
 
 
 public:

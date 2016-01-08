@@ -39,6 +39,10 @@ using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
+
+
+
+
 auto
 ObjectsContainer::
 create() -> shared_ptr<self_t>
@@ -194,35 +198,30 @@ void
 ObjectsContainer::
 print_info(LogStream &out) const
 {
+  auto print_info_and_id = [&out](const string &msg,const auto &objects)
+  {
+    out.begin_item(msg +
+                   "Number of objects: " + to_string(objects.size()));
+    for (const auto &obj : objects)
+    {
+      out.begin_item("Object Id: " + std::to_string(obj->get_object_id()));
+      obj->print_info(out);
+      out.end_item();
+    }
+    out.end_item();
+  };
+
   GridPtrs valid_grid_ptr_types;
   for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    const auto objects = at_key<Type>(objects_);
 
-    out.begin_item("Grid"
-                   " Dim : " + to_string(Type::dim) +
-                   ". Number of objects: " + to_string(objects.size()));
-    for (const auto &object : objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    const string msg = "Grid Dim : " + to_string(Type::dim) + ". ";
+    print_info_and_id(msg,
+                      at_key<Type>(objects_));
 
-    const auto const_objects = at_key<const Type>(objects_);
-
-    out.begin_item("const Grid"
-                   " Dim : " + to_string(Type::dim) +
-                   ". Number of objects: " + to_string(objects.size()));
-    for (const auto &object : const_objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    print_info_and_id("const " + msg,
+                      at_key<const Type>(objects_));
   });
 
   // Spline spaces
@@ -230,37 +229,17 @@ print_info(LogStream &out) const
   for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    const auto objects = at_key<Type>(objects_);
 
-    out.begin_item("SplineSpace"
-                   " Dim : " + to_string(Type::dim) +
-                   " Range : " + to_string(Type::range) +
-                   " Rank : "+ to_string(Type::rank) +
-                   ". Number of objects: " + to_string(objects.size())
-                  );
-    for (const auto &object : objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    const string msg = "SplineSpace"
+                       " Dim : " + to_string(Type::dim) +
+                       " Range : " + to_string(Type::range) +
+                       " Rank : "+ to_string(Type::rank)
+                       + ". ";
+    print_info_and_id(msg,
+                      at_key<Type>(objects_));
 
-    const auto const_objects = at_key<const Type>(objects_);
-
-    out.begin_item("const SplineSpace"
-                   " Dim : " + to_string(Type::dim) +
-                   " Range : " + to_string(Type::range) +
-                   " Rank : "+ to_string(Type::rank) +
-                   ". Number of objects: " + to_string(objects.size())
-                  );
-    for (const auto &object : const_objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    print_info_and_id("const " + msg,
+                      at_key<const Type>(objects_));
   });
 
   // Reference space basis
@@ -269,37 +248,17 @@ print_info(LogStream &out) const
   {
     using SSType = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     using Type = ReferenceSpaceBasis<SSType::dim, SSType::range, SSType::rank>;
-    const auto objects = at_key<Type>(objects_);
 
-    out.begin_item("ReferenceSpaceBasis"
-                   " Dim : " + to_string(Type::dim) +
-                   " Range : " + to_string(Type::range) +
-                   " Rank : "+ to_string(Type::rank) +
-                   ". Number of objects: " + to_string(objects.size())
-                  );
-    for (const auto &object : objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    const string msg = "ReferenceSpaceBasis"
+                       " Dim : " + to_string(Type::dim) +
+                       " Range : " + to_string(Type::range) +
+                       " Rank : "+ to_string(Type::rank)
+                       + ". ";
+    print_info_and_id(msg,
+                      at_key<Type>(objects_));
 
-    const auto const_objects = at_key<const Type>(objects_);
-
-    out.begin_item("const ReferenceSpaceBasis"
-                   " Dim : " + to_string(Type::dim) +
-                   " Range : " + to_string(Type::range) +
-                   " Rank : "+ to_string(Type::rank) +
-                   ". Number of objects: " + to_string(objects.size())
-                  );
-    for (const auto &object : const_objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    print_info_and_id("const " + msg,
+                      at_key<const Type>(objects_));
   });
 
   // Grid functions
@@ -307,33 +266,16 @@ print_info(LogStream &out) const
   for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    const auto objects = at_key<Type>(objects_);
 
-    out.begin_item("GridFunction"
-                   " Dim : " + to_string(Type::dim) +
-                   " Spacedim : " + to_string(Type::range) +
-                   ". Number of objects: " + to_string(objects.size()));
-    for (const auto &object : objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    const string msg = "GridFunction"
+                       " Dim : " + to_string(Type::dim) +
+                       " Spacedim : " + to_string(Type::range)
+                       + ". ";
+    print_info_and_id(msg,
+                      at_key<Type>(objects_));
 
-    const auto const_objects = at_key<const Type>(objects_);
-
-    out.begin_item("const GridFunction"
-                   " Dim : " + to_string(Type::dim) +
-                   " Spacedim : " + to_string(Type::range) +
-                   ". Number of objects: " + to_string(objects.size()));
-    for (const auto &object : const_objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    print_info_and_id("const " + msg,
+                      at_key<const Type>(objects_));
   });
 
   // Domains
@@ -341,33 +283,16 @@ print_info(LogStream &out) const
   for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    const auto objects = at_key<Type>(objects_);
 
-    out.begin_item("Domain"
-                   " Dim : " + to_string(Type::dim) +
-                   " Codim : " + to_string(Type::space_dim - Type::dim) +
-                   ". Number of objects: " + to_string(objects.size()));
-    for (const auto &object : objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    const string msg = "Domain"
+                       " Dim : " + to_string(Type::dim) +
+                       " Codim : " + to_string(Type::space_dim - Type::dim)
+                       + ". ";
+    print_info_and_id(msg,
+                      at_key<Type>(objects_));
 
-    const auto const_objects = at_key<const Type>(objects_);
-
-    out.begin_item("const Domain"
-                   " Dim : " + to_string(Type::dim) +
-                   " Codim : " + to_string(Type::space_dim - Type::dim) +
-                   ". Number of objects: " + to_string(objects.size()));
-    for (const auto &object : const_objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    print_info_and_id("const " + msg,
+                      at_key<const Type>(objects_));
   });
 
   // Physical space basis
@@ -375,37 +300,18 @@ print_info(LogStream &out) const
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    const auto objects = at_key<Type>(objects_);
 
-    out.begin_item("PhysicalSpaceBasis"
-                   " Dim : " + to_string(Type::dim) +
-                   " Range : " + to_string(Type::range) +
-                   " Rank : " + to_string(Type::rank) +
-                   " Codim : " + to_string(Type::codim) +
-                   ". Number of objects: " + to_string(objects.size()));
-    for (const auto &object : objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    const string msg = "PhysicalSpaceBasis"
+                       " Dim : " + to_string(Type::dim) +
+                       " Range : " + to_string(Type::range) +
+                       " Rank : " + to_string(Type::rank) +
+                       " Codim : " + to_string(Type::codim)
+                       + ". ";
+    print_info_and_id(msg,
+                      at_key<Type>(objects_));
 
-    const auto const_objects = at_key<const Type>(objects_);
-
-    out.begin_item("const PhysicalSpaceBasis"
-                   " Dim : " + to_string(Type::dim) +
-                   " Range : " + to_string(Type::range) +
-                   " Rank : " + to_string(Type::rank) +
-                   " Codim : " + to_string(Type::codim) +
-                   ". Number of objects: " + to_string(objects.size()));
-    for (const auto &object : const_objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    print_info_and_id("const " + msg,
+                      at_key<const Type>(objects_));
   });
 
   // Function
@@ -413,37 +319,18 @@ print_info(LogStream &out) const
   for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    const auto objects = at_key<Type>(objects_);
 
-    out.begin_item("Function"
-                   " Dim : " + to_string(Type::dim) +
-                   " Codim : " + to_string(Type::codim) +
-                   " Range : " + to_string(Type::range) +
-                   " Rank : " + to_string(Type::rank) +
-                   ". Number of objects: " + to_string(objects.size()));
-    for (const auto &object : objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    const string msg = "Function"
+                       " Dim : " + to_string(Type::dim) +
+                       " Codim : " + to_string(Type::codim) +
+                       " Range : " + to_string(Type::range) +
+                       " Rank : " + to_string(Type::rank)
+                       + ". ";
+    print_info_and_id(msg,
+                      at_key<Type>(objects_));
 
-    const auto const_objects = at_key<const Type>(objects_);
-
-    out.begin_item("const Function"
-                   " Dim : " + to_string(Type::dim) +
-                   " Codim : " + to_string(Type::codim) +
-                   " Range : " + to_string(Type::range) +
-                   " Rank : " + to_string(Type::rank) +
-                   ". Number of objects: " + to_string(objects.size()));
-    for (const auto &object : const_objects)
-    {
-      out.begin_item("Object Id: " + std::to_string(object->get_object_id()));
-      object->print_info(out);
-      out.end_item();
-    }
-    out.end_item();
+    print_info_and_id("const " + msg,
+                      at_key<const Type>(objects_));
   });
 }
 
