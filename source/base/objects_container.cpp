@@ -340,6 +340,16 @@ bool
 ObjectsContainer::
 is_void() const
 {
+  const bool is_container_not_void = boost::fusion::any(
+                                       objects_,
+                                       [](const auto &map_pair)
+  {
+    return !map_pair.second.empty();
+  });
+
+  return ! is_container_not_void;
+
+#if 0
   bool is_container_not_void = false;
 
   GridPtrs valid_grid_ptr_types;
@@ -488,6 +498,7 @@ is_void() const
     return false;
   else
     return true;
+#endif
 
 }
 
