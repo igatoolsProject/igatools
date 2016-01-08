@@ -35,7 +35,7 @@ private:
   /**
    * Container type for the number of vtk cells per Bezier element.
    */
-  typedef TensorSize<3> NumCellsContainer_;
+  typedef SafeSTLArray<int, 3> NumCellsContainer_;
 
   /**
    * Type of the class.
@@ -69,6 +69,11 @@ public:
    */
   static SelfPtr_ create(const NumCellsContainer_ &num_cells,
                          const VtkGridType &grid_type);
+
+  /**
+   * Creates and returns a shared pointer with a new instance of the class.
+   */
+  static SelfPtr_ create_void();
 
   /**
    * Updates the informations.
@@ -161,6 +166,11 @@ public:
    * Creates and returns a shared pointer with a new instance of the class.
    */
   static SelfPtr_ create(const bool structured);
+
+  /**
+   * Creates and returns a shared pointer with a new instance of the class.
+   */
+  static SelfPtr_ create_void();
 
   /**
    * Updates the informations.

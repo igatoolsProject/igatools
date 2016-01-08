@@ -24,8 +24,7 @@
 #include <vtkMultiBlockDataSetAlgorithm.h>
 
 #include <paraview_plugin/vtk_iga_types.h>
-#include <igatools/base/config.h>
-#include <igatools/utils/tensor_size.h>
+#include <igatools/utils/safe_stl_array.h>
 
 class vtkObjectBase;
 
@@ -33,11 +32,9 @@ class vtkObjectBase;
 
 namespace iga
 {
-template <int> class TensorSize;
+template <class T, int d> class SafeSTLArray;
 struct VtkGridInformation;
 struct VtkControlGridInformation;
-
-class ObjectsContainer;
 
 class VtkIgaGridContainer;
 }
@@ -94,6 +91,9 @@ private:
 
   /** Type for shared pointer of @ref VtkGridGeneratorContainer.  */
   typedef std::shared_ptr<iga::VtkIgaGridContainer> GridGenPtr_;
+
+  /** Type for containing the number of cells per side of each Bezier element.  */
+  typedef iga::SafeSTLArray<int, 3> NumCells_;
 
 
   ///@}
@@ -456,7 +456,7 @@ private:
   void set_num_vis_elements(int arg1, int arg2, int arg3,
                             const char *const name,
                             const char *const mesh_type,
-                            iga::TensorSize<3> &arr);
+                            NumCells_ &arr);
 
   /*
    * This method is used by others (all the SetGridTypeXXX)
@@ -554,7 +554,7 @@ private:
    * for dim = 1, @p n_vis_elem_phys_solid_[0] cells will be used in each
    * direction.
    */
-  iga::TensorSize<3> n_vis_elem_phys_solid_;
+  NumCells_ n_vis_elem_phys_solid_;
 
   /**
    * Sets the number of vtk cells in each direction that will be used for
@@ -568,7 +568,7 @@ private:
    * for dim = 1, @p n_vis_elem_phys_solid_[0] cells will be used in each
    * direction.
    */
-  iga::TensorSize<3> n_vis_elem_parm_solid_;
+  NumCells_ n_vis_elem_parm_solid_;
 
   /**
    * Sets the number of vtk cells in each direction that will be used for
@@ -582,7 +582,7 @@ private:
    * for dim = 1, @p n_vis_elem_phys_solid_[0] cells will be used in each
    * direction.
    */
-  iga::TensorSize<3> n_vis_elem_phys_knot_ ;
+  NumCells_ n_vis_elem_phys_knot_;
 
   /**
    * Sets the number of vtk cells in each direction that will be used for
@@ -596,37 +596,12 @@ private:
    * for dim = 1, @p n_vis_elem_phys_solid_[0] cells will be used in each
    * direction.
    */
-  iga::TensorSize<3> n_vis_elem_parm_knot_;
-
-
-  /**
-   * Igatools functions container used for storing the mapping functions
-   * and their associated field data (@see ObjectsContainer).
-   */
-  std::shared_ptr<iga::ObjectsContainer> objs_container_;
-
+  NumCells_ n_vis_elem_parm_knot_;
 
   /**
    * @todo to document.
    */
   GridGenPtr_ grid_gen_;
-
-  /**
-   * Parses the input file.
-   * It returns 1 if everything worked well, elsewhere returns 0.
-   */
-  int parse_file();
-
-  /**
-   * Updates the information related to the vtk grids for the grids generators.
-   */
-  void update_grid_info();
-
-  /**
-   * Creates the tree of vtkMultiBlockDataSet of the output, and calls the
-   * grid generators for filling the tree.
-   */
-  int create_grids(vtkMultiBlockDataSet *const mb);
 };
 
 #endif // IGATOOLS_READER_H_

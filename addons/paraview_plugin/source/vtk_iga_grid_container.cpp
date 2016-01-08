@@ -19,10 +19,12 @@
 //-+--------------------------------------------------------------------
 
 #include <paraview_plugin/vtk_iga_grid.h>
-#include <igatools/geometry/grid_function_lib.h>
 
 #include <paraview_plugin/vtk_iga_grid_container.h>
 #include <paraview_plugin/vtk_iga_grid_information.h>
+
+#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/io/objects_container_xml_reader.h>
 
 #include <vtkMultiBlockDataSet.h>
 #include <vtkInformation.h>
@@ -68,18 +70,346 @@ VtkIgaGridContainer(const ObjContPtr_ objs_container,
 }
 
 
+auto
+VtkIgaGridContainer::
+create(const std::string &file_name,
+       const NumCells_   &n_cells_phs_sol,
+       const VtkGridType &grid_type_phs_sol,
+       const NumCells_   &n_cells_phs_knt,
+       const VtkGridType &grid_type_phs_knt,
+       const VtkGridType &grid_type_phs_ctr,
+       const NumCells_   &n_cells_prm_sol,
+       const VtkGridType &grid_type_prm_sol,
+       const NumCells_   &n_cells_prm_knt,
+       const VtkGridType &grid_type_prm_knt) -> SelfPtr_
+{
+  // Physical solid grid.
+  const auto phys_sol = VtkGridInformation::create
+                        (n_cells_phs_sol, grid_type_phs_sol);
+
+  // Physical knot grid.
+  const auto phys_knt = VtkGridInformation::create
+                        (n_cells_phs_knt, grid_type_phs_knt);
+
+  // Physical control grid.
+  const auto phys_ctr = VtkControlGridInformation::create
+                        (grid_type_phs_ctr == VtkGridType::Structured);
+
+  // Parametric solid grid.
+  const auto parm_sol = VtkGridInformation::create
+                        (n_cells_prm_sol, grid_type_prm_sol);
+
+  // Parametric knot grid.
+  const auto parm_knt = VtkGridInformation::create
+                        (n_cells_prm_knt, grid_type_prm_knt);
+
+  const auto objs_container = parse_objects_container(file_name);
+
+  return SelfPtr_(new Self_(objs_container, phys_sol, phys_knt, phys_ctr,
+                            parm_sol, parm_knt));
+
+}
+
+
 
 auto
 VtkIgaGridContainer::
-create(const ObjContPtr_ objs_container,
-       const GridInfoPtr_ phys_solid_info,
-       const GridInfoPtr_ phys_knot_info,
-       const ControlGridInfoPtr_ phys_control_info,
-       const GridInfoPtr_ parm_solid_info,
-       const GridInfoPtr_ parm_knot_info) -> SelfPtr_
+parse_objects_container(const string &file_name) ->
+ObjContPtr_
 {
-  return SelfPtr_(new Self_(objs_container, phys_solid_info, phys_knot_info,
-  phys_control_info, parm_solid_info, parm_knot_info));
+    ObjContPtr_ objs_container;
+
+#ifdef XML_IO
+
+    // TODO: before parsing the hole file (that can be big),
+    // it is checked if the file has the expected structure (at least
+    // the header) for knowing if it is an XML human readable or
+    // a serialized file.
+
+    // Check here if the file is of type XML human readable
+    const bool xml_human_readable = true;
+    if (xml_human_readable)
+    {
+      objs_container = ObjectsContainerXMLReader::parse_const(file_name);
+      AssertThrow(!objs_container->is_void(),
+                  ExcMessage("No objects defined in the input file: "
+                             + file_name + "."));
+    }
+
+#endif
+
+#ifdef SERIALIZATION
+    if (parse_file_)
+    {
+      ObjectsContainer container_new;
+      {
+        std::ifstream xml_istream(file_name);
+        IArchive xml_in(xml_istream);
+        xml_in >> container_new;
+      }
+      objs_container = std::make_shared<ObjectsContainer>(container_new);
+
+      AssertThrow(!objs_container->is_void(),
+                  ExcMessage("No objects defined in the input file or "
+                             "serialization file not properly defined."
+                             " File name: " + file_name + "."));
+    }
+#endif
+
+    return objs_container;
+}
+
+
+
+auto
+VtkIgaGridContainer::
+create_void() -> SelfPtr_
+{
+  return SelfPtr_(new Self_(ObjectsContainer::create(),
+                            VtkGridInformation::create_void(),
+                            VtkGridInformation::create_void(),
+                            VtkControlGridInformation::create_void(),
+                            VtkGridInformation::create_void(),
+                            VtkGridInformation::create_void()));
+}
+
+
+
+void
+VtkIgaGridContainer::
+create_multiblock_grid(const bool phys_mesh,
+                       const bool sol_phys_mesh,
+                       const bool knt_phys_mesh,
+                       const bool ctr_phys_mesh,
+                       const bool prm_mesh,
+                       const bool sol_prm_mesh,
+                       const bool knt_prm_mesh,
+                       vtkMultiBlockDataSet *const mb) const
+{
+  unsigned int num_blocks = phys_mesh + prm_mesh;
+
+  if (num_blocks == 0)
+      throw ExcVtkWarning("Neither physical nor parametric geometries are "
+                             "active. No output produced.");
+
+  const unsigned int num_phys_blocks = sol_phys_mesh + knt_phys_mesh + ctr_phys_mesh;
+
+  const unsigned int num_parm_blocks = sol_prm_mesh + knt_prm_mesh;
+
+  // TO improve
+  const auto num_active_phys = Self_::get_number_active_grids(phys_generators_);
+  const auto num_active_parm = Self_::get_number_active_grids(parm_generators_);
+
+  bool new_create_physical_mesh = phys_mesh;
+  if (phys_mesh && (num_phys_blocks == 0 || num_active_phys == 0))
+  {
+      if (num_phys_blocks == 0)
+          throw ExcVtkWarning("Physical geometries set active, but no grid type "
+                  "(solid, knot, control) has been selected");
+      else
+          throw ExcVtkWarning("Physical geometries set active, but no "
+                  "geometry set active from the list.");
+
+    --num_blocks;
+
+    new_create_physical_mesh = false;
+  }
+
+
+  bool new_create_parametric_mesh = prm_mesh;
+  if (prm_mesh && (num_parm_blocks == 0 || num_active_parm == 0))
+  {
+      if (num_parm_blocks == 0)
+          throw ExcVtkWarning("Parametric geometries set active, but no grid type "
+                  "(solid, knot) has been selected");
+      else
+          throw ExcVtkWarning("Parametric geometries set active, but no "
+                  "geometry set active from the list.");
+
+    --num_blocks;
+
+    new_create_parametric_mesh = false;
+  }
+
+  if (num_blocks == 0)
+      throw ExcVtkWarning("Neither physical nor parametric geometries are "
+              "active. No output produced.");
+
+
+  // Creating blocks for the physical and parametric geometries.
+  mb->SetNumberOfBlocks(num_blocks);
+  for (unsigned int i = 0; i < num_blocks; ++i)
+    mb->SetBlock(i, vtkSmartPointer<vtkMultiBlockDataSet>::New());
+
+  Size total_number_blocks = 0;
+  if (new_create_physical_mesh)
+  {
+    if (sol_phys_mesh)
+      ++total_number_blocks;
+    if (knt_phys_mesh)
+      ++total_number_blocks;
+    if (ctr_phys_mesh)
+      ++total_number_blocks;
+  }
+  if (new_create_parametric_mesh)
+  {
+    if (sol_prm_mesh)
+      ++total_number_blocks;
+    if (knt_prm_mesh)
+      ++total_number_blocks;
+  }
+
+
+//  Index progress_index = 0;
+
+  unsigned int block_index = 0;
+  if (new_create_physical_mesh)
+  {
+    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Physical mesh");
+
+    vtkMultiBlockDataSet *const phys_block =
+      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
+
+    phys_block->SetNumberOfBlocks(num_phys_blocks);
+
+    Index subblock_index = 0;
+
+    if (sol_phys_mesh)
+    {
+      const auto solid_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
+      phys_block->SetBlock(subblock_index, solid_block);
+      phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
+                                                   "Solid mesh");
+      Self_::set_solid_grids(phys_generators_, solid_block);
+
+//      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
+
+      ++subblock_index;
+    }
+
+    if (knt_phys_mesh)
+    {
+      const auto knot_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
+      phys_block->SetBlock(subblock_index, knot_block);
+      phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
+                                                   "Knot mesh");
+      Self_::set_knot_grids(phys_generators_, knot_block);
+
+//      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
+
+      ++subblock_index;
+    }
+
+    if (ctr_phys_mesh)
+    {
+      const auto control_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
+      phys_block->SetBlock(subblock_index, control_block);
+      phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
+                                                   "Control mesh");
+      Self_::set_control_grids(phys_generators_, control_block);
+
+//      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
+    }
+
+    ++block_index;
+  } // create_physical_mesh
+
+
+  if (new_create_parametric_mesh)
+  {
+    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Parametric mesh");
+
+    vtkMultiBlockDataSet *const parm_block =
+      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
+
+    parm_block->SetNumberOfBlocks(num_parm_blocks);
+
+    Index subblock_index = 0;
+
+    if (sol_prm_mesh)
+    {
+      const auto solid_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
+      parm_block->SetBlock(subblock_index, solid_block);
+      parm_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
+                                                   "Solid mesh");
+      Self_::set_solid_grids(parm_generators_, solid_block);
+
+//      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
+
+      ++subblock_index;
+    }
+
+    if (knt_prm_mesh)
+    {
+      const auto knot_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
+      parm_block->SetBlock(subblock_index, knot_block);
+      parm_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
+                                                   "Knot mesh");
+      Self_::set_knot_grids(parm_generators_, knot_block);
+
+//      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
+    }
+  } // create_parametric_mesh
+
+}
+
+
+
+void
+VtkIgaGridContainer::
+update(const NumCells_   &n_cells_phs_sol,
+       const VtkGridType &grid_type_phs_sol,
+       const NumCells_   &n_cells_phs_knt,
+       const VtkGridType &grid_type_phs_knt,
+       const VtkGridType &grid_type_phs_ctr,
+       const NumCells_   &n_cells_prm_sol,
+       const VtkGridType &grid_type_prm_sol,
+       const NumCells_   &n_cells_prm_knt,
+       const VtkGridType &grid_type_prm_knt)
+{
+  // Physical solid grid.
+  const auto phys_solid_info = VtkGridInformation::create
+                        (n_cells_phs_sol, grid_type_phs_sol);
+
+  // Physical knot grid.
+  const auto phys_knot_info = VtkGridInformation::create
+                        (n_cells_phs_knt, grid_type_phs_knt);
+
+  // Physical control grid.
+  const auto phys_control_info = VtkControlGridInformation::create
+                        (grid_type_phs_ctr == VtkGridType::Structured);
+
+  // Parametric solid grid.
+  const auto parm_solid_info = VtkGridInformation::create
+                        (n_cells_prm_sol, grid_type_prm_sol);
+
+  // Parametric knot grid.
+  const auto parm_knot_info = VtkGridInformation::create
+                        (n_cells_prm_knt, grid_type_prm_knt);
+
+  const bool phys_solid_updated    = phys_solid_info_->update(phys_solid_info);
+  const bool phys_knot_updated     = phys_knot_info_->update(phys_knot_info);
+  const bool phys_control_updated  = phys_control_info_->update(phys_control_info);
+  const bool parm_solid_updated    = parm_solid_info_->update(parm_solid_info);
+  const bool parm_knot_updated     = parm_knot_info_->update(parm_knot_info);
+  const bool parm_control_updated  = false;
+
+  // Updating physical generators.
+  boost::fusion::for_each(phys_generators_, [&](const auto &gen_pair)
+  {
+    for (const auto gen : gen_pair.second)
+      gen->update(phys_solid_updated, phys_knot_updated,
+                  phys_control_updated);
+  });
+
+
+  // Updating parametric generators.
+  boost::fusion::for_each(parm_generators_, [&](const auto &gen_pair)
+  {
+    for (const auto &gen : gen_pair.second)
+      gen->update(parm_solid_updated, parm_knot_updated,
+                  parm_control_updated);
+  });
 }
 
 
@@ -524,41 +854,6 @@ build_generators()
 
 
 
-void
-VtkIgaGridContainer::
-update(const GridInfoPtr_ phys_solid_info,
-       const GridInfoPtr_ phys_knot_info,
-       const ControlGridInfoPtr_ phys_control_info,
-       const GridInfoPtr_ parm_solid_info,
-       const GridInfoPtr_ parm_knot_info)
-{
-  const bool phys_solid_updated    = phys_solid_info_->update(phys_solid_info);
-  const bool phys_knot_updated     = phys_knot_info_->update(phys_knot_info);
-  const bool phys_control_updated  = phys_control_info_->update(phys_control_info);
-  const bool parm_solid_updated    = parm_solid_info_->update(parm_solid_info);
-  const bool parm_knot_updated     = parm_knot_info_->update(parm_knot_info);
-  const bool parm_control_updated  = false;
-
-  // Updating physical generators.
-  boost::fusion::for_each(phys_generators_, [&](const auto &gen_pair)
-  {
-    for (const auto gen : gen_pair.second)
-      gen->update(phys_solid_updated, phys_knot_updated,
-                  phys_control_updated);
-  });
-
-
-  // Updating parametric generators.
-  boost::fusion::for_each(parm_generators_, [&](const auto &gen_pair)
-  {
-    for (const auto &gen : gen_pair.second)
-      gen->update(parm_solid_updated, parm_knot_updated,
-                  parm_control_updated);
-  });
-}
-
-
-
 Size
 VtkIgaGridContainer::
 get_number_physical_grids() const
@@ -573,39 +868,6 @@ VtkIgaGridContainer::
 get_number_parametric_grids() const
 {
   return Self_::get_number_grids(parm_generators_);
-}
-
-
-
-Size
-VtkIgaGridContainer::
-get_number_active_physical_grids() const
-{
-  return Self_::get_number_active_grids(phys_generators_);
-}
-
-
-
-Size
-VtkIgaGridContainer::
-get_number_active_parametric_grids() const
-{
-  return Self_::get_number_active_grids(parm_generators_);
-}
-
-
-
-Size
-VtkIgaGridContainer::
-get_number_active_ig_grids() const
-{
-  Size counter = 0;
-  boost::fusion::for_each(phys_generators_, [&](const auto &gen_pair)
-  {
-    for (const auto gen : gen_pair.second)
-      counter += (gen->is_active() && gen->is_ig_grid_func());
-  });
-  return counter;
 }
 
 
@@ -660,70 +922,6 @@ VtkIgaGridContainer::
 set_parametric_grid_status(const std::string &name, const bool status)
 {
   Self_::set_grid_status(parm_generators_, name, status);
-}
-
-
-
-void
-VtkIgaGridContainer::
-set_physical_solid_grids(vtkMultiBlockDataSet *const mb)
-{
-  Self_::set_solid_grids(phys_generators_, mb);
-}
-
-
-
-void
-VtkIgaGridContainer::
-set_physical_knot_grids(vtkMultiBlockDataSet *const mb)
-{
-  Self_::set_knot_grids(phys_generators_, mb);
-}
-
-
-
-void
-VtkIgaGridContainer::
-set_physical_control_grids(vtkMultiBlockDataSet *const mb)
-{
-  const auto active_grids = this->get_number_active_ig_grids();
-  Assert(active_grids > 0, ExcEmptyObject());
-
-  mb->SetNumberOfBlocks(active_grids);
-
-  unsigned int block_index = 0;
-  boost::fusion::for_each(phys_generators_, [&](const auto &gen_pair)
-  {
-    for (const auto gen : gen_pair.second)
-    {
-      if (gen->is_active() && gen->is_ig_grid_func())
-      {
-        const auto &name = gen->get_name();
-
-        mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-        mb->SetBlock(block_index, gen->get_control_grid());
-        ++block_index;
-      }
-    }
-  });
-}
-
-
-
-void
-VtkIgaGridContainer::
-set_parametric_solid_grids(vtkMultiBlockDataSet *const mb)
-{
-  Self_::set_solid_grids(parm_generators_, mb);
-}
-
-
-
-void
-VtkIgaGridContainer::
-set_parametric_knot_grids(vtkMultiBlockDataSet *const mb)
-{
-  Self_::set_knot_grids(parm_generators_, mb);
 }
 
 
@@ -903,7 +1101,42 @@ set_knot_grids(const GridGensContainer_ generators,
       }
     }
   });
+}
 
+
+
+void
+VtkIgaGridContainer::
+set_control_grids(const GridGensContainer_ generators,
+                  vtkMultiBlockDataSet *const mb)
+{
+  // Getting number of active ig grids.
+  Size active_grids = 0;
+  boost::fusion::for_each(generators, [&](const auto &gen_pair)
+  {
+    for (const auto gen : gen_pair.second)
+      active_grids += (gen->is_active() && gen->is_ig_grid_func());
+  });
+
+  Assert(active_grids > 0, ExcEmptyObject());
+
+  mb->SetNumberOfBlocks(active_grids);
+
+  unsigned int block_index = 0;
+  boost::fusion::for_each(generators, [&](const auto &gen_pair)
+  {
+    for (const auto gen : gen_pair.second)
+    {
+      if (gen->is_active() && gen->is_ig_grid_func())
+      {
+        const auto &name = gen->get_name();
+
+        mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+        mb->SetBlock(block_index, gen->get_control_grid());
+        ++block_index;
+      }
+    }
+  });
 }
 
 IGA_NAMESPACE_CLOSE
