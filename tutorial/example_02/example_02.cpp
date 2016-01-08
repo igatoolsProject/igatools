@@ -35,7 +35,8 @@ LogStream out;
 
 // [hypercube]
 template <int dim>
-shared_ptr<const Domain<dim>> reference_domain(Size nel) {
+shared_ptr<const Domain<dim>> reference_domain(Size nel)
+{
   auto grid = Grid<dim>::const_create(nel+1);
   auto id_funct = grid_functions::IdentityGridFunction<dim>::const_create(grid);
   return Domain<dim>::const_create(id_funct);
@@ -43,17 +44,24 @@ shared_ptr<const Domain<dim>> reference_domain(Size nel) {
 // [hypercube]
 
 // [annulus_init]
-shared_ptr<Domain<2>> quarter_annulus(TensorSize<2> nel) {
+shared_ptr<Domain<2>> quarter_annulus(TensorSize<2> nel)
+{
 
   TensorIndex<2> deg = {1,2};
   IgCoefficients control_points;
   IgCoefficients weights;
-  control_points[ 0] = 1.0;  control_points[ 6] = 0.0;
-  control_points[ 1] = 2.0;  control_points[ 7] = 0.0;
-  control_points[ 2] = 1.0;  control_points[ 8] = 1.0;
-  control_points[ 3] = 2.0;  control_points[ 9] = 2.0;
-  control_points[ 4] = 0.0;  control_points[10] = 1.0;
-  control_points[ 5] = 0.0;  control_points[11] = 2.0;
+  control_points[ 0] = 1.0;
+  control_points[ 6] = 0.0;
+  control_points[ 1] = 2.0;
+  control_points[ 7] = 0.0;
+  control_points[ 2] = 1.0;
+  control_points[ 8] = 1.0;
+  control_points[ 3] = 2.0;
+  control_points[ 9] = 2.0;
+  control_points[ 4] = 0.0;
+  control_points[10] = 1.0;
+  control_points[ 5] = 0.0;
+  control_points[11] = 2.0;
   weights[0] = 1.0;
   weights[1] = 1.0;
   weights[2] = sqrt(2.0)/2.0;
@@ -81,9 +89,9 @@ shared_ptr<Domain<2>> quarter_annulus(TensorSize<2> nel) {
   grid->refine_directions({true,true},nel);
   return Domain<2>::create(geom_funct);
 }
-  // [refinement]
+// [refinement]
 
-  // [main]
+// [main]
 int main()
 {
   auto square  = reference_domain<2>(8);
@@ -122,4 +130,4 @@ int main()
 
   return 0;
 }
-  // [annulus_plot]
+// [annulus_plot]

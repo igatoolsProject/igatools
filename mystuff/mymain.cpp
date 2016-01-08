@@ -43,7 +43,8 @@ const Real mu     = 0.38462;
 //   MY CUSTOM FUNCTION
 // ----------------------------------------------------------------------------
 #define PI 3.141592653589793
-Values<3,3,1> u(Points<3> pts) {
+Values<3,3,1> u(Points<3> pts)
+{
   Values<3,3,1> x = {0.0,0.0,0.0};
   x[2] = 0.1 * (cos(2.0*PI*pts[0]) - 1.0);
   //for (int idim=0; idim<dim; idim++) {
@@ -52,7 +53,8 @@ Values<3,3,1> u(Points<3> pts) {
   return x;
 }
 
-Values<3,3,1> f(Points<3> pts) {
+Values<3,3,1> f(Points<3> pts)
+{
   Values<3,3,1> x = {0.0,0.0,-0.1};
   x[2] = mu*PI*PI*0.8 * cos(2.0*PI*pts[0]);// * cos(2.0*PI*pts[1]);
   //for (int idim=0; idim<dim; idim++) {
@@ -64,7 +66,8 @@ Values<3,3,1> f(Points<3> pts) {
 // ----------------------------------------------------------------------------
 //   MAIN
 // ----------------------------------------------------------------------------
-int main() {
+int main()
+{
 
   // problem dimension
   const int dim = 3;
@@ -94,7 +97,8 @@ int main() {
   // linear elasticity problem creation
   TensorSize<dim>  nel;
   TensorIndex<dim> deg;
-  for (int idim=0; idim<dim; idim++) {
+  for (int idim=0; idim<dim; idim++)
+  {
     nel[idim]=4;
     deg[idim]=2;
   }
@@ -117,7 +121,7 @@ int main() {
   auto basis   = PhysicalSpaceBasis<dim,dim>::create(refbasis,domain);
   auto quad    = QGauss<dim>::create(3);
   grid->refine();
-  
+
   auto handler = basis->create_cache_handler();
   auto el      = basis->begin();
   auto el_end  = basis->end();

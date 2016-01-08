@@ -48,11 +48,11 @@ VtkIgaGrid(const DomainPtr_ domain,
   control_grid_info_(control_grid_info),
   objs_container_(obj_container),
   recompute_control_(is_physical ? true : false),
-  is_active_ (is_active),
-  is_physical_ (is_physical),
-  is_ig_grid_func_ (is_physical ?
-              std::dynamic_pointer_cast<const IgGridFunc_>(domain->get_grid_function()) != nullptr :
-              false)
+  is_active_(is_active),
+  is_physical_(is_physical),
+  is_ig_grid_func_(is_physical ?
+                  std::dynamic_pointer_cast<const IgGridFunc_>(domain->get_grid_function()) != nullptr :
+                  false)
 {
   Assert(domain_ != nullptr, ExcNullPtr());
   Assert(solid_grid_info_ != nullptr, ExcNullPtr());

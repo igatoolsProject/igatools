@@ -46,14 +46,14 @@ int main()
   // [grid_print]
   out << "Grid: " << endl;
   out << "  number of elements:  " << endl;
-  out << "    " << grid->get_num_all_elems(); 
+  out << "    " << grid->get_num_all_elems();
   out << " = " << grid->get_num_intervals() << endl;
   out << "  knots:  " << endl;
   auto knots = grid->get_knots();
-  for (const auto & knot_vect : knots)
+  for (const auto &knot_vect : knots)
   {
     out << "   ";
-    for (const auto & knot : *knot_vect)
+    for (const auto &knot : *knot_vect)
       out << " " << knot;
     out << endl;
   }

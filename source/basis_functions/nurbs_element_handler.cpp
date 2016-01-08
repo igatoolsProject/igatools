@@ -145,7 +145,7 @@ template<int dim_, int range_ , int rank_>
 NURBSElementHandler<dim_, range_, rank_>::
 SetFlagsDispatcher::
 SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
-                  self_t &nrb_handler)
+                   self_t &nrb_handler)
   :
   nrb_flag_(nrb_flag),
   nrb_handler_(nrb_handler)

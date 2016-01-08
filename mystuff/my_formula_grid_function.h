@@ -9,7 +9,8 @@ namespace grid_functions
 #define PI 3.14159265358979323846
 
 template<int dim, int space_dim>
-class MyFormulaGridFunction : public FormulaGridFunction<dim,space_dim> {
+class MyFormulaGridFunction : public FormulaGridFunction<dim,space_dim>
+{
   // some useful aliases
   using base_t   = GridFunction<dim,space_dim>;
   using parent_t = FormulaGridFunction<dim,space_dim>;
@@ -24,13 +25,15 @@ public:
 public:
   // creators
   static std::shared_ptr<base_t>
-  create(const std::shared_ptr<GridType> &domain) {
+  create(const std::shared_ptr<GridType> &domain)
+  {
     return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<GridType>(domain)));
   }
 
 
   static std::shared_ptr<const base_t>
-  const_create(const std::shared_ptr<const GridType> &domain) { 
+  const_create(const std::shared_ptr<const GridType> &domain)
+  {
     std::cout << " myformula grid function has been successfully created!" << std::endl;
     return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<GridType>(domain)));
   }
@@ -40,7 +43,7 @@ public:
   virtual ~MyFormulaGridFunction() = default;
 
   virtual void print_info(LogStream &out) const override final;
-  
+
   void grid_loop();
 
   //  my experiment
@@ -50,40 +53,46 @@ public:
 protected:
   MyFormulaGridFunction(
     const SharedPtrConstnessHandler<GridType> &domain)
-  :
-  parent_t(domain)
+    :
+    parent_t(domain)
 
-{};
+  {};
 
 private:
   void evaluate_0(const ValueVector<GridPoint> &points,
-                  ValueVector<Value> &values) const {
+                  ValueVector<Value> &values) const
+  {
     //std::cout << "evaluation of function" << std::endl;
     auto point = points.begin();
-    for (auto &val : values ) {
+    for (auto &val : values)
+    {
       val = 1.0;
       for (int idim=0; idim<dim; idim++)
-        val *= sin( (*point)[idim] * PI );
+        val *= sin((*point)[idim] * PI);
       ++point;
     }
   };
 
   void evaluate_1(const ValueVector<GridPoint> &points,
-                  ValueVector<Derivative<1>> &values) const {
+                  ValueVector<Derivative<1>> &values) const
+  {
     //std::cout << "evaluation of function derivatives" << std::endl;
     auto point = points.begin();
-    for (auto &val : values ) {
-      for (int idim=0; idim<dim; idim++) {
-        val[idim] = PI; 
+    for (auto &val : values)
+    {
+      for (int idim=0; idim<dim; idim++)
+      {
+        val[idim] = PI;
         for (int jdim=0; jdim<idim; jdim++)     val[idim] *= sin((*point)[idim] * PI);
-	                                        val[idim] *= cos((*point)[idim] * PI);
-	for (int jdim=idim+1; jdim<dim; jdim++) val[idim] *= sin((*point)[idim] * PI);
+        val[idim] *= cos((*point)[idim] * PI);
+        for (int jdim=idim+1; jdim<dim; jdim++) val[idim] *= sin((*point)[idim] * PI);
       }
     }
   };
 
   void evaluate_2(const ValueVector<GridPoint> &points,
-                  ValueVector<Derivative<2>> &values) const {
+                  ValueVector<Derivative<2>> &values) const
+  {
     std::cout << "evaluation of second derivatives" << std::endl;
   };
 
@@ -97,7 +106,8 @@ private:
 };
 
 template<int dim, int space_dim>
-void MyFormulaGridFunction<dim,space_dim>::print_info(LogStream &out) const {
+void MyFormulaGridFunction<dim,space_dim>::print_info(LogStream &out) const
+{
   std::cout << " print_info method tested!" << std::endl;
 };
 

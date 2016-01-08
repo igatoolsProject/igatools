@@ -39,7 +39,8 @@ using namespace std;
 LogStream out;
 
 // [quarter_annulus]
-shared_ptr<const Domain<2>> quarter_annulus(const Size nel) {
+shared_ptr<const Domain<2>> quarter_annulus(const Size nel)
+{
   using numbers::PI;
   BBox<2> box;
   box[0] = {{1.0,2.0}};
@@ -52,13 +53,15 @@ shared_ptr<const Domain<2>> quarter_annulus(const Size nel) {
 
 // [grid_loop]
 template <int dim>
-void grid_loop(shared_ptr<const Grid<dim>> grid) {
+void grid_loop(shared_ptr<const Grid<dim>> grid)
+{
 
   auto grid_el     = grid->begin();
   auto grid_el_end = grid->end();
 
   out << "Traversing the elements of a " << dim << "-dimensional grid." << endl;
-  for (; grid_el!=grid_el_end; ++grid_el) {
+  for (; grid_el!=grid_el_end; ++grid_el)
+  {
     out << "The flat/tensor indices of the current element are:  " << grid_el->get_index() << endl;
   }
   out << endl;
@@ -67,7 +70,8 @@ void grid_loop(shared_ptr<const Grid<dim>> grid) {
 
 // [basis_loop_start]
 template <int dim, int codim=0, int range=1, int rank=1>
-void basis_loop_with_cache(shared_ptr<const Basis<dim,codim,range,rank>> basis) {
+void basis_loop_with_cache(shared_ptr<const Basis<dim,codim,range,rank>> basis)
+{
 
   auto basis_el      = basis->begin();
   auto basis_el_end  = basis->end();
@@ -85,7 +89,8 @@ void basis_loop_with_cache(shared_ptr<const Basis<dim,codim,range,rank>> basis) 
 // [basis_loop_init]
 
 // [basis_loop_loop]
-  for (; basis_el!=basis_el_end; ++basis_el) {
+  for (; basis_el!=basis_el_end; ++basis_el)
+  {
     cache_handler->fill_element_cache(basis_el);
 // [basis_loop_loop]
 

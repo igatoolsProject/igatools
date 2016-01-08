@@ -155,8 +155,8 @@ private:
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_grids (const ContPtr_ container,
-                           const XMLDocPtr_ xml_doc);
+  static void write_grids(const ContPtr_ container,
+                          const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends all the @ref SplineSpace
@@ -165,8 +165,8 @@ private:
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_spline_spaces (const ContPtr_ container,
-                                   const XMLDocPtr_ xml_doc);
+  static void write_spline_spaces(const ContPtr_ container,
+                                  const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends all the @ref ReferenceSpaceBasis
@@ -175,8 +175,8 @@ private:
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_reference_space_bases (const ContPtr_ container,
-                                     const XMLDocPtr_ xml_doc);
+  static void write_reference_space_bases(const ContPtr_ container,
+                                          const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends all the @ref GridFunction
@@ -185,8 +185,8 @@ private:
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_grid_functions (const ContPtr_ container,
-                                    const XMLDocPtr_ xml_doc);
+  static void write_grid_functions(const ContPtr_ container,
+                                   const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends all the @ref Domain
@@ -195,8 +195,8 @@ private:
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_domains (const ContPtr_ container,
-                             const XMLDocPtr_ xml_doc);
+  static void write_domains(const ContPtr_ container,
+                            const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends all the @ref PhysicalSpaceBasis
@@ -205,8 +205,8 @@ private:
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_physical_space_bases (const ContPtr_ container,
-                                          const XMLDocPtr_ xml_doc);
+  static void write_physical_space_bases(const ContPtr_ container,
+                                         const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends all the @ref Function
@@ -215,8 +215,8 @@ private:
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_functions (const ContPtr_ container,
-                               const XMLDocPtr_ xml_doc);
+  static void write_functions(const ContPtr_ container,
+                              const XMLDocPtr_ xml_doc);
 
 
   /**
@@ -227,8 +227,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class Grid>
-  static void write_grid (const std::shared_ptr<Grid> grid,
-                          const XMLDocPtr_ xml_doc);
+  static void write_grid(const std::shared_ptr<Grid> grid,
+                         const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref SplineSpace
@@ -238,8 +238,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class SpSpace>
-  static void write_spline_space (const std::shared_ptr<SpSpace> spline_space,
-                                  const XMLDocPtr_ xml_doc);
+  static void write_spline_space(const std::shared_ptr<SpSpace> spline_space,
+                                 const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref BSpline
@@ -249,8 +249,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class BSpline>
-  static void write_bspline (const std::shared_ptr<BSpline> bspline,
-                             const XMLDocPtr_ xml_doc);
+  static void write_bspline(const std::shared_ptr<BSpline> bspline,
+                            const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref NURBS
@@ -260,8 +260,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class NURBS>
-  static void write_nurbs (const std::shared_ptr<NURBS> nurbs,
-                           const XMLDocPtr_ xml_doc);
+  static void write_nurbs(const std::shared_ptr<NURBS> nurbs,
+                          const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref grid_functions::IdentityGridFunction
@@ -271,8 +271,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class IdGridFunc>
-  static void write_identity_grid_function (const std::shared_ptr<IdGridFunc> id_func,
-                                            const XMLDocPtr_ xml_doc);
+  static void write_identity_grid_function(const std::shared_ptr<IdGridFunc> id_func,
+                                           const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref grid_functions::ConstantGridFunction
@@ -282,8 +282,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class ConstGridFunc>
-  static void write_constant_grid_function (const std::shared_ptr<ConstGridFunc> const_func,
-                                            const XMLDocPtr_ xml_doc);
+  static void write_constant_grid_function(const std::shared_ptr<ConstGridFunc> const_func,
+                                           const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref grid_functions::LinearGridFunction
@@ -293,8 +293,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class LinearGridFunc>
-  static void write_linear_grid_function (const std::shared_ptr<LinearGridFunc> linear_func,
-                                          const XMLDocPtr_ xml_doc);
+  static void write_linear_grid_function(const std::shared_ptr<LinearGridFunc> linear_func,
+                                         const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref IgGridFunction
@@ -304,8 +304,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class IgGridFunc>
-  static void write_ig_grid_function (const std::shared_ptr<IgGridFunc> ig_func,
-                                      const XMLDocPtr_ xml_doc);
+  static void write_ig_grid_function(const std::shared_ptr<IgGridFunc> ig_func,
+                                     const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref Domain
@@ -315,8 +315,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class Domain>
-  static void write_domain (const std::shared_ptr<Domain> domain,
-                            const XMLDocPtr_ xml_doc);
+  static void write_domain(const std::shared_ptr<Domain> domain,
+                           const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref PhysicalSpaceBasis
@@ -326,8 +326,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class PhysSpaceBasis>
-  static void write_phys_space_basis (const std::shared_ptr<PhysSpaceBasis> phys_space,
-                                      const XMLDocPtr_ xml_doc);
+  static void write_phys_space_basis(const std::shared_ptr<PhysSpaceBasis> phys_space,
+                                     const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref functions::ConstantFunction
@@ -337,8 +337,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class ConstantFunction>
-  static void write_constant_function (const std::shared_ptr<ConstantFunction> const_function,
-                                       const XMLDocPtr_ xml_doc);
+  static void write_constant_function(const std::shared_ptr<ConstantFunction> const_function,
+                                      const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref functions::LinearFunction
@@ -348,8 +348,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class LinearFunc>
-  static void write_linear_function (const std::shared_ptr<LinearFunc> linear_func,
-                                     const XMLDocPtr_ xml_doc);
+  static void write_linear_function(const std::shared_ptr<LinearFunc> linear_func,
+                                    const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref IgFunction
@@ -359,8 +359,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class IgFunction>
-  static void write_ig_function (const std::shared_ptr<IgFunction> ig_function,
-                                 const XMLDocPtr_ xml_doc);
+  static void write_ig_function(const std::shared_ptr<IgFunction> ig_function,
+                                const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Creates a new @ref XMLElement containing

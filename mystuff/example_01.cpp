@@ -45,7 +45,8 @@ const Real mu     = 0.38462;
 // ----------------------------------------------------------------------------
 #define PI 3.141592653589793
 template<int dim>
-Values<dim,dim,1> u(Points<dim> pts) {
+Values<dim,dim,1> u(Points<dim> pts)
+{
   Values<dim,dim,1> x;
   for (int idim=0; idim<dim-1; idim++) x[idim] = 0.0;
   x[dim-1] = 0.1 * (cos(2.0*PI*pts[0]) - 1.0);
@@ -55,7 +56,8 @@ Values<dim,dim,1> u(Points<dim> pts) {
   return x;
 }
 template<int dim>
-Values<dim,dim,1> f(Points<dim> pts) {
+Values<dim,dim,1> f(Points<dim> pts)
+{
   Values<dim,dim,1> x;
   for (int idim=0; idim<dim-1; idim++) x[idim] = 0.0;
   x[dim-1] = mu*PI*PI*0.8 * cos(2.0*PI*pts[0]);// * cos(2.0*PI*pts[1]);
@@ -65,14 +67,16 @@ Values<dim,dim,1> f(Points<dim> pts) {
   return x;
 }
 
-Real eoc(Real e1, Real e2, Real h1, Real h2) {
+Real eoc(Real e1, Real e2, Real h1, Real h2)
+{
   return (log(e2)-log(e1))/(log(h2)-log(h1));
 }
 
 // ----------------------------------------------------------------------------
 //   MAIN
 // ----------------------------------------------------------------------------
-int main() {
+int main()
+{
 
   // problem dimension
   const int dim = 2;
@@ -141,7 +145,8 @@ int main() {
 
   TensorSize<dim>  nel;
   TensorIndex<dim> deg;
-  for (int idim=0; idim<dim; idim++) {
+  for (int idim=0; idim<dim; idim++)
+  {
     nel[idim]=2;
     deg[idim]=1;
   }

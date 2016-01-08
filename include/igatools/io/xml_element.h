@@ -312,7 +312,7 @@ public:
    *
    * @param[in] xml_elem Child element to be appended.
    */
-  void append_child_element (const SelfPtr_ xml_elem);
+  void append_child_element(const SelfPtr_ xml_elem);
 
   ///@}
 

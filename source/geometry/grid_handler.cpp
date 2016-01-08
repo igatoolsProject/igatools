@@ -247,9 +247,9 @@ template <int dim>
 GridHandler<dim>::
 SetFlagsDispatcher::
 SetFlagsDispatcher(const Flags flag, self_t &grid_handler)
-    :
-    flag_(flag),
-    grid_handler_(grid_handler)
+  :
+  flag_(flag),
+  grid_handler_(grid_handler)
 {}
 
 template <int dim>

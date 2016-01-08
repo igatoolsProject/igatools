@@ -130,8 +130,8 @@ private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
     SetFlagsDispatcher(const typename space_element::Flags flag_in,
-                      GridHandler<dim_> &grid_handler,
-                      SafeSTLArray<typename space_element::Flags, dim+1> &flags);
+                       GridHandler<dim_> &grid_handler,
+                       SafeSTLArray<typename space_element::Flags, dim+1> &flags);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);

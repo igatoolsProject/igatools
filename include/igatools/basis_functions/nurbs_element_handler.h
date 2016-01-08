@@ -172,7 +172,7 @@ private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
     SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
-                      self_t &nrb_handler);
+                       self_t &nrb_handler);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);

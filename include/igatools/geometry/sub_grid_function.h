@@ -95,10 +95,10 @@ public:
 #endif
 
   virtual std::unique_ptr<GridFunctionElement<sdim,range>>
-                                                            create_element_begin(const PropId &prop) const override final;
+                                                        create_element_begin(const PropId &prop) const override final;
 
   virtual std::unique_ptr<GridFunctionElement<sdim,range>>
-                                                            create_element_end(const PropId &prop) const override final;
+                                                        create_element_end(const PropId &prop) const override final;
 
 
 #ifdef MESH_REFINEMENT

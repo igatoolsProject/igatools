@@ -87,10 +87,10 @@ public:
   ///@}
 
 
-/*
-  template <int sdim = dim>
-  int get_num_points() const;
-//*/
+  /*
+    template <int sdim = dim>
+    int get_num_points() const;
+  //*/
 
 protected:
 

@@ -242,10 +242,10 @@ private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
     SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
-                      const Transformation &transformation_type,
-                      RefElemHandler &ref_space_handler,
-                      PhysDomainHandler &phys_domain_handler,
-                      SafeSTLArray<typename space_element::Flags, dim+1> &flags);
+                       const Transformation &transformation_type,
+                       RefElemHandler &ref_space_handler,
+                       PhysDomainHandler &phys_domain_handler,
+                       SafeSTLArray<typename space_element::Flags, dim+1> &flags);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);

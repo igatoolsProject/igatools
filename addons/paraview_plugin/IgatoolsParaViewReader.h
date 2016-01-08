@@ -216,7 +216,7 @@ public:
    * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
    * @note Required by the ParaView plugin.
    */
-  static IgatoolsParaViewReader* SafeDownCast(vtkObjectBase *o);
+  static IgatoolsParaViewReader *SafeDownCast(vtkObjectBase *o);
 
 
   /**

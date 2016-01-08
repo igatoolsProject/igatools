@@ -1,22 +1,26 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim>
-class Geometry {
-  public:
+class Geometry
+{
+public:
   TensorSize<dim>  nel;
   TensorIndex<dim> deg;
   IgCoefficients   coefs;
   IgCoefficients   weights;
-  void load(const char* fname) {
+  void load(const char *fname)
+  {
     FILE *fp;
     int check;
     fp=fopen(fname,"r");
     if (fp==0) std::cout << "cannot open the .nurbs file!" << std::endl;
-    else {
+    else
+    {
       // checking dimension
       fscanf(fp,"%d",&check);
       if (check!=dim) std::cout << "wrong geometry dimension!" << std::endl;
-      else {
+      else
+      {
         // reading degrees
         for (int idim=0; idim<dim; idim++)
           fscanf(fp,"%d",&deg[idim]);
@@ -28,17 +32,19 @@ class Geometry {
         fscanf(fp,"%d",&ncp);
         // reading control points
         double data;
-        for (int icp=0; icp<ncp*dim; icp++) {
+        for (int icp=0; icp<ncp*dim; icp++)
+        {
           fscanf(fp,"%lf",&data);
           coefs[icp]=data;
         }
         // reading weights
-        for (int icp=0; icp<ncp; icp++) {
+        for (int icp=0; icp<ncp; icp++)
+        {
           fscanf(fp,"%lf",&data);
           weights[icp]=data;
         }
       }
-    fclose(fp);
+      fclose(fp);
     }
   }
 };

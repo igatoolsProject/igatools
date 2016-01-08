@@ -128,7 +128,7 @@ DomainElement<dim_,codim_>::
 get_points(const int s_id) const -> const ValueVector<Point> &
 {
   return grid_func_elem_->template
-         get_values_from_cache<grid_function_element::_D<0>, sdim>(s_id);
+  get_values_from_cache<grid_function_element::_D<0>, sdim>(s_id);
 }
 
 template<int dim_,int codim_>
@@ -138,7 +138,7 @@ DomainElement<dim_,codim_>::
 get_jacobians(const int s_id) const -> const ValueVector<Jacobian> &
 {
   return grid_func_elem_->template
-         get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id);
+  get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id);
 }
 
 template<int dim_,int codim_>
@@ -148,7 +148,7 @@ DomainElement<dim_,codim_>::
 get_hessians(const int s_id) const -> const ValueVector<Hessian> &
 {
   return grid_func_elem_->template
-         get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id);
+  get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id);
 }
 
 template<int dim_,int codim_>

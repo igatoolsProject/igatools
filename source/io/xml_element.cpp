@@ -506,12 +506,12 @@ XMLElement::
 add_attribute(const string &name,
               const T &value)
 {
-    XMLCh* name_ch = XMLString::transcode(name.c_str());
-    const auto value_str = std::to_string(value);
-    XMLCh* value_ch = XMLString::transcode(value_str.c_str());
-    root_elem_->setAttribute(name_ch, value_ch);
-    XMLString::release(&name_ch);
-    XMLString::release(&value_ch);
+  XMLCh *name_ch = XMLString::transcode(name.c_str());
+  const auto value_str = std::to_string(value);
+  XMLCh *value_ch = XMLString::transcode(value_str.c_str());
+  root_elem_->setAttribute(name_ch, value_ch);
+  XMLString::release(&name_ch);
+  XMLString::release(&value_ch);
 }
 
 
@@ -521,11 +521,11 @@ XMLElement::
 add_attribute(const string &name,
               const string &value)
 {
-    XMLCh* name_ch = XMLString::transcode(name.c_str());
-    XMLCh* value_ch = XMLString::transcode(value.c_str());
-    root_elem_->setAttribute(name_ch, value_ch);
-    XMLString::release(&name_ch);
-    XMLString::release(&value_ch);
+  XMLCh *name_ch = XMLString::transcode(name.c_str());
+  XMLCh *value_ch = XMLString::transcode(value.c_str());
+  root_elem_->setAttribute(name_ch, value_ch);
+  XMLString::release(&name_ch);
+  XMLString::release(&value_ch);
 }
 
 
@@ -535,20 +535,20 @@ XMLElement::
 add_attribute(const char *name,
               const char *value)
 {
-    XMLCh* name_ch = XMLString::transcode(name);
-    XMLCh* value_ch = XMLString::transcode(value);
-    root_elem_->setAttribute(name_ch, value_ch);
-    XMLString::release(&name_ch);
-    XMLString::release(&value_ch);
+  XMLCh *name_ch = XMLString::transcode(name);
+  XMLCh *value_ch = XMLString::transcode(value);
+  root_elem_->setAttribute(name_ch, value_ch);
+  XMLString::release(&name_ch);
+  XMLString::release(&value_ch);
 }
 
 
 
 void
 XMLElement::
-append_child_element (const SelfPtr_ xml_elem)
+append_child_element(const SelfPtr_ xml_elem)
 {
-    root_elem_->appendChild(xml_elem->root_elem_);
+  root_elem_->appendChild(xml_elem->root_elem_);
 }
 
 
@@ -561,46 +561,46 @@ print_info(LogStream &out) const
   // Creating XML writer and writing the DOM element.
   try
   {
-      xercesc::DOMImplementation *impl = xercesc::
-              DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
-      xercesc::DOMLSSerializer *writer = ((xercesc::DOMImplementationLS *)impl)
-                  ->createLSSerializer();
+    xercesc::DOMImplementation *impl = xercesc::
+                                       DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
+    xercesc::DOMLSSerializer *writer = ((xercesc::DOMImplementationLS *)impl)
+                                       ->createLSSerializer();
 
-      const auto *xmlch_output = writer->writeToString(root_elem_);
-      const auto output_string = XMLString::transcode(xmlch_output);
+    const auto *xmlch_output = writer->writeToString(root_elem_);
+    const auto output_string = XMLString::transcode(xmlch_output);
 
-      out.begin_item("XMLElement:");
-      out << output_string;
-      out.end_item();
+    out.begin_item("XMLElement:");
+    out << output_string;
+    out.end_item();
 
-      delete xmlch_output;
-      delete writer;
+    delete xmlch_output;
+    delete writer;
   }
-  catch(const xercesc::XMLException &ex)
+  catch (const xercesc::XMLException &ex)
   {
-      char *msg = XMLString::transcode(ex.getMessage());
-      AssertThrow(false, ExcXMLError("An Exception occurred when "
-              + string("writing element: ") + msg, 0, 0));
-      XMLString::release(&msg);
+    char *msg = XMLString::transcode(ex.getMessage());
+    AssertThrow(false, ExcXMLError("An Exception occurred when "
+                                   + string("writing element: ") + msg, 0, 0));
+    XMLString::release(&msg);
   }
-  catch(const xercesc::DOMException &ex)
+  catch (const xercesc::DOMException &ex)
   {
-      char *msg = XMLString::transcode(ex.getMessage());
-      AssertThrow(false, ExcXMLError("An Exception occurred when "
-              + string("writing element: ") + msg, 0, 0));
-      XMLString::release(&msg);
+    char *msg = XMLString::transcode(ex.getMessage());
+    AssertThrow(false, ExcXMLError("An Exception occurred when "
+                                   + string("writing element: ") + msg, 0, 0));
+    XMLString::release(&msg);
   }
-  catch (const xercesc::OutOfMemoryException& ex)
+  catch (const xercesc::OutOfMemoryException &ex)
   {
-      char *msg = XMLString::transcode(ex.getMessage());
-      AssertThrow(false, ExcXMLError("An Exception occurred when "
-              + string("writing element: ") + msg, 0, 0));
-      XMLString::release(&msg);
+    char *msg = XMLString::transcode(ex.getMessage());
+    AssertThrow(false, ExcXMLError("An Exception occurred when "
+                                   + string("writing element: ") + msg, 0, 0));
+    XMLString::release(&msg);
   }
   catch (...)
   {
-      AssertThrow(false, ExcXMLError("Unknown Exception occurred when "
-              "writing element.", 0, 0));
+    AssertThrow(false, ExcXMLError("Unknown Exception occurred when "
+                                   "writing element.", 0, 0));
   }
 }
 

@@ -62,10 +62,10 @@ template<int dim_,int range_,int rank_,int codim_>
 PhysSpaceElementHandler<dim_,range_,rank_,codim_>::
 SetFlagsDispatcher::
 SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
-                  const Transformation &transformation_type,
-                  RefElemHandler &ref_space_handler,
-                  PhysDomainHandler &phys_domain_handler,
-                  SafeSTLArray<typename space_element::Flags, dim+1> &flags)
+                   const Transformation &transformation_type,
+                   RefElemHandler &ref_space_handler,
+                   PhysDomainHandler &phys_domain_handler,
+                   SafeSTLArray<typename space_element::Flags, dim+1> &flags)
   :
   phys_elem_flag_(phys_elem_flag),
   transformation_type_(transformation_type),

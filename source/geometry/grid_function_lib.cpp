@@ -137,7 +137,7 @@ auto
 ConstantGridFunction<dim,range>::
 get_constant_value() const -> const Value &
 {
-    return b_;
+  return b_;
 }
 
 
@@ -266,9 +266,9 @@ print_info(LogStream &out) const
 template<int dim, int range>
 auto
 LinearGridFunction<dim,range>::
-get_A () const -> const Derivative<1> &
+get_A() const -> const Derivative<1> &
 {
-    return A_;
+  return A_;
 }
 
 
@@ -276,9 +276,9 @@ get_A () const -> const Derivative<1> &
 template<int dim, int range>
 auto
 LinearGridFunction<dim,range>::
-get_b () const -> const Value &
+get_b() const -> const Value &
 {
-    return b_;
+  return b_;
 }
 
 

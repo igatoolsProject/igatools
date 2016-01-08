@@ -63,11 +63,11 @@ XMLDocument(const char *name)
   try
   {
     // Creating main XML DOM document.
-    XMLCh* name_ch = XMLString::transcode(name);
+    XMLCh *name_ch = XMLString::transcode(name);
     xml_doc_ = dom_impl_->createDocument(0, name_ch, 0);
     XMLString::release(&name_ch);
 #ifndef NDEBUG
-    AssertThrow (xml_doc_ != nullptr, ExcNullPtr());
+    AssertThrow(xml_doc_ != nullptr, ExcNullPtr());
 #endif
   }
   catch (xercesc::XMLException &exception)
@@ -155,11 +155,11 @@ initialize_xml()
   try
   {
     xercesc::XMLPlatformUtils::Initialize();
-    XMLCh* core = XMLString::transcode("core");
+    XMLCh *core = XMLString::transcode("core");
     dom_impl_ = xercesc::DOMImplementationRegistry::getDOMImplementation(core);
     XMLString::release(&core);
 #ifndef NDEBUG
-    AssertThrow (dom_impl_ != nullptr, ExcNullPtr());
+    AssertThrow(dom_impl_ != nullptr, ExcNullPtr());
 #endif
   }
   catch (xercesc::XMLException &exception)
@@ -223,7 +223,7 @@ SelfPtr_
 
 auto
 XMLDocument::
-get_document_element () const -> XMLElemPtr_
+get_document_element() const -> XMLElemPtr_
 {
   return XMLElement::create(xml_doc_->getDocumentElement());
 }
@@ -234,7 +234,7 @@ auto
 XMLDocument::
 create_new_element(const string &name) const -> XMLElemPtr_
 {
-  XMLCh* name_ch = XMLString::transcode(name.c_str());
+  XMLCh *name_ch = XMLString::transcode(name.c_str());
   const auto xml_elem = XMLElement::create(xml_doc_->createElement(name_ch));
   XMLString::release(&name_ch);
   return xml_elem;
@@ -247,7 +247,7 @@ XMLDocument::
 create_new_text_element(const string &name,
                         const string &text) const -> XMLElemPtr_
 {
-  XMLCh* text_ch = XMLString::transcode(text.c_str());
+  XMLCh *text_ch = XMLString::transcode(text.c_str());
   DOMText *text_node = xml_doc_->createTextNode(text_ch);
   XMLString::release(&text_ch);
 
@@ -266,13 +266,13 @@ create_string_from_vector<Real> (const SafeSTLVector<Real> &vec,
                                  const int &precision,
                                  const bool scientific_format)
 {
-    std::ostringstream oss;
-    oss.precision(precision);
-    if (scientific_format)
-        oss << std::scientific;
-    for (const auto &v : vec)
-        oss << " " << v << " ";
-    return oss.str();
+  std::ostringstream oss;
+  oss.precision(precision);
+  if (scientific_format)
+    oss << std::scientific;
+  for (const auto &v : vec)
+    oss << " " << v << " ";
+  return oss.str();
 }
 
 
@@ -284,13 +284,13 @@ create_string_from_vector<float> (const SafeSTLVector<float> &vec,
                                   const int &precision,
                                   const bool scientific_format)
 {
-    std::ostringstream oss;
-    oss.precision(precision);
-    if (scientific_format)
-        oss << std::scientific;
-    for (const auto &v : vec)
-        oss << " " << v << " ";
-    return oss.str();
+  std::ostringstream oss;
+  oss.precision(precision);
+  if (scientific_format)
+    oss << std::scientific;
+  for (const auto &v : vec)
+    oss << " " << v << " ";
+  return oss.str();
 }
 
 
@@ -302,15 +302,15 @@ create_string_from_vector<bool> (const SafeSTLVector<bool> &vec,
                                  const int &precision,
                                  const bool scientific_format)
 {
-    std::ostringstream oss;
-    for (const auto &v : vec)
-    {
-        if (v)
-            oss << " true ";
-        else
-            oss << " false ";
-    }
-    return oss.str();
+  std::ostringstream oss;
+  for (const auto &v : vec)
+  {
+    if (v)
+      oss << " true ";
+    else
+      oss << " false ";
+  }
+  return oss.str();
 }
 
 
@@ -322,10 +322,10 @@ create_string_from_vector<Index> (const SafeSTLVector<Index> &vec,
                                   const int &precision,
                                   const bool scientific_format)
 {
-    std::ostringstream oss;
-    for (const auto &v : vec)
-        oss << " " << v << " ";
-    return oss.str();
+  std::ostringstream oss;
+  for (const auto &v : vec)
+    oss << " " << v << " ";
+  return oss.str();
 }
 
 
@@ -337,10 +337,10 @@ create_string_from_vector<string> (const SafeSTLVector<string> &vec,
                                    const int &precision,
                                    const bool scientific_format)
 {
-    std::ostringstream oss;
-    for (const auto &v : vec)
-        oss << " " << v << " ";
-    return oss.str();
+  std::ostringstream oss;
+  for (const auto &v : vec)
+    oss << " " << v << " ";
+  return oss.str();
 }
 
 
@@ -348,14 +348,14 @@ create_string_from_vector<string> (const SafeSTLVector<string> &vec,
 template <class T>
 auto
 XMLDocument::
-create_vector_element (const std::string &name,
-                       const SafeSTLVector<T> &vec,
-                       const int &precision,
-                       const bool scientific_format) const -> XMLElemPtr_
+create_vector_element(const std::string &name,
+                      const SafeSTLVector<T> &vec,
+                      const int &precision,
+                      const bool scientific_format) const -> XMLElemPtr_
 {
-    const auto vec_str = create_string_from_vector<T>(vec, precision, scientific_format);
-    const auto new_elem = this->create_new_text_element(name, vec_str);
-    return new_elem;
+  const auto vec_str = create_string_from_vector<T>(vec, precision, scientific_format);
+  const auto new_elem = this->create_new_text_element(name, vec_str);
+  return new_elem;
 }
 
 
@@ -365,53 +365,53 @@ XMLDocument::
 write_to_file(const string &file_path,
               const bool pretty_print) const
 {
-    // Creating XML writer and writing the DOM document.
-    try
-    {
-        xercesc::DOMLSOutput *xml_stream = dom_impl_->createLSOutput();
-        XMLCh* output_file = XMLString::transcode(file_path.c_str());
-        xml_stream->setSystemId(output_file);
-        XMLString::release(&output_file);
+  // Creating XML writer and writing the DOM document.
+  try
+  {
+    xercesc::DOMLSOutput *xml_stream = dom_impl_->createLSOutput();
+    XMLCh *output_file = XMLString::transcode(file_path.c_str());
+    xml_stream->setSystemId(output_file);
+    XMLString::release(&output_file);
 
-        xercesc::DOMLSSerializer *writer = dom_impl_->createLSSerializer();
+    xercesc::DOMLSSerializer *writer = dom_impl_->createLSSerializer();
 
-        xercesc::DOMConfiguration* dc = writer->getDomConfig();
-        if (pretty_print)
-            dc->setParameter(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, true);
-        else
-            dc->setParameter(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, false);
+    xercesc::DOMConfiguration *dc = writer->getDomConfig();
+    if (pretty_print)
+      dc->setParameter(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, true);
+    else
+      dc->setParameter(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, false);
 
-        writer->write(xml_doc_, xml_stream);
+    writer->write(xml_doc_, xml_stream);
 
-        writer->release();
-        xml_stream->release();
-    }
-    catch(const xercesc::XMLException &ex)
-    {
-        char *msg = XMLString::transcode(ex.getMessage());
-        AssertThrow(false, ExcXMLError("An Exception occurred when "
-                    "writing file " + file_path + ": " + msg, 0, 0));
-        XMLString::release(&msg);
-    }
-    catch(const xercesc::DOMException &ex)
-    {
-        char *msg = XMLString::transcode(ex.getMessage());
-        AssertThrow(false, ExcXMLError("An Exception occurred when "
-                    "writing file " + file_path + ": " + msg, 0, 0));
-        XMLString::release(&msg);
-    }
-    catch (const xercesc::OutOfMemoryException& ex)
-    {
-        char *msg = XMLString::transcode(ex.getMessage());
-        AssertThrow(false, ExcXMLError("An Exception occurred when "
-                    "writing file " + file_path + ": " + msg, 0, 0));
-        XMLString::release(&msg);
-    }
-    catch (...)
-    {
-        AssertThrow(false, ExcXMLError("Unknown Exception occurred when "
-                    "writing file " + file_path + ".", 0, 0));
-    }
+    writer->release();
+    xml_stream->release();
+  }
+  catch (const xercesc::XMLException &ex)
+  {
+    char *msg = XMLString::transcode(ex.getMessage());
+    AssertThrow(false, ExcXMLError("An Exception occurred when "
+                                   "writing file " + file_path + ": " + msg, 0, 0));
+    XMLString::release(&msg);
+  }
+  catch (const xercesc::DOMException &ex)
+  {
+    char *msg = XMLString::transcode(ex.getMessage());
+    AssertThrow(false, ExcXMLError("An Exception occurred when "
+                                   "writing file " + file_path + ": " + msg, 0, 0));
+    XMLString::release(&msg);
+  }
+  catch (const xercesc::OutOfMemoryException &ex)
+  {
+    char *msg = XMLString::transcode(ex.getMessage());
+    AssertThrow(false, ExcXMLError("An Exception occurred when "
+                                   "writing file " + file_path + ": " + msg, 0, 0));
+    XMLString::release(&msg);
+  }
+  catch (...)
+  {
+    AssertThrow(false, ExcXMLError("Unknown Exception occurred when "
+                                   "writing file " + file_path + ".", 0, 0));
+  }
 }
 
 
@@ -423,49 +423,49 @@ print_info(LogStream &out) const
   // Creating XML writer and writing the DOM document.
   try
   {
-      xercesc::DOMLSOutput *xml_stream = dom_impl_->createLSOutput();
-      xercesc::DOMLSSerializer *writer = dom_impl_->createLSSerializer();
+    xercesc::DOMLSOutput *xml_stream = dom_impl_->createLSOutput();
+    xercesc::DOMLSSerializer *writer = dom_impl_->createLSSerializer();
 
-      xercesc::DOMConfiguration* dc = writer->getDomConfig();
-      dc->setParameter(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, true);
+    xercesc::DOMConfiguration *dc = writer->getDomConfig();
+    dc->setParameter(xercesc::XMLUni::fgDOMWRTFormatPrettyPrint, true);
 
-      const auto *xmlch_output = writer->writeToString(xml_doc_);
-      const auto output_string = XMLString::transcode(xmlch_output);
+    const auto *xmlch_output = writer->writeToString(xml_doc_);
+    const auto output_string = XMLString::transcode(xmlch_output);
 
-      out.begin_item("XMLDocument:");
-      out << output_string;
-      out.end_item();
+    out.begin_item("XMLDocument:");
+    out << output_string;
+    out.end_item();
 
-      writer->release();
-      xml_stream->release();
+    writer->release();
+    xml_stream->release();
 
-       delete xmlch_output;
+    delete xmlch_output;
   }
-  catch(const xercesc::XMLException &ex)
+  catch (const xercesc::XMLException &ex)
   {
-      char *msg = XMLString::transcode(ex.getMessage());
-      AssertThrow(false, ExcXMLError("An Exception occurred when "
-              + string("writing document: ") + msg, 0, 0));
-      XMLString::release(&msg);
+    char *msg = XMLString::transcode(ex.getMessage());
+    AssertThrow(false, ExcXMLError("An Exception occurred when "
+                                   + string("writing document: ") + msg, 0, 0));
+    XMLString::release(&msg);
   }
-  catch(const xercesc::DOMException &ex)
+  catch (const xercesc::DOMException &ex)
   {
-      char *msg = XMLString::transcode(ex.getMessage());
-      AssertThrow(false, ExcXMLError("An Exception occurred when "
-              + string("writing document: ") + msg, 0, 0));
-      XMLString::release(&msg);
+    char *msg = XMLString::transcode(ex.getMessage());
+    AssertThrow(false, ExcXMLError("An Exception occurred when "
+                                   + string("writing document: ") + msg, 0, 0));
+    XMLString::release(&msg);
   }
-  catch (const xercesc::OutOfMemoryException& ex)
+  catch (const xercesc::OutOfMemoryException &ex)
   {
-      char *msg = XMLString::transcode(ex.getMessage());
-      AssertThrow(false, ExcXMLError("An Exception occurred when "
-              + string("writing document: ") + msg, 0, 0));
-      XMLString::release(&msg);
+    char *msg = XMLString::transcode(ex.getMessage());
+    AssertThrow(false, ExcXMLError("An Exception occurred when "
+                                   + string("writing document: ") + msg, 0, 0));
+    XMLString::release(&msg);
   }
   catch (...)
   {
-      AssertThrow(false, ExcXMLError("Unknown Exception occurred when "
-              "writing document.", 0, 0));
+    AssertThrow(false, ExcXMLError("Unknown Exception occurred when "
+                                   "writing document.", 0, 0));
   }
 }
 
@@ -551,15 +551,15 @@ resetErrors()
 
 
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<bool>
-    (const std::string &, const SafeSTLVector<bool> &, const int &, const bool) const;
+(const std::string &, const SafeSTLVector<bool> &, const int &, const bool) const;
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<string>
-    (const std::string &, const SafeSTLVector<string> &, const int &, const bool) const;
+(const std::string &, const SafeSTLVector<string> &, const int &, const bool) const;
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<Real>
-    (const std::string &, const SafeSTLVector<Real> &, const int &, const bool) const;
+(const std::string &, const SafeSTLVector<Real> &, const int &, const bool) const;
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<float>
-    (const std::string &, const SafeSTLVector<float> &, const int &, const bool) const;
+(const std::string &, const SafeSTLVector<float> &, const int &, const bool) const;
 template shared_ptr<XMLElement> XMLDocument::create_vector_element<Index>
-    (const std::string &, const SafeSTLVector<Index> &, const int &, const bool) const;
+(const std::string &, const SafeSTLVector<Index> &, const int &, const bool) const;
 
 IGA_NAMESPACE_CLOSE
 

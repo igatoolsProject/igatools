@@ -67,9 +67,9 @@ get_element_operators(TensorIndex<dim> idx) const -> ElemOperTable
   ElemOperTable result(ext_operators_.get_comp_map());
   for (auto comp : result.get_active_components_id())
   {
-	const auto & ext_operators_comp = ext_operators_[comp];
-	auto & result_comp = result[comp];
-	for (int dir = 0 ; dir < dim ; ++dir)
+    const auto &ext_operators_comp = ext_operators_[comp];
+    auto &result_comp = result[comp];
+    for (int dir = 0 ; dir < dim ; ++dir)
       result_comp[dir] = &(ext_operators_comp[dir][idx[dir]]);
   }
   return result;
@@ -205,10 +205,10 @@ BernsteinExtraction(const Grid<dim> &grid,
 {
   for (const int &i : ext_operators_.get_active_components_id())
   {
-	const auto & deg_i = deg[i];
-	const auto & rep_knots_i = rep_knots[i];
-	const auto & acum_mult_i = acum_mult[i];
-	auto & ext_operators_i = ext_operators_[i];
+    const auto &deg_i = deg[i];
+    const auto &rep_knots_i = rep_knots[i];
+    const auto &acum_mult_i = acum_mult[i];
+    auto &ext_operators_i = ext_operators_[i];
     for (int j = 0; j < dim; ++j)
     {
       const int m = deg_i[j] + 1;

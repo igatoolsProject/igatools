@@ -173,8 +173,8 @@ template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
 SetFlagsDispatcher::
 SetFlagsDispatcher(const typename space_element::Flags flag_in,
-                  GridHandler<dim_> &grid_handler,
-                  SafeSTLArray<typename space_element::Flags, dim+1> &flags)
+                   GridHandler<dim_> &grid_handler,
+                   SafeSTLArray<typename space_element::Flags, dim+1> &flags)
   :
   flag_in_(flag_in),
   grid_handler_(grid_handler),

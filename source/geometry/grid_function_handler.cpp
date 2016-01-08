@@ -184,7 +184,7 @@ template <int sdim>
 void
 GridFunctionHandler<dim_, range_>::
 fill_cache(ElementIterator &elem,
-                const int s_id) const
+           const int s_id) const
 {
   this->fill_cache(Topology<sdim>(), elem, s_id);
 }
@@ -194,7 +194,7 @@ template <int sdim>
 void
 GridFunctionHandler<dim_, range_>::
 fill_cache(ElementAccessor &elem,
-                const int s_id) const
+           const int s_id) const
 {
   this->fill_cache(Topology<sdim>(), elem, s_id);
 }
