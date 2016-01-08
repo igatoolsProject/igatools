@@ -80,19 +80,6 @@ insert_const_object(const shared_ptr<const T> object,
                     const bool check_present)
 {
   insert_object<const T>(object,check_present);
-  /*
-    Assert(object != nullptr, ExcNullPtr());
-
-    auto &objects_T = at_key<const T>(objects_);
-    // Before inserting the object, it check_present is true it is checked
-    // it the object is already present into the container, throwing an
-    // exception is such case.
-    AssertThrow(!check_present ||
-                std::find(objects_T.cbegin(), objects_T.cend(), object) == objects_T.cend(),
-                ExcNotUnique());
-
-    objects_T.push_back(object);
-    //*/
 };
 
 
@@ -122,18 +109,6 @@ ObjectsContainer::
 get_const_object(const Index &id) const -> shared_ptr<const T>
 {
   return get_object<const T>(id);
-  /*
-  auto &objects_T = at_key<const T>(objects_);
-  const auto obj_it = std::find_if(objects_T.cbegin(), objects_T.cend(),
-  [id](const auto obj)
-  {
-    return obj->get_object_id() == id;
-  });
-
-  Assert(obj_it != objects_T.cend(), ExcNotFound());
-
-  return *obj_it;
-  //*/
 };
 
 
@@ -157,12 +132,6 @@ ObjectsContainer::
 get_const_object_ids() const
 {
   return get_object_ids<const T>();
-  /*
-    SafeSTLSet<Index> ids;
-    for (const auto &obj : at_key<const T>(objects_))
-      ids.insert(obj->get_object_id());
-    return ids;
-    //*/
 };
 
 
@@ -191,17 +160,6 @@ ObjectsContainer::
 is_const_object_present(const Index &id) const
 {
   return is_object_present<const T>(id);
-  /*
-    const auto &objects_T = at_key<const T>(objects_);
-
-    return std::find_if(objects_T.cbegin(), objects_T.cend(),
-                        [id](const auto obj)
-    {
-      return obj->get_object_id() == id;
-    }) != objects_T.cend();
-
-    return false;
-    //*/
 };
 
 
@@ -347,7 +305,7 @@ print_info(LogStream &out) const
 }
 
 
-
+#ifdef USE_DEPRECATED
 bool
 ObjectsContainer::
 is_empty() const
@@ -362,160 +320,8 @@ is_empty() const
                               lambda_func_not_empty);
 
   return !is_not_empty;
-
-#if 0
-  bool is_container_not_void = false;
-
-  GridPtrs valid_grid_ptr_types;
-  for_each(valid_grid_ptr_types, [&](const auto &ptr_type)
-  {
-    if (is_container_not_void)
-      return;
-
-    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    is_container_not_void = at_key<Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-
-    is_container_not_void = at_key<const Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-  });
-
-  if (is_container_not_void)
-    return false;
-
-
-  // Spline spaces
-  SpSpacePtrs valid_ssp_ptr_types;
-  for_each(valid_ssp_ptr_types, [&](const auto &ptr_type)
-  {
-    if (is_container_not_void)
-      return;
-
-    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    is_container_not_void = at_key<Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-
-    is_container_not_void = at_key<const Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-  });
-
-  if (is_container_not_void)
-    return false;
-
-
-  // Reference space basis
-  RefSpacePtrs valid_rsp_ptr_types;
-  for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
-  {
-    if (is_container_not_void)
-      return;
-
-    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    is_container_not_void = at_key<Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-
-    is_container_not_void = at_key<const Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-  });
-
-  if (is_container_not_void)
-    return false;
-
-
-  // Grid functions
-  GridFuncPtrs valid_gf_ptr_types;
-  for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
-  {
-    if (is_container_not_void)
-      return;
-
-    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    is_container_not_void = at_key<Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-
-    is_container_not_void = at_key<const Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-  });
-
-  if (is_container_not_void)
-    return false;
-
-
-  // Domains
-  DomainPtrs valid_dm_ptr_types;
-  for_each(valid_dm_ptr_types, [&](const auto &ptr_type)
-  {
-    if (is_container_not_void)
-      return;
-
-    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    is_container_not_void = at_key<Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-
-    is_container_not_void = at_key<const Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-  });
-
-  if (is_container_not_void)
-    return false;
-
-
-  // Physical space basis
-  PhysSpacePtrs valid_ps_ptr_types;
-  for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
-  {
-    if (is_container_not_void)
-      return;
-
-    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    is_container_not_void = at_key<Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-
-    is_container_not_void = at_key<const Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-  });
-
-  if (is_container_not_void)
-    return false;
-
-
-  // Function
-  FunctionPtrs valid_fn_ptr_types;
-  for_each(valid_fn_ptr_types, [&](const auto &ptr_type)
-  {
-    if (is_container_not_void)
-      return;
-
-    using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    is_container_not_void = at_key<Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-
-    is_container_not_void = at_key<const Type>(objects_).size() > 0;
-    if (is_container_not_void)
-      return;
-  });
-
-  if (is_container_not_void)
-    return false;
-  else
-    return true;
-#endif
-
 }
-
+#endif // USE_DEPRECATED
 
 
 void

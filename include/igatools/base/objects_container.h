@@ -382,12 +382,14 @@ public:
    */
   void print_info(LogStream &out) const;
 
+#ifdef USE_DEPRECATED
   /**
    * @brief Checks if the container is empty.
    *
    * @return True if the container is empty, false elsewhere.
    */
   bool is_empty() const;
+#endif // USE_DEPRECATED
 
 private:
 

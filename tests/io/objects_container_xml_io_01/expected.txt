@@ -1717,37 +1717,37 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
    PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
    
+   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
    PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
@@ -6863,37 +6863,37 @@ Parsing writing/reading filetest_3_0_3_1.xml
    
    const PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
    PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
    
+   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
    PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    

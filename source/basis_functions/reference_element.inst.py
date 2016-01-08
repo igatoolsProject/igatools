@@ -27,11 +27,15 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-
-elements = ['ReferenceElement<0,0,1>', 'ReferenceElement<0,1,1>']
-
-
 member_functions = set()
+
+
+elements = ['ReferenceElement<0,0,1>']#, 'ReferenceElement<0,1,1>']
+
+member_func = 'ValueVector<Real> ReferenceElement<0,0,1>::get_w_measures<0>(const int s_id) const'
+member_functions.add(member_func)
+
+
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     elem = 'ReferenceElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
