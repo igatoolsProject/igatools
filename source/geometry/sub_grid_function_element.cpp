@@ -38,10 +38,12 @@ bool
 SubGridFunctionElement<sdim,dim,range>::
 operator==(const parent_t &elem) const
 {
+#ifndef NDEBUG
   const self_t &sub_elem = dynamic_cast<const self_t &>(elem);
   Assert(this->same_grid_function_of(elem) &&
          sup_grid_func_element_->same_grid_function_of(*(sub_elem.sup_grid_func_element_)),
          ExcMessage("Cannot compare elements on different GridFunction."));
+#endif
 
   return this->parent_t::operator==(elem);
 }
@@ -51,10 +53,13 @@ bool
 SubGridFunctionElement<sdim,dim,range>::
 operator!=(const parent_t &elem) const
 {
+#ifndef NDEBUG
   const self_t &sub_elem = dynamic_cast<const self_t &>(elem);
   Assert(this->same_grid_function_of(elem) &&
          sup_grid_func_element_->same_grid_function_of(*(sub_elem.sup_grid_func_element_)),
          ExcMessage("Cannot compare elements on different GridFunction."));
+#endif
+
   return this->parent_t::operator!=(elem);
 }
 

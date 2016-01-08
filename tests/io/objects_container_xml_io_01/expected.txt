@@ -49,7 +49,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
          Name: grid_2
       
    
-   const Grid Dim : 2. Number of objects: 1
+   const Grid Dim : 2. Number of objects: 0
    
    Grid Dim : 3. Number of objects: 0
    
@@ -158,7 +158,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
          
       
    
-   const SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 1
+   const SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 0
    
    SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 1
       Object Id: 18
@@ -239,7 +239,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
          
       
    
-   const SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 1
+   const SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
    SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
@@ -389,7 +389,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
          
       
    
-   const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 1
+   const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
    
    ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
       Object Id: 20
@@ -792,7 +792,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
          
       
    
-   const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
+   const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
    ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
@@ -810,13 +810,13 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
    
-   GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
-   
-   const GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
-   
    GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
    
    const GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
+   
+   GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
+   
+   const GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
    
    GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
    
@@ -1185,7 +1185,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
          
       
    
-   const GridFunction Dim : 2 Spacedim : 2. Number of objects: 4
+   const GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
    
    GridFunction Dim : 2 Spacedim : 1. Number of objects: 1
       Object Id: 24
@@ -1328,7 +1328,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
          
       
    
-   const GridFunction Dim : 2 Spacedim : 1. Number of objects: 1
+   const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
    
    GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
    
@@ -1346,13 +1346,13 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const Domain Dim : 0 Codim : 1. Number of objects: 0
    
-   Domain Dim : 0 Codim : 3. Number of objects: 0
-   
-   const Domain Dim : 0 Codim : 3. Number of objects: 0
-   
    Domain Dim : 0 Codim : 0. Number of objects: 0
    
    const Domain Dim : 0 Codim : 0. Number of objects: 0
+   
+   Domain Dim : 0 Codim : 3. Number of objects: 0
+   
+   const Domain Dim : 0 Codim : 3. Number of objects: 0
    
    Domain Dim : 0 Codim : 2. Number of objects: 0
    
@@ -1703,7 +1703,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
          Name: my_domain
       
    
-   const Domain Dim : 2 Codim : 0. Number of objects: 1
+   const Domain Dim : 2 Codim : 0. Number of objects: 0
    
    Domain Dim : 2 Codim : 1. Number of objects: 0
    
@@ -1717,9 +1717,29 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
+   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+   
    PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
@@ -1728,26 +1748,6 @@ Parsing writing/reading filetest_2_0_2_1.xml
    PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
@@ -2382,7 +2382,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
          
       
    
-   const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
+   const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
@@ -3131,7 +3131,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
          
       
    
-   const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 3
+   const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
    
    Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
@@ -3323,7 +3323,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
          Name: grid_3
       
    
-   const Grid Dim : 3. Number of objects: 1
+   const Grid Dim : 3. Number of objects: 0
    
    Grid Dim : 0. Number of objects: 0
    
@@ -3498,7 +3498,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
          
       
    
-   const SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 1
+   const SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 0
    
    SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 1
       Object Id: 50
@@ -3649,7 +3649,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
          
       
    
-   const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 1
+   const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
    ReferenceSpaceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
@@ -3861,7 +3861,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
          
       
    
-   const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
+   const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
    
    ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
       Object Id: 52
@@ -4620,19 +4620,19 @@ Parsing writing/reading filetest_3_0_3_1.xml
          
       
    
-   const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
+   const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
    GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
    
    const GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
    
-   GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
-   
-   const GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
-   
    GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
    
    const GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
+   
+   GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
+   
+   const GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
    
    GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
    
@@ -5597,7 +5597,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
          
       
    
-   const GridFunction Dim : 3 Spacedim : 3. Number of objects: 4
+   const GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
    
    GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
       Object Id: 56
@@ -5902,19 +5902,19 @@ Parsing writing/reading filetest_3_0_3_1.xml
          
       
    
-   const GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
+   const GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
    
    Domain Dim : 0 Codim : 1. Number of objects: 0
    
    const Domain Dim : 0 Codim : 1. Number of objects: 0
    
-   Domain Dim : 0 Codim : 3. Number of objects: 0
-   
-   const Domain Dim : 0 Codim : 3. Number of objects: 0
-   
    Domain Dim : 0 Codim : 0. Number of objects: 0
    
    const Domain Dim : 0 Codim : 0. Number of objects: 0
+   
+   Domain Dim : 0 Codim : 3. Number of objects: 0
+   
+   const Domain Dim : 0 Codim : 3. Number of objects: 0
    
    Domain Dim : 0 Codim : 2. Number of objects: 0
    
@@ -6857,15 +6857,35 @@ Parsing writing/reading filetest_3_0_3_1.xml
          Name: my_domain
       
    
-   const Domain Dim : 3 Codim : 0. Number of objects: 1
+   const Domain Dim : 3 Codim : 0. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
+   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+   
    PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
@@ -6874,26 +6894,6 @@ Parsing writing/reading filetest_3_0_3_1.xml
    PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
    const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
-   
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
@@ -8387,7 +8387,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
          
       
    
-   const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
+   const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
    PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
@@ -10304,7 +10304,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
          
       
    
-   const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 3
+   const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
    
    Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
    

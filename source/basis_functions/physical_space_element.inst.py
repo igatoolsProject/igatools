@@ -30,9 +30,17 @@ data = Instantiation(include_files)
  
 
 elements = set()
-elements.add('PhysicalSpaceElement<0,0,1,0>')
-
 element_funcs = set()
+
+elem = 'PhysicalSpaceElement<0,0,1,0>'
+elements.add(elem)
+
+
+func = 'const ValueVector<Real> %s::get_w_measures<0>(const int) const' % (elem)
+element_funcs.add(func)
+func = 'const ValueVector<Real> & %s::get_measures<0>(const int) const' % (elem)
+element_funcs.add(func)
+
 
 
 for space in inst.SubPhysSpaces + inst.PhysSpaces:

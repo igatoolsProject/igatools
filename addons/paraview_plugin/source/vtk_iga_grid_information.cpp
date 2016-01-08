@@ -49,6 +49,15 @@ create(const NumCellsContainer_ &num_cells,
 
 
 
+auto
+VtkGridInformation::
+create_void() -> SelfPtr_
+{
+  return VtkGridInformation::create({{1, 1, 1}}, VtkGridType::None);
+}
+
+
+
 bool
 VtkGridInformation::
 update(SelfPtr_ grid_info)
@@ -156,6 +165,15 @@ VtkControlGridInformation::
 create(const bool structured) -> SelfPtr_
 {
   return SelfPtr_(new Self_(structured));
+}
+
+
+
+auto
+VtkControlGridInformation::
+create_void() -> SelfPtr_
+{
+  return VtkControlGridInformation::create(true);
 }
 
 

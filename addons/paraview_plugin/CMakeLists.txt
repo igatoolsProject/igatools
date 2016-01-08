@@ -5,6 +5,11 @@
 
 cmake_minimum_required(VERSION 2.8.10)
 
+set(PLUGIN_SOURCE_DIR ${PROJECT_SOURCE_DIR})
+
+# Redefining paths: pointing to the igatools source directory.
+set(PROJECT_SOURCE_DIR ${PLUGIN_SOURCE_DIR}/../..)
+
 #-------------------------------------------------------------------------------
 # Set the igatools-ParaView version 
 #
@@ -29,6 +34,7 @@ set(IGATOOLS_REQUIRED_VERSION
 
 set(igatools_paraview_name IgatoolsParaViewReader)
 set(igatools_paraview_lib_name igatools_paraview)
+set(igatools_paraview_include_name paraview_plugin)
 # project (${igatools_paraview_name} CXX)
 
 message("Configuring igatools-ParaView plugin")
@@ -36,8 +42,8 @@ message("Configuring igatools-ParaView plugin")
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Include all local macros from the paraview plugin (and also from igatools)
 
-file(GLOB_RECURSE macro_list ${PROJECT_SOURCE_DIR}/cmake/*.cmake
-                             ${PROJECT_SOURCE_DIR}/../../cmake/*.cmake)
+file(GLOB_RECURSE macro_list ${PLUGIN_SOURCE_DIR}/cmake/*.cmake
+                             ${PROJECT_SOURCE_DIR}/cmake/*.cmake)
 foreach(item ${macro_list})
   include (${item})
 endforeach(item)
@@ -97,6 +103,11 @@ init_cxx_flags()
 # Create the configuration, install and documentation targets and finishing
 
 create_paraview_plugin_configuration_target ()
+
+set(max_der_order 2 CACHE STRINGS "maximum order of derivatives")
+message("Configuring instantiations")
+create_space_table()
+generate_plugin_instantiations()
 
 create_paraview_plugin_install_target()
 

@@ -162,7 +162,7 @@ get_single_text_element() const
   DOMNodeList *elems = root_elem_->getChildNodes();
   const Size n_children = elems->getLength();
 
-  DOMText *element;
+  DOMText *element = nullptr;
 
   for (int i = 0; i < n_children; ++i)
   {

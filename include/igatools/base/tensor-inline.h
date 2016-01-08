@@ -116,6 +116,7 @@ auto
 Tdouble::
 operator()(const int i) noexcept -> value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -126,6 +127,7 @@ auto
 Tdouble::
 operator()(const int i) const noexcept -> const value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -213,6 +215,7 @@ auto
 Tdouble::
 flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<0>
 {
+  Assert(flat_index == 0,ExcDimensionMismatch(flat_index,0));
   return TensorIndex<0>();
 }
 

@@ -76,8 +76,8 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
   auto elem = domain->cbegin();
   const auto end = domain->cend();
 
-  double point_tmp[3] = { 0.0, 0.0, 0.0 };
-  vtkIdType tuple[2]  = { 1, 0 };
+  SafeSTLArray<Real, 3> point_tmp(0.0);
+  std::array<vtkIdType, 2> tuple({{ 1, 0 }});
 
   auto domain_cache_handler = domain->create_cache_handler();
   domain_cache_handler->template set_flags<dim>(domain_element::Flags::point);
@@ -92,9 +92,9 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
     const auto &pp = points[0];
     for (const auto &dir : boost::irange(0, space_dim))
       point_tmp[dir] = pp[dir];
-    vtk_points->SetPoint(pt_id, point_tmp);
+    vtk_points->SetPoint(pt_id, point_tmp.data());
     tuple[1] = pt_id;
-    vtk_cell_ids->SetTupleValue(pt_id, tuple);
+    vtk_cell_ids->SetTupleValue(pt_id, tuple.data());
   }
 
   // Adding last point of the last element.
@@ -102,9 +102,9 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
   const auto &pp = points[1];
   for (const auto &dir : boost::irange(0, space_dim))
     point_tmp[dir] = pp[dir];
-  vtk_points->SetPoint(pt_id, point_tmp);
+  vtk_points->SetPoint(pt_id, point_tmp.data());
   tuple[1] = pt_id;
-  vtk_cell_ids->SetTupleValue(pt_id, tuple);
+  vtk_cell_ids->SetTupleValue(pt_id, tuple.data());
 
   // Creating grid.
   auto grid = vtkSmartPointer <vtkUnstructuredGrid>::New();
@@ -192,7 +192,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
   const auto vtk_points = vtkSmartPointer <vtkPoints>::New();
   vtk_points->SetNumberOfPoints(n_vtk_points);
 
-  double point_tmp[3] = { 0.0, 0.0, 0.0 };
+  SafeSTLArray<Real, 3> point_tmp(0.0);
 
   // Creating cells.
   const auto vtk_cell_ids = vtkSmartPointer <vtkIdTypeArray>::New();
@@ -200,7 +200,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
   vtk_cell_ids->SetNumberOfComponents(tuple_size);
   vtk_cell_ids->SetNumberOfTuples(n_vtk_cells);
 
-  vtkIdType *tuple = new vtkIdType[tuple_size];
+  std::vector<vtkIdType> tuple (tuple_size);
   tuple[0] = n_points_per_single_cell;
 
   // Global counters for points and cell tuples.
@@ -284,7 +284,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
         {
           for (const auto &dir2 : boost::irange(0, space_dim))
             point_tmp[dir2] = pp[dir2];
-          vtk_points->SetPoint(vtk_pt_id++, point_tmp);
+          vtk_points->SetPoint(vtk_pt_id++, point_tmp.data());
         } // pp
         --vtk_pt_id; // The first point of the next element will be filled
         // into the position of the last point of the current
@@ -300,7 +300,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
           for (const auto &c : vtk_line_connectivity)
             tuple[id++] = vtk_pt_id_0 + c;
 
-          vtk_cell_ids->SetTupleValue(vtk_tuple_id++, tuple);
+          vtk_cell_ids->SetTupleValue(vtk_tuple_id++, tuple.data());
         } // c_id
 
       } // itv
@@ -324,14 +324,6 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
   return grid;
 }
 
-// TODO: to instantiate properly.
-template class VtkIgaKnotGrid<Domain<1, 0>>;
-template class VtkIgaKnotGrid<Domain<1, 1>>;
-template class VtkIgaKnotGrid<Domain<1, 2>>;
-template class VtkIgaKnotGrid<Domain<2, 0>>;
-template class VtkIgaKnotGrid<Domain<2, 1>>;
-template class VtkIgaKnotGrid<Domain<3, 0>>;
-
-
-
 IGA_NAMESPACE_CLOSE
+
+#include <paraview_plugin/vtk_iga_knot_grid.inst>
