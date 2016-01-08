@@ -204,12 +204,6 @@ create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
   return grid;
 }
 
-// TODO: to instantiate properly.
-template class VtkIgaControlGrid<Domain<1, 0>>;
-template class VtkIgaControlGrid<Domain<1, 1>>;
-template class VtkIgaControlGrid<Domain<1, 2>>;
-template class VtkIgaControlGrid<Domain<2, 0>>;
-template class VtkIgaControlGrid<Domain<2, 1>>;
-template class VtkIgaControlGrid<Domain<3, 0>>;
-
 IGA_NAMESPACE_CLOSE
+
+#include <paraview_plugin/vtk_iga_control_grid.inst>

@@ -324,14 +324,6 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
   return grid;
 }
 
-// TODO: to instantiate properly.
-template class VtkIgaKnotGrid<Domain<1, 0>>;
-template class VtkIgaKnotGrid<Domain<1, 1>>;
-template class VtkIgaKnotGrid<Domain<1, 2>>;
-template class VtkIgaKnotGrid<Domain<2, 0>>;
-template class VtkIgaKnotGrid<Domain<2, 1>>;
-template class VtkIgaKnotGrid<Domain<3, 0>>;
-
-
-
 IGA_NAMESPACE_CLOSE
+
+#include <paraview_plugin/vtk_iga_knot_grid.inst>
