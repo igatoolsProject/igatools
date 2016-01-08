@@ -62,20 +62,19 @@ create(const DomainPtr_ domain,
   // values of the control point coefficients.
 
   // The points are initialized to zero.
-  const double point_void[3] =
-  { 0.0, 0.0, 0.0 };
+  const SafeSTLArray<Real, 3> zero_point(0.0);
   for (int i_pt = 0; i_pt < n_total_pts; ++i_pt)
-    points->SetPoint(i_pt, point_void);
+    points->SetPoint(i_pt, zero_point.data());
 
   Index comp;
   Index local_id;
-  double point_tmp[3];
+  SafeSTLArray<Real, 3> point_tmp(0.0);
   for (const auto &it : coefs)
   {
     dofs->global_to_comp_local(it.first, comp, local_id);
-    points->GetPoint(local_id, point_tmp);
+    points->GetPoint(local_id, point_tmp.data());
     point_tmp[comp] = it.second;
-    points->SetPoint(local_id, point_tmp);
+    points->SetPoint(local_id, point_tmp.data());
   }
 
   if (!grid_info->is_structured() || dim == 1)  // Unstructured grid
@@ -192,14 +191,14 @@ create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
 
   const Size n_cells = cells->GetNumberOfCells();
 
-  int cell_types[n_cells];
+  std::vector<int> cell_types(n_cells);
   cell_types[0] = VTK_POLY_VERTEX;
 
   for (int i = 1; i < n_cells; ++i)
     cell_types[i] = VTK_POLY_LINE;
 
   grid->Allocate(n_cells, 0);
-  grid->SetCells(cell_types, cells);
+  grid->SetCells(cell_types.data(), cells);
 
   return grid;
 }
