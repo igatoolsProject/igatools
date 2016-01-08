@@ -167,13 +167,12 @@ vertex(const int i) const -> Point
 
   TensorSize<dim> n_vertices_elem(2);
   const auto w = MultiArrayUtils<dim>::compute_weight(n_vertices_elem);
-  const auto vertex_id = MultiArrayUtils<dim>::flat_to_tensor_index(i,w);
+  const auto vertex_id_loc = MultiArrayUtils<dim>::flat_to_tensor_index(i,w);
 
-  const auto n_knots_dir = grid_->get_num_knots_dim();
   Point vertex;
   for (int j = 0 ; j < dim ; ++j)
   {
-    const auto v_id = vertex_id[j] + vertex_id_origin[j];
+    const auto v_id = vertex_id_loc[j] + vertex_id_origin[j];
 //    Assert(v_id >= 0 && v_id < n_knots_dir[j],
 //        ExcIndexRange(v_id,0,n_knots_dir[j]));
     vertex[j] = grid_->get_knot_coordinates(j)[v_id];
@@ -368,6 +367,23 @@ print_cache_info(LogStream &out) const
 }
 
 
+template <int dim>
+template <int sdim>
+auto
+GridElement<dim>::
+get_quad() const -> std::shared_ptr<const Quadrature<sdim>>
+{
+  return quad_list_.template get_quad<sdim>();
+}
+
+
+template <int dim>
+auto
+GridElement<dim>::
+get_index_iterator() const -> const ListIt &
+{
+  return index_it_;
+}
 
 #if 0
 template <int dim>

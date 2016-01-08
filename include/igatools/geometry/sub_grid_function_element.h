@@ -28,16 +28,16 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int sdim,int dim,int space_dim>
+template <int sdim,int dim,int range>
 class SubGridFunctionElement
-  : public GridFunctionElement<sdim,space_dim>
+  : public GridFunctionElement<sdim,range>
 {
 private:
-  using parent_t = GridFunctionElement<sdim,space_dim>;
-  using self_t = SubGridFunctionElement<sdim,dim,space_dim>;
+  using parent_t = GridFunctionElement<sdim,range>;
+  using self_t = SubGridFunctionElement<sdim,dim,range>;
 
 public:
-  using ContainerType = const SubGridFunction<sdim,dim,space_dim>;
+  using ContainerType = const SubGridFunction<sdim,dim,range>;
   using GridElem = typename ContainerType::GridType::ElementAccessor;
   using ListIt = typename ContainerType::ListIt;
 
@@ -68,7 +68,7 @@ public:
    */
   SubGridFunctionElement(const std::shared_ptr<ContainerType> &sub_grid_function,
                          std::unique_ptr<GridElement<sdim>> &&sub_grid_element,
-                         std::unique_ptr<GridFunctionElement<dim,space_dim>> &&sup_grid_func_element);
+                         std::unique_ptr<GridFunctionElement<dim,range>> &&sup_grid_func_element);
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -125,13 +125,13 @@ public:
 
 
 
-  GridFunctionElement<dim,space_dim> &
+  GridFunctionElement<dim,range> &
   get_sup_grid_function_element();
 
 
 private:
 
-  std::unique_ptr<GridFunctionElement<dim,space_dim>> sup_grid_func_element_;
+  std::unique_ptr<GridFunctionElement<dim,range>> sup_grid_func_element_;
 };
 
 

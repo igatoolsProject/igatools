@@ -112,8 +112,7 @@ public:
 
 protected:
   /** Constructor */
-  Function(const SharedPtrConstnessHandler<DomainType> &domain,
-           const std::string &name);
+  Function(const SharedPtrConstnessHandler<DomainType> &domain);
 
 
 public:
@@ -123,20 +122,18 @@ public:
 
 #if 0
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<DomainType> domain,
-         const std::string &name)
+  create(std::shared_ptr<DomainType> domain)
   {
     return std::shared_ptr<self_t>(new
-                                   self_t(SharedPtrConstnessHandler<DomainType>(domain),name));
+                                   self_t(SharedPtrConstnessHandler<DomainType>(domain)));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<const DomainType> domain,
-               const std::string &name)
+  const_create(std::shared_ptr<const DomainType> domain)
   {
     return std::shared_ptr<self_t>(new self_t(
-                                     SharedPtrConstnessHandler<DomainType>(domain),name));
+                                     SharedPtrConstnessHandler<DomainType>(domain)));
   }
 #endif
 
@@ -258,7 +255,6 @@ public:
 protected:
   SharedPtrConstnessHandler<DomainType> domain_;
 
-private:
   /**
    * Name associated to the object instance.
    */
@@ -270,6 +266,7 @@ private:
   Index object_id_;
 
 
+private:
   friend class FunctionElement<dim_, codim_, range_, rank_>;
 
 
@@ -280,10 +277,7 @@ protected:
   std::shared_ptr<const self_t> function_previous_refinement_;
 
 public:
-  const std::shared_ptr<const self_t> &get_function_previous_refinement() const
-  {
-    return function_previous_refinement_;
-  }
+  const std::shared_ptr<const self_t> &get_function_previous_refinement() const;
 
 private:
   /**
@@ -329,18 +323,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("domain_",domain_);
-    ar &make_nvp("name_",name_);
-    ar &make_nvp("object_id_",object_id_);
-
-#ifdef MESH_REFINEMENT
-    auto tmp = std::const_pointer_cast<self_t>(function_previous_refinement_);
-    ar &make_nvp("function_previous_refinement_",tmp);
-    function_previous_refinement_ = tmp;
-#endif // MESH_REFINEMENT
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };

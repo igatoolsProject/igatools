@@ -25,21 +25,30 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = []
 
-for x in inst.sub_mapping_dims:
-    mapping = 'DomainHandler<%d,%d>' %(x.dim, x.codim)
-    f.write('template class %s ;\n' %(mapping))
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+handlers = set()
+handler_funcs = set()
 
-for x in inst.mapping_dims:
-    mapping = 'DomainHandler<%d,%d>' %(x.dim, x.codim)
-    f.write('template class %s ;\n' %(mapping))
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-            f.write('template ' + s + '\n')
+for x in inst.sub_mapping_dims + inst.mapping_dims:
+    handler = 'DomainHandler<%d,%d>' %(x.dim, x.codim)
+    handlers.add(handler)
+    for k in range(0,x.dim+1):
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::set_flags<%d>(const Flags &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::fill_cache<%d>(ElementAccessor &,const int) const' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::fill_cache<%d>(ElementIterator &,const int) const' % (handler,k)
+        handler_funcs.add(func)
+        
  
+for handler in handlers:
+    f.write('template class %s;\n' %(handler))
+    
+for func in handler_funcs:
+    f.write('template %s;\n' %(func))

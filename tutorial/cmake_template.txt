@@ -33,7 +33,7 @@ link_directories(${IGATOOLS_LIBRARY_DIR})
 add_executable(${name} EXCLUDE_FROM_ALL ${name}.cpp )
 
 # todo: I would like to make this depend on the library install but it does not work
-add_dependencies(${name} ${lib_name})
+add_dependencies(${name} ${iga_lib_name})
 target_link_libraries (${name} ${IGATOOLS_LIBRARIES})
 
 # add the make run target

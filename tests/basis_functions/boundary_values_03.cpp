@@ -77,6 +77,9 @@ public:
   void evaluate_2(const ValueVector<Point> &points,
                   ValueVector<Derivative<2>> &values) const override
   {}
+
+  void print_info(LogStream &out) const override
+  {}
 };
 
 

@@ -52,7 +52,7 @@ void physical_space(const int deg)
   const int n_plot_points = 2;
   Writer<dim> writer(space->get_ptr_const_map_func(), n_plot_points);
   string filename = "ball_geometry-" + to_string(dim) + "d" ;
-  writer.save(filename);
+  writer.save(filename, true);
 }
 
 

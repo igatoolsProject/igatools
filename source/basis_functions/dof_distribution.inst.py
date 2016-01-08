@@ -30,24 +30,18 @@ for x in inst.all_ref_sp_dims:
     dof_distributions.append(dof_distribution)
     
 
-for dof_distribution in dof_distributions:
+for dof_distribution in unique(dof_distributions):
     f.write('template class %s ;\n' %(dof_distribution))
 
 
 #---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
+f.write('#ifdef SERIALIZATION\n')
 
 archives = ['OArchive','IArchive']
 
-f.write('#ifdef SERIALIZATION\n')
-id = 0 
 for dof_distribution in unique(dof_distributions):
-    alias = 'DofDistributionAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, dof_distribution))
     for ar in archives:
-        f.write('template void %s::serialize(%s&);\n' %(alias,ar))
-    id += 1 
+        f.write('template void %s::serialize(%s&);\n' %(dof_distribution,ar))
+
 f.write('#endif // SERIALIZATION\n')
-    
-f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------

@@ -34,13 +34,13 @@ namespace grid_functions
 /**
  * y = b
  */
-template<int dim, int space_dim>
+template<int dim, int range>
 class ConstantGridFunction :
-  public FormulaGridFunction<dim,space_dim>
+  public FormulaGridFunction<dim,range>
 {
-  using base_t = GridFunction<dim,space_dim>;
-  using parent_t = FormulaGridFunction<dim,space_dim>;
-  using self_t = ConstantGridFunction<dim,space_dim>;
+  using base_t = GridFunction<dim,range>;
+  using parent_t = FormulaGridFunction<dim,range>;
+  using self_t = ConstantGridFunction<dim,range>;
   using typename base_t::GridType;
 public:
   using typename parent_t::Value;
@@ -62,6 +62,8 @@ public:
   virtual ~ConstantGridFunction() = default;
 
   virtual void print_info(LogStream &out) const override final;
+
+  const Value &get_constant_value() const;
 
 protected:
   ConstantGridFunction(
@@ -102,13 +104,13 @@ private:
 /**
  * F(x) = A * x + b
  */
-template<int dim, int space_dim>
+template<int dim, int range>
 class LinearGridFunction :
-  public FormulaGridFunction<dim,space_dim>
+  public FormulaGridFunction<dim,range>
 {
-  using base_t = GridFunction<dim,space_dim>;
-  using parent_t = FormulaGridFunction<dim,space_dim>;
-  using self_t = LinearGridFunction<dim,space_dim>;
+  using base_t = GridFunction<dim,range>;
+  using parent_t = FormulaGridFunction<dim,range>;
+  using self_t = LinearGridFunction<dim,range>;
   using typename base_t::GridType;
 public:
   using typename parent_t::Value;
@@ -132,6 +134,10 @@ public:
   virtual ~LinearGridFunction() = default;
 
   virtual void print_info(LogStream &out) const override final;
+
+  const Derivative<1> &get_A() const;
+
+  const Value &get_b() const;
 
 protected:
   LinearGridFunction(
@@ -327,7 +333,7 @@ template<int dim>
 class SphereGridFunction : public FormulaGridFunction<dim, dim+1>
 {
 private:
-  static const int space_dim = dim + 1;
+  static const int range = dim + 1;
   using base_t = GridFunction<dim, dim+1>;
   using parent_t = FormulaGridFunction<dim, dim+1>;
   using self_t = SphereGridFunction<dim>;

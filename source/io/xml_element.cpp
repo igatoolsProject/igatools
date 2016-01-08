@@ -32,6 +32,7 @@
 #include <xercesc/dom/DOMImplementation.hpp>
 #include <xercesc/dom/DOMImplementationRegistry.hpp>
 #include <xercesc/dom/DOMLSSerializer.hpp>
+#include <xercesc/util/OutOfMemoryException.hpp>
 
 using std::string;
 using std::shared_ptr;
@@ -376,12 +377,11 @@ get_values_vector() const
 
 
 
-template <>
-SafeSTLVector<bool>
+std::vector<bool>
 XMLElement::
-get_values_vector() const
+get_boolean_vector() const
 {
-  SafeSTLVector<bool> data;
+  std::vector<bool> data;
   const auto text_elem = this->get_single_text_element();
 
   const string str = XMLString::transcode(text_elem->getWholeText());
@@ -499,22 +499,113 @@ get_single_element(const string &name) -> SelfPtr_
 }
 
 
+
+template <class T>
+void
+XMLElement::
+add_attribute(const string &name,
+              const T &value)
+{
+    XMLCh* name_ch = XMLString::transcode(name.c_str());
+    const auto value_str = std::to_string(value);
+    XMLCh* value_ch = XMLString::transcode(value_str.c_str());
+    root_elem_->setAttribute(name_ch, value_ch);
+    XMLString::release(&name_ch);
+    XMLString::release(&value_ch);
+}
+
+
+
+void
+XMLElement::
+add_attribute(const string &name,
+              const string &value)
+{
+    XMLCh* name_ch = XMLString::transcode(name.c_str());
+    XMLCh* value_ch = XMLString::transcode(value.c_str());
+    root_elem_->setAttribute(name_ch, value_ch);
+    XMLString::release(&name_ch);
+    XMLString::release(&value_ch);
+}
+
+
+
+void
+XMLElement::
+add_attribute(const char *name,
+              const char *value)
+{
+    XMLCh* name_ch = XMLString::transcode(name);
+    XMLCh* value_ch = XMLString::transcode(value);
+    root_elem_->setAttribute(name_ch, value_ch);
+    XMLString::release(&name_ch);
+    XMLString::release(&value_ch);
+}
+
+
+
+void
+XMLElement::
+append_child_element (const SelfPtr_ xml_elem)
+{
+    root_elem_->appendChild(xml_elem->root_elem_);
+}
+
+
+
 void
 XMLElement::
 print_info(LogStream &out) const
 {
-  xercesc::DOMImplementation *impl = xercesc::
-                                     DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
-  xercesc::DOMLSSerializer *writer = ((xercesc::DOMImplementationLS *)impl)->createLSSerializer();
-  const auto *xmlch_output = writer->writeToString(root_elem_);
-  const auto output_string = XMLString::transcode(xmlch_output);
-  out.begin_item("XMLElement:");
-  out << output_string;
-  out.end_item();
 
-  delete xmlch_output;
-  delete writer;
+  // Creating XML writer and writing the DOM element.
+  try
+  {
+      xercesc::DOMImplementation *impl = xercesc::
+              DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
+      xercesc::DOMLSSerializer *writer = ((xercesc::DOMImplementationLS *)impl)
+                  ->createLSSerializer();
+
+      const auto *xmlch_output = writer->writeToString(root_elem_);
+      const auto output_string = XMLString::transcode(xmlch_output);
+
+      out.begin_item("XMLElement:");
+      out << output_string;
+      out.end_item();
+
+      delete xmlch_output;
+      delete writer;
+  }
+  catch(const xercesc::XMLException &ex)
+  {
+      char *msg = XMLString::transcode(ex.getMessage());
+      AssertThrow(false, ExcXMLError("An Exception occurred when "
+              + string("writing element: ") + msg, 0, 0));
+      XMLString::release(&msg);
+  }
+  catch(const xercesc::DOMException &ex)
+  {
+      char *msg = XMLString::transcode(ex.getMessage());
+      AssertThrow(false, ExcXMLError("An Exception occurred when "
+              + string("writing element: ") + msg, 0, 0));
+      XMLString::release(&msg);
+  }
+  catch (const xercesc::OutOfMemoryException& ex)
+  {
+      char *msg = XMLString::transcode(ex.getMessage());
+      AssertThrow(false, ExcXMLError("An Exception occurred when "
+              + string("writing element: ") + msg, 0, 0));
+      XMLString::release(&msg);
+  }
+  catch (...)
+  {
+      AssertThrow(false, ExcXMLError("Unknown Exception occurred when "
+              "writing element.", 0, 0));
+  }
 }
+
+template void XMLElement::add_attribute<Index> (const string &, const Index &);
+template void XMLElement::add_attribute<Real> (const string &, const Real &);
 
 IGA_NAMESPACE_CLOSE
 

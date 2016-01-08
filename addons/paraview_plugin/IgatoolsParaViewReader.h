@@ -23,10 +23,11 @@
 
 #include <vtkMultiBlockDataSetAlgorithm.h>
 
+#include <paraview_plugin/vtk_iga_types.h>
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_size.h>
 
-#include <paraview_plugin/types.h>
+class vtkObjectBase;
 
 /** Forward declarations. */
 
@@ -36,16 +37,15 @@ template <int> class TensorSize;
 struct VtkGridInformation;
 struct VtkControlGridInformation;
 
-class FunctionsContainer;
+class ObjectsContainer;
 
-class VtkIgaGridGeneratorContParm;
-class VtkIgaGridGeneratorContPhys;
+class VtkIgaGridContainer;
 }
 
 /**
  * @brief This is main class called from the ParaView xml plugin.
  *
- * Once a igatools file (containing the serialization of a \ref FunctionsContainer
+ * Once a igatools file (containing the serialization of a \ref ObjectsContainer
  * class instance) has been selected, it receives some information from the
  * ParaView GUI (the file name itself, information for building the vtk
  * geometries, etc) and creates and returns the vtk grids packed into
@@ -74,7 +74,8 @@ class VtkIgaGridGeneratorContPhys;
  * @ingroup paraview_plugin
  */
 
-class VTK_EXPORT IgatoolsParaViewReader : public vtkMultiBlockDataSetAlgorithm
+// class VTK_EXPORT IgatoolsParaViewReader : public vtkMultiBlockDataSetAlgorithm
+class IgatoolsParaViewReader : public vtkMultiBlockDataSetAlgorithm
 {
 
 private:
@@ -85,17 +86,15 @@ private:
   /** Type of the class itself. */
   typedef IgatoolsParaViewReader Self_;
 
-  /** Type for shared pointer of \ref vtkGridInformation.  */
+  /** Type for shared pointer of @ref vtkGridInformation.  */
   typedef std::shared_ptr<iga::VtkGridInformation> GridInfoPtr_;
 
-  /** Type for shared pointer of \ref vtkControlGridInformation.  */
+  /** Type for shared pointer of @ref vtkControlGridInformation.  */
   typedef std::shared_ptr<iga::VtkControlGridInformation> ControlGridInfoPtr_;
 
-  /** Type for shared pointer of \ref VtkGridGeneratorContPhys.  */
-  typedef std::shared_ptr<iga::VtkIgaGridGeneratorContPhys> PhysGenPtr_;
+  /** Type for shared pointer of @ref VtkGridGeneratorContainer.  */
+  typedef std::shared_ptr<iga::VtkIgaGridContainer> GridGenPtr_;
 
-  /** Type for shared pointer of \ref VtkGridGeneratorContParm.  */
-  typedef std::shared_ptr<iga::VtkIgaGridGeneratorContParm> ParmGenPtr_;
 
   ///@}
 
@@ -108,14 +107,14 @@ private:
   IgatoolsParaViewReader();
 
 
-  /** Destructor. Defined by default. */
+  /** Default destructor. */
   ~IgatoolsParaViewReader() = default;
 
   /** Copy constructor. Not allowed to be used. */
-  IgatoolsParaViewReader(const Self_ &);
+  IgatoolsParaViewReader(const Self_ &) = delete;
 
   /** Move constructor. Not allowed to be used. */
-  IgatoolsParaViewReader(const Self_ &&);
+  IgatoolsParaViewReader(const Self_ &&) = delete;
 
   ///@}
 
@@ -141,7 +140,7 @@ protected:
   /**
    * This method is called by the vtk superclass and is the one
    * in charge of building the vtk objects (in this case, a
-   * vtkMultiBlockDataSet) and store it in @p outputVector.
+   * vtkMultiBlockDataSet) and store it in @p output_vec.
    *
    * The returned vtkMultiBlockDataSet is a block of blocks.
    * That is, the returned block is composed by two blocks: one for the
@@ -179,17 +178,62 @@ protected:
    */
   virtual int RequestInformation(vtkInformation *request,
                                  vtkInformationVector **inputVector,
-                                 vtkInformationVector *outputVector) override final;
-
-  virtual int FillOutputPortInformation(int port, vtkInformation *info) override final;
+                                 vtkInformationVector *output_vec) override final;
 
 public:
 
-  /** Required for ParaView plugin. */
+  /** Required by the ParaView plugin. */
   static IgatoolsParaViewReader *New();
 
-  /** Required for ParaView plugin. */
-  vtkTypeMacro(IgatoolsParaViewReader, vtkMultiBlockDataSetAlgorithm);
+  /** Required by the ParaView plugin. */
+
+private:
+  /**
+   * Retrieves the class name.
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  virtual const char *GetClassNameInternal() const override final;
+
+public:
+  /**
+   * Returns true if the class is of the given type.
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  static int IsTypeOf(const char *type);
+
+  /**
+   * Returns true if the class is of the given type.
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  virtual int IsA(const char *type) override final;
+
+  /**
+   * Performs a safe down cast from a @ref vtkObjectBase to the current
+   * type.
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  static IgatoolsParaViewReader* SafeDownCast(vtkObjectBase *o);
+
+
+  /**
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  IgatoolsParaViewReader *NewInstance() const;
+
+protected:
+
+  /**
+   * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
+   * @note Required by the ParaView plugin.
+   */
+  virtual vtkObjectBase *NewInstanceInternal() const override final;
+
+public:
 
   /**
    * Prints the information of the class in the stream @p using the
@@ -246,7 +290,7 @@ public:
 
   /**
    * Sets the @p name of the igatools input file containing a serialization
-   * of a \ref FunctionsContainer class instance.
+   * of a \ref ObjectsContainer class instance.
    */
   virtual void SetFileName(const char *name);
 
@@ -427,22 +471,22 @@ private:
    */
   void set_grid_type(int arg1,
                      const char *const name,
-                     iga::vtkGridType &type);
+                     iga::VtkGridType &type);
 
   /** vtkGridType for the solid representation of the physical mappings. */
-  iga::vtkGridType phys_sol_grid_type_ = iga::vtkGridType::None;
+  iga::VtkGridType phys_sol_grid_type_ = iga::VtkGridType::None;
 
   /** vtkGridType for the solid representation of the parametric mappings. */
-  iga::vtkGridType parm_sol_grid_type_ = iga::vtkGridType::None;
+  iga::VtkGridType parm_sol_grid_type_ = iga::VtkGridType::None;
 
   /** vtkGridType for the knot mesh representation of the physical mappings. */
-  iga::vtkGridType phys_knt_grid_type_ = iga::vtkGridType::None;
+  iga::VtkGridType phys_knt_grid_type_ = iga::VtkGridType::None;
 
   /** vtkGridType for the knot mesh representation of the parametric mappings. */
-  iga::vtkGridType parm_knt_grid_type_ = iga::vtkGridType::None;
+  iga::VtkGridType parm_knt_grid_type_ = iga::VtkGridType::None;
 
   /** vtkGridType for the control mesh representation of the physical mappings. */
-  iga::vtkGridType phys_ctr_grid_type_ = iga::vtkGridType::None;
+  iga::VtkGridType phys_ctr_grid_type_ = iga::VtkGridType::None;
 
   /**
    *  Flag for determining if the solid representation of the physical
@@ -557,22 +601,15 @@ private:
 
   /**
    * Igatools functions container used for storing the mapping functions
-   * and their associated field data (@see FunctionsContainer).
+   * and their associated field data (@see ObjectsContainer).
    */
-  std::shared_ptr<iga::FunctionsContainer> funcs_container_;
+  std::shared_ptr<iga::ObjectsContainer> objs_container_;
 
 
   /**
-   * Generator for creating physical mappings (and associated field
-   * data) representations throw a tree of vtkMultiBlockDataSet.
+   * @todo to document.
    */
-  PhysGenPtr_ phys_gen_;
-
-  /**
-   * Generator for creating parametric mappings (and associated field
-   * data) representations throw a tree of vtkMultiBlockDataSet.
-   */
-  ParmGenPtr_ parm_gen_;
+  GridGenPtr_ grid_gen_;
 
   /**
    * Parses the input file.
@@ -584,13 +621,6 @@ private:
    * Updates the information related to the vtk grids for the grids generators.
    */
   void update_grid_info();
-
-  /**
-   * This is a temporary class for filling a functions container while
-   * the serialization does not work.
-   */
-  template <int dim>
-  void create_geometries();
 
   /**
    * Creates the tree of vtkMultiBlockDataSet of the output, and calls the

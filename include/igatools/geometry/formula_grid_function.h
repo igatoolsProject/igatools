@@ -33,16 +33,16 @@ template <int, int> class FormulaGridFunctionHandler;
 /**
  *
  */
-template<int dim, int space_dim>
+template<int dim, int range>
 class FormulaGridFunction :
-  public GridFunction<dim, space_dim>
+  public GridFunction<dim, range>
 {
 private:
-  using parent_t =  GridFunction<dim, space_dim>;
-  using self_t = FormulaGridFunction<dim, space_dim>;
+  using parent_t =  GridFunction<dim, range>;
+  using self_t = FormulaGridFunction<dim, range>;
 protected:
   using typename parent_t::GridType;
-  using ElementHandler = FormulaGridFunctionHandler<dim, space_dim>;
+  using ElementHandler = FormulaGridFunctionHandler<dim, range>;
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
@@ -62,7 +62,7 @@ public:
   using SubGridElemMap = typename Grid<dim>::template SubGridMap<sdim>;
 
   template <int sdim>
-  std::shared_ptr<const SubGridFunction<sdim,dim,space_dim> >
+  std::shared_ptr<const SubGridFunction<sdim,dim,range> >
   get_sub_function(const int s_id,
                    const SubGridElemMap<sdim> &sub_grid_elem_map,
                    const std::shared_ptr<const Grid<sdim>> &sub_grid) const
@@ -70,7 +70,7 @@ public:
     static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
                   "The dimensionality of the sub_grid is not valid.");
 
-    auto sub_func = SubGridFunction<sdim,dim,space_dim>::const_create(
+    auto sub_func = SubGridFunction<sdim,dim,range>::const_create(
                       this->shared_from_this(),s_id,sub_grid_elem_map,sub_grid);
 //    AssertThrow(false,ExcNotImplemented());
     /*
@@ -82,7 +82,7 @@ public:
         for (int sub_dof = 0 ; sub_dof < n_sub_dofs ; ++ sub_dof)
           sub_coeffs[sub_dof] = coeffs_[dof_map[sub_dof]];
 
-        auto sub_func = IgGridFunction<sdim,space_dim>::const_create(sub_ref_space,sub_coeffs);
+        auto sub_func = IgGridFunction<sdim,range>::const_create(sub_ref_space,sub_coeffs);
 
         return sub_func;
       //*/

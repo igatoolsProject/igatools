@@ -3,33 +3,15 @@ dof_distribution_serialization
 ========================================================================
 Original DofDistribution.
    Num dofs table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 ]
       Scalar components dimensions:
       [ 5 ]
       Total Dimension: 5
    
    Index table size:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 ]
       Scalar components dimensions:
       [ 5 ]
       Total Dimension: 5
@@ -45,33 +27,15 @@ Original DofDistribution.
 
 DofDistribution after serialize-deserialize.
    Num dofs table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 ]
       Scalar components dimensions:
       [ 5 ]
       Total Dimension: 5
    
    Index table size:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 ]
       Scalar components dimensions:
       [ 5 ]
       Total Dimension: 5
@@ -92,33 +56,15 @@ dof_distribution_serialization
 ========================================================================
 Original DofDistribution.
    Num dofs table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 5 ]
       Scalar components dimensions:
       [ 25 ]
       Total Dimension: 25
    
    Index table size:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 5 ]
       Scalar components dimensions:
       [ 25 ]
       Total Dimension: 25
@@ -134,33 +80,15 @@ Original DofDistribution.
 
 DofDistribution after serialize-deserialize.
    Num dofs table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 5 ]
       Scalar components dimensions:
       [ 25 ]
       Total Dimension: 25
    
    Index table size:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 5 ]
       Scalar components dimensions:
       [ 25 ]
       Total Dimension: 25
@@ -181,33 +109,15 @@ dof_distribution_serialization
 ========================================================================
 Original DofDistribution.
    Num dofs table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 5 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 5 5 ]
       Scalar components dimensions:
       [ 125 ]
       Total Dimension: 125
    
    Index table size:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 5 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 5 5 ]
       Scalar components dimensions:
       [ 125 ]
       Total Dimension: 125
@@ -223,33 +133,15 @@ Original DofDistribution.
 
 DofDistribution after serialize-deserialize.
    Num dofs table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 5 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 5 5 ]
       Scalar components dimensions:
       [ 125 ]
       Total Dimension: 125
    
    Index table size:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 5 5 5 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 5 5 5 ]
       Scalar components dimensions:
       [ 125 ]
       Total Dimension: 125

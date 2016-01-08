@@ -9,11 +9,11 @@ for hands-on learning.
 They assume that the user is familiar with the general 
 theory of isogeometric methods or at least with the finite element methods.
 A more theoretical overview is given in the igatools paper \cite PMCA2014 and
-technical details about the classes can be find in the 
+technical details about the classes can be found in the 
 \ref index "reference manual".
 It also assumes a basic knowledge of C++ or object oriented programming.
 
-Before we start, if you haven't done it already, it is a good
+Before we start, if you haven't done it yet, it is a good
 idea to install the visualizer [Paraview](http://www.paraview.org/),
 as we will use it to show outputs.
 
@@ -56,7 +56,6 @@ http://matley.imati.cnr.it/igatools/wiki/IgatoolsProjects
 
 The examples are organized by number with a pedagogical order
 from simpler to more difficult.
-They build on and refer to facts of the previous examples
 so it is crucial to study them in order.
 
 Tutorial examples:

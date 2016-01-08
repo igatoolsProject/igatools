@@ -25,8 +25,8 @@ IGA_NAMESPACE_OPEN
 namespace grid_functions
 {
 //------------------------------------------------------------------------------
-template<int dim, int space_dim>
-ConstantGridFunction<dim,space_dim>::
+template<int dim, int range>
+ConstantGridFunction<dim,range>::
 ConstantGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
                      const Value &b)
   :
@@ -36,9 +36,9 @@ ConstantGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
 
 
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-ConstantGridFunction<dim,space_dim>::
+ConstantGridFunction<dim,range>::
 create(const std::shared_ptr<GridType> &domain,
        const Value &b) ->  std::shared_ptr<self_t>
 {
@@ -53,9 +53,9 @@ create(const std::shared_ptr<GridType> &domain,
 
 }
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-ConstantGridFunction<dim,space_dim>::
+ConstantGridFunction<dim,range>::
 const_create(const std::shared_ptr<const GridType> &domain,
              const Value &b) ->  std::shared_ptr<const self_t>
 {
@@ -64,9 +64,9 @@ const_create(const std::shared_ptr<const GridType> &domain,
 }
 
 #ifdef MESH_REFINEMENT
-template<int dim, int space_dim>
+template<int dim, int range>
 void
-ConstantGridFunction<dim,space_dim>::
+ConstantGridFunction<dim,range>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
@@ -78,9 +78,9 @@ rebuild_after_insert_knots(
 #endif // MESH_REFINEMENT
 
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-ConstantGridFunction<dim,space_dim>::
+ConstantGridFunction<dim,range>::
 evaluate_0(const ValueVector<GridPoint> &points,
            ValueVector<Value> &values) const -> void
 {
@@ -94,9 +94,9 @@ evaluate_0(const ValueVector<GridPoint> &points,
 
 
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-ConstantGridFunction<dim,space_dim>::
+ConstantGridFunction<dim,range>::
 evaluate_1(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<1>> &values) const -> void
 {
@@ -104,9 +104,9 @@ evaluate_1(const ValueVector<GridPoint> &points,
     val = 0.0;
 }
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-ConstantGridFunction<dim,space_dim>::
+ConstantGridFunction<dim,range>::
 evaluate_2(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<2>> &values) const -> void
 {
@@ -114,20 +114,30 @@ evaluate_2(const ValueVector<GridPoint> &points,
     val = 0.0;
 }
 
-template<int dim, int space_dim>
+template<int dim, int range>
 void
-ConstantGridFunction<dim,space_dim>::
+ConstantGridFunction<dim,range>::
 print_info(LogStream &out) const
 {
   out.begin_item("ConstantGridFunction<"
                  + std::to_string(dim) + ","
-                 + std::to_string(space_dim) + ">");
+                 + std::to_string(range) + ">");
 
   out.begin_item("b:");
   out << b_ ;
   out.end_item();
 
+  out << "Name: " << this->name_ << std::endl;
+
   out.end_item();
+}
+
+template<int dim, int range>
+auto
+ConstantGridFunction<dim,range>::
+get_constant_value() const -> const Value &
+{
+    return b_;
 }
 
 
@@ -136,8 +146,8 @@ print_info(LogStream &out) const
 
 
 //------------------------------------------------------------------------------
-template<int dim, int space_dim>
-LinearGridFunction<dim,space_dim>::
+template<int dim, int range>
+LinearGridFunction<dim,range>::
 LinearGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
                    const Derivative<1> &A,
                    const Value &b)
@@ -149,9 +159,9 @@ LinearGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
 
 
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-LinearGridFunction<dim,space_dim>::
+LinearGridFunction<dim,range>::
 create(const std::shared_ptr<GridType> &domain,
        const Derivative<1> &A,
        const Value &b) ->  std::shared_ptr<self_t>
@@ -167,9 +177,9 @@ create(const std::shared_ptr<GridType> &domain,
 
 }
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-LinearGridFunction<dim,space_dim>::
+LinearGridFunction<dim,range>::
 const_create(const std::shared_ptr<const GridType> &domain,
              const Derivative<1> &A,
              const Value &b) ->  std::shared_ptr<const self_t>
@@ -179,9 +189,9 @@ const_create(const std::shared_ptr<const GridType> &domain,
 }
 
 #ifdef MESH_REFINEMENT
-template<int dim, int space_dim>
+template<int dim, int range>
 void
-LinearGridFunction<dim,space_dim>::
+LinearGridFunction<dim,range>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
@@ -193,9 +203,9 @@ rebuild_after_insert_knots(
 #endif // MESH_REFINEMENT
 
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-LinearGridFunction<dim,space_dim>::
+LinearGridFunction<dim,range>::
 evaluate_0(const ValueVector<GridPoint> &points,
            ValueVector<Value> &values) const -> void
 {
@@ -209,9 +219,9 @@ evaluate_0(const ValueVector<GridPoint> &points,
 
 
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-LinearGridFunction<dim,space_dim>::
+LinearGridFunction<dim,range>::
 evaluate_1(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<1>> &values) const -> void
 {
@@ -219,9 +229,9 @@ evaluate_1(const ValueVector<GridPoint> &points,
     val = A_;
 }
 
-template<int dim, int space_dim>
+template<int dim, int range>
 auto
-LinearGridFunction<dim,space_dim>::
+LinearGridFunction<dim,range>::
 evaluate_2(const ValueVector<GridPoint> &points,
            ValueVector<Derivative<2>> &values) const -> void
 {
@@ -229,14 +239,14 @@ evaluate_2(const ValueVector<GridPoint> &points,
     val = 0.;
 }
 
-template<int dim, int space_dim>
+template<int dim, int range>
 void
-LinearGridFunction<dim,space_dim>::
+LinearGridFunction<dim,range>::
 print_info(LogStream &out) const
 {
   out.begin_item("LinearGridFunction<"
                  + std::to_string(dim) + ","
-                 + std::to_string(space_dim) + ">");
+                 + std::to_string(range) + ">");
 
   out.begin_item("A:");
   out << A_ ;
@@ -246,7 +256,29 @@ print_info(LogStream &out) const
   out << b_ ;
   out.end_item();
 
+  out << "Name: " << this->name_ << std::endl;
+
   out.end_item();
+}
+
+
+
+template<int dim, int range>
+auto
+LinearGridFunction<dim,range>::
+get_A () const -> const Derivative<1> &
+{
+    return A_;
+}
+
+
+
+template<int dim, int range>
+auto
+LinearGridFunction<dim,range>::
+get_b () const -> const Value &
+{
+    return b_;
 }
 
 
@@ -352,6 +384,8 @@ print_info(LogStream &out) const
   out.begin_item("IdentityGridFunction<"
                  + std::to_string(dim) + ">");
   out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
 }
 
 
@@ -614,6 +648,8 @@ print_info(LogStream &out) const
 {
   out.begin_item("BallGridFunction<" + std::to_string(dim) +">");
   out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -674,7 +710,7 @@ template<int order>
 auto
 SphereGridFunction<dim>::get_aux_vals(const ValueVector<GridPoint> &points) const
 {
-  SafeSTLArray<SafeSTLArray<SafeSTLVector<SafeSTLArray<double, space_dim> >, order>, 2> val_table;
+  SafeSTLArray<SafeSTLArray<SafeSTLVector<SafeSTLArray<double, range> >, order>, 2> val_table;
   auto &cos_val = val_table[0];
   auto &sin_val = val_table[1];
 
@@ -689,25 +725,25 @@ SphereGridFunction<dim>::get_aux_vals(const ValueVector<GridPoint> &points) cons
   for (int qp = 0; qp < n_points; ++qp)
   {
     sin_val[0][qp][0] = R;
-    for (int i = 1; i < space_dim; ++i)
+    for (int i = 1; i < range; ++i)
     {
       sin_val[0][qp][i]   = sin(points[qp][i-1]);
       cos_val[0][qp][i-1] = cos(points[qp][i-1]);
     }
-    cos_val[0][qp][space_dim - 1] = 1;
+    cos_val[0][qp][range - 1] = 1;
 
     for (int der = 1; der < order; ++der)
     {
       auto res = std::div(der,2);
       sin_val[der][qp][0] = R;
-      for (int i = 1; i < space_dim; ++i)
+      for (int i = 1; i < range; ++i)
       {
         sin_val[der][qp][i] =
           std::pow(-1, res.quot) *
           (res.rem == 0? sin_val[0][qp][i]: cos_val[0][qp][i-1]);
         cos_val[der][qp][i-1] = -sin_val[der-1][qp][i];
       }
-      cos_val[der][qp][space_dim - 1] = 1.;
+      cos_val[der][qp][range - 1] = 1.;
     }
   }
   return val_table;
@@ -734,7 +770,7 @@ evaluate_0(const ValueVector<GridPoint> &points,
   {
     auto &x = values[qp];
     double y = 1.;
-    for (int i = 0; i < space_dim; ++i)
+    for (int i = 0; i < range; ++i)
     {
       y *= s[qp][i];
       x[i] = y * c[qp][i];
@@ -765,7 +801,7 @@ evaluate_1(const ValueVector<GridPoint> &points,
     auto &grad = values[qp];
     grad = 0.;
 
-    for (int i = 0; i < space_dim-1; ++i)
+    for (int i = 0; i < range-1; ++i)
     {
       for (int j = 1; j < i+2; ++j)
       {
@@ -776,7 +812,7 @@ evaluate_1(const ValueVector<GridPoint> &points,
       }
     }
 
-    const int i = space_dim-1;
+    const int i = range-1;
     for (int j = 1; j < dim+1 ; ++j)
     {
       double djy = 1.;
@@ -811,7 +847,7 @@ evaluate_2(const ValueVector<GridPoint> &points,
   {
     auto &hessian = values[qp];
     hessian = 0.;
-    for (int i = 0; i < space_dim-1; ++i)
+    for (int i = 0; i < range-1; ++i)
     {
       for (int j = 1; j < i+2; ++j)
       {
@@ -840,7 +876,7 @@ evaluate_2(const ValueVector<GridPoint> &points,
       }
     }
 
-    const int i = space_dim-1;
+    const int i = range-1;
     for (int j = 1; j < dim+1; ++j)
       for (int k = 1; k < j+1; ++k)
       {
@@ -859,7 +895,7 @@ evaluate_2(const ValueVector<GridPoint> &points,
       }
 
 
-    for (int i = 0; i < space_dim; ++i)
+    for (int i = 0; i < range; ++i)
       for (int j = 0; j < dim; ++j)
         for (int k = 0; k < j; ++k)
         {
@@ -875,6 +911,8 @@ print_info(LogStream &out) const
 {
   out.begin_item("SphereGridFunction<" + std::to_string(dim) +">");
   out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -1090,6 +1128,8 @@ print_info(LogStream &out) const
   out << "theta0 = " << theta0_ << endl;
   out << "theta1 = " << theta1_ << endl;
   out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
 }
 
 //------------------------------------------------------------------------------

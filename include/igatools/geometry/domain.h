@@ -101,20 +101,17 @@ private:
   Domain() = default;
 
 protected:
-  Domain(const SharedPtrConstnessHandler<GridFuncType> &func,
-         const std::string &name);
+  Domain(const SharedPtrConstnessHandler<GridFuncType> &func);
 
 public:
   virtual ~Domain() = default;
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<GridFuncType> &func,
-         const std::string &name = "");
+  create(const std::shared_ptr<GridFuncType> &func);
 
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const GridFuncType> &func,
-               const std::string &name = "");
+  const_create(const std::shared_ptr<const GridFuncType> &func);
 
   std::shared_ptr<const GridFuncType> get_grid_function() const;
 
@@ -182,6 +179,7 @@ public:
 private:
   SharedPtrConstnessHandler<GridFunction<dim, space_dim>> grid_func_;
 
+  /// Name.
   std::string name_;
 
   /**
@@ -200,12 +198,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("grid_func_",grid_func_);
-    ar &make_nvp("name_",name_);
-    ar &make_nvp("object_id_",object_id_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 

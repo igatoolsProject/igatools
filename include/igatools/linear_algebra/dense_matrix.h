@@ -151,6 +151,28 @@ public:
    */
   bool is_symmetric() const;
 
+  bool operator==(const DenseMatrix &in) const
+  {
+    bool is_equal = (this == &in);
+    if (!is_equal)
+    {
+      bool equal_size = (this->get_num_rows() == in.get_num_rows() &&
+                         this->get_num_cols() == in.get_num_cols());
+      if (equal_size)
+      {
+        const auto &this_data_begin = this->data().begin();
+        const auto &this_data_end   = this->data().end();
+        const auto &in_data_begin = in.data().begin();
+        is_equal = std::equal(this_data_begin,this_data_end,in_data_begin);
+      }
+      else
+      {
+        is_equal = false;
+      }
+    }
+    return is_equal;
+  }
+
 private:
 
 #ifdef SERIALIZATION
@@ -162,33 +184,11 @@ private:
 
   template <class Archive>
   void
-  save(Archive &ar) const
-  {
-    auto rows = this->get_num_rows();
-    auto cols = this->get_num_cols();
-    ar(make_nvp("n_rows",rows));
-    ar(make_nvp("n_cols",cols));
-
-    const auto &data = this->data();
-    for (const Real &v : data)
-      ar(v);
-  }
+  save(Archive &ar) const;
 
   template <class Archive>
   void
-  load(Archive &ar)
-  {
-    int rows;
-    int cols;
-    ar(rows);
-    ar(cols);
-
-    this->resize(rows, cols);
-
-    auto &data = this->data();
-    for (Real &v : data)
-      ar(v);
-  }
+  load(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };
@@ -228,7 +228,7 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(iga::DenseMatrix,cereal::specialization::member_load_save);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(iga::DenseMatrix,cereal::specialization::member_load_save)
 
 #endif // SERIALIZATION
 

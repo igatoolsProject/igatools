@@ -54,11 +54,6 @@ public:
 
   using Flags = space_element::Flags;
 
-#if 0
-  static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
-  create(const std::shared_ptr<const Basis> &space);
-#endif
-
 protected:
   /** @name Constructors */
   ///@{
@@ -91,38 +86,14 @@ public:
 
   ///@}
 
-  /**
-   * @name Reset functions
-   */
-  ///@{
 
-#if 0
-  virtual void init_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
-                          const topology_variant &topology) override final;
-
-  virtual void fill_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
-                          const topology_variant &topology,
-                          const int sub_elem_id) override final;
-#endif
-
-//    virtual void print_info(LogStream &out) const = 0;
-
-  template <int sub_elem_dim = dim>
-  Size get_num_points() const
-  {
-    return grid_handler_.template get_num_points<sub_elem_dim>();
-  }
+/*
+  template <int sdim = dim>
+  int get_num_points() const;
+//*/
 
 protected:
 
-#if 0
-  virtual void init_ref_elem_cache(ElementAccessor &elem,
-                                   const topology_variant &topology)= 0;
-
-  virtual void fill_ref_elem_cache(ElementAccessor &elem,
-                                   const topology_variant &topology,
-                                   const int sub_elem_id) = 0;
-#endif
 
   GridHandler<dim> grid_handler_;
 

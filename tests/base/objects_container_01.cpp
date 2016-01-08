@@ -18,12 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for  Gauss-Legendre quadrature scheme
- *
- *  author: pauletti
- *  date: 2015-03-06
- *
+/**
+ *  @file
+ *  @brief  Test for Objects container
+ *  @author P. Antolin
+ *  @date 2015
  */
 
 #include "../tests.h"
@@ -46,7 +45,6 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   SafeSTLVector<Real> coord_z {9, 10, 11};
 
   SafeSTLArray<SafeSTLVector<Real>, dim> coord;
-  CartesianProductArray<Index , dim>  mult;
   TensorIndex<dim> degree;
 
   if (dim == 1)
@@ -112,17 +110,20 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
     weights[dof] = 1.0;
 
   const auto w_func = WeightFuncType::create(scalar_space,weights);
+  w_func->set_name("my_weight_function");
 
   container->insert_const_object<ScalarGridFuncType>(w_func);
 
   auto nurbs_space = NURBSType::create(bsp, w_func);
   container->insert_const_object<RefSpaceType>(nurbs_space);
 
-  const Values<dim, range, 1> val;
+  Values<dim, range, 1> val;
   const auto const_grid_func = ConstGridFunc::create(grid, val);
   container->insert_const_object<GridFuncType>(const_grid_func);
+  const_grid_func->set_name("my_const_grid_function");
 
-  const auto domain = DomainType::create(const_grid_func, "my_domain");
+  const auto domain = DomainType::create(const_grid_func);
+  domain->set_name("my_domain");
   container->insert_const_object<DomainType>(domain);
 
   const auto phys_space = PhysSpaceType::create(nurbs_space, domain);
@@ -130,6 +131,7 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
 
   const auto const_func = ConstFuncType::create(domain, val);
   container->insert_const_object<FuncType>(const_func);
+  const_func->set_name("my_const_function");
 }
 
 

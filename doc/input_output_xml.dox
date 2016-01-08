@@ -1,0 +1,310 @@
+/**
+   
+@defgroup in_out XML Input/Output
+@ingroup design
+@brief In this section we describe some details about the input/output XML file formats used by igatools. 
+
+Appart from the igatools serialization capabilities, the library provides
+the possibility of reading/writting different class instances from/to ascii files
+with a XML syntax.
+
+This XML input/ouptut capability presents a main advantage respect to
+the serialized files: the XML files are human readable, so they can be
+easily readed/edited with any text editor.
+
+Currently, the different class instances can be read/written throw the use
+of @ref ObjectsContainer.
+Thus, if the user wants to writes a bunch of instances to a file,
+these objects must be inserted into a @ref ObjectsContainer, and it
+can be written to a file by using the helper class @ref ObjectsContainerXMLWriter.
+
+On the other hand, a bunch of classes instances defined in a XML file can be
+parsed using the class @ref ObjectsContainerXMLParser. All the instances
+will be returned contained into a single @ref ObjectsContainer.
+
+During the library developments, the input file format will change in order to adhere closely 
+to the igatools class design and structure, so we currently have a single versions for the format,
+but new version will appear in the future.
+The value of the version reflects also which kind of capabilities can be handled/descripted/loaded from
+the input file (i.e. greater is the format number, greater are the supported capabilities).
+  
+We will try to mantain back-compability but we encourage to use the last format version available: for this
+reason we plan to provide input file convertes from a given file version to a newer one.
+
+- @subpage input_v1
+
+*/
+
+/** @}*/ //end of group in_out
+
+/**
+@defgroup input_v1 Input file format ver. 1.0
+@ingroup in_out
+
+All the XML files must be have the following structure.
+@code{.xml}
+<?xml version="1.0" encoding="utf-8"?>
+<Igatools FormatVersion="1.0">
+   ...
+   <Grid ...>
+   ...
+   <Domain ...>
+   ...
+</IgatoolsVersion>
+@endcode
+Notice that the XML document has a single XML main element, whose name
+is @p Igatools.
+ 
+Every object defined inside a single element has a number @p Id, 
+that is local and unique for every file. This @p Id allows to
+reference, from a different object, an object defined inside the same file.
+
+For example, inside a file a @ref Grid with a local id number equal to @p 5
+is defined:
+@code{.xml}
+  <Grid LocalObjectId="5"  ... >
+    <...>
+  </Grid>
+@endcode
+And we define also a @ref IdentityGridFunction with the local
+id number @p 6, but that is defined by using the previously defined grid
+with id @p 5, that is:
+@code{.xml}
+<IdentityGridFunction LocalObjectId="6" ...>
+  <Grid GetFromLocalObjectId="5"/>
+</IdentityGridFunction>
+@endcode
+
+The different objects defined into a single file do not need to be written
+in any specific order. But the file must be self consistent: the @p Id number
+associated to each object must be unique; all the objects reference throw
+its @p Id number must be defined inside the file.
+
+@note The file local object id does not correspond with the igatools
+internal object id that identify uniquely all the igatools objects
+built in a single simulation.
+
+
+Inside the main <tt><Igatools></tt> element, the igatools class instances
+that can be defined are:
+ - @ref Grid
+ - @ref SplineSpace
+ - @ref BSpline
+ - @ref NURBS
+ - @ref grid_functions::IdentityGridFunction
+ - @ref grid_functions::ConstantGridFunction
+ - @ref grid_functions::LinearGridFunction
+ - @ref IgGridFunction
+ - @ref Domain
+ - @ref PhysicalSpaceBasis
+ - @ref functions::ConstantFunction
+ - @ref functions::LinearFunction
+ - @ref IgFunction
+ 
+Below, the XML format for the above listed objects is detailed:
+
+Description of the @ref Grid XML format:
+@code{.xml}
+<Grid LocalObjectId="0" Dim="2">
+  <Knots>
+    <Knots Direction="0" Size="3">
+      0.000000 0.500000 1.000000
+    </Knots>
+    <Knots Direction="1" Size="2">
+      0.000000 1.000000
+    </Knots>
+  </Knots>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+</Grid>
+@endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+
+Description of the @ref SplineSpace XML format:
+@code{.xml}
+<SplineSpace LocalObjectId="1" Dim="2" Range="2" Rank="1">
+  <Grid GetFromLocalObjectId="0"/>
+
+  <SplineSpaceComponents>
+    <SplineSpaceComponent ComponentId="0">
+      <Degrees> 2 2 </Degrees>
+      <InteriorMultiplicities>
+        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicities>
+        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicities>
+      </InteriorMultiplicities>
+      <!-- The following entry is optional. -->
+      <Periodicity> false false </Periodicity>
+    </SplineSpaceComponent>
+
+    <SplineSpaceComponent ComponentId="1">
+      <Degrees> 2 2 </Degrees>
+      <InteriorMultiplicities>
+        <InteriorMultiplicities Direction="0"  Size="1"> 1 </InteriorMultiplicities>
+        <InteriorMultiplicities Direction="1"  Size="0">   </InteriorMultiplicities>
+      </InteriorMultiplicities>
+      <!-- The following entry is optional. -->
+      <Periodicity> false false </Periodicity>
+    </SplineSpaceComponent>
+  </SplineSpaceComponents>
+
+</SplineSpace>
+@endcode
+By default, if <tt>Periodicity</tt> is not defined, it is set to <tt>false</tt>.
+
+Description of the @ref BSpline XML format:
+@code{.xml}
+<BSpline LocalObjectId="3" Dim="2" Range="2" Rank="1">
+  <SplineSpace GetFromLocalObjectId="1"/>
+  <!-- The following entry is optional. -->
+  <EndBehaviour>
+    <EndBehaviour ComponentId="0">interpolatory interpolatory</EndBehaviour>
+    <EndBehaviour ComponentId="1">interpolatory interpolatory</EndBehaviour>
+  </EndBehaviour>
+</BSpline>
+@endcode
+By default, if <tt>EndBehaviour</tt> is not defined,
+it is set to <tt>interpolatory</tt> for all the compnents and directions.
+Its value must match with the specified <tt>Periodicity</tt>
+in the definition of the referenced @ref SplineSpace.
+
+Other possible values for <tt>EndBehaviour</tt> are
+<tt>periodic</tt> and <tt>end_knots</tt>.
+
+Description of the @ref NURBS XML format:
+@code{.xml}
+<NURBS LocalObjectId="6" Dim="2" Range="2" Rank="1">
+  <BSpline GetFromLocalObjectId="3"/>
+  <WeightFunction GetFromLocalObjectId="5"/>
+</NURBS>
+@endcode
+
+Description of the @ref grid_functions::IdentityGridFunction XML format:
+@code{.xml}
+<IdentityGridFunction LocalObjectId="11" Dim="2">
+  <Grid GetFromLocalObjectId="0"/>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+</IdentityGridFunction>
+@endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+
+Description of the @ref grid_functions::ConstantGridFunction XML format:
+@code{.xml}
+<ConstantGridFunction LocalObjectId="12" Dim="2" Range="2">
+  <Grid GetFromLocalObjectId="0"/>
+  <Values> 1.0 1.0 </Values>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+</ConstantGridFunction>
+@endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+
+Description of the @ref grid_functions::LinearGridFunction XML format:
+@code{.xml}
+<LinearGridFunction LocalObjectId="12" Dim="2" Range="2">
+  <Grid GetFromLocalObjectId="0"/>
+  <A> 1.0 0.0 0.0 1.0 </A>
+  <b> 1.0 2.0 </b>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+</LinearGridFunction>
+@endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+
+Description of the @ref IgGridFunction XML format:
+@code{.xml}
+<IgGridFunction LocalObjectId="7" Dim="2" Range="2">
+  <ReferenceSpaceBasis GetFromLocalObjectId="6"/>
+  <IgCoefficients Size="24">
+    <Indices>
+      0 1 2 3 4 5 6 7 8 9 10 11
+      12 13 14 15 16 17 18 19 20 21 22 23
+    </Indices>
+    <Values>
+      0.0 1.0 2.0 3.0 0.0 1.0 2.0 3.0 0.0 1.0 2.0 3.0
+      0.0 0.0 0.0 0.0 1.0 1.0 1.0 1.0 2.0 2.0 2.0 2.0
+    </Values>
+  </IgCoefficients>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+  <!-- The following entry is optional. -->
+  <DofsProperty>active</DofsProperty>
+</IgGridFunction>
+@endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+By default, if <tt>DofsProperty</tt> is not defined,
+it is set to <tt>active</tt>.
+
+Description of the @ref Domain XML format:
+@code{.xml}
+<Domain LocalObjectId="8"  Dim="2" Codim="0">
+  <GridFunction GetFromLocalObjectId="7"/>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+</Domain>
+@endcode
+By default, if the <tt>Name</tt> is not defined, it is set to a void string.
+
+Description of the @ref PhysicalSpaceBasis XML format:
+@code{.xml}
+<PhysicalSpaceBasis LocalObjectId="9" Dim="2" Range="2" Rank="1" Codim="0">
+  <ReferenceSpaceBasis GetFromLocalObjectId="6"/>
+  <Domain GetFromLocalObjectId="8"/>
+  <!-- The following entry is optional. -->
+  <Transformation>h_grad</Transformation>
+</PhysicalSpaceBasis>
+@endcode
+By default, if <tt>Transformation</tt> is not defined,
+it is set to <tt>h_grad</tt>.
+Other possible values for <tt>Transformation</tt> are
+<tt>h_div</tt>, <tt>h_curl</tt> and <tt>l_2</tt>.
+
+Description of the @ref functions::ConstantFunction XML format:
+@code{.xml}
+<ConstantFunction LocalObjectId="12" Dim="2" Range="2" Rank="1" Codim="0">
+  <Domain GetFromLocalObjectId="0"/>
+  <Values> 1.0 1.0 </Values>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+</ConstantFunction>
+@endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+
+Description of the @ref functions::LinearFunction XML format:
+@code{.xml}
+<LinearFunction LocalObjectId="12" Dim="2" Range="2" Codim="0">
+  <Domain GetFromLocalObjectId="0"/>
+  <A> 1.0 0.0 0.0 1.0 </A>
+  <b> 1.0 2.0 </b>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+</LinearFunction>
+@endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+
+Description of the @ref IgFunction XML format:
+@code{.xml}
+<IgFunction LocalObjectId="10" Dim="2" Range="2" Rank="1" Codim="0">
+  <PhysicalSpaceBasis GetFromLocalObjectId="9"/>
+  <IgCoefficients Size="24">
+    <Indices>
+      0 1 2 3 4 5 6 7 8 9 10 11
+      12 13 14 15 16 17 18 19 20 21 22 23
+    </Indices>
+    <Values>
+      0.0 1.0 2.0 3.0 0.0 1.0 2.0 3.0 0.0 1.0 2.0 3.0
+      0.0 0.0 0.0 0.0 1.0 1.0 1.0 1.0 2.0 2.0 2.0 2.0
+    </Values>
+  </IgCoefficients>
+  <!-- The following entry is optional. -->
+  <Name>my_name</Name>
+  <!-- The following entry is optional. -->
+  <DofsProperty>active</DofsProperty>
+</IgFunction>
+@endcode
+By default, if <tt>Name</tt> is not defined, it is set to a void string.
+By default, if <tt>DofsProperty</tt> is not defined,
+it is set to <tt>active</tt>.
+
+*/
+/** @}*/ //end of group input_v1

@@ -80,7 +80,6 @@ struct raw
  * All functions are inlined so in principle there should be no difference
  * in performance.
  *
- * @ingroup serializable
  */
 class Tdouble
 {
@@ -97,6 +96,9 @@ public:
    * total number of components of type value_type */
   static const int size = 1; //iga::constexpr_pow(dim_, rank_);
 
+  /** Total number of scalar entries of the tensor. */
+  static const int n_entries = size;
+
   using self_t = Tdouble;
   using co_tensor_t = self_t;
   using value_t = Real;
@@ -108,12 +110,18 @@ public:
    */
   Tdouble();
 
+
   /**
    * Default constructor. Sets the internal value to @p val.
    */
   Tdouble(const Real val);
 
 #if 0
+  /**
+   * Constructor from a flat array of entries.
+   */
+  Tdouble(const SafeSTLArray<value_t, n_entries> &values);
+
   /**
    * Advance constructor to optimization when zero
    * initialization is not necessary.
@@ -219,27 +227,14 @@ public:
    */
   static Size get_number_of_entries();
 
+  /**
+   * Return the value wrapped into an array.
+   */
+  SafeSTLArray<typename Tdouble::value_t, n_entries> get_flat_values() const noexcept;
+
 private:
   value_t val_;
 
-#if 0
-#ifdef SERIALIZATION
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    ar &boost::serialization::make_nvp("val_",val_);
-  };
-  ///@}
-#endif // SERIALIZATION
-#endif
 };
 
 
@@ -409,11 +404,10 @@ using ActionTensor = Conditional<
  * - if rank == 1, SubTensor<Tensor<dim,rank,tensor_type,value_type>> is value_type
  *
  *
- * @author Martinelli 2012, 2013, 2014
+ * @author Martinelli 2012, 2013, 2014, 2015
  * @author Cavallini 2012
  * @author Pauletti 2012, 2013, 2014
  *
- * @ingroup serializable
  */
 template<int dim_, int rank_, class tensor_type, class value_type>
 class Tensor
@@ -431,6 +425,9 @@ public:
   /** Flat size of the tensor, i.e. total number of components of type value_type */
   static const int size = iga::constexpr_pow(dim_, rank_);
 
+  /** Total number of scalar entries of the tensor. */
+  static const int n_entries = size * value_type::size;
+
   using tensor_t = tensor_type;
 
   using value_t = value_type;
@@ -447,6 +444,11 @@ public:
    * Default constructor. Sets all entries to 0.
    */
   Tensor() = default;
+
+  /**
+   * Constructor from a flat array of entries.
+   */
+  Tensor(const SafeSTLArray<typename Tdouble::value_t, n_entries> &values);
 
   /** Copy constructor */
   Tensor(const Tensor<dim_, rank_, tensor_type, value_type> &tensor) = default;
@@ -601,31 +603,16 @@ public:
    */
   static Size get_number_of_entries();
 
+  /**
+   * Return the value wrapped into an array.
+   */
+  SafeSTLArray<typename Tdouble::value_t, n_entries> get_flat_values() const noexcept;
+
 private :
   static const int num_sub_tensor = (dim_== 0? 1: dim_) ;
 
   SubTensor<self_t> tensor_[num_sub_tensor];
 
-#if 0
-  /**
-   * @name Functions needed for boost::serialization
-   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   */
-  ///@{
-  friend class boost::serialization::access;
-
-  template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    for (int i = 0 ; i < num_sub_tensor ; ++i)
-    {
-      const std::string tag_name = "sub_tensor_" + std::to_string(i);
-      ar &boost::serialization::make_nvp(tag_name.c_str(),tensor_[i]);
-    }
-  };
-  ///@}
-#endif
 };
 
 
@@ -1191,7 +1178,7 @@ EnableIf<(codim==1),SubTensor<Derivatives<dim, dim+codim, 1, 1> > >
 cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
 {
   SubTensor<Derivatives<dim, dim+codim, 1, 1>> res;
-  const SubTensor<Derivatives<dim, dim+1, 1, 1>> zero;
+  SubTensor<Derivatives<dim, dim+1, 1, 1>> zero;
   Derivatives<dim+1, dim+1, 1, 1> A;
   for (int i = 0; i < dim; ++i)
     A[i] = DF[i];
@@ -1205,7 +1192,7 @@ cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
   }
 
   if (dim % 2 == 1)
-    res *= -1;
+    res *= -1.0;
   return res;
 
 }

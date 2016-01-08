@@ -39,8 +39,8 @@ test()
   Writer<dim> writer(ball_function, 4);
 
   string filename = "ball_dim" + to_string(dim);
-  writer.save(filename);
-  writer.save(filename,"appended");
+  writer.save(filename, "ascii");
+  writer.save(filename + "_bin", "appended");
   writer.print_info(out);
 }
 

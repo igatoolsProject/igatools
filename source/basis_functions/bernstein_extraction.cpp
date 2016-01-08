@@ -38,13 +38,24 @@ scale_action(const Real scale, const Values &b_values) const -> Values
   return scale * prec_prod(*this, b_values);
 }
 
+#ifdef SERIALIZATION
+template<class Archive>
+void
+BernsteinOperator::
+serialize(Archive &ar)
+{
+  ar &make_nvp("DenseMatrix",base_class<DenseMatrix>(this));
+}
+#endif // SERIALIZATION
+
+
 
 template<int dim, int range, int rank>
 auto
 BernsteinExtraction<dim, range, rank>::
 get_operator(const int dir, const int inter, const int comp) const -> const Operator &
 {
-  return ext_operators_[comp].get_data_direction(dir)[inter];
+  return ext_operators_[comp][dir][inter];
 }
 
 
@@ -55,8 +66,12 @@ get_element_operators(TensorIndex<dim> idx) const -> ElemOperTable
 {
   ElemOperTable result(ext_operators_.get_comp_map());
   for (auto comp : result.get_active_components_id())
-    for (int dir = 0 ; dir < dim ; ++dir)
-      result[comp][dir] = &(ext_operators_[comp].get_data_direction(dir)[idx[dir]]);
+  {
+	const auto & ext_operators_comp = ext_operators_[comp];
+	auto & result_comp = result[comp];
+	for (int dir = 0 ; dir < dim ; ++dir)
+      result_comp[dir] = &(ext_operators_comp[dir][idx[dir]]);
+  }
   return result;
 }
 
@@ -126,7 +141,7 @@ print_info(LogStream &out) const
     for (int j = 0; j < dim; ++j)
     {
       out << "Direction[" << j << "]:" << endl;
-      for (const auto &M : comp.get_data_direction(j))
+      for (const auto &M : comp[j])
         out << M << endl;
     }
   }
@@ -190,15 +205,19 @@ BernsteinExtraction(const Grid<dim> &grid,
 {
   for (const int &i : ext_operators_.get_active_components_id())
   {
+	const auto & deg_i = deg[i];
+	const auto & rep_knots_i = rep_knots[i];
+	const auto & acum_mult_i = acum_mult[i];
+	auto & ext_operators_i = ext_operators_[i];
     for (int j = 0; j < dim; ++j)
     {
-      const int m = deg[i][j] + 1;
-      auto opers =
+      const int m = deg_i[j] + 1;
+      ext_operators_i[j] =
         fill_extraction(m,
                         grid.get_knot_coordinates(j),
-                        rep_knots[i][j],
-                        acum_mult[i].get_data_direction(j));
-      ext_operators_[i].copy_data_direction(j,opers);
+                        rep_knots_i[j],
+                        acum_mult_i[j]);
+//      ext_operators_i[j] = opers;
     }
   }
 }
@@ -214,18 +233,18 @@ BernsteinExtraction(const Space &space_data,
                      space_data.get_degree_table())
 {}
 
-#if 0
 #ifdef SERIALIZATION
+
 template<int dim, int range, int rank>
 template<class Archive>
 void
 BernsteinExtraction<dim, range, rank>::
-serialize(Archive &ar, const unsigned int version)
+serialize(Archive &ar)
 {
-  ar &boost::serialization::make_nvp("ext_operators_",ext_operators_);
+  ar &make_nvp("ext_operators_",ext_operators_);
 }
+
 #endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 

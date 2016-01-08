@@ -363,7 +363,9 @@ std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
  */
 constexpr int constexpr_pow(int a, int b)
 {
-  return (b>=1) ? a * constexpr_pow(a,b-1) : 1 ;
+  return (a>0)?
+         ((b>=1) ? a * constexpr_pow(a,b-1) : 1) :
+         0;
 }
 
 

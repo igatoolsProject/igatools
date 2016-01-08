@@ -35,20 +35,20 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
-template<int dim, int space_dim>
+template<int dim, int range>
 class IgGridFunction :
-  public GridFunction<dim, space_dim>
+  public GridFunction<dim, range>
 {
 private:
-  using parent_t = GridFunction<dim, space_dim>;
-  using self_t = IgGridFunction<dim, space_dim>;
+  using parent_t = GridFunction<dim, range>;
+  using self_t = IgGridFunction<dim, range>;
 protected:
   using typename parent_t::GridType;
   using ElementHandler = typename parent_t::ElementHandler;
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
-  using RefBasis = ReferenceSpaceBasis<dim,space_dim,1>;
+  using RefBasis = ReferenceSpaceBasis<dim,range,1>;
 
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
@@ -99,7 +99,7 @@ public:
   virtual void print_info(LogStream &out) const override final;
 
   template <int sdim>
-  std::shared_ptr<const IgGridFunction<sdim,space_dim> >
+  std::shared_ptr<const IgGridFunction<sdim,range> >
   get_sub_function(const int s_id,
                    const std::shared_ptr<const Grid<sdim>> &sub_grid) const
   {
@@ -115,7 +115,7 @@ public:
     for (int sub_dof = 0 ; sub_dof < n_sub_dofs ; ++ sub_dof)
       sub_coeffs[sub_dof] = coeffs_[dof_map[sub_dof]];
 
-    auto sub_func = IgGridFunction<sdim,space_dim>::const_create(sub_ref_space,sub_coeffs);
+    auto sub_func = IgGridFunction<sdim,range>::const_create(sub_ref_space,sub_coeffs);
 
     return sub_func;
   }
@@ -146,21 +146,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    using std::to_string;
-    const std::string base_name =
-      "GridFunction_" + to_string(dim) + "_" +
-      to_string(space_dim);
-
-    ar &make_nvp(base_name,base_class<parent_t>(this));
-
-    ar &make_nvp("ref_basis_",ref_basis_);
-
-    ar &make_nvp("coeffs_",coeffs_);
-
-    ar &make_nvp("dofs_property_",dofs_property_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 

@@ -64,7 +64,7 @@ create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
   return domain;
 }
 
-}
+};
 
 
 

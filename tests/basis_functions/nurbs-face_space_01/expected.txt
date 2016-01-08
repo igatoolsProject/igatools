@@ -18,6 +18,7 @@ Dim: 1     Sub-Dim: 0
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -33,22 +34,12 @@ Dim: 1     Sub-Dim: 0
                [ ]
             
             Interior multiplicities:
-               Size: [ 0 ]  Weights: [0]
-               Direction: 0
+               Entry id: 0
                [ ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
@@ -56,33 +47,15 @@ Dim: 1     Sub-Dim: 0
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
@@ -99,7 +72,7 @@ Dim: 1     Sub-Dim: 0
          Bernstein Extraction:
             Component[0]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
          
       
       Weight function :
@@ -119,6 +92,7 @@ Dim: 1     Sub-Dim: 0
                            
                         
                      
+                     Name: 
                   
                   Degrees:
                      Raw components: 
@@ -134,22 +108,12 @@ Dim: 1     Sub-Dim: 0
                      [ ]
                   
                   Interior multiplicities:
-                     Size: [ 0 ]  Weights: [0]
-                     Direction: 0
+                     Entry id: 0
                      [ ]
                   
                   Dimensionality Table:
-                     Raw components: 
-                        Size: [ 1 ]  Weights: [1]
-                        Entry id: 0
-                        [ 2 ]
-                     
-                     Components map: 
-                     [ 0 ]
-                     Active components ids: 
-                     [ 0 ]
-                     Inactive components ids: 
-                     [ ]
+                     Entry id: 0
+                     [ 2 ]
                      Scalar components dimensions:
                      [ 2 ]
                      Total Dimension: 2
@@ -157,33 +121,15 @@ Dim: 1     Sub-Dim: 0
                
                DoFs Distribution:
                   Num dofs table:
-                     Raw components: 
-                        Size: [ 1 ]  Weights: [1]
-                        Entry id: 0
-                        [ 2 ]
-                     
-                     Components map: 
-                     [ 0 ]
-                     Active components ids: 
-                     [ 0 ]
-                     Inactive components ids: 
-                     [ ]
+                     Entry id: 0
+                     [ 2 ]
                      Scalar components dimensions:
                      [ 2 ]
                      Total Dimension: 2
                   
                   Index table size:
-                     Raw components: 
-                        Size: [ 1 ]  Weights: [1]
-                        Entry id: 0
-                        [ 2 ]
-                     
-                     Components map: 
-                     [ 0 ]
-                     Active components ids: 
-                     [ 0 ]
-                     Inactive components ids: 
-                     [ ]
+                     Entry id: 0
+                     [ 2 ]
                      Scalar components dimensions:
                      [ 2 ]
                      Total Dimension: 2
@@ -200,7 +146,7 @@ Dim: 1     Sub-Dim: 0
                Bernstein Extraction:
                   Component[0]: 
                   Direction[0]:
-                  [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                  [2,2]((1.00000,0),(0,1.00000))
                
             
             IgCoefficients:
@@ -208,6 +154,7 @@ Dim: 1     Sub-Dim: 0
                Coef[loc_id=1 , glob_id=1] = 1.00000
             
             Dofs property: active
+            Name: 
          
       
    
@@ -227,6 +174,7 @@ Dim: 1     Sub-Dim: 0
                            
                         
                      
+                     Name: 
                   
                   Degrees:
                      Raw components: 
@@ -242,19 +190,9 @@ Dim: 1     Sub-Dim: 0
                      [ ]
                   
                   Interior multiplicities:
-                     Size: [ ]  Weights: []
                   
                   Dimensionality Table:
-                     Raw components: 
-                        Size: [ 1 ]  Weights: [1]
-                        Entry id: 0
-                        [ ]
-                     
-                     Components map: 
-                     [ 0 ]
-                     Active components ids: 
-                     [ 0 ]
-                     Inactive components ids: 
+                     Entry id: 0
                      [ ]
                      Scalar components dimensions:
                      [ 1 ]
@@ -263,32 +201,14 @@ Dim: 1     Sub-Dim: 0
                
                DoFs Distribution:
                   Num dofs table:
-                     Raw components: 
-                        Size: [ 1 ]  Weights: [1]
-                        Entry id: 0
-                        [ ]
-                     
-                     Components map: 
-                     [ 0 ]
-                     Active components ids: 
-                     [ 0 ]
-                     Inactive components ids: 
+                     Entry id: 0
                      [ ]
                      Scalar components dimensions:
                      [ 1 ]
                      Total Dimension: 1
                   
                   Index table size:
-                     Raw components: 
-                        Size: [ 1 ]  Weights: [1]
-                        Entry id: 0
-                        [ ]
-                     
-                     Components map: 
-                     [ 0 ]
-                     Active components ids: 
-                     [ 0 ]
-                     Inactive components ids: 
+                     Entry id: 0
                      [ ]
                      Scalar components dimensions:
                      [ 1 ]
@@ -322,6 +242,7 @@ Dim: 1     Sub-Dim: 0
                                  
                               
                            
+                           Name: 
                         
                         Degrees:
                            Raw components: 
@@ -337,19 +258,9 @@ Dim: 1     Sub-Dim: 0
                            [ ]
                         
                         Interior multiplicities:
-                           Size: [ ]  Weights: []
                         
                         Dimensionality Table:
-                           Raw components: 
-                              Size: [ 1 ]  Weights: [1]
-                              Entry id: 0
-                              [ ]
-                           
-                           Components map: 
-                           [ 0 ]
-                           Active components ids: 
-                           [ 0 ]
-                           Inactive components ids: 
+                           Entry id: 0
                            [ ]
                            Scalar components dimensions:
                            [ 1 ]
@@ -358,32 +269,14 @@ Dim: 1     Sub-Dim: 0
                      
                      DoFs Distribution:
                         Num dofs table:
-                           Raw components: 
-                              Size: [ 1 ]  Weights: [1]
-                              Entry id: 0
-                              [ ]
-                           
-                           Components map: 
-                           [ 0 ]
-                           Active components ids: 
-                           [ 0 ]
-                           Inactive components ids: 
+                           Entry id: 0
                            [ ]
                            Scalar components dimensions:
                            [ 1 ]
                            Total Dimension: 1
                         
                         Index table size:
-                           Raw components: 
-                              Size: [ 1 ]  Weights: [1]
-                              Entry id: 0
-                              [ ]
-                           
-                           Components map: 
-                           [ 0 ]
-                           Active components ids: 
-                           [ 0 ]
-                           Inactive components ids: 
+                           Entry id: 0
                            [ ]
                            Scalar components dimensions:
                            [ 1 ]
@@ -406,6 +299,7 @@ Dim: 1     Sub-Dim: 0
                      Coef[loc_id=0 , glob_id=0] = 0
                   
                   Dofs property: active
+                  Name: 
                
             
          
@@ -416,8 +310,10 @@ Dim: 1     Sub-Dim: 0
                   [ ] 
                   b:
                   [ 0 ] 
+                  Name: 
                
             
+            Name: 
          
       
       1-th sub space:
@@ -436,6 +332,7 @@ Dim: 1     Sub-Dim: 0
                               
                            
                         
+                        Name: 
                      
                      Degrees:
                         Raw components: 
@@ -451,19 +348,9 @@ Dim: 1     Sub-Dim: 0
                         [ ]
                      
                      Interior multiplicities:
-                        Size: [ ]  Weights: []
                      
                      Dimensionality Table:
-                        Raw components: 
-                           Size: [ 1 ]  Weights: [1]
-                           Entry id: 0
-                           [ ]
-                        
-                        Components map: 
-                        [ 0 ]
-                        Active components ids: 
-                        [ 0 ]
-                        Inactive components ids: 
+                        Entry id: 0
                         [ ]
                         Scalar components dimensions:
                         [ 1 ]
@@ -472,32 +359,14 @@ Dim: 1     Sub-Dim: 0
                   
                   DoFs Distribution:
                      Num dofs table:
-                        Raw components: 
-                           Size: [ 1 ]  Weights: [1]
-                           Entry id: 0
-                           [ ]
-                        
-                        Components map: 
-                        [ 0 ]
-                        Active components ids: 
-                        [ 0 ]
-                        Inactive components ids: 
+                        Entry id: 0
                         [ ]
                         Scalar components dimensions:
                         [ 1 ]
                         Total Dimension: 1
                      
                      Index table size:
-                        Raw components: 
-                           Size: [ 1 ]  Weights: [1]
-                           Entry id: 0
-                           [ ]
-                        
-                        Components map: 
-                        [ 0 ]
-                        Active components ids: 
-                        [ 0 ]
-                        Inactive components ids: 
+                        Entry id: 0
                         [ ]
                         Scalar components dimensions:
                         [ 1 ]
@@ -531,6 +400,7 @@ Dim: 1     Sub-Dim: 0
                                     
                                  
                               
+                              Name: 
                            
                            Degrees:
                               Raw components: 
@@ -546,19 +416,9 @@ Dim: 1     Sub-Dim: 0
                               [ ]
                            
                            Interior multiplicities:
-                              Size: [ ]  Weights: []
                            
                            Dimensionality Table:
-                              Raw components: 
-                                 Size: [ 1 ]  Weights: [1]
-                                 Entry id: 0
-                                 [ ]
-                              
-                              Components map: 
-                              [ 0 ]
-                              Active components ids: 
-                              [ 0 ]
-                              Inactive components ids: 
+                              Entry id: 0
                               [ ]
                               Scalar components dimensions:
                               [ 1 ]
@@ -567,32 +427,14 @@ Dim: 1     Sub-Dim: 0
                         
                         DoFs Distribution:
                            Num dofs table:
-                              Raw components: 
-                                 Size: [ 1 ]  Weights: [1]
-                                 Entry id: 0
-                                 [ ]
-                              
-                              Components map: 
-                              [ 0 ]
-                              Active components ids: 
-                              [ 0 ]
-                              Inactive components ids: 
+                              Entry id: 0
                               [ ]
                               Scalar components dimensions:
                               [ 1 ]
                               Total Dimension: 1
                            
                            Index table size:
-                              Raw components: 
-                                 Size: [ 1 ]  Weights: [1]
-                                 Entry id: 0
-                                 [ ]
-                              
-                              Components map: 
-                              [ 0 ]
-                              Active components ids: 
-                              [ 0 ]
-                              Inactive components ids: 
+                              Entry id: 0
                               [ ]
                               Scalar components dimensions:
                               [ 1 ]
@@ -615,6 +457,7 @@ Dim: 1     Sub-Dim: 0
                         Coef[loc_id=0 , glob_id=0] = 1.00000
                      
                      Dofs property: active
+                     Name: 
                   
                
             
@@ -625,8 +468,10 @@ Dim: 1     Sub-Dim: 0
                      [ ] 
                      b:
                      [ 1.00000 ] 
+                     Name: 
                   
                
+               Name: 
             
          
       
@@ -657,6 +502,7 @@ Dim: 1     Sub-Dim: 0
                            
                         
                      
+                     Name: 
                   
                   Degrees:
                      Raw components: 
@@ -672,24 +518,14 @@ Dim: 1     Sub-Dim: 0
                      [ ]
                   
                   Interior multiplicities:
-                     Size: [ 0 1 ]  Weights: [0,0]
-                     Direction: 0
+                     Entry id: 0
                      [ ]
-                     Direction: 1
+                     Entry id: 1
                      [ 1 ]
                   
                   Dimensionality Table:
-                     Raw components: 
-                        Size: [ 1 ]  Weights: [1]
-                        Entry id: 0
-                        [ 2 3 ]
-                     
-                     Components map: 
-                     [ 0 ]
-                     Active components ids: 
-                     [ 0 ]
-                     Inactive components ids: 
-                     [ ]
+                     Entry id: 0
+                     [ 2 3 ]
                      Scalar components dimensions:
                      [ 6 ]
                      Total Dimension: 6
@@ -697,33 +533,15 @@ Dim: 1     Sub-Dim: 0
                
                DoFs Distribution:
                   Num dofs table:
-                     Raw components: 
-                        Size: [ 1 ]  Weights: [1]
-                        Entry id: 0
-                        [ 2 3 ]
-                     
-                     Components map: 
-                     [ 0 ]
-                     Active components ids: 
-                     [ 0 ]
-                     Inactive components ids: 
-                     [ ]
+                     Entry id: 0
+                     [ 2 3 ]
                      Scalar components dimensions:
                      [ 6 ]
                      Total Dimension: 6
                   
                   Index table size:
-                     Raw components: 
-                        Size: [ 1 ]  Weights: [1]
-                        Entry id: 0
-                        [ 2 3 ]
-                     
-                     Components map: 
-                     [ 0 ]
-                     Active components ids: 
-                     [ 0 ]
-                     Inactive components ids: 
-                     [ ]
+                     Entry id: 0
+                     [ 2 3 ]
                      Scalar components dimensions:
                      [ 6 ]
                      Total Dimension: 6
@@ -740,10 +558,10 @@ Dim: 1     Sub-Dim: 0
                Bernstein Extraction:
                   Component[0]: 
                   Direction[0]:
-                  [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                  [2,2]((1.00000,0),(0,1.00000))
                   Direction[1]:
-                  [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                  [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                  [2,2]((1.00000,0),(0,1.00000))
+                  [2,2]((1.00000,0),(0,1.00000))
                
             
             Weight function :
@@ -768,6 +586,7 @@ Dim: 1     Sub-Dim: 0
                                  
                               
                            
+                           Name: 
                         
                         Degrees:
                            Raw components: 
@@ -783,24 +602,14 @@ Dim: 1     Sub-Dim: 0
                            [ ]
                         
                         Interior multiplicities:
-                           Size: [ 0 1 ]  Weights: [0,0]
-                           Direction: 0
+                           Entry id: 0
                            [ ]
-                           Direction: 1
+                           Entry id: 1
                            [ 1 ]
                         
                         Dimensionality Table:
-                           Raw components: 
-                              Size: [ 1 ]  Weights: [1]
-                              Entry id: 0
-                              [ 2 3 ]
-                           
-                           Components map: 
-                           [ 0 ]
-                           Active components ids: 
-                           [ 0 ]
-                           Inactive components ids: 
-                           [ ]
+                           Entry id: 0
+                           [ 2 3 ]
                            Scalar components dimensions:
                            [ 6 ]
                            Total Dimension: 6
@@ -808,33 +617,15 @@ Dim: 1     Sub-Dim: 0
                      
                      DoFs Distribution:
                         Num dofs table:
-                           Raw components: 
-                              Size: [ 1 ]  Weights: [1]
-                              Entry id: 0
-                              [ 2 3 ]
-                           
-                           Components map: 
-                           [ 0 ]
-                           Active components ids: 
-                           [ 0 ]
-                           Inactive components ids: 
-                           [ ]
+                           Entry id: 0
+                           [ 2 3 ]
                            Scalar components dimensions:
                            [ 6 ]
                            Total Dimension: 6
                         
                         Index table size:
-                           Raw components: 
-                              Size: [ 1 ]  Weights: [1]
-                              Entry id: 0
-                              [ 2 3 ]
-                           
-                           Components map: 
-                           [ 0 ]
-                           Active components ids: 
-                           [ 0 ]
-                           Inactive components ids: 
-                           [ ]
+                           Entry id: 0
+                           [ 2 3 ]
                            Scalar components dimensions:
                            [ 6 ]
                            Total Dimension: 6
@@ -851,10 +642,10 @@ Dim: 1     Sub-Dim: 0
                      Bernstein Extraction:
                         Component[0]: 
                         Direction[0]:
-                        [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                        [2,2]((1.00000,0),(0,1.00000))
                         Direction[1]:
-                        [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                        [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                        [2,2]((1.00000,0),(0,1.00000))
+                        [2,2]((1.00000,0),(0,1.00000))
                      
                   
                   IgCoefficients:
@@ -866,6 +657,7 @@ Dim: 1     Sub-Dim: 0
                      Coef[loc_id=5 , glob_id=5] = 5.00000
                   
                   Dofs property: active
+                  Name: 
                
             
          
@@ -890,6 +682,7 @@ Dim: 1     Sub-Dim: 0
                                  
                               
                            
+                           Name: 
                         
                         Degrees:
                            Raw components: 
@@ -905,22 +698,12 @@ Dim: 1     Sub-Dim: 0
                            [ ]
                         
                         Interior multiplicities:
-                           Size: [ 1 ]  Weights: [1]
-                           Direction: 0
+                           Entry id: 0
                            [ 1 ]
                         
                         Dimensionality Table:
-                           Raw components: 
-                              Size: [ 1 ]  Weights: [1]
-                              Entry id: 0
-                              [ 3 ]
-                           
-                           Components map: 
-                           [ 0 ]
-                           Active components ids: 
-                           [ 0 ]
-                           Inactive components ids: 
-                           [ ]
+                           Entry id: 0
+                           [ 3 ]
                            Scalar components dimensions:
                            [ 3 ]
                            Total Dimension: 3
@@ -928,33 +711,15 @@ Dim: 1     Sub-Dim: 0
                      
                      DoFs Distribution:
                         Num dofs table:
-                           Raw components: 
-                              Size: [ 1 ]  Weights: [1]
-                              Entry id: 0
-                              [ 3 ]
-                           
-                           Components map: 
-                           [ 0 ]
-                           Active components ids: 
-                           [ 0 ]
-                           Inactive components ids: 
-                           [ ]
+                           Entry id: 0
+                           [ 3 ]
                            Scalar components dimensions:
                            [ 3 ]
                            Total Dimension: 3
                         
                         Index table size:
-                           Raw components: 
-                              Size: [ 1 ]  Weights: [1]
-                              Entry id: 0
-                              [ 3 ]
-                           
-                           Components map: 
-                           [ 0 ]
-                           Active components ids: 
-                           [ 0 ]
-                           Inactive components ids: 
-                           [ ]
+                           Entry id: 0
+                           [ 3 ]
                            Scalar components dimensions:
                            [ 3 ]
                            Total Dimension: 3
@@ -971,8 +736,8 @@ Dim: 1     Sub-Dim: 0
                      Bernstein Extraction:
                         Component[0]: 
                         Direction[0]:
-                        [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                        [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                        [2,2]((1.00000,0),(0,1.00000))
+                        [2,2]((1.00000,0),(0,1.00000))
                      
                   
                   Weight function :
@@ -995,6 +760,7 @@ Dim: 1     Sub-Dim: 0
                                        
                                     
                                  
+                                 Name: 
                               
                               Degrees:
                                  Raw components: 
@@ -1010,22 +776,12 @@ Dim: 1     Sub-Dim: 0
                                  [ ]
                               
                               Interior multiplicities:
-                                 Size: [ 1 ]  Weights: [1]
-                                 Direction: 0
+                                 Entry id: 0
                                  [ 1 ]
                               
                               Dimensionality Table:
-                                 Raw components: 
-                                    Size: [ 1 ]  Weights: [1]
-                                    Entry id: 0
-                                    [ 3 ]
-                                 
-                                 Components map: 
-                                 [ 0 ]
-                                 Active components ids: 
-                                 [ 0 ]
-                                 Inactive components ids: 
-                                 [ ]
+                                 Entry id: 0
+                                 [ 3 ]
                                  Scalar components dimensions:
                                  [ 3 ]
                                  Total Dimension: 3
@@ -1033,33 +789,15 @@ Dim: 1     Sub-Dim: 0
                            
                            DoFs Distribution:
                               Num dofs table:
-                                 Raw components: 
-                                    Size: [ 1 ]  Weights: [1]
-                                    Entry id: 0
-                                    [ 3 ]
-                                 
-                                 Components map: 
-                                 [ 0 ]
-                                 Active components ids: 
-                                 [ 0 ]
-                                 Inactive components ids: 
-                                 [ ]
+                                 Entry id: 0
+                                 [ 3 ]
                                  Scalar components dimensions:
                                  [ 3 ]
                                  Total Dimension: 3
                               
                               Index table size:
-                                 Raw components: 
-                                    Size: [ 1 ]  Weights: [1]
-                                    Entry id: 0
-                                    [ 3 ]
-                                 
-                                 Components map: 
-                                 [ 0 ]
-                                 Active components ids: 
-                                 [ 0 ]
-                                 Inactive components ids: 
-                                 [ ]
+                                 Entry id: 0
+                                 [ 3 ]
                                  Scalar components dimensions:
                                  [ 3 ]
                                  Total Dimension: 3
@@ -1076,8 +814,8 @@ Dim: 1     Sub-Dim: 0
                            Bernstein Extraction:
                               Component[0]: 
                               Direction[0]:
-                              [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                              [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                              [2,2]((1.00000,0),(0,1.00000))
+                              [2,2]((1.00000,0),(0,1.00000))
                            
                         
                         IgCoefficients:
@@ -1086,6 +824,7 @@ Dim: 1     Sub-Dim: 0
                            Coef[loc_id=2 , glob_id=2] = 4.00000
                         
                         Dofs property: active
+                        Name: 
                      
                   
                
@@ -1096,8 +835,10 @@ Dim: 1     Sub-Dim: 0
                         [ [ 0 1.00000 ]  ] 
                         b:
                         [ 0 0 ] 
+                        Name: 
                      
                   
+                  Name: 
                
             
             1-th sub space:
@@ -1121,6 +862,7 @@ Dim: 1     Sub-Dim: 0
                                     
                                  
                               
+                              Name: 
                            
                            Degrees:
                               Raw components: 
@@ -1136,22 +878,12 @@ Dim: 1     Sub-Dim: 0
                               [ ]
                            
                            Interior multiplicities:
-                              Size: [ 1 ]  Weights: [1]
-                              Direction: 0
+                              Entry id: 0
                               [ 1 ]
                            
                            Dimensionality Table:
-                              Raw components: 
-                                 Size: [ 1 ]  Weights: [1]
-                                 Entry id: 0
-                                 [ 3 ]
-                              
-                              Components map: 
-                              [ 0 ]
-                              Active components ids: 
-                              [ 0 ]
-                              Inactive components ids: 
-                              [ ]
+                              Entry id: 0
+                              [ 3 ]
                               Scalar components dimensions:
                               [ 3 ]
                               Total Dimension: 3
@@ -1159,33 +891,15 @@ Dim: 1     Sub-Dim: 0
                         
                         DoFs Distribution:
                            Num dofs table:
-                              Raw components: 
-                                 Size: [ 1 ]  Weights: [1]
-                                 Entry id: 0
-                                 [ 3 ]
-                              
-                              Components map: 
-                              [ 0 ]
-                              Active components ids: 
-                              [ 0 ]
-                              Inactive components ids: 
-                              [ ]
+                              Entry id: 0
+                              [ 3 ]
                               Scalar components dimensions:
                               [ 3 ]
                               Total Dimension: 3
                            
                            Index table size:
-                              Raw components: 
-                                 Size: [ 1 ]  Weights: [1]
-                                 Entry id: 0
-                                 [ 3 ]
-                              
-                              Components map: 
-                              [ 0 ]
-                              Active components ids: 
-                              [ 0 ]
-                              Inactive components ids: 
-                              [ ]
+                              Entry id: 0
+                              [ 3 ]
                               Scalar components dimensions:
                               [ 3 ]
                               Total Dimension: 3
@@ -1202,8 +916,8 @@ Dim: 1     Sub-Dim: 0
                         Bernstein Extraction:
                            Component[0]: 
                            Direction[0]:
-                           [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                           [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                           [2,2]((1.00000,0),(0,1.00000))
+                           [2,2]((1.00000,0),(0,1.00000))
                         
                      
                      Weight function :
@@ -1226,6 +940,7 @@ Dim: 1     Sub-Dim: 0
                                           
                                        
                                     
+                                    Name: 
                                  
                                  Degrees:
                                     Raw components: 
@@ -1241,22 +956,12 @@ Dim: 1     Sub-Dim: 0
                                     [ ]
                                  
                                  Interior multiplicities:
-                                    Size: [ 1 ]  Weights: [1]
-                                    Direction: 0
+                                    Entry id: 0
                                     [ 1 ]
                                  
                                  Dimensionality Table:
-                                    Raw components: 
-                                       Size: [ 1 ]  Weights: [1]
-                                       Entry id: 0
-                                       [ 3 ]
-                                    
-                                    Components map: 
-                                    [ 0 ]
-                                    Active components ids: 
-                                    [ 0 ]
-                                    Inactive components ids: 
-                                    [ ]
+                                    Entry id: 0
+                                    [ 3 ]
                                     Scalar components dimensions:
                                     [ 3 ]
                                     Total Dimension: 3
@@ -1264,33 +969,15 @@ Dim: 1     Sub-Dim: 0
                               
                               DoFs Distribution:
                                  Num dofs table:
-                                    Raw components: 
-                                       Size: [ 1 ]  Weights: [1]
-                                       Entry id: 0
-                                       [ 3 ]
-                                    
-                                    Components map: 
-                                    [ 0 ]
-                                    Active components ids: 
-                                    [ 0 ]
-                                    Inactive components ids: 
-                                    [ ]
+                                    Entry id: 0
+                                    [ 3 ]
                                     Scalar components dimensions:
                                     [ 3 ]
                                     Total Dimension: 3
                                  
                                  Index table size:
-                                    Raw components: 
-                                       Size: [ 1 ]  Weights: [1]
-                                       Entry id: 0
-                                       [ 3 ]
-                                    
-                                    Components map: 
-                                    [ 0 ]
-                                    Active components ids: 
-                                    [ 0 ]
-                                    Inactive components ids: 
-                                    [ ]
+                                    Entry id: 0
+                                    [ 3 ]
                                     Scalar components dimensions:
                                     [ 3 ]
                                     Total Dimension: 3
@@ -1307,8 +994,8 @@ Dim: 1     Sub-Dim: 0
                               Bernstein Extraction:
                                  Component[0]: 
                                  Direction[0]:
-                                 [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                 [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                 [2,2]((1.00000,0),(0,1.00000))
+                                 [2,2]((1.00000,0),(0,1.00000))
                               
                            
                            IgCoefficients:
@@ -1317,6 +1004,7 @@ Dim: 1     Sub-Dim: 0
                               Coef[loc_id=2 , glob_id=2] = 5.00000
                            
                            Dofs property: active
+                           Name: 
                         
                      
                   
@@ -1327,8 +1015,10 @@ Dim: 1     Sub-Dim: 0
                            [ [ 0 1.00000 ]  ] 
                            b:
                            [ 1.00000 0 ] 
+                           Name: 
                         
                      
+                     Name: 
                   
                
                2-th sub space:
@@ -1349,6 +1039,7 @@ Dim: 1     Sub-Dim: 0
                                        
                                     
                                  
+                                 Name: 
                               
                               Degrees:
                                  Raw components: 
@@ -1364,22 +1055,12 @@ Dim: 1     Sub-Dim: 0
                                  [ ]
                               
                               Interior multiplicities:
-                                 Size: [ 0 ]  Weights: [0]
-                                 Direction: 0
+                                 Entry id: 0
                                  [ ]
                               
                               Dimensionality Table:
-                                 Raw components: 
-                                    Size: [ 1 ]  Weights: [1]
-                                    Entry id: 0
-                                    [ 2 ]
-                                 
-                                 Components map: 
-                                 [ 0 ]
-                                 Active components ids: 
-                                 [ 0 ]
-                                 Inactive components ids: 
-                                 [ ]
+                                 Entry id: 0
+                                 [ 2 ]
                                  Scalar components dimensions:
                                  [ 2 ]
                                  Total Dimension: 2
@@ -1387,33 +1068,15 @@ Dim: 1     Sub-Dim: 0
                            
                            DoFs Distribution:
                               Num dofs table:
-                                 Raw components: 
-                                    Size: [ 1 ]  Weights: [1]
-                                    Entry id: 0
-                                    [ 2 ]
-                                 
-                                 Components map: 
-                                 [ 0 ]
-                                 Active components ids: 
-                                 [ 0 ]
-                                 Inactive components ids: 
-                                 [ ]
+                                 Entry id: 0
+                                 [ 2 ]
                                  Scalar components dimensions:
                                  [ 2 ]
                                  Total Dimension: 2
                               
                               Index table size:
-                                 Raw components: 
-                                    Size: [ 1 ]  Weights: [1]
-                                    Entry id: 0
-                                    [ 2 ]
-                                 
-                                 Components map: 
-                                 [ 0 ]
-                                 Active components ids: 
-                                 [ 0 ]
-                                 Inactive components ids: 
-                                 [ ]
+                                 Entry id: 0
+                                 [ 2 ]
                                  Scalar components dimensions:
                                  [ 2 ]
                                  Total Dimension: 2
@@ -1430,7 +1093,7 @@ Dim: 1     Sub-Dim: 0
                            Bernstein Extraction:
                               Component[0]: 
                               Direction[0]:
-                              [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                              [2,2]((1.00000,0),(0,1.00000))
                            
                         
                         Weight function :
@@ -1450,6 +1113,7 @@ Dim: 1     Sub-Dim: 0
                                              
                                           
                                        
+                                       Name: 
                                     
                                     Degrees:
                                        Raw components: 
@@ -1465,22 +1129,12 @@ Dim: 1     Sub-Dim: 0
                                        [ ]
                                     
                                     Interior multiplicities:
-                                       Size: [ 0 ]  Weights: [0]
-                                       Direction: 0
+                                       Entry id: 0
                                        [ ]
                                     
                                     Dimensionality Table:
-                                       Raw components: 
-                                          Size: [ 1 ]  Weights: [1]
-                                          Entry id: 0
-                                          [ 2 ]
-                                       
-                                       Components map: 
-                                       [ 0 ]
-                                       Active components ids: 
-                                       [ 0 ]
-                                       Inactive components ids: 
-                                       [ ]
+                                       Entry id: 0
+                                       [ 2 ]
                                        Scalar components dimensions:
                                        [ 2 ]
                                        Total Dimension: 2
@@ -1488,33 +1142,15 @@ Dim: 1     Sub-Dim: 0
                                  
                                  DoFs Distribution:
                                     Num dofs table:
-                                       Raw components: 
-                                          Size: [ 1 ]  Weights: [1]
-                                          Entry id: 0
-                                          [ 2 ]
-                                       
-                                       Components map: 
-                                       [ 0 ]
-                                       Active components ids: 
-                                       [ 0 ]
-                                       Inactive components ids: 
-                                       [ ]
+                                       Entry id: 0
+                                       [ 2 ]
                                        Scalar components dimensions:
                                        [ 2 ]
                                        Total Dimension: 2
                                     
                                     Index table size:
-                                       Raw components: 
-                                          Size: [ 1 ]  Weights: [1]
-                                          Entry id: 0
-                                          [ 2 ]
-                                       
-                                       Components map: 
-                                       [ 0 ]
-                                       Active components ids: 
-                                       [ 0 ]
-                                       Inactive components ids: 
-                                       [ ]
+                                       Entry id: 0
+                                       [ 2 ]
                                        Scalar components dimensions:
                                        [ 2 ]
                                        Total Dimension: 2
@@ -1531,7 +1167,7 @@ Dim: 1     Sub-Dim: 0
                                  Bernstein Extraction:
                                     Component[0]: 
                                     Direction[0]:
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
                                  
                               
                               IgCoefficients:
@@ -1539,6 +1175,7 @@ Dim: 1     Sub-Dim: 0
                                  Coef[loc_id=1 , glob_id=1] = 1.00000
                               
                               Dofs property: active
+                              Name: 
                            
                         
                      
@@ -1549,8 +1186,10 @@ Dim: 1     Sub-Dim: 0
                               [ [ 1.00000 0 ]  ] 
                               b:
                               [ 0 0 ] 
+                              Name: 
                            
                         
+                        Name: 
                      
                   
                   3-th sub space:
@@ -1571,6 +1210,7 @@ Dim: 1     Sub-Dim: 0
                                           
                                        
                                     
+                                    Name: 
                                  
                                  Degrees:
                                     Raw components: 
@@ -1586,22 +1226,12 @@ Dim: 1     Sub-Dim: 0
                                     [ ]
                                  
                                  Interior multiplicities:
-                                    Size: [ 0 ]  Weights: [0]
-                                    Direction: 0
+                                    Entry id: 0
                                     [ ]
                                  
                                  Dimensionality Table:
-                                    Raw components: 
-                                       Size: [ 1 ]  Weights: [1]
-                                       Entry id: 0
-                                       [ 2 ]
-                                    
-                                    Components map: 
-                                    [ 0 ]
-                                    Active components ids: 
-                                    [ 0 ]
-                                    Inactive components ids: 
-                                    [ ]
+                                    Entry id: 0
+                                    [ 2 ]
                                     Scalar components dimensions:
                                     [ 2 ]
                                     Total Dimension: 2
@@ -1609,33 +1239,15 @@ Dim: 1     Sub-Dim: 0
                               
                               DoFs Distribution:
                                  Num dofs table:
-                                    Raw components: 
-                                       Size: [ 1 ]  Weights: [1]
-                                       Entry id: 0
-                                       [ 2 ]
-                                    
-                                    Components map: 
-                                    [ 0 ]
-                                    Active components ids: 
-                                    [ 0 ]
-                                    Inactive components ids: 
-                                    [ ]
+                                    Entry id: 0
+                                    [ 2 ]
                                     Scalar components dimensions:
                                     [ 2 ]
                                     Total Dimension: 2
                                  
                                  Index table size:
-                                    Raw components: 
-                                       Size: [ 1 ]  Weights: [1]
-                                       Entry id: 0
-                                       [ 2 ]
-                                    
-                                    Components map: 
-                                    [ 0 ]
-                                    Active components ids: 
-                                    [ 0 ]
-                                    Inactive components ids: 
-                                    [ ]
+                                    Entry id: 0
+                                    [ 2 ]
                                     Scalar components dimensions:
                                     [ 2 ]
                                     Total Dimension: 2
@@ -1652,7 +1264,7 @@ Dim: 1     Sub-Dim: 0
                               Bernstein Extraction:
                                  Component[0]: 
                                  Direction[0]:
-                                 [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                 [2,2]((1.00000,0),(0,1.00000))
                               
                            
                            Weight function :
@@ -1672,6 +1284,7 @@ Dim: 1     Sub-Dim: 0
                                                 
                                              
                                           
+                                          Name: 
                                        
                                        Degrees:
                                           Raw components: 
@@ -1687,22 +1300,12 @@ Dim: 1     Sub-Dim: 0
                                           [ ]
                                        
                                        Interior multiplicities:
-                                          Size: [ 0 ]  Weights: [0]
-                                          Direction: 0
+                                          Entry id: 0
                                           [ ]
                                        
                                        Dimensionality Table:
-                                          Raw components: 
-                                             Size: [ 1 ]  Weights: [1]
-                                             Entry id: 0
-                                             [ 2 ]
-                                          
-                                          Components map: 
-                                          [ 0 ]
-                                          Active components ids: 
-                                          [ 0 ]
-                                          Inactive components ids: 
-                                          [ ]
+                                          Entry id: 0
+                                          [ 2 ]
                                           Scalar components dimensions:
                                           [ 2 ]
                                           Total Dimension: 2
@@ -1710,33 +1313,15 @@ Dim: 1     Sub-Dim: 0
                                     
                                     DoFs Distribution:
                                        Num dofs table:
-                                          Raw components: 
-                                             Size: [ 1 ]  Weights: [1]
-                                             Entry id: 0
-                                             [ 2 ]
-                                          
-                                          Components map: 
-                                          [ 0 ]
-                                          Active components ids: 
-                                          [ 0 ]
-                                          Inactive components ids: 
-                                          [ ]
+                                          Entry id: 0
+                                          [ 2 ]
                                           Scalar components dimensions:
                                           [ 2 ]
                                           Total Dimension: 2
                                        
                                        Index table size:
-                                          Raw components: 
-                                             Size: [ 1 ]  Weights: [1]
-                                             Entry id: 0
-                                             [ 2 ]
-                                          
-                                          Components map: 
-                                          [ 0 ]
-                                          Active components ids: 
-                                          [ 0 ]
-                                          Inactive components ids: 
-                                          [ ]
+                                          Entry id: 0
+                                          [ 2 ]
                                           Scalar components dimensions:
                                           [ 2 ]
                                           Total Dimension: 2
@@ -1753,7 +1338,7 @@ Dim: 1     Sub-Dim: 0
                                     Bernstein Extraction:
                                        Component[0]: 
                                        Direction[0]:
-                                       [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                       [2,2]((1.00000,0),(0,1.00000))
                                     
                                  
                                  IgCoefficients:
@@ -1761,6 +1346,7 @@ Dim: 1     Sub-Dim: 0
                                     Coef[loc_id=1 , glob_id=1] = 5.00000
                                  
                                  Dofs property: active
+                                 Name: 
                               
                            
                         
@@ -1771,8 +1357,10 @@ Dim: 1     Sub-Dim: 0
                                  [ [ 1.00000 0 ]  ] 
                                  b:
                                  [ 0 1.00000 ] 
+                                 Name: 
                               
                            
+                           Name: 
                         
                      
                   
@@ -1817,6 +1405,7 @@ Dim: 1     Sub-Dim: 0
                                        
                                     
                                  
+                                 Name: 
                               
                               Degrees:
                                  Raw components: 
@@ -1832,26 +1421,16 @@ Dim: 1     Sub-Dim: 0
                                  [ ]
                               
                               Interior multiplicities:
-                                 Size: [ 0 1 2 ]  Weights: [0,0,0]
-                                 Direction: 0
+                                 Entry id: 0
                                  [ ]
-                                 Direction: 1
+                                 Entry id: 1
                                  [ 1 ]
-                                 Direction: 2
+                                 Entry id: 2
                                  [ 1 1 ]
                               
                               Dimensionality Table:
-                                 Raw components: 
-                                    Size: [ 1 ]  Weights: [1]
-                                    Entry id: 0
-                                    [ 2 3 4 ]
-                                 
-                                 Components map: 
-                                 [ 0 ]
-                                 Active components ids: 
-                                 [ 0 ]
-                                 Inactive components ids: 
-                                 [ ]
+                                 Entry id: 0
+                                 [ 2 3 4 ]
                                  Scalar components dimensions:
                                  [ 24 ]
                                  Total Dimension: 24
@@ -1859,33 +1438,15 @@ Dim: 1     Sub-Dim: 0
                            
                            DoFs Distribution:
                               Num dofs table:
-                                 Raw components: 
-                                    Size: [ 1 ]  Weights: [1]
-                                    Entry id: 0
-                                    [ 2 3 4 ]
-                                 
-                                 Components map: 
-                                 [ 0 ]
-                                 Active components ids: 
-                                 [ 0 ]
-                                 Inactive components ids: 
-                                 [ ]
+                                 Entry id: 0
+                                 [ 2 3 4 ]
                                  Scalar components dimensions:
                                  [ 24 ]
                                  Total Dimension: 24
                               
                               Index table size:
-                                 Raw components: 
-                                    Size: [ 1 ]  Weights: [1]
-                                    Entry id: 0
-                                    [ 2 3 4 ]
-                                 
-                                 Components map: 
-                                 [ 0 ]
-                                 Active components ids: 
-                                 [ 0 ]
-                                 Inactive components ids: 
-                                 [ ]
+                                 Entry id: 0
+                                 [ 2 3 4 ]
                                  Scalar components dimensions:
                                  [ 24 ]
                                  Total Dimension: 24
@@ -1902,14 +1463,14 @@ Dim: 1     Sub-Dim: 0
                            Bernstein Extraction:
                               Component[0]: 
                               Direction[0]:
-                              [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                              [2,2]((1.00000,0),(0,1.00000))
                               Direction[1]:
-                              [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                              [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                              [2,2]((1.00000,0),(0,1.00000))
+                              [2,2]((1.00000,0),(0,1.00000))
                               Direction[2]:
-                              [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                              [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                              [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                              [2,2]((1.00000,0),(0,1.00000))
+                              [2,2]((1.00000,0),(0,1.00000))
+                              [2,2]((1.00000,0),(0,1.00000))
                            
                         
                         Weight function :
@@ -1948,6 +1509,7 @@ Dim: 1     Sub-Dim: 0
                                              
                                           
                                        
+                                       Name: 
                                     
                                     Degrees:
                                        Raw components: 
@@ -1963,26 +1525,16 @@ Dim: 1     Sub-Dim: 0
                                        [ ]
                                     
                                     Interior multiplicities:
-                                       Size: [ 0 1 2 ]  Weights: [0,0,0]
-                                       Direction: 0
+                                       Entry id: 0
                                        [ ]
-                                       Direction: 1
+                                       Entry id: 1
                                        [ 1 ]
-                                       Direction: 2
+                                       Entry id: 2
                                        [ 1 1 ]
                                     
                                     Dimensionality Table:
-                                       Raw components: 
-                                          Size: [ 1 ]  Weights: [1]
-                                          Entry id: 0
-                                          [ 2 3 4 ]
-                                       
-                                       Components map: 
-                                       [ 0 ]
-                                       Active components ids: 
-                                       [ 0 ]
-                                       Inactive components ids: 
-                                       [ ]
+                                       Entry id: 0
+                                       [ 2 3 4 ]
                                        Scalar components dimensions:
                                        [ 24 ]
                                        Total Dimension: 24
@@ -1990,33 +1542,15 @@ Dim: 1     Sub-Dim: 0
                                  
                                  DoFs Distribution:
                                     Num dofs table:
-                                       Raw components: 
-                                          Size: [ 1 ]  Weights: [1]
-                                          Entry id: 0
-                                          [ 2 3 4 ]
-                                       
-                                       Components map: 
-                                       [ 0 ]
-                                       Active components ids: 
-                                       [ 0 ]
-                                       Inactive components ids: 
-                                       [ ]
+                                       Entry id: 0
+                                       [ 2 3 4 ]
                                        Scalar components dimensions:
                                        [ 24 ]
                                        Total Dimension: 24
                                     
                                     Index table size:
-                                       Raw components: 
-                                          Size: [ 1 ]  Weights: [1]
-                                          Entry id: 0
-                                          [ 2 3 4 ]
-                                       
-                                       Components map: 
-                                       [ 0 ]
-                                       Active components ids: 
-                                       [ 0 ]
-                                       Inactive components ids: 
-                                       [ ]
+                                       Entry id: 0
+                                       [ 2 3 4 ]
                                        Scalar components dimensions:
                                        [ 24 ]
                                        Total Dimension: 24
@@ -2033,14 +1567,14 @@ Dim: 1     Sub-Dim: 0
                                  Bernstein Extraction:
                                     Component[0]: 
                                     Direction[0]:
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
                                     Direction[1]:
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
                                     Direction[2]:
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
                                  
                               
                               IgCoefficients:
@@ -2070,6 +1604,7 @@ Dim: 1     Sub-Dim: 0
                                  Coef[loc_id=23 , glob_id=23] = 23.0000
                               
                               Dofs property: active
+                              Name: 
                            
                         
                      
@@ -2108,6 +1643,7 @@ Dim: 1     Sub-Dim: 0
                                              
                                           
                                        
+                                       Name: 
                                     
                                     Degrees:
                                        Raw components: 
@@ -2123,24 +1659,14 @@ Dim: 1     Sub-Dim: 0
                                        [ ]
                                     
                                     Interior multiplicities:
-                                       Size: [ 1 2 ]  Weights: [1,2]
-                                       Direction: 0
+                                       Entry id: 0
                                        [ 1 ]
-                                       Direction: 1
+                                       Entry id: 1
                                        [ 1 1 ]
                                     
                                     Dimensionality Table:
-                                       Raw components: 
-                                          Size: [ 1 ]  Weights: [1]
-                                          Entry id: 0
-                                          [ 3 4 ]
-                                       
-                                       Components map: 
-                                       [ 0 ]
-                                       Active components ids: 
-                                       [ 0 ]
-                                       Inactive components ids: 
-                                       [ ]
+                                       Entry id: 0
+                                       [ 3 4 ]
                                        Scalar components dimensions:
                                        [ 12 ]
                                        Total Dimension: 12
@@ -2148,33 +1674,15 @@ Dim: 1     Sub-Dim: 0
                                  
                                  DoFs Distribution:
                                     Num dofs table:
-                                       Raw components: 
-                                          Size: [ 1 ]  Weights: [1]
-                                          Entry id: 0
-                                          [ 3 4 ]
-                                       
-                                       Components map: 
-                                       [ 0 ]
-                                       Active components ids: 
-                                       [ 0 ]
-                                       Inactive components ids: 
-                                       [ ]
+                                       Entry id: 0
+                                       [ 3 4 ]
                                        Scalar components dimensions:
                                        [ 12 ]
                                        Total Dimension: 12
                                     
                                     Index table size:
-                                       Raw components: 
-                                          Size: [ 1 ]  Weights: [1]
-                                          Entry id: 0
-                                          [ 3 4 ]
-                                       
-                                       Components map: 
-                                       [ 0 ]
-                                       Active components ids: 
-                                       [ 0 ]
-                                       Inactive components ids: 
-                                       [ ]
+                                       Entry id: 0
+                                       [ 3 4 ]
                                        Scalar components dimensions:
                                        [ 12 ]
                                        Total Dimension: 12
@@ -2191,12 +1699,12 @@ Dim: 1     Sub-Dim: 0
                                  Bernstein Extraction:
                                     Component[0]: 
                                     Direction[0]:
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
                                     Direction[1]:
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                    [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
+                                    [2,2]((1.00000,0),(0,1.00000))
                                  
                               
                               Weight function :
@@ -2233,6 +1741,7 @@ Dim: 1     Sub-Dim: 0
                                                    
                                                 
                                              
+                                             Name: 
                                           
                                           Degrees:
                                              Raw components: 
@@ -2248,24 +1757,14 @@ Dim: 1     Sub-Dim: 0
                                              [ ]
                                           
                                           Interior multiplicities:
-                                             Size: [ 1 2 ]  Weights: [1,2]
-                                             Direction: 0
+                                             Entry id: 0
                                              [ 1 ]
-                                             Direction: 1
+                                             Entry id: 1
                                              [ 1 1 ]
                                           
                                           Dimensionality Table:
-                                             Raw components: 
-                                                Size: [ 1 ]  Weights: [1]
-                                                Entry id: 0
-                                                [ 3 4 ]
-                                             
-                                             Components map: 
-                                             [ 0 ]
-                                             Active components ids: 
-                                             [ 0 ]
-                                             Inactive components ids: 
-                                             [ ]
+                                             Entry id: 0
+                                             [ 3 4 ]
                                              Scalar components dimensions:
                                              [ 12 ]
                                              Total Dimension: 12
@@ -2273,33 +1772,15 @@ Dim: 1     Sub-Dim: 0
                                        
                                        DoFs Distribution:
                                           Num dofs table:
-                                             Raw components: 
-                                                Size: [ 1 ]  Weights: [1]
-                                                Entry id: 0
-                                                [ 3 4 ]
-                                             
-                                             Components map: 
-                                             [ 0 ]
-                                             Active components ids: 
-                                             [ 0 ]
-                                             Inactive components ids: 
-                                             [ ]
+                                             Entry id: 0
+                                             [ 3 4 ]
                                              Scalar components dimensions:
                                              [ 12 ]
                                              Total Dimension: 12
                                           
                                           Index table size:
-                                             Raw components: 
-                                                Size: [ 1 ]  Weights: [1]
-                                                Entry id: 0
-                                                [ 3 4 ]
-                                             
-                                             Components map: 
-                                             [ 0 ]
-                                             Active components ids: 
-                                             [ 0 ]
-                                             Inactive components ids: 
-                                             [ ]
+                                             Entry id: 0
+                                             [ 3 4 ]
                                              Scalar components dimensions:
                                              [ 12 ]
                                              Total Dimension: 12
@@ -2316,12 +1797,12 @@ Dim: 1     Sub-Dim: 0
                                        Bernstein Extraction:
                                           Component[0]: 
                                           Direction[0]:
-                                          [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                          [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                          [2,2]((1.00000,0),(0,1.00000))
+                                          [2,2]((1.00000,0),(0,1.00000))
                                           Direction[1]:
-                                          [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                          [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                          [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                          [2,2]((1.00000,0),(0,1.00000))
+                                          [2,2]((1.00000,0),(0,1.00000))
+                                          [2,2]((1.00000,0),(0,1.00000))
                                        
                                     
                                     IgCoefficients:
@@ -2339,6 +1820,7 @@ Dim: 1     Sub-Dim: 0
                                        Coef[loc_id=11 , glob_id=11] = 22.0000
                                     
                                     Dofs property: active
+                                    Name: 
                                  
                               
                            
@@ -2349,8 +1831,10 @@ Dim: 1     Sub-Dim: 0
                                     [ [ 0 1.00000 0 ]  [ 0 0 1.00000 ]  ] 
                                     b:
                                     [ 0 0 0 ] 
+                                    Name: 
                                  
                               
+                              Name: 
                            
                         
                         1-th sub space:
@@ -2388,6 +1872,7 @@ Dim: 1     Sub-Dim: 0
                                                 
                                              
                                           
+                                          Name: 
                                        
                                        Degrees:
                                           Raw components: 
@@ -2403,24 +1888,14 @@ Dim: 1     Sub-Dim: 0
                                           [ ]
                                        
                                        Interior multiplicities:
-                                          Size: [ 1 2 ]  Weights: [1,2]
-                                          Direction: 0
+                                          Entry id: 0
                                           [ 1 ]
-                                          Direction: 1
+                                          Entry id: 1
                                           [ 1 1 ]
                                        
                                        Dimensionality Table:
-                                          Raw components: 
-                                             Size: [ 1 ]  Weights: [1]
-                                             Entry id: 0
-                                             [ 3 4 ]
-                                          
-                                          Components map: 
-                                          [ 0 ]
-                                          Active components ids: 
-                                          [ 0 ]
-                                          Inactive components ids: 
-                                          [ ]
+                                          Entry id: 0
+                                          [ 3 4 ]
                                           Scalar components dimensions:
                                           [ 12 ]
                                           Total Dimension: 12
@@ -2428,33 +1903,15 @@ Dim: 1     Sub-Dim: 0
                                     
                                     DoFs Distribution:
                                        Num dofs table:
-                                          Raw components: 
-                                             Size: [ 1 ]  Weights: [1]
-                                             Entry id: 0
-                                             [ 3 4 ]
-                                          
-                                          Components map: 
-                                          [ 0 ]
-                                          Active components ids: 
-                                          [ 0 ]
-                                          Inactive components ids: 
-                                          [ ]
+                                          Entry id: 0
+                                          [ 3 4 ]
                                           Scalar components dimensions:
                                           [ 12 ]
                                           Total Dimension: 12
                                        
                                        Index table size:
-                                          Raw components: 
-                                             Size: [ 1 ]  Weights: [1]
-                                             Entry id: 0
-                                             [ 3 4 ]
-                                          
-                                          Components map: 
-                                          [ 0 ]
-                                          Active components ids: 
-                                          [ 0 ]
-                                          Inactive components ids: 
-                                          [ ]
+                                          Entry id: 0
+                                          [ 3 4 ]
                                           Scalar components dimensions:
                                           [ 12 ]
                                           Total Dimension: 12
@@ -2471,12 +1928,12 @@ Dim: 1     Sub-Dim: 0
                                     Bernstein Extraction:
                                        Component[0]: 
                                        Direction[0]:
-                                       [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                       [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                       [2,2]((1.00000,0),(0,1.00000))
+                                       [2,2]((1.00000,0),(0,1.00000))
                                        Direction[1]:
-                                       [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                       [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                       [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                       [2,2]((1.00000,0),(0,1.00000))
+                                       [2,2]((1.00000,0),(0,1.00000))
+                                       [2,2]((1.00000,0),(0,1.00000))
                                     
                                  
                                  Weight function :
@@ -2513,6 +1970,7 @@ Dim: 1     Sub-Dim: 0
                                                       
                                                    
                                                 
+                                                Name: 
                                              
                                              Degrees:
                                                 Raw components: 
@@ -2528,24 +1986,14 @@ Dim: 1     Sub-Dim: 0
                                                 [ ]
                                              
                                              Interior multiplicities:
-                                                Size: [ 1 2 ]  Weights: [1,2]
-                                                Direction: 0
+                                                Entry id: 0
                                                 [ 1 ]
-                                                Direction: 1
+                                                Entry id: 1
                                                 [ 1 1 ]
                                              
                                              Dimensionality Table:
-                                                Raw components: 
-                                                   Size: [ 1 ]  Weights: [1]
-                                                   Entry id: 0
-                                                   [ 3 4 ]
-                                                
-                                                Components map: 
-                                                [ 0 ]
-                                                Active components ids: 
-                                                [ 0 ]
-                                                Inactive components ids: 
-                                                [ ]
+                                                Entry id: 0
+                                                [ 3 4 ]
                                                 Scalar components dimensions:
                                                 [ 12 ]
                                                 Total Dimension: 12
@@ -2553,33 +2001,15 @@ Dim: 1     Sub-Dim: 0
                                           
                                           DoFs Distribution:
                                              Num dofs table:
-                                                Raw components: 
-                                                   Size: [ 1 ]  Weights: [1]
-                                                   Entry id: 0
-                                                   [ 3 4 ]
-                                                
-                                                Components map: 
-                                                [ 0 ]
-                                                Active components ids: 
-                                                [ 0 ]
-                                                Inactive components ids: 
-                                                [ ]
+                                                Entry id: 0
+                                                [ 3 4 ]
                                                 Scalar components dimensions:
                                                 [ 12 ]
                                                 Total Dimension: 12
                                              
                                              Index table size:
-                                                Raw components: 
-                                                   Size: [ 1 ]  Weights: [1]
-                                                   Entry id: 0
-                                                   [ 3 4 ]
-                                                
-                                                Components map: 
-                                                [ 0 ]
-                                                Active components ids: 
-                                                [ 0 ]
-                                                Inactive components ids: 
-                                                [ ]
+                                                Entry id: 0
+                                                [ 3 4 ]
                                                 Scalar components dimensions:
                                                 [ 12 ]
                                                 Total Dimension: 12
@@ -2596,12 +2026,12 @@ Dim: 1     Sub-Dim: 0
                                           Bernstein Extraction:
                                              Component[0]: 
                                              Direction[0]:
-                                             [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                             [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                             [2,2]((1.00000,0),(0,1.00000))
+                                             [2,2]((1.00000,0),(0,1.00000))
                                              Direction[1]:
-                                             [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                             [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                             [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                             [2,2]((1.00000,0),(0,1.00000))
+                                             [2,2]((1.00000,0),(0,1.00000))
+                                             [2,2]((1.00000,0),(0,1.00000))
                                           
                                        
                                        IgCoefficients:
@@ -2619,6 +2049,7 @@ Dim: 1     Sub-Dim: 0
                                           Coef[loc_id=11 , glob_id=11] = 23.0000
                                        
                                        Dofs property: active
+                                       Name: 
                                     
                                  
                               
@@ -2629,8 +2060,10 @@ Dim: 1     Sub-Dim: 0
                                        [ [ 0 1.00000 0 ]  [ 0 0 1.00000 ]  ] 
                                        b:
                                        [ 1.00000 0 0 ] 
+                                       Name: 
                                     
                                  
+                                 Name: 
                               
                            
                            2-th sub space:
@@ -2659,6 +2092,7 @@ Dim: 1     Sub-Dim: 0
                                                    
                                                 
                                              
+                                             Name: 
                                           
                                           Degrees:
                                              Raw components: 
@@ -2674,24 +2108,14 @@ Dim: 1     Sub-Dim: 0
                                              [ ]
                                           
                                           Interior multiplicities:
-                                             Size: [ 0 2 ]  Weights: [0,0]
-                                             Direction: 0
+                                             Entry id: 0
                                              [ ]
-                                             Direction: 1
+                                             Entry id: 1
                                              [ 1 1 ]
                                           
                                           Dimensionality Table:
-                                             Raw components: 
-                                                Size: [ 1 ]  Weights: [1]
-                                                Entry id: 0
-                                                [ 2 4 ]
-                                             
-                                             Components map: 
-                                             [ 0 ]
-                                             Active components ids: 
-                                             [ 0 ]
-                                             Inactive components ids: 
-                                             [ ]
+                                             Entry id: 0
+                                             [ 2 4 ]
                                              Scalar components dimensions:
                                              [ 8 ]
                                              Total Dimension: 8
@@ -2699,33 +2123,15 @@ Dim: 1     Sub-Dim: 0
                                        
                                        DoFs Distribution:
                                           Num dofs table:
-                                             Raw components: 
-                                                Size: [ 1 ]  Weights: [1]
-                                                Entry id: 0
-                                                [ 2 4 ]
-                                             
-                                             Components map: 
-                                             [ 0 ]
-                                             Active components ids: 
-                                             [ 0 ]
-                                             Inactive components ids: 
-                                             [ ]
+                                             Entry id: 0
+                                             [ 2 4 ]
                                              Scalar components dimensions:
                                              [ 8 ]
                                              Total Dimension: 8
                                           
                                           Index table size:
-                                             Raw components: 
-                                                Size: [ 1 ]  Weights: [1]
-                                                Entry id: 0
-                                                [ 2 4 ]
-                                             
-                                             Components map: 
-                                             [ 0 ]
-                                             Active components ids: 
-                                             [ 0 ]
-                                             Inactive components ids: 
-                                             [ ]
+                                             Entry id: 0
+                                             [ 2 4 ]
                                              Scalar components dimensions:
                                              [ 8 ]
                                              Total Dimension: 8
@@ -2742,11 +2148,11 @@ Dim: 1     Sub-Dim: 0
                                        Bernstein Extraction:
                                           Component[0]: 
                                           Direction[0]:
-                                          [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                          [2,2]((1.00000,0),(0,1.00000))
                                           Direction[1]:
-                                          [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                          [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                          [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                          [2,2]((1.00000,0),(0,1.00000))
+                                          [2,2]((1.00000,0),(0,1.00000))
+                                          [2,2]((1.00000,0),(0,1.00000))
                                        
                                     
                                     Weight function :
@@ -2774,6 +2180,7 @@ Dim: 1     Sub-Dim: 0
                                                          
                                                       
                                                    
+                                                   Name: 
                                                 
                                                 Degrees:
                                                    Raw components: 
@@ -2789,24 +2196,14 @@ Dim: 1     Sub-Dim: 0
                                                    [ ]
                                                 
                                                 Interior multiplicities:
-                                                   Size: [ 0 2 ]  Weights: [0,0]
-                                                   Direction: 0
+                                                   Entry id: 0
                                                    [ ]
-                                                   Direction: 1
+                                                   Entry id: 1
                                                    [ 1 1 ]
                                                 
                                                 Dimensionality Table:
-                                                   Raw components: 
-                                                      Size: [ 1 ]  Weights: [1]
-                                                      Entry id: 0
-                                                      [ 2 4 ]
-                                                   
-                                                   Components map: 
-                                                   [ 0 ]
-                                                   Active components ids: 
-                                                   [ 0 ]
-                                                   Inactive components ids: 
-                                                   [ ]
+                                                   Entry id: 0
+                                                   [ 2 4 ]
                                                    Scalar components dimensions:
                                                    [ 8 ]
                                                    Total Dimension: 8
@@ -2814,33 +2211,15 @@ Dim: 1     Sub-Dim: 0
                                              
                                              DoFs Distribution:
                                                 Num dofs table:
-                                                   Raw components: 
-                                                      Size: [ 1 ]  Weights: [1]
-                                                      Entry id: 0
-                                                      [ 2 4 ]
-                                                   
-                                                   Components map: 
-                                                   [ 0 ]
-                                                   Active components ids: 
-                                                   [ 0 ]
-                                                   Inactive components ids: 
-                                                   [ ]
+                                                   Entry id: 0
+                                                   [ 2 4 ]
                                                    Scalar components dimensions:
                                                    [ 8 ]
                                                    Total Dimension: 8
                                                 
                                                 Index table size:
-                                                   Raw components: 
-                                                      Size: [ 1 ]  Weights: [1]
-                                                      Entry id: 0
-                                                      [ 2 4 ]
-                                                   
-                                                   Components map: 
-                                                   [ 0 ]
-                                                   Active components ids: 
-                                                   [ 0 ]
-                                                   Inactive components ids: 
-                                                   [ ]
+                                                   Entry id: 0
+                                                   [ 2 4 ]
                                                    Scalar components dimensions:
                                                    [ 8 ]
                                                    Total Dimension: 8
@@ -2857,11 +2236,11 @@ Dim: 1     Sub-Dim: 0
                                              Bernstein Extraction:
                                                 Component[0]: 
                                                 Direction[0]:
-                                                [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                [2,2]((1.00000,0),(0,1.00000))
                                                 Direction[1]:
-                                                [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                                [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                                [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                [2,2]((1.00000,0),(0,1.00000))
+                                                [2,2]((1.00000,0),(0,1.00000))
+                                                [2,2]((1.00000,0),(0,1.00000))
                                              
                                           
                                           IgCoefficients:
@@ -2875,6 +2254,7 @@ Dim: 1     Sub-Dim: 0
                                              Coef[loc_id=7 , glob_id=7] = 19.0000
                                           
                                           Dofs property: active
+                                          Name: 
                                        
                                     
                                  
@@ -2885,8 +2265,10 @@ Dim: 1     Sub-Dim: 0
                                           [ [ 1.00000 0 0 ]  [ 0 0 1.00000 ]  ] 
                                           b:
                                           [ 0 0 0 ] 
+                                          Name: 
                                        
                                     
+                                    Name: 
                                  
                               
                               3-th sub space:
@@ -2915,6 +2297,7 @@ Dim: 1     Sub-Dim: 0
                                                       
                                                    
                                                 
+                                                Name: 
                                              
                                              Degrees:
                                                 Raw components: 
@@ -2930,24 +2313,14 @@ Dim: 1     Sub-Dim: 0
                                                 [ ]
                                              
                                              Interior multiplicities:
-                                                Size: [ 0 2 ]  Weights: [0,0]
-                                                Direction: 0
+                                                Entry id: 0
                                                 [ ]
-                                                Direction: 1
+                                                Entry id: 1
                                                 [ 1 1 ]
                                              
                                              Dimensionality Table:
-                                                Raw components: 
-                                                   Size: [ 1 ]  Weights: [1]
-                                                   Entry id: 0
-                                                   [ 2 4 ]
-                                                
-                                                Components map: 
-                                                [ 0 ]
-                                                Active components ids: 
-                                                [ 0 ]
-                                                Inactive components ids: 
-                                                [ ]
+                                                Entry id: 0
+                                                [ 2 4 ]
                                                 Scalar components dimensions:
                                                 [ 8 ]
                                                 Total Dimension: 8
@@ -2955,33 +2328,15 @@ Dim: 1     Sub-Dim: 0
                                           
                                           DoFs Distribution:
                                              Num dofs table:
-                                                Raw components: 
-                                                   Size: [ 1 ]  Weights: [1]
-                                                   Entry id: 0
-                                                   [ 2 4 ]
-                                                
-                                                Components map: 
-                                                [ 0 ]
-                                                Active components ids: 
-                                                [ 0 ]
-                                                Inactive components ids: 
-                                                [ ]
+                                                Entry id: 0
+                                                [ 2 4 ]
                                                 Scalar components dimensions:
                                                 [ 8 ]
                                                 Total Dimension: 8
                                              
                                              Index table size:
-                                                Raw components: 
-                                                   Size: [ 1 ]  Weights: [1]
-                                                   Entry id: 0
-                                                   [ 2 4 ]
-                                                
-                                                Components map: 
-                                                [ 0 ]
-                                                Active components ids: 
-                                                [ 0 ]
-                                                Inactive components ids: 
-                                                [ ]
+                                                Entry id: 0
+                                                [ 2 4 ]
                                                 Scalar components dimensions:
                                                 [ 8 ]
                                                 Total Dimension: 8
@@ -2998,11 +2353,11 @@ Dim: 1     Sub-Dim: 0
                                           Bernstein Extraction:
                                              Component[0]: 
                                              Direction[0]:
-                                             [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                             [2,2]((1.00000,0),(0,1.00000))
                                              Direction[1]:
-                                             [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                             [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                             [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                             [2,2]((1.00000,0),(0,1.00000))
+                                             [2,2]((1.00000,0),(0,1.00000))
+                                             [2,2]((1.00000,0),(0,1.00000))
                                           
                                        
                                        Weight function :
@@ -3030,6 +2385,7 @@ Dim: 1     Sub-Dim: 0
                                                             
                                                          
                                                       
+                                                      Name: 
                                                    
                                                    Degrees:
                                                       Raw components: 
@@ -3045,24 +2401,14 @@ Dim: 1     Sub-Dim: 0
                                                       [ ]
                                                    
                                                    Interior multiplicities:
-                                                      Size: [ 0 2 ]  Weights: [0,0]
-                                                      Direction: 0
+                                                      Entry id: 0
                                                       [ ]
-                                                      Direction: 1
+                                                      Entry id: 1
                                                       [ 1 1 ]
                                                    
                                                    Dimensionality Table:
-                                                      Raw components: 
-                                                         Size: [ 1 ]  Weights: [1]
-                                                         Entry id: 0
-                                                         [ 2 4 ]
-                                                      
-                                                      Components map: 
-                                                      [ 0 ]
-                                                      Active components ids: 
-                                                      [ 0 ]
-                                                      Inactive components ids: 
-                                                      [ ]
+                                                      Entry id: 0
+                                                      [ 2 4 ]
                                                       Scalar components dimensions:
                                                       [ 8 ]
                                                       Total Dimension: 8
@@ -3070,33 +2416,15 @@ Dim: 1     Sub-Dim: 0
                                                 
                                                 DoFs Distribution:
                                                    Num dofs table:
-                                                      Raw components: 
-                                                         Size: [ 1 ]  Weights: [1]
-                                                         Entry id: 0
-                                                         [ 2 4 ]
-                                                      
-                                                      Components map: 
-                                                      [ 0 ]
-                                                      Active components ids: 
-                                                      [ 0 ]
-                                                      Inactive components ids: 
-                                                      [ ]
+                                                      Entry id: 0
+                                                      [ 2 4 ]
                                                       Scalar components dimensions:
                                                       [ 8 ]
                                                       Total Dimension: 8
                                                    
                                                    Index table size:
-                                                      Raw components: 
-                                                         Size: [ 1 ]  Weights: [1]
-                                                         Entry id: 0
-                                                         [ 2 4 ]
-                                                      
-                                                      Components map: 
-                                                      [ 0 ]
-                                                      Active components ids: 
-                                                      [ 0 ]
-                                                      Inactive components ids: 
-                                                      [ ]
+                                                      Entry id: 0
+                                                      [ 2 4 ]
                                                       Scalar components dimensions:
                                                       [ 8 ]
                                                       Total Dimension: 8
@@ -3113,11 +2441,11 @@ Dim: 1     Sub-Dim: 0
                                                 Bernstein Extraction:
                                                    Component[0]: 
                                                    Direction[0]:
-                                                   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                   [2,2]((1.00000,0),(0,1.00000))
                                                    Direction[1]:
-                                                   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                                   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                                   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                   [2,2]((1.00000,0),(0,1.00000))
+                                                   [2,2]((1.00000,0),(0,1.00000))
+                                                   [2,2]((1.00000,0),(0,1.00000))
                                                 
                                              
                                              IgCoefficients:
@@ -3131,6 +2459,7 @@ Dim: 1     Sub-Dim: 0
                                                 Coef[loc_id=7 , glob_id=7] = 23.0000
                                              
                                              Dofs property: active
+                                             Name: 
                                           
                                        
                                     
@@ -3141,8 +2470,10 @@ Dim: 1     Sub-Dim: 0
                                              [ [ 1.00000 0 0 ]  [ 0 0 1.00000 ]  ] 
                                              b:
                                              [ 0 1.00000 0 ] 
+                                             Name: 
                                           
                                        
+                                       Name: 
                                     
                                  
                                  4-th sub space:
@@ -3168,6 +2499,7 @@ Dim: 1     Sub-Dim: 0
                                                          
                                                       
                                                    
+                                                   Name: 
                                                 
                                                 Degrees:
                                                    Raw components: 
@@ -3183,24 +2515,14 @@ Dim: 1     Sub-Dim: 0
                                                    [ ]
                                                 
                                                 Interior multiplicities:
-                                                   Size: [ 0 1 ]  Weights: [0,0]
-                                                   Direction: 0
+                                                   Entry id: 0
                                                    [ ]
-                                                   Direction: 1
+                                                   Entry id: 1
                                                    [ 1 ]
                                                 
                                                 Dimensionality Table:
-                                                   Raw components: 
-                                                      Size: [ 1 ]  Weights: [1]
-                                                      Entry id: 0
-                                                      [ 2 3 ]
-                                                   
-                                                   Components map: 
-                                                   [ 0 ]
-                                                   Active components ids: 
-                                                   [ 0 ]
-                                                   Inactive components ids: 
-                                                   [ ]
+                                                   Entry id: 0
+                                                   [ 2 3 ]
                                                    Scalar components dimensions:
                                                    [ 6 ]
                                                    Total Dimension: 6
@@ -3208,33 +2530,15 @@ Dim: 1     Sub-Dim: 0
                                              
                                              DoFs Distribution:
                                                 Num dofs table:
-                                                   Raw components: 
-                                                      Size: [ 1 ]  Weights: [1]
-                                                      Entry id: 0
-                                                      [ 2 3 ]
-                                                   
-                                                   Components map: 
-                                                   [ 0 ]
-                                                   Active components ids: 
-                                                   [ 0 ]
-                                                   Inactive components ids: 
-                                                   [ ]
+                                                   Entry id: 0
+                                                   [ 2 3 ]
                                                    Scalar components dimensions:
                                                    [ 6 ]
                                                    Total Dimension: 6
                                                 
                                                 Index table size:
-                                                   Raw components: 
-                                                      Size: [ 1 ]  Weights: [1]
-                                                      Entry id: 0
-                                                      [ 2 3 ]
-                                                   
-                                                   Components map: 
-                                                   [ 0 ]
-                                                   Active components ids: 
-                                                   [ 0 ]
-                                                   Inactive components ids: 
-                                                   [ ]
+                                                   Entry id: 0
+                                                   [ 2 3 ]
                                                    Scalar components dimensions:
                                                    [ 6 ]
                                                    Total Dimension: 6
@@ -3251,10 +2555,10 @@ Dim: 1     Sub-Dim: 0
                                              Bernstein Extraction:
                                                 Component[0]: 
                                                 Direction[0]:
-                                                [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                [2,2]((1.00000,0),(0,1.00000))
                                                 Direction[1]:
-                                                [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                                [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                [2,2]((1.00000,0),(0,1.00000))
+                                                [2,2]((1.00000,0),(0,1.00000))
                                              
                                           
                                           Weight function :
@@ -3279,6 +2583,7 @@ Dim: 1     Sub-Dim: 0
                                                                
                                                             
                                                          
+                                                         Name: 
                                                       
                                                       Degrees:
                                                          Raw components: 
@@ -3294,24 +2599,14 @@ Dim: 1     Sub-Dim: 0
                                                          [ ]
                                                       
                                                       Interior multiplicities:
-                                                         Size: [ 0 1 ]  Weights: [0,0]
-                                                         Direction: 0
+                                                         Entry id: 0
                                                          [ ]
-                                                         Direction: 1
+                                                         Entry id: 1
                                                          [ 1 ]
                                                       
                                                       Dimensionality Table:
-                                                         Raw components: 
-                                                            Size: [ 1 ]  Weights: [1]
-                                                            Entry id: 0
-                                                            [ 2 3 ]
-                                                         
-                                                         Components map: 
-                                                         [ 0 ]
-                                                         Active components ids: 
-                                                         [ 0 ]
-                                                         Inactive components ids: 
-                                                         [ ]
+                                                         Entry id: 0
+                                                         [ 2 3 ]
                                                          Scalar components dimensions:
                                                          [ 6 ]
                                                          Total Dimension: 6
@@ -3319,33 +2614,15 @@ Dim: 1     Sub-Dim: 0
                                                    
                                                    DoFs Distribution:
                                                       Num dofs table:
-                                                         Raw components: 
-                                                            Size: [ 1 ]  Weights: [1]
-                                                            Entry id: 0
-                                                            [ 2 3 ]
-                                                         
-                                                         Components map: 
-                                                         [ 0 ]
-                                                         Active components ids: 
-                                                         [ 0 ]
-                                                         Inactive components ids: 
-                                                         [ ]
+                                                         Entry id: 0
+                                                         [ 2 3 ]
                                                          Scalar components dimensions:
                                                          [ 6 ]
                                                          Total Dimension: 6
                                                       
                                                       Index table size:
-                                                         Raw components: 
-                                                            Size: [ 1 ]  Weights: [1]
-                                                            Entry id: 0
-                                                            [ 2 3 ]
-                                                         
-                                                         Components map: 
-                                                         [ 0 ]
-                                                         Active components ids: 
-                                                         [ 0 ]
-                                                         Inactive components ids: 
-                                                         [ ]
+                                                         Entry id: 0
+                                                         [ 2 3 ]
                                                          Scalar components dimensions:
                                                          [ 6 ]
                                                          Total Dimension: 6
@@ -3362,10 +2639,10 @@ Dim: 1     Sub-Dim: 0
                                                    Bernstein Extraction:
                                                       Component[0]: 
                                                       Direction[0]:
-                                                      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                      [2,2]((1.00000,0),(0,1.00000))
                                                       Direction[1]:
-                                                      [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                                      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                      [2,2]((1.00000,0),(0,1.00000))
+                                                      [2,2]((1.00000,0),(0,1.00000))
                                                    
                                                 
                                                 IgCoefficients:
@@ -3377,6 +2654,7 @@ Dim: 1     Sub-Dim: 0
                                                    Coef[loc_id=5 , glob_id=5] = 5.00000
                                                 
                                                 Dofs property: active
+                                                Name: 
                                              
                                           
                                        
@@ -3387,8 +2665,10 @@ Dim: 1     Sub-Dim: 0
                                                 [ [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  ] 
                                                 b:
                                                 [ 0 0 0 ] 
+                                                Name: 
                                              
                                           
+                                          Name: 
                                        
                                     
                                     5-th sub space:
@@ -3414,6 +2694,7 @@ Dim: 1     Sub-Dim: 0
                                                             
                                                          
                                                       
+                                                      Name: 
                                                    
                                                    Degrees:
                                                       Raw components: 
@@ -3429,24 +2710,14 @@ Dim: 1     Sub-Dim: 0
                                                       [ ]
                                                    
                                                    Interior multiplicities:
-                                                      Size: [ 0 1 ]  Weights: [0,0]
-                                                      Direction: 0
+                                                      Entry id: 0
                                                       [ ]
-                                                      Direction: 1
+                                                      Entry id: 1
                                                       [ 1 ]
                                                    
                                                    Dimensionality Table:
-                                                      Raw components: 
-                                                         Size: [ 1 ]  Weights: [1]
-                                                         Entry id: 0
-                                                         [ 2 3 ]
-                                                      
-                                                      Components map: 
-                                                      [ 0 ]
-                                                      Active components ids: 
-                                                      [ 0 ]
-                                                      Inactive components ids: 
-                                                      [ ]
+                                                      Entry id: 0
+                                                      [ 2 3 ]
                                                       Scalar components dimensions:
                                                       [ 6 ]
                                                       Total Dimension: 6
@@ -3454,33 +2725,15 @@ Dim: 1     Sub-Dim: 0
                                                 
                                                 DoFs Distribution:
                                                    Num dofs table:
-                                                      Raw components: 
-                                                         Size: [ 1 ]  Weights: [1]
-                                                         Entry id: 0
-                                                         [ 2 3 ]
-                                                      
-                                                      Components map: 
-                                                      [ 0 ]
-                                                      Active components ids: 
-                                                      [ 0 ]
-                                                      Inactive components ids: 
-                                                      [ ]
+                                                      Entry id: 0
+                                                      [ 2 3 ]
                                                       Scalar components dimensions:
                                                       [ 6 ]
                                                       Total Dimension: 6
                                                    
                                                    Index table size:
-                                                      Raw components: 
-                                                         Size: [ 1 ]  Weights: [1]
-                                                         Entry id: 0
-                                                         [ 2 3 ]
-                                                      
-                                                      Components map: 
-                                                      [ 0 ]
-                                                      Active components ids: 
-                                                      [ 0 ]
-                                                      Inactive components ids: 
-                                                      [ ]
+                                                      Entry id: 0
+                                                      [ 2 3 ]
                                                       Scalar components dimensions:
                                                       [ 6 ]
                                                       Total Dimension: 6
@@ -3497,10 +2750,10 @@ Dim: 1     Sub-Dim: 0
                                                 Bernstein Extraction:
                                                    Component[0]: 
                                                    Direction[0]:
-                                                   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                   [2,2]((1.00000,0),(0,1.00000))
                                                    Direction[1]:
-                                                   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                                   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                   [2,2]((1.00000,0),(0,1.00000))
+                                                   [2,2]((1.00000,0),(0,1.00000))
                                                 
                                              
                                              Weight function :
@@ -3525,6 +2778,7 @@ Dim: 1     Sub-Dim: 0
                                                                   
                                                                
                                                             
+                                                            Name: 
                                                          
                                                          Degrees:
                                                             Raw components: 
@@ -3540,24 +2794,14 @@ Dim: 1     Sub-Dim: 0
                                                             [ ]
                                                          
                                                          Interior multiplicities:
-                                                            Size: [ 0 1 ]  Weights: [0,0]
-                                                            Direction: 0
+                                                            Entry id: 0
                                                             [ ]
-                                                            Direction: 1
+                                                            Entry id: 1
                                                             [ 1 ]
                                                          
                                                          Dimensionality Table:
-                                                            Raw components: 
-                                                               Size: [ 1 ]  Weights: [1]
-                                                               Entry id: 0
-                                                               [ 2 3 ]
-                                                            
-                                                            Components map: 
-                                                            [ 0 ]
-                                                            Active components ids: 
-                                                            [ 0 ]
-                                                            Inactive components ids: 
-                                                            [ ]
+                                                            Entry id: 0
+                                                            [ 2 3 ]
                                                             Scalar components dimensions:
                                                             [ 6 ]
                                                             Total Dimension: 6
@@ -3565,33 +2809,15 @@ Dim: 1     Sub-Dim: 0
                                                       
                                                       DoFs Distribution:
                                                          Num dofs table:
-                                                            Raw components: 
-                                                               Size: [ 1 ]  Weights: [1]
-                                                               Entry id: 0
-                                                               [ 2 3 ]
-                                                            
-                                                            Components map: 
-                                                            [ 0 ]
-                                                            Active components ids: 
-                                                            [ 0 ]
-                                                            Inactive components ids: 
-                                                            [ ]
+                                                            Entry id: 0
+                                                            [ 2 3 ]
                                                             Scalar components dimensions:
                                                             [ 6 ]
                                                             Total Dimension: 6
                                                          
                                                          Index table size:
-                                                            Raw components: 
-                                                               Size: [ 1 ]  Weights: [1]
-                                                               Entry id: 0
-                                                               [ 2 3 ]
-                                                            
-                                                            Components map: 
-                                                            [ 0 ]
-                                                            Active components ids: 
-                                                            [ 0 ]
-                                                            Inactive components ids: 
-                                                            [ ]
+                                                            Entry id: 0
+                                                            [ 2 3 ]
                                                             Scalar components dimensions:
                                                             [ 6 ]
                                                             Total Dimension: 6
@@ -3608,10 +2834,10 @@ Dim: 1     Sub-Dim: 0
                                                       Bernstein Extraction:
                                                          Component[0]: 
                                                          Direction[0]:
-                                                         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                         [2,2]((1.00000,0),(0,1.00000))
                                                          Direction[1]:
-                                                         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-                                                         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+                                                         [2,2]((1.00000,0),(0,1.00000))
+                                                         [2,2]((1.00000,0),(0,1.00000))
                                                       
                                                    
                                                    IgCoefficients:
@@ -3623,6 +2849,7 @@ Dim: 1     Sub-Dim: 0
                                                       Coef[loc_id=5 , glob_id=5] = 23.0000
                                                    
                                                    Dofs property: active
+                                                   Name: 
                                                 
                                              
                                           
@@ -3633,8 +2860,10 @@ Dim: 1     Sub-Dim: 0
                                                    [ [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  ] 
                                                    b:
                                                    [ 0 0 1.00000 ] 
+                                                   Name: 
                                                 
                                              
+                                             Name: 
                                           
                                        
                                     

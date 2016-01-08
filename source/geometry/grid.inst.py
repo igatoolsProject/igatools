@@ -24,7 +24,7 @@ include_files = ['geometry/grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = ['Grid<dim>::template BoundaryNormal<k> ' +
+sub_dim_members = ['Grid<dim>::template BoundaryNormals<k> ' +
                    'Grid<dim>::get_boundary_normals<k>(const int s_id) const;',
                    'std::shared_ptr<Grid<k>> Grid<dim>::'+
                    'get_sub_grid<k>(const int sub_elem_id, typename Grid<dim>::template SubGridMap<k> &elem_map) const;']
@@ -54,19 +54,11 @@ for dim in inst.domain_dims:
 
 
 #---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
-
 f.write('#ifdef SERIALIZATION\n')
 archives = ['OArchive','IArchive']
 
-id = 0 
 for grid in unique(grids):
-    alias = 'GridAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, grid))
     for ar in archives:
-        f.write('template void %s::serialize(%s&);\n' %(alias,ar))
-    id += 1 
+        f.write('template void %s::serialize(%s&);\n' %(grid,ar))
 f.write('#endif // SERIALIZATION\n')
-#   
-f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------

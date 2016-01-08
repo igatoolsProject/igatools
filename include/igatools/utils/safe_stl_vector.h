@@ -43,6 +43,18 @@ public :
   /** Inherit the constructors of the base class. */
   using SafeSTLContainer<std::vector<T>>::SafeSTLContainer;
 
+  /**
+   * Returns a reference to the <tt>n</tt>-th entry of the container.
+   * @note In Debug mode the value of <tt>n</tt> is checked if within the valid bounds of the container.
+   */
+  T &operator[](Size n);
+
+  /**
+   * Returns a const-reference to the <tt>n</tt>-th entry of the container.
+   * @note In Debug mode the value of <tt>n</tt> is checked if within the valid bounds of the container.
+   */
+  const T &operator[](Size n) const;
+
 
 private:
 #ifdef SERIALIZATION
@@ -71,21 +83,21 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 using SafeSTLVectorReal = iga::SafeSTLVector<iga::Real>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorReal,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorReal,cereal::specialization::member_serialize)
 
 using SafeSTLVectorInt = iga::SafeSTLVector<int>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorInt,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorInt,cereal::specialization::member_serialize)
 
 
 // The next ones are used by SplineSpace
 using SafeSTLVecTIAlias0 = iga::SafeSTLVector<iga::TensorIndex<0>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias0,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias0,cereal::specialization::member_serialize)
 using SafeSTLVecTIAlias1 = iga::SafeSTLVector<iga::TensorIndex<1>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias1,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias1,cereal::specialization::member_serialize)
 using SafeSTLVecTIAlias2 = iga::SafeSTLVector<iga::TensorIndex<2>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias2,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias2,cereal::specialization::member_serialize)
 using SafeSTLVecTIAlias3 = iga::SafeSTLVector<iga::TensorIndex<3>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias3,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVecTIAlias3,cereal::specialization::member_serialize)
 
 
 //#include <igatools/utils/safe_stl_vector.serialization>

@@ -22,8 +22,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, int space_dim>
-FormulaGridFunctionHandler<dim, space_dim>::
+template<int dim, int range>
+FormulaGridFunctionHandler<dim, range>::
 FormulaGridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function)
   :
   parent_t::GridFunctionHandler(grid_function)
@@ -31,9 +31,9 @@ FormulaGridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_functio
 
 
 
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 auto
-FormulaGridFunctionHandler<dim_, space_dim_>::
+FormulaGridFunctionHandler<dim_, range_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
@@ -42,10 +42,22 @@ set_flags(const topology_variant &sdim,
 }
 
 
+template<int dim, int range>
+FormulaGridFunctionHandler<dim, range>::
+FillCacheDispatcher::
+FillCacheDispatcher(const self_t &grid_function_handler,
+                    ElementAccessor &elem,
+                    const int s_id)
+  :
+  grid_function_handler_(grid_function_handler),
+  elem_(elem),
+  s_id_(s_id)
+{}
 
-template<int dim, int space_dim>
+
+template<int dim, int range>
 auto
-FormulaGridFunctionHandler<dim, space_dim>::
+FormulaGridFunctionHandler<dim, range>::
 fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
            const int s_id) const  -> void
@@ -60,6 +72,52 @@ fill_cache(const topology_variant &sdim,
   auto disp = FillCacheDispatcher(*this, elem, s_id);
   boost::apply_visitor(disp, sdim);
 
+}
+
+
+
+template<int dim, int range>
+template<int sdim>
+void
+FormulaGridFunctionHandler<dim, range>::
+FillCacheDispatcher::
+operator()(const Topology<sdim> &sub_elem)
+{
+  const auto &formula_grid_function =
+    *std::dynamic_pointer_cast<GridFunctionType>(grid_function_handler_.get_grid_function());
+
+
+  auto &local_cache = grid_function_handler_.get_element_cache(elem_);
+  auto &cache = local_cache.template get_sub_elem_cache<sdim>(s_id_);
+
+  if (!cache.fill_none())
+  {
+    const auto &grid_pts = elem_.get_grid_element().template get_points<sdim>(s_id_);
+    if (cache.template status_fill<_D<0>>())
+    {
+      auto &F = cache.template get_data<_D<0>>();
+      formula_grid_function.evaluate_0(grid_pts, F);
+      F.set_status_filled(true);
+    }
+
+    if (cache.template status_fill<_D<1>>())
+    {
+      auto &DF = cache.template get_data<_D<1>>();
+      formula_grid_function.evaluate_1(grid_pts, DF);
+      DF.set_status_filled(true);
+    }
+
+    if (cache.template status_fill<_D<2>>())
+    {
+      auto &D2F = cache.template get_data<_D<2>>();
+      formula_grid_function.evaluate_2(grid_pts, D2F);
+      D2F.set_status_filled(true);
+    }
+//        if (cache.template status_fill<_Divergence>())
+//          Assert(false,ExcNotImplemented());
+  }
+
+  cache.set_filled(true);
 }
 
 IGA_NAMESPACE_CLOSE

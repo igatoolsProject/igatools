@@ -31,14 +31,14 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup elements
  */
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 class GridFunctionElement
 {
 private:
-  using self_t  = GridFunctionElement<dim_, space_dim_>;
+  using self_t  = GridFunctionElement<dim_, range_>;
 
 public:
-  using ContainerType = const GridFunction<dim_,space_dim_>;
+  using ContainerType = const GridFunction<dim_,range_>;
   using GridElem = typename ContainerType::GridType::ElementAccessor;
   using ListIt = typename ContainerType::ListIt;
 
@@ -157,6 +157,17 @@ public:
 
 private:
 
+
+  /**
+   * The purpose of this struct is to set (at compile time) the static boolean IsInCache::value
+   * depending on the fact that the values associated to the template argument <tt>ValueType</tt>
+   * is in the element's cache or not.
+   *
+   * @note The valid <tt>ValueType</tt> for the GridFunctionElement's cache are:
+   * - grid_function_element::_D<0> for the <b>values</b>
+   * - grid_function_element::_D<1> for the <b>gradients</b>
+   * - grid_function_element::_D<2> for the <b>hessians</b>
+   */
   template <class ValueType>
   struct IsInCache
   {
@@ -174,6 +185,9 @@ private:
 
 public:
 
+  /**
+   * Container for the admissible values (associated to the evaluation points) in the element's cache.
+   */
   using Cache = PointValuesCache<dim_,CType>;
 
   using CacheType = AllSubElementsCache<Cache>;
@@ -184,10 +198,13 @@ protected:
   std::unique_ptr<GridElem> grid_elem_;
 
 private:
+  /**
+   * @brief The cache.
+   */
   CacheType local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
-  friend class GridFunctionHandler<dim_, space_dim_>;
+  friend class GridFunctionHandler<dim_, range_>;
 
 
 public:

@@ -100,34 +100,36 @@ public:
     auto uni_indices = partition<dim>(order);
     std::copy(uni_indices.begin(), uni_indices.end(), univariate_order.begin());
 
+    TensorIndex<order> ti;
 
+    auto ind = sequence<order>();
+//    auto next_perm_result = std::next_permutation(ind.begin(),ind.end());
 
-    for (int j=0; j<num_entries_eval; ++j)
+    for (int j = 0 ; j < num_entries_eval ; ++j)
     {
-      auto &der_ind = eval_indices[j];
-      int s=0;
-      for (int dir=0; dir<dim; ++dir)
+      const auto &uni_indices_j = uni_indices[j];
+
+      auto &eval_indices_j = eval_indices[j];
+
+      int s = 0;
+      for (int dir = 0 ; dir < dim ; ++dir)
       {
-        for (int l=0; l<uni_indices[j][dir]; ++l)
-          der_ind[s+l] = dir;
-        s += uni_indices[j][dir];
+        for (int l = 0 ; l < uni_indices_j[dir] ; ++l)
+          eval_indices_j[s+l] = dir;
+        s += uni_indices_j[dir];
       }
 
-      auto ind = sequence<order>();
-      SafeSTLVector<TensorIndex<order>> v;
+      auto &copy_indices_j = copy_indices[j];
       do
       {
-        TensorIndex<order> ti;
-        for (int i=0; i<order; ++i)
-          ti[i] = eval_indices[j][ind[i]];
-        v.push_back(ti);
+        for (int i = 0 ; i < order ; ++i)
+          ti[i] = eval_indices_j[ind[i]];
+        copy_indices_j.push_back(ti);
       }
       while (std::next_permutation(ind.begin(),ind.end()));
 
-      auto it = std::unique(v.begin(), v.end());
-      v.resize(std::distance(v.begin(),it));
-
-      copy_indices[j] = v;
+      auto it = std::unique(copy_indices_j.begin(), copy_indices_j.end());
+      copy_indices_j.resize(std::distance(copy_indices_j.begin(),it));
     }
   }
 
@@ -167,24 +169,23 @@ BSplineElementHandler(shared_ptr<const Basis> space)
 {}
 
 
-#if 0
 template<int dim_, int range_ , int rank_>
-auto
 BSplineElementHandler<dim_, range_, rank_>::
-create(std::shared_ptr<const Basis> space) -> std::unique_ptr<self_t>
-{
-  auto handler = std::unique_ptr<self_t>(new self_t(space));
-  Assert(handler != nullptr, ExcNullPtr());
-  return handler;
-}
-#endif
-
+SetFlagsDispatcher::
+SetFlagsDispatcher(const typename space_element::Flags flag_in,
+                  GridHandler<dim_> &grid_handler,
+                  SafeSTLArray<typename space_element::Flags, dim+1> &flags)
+  :
+  flag_in_(flag_in),
+  grid_handler_(grid_handler),
+  flags_(flags)
+{}
 
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-SetFlagDispatcher::
+SetFlagsDispatcher::
 operator()(const Topology<sdim> &topology)
 {
   using GridFlags = grid_element::Flags;
@@ -208,10 +209,22 @@ set_flags_impl(const topology_variant &topology,
     elem_flags |= space_element::Flags::gradient;
 
 
-  auto set_flag_dispatcher = SetFlagDispatcher(elem_flags,this->grid_handler_,this->flags_);
+  auto set_flag_dispatcher = SetFlagsDispatcher(elem_flags,this->grid_handler_,this->flags_);
   boost::apply_visitor(set_flag_dispatcher,topology);
 }
 
+
+template<int dim_, int range_ , int rank_>
+BSplineElementHandler<dim_, range_, rank_>::
+InitCacheDispatcher::
+InitCacheDispatcher(const GridHandler<dim_> &grid_handler,
+                    const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
+                    BSplineElem &elem)
+  :
+  grid_handler_(grid_handler),
+  flags_(flags),
+  bsp_elem_(elem)
+{}
 
 template<int dim_, int range_ , int rank_>
 template<int sdim>
@@ -311,6 +324,18 @@ init_cache_impl(BaseElem &elem,
 }
 
 
+
+template <int dim_, int range_, int rank_>
+BSplineElementHandler<dim_, range_, rank_>::
+FillCacheDispatcherNoGlobalCache::
+FillCacheDispatcherNoGlobalCache(const int s_id,
+                                 const GridHandler<dim_> &grid_handler,
+                                 BSplineElem &elem)
+  :
+  s_id_(s_id),
+  grid_handler_(grid_handler),
+  bsp_elem_(elem)
+{}
 
 template <int dim, int range, int rank>
 void
@@ -572,11 +597,13 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
 
     for (auto comp : active_components_id)
     {
+      const auto &end_interval_comp_dir = end_interval[comp][dir];
+
       if (interval_id == 0) // processing the leftmost interval
       {
         // first interval (i.e. left-most interval)
 
-        alpha = end_interval[comp][dir].first;
+        alpha = end_interval_comp_dir[0];
         const Real one_minus_alpha = 1. - alpha;
 
         for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
@@ -589,7 +616,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
       {
         // last interval (i.e. right-most interval)
 
-        alpha = end_interval[comp][dir].second;
+        alpha = end_interval_comp_dir[1];
 
         for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
           pt_coords_boundary[ipt] = pt_coords_internal[ipt] *

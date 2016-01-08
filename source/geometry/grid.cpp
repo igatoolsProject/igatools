@@ -311,6 +311,7 @@ Grid(const self_t &grid,const CopyPolicy &copy_policy)
   knot_coordinates_(grid.knot_coordinates_),
   boundary_id_(grid.boundary_id_),
   elem_properties_(grid.elem_properties_),
+  name_(grid.get_name()),
   object_id_(UniqueIdGenerator::get_unique_id()),
   elems_size_(grid.elems_size_)
 {
@@ -344,6 +345,26 @@ operator==(const Grid<dim_> &grid) const
     same_knots_coordinates = same_knots_coordinates && (knots_a == knots_b);
   }
   return same_knots_coordinates;
+}
+
+
+
+template<int dim_>
+const std::string &
+Grid<dim_>::
+get_name() const
+{
+  return name_;
+}
+
+
+
+template<int dim_>
+void
+Grid<dim_>::
+set_name(const std::string &name)
+{
+  name_ = name;
 }
 
 
@@ -559,15 +580,14 @@ template<int dim_>
 template<int sdim>
 auto
 Grid<dim_>::
-get_boundary_normals(const int s_id) const -> BoundaryNormal<sdim>
+get_boundary_normals(const int s_id) const -> BoundaryNormals<sdim>
 {
-  auto all_elems = UnitElement<dim_>::all_elems;
-  auto element = std::get<sdim>(all_elems)[s_id];
+  const auto &element = UnitElement<dim_>::template get_elem<sdim>(s_id);
 
-  BoundaryNormal<sdim> normals;
-  for (int i=0; i<dim_-sdim; ++i)
+  BoundaryNormals<sdim> normals;
+  for (int i = 0; i < dim_-sdim; ++i)
   {
-    auto val = 2*element.constant_values[i]-1;
+    const auto val = 2 * element.constant_values[i] - 1;
     normals[i][element.constant_directions[i]] = val;
   }
 
@@ -879,6 +899,8 @@ print_info(LogStream &out) const
     out.end_item();
   }
   //-------------------------------------------------------
+
+  out << "Name: " << name_ << std::endl;
 }
 
 
@@ -1210,6 +1232,7 @@ serialize(Archive &ar)
   ar &make_nvp("boundary_id_",boundary_id_);
   ar &make_nvp("properties_elements_id_",elem_properties_);
   ar &make_nvp("object_id_",object_id_);
+  ar &make_nvp("name_",name_);
   ar &make_nvp("elems_size_",elems_size_);
 #ifdef MESH_REFINEMENT
   ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);

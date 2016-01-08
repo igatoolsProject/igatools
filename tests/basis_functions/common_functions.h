@@ -59,7 +59,9 @@ public:
 public:
   TestGridFunction(const SharedPtrConstnessHandler<Grid<dim>> &grid)
     : parent_t(grid)
-  {}
+  {
+    this->set_name("TestGridFunction");
+  }
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const Grid<dim>> &grid)
@@ -107,12 +109,13 @@ public:
   {
     Assert(false,ExcNotImplemented());
   }
-
+#ifdef MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
   {
     Assert(false,ExcNotImplemented());
   }
+#endif
 };
 
 
@@ -132,8 +135,10 @@ public:
 
 public:
   TestFunction(const SharedPtrConstnessHandler<Domain<dim,0>> &domain)
-    : parent_t(domain,"TestFunction")
-  {}
+    : parent_t(domain)
+  {
+    this->set_name("TestFunction");
+  }
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const Domain<dim,0>> &domain)
@@ -174,16 +179,17 @@ public:
     Assert(false,ExcNotImplemented());
   }
 
-  void print_info(LogStream &out) const
+  void print_info(LogStream &out) const override final
   {
     Assert(false,ExcNotImplemented());
   }
-
+#ifdef MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
   {
     Assert(false,ExcNotImplemented());
   }
+#endif
 };
 
 
@@ -203,8 +209,10 @@ public:
 
 public:
   TestBoundaryFunction(const SharedPtrConstnessHandler<Domain<dim,1>> &domain)
-    : parent_t(domain,"TestBoundaryFunction")
-  {}
+    : parent_t(domain)
+  {
+    this->set_name("TestBoundaryFunction");
+  }
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const Domain<dim,1>> &domain)
@@ -245,16 +253,17 @@ public:
     Assert(false,ExcNotImplemented());
   }
 
-  void print_info(LogStream &out) const
+  void print_info(LogStream &out) const override final
   {
     Assert(false,ExcNotImplemented());
   }
-
+#ifdef MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
   {
     Assert(false,ExcNotImplemented());
   }
+#endif
 };
 
 
@@ -330,11 +339,13 @@ private:
     Assert(false,ExcNotImplemented());
   }
 
+#ifdef MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
   {
     Assert(false,ExcNotImplemented());
   }
+#endif
 
 };
 
@@ -388,7 +399,7 @@ private:
     auto pt = points.begin();
     for (auto &val : values)
     {
-      val = std::pow(pt->norm_square(), p_/2.);
+      val = std::pow((*pt).norm_square(), p_/2.);
       ++pt;
     }
   }
@@ -420,11 +431,13 @@ private:
     Assert(false,ExcNotImplemented());
   }
 
+#ifdef MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
   {
     Assert(false,ExcNotImplemented());
   }
+#endif
 
   const Real p_;
 };

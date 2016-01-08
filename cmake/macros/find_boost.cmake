@@ -37,7 +37,8 @@ macro(find_boost)
     find_package(Boost 1.54.0 REQUIRED)
 
     include_directories(${Boost_INCLUDE_DIRS})
-
+#    set(Boost_LIBRARIES "${Boost_SERIALIZATION_LIBRARIES}")
+    
   endif (USE_CGAL)
   
 endmacro(find_boost)

@@ -89,15 +89,10 @@ private:
    * @name Functions needed for the serialization
    */
   ///@{
-  friend class serialization_access;
+  friend class cereal::access;
 
   template<class Archive>
-  void
-  serialize(Archive &ar, const unsigned int version)
-  {
-    ar &make_nvp("IgCoeff_base_t",
-                 base_class<std::map<Index,Real>>(this));
-  }
+  void serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 
@@ -106,4 +101,12 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+
+#ifdef SERIALIZATION
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,iga::IgCoefficients,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,iga::IgCoefficients,cereal::specialization::member_serialize)
+#endif // SERIALIZATION
+
+
 #endif // __IG_COEFFICIENTS_H
+

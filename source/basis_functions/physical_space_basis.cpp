@@ -117,7 +117,7 @@ create_element(const ListIt &index, const PropId &prop) const
     new ElementAccessor(this->get_this_basis(),
   index,
   this->get_reference_basis()->create_ref_element(index,prop),
-  this->get_physical_domain()->create_element(index,prop),
+  this->get_domain()->create_element(index,prop),
   prop));
 }
 #endif
@@ -131,7 +131,7 @@ create_element_begin(const PropId &prop) const
   return std::unique_ptr<ElementAccessor>(
     new ElementAccessor(this->get_this_basis(),
   this->get_reference_basis()->create_ref_element_begin(prop),
-  this->get_physical_domain()->create_element_begin(prop)));
+  this->get_domain()->create_element_begin(prop)));
 }
 
 template <int dim_, int range_, int rank_, int codim_>
@@ -143,7 +143,7 @@ create_element_end(const PropId &prop) const
   return std::unique_ptr<ElementAccessor>(
     new ElementAccessor(this->get_this_basis(),
   this->get_reference_basis()->create_ref_element_end(prop),
-  this->get_physical_domain()->create_element_end(prop)));
+  this->get_domain()->create_element_end(prop)));
 }
 
 
@@ -158,7 +158,7 @@ get_reference_basis() const -> shared_ptr<const RefBasis>
 template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-get_physical_domain() const -> std::shared_ptr<const Domain<dim_,codim_>>
+get_domain() const -> std::shared_ptr<const Domain<dim_,codim_>>
 {
   return phys_domain_.get_ptr_const_data();
 }
@@ -350,32 +350,40 @@ get_basis_previous_refinement() const -> std::shared_ptr<const base_t>
 
 #endif
 
-#if 0
 #ifdef SERIALIZATION
+
 template <int dim_, int range_, int rank_, int codim_>
 template<class Archive>
 void
 PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-serialize(Archive &ar, const unsigned int version)
+serialize(Archive &ar)
 {
-  ar &boost::serialization::make_nvp("PhysicalSpaceBasis_base_t",
-                                     boost::serialization::base_object<base_t>(*this));
+  using std::to_string;
+  const std::string base_name = "Space_" +
+                                to_string(dim_) + "_" +
+                                to_string(codim_) + "_" +
+                                to_string(range_) + "_" +
+                                to_string(rank_);
 
-  ar.template register_type<BSpline<dim_,range_,rank_> >();
-#ifdef USE_NURBS
-  ar.template register_type<NURBS<dim_,range_,rank_> >();
-#endif // NURBS
+  ar &make_nvp(base_name,base_class<base_t>(this));
 
-  ar &boost::serialization::make_nvp("ref_basis_",ref_basis_);
 
-  auto tmp = const_pointer_cast<self_t>(phys_space_previous_refinement_);
-  ar &boost::serialization::make_nvp("phys_space_previous_refinement_",tmp);
-  phys_space_previous_refinement_ = tmp;
+  ar &make_nvp("ref_basis_",ref_basis_);
+
+  ar &make_nvp("phys_domain_",phys_domain_);
+
+  Transformation transformation_type_tmp = transformation_type_;
+  ar &make_nvp("transformation_type_",transformation_type_tmp);
+  const_cast<Transformation &>(transformation_type_) = transformation_type_tmp;
+
+#ifdef MESH_REFINEMENT
+  auto tmp = std::const_pointer_cast<self_t>(phys_basis_previous_refinement_);
+  ar &make_nvp("phys_basis_previous_refinement_",tmp);
+  phys_basis_previous_refinement_ = tmp;
+#endif // MESH_REFINEMENT
 }
 
-///@}
 #endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 

@@ -34,23 +34,23 @@ template <int, int> class GridFunctionElement;
  *
  * @ingroup handlers
  */
-template<int dim_, int space_dim_>
+template<int dim_, int range_>
 class GridFunctionHandler
 //    :
-//  public std::enable_shared_from_this<GridFunctionHandler<dim_,space_dim_> >
+//  public std::enable_shared_from_this<GridFunctionHandler<dim_,range_> >
 {
 private:
-  using self_t = GridFunctionHandler<dim_, space_dim_>;
+  using self_t = GridFunctionHandler<dim_, range_>;
 
 public:
-  static const int space_dim = space_dim_;
+  static const int range = range_;
   static const int dim = dim_;
 
-  using GridFunctionType = const GridFunction<dim_, space_dim_>;
+  using GridFunctionType = const GridFunction<dim_, range_>;
   using GridType = const Grid<dim_>;
   using GridHandler = typename GridType::ElementHandler;
 
-  using ElementAccessor = GridFunctionElement<dim_, space_dim_>;
+  using ElementAccessor = GridFunctionElement<dim_, range_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
 
@@ -85,10 +85,7 @@ public:
                          const Flags &flag);
 
   template <int sdim>
-  void set_flags(const Flags &flag)
-  {
-    this->set_flags(Topology<sdim>(), flag);
-  }
+  void set_flags(const Flags &flag);
 
   void set_element_flags(const Flags &flag);
 
@@ -114,17 +111,11 @@ public:
 
   template <int sdim>
   void fill_cache(ElementIterator &elem,
-                  const int s_id) const
-  {
-    this->fill_cache(Topology<sdim>(), elem, s_id);
-  }
+                  const int s_id) const;
 
   template <int sdim>
   void fill_cache(ElementAccessor &elem,
-                  const int s_id) const
-  {
-    this->fill_cache(Topology<sdim>(), elem, s_id);
-  }
+                  const int s_id) const;
 
   void fill_element_cache(ElementAccessor &elem) const;
 
@@ -140,10 +131,7 @@ public:
 
 protected:
   typename ElementAccessor::CacheType &
-  get_element_cache(ElementAccessor &elem) const
-  {
-    return  elem.local_cache_;
-  }
+  get_element_cache(ElementAccessor &elem) const;
 //*/
 
 private:
@@ -153,17 +141,10 @@ private:
    */
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
-      :
-      flag_(flag),
-      flags_(flags)
-    {}
+    SetFlagsDispatcher(const Flags flag, FlagsArray &flags);
 
     template<int sdim>
-    void operator()(const Topology<sdim> &)
-    {
-      flags_[sdim] |= flag_;
-    }
+    void operator()(const Topology<sdim> &);
 
     const Flags flag_;
     FlagsArray &flags_;
@@ -175,27 +156,11 @@ private:
   {
     InitCacheDispatcher(const self_t &grid_function_handler,
                         ElementAccessor &elem,
-                        const FlagsArray &flags)
-      :
-      grid_function_handler_(grid_function_handler),
-      elem_(elem),
-      flags_(flags)
-    {}
+                        const FlagsArray &flags);
 
 
     template<int sdim>
-    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
-    {
-      auto &cache = grid_function_handler_.get_element_cache(elem_);
-
-      const auto n_points = elem_.get_grid_element().template get_quad<sdim>()
-                            ->get_num_points();
-      for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
-      {
-        auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
-        s_cache.resize(flags_[sdim], n_points);
-      }
-    }
+    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
 
     const self_t &grid_function_handler_;
     ElementAccessor &elem_;

@@ -189,7 +189,6 @@ if (XML_IO)
     else(XERCESC_FOUND)
       message(FATAL_ERROR "XML I/O support (EXPERIMENTAL) is enabled but Xerces-C is NOT FOUND.")
     endif(XERCESC_FOUND)
-    set(IGATOOLS_OBJECTS_CONTAINER_XML_SCHEMA "\"${CMAKE_CURRENT_BINARY_DIR}/include/igatools/io/objects_container_XML_schema.xsd\"")
 else(XML_IO)
     message("-- XML I/O support (EXPERIMENTAL) is not enabled.")    
 endif(XML_IO)
@@ -286,7 +285,7 @@ set(num_sub_elem 1 CACHE STRINGS "number of sub element to consider 1 for faces"
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Configuration of the library 
 #
-set(lib_name igatools)
+set(iga_lib_name igatools)
 
 # igatools source files
 #set (source_dirs base utils geometry basis_functions linear_algebra io contrib functions)
@@ -309,8 +308,8 @@ else (USE_CEREAL)
 endif(USE_CEREAL)
 
 # the igatools library target
-add_library(${lib_name} SHARED  ${source_files})
-target_link_libraries(${lib_name} 
+add_library(${iga_lib_name} SHARED  ${source_files})
+target_link_libraries(${iga_lib_name} 
   ${Trilinos_TPL_LIBRARIES} 
   ${Trilinos_LIBRARIES} 
   ${Petsc_LIBRARIES} 
@@ -318,20 +317,20 @@ target_link_libraries(${lib_name}
   ${Boost_LIBRARIES}
   ${VTK_LIBRARIES}
   ${CGAL_LIBRARIES})
-set_property(TARGET ${lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})
+set_property(TARGET ${iga_lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Generate configure dependent source files (in the build directory)
 configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/include/${lib_name}/base/config.h.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h")
+  "${CMAKE_CURRENT_SOURCE_DIR}/include/${iga_lib_name}/base/config.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/${iga_lib_name}/base/config.h")
 configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${lib_name}Config.cmake.in 
-  ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake @ONLY)
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${iga_lib_name}Config.cmake.in 
+  ${CMAKE_CURRENT_BINARY_DIR}/${iga_lib_name}Config.cmake @ONLY)
 configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${lib_name}ConfigVersion.cmake.in 
-  ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}ConfigVersion.cmake @ONLY)
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/${iga_lib_name}ConfigVersion.cmake.in 
+  ${CMAKE_CURRENT_BINARY_DIR}/${iga_lib_name}ConfigVersion.cmake @ONLY)
 
 
 # Create the instantiation files

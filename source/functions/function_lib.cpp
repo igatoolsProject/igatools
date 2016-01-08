@@ -28,10 +28,9 @@ namespace functions
 template<int dim, int codim, int range, int rank>
 ConstantFunction<dim, codim, range, rank>::
 ConstantFunction(const SharedPtrConstnessHandler<DomainType> &domain,
-                 const Value &b,
-                 const std::string &name)
+                 const Value &b)
   :
-  parent_t(domain,name),
+  parent_t(domain),
   b_(b)
 {}
 
@@ -41,24 +40,20 @@ template<int dim, int codim, int range, int rank>
 auto
 ConstantFunction<dim, codim, range, rank>::
 create(const std::shared_ptr<DomainType> &domain,
-       const Value &b,
-       const std::string &name)
-->  std::shared_ptr<self_t>
+       const Value &b) ->  std::shared_ptr<self_t>
 {
   return std::shared_ptr<self_t>(new
-  self_t(SharedPtrConstnessHandler<DomainType>(domain), b,name));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), b));
 }
 
 template<int dim, int codim, int range, int rank>
 auto
 ConstantFunction<dim, codim, range, rank>::
 const_create(const std::shared_ptr<const DomainType> &domain,
-             const Value &b,
-             const std::string &name)
-->  std::shared_ptr<const self_t>
+             const Value &b) ->  std::shared_ptr<const self_t>
 {
   return std::shared_ptr<self_t>(new
-  self_t(SharedPtrConstnessHandler<DomainType>(domain), b,name));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), b));
 }
 
 
@@ -114,7 +109,19 @@ print_info(LogStream &out) const
   out << b_ ;
   out.end_item();
 
+  out << "Name: " << this->name_ << std::endl;
+
   out.end_item();
+}
+
+
+
+template<int dim, int codim, int range, int rank>
+auto
+ConstantFunction<dim, codim, range, rank>::
+get_constant_value() const -> const Value &
+{
+  return b_;
 }
 
 
@@ -125,10 +132,9 @@ template<int dim, int codim, int range>
 LinearFunction<dim, codim, range>::
 LinearFunction(const SharedPtrConstnessHandler<DomainType> &domain,
                const Derivative<1> &A,
-               const Value &b,
-               const std::string &name)
+               const Value &b)
   :
-  parent_t(domain,name),
+  parent_t(domain),
   A_(A),
   b_(b)
 {}
@@ -140,11 +146,10 @@ auto
 LinearFunction<dim, codim, range>::
 create(const std::shared_ptr<DomainType> &domain,
        const Derivative<1> &A,
-       const Value &b,
-       const std::string &name) ->  std::shared_ptr<self_t>
+       const Value &b) ->  std::shared_ptr<self_t>
 {
   return std::shared_ptr<self_t>(new
-  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b,name));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b));
 }
 
 
@@ -153,11 +158,10 @@ auto
 LinearFunction<dim, codim, range>::
 const_create(const std::shared_ptr<const DomainType> &domain,
              const Derivative<1> &A,
-             const Value &b,
-             const std::string &name) -> std::shared_ptr<const self_t>
+             const Value &b) -> std::shared_ptr<const self_t>
 {
   return std::shared_ptr<self_t>(new
-  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b,name));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b));
 }
 
 
@@ -218,7 +222,29 @@ print_info(LogStream &out) const
   out << b_ ;
   out.end_item();
 
+  out << "Name: " << this->name_ << std::endl;
+
   out.end_item();
+}
+
+
+
+template<int dim, int codim, int range>
+auto
+LinearFunction<dim, codim, range>::
+get_A () const -> const Derivative<1> &
+{
+    return A_;
+}
+
+
+
+template<int dim, int codim, int range>
+auto
+LinearFunction<dim, codim, range>::
+get_b () const -> const Value &
+{
+    return b_;
 }
 
 

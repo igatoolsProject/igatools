@@ -25,36 +25,47 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
+elements = set()
+element_funcs = set()
 
-sub_dim_members = \
-  ['const ValueVector<Real> &DomainElement<dim, cod>::get_w_measures<k>(const int s_id) const;']
-#['const ValueVector<Points<dim+cod>> & DomainElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
-
-elements = []
-
-for x in inst.sub_mapping_dims:
+for x in inst.sub_mapping_dims + inst.mapping_dims:
+    space_dim = x.dim + x.codim
     elem = 'DomainElement<%d,%d>' %(x.dim, x.codim)
-    f.write('template class %s; \n' %(elem))
-    elements.append(elem)
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k','%d' %(k));
-        f.write('template ' + s + '\n')
+    elements.add(elem)
+    for k in range(0,x.dim+1):
+        func = 'const ValueVector<typename %s::Point> & %s::get_points<%d>(const int) const' % (elem,elem,k)
+        element_funcs.add(func)
+        
+        func = 'const ValueVector<typename %s::Jacobian> & %s::get_jacobians<%d>(const int) const' % (elem,elem,k)
+        element_funcs.add(func)
 
-for x in inst.mapping_dims:
-    elem = 'DomainElement<%d,%d>' %(x.dim, x.codim)
-    f.write('template class %s; \n' %(elem))
-    elements.append(elem)
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim)
-            f.write('template ' + s + '\n')
+        func = 'const ValueVector<typename %s::Hessian> & %s::get_hessians<%d>(const int) const' % (elem,elem,k)
+        element_funcs.add(func)
+
+        func = 'const ValueVector<Real> & %s::get_measures<%d>(const int) const' % (elem,k)
+        element_funcs.add(func)
+
+        func = 'const ValueVector<Real> & %s::get_w_measures<%d>(const int) const' % (elem,k)
+        element_funcs.add(func)
+
+        if (k+1 == x.dim):
+            func = 'const ValueVector<Points<%d> > & %s::get_boundary_normals<%d>(const int, EnableIf<(%d >= 0)> *) const' %(space_dim,elem,k,k)
+            element_funcs.add(func)
+
+
  
 
-accs=  ['DomainElement']
-iters =  ['GridIterator']
-for x in inst.sub_mapping_dims+inst.mapping_dims:
-  for i in range(len(accs)):
-    acc = iters[i] + '<' + accs[i]+ '<%d,%d>' %(x.dim, x.codim) + '>' 
-    f.write('template class %s; \n' %(acc))
+#accs=  ['DomainElement']
+#iters =  ['GridIterator']
+#for x in inst.sub_mapping_dims+inst.mapping_dims:
+#  for i in range(len(accs)):
+#    acc = iters[i] + '<' + accs[i]+ '<%d,%d>' %(x.dim, x.codim) + '>' 
+#    f.write('template class %s; \n' %(acc))
     
+
+for element in elements:
+    f.write('template class %s;\n' %(element))
+    f.write('template class GridIterator<%s>;\n' %(element))
+
+for func in element_funcs:
+    f.write('template %s;\n' %(func))

@@ -47,7 +47,7 @@ id = 0
 for cl in unique(classes):
     alias = 'IgGridFunctionAlias%d' %(id)
     f.write('using %s = iga::%s;\n' % (alias, cl));
-    f.write('CEREAL_REGISTER_TYPE(%s);\n' %alias);
+    f.write('CEREAL_REGISTER_TYPE(%s)\n' %alias);
     id += 1 
 
 

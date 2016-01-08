@@ -25,6 +25,15 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * @brief This class represent the index of an element of dimension <b>dim</b>.
+ *
+ * It stores the <tt>tensor</tt> and <tt>flat</tt> representation.
+ *
+ * @ingroup serializable
+ *
+ * @author M. Martinelli, 2015
+ */
 template <int dim>
 class ElementIndex
 {
@@ -93,11 +102,7 @@ private:
   friend class cereal::access;
 
   template<class Archive>
-  void serialize(Archive &ar)
-  {
-    ar &make_nvp("flat_id_",flat_id_);
-    ar &make_nvp("tensor_id_",tensor_id_);
-  }
+  void serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 
@@ -120,27 +125,7 @@ IGA_NAMESPACE_CLOSE
 
 
 #ifdef SERIALIZATION
-using ElementIndexAlias0 = iga::ElementIndex<0>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias0,cereal::specialization::member_serialize);
-using ElementIndexAlias1 = iga::ElementIndex<1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias1,cereal::specialization::member_serialize);
-using ElementIndexAlias2 = iga::ElementIndex<2>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias2,cereal::specialization::member_serialize);
-using ElementIndexAlias3 = iga::ElementIndex<3>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias3,cereal::specialization::member_serialize);
-
-
-
-using SafeSTLVectorElementIndexAlias0 = iga::SafeSTLVector<iga::ElementIndex<0>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias0,cereal::specialization::member_serialize);
-using SafeSTLVectorElementIndexAlias1 = iga::SafeSTLVector<iga::ElementIndex<1>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias1,cereal::specialization::member_serialize);
-using SafeSTLVectorElementIndexAlias2 = iga::SafeSTLVector<iga::ElementIndex<2>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias2,cereal::specialization::member_serialize);
-using SafeSTLVectorElementIndexAlias3 = iga::SafeSTLVector<iga::ElementIndex<3>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLVectorElementIndexAlias3,cereal::specialization::member_serialize);
-
-//#include <igatools/utils/element_index.serialization>
+#include <igatools/utils/element_index.serial>
 #endif // SERIALIZATION
 
 

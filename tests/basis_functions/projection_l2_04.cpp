@@ -74,7 +74,7 @@ public:
     {
       for (int i=0; i<dim; ++i)
         (*val)[i] = (*pt)[i];
-      (*val)[dim] = pt->norm_square();
+      (*val)[dim] = (*pt).norm_square();
     }
   }
 
@@ -91,16 +91,17 @@ public:
     Assert(false,ExcNotImplemented());
   }
 
-  void print_info(LogStream &out) const
+  void print_info(LogStream &out) const override final
   {
     Assert(false,ExcNotImplemented());
   }
-
+#ifdef MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
   {
     Assert(false,ExcNotImplemented());
   }
+#endif
 
 };
 

@@ -44,9 +44,6 @@
 #define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
 #define BOOST_MPL_LIMIT_VECTOR_SIZE 30
 #define FUSION_MAX_VECTOR_SIZE 30
-#ifdef XML_IO
-#cmakedefine IGATOOLS_OBJECTS_CONTAINER_XML_SCHEMA @IGATOOLS_OBJECTS_CONTAINER_XML_SCHEMA@
-#endif
 //--------------------------------------------------------------------
 
 #include <igatools/base/types.h>

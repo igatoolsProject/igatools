@@ -26,7 +26,7 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-types = ['BasisEndBehaviour','std::pair<Real,Real>']
+types = ['BasisEndBehaviour']
 
 spaces = []
 arrays = [] 
@@ -44,7 +44,7 @@ for t in types:
     arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
     arrays.append(arr_arr)
 arrays.append('SafeSTLArray<VecBernstOp,%d>' %(dim))
-arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(dim,n_components))
+#arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(dim,n_components))
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
@@ -57,7 +57,7 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
         arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
         arrays.append(arr_arr)
     arrays.append('SafeSTLArray<VecBernstOp,%d>' %(x.dim))
-    arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(x.dim,n_components))
+#    arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(x.dim,n_components))
 
 
          
@@ -65,18 +65,18 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 f.write('IGA_NAMESPACE_CLOSE\n')
 
 
-f.write('#ifdef SERIALIZATION\n')
-#archives = ['OArchive','IArchive']
+archives = ['OArchive','IArchive']
 
 
 f.write('using VecBernstOp = iga::SafeSTLVector<iga::BernsteinOperator>;\n');
-f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(VecBernstOp,cereal::specialization::member_serialize);\n');
+for ar in archives:
+    f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,VecBernstOp,cereal::specialization::member_serialize)\n' %(ar));
 
 id = 0 
 for space in unique(spaces):
     sp_alias = 'BSplineAlias%d' %(id)
     f.write('using %s = iga::%s;\n' % (sp_alias, space));
-    f.write('CEREAL_REGISTER_TYPE(%s);\n' %sp_alias);
+    f.write('CEREAL_REGISTER_TYPE(%s)\n' %sp_alias);
     id += 1 
 
 
@@ -89,10 +89,10 @@ for arr in unique(arrays):
                                      .replace('CartesianProductArray','iga::CartesianProductArray')
                                      .replace('BernsteinOperator','iga::BernsteinOperator')
                                      .replace('Real','iga::Real')));
-    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize);\n' %(alias));
+    for ar in archives:
+        f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,%s,cereal::specialization::member_serialize)\n' %(ar,alias));
     id += 1
 
-f.write('#endif // SERIALIZATION\n')
 
 #   
 f.write('IGA_NAMESPACE_OPEN\n')

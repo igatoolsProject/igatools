@@ -113,7 +113,7 @@ void PoissonProblem<dim>::assemble()
 {
 //  auto grid = basis->get_grid();
 
-  const auto domain = basis->get_physical_domain();
+  const auto domain = basis->get_domain();
 
   using ConstFunc = functions::ConstantFunction<dim,0,1,1>;
   auto f = ConstFunc::const_create(domain, {5.});
@@ -190,7 +190,7 @@ template<int dim>
 void PoissonProblem<dim>::output()
 {
   const int n_plot_points = 2;
-  auto domain = basis->get_physical_domain();
+  auto domain = basis->get_domain();
   Writer<dim> writer(domain, n_plot_points);
 
   using IgFunc = IgFunction<dim,0,1,1>;
@@ -198,7 +198,7 @@ void PoissonProblem<dim>::output()
   writer.template add_field<1,1>(*solution_function, "solution");
 
   string filename = "poisson_problem-" + to_string(dim) + "d" ;
-  writer.save(filename);
+  writer.save(filename, true);
 }
 
 

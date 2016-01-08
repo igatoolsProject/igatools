@@ -22,17 +22,19 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-output = set ()
+funcs = set ()
 for row in inst.all_function_dims:
-    output.add ('template class functions::LinearFunction<%d, %d, %d>;\n' 
+    funcs.add ('functions::LinearFunction<%d,%d,%d>' 
          %(row.dim, row.codim, row.range) )
 
 for row in inst.all_function_dims:
-    output.add ('template class functions::ConstantFunction<%d, %d, %d, %d>;\n' 
+    funcs.add ('functions::ConstantFunction<%d,%d,%d,%d>' 
          % (row.dim, row.codim, row.range, row.rank))
 
-for s in output:
-  f.write(s)
+for func in funcs:
+  f.write('template class %s;\n' %(func))
+
+
 
 
 #s = ('template class functions::SphereFunction<%d>;\n' %1 )
@@ -43,3 +45,14 @@ for s in output:
 #s = ('template class functions::CylindricalAnnulus<%d>;\n' %3)
 #f.write(s)
 
+
+
+#---------------------------------------------------
+#f.write('#ifdef SERIALIZATION\n')
+#archives = ['OArchive','IArchive']
+#
+#for func in unique(funcs):
+#    for ar in archives:
+#        f.write('template void %s::serialize(%s&);\n' %(func,ar))
+#f.write('#endif // SERIALIZATION\n')
+#---------------------------------------------------

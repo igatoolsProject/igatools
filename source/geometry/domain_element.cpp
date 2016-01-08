@@ -122,6 +122,67 @@ operator !=(const self_t &elem) const
 
 
 template<int dim_,int codim_>
+template<int sdim>
+auto
+DomainElement<dim_,codim_>::
+get_points(const int s_id) const -> const ValueVector<Point> &
+{
+  return grid_func_elem_->template
+         get_values_from_cache<grid_function_element::_D<0>, sdim>(s_id);
+}
+
+template<int dim_,int codim_>
+template<int sdim>
+auto
+DomainElement<dim_,codim_>::
+get_jacobians(const int s_id) const -> const ValueVector<Jacobian> &
+{
+  return grid_func_elem_->template
+         get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id);
+}
+
+template<int dim_,int codim_>
+template<int sdim>
+auto
+DomainElement<dim_,codim_>::
+get_hessians(const int s_id) const -> const ValueVector<Hessian> &
+{
+  return grid_func_elem_->template
+         get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id);
+}
+
+template<int dim_,int codim_>
+template<int sdim>
+auto
+DomainElement<dim_,codim_>::
+get_measures(const int s_id) const -> const ValueVector<Real> &
+{
+  return get_values_from_cache<_Measure,sdim>(s_id);
+}
+
+template<int dim_,int codim_>
+template<int sdim>
+auto
+DomainElement<dim_,codim_>::
+get_w_measures(const int s_id) const -> const ValueVector<Real> &
+{
+  return get_values_from_cache<_W_Measure,sdim>(s_id);
+}
+
+
+template<int dim_,int codim_>
+template<int sdim>
+auto
+DomainElement<dim_,codim_>::
+get_boundary_normals(const int s_id, EnableIf<(sdim >= 0)> *) const
+-> const ValueVector<Points<dim_+codim_> > &
+{
+  Assert(dim_ == sdim+1, ExcNotImplemented());
+  return get_values_from_cache<_BoundaryNormal,sdim>(s_id);
+}
+
+
+template<int dim_,int codim_>
 auto
 DomainElement<dim_,codim_>::
 get_element_measures() const -> const ValueVector<Real> &

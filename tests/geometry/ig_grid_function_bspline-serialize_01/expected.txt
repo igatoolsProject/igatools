@@ -18,6 +18,7 @@ Original IgGridFunction:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -33,22 +34,12 @@ Original IgGridFunction:
                [ ]
             
             Interior multiplicities:
-               Size: [ 0 ]  Weights: [0]
-               Direction: 0
+               Entry id: 0
                [ ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
@@ -56,33 +47,15 @@ Original IgGridFunction:
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
@@ -99,7 +72,7 @@ Original IgGridFunction:
          Bernstein Extraction:
             Component[0]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
          
       
       IgCoefficients:
@@ -107,6 +80,7 @@ Original IgGridFunction:
          Coef[loc_id=1 , glob_id=1] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 IgGridFunction after serialize-deserialize:
@@ -126,6 +100,7 @@ IgGridFunction after serialize-deserialize:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -141,22 +116,12 @@ IgGridFunction after serialize-deserialize:
                [ ]
             
             Interior multiplicities:
-               Size: [ 0 ]  Weights: [0]
-               Direction: 0
+               Entry id: 0
                [ ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
@@ -164,33 +129,15 @@ IgGridFunction after serialize-deserialize:
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
             
             Index table size:
-               Raw components: 
-                  Size: [ 1 ]  Weights: [1]
-                  Entry id: 0
-                  [ 2 ]
-               
-               Components map: 
-               [ 0 ]
-               Active components ids: 
-               [ 0 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 ]
                Scalar components dimensions:
                [ 2 ]
                Total Dimension: 2
@@ -207,7 +154,7 @@ IgGridFunction after serialize-deserialize:
          Bernstein Extraction:
             Component[0]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
          
       
       IgCoefficients:
@@ -215,6 +162,7 @@ IgGridFunction after serialize-deserialize:
          Coef[loc_id=1 , glob_id=1] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ig_grid_function_bspline<1>
@@ -257,6 +205,7 @@ Original IgGridFunction:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -274,31 +223,20 @@ Original IgGridFunction:
                [ 1 ]
             
             Interior multiplicities:
-               Size: [ 0 0 ]  Weights: [0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Size: [ 0 0 ]  Weights: [0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 2 ]  Weights: [2]
-                  Entry id: 0
-                  [ 2 2 ]
-                  Entry id: 1
-                  [ 2 2 ]
-               
-               Components map: 
-               [ 0 1 ]
-               Active components ids: 
-               [ 0 1 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
                Scalar components dimensions:
                [ 4 4 ]
                Total Dimension: 8
@@ -306,37 +244,19 @@ Original IgGridFunction:
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 2 ]  Weights: [2]
-                  Entry id: 0
-                  [ 2 2 ]
-                  Entry id: 1
-                  [ 2 2 ]
-               
-               Components map: 
-               [ 0 1 ]
-               Active components ids: 
-               [ 0 1 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
                Scalar components dimensions:
                [ 4 4 ]
                Total Dimension: 8
             
             Index table size:
-               Raw components: 
-                  Size: [ 2 ]  Weights: [2]
-                  Entry id: 0
-                  [ 2 2 ]
-                  Entry id: 1
-                  [ 2 2 ]
-               
-               Components map: 
-               [ 0 1 ]
-               Active components ids: 
-               [ 0 1 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
                Scalar components dimensions:
                [ 4 4 ]
                Total Dimension: 8
@@ -355,14 +275,14 @@ Original IgGridFunction:
          Bernstein Extraction:
             Component[0]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[1]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Component[1]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[1]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
          
       
       IgCoefficients:
@@ -376,6 +296,7 @@ Original IgGridFunction:
          Coef[loc_id=7 , glob_id=7] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 IgGridFunction after serialize-deserialize:
@@ -397,6 +318,7 @@ IgGridFunction after serialize-deserialize:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -414,31 +336,20 @@ IgGridFunction after serialize-deserialize:
                [ 1 ]
             
             Interior multiplicities:
-               Size: [ 0 0 ]  Weights: [0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Size: [ 0 0 ]  Weights: [0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 2 ]  Weights: [2]
-                  Entry id: 0
-                  [ 2 2 ]
-                  Entry id: 1
-                  [ 2 2 ]
-               
-               Components map: 
-               [ 0 1 ]
-               Active components ids: 
-               [ 0 1 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
                Scalar components dimensions:
                [ 4 4 ]
                Total Dimension: 8
@@ -446,37 +357,19 @@ IgGridFunction after serialize-deserialize:
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 2 ]  Weights: [2]
-                  Entry id: 0
-                  [ 2 2 ]
-                  Entry id: 1
-                  [ 2 2 ]
-               
-               Components map: 
-               [ 0 1 ]
-               Active components ids: 
-               [ 0 1 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
                Scalar components dimensions:
                [ 4 4 ]
                Total Dimension: 8
             
             Index table size:
-               Raw components: 
-                  Size: [ 2 ]  Weights: [2]
-                  Entry id: 0
-                  [ 2 2 ]
-                  Entry id: 1
-                  [ 2 2 ]
-               
-               Components map: 
-               [ 0 1 ]
-               Active components ids: 
-               [ 0 1 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
                Scalar components dimensions:
                [ 4 4 ]
                Total Dimension: 8
@@ -495,14 +388,14 @@ IgGridFunction after serialize-deserialize:
          Bernstein Extraction:
             Component[0]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[1]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Component[1]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[1]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
          
       
       IgCoefficients:
@@ -516,6 +409,7 @@ IgGridFunction after serialize-deserialize:
          Coef[loc_id=7 , glob_id=7] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ig_grid_function_bspline<2>
@@ -560,6 +454,7 @@ Original IgGridFunction:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -579,44 +474,32 @@ Original IgGridFunction:
                [ 1 2 ]
             
             Interior multiplicities:
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 3 ]  Weights: [3]
-                  Entry id: 0
-                  [ 2 2 2 ]
-                  Entry id: 1
-                  [ 2 2 2 ]
-                  Entry id: 2
-                  [ 2 2 2 ]
-               
-               Components map: 
-               [ 0 1 2 ]
-               Active components ids: 
-               [ 0 1 2 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
                Scalar components dimensions:
                [ 8 8 8 ]
                Total Dimension: 24
@@ -624,41 +507,23 @@ Original IgGridFunction:
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 3 ]  Weights: [3]
-                  Entry id: 0
-                  [ 2 2 2 ]
-                  Entry id: 1
-                  [ 2 2 2 ]
-                  Entry id: 2
-                  [ 2 2 2 ]
-               
-               Components map: 
-               [ 0 1 2 ]
-               Active components ids: 
-               [ 0 1 2 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
                Scalar components dimensions:
                [ 8 8 8 ]
                Total Dimension: 24
             
             Index table size:
-               Raw components: 
-                  Size: [ 3 ]  Weights: [3]
-                  Entry id: 0
-                  [ 2 2 2 ]
-                  Entry id: 1
-                  [ 2 2 2 ]
-                  Entry id: 2
-                  [ 2 2 2 ]
-               
-               Components map: 
-               [ 0 1 2 ]
-               Active components ids: 
-               [ 0 1 2 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
                Scalar components dimensions:
                [ 8 8 8 ]
                Total Dimension: 24
@@ -679,25 +544,25 @@ Original IgGridFunction:
          Bernstein Extraction:
             Component[0]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[1]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[2]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Component[1]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[1]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[2]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Component[2]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[1]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[2]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
          
       
       IgCoefficients:
@@ -727,6 +592,7 @@ Original IgGridFunction:
          Coef[loc_id=23 , glob_id=23] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 IgGridFunction after serialize-deserialize:
@@ -750,6 +616,7 @@ IgGridFunction after serialize-deserialize:
                      
                   
                
+               Name: 
             
             Degrees:
                Raw components: 
@@ -769,44 +636,32 @@ IgGridFunction after serialize-deserialize:
                [ 1 2 ]
             
             Interior multiplicities:
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
-               Size: [ 0 0 0 ]  Weights: [0,0,0]
-               Direction: 0
+               Entry id: 0
                [ ]
-               Direction: 1
+               Entry id: 1
                [ ]
-               Direction: 2
+               Entry id: 2
                [ ]
             
             Dimensionality Table:
-               Raw components: 
-                  Size: [ 3 ]  Weights: [3]
-                  Entry id: 0
-                  [ 2 2 2 ]
-                  Entry id: 1
-                  [ 2 2 2 ]
-                  Entry id: 2
-                  [ 2 2 2 ]
-               
-               Components map: 
-               [ 0 1 2 ]
-               Active components ids: 
-               [ 0 1 2 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
                Scalar components dimensions:
                [ 8 8 8 ]
                Total Dimension: 24
@@ -814,41 +669,23 @@ IgGridFunction after serialize-deserialize:
          
          DoFs Distribution:
             Num dofs table:
-               Raw components: 
-                  Size: [ 3 ]  Weights: [3]
-                  Entry id: 0
-                  [ 2 2 2 ]
-                  Entry id: 1
-                  [ 2 2 2 ]
-                  Entry id: 2
-                  [ 2 2 2 ]
-               
-               Components map: 
-               [ 0 1 2 ]
-               Active components ids: 
-               [ 0 1 2 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
                Scalar components dimensions:
                [ 8 8 8 ]
                Total Dimension: 24
             
             Index table size:
-               Raw components: 
-                  Size: [ 3 ]  Weights: [3]
-                  Entry id: 0
-                  [ 2 2 2 ]
-                  Entry id: 1
-                  [ 2 2 2 ]
-                  Entry id: 2
-                  [ 2 2 2 ]
-               
-               Components map: 
-               [ 0 1 2 ]
-               Active components ids: 
-               [ 0 1 2 ]
-               Inactive components ids: 
-               [ ]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
                Scalar components dimensions:
                [ 8 8 8 ]
                Total Dimension: 24
@@ -869,25 +706,25 @@ IgGridFunction after serialize-deserialize:
          Bernstein Extraction:
             Component[0]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[1]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[2]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Component[1]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[1]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[2]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Component[2]: 
             Direction[0]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[1]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
             Direction[2]:
-            [2,2]((1.00000,0.00000),(0.00000,1.00000))
+            [2,2]((1.00000,0),(0,1.00000))
          
       
       IgCoefficients:
@@ -917,6 +754,7 @@ IgGridFunction after serialize-deserialize:
          Coef[loc_id=23 , glob_id=23] = 1.00000
       
       Dofs property: active
+      Name: 
    
 
 ig_grid_function_bspline<3>
