@@ -79,17 +79,20 @@ ObjectsContainer::
 insert_const_object(const shared_ptr<const T> object,
                     const bool check_present)
 {
-  Assert(object != nullptr, ExcNullPtr());
+  insert_object<const T>(object,check_present);
+  /*
+    Assert(object != nullptr, ExcNullPtr());
 
-  auto &objects_T = at_key<const T>(objects_);
-  // Before inserting the object, it check_present is true it is checked
-  // it the object is already present into the container, throwing an
-  // exception is such case.
-  AssertThrow(!check_present ||
-              std::find(objects_T.cbegin(), objects_T.cend(), object) == objects_T.cend(),
-              ExcNotUnique());
+    auto &objects_T = at_key<const T>(objects_);
+    // Before inserting the object, it check_present is true it is checked
+    // it the object is already present into the container, throwing an
+    // exception is such case.
+    AssertThrow(!check_present ||
+                std::find(objects_T.cbegin(), objects_T.cend(), object) == objects_T.cend(),
+                ExcNotUnique());
 
-  objects_T.push_back(object);
+    objects_T.push_back(object);
+    //*/
 };
 
 
@@ -118,6 +121,8 @@ auto
 ObjectsContainer::
 get_const_object(const Index &id) const -> shared_ptr<const T>
 {
+  return get_object<const T>(id);
+  /*
   auto &objects_T = at_key<const T>(objects_);
   const auto obj_it = std::find_if(objects_T.cbegin(), objects_T.cend(),
   [id](const auto obj)
@@ -128,6 +133,7 @@ get_const_object(const Index &id) const -> shared_ptr<const T>
   Assert(obj_it != objects_T.cend(), ExcNotFound());
 
   return *obj_it;
+  //*/
 };
 
 
@@ -150,10 +156,13 @@ SafeSTLSet<Index>
 ObjectsContainer::
 get_const_object_ids() const
 {
-  SafeSTLSet<Index> ids;
-  for (const auto &obj : at_key<const T>(objects_))
-    ids.insert(obj->get_object_id());
-  return ids;
+  return get_object_ids<const T>();
+  /*
+    SafeSTLSet<Index> ids;
+    for (const auto &obj : at_key<const T>(objects_))
+      ids.insert(obj->get_object_id());
+    return ids;
+    //*/
 };
 
 
@@ -181,15 +190,18 @@ bool
 ObjectsContainer::
 is_const_object_present(const Index &id) const
 {
-  const auto &objects_T = at_key<const T>(objects_);
+  return is_object_present<const T>(id);
+  /*
+    const auto &objects_T = at_key<const T>(objects_);
 
-  return std::find_if(objects_T.cbegin(), objects_T.cend(),
-                      [id](const auto obj)
-  {
-    return obj->get_object_id() == id;
-  }) != objects_T.cend();
+    return std::find_if(objects_T.cbegin(), objects_T.cend(),
+                        [id](const auto obj)
+    {
+      return obj->get_object_id() == id;
+    }) != objects_T.cend();
 
-  return false;
+    return false;
+    //*/
 };
 
 
@@ -340,12 +352,14 @@ bool
 ObjectsContainer::
 is_empty() const
 {
-  const bool is_not_empty = boost::fusion::any(
-                              objects_,
-                              [](const auto &map_pair)
+  auto lambda_func_not_empty = [](const auto &map_pair)
   {
     return !map_pair.second.empty();
-  });
+  };
+
+  const bool is_not_empty = boost::fusion::any(
+                              objects_,
+                              lambda_func_not_empty);
 
   return !is_not_empty;
 
