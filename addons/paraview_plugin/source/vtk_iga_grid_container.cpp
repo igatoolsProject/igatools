@@ -131,7 +131,7 @@ ObjContPtr_
     if (xml_human_readable)
     {
       objs_container = ObjectsContainerXMLReader::parse_const(file_name);
-      AssertThrow(!objs_container->is_void(),
+      AssertThrow(!objs_container->is_empty(),
                   ExcMessage("No objects defined in the input file: "
                              + file_name + "."));
     }

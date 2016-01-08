@@ -601,7 +601,7 @@ private:
   /**
    * @todo to document.
    */
-  GridGenPtr_ grid_gen_;
+  GridGenPtr_ iga_grid_gen_;
 };
 
 #endif // IGATOOLS_READER_H_
