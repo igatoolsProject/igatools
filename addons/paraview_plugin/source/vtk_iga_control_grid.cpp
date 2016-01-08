@@ -45,7 +45,7 @@ create(const DomainPtr_ domain,
   Assert(grid_info != nullptr, ExcNullPtr());
 
   const auto ig_grid_fun = std::dynamic_pointer_cast<const IgGridFun_>
-      (domain->get_grid_function());
+  (domain->get_grid_function());
   Assert(ig_grid_fun != nullptr, ExcNullPtr());
 
   const auto &coefs = ig_grid_fun->get_coefficients();
@@ -123,7 +123,7 @@ create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
 
   // Creating poly vertices.
   vtkSmartPointer <vtkPolyVertex> vertices = vtkSmartPointer <
-                                             vtkPolyVertex>::New();
+  vtkPolyVertex>::New();
 
   const Size n_points = points->GetNumberOfPoints();
   auto vertex_points = vertices->GetPointIds();
@@ -133,7 +133,7 @@ create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
 
   // Create a cell array to store the lines and vertices,
   vtkSmartPointer <vtkCellArray> cells = vtkSmartPointer <
-                                         vtkCellArray>::New();
+  vtkCellArray>::New();
   cells->InsertNextCell(vertices);
 
   const TensorSizedContainer <dim> ids(n_pts_dir);
@@ -177,7 +177,7 @@ create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
       Index pt_id = ids.tensor_to_flat(tid);
 
       vtkSmartPointer <vtkPolyLine> line = vtkSmartPointer <
-                                           vtkPolyLine>::New();
+      vtkPolyLine>::New();
       auto line_points = line->GetPointIds();
       line_points->SetNumberOfIds(n_pts_line);
 

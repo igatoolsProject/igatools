@@ -45,7 +45,7 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
   n_vis_elem_parm_solid_(1),
   n_vis_elem_phys_knot_(1),
   n_vis_elem_parm_knot_(1),
-  iga_grid_gen_(iga::VtkIgaGridContainer::create_void ())
+  iga_grid_gen_(iga::VtkIgaGridContainer::create_void())
 {
 #ifndef NDEBUG
   this->DebugOn();
@@ -72,8 +72,8 @@ int
 IgatoolsParaViewReader::
 IsTypeOf(const char *type)
 {
-  if ( !strcmp("IgatoolsParaViewReader", type) )
-      return 1;
+  if (!strcmp("IgatoolsParaViewReader", type))
+    return 1;
   return vtkMultiBlockDataSetAlgorithm::IsTypeOf(type);
 }
 
@@ -92,9 +92,9 @@ IgatoolsParaViewReader *
 IgatoolsParaViewReader::
 SafeDownCast(vtkObjectBase *o)
 {
-    if ( o && o->IsA("IgatoolsParaViewReader") )
-        return static_cast<IgatoolsParaViewReader *>(o);
-    return NULL;
+  if (o && o->IsA("IgatoolsParaViewReader"))
+    return static_cast<IgatoolsParaViewReader *>(o);
+  return NULL;
 }
 
 
@@ -129,7 +129,7 @@ int IgatoolsParaViewReader::RequestInformation(
 
   // If the file is not parse, it is parsed now.
   if (!parse_file_)
-      return 1;
+    return 1;
 
   if (this->CanReadFile(file_name_) == 0)
     return 0;
@@ -138,23 +138,23 @@ int IgatoolsParaViewReader::RequestInformation(
 
   try
   {
-      iga_grid_gen_ = iga::VtkIgaGridContainer::create
-              (file_name_,
-               n_vis_elem_phys_solid_, phys_sol_grid_type_,
-               n_vis_elem_phys_knot_,  phys_knt_grid_type_,
-                                       phys_ctr_grid_type_,
-               n_vis_elem_parm_solid_, parm_sol_grid_type_,
-               n_vis_elem_parm_knot_,  parm_knt_grid_type_);
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create
+                    (file_name_,
+                     n_vis_elem_phys_solid_, phys_sol_grid_type_,
+                     n_vis_elem_phys_knot_,  phys_knt_grid_type_,
+                     phys_ctr_grid_type_,
+                     n_vis_elem_parm_solid_, parm_sol_grid_type_,
+                     n_vis_elem_parm_knot_,  parm_knt_grid_type_);
 
-      parse_file_ = false;
+    parse_file_ = false;
 
-      return 1;
+    return 1;
   }
   catch (std::exception &e)
   {
     vtkErrorMacro(<< e.what());
 
-    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void();
 
     return 0;
   }
@@ -163,7 +163,7 @@ int IgatoolsParaViewReader::RequestInformation(
     vtkErrorMacro(<< "An exception occurred when parsing file "
                   << string(file_name_) << ".");
 
-    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void();
 
     return 0;
   }
@@ -185,37 +185,37 @@ int IgatoolsParaViewReader::RequestData(
   this->UpdateProgress(0.0);
 
   iga_grid_gen_->update(n_vis_elem_phys_solid_, phys_sol_grid_type_,
-                    n_vis_elem_phys_knot_,  phys_knt_grid_type_,
-                                            phys_ctr_grid_type_,
-                    n_vis_elem_parm_solid_, parm_sol_grid_type_,
-                    n_vis_elem_parm_knot_,  parm_knt_grid_type_);
+                        n_vis_elem_phys_knot_,  phys_knt_grid_type_,
+                        phys_ctr_grid_type_,
+                        n_vis_elem_parm_solid_, parm_sol_grid_type_,
+                        n_vis_elem_parm_knot_,  parm_knt_grid_type_);
 
   try
   {
-      iga_grid_gen_->create_multiblock_grid(create_physical_mesh_,
-                                  create_sol_mesh_phys_,
-                                  create_knt_mesh_phys_,
-                                  create_ctr_mesh_phys_,
-                                  create_parametric_mesh_,
-                                  create_sol_mesh_parm_,
-                                  create_knt_mesh_parm_,
-                                  output);
-      return 1;
+    iga_grid_gen_->create_multiblock_grid(create_physical_mesh_,
+                                          create_sol_mesh_phys_,
+                                          create_knt_mesh_phys_,
+                                          create_ctr_mesh_phys_,
+                                          create_parametric_mesh_,
+                                          create_sol_mesh_parm_,
+                                          create_knt_mesh_parm_,
+                                          output);
+    return 1;
   }
   catch (iga::ExcVtkWarning &wrn)
   {
-      vtkWarningMacro(<< wrn.what());
-      return 1;
+    vtkWarningMacro(<< wrn.what());
+    return 1;
   }
   catch (std::exception &exc)
   {
-      vtkErrorMacro(<< exc.what());
-      return 0;
+    vtkErrorMacro(<< exc.what());
+    return 0;
   }
   catch (...)
   {
-      vtkErrorMacro(<< "An exception occurred.");
-      return 0;
+    vtkErrorMacro(<< "An exception occurred.");
+    return 0;
   }
 }
 

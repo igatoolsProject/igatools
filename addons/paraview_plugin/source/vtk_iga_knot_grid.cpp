@@ -37,7 +37,7 @@ VtkIgaKnotGrid<Domain>::
 create(const DomainPtr_ domain,
        const GridInfoPtr_ grid_info) -> VtkGridPtr_
 {
-    return Self_::create_grid<Domain::dim>(domain, grid_info);
+  return Self_::create_grid<Domain::dim>(domain, grid_info);
 }
 
 
@@ -54,8 +54,8 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
   // In this case the grid consists on a set of points corresponding
   // to the knots.
 
-  Assert (domain != nullptr, ExcNullPtr());
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(domain != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
 
   const auto cartesian_grid = domain->get_grid_function()->get_grid();
   const auto &n_intervals = cartesian_grid->get_num_intervals();
@@ -133,14 +133,14 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
   // Implementation for 2D and 3D cases.
 
   const auto num_visualization_elements =
-    grid_info->get_num_cells_per_element<dim>();
+  grid_info->get_num_cells_per_element<dim>();
 
   TensorSize <dim> n_vis_elements;
   for (int dir = 0; dir < dim; ++dir)
   {
     n_vis_elements[dir] = num_visualization_elements[dir];
     Assert(n_vis_elements[dir] > 0,
-           ExcMessage("The number of visualization elements must be > 0."))
+    ExcMessage("The number of visualization elements must be > 0."))
   }
 
   const auto cartesian_grid = domain->get_grid_function()->get_grid();
@@ -148,7 +148,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
 
   const Size n_points_per_single_cell = grid_info->is_quadratic() ? 3 : 2;
   const SafeSTLVector <int> vtk_line_connectivity =
-    grid_info->is_quadratic() ?
+  grid_info->is_quadratic() ?
   SafeSTLVector <int> ({{ 0, 2, 1 } }) :
     SafeSTLVector <int> ({{ 0, 1 } });
 
@@ -156,7 +156,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
   SafeSTLArray <shared_ptr<Quadrature <1>>,dim> quadratures;
   for (const auto &dir : boost::irange(0, dim))
     quadratures[dir] = QUniform<1>::create(
-                         n_vis_elements[dir] * (n_points_per_single_cell - 1) + 1);
+      n_vis_elements[dir] * (n_points_per_single_cell - 1) + 1);
 
   const Size n_pts_per_cell_dir = grid_info->is_quadratic() ? 3 : 2;
   TensorSize <aux_dim> n_points;
@@ -180,12 +180,12 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
     for (const auto &face_dir : face_elem.active_directions)
       n_knot_lines *= (n_intervals[face_dir] + 1);
     const Size n_cells_in_knot_line = n_intervals[dir]
-                                      * n_vis_elements[dir];
+    * n_vis_elements[dir];
     n_vtk_cells += n_knot_lines * n_cells_in_knot_line;
     n_vtk_points +=
-      n_knot_lines
-      * (n_cells_in_knot_line
-         * (n_points_per_single_cell - 1) + 1);
+    n_knot_lines
+    * (n_cells_in_knot_line
+    * (n_points_per_single_cell - 1) + 1);
   }
 
   // Creating points.
@@ -200,7 +200,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
   vtk_cell_ids->SetNumberOfComponents(tuple_size);
   vtk_cell_ids->SetNumberOfTuples(n_vtk_cells);
 
-  std::vector<vtkIdType> tuple (tuple_size);
+  std::vector<vtkIdType> tuple(tuple_size);
   tuple[0] = n_points_per_single_cell;
 
   // Global counters for points and cell tuples.
@@ -218,7 +218,7 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
     // Looping along all the knot coordinates of the face.
     typename Grid<dim>::template SubGridMap<dim-1> elem_map;
     const auto sub_grid =
-      cartesian_grid->template get_sub_grid <dim-1>(face_id,elem_map);
+    cartesian_grid->template get_sub_grid <dim-1>(face_id,elem_map);
     const auto &face_coords_t_size = sub_grid->get_num_knots_dim();
     const Size n_pts_face = face_coords_t_size.flat_size();
     const auto face_coords_t_w = MultiArrayUtils<dim-1>::compute_weight(face_coords_t_size);

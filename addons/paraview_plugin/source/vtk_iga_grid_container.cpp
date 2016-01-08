@@ -85,28 +85,28 @@ create(const std::string &file_name,
 {
   // Physical solid grid.
   const auto phys_sol = VtkGridInformation::create
-                        (n_cells_phs_sol, grid_type_phs_sol);
+  (n_cells_phs_sol, grid_type_phs_sol);
 
   // Physical knot grid.
   const auto phys_knt = VtkGridInformation::create
-                        (n_cells_phs_knt, grid_type_phs_knt);
+  (n_cells_phs_knt, grid_type_phs_knt);
 
   // Physical control grid.
   const auto phys_ctr = VtkControlGridInformation::create
-                        (grid_type_phs_ctr == VtkGridType::Structured);
+  (grid_type_phs_ctr == VtkGridType::Structured);
 
   // Parametric solid grid.
   const auto parm_sol = VtkGridInformation::create
-                        (n_cells_prm_sol, grid_type_prm_sol);
+  (n_cells_prm_sol, grid_type_prm_sol);
 
   // Parametric knot grid.
   const auto parm_knt = VtkGridInformation::create
-                        (n_cells_prm_knt, grid_type_prm_knt);
+  (n_cells_prm_knt, grid_type_prm_knt);
 
   const auto objs_container = parse_objects_container(file_name);
 
   return SelfPtr_(new Self_(objs_container, phys_sol, phys_knt, phys_ctr,
-                            parm_sol, parm_knt));
+  parm_sol, parm_knt));
 
 }
 
@@ -117,46 +117,46 @@ VtkIgaGridContainer::
 parse_objects_container(const string &file_name) ->
 ObjContPtr_
 {
-    ObjContPtr_ objs_container;
+  ObjContPtr_ objs_container;
 
 #ifdef XML_IO
 
-    // TODO: before parsing the hole file (that can be big),
-    // it is checked if the file has the expected structure (at least
-    // the header) for knowing if it is an XML human readable or
-    // a serialized file.
+  // TODO: before parsing the hole file (that can be big),
+  // it is checked if the file has the expected structure (at least
+  // the header) for knowing if it is an XML human readable or
+  // a serialized file.
 
-    // Check here if the file is of type XML human readable
-    const bool xml_human_readable = true;
-    if (xml_human_readable)
-    {
-      objs_container = ObjectsContainerXMLReader::parse_const(file_name);
-      AssertThrow(!objs_container->is_empty(),
-                  ExcMessage("No objects defined in the input file: "
-                             + file_name + "."));
-    }
+  // Check here if the file is of type XML human readable
+  const bool xml_human_readable = true;
+  if (xml_human_readable)
+  {
+    objs_container = ObjectsContainerXMLReader::parse_const(file_name);
+    AssertThrow(!objs_container->is_empty(),
+    ExcMessage("No objects defined in the input file: "
+    + file_name + "."));
+  }
 
 #endif
 
 #ifdef SERIALIZATION
-    if (parse_file_)
+  if (parse_file_)
+  {
+    ObjectsContainer container_new;
     {
-      ObjectsContainer container_new;
-      {
-        std::ifstream xml_istream(file_name);
-        IArchive xml_in(xml_istream);
-        xml_in >> container_new;
-      }
-      objs_container = std::make_shared<ObjectsContainer>(container_new);
-
-      AssertThrow(!objs_container->is_void(),
-                  ExcMessage("No objects defined in the input file or "
-                             "serialization file not properly defined."
-                             " File name: " + file_name + "."));
+      std::ifstream xml_istream(file_name);
+      IArchive xml_in(xml_istream);
+      xml_in >> container_new;
     }
+    objs_container = std::make_shared<ObjectsContainer>(container_new);
+
+    AssertThrow(!objs_container->is_void(),
+                ExcMessage("No objects defined in the input file or "
+                           "serialization file not properly defined."
+                           " File name: " + file_name + "."));
+  }
 #endif
 
-    return objs_container;
+  return objs_container;
 }
 
 
@@ -166,11 +166,11 @@ VtkIgaGridContainer::
 create_void() -> SelfPtr_
 {
   return SelfPtr_(new Self_(ObjectsContainer::create(),
-                            VtkGridInformation::create_void(),
-                            VtkGridInformation::create_void(),
-                            VtkControlGridInformation::create_void(),
-                            VtkGridInformation::create_void(),
-                            VtkGridInformation::create_void()));
+  VtkGridInformation::create_void(),
+  VtkGridInformation::create_void(),
+  VtkControlGridInformation::create_void(),
+  VtkGridInformation::create_void(),
+  VtkGridInformation::create_void()));
 }
 
 
@@ -189,8 +189,8 @@ create_multiblock_grid(const bool phys_mesh,
   unsigned int num_blocks = phys_mesh + prm_mesh;
 
   if (num_blocks == 0)
-      throw ExcVtkWarning("Neither physical nor parametric geometries are "
-                             "active. No output produced.");
+    throw ExcVtkWarning("Neither physical nor parametric geometries are "
+                        "active. No output produced.");
 
   const unsigned int num_phys_blocks = sol_phys_mesh + knt_phys_mesh + ctr_phys_mesh;
 
@@ -203,12 +203,12 @@ create_multiblock_grid(const bool phys_mesh,
   bool new_create_physical_mesh = phys_mesh;
   if (phys_mesh && (num_phys_blocks == 0 || num_active_phys == 0))
   {
-      if (num_phys_blocks == 0)
-          throw ExcVtkWarning("Physical geometries set active, but no grid type "
-                  "(solid, knot, control) has been selected");
-      else
-          throw ExcVtkWarning("Physical geometries set active, but no "
-                  "geometry set active from the list.");
+    if (num_phys_blocks == 0)
+      throw ExcVtkWarning("Physical geometries set active, but no grid type "
+                          "(solid, knot, control) has been selected");
+    else
+      throw ExcVtkWarning("Physical geometries set active, but no "
+                          "geometry set active from the list.");
 
     --num_blocks;
 
@@ -219,12 +219,12 @@ create_multiblock_grid(const bool phys_mesh,
   bool new_create_parametric_mesh = prm_mesh;
   if (prm_mesh && (num_parm_blocks == 0 || num_active_parm == 0))
   {
-      if (num_parm_blocks == 0)
-          throw ExcVtkWarning("Parametric geometries set active, but no grid type "
-                  "(solid, knot) has been selected");
-      else
-          throw ExcVtkWarning("Parametric geometries set active, but no "
-                  "geometry set active from the list.");
+    if (num_parm_blocks == 0)
+      throw ExcVtkWarning("Parametric geometries set active, but no grid type "
+                          "(solid, knot) has been selected");
+    else
+      throw ExcVtkWarning("Parametric geometries set active, but no "
+                          "geometry set active from the list.");
 
     --num_blocks;
 
@@ -232,8 +232,8 @@ create_multiblock_grid(const bool phys_mesh,
   }
 
   if (num_blocks == 0)
-      throw ExcVtkWarning("Neither physical nor parametric geometries are "
-              "active. No output produced.");
+    throw ExcVtkWarning("Neither physical nor parametric geometries are "
+                        "active. No output produced.");
 
 
   // Creating blocks for the physical and parametric geometries.
@@ -369,23 +369,23 @@ update(const NumCells_   &n_cells_phs_sol,
 {
   // Physical solid grid.
   const auto phys_solid_info = VtkGridInformation::create
-                        (n_cells_phs_sol, grid_type_phs_sol);
+                               (n_cells_phs_sol, grid_type_phs_sol);
 
   // Physical knot grid.
   const auto phys_knot_info = VtkGridInformation::create
-                        (n_cells_phs_knt, grid_type_phs_knt);
+                              (n_cells_phs_knt, grid_type_phs_knt);
 
   // Physical control grid.
   const auto phys_control_info = VtkControlGridInformation::create
-                        (grid_type_phs_ctr == VtkGridType::Structured);
+                                 (grid_type_phs_ctr == VtkGridType::Structured);
 
   // Parametric solid grid.
   const auto parm_solid_info = VtkGridInformation::create
-                        (n_cells_prm_sol, grid_type_prm_sol);
+                               (n_cells_prm_sol, grid_type_prm_sol);
 
   // Parametric knot grid.
   const auto parm_knot_info = VtkGridInformation::create
-                        (n_cells_prm_knt, grid_type_prm_knt);
+                              (n_cells_prm_knt, grid_type_prm_knt);
 
   const bool phys_solid_updated    = phys_solid_info_->update(phys_solid_info);
   const bool phys_knot_updated     = phys_knot_info_->update(phys_knot_info);

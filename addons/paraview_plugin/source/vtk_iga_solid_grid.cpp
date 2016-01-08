@@ -47,14 +47,14 @@ template <class Domain>
 VtkIgaSolidGrid<Domain>::
 PointsTopology::
 PointsTopology(const std::shared_ptr<const Grid<dim>> cartesian_grid,
-           const GridInfoPtr_ grid_info)
-           :
-           connectivity_(create_element_connectivity(grid_info)),
-           quad_ (create_visualization_quadrature(grid_info)),
-           n_vis_elements_ (grid_info->get_num_cells_per_element<dim>())
+               const GridInfoPtr_ grid_info)
+  :
+  connectivity_(create_element_connectivity(grid_info)),
+  quad_(create_visualization_quadrature(grid_info)),
+  n_vis_elements_(grid_info->get_num_cells_per_element<dim>())
 {
-  Assert (cartesian_grid != nullptr, ExcNullPtr());
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(cartesian_grid != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
 
   this->fill_points_map_mask(cartesian_grid, grid_info);
 };
@@ -68,8 +68,8 @@ PointsTopology::
 fill_points_map_mask(const std::shared_ptr<const Grid<dim>> cartesian_grid,
                      const GridInfoPtr_ grid_info)
 {
-  Assert (cartesian_grid != nullptr, ExcNullPtr());
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(cartesian_grid != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
 
   // Points map and mask
   map_.clear();
@@ -221,7 +221,7 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_element_connectivity(const GridInfoPtr_ grid_info) -> Connectivity_
 {
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
 
   if (!grid_info->is_structured() || dim == 1) // VTK unstructured grid
   {
@@ -231,7 +231,7 @@ create_element_connectivity(const GridInfoPtr_ grid_info) -> Connectivity_
       return Self_::create_linear_element_connectivity(grid_info);
   }
   else // end VTK structured grid
-      return Connectivity_();
+    return Connectivity_();
 }
 
 
@@ -242,7 +242,7 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_num_pts_per_bezier_elem() const
 {
-    return mask_.size();
+  return mask_.size();
 }
 
 
@@ -253,7 +253,7 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_num_bezier_elems() const
 {
-    return map_.size();
+  return map_.size();
 }
 
 
@@ -264,7 +264,7 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_flat_num_cells_per_bezier_elem() const
 {
-    return n_vis_elements_.flat_size();
+  return n_vis_elements_.flat_size();
 }
 
 
@@ -275,7 +275,7 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_num_total_pts() const
 {
-    return n_total_points_;
+  return n_total_points_;
 }
 
 
@@ -286,7 +286,7 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_num_pts_per_single_vtk_cell() const
 {
-    return connectivity_[0].size();
+  return connectivity_[0].size();
 }
 
 
@@ -295,10 +295,10 @@ template <class Domain>
 Size
 VtkIgaSolidGrid<Domain>::
 PointsTopology::
-get_num_vtk_cells_per_bezier_elem (const Index &dir) const
+get_num_vtk_cells_per_bezier_elem(const Index &dir) const
 {
-    Assert (dir >= 0 && dir < dim, ExcIndexRange(dir, 0, dim));
-    return n_vis_elements_[dir];
+  Assert(dir >= 0 && dir < dim, ExcIndexRange(dir, 0, dim));
+  return n_vis_elements_[dir];
 }
 
 
@@ -309,7 +309,7 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_mask() const
 {
-    return mask_;
+  return mask_;
 }
 
 
@@ -320,7 +320,7 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_connectivity() const -> const Connectivity_ &
 {
-    return connectivity_;
+  return connectivity_;
 }
 
 
@@ -331,7 +331,7 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 map_cbegin() const -> Map_::const_iterator
 {
-    return map_.cbegin();
+  return map_.cbegin();
 }
 
 
@@ -342,7 +342,7 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 get_quadrature() const ->QuadPtr_
 {
-    return quad_;
+  return quad_;
 }
 
 
@@ -354,12 +354,12 @@ VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_linear_element_connectivity(const GridInfoPtr_ grid_info) -> Connectivity_
 {
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
   Connectivity_ conn;
 
   // Number of vertices in a dim-dimensional square.
   static constexpr int n_vertices =
-    UnitElement <dim>::template num_elem <0> ();
+  UnitElement <dim>::template num_elem <0> ();
 
   const auto n_vis_elems = grid_info->get_num_cells_per_element<dim>();
   TensorSize <dim> n_elem_bound_per_dir;
@@ -406,7 +406,7 @@ create_linear_element_connectivity(const GridInfoPtr_ grid_info) -> Connectivity
   }); // dim = 3
 
   const TensorIndex <dim> weight_points =
-    MultiArrayUtils <dim>::compute_weight(n_elem_bound_per_dir);
+  MultiArrayUtils <dim>::compute_weight(n_elem_bound_per_dir);
 
   TensorIndex <dim> vtk_vertex_tensor_idx;
 
@@ -421,14 +421,14 @@ create_linear_element_connectivity(const GridInfoPtr_ grid_info) -> Connectivity
 
     auto conn = conn_el->begin();
     for (int iVertex = 0; iVertex < n_points_per_single_cell;
-         ++iVertex, ++conn)
+    ++iVertex, ++conn)
     {
       for (int i = 0; i < dim; ++i)
         vtk_vertex_tensor_idx[i] = vtk_elem_tensor_idx[i]
-                                   + delta_idx[iVertex][i];
+        + delta_idx[iVertex][i];
 
       *conn = MultiArrayUtils <dim>::tensor_to_flat_index
-              (vtk_vertex_tensor_idx, weight_points);
+      (vtk_vertex_tensor_idx, weight_points);
     } // end loop iVertex
   } // end loop cell
   //--------------------------------------------------------------------------//
@@ -444,9 +444,9 @@ auto
 VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
-  typename std::enable_if_t<aux_dim == 1> *) -> Connectivity_
+                                      typename std::enable_if_t<aux_dim == 1> *) -> Connectivity_
 {
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
 
   Connectivity_ conn;
 
@@ -458,7 +458,7 @@ create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
   Size n_cells_per_bezier = 1;
   const auto n_vis_elems = grid_info->get_num_cells_per_element<dim>();
   for (int dir = 0; dir < dim; ++dir)
-      n_cells_per_bezier *= n_vis_elems[dir];
+    n_cells_per_bezier *= n_vis_elems[dir];
 
   conn.clear();
   conn.resize(n_cells_per_bezier);
@@ -481,9 +481,9 @@ auto
 VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
-  typename std::enable_if_t<aux_dim == 2> *) -> Connectivity_
+                                      typename std::enable_if_t<aux_dim == 2> *) -> Connectivity_
 {
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
 
   Connectivity_ conn;
 
@@ -499,7 +499,7 @@ create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
   const auto n_vis_elems = grid_info->get_num_cells_per_element<dim>();
   Size n_cells_per_bezier = 1;
   for (int dir = 0; dir < dim; ++dir)
-      n_cells_per_bezier *= n_vis_elems[dir];
+    n_cells_per_bezier *= n_vis_elems[dir];
 
   conn.clear();
   conn.resize(n_cells_per_bezier);
@@ -575,9 +575,9 @@ auto
 VtkIgaSolidGrid<Domain>::
 PointsTopology::
 create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
-  typename std::enable_if_t<aux_dim == 3> *) -> Connectivity_
+                                      typename std::enable_if_t<aux_dim == 3> *) -> Connectivity_
 {
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
 
   Connectivity_ conn;
 
@@ -596,7 +596,7 @@ create_quadratic_element_connectivity(const GridInfoPtr_ grid_info,
   const auto n_vis_elems = grid_info->get_num_cells_per_element<dim>();
   Size n_cells_per_bezier = 1;
   for (int dir = 0; dir < dim; ++dir)
-      n_cells_per_bezier *= n_vis_elems[dir];
+    n_cells_per_bezier *= n_vis_elems[dir];
 
   conn.clear();
   conn.resize(n_cells_per_bezier);
@@ -730,7 +730,7 @@ PointsTopology::
 create_visualization_quadrature(const GridInfoPtr_ grid_info) ->
 QuadPtr_
 {
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
 
   const auto n_vis_elems = grid_info->get_num_cells_per_element<dim>();
   const Size n_pts_per_cell_dir =  grid_info->is_quadratic() ? 3 : 2;
@@ -774,7 +774,7 @@ QuadPtr_
   BBox<dim> box;
 
   return shared_ptr<Quadrature<dim>> (new Quadrature<dim> (quad_points,
-                                                           uniform_quad.get_weights_1d(), box));
+  uniform_quad.get_weights_1d(), box));
 #endif
 }
 
@@ -788,17 +788,17 @@ create(const DomainPtr_ domain,
        const GridInfoPtr_ grid_info,
        const bool is_physical) -> VtkGridPtr_
 {
-  Assert (domain != nullptr, ExcNullPtr());
-  Assert (grid_info != nullptr, ExcNullPtr());
-  Assert (objs_container != nullptr, ExcNullPtr());
+  Assert(domain != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
+  Assert(objs_container != nullptr, ExcNullPtr());
 
   // 1D geometries must be unstructured.
   if (!grid_info->is_structured() || dim == 1)  // VTK unstructured grid.
     return Self_::create_grid_vtu(domain, objs_container, grid_info,
-                                  is_physical);
+    is_physical);
   else // VTK structured grid.
     return Self_::create_grid_vts(domain, objs_container, grid_info,
-                                  is_physical);
+    is_physical);
 }
 
 
@@ -812,16 +812,16 @@ create_grid_vts(const DomainPtr_ domain,
                 const bool is_physical) ->
 VtkGridPtr_
 {
-  Assert (domain != nullptr, ExcNullPtr());
-  Assert (objs_container != nullptr, ExcNullPtr());
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(domain != nullptr, ExcNullPtr());
+  Assert(objs_container != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
 
-  PointsTopology topology (domain->get_grid_function()->get_grid(), grid_info);
+  PointsTopology topology(domain->get_grid_function()->get_grid(), grid_info);
 
   const auto points = Self_::create_points(domain, topology);
 
   AssertThrow(dim != 1, ExcMessage("For 1D is not possible to create vtk"
-                                   " structured meshes."))
+  " structured meshes."))
   auto vts_grid = vtkSmartPointer <vtkStructuredGrid>::New();
 
   const auto n_intervals = domain->get_grid_function()->get_grid()->get_num_intervals();
@@ -833,11 +833,11 @@ VtkGridPtr_
   vts_grid->SetPoints(points);
 
   if (is_physical)
-      Self_::create_point_data_physical(domain, objs_container,
-                                        topology, vts_grid);
+    Self_::create_point_data_physical(domain, objs_container,
+    topology, vts_grid);
   else
-      Self_::create_point_data_parametric(domain, objs_container,
-                                          topology, vts_grid);
+    Self_::create_point_data_parametric(domain, objs_container,
+    topology, vts_grid);
 
   return vts_grid;
 }
@@ -853,11 +853,11 @@ create_grid_vtu(const DomainPtr_ domain,
                 const bool is_physical) ->
 VtkGridPtr_
 {
-  Assert (domain != nullptr, ExcNullPtr());
-  Assert (objs_container != nullptr, ExcNullPtr());
-  Assert (grid_info != nullptr, ExcNullPtr());
+  Assert(domain != nullptr, ExcNullPtr());
+  Assert(objs_container != nullptr, ExcNullPtr());
+  Assert(grid_info != nullptr, ExcNullPtr());
 
-  PointsTopology topology (domain->get_grid_function()->get_grid(), grid_info);
+  PointsTopology topology(domain->get_grid_function()->get_grid(), grid_info);
 
   const auto points = Self_::create_points(domain, topology);
 
@@ -913,11 +913,11 @@ VtkGridPtr_
 
 
   if (is_physical)
-      Self_::create_point_data_physical(domain, objs_container,
-                                        topology, vtu_grid);
+    Self_::create_point_data_physical(domain, objs_container,
+                                      topology, vtu_grid);
   else
-      Self_::create_point_data_parametric(domain, objs_container,
-                                          topology, vtu_grid);
+    Self_::create_point_data_parametric(domain, objs_container,
+                                        topology, vtu_grid);
 
   return vtu_grid;
 }
@@ -974,9 +974,9 @@ create_point_data_physical(const DomainPtr_ domain,
                            const PointsTopology &points_top,
                            const VtkGridPtr_ vtk_grid)
 {
-  Assert (domain != nullptr, ExcNullPtr());
-  Assert (objs_container != nullptr, ExcNullPtr());
-  Assert (vtk_grid != nullptr, ExcNullPtr());
+  Assert(domain != nullptr, ExcNullPtr());
+  Assert(objs_container != nullptr, ExcNullPtr());
+  Assert(vtk_grid != nullptr, ExcNullPtr());
 
   vtkPointData *point_data = vtk_grid->GetPointData();
 
@@ -989,45 +989,45 @@ create_point_data_physical(const DomainPtr_ domain,
     // Constant functions from the objects container.
     for (const auto &id : objs_container->template get_const_object_ids<FunctionType>())
     {
-        const auto func = objs_container->template get_const_object<FunctionType>(id);
+      const auto func = objs_container->template get_const_object<FunctionType>(id);
 
-        // Checking if func corresponds to the domain of the generator.
-        if (func->get_domain() == domain)
+      // Checking if func corresponds to the domain of the generator.
+      if (func->get_domain() == domain)
+      {
+        using Value = typename FunctionType::Value;
+        using _D0 = typename function_element::template _D<0>;
+        using Flags = function_element::Flags;
+
+        const vtkIdType n_tuples = points_top.get_num_bezier_elems() * points_top.get_num_pts_per_bezier_elem();
+
+        auto arr = vtkSmartPointer <vtkDoubleArray>::New();
+
+        arr->SetName(func->get_name().c_str());
+        arr->SetNumberOfComponents(Value::size);
+        arr->SetNumberOfTuples(n_tuples);
+
+        auto func_handler = func->create_cache_handler();
+        func_handler->set_element_flags(Flags::D0);
+
+        auto elem = func->cbegin();
+        const auto end = func->cend();
+
+        func_handler->init_cache(*elem, points_top.get_quadrature());
+
+        auto pnm_it = points_top.map_cbegin();
+        for (; elem != end; ++elem, ++pnm_it)
         {
-            using Value = typename FunctionType::Value;
-            using _D0 = typename function_element::template _D<0>;
-            using Flags = function_element::Flags;
+          func_handler->fill_element_cache(*elem);
 
-            const vtkIdType n_tuples = points_top.get_num_bezier_elems() * points_top.get_num_pts_per_bezier_elem();
-
-            auto arr = vtkSmartPointer <vtkDoubleArray>::New();
-
-            arr->SetName(func->get_name().c_str());
-            arr->SetNumberOfComponents(Value::size);
-            arr->SetNumberOfTuples(n_tuples);
-
-            auto func_handler = func->create_cache_handler();
-            func_handler->set_element_flags(Flags::D0);
-
-            auto elem = func->cbegin();
-            const auto end = func->cend();
-
-            func_handler->init_cache(*elem, points_top.get_quadrature());
-
-            auto pnm_it = points_top.map_cbegin();
-            for (; elem != end; ++elem, ++pnm_it)
-            {
-                func_handler->fill_element_cache(*elem);
-
-                auto pnm = pnm_it->cbegin();
-                auto values = elem->template get_values_from_cache<_D0, dim>(0);
-                for (const auto &pm : points_top.get_mask())
-                    arr->SetTuple(*pnm++, values[pm].get_flat_values().data());
-            }
-
-            point_data->AddArray(arr.Get());
-
+          auto pnm = pnm_it->cbegin();
+          auto values = elem->template get_values_from_cache<_D0, dim>(0);
+          for (const auto &pm : points_top.get_mask())
+            arr->SetTuple(*pnm++, values[pm].get_flat_values().data());
         }
+
+        point_data->AddArray(arr.Get());
+
+      }
     }
   });
 
@@ -1043,9 +1043,9 @@ create_point_data_parametric(const DomainPtr_ domain,
                              const PointsTopology &points_top,
                              const VtkGridPtr_ vtk_grid)
 {
-  Assert (domain != nullptr, ExcNullPtr());
-  Assert (objs_container != nullptr, ExcNullPtr());
-  Assert (vtk_grid != nullptr, ExcNullPtr());
+  Assert(domain != nullptr, ExcNullPtr());
+  Assert(objs_container != nullptr, ExcNullPtr());
+  Assert(vtk_grid != nullptr, ExcNullPtr());
 
   vtkPointData *point_data = vtk_grid->GetPointData();
 
@@ -1057,45 +1057,45 @@ create_point_data_parametric(const DomainPtr_ domain,
     // Constant functions from the objects container.
     for (const auto &id : objs_container->template get_const_object_ids<GridFunctionType>())
     {
-        const auto grid_func = objs_container->template get_const_object<GridFunctionType>(id);
-        const auto grid = domain->get_grid_function()->get_grid();
+      const auto grid_func = objs_container->template get_const_object<GridFunctionType>(id);
+      const auto grid = domain->get_grid_function()->get_grid();
 
-        // Checking if func corresponds to the domain of the generator.
-        if (grid_func->get_grid() == grid)
+      // Checking if func corresponds to the domain of the generator.
+      if (grid_func->get_grid() == grid)
+      {
+        using Value = typename GridFunctionType::Value;
+        using _D0 = typename grid_function_element::template _D<0>;
+        using Flags = grid_function_element::Flags;
+
+        const vtkIdType n_tuples = points_top.get_num_bezier_elems() * points_top.get_num_pts_per_bezier_elem();
+
+        auto arr = vtkSmartPointer <vtkDoubleArray>::New();
+
+        arr->SetName(grid_func->get_name().c_str());
+        arr->SetNumberOfComponents(Value::size);
+        arr->SetNumberOfTuples(n_tuples);
+
+        auto grid_func_handler = grid_func->create_cache_handler();
+        grid_func_handler->set_element_flags(Flags::D0);
+
+        auto elem = grid_func->cbegin();
+        const auto end = grid_func->cend();
+
+        grid_func_handler->init_cache(*elem, points_top.get_quadrature());
+
+        auto pnm_it = points_top.map_cbegin();
+        for (; elem != end; ++elem, ++pnm_it)
         {
-            using Value = typename GridFunctionType::Value;
-            using _D0 = typename grid_function_element::template _D<0>;
-            using Flags = grid_function_element::Flags;
+          grid_func_handler->fill_element_cache(*elem);
 
-            const vtkIdType n_tuples = points_top.get_num_bezier_elems() * points_top.get_num_pts_per_bezier_elem();
-
-            auto arr = vtkSmartPointer <vtkDoubleArray>::New();
-
-            arr->SetName(grid_func->get_name().c_str());
-            arr->SetNumberOfComponents(Value::size);
-            arr->SetNumberOfTuples(n_tuples);
-
-            auto grid_func_handler = grid_func->create_cache_handler();
-            grid_func_handler->set_element_flags(Flags::D0);
-
-            auto elem = grid_func->cbegin();
-            const auto end = grid_func->cend();
-
-            grid_func_handler->init_cache(*elem, points_top.get_quadrature());
-
-            auto pnm_it = points_top.map_cbegin();
-            for (; elem != end; ++elem, ++pnm_it)
-            {
-                grid_func_handler->fill_element_cache(*elem);
-
-                auto pnm = pnm_it->cbegin();
-                auto values = elem->template get_values_from_cache<_D0, dim>(0);
-                for (const auto &pm : points_top.get_mask())
-                    arr->SetTuple(*pnm++, values[pm].get_flat_values().data());
-            }
-
-            point_data->AddArray(arr.Get());
+          auto pnm = pnm_it->cbegin();
+          auto values = elem->template get_values_from_cache<_D0, dim>(0);
+          for (const auto &pm : points_top.get_mask())
+            arr->SetTuple(*pnm++, values[pm].get_flat_values().data());
         }
+
+        point_data->AddArray(arr.Get());
+      }
     }
   });
 

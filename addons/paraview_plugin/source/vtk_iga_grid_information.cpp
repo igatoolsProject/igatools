@@ -126,27 +126,27 @@ get_num_cells_per_element() const
 
 void
 VtkGridInformation::
-print_info (LogStream &out) const
+print_info(LogStream &out) const
 {
-    out.begin_item("VtkGridInformation");
-    out << "VTK grid type: ";
-    switch (grid_type_)
-    {
-        case VtkGridType::Structured:
-            out << "Structured Grid";
-            break;
-        case VtkGridType::UnstructuredLinear:
-            out << "Unstructured Linear Grid";
-            break;
-        case VtkGridType::UnstructuredQuadratic:
-            out << "Unstructured Quadratic Grid";
-            break;
-        default:
-            break;
-    }
-    out << std::endl;
-    out << "Number of VTK cells per Bezier element: " << cells_per_element_ << std::endl;
-    out.end_item();
+  out.begin_item("VtkGridInformation");
+  out << "VTK grid type: ";
+  switch (grid_type_)
+  {
+    case VtkGridType::Structured:
+      out << "Structured Grid";
+      break;
+    case VtkGridType::UnstructuredLinear:
+      out << "Unstructured Linear Grid";
+      break;
+    case VtkGridType::UnstructuredQuadratic:
+      out << "Unstructured Quadratic Grid";
+      break;
+    default:
+      break;
+  }
+  out << std::endl;
+  out << "Number of VTK cells per Bezier element: " << cells_per_element_ << std::endl;
+  out.end_item();
 };
 
 
@@ -214,26 +214,26 @@ get_grid_type() const
 
 void
 VtkControlGridInformation::
-print_info (LogStream &out) const
+print_info(LogStream &out) const
 {
-    out.begin_item("VtkControlGridInformation");
-    out << "VTK grid type: ";
-    switch (grid_type_)
-    {
-        case VtkGridType::Structured:
-            out << "Structured Grid";
-            break;
-        case VtkGridType::UnstructuredLinear:
-            out << "Unstructured Linear Grid";
-            break;
-        case VtkGridType::UnstructuredQuadratic:
-            out << "Unstructured Quadratic Grid";
-            break;
-        default:
-            break;
-    }
-    out << std::endl;
-    out.end_item();
+  out.begin_item("VtkControlGridInformation");
+  out << "VTK grid type: ";
+  switch (grid_type_)
+  {
+    case VtkGridType::Structured:
+      out << "Structured Grid";
+      break;
+    case VtkGridType::UnstructuredLinear:
+      out << "Unstructured Linear Grid";
+      break;
+    case VtkGridType::UnstructuredQuadratic:
+      out << "Unstructured Quadratic Grid";
+      break;
+    default:
+      break;
+  }
+  out << std::endl;
+  out.end_item();
 };
 
 template SafeSTLArray <Size, 1> VtkGridInformation::get_num_cells_per_element<1>() const;
