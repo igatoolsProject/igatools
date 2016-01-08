@@ -116,12 +116,12 @@ public:
    */
   Tdouble(const Real val);
 
-#if 0
   /**
    * Constructor from a flat array of entries.
    */
-  Tdouble(const SafeSTLArray<value_t, n_entries> &values);
+  Tdouble(const SafeSTLArray<value_t,1> &values);
 
+#if 0
   /**
    * Advance constructor to optimization when zero
    * initialization is not necessary.

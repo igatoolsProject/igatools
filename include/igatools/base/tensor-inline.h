@@ -44,11 +44,10 @@ Tdouble(const Real val)
 
 inline
 Tdouble::
-Tdouble(const SafeSTLArray<value_t, n_entries> &values)
+Tdouble(const SafeSTLArray<value_t,1> &values)
   :
   Tdouble(values[0])
 {}
-
 
 #if 0
 inline

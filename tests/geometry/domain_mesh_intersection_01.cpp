@@ -19,19 +19,18 @@
 //-+--------------------------------------------------------------------
 
 
-#define USE_IGATOOLS
-
-#ifdef USE_IGATOOLS
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/grid_function_lib.h>
 #include <igatools/io/writer.h>
 #include "../tests.h"
-#endif
 
 #include <vtkXMLUnstructuredGridReader.h>
 #include <vtkXMLUnstructuredGridWriter.h>
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
+#include <vtkPolyVertex.h>
+//#include <vtkCellArray.h>
+#include <vtkPolyLine.h>
 
 #include "vtkUnstructuredGridOverlay_3.h"
 
@@ -39,7 +38,130 @@
 using std::string;
 using std::to_string;
 
-#ifdef USE_IGATOOLS
+
+void
+create_file_grid_to_project(const int n_knots)
+{
+  TensorSize<2> n_pts_dir(2);
+
+  //---------------------------------------------------------------------------
+  // Filling the points -- begin
+  const int n_pts = n_pts_dir.flat_size();
+  auto points = vtkSmartPointer<vtkPoints>::New();
+  points->SetNumberOfPoints(n_pts);
+
+  double pt_coords[3] = { 0.0, 0.0, 0.0 };
+
+  pt_coords[0] = 0.1;
+  pt_coords[1] = 0.1;
+  points->SetPoint(0,pt_coords);
+
+  pt_coords[0] = 0.9;
+  pt_coords[1] = 0.1;
+  points->SetPoint(1,pt_coords);
+
+  pt_coords[0] = 0.1;
+  pt_coords[1] = 0.9;
+  points->SetPoint(2,pt_coords);
+
+  pt_coords[0] = 0.9;
+  pt_coords[1] = 0.9;
+  points->SetPoint(3,pt_coords);
+  // Filling the points -- end
+  //---------------------------------------------------------------------------
+
+
+
+
+
+  auto grid = vtkSmartPointer <vtkUnstructuredGrid>::New();
+  grid->SetPoints(points);
+
+  // Creating poly vertices.
+  auto vertices = vtkSmartPointer<vtkPolyVertex>::New();
+
+  Assert(n_pts == points->GetNumberOfPoints(),ExcDimensionMismatch(n_pts,points->GetNumberOfPoints()));
+  auto vertex_points = vertices->GetPointIds();
+  vertex_points->SetNumberOfIds(n_pts);
+  for (int pt = 0; pt < n_pts; ++pt)
+    vertex_points->SetId(pt,pt);
+
+  // Create a cell array to store the lines and vertices,
+  auto cells = vtkSmartPointer<vtkCellArray>::New();
+  cells->InsertNextCell(vertices);
+
+  const int dim = 2;
+  const int sdim = dim-1;
+
+  const TensorSizedContainer<dim> ids(n_pts_dir);
+  TensorIndex <dim> tid;
+
+  UnitElement<dim> elem;
+
+  for (int dir = 0 ; dir < dim ; ++dir)
+  {
+    // Building the point id container for the face.
+
+    const Index face_id = dir * 2;
+
+    // Creating the cartesian product container for the face.
+    TensorSize<sdim> n_pts_face_dir;
+
+    const auto face_elem = elem.template get_elem<sdim>(face_id);
+
+    Index i = 0;
+    for (const auto &face_dir : face_elem.active_directions)
+      n_pts_face_dir[i++] = n_pts_dir[face_dir];
+
+    const TensorSizedContainer<sdim>ids_face(n_pts_face_dir);
+
+    const int n_pts_line = n_pts_dir[dir];
+
+    // Creating the offset of the line points.
+    Index offset = 1;
+    for (int dir2 = 0; dir2 < dir; ++dir2)
+      offset *= n_pts_dir[dir2];
+
+    tid[dir] = 0;
+    for (int l_id = 0; l_id < ids_face.flat_size(); ++l_id)
+    {
+      // Getting the flat index of the initial point of the line.
+      const auto fid = ids_face.flat_to_tensor(l_id);
+      auto fid_it = fid.cbegin();
+      for (const auto &face_dir : face_elem.active_directions)
+        tid[face_dir] = *fid_it++;
+      Index pt_id = ids.tensor_to_flat(tid);
+
+      auto line = vtkSmartPointer<vtkPolyLine>::New();
+      auto line_points = line->GetPointIds();
+      line_points->SetNumberOfIds(n_pts_line);
+
+      for (int i_pt = 0; i_pt < n_pts_line; ++i_pt, pt_id += offset)
+        line_points->SetId(i_pt, pt_id);
+
+      cells->InsertNextCell(line);
+
+    }
+  }
+
+  const Size n_cells = cells->GetNumberOfCells();
+
+  int cell_types[n_cells];
+  cell_types[0] = VTK_POLY_VERTEX;
+
+  for (int i = 1; i < n_cells; ++i)
+    cell_types[i] = VTK_POLY_LINE;
+
+  grid->Allocate(n_cells, 0);
+  grid->SetCells(cell_types, cells);
+//#endif
+
+
+
+  AssertThrow(false,ExcNotImplemented());
+}
+
+
 template <int dim>
 void create_grid_files(const std::array<string,2> &names,const std::array<int,dim> &n_knots)
 {
@@ -49,6 +171,8 @@ void create_grid_files(const std::array<string,2> &names,const std::array<int,di
   const int n_pts_dir = 2;
 
   {
+    create_file_grid_to_project(n_knots[0]);
+
     auto grid_a = Grid<dim>::create(n_knots[0]);
 
     typename LinearFunc::template Derivative<1> A;
@@ -77,7 +201,6 @@ void create_grid_files(const std::array<string,2> &names,const std::array<int,di
     writer.save(names[1]);
   }
 }
-#endif
 
 template<int dim>
 void test_overlay()
