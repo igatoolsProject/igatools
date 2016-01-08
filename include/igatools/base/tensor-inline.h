@@ -44,8 +44,8 @@ Tdouble(const Real val)
 inline
 Tdouble::
 Tdouble(const SafeSTLArray<value_t, n_entries> &values)
-    :
-    Tdouble (values[0])
+  :
+  Tdouble(values[0])
 {}
 
 
@@ -74,6 +74,7 @@ inline
 auto
 Tdouble::operator[](const int i) noexcept -> value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -84,6 +85,7 @@ auto
 Tdouble::
 operator[](const int i) const noexcept -> const value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -114,6 +116,7 @@ auto
 Tdouble::
 operator()(const int i) noexcept -> value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -124,6 +127,7 @@ auto
 Tdouble::
 operator()(const int i) const noexcept -> const value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -211,6 +215,7 @@ auto
 Tdouble::
 flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<0>
 {
+  Assert(flat_index == 0,ExcDimensionMismatch(flat_index,0));
   return TensorIndex<0>();
 }
 
@@ -271,9 +276,9 @@ Tensor(const SafeSTLArray<typename Tdouble::value_t, n_entries> &values)
   for (int i = 0; i < self_t::size; ++i)
   {
     SubTensArray new_array;
-    std::copy (values.cbegin() + i * sub_tens_entries,
-               values.cbegin() + (i + 1) * sub_tens_entries,
-               new_array.begin());
+    std::copy(values.cbegin() + i * sub_tens_entries,
+              values.cbegin() + (i + 1) * sub_tens_entries,
+              new_array.begin());
     tensor_[i] = value_type(new_array);
   }
 }
@@ -567,8 +572,8 @@ SafeSTLArray<typename Tdouble::value_t, n_entries>
   for (int i = 0; i < dim_; ++i)
   {
     const auto new_values= tensor_[i].get_flat_values();
-    std::copy (new_values.cbegin(), new_values.cend(),
-               values.begin() + i * value_type::n_entries);
+    std::copy(new_values.cbegin(), new_values.cend(),
+    values.begin() + i * value_type::n_entries);
   }
 
   return values;
