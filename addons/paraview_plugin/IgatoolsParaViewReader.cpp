@@ -148,7 +148,7 @@ int IgatoolsParaViewReader::RequestInformation(
 
       parse_file_ = false;
 
-      iga_grid_gen_->check_container();
+      iga_grid_gen_->check();
 
       return 1;
   }

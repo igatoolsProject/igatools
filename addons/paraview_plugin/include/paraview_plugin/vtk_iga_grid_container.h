@@ -292,7 +292,7 @@ public:
   /**
    * TODO: to document.
    */
-  void check_container () const;
+  void check () const;
 
   /**
    * TODO: to document.
@@ -310,8 +310,6 @@ public:
 private:
 
   static ObjContPtr_ parse_objects_container(const std::string &file_name);
-
-  static bool is_container_empty(const ObjContPtr_ obj_container);
 
   static SafeSTLVector<std::string>
   get_invalid_dimension_objects(const ObjContPtr_ obj_container);

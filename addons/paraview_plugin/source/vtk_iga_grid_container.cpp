@@ -155,12 +155,24 @@ ObjContPtr_
 
 void
 VtkIgaGridContainer::
-check_container() const
+check() const
 {
+  // Checking if there is any valid generator.
+  auto lambda_func_not_empty = [](const auto &gen_pair)
+  {
+    return !gen_pair.second.empty();
+  };
 
-  if (is_container_empty(objs_container_))
+  const bool is_not_empty =
+          boost::fusion::any(phys_generators_, lambda_func_not_empty) ||
+          boost::fusion::any(parm_generators_, lambda_func_not_empty);
+
+  if (!is_not_empty)
       throw ExcVtkError("Objects container is void.");
 
+
+  // Checking if there is any object with invalid dimension in the
+  // container.
   const auto invalid_dim_obj = Self_::get_invalid_dimension_objects(objs_container_);
   if (invalid_dim_obj.size() > 0)
   {
@@ -172,47 +184,6 @@ check_container() const
       throw ExcVtkWarning(warning_message);
   }
 
-}
-
-
-bool
-VtkIgaGridContainer::
-is_container_empty(const ObjContPtr_ objs_container)
-{
-  bool is_container_not_empty = false;
-
-  auto lambda_not_empty = [&](const auto &ptr_type)
-  {
-    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-
-    if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
-        objs_container->template get_const_object_ids<ObjectType>().size() > 0)
-        return true;
-    else
-        return false;
-  };
-
-  FunctionPtrs_ valid_f_ptr_types;
-  if (!is_container_not_empty &&
-      boost::fusion::any(valid_f_ptr_types, lambda_not_empty))
-      is_container_not_empty = true;
-
-  GridFuncPtrs_ valid_gf_ptr_types;
-  if (!is_container_not_empty &&
-      boost::fusion::any(valid_gf_ptr_types, lambda_not_empty))
-      is_container_not_empty = true;
-
-  DomainPtrs_ valid_d_ptr_types;
-  if (!is_container_not_empty &&
-      boost::fusion::any(valid_d_ptr_types, lambda_not_empty))
-      is_container_not_empty = true;
-
-  GridPtrs_ valid_g_ptr_types;
-  if (!is_container_not_empty &&
-      boost::fusion::any(valid_g_ptr_types, lambda_not_empty))
-      is_container_not_empty = true;
-
-  return !is_container_not_empty;
 }
 
 
@@ -1080,7 +1051,6 @@ get_number_active_grids(const GridGensContainer_ generators)
       counter += gen->is_active();
   });
   return counter;
-
 }
 
 
