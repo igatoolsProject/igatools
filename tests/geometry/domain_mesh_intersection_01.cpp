@@ -28,9 +28,10 @@
 #include <vtkXMLUnstructuredGridWriter.h>
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
-#include <vtkPolyVertex.h>
+#include <vtkQuad.h>
+//#include <vtkPolyVertex.h>
 //#include <vtkCellArray.h>
-#include <vtkPolyLine.h>
+//#include <vtkPolyLine.h>
 
 #include "vtkUnstructuredGridOverlay_3.h"
 
@@ -39,8 +40,110 @@ using std::string;
 using std::to_string;
 
 
+
+
+void write_grid(const string &filename,const Grid<2> &grid)
+{
+  auto vtk_grid = vtkSmartPointer <vtkUnstructuredGrid>::New();
+
+  const int dim = 2;
+  const auto &n_pts_dir = grid.get_num_knots_dim();
+  TensorSizedContainer<dim> pts_t_size(n_pts_dir);
+
+
+  //---------------------------------------------------------------------------
+  // Filling the points -- begin
+  const int n_pts = n_pts_dir.flat_size();
+  auto points = vtkSmartPointer<vtkPoints>::New();
+  points->SetNumberOfPoints(n_pts);
+
+  double pt_coords[3] = { 0.0, 0.0, 0.0 };
+
+  TensorIndex<dim> pt_t_id;
+
+  for (int pt_f_id = 0 ; pt_f_id < n_pts ; ++pt_f_id)
+  {
+    out << "pt_f_id: " << pt_f_id << endl;
+    pt_t_id = pts_t_size.flat_to_tensor(pt_f_id);
+
+    for (int dir = 0 ; dir < dim ; ++dir)
+    {
+      const int knt_id = pt_t_id[dir];
+      pt_coords[dir] = grid.get_knot_coordinates(dir)[knt_id];
+    }
+    points->SetPoint(pt_f_id,pt_coords);
+  }
+  vtk_grid->SetPoints(points);
+  // Filling the points -- end
+  //---------------------------------------------------------------------------
+
+
+
+  //---------------------------------------------------------------------------
+  // Filling the connectivity -- begin
+  const int n_vertices = 4;
+  using T_ = SafeSTLArray<SafeSTLArray<int,dim>,n_vertices>;
+  const T_ delta_idx
+  {
+    { 0, 0 },
+    { 1, 0 },
+    { 1, 1 },
+    { 0, 1 }};
+
+
+  for (const auto &elem : grid)
+  {
+    const auto pt_offset_t_id = elem.get_index().get_tensor_index();
+
+    auto vtk_quad = vtkSmartPointer<vtkQuad>::New();
+
+    for (int vertex = 0 ; vertex < n_vertices ; ++vertex)
+    {
+      const auto &delta_idx_vertex = delta_idx[vertex];
+      for (int dir = 0 ; dir < dim ; ++dir)
+        pt_t_id[dir] = pt_offset_t_id[dir] + delta_idx_vertex[dir];
+
+      const auto pt_f_id = pts_t_size.tensor_to_flat(pt_t_id);
+      out << "pt_f_id: " << pt_f_id << endl;
+
+      vtk_quad->GetPointIds()->SetId(vertex,pt_f_id);
+    }
+    vtk_grid->InsertNextCell(vtk_quad->GetCellType(),vtk_quad->GetPointIds());
+  }
+  // Filling the connectivity -- end
+  //---------------------------------------------------------------------------
+
+
+  auto writer = vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();
+  writer->SetDataModeToAscii();
+  string outputname = filename + ".vtu";
+  writer->SetFileName(outputname.c_str());
+  writer->SetInputData(vtk_grid);
+  writer->Write();
+
+}
+
+
+template<int codim>
+void write_domain(const string &filename, const Domain<2,codim> &domain)
+{
+  auto domain_handler = domain.create_cache_handler();
+
+  domain_handler->set_element_flags(domain_element::Flags::point);
+
+  auto elem = domain->begin();
+  const auto end = domain->end();
+
+  const auto quad = QTrapez<2>::create();
+  domain_handler->init_element_cache(elem,quad);
+
+  Assert(false,ExcNotImplemented());
+
+}
+
+
 void
-create_file_grid_to_project(const int n_knots)
+create_file_grid_to_project(const string &filename, const int n_knots)
 {
   TensorSize<2> n_pts_dir(2);
 
@@ -50,6 +153,15 @@ create_file_grid_to_project(const int n_knots)
   auto points = vtkSmartPointer<vtkPoints>::New();
   points->SetNumberOfPoints(n_pts);
 
+  SafeSTLArray<SafeSTLVector<Real>,2> knots
+  {
+    {0.1, 0.5, 0.9},
+    {0.1, 0.5, 0.9}};
+
+  auto grid = Grid<2>::create(knots);
+
+  write_grid(filename,*grid);
+#if 0
   double pt_coords[3] = { 0.0, 0.0, 0.0 };
 
   pt_coords[0] = 0.1;
@@ -72,95 +184,47 @@ create_file_grid_to_project(const int n_knots)
 
 
 
-
-
   auto grid = vtkSmartPointer <vtkUnstructuredGrid>::New();
   grid->SetPoints(points);
 
-  // Creating poly vertices.
-  auto vertices = vtkSmartPointer<vtkPolyVertex>::New();
 
-  Assert(n_pts == points->GetNumberOfPoints(),ExcDimensionMismatch(n_pts,points->GetNumberOfPoints()));
-  auto vertex_points = vertices->GetPointIds();
-  vertex_points->SetNumberOfIds(n_pts);
-  for (int pt = 0; pt < n_pts; ++pt)
-    vertex_points->SetId(pt,pt);
+  const int n_elems = 1;
+  auto cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
 
-  // Create a cell array to store the lines and vertices,
-  auto cells = vtkSmartPointer<vtkCellArray>::New();
-  cells->InsertNextCell(vertices);
+  const int n_pts_per_elem = 4;
+  const int tuple_size = n_pts_per_elem+1;
+  cell_ids->SetNumberOfComponents(tuple_size);
+  cell_ids->SetNumberOfTuples(n_elems);
 
-  const int dim = 2;
-  const int sdim = dim-1;
 
-  const TensorSizedContainer<dim> ids(n_pts_dir);
-  TensorIndex <dim> tid;
+  std::vector<vtkIdType> elem_conn(tuple_size);
+  elem_conn[0] = n_pts_per_elem;
 
-  UnitElement<dim> elem;
 
-  for (int dir = 0 ; dir < dim ; ++dir)
-  {
-    // Building the point id container for the face.
+  auto vtk_quad = vtkSmartPointer<vtkQuad>::New();
+  vtk_quad->GetPointIds()->SetId(0,0);
+  vtk_quad->GetPointIds()->SetId(1,1);
+  vtk_quad->GetPointIds()->SetId(2,3);
+  vtk_quad->GetPointIds()->SetId(3,2);
 
-    const Index face_id = dir * 2;
-
-    // Creating the cartesian product container for the face.
-    TensorSize<sdim> n_pts_face_dir;
-
-    const auto face_elem = elem.template get_elem<sdim>(face_id);
-
-    Index i = 0;
-    for (const auto &face_dir : face_elem.active_directions)
-      n_pts_face_dir[i++] = n_pts_dir[face_dir];
-
-    const TensorSizedContainer<sdim>ids_face(n_pts_face_dir);
-
-    const int n_pts_line = n_pts_dir[dir];
-
-    // Creating the offset of the line points.
-    Index offset = 1;
-    for (int dir2 = 0; dir2 < dir; ++dir2)
-      offset *= n_pts_dir[dir2];
-
-    tid[dir] = 0;
-    for (int l_id = 0; l_id < ids_face.flat_size(); ++l_id)
-    {
-      // Getting the flat index of the initial point of the line.
-      const auto fid = ids_face.flat_to_tensor(l_id);
-      auto fid_it = fid.cbegin();
-      for (const auto &face_dir : face_elem.active_directions)
-        tid[face_dir] = *fid_it++;
-      Index pt_id = ids.tensor_to_flat(tid);
-
-      auto line = vtkSmartPointer<vtkPolyLine>::New();
-      auto line_points = line->GetPointIds();
-      line_points->SetNumberOfIds(n_pts_line);
-
-      for (int i_pt = 0; i_pt < n_pts_line; ++i_pt, pt_id += offset)
-        line_points->SetId(i_pt, pt_id);
-
-      cells->InsertNextCell(line);
-
-    }
-  }
-
-  const Size n_cells = cells->GetNumberOfCells();
-
-  int cell_types[n_cells];
-  cell_types[0] = VTK_POLY_VERTEX;
-
-  for (int i = 1; i < n_cells; ++i)
-    cell_types[i] = VTK_POLY_LINE;
-
-  grid->Allocate(n_cells, 0);
-  grid->SetCells(cell_types, cells);
-//#endif
+  grid->InsertNextCell(vtk_quad->GetCellType(),vtk_quad->GetPointIds());
 
 
 
-  AssertThrow(false,ExcNotImplemented());
+
+
+
+//  std::string outputname = "kkk.vtu";
+  auto writer = vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();
+  writer->SetDataModeToAscii();
+  string outputname = filename + ".vtu";
+  writer->SetFileName(outputname.c_str());
+  writer->SetInputData(grid);
+  writer->Write();
+#endif
+
+//  AssertThrow(false,ExcNotImplemented());
 }
-
 
 template <int dim>
 void create_grid_files(const std::array<string,2> &names,const std::array<int,dim> &n_knots)
@@ -171,34 +235,39 @@ void create_grid_files(const std::array<string,2> &names,const std::array<int,di
   const int n_pts_dir = 2;
 
   {
-    create_file_grid_to_project(n_knots[0]);
+    create_file_grid_to_project(names[0],n_knots[0]);
+    /*
+        auto grid_a = Grid<dim>::create(n_knots[0]);
 
-    auto grid_a = Grid<dim>::create(n_knots[0]);
+        typename LinearFunc::template Derivative<1> A;
+        typename LinearFunc::Value b;
+        const Real eps = 0.1;
+        for (int i = 0 ; i < dim ; ++i)
+        {
+          A[i][i] = 1.0 - 2.0 * eps;
+          b[i] = eps;
+        }
 
-    typename LinearFunc::template Derivative<1> A;
-    typename LinearFunc::Value b;
-    const Real eps = 0.1;
-    for (int i = 0 ; i < dim ; ++i)
-    {
-      A[i][i] = 1.0 - 2.0 * eps;
-      b[i] = eps;
-    }
+        auto func_a = LinearFunc::create(grid_a,A,b);
+        auto domain_a = Domain<dim,0>::create(func_a);
 
-    auto func_a = LinearFunc::create(grid_a,A,b);
-    auto domain_a = Domain<dim,0>::create(func_a);
-
-    Writer<dim,0> writer(domain_a,n_pts_dir);
-    writer.save(names[0]);
+        Writer<dim,0> writer(domain_a,n_pts_dir);
+        writer.save(names[0]);
+        //*/
   }
 
 
   {
     auto grid_b = Grid<dim>::create(n_knots[1]);
+    /*
     auto func_b = IdentityFunc::create(grid_b);
     auto domain_b = Domain<dim,0>::create(func_b);
 
     Writer<dim,0> writer(domain_b,n_pts_dir);
     writer.save(names[1]);
+    //*/
+
+    write_grid(names[1],*grid_b);
   }
 }
 
@@ -206,8 +275,8 @@ template<int dim>
 void test_overlay()
 {
   std::array<int,dim> n_knots;
-  n_knots[0] = 2;
-  n_knots[1] = 3;
+  n_knots[0] = 3;
+  n_knots[1] = 4;
 
   std::array<string,2> names;
   names[0] = "domain_to_proj_" + to_string(n_knots[0]-1) + "_elems";
