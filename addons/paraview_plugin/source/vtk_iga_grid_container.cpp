@@ -131,9 +131,8 @@ ObjContPtr_
   if (xml_human_readable)
   {
     objs_container = ObjectsContainerXMLReader::parse_const(file_name);
-    AssertThrow(!objs_container->is_empty(),
-    ExcMessage("No objects defined in the input file: "
-    + file_name + "."));
+//    AssertThrow(!objs_container->is_empty(),
+//    		ExcMessage("No objects defined in the input file: " + file_name + "."));
   }
 
 #endif
@@ -155,6 +154,54 @@ ObjContPtr_
                            " File name: " + file_name + "."));
   }
 #endif
+
+  // Checking if the container is empty.
+
+  bool is_container_empty = true;
+  FunctionPtrs_ valid_f_ptr_types;
+  for_each(valid_f_ptr_types, [&](const auto &ptr_type)
+  {
+    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+
+    if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
+        objs_container->template get_const_object_ids<ObjectType>().size() > 0)
+        is_container_empty = false;
+  });
+
+  DomainPtrs_ valid_d_ptr_types;
+  for_each(valid_f_ptr_types, [&](const auto &ptr_type)
+  {
+    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+
+    if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
+        objs_container->template get_const_object_ids<ObjectType>().size() > 0)
+        is_container_empty = false;
+  });
+
+  GridFuncPtrs_ valid_gf_ptr_types;
+  for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
+  {
+    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+
+    if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
+        objs_container->template get_const_object_ids<ObjectType>().size() > 0)
+        is_container_empty = false;
+  });
+
+  GridPtrs_ valid_g_ptr_types;
+  for_each(valid_g_ptr_types, [&](const auto &ptr_type)
+  {
+    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+
+    if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
+        objs_container->template get_const_object_ids<ObjectType>().size() > 0)
+        is_container_empty = false;
+  });
+
+
+  AssertThrow(!is_container_empty,
+              ExcMessage("No objects defined in the input file: "
+                             + file_name + "."));
 
   return objs_container;
 }

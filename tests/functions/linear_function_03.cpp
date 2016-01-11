@@ -92,8 +92,8 @@ void test_linear_function()
 int main()
 {
   test_linear_function<1, 0, 1>();
-  test_linear_function<2, 0, 2>();
-  test_linear_function<3, 0, 3>();
+//  test_linear_function<2, 0, 2>();
+//  test_linear_function<3, 0, 3>();
 
   return 0;
 }

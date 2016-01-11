@@ -1,1 +1,17 @@
-to be defined
+test_linear_function<dim=1,codim=0,range=1
+   FunctionElement:
+      Flat ID: 0    Tensor ID: [0]
+      Values:
+         ValueVector (num_points=2) :
+         [ [ 1.57735 ]  [ 0.422650 ]  ]
+      
+      Gradients:
+         ValueVector (num_points=2) :
+         [ [ [ 2.00000 ]  ]  [ [ 2.00000 ]  ]  ]
+      
+      Hessians:
+         ValueVector (num_points=2) :
+         [ [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  ]
+      
+   
+
