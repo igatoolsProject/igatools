@@ -289,6 +289,9 @@ public:
               const VtkGridType &grid_type_prm_knt);
 
 
+  /**
+   * TODO: to document.
+   */
   void check_container () const;
 
   /**
