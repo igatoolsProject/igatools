@@ -132,7 +132,7 @@ ObjContPtr_
   {
     objs_container = ObjectsContainerXMLReader::parse_const(file_name);
 //    AssertThrow(!objs_container->is_empty(),
-//    		ExcMessage("No objects defined in the input file: " + file_name + "."));
+//        ExcMessage("No objects defined in the input file: " + file_name + "."));
   }
 
 #endif
@@ -165,7 +165,7 @@ ObjContPtr_
 
     if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
         objs_container->template get_const_object_ids<ObjectType>().size() > 0)
-        is_container_empty = false;
+      is_container_empty = false;
   });
 
   DomainPtrs_ valid_d_ptr_types;
@@ -175,7 +175,7 @@ ObjContPtr_
 
     if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
         objs_container->template get_const_object_ids<ObjectType>().size() > 0)
-        is_container_empty = false;
+      is_container_empty = false;
   });
 
   GridFuncPtrs_ valid_gf_ptr_types;
@@ -185,7 +185,7 @@ ObjContPtr_
 
     if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
         objs_container->template get_const_object_ids<ObjectType>().size() > 0)
-        is_container_empty = false;
+      is_container_empty = false;
   });
 
   GridPtrs_ valid_g_ptr_types;
@@ -195,13 +195,13 @@ ObjContPtr_
 
     if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
         objs_container->template get_const_object_ids<ObjectType>().size() > 0)
-        is_container_empty = false;
+      is_container_empty = false;
   });
 
 
   AssertThrow(!is_container_empty,
               ExcMessage("No objects defined in the input file: "
-                             + file_name + "."));
+                         + file_name + "."));
 
   return objs_container;
 }
