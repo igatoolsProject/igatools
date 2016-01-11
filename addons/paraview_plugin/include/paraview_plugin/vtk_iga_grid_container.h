@@ -133,11 +133,47 @@ private:
                           typename boost::mpl::lambda< IsInValidDomain< boost::mpl::_1 > >::type
                           >::type;
 
+  /**
+   * Invalid domains.
+   */
+  using InvalidDomains_ = boost::mpl::remove_if<
+                        InstantiatedTypes::Domains,
+                        boost::mpl::lambda< boost::mpl::not_<IsInValidDomain< boost::mpl::_1 >> >::type
+                        >::type;
+
+  /**
+   * Invalid grids.
+   */
+  using InvalidGrids_ = boost::mpl::remove_if<
+                      InstantiatedTypes::Grids,
+                      boost::mpl::lambda< boost::mpl::not_<IsInValidDim< boost::mpl::_1 >> >::type
+                      >::type;
+
+  /**
+   * Invalid grids functions.
+   */
+  using InvalidGridFuncs_ = typename boost::mpl::remove_if<
+                          InstantiatedTypes::GridFunctions,
+                          boost::mpl::lambda< boost::mpl::not_<IsInValidDim< boost::mpl::_1 >> >::type
+                          >::type;
+
+  /**
+   * Invalid functions.
+   */
+  using InvalidFunctions_ = typename boost::mpl::remove_if<
+                          InstantiatedTypes::Functions,
+                          boost::mpl::lambda< boost::mpl::not_<IsInValidDomain< boost::mpl::_1 >> >::type
+                          >::type;
+
   using GridPtrs_ = as_fusion_vector_shared_ptr<ValidGrids_>::type;
   using GridFuncPtrs_ = as_fusion_vector_shared_ptr<ValidGridFuncs_>::type;
   using DomainPtrs_ = as_fusion_vector_shared_ptr<ValidDomains_>::type;
   using FunctionPtrs_ = as_fusion_vector_shared_ptr<ValidFunctions_>::type;
 
+  using InvalidGridPtrs_ = as_fusion_vector_shared_ptr<InvalidGrids_>::type;
+  using InvalidGridFuncPtrs_ = as_fusion_vector_shared_ptr<InvalidGridFuncs_>::type;
+  using InvalidDomainPtrs_ = as_fusion_vector_shared_ptr<InvalidDomains_>::type;
+  using InvalidFunctionPtrs_ = as_fusion_vector_shared_ptr<InvalidFunctions_>::type;
 
   template< class T >
   struct as_fusion_vector_const_shared_ptr
@@ -252,6 +288,9 @@ public:
               const NumCells_   &n_cells_prm_knt,
               const VtkGridType &grid_type_prm_knt);
 
+
+  void check_container () const;
+
   /**
    * TODO: to document.
    */
@@ -268,6 +307,11 @@ public:
 private:
 
   static ObjContPtr_ parse_objects_container(const std::string &file_name);
+
+  static bool is_container_empty(const ObjContPtr_ obj_container);
+
+  static SafeSTLVector<std::string>
+  get_invalid_dimension_objects(const ObjContPtr_ obj_container);
 
   void fill_objects_container(const ObjContPtr_ objs_container);
 

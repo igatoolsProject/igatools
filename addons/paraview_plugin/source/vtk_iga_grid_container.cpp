@@ -145,63 +145,147 @@ ObjContPtr_
         xml_in >> container_new;
       }
       objs_container = std::make_shared<ObjectsContainer>(container_new);
-
-      AssertThrow(!objs_container->is_void(),
-                  ExcMessage("No objects defined in the input file or "
-                             "serialization file not properly defined."
-                             " File name: " + file_name + "."));
     }
 #endif
 
-  // Checking if the container is empty.
+  return objs_container;
+}
 
-  bool is_container_empty = true;
+
+
+void
+VtkIgaGridContainer::
+check_container() const
+{
+
+  if (is_container_empty(objs_container_))
+      throw ExcVtkError("Objects container is void.");
+
+  const auto invalid_dim_obj = Self_::get_invalid_dimension_objects(objs_container_);
+  if (invalid_dim_obj.size() > 0)
+  {
+      string warning_message = "The following objects have dimensions that the "
+              "plugin cannot currently visualize:\n";
+      for (const auto &obj : invalid_dim_obj)
+          warning_message += obj + "\n";
+
+      throw ExcVtkWarning(warning_message);
+  }
+
+}
+
+
+bool
+VtkIgaGridContainer::
+is_container_empty(const ObjContPtr_ objs_container)
+{
+  bool is_container_not_empty = false;
+
+  auto lambda_not_empty = [&](const auto &ptr_type)
+  {
+    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+
+    if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
+        objs_container->template get_const_object_ids<ObjectType>().size() > 0)
+        return true;
+    else
+        return false;
+  };
+
   FunctionPtrs_ valid_f_ptr_types;
-  for_each(valid_f_ptr_types, [&](const auto &ptr_type)
-  {
-    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-
-    if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
-        objs_container->template get_const_object_ids<ObjectType>().size() > 0)
-        is_container_empty = false;
-  });
-
-  DomainPtrs_ valid_d_ptr_types;
-  for_each(valid_f_ptr_types, [&](const auto &ptr_type)
-  {
-    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-
-    if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
-        objs_container->template get_const_object_ids<ObjectType>().size() > 0)
-        is_container_empty = false;
-  });
+  if (!is_container_not_empty &&
+      boost::fusion::any(valid_f_ptr_types, lambda_not_empty))
+      is_container_not_empty = true;
 
   GridFuncPtrs_ valid_gf_ptr_types;
-  for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
-  {
-    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+  if (!is_container_not_empty &&
+      boost::fusion::any(valid_gf_ptr_types, lambda_not_empty))
+      is_container_not_empty = true;
 
-    if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
-        objs_container->template get_const_object_ids<ObjectType>().size() > 0)
-        is_container_empty = false;
-  });
+  DomainPtrs_ valid_d_ptr_types;
+  if (!is_container_not_empty &&
+      boost::fusion::any(valid_d_ptr_types, lambda_not_empty))
+      is_container_not_empty = true;
 
   GridPtrs_ valid_g_ptr_types;
-  for_each(valid_g_ptr_types, [&](const auto &ptr_type)
-  {
-    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+  if (!is_container_not_empty &&
+      boost::fusion::any(valid_g_ptr_types, lambda_not_empty))
+      is_container_not_empty = true;
 
-    if (objs_container->template get_object_ids<ObjectType>().size() > 0 ||
-        objs_container->template get_const_object_ids<ObjectType>().size() > 0)
-        is_container_empty = false;
-  });
+  return !is_container_not_empty;
+}
 
 
-  AssertThrow(!is_container_empty,
-              ExcMessage("No objects defined in the input file: "
-                             + file_name + "."));
 
-  return objs_container;
+SafeSTLVector<string>
+VtkIgaGridContainer::
+get_invalid_dimension_objects(const ObjContPtr_ objs_container)
+{
+  SafeSTLVector<string> invalid_objects;
+
+  InvalidGridPtrs_ invalid_g_ptr_types;
+  for_each(invalid_g_ptr_types, [&](const auto &ptr_type)
+           {
+              using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+              for (const auto &id : objs_container->template get_object_ids<ObjectType>())
+              {
+                  const auto obj = objs_container->template get_object<ObjectType>(id);
+                  invalid_objects.push_back(
+                          "Grid<" + to_string(ObjectType::dim) + ">, "
+                          "Name: " + obj->get_name() + ", "
+                          "ObjectId: " + to_string(id));
+              }
+           });
+
+
+  InvalidDomainPtrs_ invalid_d_ptr_types;
+  for_each(invalid_d_ptr_types, [&](const auto &ptr_type)
+           {
+              using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+              for (const auto &id : objs_container->template get_object_ids<ObjectType>())
+              {
+                  const auto obj = objs_container->template get_object<ObjectType>(id);
+                  invalid_objects.push_back(
+                          "Domain<" + to_string(ObjectType::dim) + ", " +
+                          to_string(ObjectType::space_dim - ObjectType::dim) + ">, "
+                          "Name: " + obj->get_name() + ", "
+                          "ObjectId: " + to_string(id));
+              }
+           });
+
+  InvalidGridFuncPtrs_ invalid_gf_ptr_types;
+  for_each(invalid_gf_ptr_types, [&](const auto &ptr_type)
+           {
+              using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+              for (const auto &id : objs_container->template get_object_ids<ObjectType>())
+              {
+                  const auto obj = objs_container->template get_object<ObjectType>(id);
+                  invalid_objects.push_back(
+                          "GridFunction<" + to_string(ObjectType::dim) + ", " +
+                          to_string(ObjectType::range) + ">, "
+                          "Name: " + obj->get_name() + ", "
+                          "ObjectId: " + to_string(id));
+              }
+           });
+
+  InvalidFunctionPtrs_ invalid_f_ptr_types;
+  for_each(invalid_f_ptr_types, [&](const auto &ptr_type)
+           {
+              using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+              for (const auto &id : objs_container->template get_object_ids<ObjectType>())
+              {
+                  const auto obj = objs_container->template get_object<ObjectType>(id);
+                  invalid_objects.push_back(
+                          "Function<" + to_string(ObjectType::dim) + ", "
+                                      + to_string(ObjectType::codim) + ", "
+                                      + to_string(ObjectType::range) + ", "
+                                      + to_string(ObjectType::rank) + ">, "
+                          "Name: " + obj->get_name() + ", "
+                          "ObjectId: " + to_string(id));
+              }
+           });
+
+  return invalid_objects;
 }
 
 

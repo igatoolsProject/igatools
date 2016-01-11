@@ -148,11 +148,32 @@ int IgatoolsParaViewReader::RequestInformation(
 
       parse_file_ = false;
 
+      iga_grid_gen_->check_container();
+
       return 1;
+  }
+  catch (iga::ExcVtkWarning &w)
+  {
+    vtkWarningMacro("Parsing file " << string(file_name_) << ":\n"
+                    << w.what());
+
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+
+    return 1;
+  }
+  catch (iga::ExcVtkError &e)
+  {
+    vtkErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                  << e.what());
+
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+
+    return 0;
   }
   catch (std::exception &e)
   {
-    vtkErrorMacro(<< e.what());
+    vtkErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                  << e.what());
 
     iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
 
@@ -160,13 +181,16 @@ int IgatoolsParaViewReader::RequestInformation(
   }
   catch (...)
   {
-    vtkErrorMacro(<< "An exception occurred when parsing file "
-                  << string(file_name_) << ".");
+    vtkErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                  << "AN UNKNOWN EXCEPTION OCCUR!");
 
     iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
 
     return 0;
   }
+
+
+
 }
 
 
@@ -201,6 +225,11 @@ int IgatoolsParaViewReader::RequestData(
                                   create_knt_mesh_parm_,
                                   output);
       return 1;
+  }
+  catch (iga::ExcVtkError &err)
+  {
+      vtkErrorMacro(<< err.what());
+      return 0;
   }
   catch (iga::ExcVtkWarning &wrn)
   {
