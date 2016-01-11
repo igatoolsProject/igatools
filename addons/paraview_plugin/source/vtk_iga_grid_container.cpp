@@ -47,14 +47,16 @@ VtkIgaGridContainer(const ObjContPtr_ objs_container,
                     const GridInfoPtr_ phys_knot_info,
                     const ControlGridInfoPtr_ phys_control_info,
                     const GridInfoPtr_ parm_solid_info,
-                    const GridInfoPtr_ parm_knot_info)
+                    const GridInfoPtr_ parm_knot_info,
+                    const std::string &file_name)
   :
   objs_container_(ObjectsContainer::create()),
   phys_solid_info_(phys_solid_info),
   phys_knot_info_(phys_knot_info),
   phys_control_info_(phys_control_info),
   parm_solid_info_(parm_solid_info),
-  parm_knot_info_(parm_knot_info)
+  parm_knot_info_(parm_knot_info),
+  file_name_(file_name)
 {
   Assert(objs_container != nullptr, ExcNullPtr());
   Assert(objs_container_ != nullptr, ExcNullPtr());
@@ -67,6 +69,7 @@ VtkIgaGridContainer(const ObjContPtr_ objs_container,
   this->fill_objects_container(objs_container);
   this->set_names();
   this->build_generators();
+  this->check();
 }
 
 
@@ -106,7 +109,7 @@ create(const std::string &file_name,
   const auto objs_container = parse_objects_container(file_name);
 
   return SelfPtr_(new Self_(objs_container, phys_sol, phys_knt, phys_ctr,
-                            parm_sol, parm_knt));
+                            parm_sol, parm_knt, file_name));
 
 }
 
@@ -135,18 +138,18 @@ ObjContPtr_
 
 #endif
 
-#ifdef SERIALIZATION
-//    if (parse_file_)
-//    {
-      ObjectsContainer container_new;
-      {
-        std::ifstream xml_istream(file_name);
-        IArchive xml_in(xml_istream);
-        xml_in >> container_new;
-      }
-      objs_container = std::make_shared<ObjectsContainer>(container_new);
-//    }
-#endif
+//#ifdef SERIALIZATION
+////    if (parse_file_)
+////    {
+//      ObjectsContainer container_new;
+//      {
+//        std::ifstream xml_istream(file_name);
+//        IArchive xml_in(xml_istream);
+//        xml_in >> container_new;
+//      }
+//      objs_container = std::make_shared<ObjectsContainer>(container_new);
+////    }
+//#endif
 
   return objs_container;
 }
@@ -163,12 +166,10 @@ check() const
     return !gen_pair.second.empty();
   };
 
-  const bool is_not_empty =
-          boost::fusion::any(phys_generators_, lambda_func_not_empty) ||
-          boost::fusion::any(parm_generators_, lambda_func_not_empty);
-
-  if (!is_not_empty)
-      throw ExcVtkError("Objects container is void.");
+  if (!boost::fusion::any(phys_generators_, lambda_func_not_empty) &&
+      !boost::fusion::any(parm_generators_, lambda_func_not_empty))
+      // Both list of generators are empty.
+      throw ExcVtkError("There are not valid domains or grids.");
 
 
   // Checking if there is any object with invalid dimension in the
@@ -181,9 +182,9 @@ check() const
       for (const auto &obj : invalid_dim_obj)
           warning_message += obj + "\n";
 
-      throw ExcVtkWarning(warning_message);
+      VtkIgaWarningMacro("Parsing file " << string(file_name_) << ":\n"
+                         << warning_message);
   }
-
 }
 
 
@@ -270,7 +271,8 @@ create_void() -> SelfPtr_
                             VtkGridInformation::create_void(),
                             VtkControlGridInformation::create_void(),
                             VtkGridInformation::create_void(),
-                            VtkGridInformation::create_void()));
+                            VtkGridInformation::create_void(),
+                            string("")));
 }
 
 
@@ -289,8 +291,10 @@ create_multiblock_grid(const bool phys_mesh,
   unsigned int num_blocks = phys_mesh + prm_mesh;
 
   if (num_blocks == 0)
-      throw ExcVtkWarning("Neither physical nor parametric geometries are "
-                             "active. No output produced.");
+  {
+      VtkIgaWarningMacro("Neither physical nor parametric geometries are "
+                         "active. No output produced.");
+  }
 
   const unsigned int num_phys_blocks = sol_phys_mesh + knt_phys_mesh + ctr_phys_mesh;
 
@@ -304,11 +308,15 @@ create_multiblock_grid(const bool phys_mesh,
   if (phys_mesh && (num_phys_blocks == 0 || num_active_phys == 0))
   {
       if (num_phys_blocks == 0)
-          throw ExcVtkWarning("Physical geometries set active, but no grid type "
+      {
+          VtkIgaWarningMacro("Physical geometries set active, but no grid type "
                   "(solid, knot, control) has been selected");
+      }
       else
-          throw ExcVtkWarning("Physical geometries set active, but no "
+      {
+          VtkIgaWarningMacro("Physical geometries set active, but no "
                   "geometry set active from the list.");
+      }
 
     --num_blocks;
 
@@ -320,11 +328,15 @@ create_multiblock_grid(const bool phys_mesh,
   if (prm_mesh && (num_parm_blocks == 0 || num_active_parm == 0))
   {
       if (num_parm_blocks == 0)
-          throw ExcVtkWarning("Parametric geometries set active, but no grid type "
+      {
+          VtkIgaWarningMacro("Parametric geometries set active, but no grid type "
                   "(solid, knot) has been selected");
+      }
       else
-          throw ExcVtkWarning("Parametric geometries set active, but no "
+      {
+          VtkIgaWarningMacro("Parametric geometries set active, but no "
                   "geometry set active from the list.");
+      }
 
     --num_blocks;
 
@@ -332,8 +344,10 @@ create_multiblock_grid(const bool phys_mesh,
   }
 
   if (num_blocks == 0)
-      throw ExcVtkWarning("Neither physical nor parametric geometries are "
+  {
+      VtkIgaWarningMacro("Neither physical nor parametric geometries are "
               "active. No output produced.");
+  }
 
 
   // Creating blocks for the physical and parametric geometries.

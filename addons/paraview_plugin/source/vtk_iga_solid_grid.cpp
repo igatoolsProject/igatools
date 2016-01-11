@@ -76,8 +76,11 @@ fill_points_map_mask(const std::shared_ptr<const Grid<dim>> cartesian_grid,
 
   const Size n_bezier_elements = cartesian_grid->get_num_all_elems();
 
-  AssertThrow(n_bezier_elements > 0,
-              ExcMessage("0 Bezier elements found."));
+  if (n_bezier_elements == 0)
+      VtkIgaWarningMacro("Grid \"" + cartesian_grid->get_name() +
+                         "\" with ObjectId=\"" +
+                         std::to_string(cartesian_grid->get_object_id()) +
+                         "\" has 0 Bezier elements");
 
   map_.resize(n_bezier_elements);
 
@@ -819,8 +822,10 @@ VtkGridPtr_
 
   const auto points = Self_::create_points(domain, topology);
 
-  AssertThrow(dim != 1, ExcMessage("For 1D is not possible to create vtk"
-                                   " structured meshes."))
+  if (dim == 1)
+      VtkIgaWarningMacro("It is not possible to create vtk structured "
+                         "grids for 1D geometries.");
+
   auto vts_grid = vtkSmartPointer <vtkStructuredGrid>::New();
 
   const auto n_intervals = domain->get_grid_function()->get_grid()->get_num_intervals();

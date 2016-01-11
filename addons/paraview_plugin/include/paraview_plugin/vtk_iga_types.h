@@ -61,58 +61,6 @@ enum class VtkGridType : std::int64_t
  * used as vtk runtime warning to be
  * caught by ParaView
  */
-class ExcVtkWarning: public std::exception
-{
-public:
-
-    /**
-     * Constructor
-     * @param message The error message.
-     */
-    explicit ExcVtkWarning(const std::string& message):
-      error_msg_(message)
-    {}
-
-    /** Destructor.
-     * Virtual to allow for subclassing.
-     */
-    virtual ~ExcVtkWarning() throw (){};
-
-    /**
-     *  Returns a pointer to the (constant) error description.
-     *  @return A pointer to a \c const \c char*. The underlying memory
-     *          is in posession of the \c ExcVtkWarning object. Callers \a must
-     *          not attempt to free the memory.
-     */
-    virtual const char* what() const throw ()
-    {
-       return error_msg_.c_str();
-    }
-
-protected:
-    /** Error message.
-     */
-    std::string error_msg_;
-};
-
-
-/**
- * TODO: to document.
- * When throwing this exception,
- * you can give a message as a
- * <tt>std::string</tt> as argument to the
- * exception that is then
- * displayed. The argument can, of
- * course, be constructed at run-time,
- * for example including the name of a
- * file that can't be opened, or any
- * other text you may want to assemble
- * from different pieces.
- *
- * This is exception is intended to be
- * used as vtk runtime warning to be
- * caught by ParaView
- */
 class ExcVtkError: public std::exception
 {
 public:
@@ -146,6 +94,36 @@ protected:
      */
     std::string error_msg_;
 };
+
+
+
+#define VtkIgaErrorMacro(x)                                       \
+{                                                                 \
+    if (vtkObject::GetGlobalWarningDisplay())                     \
+    {                                                             \
+        vtkOStreamWrapper::EndlType endl;                         \
+        vtkOStreamWrapper::UseEndl(endl);                         \
+        vtkOStrStreamWrapper vtkmsg;                              \
+        vtkmsg << "IGATOOLS PLUGIN ERROR!!:\n" x << "\n\n";       \
+        vtkOutputWindowDisplayErrorText(vtkmsg.str());            \
+        vtkmsg.rdbuf()->freeze(0);                                \
+        vtkObject::BreakOnError();                                \
+    }                                                             \
+}
+
+#define VtkIgaWarningMacro(x)                                     \
+{                                                                 \
+    if (vtkObject::GetGlobalWarningDisplay())                     \
+    {                                                             \
+        vtkOStreamWrapper::EndlType endl;                         \
+        vtkOStreamWrapper::UseEndl(endl);                         \
+        vtkOStrStreamWrapper vtkmsg;                              \
+        vtkmsg << "IGATOOLS PLUGIN WARNING!!:\n" x << "\n\n";     \
+        vtkOutputWindowDisplayErrorText(vtkmsg.str());            \
+        vtkmsg.rdbuf()->freeze(0);                                \
+        vtkObject::BreakOnError();                                \
+    }                                                             \
+}
 
 IGA_NAMESPACE_CLOSE
 

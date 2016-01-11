@@ -252,7 +252,8 @@ private:
                       const GridInfoPtr_ phys_knot_info,
                       const ControlGridInfoPtr_ phys_control_info,
                       const GridInfoPtr_ parm_solid_info,
-                      const GridInfoPtr_ parm_knot_info);
+                      const GridInfoPtr_ parm_knot_info,
+                      const std::string &file_name);
 
 public:
 
@@ -289,11 +290,13 @@ public:
               const VtkGridType &grid_type_prm_knt);
 
 
+private:
   /**
    * TODO: to document.
    */
   void check () const;
 
+public:
   /**
    * TODO: to document.
    */
@@ -346,6 +349,9 @@ private:
 
   /// Collection of parametric grid generators.
   GridGensContainer_ parm_generators_;
+
+  /// File name.
+  std::string file_name_;
 
   /**
    * Container for numbering the generators included in the container.

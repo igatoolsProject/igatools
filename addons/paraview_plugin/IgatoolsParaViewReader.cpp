@@ -148,23 +148,12 @@ int IgatoolsParaViewReader::RequestInformation(
 
       parse_file_ = false;
 
-      iga_grid_gen_->check();
-
       return 1;
-  }
-  catch (iga::ExcVtkWarning &w)
-  {
-    vtkWarningMacro("Parsing file " << string(file_name_) << ":\n"
-                    << w.what());
-
-    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
-
-    return 1;
   }
   catch (iga::ExcVtkError &e)
   {
-    vtkErrorMacro("Parsing file " << string(file_name_) << ":\n"
-                  << e.what());
+    VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                     << e.what());
 
     iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
 
@@ -172,8 +161,8 @@ int IgatoolsParaViewReader::RequestInformation(
   }
   catch (std::exception &e)
   {
-    vtkErrorMacro("Parsing file " << string(file_name_) << ":\n"
-                  << e.what());
+    VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                     << e.what());
 
     iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
 
@@ -181,8 +170,8 @@ int IgatoolsParaViewReader::RequestInformation(
   }
   catch (...)
   {
-    vtkErrorMacro("Parsing file " << string(file_name_) << ":\n"
-                  << "AN UNKNOWN EXCEPTION OCCUR!");
+    VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                     << "AN UNKNOWN EXCEPTION OCCUR!");
 
     iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
 
@@ -226,24 +215,14 @@ int IgatoolsParaViewReader::RequestData(
                                   output);
       return 1;
   }
-  catch (iga::ExcVtkError &err)
-  {
-      vtkErrorMacro(<< err.what());
-      return 0;
-  }
-  catch (iga::ExcVtkWarning &wrn)
-  {
-      vtkWarningMacro(<< wrn.what());
-      return 1;
-  }
   catch (std::exception &exc)
   {
-      vtkErrorMacro(<< exc.what());
+      VtkIgaErrorMacro(<< exc.what());
       return 0;
   }
   catch (...)
   {
-      vtkErrorMacro(<< "An exception occurred.");
+      VtkIgaErrorMacro("AN UNKNOWN EXCEPTION OCCUR!");
       return 0;
   }
 }
@@ -274,12 +253,14 @@ CanReadFile(const char *name)
   {
     std::ostringstream stream;
     exc.print_exc_data(stream);
-    vtkErrorMacro(<< stream.str());
+    VtkIgaErrorMacro("Parsing file " << string(name) << ":\n"
+                     << stream.str());
     return 0;
   }
   catch (...)
   {
-    vtkErrorMacro(<< "Impossible to read IGA file " << name << ".");
+    VtkIgaErrorMacro("Parsing file " << string(name) << ":\n"
+                     "Impossible to read IGA file");
     return 0;
   }
 }
@@ -292,10 +273,6 @@ set_grid_type(int arg,
               const char *const name,
               iga::VtkGridType &type)
 {
-
-  vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
-                << name <<  " to " << arg);
-
   switch (arg)
   {
     case 0:
@@ -334,8 +311,6 @@ set_num_vis_elements(int arg1, int arg2, int arg3,
                      const char *const mesh_type,
                      NumCells_ &arr)
 {
-  vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
-                << name << " to (" << arg1 << "," << arg2 << "," << arg3 << ")");
   if ((arr[0] != arg1) || (arr[1] != arg2) || (arr[2] != arg3))
   {
     arr[0] = arg1;
@@ -350,13 +325,12 @@ set_num_vis_elements(int arg1, int arg2, int arg3,
     if (arg2 < 2) arr[1] = 1;
     if (arg3 < 2) arr[2] = 1;
 
-    vtkWarningMacro(<< "In IgatoolsParaViewReader invalid specified "
-                    << "number of visualization elements per Bezier "
-                    << "for the " << mesh_type << " mesh(" << arg1
-                    << ", " << arg2 << ", " << arg3 << "). All the values"
-                    << " must be >= 1.\nThe number of elements was "
-                    << "automatically set to (" << arr[0] << ", "
-                    << arr[1] << ", " << arr[2] << ").\n");
+    VtkIgaWarningMacro(<< "Invalid specified number of visualization "
+                       << "elements per Bezier for the " << mesh_type
+                       << " mesh(" << arg1 << ", " << arg2 << ", " << arg3
+                       << "). All the values must be >= 1.\nThe number of "
+                       << "elements was automatically set to (" << arr[0]
+                       << ", " << arr[1] << ", " << arr[2] << ").\n");
   }
 }
 
@@ -466,9 +440,6 @@ IgatoolsParaViewReader::
 SetSolidMeshPhysical(bool arg)
 {
   auto &name  = this->create_sol_mesh_phys_;
-  vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
-                "SolidMeshPhysical"
-                " to " << arg);
   if (name != arg)
   {
     name = arg;
@@ -483,9 +454,6 @@ IgatoolsParaViewReader::
 SetKnotMeshPhysical(bool arg)
 {
   auto &name  = this->create_knt_mesh_phys_;
-  vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
-                "KnotMeshPhysical"
-                " to " << arg);
   if (name != arg)
   {
     name = arg;
@@ -500,9 +468,6 @@ IgatoolsParaViewReader::
 SetControlMeshPhysical(bool arg)
 {
   auto &name  = this->create_ctr_mesh_phys_;
-  vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
-                "ControlMeshPhysical"
-                " to " << arg);
   if (name != arg)
   {
     name = arg;
@@ -517,9 +482,6 @@ IgatoolsParaViewReader::
 SetSolidMeshParametric(bool arg)
 {
   auto &name  = this->create_sol_mesh_parm_;
-  vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
-                "SolidMeshParametric"
-                " to " << arg);
   if (name != arg)
   {
     name = arg;
@@ -534,9 +496,6 @@ IgatoolsParaViewReader::
 SetKnotMeshParametric(bool arg)
 {
   auto &name  = this->create_knt_mesh_parm_;
-  vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
-                "KnotMeshParametric"
-                " to " << arg);
   if (name != arg)
   {
     name = arg;
@@ -551,9 +510,6 @@ IgatoolsParaViewReader::
 SetParametricMesh(bool arg)
 {
   auto &name  = this->create_parametric_mesh_;
-  vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
-                "create_parametric_mesh_"
-                " to " << arg);
   if (name != arg)
   {
     name = arg;
@@ -568,9 +524,6 @@ IgatoolsParaViewReader::
 SetPhysicalMesh(bool arg)
 {
   auto &name  = this->create_physical_mesh_;
-  vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
-                "PhysicalMesh"
-                " to " << arg);
   if (name != arg)
   {
     name = arg;
@@ -584,9 +537,6 @@ void
 IgatoolsParaViewReader::
 SetFileName(const char *arg)
 {
-  vtkDebugMacro(<< this->GetClassName() << " (" << this <<
-                "): setting FileName to  " << arg);
-
   if (this->file_name_ && arg && (!strcmp(this->file_name_, arg)))
     return;
 
