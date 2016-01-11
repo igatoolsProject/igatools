@@ -18,43 +18,25 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Jun 27, 2014):
 from init_instantiation_data import *
 
-include_files = ['geometry/grid_iterator.h']
+include_files = []
 
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-member_functions = set()
+domains = set()
 
+for x in inst.sub_mapping_dims:
+    if x.dim > 0 and x.dim < 4 and (x.dim + x.codim) > 0 and (x.dim + x.codim) < 4:
+      domain = 'Domain<%d,%d>' %(x.dim, x.codim)
+      domains.add(domain)
 
-elements = ['ReferenceElement<0,0,1>']#, 'ReferenceElement<0,1,1>']
-
-member_func = 'ValueVector<Real> ReferenceElement<0,0,1>::get_w_measures<0>(const int s_id) const'
-member_functions.add(member_func)
-
-
-
-for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    elem = 'ReferenceElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    elements.append(elem)
-    for k in range(0,x.dim+1):
-        member_func = 'ValueVector<Real> %s::get_w_measures<%d>(const int s_id) const' % (elem,k)
-        member_functions.add(member_func)
-
-
-for elem in unique(elements):
-    f.write('template class %s; \n' %elem)
-    f.write('template class GridIterator<%s>; \n' %elem)
-
-
-for func in member_functions:
-    f.write('template %s;\n' %(func))
-
-
-
-#---------------------------------------------------
-
-
+for x in inst.mapping_dims:
+    if x.dim > 0 and x.dim < 4 and (x.dim + x.codim) > 0 and (x.dim + x.codim) < 4:
+      domain = 'Domain<%d,%d>' %(x.dim, x.codim)
+      domains.add(domain)
+ 
+for domain in domains:
+    f.write('template class VtkIgaSolidGrid<%s>;\n' %(domain))

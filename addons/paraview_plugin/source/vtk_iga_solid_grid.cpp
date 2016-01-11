@@ -18,9 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
-#include <paraview_plugin/vtk_iga_solid_grid.h>
-
 #include <vtkStructuredGrid.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkSmartPointer.h>
@@ -28,6 +25,8 @@
 #include <vtkPolyLine.h>
 #include <vtkDoubleArray.h>
 #include <vtkPointData.h>
+
+#include <paraview_plugin/vtk_iga_solid_grid.h>
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain_element.h>
@@ -825,7 +824,7 @@ VtkGridPtr_
   auto vts_grid = vtkSmartPointer <vtkStructuredGrid>::New();
 
   const auto n_intervals = domain->get_grid_function()->get_grid()->get_num_intervals();
-  int grid_dim[3] = { 1, 1, 1 };
+  SafeSTLArray<int, 3> grid_dim({{1, 1, 1}});
   for (int dir = 0; dir < dim; ++dir)
     grid_dim[dir] = (topology.get_num_vtk_cells_per_bezier_elem(dir) + 1) * n_intervals[dir];
   vts_grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
@@ -876,7 +875,7 @@ VtkGridPtr_
   cell_ids->SetNumberOfComponents(tuple_size);
   cell_ids->SetNumberOfTuples(n_total_cells);
 
-  vtkIdType *tuple = new vtkIdType[tuple_size];
+  std::vector<vtkIdType> tuple(tuple_size);
   tuple[0] = tuple_size - 1;
 
   Index cell_id = 0;
@@ -891,7 +890,7 @@ VtkGridPtr_
       for (const auto &c : cc)
         tuple[point_id++] = c + vtk_vertex_id_offset;
 
-      cell_ids->SetTupleValue(cell_id++, tuple);
+      cell_ids->SetTupleValue(cell_id++, tuple.data());
     }
   }
 
@@ -935,7 +934,7 @@ create_points(const DomainPtr_ domain,
   const auto points = vtkSmartPointer <vtkPoints>::New();
   points->SetNumberOfPoints(points_top.get_num_total_pts());
 
-  double point_tmp[3] = { 0.0, 0.0, 0.0 };
+  SafeSTLArray<Real, 3> point_tmp(0.0);
 
   auto domain_cache_handler = domain->create_cache_handler();
   domain_cache_handler->template set_flags<dim>(domain_element::Flags::point);
@@ -957,7 +956,7 @@ create_points(const DomainPtr_ domain,
       const auto &point = element_vertices_tmp[mask];
       for (int dir = 0; dir < space_dim; ++dir)
         point_tmp[dir] = point[dir];
-      points->SetPoint(*pm++, point_tmp);
+      points->SetPoint(*pm++, point_tmp.data());
     }
   }
 
@@ -1101,14 +1100,6 @@ create_point_data_parametric(const DomainPtr_ domain,
 
 }
 
-
-// TODO: to instantiate properly.
-template class VtkIgaSolidGrid<Domain<1, 0>>;
-template class VtkIgaSolidGrid<Domain<1, 1>>;
-template class VtkIgaSolidGrid<Domain<1, 2>>;
-template class VtkIgaSolidGrid<Domain<2, 0>>;
-template class VtkIgaSolidGrid<Domain<2, 1>>;
-template class VtkIgaSolidGrid<Domain<3, 0>>;
-
-
 IGA_NAMESPACE_CLOSE
+
+#include <paraview_plugin/vtk_iga_solid_grid.inst>

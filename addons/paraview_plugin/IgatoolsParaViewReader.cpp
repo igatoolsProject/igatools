@@ -24,21 +24,11 @@
 #include <vtkInformationVector.h>
 #include <vtkInformation.h>
 #include <vtkMultiBlockDataSet.h>
-#include <vtkSmartPointer.h>
 
 #include <igatools/io/xml_document.h>
-#include <igatools/io/objects_container_xml_reader.h>
-#include <igatools/base/objects_container.h>
 #include <paraview_plugin/vtk_iga_grid_container.h>
-#include <paraview_plugin/vtk_iga_grid_information.h>
 
-#include <sys/stat.h>
-
-
-using std::get;
 using std::string;
-using std::shared_ptr;
-using namespace iga;
 
 vtkStandardNewMacro(IgatoolsParaViewReader);
 
@@ -55,7 +45,7 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
   n_vis_elem_parm_solid_(1),
   n_vis_elem_phys_knot_(1),
   n_vis_elem_parm_knot_(1),
-  grid_gen_(GridGenPtr_())
+  iga_grid_gen_(iga::VtkIgaGridContainer::create_void ())
 {
 #ifndef NDEBUG
   this->DebugOn();
@@ -83,9 +73,7 @@ IgatoolsParaViewReader::
 IsTypeOf(const char *type)
 {
     if ( !strcmp("IgatoolsParaViewReader", type) )
-    {
         return 1;
-    }
     return vtkMultiBlockDataSetAlgorithm::IsTypeOf(type);
 }
 
@@ -105,9 +93,7 @@ IgatoolsParaViewReader::
 SafeDownCast(vtkObjectBase *o)
 {
     if ( o && o->IsA("IgatoolsParaViewReader") )
-    {
-        return static_cast<IgatoolsParaViewReader *>(o); \
-    }
+        return static_cast<IgatoolsParaViewReader *>(o);
     return NULL;
 }
 
@@ -142,10 +128,69 @@ int IgatoolsParaViewReader::RequestInformation(
     return 0;
 
   // If the file is not parse, it is parsed now.
-  if (parse_file_)
-    return this->parse_file();
+  if (!parse_file_)
+      return 1;
 
-  return 1;
+  if (this->CanReadFile(file_name_) == 0)
+    return 0;
+
+  this->SetProgressText("Parsing igatools file.");
+
+  try
+  {
+      iga_grid_gen_ = iga::VtkIgaGridContainer::create
+              (file_name_,
+               n_vis_elem_phys_solid_, phys_sol_grid_type_,
+               n_vis_elem_phys_knot_,  phys_knt_grid_type_,
+                                       phys_ctr_grid_type_,
+               n_vis_elem_parm_solid_, parm_sol_grid_type_,
+               n_vis_elem_parm_knot_,  parm_knt_grid_type_);
+
+      parse_file_ = false;
+
+      iga_grid_gen_->check();
+
+      return 1;
+  }
+  catch (iga::ExcVtkWarning &w)
+  {
+    vtkWarningMacro("Parsing file " << string(file_name_) << ":\n"
+                    << w.what());
+
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+
+    return 1;
+  }
+  catch (iga::ExcVtkError &e)
+  {
+    vtkErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                  << e.what());
+
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+
+    return 0;
+  }
+  catch (std::exception &e)
+  {
+    vtkErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                  << e.what());
+
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+
+    return 0;
+  }
+  catch (...)
+  {
+    vtkErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                  << "AN UNKNOWN EXCEPTION OCCUR!");
+
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+
+    return 0;
+  }
+
+
+
 }
 
 
@@ -163,8 +208,44 @@ int IgatoolsParaViewReader::RequestData(
 
   this->UpdateProgress(0.0);
 
-  this->update_grid_info();
-  return this->create_grids(output);
+  iga_grid_gen_->update(n_vis_elem_phys_solid_, phys_sol_grid_type_,
+                    n_vis_elem_phys_knot_,  phys_knt_grid_type_,
+                                            phys_ctr_grid_type_,
+                    n_vis_elem_parm_solid_, parm_sol_grid_type_,
+                    n_vis_elem_parm_knot_,  parm_knt_grid_type_);
+
+  try
+  {
+      iga_grid_gen_->create_multiblock_grid(create_physical_mesh_,
+                                  create_sol_mesh_phys_,
+                                  create_knt_mesh_phys_,
+                                  create_ctr_mesh_phys_,
+                                  create_parametric_mesh_,
+                                  create_sol_mesh_parm_,
+                                  create_knt_mesh_parm_,
+                                  output);
+      return 1;
+  }
+  catch (iga::ExcVtkError &err)
+  {
+      vtkErrorMacro(<< err.what());
+      return 0;
+  }
+  catch (iga::ExcVtkWarning &wrn)
+  {
+      vtkWarningMacro(<< wrn.what());
+      return 1;
+  }
+  catch (std::exception &exc)
+  {
+      vtkErrorMacro(<< exc.what());
+      return 0;
+  }
+  catch (...)
+  {
+      vtkErrorMacro(<< "An exception occurred.");
+      return 0;
+  }
 }
 
 
@@ -186,10 +267,10 @@ CanReadFile(const char *name)
   // TODO this can be done if XML_IO is active
   try
   {
-    XMLDocument::check_file(name);
+    iga::XMLDocument::check_file(name);
     return 1;
   }
-  catch (ExceptionBase &exc)
+  catch (iga::ExceptionBase &exc)
   {
     std::ostringstream stream;
     exc.print_exc_data(stream);
@@ -205,341 +286,11 @@ CanReadFile(const char *name)
 
 
 
-int
-IgatoolsParaViewReader::
-parse_file()
-{
-  if (this->CanReadFile(file_name_) == 0)
-    return 0;
-
-  const auto file_name_str = string(file_name_);
-
-  grid_gen_.reset();
-  objs_container_.reset();
-
-  // Physical solid grid.
-  const auto phys_sol = VtkGridInformation::create
-                        (n_vis_elem_phys_solid_, phys_sol_grid_type_);
-
-  // Physical knot grid.
-  const auto phys_knt = VtkGridInformation::create
-                        (n_vis_elem_phys_knot_, phys_knt_grid_type_);
-
-  // Physical control grid.
-  const auto phys_ctr = VtkControlGridInformation::create
-                        (phys_ctr_grid_type_ == VtkGridType::Structured);
-
-  // Parametric solid grid.
-  const auto parm_sol = VtkGridInformation::create
-                        (n_vis_elem_parm_solid_, parm_sol_grid_type_);
-
-  // Parametric knot grid.
-  const auto parm_knt = VtkGridInformation::create
-                        (n_vis_elem_parm_knot_, parm_knt_grid_type_);
-
-  try
-  {
-    this->SetProgressText("Parsing igatools file.");
-
-#ifdef XML_IO
-
-    // TODO: before parsing the hole file (that can be big),
-    // it is checked if the file has the expected structure (at least
-    // the header) for knowing if it is an XML human readable or
-    // a serialized file.
-
-    // Check here if the file is of type XML human readable
-    const bool xml_human_readable = true;
-    if (xml_human_readable)
-    {
-      objs_container_ = ObjectsContainerXMLReader::parse_const(file_name_str);
-      AssertThrow(!objs_container_->is_void(),
-                  ExcMessage("No objects defined in the input file: "
-                             + file_name_str + "."));
-      parse_file_ = false;
-    }
-
-#endif
-
-#ifdef SERIALIZATION
-    if (parse_file_)
-    {
-      ObjectsContainer container_new;
-      {
-        std::ifstream xml_istream(file_name_str);
-        IArchive xml_in(xml_istream);
-        xml_in >> container_new;
-      }
-      objs_container_ = std::make_shared<ObjectsContainer>(container_new);
-
-      AssertThrow(!objs_container_->is_void(),
-                  ExcMessage("No objects defined in the input file or "
-                             "serialization file not properly defined."
-                             " File name: " + file_name_str + "."));
-      parse_file_ = false;
-    }
-#endif
-
-    grid_gen_ = VtkIgaGridContainer::create
-                (objs_container_, phys_sol, phys_knt, phys_ctr,
-                 parm_sol, parm_knt);
-
-    return 1;
-  }
-  catch (std::exception &e)
-  {
-    vtkErrorMacro(<< e.what());
-
-    objs_container_ = ObjectsContainer::create();
-    grid_gen_ = VtkIgaGridContainer::create
-                (objs_container_, phys_sol, phys_knt, phys_ctr,
-                 parm_sol, parm_knt);
-
-    return 0;
-  }
-  catch (...)
-  {
-    vtkErrorMacro(<< "An exception occurred when parsing file "
-                  << file_name_str << ".");
-
-    objs_container_ = ObjectsContainer::create();
-    grid_gen_ = VtkIgaGridContainer::create
-                (objs_container_, phys_sol, phys_knt, phys_ctr,
-                 parm_sol, parm_knt);
-
-    return 0;
-  }
-}
-
-
-
-void
-IgatoolsParaViewReader::
-update_grid_info()
-{
-  // Physical solid grid.
-  const auto phys_sol = VtkGridInformation::create
-                        (n_vis_elem_phys_solid_, phys_sol_grid_type_);
-
-  // Physical knot grid.
-  const auto phys_knt = VtkGridInformation::create
-                        (n_vis_elem_phys_knot_, phys_knt_grid_type_);
-
-  // Physical control grid.
-  const auto phys_ctr = VtkControlGridInformation::create
-                        (phys_ctr_grid_type_ == VtkGridType::Structured);
-
-  // Parametric solid grid.
-  const auto parm_sol = VtkGridInformation::create
-                        (n_vis_elem_parm_solid_, parm_sol_grid_type_);
-
-
-  // Parametric knot grid.
-  const auto parm_knt = VtkGridInformation::create
-                        (n_vis_elem_parm_knot_, parm_knt_grid_type_);
-
-  grid_gen_->update(phys_sol, phys_knt, phys_ctr, parm_sol, parm_knt);
-}
-
-
-
-int
-IgatoolsParaViewReader::
-create_grids(vtkMultiBlockDataSet *const mb)
-{
-  unsigned int num_blocks = create_physical_mesh_ + create_parametric_mesh_;
-
-  if (num_blocks == 0)
-  {
-    vtkWarningMacro(<< "Neither physical nor parametric geometries are "
-                    "active. No output produced.");
-
-    return 1;
-  }
-
-  const unsigned int num_phys_blocks =
-    create_sol_mesh_phys_ + create_knt_mesh_phys_ + create_ctr_mesh_phys_;
-
-  const unsigned int num_parm_blocks =
-    create_sol_mesh_parm_ + create_knt_mesh_parm_;
-
-  const auto num_active_phys = grid_gen_->get_number_active_physical_grids();
-  const auto num_active_parm = grid_gen_->get_number_active_parametric_grids();
-
-  bool new_create_physical_mesh = create_physical_mesh_;
-  if (create_physical_mesh_ && (num_phys_blocks == 0 || num_active_phys == 0))
-  {
-    if (num_phys_blocks == 0)
-    {
-      vtkWarningMacro(<< "Physical geometries set active, but no grid type "
-                      "(solid, knot, control) has been selected");
-    }
-    else
-    {
-      vtkWarningMacro(<< "Physical geometries set active, but no "
-                      "geometry set active from the list.");
-    }
-
-    --num_blocks;
-
-    new_create_physical_mesh = false;
-  }
-
-
-  bool new_create_parametric_mesh = create_parametric_mesh_;
-  if (create_parametric_mesh_ && (num_parm_blocks == 0 || num_active_parm == 0))
-  {
-    if (num_parm_blocks == 0)
-    {
-      vtkWarningMacro(<< "Parametric geometries set active, but no grid type "
-                      "(solid, knot) has been selected");
-    }
-    else
-    {
-      vtkWarningMacro(<< "Parametric geometries set active, but no "
-                      "geometry set active from the list.");
-    }
-
-    --num_blocks;
-
-    new_create_parametric_mesh = false;
-  }
-
-  if (num_blocks == 0)
-  {
-    vtkWarningMacro(<< "Neither physical nor parametric geometries are "
-                    "active. No output produced.");
-
-    return 1;
-  }
-
-
-  // Creating blocks for the physical and parametric geometries.
-  mb->SetNumberOfBlocks(num_blocks);
-  for (unsigned int i = 0; i < num_blocks; ++i)
-    mb->SetBlock(i, vtkSmartPointer<vtkMultiBlockDataSet>::New());
-
-  Size total_number_blocks = 0;
-  if (new_create_physical_mesh)
-  {
-    if (create_sol_mesh_phys_)
-      ++total_number_blocks;
-    if (create_knt_mesh_phys_)
-      ++total_number_blocks;
-    if (create_ctr_mesh_phys_)
-      ++total_number_blocks;
-  }
-  if (new_create_parametric_mesh)
-  {
-    if (create_sol_mesh_parm_)
-      ++total_number_blocks;
-    if (create_knt_mesh_parm_)
-      ++total_number_blocks;
-  }
-
-
-  Index progress_index = 0;
-
-  unsigned int block_index = 0;
-  if (new_create_physical_mesh)
-  {
-    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Physical mesh");
-
-    vtkMultiBlockDataSet *const phys_block =
-      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
-
-    phys_block->SetNumberOfBlocks(num_phys_blocks);
-
-    Index subblock_index = 0;
-
-    if (create_sol_mesh_phys_)
-    {
-      const auto solid_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
-      phys_block->SetBlock(subblock_index, solid_block);
-      phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
-                                                   "Solid mesh");
-      grid_gen_->set_physical_solid_grids(solid_block);
-
-      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
-
-      ++subblock_index;
-    }
-
-    if (create_knt_mesh_phys_)
-    {
-      const auto knot_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
-      phys_block->SetBlock(subblock_index, knot_block);
-      phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
-                                                   "Knot mesh");
-      grid_gen_->set_physical_knot_grids(knot_block);
-
-      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
-
-      ++subblock_index;
-    }
-
-    if (create_ctr_mesh_phys_)
-    {
-      const auto control_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
-      phys_block->SetBlock(subblock_index, control_block);
-      phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
-                                                   "Control mesh");
-      grid_gen_->set_physical_control_grids(control_block);
-
-      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
-    }
-
-    ++block_index;
-  } // create_physical_mesh
-
-
-  if (new_create_parametric_mesh)
-  {
-    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Parametric mesh");
-
-    vtkMultiBlockDataSet *const parm_block =
-      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
-
-    parm_block->SetNumberOfBlocks(num_parm_blocks);
-
-    Index subblock_index = 0;
-
-    if (create_sol_mesh_parm_)
-    {
-      const auto solid_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
-      parm_block->SetBlock(subblock_index, solid_block);
-      parm_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
-                                                   "Solid mesh");
-      grid_gen_->set_parametric_solid_grids(solid_block);
-
-      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
-
-      ++subblock_index;
-    }
-
-    if (create_knt_mesh_parm_)
-    {
-      const auto knot_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
-      parm_block->SetBlock(subblock_index, knot_block);
-      parm_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
-                                                   "Knot mesh");
-      grid_gen_->set_parametric_knot_grids(knot_block);
-
-      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
-    }
-  } // create_parametric_mesh
-
-
-  return 1;
-}
-
-
-
 void
 IgatoolsParaViewReader::
 set_grid_type(int arg,
               const char *const name,
-              VtkGridType &type)
+              iga::VtkGridType &type)
 {
 
   vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
@@ -548,28 +299,28 @@ set_grid_type(int arg,
   switch (arg)
   {
     case 0:
-      if (type != VtkGridType::UnstructuredQuadratic)
+      if (type != iga::VtkGridType::UnstructuredQuadratic)
       {
-        type = VtkGridType::UnstructuredQuadratic;
+        type = iga::VtkGridType::UnstructuredQuadratic;
         this->Modified();
       }
       break;
     case 1:
-      if (type != VtkGridType::UnstructuredLinear)
+      if (type != iga::VtkGridType::UnstructuredLinear)
       {
-        type = VtkGridType::UnstructuredLinear;
+        type = iga::VtkGridType::UnstructuredLinear;
         this->Modified();
       }
       break;
     case 2:
-      if (type != VtkGridType::Structured)
+      if (type != iga::VtkGridType::Structured)
       {
-        type = VtkGridType::Structured;
+        type = iga::VtkGridType::Structured;
         this->Modified();
       }
       break;
     default:
-      Assert(arg >= 0 && arg < 3, ExcIndexRange(arg, 0, 3));
+      Assert(arg >= 0 && arg < 3, iga::ExcIndexRange(arg, 0, 3));
       break;
   }
 }
@@ -581,7 +332,7 @@ IgatoolsParaViewReader::
 set_num_vis_elements(int arg1, int arg2, int arg3,
                      const char *const name,
                      const char *const mesh_type,
-                     TensorSize<3> &arr)
+                     NumCells_ &arr)
 {
   vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting "
                 << name << " to (" << arg1 << "," << arg2 << "," << arg3 << ")");
@@ -673,8 +424,8 @@ IgatoolsParaViewReader::
 SetGridTypePhysicalKnot(int arg)
 {
   this->set_grid_type(arg, "GridTypePhysicalKnot", phys_knt_grid_type_);
-  Assert(phys_knt_grid_type_ != VtkGridType::Structured,
-         ExcMessage("Knot mesh must be unstructured."));
+  Assert(phys_knt_grid_type_ != iga::VtkGridType::Structured,
+         iga::ExcMessage("Knot mesh must be unstructured."));
 }
 
 
@@ -684,8 +435,8 @@ IgatoolsParaViewReader::
 SetGridTypePhysicalControl(int arg)
 {
   this->set_grid_type(arg, "GridTypePhysicalControl", phys_ctr_grid_type_);
-  Assert(phys_ctr_grid_type_ != VtkGridType::UnstructuredQuadratic,
-         ExcMessage("Control mesh cannot be quadratic."));
+  Assert(phys_ctr_grid_type_ != iga::VtkGridType::UnstructuredQuadratic,
+         iga::ExcMessage("Control mesh cannot be quadratic."));
 }
 
 
@@ -704,8 +455,8 @@ IgatoolsParaViewReader::
 SetGridTypeParametricKnot(int arg)
 {
   this->set_grid_type(arg, "GridTypeParametricKnot", parm_knt_grid_type_);
-  Assert(parm_knt_grid_type_ != VtkGridType::Structured,
-         ExcMessage("Knot mesh must be unstructured."));
+  Assert(parm_knt_grid_type_ != iga::VtkGridType::Structured,
+         iga::ExcMessage("Knot mesh must be unstructured."));
 }
 
 
@@ -865,9 +616,9 @@ int
 IgatoolsParaViewReader::
 GetNumberOfPhysGeomArrays()
 {
-  if (grid_gen_ == nullptr)
+  if (iga_grid_gen_ == nullptr)
     return 0;
-  return grid_gen_->get_number_physical_grids();
+  return iga_grid_gen_->get_number_physical_grids();
 }
 
 
@@ -876,8 +627,8 @@ const char *
 IgatoolsParaViewReader::
 GetPhysGeomArrayName(int index)
 {
-  Assert(grid_gen_ != nullptr, ExcNullPtr());
-  const char *name = grid_gen_->get_physical_grid_name(index);
+  Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
+  const char *name = iga_grid_gen_->get_physical_grid_name(index);
   return name;
 }
 
@@ -887,8 +638,8 @@ int
 IgatoolsParaViewReader::
 GetPhysGeomArrayStatus(const char *name)
 {
-  Assert(grid_gen_ != nullptr, ExcNullPtr());
-  return grid_gen_->get_physical_grid_status(string(name));
+  Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
+  return iga_grid_gen_->get_physical_grid_status(string(name));
 }
 
 
@@ -900,12 +651,12 @@ SetPhysGeomArrayStatus(const char *name, int enable)
   // Note: sometimes this function is called before parsing and
   // names gotten from Previous ParaView session are parsed.
   // The if is introduced for fixing this problem.
-  if (grid_gen_ != nullptr)
+  if (iga_grid_gen_ != nullptr)
   {
     const auto name_str = string(name);
-    if (grid_gen_->get_physical_grid_status(name_str) != enable)
+    if (iga_grid_gen_->get_physical_grid_status(name_str) != enable)
     {
-      grid_gen_->set_physical_grid_status(name_str, enable);
+      iga_grid_gen_->set_physical_grid_status(name_str, enable);
       this->Modified();
     }
   }
@@ -917,9 +668,9 @@ int
 IgatoolsParaViewReader::
 GetNumberOfParmGeomArrays()
 {
-  if (grid_gen_ == nullptr)
+  if (iga_grid_gen_ == nullptr)
     return 0;
-  return grid_gen_->get_number_parametric_grids();
+  return iga_grid_gen_->get_number_parametric_grids();
 }
 
 
@@ -928,8 +679,8 @@ const char *
 IgatoolsParaViewReader::
 GetParmGeomArrayName(int index)
 {
-  Assert(grid_gen_ != nullptr, ExcNullPtr());
-  const char *name = grid_gen_->get_parametric_grid_name(index);
+  Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
+  const char *name = iga_grid_gen_->get_parametric_grid_name(index);
   return name;
 }
 
@@ -939,8 +690,8 @@ int
 IgatoolsParaViewReader::
 GetParmGeomArrayStatus(const char *name)
 {
-  Assert(grid_gen_ != nullptr, ExcNullPtr());
-  return grid_gen_->get_parametric_grid_status(string(name));
+  Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
+  return iga_grid_gen_->get_parametric_grid_status(string(name));
 }
 
 
@@ -952,12 +703,12 @@ SetParmGeomArrayStatus(const char *name, int enable)
   // Note: sometimes this function is called before parsing and
   // names gotten from Previous ParaView session are parsed.
   // The if is introduced for fixing this problem.
-  if (grid_gen_ != nullptr)
+  if (iga_grid_gen_ != nullptr)
   {
     const auto name_str = string(name);
-    if (grid_gen_->get_parametric_grid_status(name_str) != enable)
+    if (iga_grid_gen_->get_parametric_grid_status(name_str) != enable)
     {
-      grid_gen_->set_parametric_grid_status(name_str, enable);
+      iga_grid_gen_->set_parametric_grid_status(name_str, enable);
       this->Modified();
     }
   }

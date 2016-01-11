@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 
-#include <paraview_plugin/vtk_iga_grid.h>
+#include <paraview_plugin/vtk_iga_types.h>
 #include <igatools/base/objects_container.h>
 #include <igatools/geometry/grid.h>
 #include <igatools/geometry/grid_function.h>
@@ -33,6 +33,11 @@
 class vtkMultiBlockDataSet;
 
 IGA_NAMESPACE_OPEN
+
+template <class Domain> class VtkIgaGrid;
+struct VtkGridInformation;
+struct VtkControlGridInformation;
+class ObjectsContainer;
 
 class VtkIgaGridContainer
 {
@@ -53,6 +58,8 @@ private:
    */
   template <class Dmn>
   using GridGenPtr_ = std::shared_ptr<VtkIgaGrid<Dmn>>;
+
+  typedef SafeSTLArray<int, 3> NumCells_;
 
   template <class T>
   struct IsInValidDim :
@@ -126,11 +133,47 @@ private:
                           typename boost::mpl::lambda< IsInValidDomain< boost::mpl::_1 > >::type
                           >::type;
 
+  /**
+   * Invalid domains.
+   */
+  using InvalidDomains_ = boost::mpl::remove_if<
+                        InstantiatedTypes::Domains,
+                        boost::mpl::lambda< boost::mpl::not_<IsInValidDomain< boost::mpl::_1 >> >::type
+                        >::type;
+
+  /**
+   * Invalid grids.
+   */
+  using InvalidGrids_ = boost::mpl::remove_if<
+                      InstantiatedTypes::Grids,
+                      boost::mpl::lambda< boost::mpl::not_<IsInValidDim< boost::mpl::_1 >> >::type
+                      >::type;
+
+  /**
+   * Invalid grids functions.
+   */
+  using InvalidGridFuncs_ = typename boost::mpl::remove_if<
+                          InstantiatedTypes::GridFunctions,
+                          boost::mpl::lambda< boost::mpl::not_<IsInValidDim< boost::mpl::_1 >> >::type
+                          >::type;
+
+  /**
+   * Invalid functions.
+   */
+  using InvalidFunctions_ = typename boost::mpl::remove_if<
+                          InstantiatedTypes::Functions,
+                          boost::mpl::lambda< boost::mpl::not_<IsInValidDomain< boost::mpl::_1 >> >::type
+                          >::type;
+
   using GridPtrs_ = as_fusion_vector_shared_ptr<ValidGrids_>::type;
   using GridFuncPtrs_ = as_fusion_vector_shared_ptr<ValidGridFuncs_>::type;
   using DomainPtrs_ = as_fusion_vector_shared_ptr<ValidDomains_>::type;
   using FunctionPtrs_ = as_fusion_vector_shared_ptr<ValidFunctions_>::type;
 
+  using InvalidGridPtrs_ = as_fusion_vector_shared_ptr<InvalidGrids_>::type;
+  using InvalidGridFuncPtrs_ = as_fusion_vector_shared_ptr<InvalidGridFuncs_>::type;
+  using InvalidDomainPtrs_ = as_fusion_vector_shared_ptr<InvalidDomains_>::type;
+  using InvalidFunctionPtrs_ = as_fusion_vector_shared_ptr<InvalidFunctions_>::type;
 
   template< class T >
   struct as_fusion_vector_const_shared_ptr
@@ -216,23 +259,60 @@ public:
   /**
    * TODO: to document.
    */
-  static SelfPtr_ create(const ObjContPtr_ objs_container,
-                         const GridInfoPtr_ phys_solid_info,
-                         const GridInfoPtr_ phys_knot_info,
-                         const ControlGridInfoPtr_ phys_control_info,
-                         const GridInfoPtr_ parm_solid_info,
-                         const GridInfoPtr_ parm_knot_info);
+  static SelfPtr_ create(const std::string &file_name,
+                         const NumCells_   &n_cells_phs_sol,
+                         const VtkGridType &grid_type_phs_sol,
+                         const NumCells_   &n_cells_phs_knt,
+                         const VtkGridType &grid_type_phs_knt,
+                         const VtkGridType &grid_type_phs_ctr,
+                         const NumCells_   &n_cells_prm_sol,
+                         const VtkGridType &grid_type_prm_sol,
+                         const NumCells_   &n_cells_prm_knt,
+                         const VtkGridType &grid_type_prm_knt);
+
   /**
    * TODO: to document.
    */
-  void update(const GridInfoPtr_ phys_solid_info,
-              const GridInfoPtr_ phys_knot_info,
-              const ControlGridInfoPtr_ phys_control_info,
-              const GridInfoPtr_ parm_solid_info,
-              const GridInfoPtr_ parm_knot_info);
+  static SelfPtr_ create_void();
+
+  /**
+   * TODO: to document.
+   */
+  void update(const NumCells_   &n_cells_phs_sol,
+              const VtkGridType &grid_type_phs_sol,
+              const NumCells_   &n_cells_phs_knt,
+              const VtkGridType &grid_type_phs_knt,
+              const VtkGridType &grid_type_phs_ctr,
+              const NumCells_   &n_cells_prm_sol,
+              const VtkGridType &grid_type_prm_sol,
+              const NumCells_   &n_cells_prm_knt,
+              const VtkGridType &grid_type_prm_knt);
+
+
+  /**
+   * TODO: to document.
+   */
+  void check () const;
+
+  /**
+   * TODO: to document.
+   */
+  void create_multiblock_grid(const bool phys_mesh,
+                              const bool sol_phys_mesh,
+                              const bool knt_phys_mesh,
+                              const bool ctr_phys_mesh,
+                              const bool prm_mesh,
+                              const bool sol_prm_mesh,
+                              const bool knt_prm_mesh,
+                              vtkMultiBlockDataSet *const mb) const;
 
 
 private:
+
+  static ObjContPtr_ parse_objects_container(const std::string &file_name);
+
+  static SafeSTLVector<std::string>
+  get_invalid_dimension_objects(const ObjContPtr_ obj_container);
 
   void fill_objects_container(const ObjContPtr_ objs_container);
 
@@ -289,23 +369,6 @@ public:
    */
   Size get_number_parametric_grids() const;
 
-private:
-  /**
-   * Returns the number of ig grid functions.
-   */
-  Size get_number_active_ig_grids() const;
-
-public:
-  /**
-   * Returns the number of active physical grids.
-   */
-  Size get_number_active_physical_grids() const;
-
-  /**
-   * Returns the number of active active grids.
-   */
-  Size get_number_active_parametric_grids() const;
-
   /**
    * Returns the name of the @p id physical grid.
    * */
@@ -342,33 +405,8 @@ public:
   void set_parametric_grid_status(const std::string &name,
                                   const bool status);
 
-  /**
-   * TODO: to document.
-   */
-  void set_physical_solid_grids(vtkMultiBlockDataSet *const mb);
-
-  /**
-   * TODO: to document.
-   */
-  void set_physical_knot_grids(vtkMultiBlockDataSet *const mb);
-
-  /**
-   * TODO: to document.
-   */
-  void set_physical_control_grids(vtkMultiBlockDataSet *const mb);
-
-  /**
-   * TODO: to document.
-   */
-  void set_parametric_solid_grids(vtkMultiBlockDataSet *const mb);
-
-  /**
-   * TODO: to document.
-   */
-  void set_parametric_knot_grids(vtkMultiBlockDataSet *const mb);
-
-
 private:
+
   /**
    * TODO: to document.
    */
@@ -409,6 +447,12 @@ private:
    */
   static void set_knot_grids(const GridGensContainer_ generators,
                              vtkMultiBlockDataSet *const mb);
+
+  /**
+   * TODO: to document.
+   */
+  static void set_control_grids(const GridGensContainer_ generators,
+                                vtkMultiBlockDataSet *const mb);
 
 };
 
