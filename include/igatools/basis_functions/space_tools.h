@@ -748,7 +748,6 @@ project_boundary_values(
     InterSpaceMap  dof_map;
     const auto sub_basis = basis.template get_sub_space<sdim>(s_id, dof_map,sub_grid,elem_map);
 
-
     const auto coeffs = projection_l2_function(
                           bndry_func,*sub_basis,quad,DofProperties::active);
 

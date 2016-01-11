@@ -107,7 +107,7 @@ operator++()
 //      out << "Sub elem ID: " << this->get_index() << "    Sup elem ID: " << sup_grid_func_element_->get_index() << std::endl;
   }
 
-//    Assert(false,ExcNotImplemented());
+  Assert(false,ExcNotImplemented());
 }
 
 
