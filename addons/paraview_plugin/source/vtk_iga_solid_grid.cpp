@@ -18,9 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
-#include <paraview_plugin/vtk_iga_solid_grid.h>
-
 #include <vtkStructuredGrid.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkSmartPointer.h>
@@ -28,6 +25,8 @@
 #include <vtkPolyLine.h>
 #include <vtkDoubleArray.h>
 #include <vtkPointData.h>
+
+#include <paraview_plugin/vtk_iga_solid_grid.h>
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain_element.h>

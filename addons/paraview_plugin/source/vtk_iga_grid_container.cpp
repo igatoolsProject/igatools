@@ -136,8 +136,8 @@ ObjContPtr_
 #endif
 
 #ifdef SERIALIZATION
-    if (parse_file_)
-    {
+//    if (parse_file_)
+//    {
       ObjectsContainer container_new;
       {
         std::ifstream xml_istream(file_name);
@@ -145,7 +145,7 @@ ObjContPtr_
         xml_in >> container_new;
       }
       objs_container = std::make_shared<ObjectsContainer>(container_new);
-    }
+//    }
 #endif
 
   return objs_container;
