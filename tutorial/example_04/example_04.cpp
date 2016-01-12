@@ -25,11 +25,13 @@
 #include <igatools/geometry/grid_function_lib.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/io/writer.h>
+#include <igatools/io/objects_container_xml_writer.h>
 
 #include <igatools/geometry/grid_element.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/base/objects_container.h>
 
 // [include]
 #include <igatools/linear_algebra/dof_tools.h>
@@ -60,6 +62,8 @@ class PoissonProblem {
     shared_ptr<Vector> sol;
 // [system]
 
+    using IgGridFunc_t = IgGridFunction<dim,1>;
+
   public:
     PoissonProblem(const Size nel, const Index deg) {
       grid  = Grid<dim>::const_create(nel+1);
@@ -75,6 +79,7 @@ class PoissonProblem {
 
     void assemble();
     void solve();
+    std::shared_ptr<const IgGridFunc_t> get_solution();
     void save();
     void run();
 };
@@ -160,12 +165,31 @@ void PoissonProblem<dim>::solve() {
 // [solve]
 
 template<int dim>
+auto
+PoissonProblem<dim>::get_solution() ->
+std::shared_ptr<const IgGridFunc_t>
+{
+  return IgGridFunc_t::const_create(basis, *sol);
+}
+
+template<int dim>
 void PoissonProblem<dim>::save() {
-  Writer<dim> writer(grid,5);
-  auto solution = IgGridFunction<dim,1>::const_create(basis, *sol);
-  writer.add_field(*solution, "solution");
+
+  const auto solution = this->get_solution();
   string filename = "problem_" + to_string(dim) + "d" ;
+
+#ifndef XML_IO
+  Writer<dim> writer(grid,5);
+  writer.add_field(*solution, "solution");
   writer.save(filename);
+#else
+  const auto objs_container = ObjectsContainer::create();
+  using GridFunc_t = GridFunction<dim, 1>;
+  const auto solution_non_const = std::const_pointer_cast<IgGridFunc_t>(solution);
+  solution_non_const->set_name("solution");
+  objs_container->insert_const_object<GridFunc_t>(solution_non_const);
+  ObjectsContainerXMLWriter::write(filename + ".iga", objs_container);
+#endif
 }
 
 template<int dim>
