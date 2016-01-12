@@ -200,18 +200,18 @@ check_file(const std::string &file_name)
     if (Self_::is_file_binary(file_name))
     {
 #ifndef SERIALIZATION
-        AssertThrow (false, ExcVtkError("Impossible to parse binary format file."
+        throw ExcVtkError("Impossible to parse binary format file."
                 " Igatools serialization of binary files was not activated."
-                " Currently this plugin is only capable of parsing XML files."));
+                " Currently this plugin is only capable of parsing XML files.");
 #endif
     }
     else
     {
 #ifndef XML_IO
-        AssertThrow (false, ExcVtkError("Impossible to parse an ascii format file."
+        throw ExcVtkError("Impossible to parse an ascii format file."
                 " Igatools XML ascii parser was not activated."
                 " Currently this plugin is only capable of parsing "
-                "igatools serialized files in binary format."));
+                "igatools serialized files in binary format.");
 #endif
     }
 
