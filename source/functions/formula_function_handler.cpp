@@ -50,11 +50,13 @@ fill_cache(const topology_variant &sdim,
 {
   this->get_domain_handler()->fill_cache(sdim, elem.get_domain_element(), s_id);
 
+  parent_t::fill_cache(sdim, elem, s_id);
+
   FuncType &func = *std::dynamic_pointer_cast<FuncType>(this->get_function());
   auto disp = FillCacheDispatcher(func, *this, elem, s_id);
   boost::apply_visitor(disp, sdim);
 
-  parent_t::fill_cache(sdim, elem, s_id);
+//  parent_t::fill_cache(sdim, elem, s_id);
 
 }
 

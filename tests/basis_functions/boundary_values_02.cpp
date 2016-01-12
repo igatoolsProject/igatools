@@ -43,9 +43,13 @@
 
 
 template<int dim , int range ,int rank>
-void do_test(const int p, const int num_knots = 10)
+void do_test(const int p, const int num_knots)
 {
-  out << "Dimension: " << dim << endl;
+  OUTSTART
+  using std::to_string;
+  out.begin_item("Dimension: " + to_string(dim) +
+                 ",   Degree: " + to_string(p) +
+                 ",   N.intervals.: " + to_string(num_knots-1)) ;
 
 
   auto grid = Grid<dim>::create(num_knots);
@@ -57,31 +61,46 @@ void do_test(const int p, const int num_knots = 10)
 
 
   const int sdim = dim-1;
-  const int s_id = 0;
 
-  using SubGridElemMap = typename Grid<dim>::template SubGridMap<sdim>;
-  SubGridElemMap sub_grid_elem_map;
-  const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,sub_grid_elem_map);
+  const int n_sub_elems = UnitElement<dim>::template num_elem<sdim>();
 
-  auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
+  for (int s_id = 0 ; s_id < n_sub_elems ; ++s_id)
+  {
+    out.begin_item("Sub-Element ID: " + std::to_string(s_id));
 
-  using BndFunc = Function<dim-1,1,range,1>;
-  SafeSTLMap<int,std::shared_ptr<const BndFunc>> boundary_functions;
-  boundary_functions[s_id] = TestBoundaryFunction<dim-1,range>::const_create(bndry_domain);
+    using SubGridElemMap = typename Grid<dim>::template SubGridMap<sdim>;
+    SubGridElemMap sub_grid_elem_map;
+    const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,sub_grid_elem_map);
+
+    auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
+
+    using BndFunc = Function<dim-1,1,range,1>;
+    SafeSTLMap<int,std::shared_ptr<const BndFunc>> boundary_functions;
+//  boundary_functions[s_id] = TestBoundaryFunction<dim-1,range>::const_create(bndry_domain);
+
+    using F = functions::ConstantFunction<dim-1,1,range,1>;
+    typename F::Value f_val;
+    f_val(0) = s_id;
+    boundary_functions[s_id] = functions::ConstantFunction<dim-1,1,range,1>::const_create(bndry_domain,f_val);
 
 
-  const int n_qpoints = 4;
-  auto quad = QGauss<sdim>::const_create(n_qpoints);
+    const int n_qpoints = 4;
+    auto quad = QGauss<sdim>::const_create(n_qpoints);
 
 
-  std::map<Index,Real> boundary_values;
-  space_tools::project_boundary_values<dim,0,range,rank>(
-    boundary_functions, *basis, quad, boundary_values);
+    std::map<Index,Real> boundary_values;
+    space_tools::project_boundary_values<dim,0,range,rank>(
+      boundary_functions, *basis, quad, boundary_values);
 
-  out << "basis index \t value" << endl;
-  for (auto entry : boundary_values)
-    out << entry.first << "\t" << entry.second << endl;
+    out << "basis index \t value" << endl;
+    for (auto entry : boundary_values)
+      out << entry.first << "\t" << entry.second << endl;
 
+    out.end_item();
+  }
+
+  out.end_item();
+  OUTEND
 }
 
 
@@ -89,14 +108,19 @@ void do_test(const int p, const int num_knots = 10)
 int main()
 {
 
-  // do_test<1,1,1>(3);
-
-  //TODO (martinelli, Nov 18,2015): with gcc.5.2.0 it crash calling the two function in this order
-  do_test<2,1,1>(3);
-  do_test<3,1,1>(2);
+  SafeSTLVector<int> degrees{1,2,3};
+  SafeSTLVector<int> n_knots{2,3,4};
 
 
-//  do_test<2,1,1>(3);
+  for (auto deg : degrees)
+  {
+    for (auto n_knot : n_knots)
+    {
+      do_test<1,1,1>(deg,n_knot);
+      do_test<2,1,1>(deg,n_knot);
+      do_test<3,1,1>(deg,n_knot);
+    }
+  }
 
   return 0;
 }

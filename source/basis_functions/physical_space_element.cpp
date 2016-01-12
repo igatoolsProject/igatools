@@ -283,8 +283,8 @@ operator!=(const parent_t &a) const
   const self_t &elem = dynamic_cast<const self_t &>(a);
   Assert(this->is_comparable_with(elem),
          ExcMessage("The elements are not comparable"));
-  return (*ref_space_element_ != *elem.ref_space_element_) ||
-         (*phys_domain_element_ != *elem.phys_domain_element_);
+  return (ref_space_element_ != elem.ref_space_element_) ||
+         (phys_domain_element_ != elem.phys_domain_element_);
 }
 
 

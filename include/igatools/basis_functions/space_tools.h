@@ -734,11 +734,14 @@ project_boundary_values(
 
   boundary_values.clear();
 
+//  LogStream myout;
   for (const auto &bndry : bndry_funcs)
   {
     InterGridMap elem_map;
 
     const int s_id = bndry.first;
+
+//    myout.begin_item("SubElem ID: " + std::to_string(s_id));
 
     Assert(bndry.second != nullptr,ExcNullPtr());
     const auto &bndry_func = *bndry.second;
@@ -748,13 +751,14 @@ project_boundary_values(
     InterSpaceMap  dof_map;
     const auto sub_basis = basis.template get_sub_space<sdim>(s_id, dof_map,sub_grid,elem_map);
 
-
     const auto coeffs = projection_l2_function(
                           bndry_func,*sub_basis,quad,DofProperties::active);
 
     const int face_n_dofs = dof_map.size();
     for (Index i = 0; i< face_n_dofs; ++i)
       boundary_values[dof_map[i]] = coeffs[i];
+
+//    myout.end_item();
   }
 }
 
