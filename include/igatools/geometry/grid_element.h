@@ -128,7 +128,7 @@ public:
   virtual void operator++();
 
   /**
-   * Move the element to the one specified by <tt>elem_id</tt>.
+   * @brief Move the element to the position specified by the index <tt>elem_id</tt>.
    *
    * In Debug mode an assertion will be raised
    * if the GridElement specified by <tt>elem_id</tt> has not the same property of the
