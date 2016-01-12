@@ -1318,7 +1318,7 @@ parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
   const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
   local_object_id, {{dim, range}});
 
-  // Gettting grid.
+  // Getting grid.
   const auto gr_tag = xml_elem->get_single_element("Grid");
   const auto local_gr_id = gr_tag->get_attribute<Index>("GetFromLocalObjectId");
 
@@ -1399,7 +1399,7 @@ parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
   const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
   local_object_id, {{dim, range}});
 
-  // Gettting grid.
+  // Getting grid.
   const auto gr_tag = xml_elem->get_single_element("Grid");
   const auto local_gr_id = gr_tag->get_attribute<Index>("GetFromLocalObjectId");
 
