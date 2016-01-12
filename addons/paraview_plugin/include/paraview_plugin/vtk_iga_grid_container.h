@@ -298,13 +298,6 @@ public:
               const NumCells_   &n_cells_prm_knt,
               const VtkGridType &grid_type_prm_knt);
 
-
-private:
-  /**
-   * TODO: to document.
-   */
-  void check () const;
-
 public:
   /**
    * TODO: to document.

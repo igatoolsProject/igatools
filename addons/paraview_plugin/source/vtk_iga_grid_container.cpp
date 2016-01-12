@@ -74,7 +74,17 @@ VtkIgaGridContainer(const ObjContPtr_ objs_container,
   this->fill_objects_container(objs_container);
   this->set_names();
   this->build_generators();
-  this->check();
+
+  // Checking if there is any valid generator.
+  auto lambda_func_not_empty = [](const auto &gen_pair)
+  {
+    return !gen_pair.second.empty();
+  };
+
+  if (!boost::fusion::any(phys_generators_, lambda_func_not_empty) &&
+      !boost::fusion::any(parm_generators_, lambda_func_not_empty))
+      // Both list of generators are empty.
+      throw ExcVtkError("There are not valid domains or grids.");
 }
 
 
@@ -237,38 +247,6 @@ is_file_binary(const std::string &file_name)
 }
 
 
-void
-VtkIgaGridContainer::
-check() const
-{
-  // Checking if there is any valid generator.
-  auto lambda_func_not_empty = [](const auto &gen_pair)
-  {
-    return !gen_pair.second.empty();
-  };
-
-  if (!boost::fusion::any(phys_generators_, lambda_func_not_empty) &&
-      !boost::fusion::any(parm_generators_, lambda_func_not_empty))
-      // Both list of generators are empty.
-      throw ExcVtkError("There are not valid domains or grids.");
-
-
-  // Checking if there is any object with invalid dimension in the
-  // container.
-  const auto invalid_dim_obj = Self_::get_invalid_dimension_objects(objs_container_);
-  if (invalid_dim_obj.size() > 0)
-  {
-      string warning_message = "The following objects have dimensions that the "
-              "plugin cannot currently visualize:\n";
-      for (const auto &obj : invalid_dim_obj)
-          warning_message += obj + "\n";
-
-      VtkIgaWarningMacro("Parsing file " << string(file_name_) << ":\n"
-                         << warning_message);
-  }
-}
-
-
 
 SafeSTLVector<string>
 VtkIgaGridContainer::
@@ -280,9 +258,9 @@ get_invalid_dimension_objects(const ObjContPtr_ objs_container)
   for_each(invalid_g_ptr_types, [&](const auto &ptr_type)
            {
               using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-              for (const auto &id : objs_container->template get_object_ids<ObjectType>())
+              for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
               {
-                  const auto obj = objs_container->template get_object<ObjectType>(id);
+                  const auto obj = objs_container->template get_const_object<ObjectType>(id);
                   invalid_objects.push_back(
                           "Grid<" + to_string(ObjectType::dim) + ">, "
                           "Name: " + obj->get_name() + ", "
@@ -295,9 +273,9 @@ get_invalid_dimension_objects(const ObjContPtr_ objs_container)
   for_each(invalid_d_ptr_types, [&](const auto &ptr_type)
            {
               using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-              for (const auto &id : objs_container->template get_object_ids<ObjectType>())
+              for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
               {
-                  const auto obj = objs_container->template get_object<ObjectType>(id);
+                  const auto obj = objs_container->template get_const_object<ObjectType>(id);
                   invalid_objects.push_back(
                           "Domain<" + to_string(ObjectType::dim) + ", " +
                           to_string(ObjectType::space_dim - ObjectType::dim) + ">, "
@@ -310,9 +288,9 @@ get_invalid_dimension_objects(const ObjContPtr_ objs_container)
   for_each(invalid_gf_ptr_types, [&](const auto &ptr_type)
            {
               using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-              for (const auto &id : objs_container->template get_object_ids<ObjectType>())
+              for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
               {
-                  const auto obj = objs_container->template get_object<ObjectType>(id);
+                  const auto obj = objs_container->template get_const_object<ObjectType>(id);
                   invalid_objects.push_back(
                           "GridFunction<" + to_string(ObjectType::dim) + ", " +
                           to_string(ObjectType::range) + ">, "
@@ -325,9 +303,9 @@ get_invalid_dimension_objects(const ObjContPtr_ objs_container)
   for_each(invalid_f_ptr_types, [&](const auto &ptr_type)
            {
               using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-              for (const auto &id : objs_container->template get_object_ids<ObjectType>())
+              for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
               {
-                  const auto obj = objs_container->template get_object<ObjectType>(id);
+                  const auto obj = objs_container->template get_const_object<ObjectType>(id);
                   invalid_objects.push_back(
                           "Function<" + to_string(ObjectType::dim) + ", "
                                       + to_string(ObjectType::codim) + ", "
@@ -609,6 +587,19 @@ fill_objects_container(const ObjContPtr_ objs_container_old)
 {
     // Adding missing object into the container.
     objs_container_old->fill_not_inserted_dependencies();
+
+    // Checking if there is any object with invalid dimension in the
+    // container.
+    const auto invalid_dim_obj = Self_::get_invalid_dimension_objects(objs_container_old);
+    if (invalid_dim_obj.size() > 0)
+    {
+        string warning_message = "The following objects have dimensions that the "
+                "plugin cannot currently visualize:\n";
+        for (const auto &obj : invalid_dim_obj)
+            warning_message += obj + "\n";
+
+        VtkIgaWarningMacro(<< warning_message);
+    }
 
     // Adding all the present objects in the container to a new container,
     // all of them as constant.
