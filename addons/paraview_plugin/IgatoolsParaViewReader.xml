@@ -43,7 +43,7 @@
 
       <Hints>
         <ReaderFactory extensions="iga"
-                       file_description="Igatools File Format" />
+                       file_description="Igatools XML File Format" />
       </Hints>
 
 

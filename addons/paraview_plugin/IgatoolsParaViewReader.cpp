@@ -25,7 +25,6 @@
 #include <vtkInformation.h>
 #include <vtkMultiBlockDataSet.h>
 
-#include <igatools/io/xml_document.h>
 #include <paraview_plugin/vtk_iga_grid_container.h>
 
 using std::string;
@@ -131,13 +130,10 @@ int IgatoolsParaViewReader::RequestInformation(
   if (!parse_file_)
       return 1;
 
-  if (this->CanReadFile(file_name_) == 0)
-    return 0;
-
-  this->SetProgressText("Parsing igatools file.");
-
   try
   {
+      this->SetProgressText("Parsing igatools file.");
+
       iga_grid_gen_ = iga::VtkIgaGridContainer::create
               (file_name_,
                n_vis_elem_phys_solid_, phys_sol_grid_type_,
@@ -149,15 +145,6 @@ int IgatoolsParaViewReader::RequestInformation(
       parse_file_ = false;
 
       return 1;
-  }
-  catch (iga::ExcVtkError &e)
-  {
-    VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
-                     << e.what());
-
-    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
-
-    return 0;
   }
   catch (std::exception &e)
   {
@@ -177,8 +164,6 @@ int IgatoolsParaViewReader::RequestInformation(
 
     return 0;
   }
-
-
 
 }
 
@@ -243,24 +228,27 @@ int
 IgatoolsParaViewReader::
 CanReadFile(const char *name)
 {
-  // TODO this can be done if XML_IO is active
   try
   {
-    iga::XMLDocument::check_file(name);
-    return 1;
+      iga::VtkIgaGridContainer::check_file(name);
+      return 1;
   }
-  catch (iga::ExceptionBase &exc)
+  catch (std::exception &e)
   {
-    std::ostringstream stream;
-    exc.print_exc_data(stream);
-    VtkIgaErrorMacro("Parsing file " << string(name) << ":\n"
-                     << stream.str());
+    VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                     << e.what());
+
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+
     return 0;
   }
   catch (...)
   {
-    VtkIgaErrorMacro("Parsing file " << string(name) << ":\n"
-                     "Impossible to read IGA file");
+    VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
+                     << "AN UNKNOWN EXCEPTION OCCUR!");
+
+    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+
     return 0;
   }
 }

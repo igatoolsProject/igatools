@@ -30,6 +30,8 @@
 #include <vtkInformation.h>
 #include <vtkPointSet.h>
 
+#include <sys/stat.h>
+
 
 using namespace boost::fusion;
 
@@ -70,6 +72,29 @@ VtkIgaGridContainer(const ObjContPtr_ objs_container,
   this->set_names();
   this->build_generators();
   this->check();
+}
+
+
+
+VtkIgaGridContainer::
+VtkIgaGridContainer()
+  :
+  objs_container_(ObjectsContainer::create()),
+  phys_solid_info_(VtkGridInformation::create_void()),
+  phys_knot_info_(VtkGridInformation::create_void()),
+  phys_control_info_(VtkControlGridInformation::create_void()),
+  parm_solid_info_(VtkGridInformation::create_void()),
+  parm_knot_info_(VtkGridInformation::create_void()),
+  file_name_(string(""))
+{
+  Assert(objs_container_ != nullptr, ExcNullPtr());
+  Assert(phys_solid_info_ != nullptr, ExcNullPtr());
+  Assert(phys_knot_info_ != nullptr, ExcNullPtr());
+  Assert(phys_control_info_ != nullptr, ExcNullPtr());
+  Assert(parm_solid_info_ != nullptr, ExcNullPtr());
+  Assert(parm_knot_info_ != nullptr, ExcNullPtr());
+
+  this->build_generators();
 }
 
 
@@ -120,40 +145,93 @@ VtkIgaGridContainer::
 parse_objects_container(const string &file_name) ->
 ObjContPtr_
 {
+    Self_::check_file(file_name);
+
     ObjContPtr_ objs_container;
 
-#ifdef XML_IO
-
-    // TODO: before parsing the hole file (that can be big),
-    // it is checked if the file has the expected structure (at least
-    // the header) for knowing if it is an XML human readable or
-    // a serialized file.
-
-    // Check here if the file is of type XML human readable
-    const bool xml_human_readable = true;
-    if (xml_human_readable)
+    if (Self_::is_file_binary(file_name))
     {
-      objs_container = ObjectsContainerXMLReader::parse_const(file_name);
+#ifdef SERIALIZATION
+        ObjectsContainer container_new;
+        {
+            std::ifstream xml_istream(file_name);
+            IArchive xml_in(xml_istream);
+            xml_in >> container_new;
+        }
+        objs_container = std::make_shared<ObjectsContainer>(container_new);
+#endif
+    }
+    else
+    {
+#ifdef XML_IO
+        objs_container = ObjectsContainerXMLReader::parse_const(file_name);
+#endif
     }
 
-#endif
-
-//#ifdef SERIALIZATION
-////    if (parse_file_)
-////    {
-//      ObjectsContainer container_new;
-//      {
-//        std::ifstream xml_istream(file_name);
-//        IArchive xml_in(xml_istream);
-//        xml_in >> container_new;
-//      }
-//      objs_container = std::make_shared<ObjectsContainer>(container_new);
-////    }
-//#endif
-
-  return objs_container;
+    Assert (objs_container != nullptr, ExcNullPtr());
+    return objs_container;
 }
 
+
+
+void
+VtkIgaGridContainer::
+check_file(const std::string &file_name)
+{
+  // Checking if the file exists.
+  errno = 0;
+  struct stat buffer;
+  if (stat(file_name.c_str(), &buffer) == -1) // == 0 ok; == -1 error
+  {
+    if (errno == ENOENT)   // errno declared by include file errno.h
+      throw ExcVtkError("Path file does not exist, or path is an empty string.");
+    else if (errno == ENOTDIR)
+      throw ExcVtkError("A component of the path is not a directory.");
+    else if (errno == ELOOP)
+      throw ExcVtkError("Too many symbolic links encountered while traversing the path.");
+    else if (errno == EACCES)
+      throw ExcVtkError("Permission denied.");
+    else if (errno == ENAMETOOLONG)
+      throw ExcVtkError("File can not be read");
+    else
+      throw ExcVtkError("An unknown problem was encountered.");
+  }
+
+    if (Self_::is_file_binary(file_name))
+    {
+#ifndef SERIALIZATION
+        AssertThrow (false, ExcVtkError("Impossible to parse binary format file."
+                " Igatools serialization of binary files was not activated."
+                " Currently this plugin is only capable of parsing XML files."));
+#endif
+    }
+    else
+    {
+#ifndef XML_IO
+        AssertThrow (false, ExcVtkError("Impossible to parse an ascii format file."
+                " Igatools XML ascii parser was not activated."
+                " Currently this plugin is only capable of parsing "
+                "igatools serialized files in binary format."));
+#endif
+    }
+
+}
+
+
+
+bool
+VtkIgaGridContainer::
+is_file_binary(const std::string &file_name)
+{
+    int c;
+    std::ifstream file(file_name);
+    while((c = file.get()) != EOF && c <= 127);
+    file.close();
+    if(c == EOF)
+        return false;
+    else
+        return true;
+}
 
 
 void
@@ -266,13 +344,7 @@ auto
 VtkIgaGridContainer::
 create_void() -> SelfPtr_
 {
-  return SelfPtr_(new Self_(ObjectsContainer::create(),
-                            VtkGridInformation::create_void(),
-                            VtkGridInformation::create_void(),
-                            VtkControlGridInformation::create_void(),
-                            VtkGridInformation::create_void(),
-                            VtkGridInformation::create_void(),
-                            string("")));
+  return SelfPtr_(new Self_());
 }
 
 

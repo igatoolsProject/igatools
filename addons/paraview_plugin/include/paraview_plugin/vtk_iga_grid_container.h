@@ -245,6 +245,11 @@ private:
   typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
 
   /**
+   * Void constructor.
+   */
+  VtkIgaGridContainer();
+
+  /**
    * Constructor.
    */
   VtkIgaGridContainer(const ObjContPtr_ objs_container,
@@ -310,8 +315,12 @@ public:
                               vtkMultiBlockDataSet *const mb) const;
 
 
-private:
 
+
+  static void check_file (const std::string &file_name);
+
+private:
+  static bool is_file_binary(const std::string &file_name);
   static ObjContPtr_ parse_objects_container(const std::string &file_name);
 
   static SafeSTLVector<std::string>
