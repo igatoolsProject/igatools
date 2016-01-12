@@ -32,7 +32,7 @@
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/ig_grid_function.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/linear_algebra/epetra_matrix.h>
 #include <igatools/linear_algebra/epetra_vector.h>
 

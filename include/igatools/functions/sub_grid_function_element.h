@@ -21,9 +21,9 @@
 #ifndef __SUB_GRID_FUNCTION_ELEMENT_H_
 #define __SUB_GRID_FUNCTION_ELEMENT_H_
 
-#include <igatools/geometry/sub_grid_function.h>
-#include <igatools/geometry/sub_grid_function_handler.h>
-#include <igatools/geometry/grid_function_element.h>
+#include <igatools/functions/sub_grid_function.h>
+#include <igatools/functions/sub_grid_function_handler.h>
+#include <igatools/functions/grid_function_element.h>
 
 IGA_NAMESPACE_OPEN
 

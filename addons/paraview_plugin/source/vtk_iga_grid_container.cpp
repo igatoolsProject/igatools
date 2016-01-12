@@ -23,7 +23,7 @@
 #include <paraview_plugin/vtk_iga_grid_container.h>
 #include <paraview_plugin/vtk_iga_grid_information.h>
 
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/io/objects_container_xml_reader.h>
 
 #include <vtkMultiBlockDataSet.h>

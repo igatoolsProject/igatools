@@ -20,7 +20,7 @@
 
 // [functions]
 //#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 // [functions]
 // [old includes]
 #include <igatools/basis_functions/bspline.h>

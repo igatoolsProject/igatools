@@ -18,9 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/grid_function_handler.h>
-#include <igatools/geometry/grid_function.h>
-#include <igatools/geometry/grid_function_element.h>
+#include <igatools/functions/grid_function_handler.h>
+#include <igatools/functions/grid_function.h>
+#include <igatools/functions/grid_function_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -271,4 +271,4 @@ operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/grid_function_handler.inst>
+#include <igatools/functions/grid_function_handler.inst>

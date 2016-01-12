@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/grid_function_element.h>
+#include <igatools/functions/grid_function_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -206,5 +206,5 @@ get_exterior_normals() const -> ValueVector<SafeSTLArray<Value, range_> >
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/grid_function_element.inst>
+#include <igatools/functions/grid_function_element.inst>
 

@@ -29,7 +29,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 
 #include <igatools/io/writer.h>
 

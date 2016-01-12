@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 // [analytical map]
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 // [analytical map]
 
 // [ig map bspline]

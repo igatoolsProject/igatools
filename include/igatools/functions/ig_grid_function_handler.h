@@ -21,7 +21,7 @@
 #ifndef __IG_GRID_FUNCTION_HANDLER_H_
 #define __IG_GRID_FUNCTION_HANDLER_H_
 
-#include <igatools/geometry/grid_function_handler.h>
+#include <igatools/functions/grid_function_handler.h>
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/basis_functions/space_element_handler.h>
 

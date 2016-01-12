@@ -34,7 +34,7 @@
 #include <igatools/basis_functions/physical_space_basis.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/functions/ig_grid_function.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 
 
 template <int dim>

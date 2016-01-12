@@ -38,7 +38,7 @@
 //#include <igatools/geometry/push_forward_element.h>
 
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/basis_functions/physical_space_basis.h>
 
 #if 0

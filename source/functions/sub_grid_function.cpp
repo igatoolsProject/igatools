@@ -18,9 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/sub_grid_function.h>
-#include <igatools/geometry/sub_grid_function_element.h>
-#include <igatools/geometry/sub_grid_function_handler.h>
+#include <igatools/functions/sub_grid_function.h>
+#include <igatools/functions/sub_grid_function_element.h>
+#include <igatools/functions/sub_grid_function_handler.h>
 
 using std::shared_ptr;
 
@@ -249,5 +249,5 @@ get_sub_grid_elem_map() const -> const SubGridMap &
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/sub_grid_function.inst>
+#include <igatools/functions/sub_grid_function.inst>
 

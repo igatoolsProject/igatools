@@ -21,7 +21,7 @@
 #ifndef __GRID_FUNCTION_LIB_H_
 #define __GRID_FUNCTION_LIB_H_
 
-#include <igatools/geometry/formula_grid_function.h>
+#include <igatools/functions/formula_grid_function.h>
 
 IGA_NAMESPACE_OPEN
 

@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/formula_grid_function_handler.h>
+#include <igatools/functions/formula_grid_function_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -122,4 +122,4 @@ operator()(const Topology<sdim> &sub_elem)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/formula_grid_function_handler.inst>
+#include <igatools/functions/formula_grid_function_handler.inst>

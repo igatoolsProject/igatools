@@ -30,7 +30,7 @@
 #include <igatools/io/xml_element.h>
 
 #include <igatools/geometry/grid.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs.h>

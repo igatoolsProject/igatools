@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -1137,5 +1137,5 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/grid_function_lib.inst>
+#include <igatools/functions/grid_function_lib.inst>
 

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/formula_grid_function.h>
-#include <igatools/geometry/formula_grid_function_handler.h>
+#include <igatools/functions/formula_grid_function.h>
+#include <igatools/functions/formula_grid_function_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -48,5 +48,5 @@ create_cache_handler() const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/formula_grid_function.inst>
+#include <igatools/functions/formula_grid_function.inst>
 

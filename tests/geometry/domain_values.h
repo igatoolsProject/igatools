@@ -28,8 +28,8 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
-#include <igatools/geometry/grid_function_element.h>
+#include <igatools/functions/grid_function_lib.h>
+#include <igatools/functions/grid_function_element.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
 #include <igatools/geometry/domain_handler.h>

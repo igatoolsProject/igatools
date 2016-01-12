@@ -33,7 +33,7 @@
 #include <igatools/functions/formula_function.h>
 #include <igatools/functions/function_lib.h>
 
-#include <igatools/geometry/formula_grid_function.h>
+#include <igatools/functions/formula_grid_function.h>
 
 
 // TODO (pauletti, Nov 13, 2014): delete this after cleaning and arranging test

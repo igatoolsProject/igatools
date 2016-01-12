@@ -26,7 +26,7 @@
  */
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
 

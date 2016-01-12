@@ -22,8 +22,8 @@
 #define __SUB_GRID_FUNCTION_HANDLER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/grid_function_handler.h>
-#include <igatools/geometry/sub_grid_function.h>
+#include <igatools/functions/grid_function_handler.h>
+#include <igatools/functions/sub_grid_function.h>
 
 IGA_NAMESPACE_OPEN
 

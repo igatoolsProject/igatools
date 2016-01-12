@@ -23,7 +23,7 @@
 
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_handler.h>
-#include <igatools/geometry/grid_function_element.h>
+#include <igatools/functions/grid_function_element.h>
 
 IGA_NAMESPACE_OPEN
 

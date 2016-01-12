@@ -22,9 +22,9 @@
 #define __FORMULA_GRID_FUNCTION_H_
 
 #include <igatools/base/value_types.h>
-#include <igatools/geometry/grid_function.h>
-#include <igatools/geometry/grid_function_element.h>
-#include <igatools/geometry/sub_grid_function.h>
+#include <igatools/functions/grid_function.h>
+#include <igatools/functions/grid_function_element.h>
+#include <igatools/functions/sub_grid_function.h>
 
 IGA_NAMESPACE_OPEN
 

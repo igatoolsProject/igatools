@@ -21,8 +21,8 @@
 #ifndef __GRID_FUNCTION_ELEMENT_H_
 #define __GRID_FUNCTION_ELEMENT_H_
 
-#include <igatools/geometry/grid_function.h>
-#include <igatools/geometry/grid_function_handler.h>
+#include <igatools/functions/grid_function.h>
+#include <igatools/functions/grid_function_handler.h>
 #include <igatools/geometry/grid_element.h>
 
 IGA_NAMESPACE_OPEN

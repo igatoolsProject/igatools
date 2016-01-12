@@ -26,7 +26,7 @@
 #include <paraview_plugin/vtk_iga_types.h>
 #include <igatools/base/objects_container.h>
 #include <igatools/geometry/grid.h>
-#include <igatools/geometry/grid_function.h>
+#include <igatools/functions/grid_function.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/functions/function.h>
 

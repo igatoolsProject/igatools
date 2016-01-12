@@ -21,8 +21,8 @@
 #ifndef __FORMULA_GRID_FUNCTION_HANDLER_H_
 #define __FORMULA_GRID_FUNCTION_HANDLER_H_
 
-#include <igatools/geometry/grid_function_handler.h>
-#include <igatools/geometry/formula_grid_function.h>
+#include <igatools/functions/grid_function_handler.h>
+#include <igatools/functions/formula_grid_function.h>
 
 IGA_NAMESPACE_OPEN
 

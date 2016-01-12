@@ -23,8 +23,8 @@
 
 #include <igatools/base/config.h>
 #include <igatools/functions/ig_grid_function.h>
-#include <igatools/geometry/formula_grid_function.h>
-//#include <igatools/geometry/grid_function_handler.h>
+#include <igatools/functions/formula_grid_function.h>
+//#include <igatools/functions/grid_function_handler.h>
 
 IGA_NAMESPACE_OPEN
 

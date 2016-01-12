@@ -32,7 +32,7 @@
 #include <igatools/base/quadrature_lib.h>
 //#include <igatools/functions/function_lib.h>
 //#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_space_basis.h>
 #include <igatools/basis_functions/physical_space_element.h>
