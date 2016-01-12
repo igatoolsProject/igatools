@@ -253,7 +253,6 @@ Real PoissonProblem<dim>::error(shared_ptr<const Function<dim>> exact_solution) 
 // [functions_u]]
 #define SQR(x,y) (((x)*(x))+((y)*(y)))
 using numbers::PI;
-// exact solution
 Values<2,1,1> u(Points<2> x) {
   Values<2,1,1> y;
   y  = 0.1*sin(2.0*PI*SQR(x[0],x[1])) + std::sqrt(SQR(x[0],x[1]));
@@ -300,30 +299,28 @@ int main()
 // [main]
 
 // [main_pre_dirichlet]
+  auto grid = annulus->get_grid_function()->get_grid();
   using SubGridElemMap = typename Grid<2>::template SubGridMap<1>;
   SubGridElemMap sub_grid_elem_map;
-  auto grid = annulus->get_grid_function()->get_grid();
   std::map<Index,shared_ptr<const Function<1,1,1>>> dirichlet;
 // [main_pre_dirichlet]
 
-// [main_dirichlet_cond]
   const auto sub_grid_0    = grid->template get_sub_grid<1>(0,sub_grid_elem_map);
   const auto sub_annulus_0 = annulus->template get_sub_domain<1>(0,sub_grid_elem_map,sub_grid_0);
   auto g_0 = functions::ConstantFunction<1,1,1>::const_create(sub_annulus_0,{1.0});
   dirichlet[0] = dynamic_pointer_cast<const Function<1,1,1>>(g_0);
-// [main_dirichlet_cond]
 
   const auto sub_grid_1    = grid->template get_sub_grid<1>(1,sub_grid_elem_map);
   const auto sub_annulus_1 = annulus->template get_sub_domain<1>(1,sub_grid_elem_map,sub_grid_1);
   auto g_1 = functions::ConstantFunction<1,1,1>::const_create(sub_annulus_1,{2.0});
   dirichlet[1] = dynamic_pointer_cast<const Function<1,1,1>>(g_1);
 
+// [main_dirichlet_cond]
   const auto sub_grid_2    = grid->template get_sub_grid<1>(2,sub_grid_elem_map);
   const auto sub_annulus_2 = annulus->template get_sub_domain<1>(2,sub_grid_elem_map,sub_grid_2);
   auto g_2 = CustomFunction<1,1,1>::const_create(sub_annulus_2,g2);
-// [main_dirichlet_cond_custom]
   dirichlet[2] = dynamic_pointer_cast<const Function<1,1,1>>(g_2);
-// [main_dirichlet_cond_custom]
+// [main_dirichlet_cond]
 
   const auto sub_grid_3    = grid->template get_sub_grid<1>(3,sub_grid_elem_map);
   const auto sub_annulus_3 = annulus->template get_sub_domain<1>(3,sub_grid_elem_map,sub_grid_3);
