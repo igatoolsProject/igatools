@@ -33,10 +33,12 @@ class vtkObjectBase;
 namespace iga
 {
 template <class T, int d> class SafeSTLArray;
+namespace paraview_plugin
+{
 struct VtkGridInformation;
 struct VtkControlGridInformation;
-
 class VtkIgaGridContainer;
+}
 }
 
 /**
@@ -84,13 +86,13 @@ private:
   typedef IgatoolsParaViewReader Self_;
 
   /** Type for shared pointer of @ref vtkGridInformation.  */
-  typedef std::shared_ptr<iga::VtkGridInformation> GridInfoPtr_;
+  typedef std::shared_ptr<iga::paraview_plugin::VtkGridInformation> GridInfoPtr_;
 
   /** Type for shared pointer of @ref vtkControlGridInformation.  */
-  typedef std::shared_ptr<iga::VtkControlGridInformation> ControlGridInfoPtr_;
+  typedef std::shared_ptr<iga::paraview_plugin::VtkControlGridInformation> ControlGridInfoPtr_;
 
   /** Type for shared pointer of @ref VtkGridGeneratorContainer.  */
-  typedef std::shared_ptr<iga::VtkIgaGridContainer> GridGenPtr_;
+  typedef std::shared_ptr<iga::paraview_plugin::VtkIgaGridContainer> GridGenPtr_;
 
   /** Type for containing the number of cells per side of each Bezier element.  */
   typedef iga::SafeSTLArray<int, 3> NumCells_;
@@ -471,22 +473,22 @@ private:
    */
   void set_grid_type(int arg1,
                      const char *const name,
-                     iga::VtkGridType &type);
+                     iga::paraview_plugin::VtkGridType &type);
 
   /** vtkGridType for the solid representation of the physical mappings. */
-  iga::VtkGridType phys_sol_grid_type_ = iga::VtkGridType::None;
+  iga::paraview_plugin::VtkGridType phys_sol_grid_type_ = iga::paraview_plugin::VtkGridType::None;
 
   /** vtkGridType for the solid representation of the parametric mappings. */
-  iga::VtkGridType parm_sol_grid_type_ = iga::VtkGridType::None;
+  iga::paraview_plugin::VtkGridType parm_sol_grid_type_ = iga::paraview_plugin::VtkGridType::None;
 
   /** vtkGridType for the knot mesh representation of the physical mappings. */
-  iga::VtkGridType phys_knt_grid_type_ = iga::VtkGridType::None;
+  iga::paraview_plugin::VtkGridType phys_knt_grid_type_ = iga::paraview_plugin::VtkGridType::None;
 
   /** vtkGridType for the knot mesh representation of the parametric mappings. */
-  iga::VtkGridType parm_knt_grid_type_ = iga::VtkGridType::None;
+  iga::paraview_plugin::VtkGridType parm_knt_grid_type_ = iga::paraview_plugin::VtkGridType::None;
 
   /** vtkGridType for the control mesh representation of the physical mappings. */
-  iga::VtkGridType phys_ctr_grid_type_ = iga::VtkGridType::None;
+  iga::paraview_plugin::VtkGridType phys_ctr_grid_type_ = iga::paraview_plugin::VtkGridType::None;
 
   /**
    *  Flag for determining if the solid representation of the physical

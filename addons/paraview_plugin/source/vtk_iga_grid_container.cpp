@@ -43,6 +43,9 @@ using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
+namespace paraview_plugin
+{
+
 VtkIgaGridContainer::
 VtkIgaGridContainer(const ObjContPtr_ objs_container,
                     const GridInfoPtr_ phys_solid_info,
@@ -1195,5 +1198,7 @@ set_control_grids(const GridGensContainer_ generators,
     }
   });
 }
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE

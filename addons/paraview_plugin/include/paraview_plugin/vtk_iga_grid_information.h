@@ -28,6 +28,8 @@
 
 IGA_NAMESPACE_OPEN
 
+namespace paraview_plugin
+{
 
 struct VtkGridInformation
 {
@@ -205,7 +207,7 @@ private:
 
 };
 
-
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

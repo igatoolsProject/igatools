@@ -31,6 +31,9 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+namespace paraview_plugin
+{
+
 template <class Domain>
 auto
 VtkIgaKnotGrid<Domain>::
@@ -323,6 +326,8 @@ EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
 
   return grid;
 }
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

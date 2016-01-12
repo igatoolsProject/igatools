@@ -34,10 +34,14 @@ class vtkMultiBlockDataSet;
 
 IGA_NAMESPACE_OPEN
 
+class ObjectsContainer;
+
+namespace paraview_plugin
+{
+
 template <class Domain> class VtkIgaGrid;
 struct VtkGridInformation;
 struct VtkControlGridInformation;
-class ObjectsContainer;
 
 class VtkIgaGridContainer
 {
@@ -470,6 +474,8 @@ private:
                                 vtkMultiBlockDataSet *const mb);
 
 };
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

@@ -37,12 +37,15 @@ class vtkPointData;
 class vtkCellArray;
 template<class T> class vtkSmartPointer;
 
-
 IGA_NAMESPACE_OPEN
 
 class ObjectsContainer;
 template <int dim> class Quadrature;
 template <int dim, int codim> class Domain;
+
+namespace paraview_plugin
+{
+
 struct VtkGridInformation;
 
 
@@ -321,6 +324,8 @@ private:
                                            const VtkGridPtr_ vtk_grid);
 
 };
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

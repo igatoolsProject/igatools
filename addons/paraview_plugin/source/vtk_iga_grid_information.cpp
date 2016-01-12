@@ -23,6 +23,9 @@
 
 IGA_NAMESPACE_OPEN
 
+namespace paraview_plugin
+{
+
 VtkGridInformation::
 VtkGridInformation(const NumCellsContainer_ &num_cells,
                    const VtkGridType &grid_type)
@@ -239,5 +242,7 @@ print_info (LogStream &out) const
 template SafeSTLArray <Size, 1> VtkGridInformation::get_num_cells_per_element<1>() const;
 template SafeSTLArray <Size, 2> VtkGridInformation::get_num_cells_per_element<2>() const;
 template SafeSTLArray <Size, 3> VtkGridInformation::get_num_cells_per_element<3>() const;
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
