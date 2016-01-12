@@ -225,6 +225,22 @@ private:
 
   template <class Accessor> friend class GridIteratorBase;
   friend class FunctionHandler<dim, codim, range, rank>;
+
+
+
+public:
+
+  /**
+   * Return TRUE if the element index is referring to a valid element in the Grid.
+   *
+   * @note An element with non valido position can happens when we use the ++ operator
+   * on an element that is the last in the list.
+   */
+  bool has_valid_position() const
+  {
+    return domain_elem_->has_valid_position();
+  }
+
 };
 
 

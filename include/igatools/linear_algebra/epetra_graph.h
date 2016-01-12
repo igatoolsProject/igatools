@@ -55,11 +55,15 @@ create_graph(const RowSpace &row_space, const std::string &row_property,
              const Comm &comm)
 {
   std::map<Index,std::set<Index>> dofs_connectivity;
+
+  Assert(row_space.get_grid() == col_space.get_grid(),
+         ExcMessage("Row and column basis built on different grids."));
+
   auto r_elem = row_space.begin();
   auto c_elem = col_space.begin();
   const auto r_end = row_space.end();
 
-  LogStream myout;
+//  LogStream myout;
   for (; r_elem != r_end ;)
   {
     const auto r_dofs = r_elem->get_local_to_global(row_property);
@@ -67,8 +71,13 @@ create_graph(const RowSpace &row_space, const std::string &row_property,
     for (auto &r_dof : r_dofs)
       dofs_connectivity[r_dof].insert(c_dofs.begin(),c_dofs.end());
 
+//    myout.begin_item("Row elem");
     ++r_elem;
+//    myout.end_item();
+
+//    myout.begin_item("Col elem");
     ++c_elem;
+//    myout.end_item();
   }
 
   return create_graph(dofs_connectivity,comm);

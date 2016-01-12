@@ -734,11 +734,14 @@ project_boundary_values(
 
   boundary_values.clear();
 
+//  LogStream myout;
   for (const auto &bndry : bndry_funcs)
   {
     InterGridMap elem_map;
 
     const int s_id = bndry.first;
+
+//    myout.begin_item("SubElem ID: " + std::to_string(s_id));
 
     Assert(bndry.second != nullptr,ExcNullPtr());
     const auto &bndry_func = *bndry.second;
@@ -754,6 +757,8 @@ project_boundary_values(
     const int face_n_dofs = dof_map.size();
     for (Index i = 0; i< face_n_dofs; ++i)
       boundary_values[dof_map[i]] = coeffs[i];
+
+//    myout.end_item();
   }
 }
 
