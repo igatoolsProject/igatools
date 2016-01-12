@@ -48,10 +48,16 @@ private:
 
   void evaluate_0(const ValueVector<Point> &points, ValueVector<Value> &values) const
   {
+    LogStream myout;
+    myout.begin_item("Points");
+    points.print_info(myout);
+    myout.end_item();
+
     auto point = points.begin();
     for (auto &val : values)
     {
-      val = funct_D0(*point);
+//      val = funct_D0(*point);
+      val = (*point)[0] + (*point)[1];
       ++point;
     }
   };
@@ -163,17 +169,28 @@ void PoissonProblem<dim>::assemble()
 
   // Dirichlet boundary conditions
   cout << "> --- FACE BY FACE ---" << endl;
+  LogStream myout;
   for (int face=0; face<2*dim; face++)
   {
+
+    myout.begin_item("Face ID: " + std::to_string(face));
+
     map<Index,shared_ptr<const Function<dim-1,1,1,1>>> dir;
     dir[face] = dirichlet_cond[face];
     std::map<Index,Real> vals;
-    space_tools::project_boundary_values(dir,*phy_basis,face_quad,vals);
+//    space_tools::project_boundary_values(dir,*phy_basis,face_quad,vals);
+
+    space_tools::project_boundary_values<dim,0,1,1>(
+      dir, *phy_basis, face_quad, vals);
+
+
     cout << "  Dirichlet values on face " << face << endl;
     for (auto it = vals.begin(); it!=vals.end(); it++)
     {
       std::cout << "     " << it->first << "   " << it->second << endl;
     }
+
+    myout.end_item();
   }
 
   cout << "> --- ONCE FOR ALL ---" << endl;
@@ -265,7 +282,7 @@ Values<1,1,1> g(Points<2> x)
   y  = x[0]+x[1];
   LogStream myout;
   myout << x << endl;
-  myout << x[0] << "  " << x[1] << endl;
+  myout << "x=" << x[0] << "  y=" << x[1] << endl;
   return y;
 }
 
@@ -295,6 +312,8 @@ int main()
     SubGridElemMap sub_grid_elem_map;
 
     std::map<Index,shared_ptr<const Function<1,1,1>>> dirichlet;
+
+
 
     const auto sub_grid_0    = grid->template get_sub_grid<1>(0,sub_grid_elem_map);
     const auto sub_annulus_0 = annulus->template get_sub_domain<1>(0,sub_grid_elem_map,sub_grid_0);

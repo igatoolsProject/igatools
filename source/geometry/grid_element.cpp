@@ -76,7 +76,18 @@ auto
 GridElement<dim>::
 get_index() const ->  const IndexType &
 {
-  return *index_it_;
+  Assert(this->has_valid_position(),ExcMessage("The element has an invalid position."));
+
+  const auto &index = *index_it_;
+
+#ifndef NDEBUG
+  const auto &f_index = index.get_flat_index();
+  const auto &t_index = index.get_tensor_index();
+  const auto t_index_2 = grid_->flat_to_tensor_element_id(f_index);
+  Assert(t_index == t_index_2,ExcMessage("Different tensor indices (maybe a memory corruption)."));
+#endif
+
+  return index;
 }
 
 
@@ -104,6 +115,9 @@ move_to(const IndexType &elem_id)
 
   const auto &list = grid_->elem_properties_[property_];
   index_it_ = std::find(list.begin(),list.end(),elem_id);
+
+  Assert((index_it_ >= list.begin()) && (index_it_ < list.end()),
+         ExcMessage("The index iterator is pointing to an invalid memory location."));
 }
 
 
@@ -396,7 +410,10 @@ has_valid_position() const
 {
   const auto &list = grid_->elem_properties_[property_];
 
-  return (index_it_ >= list.begin()) && (index_it_ < list.end());
+  const bool index_it_in_list = (index_it_ >= list.begin()) && (index_it_ < list.end());
+
+
+  return index_it_in_list;
 //  index_it_ = std::find(list.begin(),list.end(),*index_it_);
 }
 

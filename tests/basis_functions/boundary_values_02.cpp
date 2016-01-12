@@ -108,11 +108,8 @@ void do_test(const int p, const int num_knots)
 int main()
 {
 
-//  SafeSTLVector<int> degrees{1,2,3};
-//  SafeSTLVector<int> n_knots{2,3,4};
-
-  SafeSTLArray<int,1> degrees{3};
-  SafeSTLArray<int,2> n_knots{2,3};
+  SafeSTLVector<int> degrees{1,2,3};
+  SafeSTLVector<int> n_knots{2,3,4};
 
 
   for (auto deg : degrees)
@@ -124,14 +121,6 @@ int main()
       do_test<3,1,1>(deg,n_knot);
     }
   }
-  // do_test<1,1,1>(3);
-
-//  do_test<2,1,1>(1,2);
-//  do_test<2,1,1>(1,3);
-//  do_test<3,1,1>(2);
-
-
-//  do_test<2,1,1>(3);
 
   return 0;
 }

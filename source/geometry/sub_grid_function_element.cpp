@@ -164,24 +164,21 @@ void
 SubGridFunctionElement<sdim,dim,range>::
 move_to(const IndexType &elem_id)
 {
+//  const auto &grid_elem = this->get_grid_element();
+//  const bool valid_elem = grid_elem.get_grid()->element_has_property(elem_id,grid_elem.get_property());
+//  Assert(valid_elem,
+//      ExcMessage("The element is requested to be moved to an invalid position."));
+
   parent_t::move_to(elem_id);
 
   using SubGridFunc = SubGridFunction<sdim,dim,range>;
   const auto grid_func =
     std::dynamic_pointer_cast<const SubGridFunc>(this->grid_function_);
 
-  if (*this->get_grid_element().get_index_iterator() != *grid_func->get_id_elems_sub_grid().end())
-  {
-    const auto &sub_elem_id = this->get_index();
-    const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
+  const auto &sub_elem_id = this->get_index();
+  const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
 
-    sup_grid_func_element_->move_to(sup_elem_id);
-  }
-  else
-  {
-    sup_grid_func_element_->move_to(*(--grid_func->get_id_elems_sup_grid().end()));
-    ++(*sup_grid_func_element_);
-  }
+  sup_grid_func_element_->move_to(sup_elem_id);
 }
 
 
