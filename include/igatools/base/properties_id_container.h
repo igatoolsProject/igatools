@@ -207,16 +207,21 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 using MapStringSetIntAlias = iga::SafeSTLMap<std::string,iga::SafeSTLSet<int>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetIntAlias,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringSetIntAlias,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringSetIntAlias,cereal::specialization::member_serialize)
 
 using MapStringVectorElemIDAlias0 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<0>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringVectorElemIDAlias0,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringVectorElemIDAlias0,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringVectorElemIDAlias0,cereal::specialization::member_serialize)
 using MapStringVectorElemIDAlias1 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<1>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringVectorElemIDAlias1,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringVectorElemIDAlias1,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringVectorElemIDAlias1,cereal::specialization::member_serialize)
 using MapStringVectorElemIDAlias2 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<2>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringVectorElemIDAlias2,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringVectorElemIDAlias2,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringVectorElemIDAlias2,cereal::specialization::member_serialize)
 using MapStringVectorElemIDAlias3 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<3>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringVectorElemIDAlias3,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringVectorElemIDAlias3,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringVectorElemIDAlias3,cereal::specialization::member_serialize)
 
 
 //#include <igatools/utils/element_index.serialization>

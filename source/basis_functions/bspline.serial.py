@@ -43,7 +43,7 @@ for t in types:
     arrays.append(arr)
     arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
     arrays.append(arr_arr)
-arrays.append('SafeSTLArray<VecBernstOp,%d>' %(dim))
+#arrays.append('SafeSTLArray<VecBernstOp,%d>' %(dim))
 #arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(dim,n_components))
 
 
@@ -56,7 +56,7 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
         arrays.append(arr)
         arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
         arrays.append(arr_arr)
-    arrays.append('SafeSTLArray<VecBernstOp,%d>' %(x.dim))
+#    arrays.append('SafeSTLArray<VecBernstOp,%d>' %(x.dim))
 #    arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(x.dim,n_components))
 
 
@@ -69,8 +69,9 @@ archives = ['OArchive','IArchive']
 
 
 f.write('using VecBernstOp = iga::SafeSTLVector<iga::BernsteinOperator>;\n');
-for ar in archives:
-    f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,VecBernstOp,cereal::specialization::member_serialize)\n' %(ar));
+# Already done in spline_space.serial.py
+# for ar in archives:
+#    f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,VecBernstOp,cereal::specialization::member_serialize)\n' %(ar));
 
 id = 0 
 for space in unique(spaces):

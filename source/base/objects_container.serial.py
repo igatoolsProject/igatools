@@ -88,7 +88,8 @@ f.write('#ifdef SERIALIZATION\n')
 i = 0
 for vt in valid_types:
   f.write('using Alias%d = iga::SafeSTLVector<std::shared_ptr<iga::%s>>;\n' % (i, vt));
-  f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Alias%d,cereal::specialization::member_serialize);\n' % (i));
+  f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,Alias%d,cereal::specialization::member_serialize);\n' % (i));
+  f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,Alias%d,cereal::specialization::member_serialize);\n' % (i));
   i += 1
 
 f.write('#endif // SERIALIZATION\n')
