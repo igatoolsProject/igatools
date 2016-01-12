@@ -66,17 +66,13 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/polymorphic.hpp>
 
-#ifndef NDEBUG
-#include <cereal/archives/xml.hpp>
-using OArchiveCereal = cereal::XMLOutputArchive;
-using IArchiveCereal = cereal::XMLInputArchive;
-//using OArchiveCereal = cereal::BinaryOutputArchive;
-//using IArchiveCereal = cereal::BinaryInputArchive;
-//#else
-//#include <cereal/archives/binary.hpp>
-//using OArchiveCereal = cereal::BinaryOutputArchive;
-//using IArchiveCereal = cereal::BinaryInputArchive;
-#endif // NDEBUG
+// #include <cereal/archives/xml.hpp>
+// using OArchiveCereal = cereal::XMLOutputArchive;
+// using IArchiveCereal = cereal::XMLInputArchive;
+
+#include <cereal/archives/binary.hpp>
+using OArchiveCereal = cereal::BinaryOutputArchive;
+using IArchiveCereal = cereal::BinaryInputArchive;
 
 using namespace cereal;
 
