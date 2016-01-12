@@ -20,78 +20,106 @@
 
 /*
  *  Test for the evaluation of physical space basis functions
- *  with the ball function as a map.
+ *  values and gradients the cylindrical mapping.
  *
- *  author: pauletti
- *  date: 2014/11/10
+ *  author:
+ *  date:
  *
  */
 
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/function_lib.h>
-#include "phys_space_iterator.h"
+#include "../tests.h"
+
+#include <igatools/base/quadrature_lib.h>
+//#include <igatools/functions/function_lib.h>
+//#include <igatools/functions/identity_function.h>
+#include <igatools/functions/grid_function_lib.h>
+#include <igatools/basis_functions/bspline.h>
+#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/phys_space_element_handler.h>
 
 
-
-template<int dim, int sub_dim = dim>
-void
-ball_map(const int n_knots, const int deg, const string prop=DofProperties::active,
-         const bool use_bdry=true)
+template<int dim, int codim=0>
+auto
+create_domain(const shared_ptr<const Grid<dim>> &grid)
 {
-  OUTSTART
+  /*
+  using Function = functions::CylindricalAnnulus<dim>;
+  auto map = Function::const_create(grid, IdentityFunction<dim>::const_create(grid),
+                              1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
+  return map;
+  //*/
 
-  BBox<dim> box;
-  box[0] = {0.5, 1};
-  for (int i=1; i<dim; ++i)
-    box[i] = {0., M_PI/4.};
+  using GridFunc = grid_functions::CylindricalAnnulusGridFunction;
+  auto grid_func = GridFunc::const_create(grid,
+                                          1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
 
-  auto grid  = Grid<dim>::create(box, n_knots);
-  auto map = grid_functions::BallGridFunction<dim>::create(grid);
-  auto phys_basis = create_phys_basis<dim>(grid, map, deg);
+  using Domain = Domain<dim,codim>;
+  auto domain = Domain::const_create(grid_func);
+
+  return domain;
+}
+
+template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
+void elem_values(const int n_knots = 2, const int deg=1)
+{
+
+  const int k = dim;
+  using BspBasis = BSpline<dim, range, rank>;
+  using PhysBasis = PhysicalSpaceBasis<dim,range,rank,codim>;
+
+  auto grid  = Grid<dim>::const_create(n_knots);
+
+  auto space = SplineSpace<dim,range,rank>::const_create(deg,grid);
+  auto bsp_basis = BspBasis::const_create(space);
+  auto phys_domain = create_domain(grid);
+
+  auto phys_basis = PhysBasis::const_create(bsp_basis, phys_domain, Transformation::h_grad);
+
   const int n_qp = 2;
-  elem_values<dim, sub_dim>(phys_basis, n_qp, prop, use_bdry);
+  auto quad = QGauss<k>::create(n_qp);
+  using Flags = space_element::Flags;
+  auto flag = Flags::value |
+              Flags::gradient |
+              Flags::hessian;
 
-  OUTEND
+  auto elem_cache_handler = phys_basis->create_cache_handler();
+  elem_cache_handler->template set_flags<dim>(flag);
+
+  auto elem = phys_basis->begin();
+  auto end = phys_basis->end();
+  elem_cache_handler->init_element_cache(elem,quad);
+
+  using Elem = typename PhysBasis::ElementAccessor;
+  using _Value = typename Elem::_Value;
+  using _Gradient = typename Elem::_Gradient;
+  using _Hessian = typename Elem::_Hessian;
+  for (; elem != end; ++elem)
+  {
+    elem_cache_handler->fill_element_cache(elem);
+
+    out.begin_item("Basis values:");
+    elem->template get_basis_data<_Value, k>(0,DofProperties::active).print_info(out);
+    out.end_item();
+
+    out.begin_item("Basis gradients:");
+    elem->template get_basis_data<_Gradient, k>(0,DofProperties::active).print_info(out);
+    out.end_item();
+
+    out.begin_item("Basis hessians:");
+    elem->template get_basis_data<_Hessian, k>(0,DofProperties::active).print_info(out);
+    out.end_item();
+  }
+
+  out << endl << endl;
 }
-
-template<int dim, int sub_dim = dim>
-void
-ball_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
-{
-  OUTSTART
-
-  BBox<dim> box;
-  box[0] = {0.5, 1};
-  for (int i=1; i<dim; ++i)
-    box[i] = {0., M_PI/4.};
-
-  auto grid  = Grid<dim>::const_create(box, n_knots);
-
-  auto map = grid_functions::BallGridFunction<dim>::const_create(grid);
-  auto phys_basis = create_phys_basis<dim>(grid, map, deg);
-  const int n_qp = 1;
-  elem_values<dim, sub_dim>(phys_basis, n_qp, DofProp::interior, use_bdry);
-  elem_values<dim, sub_dim>(phys_basis, n_qp, DofProp::dirichlet, use_bdry);
-  elem_values<dim, sub_dim>(phys_basis, n_qp, DofProp::neumman, use_bdry);
-  OUTEND
-}
-
-
-
-
 
 
 int main()
 {
+  out.depth_console(10);
 
-  //  ball_map_prop<1,1>(2,1,true);
+  elem_values<3>();
 
-
-  ball_map<1,1>(2,1);
-  ball_map<2,1>(3,2);
-  ball_map<3,3>(2,1);
-
-  //ball_map_prop<2,1>(3,1);
-  //ball_map_prop<2,1>(3,2, false);
   return 0;
 }

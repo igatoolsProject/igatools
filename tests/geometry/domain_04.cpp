@@ -18,91 +18,89 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/**
- *  @file
- *  @brief Domain using an IgGridFunction
- *  @author martinelli
- *  @date Nov 06, 2015
+/*
+ *  Test for linear domain class
+ *  author: pauletti
+ *  date: Oct 11, 2014
  */
 
 #include "../tests.h"
 
-#include <igatools/functions/ig_grid_function.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
-#include <igatools/geometry/domain_handler.h>
-
 
 template<int dim, int codim>
-void ig_mapping(const int deg = 1)
+void linear_grid_func()
 {
-  OUTSTART
-  out.begin_item("ig_mapping<dim=" + std::to_string(dim) +",codim=" + std::to_string(codim) +">");
+  out.begin_item("linear_grid_func<dim=" + std::to_string(dim) +",codim=" + std::to_string(codim) +">");
 
+  const int space_dim = dim + codim;
+  using Function = grid_functions::LinearGridFunction<dim,space_dim>;
+
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i=0; i<space_dim; i++)
+  {
+    for (int j=0; j<dim; j++)
+      if (j == i)
+        A[j][j] = 2.;
+    b[i] = i;
+  }
 
   auto grid = Grid<dim>::const_create(3);
-  auto space = SplineSpace<dim, dim+codim>::const_create(deg, grid);
-  auto basis = BSpline<dim, dim+codim>::const_create(space);
+  auto F = Function::const_create(grid, A, b);
 
-  auto c_p = EpetraTools::create_vector(*basis, DofProperties::active,Epetra_SerialComm());
-  (*c_p)[0] = 1.;
-  auto F = IgGridFunction<dim,dim+codim>::const_create(basis, *c_p);
-  auto domain = Domain<dim, codim>::const_create(F);
+  using Flags = domain_element::Flags;
+  auto flag = Flags::inv_hessian|Flags::inv_jacobian;
+
+  auto domain = Domain<dim,codim>::const_create(F);
 
   auto domain_handler = domain->create_cache_handler();
 
-  using Flags = domain_element::Flags;
-  auto flag = Flags::point | Flags::jacobian | Flags::hessian;
   domain_handler->set_element_flags(flag);
-
 
   auto elem = domain->begin();
   auto end  = domain->end();
+
 
   auto quad = QGauss<dim>::create(2);
   domain_handler->init_cache(elem,quad);
   int elem_id = 0;
   for (; elem != end; ++elem, ++elem_id)
   {
-    out.begin_item("Element " +std::to_string(elem_id));
+    out.begin_item("Element " + std::to_string(elem_id));
 
     out << "Element ID: " << elem->get_index() << std::endl;
 
     domain_handler->fill_element_cache(elem);
 
-    out.begin_item("Points:");
-    elem->get_element_points().print_info(out);
+    out.begin_item("Inverse Jacobian:");
+    elem->template get_values_from_cache<domain_element::_InvJacobian,dim>(0).print_info(out);
     out.end_item();
 
-    out.begin_item("Jacobians:");
-    elem->get_element_jacobians().print_info(out);
-    out.end_item();
-
-    out.begin_item("Hessians:");
-    elem->get_element_hessians().print_info(out);
+    out.begin_item("Inverse Hessian:");
+    elem->template get_values_from_cache<domain_element::_InvHessian,dim>(0).print_info(out);
     out.end_item();
 
     out.end_item();
   }
 
   out.end_item();
-  OUTEND
 }
 
 
 int main()
 {
-  ig_mapping<1,0>();
-  ig_mapping<2,0>();
-  ig_mapping<3,0>();
+  linear_grid_func<1,0>();
+  linear_grid_func<2,0>();
+  linear_grid_func<3,0>();
 
-  ig_mapping<1,1>();
-  ig_mapping<2,1>();
+  linear_grid_func<1,1>();
+  linear_grid_func<2,1>();
 
-  ig_mapping<1,2>();
+  linear_grid_func<1,2>();
 
   return 0;
 }

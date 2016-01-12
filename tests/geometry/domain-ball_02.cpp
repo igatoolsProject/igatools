@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the BallGridFunction class as a mapping
+ *  Test for the BallGridFunction class as a domain
  *  Computing the volume
  *
  *  author: pauletti

@@ -18,10 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for linear mapping class
- *  author: pauletti
- *  date: Oct 11, 2014
+/**
+ *  @file
+ *  @brief Domain using a linear Function
+ *  @author martinelli
+ *  @date Nov 06, 2105
  */
 
 #include "../tests.h"
@@ -30,13 +31,16 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
+#include <igatools/geometry/domain_handler.h>
 
 template<int dim, int codim>
-void linear_grid_func()
+void linear_domain()
 {
-  out.begin_item("linear_grid_func<dim=" + std::to_string(dim) +",codim=" + std::to_string(codim) +">");
+  OUTSTART
 
-  const int space_dim = dim + codim;
+  out.begin_item("linear_domain<dim=" + std::to_string(dim) +",codim=" + std::to_string(codim) +">");
+
+  const int space_dim = dim+codim;
   using Function = grid_functions::LinearGridFunction<dim,space_dim>;
 
   typename Function::Value    b;
@@ -48,25 +52,23 @@ void linear_grid_func()
         A[j][j] = 2.;
     b[i] = i;
   }
-
   auto grid = Grid<dim>::const_create(3);
   auto F = Function::const_create(grid, A, b);
-
-  using Flags = domain_element::Flags;
-  auto flag = Flags::inv_hessian|Flags::inv_jacobian;
-
   auto domain = Domain<dim,codim>::const_create(F);
 
   auto domain_handler = domain->create_cache_handler();
 
+  using Flags = domain_element::Flags;
+  auto flag = Flags::point | Flags::jacobian |
+              Flags::hessian |Flags::measure|Flags::w_measure;
   domain_handler->set_element_flags(flag);
+
 
   auto elem = domain->begin();
   auto end  = domain->end();
 
-
   auto quad = QGauss<dim>::create(2);
-  domain_handler->init_cache(elem,quad);
+  domain_handler->init_cache(elem, quad);
   int elem_id = 0;
   for (; elem != end; ++elem, ++elem_id)
   {
@@ -76,31 +78,47 @@ void linear_grid_func()
 
     domain_handler->fill_element_cache(elem);
 
-    out.begin_item("Inverse Jacobian:");
-    elem->template get_values_from_cache<domain_element::_InvJacobian,dim>(0).print_info(out);
+    out.begin_item("Ref. Points:");
+    elem->get_grid_function_element().get_grid_element().get_element_points().print_info(out);
     out.end_item();
 
-    out.begin_item("Inverse Hessian:");
-    elem->template get_values_from_cache<domain_element::_InvHessian,dim>(0).print_info(out);
+    out.begin_item("Points:");
+    elem->get_element_points().print_info(out);
+    out.end_item();
+
+    out.begin_item("Jacobians:");
+    elem->get_element_jacobians().print_info(out);
+    out.end_item();
+
+    out.begin_item("Hessians:");
+    elem->get_element_hessians().print_info(out);
+    out.end_item();
+
+    out.begin_item("Measures:");
+    elem->get_element_measures().print_info(out);
+    out.end_item();
+
+    out.begin_item("W * Measuress:");
+    elem->get_element_w_measures().print_info(out);
     out.end_item();
 
     out.end_item();
   }
-
   out.end_item();
+  OUTEND
 }
 
 
 int main()
 {
-  linear_grid_func<1,0>();
-  linear_grid_func<2,0>();
-  linear_grid_func<3,0>();
+  linear_domain<1,0>();
+  linear_domain<2,0>();
+  linear_domain<3,0>();
 
-  linear_grid_func<1,1>();
-  linear_grid_func<2,1>();
+  linear_domain<1,1>();
+  linear_domain<2,1>();
 
-  linear_grid_func<1,2>();
+  linear_domain<1,2>();
 
   return 0;
 }

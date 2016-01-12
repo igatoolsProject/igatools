@@ -1,7 +1,7 @@
 ========================================================================
-linear_mapping
+linear_domain
 ========================================================================
-linear_mapping<dim=1,codim=0>
+linear_domain<dim=1,codim=0>
    Element 0
       Element ID: Flat ID: 0    Tensor ID: [0]
       Ref. Points:
@@ -60,9 +60,9 @@ linear_mapping<dim=1,codim=0>
 ========================================================================
 
 ========================================================================
-linear_mapping
+linear_domain
 ========================================================================
-linear_mapping<dim=2,codim=0>
+linear_domain<dim=2,codim=0>
    Element 0
       Element ID: Flat ID: 0    Tensor ID: [0,0]
       Ref. Points:
@@ -175,9 +175,9 @@ linear_mapping<dim=2,codim=0>
 ========================================================================
 
 ========================================================================
-linear_mapping
+linear_domain
 ========================================================================
-linear_mapping<dim=3,codim=0>
+linear_domain<dim=3,codim=0>
    Element 0
       Element ID: Flat ID: 0    Tensor ID: [0,0,0]
       Ref. Points:
@@ -398,9 +398,9 @@ linear_mapping<dim=3,codim=0>
 ========================================================================
 
 ========================================================================
-linear_mapping
+linear_domain
 ========================================================================
-linear_mapping<dim=1,codim=1>
+linear_domain<dim=1,codim=1>
    Element 0
       Element ID: Flat ID: 0    Tensor ID: [0]
       Ref. Points:
@@ -459,9 +459,9 @@ linear_mapping<dim=1,codim=1>
 ========================================================================
 
 ========================================================================
-linear_mapping
+linear_domain
 ========================================================================
-linear_mapping<dim=2,codim=1>
+linear_domain<dim=2,codim=1>
    Element 0
       Element ID: Flat ID: 0    Tensor ID: [0,0]
       Ref. Points:
@@ -574,9 +574,9 @@ linear_mapping<dim=2,codim=1>
 ========================================================================
 
 ========================================================================
-linear_mapping
+linear_domain
 ========================================================================
-linear_mapping<dim=1,codim=2>
+linear_domain<dim=1,codim=2>
    Element 0
       Element ID: Flat ID: 0    Tensor ID: [0]
       Ref. Points:

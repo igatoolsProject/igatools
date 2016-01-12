@@ -20,98 +20,113 @@
 
 /*
  *  Test for the evaluation of physical space basis functions
- *  values and gradients the cylindrical mapping.
+ *  values and gradients with the identity mapping
  *
- *  author:
- *  date:
+ *  author: pauletti
+ *  date: 2013-10-02
  *
  */
 
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-//#include <igatools/functions/function_lib.h>
-//#include <igatools/functions/identity_function.h>
 #include <igatools/functions/grid_function_lib.h>
+
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_space_basis.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
-
 template<int dim, int codim=0>
 auto
-create_domain(const shared_ptr<const Grid<dim>> &grid)
+create_function(shared_ptr<const Grid<dim>> grid)
 {
-  /*
-  using Function = functions::CylindricalAnnulus<dim>;
-  auto map = Function::const_create(grid, IdentityFunction<dim>::const_create(grid),
-                              1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
-  return map;
-  //*/
 
-  using GridFunc = grid_functions::CylindricalAnnulusGridFunction;
-  auto grid_func = GridFunc::const_create(grid,
-                                          1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
+  using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
+  typename Function::Value    b;
+  typename Function::Gradient A;
 
-  using Domain = Domain<dim,codim>;
-  auto domain = Domain::const_create(grid_func);
+  for (int j=0; j<dim; j++)
+    A[j][j] = 1.;
 
-  return domain;
+  return Function::const_create(grid,A, b);
 }
 
-template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
-void elem_values(const int n_knots = 2, const int deg=1)
-{
 
-  const int k = dim;
-  using BspBasis = BSpline<dim, range, rank>;
-  using PhysBasis = PhysicalSpaceBasis<dim,range,rank,codim>;
+template <int dim, int k, int range=1, int rank=1, int codim = 0>
+void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
+{
+  OUTSTART
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
   auto space = SplineSpace<dim,range,rank>::const_create(deg,grid);
-  auto bsp_basis = BspBasis::const_create(space);
-  auto phys_domain = create_domain(grid);
 
-  auto phys_basis = PhysBasis::const_create(bsp_basis, phys_domain, Transformation::h_grad);
+  auto bsp_basis = BSpline<dim, range, rank>::const_create(space);
 
-  const int n_qp = 2;
+  auto map_func = create_function(grid);
+
+  auto phys_basis =
+    PhysicalSpaceBasis<dim,range,rank,codim>::const_create(
+      bsp_basis,
+      Domain<dim,0>::const_create(map_func), Transformation::h_grad);
+
+
   auto quad = QGauss<k>::create(n_qp);
-  using Flags = space_element::Flags;
-  auto flag = Flags::value |
-              Flags::gradient |
-              Flags::hessian;
 
-  auto elem_cache_handler = phys_basis->create_cache_handler();
-  elem_cache_handler->template set_flags<dim>(flag);
+  using space_element::Flags;
+  auto flag = Flags::value|
+              Flags::gradient|
+              Flags::hessian |
+              Flags::point;
+
+  auto elem_filler = phys_basis->create_cache_handler();
+  elem_filler->template set_flags<k>(flag);
 
   auto elem = phys_basis->begin();
   auto end = phys_basis->end();
-  elem_cache_handler->init_element_cache(elem,quad);
+  elem_filler->init_face_cache(elem,quad);
 
-  using Elem = typename PhysBasis::ElementAccessor;
-  using _Value = typename Elem::_Value;
-  using _Gradient = typename Elem::_Gradient;
-  using _Hessian = typename Elem::_Hessian;
+
+  using space_element::_Value;
+  using space_element::_Gradient;
+  using space_element::_Hessian;
+  int elem_id = 0;
   for (; elem != end; ++elem)
   {
-    elem_cache_handler->fill_element_cache(elem);
+    const auto &grid_elem = elem->get_grid_element();
+    if (grid_elem.is_boundary())
+    {
+      out.begin_item("Element " + std::to_string(elem_id));
+      out << "Element index: " << grid_elem.get_index() << endl;
+      for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
+      {
+        if (grid_elem.is_boundary(s_id))
+        {
+          out.begin_item("Face " + std::to_string(s_id));
+          elem_filler->fill_face_cache(elem,s_id);
 
-    out.begin_item("Basis values:");
-    elem->template get_basis_data<_Value, k>(0,DofProperties::active).print_info(out);
-    out.end_item();
+          out.begin_item("Values: ");
+          elem->template get_basis_data<_Value, k>(s_id,DofProperties::active).print_info(out);
+          out.end_item();
 
-    out.begin_item("Basis gradients:");
-    elem->template get_basis_data<_Gradient, k>(0,DofProperties::active).print_info(out);
-    out.end_item();
+          out.begin_item("Gradients: ");
+          elem->template get_basis_data<_Gradient, k>(s_id,DofProperties::active).print_info(out);
+          out.end_item();
 
-    out.begin_item("Basis hessians:");
-    elem->template get_basis_data<_Hessian, k>(0,DofProperties::active).print_info(out);
-    out.end_item();
+          out.begin_item("Hessians: ");
+          elem->template get_basis_data<_Hessian, k>(s_id,DofProperties::active).print_info(out);
+          out.end_item();
+
+          out.end_item();
+        }
+      }
+      out.end_item();
+    }
+    ++elem_id;
   }
+  OUTEND
 
-  out << endl << endl;
 }
 
 
@@ -119,7 +134,17 @@ int main()
 {
   out.depth_console(10);
 
-  elem_values<3>();
+  const int p = 1;
+
+  for (int num_knots = 2; num_knots<4; ++num_knots)
+  {
+    elem_values<2,1>(num_knots, p, 2);
+    elem_values<3,2>(num_knots, p, 2);
+  }
 
   return 0;
 }
+
+
+
+

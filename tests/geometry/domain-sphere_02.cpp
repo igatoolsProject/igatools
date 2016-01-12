@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the SphereGridFunction class as a mapping
+ *  Test for the SphereGridFunction class as a domain
  *
  *  author: martinelli
  *  date: Nov 06, 2015
