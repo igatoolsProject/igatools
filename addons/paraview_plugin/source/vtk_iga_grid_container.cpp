@@ -604,162 +604,34 @@ void
 VtkIgaGridContainer::
 fill_objects_container(const ObjContPtr_ objs_container_old)
 {
-  // Adding all the constant and non constant functions to the new container.
-  // It is checked if its domains are present in the container.
-  // If not, they are included in the new container.
+    // Adding missing object into the container.
+    objs_container_old->fill_not_inserted_dependencies();
 
-  // TODO: to document further here.
-
-  // All the present functions are inserted into the new container.
-  // The domain of every function is obtained. If it is not included
-  // in the old container, it is inserted directly into the new container.
-
-  FunctionPtrs_ valid_f_ptr_types;
-  for_each(valid_f_ptr_types, [&](const auto &ptr_type)
-  {
-    using FunctionType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-    using DomainType = Domain<FunctionType::dim, FunctionType::codim>;
-
-    // Non constant functions from the old container.
-    for (const auto &id : objs_container_old->template get_object_ids<FunctionType>())
+    // Adding all the present objects in the container to a new container,
+    // all of them as constant.
+    auto lambda_insert_as_const = [&](const auto &ptr_type)
     {
-      const auto func = objs_container_old->template get_object<FunctionType>(id);
-      objs_container_->template insert_const_object<FunctionType> (func);
+        using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
+        for (const auto &id : objs_container_old->template get_object_ids<Type>())
+            objs_container_->template insert_const_object<Type>(
+                    objs_container_old->template get_object<Type>(id));
 
-      const auto domain = func->get_domain();
-      const auto dom_id = domain->get_object_id();
-      if (!objs_container_old->template is_const_object_present<DomainType>(dom_id) &&
-          !objs_container_old->template is_object_present<DomainType>(dom_id))
-        objs_container_->template insert_const_object<DomainType> (domain);
-    }
+        for (const auto &id : objs_container_old->template get_const_object_ids<Type>())
+            objs_container_->template insert_const_object<Type>(
+                    objs_container_old->template get_const_object<Type>(id));
+    };
 
-    // Constant functions from the old container.
-    for (const auto &id : objs_container_old->template get_const_object_ids<FunctionType>())
-    {
-      const auto func = objs_container_old->template get_const_object<FunctionType>(id);
-      objs_container_->template insert_const_object<FunctionType> (func);
+    GridPtrs_ valid_g_ptr_types;
+    for_each(valid_g_ptr_types, lambda_insert_as_const);
 
-      const auto domain = func->get_domain();
-      const auto dom_id = domain->get_object_id();
-      if (!objs_container_old->template is_const_object_present<DomainType>(dom_id) &&
-          !objs_container_old->template is_object_present<DomainType>(dom_id))
-        objs_container_->template insert_const_object<DomainType> (domain);
-    }
-  });
+    GridFuncPtrs_ valid_gf_ptr_types;
+    for_each(valid_gf_ptr_types, lambda_insert_as_const);
 
+    DomainPtrs_ valid_d_ptr_types;
+    for_each(valid_d_ptr_types, lambda_insert_as_const);
 
-  // Adding all the domains to the new container.
-  // It is checked if its grid functions are present into the container.
-  // If not, they are inserted into the new container.
-  DomainPtrs_ valid_d_ptr_types;
-  for_each(valid_d_ptr_types, [&](const auto &ptr_type)
-  {
-    using DomainType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-    using GridFuncType = typename DomainType::GridFuncType;
-
-    // Inserting grid functions from the previously inserted domains.
-    for (const auto &id : objs_container_->template get_const_object_ids<DomainType>())
-    {
-      const auto domain = objs_container_->template get_const_object<DomainType>(id);
-
-      const auto grid_func = domain->get_grid_function();
-      const auto gf_id = grid_func->get_object_id();
-      if (!objs_container_old->template is_const_object_present<GridFuncType>(gf_id) &&
-          !objs_container_old->template is_object_present<GridFuncType>(gf_id))
-        objs_container_->template insert_const_object<GridFuncType> (grid_func);
-    }
-
-    // Non constant domains from the old container.
-    for (const auto &id : objs_container_old->template get_object_ids<DomainType>())
-    {
-      const auto domain = objs_container_old->template get_object<DomainType>(id);
-      objs_container_->template insert_const_object<DomainType> (domain);
-
-      const auto grid_func = domain->get_grid_function();
-      const auto gf_id = grid_func->get_object_id();
-      if (!objs_container_old->template is_const_object_present<GridFuncType>(gf_id) &&
-          !objs_container_old->template is_object_present<GridFuncType>(gf_id))
-        objs_container_->template insert_const_object<GridFuncType> (grid_func);
-    }
-
-    // Constant domains from the old container.
-    for (const auto &id : objs_container_old->template get_const_object_ids<DomainType>())
-    {
-      const auto domain = objs_container_old->template get_const_object<DomainType>(id);
-      objs_container_->template insert_const_object<DomainType> (domain);
-
-      const auto grid_func = domain->get_grid_function();
-      const auto gf_id = grid_func->get_object_id();
-      if (!objs_container_old->template is_const_object_present<GridFuncType>(gf_id) &&
-          !objs_container_old->template is_object_present<GridFuncType>(gf_id))
-        objs_container_->template insert_const_object<GridFuncType> (grid_func);
-    }
-  });
-
-
-  // Adding all the grid functions to the new container.
-  // It is checked if its grids are present in the container. If not,
-  // they are included in the new container.
-  GridFuncPtrs_ valid_gf_ptr_types;
-  for_each(valid_gf_ptr_types, [&](const auto &ptr_type)
-  {
-    using GridFuncType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-    using GridType = typename GridFuncType::GridType;
-
-    // Inserting grids from the previously inserted grid functions.
-    for (const auto &id : objs_container_->template get_const_object_ids<GridFuncType>())
-    {
-      const auto grid_func = objs_container_->template get_const_object<GridFuncType>(id);
-
-      const auto grid = grid_func->get_grid();
-      const auto g_id = grid->get_object_id();
-      if (!objs_container_old->template is_const_object_present<GridType>(g_id) &&
-          !objs_container_old->template is_object_present<GridType>(g_id))
-        objs_container_->template insert_const_object<GridType> (grid);
-    }
-
-    // Non constant grid functions from the old container.
-    for (const auto &id : objs_container_old->template get_object_ids<GridFuncType>())
-    {
-      const auto grid_func = objs_container_old->template get_object<GridFuncType>(id);
-      objs_container_->template insert_const_object<GridFuncType> (grid_func);
-
-      const auto grid = grid_func->get_grid();
-      const auto g_id = grid->get_object_id();
-      if (!objs_container_old->template is_const_object_present<GridType>(g_id) &&
-          !objs_container_old->template is_object_present<GridType>(g_id))
-        objs_container_->template insert_const_object<GridType> (grid);
-    }
-
-    // Constant grid functions from the old container.
-    for (const auto &id : objs_container_old->template get_const_object_ids<GridFuncType>())
-    {
-      const auto grid_func = objs_container_old->template get_const_object<GridFuncType>(id);
-      objs_container_->template insert_const_object<GridFuncType> (grid_func);
-
-      const auto grid = grid_func->get_grid();
-      const auto g_id = grid->get_object_id();
-      if (!objs_container_old->template is_const_object_present<GridType>(g_id) &&
-          !objs_container_old->template is_object_present<GridType>(g_id))
-        objs_container_->template insert_const_object<GridType> (grid);
-    }
-  });
-
-
-  // Adding all the grids to the new container.
-  GridPtrs_ valid_g_ptr_types;
-  for_each(valid_g_ptr_types, [&](const auto &ptr_type)
-  {
-    using GridType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-
-    // Non-const objects.
-    for (const auto &id : objs_container_old->template get_object_ids<GridType>())
-      objs_container_->template insert_const_object<GridType> (objs_container_old->template get_object<GridType>(id));
-
-    // Const objects.
-    for (const auto &id : objs_container_old->template get_const_object_ids<GridType>())
-      objs_container_->template insert_const_object<GridType> (objs_container_old->template get_const_object<GridType>(id));
-  });
+    FunctionPtrs_ valid_f_ptr_types;
+    for_each(valid_f_ptr_types, lambda_insert_as_const);
 }
 
 
