@@ -263,6 +263,18 @@ public:
 
   bool same_grid_function_of(const self_t &elem) const;
 
+
+  /**
+   * Return TRUE if the element index is referring to a valid element in the Grid.
+   *
+   * @note An element with non valido position can happens when we use the ++ operator
+   * on an element that is the last in the list.
+   */
+  bool has_valid_position() const
+  {
+    return this->get_grid_element().has_valid_position();
+  }
+
 };
 
 

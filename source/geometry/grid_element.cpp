@@ -76,7 +76,18 @@ auto
 GridElement<dim>::
 get_index() const ->  const IndexType &
 {
-  return *index_it_;
+  Assert(this->has_valid_position(),ExcMessage("The element has an invalid position."));
+
+  const auto &index = *index_it_;
+
+#ifndef NDEBUG
+  const auto &f_index = index.get_flat_index();
+  const auto &t_index = index.get_tensor_index();
+  const auto t_index_2 = grid_->flat_to_tensor_element_id(f_index);
+  Assert(t_index == t_index_2,ExcMessage("Different tensor indices (maybe a memory corruption)."));
+#endif
+
+  return index;
 }
 
 
@@ -104,6 +115,9 @@ move_to(const IndexType &elem_id)
 
   const auto &list = grid_->elem_properties_[property_];
   index_it_ = std::find(list.begin(),list.end(),elem_id);
+
+  Assert((index_it_ >= list.begin()) && (index_it_ < list.end()),
+         ExcMessage("The index iterator is pointing to an invalid memory location."));
 }
 
 
@@ -163,16 +177,19 @@ vertex(const int i) const -> Point
   }
   //*/
 
-  const TensorIndex<dim> &vertex_id_origin = get_index().get_tensor_index();
+  const auto &elem_id = this->get_index();
+//  const auto &vertex_f_id_origin = elem_id.get_flat_index();
+//  const auto vertex_t_id_origin = grid_->flat_to_tensor_element_id(vertex_f_id_origin);
+  const auto &vertex_t_id_origin = elem_id.get_tensor_index();
 
   TensorSize<dim> n_vertices_elem(2);
   const auto w = MultiArrayUtils<dim>::compute_weight(n_vertices_elem);
-  const auto vertex_id_loc = MultiArrayUtils<dim>::flat_to_tensor_index(i,w);
+  const auto vertex_t_id_loc = MultiArrayUtils<dim>::flat_to_tensor_index(i,w);
 
   Point vertex;
   for (int j = 0 ; j < dim ; ++j)
   {
-    const auto v_id = vertex_id_loc[j] + vertex_id_origin[j];
+    const auto v_id = vertex_t_id_loc[j] + vertex_t_id_origin[j];
 //    Assert(v_id >= 0 && v_id < n_knots_dir[j],
 //        ExcIndexRange(v_id,0,n_knots_dir[j]));
     vertex[j] = grid_->get_knot_coordinates(j)[v_id];
@@ -384,6 +401,22 @@ get_index_iterator() const -> const ListIt &
 {
   return index_it_;
 }
+
+
+template <int dim>
+bool
+GridElement<dim>::
+has_valid_position() const
+{
+  const auto &list = grid_->elem_properties_[property_];
+
+  const bool index_it_in_list = (index_it_ >= list.begin()) && (index_it_ < list.end());
+
+
+  return index_it_in_list;
+//  index_it_ = std::find(list.begin(),list.end(),*index_it_);
+}
+
 
 #if 0
 template <int dim>

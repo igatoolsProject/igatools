@@ -117,7 +117,16 @@ public:
   virtual void operator++() override;
 
 
-  void move_to(const IndexType &elem_id) override;
+  /**
+   * @brief Move the element to the position specified by the index<tt>elem_id</tt>.
+   *
+   * In Debug mode an assertion will be raised
+   * if the GridElement specified by <tt>elem_id</tt> has not the same property of the
+   * calling GridElement.
+   *
+   * @warning Use this function only if you know what you are doing
+   */
+  void move_to(const IndexType &elem_id) override final;
 
 
 

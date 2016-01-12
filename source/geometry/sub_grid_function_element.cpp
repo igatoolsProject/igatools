@@ -70,11 +70,30 @@ void
 SubGridFunctionElement<sdim,dim,range>::
 operator++()
 {
-  parent_t::operator++();
-
   using SubGridFunc = SubGridFunction<sdim,dim,range>;
   const auto grid_func =
     std::dynamic_pointer_cast<const SubGridFunc>(this->grid_function_);
+
+#if 0
+  LogStream myout;
+  myout.begin_item("Before ++");
+
+  {
+    const auto &sub_elem_id = this->get_index();
+    myout.begin_item("sub_elem_id");
+    sub_elem_id.print_info(myout);
+    myout.end_item();
+
+//  const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
+    const auto &sup_elem_id = sup_grid_func_element_->get_index();
+    myout.begin_item("sup_elem_id");
+    sup_elem_id.print_info(myout);
+    myout.end_item();
+  }
+
+  myout.end_item();
+#endif
+
 
 #if 0
   LogStream out;
@@ -90,24 +109,53 @@ operator++()
 
   out.end_item();
 #endif
-  if (*this->get_grid_element().get_index_iterator() != *grid_func->get_id_elems_sub_grid().end())
+
+#if 0
+  myout.begin_item("this_index");
+  this->get_index().print_info(myout);
+  myout.end_item();
+
+  myout.begin_item("last_index");
+  grid_func->get_id_elems_sub_grid().rbegin()->print_info(myout);
+  myout.end_item();
+#endif
+
+  // if the iterator is different from last, advance normally
+  if (this->get_index() != *grid_func->get_id_elems_sub_grid().rbegin())
   {
+    parent_t::operator++();
+
     const auto &sub_elem_id = this->get_index();
     const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
 
     sup_grid_func_element_->move_to(sup_elem_id);
-//      out << "Sub elem ID: " << sub_elem_id << "    Sup elem ID: " << sup_elem_id << std::endl;
   }
+  // if the iterator is last, then advance to an invalid position
   else
   {
-//      const auto & sup_elem_id = *(grid_func->get_id_elems_sup_grid().end());
-//      sup_grid_func_element_->move_to(sup_elem_id);
+    parent_t::operator++();
     sup_grid_func_element_->move_to(*(--grid_func->get_id_elems_sup_grid().end()));
     ++(*sup_grid_func_element_);
-//      out << "Sub elem ID: " << this->get_index() << "    Sup elem ID: " << sup_grid_func_element_->get_index() << std::endl;
+
   }
 
-//    Assert(false,ExcNotImplemented());
+#if 0
+  myout.begin_item("After ++");
+  {
+    const auto &sub_elem_id = this->get_index();
+    myout.begin_item("sub_elem_id");
+    sub_elem_id.print_info(myout);
+    myout.end_item();
+
+//  const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
+    const auto &sup_elem_id = sup_grid_func_element_->get_index();
+    myout.begin_item("sup_elem_id");
+    sup_elem_id.print_info(myout);
+    myout.end_item();
+  }
+
+  myout.end_item();
+#endif
 }
 
 
@@ -116,24 +164,21 @@ void
 SubGridFunctionElement<sdim,dim,range>::
 move_to(const IndexType &elem_id)
 {
+//  const auto &grid_elem = this->get_grid_element();
+//  const bool valid_elem = grid_elem.get_grid()->element_has_property(elem_id,grid_elem.get_property());
+//  Assert(valid_elem,
+//      ExcMessage("The element is requested to be moved to an invalid position."));
+
   parent_t::move_to(elem_id);
 
   using SubGridFunc = SubGridFunction<sdim,dim,range>;
   const auto grid_func =
     std::dynamic_pointer_cast<const SubGridFunc>(this->grid_function_);
 
-  if (*this->get_grid_element().get_index_iterator() != *grid_func->get_id_elems_sub_grid().end())
-  {
-    const auto &sub_elem_id = this->get_index();
-    const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
+  const auto &sub_elem_id = this->get_index();
+  const auto &sup_elem_id = grid_func->get_sup_element_id(sub_elem_id);
 
-    sup_grid_func_element_->move_to(sup_elem_id);
-  }
-  else
-  {
-    sup_grid_func_element_->move_to(*(--grid_func->get_id_elems_sup_grid().end()));
-    ++(*sup_grid_func_element_);
-  }
+  sup_grid_func_element_->move_to(sup_elem_id);
 }
 
 
