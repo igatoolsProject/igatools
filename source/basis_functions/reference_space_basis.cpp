@@ -25,7 +25,7 @@
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 
 
 using std::shared_ptr;
@@ -36,10 +36,10 @@ IGA_NAMESPACE_OPEN
 
 
 
-template<int dim, int range, int rank>
+template<int dim_,int range_,int rank_>
 template<int sdim>
 auto
-ReferenceSpaceBasis<dim, range, rank>::
+ReferenceSpaceBasis<dim_,range_,rank_>::
 get_ref_sub_space(const int sub_elem_id,
                   InterSpaceMap<sdim> &dof_map,
                   const std::shared_ptr<const Grid<sdim>> &sub_grid) const
@@ -73,10 +73,10 @@ get_ref_sub_space(const int sub_elem_id,
 
 
 
-template<int dim, int range, int rank>
+template<int dim_,int range_,int rank_>
 template<int k>
 auto
-ReferenceSpaceBasis<dim, range, rank>::
+ReferenceSpaceBasis<dim_,range_,rank_>::
 get_sub_space(const int s_id,
               InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
@@ -138,9 +138,9 @@ get_sub_space(const int s_id,
 
 
 #if 0
-template<int dim, int range, int rank>
+template<int dim_,int range_,int rank_>
 int
-ReferenceSpaceBasis<dim, range, rank>::
+ReferenceSpaceBasis<dim_,range_,rank_>::
 get_max_degree() const
 {
   return this->get_spline_space()->get_max_degree();
@@ -149,9 +149,9 @@ get_max_degree() const
 
 
 #ifdef MESH_REFINEMENT
-template<int dim, int range, int rank>
+template<int dim_,int range_,int rank_>
 void
-ReferenceSpaceBasis<dim, range, rank>::
+ReferenceSpaceBasis<dim_,range_,rank_>::
 create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 {
   Assert(space != nullptr, ExcNullPtr());
@@ -168,15 +168,42 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 }
 
 
-template<int dim, int range, int rank>
+template<int dim_,int range_,int rank_>
 auto
-ReferenceSpaceBasis<dim, range, rank>::
+ReferenceSpaceBasis<dim_,range_,rank_>::
 get_basis_previous_refinement() const -> std::shared_ptr<const self_t>
 {
   return ref_basis_previous_refinement_;
 }
 
 #endif // MESH_REFINEMENT
+
+
+
+#ifdef SERIALIZATION
+
+template<int dim_,int range_,int rank_>
+template<class Archive>
+void
+ReferenceSpaceBasis<dim_,range_,rank_>::
+serialize(Archive &ar)
+{
+  using std::to_string;
+  const std::string base_name = "Space_" +
+                                to_string(dim_) + "_" +
+                                to_string(0) + "_" +
+                                to_string(range_) + "_" +
+                                to_string(rank_) + "_hgrad";
+
+  ar &make_nvp(base_name,base_class<base_t>(this));
+
+#ifdef MESH_REFINEMENT
+  auto tmp = std::const_pointer_cast<RefBasis>(ref_basis_previous_refinement_);
+  ar &make_nvp("ref_basis_previous_refinement_",tmp);
+  ref_basis_previous_refinement_ = std::const_pointer_cast<const RefBasis>(tmp);
+#endif
+}
+#endif // SERIALIZATION
 
 
 IGA_NAMESPACE_CLOSE

@@ -175,13 +175,6 @@ public:
                const BasisEndBehaviour &end_b = BasisEndBehaviour::interpolatory);
 
   ///@}
-#if 0
-  /**
-   * Create an element (defined on this space) with a given @p index.
-   */
-  virtual std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
-  create_element(const ListIt &index, const PropId &property) const override final;
-#endif
 
   virtual
   std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
@@ -191,10 +184,6 @@ public:
   std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
   create_element_end(const PropId &property) const  override final;
 
-#if 0
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
-  create_ref_element(const ListIt &index, const PropId &property) const override final;
-#endif
 
   virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
   create_ref_element_begin(const PropId &property) const override final;
@@ -314,7 +303,7 @@ private:
 
   /** If end knots are not in the repeated knot vector */
   using EndIntervalTable = typename BaseSpace::template
-                           ComponentContainer<SafeSTLArray<std::pair<Real,Real>, dim>>;
+                           ComponentContainer<SafeSTLArray<SafeSTLArray<Real,2>,dim>>;
   EndIntervalTable end_interval_;
 
 

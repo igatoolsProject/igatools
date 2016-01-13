@@ -52,6 +52,7 @@ set_flags(const Flags &flag)
 
 
 
+
 template <int dim>
 void
 GridHandler<dim>::
@@ -79,7 +80,7 @@ template <int sdim>
 void
 GridHandler<dim>::
 init_cache(ElementAccessor &elem,
-           std::shared_ptr<const Quadrature<sdim>> quad) const
+           const std::shared_ptr<const Quadrature<sdim>> &quad) const
 {
   Assert(quad != nullptr, ExcNullPtr());
 
@@ -102,6 +103,17 @@ init_cache(ElementAccessor &elem,
   }
 }
 
+
+template <int dim>
+template <int sdim>
+void
+GridHandler<dim>::
+init_cache(ElementIterator &elem,
+           const std::shared_ptr<const Quadrature<sdim>> &quad) const
+{
+  init_cache<sdim>(*elem, quad);
+}
+
 template <int dim>
 void
 GridHandler<dim>::
@@ -117,7 +129,7 @@ template <int dim>
 void
 GridHandler<dim>::
 init_element_cache(ElementIterator &elem,
-                   std::shared_ptr<const Quadrature<dim>> quad) const
+                   const std::shared_ptr<const Quadrature<dim>> &quad) const
 {
   init_cache<dim>(*elem, quad);
 }
@@ -126,7 +138,7 @@ template <int dim>
 void
 GridHandler<dim>::
 init_face_cache(ElementIterator &elem,
-                std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
+                const std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> &quad) const
 {
   Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
   init_cache<(dim > 0) ? dim-1 : 0>(*elem, quad);
@@ -180,6 +192,15 @@ fill_cache(ElementAccessor &elem, const int s_id) const
   cache.set_filled(true);
 }
 
+template <int dim>
+template <int sdim>
+void
+GridHandler<dim>::
+fill_cache(ElementIterator &elem, const int s_id) const
+{
+  fill_cache<sdim>(*elem, s_id);
+}
+
 
 template <int dim>
 void
@@ -219,6 +240,72 @@ print_info(LogStream &out) const
   // flags_.print_info(out);
   out.end_item();
 
+}
+
+
+template <int dim>
+GridHandler<dim>::
+SetFlagsDispatcher::
+SetFlagsDispatcher(const Flags flag, self_t &grid_handler)
+    :
+    flag_(flag),
+    grid_handler_(grid_handler)
+{}
+
+template <int dim>
+template<int sdim>
+void
+GridHandler<dim>::
+SetFlagsDispatcher::
+operator()(const Topology<sdim> &s_el)
+{
+  grid_handler_.template set_flags<sdim>(flag_);
+}
+
+
+template <int dim>
+GridHandler<dim>::
+InitCacheDispatcher::
+InitCacheDispatcher(const self_t &grid_handler,
+                    ElementAccessor &elem)
+  :
+  grid_handler_(grid_handler),
+  elem_(elem)
+{}
+
+
+template <int dim>
+template<int sdim>
+void
+GridHandler<dim>::
+InitCacheDispatcher::
+operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
+{
+  grid_handler_.template init_cache<sdim>(elem_, quad);
+}
+
+
+template <int dim>
+GridHandler<dim>::
+FillCacheDispatcher::
+FillCacheDispatcher(const self_t &grid_handler,
+                    ElementAccessor &elem,
+                    const int s_id)
+  :
+  grid_handler_(grid_handler),
+  elem_(elem),
+  s_id_(s_id)
+{}
+
+
+template <int dim>
+template<int sdim>
+void
+GridHandler<dim>::
+FillCacheDispatcher::
+operator()(const Topology<sdim> &)
+{
+  grid_handler_.template fill_cache<sdim>(elem_, s_id_);
 }
 
 

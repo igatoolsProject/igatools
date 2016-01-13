@@ -24,6 +24,13 @@
 
 IGA_NAMESPACE_OPEN
 
+template <int dim>
+ElementIndex<dim>::
+ElementIndex()
+  :
+  flat_id_(0),
+  tensor_id_(TensorIndex<dim>())
+{}
 
 template <int dim>
 ElementIndex<dim>::
@@ -61,6 +68,15 @@ operator==(const ElementIndex<dim> &elem) const
   return (same_tid && same_fid);
 }
 
+template <>
+bool
+ElementIndex<0>::
+operator==(const ElementIndex<0> &elem) const
+{
+  // If dim==0 the element index is always the same
+  return true;
+}
+
 template <int dim>
 bool
 ElementIndex<dim>::
@@ -69,6 +85,15 @@ operator!=(const ElementIndex<dim> &elem) const
   const bool different_tid = (this->tensor_id_ != elem.tensor_id_);
   const bool different_fid = (this->flat_id_ != elem.flat_id_);
   return (different_tid || different_fid);
+}
+
+template <>
+bool
+ElementIndex<0>::
+operator!=(const ElementIndex<0> &elem) const
+{
+  // If dim==0 the element index is always the same
+  return false;
 }
 
 template <int dim>
@@ -96,6 +121,18 @@ print_info(LogStream &out) const
 //    tensor_id_.print_info(out);
 }
 
+
+#ifdef SERIALIZATION
+template <int dim>
+template<class Archive>
+void
+ElementIndex<dim>::
+serialize(Archive &ar)
+{
+  ar &make_nvp("flat_id_",flat_id_);
+  ar &make_nvp("tensor_id_",tensor_id_);
+}
+#endif
 
 IGA_NAMESPACE_CLOSE
 

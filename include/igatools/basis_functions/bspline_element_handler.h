@@ -52,12 +52,6 @@ class BSplineElementHandler
   template<class T>
   using ComponentContainer = typename Basis::template ComponentContainer<T>;
 
-  template<class T>
-  using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim_>>;
-
-  template<class T>
-  using ComponentDirectionContainer = ComponentContainer<SafeSTLArray<T,dim_>>;
-
 
   template <int order>
   using Derivative = typename Basis::template Derivative<order>;
@@ -133,16 +127,11 @@ public:
                               const typename space_element::Flags &flag) override final;
 
 private:
-  struct SetFlagDispatcher : boost::static_visitor<void>
+  struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagDispatcher(const typename space_element::Flags flag_in,
+    SetFlagsDispatcher(const typename space_element::Flags flag_in,
                       GridHandler<dim_> &grid_handler,
-                      SafeSTLArray<typename space_element::Flags, dim+1> &flags)
-      :
-      flag_in_(flag_in),
-      grid_handler_(grid_handler),
-      flags_(flags)
-    {}
+                      SafeSTLArray<typename space_element::Flags, dim+1> &flags);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);
@@ -166,12 +155,7 @@ private:
   {
     InitCacheDispatcher(const GridHandler<dim_> &grid_handler,
                         const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
-                        BSplineElem &elem)
-      :
-      grid_handler_(grid_handler),
-      flags_(flags),
-      bsp_elem_(elem)
-    {}
+                        BSplineElem &elem);
 
 
     template<int sdim>
@@ -199,12 +183,7 @@ private:
   {
     FillCacheDispatcherNoGlobalCache(const int s_id,
                                      const GridHandler<dim_> &grid_handler,
-                                     BSplineElem &elem)
-      :
-      s_id_(s_id),
-      grid_handler_(grid_handler),
-      bsp_elem_(elem)
-    {}
+                                     BSplineElem &elem);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);

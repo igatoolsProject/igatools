@@ -35,7 +35,8 @@ macro(create_paraview_plugin_configuration_target)
     list(APPEND source_files_cxx ${source})
   endforeach()
 
-  include_directories(${CMAKE_SOURCE_DIR}/include)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
+                      ${CMAKE_CURRENT_BINARY_DIR}/include)
 
   add_paraview_plugin (${igatools_paraview_lib_name} "${IGATOOLS_PARAVIEW_VERSION}"
     SERVER_MANAGER_XML       ${manager_source_files_xml}

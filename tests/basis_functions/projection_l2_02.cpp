@@ -31,7 +31,7 @@
 #include <igatools/base/quadrature_lib.h>
 //#include <igatools/functions/formula_function.h>
 
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>

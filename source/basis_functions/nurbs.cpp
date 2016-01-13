@@ -119,18 +119,6 @@ get_this_basis() const -> std::shared_ptr<const self_t >
   return nrb_space;
 }
 
-#if 0
-template<int dim_, int range_, int rank_>
-auto
-NURBS<dim_, range_, rank_>::
-create_element(const ListIt &index, const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
-{
-  using Elem = NURBSElement<dim_,range_,rank_>;
-
-  return std::unique_ptr<Elem>(new Elem(this->get_this_basis(),index,property));
-}
-#endif
 
 
 
@@ -503,7 +491,7 @@ NURBS<dim_, range_, rank_>::
 get_end_behaviour_table() const -> const EndBehaviourTable &
 {
   return bsp_basis_->get_end_behaviour_table();
-};
+}
 
 
 template <int dim_, int range_, int rank_>
@@ -562,6 +550,29 @@ rebuild_after_insert_knots(
 #endif //MESH_REFINEMENT
 
 
+#ifdef SERIALIZATION
+
+template<int dim_, int range_, int rank_>
+template<class Archive>
+void
+NURBS<dim_, range_, rank_>::
+serialize(Archive &ar)
+{
+  using std::to_string;
+  const std::string base_name = "ReferenceSpaceBasis_" +
+                                to_string(dim_) + "_" +
+                                to_string(0) + "_" +
+                                to_string(range_) + "_" +
+                                to_string(rank_);
+
+  ar &make_nvp(base_name,base_class<BaseSpace>(this));
+  ar &make_nvp("bsp_basis_",bsp_basis_);
+
+  ar &make_nvp("weight_func_",weight_func_);
+}
+///@}
+
+#endif // SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

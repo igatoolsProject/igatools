@@ -28,20 +28,18 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
-#include <igatools/geometry/grid_function_element.h>
+#include <igatools/functions/grid_function_lib.h>
+#include <igatools/functions/grid_function_element.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
 #include <igatools/geometry/domain_handler.h>
 
 
-template <int dim,int space_dim>
-void domain_values(const std::shared_ptr<const GridFunction<dim,space_dim>> &func,
+template <int dim,int codim>
+void domain_values(const Domain<dim,codim> &domain,
                    const std::shared_ptr<const Quadrature<dim>> &quad)
 {
-  auto domain = Domain<dim,space_dim-dim>::const_create(func);
-
-  auto domain_handler = domain->create_cache_handler();
+  auto domain_handler = domain.create_cache_handler();
 
   using Flags = domain_element::Flags;
   auto flag = Flags::point |
@@ -51,8 +49,8 @@ void domain_values(const std::shared_ptr<const GridFunction<dim,space_dim>> &fun
               Flags::w_measure;
   domain_handler->set_element_flags(flag);
 
-  auto elem = domain->begin();
-  auto end = domain->end();
+  auto elem = domain.begin();
+  auto end = domain.end();
 
   domain_handler->init_element_cache(elem,quad);
   int elem_id = 0;

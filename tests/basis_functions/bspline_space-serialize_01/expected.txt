@@ -14,6 +14,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -29,19 +30,9 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ ]  Weights: []
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -50,32 +41,14 @@ Original BSpline:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
          Total Dimension: 1
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -107,6 +80,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -122,19 +96,9 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ ]  Weights: []
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -143,32 +107,14 @@ BSpline after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
          Total Dimension: 1
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -207,6 +153,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -222,22 +169,12 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 ]  Weights: [0]
-         Direction: 0
+         Entry id: 0
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
@@ -245,33 +182,15 @@ Original BSpline:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
@@ -288,7 +207,7 @@ Original BSpline:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
    
 
 BSpline after serialize-deserialize:
@@ -306,6 +225,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -321,22 +241,12 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 ]  Weights: [0]
-         Direction: 0
+         Entry id: 0
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
@@ -344,33 +254,15 @@ BSpline after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
@@ -387,7 +279,7 @@ BSpline after serialize-deserialize:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
    
 
 ========================================================================
@@ -412,6 +304,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -427,24 +320,14 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 ]  Weights: [0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 ]
          Scalar components dimensions:
          [ 4 ]
          Total Dimension: 4
@@ -452,33 +335,15 @@ Original BSpline:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 ]
          Scalar components dimensions:
          [ 4 ]
          Total Dimension: 4
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 ]
          Scalar components dimensions:
          [ 4 ]
          Total Dimension: 4
@@ -495,9 +360,9 @@ Original BSpline:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
       Direction[1]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
    
 
 BSpline after serialize-deserialize:
@@ -517,6 +382,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -532,24 +398,14 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 ]  Weights: [0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 ]
          Scalar components dimensions:
          [ 4 ]
          Total Dimension: 4
@@ -557,33 +413,15 @@ BSpline after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 ]
          Scalar components dimensions:
          [ 4 ]
          Total Dimension: 4
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 ]
          Scalar components dimensions:
          [ 4 ]
          Total Dimension: 4
@@ -600,9 +438,9 @@ BSpline after serialize-deserialize:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
       Direction[1]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
    
 
 ========================================================================
@@ -629,6 +467,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -644,26 +483,16 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 0 ]  Weights: [0,0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
-         Direction: 2
+         Entry id: 2
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 2 ]
          Scalar components dimensions:
          [ 8 ]
          Total Dimension: 8
@@ -671,33 +500,15 @@ Original BSpline:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 2 ]
          Scalar components dimensions:
          [ 8 ]
          Total Dimension: 8
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 2 ]
          Scalar components dimensions:
          [ 8 ]
          Total Dimension: 8
@@ -714,11 +525,11 @@ Original BSpline:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
       Direction[1]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
       Direction[2]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
    
 
 BSpline after serialize-deserialize:
@@ -740,6 +551,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -755,26 +567,16 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 0 ]  Weights: [0,0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
-         Direction: 2
+         Entry id: 2
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 2 ]
          Scalar components dimensions:
          [ 8 ]
          Total Dimension: 8
@@ -782,33 +584,15 @@ BSpline after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 2 ]
          Scalar components dimensions:
          [ 8 ]
          Total Dimension: 8
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 2 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 2 2 ]
          Scalar components dimensions:
          [ 8 ]
          Total Dimension: 8
@@ -825,11 +609,11 @@ BSpline after serialize-deserialize:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
       Direction[1]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
       Direction[2]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
    
 
 ========================================================================
@@ -850,6 +634,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -865,19 +650,9 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ ]  Weights: []
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -886,32 +661,14 @@ Original BSpline:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
          Total Dimension: 1
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -943,6 +700,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -958,19 +716,9 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ ]  Weights: []
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -979,32 +727,14 @@ BSpline after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
          Total Dimension: 1
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
+         Entry id: 0
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -1043,6 +773,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1058,22 +789,12 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 ]  Weights: [0]
-         Direction: 0
+         Entry id: 0
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
@@ -1081,33 +802,15 @@ Original BSpline:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
@@ -1124,7 +827,7 @@ Original BSpline:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
    
 
 BSpline after serialize-deserialize:
@@ -1142,6 +845,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1157,22 +861,12 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 ]  Weights: [0]
-         Direction: 0
+         Entry id: 0
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
@@ -1180,33 +874,15 @@ BSpline after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 2 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 2 ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
@@ -1223,7 +899,7 @@ BSpline after serialize-deserialize:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      [2,2]((1.00000,0),(0,1.00000))
    
 
 ========================================================================
@@ -1248,6 +924,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1263,24 +940,14 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 ]  Weights: [0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 3 4 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 3 4 ]
          Scalar components dimensions:
          [ 12 ]
          Total Dimension: 12
@@ -1288,33 +955,15 @@ Original BSpline:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 3 4 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 3 4 ]
          Scalar components dimensions:
          [ 12 ]
          Total Dimension: 12
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 3 4 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 3 4 ]
          Scalar components dimensions:
          [ 12 ]
          Total Dimension: 12
@@ -1331,9 +980,9 @@ Original BSpline:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+      [3,3]((1.00000,0,0),(0,1.00000,0),(0,0,1.00000))
       Direction[1]:
-      [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+      [4,4]((1.00000,0,0,0),(0,1.00000,0,0),(0,0,1.00000,0),(0,0,0,1.00000))
    
 
 BSpline after serialize-deserialize:
@@ -1353,6 +1002,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1368,24 +1018,14 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 ]  Weights: [0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 3 4 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 3 4 ]
          Scalar components dimensions:
          [ 12 ]
          Total Dimension: 12
@@ -1393,33 +1033,15 @@ BSpline after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 3 4 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 3 4 ]
          Scalar components dimensions:
          [ 12 ]
          Total Dimension: 12
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 3 4 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 3 4 ]
          Scalar components dimensions:
          [ 12 ]
          Total Dimension: 12
@@ -1436,9 +1058,9 @@ BSpline after serialize-deserialize:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+      [3,3]((1.00000,0,0),(0,1.00000,0),(0,0,1.00000))
       Direction[1]:
-      [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+      [4,4]((1.00000,0,0,0),(0,1.00000,0,0),(0,0,1.00000,0),(0,0,0,1.00000))
    
 
 ========================================================================
@@ -1465,6 +1087,7 @@ Original BSpline:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1480,26 +1103,16 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 0 ]  Weights: [0,0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
-         Direction: 2
+         Entry id: 2
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 4 5 6 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 4 5 6 ]
          Scalar components dimensions:
          [ 120 ]
          Total Dimension: 120
@@ -1507,33 +1120,15 @@ Original BSpline:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 4 5 6 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 4 5 6 ]
          Scalar components dimensions:
          [ 120 ]
          Total Dimension: 120
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 4 5 6 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 4 5 6 ]
          Scalar components dimensions:
          [ 120 ]
          Total Dimension: 120
@@ -1550,11 +1145,11 @@ Original BSpline:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+      [4,4]((1.00000,0,0,0),(0,1.00000,0,0),(0,0,1.00000,0),(0,0,0,1.00000))
       Direction[1]:
-      [5,5]((1.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,1.00000))
+      [5,5]((1.00000,0,0,0,0),(0,1.00000,0,0,0),(0,0,1.00000,0,0),(0,0,0,1.00000,0),(0,0,0,0,1.00000))
       Direction[2]:
-      [6,6]((1.00000,0.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,0.00000,1.00000))
+      [6,6]((1.00000,0,0,0,0,0),(0,1.00000,0,0,0,0),(0,0,1.00000,0,0,0),(0,0,0,1.00000,0,0),(0,0,0,0,1.00000,0),(0,0,0,0,0,1.00000))
    
 
 BSpline after serialize-deserialize:
@@ -1576,6 +1171,7 @@ BSpline after serialize-deserialize:
                
             
          
+         Name: 
       
       Degrees:
          Raw components: 
@@ -1591,26 +1187,16 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Size: [ 0 0 0 ]  Weights: [0,0,0]
-         Direction: 0
+         Entry id: 0
          [ ]
-         Direction: 1
+         Entry id: 1
          [ ]
-         Direction: 2
+         Entry id: 2
          [ ]
       
       Dimensionality Table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 4 5 6 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 4 5 6 ]
          Scalar components dimensions:
          [ 120 ]
          Total Dimension: 120
@@ -1618,33 +1204,15 @@ BSpline after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 4 5 6 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 4 5 6 ]
          Scalar components dimensions:
          [ 120 ]
          Total Dimension: 120
       
       Index table size:
-         Raw components: 
-            Size: [ 1 ]  Weights: [1]
-            Entry id: 0
-            [ 4 5 6 ]
-         
-         Components map: 
-         [ 0 ]
-         Active components ids: 
-         [ 0 ]
-         Inactive components ids: 
-         [ ]
+         Entry id: 0
+         [ 4 5 6 ]
          Scalar components dimensions:
          [ 120 ]
          Total Dimension: 120
@@ -1661,11 +1229,11 @@ BSpline after serialize-deserialize:
    Bernstein Extraction:
       Component[0]: 
       Direction[0]:
-      [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+      [4,4]((1.00000,0,0,0),(0,1.00000,0,0),(0,0,1.00000,0),(0,0,0,1.00000))
       Direction[1]:
-      [5,5]((1.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,1.00000))
+      [5,5]((1.00000,0,0,0,0),(0,1.00000,0,0,0),(0,0,1.00000,0,0),(0,0,0,1.00000,0),(0,0,0,0,1.00000))
       Direction[2]:
-      [6,6]((1.00000,0.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,0.00000,0.00000,1.00000))
+      [6,6]((1.00000,0,0,0,0,0),(0,1.00000,0,0,0,0),(0,0,1.00000,0,0,0),(0,0,0,1.00000,0,0),(0,0,0,0,1.00000,0),(0,0,0,0,0,1.00000))
    
 
 ========================================================================

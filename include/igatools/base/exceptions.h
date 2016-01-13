@@ -924,6 +924,34 @@ DeclException1(ExcMessage,
                << arg1);
 
 /**
+ * This exception is thrown if
+ * an error occurred working with an XML document.
+ * If available, it shown information about the error and the line
+ * and column where it occurred.
+ */
+DeclException3(ExcXMLError,
+               std::string, int, int,
+               << "An error occurred working with XML document at line "
+               << (arg2 > 0 ? std::to_string(arg2) : std::string("UNKNOWN")) << " "
+               << "column "
+               << (arg3 > 0 ? std::to_string(arg3) : std::string("UNKNOWN")) << ". "
+               << "The reported error is:\n\t" << arg1);
+
+/**
+ * This exception is thrown if
+ * a waring occurred working with an XML document.
+ * If available, it shown information about the warning and the line
+ * and column where it occurred.
+ */
+DeclException3(ExcXMLWarning,
+               std::string, int, int,
+               << "An warning occurred working with XML document at line "
+               << (arg2 > 0 ? std::to_string(arg2) : std::string("UNKNOWN")) << " "
+               << "column "
+               << (arg3 > 0 ? std::to_string(arg3) : std::string("UNKNOWN")) << ". "
+               << "The reported warning is:\n\t" << arg1);
+
+/**
  * Exception used when running into
  * functions that are only supported
  * in a backward compatibility mode.

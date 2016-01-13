@@ -30,13 +30,13 @@ using std::to_string;
 
 template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
-Function(const SharedPtrConstnessHandler<DomainType> &domain,
-         const std::string &name)
+Function(const SharedPtrConstnessHandler<DomainType> &domain)
   :
   domain_(domain),
-  name_(name),
   object_id_(UniqueIdGenerator::get_unique_id())
-{}
+{
+
+}
 
 
 
@@ -95,30 +95,6 @@ create_element_end(const PropId &prop) const
     this->shared_from_this(),
     domain_->create_element_end(prop)));
 }
-
-#if 0
-template<int dim_, int codim_, int range_, int rank_>
-auto
-Function<dim_, codim_, range_, rank_ >::
-begin(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(this->shared_from_this(),
-  domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).begin(),
-  prop);
-}
-
-
-
-template<int dim_, int codim_, int range_, int rank_>
-auto
-Function<dim_, codim_, range_, rank_ >::
-end(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(this->shared_from_this(),
-  domain_->get_grid_function()->get_grid()->get_elements_with_property(prop).end(),
-  prop);
-}
-#endif
 
 
 template<int dim_, int codim_, int range_, int rank_>
@@ -186,34 +162,72 @@ get_object_id() const
 }
 
 
-#if 0
-#ifdef SERIALIZATION
 
+
+#ifdef MESH_REFINEMENT
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+get_function_previous_refinement() const -> const std::shared_ptr<const self_t> &
+{
+  return function_previous_refinement_;
+}
+
+
+template<int dim_, int codim_, int range_, int rank_>
+boost::signals2::connection
+Function<dim_, codim_, range_, rank_ >::
+connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber)
+{
+  return domain_.data_is_const() ?
+         std::const_pointer_cast<DomainType>(domain_.get_ptr_const_data())
+         ->connect_insert_knots(subscriber) :
+         domain_.get_ptr_data()->connect_insert_knots(subscriber);
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &function)
+{
+  Assert(function != nullptr, ExcNullPtr());
+  Assert(&(*function) == &(*this), ExcMessage("Different objects."));
+
+  auto func_to_connect =
+    std::bind(&self_t::rebuild_after_insert_knots,
+              function.get(),
+              std::placeholders::_1,
+              std::placeholders::_2);
+
+  using SlotType = typename Grid<dim_>::SignalInsertKnotsSlot;
+  this->connect_insert_knots(SlotType(func_to_connect).track_foreign(function));
+}
+
+
+#endif // MESH_REFINEMENT
+
+
+
+#ifdef SERIALIZATION
 template<int dim_, int codim_, int range_, int rank_>
 template<class Archive>
 void
 Function<dim_, codim_, range_, rank_ >::
-serialize(Archive &ar, const unsigned int version)
+serialize(Archive &ar)
 {
-  AssertThrow(false,ExcNotImplemented());
-#if 0
-  ar &boost::serialization::make_nvp("grid_elem_handler_",
-                                     boost::serialization::base_object<GridHandler<dim_>>(*this));
-
-  ar &boost::serialization::make_nvp("object_id_",object_id_);
-  ar &boost::serialization::make_nvp("name_",name_);
-
-  ar &boost::serialization::make_nvp("flags_",flags_);
-
-  ar &boost::serialization::make_nvp("grid_",grid_);
+  ar &make_nvp("domain_",domain_);
+  ar &make_nvp("name_",name_);
+  ar &make_nvp("object_id_",object_id_);
 
 #ifdef MESH_REFINEMENT
-  ar &boost::serialization::make_nvp("function_previous_refinement_",function_previous_refinement_);
+  auto tmp = std::const_pointer_cast<self_t>(function_previous_refinement_);
+  ar &make_nvp("function_previous_refinement_",tmp);
+  function_previous_refinement_ = tmp;
 #endif // MESH_REFINEMENT
-#endif
 }
+///@}
 #endif // SERIALIZATION
-#endif
+
 
 IGA_NAMESPACE_CLOSE
 

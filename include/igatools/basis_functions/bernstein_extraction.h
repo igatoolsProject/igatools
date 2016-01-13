@@ -28,6 +28,10 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ *
+ * @ingroup serializable
+ */
 class BernsteinOperator : public DenseMatrix
 {
 public:
@@ -47,12 +51,7 @@ private:
   friend class cereal::access;
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-//    Assert(false,ExcNotImplemented());
-    ar &make_nvp("DenseMatrix",base_class<DenseMatrix>(this));
-  }
-
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 
@@ -86,14 +85,12 @@ public:
   using ElemOper = SafeSTLArray<Operator const *, dim>;
   using ElemOperTable = typename Space::template ComponentContainer<ElemOper>;
 private:
-  using Operators = CartesianProductArray<Operator, dim>;
+  using Operators = SafeSTLArray<SafeSTLVector<Operator>,dim>;
   using OperatorsTable = typename Space::template ComponentContainer<Operators>;
 
 public:
   /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
+   * Default constructor. It does nothing but it is needed for the srialization.
    */
   BernsteinExtraction() = default;
 
@@ -149,12 +146,7 @@ private:
   ///@{
   friend class cereal::access;
   template<class Archive>
-  void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("ext_operators_",ext_operators_);
-  }
-
+  void serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };
@@ -165,7 +157,10 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(iga::BernsteinOperator,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,iga::BernsteinOperator,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,iga::BernsteinOperator,cereal::specialization::member_serialize)
+
+//#include <igatools/basis_functions/bernstein_extraction.serial>
 
 #endif // SERIALIZATION
 

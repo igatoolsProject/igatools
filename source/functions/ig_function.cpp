@@ -34,14 +34,13 @@ template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
 IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
            const EpetraTools::Vector &coeff,
-           const std::string &dofs_property,
-           const std::string &name)
+           const std::string &dofs_property)
   :
   parent_t::Function(
    space.data_is_const() ?
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain()),
-   name),
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_domain()) :
+   SharedPtrConstnessHandler<DomainType>(
+     std::const_pointer_cast<Domain<dim,codim>>(space.get_ptr_data()->get_domain()))),
   basis_(space),
   dofs_property_(dofs_property)
 {
@@ -64,14 +63,12 @@ template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
 IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
            const IgCoefficients &coeff,
-           const std::string &dofs_property,
-           const std::string &name)
+           const std::string &dofs_property)
   :
   parent_t::Function(
    space.data_is_const() ?
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_physical_domain()) :
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_physical_domain()),
-   name),
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_domain()) :
+   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_domain())),
   basis_(space),
   dofs_property_(dofs_property)
 {
@@ -94,11 +91,10 @@ auto
 IgFunction<dim,codim,range,rank>::
 const_create(const std::shared_ptr<const PhysBasis> &space,
              const EpetraTools::Vector &coeff,
-             const std::string &dofs_property,
-             const std::string &name) ->  std::shared_ptr<const parent_t>
+             const std::string &dofs_property) ->  std::shared_ptr<const self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
-  coeff, dofs_property,name);
+  coeff, dofs_property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
   return ig_func;
@@ -110,11 +106,10 @@ auto
 IgFunction<dim,codim,range,rank>::
 const_create(const std::shared_ptr<const PhysBasis> &space,
              const IgCoefficients &coeff,
-             const std::string &dofs_property,
-             const std::string &name) ->  std::shared_ptr<const parent_t>
+             const std::string &dofs_property) ->  std::shared_ptr<const self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
-  coeff, dofs_property,name);
+  coeff, dofs_property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
   return ig_func;
@@ -126,11 +121,10 @@ auto
 IgFunction<dim,codim,range,rank>::
 create(const std::shared_ptr<PhysBasis> &space,
        const EpetraTools::Vector &coeff,
-       const std::string &dofs_property,
-       const std::string &name) ->  std::shared_ptr<parent_t>
+       const std::string &dofs_property) ->  std::shared_ptr<self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
-  coeff, dofs_property,name);
+  coeff, dofs_property);
 
   Assert(ig_func != nullptr, ExcNullPtr());
 #ifdef MESH_REFINEMENT
@@ -145,11 +139,10 @@ auto
 IgFunction<dim,codim,range,rank>::
 create(const std::shared_ptr<PhysBasis> &space,
        const IgCoefficients &coeff,
-       const std::string &dofs_property,
-       const std::string &name) ->  std::shared_ptr<parent_t>
+       const std::string &dofs_property) ->  std::shared_ptr<self_t>
 {
   auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
-  coeff, dofs_property,name);
+  coeff, dofs_property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -234,11 +227,11 @@ rebuild_after_insert_knots(
 
 //  this->coeffs_ = std::move(function_refined->coeffs_);
 }
-
+#if 0
 template<int dim,int codim,int range,int rank>
 void
 IgFunction<dim,codim,range,rank>::
-create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &ig_function)
 {
   Assert(ig_function != nullptr, ExcNullPtr());
   Assert(&(*ig_function) == &(*this), ExcMessage("Different objects."));
@@ -258,6 +251,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
   connect_insert_knots(SlotType(func_to_connect).track_foreign(ig_function));
 //  Assert(false,ExcNotImplemented());
 }
+#endif
 
 #endif // MESH_REFINEMENT
 
@@ -288,6 +282,8 @@ print_info(LogStream &out) const
 
   out << "Dofs property: " << dofs_property_ << std::endl;
 
+  out << "Name: " << this->name_ << std::endl;
+
   out.end_item();
 }
 
@@ -301,47 +297,29 @@ get_dofs_property() const
   return dofs_property_;
 }
 
-#if 0
+
 #ifdef SERIALIZATION
 template<int dim,int codim,int range,int rank>
 template<class Archive>
 void
 IgFunction<dim,codim,range,rank>::
-serialize(Archive &ar, const unsigned int version)
+serialize(Archive &ar)
 {
-  ar &boost::serialization::make_nvp("IgFunction_base_t",
-                                     boost::serialization::base_object<base_t>(*this));
+  using std::to_string;
+  const std::string base_name = "Function_" +
+                                to_string(dim) + "_" +
+                                to_string(codim) + "_" +
+                                to_string(range) + "_" +
+                                to_string(rank);
 
-  ar.template register_type<BSpline<dim,range,rank>>();
+  ar &make_nvp(base_name,base_class<base_t>(this));
 
-#ifdef USE_NURBS
-  ar.template register_type<NURBS<dim,range,rank>>();
-#endif // NURBS
-
-  ar.template register_type<PhysicalSpaceBasis<dim,range,rank,codim>>();
-  auto non_nonst_space = std::const_pointer_cast<Basis<dim,codim,range,rank>>(basis_);
-  ar &boost::serialization::make_nvp("basis_",non_nonst_space);
-  basis_ = non_nonst_space;
-  Assert(basis_ != nullptr,ExcNullPtr());
-
-  ar &boost::serialization::make_nvp("coeffs_",coeffs_);
-
-  ar &boost::serialization::make_nvp("dofs_property_",const_cast<std::string &>(dofs_property_));
-
-  ar.template register_type<BSplineElement<dim,range,rank>>();
-  ar.template register_type<NURBSElement<dim,range,rank>>();
-  ar.template register_type<PhysicalSpaceElement<dim,range,rank,codim>>();
-  ar &boost::serialization::make_nvp("space_elem_",space_elem_);
-
-
-  ar.template register_type<BSplineElementHandler<dim,range,rank>>();
-  ar.template register_type<NURBSElementHandler<dim,range,rank>>();
-  ar.template register_type<PhysSpaceElementHandler<dim,range,rank,codim>>();
-  ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
-  Assert(space_elem_handler_ != nullptr,ExcNullPtr());
+  ar &make_nvp("basis_",basis_);
+  ar &make_nvp("coeffs_",coeffs_);
+  ar &make_nvp("dofs_property_",dofs_property_);
 }
+
 #endif // SERIALIZATION
-#endif
 
 IGA_NAMESPACE_CLOSE
 

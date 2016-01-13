@@ -26,17 +26,19 @@ data = Instantiation(include_files)
 containers = []
 for dim in inst.sub_domain_dims + inst.domain_dims:
     element_index = 'ElementIndex<%d>' %(dim)
-    obj = 'SafeSTLSet<%s>' %(element_index)
+    obj = 'SafeSTLVector<%s>' %(element_index)
     containers.append(obj)
     containers.append('SafeSTLMap<PropId,%s>' % obj)
-    obj = 'PropertiesIdContainer<%s>' %(element_index)
+    obj = 'PropertiesIdContainer<%s,SafeSTLVector>' %(element_index)
+    containers.append(obj)
+    obj = 'PropertiesElementID<%d>' %(dim)
     containers.append(obj)
 
 obj = 'PropertiesIdContainer<int>'
 containers.append(obj)
 
 for obj in unique(containers):
-    f.write('template class %s; \n' %(obj))
+    f.write('template class %s;\n' %(obj))
 
 
 f.write('IGA_NAMESPACE_CLOSE\n')

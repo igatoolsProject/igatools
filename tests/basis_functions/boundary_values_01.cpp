@@ -36,7 +36,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline.h>
 
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 
 
 
@@ -58,8 +58,11 @@ void do_test(const int p, const int num_knots = 10)
   SubGridElemMap sub_grid_elem_map;
   const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,sub_grid_elem_map);
 
-  auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
 
+  auto bndry_domain = domain->get_sub_domain(s_id,sub_grid_elem_map,sub_grid);
+  out.begin_item("Boundary Domain");
+  bndry_domain->print_info(out);
+  out.end_item();
 
   using BndFunc = Function<dim-1,1,range,1>;
   SafeSTLMap<int,std::shared_ptr<const BndFunc>> boundary_functions;

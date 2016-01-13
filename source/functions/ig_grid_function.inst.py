@@ -25,38 +25,52 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = []
+#sub_dim_members = []
 
-classes = []
+funcs = set()
 
-templated_functions = []
+#templated_functions = []
 
 for x in inst.sub_mapping_dims:
-    cl = 'IgGridFunction<%d,%d>' %(x.dim,x.space_dim)
-    classes.append(cl)
+    func = 'IgGridFunction<%d,%d>' %(x.dim,x.space_dim)
+    funcs.add(func)
 #    for fun in sub_dim_members:
 #        k = x.dim
 #        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
 #        templated_functions.append(s)
 
 for x in inst.mapping_dims:
-    cl = 'IgGridFunction<%d,%d>' %(x.dim,x.space_dim)
-    classes.append(cl)
+    func = 'IgGridFunction<%d,%d>' %(x.dim,x.space_dim)
+    funcs.add(func)
 #    for fun in sub_dim_members:
 #        for k in inst.sub_dims(x.dim):
 #            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
 #            templated_functions.append(s)
 
-    #the next classes are needed by NURBS
-    cl = 'IgGridFunction<%d,1>' %(x.dim)
-    classes.append(cl)
+    #the next classes are needed by NURBS (it is the weight function)
+    func = 'IgGridFunction<%d,1>' %(x.dim)
+    funcs.add(func)
 
  
 
 
-for cl in unique(classes):
-    f.write('template class %s ;\n' %(cl))
+for func in funcs:
+    f.write('template class %s ;\n' %(func))
 
 
-for func in unique(templated_functions):
-    f.write('template ' + func + '\n')
+#for func in unique(templated_functions):
+#    f.write('template ' + func + '\n')
+
+
+
+#---------------------------------------------------
+f.write('#ifdef SERIALIZATION\n')
+
+archives = ['OArchive','IArchive']
+
+for func in funcs:
+    for ar in archives:
+        f.write('template void %s::serialize(%s&);\n' %(func,ar))
+f.write('#endif // SERIALIZATION\n')
+#---------------------------------------------------
+

@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/functions/function_lib.h>
@@ -98,7 +98,7 @@ int main()
 
   for (int n_knots = 2 ; n_knots <= 5 ; ++n_knots)
   {
-//  intregrate_on_sphere<1>(n_knots);
+    intregrate_on_sphere<1>(n_knots);
     intregrate_on_sphere<2>(n_knots);
   }
 

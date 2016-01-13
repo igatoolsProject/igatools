@@ -52,13 +52,14 @@ f.write('#ifdef SERIALIZATION\n')
 
 
 #f.write('using VecBernstOp = iga::SafeSTLVector<iga::BernsteinOperator>;\n');
-#f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(VecBernstOp,cereal::specialization::member_serialize);\n');
+#f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,VecBernstOp,cereal::specialization::member_serialize);\n');
+#f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,VecBernstOp,cereal::specialization::member_serialize);\n');
 
 id = 0 
 for space in unique(spaces):
     sp_alias = 'NURBSAlias%d' %(id)
     f.write('using %s = iga::%s;\n' % (sp_alias, space));
-    f.write('CEREAL_REGISTER_TYPE(%s);\n' %sp_alias);
+    f.write('CEREAL_REGISTER_TYPE(%s)\n' %sp_alias);
     id += 1 
 
 

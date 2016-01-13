@@ -169,10 +169,10 @@ public:
   reference operator* ();
 
   /** Dereferencing operator (const version).*/
-  const value_type *const operator-> () const;
+  const reference operator-> () const;
 
   /** Dereferencing operator (non-const version).*/
-  value_type *operator->();
+  reference operator->();
 
 
   /** Dereferencing operator (const version). Returns the i-th entry in the iterator. */

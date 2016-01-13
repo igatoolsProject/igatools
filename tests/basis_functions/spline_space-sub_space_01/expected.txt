@@ -6,8 +6,7 @@ Sub element id: 0
       Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
-            Size: [ 2 ]  Weights: [2]
-            Direction: 0
+            Entry id: 0
             [ 1 1 ]
          
       
@@ -39,8 +38,7 @@ Sub element id: 1
       Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
-            Size: [ 2 ]  Weights: [2]
-            Direction: 0
+            Entry id: 0
             [ 1 1 ]
          
       
@@ -72,8 +70,7 @@ Sub element id: 2
       Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
-            Size: [ 1 ]  Weights: [1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
          
       
@@ -105,8 +102,7 @@ Sub element id: 3
       Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
-            Size: [ 1 ]  Weights: [1]
-            Direction: 0
+            Entry id: 0
             [ 1 ]
          
       

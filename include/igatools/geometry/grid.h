@@ -184,12 +184,13 @@ public:
 
 
   using Point = Points<dim_>;
+  using Weight = Real;
 
   using IndexType = ElementIndex<dim_>;
 
-  using PropertyList = PropertiesIdContainer<IndexType>;
+  using PropertyList = PropertiesElementID<dim_>;
   using List = typename PropertyList::List;
-  using ListIt = typename PropertyList::List::iterator;
+  using ListIt = typename PropertyList::List::const_iterator;
 
 
   /** Type for the vector of knot vectors */
@@ -471,14 +472,14 @@ public:
   void set_boundary_id(const int face, const boundary_id id);
 
   template<int sdim>
-  using BoundaryNormal = SafeSTLArray<Points<dim_>, dim_-sdim>;
+  using BoundaryNormals = SafeSTLArray<Points<dim_>, dim_-sdim>;
 
   /**
    * Returns the outward pointing
-   * unit normal vector space to the element of sub dim_ k.
+   * unit normal vector space to the element <tt>s_id</tt> of sub-dimension <tt>sdim</tt>.
    */
   template<int sdim>
-  BoundaryNormal<sdim> get_boundary_normals(const int s_id) const;
+  BoundaryNormals<sdim> get_boundary_normals(const int s_id) const;
 
   template<int sdim>
   using SubGridMap =
@@ -648,7 +649,11 @@ private:
    */
   KnotCoordinates knot_coordinates_;
 
-  /** Boundary ids, one id per face */
+  /**
+   * Boundary ids, one id per face
+   *
+   * TODO (martinelli dec 23, 2015): discuss about the usefulness of this member variable
+   */
   SafeSTLArray<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
 
   /**
@@ -656,6 +661,9 @@ private:
    * Elements are referred to by their flat ids.
    */
   PropertyList elem_properties_;
+
+  /// Name.
+  std::string name_;
 
   /**
    * Unique identifier associated to each object instance.
@@ -682,13 +690,6 @@ private:
   SubGridData<(dim_>0)? dim_-1 : 0> sub_grid_data_;
 
 public:
-#if 0
-  /**
-   * Create an element (defined on this grid) with a given index and the given property
-   */
-  std::unique_ptr<ElementAccessor>
-  create_element(const ListIt &index, const PropId &property) const;
-#endif
 
   /**
    * Create the first element (defined on this grid) with a given given @p property.
@@ -701,6 +702,16 @@ public:
    */
   std::unique_ptr<ElementAccessor>
   create_element_end(const PropId &property) const;
+
+  /**
+   * Get the name associated to the object instance.
+   */
+  const std::string &get_name() const;
+
+  /**
+   * Set the name associated to the object instance.
+   */
+  void set_name(const std::string &name);
 
   /**
    * Returns the unique identifier associated to each object instance.
@@ -808,17 +819,8 @@ private:
 IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
-
-using ArrayPtrVectorRealAlias0 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,0>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias0,cereal::specialization::member_serialize);
-using ArrayPtrVectorRealAlias1 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias1,cereal::specialization::member_serialize);
-using ArrayPtrVectorRealAlias2 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,2>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias2,cereal::specialization::member_serialize);
-using ArrayPtrVectorRealAlias3 = iga::SafeSTLArray<std::shared_ptr<iga::SafeSTLVector<iga::Real>>,3>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ArrayPtrVectorRealAlias3,cereal::specialization::member_serialize);
-
+#include <igatools/geometry/grid.serial>
 #endif //SERIALIZATION
-//#include <igatools/geometry/grid.serial>
+
 
 #endif /* CARTESIAN_GRID_H_ */

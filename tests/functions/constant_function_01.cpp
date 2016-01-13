@@ -27,7 +27,7 @@
 #include <igatools/geometry/domain_lib.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/functions/function_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/geometry/domain.h>
 
 #include <igatools/base/quadrature_lib.h>
@@ -51,7 +51,7 @@ void constant_func()
     b[i] = i;
 
   auto func = Function::const_create(ball_domain, b);
-  function_values<dim, codim, range>(func);
+  function_values(*func);
 }
 
 int main()

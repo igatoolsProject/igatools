@@ -112,8 +112,7 @@ public:
 
 protected:
   /** Constructor */
-  Function(const SharedPtrConstnessHandler<DomainType> &domain,
-           const std::string &name);
+  Function(const SharedPtrConstnessHandler<DomainType> &domain);
 
 
 public:
@@ -123,20 +122,18 @@ public:
 
 #if 0
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<DomainType> domain,
-         const std::string &name)
+  create(std::shared_ptr<DomainType> domain)
   {
     return std::shared_ptr<self_t>(new
-                                   self_t(SharedPtrConstnessHandler<DomainType>(domain),name));
+                                   self_t(SharedPtrConstnessHandler<DomainType>(domain)));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<const DomainType> domain,
-               const std::string &name)
+  const_create(std::shared_ptr<const DomainType> domain)
   {
     return std::shared_ptr<self_t>(new self_t(
-                                     SharedPtrConstnessHandler<DomainType>(domain),name));
+                                     SharedPtrConstnessHandler<DomainType>(domain)));
   }
 #endif
 
@@ -198,10 +195,7 @@ public:
   ElementIterator cend(const PropId &property = ElementProperties::active) const;
   ///@}
 
-  virtual void print_info(LogStream &out) const
-  {
-    Assert(false, ExcNotImplemented());
-  }
+  virtual void print_info(LogStream &out) const = 0;
 
 
   /**
@@ -261,7 +255,6 @@ public:
 protected:
   SharedPtrConstnessHandler<DomainType> domain_;
 
-private:
   /**
    * Name associated to the object instance.
    */
@@ -273,6 +266,7 @@ private:
   Index object_id_;
 
 
+private:
   friend class FunctionElement<dim_, codim_, range_, rank_>;
 
 
@@ -283,11 +277,41 @@ protected:
   std::shared_ptr<const self_t> function_previous_refinement_;
 
 public:
-  const std::shared_ptr<const self_t> &get_function_previous_refinement() const
+  const std::shared_ptr<const self_t> &get_function_previous_refinement() const;
+
+private:
+  /**
+   * Rebuild the internal state of the object after an insert_knots() function is invoked.
+   *
+   * @pre Before invoking this function, must be invoked the function grid_->insert_knots().
+   * @note This function is connected to the Grid's signal for the refinement, and
+   * it is necessary in order to avoid infinite loops in the insert_knots() function calls.
+   *
+   * @ingroup h_refinement
+   */
+  virtual void rebuild_after_insert_knots(
+    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+    const Grid<dim> &old_grid)
   {
-    return function_previous_refinement_;
+    AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
   }
+
+public:
+
+  /**
+   *  Connect a slot (i.e. a function pointer) to the refinement signals
+   *  which will be
+   *  emitted whenever a insert_knots() function is called by the underlying
+   *  a Grid member.
+   */
+  boost::signals2::connection
+  connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber);
+
+  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &function);
+
 #endif // MESH_REFINEMENT
+
+
 
 #ifdef SERIALIZATION
 private:
@@ -299,18 +323,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("domain_",domain_);
-    ar &make_nvp("name_",name_);
-    ar &make_nvp("object_id_",object_id_);
-
-#ifdef MESH_REFINEMENT
-    auto tmp = std::const_pointer_cast<self_t>(function_previous_refinement_);
-    ar &make_nvp("function_previous_refinement_",tmp);
-    function_previous_refinement_ = tmp;
-#endif // MESH_REFINEMENT
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };

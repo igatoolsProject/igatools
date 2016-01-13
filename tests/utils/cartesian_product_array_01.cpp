@@ -37,7 +37,7 @@ void do_test()
 {
   out << "========= BEGIN do_test<" << dim << "> =========" << endl ;
 
-  using ClassToTest = CartesianProductArray<Index,dim>;
+  using ClassToTest = CartesianProductArray<Real,dim>;
 
   out<< "Testing the default constructor" << endl;
   ClassToTest data1;
@@ -46,7 +46,7 @@ void do_test()
 
   TensorSize<dim> size;
   for (int i = 0; i < dim; ++i)
-    size[i] = 2+i;
+    size[i] = 2.+i;
 
   out << "Testing the entry() function"<<endl;
   ClassToTest data2(size);
@@ -66,7 +66,7 @@ void do_test()
   out << endl;
 
   out << "Testing the get_flat_cartesian_product() function" <<endl;
-  SafeSTLVector<TensorIndex<dim>> flat_cartesian_product = data3.get_flat_cartesian_product();
+  auto flat_cartesian_product = data3.get_flat_cartesian_product();
   flat_cartesian_product.print_info(out);
   out << endl << endl;
 
@@ -74,14 +74,14 @@ void do_test()
   TensorIndex<dim-1> sub_id;
   for (int i = 0 ; i < dim-1 ; ++i)
     sub_id[i] = i+1;
-  CartesianProductArray<Index,dim-1> data4 = data3.get_sub_product(sub_id);
+  auto data4 = data3.get_sub_product(sub_id);
   data4.print_info(out);
   out << endl;
 
 
   out << "Testing the insert() function" << endl;
-  SafeSTLVector<Index> new_values = {10,11};
-  CartesianProductArray<Index,dim> data5 = insert(data4, dim-1,new_values);
+  SafeSTLVector<Real> new_values = {10.,11.};
+  CartesianProductArray<Real,dim> data5 = insert(data4, dim-1,new_values);
   data5.print_info(out);
 
   out << "========= END do_test<" << dim << "> =========" << endl ;

@@ -66,12 +66,15 @@ dilate_translate(const Points<rank> &dilate,
 {
   const TensorSize<rank> size = this->tensor_size();
   for (int i=0; i<rank; ++i)
+  {
+	auto & data_i = this->data_[i];
+
     for (int j = 0 ; j < size[i] ; ++j)
     {
-      this->data_[i][j] *= dilate[i];
-      this->data_[i][j]+= translate[i];
+      data_i[j] *= dilate[i];
+      data_i[j] += translate[i];
     }
-
+  }
 }
 
 template<int rank>
@@ -81,8 +84,12 @@ dilate(const Points<rank> &dilate)
 {
   const TensorSize<rank> size = this->tensor_size();
   for (int i=0; i<rank; ++i)
+  {
+	auto & data_i = this->data_[i];
+
     for (int j = 0 ; j < size[i] ; ++j)
-      this->data_[i][j] *= dilate[i];
+      data_i[j] *= dilate[i];
+  }
 }
 
 
@@ -93,8 +100,12 @@ translate(const Points<rank> &translate)
 {
   const TensorSize<rank> size = this->tensor_size();
   for (int i=0; i<rank; ++i)
+  {
+	auto & data_i = this->data_[i];
+
     for (int j = 0 ; j < size[i] ; ++j)
-      this->data_[i][j] += translate[i];
+      data_i[j] += translate[i];
+  }
 }
 
 

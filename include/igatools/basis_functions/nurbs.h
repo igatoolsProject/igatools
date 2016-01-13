@@ -159,14 +159,6 @@ public:
 
   ///@}
 
-#if 0
-  /**
-   * Create an element (defined on this space) with a given @p index.
-   */
-  virtual std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
-  create_element(const ListIt &index, const PropId &property) const override final;
-#endif
-
   virtual
   std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
   create_element_begin(const PropId &property) const  override final;
@@ -175,13 +167,6 @@ public:
   std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
   create_element_end(const PropId &property) const  override final;
 
-#if 0
-  /**
-   * Create an element (defined on this space) with a given @p index.
-   */
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
-  create_ref_element(const ListIt &index, const PropId &property) const override final;
-#endif
 
   virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
   create_ref_element_begin(const PropId &property) const override final;
@@ -320,20 +305,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    using std::to_string;
-    const std::string base_name = "ReferenceSpaceBasis_" +
-                                  to_string(dim_) + "_" +
-                                  to_string(0) + "_" +
-                                  to_string(range_) + "_" +
-                                  to_string(rank_);
-
-    ar &make_nvp(base_name,base_class<BaseSpace>(this));
-    ar &make_nvp("bsp_basis_",bsp_basis_);
-
-    ar &make_nvp("weight_func_",weight_func_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };

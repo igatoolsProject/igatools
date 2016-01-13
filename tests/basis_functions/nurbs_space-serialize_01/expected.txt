@@ -26,6 +26,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -41,22 +42,12 @@ Original NURBS:
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
@@ -64,33 +55,15 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
@@ -107,10 +80,10 @@ Original NURBS:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
       
    
    Weight function :
@@ -139,6 +112,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -154,22 +128,12 @@ Original NURBS:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 ]  Weights: [3]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -177,33 +141,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -220,10 +166,10 @@ Original NURBS:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
             
          
          IgCoefficients:
@@ -236,6 +182,7 @@ Original NURBS:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -264,6 +211,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -279,22 +227,12 @@ NURBS after serialize-deserialize:
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
@@ -302,33 +240,15 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
             Scalar components dimensions:
             [ 7 ]
             Total Dimension: 7
@@ -345,10 +265,10 @@ NURBS after serialize-deserialize:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
       
    
    Weight function :
@@ -377,6 +297,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -392,22 +313,12 @@ NURBS after serialize-deserialize:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 ]  Weights: [3]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -415,33 +326,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -458,10 +351,10 @@ NURBS after serialize-deserialize:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
             
          
          IgCoefficients:
@@ -474,6 +367,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -507,6 +401,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -524,27 +419,16 @@ Original NURBS:
             [ 1 ]
          
          Interior multiplicities:
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
@@ -552,37 +436,19 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
          
          Index table size:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
@@ -601,16 +467,16 @@ Original NURBS:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Component[1]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
       
    
    Weight function :
@@ -639,6 +505,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -654,22 +521,12 @@ Original NURBS:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 ]  Weights: [3]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -677,33 +534,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -720,10 +559,10 @@ Original NURBS:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
             
          
          IgCoefficients:
@@ -736,6 +575,7 @@ Original NURBS:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -764,6 +604,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -781,27 +622,16 @@ NURBS after serialize-deserialize:
             [ 1 ]
          
          Interior multiplicities:
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
@@ -809,37 +639,19 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
          
          Index table size:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 ]
             Total Dimension: 14
@@ -858,16 +670,16 @@ NURBS after serialize-deserialize:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Component[1]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
       
    
    Weight function :
@@ -896,6 +708,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -911,22 +724,12 @@ NURBS after serialize-deserialize:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 ]  Weights: [3]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -934,33 +737,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -977,10 +762,10 @@ NURBS after serialize-deserialize:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
             
          
          IgCoefficients:
@@ -993,6 +778,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -1026,6 +812,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1045,32 +832,20 @@ Original NURBS:
             [ 1 2 ]
          
          Interior multiplicities:
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
@@ -1078,41 +853,23 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
@@ -1133,22 +890,22 @@ Original NURBS:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Component[1]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Component[2]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
       
    
    Weight function :
@@ -1177,6 +934,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -1192,22 +950,12 @@ Original NURBS:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 ]  Weights: [3]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -1215,33 +963,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -1258,10 +988,10 @@ Original NURBS:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
             
          
          IgCoefficients:
@@ -1274,6 +1004,7 @@ Original NURBS:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -1302,6 +1033,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1321,32 +1053,20 @@ NURBS after serialize-deserialize:
             [ 1 2 ]
          
          Interior multiplicities:
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Size: [ 3 ]  Weights: [3]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
@@ -1354,41 +1074,23 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 ]
-               Entry id: 1
-               [ 7 ]
-               Entry id: 2
-               [ 7 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
             Scalar components dimensions:
             [ 7 7 7 ]
             Total Dimension: 21
@@ -1409,22 +1111,22 @@ NURBS after serialize-deserialize:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Component[1]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Component[2]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
       
    
    Weight function :
@@ -1453,6 +1155,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -1468,22 +1171,12 @@ NURBS after serialize-deserialize:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 ]  Weights: [3]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -1491,33 +1184,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 ]
                   Scalar components dimensions:
                   [ 7 ]
                   Total Dimension: 7
@@ -1534,10 +1209,10 @@ NURBS after serialize-deserialize:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
             
          
          IgCoefficients:
@@ -1550,6 +1225,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=6 , glob_id=6] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -1609,6 +1285,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1624,24 +1301,14 @@ Original NURBS:
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
@@ -1649,33 +1316,15 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
@@ -1692,14 +1341,14 @@ Original NURBS:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -1754,6 +1403,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -1769,24 +1419,14 @@ Original NURBS:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 2 ]  Weights: [3,6]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -1794,33 +1434,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -1837,14 +1459,14 @@ Original NURBS:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -1885,6 +1507,7 @@ Original NURBS:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -1939,6 +1562,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -1954,24 +1578,14 @@ NURBS after serialize-deserialize:
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
@@ -1979,33 +1593,15 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 ]
             Total Dimension: 35
@@ -2022,14 +1618,14 @@ NURBS after serialize-deserialize:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -2084,6 +1680,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -2099,24 +1696,14 @@ NURBS after serialize-deserialize:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 2 ]  Weights: [3,6]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2124,33 +1711,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2167,14 +1736,14 @@ NURBS after serialize-deserialize:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -2215,6 +1784,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -2274,6 +1844,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -2291,31 +1862,20 @@ Original NURBS:
             [ 1 ]
          
          Interior multiplicities:
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
@@ -2323,37 +1883,19 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
          
          Index table size:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
@@ -2372,24 +1914,24 @@ Original NURBS:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Component[1]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -2444,6 +1986,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -2459,24 +2002,14 @@ Original NURBS:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 2 ]  Weights: [3,6]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2484,33 +2017,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2527,14 +2042,14 @@ Original NURBS:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -2575,6 +2090,7 @@ Original NURBS:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -2629,6 +2145,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -2646,31 +2163,20 @@ NURBS after serialize-deserialize:
             [ 1 ]
          
          Interior multiplicities:
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
@@ -2678,37 +2184,19 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
          
          Index table size:
-            Raw components: 
-               Size: [ 2 ]  Weights: [2]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 ]
-            Active components ids: 
-            [ 0 1 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 ]
             Total Dimension: 70
@@ -2727,24 +2215,24 @@ NURBS after serialize-deserialize:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Component[1]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -2799,6 +2287,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -2814,24 +2303,14 @@ NURBS after serialize-deserialize:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 2 ]  Weights: [3,6]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2839,33 +2318,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -2882,14 +2343,14 @@ NURBS after serialize-deserialize:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -2930,6 +2391,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -2989,6 +2451,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -3008,38 +2471,26 @@ Original NURBS:
             [ 1 2 ]
          
          Interior multiplicities:
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
@@ -3047,41 +2498,23 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
@@ -3102,34 +2535,34 @@ Original NURBS:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Component[1]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Component[2]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -3184,6 +2617,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -3199,24 +2633,14 @@ Original NURBS:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 2 ]  Weights: [3,6]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -3224,33 +2648,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -3267,14 +2673,14 @@ Original NURBS:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -3315,6 +2721,7 @@ Original NURBS:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -3369,6 +2776,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -3388,38 +2796,26 @@ NURBS after serialize-deserialize:
             [ 1 2 ]
          
          Interior multiplicities:
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Size: [ 3 2 ]  Weights: [3,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
@@ -3427,41 +2823,23 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 ]
-               Entry id: 1
-               [ 7 5 ]
-               Entry id: 2
-               [ 7 5 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
             Scalar components dimensions:
             [ 35 35 35 ]
             Total Dimension: 105
@@ -3482,34 +2860,34 @@ NURBS after serialize-deserialize:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Component[1]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Component[2]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
       
    
    Weight function :
@@ -3564,6 +2942,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -3579,24 +2958,14 @@ NURBS after serialize-deserialize:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 2 ]  Weights: [3,6]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -3604,33 +2973,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 ]
                   Scalar components dimensions:
                   [ 35 ]
                   Total Dimension: 35
@@ -3647,14 +2998,14 @@ NURBS after serialize-deserialize:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
             
          
          IgCoefficients:
@@ -3695,6 +3046,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=34 , glob_id=34] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -3792,6 +3144,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -3807,26 +3160,16 @@ Original NURBS:
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
@@ -3834,33 +3177,15 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
@@ -3877,17 +3202,17 @@ Original NURBS:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[2]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
       
    
    Weight function :
@@ -3980,6 +3305,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -3995,26 +3321,16 @@ Original NURBS:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 2 1 ]  Weights: [3,6,6]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 ]
-                  Direction: 2
+                  Entry id: 2
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -4022,33 +3338,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -4065,17 +3363,17 @@ Original NURBS:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
                Direction[2]:
-               [2,2]((1.00000,0.00000),(0.00000,1.00000))
-               [2,2]((1.00000,0.00000),(0.00000,1.00000))
+               [2,2]((1.00000,0),(0,1.00000))
+               [2,2]((1.00000,0),(0,1.00000))
             
          
          IgCoefficients:
@@ -4186,6 +3484,7 @@ Original NURBS:
             Coef[loc_id=104 , glob_id=104] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -4278,6 +3577,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -4293,26 +3593,16 @@ NURBS after serialize-deserialize:
             [ ]
          
          Interior multiplicities:
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
@@ -4320,33 +3610,15 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 ]
             Total Dimension: 105
@@ -4363,17 +3635,17 @@ NURBS after serialize-deserialize:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[2]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
       
    
    Weight function :
@@ -4466,6 +3738,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -4481,26 +3754,16 @@ NURBS after serialize-deserialize:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 2 1 ]  Weights: [3,6,6]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 ]
-                  Direction: 2
+                  Entry id: 2
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -4508,33 +3771,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -4551,17 +3796,17 @@ NURBS after serialize-deserialize:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
                Direction[2]:
-               [2,2]((1.00000,0.00000),(0.00000,1.00000))
-               [2,2]((1.00000,0.00000),(0.00000,1.00000))
+               [2,2]((1.00000,0),(0,1.00000))
+               [2,2]((1.00000,0),(0,1.00000))
             
          
          IgCoefficients:
@@ -4672,6 +3917,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=104 , glob_id=104] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -4769,6 +4015,7 @@ Original NURBS:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -4788,44 +4035,32 @@ Original NURBS:
             [ 1 2 ]
          
          Interior multiplicities:
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 ]
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 ]
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
@@ -4833,41 +4068,23 @@ Original NURBS:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
@@ -4888,43 +4105,43 @@ Original NURBS:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[2]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
          Component[1]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[2]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
          Component[2]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[2]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
       
    
    Weight function :
@@ -5017,6 +4234,7 @@ Original NURBS:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -5032,26 +4250,16 @@ Original NURBS:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 2 1 ]  Weights: [3,6,6]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 ]
-                  Direction: 2
+                  Entry id: 2
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -5059,33 +4267,15 @@ Original NURBS:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -5102,17 +4292,17 @@ Original NURBS:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
                Direction[2]:
-               [2,2]((1.00000,0.00000),(0.00000,1.00000))
-               [2,2]((1.00000,0.00000),(0.00000,1.00000))
+               [2,2]((1.00000,0),(0,1.00000))
+               [2,2]((1.00000,0),(0,1.00000))
             
          
          IgCoefficients:
@@ -5223,6 +4413,7 @@ Original NURBS:
             Coef[loc_id=104 , glob_id=104] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 
@@ -5315,6 +4506,7 @@ NURBS after serialize-deserialize:
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -5334,44 +4526,32 @@ NURBS after serialize-deserialize:
             [ 1 2 ]
          
          Interior multiplicities:
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 ]
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 ]
-            Size: [ 3 2 1 ]  Weights: [3,6,6]
-            Direction: 0
+            Entry id: 0
             [ 1 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Direction: 2
+            Entry id: 2
             [ 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
@@ -5379,41 +4559,23 @@ NURBS after serialize-deserialize:
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 7 5 3 ]
-               Entry id: 1
-               [ 7 5 3 ]
-               Entry id: 2
-               [ 7 5 3 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
             Scalar components dimensions:
             [ 105 105 105 ]
             Total Dimension: 315
@@ -5434,43 +4596,43 @@ NURBS after serialize-deserialize:
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[2]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
          Component[1]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[2]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
          Component[2]: 
          Direction[0]:
-         [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-         [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+         [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+         [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+         [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+         [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
          Direction[1]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-         [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+         [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
          Direction[2]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
       
    
    Weight function :
@@ -5563,6 +4725,7 @@ NURBS after serialize-deserialize:
                         
                      
                   
+                  Name: 
                
                Degrees:
                   Raw components: 
@@ -5578,26 +4741,16 @@ NURBS after serialize-deserialize:
                   [ ]
                
                Interior multiplicities:
-                  Size: [ 3 2 1 ]  Weights: [3,6,6]
-                  Direction: 0
+                  Entry id: 0
                   [ 1 1 1 ]
-                  Direction: 1
+                  Entry id: 1
                   [ 1 1 ]
-                  Direction: 2
+                  Entry id: 2
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -5605,33 +4758,15 @@ NURBS after serialize-deserialize:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
                
                Index table size:
-                  Raw components: 
-                     Size: [ 1 ]  Weights: [1]
-                     Entry id: 0
-                     [ 7 5 3 ]
-                  
-                  Components map: 
-                  [ 0 ]
-                  Active components ids: 
-                  [ 0 ]
-                  Inactive components ids: 
-                  [ ]
+                  Entry id: 0
+                  [ 7 5 3 ]
                   Scalar components dimensions:
                   [ 105 ]
                   Total Dimension: 105
@@ -5648,17 +4783,17 @@ NURBS after serialize-deserialize:
             Bernstein Extraction:
                Component[0]: 
                Direction[0]:
-               [4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.500000,0.250000),(0.00000,0.00000,0.500000,0.583333),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.250000,0.00000,0.00000,0.00000),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0.00000,0.00000,0.00000,0.166667))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0.00000,0.00000,0.00000,0.250000))
-               [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+               [4,4]((1.00000,0,0,0),(0,1.00000,0.500000,0.250000),(0,0,0.500000,0.583333),(0,0,0,0.166667))
+               [4,4]((0.250000,0,0,0),(0.583333,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.666667),(0,0,0,0.166667))
+               [4,4]((0.166667,0,0,0),(0.666667,0.666667,0.333333,0.166667),(0.166667,0.333333,0.666667,0.583333),(0,0,0,0.250000))
+               [4,4]((0.166667,0,0,0),(0.583333,0.500000,0,0),(0.250000,0.500000,1.00000,0),(0,0,0,1.00000))
                Direction[1]:
-               [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
-               [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+               [3,3]((1.00000,0,0),(0,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0.500000),(0,0,0.500000))
+               [3,3]((0.500000,0,0),(0.500000,1.00000,0),(0,0,1.00000))
                Direction[2]:
-               [2,2]((1.00000,0.00000),(0.00000,1.00000))
-               [2,2]((1.00000,0.00000),(0.00000,1.00000))
+               [2,2]((1.00000,0),(0,1.00000))
+               [2,2]((1.00000,0),(0,1.00000))
             
          
          IgCoefficients:
@@ -5769,6 +4904,7 @@ NURBS after serialize-deserialize:
             Coef[loc_id=104 , glob_id=104] = 1.00000
          
          Dofs property: active
+         Name: 
       
    
 

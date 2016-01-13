@@ -23,7 +23,7 @@
 
 // [headers]
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/io/writer.h>
 // [headers]

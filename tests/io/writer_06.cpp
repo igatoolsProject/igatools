@@ -29,7 +29,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 
 #include <igatools/io/writer.h>
 
@@ -47,7 +47,8 @@ void write_sphere()
 
   const int codim = 1;
   Writer<dim, codim> writer(F, 4);
-  writer.save("sphere_dim" + std::to_string(dim));
+  writer.save("sphere_dim" + std::to_string(dim), "ascii");
+  writer.save("sphere_dim" + std::to_string(dim) + "_bin", "appended");
   writer.print_info(out);
 
   OUTEND

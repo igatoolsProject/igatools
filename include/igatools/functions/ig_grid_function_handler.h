@@ -21,7 +21,7 @@
 #ifndef __IG_GRID_FUNCTION_HANDLER_H_
 #define __IG_GRID_FUNCTION_HANDLER_H_
 
-#include <igatools/geometry/grid_function_handler.h>
+#include <igatools/functions/grid_function_handler.h>
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/basis_functions/space_element_handler.h>
 
@@ -33,17 +33,17 @@ IGA_NAMESPACE_OPEN
 /**
  * @ingroup handlers
  */
-template<int dim, int space_dim>
+template<int dim, int range>
 class IgGridFunctionHandler :
-  public GridFunctionHandler<dim, space_dim>
+  public GridFunctionHandler<dim, range>
 {
 private:
-  using parent_t = GridFunctionHandler<dim, space_dim>;
-  using self_t = IgGridFunctionHandler<dim, space_dim>;
+  using parent_t = GridFunctionHandler<dim, range>;
+  using self_t = IgGridFunctionHandler<dim, range>;
 protected:
   using typename parent_t::GridType;
 public:
-  using GridFunctionType = const IgGridFunction<dim, space_dim>;
+  using GridFunctionType = const IgGridFunction<dim, range>;
   using typename parent_t::ElementAccessor;
   using typename parent_t::Flags;
   using typename parent_t::topology_variant;
@@ -92,7 +92,7 @@ private:
 
 //  friend struct FillCacheDispatcher;
 
-  using IgBasisHandler = SpaceElementHandler<dim,0,space_dim,1>;
+  using IgBasisHandler = SpaceElementHandler<dim,0,range,1>;
   std::unique_ptr<IgBasisHandler> ig_basis_handler_;
 
   std::shared_ptr<GridFunctionType> ig_grid_function_;

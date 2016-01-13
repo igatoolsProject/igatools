@@ -28,29 +28,44 @@ data = Instantiation(include_files)
 
  
  
-sub_dim_members = \
-['void elhandler::FillCacheDispatcher::operator()(const Topology<k> &);' ,
- 'void elhandler::InitCacheDispatcher::operator()(const Topology<k> &);']
 
-elements = ['PhysicalSpaceElement<0,0,1,0>']
+elements = set()
+element_funcs = set()
+
+elem = 'PhysicalSpaceElement<0,0,1,0>'
+elements.add(elem)
+
+
+func = 'const ValueVector<Real> %s::get_w_measures<0>(const int) const' % (elem)
+element_funcs.add(func)
+func = 'const ValueVector<Real> & %s::get_measures<0>(const int) const' % (elem)
+element_funcs.add(func)
 
 
 
-for space in inst.SubPhysSpaces:
+for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
+    space_dim = x.dim + x.codim
     elem = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    elements.append(elem)
+    elements.add(elem)
+    for k in range(0,x.dim+1):
+        func = 'const ValueVector<Real> %s::get_w_measures<%d>(const int) const' % (elem,k)
+        element_funcs.add(func)
+        func = 'const ValueVector<Real> & %s::get_measures<%d>(const int) const' % (elem,k)
+        element_funcs.add(func)
+        if (k+1 == x.dim):
+            func = 'const ValueVector<Points<%d>> & %s::get_boundary_normals<%d>(const int) const' % (space_dim,elem,k)
+            element_funcs.add(func)
 
 
-for space in inst.PhysSpaces:
-    x = space.spec
-    elem = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    elements.append(elem)
 
 
 
-for elem in unique(elements):
-    f.write('template class %s; \n' %elem)
+for elem in elements:
+    f.write('template class %s;\n' %elem)
 
+
+for func in element_funcs:
+    f.write('template %s;\n' %func)
 
       

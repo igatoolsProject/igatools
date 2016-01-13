@@ -20,7 +20,7 @@
 
 // [functions]
 //#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 // [functions]
 // [old includes]
 #include <igatools/basis_functions/bspline.h>
@@ -187,7 +187,7 @@ void PoissonProblem<dim>::output()
   auto solution_function = IgFunc::const_create(basis, *solution);
   writer.template add_field<1>(*solution_function, "solution");
   string filename = "poisson_problem-" + to_string(dim) + "d" ;
-  writer.save(filename);
+  writer.save(filename, true);
 }
 
 

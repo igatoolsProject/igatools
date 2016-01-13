@@ -40,6 +40,7 @@ IgGridFunction<2,3>
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -59,38 +60,26 @@ IgGridFunction<2,3>
             [ 1 2 ]
          
          Interior multiplicities:
-            Size: [ 2 2 ]  Weights: [2,4]
-            Direction: 0
+            Entry id: 0
             [ 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Size: [ 2 2 ]  Weights: [2,4]
-            Direction: 0
+            Entry id: 0
             [ 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
-            Size: [ 2 2 ]  Weights: [2,4]
-            Direction: 0
+            Entry id: 0
             [ 1 1 ]
-            Direction: 1
+            Entry id: 1
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 4 4 ]
-               Entry id: 1
-               [ 4 4 ]
-               Entry id: 2
-               [ 4 4 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 4 ]
+            Entry id: 1
+            [ 4 4 ]
+            Entry id: 2
+            [ 4 4 ]
             Scalar components dimensions:
             [ 16 16 16 ]
             Total Dimension: 48
@@ -98,41 +87,23 @@ IgGridFunction<2,3>
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 4 4 ]
-               Entry id: 1
-               [ 4 4 ]
-               Entry id: 2
-               [ 4 4 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 4 ]
+            Entry id: 1
+            [ 4 4 ]
+            Entry id: 2
+            [ 4 4 ]
             Scalar components dimensions:
             [ 16 16 16 ]
             Total Dimension: 48
          
          Index table size:
-            Raw components: 
-               Size: [ 3 ]  Weights: [3]
-               Entry id: 0
-               [ 4 4 ]
-               Entry id: 1
-               [ 4 4 ]
-               Entry id: 2
-               [ 4 4 ]
-            
-            Components map: 
-            [ 0 1 2 ]
-            Active components ids: 
-            [ 0 1 2 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 4 4 ]
+            Entry id: 1
+            [ 4 4 ]
+            Entry id: 2
+            [ 4 4 ]
             Scalar components dimensions:
             [ 16 16 16 ]
             Total Dimension: 48
@@ -153,31 +124,31 @@ IgGridFunction<2,3>
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
          Direction[1]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
          Component[1]: 
          Direction[0]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
          Direction[1]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
          Component[2]: 
          Direction[0]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
          Direction[1]:
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
-         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
+         [2,2]((1.00000,0),(0,1.00000))
       
    
    IgCoefficients:
@@ -231,4 +202,5 @@ IgGridFunction<2,3>
       Coef[loc_id=47 , glob_id=47] = 1.96296
    
    Dofs property: active
+   Name: 
 

@@ -25,17 +25,50 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * @brief This class represent the index of an element of dimension <b>dim</b>.
+ *
+ * It stores the <tt>tensor</tt> and <tt>flat</tt> representation.
+ *
+ * @ingroup serializable
+ *
+ * @author M. Martinelli, 2015
+ */
 template <int dim>
 class ElementIndex
 {
 public:
-#ifdef SERIALIZATION
-  ElementIndex() = default;
-#else
-  ElementIndex() = delete;
-#endif
+  /**
+   * Default constructor. Sets the element index to 0.
+   */
+  ElementIndex();
 
   ElementIndex(const int flat_id, const TensorIndex<dim> &tensor_id);
+
+  /**
+   * Copy constructor.
+   */
+  ElementIndex(const ElementIndex<dim> &elem_id) = default;
+
+  /**
+   * Move constructor.
+   */
+  ElementIndex(ElementIndex<dim> &&elem_id) = default;
+
+  /**
+   * Destructor.
+   */
+  ~ElementIndex() = default;
+
+  /**
+   * Copy assignment operator.
+   */
+  ElementIndex<dim> &operator=(const ElementIndex<dim> &elem_id) = delete;
+
+  /**
+   * Move assignment operator.
+   */
+  ElementIndex<dim> &operator=(ElementIndex<dim> &&elem_id) = default;
 
 
   const TensorIndex<dim> &
@@ -69,11 +102,7 @@ private:
   friend class cereal::access;
 
   template<class Archive>
-  void serialize(Archive &ar)
-  {
-    ar &make_nvp("flat_id_",flat_id_);
-    ar &make_nvp("tensor_id_",tensor_id_);
-  }
+  void serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 
@@ -96,16 +125,7 @@ IGA_NAMESPACE_CLOSE
 
 
 #ifdef SERIALIZATION
-using ElementIndexAlias0 = iga::ElementIndex<0>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias0,cereal::specialization::member_serialize);
-using ElementIndexAlias1 = iga::ElementIndex<1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias1,cereal::specialization::member_serialize);
-using ElementIndexAlias2 = iga::ElementIndex<2>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias2,cereal::specialization::member_serialize);
-using ElementIndexAlias3 = iga::ElementIndex<3>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ElementIndexAlias3,cereal::specialization::member_serialize);
-
-//#include <igatools/utils/element_index.serialization>
+#include <igatools/utils/element_index.serial>
 #endif // SERIALIZATION
 
 

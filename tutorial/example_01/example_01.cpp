@@ -50,11 +50,11 @@ int main()
   out << " = " << grid->get_num_intervals() << endl;
   out << "  knots:  " << endl;
   auto knots = grid->get_knots();
-  for (auto knot_vect=knots.begin(); knot_vect!=knots.end(); knot_vect++) {
+  for (const auto & knot_vect : knots)
+  {
     out << "   ";
-    for (auto knot=(*knot_vect)->begin(); knot!=(*knot_vect)->end(); knot++) {
-      out << " " << *knot;
-    }
+    for (const auto & knot : *knot_vect)
+      out << " " << knot;
     out << endl;
   }
   out << endl;
@@ -67,8 +67,9 @@ int main()
 
   // [basis]
   auto basis = BSpline<dim>::const_create(space);
+  out.begin_item("BSpline:");
   basis->print_info(out);
-  out << endl;
+  out.end_item();
   // [basis]
 
   return 0;

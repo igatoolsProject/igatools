@@ -57,9 +57,11 @@ filled_progression(const BBox<dim_> &end_points, const TensorSize<dim_> &n_knots
 
     knots_1d.resize(n_i);
 
-    const Real h=(end_points[i][1] - end_points[i][0]) /(n_i-1);
+    const auto &end_points_i = end_points[i];
 
-    knots_1d[0] = end_points[i][0];
+    const auto h = (end_points_i[1] - end_points_i[0]) /(n_i-1);
+
+    knots_1d[0] = end_points_i[0];
     for (int j = 1; j < n_i; ++j)
       knots_1d[ j ] = knots_1d[ j-1 ] + h;
 
@@ -210,12 +212,12 @@ Grid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates)
     for (const auto &tensor_id : tensor_index_range)
     {
       const int flat_id = this->tensor_to_flat_element_id(tensor_id);
-      active_elements.emplace(ElementIndex<dim_>(flat_id,tensor_id));
+      active_elements.emplace_back(ElementIndex<dim_>(flat_id,tensor_id));
     }
   } // end if (dim_ > 0)
   else // if (dim_ == 0)
   {
-    active_elements.emplace(ElementIndex<dim_>(0,TensorIndex<dim_>()));
+    active_elements.emplace_back(ElementIndex<dim_>(0,TensorIndex<dim_>()));
   } // end if (dim_ == 0)
 
 #ifndef NDEBUG
@@ -309,6 +311,7 @@ Grid(const self_t &grid,const CopyPolicy &copy_policy)
   knot_coordinates_(grid.knot_coordinates_),
   boundary_id_(grid.boundary_id_),
   elem_properties_(grid.elem_properties_),
+  name_(grid.get_name()),
   object_id_(UniqueIdGenerator::get_unique_id()),
   elems_size_(grid.elems_size_)
 {
@@ -342,6 +345,26 @@ operator==(const Grid<dim_> &grid) const
     same_knots_coordinates = same_knots_coordinates && (knots_a == knots_b);
   }
   return same_knots_coordinates;
+}
+
+
+
+template<int dim_>
+const std::string &
+Grid<dim_>::
+get_name() const
+{
+  return name_;
+}
+
+
+
+template<int dim_>
+void
+Grid<dim_>::
+set_name(const std::string &name)
+{
+  name_ = name;
 }
 
 
@@ -557,15 +580,14 @@ template<int dim_>
 template<int sdim>
 auto
 Grid<dim_>::
-get_boundary_normals(const int s_id) const -> BoundaryNormal<sdim>
+get_boundary_normals(const int s_id) const -> BoundaryNormals<sdim>
 {
-  auto all_elems = UnitElement<dim_>::all_elems;
-  auto element = std::get<sdim>(all_elems)[s_id];
+  const auto &element = UnitElement<dim_>::template get_elem<sdim>(s_id);
 
-  BoundaryNormal<sdim> normals;
-  for (int i=0; i<dim_-sdim; ++i)
+  BoundaryNormals<sdim> normals;
+  for (int i = 0; i < dim_-sdim; ++i)
   {
-    auto val = 2*element.constant_values[i]-1;
+    const auto val = 2 * element.constant_values[i] - 1;
     normals[i][element.constant_directions[i]] = val;
   }
 
@@ -749,14 +771,14 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
     for (const auto &tensor_id : tensor_index_range)
     {
       const int flat_id = this->tensor_to_flat_element_id(tensor_id);
-      active_elements.insert(ElementIndex<dim_>(flat_id,tensor_id));
+      active_elements.emplace_back(ElementIndex<dim_>(flat_id,tensor_id));
     }
   }
   else // if (dim_ == 0)
   {
-    active_elements.emplace(ElementIndex<dim_>(0,TensorIndex<dim_>()));
+    active_elements.emplace_back(ElementIndex<dim_>(0,TensorIndex<dim_>()));
   } // end if (dim_ == 0)
-
+  std::sort(active_elements.begin(),active_elements.end());
 
   const auto fine_to_coarse_elems_id = grid_tools::build_map_elements_id_between_grids(
                                          *this,*grid_pre_refinement_);
@@ -784,8 +806,10 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
       for (const auto &elem_id_coarse : elems_id_coarse_with_property)
       {
         const auto &elems_id_fine = coarse_to_fine_elems_id[elem_id_coarse];
-        elems_id_fine_with_property.insert(elems_id_fine.begin(),elems_id_fine.end());
+        for (const auto &elem_id_fine : elems_id_fine)
+          elems_id_fine_with_property.emplace_back(elem_id_fine);
       }
+      std::sort(elems_id_fine_with_property.begin(),elems_id_fine_with_property.end());
     }
   }
 
@@ -875,6 +899,8 @@ print_info(LogStream &out) const
     out.end_item();
   }
   //-------------------------------------------------------
+
+  out << "Name: " << name_ << std::endl;
 }
 
 
@@ -1206,6 +1232,7 @@ serialize(Archive &ar)
   ar &make_nvp("boundary_id_",boundary_id_);
   ar &make_nvp("properties_elements_id_",elem_properties_);
   ar &make_nvp("object_id_",object_id_);
+  ar &make_nvp("name_",name_);
   ar &make_nvp("elems_size_",elems_size_);
 #ifdef MESH_REFINEMENT
   ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);

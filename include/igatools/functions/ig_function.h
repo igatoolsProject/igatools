@@ -71,6 +71,7 @@ class PhysicalSpaceElement;
 
 
 /**
+ * @brief Function built as linear combination of basis functions from PhysicalSpaceBasis
  *
  * @ingroup serializable
  */
@@ -100,13 +101,11 @@ public:
   //TODO (pauletti, Mar 23, 2015): should we make this private?
   IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const EpetraTools::Vector &coeff,
-             const std::string &dofs_property,
-             const std::string &name);
+             const std::string &dofs_property);
 
   IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const IgCoefficients &coeff,
-             const std::string &dofs_property,
-             const std::string &name);
+             const std::string &dofs_property);
 
 
 
@@ -131,29 +130,25 @@ public:
   create_cache_handler() const override final;
 
 
-  static std::shared_ptr<const parent_t>
+  static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const PhysBasis> &basis,
                const EpetraTools::Vector &coeff,
-               const std::string &dofs_property = DofProperties::active,
-               const std::string &name = "");
+               const std::string &dofs_property = DofProperties::active);
 
-  static std::shared_ptr<const parent_t>
+  static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const PhysBasis> &basis,
                const IgCoefficients &coeff,
-               const std::string &dofs_property = DofProperties::active,
-               const std::string &name = "");
+               const std::string &dofs_property = DofProperties::active);
 
-  static std::shared_ptr<parent_t>
+  static std::shared_ptr<self_t>
   create(const std::shared_ptr<PhysBasis> &basis,
          const EpetraTools::Vector &coeff,
-         const std::string &dofs_property = DofProperties::active,
-         const std::string &name = "");
+         const std::string &dofs_property = DofProperties::active);
 
-  static std::shared_ptr<parent_t>
+  static std::shared_ptr<self_t>
   create(const std::shared_ptr<PhysBasis> &basis,
          const IgCoefficients &coeff,
-         const std::string &dofs_property = DofProperties::active,
-         const std::string &name = "");
+         const std::string &dofs_property = DofProperties::active);
 
 
 
@@ -228,11 +223,11 @@ private:
 
 #ifdef MESH_REFINEMENT
 
-  void create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function);
+//  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &ig_function);
 
   void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const Grid<dim> &old_grid);
+    const Grid<dim> &old_grid) override final;
 
 #endif // MESH_REFINEMENT
 
@@ -245,21 +240,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    using std::to_string;
-    const std::string base_name = "Function_" +
-                                  to_string(dim) + "_" +
-                                  to_string(codim) + "_" +
-                                  to_string(range) + "_" +
-                                  to_string(rank);
-
-    ar &make_nvp(base_name,base_class<base_t>(this));
-
-    ar &make_nvp("basis_",basis_);
-    ar &make_nvp("coeffs_",coeffs_);
-    ar &make_nvp("dofs_property_",dofs_property_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 };

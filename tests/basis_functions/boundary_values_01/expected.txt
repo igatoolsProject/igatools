@@ -1,3 +1,74 @@
+Boundary Domain
+   GridFunction<1,2>
+      SubGridFunction<1>
+         Sup. function:
+            IdentityGridFunction<2>
+            
+            Name: 
+         
+         Sub-element topology ID: 0
+         Sub elements ID:
+            Entry id: 0
+               Flat ID: 0    Tensor ID: [0]
+            
+            Entry id: 1
+               Flat ID: 1    Tensor ID: [1]
+            
+            Entry id: 2
+               Flat ID: 2    Tensor ID: [2]
+            
+            Entry id: 3
+               Flat ID: 3    Tensor ID: [3]
+            
+            Entry id: 4
+               Flat ID: 4    Tensor ID: [4]
+            
+            Entry id: 5
+               Flat ID: 5    Tensor ID: [5]
+            
+            Entry id: 6
+               Flat ID: 6    Tensor ID: [6]
+            
+            Entry id: 7
+               Flat ID: 7    Tensor ID: [7]
+            
+            Entry id: 8
+               Flat ID: 8    Tensor ID: [8]
+            
+         
+         Sup elements ID:
+            Entry id: 0
+               Flat ID: 0    Tensor ID: [0,0]
+            
+            Entry id: 1
+               Flat ID: 9    Tensor ID: [0,1]
+            
+            Entry id: 2
+               Flat ID: 18    Tensor ID: [0,2]
+            
+            Entry id: 3
+               Flat ID: 27    Tensor ID: [0,3]
+            
+            Entry id: 4
+               Flat ID: 36    Tensor ID: [0,4]
+            
+            Entry id: 5
+               Flat ID: 45    Tensor ID: [0,5]
+            
+            Entry id: 6
+               Flat ID: 54    Tensor ID: [0,6]
+            
+            Entry id: 7
+               Flat ID: 63    Tensor ID: [0,7]
+            
+            Entry id: 8
+               Flat ID: 72    Tensor ID: [0,8]
+            
+         
+      
+   
+   Name: 
+
 basis index 	 value
 0	0.999875
 12	1.00090

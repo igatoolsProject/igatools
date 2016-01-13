@@ -23,7 +23,7 @@
 
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_handler.h>
-#include <igatools/geometry/grid_function_element.h>
+#include <igatools/functions/grid_function_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -134,37 +134,19 @@ public:
 
 
   template<int sdim>
-  const ValueVector<Point> &get_points(const int s_id) const
-  {
-    return grid_func_elem_->template
-           get_values_from_cache<grid_function_element::_D<0>, sdim>(s_id);
-  }
+  const ValueVector<Point> &get_points(const int s_id) const;
 
   template<int sdim>
-  const ValueVector<Jacobian> &get_jacobians(const int s_id) const
-  {
-    return grid_func_elem_->template
-           get_values_from_cache<grid_function_element::_D<1>,sdim>(s_id);
-  }
+  const ValueVector<Jacobian> &get_jacobians(const int s_id) const;
 
   template<int sdim>
-  const ValueVector<Hessian> &get_hessians(const int s_id) const
-  {
-    return grid_func_elem_->template
-           get_values_from_cache<grid_function_element::_D<2>,sdim>(s_id);
-  }
+  const ValueVector<Hessian> &get_hessians(const int s_id) const;
 
   template<int sdim>
-  const ValueVector<Real> &get_measures(const int s_id) const
-  {
-    return get_values_from_cache<_Measure,sdim>(s_id);
-  }
+  const ValueVector<Real> &get_measures(const int s_id) const;
 
   template<int sdim>
-  const ValueVector<Real> &get_w_measures(const int s_id) const
-  {
-    return get_values_from_cache<_W_Measure,sdim>(s_id);
-  }
+  const ValueVector<Real> &get_w_measures(const int s_id) const;
 
 
   const ValueVector<SafeSTLArray<Point, codim_> > &
@@ -175,11 +157,7 @@ public:
 
   template <int sdim>
   const ValueVector<Points<dim_+codim_> > &
-  get_boundary_normals(const int s_id, EnableIf<(sdim >= 0)> * = nullptr) const
-  {
-    Assert(dim_ == sdim+1, ExcNotImplemented());
-    return get_values_from_cache<_BoundaryNormal,sdim>(s_id);
-  }
+  get_boundary_normals(const int s_id, EnableIf<(sdim >= 0)> * = nullptr) const;
 
 
   const ValueVector<Point> &get_element_points() const;
@@ -284,7 +262,7 @@ private:
       std::is_same<ValueType,_Curvature>::value ||
       std::is_same<ValueType,_FirstFundamentalForm>::value ||
       std::is_same<ValueType,_SecondFundamentalForm>::value ||
-      std::is_same<ValueType,_ExtNormalD1>::value;;
+      std::is_same<ValueType,_ExtNormalD1>::value;
   };
 
   using CType = boost::fusion::map<
@@ -337,6 +315,18 @@ public:
   {
     return grid_func_elem_->template
            evaluate_at_points<typename ValueType::GridFuncElemType>(quad);
+  }
+
+
+  /**
+   * Return TRUE if the element index is referring to a valid element in the Grid.
+   *
+   * @note An element with non valido position can happens when we use the ++ operator
+   * on an element that is the last in the list.
+   */
+  bool has_valid_position() const
+  {
+    return grid_func_elem_->has_valid_position();
   }
 
 

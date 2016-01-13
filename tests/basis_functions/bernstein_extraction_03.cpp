@@ -45,7 +45,7 @@ int main()
     auto int_mult = MultiplicityTable({ {{1,3}} });
     auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
-    CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
+    SafeSTLArray<SafeSTLVector<Real>,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
     typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
 
     typename SplineSpace::EndBehaviour endb(BasisEndBehaviour::end_knots);

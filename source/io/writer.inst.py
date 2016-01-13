@@ -26,7 +26,7 @@ data = Instantiation(include_files)
 
 strings = []
 
-writer_real_types = ['double','float']
+writer_real_types = ['double']
 
 for x in inst.mapping_dims:
     for writer_real_t in writer_real_types:

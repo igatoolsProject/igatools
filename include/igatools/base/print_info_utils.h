@@ -26,7 +26,7 @@
 #include <type_traits>
 
 IGA_NAMESPACE_OPEN
-
+#if 0
 /**
  * Type traits to determine if a class provides
  * a print_info function
@@ -50,6 +50,10 @@ has_print_info(long)
 {
   return false;
 }
+#endif
+
+
+
 
 IGA_NAMESPACE_CLOSE
 

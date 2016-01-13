@@ -24,6 +24,33 @@
 IGA_NAMESPACE_OPEN
 
 
+class LogStream;
+
+/**
+ * Type traits to determine if a class provides
+ * a print_info function
+ */
+template<class T>
+using print_info_type =
+  decltype(std::declval<T>().print_info(std::declval<LogStream &>()));
+
+
+template<class T>
+constexpr
+EnableIf<std::is_void<print_info_type<T>>::value, bool >
+                                       has_print_info(int)
+{
+  return true;
+}
+
+template<class T>
+constexpr bool
+has_print_info(long)
+{
+  return false;
+}
+
+
 /**
  * A class that simplifies the process of execution logging. It does so by
  * providing
@@ -545,15 +572,43 @@ private:
   /** Maximum number of digits to be written to express floating-point values. */
   int precision_ ;
 
-  template <typename T> friend LogStream &operator << (LogStream &log, const T &t);
+  /*
+  template <typename T>
+  friend
+  EnableIf<has_print_info<T>(0),LogStream &>
+  operator << (LogStream &log, const T &t);
+  //*/
+  template <typename T>
+  friend
+  EnableIf<!has_print_info<T>(0),LogStream &>
+  operator << (LogStream &log, const T &t);
 };
 
 
 /* ----------------------------- Inline functions and templates ---------------- */
 
 
+
+
+
 /**
- * Output a constant something through LogStream:
+ * Output an object of type </tt>T</tt> (that has the <tt>print_info()</tt> function) through LogStream.
+ *
+ * @note We declare this operator as a non-member function so that it is
+ * possible to overload it with more specialized templated versions under
+ * C++11 overload resolution rules
+ */
+template<class T>
+inline
+EnableIf<has_print_info<T>(0),LogStream &>
+operator<<(LogStream &out, const T &in)
+{
+  in.print_info(out);
+  return out;
+}
+
+/**
+ * Output an object of type </tt>T</tt> (that has not the <tt>print_info()</tt> function) through LogStream.
  *
  * @note We declare this operator as a non-member function so that it is
  * possible to overload it with more specialized templated versions under
@@ -561,11 +616,90 @@ private:
  */
 template <typename T>
 inline
-LogStream &operator<< (LogStream &log, const T &t)
+EnableIf<!has_print_info<T>(0),LogStream &>
+operator<< (LogStream &log, const T &t)
 {
   // print to the internal stringstream
   log.get_stream() << t;
   return log;
+}
+
+
+/**
+ * Output an object of type </tt>T</tt> (wrapped by a <tt>unique_ptr</tt>) through LogStream.
+ *
+ * @note We declare this operator as a non-member function so that it is
+ * possible to overload it with more specialized templated versions under
+ * C++11 overload resolution rules
+ */
+template <typename T>
+inline
+LogStream &
+operator<< (LogStream &log, const std::unique_ptr<T> &t)
+{
+  // print to the internal stringstream
+  log << "[ " << *t << "]";
+  return log;
+}
+
+/*
+template<>
+inline
+LogStream &
+operator<< <std::pair<Real,Real> >(LogStream &out,const std::pair<Real,Real> &pair)
+{
+  out << "[ " << pair.first << " , " << pair.second << "]";
+  return out;
+}
+//*/
+
+
+inline
+LogStream &
+LogStream::operator<<(const double t)
+{
+  std::ostringstream &stream = get_stream();
+
+  // drop small numbers or skew them away from zero.
+  // we have to make sure that we don't catch NaN's and +-Inf's with the
+  // test, because for these denormals all comparisons are always false.
+//   if (! numbers::is_finite(t))
+  if (!(t <= std::numeric_limits<double>::max()))
+    stream << t;
+  else if (std::fabs(t) < double_threshold)
+  {
+    stream << '0';
+//    stream << 0.0d;
+  }
+  else
+    stream << t*(1.+offset);
+
+  return *this;
+}
+
+
+
+inline
+LogStream &
+LogStream::operator<<(const float t)
+{
+  std::ostringstream &stream = get_stream();
+
+  // we have to make sure that we don't catch NaN's and +-Inf's with the
+  // test, because for these denormals all comparisons are always false.
+  // thus, for a NaN, both t<=0 and t>=0 are false at the same time, which
+  // can't be said for any other number
+  if (!(t<=0) && !(t>=0))
+    stream << t;
+  else if (std::fabs(t) < float_threshold)
+  {
+    stream << '0';
+//    stream << 0.0f;
+  }
+  else
+    stream << t*(1.+offset);
+
+  return *this;
 }
 
 
@@ -594,48 +728,6 @@ LogStream::get_stream()
 
 
 
-
-inline
-LogStream &
-LogStream::operator<< (const double t)
-{
-  std::ostringstream &stream = get_stream();
-
-  // drop small numbers or skew them away from zero.
-  // we have to make sure that we don't catch NaN's and +-Inf's with the
-  // test, because for these denormals all comparisons are always false.
-//   if (! numbers::is_finite(t))
-  if (!(t <= std::numeric_limits<double>::max()))
-    stream << t;
-  else if (std::fabs(t) < double_threshold)
-    stream << '0';
-  else
-    stream << t*(1.+offset);
-
-  return *this;
-}
-
-
-
-inline
-LogStream &
-LogStream::operator<< (const float t)
-{
-  std::ostringstream &stream = get_stream();
-
-  // we have to make sure that we don't catch NaN's and +-Inf's with the
-  // test, because for these denormals all comparisons are always false.
-  // thus, for a NaN, both t<=0 and t>=0 are false at the same time, which
-  // can't be said for any other number
-  if (!(t<=0) && !(t>=0))
-    stream << t;
-  else if (std::fabs(t) < float_threshold)
-    stream << '0';
-  else
-    stream << t*(1.+offset);
-
-  return *this;
-}
 
 
 inline

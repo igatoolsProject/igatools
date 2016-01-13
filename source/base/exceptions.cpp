@@ -333,7 +333,7 @@ const char *ExceptionBase::what() const throw()
 const char *ExceptionBase::get_condition() const
 {
   return cond;
-};
+}
 
 
 

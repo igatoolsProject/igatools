@@ -25,8 +25,24 @@ data = Instantiation()
 f = data.file_output
 inst = data.inst
 
+
+quad_types = ['QGauss','QGaussLobatto','QUniform','QTrapez']
+
+quad_classes = []
+
 for dim in inst.all_domain_dims:
-    f.write('template class QGauss< %d > ;\n' % (dim))
-    f.write('template class QGaussLobatto< %d > ;\n' % (dim))
-    f.write('template class QUniform< %d > ;\n' % (dim))
-    f.write('template class QTrapez< %d > ;\n' % (dim))
+    for quad_type in quad_types:
+        quad = '%s<%d>' % (quad_type,dim)
+        quad_classes.append(quad)
+   
+for quad in unique(quad_classes):   
+    f.write('template class %s;\n' % (quad))
+    
+
+#f.write('IGA_NAMESPACE_CLOSE\n')
+#
+#for quad in unique(quad_classes):   
+#    f.write('extern template class std::shared_ptr<iga::%s>;\n' % (quad))
+#
+#f.write('IGA_NAMESPACE_OPEN\n')
+

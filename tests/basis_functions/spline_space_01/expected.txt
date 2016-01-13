@@ -2,10 +2,9 @@
 test_1d
 ========================================================================
 Boundary knots:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 0 ]
-Direction: 1
+Entry id: 1
 [ 1.10000 1.20000 1.30000 ]
 Repeated knots:
 Entry id: 0
@@ -16,15 +15,13 @@ Entry id: 0
 test_2d
 ========================================================================
 Boundary knots:
-Size: [ 2 2 ]  Weights: [2,4]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 ]
-Direction: 1
+Entry id: 1
 [ 1.20000 1.30000 ]
-Size: [ 4 4 ]  Weights: [4,16]
-Direction: 0
+Entry id: 0
 [ -0.600000 0 0 0 ]
-Direction: 1
+Entry id: 1
 [ 1.00000 1.10000 1.60000 1.60000 ]
 Repeated knots:
 Entry id: 0
@@ -37,20 +34,17 @@ Entry id: 1
 test_3d
 ========================================================================
 Boundary knots:
-Size: [ 2 2 ]  Weights: [2,4]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 ]
-Direction: 1
+Entry id: 1
 [ 1.20000 1.30000 ]
-Size: [ 4 4 ]  Weights: [4,16]
-Direction: 0
+Entry id: 0
 [ -0.600000 0 0 0 ]
-Direction: 1
+Entry id: 1
 [ 1.00000 1.00000 1.60000 1.60000 ]
-Size: [ 1 1 ]  Weights: [1,1]
-Direction: 0
+Entry id: 0
 [ -0.600000 ]
-Direction: 1
+Entry id: 1
 [ 1.60000 ]
 Repeated knots:
 Entry id: 0
@@ -65,25 +59,21 @@ Entry id: 2
 test_2d_2
 ========================================================================
 Boundary knots:
-Size: [ 2 2 ]  Weights: [2,4]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 ]
-Direction: 1
+Entry id: 1
 [ 1.20000 1.30000 ]
-Size: [ 4 4 ]  Weights: [4,16]
-Direction: 0
+Entry id: 0
 [ -0.600000 0 0 0 ]
-Direction: 1
+Entry id: 1
 [ 1.00000 1.00000 1.60000 1.60000 ]
-Size: [ 4 4 ]  Weights: [4,16]
-Direction: 0
+Entry id: 0
 [ -0.600000 0 0 0 ]
-Direction: 1
+Entry id: 1
 [ 1.00000 1.00000 1.60000 1.60000 ]
-Size: [ 2 2 ]  Weights: [2,4]
-Direction: 0
+Entry id: 0
 [ -0.500000 0 ]
-Direction: 1
+Entry id: 1
 [ 1.20000 1.30000 ]
 Repeated knots:
 Entry id: 0

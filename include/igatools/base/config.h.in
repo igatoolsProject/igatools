@@ -30,6 +30,7 @@
 #cmakedefine PARAVIEW_PLUGIN
 #cmakedefine MESH_REFINEMENT
 #cmakedefine USE_CEREAL
+#cmakedefine XML_IO
 
 #define MAX_NUM_DERIVATIVES @max_der_order@ + 1
 #define num_sub_elem @num_sub_elem@
@@ -38,6 +39,12 @@
 
 #define IGA_NAMESPACE_OPEN namespace iga {
 #define IGA_NAMESPACE_CLOSE }
+
+//--------------------------------------------------------------------
+#define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+#define BOOST_MPL_LIMIT_VECTOR_SIZE 30
+#define FUSION_MAX_VECTOR_SIZE 30
+//--------------------------------------------------------------------
 
 #include <igatools/base/types.h>
 #include <igatools/base/numbers.h>
@@ -59,15 +66,13 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/polymorphic.hpp>
 
-//#ifndef NDEBUG
-#include <cereal/archives/xml.hpp>
-using OArchiveCereal = cereal::XMLOutputArchive;
-using IArchiveCereal = cereal::XMLInputArchive;
-//#else
-//#include <cereal/archives/binary.hpp>
-//using OArchiveCereal = cereal::BinaryOutputArchive;
-//using IArchiveCereal = cereal::BinaryInputArchive;
-//#endif // NDEBUG
+// #include <cereal/archives/xml.hpp>
+// using OArchiveCereal = cereal::XMLOutputArchive;
+// using IArchiveCereal = cereal::XMLInputArchive;
+
+#include <cereal/archives/binary.hpp>
+using OArchiveCereal = cereal::BinaryOutputArchive;
+using IArchiveCereal = cereal::BinaryInputArchive;
 
 using namespace cereal;
 

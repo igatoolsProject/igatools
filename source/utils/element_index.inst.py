@@ -23,13 +23,24 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-objects = []
+elem_ids = set()
 
 for dim in inst.all_domain_dims:
-    obj = 'ElementIndex<%d>' % (dim)
-    objects.append(obj)
+    elem_id = 'ElementIndex<%d>' % (dim)
+    elem_ids.add(elem_id)
     
     
-for obj in unique(objects):
-   f.write('template class %s; \n' %obj)
-   f.write('template LogStream & operator<<(LogStream &,const %s &); \n' %(obj) )
+for elem_id in elem_ids:
+   f.write('template class %s; \n' %elem_id)
+   f.write('template LogStream & operator<<(LogStream &,const %s &); \n' %(elem_id) )
+
+
+#---------------------------------------------------
+f.write('#ifdef SERIALIZATION\n')
+archives = ['OArchive','IArchive']
+
+for elem_id in elem_ids:
+    for ar in archives:
+        f.write('template void %s::serialize(%s&);\n' %(elem_id,ar))
+f.write('#endif // SERIALIZATION\n')
+#---------------------------------------------------

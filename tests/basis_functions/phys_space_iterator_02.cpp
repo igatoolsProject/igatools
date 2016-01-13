@@ -19,242 +19,79 @@
 //-+--------------------------------------------------------------------
 
 /*
- *
  *  Test for the evaluation of physical space basis functions
- *  values and gradients with an ig function for the map
- *  author:
- *  date: 2014-11-08
+ *  with the ball function as a map.
+ *
+ *  author: pauletti
+ *  date: 2014/11/10
  *
  */
 
-#include "../tests.h"
-
-#include <igatools/functions/ig_grid_function.h>
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/nurbs.h>
-#include <igatools/basis_functions/physical_space_basis.h>
-#include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
-
-//using namespace EpetraTools;
+#include <igatools/functions/identity_function.h>
+#include <igatools/functions/function_lib.h>
+#include "phys_space_iterator.h"
 
 
 
-
-template <class Basis>
-void serialize_deserialize(std::shared_ptr<Basis> space)
+template<int dim, int sub_dim = dim>
+void
+ball_map(const int n_knots, const int deg, const string prop=DofProperties::active,
+         const bool use_bdry=true)
 {
   OUTSTART
 
-  out.begin_item("Original PhysicalSpaceBasis:");
-  space->print_info(out);
-  out.end_item();
+  BBox<dim> box;
+  box[0] = {0.5, 1};
+  for (int i=1; i<dim; ++i)
+    box[i] = {0., M_PI/4.};
 
-
-  std::string template_args =
-    "_dim" + std::to_string(Basis::dim) +
-    "_range" + std::to_string(Basis::range) +
-    "_rank" + std::to_string(Basis::rank) +
-    "_codim" + std::to_string(Basis::codim);
-  std::string filename = "phys_space" + template_args + ".xml";
-  std::string tag_name = "PhysicalSpaceBasis" + template_args;
-  {
-    // serialize the PhysicalSpaceBasis object to an xml file
-    std::ofstream xml_ostream(filename);
-    OArchive xml_out(xml_ostream);
-
-    xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
-    xml_ostream.close();
-  }
-
-  space.reset();
-  {
-    // de-serialize the PhysicalSpaceBasis object from an xml file
-    std::ifstream xml_istream(filename);
-    IArchive xml_in(xml_istream);
-
-    xml_in >> BOOST_SERIALIZATION_NVP(space);
-    xml_istream.close();
-  }
-  out.begin_item("PhysicalSpaceBasis after serialize-deserialize:");
-  space->print_info(out);
-  out.end_item();
-//*/
+  auto grid  = Grid<dim>::create(box, n_knots);
+  auto map = grid_functions::BallGridFunction<dim>::create(grid);
+  auto phys_basis = create_phys_basis<dim>(grid, map, deg);
+  const int n_qp = 2;
+  elem_values<dim, sub_dim>(phys_basis, n_qp, prop, use_bdry);
 
   OUTEND
 }
 
-
-template<int dim, int codim=0>
-auto
-create_function(shared_ptr<const BSpline<dim, dim + codim>> space)
-{
-  IgCoefficients control_pts;
-
-  if (dim == 1)
-  {
-    int id = 0 ;
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 1.0 ;
-  }
-  else if (dim == 2)
-  {
-    int id = 0 ;
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 1.0 ;
-
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 1.0 ;
-
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 0.0 ;
-
-    control_pts[id++] = 1.0 ;
-    control_pts[id++] = 1.0 ;
-  }
-  else if (dim == 3)
-  {
-    int id = 0 ;
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 1.0 ;
-
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 1.0 ;
-
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 1.0 ;
-
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 1.0 ;
-
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 0.0 ;
-
-    control_pts[id++] = 1.0 ;
-    control_pts[id++] = 1.0 ;
-
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 0.0 ;
-
-    control_pts[id++] = 1.0 ;
-    control_pts[id++] = 1.0 ;
-
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 0.0 ;
-
-    control_pts[id++] = 0.0 ;
-    control_pts[id++] = 0.0 ;
-
-    control_pts[id++] = 1.0 ;
-    control_pts[id++] = 1.0 ;
-
-    control_pts[id++] = 1.0 ;
-    control_pts[id++] = 1.0 ;
-
-  }
-
-  using Function = IgGridFunction<dim,dim+codim>;
-  return Function::const_create(space, control_pts);
-}
-
-
-template<int dim,int range=dim,int rank=1,int codim=0>
-auto
-create_phys_space(shared_ptr<const BSpline<dim,range,rank>> ref_space)
-{
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
-
-  return Basis::const_create(
-           ref_space,
-           Domain<dim,codim>::const_create(create_function(ref_space)),
-           Transformation::h_grad);
-}
-
-
-template <int dim, int order = 0, int range=dim, int rank=1, int codim = 0>
-void elem_values(const int n_knots = 2, const int deg=1)
+template<int dim, int sub_dim = dim>
+void
+ball_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
 {
   OUTSTART
-  const int k = dim;
-  using BspSpace = BSpline<dim, range, rank>;
 
+  BBox<dim> box;
+  box[0] = {0.5, 1};
+  for (int i=1; i<dim; ++i)
+    box[i] = {0., M_PI/4.};
 
-  auto grid  = Grid<dim>::const_create(n_knots);
+  auto grid  = Grid<dim>::const_create(box, n_knots);
 
-  auto ref_space = BspSpace::const_create(
-                     SplineSpace<dim,range,rank>::const_create(deg,grid));
-
-
-  auto space = create_phys_space(ref_space);
-
-//  serialize_deserialize(space);
-
-
-  const int n_qp = 3;
-  auto quad = QGauss<k>::create(n_qp);
-
-  using space_element::Flags;
-  auto flag = Flags::value |
-              Flags::gradient |
-              Flags::hessian |
-              Flags::divergence |
-              Flags::w_measure;
-
-  auto elem_handler = space->create_cache_handler();
-  elem_handler->template set_flags<k>(flag);
-
-  using space_element::_Value;
-  using space_element::_Gradient;
-  using space_element::_Hessian;
-  using space_element::_Divergence;
-
-  auto elem = space->begin();
-  auto end = space->end();
-  elem_handler->init_element_cache(elem,quad);
-  int elem_id = 0;
-  for (; elem != end; ++elem)
-  {
-    elem_handler->fill_element_cache(elem);
-    out.begin_item("Element " + std::to_string(elem_id));
-    elem->print_info(out);
-//    elem->print_cache_info(out);
-
-    out.begin_item("Values: ");
-    elem->template get_basis_data<_Value, k>(0,DofProperties::active).print_info(out);
-    out.end_item();
-
-    out.begin_item("Gradients: ");
-    elem->template get_basis_data<_Gradient, k>(0,DofProperties::active).print_info(out);
-    out.end_item();
-
-    out.begin_item("Hessians: ");
-    elem->template get_basis_data<_Hessian, k>(0,DofProperties::active).print_info(out);
-    out.end_item();
-
-    out.begin_item("Divergences: ");
-    elem->template get_basis_data<_Divergence,k>(0,DofProperties::active).print_info(out);
-    out.end_item();
-
-    out.begin_item("W * Measures: ");
-    elem->template get_w_measures<k>(0).print_info(out);
-    out.end_item();
-
-    out.end_item();
-
-    ++elem_id;
-  }
-
-
+  auto map = grid_functions::BallGridFunction<dim>::const_create(grid);
+  auto phys_basis = create_phys_basis<dim>(grid, map, deg);
+  const int n_qp = 1;
+  elem_values<dim, sub_dim>(phys_basis, n_qp, DofProp::interior, use_bdry);
+  elem_values<dim, sub_dim>(phys_basis, n_qp, DofProp::dirichlet, use_bdry);
+  elem_values<dim, sub_dim>(phys_basis, n_qp, DofProp::neumman, use_bdry);
   OUTEND
 }
+
+
+
+
+
 
 int main()
 {
-  out.depth_console(10);
 
-  elem_values<1>();
-  elem_values<2>();
-  elem_values<3>();
+  //  ball_map_prop<1,1>(2,1,true);
 
+
+  ball_map<1,1>(2,1);
+  ball_map<2,1>(3,2);
+  ball_map<3,3>(2,1);
+
+  //ball_map_prop<2,1>(3,1);
+  //ball_map_prop<2,1>(3,2, false);
+  return 0;
 }

@@ -27,12 +27,26 @@ IGA_NAMESPACE_OPEN
 
 inline
 Tdouble::
+Tdouble()
+  :
+  val_(0.0)
+{}
+
+inline
+Tdouble::
 Tdouble(const Real val)
 {
   Assert(!std::isnan(val),ExcNotANumber());
   Assert(!std::isinf(val),ExcNumberNotFinite());
   val_ = val;
 }
+
+inline
+Tdouble::
+Tdouble(const SafeSTLArray<value_t, n_entries> &values)
+  :
+  Tdouble(values[0])
+{}
 
 
 
@@ -60,6 +74,7 @@ inline
 auto
 Tdouble::operator[](const int i) noexcept -> value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -70,6 +85,7 @@ auto
 Tdouble::
 operator[](const int i) const noexcept -> const value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -100,6 +116,7 @@ auto
 Tdouble::
 operator()(const int i) noexcept -> value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -110,6 +127,7 @@ auto
 Tdouble::
 operator()(const int i) const noexcept -> const value_t &
 {
+  Assert(i == 0,ExcDimensionMismatch(i,0));
   return *this;
 }
 
@@ -197,6 +215,7 @@ auto
 Tdouble::
 flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<0>
 {
+  Assert(flat_index == 0,ExcDimensionMismatch(flat_index,0));
   return TensorIndex<0>();
 }
 
@@ -222,6 +241,17 @@ get_number_of_entries()
 
 
 
+inline
+auto
+Tdouble::
+get_flat_values() const noexcept ->
+SafeSTLArray<value_t, n_entries>
+{
+  return SafeSTLArray<value_t, n_entries> ({val_});
+}
+
+
+
 
 /*------ Inline functions: Tensor<  dim_, rank_, tensor_type, value_type > ---*/
 
@@ -234,6 +264,23 @@ Tensor(std::initializer_list<value_type> list)
          ExcDimensionMismatch(list.size(),self_t::size)) ;
   for (int i = 0; i < self_t::size; ++i)
     tensor_[i] = list.begin()[i];
+}
+
+template<int dim_, int rank_, class tensor_type, class value_type >
+inline
+Tensor< dim_, rank_, tensor_type, value_type >::
+Tensor(const SafeSTLArray<typename Tdouble::value_t, n_entries> &values)
+{
+  static const int sub_tens_entries = value_type::n_entries;
+  using SubTensArray = SafeSTLArray<typename Tdouble::value_t, sub_tens_entries>;
+  for (int i = 0; i < self_t::size; ++i)
+  {
+    SubTensArray new_array;
+    std::copy(values.cbegin() + i * sub_tens_entries,
+              values.cbegin() + (i + 1) * sub_tens_entries,
+              new_array.begin());
+    tensor_[i] = value_type(new_array);
+  }
 }
 
 
@@ -494,8 +541,6 @@ Size
 Tensor< dim_, rank_, tensor_type, value_type >::
 get_number_of_entries()
 {
-  Size n_entries = size;
-  n_entries *= value_type::get_number_of_entries();
   return n_entries;
 }
 
@@ -512,6 +557,26 @@ tensor_to_flat_index(const TensorIndex<rank_> &tensor_index) const noexcept
     flat_index += pow(dim_,i) * tensor_index[rank_-1-i];
 
   return flat_index;
+}
+
+
+
+template<int dim_, int rank_, class tensor_type, class value_type >
+inline
+auto
+Tensor< dim_, rank_, tensor_type, value_type >::
+get_flat_values() const noexcept ->
+SafeSTLArray<typename Tdouble::value_t, n_entries>
+{
+  SafeSTLArray<typename Tdouble::value_t, n_entries> values;
+  for (int i = 0; i < dim_; ++i)
+  {
+    const auto new_values= tensor_[i].get_flat_values();
+    std::copy(new_values.cbegin(), new_values.cend(),
+    values.begin() + i * value_type::n_entries);
+  }
+
+  return values;
 }
 
 

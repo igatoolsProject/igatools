@@ -20,65 +20,39 @@
 
 /**
  *  @file
- *  @brief  One cache handler with two different elements
+ *  @brief  Plain iteration
  *  @author pauletti
- *  @date   2015-08-19
+ *  @date  Aug 19, 2015
  */
 
 #include "../tests.h"
 
-#include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/grid.h>
-#include <igatools/geometry/grid_handler.h>
 #include <igatools/geometry/grid_element.h>
 
-
 template <int dim>
-void handler_two_elems(const int n_knots = 3)
+void iterate(const int n_knots = 5)
 {
   OUTSTART
 
-  using Grid = Grid<dim>;
-  using Flags = typename Grid::ElementAccessor::Flags;
-  auto grid = Grid::const_create(n_knots);
+  auto grid = Grid<dim>::const_create(n_knots);
 
-  auto flag = Flags::point;
-
-  auto cache_handler = grid->create_cache_handler();
-  cache_handler->template set_flags<dim>(flag);
-
-  auto quad1 = QGauss<dim>::create(2);
-  auto quad2 = QGauss<dim>::create(1);
-
-  auto elem1 = grid->cbegin();
-  auto elem2 = grid->cbegin();
-
-  cache_handler->template init_cache<dim>(elem1, quad1);
-  cache_handler->template init_cache<dim>(elem2, quad2);
-
-  cache_handler->template fill_cache<dim>(elem1, 0);
-  elem1->template get_points<dim>(0).print_info(out);
-  out << endl;
-
-  ++elem1;
-  cache_handler->template fill_cache<dim>(elem1, 0);
-  elem1->template get_points<dim>(0).print_info(out);
-  out << endl;
-
-  cache_handler->template fill_cache<dim>(elem2, 0);
-  elem2->template get_points<dim>(0).print_info(out);
-  out << endl;
+  for (auto &elem : *grid)
+  {
+    elem.print_info(out);
+  }
 
   OUTEND
 }
 
 
+
 int main()
 {
-
-  handler_two_elems<1>();
-  handler_two_elems<2>();
-  handler_two_elems<3>();
+  iterate<0>();
+  iterate<1>();
+  iterate<2>();
+  iterate<3>();
 
   return  0;
 }

@@ -107,7 +107,7 @@ DenseMatrix
 derivative(int k, const int p, const SafeSTLVector<Real> &x) ;
 
 
-};
+}
 
 
 IGA_NAMESPACE_CLOSE

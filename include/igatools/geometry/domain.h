@@ -23,8 +23,8 @@
 
 #include <igatools/base/config.h>
 #include <igatools/functions/ig_grid_function.h>
-#include <igatools/geometry/formula_grid_function.h>
-//#include <igatools/geometry/grid_function_handler.h>
+#include <igatools/functions/formula_grid_function.h>
+//#include <igatools/functions/grid_function_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -101,20 +101,17 @@ private:
   Domain() = default;
 
 protected:
-  Domain(const SharedPtrConstnessHandler<GridFuncType> &func,
-         const std::string &name);
+  Domain(const SharedPtrConstnessHandler<GridFuncType> &func);
 
 public:
   virtual ~Domain() = default;
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<GridFuncType> &func,
-         const std::string &name = "");
+  create(const std::shared_ptr<GridFuncType> &func);
 
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const GridFuncType> &func,
-               const std::string &name = "");
+  const_create(const std::shared_ptr<const GridFuncType> &func);
 
   std::shared_ptr<const GridFuncType> get_grid_function() const;
 
@@ -182,6 +179,7 @@ public:
 private:
   SharedPtrConstnessHandler<GridFunction<dim, space_dim>> grid_func_;
 
+  /// Name.
   std::string name_;
 
   /**
@@ -200,12 +198,7 @@ private:
 
   template<class Archive>
   void
-  serialize(Archive &ar)
-  {
-    ar &make_nvp("grid_func_",grid_func_);
-    ar &make_nvp("name_",name_);
-    ar &make_nvp("object_id_",object_id_);
-  }
+  serialize(Archive &ar);
   ///@}
 #endif // SERIALIZATION
 
@@ -264,18 +257,18 @@ public:
   {
     std::shared_ptr<const GridFunction<sdim,space_dim>> sub_func;
 
-    const auto F = this->get_grid_function();
-    using IgFunc = IgGridFunction<dim,space_dim>;
-    auto ig_func = std::dynamic_pointer_cast<const IgFunc>(F);
-    using FormulaFunc = FormulaGridFunction<dim,space_dim>;
-    auto formula_func = std::dynamic_pointer_cast<const FormulaFunc>(F);
-    if (ig_func)
+    const auto grid_func = this->get_grid_function();
+    using IgGridFunc = IgGridFunction<dim,space_dim>;
+    auto ig_grid_func = std::dynamic_pointer_cast<const IgGridFunc>(grid_func);
+    using FormulaGridFunc = FormulaGridFunction<dim,space_dim>;
+    auto formula_grid_func = std::dynamic_pointer_cast<const FormulaGridFunc>(grid_func);
+    if (ig_grid_func)
     {
-      sub_func = ig_func->get_sub_function(s_id,sub_grid);
+      sub_func = ig_grid_func->get_sub_function(s_id,sub_grid);
     }
-    else if (formula_func)
+    else if (formula_grid_func)
     {
-      sub_func = formula_func->get_sub_function(s_id,sub_grid_elem_map,sub_grid);
+      sub_func = formula_grid_func->get_sub_function(s_id,sub_grid_elem_map,sub_grid);
     }
     else
     {
@@ -284,19 +277,21 @@ public:
     auto sub_domain = Domain<sdim,space_dim-sdim>::const_create(sub_func);
 
     /*
-        LogStream out;
-        out.begin_item("Sub-Function:");
-        sub_func->print_info(out);
-        out.end_item();
-        auto sub_func_elem = sub_func->begin();
-        auto sub_func_end = sub_func->end();
+            LogStream out;
+            out.begin_item("Sub-Function:");
+            sub_func->print_info(out);
+            out.end_item();
+            //*/
+    /*
+    auto sub_func_elem = sub_func->begin();
+    auto sub_func_end = sub_func->end();
 
-        out.begin_item("Sub-function elements:");
-        for (; sub_func_elem != sub_func_end ; ++sub_func_elem)
-          sub_func_elem->print_info(out);
+    out.begin_item("Sub-function elements:");
+    for (; sub_func_elem != sub_func_end ; ++sub_func_elem)
+      sub_func_elem->print_info(out);
     //    for (const auto & sub_func_elem : *sub_func)
     //      sub_func_elem.print_info(out);
-        out.end_item();
+    out.end_item();
     //*/
 
 

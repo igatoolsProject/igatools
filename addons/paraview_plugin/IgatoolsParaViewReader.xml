@@ -27,8 +27,8 @@
                  class="IgatoolsParaViewReader"
                  label="Igatools-ParaView reader">
       <Documentation
-         long_help="Read a .iga file."
-         short_help="Read a .iga file.">
+         long_help="Read an igatools .iga file."
+         short_help="Read an igatools .iga file.">
       </Documentation>
       <StringVectorProperty
             name="FileName"
@@ -43,7 +43,7 @@
 
       <Hints>
         <ReaderFactory extensions="iga"
-                       file_description="Igatools File Format" />
+                       file_description="Igatools XML File Format" />
       </Hints>
 
 
@@ -52,7 +52,7 @@
                          command="SetPhysicalMesh"
                          number_of_elements="1"
                          label="Create physical geometries"
-                         panel_visibility="advanced"
+                         panel_visibility="default"
                          default_values="1">
         <BooleanDomain name="bool"/>
         <Documentation>
@@ -66,7 +66,7 @@
                          command="SetParametricMesh"
                          number_of_elements="1"
                          label="Create parametric geometries"
-                         panel_visibility="advanced"
+                         panel_visibility="default"
                          default_values="0">
         <BooleanDomain name="bool"/>
         <Documentation>
@@ -90,7 +90,7 @@
                             number_of_elements="0"
                             repeat_command="1" number_of_elements_per_command="2"
                             element_types="2 0"
-                            panel_visibility="advanced"
+                            panel_visibility="default"
                             information_property="PhysGeomArrayInfo"
                             label="Physical patches">
         <ArraySelectionDomain name="array_list">
@@ -330,7 +330,7 @@
                             number_of_elements="0"
                             repeat_command="1" number_of_elements_per_command="2"
                             element_types="2 0"
-                            panel_visibility="advanced"
+                            panel_visibility="default"
                             information_property="ParmGeomArrayInfo"
                             label="Parametric patches">
         <ArraySelectionDomain name="array_list">
@@ -357,6 +357,7 @@
                          command="SetSolidMeshParametric"
                          number_of_elements="1"
                          label="Create the solid mesh"
+                         panel_visibility="advanced"
                          default_values="1">
         <BooleanDomain name="bool"/>
         <Documentation>
@@ -377,6 +378,7 @@
                          default_values="0"
                          name="GridTypeParametricSolid"
                          label="Grid type"
+                         panel_visibility="advanced"
                          number_of_elements="1">
         <EnumerationDomain name="enum">
           <Entry text="VTK Unstructured grid - quadratic cells"
@@ -411,6 +413,7 @@
                          default_values="1 1 1"
                          name="NumVisualizationElementsParametricSolid"
                          label="Num of cells per Bezier element direction"
+                         panel_visibility="advanced"
                          number_of_elements="3">
         <IntRangeDomain name="range" min="1" max="20"/>
         <Documentation>Set the number of visualization VTK cell in each
@@ -431,6 +434,7 @@
                          command="SetKnotMeshParametric"
                          number_of_elements="1"
                          label="Create the knot mesh"
+                         panel_visibility="advanced"
                          default_values="0">
         <BooleanDomain name="bool"/>
         <Documentation>
@@ -534,7 +538,7 @@
       </PropertyGroup>
 
 
-      <PropertyGroup label="Physical mesh">
+      <PropertyGroup label="Parametric mesh">
         <Property name="ParmGeomArrayStatus" />
       </PropertyGroup>
 

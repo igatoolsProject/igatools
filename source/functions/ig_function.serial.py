@@ -49,13 +49,12 @@ id = 0
 for cl in unique(funcs):
     alias = 'IgFunctionAlias%d' %(id)
     f.write('using %s = iga::%s;\n' % (alias, cl));
-    f.write('CEREAL_REGISTER_TYPE(%s);\n' %alias);
+    f.write('CEREAL_REGISTER_TYPE(%s)\n' %alias);
     id += 1 
-
-
 f.write('#endif // SERIALIZATION\n')
 
 #   
 f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
   
+

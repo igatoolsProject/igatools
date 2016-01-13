@@ -42,11 +42,11 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
-template <typename IndexType>
+template <typename IndexType,template <class T> class STLContainer = SafeSTLSet>
 class PropertiesIdContainer
 {
 public:
-  using List = SafeSTLSet<IndexType>;
+  using List = STLContainer<IndexType>;
 private:
   using ContainerType = SafeSTLMap<PropId, List>;
   using iterator = typename ContainerType::iterator;
@@ -84,19 +84,6 @@ public:
    */
   const List &operator[](const PropId &property) const;
 
-  /**
-   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
-   */
-  void set_property_status_for_id(const PropId &property,
-                                  const IndexType id,
-                                  const bool status);
-
-  /**
-   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
-   */
-  void set_property_status_for_ids(const PropId &property,
-                                   const List ids,
-                                   const bool status);
 
   /**
    * Prints the contents of the class. Its use is intended for testing and debugging purposes.
@@ -162,31 +149,80 @@ private:
 
 
 
+class PropertiesDofs
+  : public PropertiesIdContainer<int,SafeSTLSet>
+{
+  using base_t = PropertiesIdContainer<int,SafeSTLSet>;
+
+public:
+
+  using typename base_t::List;
+
+  /**
+   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
+   */
+  void set_property_status_for_id(const PropId &property,
+                                  const int id,
+                                  const bool status);
+
+  /**
+   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
+   */
+  void set_property_status_for_ids(const PropId &property,
+                                   const List &ids,
+                                   const bool status);
+
+};
+
+template <int dim>
+class PropertiesElementID
+  : public PropertiesIdContainer<ElementIndex<dim>,SafeSTLVector>
+{
+  using base_t = PropertiesIdContainer<ElementIndex<dim>,SafeSTLVector>;
+
+public:
+
+  using typename base_t::List;
+
+  /**
+   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
+   *
+   */
+  void set_property_status_for_id(const PropId &property,
+                                  const ElementIndex<dim> &elem_id,
+                                  const bool status);
+
+  /**
+   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
+   */
+  void set_property_status_for_ids(const PropId &property,
+                                   const List &ids,
+                                   const bool status);
+
+};
+
+
+
 IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 using MapStringSetIntAlias = iga::SafeSTLMap<std::string,iga::SafeSTLSet<int>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetIntAlias,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringSetIntAlias,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringSetIntAlias,cereal::specialization::member_serialize)
 
-using MapStringSetElemIDAlias0 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<0>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias0,cereal::specialization::member_serialize);
-using MapStringSetElemIDAlias1 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<1>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias1,cereal::specialization::member_serialize);
-using MapStringSetElemIDAlias2 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<2>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias2,cereal::specialization::member_serialize);
-using MapStringSetElemIDAlias3 = iga::SafeSTLMap<std::string,iga::SafeSTLSet<iga::ElementIndex<3>>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(MapStringSetElemIDAlias3,cereal::specialization::member_serialize);
+using MapStringVectorElemIDAlias0 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<0>>>;
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringVectorElemIDAlias0,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringVectorElemIDAlias0,cereal::specialization::member_serialize)
+using MapStringVectorElemIDAlias1 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<1>>>;
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringVectorElemIDAlias1,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringVectorElemIDAlias1,cereal::specialization::member_serialize)
+using MapStringVectorElemIDAlias2 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<2>>>;
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringVectorElemIDAlias2,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringVectorElemIDAlias2,cereal::specialization::member_serialize)
+using MapStringVectorElemIDAlias3 = iga::SafeSTLMap<std::string,iga::SafeSTLVector<iga::ElementIndex<3>>>;
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringVectorElemIDAlias3,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringVectorElemIDAlias3,cereal::specialization::member_serialize)
 
-#if 0
-using PropertiesIdContainerElemIDAlias0 = iga::PropertiesIdContainer<iga::ElementIndex<0>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(PropertiesIdContainerElemIDAlias0,cereal::specialization::member_serialize);
-using PropertiesIdContainerElemIDAlias1 = iga::PropertiesIdContainer<iga::ElementIndex<1>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(PropertiesIdContainerElemIDAlias1,cereal::specialization::member_serialize);
-using PropertiesIdContainerElemIDAlias2 = iga::PropertiesIdContainer<iga::ElementIndex<2>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(PropertiesIdContainerElemIDAlias2,cereal::specialization::member_serialize);
-using PropertiesIdContainerElemIDAlias3 = iga::PropertiesIdContainer<iga::ElementIndex<3>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(PropertiesIdContainerElemIDAlias3,cereal::specialization::member_serialize);
-#endif
 
 //#include <igatools/utils/element_index.serialization>
 #endif // SERIALIZATION

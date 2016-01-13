@@ -76,3 +76,16 @@ for func in unique(templated_funcs):
     f.write('template ' + func + '\n')
 
 
+
+#---------------------------------------------------
+f.write('#ifdef SERIALIZATION\n')
+
+archives = ['OArchive','IArchive']
+
+for space in unique(spaces):
+    for ar in archives:
+        f.write('template void %s::serialize(%s&);\n' %(space,ar))
+f.write('#endif // SERIALIZATION\n')
+#---------------------------------------------------
+
+

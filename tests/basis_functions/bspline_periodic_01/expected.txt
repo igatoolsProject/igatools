@@ -25,6 +25,7 @@ Spline Space:
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -40,22 +41,12 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ 4 ]  Weights: [4]
-      Direction: 0
+      Entry id: 0
       [ 1 1 1 1 ]
    
    Dimensionality Table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 4 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 4 ]
       Scalar components dimensions:
       [ 4 ]
       Total Dimension: 4
@@ -63,33 +54,15 @@ Spline Space:
 
 DoFs Distribution:
    Num dofs table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 4 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 4 ]
       Scalar components dimensions:
       [ 4 ]
       Total Dimension: 4
    
    Index table size:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 6 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 6 ]
       Scalar components dimensions:
       [ 6 ]
       Total Dimension: 6
@@ -106,11 +79,11 @@ DoFs Distribution:
 Bernstein Extraction:
    Component[0]: 
    Direction[0]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
 
 Num basis: 16
 Spline Space:
@@ -201,6 +174,7 @@ Spline Space:
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -216,24 +190,14 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ 4 4 ]  Weights: [4,16]
-      Direction: 0
+      Entry id: 0
       [ 1 1 1 1 ]
-      Direction: 1
+      Entry id: 1
       [ 1 1 1 1 ]
    
    Dimensionality Table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 4 4 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 4 4 ]
       Scalar components dimensions:
       [ 16 ]
       Total Dimension: 16
@@ -241,33 +205,15 @@ Spline Space:
 
 DoFs Distribution:
    Num dofs table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 4 4 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 4 4 ]
       Scalar components dimensions:
       [ 16 ]
       Total Dimension: 16
    
    Index table size:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 6 6 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 6 6 ]
       Scalar components dimensions:
       [ 36 ]
       Total Dimension: 36
@@ -284,17 +230,17 @@ DoFs Distribution:
 Bernstein Extraction:
    Component[0]: 
    Direction[0]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
    Direction[1]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
 
 Num basis: 64
 Spline Space:
@@ -687,6 +633,7 @@ Spline Space:
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -702,26 +649,16 @@ Spline Space:
       [ ]
    
    Interior multiplicities:
-      Size: [ 4 4 4 ]  Weights: [4,16,64]
-      Direction: 0
+      Entry id: 0
       [ 1 1 1 1 ]
-      Direction: 1
+      Entry id: 1
       [ 1 1 1 1 ]
-      Direction: 2
+      Entry id: 2
       [ 1 1 1 1 ]
    
    Dimensionality Table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 4 4 4 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 4 4 4 ]
       Scalar components dimensions:
       [ 64 ]
       Total Dimension: 64
@@ -729,33 +666,15 @@ Spline Space:
 
 DoFs Distribution:
    Num dofs table:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 4 4 4 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 4 4 4 ]
       Scalar components dimensions:
       [ 64 ]
       Total Dimension: 64
    
    Index table size:
-      Raw components: 
-         Size: [ 1 ]  Weights: [1]
-         Entry id: 0
-         [ 6 6 6 ]
-      
-      Components map: 
-      [ 0 ]
-      Active components ids: 
-      [ 0 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 6 6 6 ]
       Scalar components dimensions:
       [ 216 ]
       Total Dimension: 216
@@ -772,23 +691,23 @@ DoFs Distribution:
 Bernstein Extraction:
    Component[0]: 
    Direction[0]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
    Direction[1]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
    Direction[2]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
 
 Num basis: 8
 Spline Space:
@@ -817,6 +736,7 @@ Spline Space:
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -834,27 +754,16 @@ Spline Space:
       [ 1 ]
    
    Interior multiplicities:
-      Size: [ 4 ]  Weights: [4]
-      Direction: 0
+      Entry id: 0
       [ 1 1 1 1 ]
-      Size: [ 4 ]  Weights: [4]
-      Direction: 0
+      Entry id: 0
       [ 1 1 1 1 ]
    
    Dimensionality Table:
-      Raw components: 
-         Size: [ 2 ]  Weights: [2]
-         Entry id: 0
-         [ 4 ]
-         Entry id: 1
-         [ 4 ]
-      
-      Components map: 
-      [ 0 1 ]
-      Active components ids: 
-      [ 0 1 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 4 ]
+      Entry id: 1
+      [ 4 ]
       Scalar components dimensions:
       [ 4 4 ]
       Total Dimension: 8
@@ -862,37 +771,19 @@ Spline Space:
 
 DoFs Distribution:
    Num dofs table:
-      Raw components: 
-         Size: [ 2 ]  Weights: [2]
-         Entry id: 0
-         [ 4 ]
-         Entry id: 1
-         [ 4 ]
-      
-      Components map: 
-      [ 0 1 ]
-      Active components ids: 
-      [ 0 1 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 4 ]
+      Entry id: 1
+      [ 4 ]
       Scalar components dimensions:
       [ 4 4 ]
       Total Dimension: 8
    
    Index table size:
-      Raw components: 
-         Size: [ 2 ]  Weights: [2]
-         Entry id: 0
-         [ 6 ]
-         Entry id: 1
-         [ 6 ]
-      
-      Components map: 
-      [ 0 1 ]
-      Active components ids: 
-      [ 0 1 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 6 ]
+      Entry id: 1
+      [ 6 ]
       Scalar components dimensions:
       [ 6 6 ]
       Total Dimension: 12
@@ -911,18 +802,18 @@ DoFs Distribution:
 Bernstein Extraction:
    Component[0]: 
    Direction[0]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
    Component[1]: 
    Direction[0]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
 
 Num basis: 32
 Spline Space:
@@ -1013,6 +904,7 @@ Spline Space:
             
          
       
+      Name: 
    
    Degrees:
       Raw components: 
@@ -1030,31 +922,20 @@ Spline Space:
       [ 1 ]
    
    Interior multiplicities:
-      Size: [ 4 4 ]  Weights: [4,16]
-      Direction: 0
+      Entry id: 0
       [ 1 1 1 1 ]
-      Direction: 1
+      Entry id: 1
       [ 1 1 1 1 ]
-      Size: [ 4 4 ]  Weights: [4,16]
-      Direction: 0
+      Entry id: 0
       [ 1 1 1 1 ]
-      Direction: 1
+      Entry id: 1
       [ 1 1 1 1 ]
    
    Dimensionality Table:
-      Raw components: 
-         Size: [ 2 ]  Weights: [2]
-         Entry id: 0
-         [ 4 4 ]
-         Entry id: 1
-         [ 4 4 ]
-      
-      Components map: 
-      [ 0 1 ]
-      Active components ids: 
-      [ 0 1 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 4 4 ]
+      Entry id: 1
+      [ 4 4 ]
       Scalar components dimensions:
       [ 16 16 ]
       Total Dimension: 32
@@ -1062,37 +943,19 @@ Spline Space:
 
 DoFs Distribution:
    Num dofs table:
-      Raw components: 
-         Size: [ 2 ]  Weights: [2]
-         Entry id: 0
-         [ 4 4 ]
-         Entry id: 1
-         [ 4 4 ]
-      
-      Components map: 
-      [ 0 1 ]
-      Active components ids: 
-      [ 0 1 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 4 4 ]
+      Entry id: 1
+      [ 4 4 ]
       Scalar components dimensions:
       [ 16 16 ]
       Total Dimension: 32
    
    Index table size:
-      Raw components: 
-         Size: [ 2 ]  Weights: [2]
-         Entry id: 0
-         [ 6 6 ]
-         Entry id: 1
-         [ 6 6 ]
-      
-      Components map: 
-      [ 0 1 ]
-      Active components ids: 
-      [ 0 1 ]
-      Inactive components ids: 
-      [ ]
+      Entry id: 0
+      [ 6 6 ]
+      Entry id: 1
+      [ 6 6 ]
       Scalar components dimensions:
       [ 36 36 ]
       Total Dimension: 72
@@ -1111,28 +974,28 @@ DoFs Distribution:
 Bernstein Extraction:
    Component[0]: 
    Direction[0]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
    Direction[1]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
    Component[1]: 
    Direction[0]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
    Direction[1]:
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
-   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
+   [2,2]((1.00000,0),(0,1.00000))
 

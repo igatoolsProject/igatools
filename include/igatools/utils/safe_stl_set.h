@@ -72,16 +72,8 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 using SafeSTLSetIntAlias = iga::SafeSTLSet<int>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetIntAlias,cereal::specialization::member_serialize);
-
-using SafeSTLSetElementIndexAlias0 = iga::SafeSTLSet<iga::ElementIndex<0>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetElementIndexAlias0,cereal::specialization::member_serialize);
-using SafeSTLSetElementIndexAlias1 = iga::SafeSTLSet<iga::ElementIndex<1>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetElementIndexAlias1,cereal::specialization::member_serialize);
-using SafeSTLSetElementIndexAlias2 = iga::SafeSTLSet<iga::ElementIndex<2>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetElementIndexAlias2,cereal::specialization::member_serialize);
-using SafeSTLSetElementIndexAlias3 = iga::SafeSTLSet<iga::ElementIndex<3>>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(SafeSTLSetElementIndexAlias3,cereal::specialization::member_serialize);
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,SafeSTLSetIntAlias,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,SafeSTLSetIntAlias,cereal::specialization::member_serialize)
 
 //#include <igatools/utils/safe_stl_set.serialization>
 #endif // SERIALIZATION

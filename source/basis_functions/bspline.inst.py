@@ -29,7 +29,7 @@ sub_dim_members = \
  ['std::shared_ptr<const typename class::template BSpline<sdim,range,rank>> ' + 
   'class::get_sub_bspline_space<sdim>(const int s_id, ' + 
   'InterSpaceMap<sdim> &dof_map, ' +
-  'const std::shared_ptr<const Grid<sdim>> &sub_grid) const;'
+  'const std::shared_ptr<const Grid<sdim>> &sub_grid) const'
 #  ,
 #  'std::shared_ptr<typename class::template SubSpace<k>> ' + 
 #  'class::get_sub_space<k>(const int sub_elem_id, ' + 
@@ -72,21 +72,14 @@ for func in unique(templated_funcs):
 
 
 #---------------------------------------------------
-f.write('IGA_NAMESPACE_CLOSE\n')
+f.write('#ifdef SERIALIZATION\n')
 
 archives = ['OArchive','IArchive']
 
-f.write('#ifdef SERIALIZATION\n')
-id = 0 
 for space in unique(spaces):
-    alias = 'BSplineAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, space))
     for ar in archives:
-        f.write('template void %s::serialize(%s&);\n' %(alias,ar))
-    id += 1 
+        f.write('template void %s::serialize(%s&);\n' %(space,ar))
 f.write('#endif // SERIALIZATION\n')
-    
-f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
 
 

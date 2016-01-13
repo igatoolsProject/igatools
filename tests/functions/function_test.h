@@ -21,8 +21,44 @@
 
 template<int dim, int codim, int range, int rank>
 void
-function_values(shared_ptr<const Function<dim, codim, range, rank>> func)
+function_values(const Function<dim, codim, range, rank> &func)
 {
+  auto quad = QGauss<dim>::create(2);
+
+  auto func_handler = func.create_cache_handler();
+
+  using Flags = function_element::Flags;
+  auto flag = Flags::D0 | Flags::D1 | Flags::D2;
+  func_handler->set_element_flags(flag);
+
+  auto elem = func.begin();
+  auto end  = func.end();
+
+  func_handler->init_cache(*elem,quad);
+
+  for (; elem != end; ++elem)
+  {
+    func_handler->fill_element_cache(*elem);
+
+    out.begin_item("FunctionElement:");
+    elem->get_index().print_info(out);
+
+
+    out.begin_item("Values:");
+    elem->template get_values_from_cache<function_element::_D<0>, dim>(0).print_info(out);
+    out.end_item();
+
+    out.begin_item("Gradients:");
+    elem->template get_values_from_cache<function_element::_D<1>, dim>(0).print_info(out);
+    out.end_item();
+
+    out.begin_item("Hessians:");
+    elem->template get_values_from_cache<function_element::_D<2>, dim>(0).print_info(out);
+    out.end_item();
+
+    out.end_item();
+  }
+#if 0
   const int sdim = dim;
   using Flags = function_element::Flags;
   auto flag = Flags::D0 | Flags::D1;
@@ -45,4 +81,5 @@ function_values(shared_ptr<const Function<dim, codim, range, rank>> func)
 //    elem->template get_values<function_element::_D2, dim>(0).print_info(out);
 //    out << endl;
   }
+#endif
 }

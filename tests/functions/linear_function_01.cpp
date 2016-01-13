@@ -26,7 +26,7 @@
  */
 #include <igatools/geometry/domain_lib.h>
 #include <igatools/functions/function_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 
 #include <igatools/base/quadrature_lib.h>
 
@@ -55,7 +55,8 @@ void linear_func()
       A[i][j] = i+j;
   }
   auto func = LinFunc::const_create(ball_domain, A, b);
-  function_values<dim, codim, range>(func);
+
+  function_values(*func);
 }
 
 int main()

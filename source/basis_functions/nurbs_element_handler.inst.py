@@ -30,35 +30,28 @@ sub_dim_members = []
 
         
         
-        
-handlers = ['NURBSElementHandler<0,0,1>']
-handler_templated_funcs = []
+handlers = set()
+handlers.add('NURBSElementHandler<0,0,1>')
+handler_funcs = set()
 
 
-for x in inst.sub_ref_sp_dims:
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     handler = 'NURBSElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    handlers.append(handler)
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
-        handler_templated_funcs.append(s)
-
-
-for x in inst.ref_sp_dims:
-    handler = 'NURBSElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    handlers.append(handler)
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
-            handler_templated_funcs.append(s)
+    handlers.add(handler)
+    for k in range(0,x.dim+1):
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const shared_ptr<const Quadrature<%d>> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
         
         
-        
-for handler in unique(handlers):
-    f.write('template class %s; \n' %handler)
+for handler in handlers:
+    f.write('template class %s;\n' %handler)
 
-for func in unique(handler_templated_funcs):        
-    f.write('template %s; \n' %func)        
+for func in handler_funcs:        
+    f.write('template %s;\n' %func)        
    
 
 

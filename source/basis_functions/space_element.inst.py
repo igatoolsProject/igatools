@@ -29,56 +29,42 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = \
- ['ValueVector<Real> elem::get_w_measures<k>(const int) const;']
+ ['ValueVector<Real> elem::get_w_measures<k>(const int) const']
+
+elements = set()
+elements.add('SpaceElement<0,0,0,1>')
+
+#templated_funcs = ['ValueVector<Real> SpaceElement<0,0,0,1>::get_w_measures<0>(const int) const']
+
+element_funcs = set()
 
 
-elements = ['SpaceElement<0,0,0,1>']
-templated_funcs = ['ValueVector<Real> SpaceElement<0,0,0,1>::get_w_measures<0>(const int) const;']
-
+VTypes = ['space_element::_Value','space_element::_Gradient','space_element::_Hessian','space_element::_Divergence']
 
 
 
 #--------------------------------------------------------------------------------------
 # SpaceElement used by ReferenceSpaceBasisElement 
-for x in inst.sub_ref_sp_dims:
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
-    elements.append(elem)
-    for func in sub_dim_members:
-        k = x.dim
-        s = func.replace('elem', elem).replace('k', '%d' % (k));
-        templated_funcs.append(s)
+    elements.add(elem)
+    for k in range(0,x.dim+1):
+        func = 'ValueVector<Real> %s::get_w_measures<%d>(const int) const' % (elem,k)
+        element_funcs.add(func)
             
-            
-for x in inst.ref_sp_dims:
-    elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
-    elements.append(elem)
-    for func in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = func.replace('elem', elem).replace('k', '%d' % (k));
-            templated_funcs.append(s)
 #--------------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------------
 # SpaceElement used by PhysicalSpaceElement 
-for space in inst.SubPhysSpaces:
-    x = space.spec
-    elem = 'SpaceElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
-    elements.append(elem)
-    for func in sub_dim_members:
-        k = x.dim
-        s = func.replace('elem', elem).replace('k', '%d' % (k));
-        templated_funcs.append(s)
-
 
 for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
     elem = 'SpaceElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
-    elements.append(elem)
-    for func in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = func.replace('elem', elem).replace('k', '%d' % (k));
-            templated_funcs.append(s)
+    elements.add(elem)
+    for k in range(0,x.dim+1):
+        func = 'ValueVector<Real> %s::get_w_measures<%d>(const int) const' % (elem,k)
+        element_funcs.add(func)
 #--------------------------------------------------------------------------------------
 
 
@@ -86,13 +72,12 @@ for space in inst.SubPhysSpaces + inst.PhysSpaces:
 #---------------------------------------------------
 iters =  ['GridIterator']
 
-for elem in unique(elements):
-    f.write('template class %s ;\n' %elem)
-    for it in iters:
-        iterator = '%s<%s>' % (it,elem)
-        f.write('template class %s; \n' %iterator)
+for elem in elements:
+    f.write('template class %s;\n' %elem)
+    f.write('template class GridIterator<%s>;\n' %elem)
 
-for func in unique(templated_funcs):
-    f.write('template %s ;\n' %func)
+
+for func in element_funcs:
+    f.write('template %s;\n' %func)
 #---------------------------------------------------
 

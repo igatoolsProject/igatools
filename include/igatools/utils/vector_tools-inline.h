@@ -66,21 +66,21 @@ count_and_remove_duplicates(
   const int size_vec_with_duplicates = vec_with_duplicates.size();
   if (size_vec_with_duplicates > 0)
   {
-	  int id = 0;
-	  multiplicities.push_back(1);
-	  int mult_id = 0;
-	  for (id = 1 ; id < size_vec_with_duplicates ; ++id)
-	  {
-		  if (vec_with_duplicates[id] == vec_with_duplicates[id-1])
-		  {
-			  multiplicities[mult_id]++;
-		  }
-		  else
-		  {
-			  multiplicities.push_back(1);
-			  mult_id++;
-		  }
-	  }
+    int id = 0;
+    multiplicities.push_back(1);
+    int mult_id = 0;
+    for (id = 1 ; id < size_vec_with_duplicates ; ++id)
+    {
+      if (vec_with_duplicates[id] == vec_with_duplicates[id-1])
+      {
+        multiplicities[mult_id]++;
+      }
+      else
+      {
+        multiplicities.push_back(1);
+        mult_id++;
+      }
+    }
   }
 
   Assert(multiplicities.size() == int(vec_without_duplicates.size()),
@@ -90,7 +90,7 @@ count_and_remove_duplicates(
          ExcDimensionMismatch(std::accumulate(multiplicities.begin(),multiplicities.end(),0),vec_with_duplicates.size()));
 }
 
-} ;
+}
 
 IGA_NAMESPACE_CLOSE
 

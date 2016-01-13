@@ -31,50 +31,6 @@
 
 IGA_NAMESPACE_OPEN
 
-/**
- * @brief This is the base class for all kind of elements.
- *
- * It a pure virtual class and contains the interfaces for the functions
- * that the derived classes must implement
- * (basically the advance/increment operator <tt>++</tt>).
- * Moreover it contains the element-property identifier and the associated getter.
- *
- * @ingroup elements
- *
- * @author martinelli, 2105
- *
- */
-class Element
-{
-public:
-
-  Element(const PropId &property);
-
-  virtual ~Element() = default;
-
-  virtual void operator++() = 0;
-
-
-  /**
-   * @name Functions for managing/querying the element properties.
-   */
-  ///@{
-  /**
-   * Tests if a certain element @p property is TRUE.
-   */
-  bool has_property(const PropId &property) const;
-
-  /**
-   * Returns the property of the element.
-   */
-  const PropId &get_property() const;
-  ///@}
-
-private:
-
-  PropId property_;
-
-};
 
 
 /**
@@ -95,7 +51,7 @@ private:
  *
  */
 template <int dim>
-class GridElement : public Element
+class GridElement
 {
 private:
   using self_t = GridElement<dim>;
@@ -142,7 +98,7 @@ public:
   /**
    * Destructor.
    */
-  ~GridElement() = default;
+  virtual ~GridElement() = default;
   ///@}
 
 
@@ -169,10 +125,10 @@ public:
    * @note They should be called only by the GridIterator.
    */
   ///@{
-  void operator++() override;
+  virtual void operator++();
 
   /**
-   * Move the element to the one specified by <tt>elem_id</tt>.
+   * @brief Move the element to the position specified by the index <tt>elem_id</tt>.
    *
    * In Debug mode an assertion will be raised
    * if the GridElement specified by <tt>elem_id</tt> has not the same property of the
@@ -212,10 +168,8 @@ public:
 
   const IndexType &get_index() const;
 
-  const typename List::iterator &get_index_iterator() const
-  {
-    return index_it_;
-  }
+  const ListIt &get_index_iterator() const;
+
 
   /** Return the Grid from which the element belongs.*/
   std::shared_ptr<const Grid<dim>> get_grid() const;
@@ -311,14 +265,27 @@ public:
    * s_id-th sub-element.
    */
   template <int sdim>
-  std::shared_ptr<const Quadrature<sdim>> get_quad() const
-  {
-    return quad_list_.template get_quad<sdim>();
-  }
+  std::shared_ptr<const Quadrature<sdim>> get_quad() const;
 
 
   void print_cache_info(LogStream &out) const;
 
+  ///@}
+
+
+  /**
+   * @name Functions for managing/querying the element properties.
+   */
+  ///@{
+  /**
+   * Tests if a certain element @p property is TRUE.
+   */
+  bool has_property(const PropId &property) const;
+
+  /**
+   * Returns the property of the element.
+   */
+  const PropId &get_property() const;
   ///@}
 
 
@@ -334,7 +301,9 @@ protected:
 private:
 
   /** Index in the property list of the current element */
-  typename List::iterator index_it_;
+  ListIt index_it_;
+
+  PropId property_;
 
   /**
    * @name Types and data needed for the definition/use of the cache.
@@ -349,6 +318,15 @@ public:
 
 private:
 
+  /**
+   * The purpose of this struct is to set (at compile time) the static boolean IsInCache::value
+   * depending on the fact that the values associated to the template argument <tt>ValueType</tt>
+   * is in the element's cache or not.
+   *
+   * @note The valid <tt>ValueType</tt> for the GridElement's cache are:
+   * - grid_element::_Point for the <b>points</b> in the parametric domain
+   * - grid_element::_Weight for the <b>weights</b> associated to the points in the parametric domain
+   */
   template <class ValueType>
   struct IsInCache
   {
@@ -396,6 +374,15 @@ public:
     return this->template get_values_from_cache<ValueType,dim>(0);
   }
 
+
+public:
+  /**
+   * Return TRUE if the element index is referring to a valid element in the Grid.
+   *
+   * @note An element with non valido position can happens when we use the ++ operator
+   * on an element that is the last in the list.
+   */
+  bool has_valid_position() const;
 };
 
 

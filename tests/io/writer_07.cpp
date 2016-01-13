@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 #include "igatools/io/writer.h"
-#include "igatools/geometry/grid_function_lib.h"
+#include "igatools/functions/grid_function_lib.h"
 #include "igatools/basis_functions/bspline.h"
 #include "igatools/functions/ig_function.h"
 //#include "igatools/functions/function_lib.h"
@@ -126,8 +126,8 @@ test()
 //    writer.add_field(tensor_function,"tensor_function");
 
   string filename = "grid_dim" + to_string(dim);
-  writer.save(filename);
-  writer.save(filename,"appended");
+  writer.save(filename, "ascii");
+  writer.save(filename + "_bin", "appended");
   writer.print_info(out);
 
   out.end_item();

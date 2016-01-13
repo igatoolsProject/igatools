@@ -38,21 +38,16 @@ for x in inst.all_ref_sp_dims:
     funcs.append(func)
     
 for func in unique(funcs):
-    f.write("template class %s ;\n" %(func))
+    f.write("template class %s;\n" %(func))
 
  
-#---------------------------------------------------
-#f.write('IGA_NAMESPACE_CLOSE\n')
-   
-#f.write('#ifdef SERIALIZATION\n')
-#id = 0 
-#for func in unique(funcs):
-#    alias = 'IgFunctionAlias%d' %(id)
-#    f.write('using %s = iga::%s; \n' % (alias, func))
-#    f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
-#    id += 1 
-#f.write('#endif // SERIALIZATION\n')
-       
-#f.write('IGA_NAMESPACE_OPEN\n')
-#---------------------------------------------------
   
+#---------------------------------------------------
+f.write('#ifdef SERIALIZATION\n')
+archives = ['OArchive','IArchive']
+
+for func in unique(funcs):
+    for ar in archives:
+        f.write('template void %s::serialize(%s&);\n' %(func,ar))
+f.write('#endif // SERIALIZATION\n')
+#---------------------------------------------------

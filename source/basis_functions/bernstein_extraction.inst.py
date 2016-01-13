@@ -29,23 +29,19 @@ classes = ['BernsteinExtraction<%d,%d,%d>' %(x.dim, x.range, x.rank)
 
 classes.append('BernsteinExtraction<0,0,1>')
 
-for c in classes:
+for c in unique(classes):
    f.write('template class %s ;\n' %c)
 
 
 #---------------------------------------------------
-#f.write('IGA_NAMESPACE_CLOSE\n')
+f.write('#ifdef SERIALIZATION\n')
 
-#f.write('#ifdef SERIALIZATION\n')
-#id = 0 
-#for c in unique(classes):
-#    alias = 'BernsteinExtractionAlias%d' %(id)
-#    f.write('using %s = iga::%s; \n' % (alias, c))
-#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-#    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-#    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-#    id += 1 
-#f.write('#endif // SERIALIZATION\n')
-    
-#f.write('IGA_NAMESPACE_OPEN\n')
+archives = ['OArchive','IArchive']
+
+classes.append('BernsteinOperator')
+for c in unique(classes):
+    for ar in archives:
+        f.write('template void %s::serialize(%s&);\n' %(c,ar))
+f.write('#endif // SERIALIZATION\n')
 #---------------------------------------------------
+

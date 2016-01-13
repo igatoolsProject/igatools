@@ -200,7 +200,7 @@ public:
   GridIterator(const std::shared_ptr<ContainerType> &container,
                const ListIt &index,
                const PropId &property)
-  :
+    :
     elem_(std::move(container->create_element(index, property)))
   {}
 #endif
@@ -212,10 +212,10 @@ public:
    * an assertion will be raised (in DEBUG mode).
    */
   GridIterator(std::unique_ptr<Element> &&elem)
-  :
-  elem_(std::move(elem))
+    :
+    elem_(std::move(elem))
   {
-	Assert(elem_ != nullptr,ExcNullPtr());
+    Assert(elem_ != nullptr,ExcNullPtr());
   }
 
   /**
@@ -292,6 +292,8 @@ public:
    */
   Element &operator*()
   {
+    Assert(this->elem_->has_valid_position(),
+           ExcMessage("The element has an invalid position."));
     return *this->elem_;
   }
 
@@ -301,6 +303,8 @@ public:
    */
   Element *operator->()
   {
+    Assert(this->elem_->has_valid_position(),
+           ExcMessage("The element has an invalid position."));
     return this->elem_.get();
   }
 
@@ -310,6 +314,8 @@ public:
    */
   const Element &operator*() const
   {
+    Assert(this->elem_->has_valid_position(),
+           ExcMessage("The element has an invalid position."));
     return *this->elem_;
   }
 
@@ -319,6 +325,8 @@ public:
    */
   const Element *operator->() const
   {
+    Assert(this->elem_->has_valid_position(),
+           ExcMessage("The element has an invalid position."));
     return this->elem_.get();
   }
   ///@}

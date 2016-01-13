@@ -64,7 +64,7 @@ In the following lines, we directly access to the grid knots by the variable
 SafeSTLArray of SafeSTLVector (wrapped in a smart pointer). These two classes are
 the analogous of <tt>std::array</tt> and <tt>std::vector</tt>, and provide bound
 check if igatools is compiled in debug mode. The data therein is accessed via 
-iterators.
+<tt>range-based for-loop</tt> or iterators.
 
 With the Grid structure and the polynomial degrees in our hands we can create a SplineSpace:
 \snippet example_01.cpp space

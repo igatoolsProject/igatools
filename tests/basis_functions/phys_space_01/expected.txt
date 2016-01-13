@@ -17,6 +17,7 @@ PhysicalSpaceBasis<1,1,1,0,Transformation::h_grad>
                   
                
             
+            Name: 
          
          Degrees:
             Raw components: 
@@ -32,22 +33,12 @@ PhysicalSpaceBasis<1,1,1,0,Transformation::h_grad>
             [ ]
          
          Interior multiplicities:
-            Size: [ 0 ]  Weights: [0]
-            Direction: 0
+            Entry id: 0
             [ ]
          
          Dimensionality Table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 3 ]
             Scalar components dimensions:
             [ 3 ]
             Total Dimension: 3
@@ -55,33 +46,15 @@ PhysicalSpaceBasis<1,1,1,0,Transformation::h_grad>
       
       DoFs Distribution:
          Num dofs table:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 3 ]
             Scalar components dimensions:
             [ 3 ]
             Total Dimension: 3
          
          Index table size:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 3 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
+            Entry id: 0
+            [ 3 ]
             Scalar components dimensions:
             [ 3 ]
             Total Dimension: 3
@@ -98,14 +71,16 @@ PhysicalSpaceBasis<1,1,1,0,Transformation::h_grad>
       Bernstein Extraction:
          Component[0]: 
          Direction[0]:
-         [3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+         [3,3]((1.00000,0,0),(0,1.00000,0),(0,0,1.00000))
       
    
    Physical domain:
       GridFunction<1,1>
          BallGridFunction<1>
          
+         Name: 
       
+      Name: 
    
 
 ========================================================================

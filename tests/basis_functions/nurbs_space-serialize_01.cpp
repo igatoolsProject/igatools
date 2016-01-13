@@ -78,7 +78,6 @@ void do_test()
   SafeSTLVector<Real> coord_z {9, 10, 11};
 
   SafeSTLArray<SafeSTLVector<Real>, dim> coord;
-  CartesianProductArray<Index , dim>  mult;
   TensorIndex<dim> degree;
 
   if (dim == 1)

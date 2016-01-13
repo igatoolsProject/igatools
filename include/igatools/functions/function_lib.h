@@ -51,22 +51,23 @@ public:
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<DomainType> &domain,
-         const Value &b,
-         const std::string &name = "");
+         const Value &b);
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const DomainType> &domain,
-               const Value &b,
-               const std::string &name = "");
+               const Value &b);
 
   ConstantFunction(const self_t &) = delete;
 
   virtual ~ConstantFunction() = default;
 
+  virtual void print_info(LogStream &out) const override final;
+
+  const Value &get_constant_value() const;
+
 protected:
   ConstantFunction(const SharedPtrConstnessHandler<DomainType> &domain,
-                   const Value &b,
-                   const std::string &name);
+                   const Value &b);
 
 private:
   void evaluate_0(const ValueVector<Point> &points,
@@ -108,24 +109,27 @@ public:
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<DomainType> &domain,
          const Derivative<1> &A,
-         const Value &b,
-         const std::string &name = "");
+         const Value &b);
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const DomainType> &domain,
                const Derivative<1> &A,
-               const Value &b,
-               const std::string &name = "");
+               const Value &b);
 
   LinearFunction(const self_t &) = default;
 
   virtual ~LinearFunction() = default;
 
+  virtual void print_info(LogStream &out) const override final;
+
+  const Derivative<1> &get_A() const;
+
+  const Value &get_b() const;
+
 
 protected:
   LinearFunction(const SharedPtrConstnessHandler<DomainType> &domain, const Derivative<1> &A,
-                 const Value &b,
-                 const std::string &name);
+                 const Value &b);
 
 private:
   void evaluate_0(const ValueVector<Point> &points,
@@ -183,6 +187,11 @@ public:
 
   BallFunction(const self_t &) = default;
   virtual ~BallFunction() = default;
+
+  virtual void print_info(LogStream &out) const override final
+  {
+    AssertThrow(false, ExcNotImplemented());
+  };
 
 protected:
   BallFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
@@ -247,6 +256,11 @@ public:
 
   SphereFunction(const self_t &) = default;
   virtual ~SphereFunction() = default;
+
+  virtual void print_info(LogStream &out) const override final
+  {
+    AssertThrow(false, ExcNotImplemented());
+  };
 
 protected:
   SphereFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
@@ -340,6 +354,11 @@ protected:
                      const Real h1,
                      const Real theta0,
                      const Real theta1);
+
+  virtual void print_info(LogStream &out) const override final
+  {
+    AssertThrow(false, ExcNotImplemented());
+  };
 
 private:
   template<int order>

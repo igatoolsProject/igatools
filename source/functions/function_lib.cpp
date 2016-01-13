@@ -28,10 +28,9 @@ namespace functions
 template<int dim, int codim, int range, int rank>
 ConstantFunction<dim, codim, range, rank>::
 ConstantFunction(const SharedPtrConstnessHandler<DomainType> &domain,
-                 const Value &b,
-                 const std::string &name)
+                 const Value &b)
   :
-  parent_t(domain,name),
+  parent_t(domain),
   b_(b)
 {}
 
@@ -41,24 +40,20 @@ template<int dim, int codim, int range, int rank>
 auto
 ConstantFunction<dim, codim, range, rank>::
 create(const std::shared_ptr<DomainType> &domain,
-       const Value &b,
-       const std::string &name)
-->  std::shared_ptr<self_t>
+       const Value &b) ->  std::shared_ptr<self_t>
 {
   return std::shared_ptr<self_t>(new
-  self_t(SharedPtrConstnessHandler<DomainType>(domain), b,name));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), b));
 }
 
 template<int dim, int codim, int range, int rank>
 auto
 ConstantFunction<dim, codim, range, rank>::
 const_create(const std::shared_ptr<const DomainType> &domain,
-             const Value &b,
-             const std::string &name)
-->  std::shared_ptr<const self_t>
+             const Value &b) ->  std::shared_ptr<const self_t>
 {
   return std::shared_ptr<self_t>(new
-  self_t(SharedPtrConstnessHandler<DomainType>(domain), b,name));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), b));
 }
 
 
@@ -99,16 +94,47 @@ evaluate_2(const ValueVector<Point> &points,
 
 
 
+template<int dim, int codim, int range, int rank>
+void
+ConstantFunction<dim, codim, range, rank>::
+print_info(LogStream &out) const
+{
+  out.begin_item("ConstantFunction<"
+                 + std::to_string(dim) + ","
+                 + std::to_string(codim) + ","
+                 + std::to_string(range) + ","
+                 + std::to_string(rank) + ">");
+
+  out.begin_item("b:");
+  out << b_ ;
+  out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
+
+  out.end_item();
+}
+
+
+
+template<int dim, int codim, int range, int rank>
+auto
+ConstantFunction<dim, codim, range, rank>::
+get_constant_value() const -> const Value &
+{
+  return b_;
+}
+
+
+
 
 //------------------------------------------------------------------------------
 template<int dim, int codim, int range>
 LinearFunction<dim, codim, range>::
 LinearFunction(const SharedPtrConstnessHandler<DomainType> &domain,
                const Derivative<1> &A,
-               const Value &b,
-               const std::string &name)
+               const Value &b)
   :
-  parent_t(domain,name),
+  parent_t(domain),
   A_(A),
   b_(b)
 {}
@@ -120,11 +146,10 @@ auto
 LinearFunction<dim, codim, range>::
 create(const std::shared_ptr<DomainType> &domain,
        const Derivative<1> &A,
-       const Value &b,
-       const std::string &name) ->  std::shared_ptr<self_t>
+       const Value &b) ->  std::shared_ptr<self_t>
 {
   return std::shared_ptr<self_t>(new
-  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b,name));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b));
 }
 
 
@@ -133,11 +158,10 @@ auto
 LinearFunction<dim, codim, range>::
 const_create(const std::shared_ptr<const DomainType> &domain,
              const Derivative<1> &A,
-             const Value &b,
-             const std::string &name) -> std::shared_ptr<const self_t>
+             const Value &b) -> std::shared_ptr<const self_t>
 {
   return std::shared_ptr<self_t>(new
-  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b,name));
+  self_t(SharedPtrConstnessHandler<DomainType>(domain), A, b));
 }
 
 
@@ -176,6 +200,51 @@ evaluate_2(const ValueVector<Point> &points,
 {
   for (auto &val : values)
     val = 0.;
+}
+
+
+
+template<int dim, int codim, int range>
+void
+LinearFunction<dim, codim, range>::
+print_info(LogStream &out) const
+{
+  out.begin_item("LinearFunction<"
+                 + std::to_string(dim) + ","
+                 + std::to_string(codim) + ","
+                 + std::to_string(range) + ">");
+
+  out.begin_item("A:");
+  out << A_ ;
+  out.end_item();
+
+  out.begin_item("b:");
+  out << b_ ;
+  out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
+
+  out.end_item();
+}
+
+
+
+template<int dim, int codim, int range>
+auto
+LinearFunction<dim, codim, range>::
+get_A () const -> const Derivative<1> &
+{
+    return A_;
+}
+
+
+
+template<int dim, int codim, int range>
+auto
+LinearFunction<dim, codim, range>::
+get_b () const -> const Value &
+{
+    return b_;
 }
 
 
