@@ -102,6 +102,8 @@ find_doxygen()
 # Optional features for building  igatools
 #
 
+option(USE_DEPRECATED "Use the part of the igatools code marked as deprecated" OFF)
+
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
 
 option(USE_NURBS "Enable NURBS support" ON)

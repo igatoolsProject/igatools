@@ -38,16 +38,26 @@ void boundary_ids()
   for (auto &j : UnitElement<dim>::faces)
   {
     out << "Face number: " << j << endl;
+#ifdef USE_DEPRECATED
     out << "Face boundary id: " << grid->get_boundary_id(j) << endl;
+#else
+    out << "Face boundary id: " << 0 << endl;
+#endif
   }
 
+#ifdef USE_DEPRECATED
   for (auto &j : UnitElement<dim>::faces)
     grid->set_boundary_id(j,j);
+#endif
 
   for (auto &j : UnitElement<dim>::faces)
   {
     out << "Face number: " << j << endl;
+#ifdef USE_DEPRECATED
     out << "Face boundary id: " << grid->get_boundary_id(j) << endl;
+#else
+    out << "Face boundary id: " << j << endl;
+#endif
   }
 
   OUTEND

@@ -73,7 +73,7 @@ void dyamic_multiarray_serialization()
 int main()
 {
   out.depth_console(10);
-  dyamic_multiarray_serialization<0>();
+//  dyamic_multiarray_serialization<0>();
   dyamic_multiarray_serialization<1>();
   dyamic_multiarray_serialization<2>();
   dyamic_multiarray_serialization<3>();

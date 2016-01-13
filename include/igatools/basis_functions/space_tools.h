@@ -873,33 +873,35 @@ project_boundary_values(
 
 /**
  * Returns the list of global ids of the non zero basis functions
- * on the faces with the given boundary ids.
+ * on the faces with the given ids.
  */
 template<class Basis>
 std::set<Index>
 get_boundary_dofs(std::shared_ptr<const Basis> basis,
-                  const std::set<boundary_id>  &boundary_ids)
+                  const std::set<int> &boundary_ids)
 {
   const int dim   = Basis::dim;
   std::set<Index> dofs;
+
   const int sub_dim = dim - 1;
+  /*
+    auto grid = basis->get_grid();
 
-  auto grid = basis->get_grid();
-
-  std::set<int> sub_elems;
-  auto bdry_begin = boundary_ids.begin();
-  auto bdry_end   = boundary_ids.end();
-  for (auto &s_id : UnitElement<Basis::dim>::template elems_ids<sub_dim>())
-  {
-    const auto bdry_id = grid->get_boundary_id(s_id);
-    if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
-      sub_elems.insert(s_id);
-  }
+    std::set<int> sub_elems;
+    auto bdry_begin = boundary_ids.begin();
+    auto bdry_end   = boundary_ids.end();
+    for (auto &s_id : UnitElement<Basis::dim>::template elems_ids<sub_dim>())
+    {
+      const auto bdry_id = grid->get_boundary_id(s_id);
+      if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
+        sub_elems.insert(s_id);
+    }
+  //*/
 
   const auto &dof_distribution =
     *basis->get_spline_space()->get_dof_distribution();
   Topology<sub_dim> sub_elem_topology;
-  for (const Index &s_id : sub_elems)
+  for (const int s_id : boundary_ids)
   {
     auto s_dofs = dof_distribution.get_boundary_dofs(s_id,sub_elem_topology);
     dofs.insert(s_dofs.begin(), s_dofs.end());

@@ -115,13 +115,13 @@ int main()
 {
   const int deg = 1;
   const int n_knots = 2;
-  uniform_degree<0>(deg, grid::uniform<0>(n_knots));
+//  uniform_degree<0>(deg, grid::uniform<0>(n_knots));
   uniform_degree<1>(deg, grid::uniform<1>(n_knots));
   uniform_degree<2>(deg, grid::uniform<2>(n_knots));
   uniform_degree<3>(deg, grid::uniform<3>(n_knots));
 
-  TensorIndex<0> deg0;
-  direction_degree<0>(deg0, grid::uniform<0>(n_knots));
+//  TensorIndex<0> deg0;
+//  direction_degree<0>(deg0, grid::uniform<0>(n_knots));
 
   TensorIndex<1> deg1 = {1};
   direction_degree<1>(deg1, grid::uniform<1>(n_knots));

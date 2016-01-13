@@ -31,6 +31,7 @@
 #cmakedefine MESH_REFINEMENT
 #cmakedefine USE_CEREAL
 #cmakedefine XML_IO
+#cmakedefine USE_DEPRECATED
 
 #define MAX_NUM_DERIVATIVES @max_der_order@ + 1
 #define num_sub_elem @num_sub_elem@

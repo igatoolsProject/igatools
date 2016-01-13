@@ -77,8 +77,6 @@ create_space_prop(const shared_ptr<Grid<dim>> &grid,
                   const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
                   const int deg=1)
 {
-  const int neu_face = 0;
-  grid->set_boundary_id(neu_face, bc::neu);
 
   using BSpBasis = BSpline<dim, range, rank>;
   using PhysBasis = PhysicalSpaceBasis<dim,range,rank,codim>;
@@ -86,16 +84,21 @@ create_space_prop(const shared_ptr<Grid<dim>> &grid,
   auto bsp_basis = BSpBasis::create(space);
   auto phys_basis = PhysBasis::create(bsp_basis, Domain<dim,codim>::create(grid_func));
 
-  std::set<boundary_id>  dir_ids = {bc::dir};
-  auto dir_dofs = get_boundary_dofs<PhysBasis>(phys_basis, dir_ids);
+//  std::set<boundary_id>  dir_ids = {bc::dir};
+  std::set<int> dir_faces;
+  for (int face_id = 1 ; face_id < UnitElement<dim>::n_faces ; ++face_id)
+    dir_faces.insert(face_id);
+  auto dir_dofs = get_boundary_dofs<PhysBasis>(phys_basis, dir_faces);
+
+
+  const std::set<int> neu_faces{0};
+  auto neu_dofs = get_boundary_dofs<PhysBasis>(phys_basis, neu_faces);
 
 
   auto dof_dist = space->get_dof_distribution();
   auto int_dofs = dof_dist->get_interior_dofs();
 
 
-  std::set<boundary_id>  neu_ids = {bc::neu};
-  auto neu_dofs = get_boundary_dofs<PhysBasis>(phys_basis, neu_ids);
   SafeSTLVector<Index> common(dim*range);
   auto end1 =
     std::set_intersection(neu_dofs.begin(), neu_dofs.end(),

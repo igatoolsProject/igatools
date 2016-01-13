@@ -70,23 +70,26 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
   auto grid = Grid<dim>::create(n_knots);
 
-  const int neu_face = 3;
-  grid->set_boundary_id(neu_face, bc::neu);
+  const std::set<int> dir_face{0};
+  const std::set<int> neu_face{3};
+//  grid->set_boundary_id(neu_face, bc::neu);
 
 
   auto space = SplineSpace<dim,range,rank>::create(deg,grid);
   auto basis = Basis::create(space);
 
-  std::set<boundary_id>  dir_ids = {bc::dir};
-  auto dir_dofs = get_boundary_dofs<RefSpace>(basis, dir_ids);
+//  std::set<boundary_id>  dir_ids = {bc::dir};
+//  auto dir_dofs = get_boundary_dofs<RefSpace>(basis, dir_ids);
+  auto dir_dofs = get_boundary_dofs<RefSpace>(basis, dir_face);
 
 
   auto dof_dist = space->get_dof_distribution();
   auto int_dofs = dof_dist->get_interior_dofs();
 
 
-  std::set<boundary_id>  neu_ids = {bc::neu};
-  auto neu_dofs = get_boundary_dofs<RefSpace>(basis, neu_ids);
+//  std::set<boundary_id>  neu_ids = {bc::neu};
+//  auto neu_dofs = get_boundary_dofs<RefSpace>(basis, neu_ids);
+  auto neu_dofs = get_boundary_dofs<RefSpace>(basis, neu_face);
   SafeSTLVector<Index> common(dim*range);
   auto end1 =
     std::set_intersection(neu_dofs.begin(), neu_dofs.end(),

@@ -1,15 +1,6 @@
 ========================================================================
 tsc_serialization
 ========================================================================
-TensorSizedContainer<0> before serialization
-Size: [ ]  Weights: []
-TensorSizedContainer<0> after serialization
-Size: [ ]  Weights: []
-========================================================================
-
-========================================================================
-tsc_serialization
-========================================================================
 TensorSizedContainer<1> before serialization
 Size: [ 3 ]  Weights: [3]
 TensorSizedContainer<1> after serialization

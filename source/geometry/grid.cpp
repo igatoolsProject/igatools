@@ -187,8 +187,9 @@ template<int dim_>
 Grid<dim_>::
 Grid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates)
   :
-//  knot_coordinates_(knot_coordinates),
+#ifdef USE_DEPRECATED
   boundary_id_(0),
+#endif
   object_id_(UniqueIdGenerator::get_unique_id())
 {
   TensorSize<dim_> t_size;
@@ -309,7 +310,9 @@ Grid(const self_t &grid,const CopyPolicy &copy_policy)
   :
 //  TensorSizedContainer<dim_>(grid),
   knot_coordinates_(grid.knot_coordinates_),
+#ifdef USE_DEPRECATED
   boundary_id_(grid.boundary_id_),
+#endif
   elem_properties_(grid.elem_properties_),
   name_(grid.get_name()),
   object_id_(UniqueIdGenerator::get_unique_id()),
@@ -551,6 +554,7 @@ cend(const PropId &prop) const -> ElementIterator
 
 
 
+#ifdef USE_DEPRECATED
 
 template<int dim_>
 void
@@ -574,6 +578,7 @@ get_boundary_id(const int face) const
   return (boundary_id_[face]);
 }
 
+#endif // USE_DEPRECATED
 
 
 template<int dim_>
@@ -1229,7 +1234,11 @@ Grid<dim_>::
 serialize(Archive &ar)
 {
   ar &make_nvp("knot_coordinates_",knot_coordinates_);
+
+#ifdef USE_DEPRECATED
   ar &make_nvp("boundary_id_",boundary_id_);
+#endif
+
   ar &make_nvp("properties_elements_id_",elem_properties_);
   ar &make_nvp("object_id_",object_id_);
   ar &make_nvp("name_",name_);
