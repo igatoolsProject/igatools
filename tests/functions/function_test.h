@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
+#include <igatools/functions/formula_function.h>
 
 template<int dim, int codim>
 class CustomFunction
