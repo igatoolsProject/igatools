@@ -88,7 +88,8 @@ private:
   {
     FillCacheDispatcher(const SubGridFunctionHandler<sdim,dim,range> &sub_grid_func_handler,
                         SubGridFunctionElement<sdim,dim,range> &sub_grid_func_elem,
-                        const int s_id);
+                        const int s_id,
+                        const int sup_grid_func_s_id);
 
     template<int k>
     void operator()(const Topology<k> &topology);
@@ -97,11 +98,13 @@ private:
     const SubGridFunctionHandler<sdim,dim,range> &sub_grid_func_handler_;
     SubGridFunctionElement<sdim,dim,range> &sub_grid_func_elem_;
     const int s_id_;
+    const int sup_grid_func_s_id_;
   };
 
 private:
 
   std::unique_ptr<GridFunctionHandler<dim,range>> sup_grid_func_handler_;
+  int sup_grid_func_s_id_;
 };
 
 

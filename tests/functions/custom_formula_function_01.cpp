@@ -28,7 +28,7 @@
 
 #include <igatools/functions/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/io/writer.h>
@@ -174,20 +174,32 @@ void test_custom_function(const int s_id)
   auto sup_grid = Grid<sp_dim>::create(3);
 
   using SubGridElemMap = typename Grid<sp_dim>::template SubGridMap<dim>;
-  SubGridElemMap sub_grid_elem_map;
+  SubGridElemMap grid_elem_map;
+  LogStream myout;
 
-  auto grid = sup_grid->template get_sub_grid<dim>(s_id,sub_grid_elem_map);
+
+  auto grid = sup_grid->template get_sub_grid<dim>(s_id,grid_elem_map);
+  /*
+  myout.begin_item("grid_elem_map ID: " + std::to_string(s_id));
+  grid_elem_map.print_info(myout);
+  myout.end_item();
+  //*/
 
   auto sup_domain =
     Domain<sp_dim,0>::create(
       grid_functions::IdentityGridFunction<sp_dim>::create(sup_grid));
-  const auto domain = sup_domain->template get_sub_domain<dim>(s_id,sub_grid_elem_map,grid);
+  const auto domain = sup_domain->template get_sub_domain<dim>(s_id,grid_elem_map,grid);
 //#endif
 
+  /*
+    std::string filename_grid = "new_grid_s_id_" + std::to_string(s_id);
+    Writer<dim,codim> writer_grid(grid,5);
+    writer_grid.save(filename_grid);
 
-  std::string filename = "new_domain_s_id_" + std::to_string(s_id);
-  Writer<dim,codim> writer(domain,5);
-  writer.save(filename);
+    std::string filename_domain = "new_domain_s_id_" + std::to_string(s_id);
+    Writer<dim,codim> writer_domain(domain,5);
+    writer_domain.save(filename_domain);
+  //*/
   auto F = Function::const_create(domain);
 
   out.begin_item("SubElem ID: " + std::to_string(s_id));

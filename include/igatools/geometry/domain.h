@@ -257,18 +257,18 @@ public:
   {
     std::shared_ptr<const GridFunction<sdim,space_dim>> sub_func;
 
-    const auto F = this->get_grid_function();
-    using IgFunc = IgGridFunction<dim,space_dim>;
-    auto ig_func = std::dynamic_pointer_cast<const IgFunc>(F);
-    using FormulaFunc = FormulaGridFunction<dim,space_dim>;
-    auto formula_func = std::dynamic_pointer_cast<const FormulaFunc>(F);
-    if (ig_func)
+    const auto grid_func = this->get_grid_function();
+    using IgGridFunc = IgGridFunction<dim,space_dim>;
+    auto ig_grid_func = std::dynamic_pointer_cast<const IgGridFunc>(grid_func);
+    using FormulaGridFunc = FormulaGridFunction<dim,space_dim>;
+    auto formula_grid_func = std::dynamic_pointer_cast<const FormulaGridFunc>(grid_func);
+    if (ig_grid_func)
     {
-      sub_func = ig_func->get_sub_function(s_id,sub_grid);
+      sub_func = ig_grid_func->get_sub_function(s_id,sub_grid);
     }
-    else if (formula_func)
+    else if (formula_grid_func)
     {
-      sub_func = formula_func->get_sub_function(s_id,sub_grid_elem_map,sub_grid);
+      sub_func = formula_grid_func->get_sub_function(s_id,sub_grid_elem_map,sub_grid);
     }
     else
     {
@@ -277,19 +277,21 @@ public:
     auto sub_domain = Domain<sdim,space_dim-sdim>::const_create(sub_func);
 
     /*
-        LogStream out;
-        out.begin_item("Sub-Function:");
-        sub_func->print_info(out);
-        out.end_item();
-        auto sub_func_elem = sub_func->begin();
-        auto sub_func_end = sub_func->end();
+            LogStream out;
+            out.begin_item("Sub-Function:");
+            sub_func->print_info(out);
+            out.end_item();
+            //*/
+    /*
+    auto sub_func_elem = sub_func->begin();
+    auto sub_func_end = sub_func->end();
 
-        out.begin_item("Sub-function elements:");
-        for (; sub_func_elem != sub_func_end ; ++sub_func_elem)
-          sub_func_elem->print_info(out);
+    out.begin_item("Sub-function elements:");
+    for (; sub_func_elem != sub_func_end ; ++sub_func_elem)
+      sub_func_elem->print_info(out);
     //    for (const auto & sub_func_elem : *sub_func)
     //      sub_func_elem.print_info(out);
-        out.end_item();
+    out.end_item();
     //*/
 
 

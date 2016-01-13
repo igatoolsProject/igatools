@@ -61,7 +61,7 @@ public:
 public:
 
   SubGridFunction(const SharedPtrConstnessHandler<SupFunc> &sup_func,
-                  const int s_id,
+                  const int sup_grid_func_s_id,
                   const SubGridMap &sub_grid_elem_map,
                   const SharedPtrConstnessHandler<GridType> &grid);
 
@@ -76,13 +76,13 @@ public:
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const SupFunc> &func,
-               const int s_id,
+               const int sup_grid_func_s_id,
                const SubGridMap &sub_grid_elem_map,
                const std::shared_ptr<const GridType> &grid);
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<const SupFunc> &func,
-         const int s_id,
+         const int sup_grid_func_s_id,
          const SubGridMap &sub_grid_elem_map,
          const std::shared_ptr<GridType> &grid);
 
@@ -95,10 +95,10 @@ public:
 #endif
 
   virtual std::unique_ptr<GridFunctionElement<sdim,range>>
-                                                            create_element_begin(const PropId &prop) const override final;
+                                                        create_element_begin(const PropId &prop) const override final;
 
   virtual std::unique_ptr<GridFunctionElement<sdim,range>>
-                                                            create_element_end(const PropId &prop) const override final;
+                                                        create_element_end(const PropId &prop) const override final;
 
 
 #ifdef MESH_REFINEMENT
@@ -128,7 +128,7 @@ public:
 
 private:
   SharedPtrConstnessHandler<SupFunc> sup_func_;
-  const int s_id_;
+  const int sup_grid_func_s_id_;
 
 
 
@@ -137,6 +137,7 @@ private:
   SafeSTLVector<typename Grid<sdim>::IndexType> id_elems_sub_grid_;
   SafeSTLVector<typename Grid< dim>::IndexType> id_elems_sup_grid_;
 
+  friend class SubGridFunctionHandler<sdim,dim,range>;
 };
 
 

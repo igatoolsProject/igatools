@@ -29,15 +29,13 @@ IGA_NAMESPACE_OPEN
 template<int sdim,int dim,int range>
 SubGridFunction<sdim,dim,range>::
 SubGridFunction(const SharedPtrConstnessHandler<SupFunc> &sup_func,
-                const int s_id,
+                const int sup_grid_func_s_id,
                 const SubGridMap &sub_grid_elem_map,
                 const SharedPtrConstnessHandler<GridType> &grid)
   :
   base_t(grid),
   sup_func_(sup_func),
-  s_id_(s_id)//,
-//  elems_property_("boundary"),
-//  sub_grid_elem_map_(sub_grid_elem_map)
+  sup_grid_func_s_id_(sup_grid_func_s_id)
 {
 //    LogStream out;
   for (const auto &elems_id : sub_grid_elem_map)
@@ -55,11 +53,19 @@ SubGridFunction<sdim,dim,range>::
 create_element_begin(const PropId &prop) const
 -> std::unique_ptr<GridFunctionElement<sdim,range>>
 {
+  auto sub_elem = this->get_grid()->create_element_begin(prop);
+  sub_elem->move_to(id_elems_sub_grid_.front());
+
+  auto sup_elem = sup_func_->create_element_begin(prop);
+  sup_elem->move_to(id_elems_sup_grid_.front());
+
   using Elem = SubGridFunctionElement<sdim,dim,range>;
-  return std::unique_ptr<Elem>(new Elem(
+  auto elem = std::unique_ptr<Elem>(new Elem(
     std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
-    std::move(this->get_grid()->create_element_begin(prop)),
-    std::move(sup_func_->create_element_begin(prop))));
+    std::move(sub_elem),
+    std::move(sup_elem)));
+
+  return std::move(elem);
 }
 
 template<int sdim,int dim,int range>
@@ -68,11 +74,28 @@ SubGridFunction<sdim,dim,range>::
 create_element_end(const PropId &prop) const
 -> std::unique_ptr<GridFunctionElement<sdim,range>>
 {
+  auto sub_elem = this->get_grid()->create_element_begin(prop);
+  sub_elem->move_to(id_elems_sub_grid_.back());
+  ++(*sub_elem);
+
+  auto sup_elem = sup_func_->create_element_begin(prop);
+  sup_elem->move_to(id_elems_sup_grid_.back());
+  ++(*sup_elem);
+
   using Elem = SubGridFunctionElement<sdim,dim,range>;
-  return std::unique_ptr<Elem>(new Elem(
+  auto elem = std::unique_ptr<Elem>(new Elem(
+    std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
+    std::move(sub_elem),
+    std::move(sup_elem)));
+  /*
+  auto elem = std::unique_ptr<Elem>(new Elem(
     std::dynamic_pointer_cast<const self_t>(this->shared_from_this()),
     std::move(this->get_grid()->create_element_end(prop)),
     std::move(sup_func_->create_element_end(prop))));
+  //*/
+
+
+  return std::move(elem);
 }
 
 template<int sdim,int dim,int range>
@@ -98,13 +121,13 @@ template<int sdim,int dim,int range>
 auto
 SubGridFunction<sdim,dim,range>::
 const_create(const std::shared_ptr<const SupFunc> &func,
-             const int s_id,
+             const int sup_grid_func_s_id,
              const SubGridMap &sub_grid_elem_map,
              const std::shared_ptr<const GridType> &grid)
 -> std::shared_ptr<const self_t>
 {
   return std::make_shared<self_t>(SharedPtrConstnessHandler<SupFunc>(func),
-  s_id,
+  sup_grid_func_s_id,
   sub_grid_elem_map,
   SharedPtrConstnessHandler<GridType>(grid));
 }
@@ -113,13 +136,13 @@ template<int sdim,int dim,int range>
 auto
 SubGridFunction<sdim,dim,range>::
 create(const std::shared_ptr<const SupFunc> &func,
-       const int s_id,
+       const int sup_grid_func_s_id,
        const SubGridMap &sub_grid_elem_map,
        const std::shared_ptr<GridType> &grid)
 -> std::shared_ptr<self_t>
 {
   return std::make_shared<self_t>(SharedPtrConstnessHandler<SupFunc>(func),
-  s_id,
+  sup_grid_func_s_id,
   sub_grid_elem_map,
   SharedPtrConstnessHandler<GridType>(grid));
 }
@@ -178,7 +201,7 @@ print_info(LogStream &out) const
   out.end_item();
 
 
-  out << "Sub-element topology ID: " << s_id_ << std::endl;
+  out << "Sub-element topology ID: " << sup_grid_func_s_id_ << std::endl;
   /*
     out.begin_item("Sub-Grid Element Map:");
     sub_grid_elem_map_.print_info(out);

@@ -50,11 +50,11 @@ public:
 
 public:
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<GridType> &domain,
+  create(const std::shared_ptr<GridType> &grid,
          const Value &b);
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const GridType> &domain,
+  const_create(const std::shared_ptr<const GridType> &grid,
                const Value &b);
 
   ConstantGridFunction(const self_t &) = default;
@@ -67,7 +67,7 @@ public:
 
 protected:
   ConstantGridFunction(
-    const SharedPtrConstnessHandler<GridType> &domain,
+    const SharedPtrConstnessHandler<GridType> &grid,
     const Value &b);
 
 private:
@@ -120,12 +120,12 @@ public:
 
 public:
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<GridType> &domain,
+  create(const std::shared_ptr<GridType> &grid,
          const Derivative<1> &A,
          const Value &b);
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const GridType> &domain,
+  const_create(const std::shared_ptr<const GridType> &grid,
                const Derivative<1> &A,
                const Value &b);
 
@@ -141,7 +141,7 @@ public:
 
 protected:
   LinearGridFunction(
-    const SharedPtrConstnessHandler<GridType> &domain,
+    const SharedPtrConstnessHandler<GridType> &grid,
     const Derivative<1> &A,
     const Value &b);
 
@@ -196,10 +196,10 @@ public:
 
 public:
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<GridType> &domain);
+  create(const std::shared_ptr<GridType> &grid);
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const GridType> &domain);
+  const_create(const std::shared_ptr<const GridType> &grid);
 
 
   IdentityGridFunction(const self_t &) = default;
@@ -210,7 +210,7 @@ public:
 
 protected:
   IdentityGridFunction(
-    const SharedPtrConstnessHandler<GridType> &domain);
+    const SharedPtrConstnessHandler<GridType> &grid);
 
 private:
   void evaluate_0(const ValueVector<GridPoint> &points,

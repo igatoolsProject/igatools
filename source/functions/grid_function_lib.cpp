@@ -27,10 +27,10 @@ namespace grid_functions
 //------------------------------------------------------------------------------
 template<int dim, int range>
 ConstantGridFunction<dim,range>::
-ConstantGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
+ConstantGridFunction(const SharedPtrConstnessHandler<GridType> &grid,
                      const Value &b)
   :
-  parent_t(domain),
+  parent_t(grid),
   b_(b)
 {}
 
@@ -39,11 +39,11 @@ ConstantGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
 template<int dim, int range>
 auto
 ConstantGridFunction<dim,range>::
-create(const std::shared_ptr<GridType> &domain,
+create(const std::shared_ptr<GridType> &grid,
        const Value &b) ->  std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<GridType>(domain),b));
+    new self_t(SharedPtrConstnessHandler<GridType>(grid),b));
 
 #ifdef MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
@@ -56,11 +56,11 @@ create(const std::shared_ptr<GridType> &domain,
 template<int dim, int range>
 auto
 ConstantGridFunction<dim,range>::
-const_create(const std::shared_ptr<const GridType> &domain,
+const_create(const std::shared_ptr<const GridType> &grid,
              const Value &b) ->  std::shared_ptr<const self_t>
 {
   return std::shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<GridType>(domain), b));
+    new self_t(SharedPtrConstnessHandler<GridType>(grid), b));
 }
 
 #ifdef MESH_REFINEMENT
@@ -137,7 +137,7 @@ auto
 ConstantGridFunction<dim,range>::
 get_constant_value() const -> const Value &
 {
-    return b_;
+  return b_;
 }
 
 
@@ -148,11 +148,11 @@ get_constant_value() const -> const Value &
 //------------------------------------------------------------------------------
 template<int dim, int range>
 LinearGridFunction<dim,range>::
-LinearGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
+LinearGridFunction(const SharedPtrConstnessHandler<GridType> &grid,
                    const Derivative<1> &A,
                    const Value &b)
   :
-  parent_t(domain),
+  parent_t(grid),
   A_(A),
   b_(b)
 {}
@@ -162,12 +162,12 @@ LinearGridFunction(const SharedPtrConstnessHandler<GridType> &domain,
 template<int dim, int range>
 auto
 LinearGridFunction<dim,range>::
-create(const std::shared_ptr<GridType> &domain,
+create(const std::shared_ptr<GridType> &grid,
        const Derivative<1> &A,
        const Value &b) ->  std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<GridType>(domain),A,b));
+    new self_t(SharedPtrConstnessHandler<GridType>(grid),A,b));
 
 #ifdef MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
@@ -180,12 +180,12 @@ create(const std::shared_ptr<GridType> &domain,
 template<int dim, int range>
 auto
 LinearGridFunction<dim,range>::
-const_create(const std::shared_ptr<const GridType> &domain,
+const_create(const std::shared_ptr<const GridType> &grid,
              const Derivative<1> &A,
              const Value &b) ->  std::shared_ptr<const self_t>
 {
   return std::shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<GridType>(domain), A, b));
+    new self_t(SharedPtrConstnessHandler<GridType>(grid), A, b));
 }
 
 #ifdef MESH_REFINEMENT
@@ -266,9 +266,9 @@ print_info(LogStream &out) const
 template<int dim, int range>
 auto
 LinearGridFunction<dim,range>::
-get_A () const -> const Derivative<1> &
+get_A() const -> const Derivative<1> &
 {
-    return A_;
+  return A_;
 }
 
 
@@ -276,9 +276,9 @@ get_A () const -> const Derivative<1> &
 template<int dim, int range>
 auto
 LinearGridFunction<dim,range>::
-get_b () const -> const Value &
+get_b() const -> const Value &
 {
-    return b_;
+  return b_;
 }
 
 
@@ -289,9 +289,9 @@ get_b () const -> const Value &
 //------------------------------------------------------------------------------
 template<int dim>
 IdentityGridFunction<dim>::
-IdentityGridFunction(const SharedPtrConstnessHandler<GridType> &domain)
+IdentityGridFunction(const SharedPtrConstnessHandler<GridType> &grid)
   :
-  parent_t(domain)
+  parent_t(grid)
 {}
 
 
@@ -299,11 +299,11 @@ IdentityGridFunction(const SharedPtrConstnessHandler<GridType> &domain)
 template<int dim>
 auto
 IdentityGridFunction<dim>::
-create(const std::shared_ptr<GridType> &domain)
+create(const std::shared_ptr<GridType> &grid)
 ->  std::shared_ptr<self_t>
 {
   auto func = std::shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<GridType>(domain)));
+    new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 
 #ifdef MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
@@ -315,11 +315,11 @@ create(const std::shared_ptr<GridType> &domain)
 template<int dim>
 auto
 IdentityGridFunction<dim>::
-const_create(const std::shared_ptr<const GridType> &domain)
+const_create(const std::shared_ptr<const GridType> &grid)
 ->  std::shared_ptr<const self_t>
 {
   return std::shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<GridType>(domain)));
+    new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 }
 
 

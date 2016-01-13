@@ -29,7 +29,8 @@ SubGridFunctionHandler<sdim,dim,range>::
 SubGridFunctionHandler(const std::shared_ptr<GridFunctionType> &grid_function)
   :
   parent_t(grid_function),
-  sup_grid_func_handler_(grid_function->get_sup_grid_function()->create_cache_handler())
+  sup_grid_func_handler_(grid_function->get_sup_grid_function()->create_cache_handler()),
+  sup_grid_func_s_id_(grid_function->sup_grid_func_s_id_)
 {}
 
 
@@ -66,17 +67,22 @@ fill_cache(const topology_variant &topology,
            GridFunctionElement<sdim,range> &sub_grid_func_elem,
            const int s_id) const
 {
-  this->grid_handler_->fill_cache(topology, sub_grid_func_elem.get_grid_element(), s_id);
+  Assert(dim > 0 && dim-sdim == 1,ExcMessage("This function is tested only for sdim==dim-1."));
+  this->grid_handler_->fill_cache(topology, sub_grid_func_elem.get_grid_element(),s_id);
 
   auto &as_sub_grid_func_elem =
     dynamic_cast<SubGridFunctionElement<sdim,dim,range> &>(sub_grid_func_elem);
 
-  this->sup_grid_func_handler_->fill_cache(topology,as_sub_grid_func_elem.get_sup_grid_function_element(),s_id);
+  this->sup_grid_func_handler_->fill_cache(
+    topology,
+    as_sub_grid_func_elem.get_sup_grid_function_element(),
+    sup_grid_func_s_id_);
 
   auto fill_dispatcher = FillCacheDispatcher(
                            *this,
                            as_sub_grid_func_elem,
-                           s_id);
+                           s_id,
+                           sup_grid_func_s_id_);
   boost::apply_visitor(fill_dispatcher, topology);
 }
 
@@ -86,11 +92,13 @@ SubGridFunctionHandler<sdim,dim,range>::
 FillCacheDispatcher::
 FillCacheDispatcher(const SubGridFunctionHandler<sdim,dim,range> &sub_grid_func_handler,
                     SubGridFunctionElement<sdim,dim,range> &sub_grid_func_elem,
-                    const int s_id)
+                    const int s_id,
+                    const int sup_grid_func_s_id)
   :
   sub_grid_func_handler_(sub_grid_func_handler),
   sub_grid_func_elem_(sub_grid_func_elem),
-  s_id_(s_id)
+  s_id_(s_id),
+  sup_grid_func_s_id_(sup_grid_func_s_id)
 {}
 
 
@@ -102,9 +110,11 @@ FillCacheDispatcher::
 operator()(const Topology<k> &topology)
 {
   static_assert(k >= 0 && k <= sdim,"Invalid topological dimension.");
+  //TODO (martinelli, Jan 13, 2016): implement the cases with k < sdim
+  Assert(k == sdim,ExcMessage("The cases k < sdim are not implemented."));
+  Assert(s_id_ == 0,ExcMessage("The cases k < sdim are not implemented."));
 
-
-  const auto &sub_unit_elem = UnitElement<dim>::template get_elem<k>(s_id_);
+  const auto &sub_unit_elem = UnitElement<dim>::template get_elem<k>(sup_grid_func_s_id_);
   const auto &sub_elem_active_dirs = sub_unit_elem.active_directions;
 
 
@@ -118,7 +128,7 @@ operator()(const Topology<k> &topology)
     using _D0 = typename grid_function_element::template _D<0>;
     if (sub_grid_func_cache.template status_fill<_D0>())
     {
-      const auto &sup_grid_func_D0 = sup_grid_func_elem.template get_values_from_cache<_D0,k>(s_id_);
+      const auto &sup_grid_func_D0 = sup_grid_func_elem.template get_values_from_cache<_D0,k>(sup_grid_func_s_id_);
       auto &D0 = sub_grid_func_cache.template get_data<_D0>();
 
       D0 = sup_grid_func_D0;
@@ -128,7 +138,7 @@ operator()(const Topology<k> &topology)
     using _D1 = typename grid_function_element::template _D<1>;
     if (sub_grid_func_cache.template status_fill<_D1>())
     {
-      const auto &sup_grid_func_D1 = sup_grid_func_elem.template get_values_from_cache<_D1,k>(s_id_);
+      const auto &sup_grid_func_D1 = sup_grid_func_elem.template get_values_from_cache<_D1,k>(sup_grid_func_s_id_);
       auto &D1 = sub_grid_func_cache.template get_data<_D1>();
 
       const int n_pts = sup_grid_func_D1.get_num_points();
@@ -151,7 +161,7 @@ operator()(const Topology<k> &topology)
     using _D2 = typename grid_function_element::template _D<2>;
     if (sub_grid_func_cache.template status_fill<_D2>())
     {
-      const auto &sup_grid_func_D2 = sup_grid_func_elem.template get_values_from_cache<_D2,k>(s_id_);
+      const auto &sup_grid_func_D2 = sup_grid_func_elem.template get_values_from_cache<_D2,k>(sup_grid_func_s_id_);
       auto &D2 = sub_grid_func_cache.template get_data<_D2>();
 
       const int n_pts = sup_grid_func_D2.get_num_points();
