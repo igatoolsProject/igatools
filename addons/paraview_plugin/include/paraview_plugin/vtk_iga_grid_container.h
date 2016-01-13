@@ -39,6 +39,15 @@ class ObjectsContainer;
 namespace paraview_plugin
 {
 
+/**
+ * @brief To be defined.
+ *
+ * @todo To be defined.
+ *
+ * @author P. Antolin, 2016.
+ *
+ * @ingroup paraview_plugin
+ */
 template <class Domain> class VtkIgaGrid;
 struct VtkGridInformation;
 struct VtkControlGridInformation;

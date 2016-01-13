@@ -38,65 +38,126 @@ namespace paraview_plugin
 struct VtkControlGridInformation;
 
 
+/**
+ * @brief Helper class for creating a VTK grid representing the
+ * control polygon of an IGA function.
+ *
+ * This class takes as argument an IGA @ref Domain, whose grid function
+ * is an @ref IgGridFunction.
+ *
+ * This is a template class, whose argument is the @ref Domain
+ * class which defines the IGA domain.
+ *
+ * The class extracts the control points and builds the control polygon
+ * that is represented in a VTK grid, that can be structured or
+ * unstructured linear.
+ *
+ * The control polygons can be represented for 1D, 2D and 3D IGA functions.
+ *
+ * The method @ref create is in charge of extracting the grid function from
+ * the domain and obtaining the control points, and the methods
+ * @ref create_vts_grid and @ref create_vtu_grid create the
+ * structured or unstructured VTK grids.
+ *
+ * @note For 1D grid functions, it is not possible to create structured
+ * control grids.
+ *
+ * @see VtkGridType
+ * @see Domain
+ * @see IgGridFunction
+ *
+ * @author P. Antolin, 2016.
+ *
+ * @ingroup paraview_plugin
+ */
 template <class Domain>
 class VtkIgaControlGrid
 {
 private:
-  /// Dimension.
+  /// Dimension of the @ref Domain.
   static const int dim = Domain::dim;
 
-  /// Space dimension.
+  /// Space dimension of the @ref Domain.
   static const int space_dim = Domain::space_dim;
 
-  /**
-   * Self type.
-   */
+  /// Self type of the class.
   typedef VtkIgaControlGrid Self_;
 
-  /**
-   * Self shared poitner type.
-   */
+  /// Shared pointer type of the class.
   typedef std::shared_ptr<Self_> SelfPtr_;
 
-  /**
-   * Alias for a shared pointer of a map function type.
-   */
+  /// Shared pointer of the @ref Domain.
   typedef std::shared_ptr<const Domain> DomainPtr_;
 
-  /**
-   * Alias for mesh grid information shared pointer.
-   */
+  /// Shared pointer of the @ref VtkControlGridInformation.
   typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
 
-  /**
-   * Alias for vtk grid object for visualization.
-   */
+  /// Shared pointer of the @ref vtkPointSet that contains the produced grid.
   typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
 
-  /**
-   * Alias for a ig function type.
-   */
+  /// Alias for the @ref IgGridFunction.
   typedef IgGridFunction<dim, space_dim> IgGridFun_;
 
-  /**
-   * Alias for a shared pointer of a ig function type.
-   */
+  /// Shared pointer of the @ref IgGridFunction.
   typedef std::shared_ptr<const IgGridFun_> IgGridFunPtr_;
 
+  /** @name Constructors*/
+  ///@{
   /**
-   * Constructor, copy and assignment operators not allowed to be used.
+   * Default constructor.
+   * @warning Not allowed to be used.
    */
   VtkIgaControlGrid() = delete;
+
+  /**
+   * Copy constructor.
+   * @warning Not allowed to be used.
+   */
   VtkIgaControlGrid(const VtkIgaControlGrid &) = delete;
+
+  /**
+   * Move constructor.
+   * @warning Not allowed to be used.
+   */
   VtkIgaControlGrid(const VtkIgaControlGrid &&) = delete;
+  ///@}
+
+  /** @name Assignment operators*/
+  ///@{
+  /**
+   * Copy assignment operator.
+   * @warning Not allowed to be used.
+   */
   void operator=(const VtkIgaControlGrid &) = delete;
+
+  /**
+   * Move assignment operator.
+   * @warning Not allowed to be used.
+   */
   void operator=(const VtkIgaControlGrid &&) = delete;
+  ///@}
 
 
 public:
 
+  /** @name Creators*/
+  ///@{
   /**
-   * Creates and returns the vtk grid for the visualization.
+   * @brief Creates and returns the VTK grid for visualizing the control
+   * grid polygon of an @ref IgGridFunction.
+   *
+   * This method extract the IGA function from the @ref domain and
+   * extract the control points of the function.
+   * It will call the method @ref create_grid_vts or @ref create_grid_vtu
+   * for creating the VTK grid.
+   *
+   * @warning In debug mode, if the @ref domain does not corresponds to
+   * a @ref IgGridFunction, an exception is thrown.
+   *
+   * @param[in] domain Domain defined by the IGA function whose
+   * control polygon is created.
+   * @param[in] grid_info Information for creating the VTK grid.
+   * @return VTK grid representing the control polygon.
    */
   static VtkGridPtr_ create(const DomainPtr_ domain,
                             const ControlGridInfoPtr_ grid_info);
@@ -104,16 +165,29 @@ public:
 private:
 
   /**
-   * Creates and returns the vtk structured grid for the visualization.
+   * @brief Creates and returns the VTK \a structured grid for visualizing the
+   * control grid polygon of an @ref IgGridFunction.
+   * @param[in] ig_grid_fun IGA function whose control polygon is created.
+   * @param[in] points Points of the control polygon.
+   * @return VTK grid representing the control polygon.
    */
   static VtkGridPtr_ create_grid_vts(const IgGridFunPtr_ ig_grid_fun,
                                      const vtkSmartPointer<vtkPoints> points);
 
   /**
-   * Creates and returns the vtk unstructured grid for the visualization.
+   * @brief Creates and returns the VTK \a unstructured \a linear grid for
+   * visualizing the control grid polygon of an @ref IgGridFunction.
+   *
+   * The unstructured grid is composed of a set of points, corresponding
+   * to the control points, and lines joining them.
+   *
+   * @param[in] ig_grid_fun IGA function whose control polygon is created.
+   * @param[in] points Points of the control polygon.
+   * @return VTK grid representing the control polygon.
    */
   static VtkGridPtr_ create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
                                      const vtkSmartPointer<vtkPoints> points);
+  ///@}
 
 };
 

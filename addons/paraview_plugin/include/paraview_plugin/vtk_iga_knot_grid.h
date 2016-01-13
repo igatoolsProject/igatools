@@ -29,11 +29,6 @@
 #include <vtkCellArray.h>
 
 #include <igatools/base/config.h>
-/*
-class vtkPoints;
-class vtkPointSet;
-template<class T> class vtkSmartPointer;
-//*/
 
 IGA_NAMESPACE_OPEN
 
@@ -44,57 +39,116 @@ namespace paraview_plugin
 
 struct VtkGridInformation;
 
-
+/**
+ * @brief Helper class for creating a VTK grid representing the
+ * knot mesh of an IGA domain.
+ *
+ * This class takes as argument an IGA @ref Domain, and represents
+ * its knot mesh with a VTK grid. Being the knot mesh
+ * the image of the knot lines of the mesh.
+ *
+ * This is a template class, whose argument is the @ref Domain
+ * class which defines the IGA domain.
+ *
+ * For the case of non IGA functions, the term knot lines refers
+ * to the inter-element lines.
+ *
+ * When we refer here to a domain, we do it in a general way: it can be
+ * a parametric domain (a @ref Grid mapped with an
+ * @ref grid_functions::IdentityGridFunction) or a physical domain (a
+ * mapped parametric domain represented by an object of the class @ref Domain)
+ * of dimensions 1, 2 and 3.
+ *
+ * The knot mesh is represent as a VTK unstructured grid of linear
+ * or quadratic lines. It is not possible to create VTK structured grids
+ * for the knot mesh.
+ *
+ * The grid is created by calling the public method @ref create.
+ *
+ * @see VtkGridType
+ * @see Domain
+ * @see Grid
+ *
+ * @author P. Antolin, 2016.
+ *
+ * @ingroup paraview_plugin
+ */
 template <class Domain>
 class VtkIgaKnotGrid
 {
 private:
 
-  /// Dimension.
+  /// Dimension of the @ref Domain.
   static const int dim = Domain::dim;
 
-  /// Space dimension.
+  /// Space dimension of the @ref Domain.
   static const int space_dim = Domain::space_dim;
 
-  /**
-   * Self type.
-   */
+  /// Self type of the class.
   typedef VtkIgaKnotGrid Self_;
 
-  /**
-   * Self shared pointer type.
-   */
+  /// Shared pointer type of the class.
   typedef std::shared_ptr<Self_> SelfPtr_;
 
-  /**
-   * Alias for a shared pointer of a domain type.
-   */
+  /// Shared pointer of the @ref Domain.
   typedef std::shared_ptr<const Domain> DomainPtr_;
 
-  /**
-   * Alias for mesh grid information shared pointer.
-   */
+  /// Shared pointer of the @ref VtkGridInformation.
   typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
 
-  /**
-   * Alias for vtk grid object for visualization.
-   */
+  /// Shared pointer of the @ref vtkPointSet that contains the produced grid.
   typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
 
+  /** @name Constructors*/
+  ///@{
   /**
-   * Constructor, copy and assignment operators not allowed to be used.
+   * Default constructor.
+   * @warning Not allowed to be used.
    */
   VtkIgaKnotGrid() = delete;
-  VtkIgaKnotGrid(const VtkIgaKnotGrid &) = delete;
-  VtkIgaKnotGrid(const VtkIgaKnotGrid &&) = delete;
-  void operator=(const VtkIgaKnotGrid &) = delete;
-  void operator=(const VtkIgaKnotGrid &&) = delete;
 
+  /**
+   * Copy constructor.
+   * @warning Not allowed to be used.
+   */
+  VtkIgaKnotGrid(const VtkIgaKnotGrid &) = delete;
+
+  /**
+   * Move constructor.
+   * @warning Not allowed to be used.
+   */
+  VtkIgaKnotGrid(const VtkIgaKnotGrid &&) = delete;
+  ///@}
+
+  /** @name Assignment operators*/
+  ///@{
+  /**
+   * Copy assignment operator.
+   * @warning Not allowed to be used.
+   */
+  void operator=(const VtkIgaKnotGrid &) = delete;
+
+  /**
+   * Move assignment operator.
+   * @warning Not allowed to be used.
+   */
+  void operator=(const VtkIgaKnotGrid &&) = delete;
+  ///@}
 
 public:
 
+  /** @name Creators*/
+  ///@{
   /**
-   * Creates and returns the vtk grid for the visualization.
+   * @brief Creates and returns the VTK grid for visualizing the knot
+   * mesh of an IGA domain.
+   *
+   * This method calls @ref create_grid for creating the VTK grid
+   * representing the knot mesh.
+   *
+   * @param[in] domain IGA domain to be represented.
+   * @param[in] grid_info Information for creating the VTK grid.
+   * @return VTK grid representing the IGA domain.
    */
   static VtkGridPtr_ create(const DomainPtr_ domain,
                             const GridInfoPtr_ grid_info);
@@ -102,7 +156,15 @@ public:
 private:
 
   /**
-   * Creates and returns the vtk grid for the visualization for 1D mappings.
+   * @brief Creates and returns the VTK grid for visualizing the knot
+   * mesh of a 1D IGA domain.
+   *
+   * For 1D, the knot mesh is a VTK unstructured grid composed as
+   * a set of points that correspond to the knot lines.
+   *
+   * @param[in] domain IGA domain to be represented.
+   * @param[in] grid_info Information for creating the VTK grid.
+   * @return VTK grid representing the 1D IGA domain.
    */
   template<int aux_dim>
   static EnableIf<aux_dim == 1, VtkGridPtr_>
@@ -110,13 +172,21 @@ private:
                   const GridInfoPtr_ grid_info);
 
   /**
-   * Creates and returns the vtk grid for the visualization for 2D and 3D
-   *  mappings.
+   * @brief Creates and returns the VTK grid for visualizing the knot
+   * mesh of a 2D or 3D IGA domain.
+   *
+   * For 2D and 3D, the knot mesh is a VTK unstructured grid composed as
+   * a set of edges representing the the image of the knots lines.
+   *
+   * @param[in] domain IGA domain to be represented.
+   * @param[in] grid_info Information for creating the VTK grid.
+   * @return VTK grid representing the 2D or 3D IGA domain.
    */
   template<int aux_dim>
   static EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
       create_grid(const DomainPtr_ domain,
                   const GridInfoPtr_ grid_info);
+  ///@}
 
 };
 

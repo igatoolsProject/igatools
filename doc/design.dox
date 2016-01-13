@@ -54,6 +54,7 @@ container.
 - @subpage in_out
 - @subpage linear_algebra
 - @subpage spaces_manager
+- @subpage iga_paraview_plugin
 
 
 The split in the above concepts is made to have (and maintain) a clear distinction between

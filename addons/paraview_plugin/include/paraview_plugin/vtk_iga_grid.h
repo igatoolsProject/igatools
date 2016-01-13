@@ -39,6 +39,15 @@ struct VtkGridInformation;
 struct VtkControlGridInformation;
 
 
+/**
+ * @brief To be defined.
+ *
+ * @todo To be defined.
+ *
+ * @author P. Antolin, 2016.
+ *
+ * @ingroup paraview_plugin
+ */
 template <class Domain>
 class VtkIgaGrid
 {

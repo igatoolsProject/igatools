@@ -68,12 +68,10 @@ class VtkIgaGridContainer;
  * are recomputed.
  *
  *
- * @author P. Antolin, 2015.
+ * @author P. Antolin, 2016.
  *
  * @ingroup paraview_plugin
  */
-
-// class VTK_EXPORT IgatoolsParaViewReader : public vtkMultiBlockDataSetAlgorithm
 class IgatoolsParaViewReader : public vtkMultiBlockDataSetAlgorithm
 {
 
