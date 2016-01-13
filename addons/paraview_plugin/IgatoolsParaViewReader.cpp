@@ -44,7 +44,7 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
   n_vis_elem_parm_solid_(1),
   n_vis_elem_phys_knot_(1),
   n_vis_elem_parm_knot_(1),
-  iga_grid_gen_(iga::VtkIgaGridContainer::create_void ())
+  iga_grid_gen_(iga::paraview_plugin::VtkIgaGridContainer::create_void ())
 {
 #ifndef NDEBUG
   this->DebugOn();
@@ -134,7 +134,7 @@ int IgatoolsParaViewReader::RequestInformation(
   {
       this->SetProgressText("Parsing igatools file.");
 
-      iga_grid_gen_ = iga::VtkIgaGridContainer::create
+      iga_grid_gen_ = iga::paraview_plugin::VtkIgaGridContainer::create
               (file_name_,
                n_vis_elem_phys_solid_, phys_sol_grid_type_,
                n_vis_elem_phys_knot_,  phys_knt_grid_type_,
@@ -151,7 +151,7 @@ int IgatoolsParaViewReader::RequestInformation(
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << e.what());
 
-    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+    iga_grid_gen_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
 
     return 0;
   }
@@ -160,7 +160,7 @@ int IgatoolsParaViewReader::RequestInformation(
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << "AN UNKNOWN EXCEPTION OCCUR!");
 
-    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+    iga_grid_gen_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
 
     return 0;
   }
@@ -230,7 +230,7 @@ CanReadFile(const char *name)
 {
   try
   {
-      iga::VtkIgaGridContainer::check_file(name);
+      iga::paraview_plugin::VtkIgaGridContainer::check_file(name);
       return 1;
   }
   catch (std::exception &e)
@@ -238,7 +238,7 @@ CanReadFile(const char *name)
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << e.what());
 
-    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+    iga_grid_gen_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
 
     return 0;
   }
@@ -247,7 +247,7 @@ CanReadFile(const char *name)
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << "AN UNKNOWN EXCEPTION OCCUR!");
 
-    iga_grid_gen_ = iga::VtkIgaGridContainer::create_void ();
+    iga_grid_gen_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
 
     return 0;
   }
@@ -259,28 +259,28 @@ void
 IgatoolsParaViewReader::
 set_grid_type(int arg,
               const char *const name,
-              iga::VtkGridType &type)
+              iga::paraview_plugin::VtkGridType &type)
 {
   switch (arg)
   {
     case 0:
-      if (type != iga::VtkGridType::UnstructuredQuadratic)
+      if (type != iga::paraview_plugin::VtkGridType::UnstructuredQuadratic)
       {
-        type = iga::VtkGridType::UnstructuredQuadratic;
+        type = iga::paraview_plugin::VtkGridType::UnstructuredQuadratic;
         this->Modified();
       }
       break;
     case 1:
-      if (type != iga::VtkGridType::UnstructuredLinear)
+      if (type != iga::paraview_plugin::VtkGridType::UnstructuredLinear)
       {
-        type = iga::VtkGridType::UnstructuredLinear;
+        type = iga::paraview_plugin::VtkGridType::UnstructuredLinear;
         this->Modified();
       }
       break;
     case 2:
-      if (type != iga::VtkGridType::Structured)
+      if (type != iga::paraview_plugin::VtkGridType::Structured)
       {
-        type = iga::VtkGridType::Structured;
+        type = iga::paraview_plugin::VtkGridType::Structured;
         this->Modified();
       }
       break;
@@ -386,7 +386,7 @@ IgatoolsParaViewReader::
 SetGridTypePhysicalKnot(int arg)
 {
   this->set_grid_type(arg, "GridTypePhysicalKnot", phys_knt_grid_type_);
-  Assert(phys_knt_grid_type_ != iga::VtkGridType::Structured,
+  Assert(phys_knt_grid_type_ != iga::paraview_plugin::VtkGridType::Structured,
          iga::ExcMessage("Knot mesh must be unstructured."));
 }
 
@@ -397,7 +397,7 @@ IgatoolsParaViewReader::
 SetGridTypePhysicalControl(int arg)
 {
   this->set_grid_type(arg, "GridTypePhysicalControl", phys_ctr_grid_type_);
-  Assert(phys_ctr_grid_type_ != iga::VtkGridType::UnstructuredQuadratic,
+  Assert(phys_ctr_grid_type_ != iga::paraview_plugin::VtkGridType::UnstructuredQuadratic,
          iga::ExcMessage("Control mesh cannot be quadratic."));
 }
 
@@ -417,7 +417,7 @@ IgatoolsParaViewReader::
 SetGridTypeParametricKnot(int arg)
 {
   this->set_grid_type(arg, "GridTypeParametricKnot", parm_knt_grid_type_);
-  Assert(parm_knt_grid_type_ != iga::VtkGridType::Structured,
+  Assert(parm_knt_grid_type_ != iga::paraview_plugin::VtkGridType::Structured,
          iga::ExcMessage("Knot mesh must be unstructured."));
 }
 

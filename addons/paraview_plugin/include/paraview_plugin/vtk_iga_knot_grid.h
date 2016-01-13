@@ -38,6 +38,10 @@ template<class T> class vtkSmartPointer;
 IGA_NAMESPACE_OPEN
 
 template <int dim, int codim> class Domain;
+
+namespace paraview_plugin
+{
+
 struct VtkGridInformation;
 
 
@@ -115,6 +119,8 @@ private:
                   const GridInfoPtr_ grid_info);
 
 };
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

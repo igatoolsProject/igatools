@@ -35,7 +35,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/linear_algebra/epetra_solver.h>
 #include <igatools/io/writer.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/functions/ig_grid_function.h>
 
 using namespace EpetraTools;

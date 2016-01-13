@@ -26,7 +26,7 @@
 #include <paraview_plugin/vtk_iga_types.h>
 #include <igatools/base/objects_container.h>
 #include <igatools/geometry/grid.h>
-#include <igatools/geometry/grid_function.h>
+#include <igatools/functions/grid_function.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/functions/function.h>
 
@@ -34,10 +34,14 @@ class vtkMultiBlockDataSet;
 
 IGA_NAMESPACE_OPEN
 
+class ObjectsContainer;
+
+namespace paraview_plugin
+{
+
 template <class Domain> class VtkIgaGrid;
 struct VtkGridInformation;
 struct VtkControlGridInformation;
-class ObjectsContainer;
 
 class VtkIgaGridContainer
 {
@@ -294,13 +298,6 @@ public:
               const NumCells_   &n_cells_prm_knt,
               const VtkGridType &grid_type_prm_knt);
 
-
-private:
-  /**
-   * TODO: to document.
-   */
-  void check () const;
-
 public:
   /**
    * TODO: to document.
@@ -470,6 +467,8 @@ private:
                                 vtkMultiBlockDataSet *const mb);
 
 };
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

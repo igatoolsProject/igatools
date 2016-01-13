@@ -22,7 +22,7 @@
 #include <igatools/base/logstream.h>
 
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/io/writer.h>
 #include <igatools/io/objects_container_xml_writer.h>
@@ -178,17 +178,27 @@ void PoissonProblem<dim>::save() {
   const auto solution = this->get_solution();
   string filename = "problem_" + to_string(dim) + "d" ;
 
-#ifndef XML_IO
+  const auto solution_non_const = std::const_pointer_cast<IgGridFunc_t>(solution);
+  solution_non_const->set_name("solution");
+
+#ifdef SERIALIZATION
+  const auto objs_container = ObjectsContainer::create();
+  objs_container->insert_const_object<GridFunction<dim, 1>>(solution);
+  {
+    std::ofstream xml_ostream(filename + ".iga");
+    OArchive xml_out(xml_ostream);
+    xml_out << *objs_container;
+  }
+#else
+#if XML_IO
+  const auto objs_container = ObjectsContainer::create();
+  objs_container->insert_const_object<GridFunction<dim, 1>>(solution);
+  ObjectsContainerXMLWriter::write(filename + ".iga", objs_container);
+#else
   Writer<dim> writer(grid,5);
   writer.add_field(*solution, "solution");
   writer.save(filename);
-#else
-  const auto objs_container = ObjectsContainer::create();
-  using GridFunc_t = GridFunction<dim, 1>;
-  const auto solution_non_const = std::const_pointer_cast<IgGridFunc_t>(solution);
-  solution_non_const->set_name("solution");
-  objs_container->insert_const_object<GridFunc_t>(solution_non_const);
-  ObjectsContainerXMLWriter::write(filename + ".iga", objs_container);
+#endif
 #endif
 }
 

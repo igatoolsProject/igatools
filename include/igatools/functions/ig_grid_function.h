@@ -22,7 +22,7 @@
 #define __IG_GRID_FUNCTION_H
 
 
-#include <igatools/geometry/grid_function.h>
+#include <igatools/functions/grid_function.h>
 #include <igatools/functions/ig_coefficients.h>
 #include <igatools/basis_functions/reference_space_basis.h>
 #include <igatools/linear_algebra/epetra_vector.h>

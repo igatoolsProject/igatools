@@ -117,13 +117,17 @@ IGA_NAMESPACE_CLOSE
 #ifdef SERIALIZATION
 #if 0
 using TensorSizeAlias0 = iga::TensorSize<0>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias0,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,TensorSizeAlias0,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,TensorSizeAlias0,cereal::specialization::member_serialize)
 using TensorSizeAlias1 = iga::TensorSize<1>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias1,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,TensorSizeAlias1,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,TensorSizeAlias1,cereal::specialization::member_serialize)
 using TensorSizeAlias2 = iga::TensorSize<2>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias2,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,TensorSizeAlias2,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,TensorSizeAlias2,cereal::specialization::member_serialize)
 using TensorSizeAlias3 = iga::TensorSize<3>;
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(TensorSizeAlias3,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,TensorSizeAlias3,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,TensorSizeAlias3,cereal::specialization::member_serialize)
 #endif
 
 #include <igatools/utils/tensor_size.serial>

@@ -29,8 +29,12 @@ template<class T> class vtkSmartPointer;
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, int space_dim> class IgGridFunction;
 template <int dim, int codim> class Domain;
+template <int dim, int space_dim> class IgGridFunction;
+
+namespace paraview_plugin
+{
+
 struct VtkControlGridInformation;
 
 
@@ -112,6 +116,8 @@ private:
                                      const vtkSmartPointer<vtkPoints> points);
 
 };
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

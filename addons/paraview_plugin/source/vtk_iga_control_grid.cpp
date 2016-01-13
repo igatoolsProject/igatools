@@ -35,6 +35,9 @@
 
 IGA_NAMESPACE_OPEN
 
+namespace paraview_plugin
+{
+
 template <class Domain>
 auto
 VtkIgaControlGrid<Domain>::
@@ -202,6 +205,8 @@ create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
 
   return grid;
 }
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

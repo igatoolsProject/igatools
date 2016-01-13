@@ -22,7 +22,7 @@
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/functions/sub_function.h>
 //#include <igatools/functions/identity_function.h>
-//#include <igatools/geometry/grid_function_lib.h>
+//#include <igatools/functions/grid_function_lib.h>
 
 
 using std::endl;

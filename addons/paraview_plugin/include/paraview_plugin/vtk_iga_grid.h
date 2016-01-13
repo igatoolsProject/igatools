@@ -27,14 +27,16 @@
 
 class vtkPointSet;
 
-
 IGA_NAMESPACE_OPEN
 
 class ObjectsContainer;
+template <int dim, int space_dim> class IgGridFunction;
+
+namespace paraview_plugin
+{
+
 struct VtkGridInformation;
 struct VtkControlGridInformation;
-
-template <int dim, int space_dim> class IgGridFunction;
 
 
 template <class Domain>
@@ -221,6 +223,8 @@ protected:
   const bool is_ig_grid_func_;
 
 };
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

@@ -37,6 +37,10 @@ for x in inst.mapping_dims:
     if x.dim > 0 and x.dim < 4 and (x.dim + x.codim) > 0 and (x.dim + x.codim) < 4:
       domain = 'Domain<%d,%d>' %(x.dim, x.codim)
       domains.add(domain)
+
+f.write("namespace paraview_plugin {\n")
  
 for domain in domains:
     f.write('template class VtkIgaGrid<%s>;\n' %(domain))
+
+f.write("};")

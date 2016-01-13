@@ -27,7 +27,7 @@
 
 #include "../tests.h"
 #include <igatools/base/objects_container.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/function_lib.h>

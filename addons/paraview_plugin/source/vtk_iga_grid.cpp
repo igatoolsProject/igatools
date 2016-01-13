@@ -30,6 +30,9 @@
 
 IGA_NAMESPACE_OPEN
 
+namespace paraview_plugin
+{
+
 template <class Domain>
 VtkIgaGrid<Domain>::
 VtkIgaGrid(const DomainPtr_ domain,
@@ -224,6 +227,8 @@ update(const bool solid_updated,
   if (!this->recompute_control_ && is_physical_)
     this->recompute_control_ = control_updated;
 }
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

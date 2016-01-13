@@ -30,7 +30,7 @@ include_files = ['base/value_types.h',
                  'basis_functions/bernstein_extraction.h',
                  'basis_functions/spline_space.h',
                  'basis_functions/values1d_const_view.h',
-                 'geometry/grid_function_element.h',
+                 'functions/grid_function_element.h',
                  'functions/function_element.h']
 
 data = Instantiation(include_files)

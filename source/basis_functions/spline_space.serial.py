@@ -85,7 +85,8 @@ for arr_t_id in unique(arrays):
                                                  .replace('SafeSTLArray','iga::SafeSTLArray')
                                                  .replace('SafeSTLVector','iga::SafeSTLVector')
                                                  .replace('SplineSpace','iga::SplineSpace')));
-    f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(%s,cereal::specialization::member_serialize)\n' %alias);
+    f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,%s,cereal::specialization::member_serialize)\n' %alias);
+    f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,%s,cereal::specialization::member_serialize)\n' %alias);
     id += 1 
 
 

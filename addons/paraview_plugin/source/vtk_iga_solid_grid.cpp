@@ -42,6 +42,9 @@ using std::remove_reference;
 
 IGA_NAMESPACE_OPEN
 
+namespace paraview_plugin
+{
+
 template <class Domain>
 VtkIgaSolidGrid<Domain>::
 PointsTopology::
@@ -1104,6 +1107,8 @@ create_point_data_parametric(const DomainPtr_ domain,
   });
 
 }
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

@@ -25,6 +25,9 @@
 
 IGA_NAMESPACE_OPEN
 
+namespace paraview_plugin
+{
+
 /**
 * Bit field flags for specifying which VTK grid type must be used.
 */
@@ -124,6 +127,8 @@ protected:
         vtkObject::BreakOnError();                                \
     }                                                             \
 }
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

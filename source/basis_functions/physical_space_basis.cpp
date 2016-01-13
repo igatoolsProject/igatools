@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/physical_space_basis.h>
-#include <igatools/geometry/formula_grid_function.h>
+#include <igatools/functions/formula_grid_function.h>
 //#include <igatools/functions/sub_function.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 #include <igatools/geometry/push_forward.h>
