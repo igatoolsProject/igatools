@@ -20,7 +20,7 @@
 
 /*
  *  Test for the creation of the subdomain from a domain
- *  built using an IdentityGridFunction
+ *  built using an BallGridFunction
  *  author: martinelli
  *  date: Jan 12, 2016
  */
@@ -39,6 +39,7 @@
 
 
 
+
 template<int dim, int codim>
 void test_sub_domain(const int s_id)
 {
@@ -46,81 +47,44 @@ void test_sub_domain(const int s_id)
   out.begin_item("test_sub_domain<dim=" + to_string(dim) +
                  ",codim=" + to_string(codim)+ ">");
 
-  using Function = CustomFunction<dim,codim>;
-
 
   const int sp_dim = dim+codim;
-
 
 
   std::shared_ptr<Grid<dim>> grid;
 
   std::shared_ptr<const Domain<dim,codim>> domain;
 
-  bool use_custom_formula_func = false;
 
-  if (use_custom_formula_func)
-  {
-    grid = Grid<dim>::create(3);
+  auto sup_grid = Grid<sp_dim>::create(3);
 
-    using GridF = grid_functions::LinearGridFunction<dim,sp_dim>;
-    using Grad = typename GridF::Gradient;
-    using Val = typename GridF::Value;
-    Grad A;
-    Val b;
-
-    const auto &sub_elem = UnitElement<sp_dim>::template get_elem<dim>(s_id);
-    const auto &active_dirs = sub_elem.active_directions;
-    const auto &constant_dirs = sub_elem.constant_directions;
-    const auto &constant_vals = sub_elem.constant_values;
-    int i = 0;
-    for (const auto active_dir : active_dirs)
-    {
-      A[i][active_dir] = 1.0;
-      ++i;
-    }
-
-    i = 0;
-    for (const auto constant_dir : constant_dirs)
-    {
-      b[constant_dir] = constant_vals[i];
-      ++i;
-    }
-    auto grid_func = GridF::create(grid,A,b);
-
-    domain = Domain<dim,codim>::const_create(grid_func);
-  }
-  else
-  {
-//#endif
-
-    auto sup_grid = Grid<sp_dim>::create(3);
-
-    using SubGridElemMap = typename Grid<sp_dim>::template SubGridMap<dim>;
-    SubGridElemMap grid_elem_map;
+  using SubGridElemMap = typename Grid<sp_dim>::template SubGridMap<dim>;
+  SubGridElemMap grid_elem_map;
 
 
-    grid = sup_grid->template get_sub_grid<dim>(s_id,grid_elem_map);
+  grid = sup_grid->template get_sub_grid<dim>(s_id,grid_elem_map);
 
-    auto sup_domain =
-      Domain<sp_dim,0>::create(
-        grid_functions::IdentityGridFunction<sp_dim>::create(sup_grid));
-    domain = sup_domain->template get_sub_domain<dim>(s_id,grid_elem_map,grid);
-  }
+  auto sup_domain =
+    Domain<sp_dim,0>::create(
+      grid_functions::BallGridFunction<sp_dim>::create(sup_grid));
+  domain = sup_domain->template get_sub_domain<dim>(s_id,grid_elem_map,grid);
+
 
   string msg = "_dim_" + std::to_string(dim) +
                "_codim_" + std::to_string(codim) +
                "_s_id_" + std::to_string(s_id);
 
+  /*
   std::string filename_grid = "grid" + msg;
   Writer<dim,codim> writer_grid(grid,5);
   writer_grid.save(filename_grid);
+  //*/
 
   std::string filename_domain = "domain" + msg;
-  Writer<dim,codim> writer_domain(domain,5);
+  Writer<dim,codim> writer_domain(domain,10);
   writer_domain.save(filename_domain);
   //*/
-  auto F = Function::const_create(domain);
+  auto F = CustomFunction<dim,codim>::const_create(domain);
 
   out.begin_item("SubElem ID: " + std::to_string(s_id));
   function_values(*F);
