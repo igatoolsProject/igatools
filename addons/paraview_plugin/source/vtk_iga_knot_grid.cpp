@@ -88,11 +88,14 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
 
   Index pt_id = 0;
   // Adding first point of every element.
+  using Point = typename Domain::Point;
+  const Point *p1;
   for (; elem != end; ++elem, ++pt_id)
   {
     domain_cache_handler->template fill_cache<dim>(elem, 0);
     const auto points = elem->template get_points<dim>(0);
     const auto &pp = points[0];
+    p1 = &(points[1]);
     for (const auto &dir : boost::irange(0, space_dim))
       point_tmp[dir] = pp[dir];
     vtk_points->SetPoint(pt_id, point_tmp.data());
@@ -101,10 +104,8 @@ EnableIf<aux_dim == 1, VtkGridPtr_>
   }
 
   // Adding last point of the last element.
-  const auto points = elem->template get_points<dim>(0);
-  const auto &pp = points[1];
   for (const auto &dir : boost::irange(0, space_dim))
-    point_tmp[dir] = pp[dir];
+    point_tmp[dir] = (*p1)[dir];
   vtk_points->SetPoint(pt_id, point_tmp.data());
   tuple[1] = pt_id;
   vtk_cell_ids->SetTupleValue(pt_id, tuple.data());
