@@ -63,11 +63,11 @@ private:
   
 // [custom_constructor]
   CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain)
-    : FormulaFunction<dim,codim,range,rank>(domain,"") {};
+    : FormulaFunction<dim,codim,range,rank>(domain) {};
 
   CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain,
                  Value (*f_D0)(const Point))
-    : FormulaFunction<dim,codim,range,rank>(domain,""), funct_D0(f_D0) {};
+    : FormulaFunction<dim,codim,range,rank>(domain), funct_D0(f_D0) {};
 // [custom_constructor]
     
 // [custom_evaluator]
@@ -203,7 +203,7 @@ void PoissonProblem<dim>::solve() {
 
 template<int dim>
 void PoissonProblem<dim>::save() {
-  auto domain = phy_basis->get_physical_domain();
+  auto domain = phy_basis->get_domain();
   Writer<dim> writer(domain,5);
   auto solution = IgFunction<dim,0,1,1>::const_create(phy_basis, *sol);
   writer.add_field(*solution, "solution");
@@ -214,7 +214,7 @@ void PoissonProblem<dim>::save() {
 template<int dim>
 Real PoissonProblem<dim>::error(shared_ptr<const Function<dim>> exact_solution) {
 
-  auto domain         = phy_basis->get_physical_domain();
+  auto domain         = phy_basis->get_domain();
   auto domain_el      = domain->begin();
   auto domain_el_end  = domain->end();
   auto domain_handler = domain->create_cache_handler();
