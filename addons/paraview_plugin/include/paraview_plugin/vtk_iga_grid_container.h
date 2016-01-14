@@ -44,6 +44,11 @@ namespace paraview_plugin
  *
  * @todo To be defined.
  *
+ * @warning Cases have been found in which trying to de-serialize
+ * an objects container from a binary file (that has not been written
+ * properly) the de-serialize operation stacks, instead of throwing
+ * an error that could be managed.
+ *
  * @author P. Antolin, 2016.
  *
  * @ingroup paraview_plugin
@@ -62,62 +67,86 @@ private:
   /// Shared pointer type of the class.
   typedef std::shared_ptr<Self_> SelfPtr_;
 
-  /**
-   * VTK IGA grid type for @p dim and @p codim.
-   */
-  template <class Dmn>
-  using GridGenPtr_ = std::shared_ptr<VtkIgaGrid<Dmn>>;
-
   /// Container for the number of VTK cells by Bezier element in each direction.
   typedef SafeSTLArray<int, 3> NumCells_;
 
-  /// TODO: to document.
+  /**
+   * @brief Struct for determining if a type @p T has a wrong parametric
+   * dimension.
+   *
+   * Valid dimensions are 1, 2 or 3.
+   */
   template <class T>
   struct IsInValidDim :
     boost::mpl::or_<
-  boost::mpl::bool_<(T::dim < 1)>,
-  boost::mpl::bool_<(T::dim > 3)>>
-                                {};
+        boost::mpl::bool_<(T::dim < 1)>,
+        boost::mpl::bool_<(T::dim > 3)>>{};
 
-  /// TODO: to document.
+  /**
+   * @brief Struct for determining if a type @p T has a wrong space
+   * dimension.
+   *
+   * Valid space dimensions are 1, 2 or 3.
+   */
   template <class T>
   struct IsInValidSpaceDim :
     boost::mpl::or_<
-  boost::mpl::bool_<(T::space_dim < 1)>,
-  boost::mpl::bool_<(T::space_dim > 3)>>
-                                      {};
-
-  /// TODO: to document.
-  template <class T>
-  struct IsInValidDomain :
-    boost::mpl::or_<
-    IsInValidDim<T>,
-    IsInValidSpaceDim<T>>
-  {};
-
-  /// TODO: to document.
-  template <class T>
-  struct IsInValidFunction :
-    boost::mpl::or_<
-    IsInValidDim<T>,
-    IsInValidSpaceDim<T>>
-  {};
-
-  /// TODO: to document.
-  template< class T >
-  struct as_fusion_vector_shared_ptr
-  {
-    /**
-     * This functor transform a <tt>boost::mpl::vector</tt> of types into a
-     *  <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt>s of the types.
-     */
-
-    typedef typename boost::fusion::result_of::as_vector<
-    typename boost::mpl::transform<T, std::shared_ptr<boost::mpl::_1>>::type>::type type;
-  };
+        boost::mpl::bool_<(T::space_dim < 1)>,
+        boost::mpl::bool_<(T::space_dim > 3)>> {};
 
   /**
-   * Valid domains.
+   * @brief Struct for determining if a type @ref Domain has invalid
+   * dimensions.
+   *
+   * Valid domains are those which have their parametric and space
+   * dimensions valid according to the definition of @ref IsInValidDim and
+   * @ref IsInValidSpaceDim.
+   */
+  template <class Domain>
+  struct IsInValidDomain :
+    boost::mpl::or_<IsInValidDim<Domain>, IsInValidSpaceDim<Domain>> {};
+
+  /**
+   * @brief Struct for determining if a type @ref Function has invalid
+   * dimensions.
+   *
+   * Valid functions are those which have their parametric and space
+   * dimensions valid according to the definition of @ref IsInValidDim and
+   * @ref IsInValidSpaceDim.
+   */
+  template <class Function>
+  struct IsInValidFunction :
+    boost::mpl::or_<IsInValidDim<Function>, IsInValidSpaceDim<Function>> {};
+
+  /**
+   * @brief Struct for determining if the dimensions of a @ref Function
+   * match with the @ref Domain dimensions.
+   *
+   * The parametric and space dimensions must be equal.
+   */
+  template <class Function, class Domain>
+  struct IsInValidFunctionForDomain_ :
+    boost::mpl::or_<
+        boost::mpl::bool_<(Function::dim != Domain::dim)>,
+        boost::mpl::bool_<(Function::space_dim != Domain::space_dim)>> {};
+
+  /**
+   * @brief Struct for determining if the dimensions of a @ref GridFunction
+   * match with the @ref Domain (a parametric domain) dimensions
+   *
+   * The parametric dimension must be equal for both, and, in addition,
+   * the codimention of the @ref Domain must be 0 (in order to correspond
+   * to a parametric domain).
+   */
+  template <class GridFunction, class Domain>
+  struct IsInValidGridFunctionForDomain_ :
+    boost::mpl::or_<
+        boost::mpl::bool_<(GridFunction::dim != Domain::dim)>,
+        boost::mpl::bool_<(Domain::space_dim != Domain::dim)>> {};
+
+  /**
+   * Alias for a <tt>boost::mpl vector</tt> containing all the valid
+   * @ref Domain classes for the plugin.
    */
   using ValidDomains_ = boost::mpl::remove_if<
                         InstantiatedTypes::Domains,
@@ -125,7 +154,8 @@ private:
                         >::type;
 
   /**
-   * Valid grids.
+   * Alias for a <tt>boost::mpl vector</tt> containing all the valid
+   * @ref Grid classes for the plugin.
    */
   using ValidGrids_ = boost::mpl::remove_if<
                       InstantiatedTypes::Grids,
@@ -133,15 +163,16 @@ private:
                       >::type;
 
   /**
-   * Valid grids functions.
+   * Alias for a <tt>boost::mpl vector</tt> containing all the valid
+   * @ref GridFunction classes for the plugin.
    */
   using ValidGridFuncs_ = typename boost::mpl::remove_if<
                           InstantiatedTypes::GridFunctions,
                           typename boost::mpl::lambda< IsInValidDim< boost::mpl::_1 > >::type
                           >::type;
-
   /**
-   * Valid functions.
+   * Alias for a <tt>boost::mpl vector</tt> containing all the valid
+   * @ref Function classes for the plugin.
    */
   using ValidFunctions_ = typename boost::mpl::remove_if<
                           InstantiatedTypes::Functions,
@@ -149,7 +180,8 @@ private:
                           >::type;
 
   /**
-   * Invalid domains.
+   * Alias for a <tt>boost::mpl vector</tt> containing all the \a invalid
+   * @ref Domain classes for the plugin.
    */
   using InvalidDomains_ = boost::mpl::remove_if<
                         InstantiatedTypes::Domains,
@@ -157,7 +189,8 @@ private:
                         >::type;
 
   /**
-   * Invalid grids.
+   * Alias for a <tt>boost::mpl vector</tt> containing all the \a invalid
+   * @ref Grid classes for the plugin.
    */
   using InvalidGrids_ = boost::mpl::remove_if<
                       InstantiatedTypes::Grids,
@@ -165,7 +198,8 @@ private:
                       >::type;
 
   /**
-   * Invalid grids functions.
+   * Alias for a <tt>boost::mpl vector</tt> containing all the \a invalid
+   * @ref GridFunction classes for the plugin.
    */
   using InvalidGridFuncs_ = typename boost::mpl::remove_if<
                           InstantiatedTypes::GridFunctions,
@@ -173,61 +207,52 @@ private:
                           >::type;
 
   /**
-   * Invalid functions.
+   * Alias for a <tt>boost::mpl vector</tt> containing all the \a invalid
+   * @ref Function classes for the plugin.
    */
   using InvalidFunctions_ = typename boost::mpl::remove_if<
                           InstantiatedTypes::Functions,
                           boost::mpl::lambda< boost::mpl::not_<IsInValidDomain< boost::mpl::_1 >> >::type
                           >::type;
 
-  /// TODO: to document.
-  using GridPtrs_ = as_fusion_vector_shared_ptr<ValidGrids_>::type;
-  /// TODO: to document.
-  using GridFuncPtrs_ = as_fusion_vector_shared_ptr<ValidGridFuncs_>::type;
-  /// TODO: to document.
-  using DomainPtrs_ = as_fusion_vector_shared_ptr<ValidDomains_>::type;
-  /// TODO: to document.
-  using FunctionPtrs_ = as_fusion_vector_shared_ptr<ValidFunctions_>::type;
 
-  /// TODO: to document.
-  using InvalidGridPtrs_ = as_fusion_vector_shared_ptr<InvalidGrids_>::type;
-  /// TODO: to document.
-  using InvalidGridFuncPtrs_ = as_fusion_vector_shared_ptr<InvalidGridFuncs_>::type;
-  /// TODO: to document.
-  using InvalidDomainPtrs_ = as_fusion_vector_shared_ptr<InvalidDomains_>::type;
-  /// TODO: to document.
-  using InvalidFunctionPtrs_ = as_fusion_vector_shared_ptr<InvalidFunctions_>::type;
-
-  /// TODO: to document.
+  /**
+   * @brief This functor transform a given <tt>boost::mpl vector T</tt>
+   * into a <tt>boost::fusion vector</tt>.
+   *
+   * The new <tt>boost::fusion vector</tt> created contains a shared pointer
+   * of each type contained in the vector @p T.
+   */
   template< class T >
-  struct as_fusion_vector_const_shared_ptr
+  struct AsFusionVectorSharedPtr
   {
-  private:
-    template <class S>
-    using Pair_ = boost::fusion::pair<S, SafeSTLVector<GridGenPtr_<S>>>;
-
-  public:
-    typedef typename boost::fusion::result_of::as_map<
-    typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
+    typedef typename boost::fusion::result_of::as_vector<
+    typename boost::mpl::transform<T, std::shared_ptr<boost::mpl::_1>>::type>::type type;
   };
 
+  /// <tt>boost::fusion vector</tt> containing the types of all the valid grids.
+  using GridPtrs_ = AsFusionVectorSharedPtr<ValidGrids_>::type;
 
+  /// <tt>boost::fusion vector</tt> containing the types of all the valid grids functions.
+  using GridFuncPtrs_ = AsFusionVectorSharedPtr<ValidGridFuncs_>::type;
 
-  /// TODO: to document.
-  template <class T, class Domain>
-  struct IsInValidFunctionForDomain_ :
-    boost::mpl::or_<
-  boost::mpl::bool_<(T::dim != Domain::dim)>,
-  boost::mpl::bool_<(T::space_dim != Domain::space_dim)>>
-                                                       {};
+  /// <tt>boost::fusion vector</tt> containing the types of all the valid domains.
+  using DomainPtrs_ = AsFusionVectorSharedPtr<ValidDomains_>::type;
 
-  /// TODO: to document.
-  template <class T, class Domain>
-  struct IsInValidGridFunctionForDomain_ :
-    boost::mpl::or_<
-  boost::mpl::bool_<(T::dim != Domain::dim)>,
-  boost::mpl::bool_<(Domain::space_dim != Domain::dim)>>
-                                                      {};
+  /// <tt>boost::fusion vector</tt> containing the types of all the valid functions.
+  using FunctionPtrs_ = AsFusionVectorSharedPtr<ValidFunctions_>::type;
+
+  /// <tt>boost::fusion vector</tt> containing the types of all the \a invalid grids.
+  using InvalidGridPtrs_ = AsFusionVectorSharedPtr<InvalidGrids_>::type;
+
+  /// <tt>boost::fusion vector</tt> containing the types of all the \a invalid grids functions.
+  using InvalidGridFuncPtrs_ = AsFusionVectorSharedPtr<InvalidGridFuncs_>::type;
+
+  /// <tt>boost::fusion vector</tt> containing the types of all the \a invalid domains.
+  using InvalidDomainPtrs_ = AsFusionVectorSharedPtr<InvalidDomains_>::type;
+
+  /// <tt>boost::fusion vector</tt> containing the types of all the \a invalid functions.
+  using InvalidFunctionPtrs_ = AsFusionVectorSharedPtr<InvalidFunctions_>::type;
 
 public:
   /**
@@ -254,18 +279,38 @@ public:
 
 private:
 
+  /**
+   * @brief This functor transform a given <tt>boost::mpl vector T</tt>
+   * into a <tt>boost::fusion map</tt>.
+   *
+   * The new <tt>boost::fusion map</tt> created contains, for each type
+   * of @p T, a pair composed by the type @p T itself
+   * and a vector of shared pointers @ref VtkIgaGrid for the type @p T.
+   */
+  template< class T >
+  struct AsFusionMapTypeVtkIgaGridVector
+  {
+  private:
+    /// Alias of a shared pointer of the VTK IGA grid type for a given @ref Domain type.
+    template <class Domain>
+    using Pair_ = boost::fusion::pair<Domain,
+                                      SafeSTLVector<std::shared_ptr<VtkIgaGrid<Domain>>>>;
+
+  public:
+    typedef typename boost::fusion::result_of::as_map<
+    typename boost::mpl::transform<T, Pair_<boost::mpl::_1>>::type>::type type;
+  };
 
   /**
    * Basic container for VTK IGA grids.
    */
-  using VtkIgaGridsContainer_ = as_fusion_vector_const_shared_ptr<ValidDomains_>::type;
+  using VtkIgaGridsContainer_ = AsFusionMapTypeVtkIgaGridVector<ValidDomains_>::type;
 
   /// Grid information shared pointer type.
   typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
 
   /// Objects container shared pointer type.
   typedef std::shared_ptr<ObjectsContainer> ObjContPtr_;
-
 
   /// Control grid information shared pointer type.
   typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
@@ -485,95 +530,188 @@ public:
 
   /**
    * Returns the number of physical domains.
+   * @return Number of physical domains.
    */
   Size get_number_physical_domains() const;
 
   /**
    * Returns the number of parametric domains.
+   * @return Number of parametric domains.
    */
   Size get_number_parametric_domains() const;
 
   /**
-   * Returns the name of the @p id physical grid.
-   * */
+   * @brief Returns the name of a physical domain identified by an
+   * @p id number.
+   *
+   * Given the @p id number associated to the VTK grid, it returns its
+   * physical domains' name.
+   *
+   * @param[in] Id of the VTK grid.
+   * @return Name of the domain.
+   */
   const char *get_physical_domain_name(const Index &id) const;
 
   /**
-   * Returns the name of the @p id parametric grid.
+   * @brief Returns the name of a parametric domain identified by an
+   * @p id number.
+   *
+   * Given the @p id number associated to the VTK grid, it returns its
+   * parametric domains' name.
+   *
+   * @param[in] Id of the VTK grid.
+   * @return Name of the domain.
    */
   const char *get_parametric_domain_name(const Index &id) const;
 
   /**
-   * Returns the status (active/inactive) of the physical grid named
-   * @p name.
+   * @brief Returns the status of a physical domain.
+   *
+   * Given the name of the physical domain, it returns the status (active
+   * or not).
+   *
+   * @param[in] name Name of the domain.
+   * @return true if the domain is active, false elsewhere.
    */
   bool get_physical_domain_status(const std::string &name) const;
 
   /**
-   * Returns the status (active/inactive) of the parametric grid named
-   * @p name.
+   * @brief Returns the status of a parametric domain.
+   *
+   * Given the name of the parametric domain, it returns the status (active
+   * or not).
+   *
+   * @param[in] name Name of the domain.
+   * @return true if the domain is active, false elsewhere.
    */
   bool get_parametric_domain_status(const std::string &name) const;
 
   /**
-   * Set the @p status (active/inactive) of the physical grid named
-   * @p name.
+   * @brief Sets the status of a physical domain.
+   *
+   * Given the name of the physical domain, it sets the status (active
+   * or not).
+   *
+   * @param[in] name Name of the domain.
+   * @param[in] status Status to be set in the domain.
    */
   void set_physical_domain_status(const std::string &name,
-                                const bool status);
+                                  const bool status);
 
   /**
-   * Set the @p status (active/inactive) of the parametric grid named
-   * @p name.
+   * @brief Sets the status of a parametric domain.
+   *
+   * Given the name of the parametric domain, it sets the status (active
+   * or not).
+   *
+   * @param[in] name Name of the domain.
+   * @param[in] status Status to be set in the domain.
    */
   void set_parametric_domain_status(const std::string &name,
                                   const bool status);
 
 private:
-
   /**
-   * TODO: to document.
+   * @brief Retrieves the number of domains in a given grid container.
+   *
+   * @param[in] grid_container Container to be checked.
+   * @return Number of domains.
    */
   static Size get_number_domains(const VtkIgaGridsContainer_ grid_container);
 
   /**
-   * TODO: to document.
+   * @brief Retrieves the number of \a active domains in a given grid container.
+   *
+   * @param[in] grid_container Container in which to look for the active
+   * domains.
+   * @return Number of domains.
    */
   static Size get_number_active_domains(const VtkIgaGridsContainer_ grid_container);
 
   /**
-   * TODO: to document.
+   * @brief Retrieves the name of a domain identified by its @p id
+   * and contained in @p grid_container.
+   *
+   * @param[in] grid_container Container in which to look for the domain
+   * with the given @p id.
+   * @param[i] id Id number of the domain to be looked for.
+   * @return Name of the domain.
    */
   static const char *get_domain_name(const VtkIgaGridsContainer_ grid_container,
-                                   const Index &id);
+                                     const Index &id);
 
   /**
-   * TODO: to document.
+   * @brief Retrieves the status of a domain identified by its @p name
+   * and contained in @p grid_container.
+   *
+   * @param[in] grid_container Container in which to look for the domain
+   * with the given @p name.
+   * @param[i] name Name of the domain to be looked for.
+   * @return Status (active or inactive) of the domain.
    */
   static bool get_domain_status(const VtkIgaGridsContainer_ grid_container,
-                              const std::string &name);
+                                const std::string &name);
 
   /**
-   * TODO: to document.
+   * @brief Sets the status of a domain identified by its @p name
+   * and contained in @p grid_container.
+   *
+   * @param[in] grid_container Container in which to look for the domain
+   * with the given @p name.
+   * @param[i] name Name of the domain to be looked for.
+   * @param[in] status Status (active or inactive) to be set.
    */
   static void set_domain_status(const VtkIgaGridsContainer_ grid_container,
                               const std::string &name,
                               const bool status);
 
   /**
-   * TODO: to document.
+   * @brief Creates the VTK grids of the solid meshes of the
+   * domains and includes them into the multiblock data set.
+   *
+   * Iterates along @p grid_container and creates all the VTK grids
+   * of the solid meshes of the domains that are active and inserts
+   * them into the multiblock data set.
+   *
+   * The grids are created by calling to the @ref VtkIgaGrid methods,
+   * that will call to the @ref VtkIgaSolidGrid helper class.
+   *
+   * @param[in] grid_container Container for creating the required grids.
+   * @param[out] mb Multiblock data set for inserting the created VTK grids.
    */
   static void set_solid_domains(const VtkIgaGridsContainer_ grid_container,
-                              vtkMultiBlockDataSet *const mb);
+                                vtkMultiBlockDataSet *const mb);
 
   /**
-   * TODO: to document.
+   * @brief Creates the VTK grids of the knot meshes of the
+   * domains and includes them into the multiblock data set.
+   *
+   * Iterates along @p grid_container and creates all the VTK grids
+   * of the knot meshes of the domains that are active and inserts
+   * them into the multiblock data set.
+   *
+   * The grids are created by calling to the @ref VtkIgaGrid methods,
+   * that will call to the @ref VtkIgaKnotGrid helper class.
+   *
+   * @param[in] grid_container Container for creating the required grids.
+   * @param[out] mb Multiblock data set for inserting the created VTK grids.
    */
   static void set_knot_domains(const VtkIgaGridsContainer_ grid_container,
                              vtkMultiBlockDataSet *const mb);
 
   /**
-   * TODO: to document.
+   * @brief Creates the VTK grids of the control polygon meshes of the
+   * domains and includes them into the multiblock data set.
+   *
+   * Iterates along @p grid_container and creates all the VTK grids
+   * of the control polygon meshes of the domains that are active and inserts
+   * them into the multiblock data set.
+   *
+   * The grids are created by calling to the @ref VtkIgaGrid methods,
+   * that will call to the @ref VtkIgaControlGrid helper class.
+   *
+   * @param[in] grid_container Container for creating the required grids.
+   * @param[out] mb Multiblock data set for inserting the created VTK grids.
    */
   static void set_control_domains(const VtkIgaGridsContainer_ grid_container,
                                 vtkMultiBlockDataSet *const mb);
@@ -589,7 +727,26 @@ private:
   static bool is_file_binary(const std::string &file_name);
 
   /**
-   * TODO to document.
+   * @brief Parses an igatools objects container from a given @p file_name.
+   *
+   * Before parsing the object container, it is checked if the file
+   * is suitable by calling the @ref check_file method.
+   *
+   * If it is identify that the file has a binary format (by calling
+   * the method @ref is_file_binary), the objects container is parsed
+   * by means of the igatools serialization techniques.
+   *
+   * Otherwise, if the file is ascii, the objects container it is
+   * parsed by means of the helper class @ref ObjectsContainerXMLReader.
+   * This class parses objects container written in an ascii XML human
+   * readable format. See @ref ObjectsContainerXMLReader and
+   * @subpage in_out for further details.
+   *
+   * In the case that problems occurs during the parsing of the container,
+   * errors will be thrown that must be caught by @ref IgatoolsParaViewReader.
+   *
+   * @param[in] file_name Name of the file to be parsed.
+   * @return Objects container parsed.
    */
   static ObjContPtr_ parse_objects_container(const std::string &file_name);
 

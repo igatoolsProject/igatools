@@ -1097,7 +1097,7 @@ set_domain_status(const VtkIgaGridsContainer_ grid_container,
 void
 VtkIgaGridContainer::
 set_solid_domains(const VtkIgaGridsContainer_ grid_container,
-                vtkMultiBlockDataSet *const mb)
+                  vtkMultiBlockDataSet *const mb)
 {
   const auto active_domains = get_number_active_domains(grid_container);
   Assert(active_domains > 0, ExcEmptyObject());
