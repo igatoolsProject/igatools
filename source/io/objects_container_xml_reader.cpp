@@ -79,7 +79,7 @@ parse(const string &file_path)
   Self_::parse_bsplines(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_grid_functions_and_nurbs(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_domains(xml_elem, parse_as_constant, id_map, container);
-  Self_::parse_phys_spaces(xml_elem, parse_as_constant, id_map, container);
+  Self_::parse_phys_bases(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_functions(xml_elem, parse_as_constant, id_map, container);
 
   return container;
@@ -115,7 +115,7 @@ parse_const(const string &file_path)
   Self_::parse_bsplines(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_grid_functions_and_nurbs(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_domains(xml_elem, parse_as_constant, id_map, container);
-  Self_::parse_phys_spaces(xml_elem, parse_as_constant, id_map, container);
+  Self_::parse_phys_bases(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_functions(xml_elem, parse_as_constant, id_map, container);
 
   return container;
@@ -573,7 +573,7 @@ parse_domains(const shared_ptr<XMLElement> xml_elem,
 
 void
 ObjectsContainerXMLReader::
-parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
+parse_phys_bases(const shared_ptr<XMLElement> xml_elem,
                   const bool parse_as_constant,
                   IdMap_ &id_map,
                   const shared_ptr<ObjectsContainer> container)
@@ -604,7 +604,7 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
       if (ps_dim == dim && ps_range == range && ps_rank == rank && ps_codim == codim)
       {
         found = true;
-        parse_phys_space<dim, codim, range, rank>(ps, parse_as_constant, id_map, container);
+        parse_phys_basis<dim, codim, range, rank>(ps, parse_as_constant, id_map, container);
       }
     });
 
@@ -1504,19 +1504,19 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
   const auto rs_tag = xml_elem->get_single_element("ReferenceBasis");
   const auto local_rs_id = rs_tag->get_attribute<Index>("GetFromLocalObjectId");
 
-  // Checking the reference space with proper dimension and id exists.
-  const bool ref_space_parsed =
+  // Checking the reference basis with proper dimension and id exists.
+  const bool ref_basis_parsed =
     id_map.find(local_rs_id) != id_map.cend() &&
     (parse_as_constant ?
      container->is_const_object_present<RefBasisType> (id_map.at(local_rs_id)) :
      container->is_object_present<RefBasisType> (id_map.at(local_rs_id)));
 
-  if (!ref_space_parsed)
+  if (!ref_basis_parsed)
   {
     // If does not exist there are two possibiities:
     if (first_parsing)
       // It is the first parsing time for the ig grid function.
-      // It is assumed that the reference space is a NURBS that
+      // It is assumed that the reference basis is a NURBS that
       // has not been parsed yet.
       return;
     else
@@ -1635,16 +1635,16 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
     rs = SharedPtrConstnessHandler<RefBasisType>
          (container->get_object<RefBasisType>(id_map.at(local_bs_id)));
 
-  // Checking that the reference space is a BSpline.
+  // Checking that the reference basis is a BSpline.
   AssertThrow(rs->is_bspline(),
               ExcMessage("Parsing " + parsing_msg + " not matching "
                          "definition for " +
                          Self_::get_type_id_string("BSplineBasis", local_bs_id,
   {{dim, range, rank}}) + ". It is a "
   "ReferenceBasis, but not a BSpline."
-  "BSpline space basis must be used for "
+  "BSpline basis must be used for "
   "defining IgGridFunctions used as weight "
-  "functions for NURBS space basis."));
+  "functions for NURBS basis."));
 
   // Parsing Weight function
   const auto wg_tag = xml_elem->get_single_element("WeightFunction");
@@ -1662,7 +1662,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
   "to IgGridFunction built upon a BSpline. "
   "Currently igatools only allows to build "
   "weight functions based on scalar BSpline "
-  "space basis."));
+  "basis."));
 
   SharedPtrConstnessHandler<WeightIgFunctionType> wf;
   if (parse_as_constant)
@@ -1692,8 +1692,8 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
   Assert(wf->get_basis()->is_bspline(),
          ExcMessage("Parsing " + parsing_msg + ", " +
                     Self_::get_type_id_string("IgGridFunction", local_wg_id,
-  {{dim, 1}}) + ". It is based on a NURBS space basis"
-  ", but must be based on BSpline space basis."));
+  {{dim, 1}}) + ". It is based on a NURBS basis"
+  ", but must be based on BSpline basis."));
 
   // Checking that the grids of the bspline and weight function match.
   AssertThrow(rs->get_grid() == wf->get_grid(),
@@ -1834,7 +1834,7 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
   const auto ps_tag = xml_elem->get_single_element("PhysicalBasis");
   const auto local_ps_id = ps_tag->get_attribute<Index>("GetFromLocalObjectId");
 
-  // Checking if the physical space exists.
+  // Checking if the physical basis exists.
   AssertThrow(id_map.find(local_ps_id) != id_map.cend() &&
               (parse_as_constant ?
                container->is_const_object_present<PhysBasisType> (id_map.at(local_ps_id)) :
@@ -2090,7 +2090,7 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
 template <int dim, int codim, int range, int rank>
 void
 ObjectsContainerXMLReader::
-parse_phys_space(const shared_ptr<XMLElement> xml_elem,
+parse_phys_basis(const shared_ptr<XMLElement> xml_elem,
                  const bool parse_as_constant,
                  IdMap_ &id_map,
                  const shared_ptr<ObjectsContainer> container)
@@ -2173,7 +2173,7 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
     dm = SharedPtrConstnessHandler<DomainType>
          (container->get_object<DomainType>(id_map.at(local_dm_id)));
 
-  // Checking that the reference space and domain grids match.
+  // Checking that the reference basis and domain grids match.
   AssertThrow(rs->get_grid() == dm->get_grid_function()->get_grid(),
               ExcMessage("Parsing " + parsing_msg + ", mismatching "
                          "grids for the ReferenceBasis and Domain."));

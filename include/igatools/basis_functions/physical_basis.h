@@ -31,8 +31,6 @@
 
 IGA_NAMESPACE_OPEN
 
-class SpaceManager;
-
 template <int,int> class PushForward;
 
 template <int,int,int,int> class PhysicalBasisElement;

@@ -42,12 +42,12 @@ private:
   using self_t = BasisHandler<dim,codim,range,rank>;
 
 public:
-  using Sp = Basis<dim,codim,range,rank>;
-  using ElementAccessor = typename Sp::ElementAccessor;
-  using ElementIterator = typename Sp::ElementIterator;
+  using Bs = Basis<dim,codim,range,rank>;
+  using ElementAccessor = typename Bs::ElementAccessor;
+  using ElementIterator = typename Bs::ElementIterator;
 
 
-  using IndexType = typename Sp::IndexType;
+  using IndexType = typename Bs::IndexType;
 
 
 private:
@@ -64,7 +64,7 @@ protected:
   BasisHandler() = delete;
 
 
-  BasisHandler(const std::shared_ptr<const Sp> &basis);
+  BasisHandler(const std::shared_ptr<const Bs> &basis);
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -145,10 +145,10 @@ public:
   virtual void print_info(LogStream &out) const = 0;
 
 
-  std::shared_ptr<const Sp> get_basis() const;
+  std::shared_ptr<const Bs> get_basis() const;
 
 private:
-  std::shared_ptr<const Sp> basis_;
+  std::shared_ptr<const Bs> basis_;
 
 
 

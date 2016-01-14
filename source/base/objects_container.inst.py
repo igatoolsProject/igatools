@@ -41,7 +41,7 @@ for x in inst.sub_ref_sp_dims:
 for x in inst.ref_sp_dims:
     valid_types.add('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
 
-# Reference spaces
+# Reference bases
 valid_types.add('ReferenceBasis<%d, %d, %d>' % (0, 0, 1))
 for x in inst.sub_ref_sp_dims:
     valid_types.add('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
@@ -62,7 +62,7 @@ for x in inst.sub_mapping_dims:
 for x in inst.mapping_dims:
     valid_types.add('Domain<%d, %d>' % (x.dim, x.codim))
 
-# Physical spaces
+# Physical bases
 valid_types.add('PhysicalBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
 for sp in inst.SubPhysSpaces:
     valid_types.add('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))

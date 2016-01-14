@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_,int codim_,int range_,int rank_>
 BasisElement<dim_,codim_,range_,rank_>::
-BasisElement(const std::shared_ptr<Sp> &basis)
+BasisElement(const std::shared_ptr<Bs> &basis)
   :
   basis_(basis)
 {}
@@ -145,7 +145,7 @@ BasisElement<dim_,codim_,range_,rank_>::
 operator==(const self_t &a) const
 {
   Assert(this->has_same_basis_of(a),
-         ExcMessage("Comparison between elements defined on different spaces"));
+         ExcMessage("Comparison between elements defined on different basis"));
   return this->get_grid_element() == a.get_grid_element();
 }
 
@@ -155,7 +155,7 @@ BasisElement<dim_,codim_,range_,rank_>::
 operator!=(const self_t &a) const
 {
   Assert(this->has_same_basis_of(a),
-         ExcMessage("Comparison between elements defined on different spaces"));
+         ExcMessage("Comparison between elements defined on different basis"));
   return this->get_grid_element() != a.get_grid_element();
 }
 
@@ -194,7 +194,7 @@ get_element_w_measures() const
 template<int dim_,int codim_,int range_,int rank_>
 auto
 BasisElement<dim_,codim_,range_,rank_>::
-get_basis() const -> std::shared_ptr<Sp>
+get_basis() const -> std::shared_ptr<Bs>
 {
   return basis_;
 }

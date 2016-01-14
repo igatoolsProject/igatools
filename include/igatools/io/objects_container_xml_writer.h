@@ -175,8 +175,8 @@ private:
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_reference_space_bases(const ContPtr_ container,
-                                          const XMLDocPtr_ xml_doc);
+  static void write_reference_bases(const ContPtr_ container,
+                                    const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends all the @ref GridFunction
@@ -205,8 +205,8 @@ private:
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_physical_space_bases(const ContPtr_ container,
-                                         const XMLDocPtr_ xml_doc);
+  static void write_physical_bases(const ContPtr_ container,
+                                   const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends all the @ref Function
@@ -326,8 +326,8 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class PhysicalBasis>
-  static void write_phys_space_basis(const std::shared_ptr<PhysicalBasis> phys_space,
-                                     const XMLDocPtr_ xml_doc);
+  static void write_phys_basis(const std::shared_ptr<PhysicalBasis> phys_space,
+                               const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref functions::ConstantFunction

@@ -71,9 +71,9 @@ projection_l2(const Function<Basis::dim,Basis::codim,Basis::range,Basis::rank> &
   const int dim = Basis::dim;
 
 
-  using SpFlags = basis_element::Flags;
-  auto sp_flag = SpFlags::value |
-                 SpFlags::w_measure;
+  using BsFlags = basis_element::Flags;
+  auto sp_flag = BsFlags::value |
+                 BsFlags::w_measure;
   auto space_elem_handler = basis->create_cache_handler();
   space_elem_handler->template set_flags<dim>(sp_flag);
 
@@ -254,9 +254,9 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
   Assert(space_grid->same_knots_or_refinement_of(*func_grid),
          ExcMessage("The space grid is not a refinement of the function grid."));
 
-  using SpFlags = basis_element::Flags;
-  auto sp_flag = SpFlags::value |
-                 SpFlags::w_measure;
+  using BsFlags = basis_element::Flags;
+  auto sp_flag = BsFlags::value |
+                 BsFlags::w_measure;
   auto space_elem_handler = basis.create_cache_handler();
   space_elem_handler->set_element_flags(sp_flag);
 
@@ -394,9 +394,9 @@ projection_l2_ig_grid_function(
          ExcMessage("The space grid is not a refinement of the function grid."));
 
 
-  using SpFlags = basis_element::Flags;
-  auto sp_flag = SpFlags::value |
-                 SpFlags::w_measure;
+  using BsFlags = basis_element::Flags;
+  auto sp_flag = BsFlags::value |
+                 BsFlags::w_measure;
   auto space_elem_handler = ref_basis.create_cache_handler();
   space_elem_handler->template set_flags<dim>(sp_flag);
 
@@ -593,9 +593,9 @@ projection_l2_grid_function(
          ExcMessage("The space grid is not a refinement of the function grid."));
 
 
-  using SpFlags = basis_element::Flags;
-  auto sp_flag = SpFlags::value |
-                 SpFlags::w_measure;
+  using BsFlags = basis_element::Flags;
+  auto sp_flag = BsFlags::value |
+                 BsFlags::w_measure;
   auto space_elem_handler = ref_basis.create_cache_handler();
   space_elem_handler->set_element_flags(sp_flag);
 

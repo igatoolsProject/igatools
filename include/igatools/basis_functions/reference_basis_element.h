@@ -100,7 +100,7 @@ public:
 
 protected:
 
-  /** Number of scalar basis functions along each direction, for all space components. */
+  /** Number of scalar basis functions along each direction, for all basis components. */
   TensorSizeTable n_basis_direction_;
 
   /**
@@ -130,7 +130,7 @@ public:
 
   /**
    * Number of non-zero scalar basis functions associated
-   * with the i-th space component on the element.
+   * with the i-th basis component on the element.
    * This makes sense as a reference B-spline basis
    * is only allowed to be of the cartesian product type
    * V = V1 x V2 x ... X Vn.

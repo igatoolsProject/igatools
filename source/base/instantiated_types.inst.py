@@ -106,11 +106,11 @@ f.write("                              %s >  SplineSpaces;\n" % (types[-1]));
 
 
 
-# Reference spaces
+# Reference basis
 
 f.write("""
 
-  /** All reference space basis instantiations. */
+  /** All reference basis instantiations. */
   typedef boost::mpl::vector<""")
 
 types = []
@@ -183,11 +183,11 @@ f.write("                              %s >  Domains;\n" % (types[-1]));
 
 
 
-# Physical spaces
+# Physical basis
 
 f.write("""
 
-  /** All physical space basis instantiations. */
+  /** All physical basis instantiations. */
   typedef boost::mpl::vector<""")
 
 types = []

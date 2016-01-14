@@ -51,7 +51,7 @@ class BasisElement
 {
 protected:
 
-  using Sp = const Basis<dim_,codim_,range_,rank_>;
+  using Bs = const Basis<dim_,codim_,range_,rank_>;
 
 private:
   using self_t = BasisElement<dim_,codim_,range_,rank_>;
@@ -67,11 +67,11 @@ public:
 
 
 
-  using Point = typename Sp::Point;
-  using Value = typename Sp::Value;
+  using Point = typename Bs::Point;
+  using Value = typename Bs::Value;
   template <int order>
-  using Derivative = typename Sp::template Derivative<order>;
-  using Div = typename Sp::Div;
+  using Derivative = typename Bs::template Derivative<order>;
+  using Div = typename Bs::Div;
 
   static const int dim = dim_;
   static const int space_dim = dim_+codim_;
@@ -79,7 +79,7 @@ public:
 
 
 
-  using ContainerType = Sp;
+  using ContainerType = Bs;
 
   /**
    * For each component gives a product array of the dimension
@@ -128,7 +128,7 @@ private:
 
 public:
 
-  BasisElement(const std::shared_ptr<Sp> &basis);
+  BasisElement(const std::shared_ptr<Bs> &basis);
 
 
 
@@ -493,7 +493,7 @@ private:
   /**
    * \brief Basis upon which the element refers from.
    */
-  std::shared_ptr<Sp> basis_;
+  std::shared_ptr<Bs> basis_;
 
 public:
   using _Value =  basis_element::_Value;
@@ -524,7 +524,7 @@ public:
   /**
    * \brief Returns the Basis upon which the element refers from.
    */
-  std::shared_ptr<Sp> get_basis() const;
+  std::shared_ptr<Bs> get_basis() const;
 
 
 

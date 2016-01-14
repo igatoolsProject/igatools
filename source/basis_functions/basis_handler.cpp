@@ -29,7 +29,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int codim,int range,int rank>
 BasisHandler<dim,codim,range,rank>::
-BasisHandler(const std::shared_ptr<const Sp> &basis)
+BasisHandler(const std::shared_ptr<const Bs> &basis)
   :
   basis_(basis)
 {
@@ -42,7 +42,7 @@ BasisHandler(const std::shared_ptr<const Sp> &basis)
 template<int dim,int codim,int range,int rank>
 auto
 BasisHandler<dim,codim,range,rank>::
-get_basis() const -> std::shared_ptr<const Sp>
+get_basis() const -> std::shared_ptr<const Bs>
 {
   return basis_;
 }

@@ -119,7 +119,7 @@ private:
   /** Alias for all instantiated spline spaces. */
   using SpSpaces = typename InstantiatedTypes::SplineSpaces;
 
-  /** Alias for all instantiated reference space bases. */
+  /** Alias for all instantiated reference bases. */
   using RefBases = typename InstantiatedTypes::RefBases;
 
   /** Alias for all instantiated grids functions. */
@@ -128,7 +128,7 @@ private:
   /** Alias for all instantiated domains. */
   using Domains = typename InstantiatedTypes::Domains;
 
-  /** Alias for all instantiated physical space bases. */
+  /** Alias for all instantiated physical bases. */
   using PhysBases = typename InstantiatedTypes::PhysBases;
 
   /** Alias for all instantiated  functions.*/
@@ -149,7 +149,7 @@ public:
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
-   * instantiated reference space bases.
+   * instantiated reference bases.
    */
   using RefBasisPtrs = as_fusion_vector_shared_ptr_t<RefBases>;
 
@@ -167,7 +167,7 @@ public:
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
-   * instantiated physical spaces.
+   * instantiated physical bases.
    */
   using PhysBasisPtrs = as_fusion_vector_shared_ptr_t<PhysBases>;
 
