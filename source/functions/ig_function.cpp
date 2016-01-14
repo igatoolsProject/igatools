@@ -32,7 +32,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
-IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
+IgFunction(const SharedPtrConstnessHandler<PhysicalBasis> &space,
            const EpetraTools::Vector &coeff,
            const std::string &dofs_property)
   :
@@ -61,7 +61,7 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
-IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
+IgFunction(const SharedPtrConstnessHandler<PhysicalBasis> &space,
            const IgCoefficients &coeff,
            const std::string &dofs_property)
   :
@@ -89,11 +89,11 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-const_create(const std::shared_ptr<const PhysBasis> &space,
+const_create(const std::shared_ptr<const PhysicalBasis> &space,
              const EpetraTools::Vector &coeff,
              const std::string &dofs_property) ->  std::shared_ptr<const self_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysicalBasis>(space),
   coeff, dofs_property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
@@ -104,11 +104,11 @@ const_create(const std::shared_ptr<const PhysBasis> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-const_create(const std::shared_ptr<const PhysBasis> &space,
+const_create(const std::shared_ptr<const PhysicalBasis> &space,
              const IgCoefficients &coeff,
              const std::string &dofs_property) ->  std::shared_ptr<const self_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysicalBasis>(space),
   coeff, dofs_property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
@@ -119,11 +119,11 @@ const_create(const std::shared_ptr<const PhysBasis> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(const std::shared_ptr<PhysBasis> &space,
+create(const std::shared_ptr<PhysicalBasis> &space,
        const EpetraTools::Vector &coeff,
        const std::string &dofs_property) ->  std::shared_ptr<self_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysicalBasis>(space),
   coeff, dofs_property);
 
   Assert(ig_func != nullptr, ExcNullPtr());
@@ -137,11 +137,11 @@ create(const std::shared_ptr<PhysBasis> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(const std::shared_ptr<PhysBasis> &space,
+create(const std::shared_ptr<PhysicalBasis> &space,
        const IgCoefficients &coeff,
        const std::string &dofs_property) ->  std::shared_ptr<self_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysicalBasis>(space),
   coeff, dofs_property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
@@ -169,7 +169,7 @@ create_cache_handler() const
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-get_basis() const -> std::shared_ptr<const PhysBasis>
+get_basis() const -> std::shared_ptr<const PhysicalBasis>
 {
   return basis_.get_ptr_const_data();
 }
@@ -213,7 +213,7 @@ rebuild_after_insert_knots(
   using std::const_pointer_cast;
   this->function_previous_refinement_ =
     IgFunction<dim,codim,range,rank>::const_create(
-      std::dynamic_pointer_cast<const PhysBasis>(basis_->get_basis_previous_refinement()),
+      std::dynamic_pointer_cast<const PhysicalBasis>(basis_->get_basis_previous_refinement()),
       coeffs_,
       dofs_property_);
 

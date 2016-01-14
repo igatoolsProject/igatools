@@ -322,11 +322,11 @@ private:
    * @brief Appends a single @ref PhysicalBasis
    * to the XML Document @p xml_doc.
    *
-   * @tparam PhysBasis Type of the @ref PhysicalBasis to be appended.
+   * @tparam PhysicalBasis Type of the @ref PhysicalBasis to be appended.
    * @param[in] xml_doc XML Document where the object is appended to.
    */
-  template <class PhysBasis>
-  static void write_phys_space_basis(const std::shared_ptr<PhysBasis> phys_space,
+  template <class PhysicalBasis>
+  static void write_phys_space_basis(const std::shared_ptr<PhysicalBasis> phys_space,
                                      const XMLDocPtr_ xml_doc);
 
   /**

@@ -34,8 +34,8 @@
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/physical_basis.h>
-#include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_element.h>
+#include <igatools/basis_functions/physical_basis_element_handler.h>
 
 //using namespace EpetraTools;
 

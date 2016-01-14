@@ -25,8 +25,8 @@
 #include <igatools/geometry/grid_tools.h>
 #include <igatools/functions/sub_function.h>
 
-#include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_element.h>
+#include <igatools/basis_functions/physical_basis_element_handler.h>
 
 #include <igatools/linear_algebra/epetra_solver.h>
 

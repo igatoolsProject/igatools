@@ -46,7 +46,7 @@ class PhysicalBasis;
 
 
 template <int,int,int,int>
-class SpaceElementHandler;
+class BasisElementHandler;
 
 template <int,int,int>
 class BSplineElementHandler;
@@ -55,10 +55,10 @@ template <int,int,int>
 class NURBSElementHandler;
 
 template <int,int,int,int>
-class PhysSpaceElementHandler;
+class PhysicalBasisElementHandler;
 
 template <int,int,int,int>
-class SpaceElement;
+class BasisElement;
 
 template <int,int,int>
 class BSplineElement;
@@ -67,7 +67,7 @@ template <int,int,int>
 class NURBSElement;
 
 template <int,int,int,int>
-class PhysicalSpaceElement;
+class PhysicalBasisElement;
 
 
 /**
@@ -88,7 +88,7 @@ private:
   using base_t = Function<dim,codim,range,rank>;
   using parent_t = Function<dim,codim,range,rank>;
   using self_t = IgFunction<dim,codim,range,rank>;
-  using PhysBasis = PhysicalBasis<dim,range,rank,codim>;
+  using PhysicalBasis = PhysicalBasis<dim,range,rank,codim>;
 
 public:
   /**
@@ -99,11 +99,11 @@ public:
 
 
   //TODO (pauletti, Mar 23, 2015): should we make this private?
-  IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
+  IgFunction(const SharedPtrConstnessHandler<PhysicalBasis> &basis,
              const EpetraTools::Vector &coeff,
              const std::string &dofs_property);
 
-  IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
+  IgFunction(const SharedPtrConstnessHandler<PhysicalBasis> &basis,
              const IgCoefficients &coeff,
              const std::string &dofs_property);
 
@@ -131,28 +131,28 @@ public:
 
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const PhysBasis> &basis,
+  const_create(const std::shared_ptr<const PhysicalBasis> &basis,
                const EpetraTools::Vector &coeff,
                const std::string &dofs_property = DofProperties::active);
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const PhysBasis> &basis,
+  const_create(const std::shared_ptr<const PhysicalBasis> &basis,
                const IgCoefficients &coeff,
                const std::string &dofs_property = DofProperties::active);
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<PhysBasis> &basis,
+  create(const std::shared_ptr<PhysicalBasis> &basis,
          const EpetraTools::Vector &coeff,
          const std::string &dofs_property = DofProperties::active);
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<PhysBasis> &basis,
+  create(const std::shared_ptr<PhysicalBasis> &basis,
          const IgCoefficients &coeff,
          const std::string &dofs_property = DofProperties::active);
 
 
 
-  std::shared_ptr<const PhysBasis> get_basis() const;
+  std::shared_ptr<const PhysicalBasis> get_basis() const;
 
   const CoeffType &get_coefficients() const;
 
@@ -186,7 +186,7 @@ public:
 
 
 
-    typename PhysBasis::template InterSpaceMap<sdim> dof_map;
+    typename PhysicalBasis::template InterSpaceMap<sdim> dof_map;
     typename Grid<dim>::template SubGridMap<sdim> elem_map;
     auto sub_basis = basis_->template get_sub_space<sdim>(s_id,dof_map,sub_grid,elem_map);
 
@@ -213,7 +213,7 @@ public:
 
 private:
 
-  SharedPtrConstnessHandler<PhysBasis> basis_;
+  SharedPtrConstnessHandler<PhysicalBasis> basis_;
 
   CoeffType coeffs_;
 

@@ -2,7 +2,7 @@
 elem_values
 ========================================================================
 Element 0
-   PhysicalSpaceElement<1,1,1,0>:
+   PhysicalBasisElement<1,1,1,0>:
       ReferenceElement<1,1,1>
          ReferenceElement<1,1,1>
             Element global connectivity (property="active"):
@@ -81,7 +81,7 @@ Element 0
 elem_values
 ========================================================================
 Element 0
-   PhysicalSpaceElement<2,2,1,0>:
+   PhysicalBasisElement<2,2,1,0>:
       ReferenceElement<2,2,1>
          ReferenceElement<2,2,1>
             Element global connectivity (property="active"):
@@ -210,7 +210,7 @@ Element 0
 elem_values
 ========================================================================
 Element 0
-   PhysicalSpaceElement<3,3,1,0>:
+   PhysicalBasisElement<3,3,1,0>:
       ReferenceElement<3,3,1>
          ReferenceElement<3,3,1>
             Element global connectivity (property="active"):

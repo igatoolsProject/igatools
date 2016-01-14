@@ -152,21 +152,21 @@ class PhysicalBasis;
  * @ingroup handlers
  */
 template<int dim_,int range_,int rank_,int codim_>
-class PhysSpaceElementHandler
+class PhysicalBasisElementHandler
   :
-  public SpaceElementHandler<dim_,codim_,range_,rank_>
+  public BasisElementHandler<dim_,codim_,range_,rank_>
 {
 
   using PhysSpace = PhysicalBasis<dim_,range_,rank_,codim_>;
   using RefBasis =  typename PhysSpace::RefBasis;
-  using RefPhysSpaceElementHandler = typename PhysSpace::RefBasis::ElementHandler;
+  using RefPhysicalBasisElementHandler = typename PhysSpace::RefBasis::ElementHandler;
 //    using PFCache = typename PhysSpace::PushForwardType;
 
   using ElementIterator = typename PhysSpace::ElementIterator;
   using ElementAccessor = typename PhysSpace::ElementAccessor;
 
-  using base_t = SpaceElementHandler<dim_,codim_,range_,rank_>;
-  using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
+  using base_t = BasisElementHandler<dim_,codim_,range_,rank_>;
+  using self_t = PhysicalBasisElementHandler<dim_,range_,rank_,codim_>;
 
   using eval_pts_variant = QuadVariants<dim_>;
   using topology_variant = TopologyVariants<dim_>;
@@ -186,24 +186,24 @@ public:
   /**
    * Default constructor. Not allowed to be used.
    */
-  PhysSpaceElementHandler() = delete;
+  PhysicalBasisElementHandler() = delete;
 
-  PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space);
+  PhysicalBasisElementHandler(std::shared_ptr<const PhysSpace> space);
   /**
    * Copy constructor. Not allowed to be used.
    */
-  PhysSpaceElementHandler(const self_t &) = delete;
+  PhysicalBasisElementHandler(const self_t &) = delete;
 
   /**
    * Move constructor. Not allowed to be used.
    */
-  PhysSpaceElementHandler(self_t &&) = delete;
+  PhysicalBasisElementHandler(self_t &&) = delete;
 
 public:
   /**
    * Destructor.
    */
-  virtual ~PhysSpaceElementHandler() = default;
+  virtual ~PhysicalBasisElementHandler() = default;
   ///@}
 
   /**
@@ -226,7 +226,7 @@ public:
 
 private:
 
-  using RefElemHandler = SpaceElementHandler<RefBasis::dim,0,RefBasis::range,RefBasis::rank>;
+  using RefElemHandler = BasisElementHandler<RefBasis::dim,0,RefBasis::range,RefBasis::rank>;
   std::unique_ptr<RefElemHandler> ref_space_handler_;
 
 
@@ -260,7 +260,7 @@ private:
   };
 
 
-  using BaseElem = SpaceElement<dim_,codim_,range_,rank_>;
+  using BaseElem = BasisElement<dim_,codim_,range_,rank_>;
 
   virtual void init_cache_impl(BaseElem &elem,
                                const eval_pts_variant &quad) const override final;

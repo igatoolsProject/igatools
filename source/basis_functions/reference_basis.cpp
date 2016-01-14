@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/basis_functions/reference_space_basis.h>
+#include <igatools/basis_functions/reference_basis.h>
 #include <igatools/basis_functions/reference_element.h>
 #include <igatools/base/array_utils.h>
 
@@ -208,5 +208,5 @@ serialize(Archive &ar)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/reference_space_basis.inst>
+#include <igatools/basis_functions/reference_basis.inst>
 

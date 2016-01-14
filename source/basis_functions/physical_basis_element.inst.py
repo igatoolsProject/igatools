@@ -27,31 +27,45 @@ data = Instantiation(include_files)
 
 
  
+ 
+
+elements = set()
+element_funcs = set()
+
+elem = 'PhysicalBasisElement<0,0,1,0>'
+elements.add(elem)
 
 
-handlers = set()
-handlers.add('PhysSpaceElementHandler<0,0,1,0>')
+func = 'const ValueVector<Real> %s::get_w_measures<0>(const int) const' % (elem)
+element_funcs.add(func)
+func = 'const ValueVector<Real> & %s::get_measures<0>(const int) const' % (elem)
+element_funcs.add(func)
 
-handler_funcs = set()
+
 
 for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
-    handler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    handlers.add(handler)
+    space_dim = x.dim + x.codim
+    elem = 'PhysicalBasisElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
+    elements.add(elem)
     for k in range(0,x.dim+1):
-        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' %(handler,k)
-        handler_funcs.add(func)
-        func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' %(handler,k)
-        handler_funcs.add(func)
-        func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &)' %(handler,k)
-        handler_funcs.add(func)
+        func = 'const ValueVector<Real> %s::get_w_measures<%d>(const int) const' % (elem,k)
+        element_funcs.add(func)
+        func = 'const ValueVector<Real> & %s::get_measures<%d>(const int) const' % (elem,k)
+        element_funcs.add(func)
+        if (k+1 == x.dim):
+            func = 'const ValueVector<Points<%d>> & %s::get_boundary_normals<%d>(const int) const' % (space_dim,elem,k)
+            element_funcs.add(func)
 
 
 
-for handler in handlers:
-    f.write('template class %s;\n' %handler)
 
-for func in handler_funcs:        
+
+for elem in elements:
+    f.write('template class %s;\n' %elem)
+
+
+for func in element_funcs:
     f.write('template %s;\n' %func)
 
       

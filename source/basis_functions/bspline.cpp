@@ -156,7 +156,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_element_begin(const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+-> std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -170,7 +170,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_element_end(const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+-> std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -417,7 +417,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_cache_handler() const
--> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
+-> std::unique_ptr<BasisElementHandler<dim_,0,range_,rank_>>
 {
   using Handler = BSplineElementHandler<dim_,range_,rank_>;
   return std::unique_ptr<Handler>(new Handler(this->get_this_basis()));

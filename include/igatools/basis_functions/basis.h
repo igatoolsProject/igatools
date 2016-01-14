@@ -33,8 +33,8 @@ template <int,int> class Domain;
 
 template <int,int,int,int> class Function;
 //template <int> class NonConstGridElement;
-template <int,int,int,int> class SpaceElement;
-template <int,int,int,int> class SpaceElementHandler;
+template <int,int,int,int> class BasisElement;
+template <int,int,int,int> class BasisElementHandler;
 
 
 template <int,int,int> class SplineSpace;
@@ -186,15 +186,15 @@ public:
 
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
   create_element_begin(const PropId &property) const = 0;
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
   create_element_end(const PropId &property) const = 0;
 
 
-  virtual std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_> >
+  virtual std::unique_ptr<BasisElementHandler<dim_,codim_,range_,rank_> >
   create_cache_handler() const = 0;
 
 
@@ -206,7 +206,7 @@ public:
   get_spline_space() const = 0;
 
 
-  using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_>;
+  using ElementAccessor = BasisElement<dim_,codim_,range_,rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
   /** @name Functions involving the element iterator */

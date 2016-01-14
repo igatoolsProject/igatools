@@ -173,8 +173,8 @@ template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
 SetFlagsDispatcher::
 SetFlagsDispatcher(const typename space_element::Flags flag_in,
-                  GridHandler<dim_> &grid_handler,
-                  SafeSTLArray<typename space_element::Flags, dim+1> &flags)
+                   GridHandler<dim_> &grid_handler,
+                   SafeSTLArray<typename space_element::Flags, dim+1> &flags)
   :
   flag_in_(flag_in),
   grid_handler_(grid_handler),
@@ -691,7 +691,7 @@ fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
     bsp_elem_.all_sub_elems_cache_.template get_sub_elem_cache<sdim>(s_id_);
 
 
-  using Elem = SpaceElement<dim_,0,range_,rank_>;
+  using Elem = BasisElement<dim_,0,range_,rank_>;
   using _Value      = typename Elem::_Value;
   using _Gradient   = typename Elem::_Gradient;
   using _Hessian    = typename Elem::_Hessian;

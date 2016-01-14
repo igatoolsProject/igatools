@@ -27,7 +27,7 @@
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/basis_functions/basis.h>
 #include <igatools/geometry/grid.h>
-#include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/basis_element.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/utils/multi_array_utils.h>

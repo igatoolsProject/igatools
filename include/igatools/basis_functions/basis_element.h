@@ -47,14 +47,14 @@ IGA_NAMESPACE_OPEN
  * @ingroup elements
  */
 template<int dim_,int codim_,int range_,int rank_>
-class SpaceElement
+class BasisElement
 {
 protected:
 
   using Sp = const Basis<dim_,codim_,range_,rank_>;
 
 private:
-  using self_t = SpaceElement<dim_,codim_,range_,rank_>;
+  using self_t = BasisElement<dim_,codim_,range_,rank_>;
 
 public:
 
@@ -99,17 +99,17 @@ private:
   /**
    * \brief Default constructor. Not allowed to be used.
    */
-  SpaceElement() = delete;
+  BasisElement() = delete;
 
   /**
    * \brief Copy constructor. Not allowed to be used.
    */
-  SpaceElement(const self_t &elem) = delete;
+  BasisElement(const self_t &elem) = delete;
 
   /**
    * \brief Move constructor. Not allowed to be used.
    */
-  SpaceElement(self_t &&elem) = delete;
+  BasisElement(self_t &&elem) = delete;
   ///@}
 
 
@@ -128,14 +128,14 @@ private:
 
 public:
 
-  SpaceElement(const std::shared_ptr<Sp> &space_basis);
+  BasisElement(const std::shared_ptr<Sp> &space_basis);
 
 
 
   /**
    * \brief Destructor.
    */
-  virtual ~SpaceElement() = default;
+  virtual ~BasisElement() = default;
 
 
 
@@ -145,7 +145,7 @@ public:
    *
    * @brief The comparison operators compares the <em>position</em> of the element in the grid.
    *
-   * @warning To be comparable, two SpaceElement objects must be defined on the same Basis
+   * @warning To be comparable, two BasisElement objects must be defined on the same Basis
    * (and therefore on the same grid),
    * otherwise an assertion will be raised (in Debug mode).
    */
@@ -331,7 +331,7 @@ public:
    * \brief Returns the <b>basis values</b> evaluated at the evaluation points on the
    * <dim>-dimensional element (i.e. the element itself).
    *
-   * @note Before call this function, the SpaceElement cache must be filled with
+   * @note Before call this function, the BasisElement cache must be filled with
    * the appropriate data.
    */
   ValueTable<Value>
@@ -341,7 +341,7 @@ public:
    * \brief Returns the <b>basis gradients</b> evaluated at the evaluation points on the
    * <dim>-dimensional element (i.e. the element itself).
    *
-   * @note Before call this function, the SpaceElement cache must be filled with
+   * @note Before call this function, the BasisElement cache must be filled with
    * the appropriate data.
    */
   ValueTable<Derivative<1> >
@@ -351,7 +351,7 @@ public:
    * \brief Returns the <b>basis hessians</b> evaluated at the evaluation points on the
    * <dim>-dimensional element (i.e. the element itself).
    *
-   * @note Before call this function, the SpaceElement cache must be filled with
+   * @note Before call this function, the BasisElement cache must be filled with
    * the appropriate data.
    */
   ValueTable<Derivative<2> >
@@ -361,7 +361,7 @@ public:
    * \brief Returns the <b>basis divergences</b> evaluated at the evaluation points on the
    * <dim>-dimensional element (i.e. the element itself).
    *
-   * \note Before call this function, the SpaceElement cache must be filled with
+   * \note Before call this function, the BasisElement cache must be filled with
    * the appropriate data.
    *
    * \warning The divergence is defined only if ...
@@ -529,7 +529,7 @@ public:
 
 
 
-  friend class SpaceElementHandler<dim_,codim_,range_,rank_>;
+  friend class BasisElementHandler<dim_,codim_,range_,rank_>;
 
 
   /**

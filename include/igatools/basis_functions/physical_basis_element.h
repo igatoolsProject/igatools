@@ -41,12 +41,12 @@ template <class Accessor> class GridIterator;
  * @ingroup elements
  */
 template<int dim_,int range_,int rank_,int codim_>
-class PhysicalSpaceElement
+class PhysicalBasisElement
   :
-  public SpaceElement<dim_,codim_,range_,rank_>
+  public BasisElement<dim_,codim_,range_,rank_>
 {
-  using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
-  using parent_t = SpaceElement<dim_,codim_,range_,rank_>;
+  using self_t = PhysicalBasisElement<dim_,range_,rank_,codim_>;
+  using parent_t = BasisElement<dim_,codim_,range_,rank_>;
 
 public :
   using PhysSpace = PhysicalBasis<dim_,range_,rank_,codim_>;
@@ -56,7 +56,7 @@ public :
   using Basis = PhysSpace;
   using RefBasis = typename PhysSpace::RefBasis;
   using PushFwd = typename PhysSpace::PushFwd;
-//    using RefElemAccessor = SpaceElement<RefBasis::dim,0,RefBasis::range,RefBasis::rank,Transformation::h_grad>;
+//    using RefElemAccessor = BasisElement<RefBasis::dim,0,RefBasis::range,RefBasis::rank,Transformation::h_grad>;
   using RefElemAccessor = ReferenceElement<RefBasis::dim,RefBasis::range,RefBasis::rank>;
 
   using PhysDomain = Domain<dim_, codim_>;
@@ -83,9 +83,9 @@ public:
   /**
    * Default constructor. Not allowed to be used.
    */
-  PhysicalSpaceElement() = delete;
+  PhysicalBasisElement() = delete;
 
-  PhysicalSpaceElement(const std::shared_ptr<ContainerType> &space,
+  PhysicalBasisElement(const std::shared_ptr<ContainerType> &space,
                        GridIterator<RefElemAccessor> &&ref_space_element,
                        GridIterator<PhysDomainElem> &&phys_domain_element);
 
@@ -93,18 +93,18 @@ public:
   /**
    * Copy constructor. Not allowed to be used.
    */
-  PhysicalSpaceElement(const self_t &in) = delete;
+  PhysicalBasisElement(const self_t &in) = delete;
 
 
   /**
    * Move constructor.
    */
-  PhysicalSpaceElement(self_t &&in) = default;
+  PhysicalBasisElement(self_t &&in) = default;
 
   /**
    * Destructor.
    */
-  virtual ~PhysicalSpaceElement() = default;
+  virtual ~PhysicalBasisElement() = default;
 
   ///@}
 
@@ -226,7 +226,7 @@ public:
    *
    * @brief The comparison operators compares the <em>position</em> of the element in the grid.
    *
-   * @warning To be comparable, two SpaceElement objects must be defined on the same space
+   * @warning To be comparable, two BasisElement objects must be defined on the same space
    * (and therefore on the same grid),
    * otherwise an assertion will be raised (in Debug mode).
    */
@@ -245,7 +245,7 @@ public:
 
 private:
   template <class Accessor> friend class GridIteratorBase;
-  template <int,int,int,int> friend class PhysSpaceElementHandler;
+  template <int,int,int,int> friend class PhysicalBasisElementHandler;
 
   GridIterator<RefElemAccessor> ref_space_element_;
 

@@ -22,7 +22,7 @@ from init_instantiation_data import *
 
 include_files = ['geometry/grid.h',
                  'geometry/grid_element.h',
-                 'basis_functions/space_element.h',
+                 'basis_functions/basis_element.h',
                  '../../source/geometry/grid_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
@@ -32,9 +32,9 @@ sub_dim_members = \
  ['ValueVector<Real> elem::get_w_measures<k>(const int) const']
 
 elements = set()
-elements.add('SpaceElement<0,0,0,1>')
+elements.add('BasisElement<0,0,0,1>')
 
-#templated_funcs = ['ValueVector<Real> SpaceElement<0,0,0,1>::get_w_measures<0>(const int) const']
+#templated_funcs = ['ValueVector<Real> BasisElement<0,0,0,1>::get_w_measures<0>(const int) const']
 
 element_funcs = set()
 
@@ -44,9 +44,9 @@ VTypes = ['space_element::_Value','space_element::_Gradient','space_element::_He
 
 
 #--------------------------------------------------------------------------------------
-# SpaceElement used by ReferenceBasisElement 
+# BasisElement used by ReferenceBasisElement 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
+    elem = 'BasisElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
     elements.add(elem)
     for k in range(0,x.dim+1):
         func = 'ValueVector<Real> %s::get_w_measures<%d>(const int) const' % (elem,k)
@@ -56,11 +56,11 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 
 
 #--------------------------------------------------------------------------------------
-# SpaceElement used by PhysicalSpaceElement 
+# BasisElement used by PhysicalBasisElement 
 
 for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
-    elem = 'SpaceElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
+    elem = 'BasisElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
     elements.add(elem)
     for k in range(0,x.dim+1):
         func = 'ValueVector<Real> %s::get_w_measures<%d>(const int) const' % (elem,k)

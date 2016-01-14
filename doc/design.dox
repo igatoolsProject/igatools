@@ -40,11 +40,11 @@ as described by the following table:
 Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
 Grid                 | GridElement           | GridHandler
-Basis       | SpaceElement      | SpaceElementHandler
+Basis       | BasisElement      | BasisElementHandler
 ReferenceBasis       | ReferenceElement      | ReferenceElementHandler
 BSpline         | BSplineElement        | BSplineElementHandler 
 NURBS           | NURBSElement          | NURBSElementHandler
-PhysicalBasis        | PhysicalSpaceElement  | PhysSpaceElementHandler
+PhysicalBasis        | PhysicalBasisElement  | PhysicalBasisElementHandler
 Domain              | DomainElement        | DomainHandler
 GridFunction              | GridFunctionElement        | GridFunctionHandler
 IgGridFunction              | IgGridFunctionElement        | IgGridFunctionHandler
@@ -58,11 +58,11 @@ FormulaFunction              | FormulaFunctionElement        | FormulaFunctionHa
 <center>
 Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
-Basis       | SpaceElement      | SpaceElementHandler
+Basis       | BasisElement      | BasisElementHandler
 ReferenceBasis       | ReferenceElement      | ReferenceElementHandler
 BSpline         | BSplineElement        | BSplineElementHandler 
 NURBS           | NURBSElement          | NURBSElementHandler
-PhysicalBasis        | PhysicalSpaceElement  | PhysSpaceElementHandler
+PhysicalBasis        | PhysicalBasisElement  | PhysicalBasisElementHandler
 </center>
 
 <center>
@@ -127,7 +127,7 @@ BSplineElement       | BSpline
 NURBSElement         | NURBS          
 MappingElement       | Mapping        
 PushForwardElement   | PushForward    
-PhysicalSpaceElement | PhysicalBasis
+PhysicalBasisElement | PhysicalBasis
 </center>
 - they have an identifier in order to specify which element in the associated container they are representing;
 - they have @subpage iterators as friend classes (because the an iterator must be able to modify the 

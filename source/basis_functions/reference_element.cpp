@@ -20,8 +20,8 @@
 
 
 #include <igatools/basis_functions/reference_element.h>
-#include <igatools/basis_functions/reference_space_basis.h>
-#include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/reference_basis.h>
+#include <igatools/basis_functions/basis_element.h>
 #include <igatools/basis_functions/reference_element_handler.h>
 
 IGA_NAMESPACE_OPEN

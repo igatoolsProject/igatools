@@ -160,11 +160,11 @@ public:
   ///@}
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
   create_element_begin(const PropId &property) const  override final;
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
   create_element_end(const PropId &property) const  override final;
 
 
@@ -267,7 +267,7 @@ private:
 
 
 public:
-  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_> >
+  virtual std::unique_ptr<BasisElementHandler<dim_,0,range_,rank_> >
   create_cache_handler() const override final;
 
 

@@ -20,7 +20,7 @@
 
 #include <igatools/basis_functions/physical_basis.h>
 #include <igatools/functions/formula_grid_function.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_element_handler.h>
 #include <igatools/geometry/push_forward.h>
 
 
@@ -43,8 +43,8 @@ PhysicalBasis<dim_, range_, rank_, codim_>::components =
 template <int dim_, int range_, int rank_, int codim_>
 PhysicalBasis<dim_, range_, rank_, codim_>::
 PhysicalBasis(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
-                   const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
-                   const Transformation &transformation_type)
+              const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
+              const Transformation &transformation_type)
   :
   ref_basis_(ref_basis),
   phys_domain_(phys_domain),
@@ -110,7 +110,7 @@ template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalBasis<dim_, range_, rank_, codim_>::
 create_element(const ListIt &index, const PropId &prop) const
--> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+-> std::unique_ptr<BasisElement<dim_,codim_,range_,rank_>>
 {
   return std::unique_ptr<ElementAccessor>(
     new ElementAccessor(this->get_this_basis(),
@@ -125,7 +125,7 @@ template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalBasis<dim_, range_, rank_, codim_>::
 create_element_begin(const PropId &prop) const
--> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+-> std::unique_ptr<BasisElement<dim_,codim_,range_,rank_>>
 {
   return std::unique_ptr<ElementAccessor>(
     new ElementAccessor(this->get_this_basis(),
@@ -137,7 +137,7 @@ template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalBasis<dim_, range_, rank_, codim_>::
 create_element_end(const PropId &prop) const
--> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+-> std::unique_ptr<BasisElement<dim_,codim_,range_,rank_>>
 {
   return std::unique_ptr<ElementAccessor>(
     new ElementAccessor(this->get_this_basis(),
@@ -264,7 +264,7 @@ template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalBasis<dim_, range_, rank_, codim_>::
 create_cache_handler() const
--> std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>>
+-> std::unique_ptr<BasisElementHandler<dim_,codim_,range_,rank_>>
 {
   return std::unique_ptr<ElementHandler>(
     new ElementHandler(this->get_this_basis()));

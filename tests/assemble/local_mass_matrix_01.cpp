@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_element_handler.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/basis_functions/bspline_element.h>

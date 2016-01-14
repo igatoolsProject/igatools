@@ -145,7 +145,7 @@ template<int dim_, int range_ , int rank_>
 NURBSElementHandler<dim_, range_, rank_>::
 SetFlagsDispatcher::
 SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
-                  self_t &nrb_handler)
+                   self_t &nrb_handler)
   :
   nrb_flag_(nrb_flag),
   nrb_handler_(nrb_handler)
@@ -167,7 +167,7 @@ template<int dim_, int range_ , int rank_>
 NURBSElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 InitCacheDispatcher(const self_t &nrb_handler,
-                    SpaceElement<dim_,0,range_,rank_> &elem)
+                    BasisElement<dim_,0,range_,rank_> &elem)
   :
   nrb_handler_(nrb_handler),
   nrb_elem_(dynamic_cast<NURBSElement<dim_,range_,rank_> &>(elem))
@@ -212,7 +212,7 @@ template<int dim_, int range_ , int rank_>
 NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 FillCacheDispatcher(const self_t &nrb_handler,
-                    SpaceElement<dim_,0,range_,rank_> &elem,
+                    BasisElement<dim_,0,range_,rank_> &elem,
                     const int s_id)
   :
   nrb_handler_(nrb_handler),

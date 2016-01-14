@@ -136,7 +136,7 @@ public:
 private:
 
 
-  std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>> bsp_elem_handler_;
+  std::unique_ptr<BasisElementHandler<dim_,0,range_,rank_>> bsp_elem_handler_;
 
   std::unique_ptr<IgGridFunctionHandler<dim_,1>> w_func_elem_handler_;
 
@@ -155,7 +155,7 @@ private:
 
 private:
 
-  using BaseElem = SpaceElement<dim_,0,range_,rank_>;
+  using BaseElem = BasisElement<dim_,0,range_,rank_>;
 
   virtual void set_flags_impl(const topology_variant &topology,
                               const typename space_element::Flags &flag) override final;
@@ -186,7 +186,7 @@ private:
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
     InitCacheDispatcher(const self_t &nrb_handler,
-                        SpaceElement<dim_,0,range_,rank_> &elem);
+                        BasisElement<dim_,0,range_,rank_> &elem);
 
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
@@ -200,7 +200,7 @@ private:
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
     FillCacheDispatcher(const self_t &nrb_handler,
-                        SpaceElement<dim_,0,range_,rank_> &elem,
+                        BasisElement<dim_,0,range_,rank_> &elem,
                         const int s_id);
 
     template<int sdim>

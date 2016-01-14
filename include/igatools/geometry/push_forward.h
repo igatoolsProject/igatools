@@ -22,13 +22,13 @@
 #define NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 
 #include <igatools/geometry/domain_element.h>
-#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/physical_basis_element.h>
 
 IGA_NAMESPACE_OPEN
 
 
 template <int,int,int,int>
-class PhysicalSpaceElement;
+class PhysicalBasisElement;
 
 constexpr
 int physical_range(const int ref_range, const int space_dim, const Transformation type)
@@ -88,7 +88,7 @@ public:
 
 
   template <int range,int rank>
-  using PhysSpaceElem = PhysicalSpaceElement<dim_,range,rank,codim>;
+  using PhysSpaceElem = PhysicalBasisElement<dim_,range,rank,codim>;
 
 public:
 

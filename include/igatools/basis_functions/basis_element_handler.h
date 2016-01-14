@@ -25,7 +25,7 @@
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/basis.h>
 #include <igatools/base/tuple_utils.h>
-#include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/basis_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -36,10 +36,10 @@ IGA_NAMESPACE_OPEN
  * @ingroup handlers
  */
 template <int dim,int codim,int range,int rank>
-class SpaceElementHandler
+class BasisElementHandler
 {
 private:
-  using self_t = SpaceElementHandler<dim,codim,range,rank>;
+  using self_t = BasisElementHandler<dim,codim,range,rank>;
 
 public:
   using Sp = Basis<dim,codim,range,rank>;
@@ -61,27 +61,27 @@ protected:
   /**
    * Default constructor. Not allowed to be used
    */
-  SpaceElementHandler() = delete;
+  BasisElementHandler() = delete;
 
 
-  SpaceElementHandler(const std::shared_ptr<const Sp> &space);
+  BasisElementHandler(const std::shared_ptr<const Sp> &space);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  SpaceElementHandler(const self_t &elem_handler) = delete;
+  BasisElementHandler(const self_t &elem_handler) = delete;
 
   /**
    * Move constructor. Not allowed to be used.
    */
-  SpaceElementHandler(self_t &&elem_handler) = delete;
+  BasisElementHandler(self_t &&elem_handler) = delete;
 
 public:
 
   /**
    * Destructor.
    */
-  virtual ~SpaceElementHandler() = default;
+  virtual ~BasisElementHandler() = default;
 
   ///@}
 

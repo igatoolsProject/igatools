@@ -335,7 +335,7 @@ fill_not_inserted_dependencies()
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
     using DomainType = Domain<Type::dim, Type::codim>;
     using IgFunctionType = IgFunction<Type::dim, Type::codim, Type::range, Type::rank>;
-    using PhysBasisType = PhysicalBasis<Type::dim, Type::range, Type::rank, Type::codim>;
+    using PhysicalBasisType = PhysicalBasis<Type::dim, Type::range, Type::rank, Type::codim>;
 
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
@@ -356,9 +356,9 @@ fill_not_inserted_dependencies()
         const auto ig_func = const_pointer_cast<IgFunctionType>(const_ig_func);
         Assert(ig_func != nullptr, ExcNullPtr());
 
-        const auto phys_space = const_pointer_cast<PhysBasisType>(ig_func->get_basis());
+        const auto phys_space = const_pointer_cast<PhysicalBasisType>(ig_func->get_basis());
         Assert(phys_space != nullptr, ExcNullPtr());
-        this->template insert_object<PhysBasisType> (phys_space);
+        this->template insert_object<PhysicalBasisType> (phys_space);
       }
     }
 
@@ -375,7 +375,7 @@ fill_not_inserted_dependencies()
       // If the function is an ig function, its physical space basis is also inserted.
       const auto ig_func = dynamic_pointer_cast<const IgFunctionType>(obj);
       if (ig_func != nullptr)
-        this->insert_const_object<PhysBasisType> (ig_func->get_basis());
+        this->insert_const_object<PhysicalBasisType> (ig_func->get_basis());
     }
   });
 

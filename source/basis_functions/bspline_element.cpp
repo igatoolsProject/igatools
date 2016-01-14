@@ -109,8 +109,8 @@ print_cache_info(LogStream &out) const
   }
   out.end_item();
 //*/
-  out.begin_item("SpaceElement's cache:");
-  SpaceElement<dim,0,range,rank>::print_cache_info(out);
+  out.begin_item("BasisElement's cache:");
+  BasisElement<dim,0,range,rank>::print_cache_info(out);
   out.end_item();
 
   out.end_item();

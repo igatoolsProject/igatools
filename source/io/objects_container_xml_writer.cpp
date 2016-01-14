@@ -779,18 +779,18 @@ write_domain(const shared_ptr<Domain> domain,
 
 
 
-template <class PhysBasis>
+template <class PhysicalBasis>
 void
 ObjectsContainerXMLWriter::
-write_phys_space_basis(const shared_ptr<PhysBasis> phys_space,
+write_phys_space_basis(const shared_ptr<PhysicalBasis> phys_space,
                        const XMLDocPtr_ xml_doc)
 {
   const auto obj_elem = xml_doc->create_new_element("PhysicalBasis");
 
-  static const int dim   = PhysBasis::dim;
-  static const int range = PhysBasis::range;
-  static const int rank  = PhysBasis::rank;
-  static const int codim = PhysBasis::codim;
+  static const int dim   = PhysicalBasis::dim;
+  static const int range = PhysicalBasis::range;
+  static const int rank  = PhysicalBasis::rank;
+  static const int codim = PhysicalBasis::codim;
 
   obj_elem->add_attribute("LocalObjectId", phys_space->get_object_id());
   obj_elem->add_attribute("Dim", dim);

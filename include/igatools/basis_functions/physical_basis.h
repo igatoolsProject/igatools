@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/basis.h>
-#include <igatools/basis_functions/reference_space_basis.h>
+#include <igatools/basis_functions/reference_basis.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/grid_iterator.h>
@@ -35,9 +35,9 @@ class SpaceManager;
 
 template <int,int> class PushForward;
 
-template <int,int,int,int> class PhysicalSpaceElement;
+template <int,int,int,int> class PhysicalBasisElement;
 
-template <int,int,int,int> class PhysSpaceElementHandler;
+template <int,int,int,int> class PhysicalBasisElementHandler;
 
 /**
  *
@@ -69,7 +69,7 @@ public:
 
   using GridType = Grid<dim_>;
   ///@}
-  using ElementHandler = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
+  using ElementHandler = PhysicalBasisElementHandler<dim_,range_,rank_,codim_>;
 
   static const int dim = dim_;
 
@@ -113,7 +113,7 @@ public:
 public:
 
 
-  using ElementAccessor = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
+  using ElementAccessor = PhysicalBasisElement<dim_,range_,rank_,codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
   /**
@@ -136,10 +136,10 @@ public:
                const std::shared_ptr<const PhysDomain> &phys_domain,
                const Transformation &transformation_type = Transformation::h_grad);
 
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
   create_element_begin(const PropId &property) const override final;
 
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
   create_element_end(const PropId &property) const override final;
 
 
@@ -171,7 +171,7 @@ public:
 
   void print_info(LogStream &out) const override final;
 
-  std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisElementHandler<dim_,codim_,range_,rank_> >
   create_cache_handler() const override final;
 
 
@@ -195,8 +195,8 @@ private:
 
 
   PhysicalBasis(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
-                     const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
-                     const Transformation &transformation_type);
+                const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
+                const Transformation &transformation_type);
 
 
 

@@ -23,7 +23,7 @@
 
 #include <igatools/functions/grid_function_handler.h>
 #include <igatools/functions/ig_grid_function.h>
-#include <igatools/basis_functions/space_element_handler.h>
+#include <igatools/basis_functions/basis_element_handler.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -92,7 +92,7 @@ private:
 
 //  friend struct FillCacheDispatcher;
 
-  using IgBasisHandler = SpaceElementHandler<dim,0,range,1>;
+  using IgBasisHandler = BasisElementHandler<dim,0,range,1>;
   std::unique_ptr<IgBasisHandler> ig_basis_handler_;
 
   std::shared_ptr<GridFunctionType> ig_grid_function_;

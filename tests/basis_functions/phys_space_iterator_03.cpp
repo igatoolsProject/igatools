@@ -35,8 +35,8 @@
 #include <igatools/functions/grid_function_lib.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_basis.h>
-#include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_element.h>
+#include <igatools/basis_functions/physical_basis_element_handler.h>
 
 
 template<int dim, int codim=0>

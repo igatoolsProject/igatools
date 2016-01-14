@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/space_element_handler.h>
-#include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/basis_element_handler.h>
+#include <igatools/basis_functions/basis_element.h>
 
 
 using std::shared_ptr;
@@ -28,8 +28,8 @@ using std::shared_ptr;
 IGA_NAMESPACE_OPEN
 
 template<int dim,int codim,int range,int rank>
-SpaceElementHandler<dim,codim,range,rank>::
-SpaceElementHandler(const std::shared_ptr<const Sp> &space)
+BasisElementHandler<dim,codim,range,rank>::
+BasisElementHandler(const std::shared_ptr<const Sp> &space)
   :
   space_(space)
 {
@@ -41,7 +41,7 @@ SpaceElementHandler(const std::shared_ptr<const Sp> &space)
 
 template<int dim,int codim,int range,int rank>
 auto
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 get_space() const -> std::shared_ptr<const Sp>
 {
   return space_;
@@ -51,7 +51,7 @@ get_space() const -> std::shared_ptr<const Sp>
 template<int dim,int codim,int range,int rank>
 template<int sdim>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 set_flags(const typename space_element::Flags &flag)
 {
   this->set_flags_impl(Topology<sdim>(),flag);
@@ -59,7 +59,7 @@ set_flags(const typename space_element::Flags &flag)
 
 template<int dim,int codim,int range,int rank>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 set_element_flags(const typename space_element::Flags &flag)
 {
   this->set_flags_impl(Topology<dim>(),flag);
@@ -69,7 +69,7 @@ set_element_flags(const typename space_element::Flags &flag)
 template<int dim,int codim,int range,int rank>
 template<int sdim>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 init_cache(ElementAccessor &elem,
            const std::shared_ptr<const Quadrature<sdim>> &quad) const
 {
@@ -79,7 +79,7 @@ init_cache(ElementAccessor &elem,
 template<int dim,int codim,int range,int rank>
 template<int sdim>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 init_cache(ElementIterator &elem,
            const std::shared_ptr<const Quadrature<sdim>> &quad) const
 {
@@ -89,7 +89,7 @@ init_cache(ElementIterator &elem,
 
 template<int dim,int codim,int range,int rank>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 init_element_cache(ElementAccessor &elem,
                    const std::shared_ptr<const Quadrature<dim>> &quad) const
 {
@@ -98,7 +98,7 @@ init_element_cache(ElementAccessor &elem,
 
 template<int dim,int codim,int range,int rank>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 init_element_cache(ElementIterator &elem,
                    const std::shared_ptr<const Quadrature<dim>> &quad) const
 {
@@ -107,7 +107,7 @@ init_element_cache(ElementIterator &elem,
 
 template<int dim,int codim,int range,int rank>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 init_face_cache(ElementAccessor &elem,
                 const std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> &quad) const
 {
@@ -117,7 +117,7 @@ init_face_cache(ElementAccessor &elem,
 
 template<int dim,int codim,int range,int rank>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 init_face_cache(ElementIterator &elem,
                 const std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> &quad) const
 {
@@ -128,7 +128,7 @@ init_face_cache(ElementIterator &elem,
 template<int dim,int codim,int range,int rank>
 template<int sdim>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 fill_cache(ElementAccessor &elem, const int s_id) const
 {
   Assert(s_id >= 0 && s_id < UnitElement<dim>::template num_elem<sdim>(),
@@ -140,7 +140,7 @@ fill_cache(ElementAccessor &elem, const int s_id) const
 template<int dim,int codim,int range,int rank>
 template<int sdim>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 fill_cache(ElementIterator &elem, const int s_id) const
 {
   fill_cache<sdim>(*elem, s_id);
@@ -149,7 +149,7 @@ fill_cache(ElementIterator &elem, const int s_id) const
 
 template<int dim,int codim,int range,int rank>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 fill_element_cache(ElementAccessor &elem) const
 {
   fill_cache<dim>(elem,0);
@@ -157,7 +157,7 @@ fill_element_cache(ElementAccessor &elem) const
 
 template<int dim,int codim,int range,int rank>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 fill_element_cache(ElementIterator &elem) const
 {
   fill_element_cache(*elem);
@@ -166,7 +166,7 @@ fill_element_cache(ElementIterator &elem) const
 
 template<int dim,int codim,int range,int rank>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 fill_face_cache(ElementAccessor &elem, const int s_id) const
 {
   Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
@@ -175,7 +175,7 @@ fill_face_cache(ElementAccessor &elem, const int s_id) const
 
 template<int dim,int codim,int range,int rank>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 fill_face_cache(ElementIterator &elem, const int s_id) const
 {
   fill_face_cache(*elem,s_id);
@@ -184,7 +184,7 @@ fill_face_cache(ElementIterator &elem, const int s_id) const
 
 template<int dim,int codim,int range,int rank>
 auto
-SpaceElementHandler<dim,codim,range,rank>::
+BasisElementHandler<dim,codim,range,rank>::
 get_element_cache(ElementAccessor &elem) const -> typename ElementAccessor::CacheType &
 {
   return elem.all_sub_elems_cache_;
@@ -195,4 +195,4 @@ get_element_cache(ElementAccessor &elem) const -> typename ElementAccessor::Cach
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/space_element_handler.inst>
+#include <igatools/basis_functions/basis_element_handler.inst>

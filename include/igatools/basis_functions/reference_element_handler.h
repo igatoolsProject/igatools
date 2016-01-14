@@ -25,9 +25,9 @@
 #include <igatools/base/flags_handler.h>
 #include <igatools/base/quadrature.h>
 
-#include <igatools/basis_functions/space_element_handler.h>
+#include <igatools/basis_functions/basis_element_handler.h>
 #include <igatools/geometry/grid_handler.h>
-#include <igatools/basis_functions/reference_space_basis.h>
+#include <igatools/basis_functions/reference_basis.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -39,10 +39,10 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range = 1, int rank = 1>
 class ReferenceElementHandler
   :
-  public SpaceElementHandler<dim,0,range,rank>
+  public BasisElementHandler<dim,0,range,rank>
 {
 private:
-  using base_t = SpaceElementHandler<dim,0,range,rank>;
+  using base_t = BasisElementHandler<dim,0,range,rank>;
 public:
   using Basis = ReferenceBasis<dim,range,rank>;
   using ElementIterator = typename Basis::ElementIterator;
