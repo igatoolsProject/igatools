@@ -388,7 +388,7 @@ template<int sdim>
 auto
 NURBS<dim_, range_, rank_>::
 get_sub_nurbs_space(const int s_id,
-                    InterSpaceMap<sdim> &dof_map,
+                    InterBasisMap<sdim> &dof_map,
                     const std::shared_ptr<const Grid<sdim>> &sub_grid) const
 -> std::shared_ptr<const NURBS<sdim,range_,rank_> >
 {
@@ -411,7 +411,7 @@ template<int dim_, int range_, int rank_>
 template<int k>
 auto
 NURBS<dim_, range_, rank_>::
-get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+get_sub_space(const int s_id, InterBasisMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {

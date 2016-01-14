@@ -57,7 +57,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
   auto nrb_space = Basis::const_create(bsp_space,w_func);
 
 
-  typename Basis::template InterSpaceMap<sub_dim> dof_map;
+  typename Basis::template InterBasisMap<sub_dim> dof_map;
 
   out.begin_item("Dim: " + std::to_string(dim) + "     Sub-Dim: " + std::to_string(sub_dim));
 

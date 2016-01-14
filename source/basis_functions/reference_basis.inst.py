@@ -27,11 +27,11 @@ inst = data.inst
 sub_dim_members = \
  ['std::shared_ptr<const typename class::template SubRefSpace<k>> ' + 
   'class::get_ref_sub_space<k>(const int sub_elem_id, ' + 
-  'InterSpaceMap<k> &dof_map, ' +
+  'InterBasisMap<k> &dof_map, ' +
   'const std::shared_ptr<const Grid<k>> &sub_grid) const',
   'std::shared_ptr<const typename class::template SubSpace<k>> ' + 
   'class::get_sub_space<k>(const int sub_elem_id, ' + 
-  'InterSpaceMap<k> &dof_map, SubGridMap<k> &elem_map) const']
+  'InterBasisMap<k> &dof_map, SubGridMap<k> &elem_map) const']
 
 spaces = ['ReferenceBasis<0,0,1>']
 templated_funcs = []

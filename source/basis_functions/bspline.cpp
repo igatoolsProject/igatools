@@ -236,7 +236,7 @@ template<int sdim>
 auto
 BSpline<dim_, range_, rank_>::
 get_sub_bspline_space(const int s_id,
-                      InterSpaceMap<sdim> &dof_map,
+                      InterBasisMap<sdim> &dof_map,
                       const std::shared_ptr<const Grid<sdim>> &sub_grid_in) const
 -> std::shared_ptr<const BSpline<sdim, range_, rank_> >
 {

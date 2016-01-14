@@ -43,7 +43,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
   auto space = Space::const_create(degree, grid);
   auto basis = Basis::const_create(space);
 
-  typename Basis::template InterSpaceMap<sub_dim> dof_map;
+  typename Basis::template InterBasisMap<sub_dim> dof_map;
 
   for (auto i : UnitElement<dim>::template elems_ids<sub_dim>())
   {

@@ -107,7 +107,7 @@ public:
                   "The dimensionality of the sub_grid is not valid.");
 
 
-    typename RefBasis::template InterSpaceMap<sdim> dof_map;
+    typename RefBasis::template InterBasisMap<sdim> dof_map;
     auto sub_ref_space = ref_basis_->template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
 
     IgCoefficients sub_coeffs;

@@ -186,7 +186,7 @@ public:
 
 
 
-    typename PhysicalBasis::template InterSpaceMap<sdim> dof_map;
+    typename PhysicalBasis::template InterBasisMap<sdim> dof_map;
     typename Grid<dim>::template SubGridMap<sdim> elem_map;
     auto sub_basis = basis_->template get_sub_space<sdim>(s_id,dof_map,sub_grid,elem_map);
 

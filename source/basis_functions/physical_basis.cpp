@@ -186,7 +186,7 @@ template <int dim_, int range_, int rank_, int codim_>
 template<int sdim>
 auto
 PhysicalBasis<dim_, range_, rank_, codim_>::
-get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
+get_sub_space(const int s_id, InterBasisMap<sdim> &dof_map,
               const std::shared_ptr<const Grid<sdim>> &sub_grid,
               SubGridMap<sdim> &elem_map,
               EnableIf<(dim_ != 0) &&(sdim>=0)> *) const

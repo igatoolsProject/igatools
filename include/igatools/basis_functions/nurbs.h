@@ -104,7 +104,7 @@ public:
 
 
   template <int k>
-  using InterSpaceMap = typename BaseSpace::template InterSpaceMap<k>;
+  using InterBasisMap = typename BaseSpace::template InterBasisMap<k>;
 
 
   /**
@@ -116,12 +116,12 @@ public:
   template<int sdim>
   std::shared_ptr<const NURBS<sdim,range_,rank_> >
   get_sub_nurbs_space(const int sub_elem_id,
-                      InterSpaceMap<sdim> &dof_map,
+                      InterBasisMap<sdim> &dof_map,
                       const std::shared_ptr<const Grid<sdim>> &sub_grid) const;
 #if 0
   template<int k>
   std::shared_ptr<SubSpace<k> >
-  get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+  get_sub_space(const int s_id, InterBasisMap<k> &dof_map,
                 SubGridMap<k> &elem_map) const;
 #endif
 

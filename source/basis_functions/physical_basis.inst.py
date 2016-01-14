@@ -35,7 +35,7 @@ data = Instantiation(include_files)
 
 sub_dim_members = \
  ['std::shared_ptr<const typename class::SubSpace<k> > ' +
-   'class::get_sub_space(const int s_id, InterSpaceMap<k> &dof_map, ' +
+   'class::get_sub_space(const int s_id, InterBasisMap<k> &dof_map, ' +
    'const std::shared_ptr<const Grid<k>> &sub_grid, ' + 
    'SubGridMap<k> &elem_map, void *) const;']
 

@@ -725,7 +725,7 @@ project_boundary_values(
   const int sdim = dim - 1;
 
   using Basis = PhysicalBasis<dim,range,rank,codim>;
-  using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
+  using InterBasisMap = typename Basis::template InterBasisMap<sdim>;
 
   using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
 
@@ -748,7 +748,7 @@ project_boundary_values(
 
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
-    InterSpaceMap  dof_map;
+    InterBasisMap  dof_map;
     const auto sub_basis = basis.template get_sub_space<sdim>(s_id, dof_map,sub_grid,elem_map);
 
     const auto coeffs = projection_l2_function(
@@ -777,7 +777,7 @@ project_boundary_values(
   const int sdim = (dim >=1) ? dim - 1 : 0;
 
   using Basis = ReferenceBasis<dim,range,1>;
-  using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
+  using InterBasisMap = typename Basis::template InterBasisMap<sdim>;
 
   using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
 
@@ -799,7 +799,7 @@ project_boundary_values(
 
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
-    InterSpaceMap  dof_map;
+    InterBasisMap  dof_map;
     const auto sub_basis = ref_basis.template get_ref_sub_space<sdim>(s_id, dof_map,sub_grid);
 
     const auto coeffs = projection_l2_grid_function(
@@ -832,7 +832,7 @@ project_boundary_values(
   const int sdim = dim - 1;
 
   using Basis = ReferenceBasis<dim,range>;
-  using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
+  using InterBasisMap = typename Basis::template InterBasisMap<sdim>;
 
   using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
 
@@ -855,7 +855,7 @@ project_boundary_values(
 
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
-    InterSpaceMap  dof_map;
+    InterBasisMap  dof_map;
     const auto sub_basis = basis.template get_ref_sub_space<sdim>(s_id, dof_map,sub_grid);
 
 //    const auto sub_func = ig_grid_func.get_sub_function(s_id,sub_grid);
@@ -933,7 +933,7 @@ project_function_on_boundary(
   const int sdim = dim-1;
 
 //  using Basis = PhysicalBasis<dim,range,rank,codim>;
-//  using InterSpaceMap = typename Basis::template InterSpaceMap<dim>;
+//  using InterBasisMap = typename Basis::template InterBasisMap<dim>;
 //  using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
 
   using BndryFunc = Function<sdim,codim+1,range,rank>;
@@ -948,7 +948,7 @@ project_function_on_boundary(
 
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
-    InterSpaceMap  dof_map;
+    InterBasisMap  dof_map;
     const auto sub_basis = basis.template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
     //*/
     boundary_functions[s_id] = func_to_project.get_sub_function(s_id);

@@ -152,13 +152,13 @@ public:
 //    using InterGridMap = std::map<Index,Index>;
 
   template <int k>
-  using InterSpaceMap = typename RefBasis::template InterSpaceMap<k>;
+  using InterBasisMap = typename RefBasis::template InterBasisMap<k>;
 
 
 
   template<int k>
   std::shared_ptr<const SubSpace<k> >
-  get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+  get_sub_space(const int s_id, InterBasisMap<k> &dof_map,
                 const std::shared_ptr<const Grid<k>> &sub_grid,
                 SubGridMap<k> &elem_map,
                 EnableIf<(dim_ != 0) &&(k>=0)> * = nullptr) const;

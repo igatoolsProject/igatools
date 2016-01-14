@@ -41,7 +41,7 @@ template<int sdim>
 auto
 ReferenceBasis<dim_,range_,rank_>::
 get_ref_sub_space(const int sub_elem_id,
-                  InterSpaceMap<sdim> &dof_map,
+                  InterBasisMap<sdim> &dof_map,
                   const std::shared_ptr<const Grid<sdim>> &sub_grid) const
 -> std::shared_ptr<const SubRefSpace<sdim> >
 {
@@ -78,7 +78,7 @@ template<int k>
 auto
 ReferenceBasis<dim_,range_,rank_>::
 get_sub_space(const int s_id,
-              InterSpaceMap<k> &dof_map,
+              InterBasisMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<const SubSpace<k> >
 {

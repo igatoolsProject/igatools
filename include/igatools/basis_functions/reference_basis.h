@@ -123,7 +123,7 @@ public:
   using SubGridMap = typename GridType::template SubGridMap<sdim>;
 
   template <int k>
-  using InterSpaceMap = SafeSTLVector<Index>;
+  using InterBasisMap = SafeSTLVector<Index>;
 
   template <int k>
   using SubRefSpace = ReferenceBasis<k, range, rank>;
@@ -151,12 +151,12 @@ public:
   template<int sdim>
   std::shared_ptr<const SubRefSpace<sdim> >
   get_ref_sub_space(const int s_id,
-                    InterSpaceMap<sdim> &dof_map,
+                    InterBasisMap<sdim> &dof_map,
                     const std::shared_ptr<const Grid<sdim>> &sub_grid = nullptr) const;
 
   template<int sdim>
   std::shared_ptr<const SubSpace<sdim> >
-  get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
+  get_sub_space(const int s_id, InterBasisMap<sdim> &dof_map,
                 SubGridMap<sdim> &elem_map) const;
 
 
