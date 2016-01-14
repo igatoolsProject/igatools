@@ -51,12 +51,12 @@
       <IntVectorProperty name="PhysicalMesh"
                          command="SetPhysicalMesh"
                          number_of_elements="1"
-                         label="Create physical geometries"
+                         label="Create physical domains"
                          panel_visibility="default"
                          default_values="1">
         <BooleanDomain name="bool"/>
         <Documentation>
-          Activates/deactivates the creation of the physical mesh geometries.
+          Activates/deactivates the creation of the physical domains.
         </Documentation>
       </IntVectorProperty>
 
@@ -65,12 +65,12 @@
       <IntVectorProperty name="ParametricMesh"
                          command="SetParametricMesh"
                          number_of_elements="1"
-                         label="Create parametric geometries"
+                         label="Create parametric domains"
                          panel_visibility="default"
                          default_values="0">
         <BooleanDomain name="bool"/>
         <Documentation>
-          Activates/deactivates the creation of the parametric mesh geometries.
+          Activates/deactivates the creation of the parametric domains.
         </Documentation>
       </IntVectorProperty>
 
@@ -92,7 +92,7 @@
                             element_types="2 0"
                             panel_visibility="default"
                             information_property="PhysGeomArrayInfo"
-                            label="Physical patches">
+                            label="Available physical domains">
         <ArraySelectionDomain name="array_list">
           <RequiredProperties>
             <Property name="PhysGeomArrayInfo" function="ArrayList" />
@@ -262,16 +262,16 @@
         </Hints>
       </IntVectorProperty>
 
-      <!-- Activates/deactivates the creation of the physical control mesh -->
+      <!-- Activates/deactivates the creation of the physical control polygon mesh -->
       <IntVectorProperty name="ControlMeshPhysical"
                          command="SetControlMeshPhysical"
                          number_of_elements="1"
                          panel_visibility="advanced"
-                         label="Create control mesh"
+                         label="Create control polygon mesh"
                          default_values="0">
         <BooleanDomain name="bool"/>
         <Documentation>
-          Activates/deactivates the creation of the control mesh geometry
+          Activates/deactivates the creation of the control polygon mesh geometry
           for the physical mesh.
         </Documentation>
         <Hints>
@@ -284,7 +284,7 @@
         </Hints>
       </IntVectorProperty>
 
-      <!-- Sets the VTK cell type the physical control mesh -->
+      <!-- Sets the VTK cell type the physical control polygon mesh -->
       <IntVectorProperty command="SetGridTypePhysicalControl"
                          default_values="1"
                          panel_visibility="advanced"
@@ -299,7 +299,7 @@
         </EnumerationDomain>
         <Documentation>
           This propery specifies which type of grid must be produced
-          for the physical control mesh.
+          for the physical control polygon mesh.
         </Documentation>
         <Hints>
           <!-- This property is hidden when PhysicalMesh = 0 -->
@@ -332,7 +332,7 @@
                             element_types="2 0"
                             panel_visibility="default"
                             information_property="ParmGeomArrayInfo"
-                            label="Parametric patches">
+                            label="Available parametric domains">
         <ArraySelectionDomain name="array_list">
           <RequiredProperties>
             <Property name="ParmGeomArrayInfo" function="ArrayList" />

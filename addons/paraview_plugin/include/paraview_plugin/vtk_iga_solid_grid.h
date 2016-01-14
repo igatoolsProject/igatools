@@ -61,6 +61,20 @@ struct VtkGridInformation;
  * inside an igatools objects container (received as argument)
  * are visualized as point data associated to the VTK grid.
  *
+ * Each domain, i.e. the function
+ * \f$ \mathbf{F} \colon \hat{\Omega}\in\mathbb{R}^{\text{dim}} \to
+ * \Omega\in\mathbb{R}^{\text{dim}+\text{codim}} \f$
+ * representing the geometry, is represented in ParaView by a VTK grid.
+ *
+ * For each domain, different functions
+ * \f$ \mathbf{g} \colon \Omega\in\mathbb{R}^{\text{dim}+\text{codim}} \to \mathbb{R}^{\text{range}\times\text{rank}} \f$
+ * can be associated to it, being represented in ParaView throw VTK point data.
+ *
+ * And also, for the parametric domains, i.e. \f$ \mathbf{F} \colon \hat{\Omega}\in\mathbb{R}^{\text{dim}} \f$
+ * represented by a VTK grid, different grid functions
+ * \f$ \mathbf{g} \colon \hat{\Omega}\in\mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{range}\times\text{rank}} \f$
+ * can be associated to it, being represented in ParaView throw VTK point data.
+ *
  * The struct @ref PointsTopology, defined below, helps the create
  * functions in the definition the VTK grids topology.
  *

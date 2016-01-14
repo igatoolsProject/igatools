@@ -200,7 +200,17 @@ private:
   /// VTK grid type.
   VtkGridType grid_type_;
 
-  /// Number of cells in each parametric direction in each Bezier element.
+  /**
+   * Sets the number of VTK cells in each parametric direction that will
+   * be used for visualizing each Bezier element on the VTK grid.
+   *
+   * For dimension 3, all the components of the tensor will be used.
+   *
+   * For dimension 2, the number of cells will be
+   * (@p cells_per_element_[0], @p cells_per_element_[1]) and
+   * for dim = 1, @p cells_per_element_[0] cells will be used in each
+   * direction.
+   */
   NumCellsContainer_ cells_per_element_;
 };
 
