@@ -90,7 +90,7 @@ private:
    * Copy constructor.
    * @warning Not allowed to be used.
    */
-  VtkGridInformation(const VtkGridInformation &grid_info) = delete;
+  VtkGridInformation(const VtkGridInformation &) = delete;
 
   /**
    * Move constructor.
@@ -106,7 +106,7 @@ private:
    * Copy assignment operator.
    * @warning Not allowed to be used.
    */
-  void operator=(const VtkGridInformation &grid_info) = delete;
+  void operator=(const VtkGridInformation &) = delete;
 
   /**
    * Move assignment operator.

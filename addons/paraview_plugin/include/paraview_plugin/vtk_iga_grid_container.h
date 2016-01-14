@@ -56,14 +56,10 @@ class VtkIgaGridContainer
 {
 private:
 
-  /**
-   * Self type.
-   */
+  /// Self type of the class.
   typedef VtkIgaGridContainer Self_;
 
-  /**
-   * Self shared pointer type.
-   */
+  /// Shared pointer type of the class.
   typedef std::shared_ptr<Self_> SelfPtr_;
 
   /**
@@ -257,24 +253,60 @@ private:
   /// Control grid information shared pointer type.
   typedef std::shared_ptr<VtkControlGridInformation> ControlGridInfoPtr_;
 
+  /** @name Constructors*/
+  ///@{
   /**
-   * Void constructor.
+   * Constructor.
+   * @param[in] num_cells Number of VTK cells in each direction
+   * for each Bezier element.
+   * @param[in] grid_type Type of the VTK grid.
    */
   VtkIgaGridContainer();
 
   /**
-   * Constructor.
+   * Default constructor.
+   * @warning Not allowed to be used.
    */
   VtkIgaGridContainer(const ObjContPtr_ objs_container,
                       const GridInfoPtr_ phys_solid_info,
                       const GridInfoPtr_ phys_knot_info,
                       const ControlGridInfoPtr_ phys_control_info,
                       const GridInfoPtr_ parm_solid_info,
-                      const GridInfoPtr_ parm_knot_info,
-                      const std::string &file_name);
+                      const GridInfoPtr_ parm_knot_info);
+
+  /**
+   * Copy constructor.
+   * @warning Not allowed to be used.
+   */
+  VtkIgaGridContainer(const VtkIgaGridContainer &) = delete;
+
+  /**
+   * Move constructor.
+   * @warning Not allowed to be used.
+   */
+  VtkIgaGridContainer(const VtkIgaGridContainer &&) = delete;
+  ///@}
+
+  /** @name Assignment operators*/
+  ///@{
+
+  /**
+   * Copy assignment operator.
+   * @warning Not allowed to be used.
+   */
+  void operator=(const VtkIgaGridContainer &) = delete;
+
+  /**
+   * Move assignment operator.
+   * @warning Not allowed to be used.
+   */
+  void operator=(const VtkIgaGridContainer &&) = delete;
+  ///@}
 
 public:
 
+  /** @name Creators*/
+  ///@{
   /**
    * TODO: to document.
    */
@@ -294,6 +326,8 @@ public:
    */
   static SelfPtr_ create_void();
 
+  ///@}
+
   /**
    * TODO: to document.
    */
@@ -307,7 +341,6 @@ public:
               const NumCells_   &n_cells_prm_knt,
               const VtkGridType &grid_type_prm_knt);
 
-public:
   /**
    * TODO: to document.
    */
@@ -321,23 +354,47 @@ public:
                               vtkMultiBlockDataSet *const mb) const;
 
 
-
-
+  /**
+   * TODO to document.
+   */
   static void check_file (const std::string &file_name);
 
 private:
+
+  /**
+   * TODO to document.
+   */
   static bool is_file_binary(const std::string &file_name);
+
+  /**
+   * TODO to document.
+   */
   static ObjContPtr_ parse_objects_container(const std::string &file_name);
 
+  /**
+   * TODO to document.
+   */
   static SafeSTLVector<std::string>
   get_invalid_dimension_objects(const ObjContPtr_ obj_container);
 
+  /**
+   * TODO to document.
+   */
   void fill_objects_container(const ObjContPtr_ objs_container);
 
+  /**
+   * TODO to document.
+   */
   void set_names();
 
+  /**
+   * TODO to document.
+   */
   void build_generators();
 
+  /**
+   * TODO to document.
+   */
   template <class Domain>
   void insert_generator(const std::shared_ptr<const Domain> domain);
 
@@ -364,9 +421,6 @@ private:
 
   /// Collection of parametric grid generators.
   GridGensContainer_ parm_generators_;
-
-  /// File name.
-  std::string file_name_;
 
   /**
    * Container for numbering the generators included in the container.
