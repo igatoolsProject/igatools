@@ -3,7 +3,7 @@
 
 ===============================================================
 O R I G I N A L     S P A C E
-   Reference space:
+   Reference basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 2 ]
@@ -92,7 +92,7 @@ O R I G I N A L     S P A C E
 
 ===============================================================
 R E F I N E D     S P A C E
-   Reference space:
+   Reference basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -193,7 +193,7 @@ R E F I N E D     S P A C E
 
 ===============================================================
 O R I G I N A L     S P A C E
-   Reference space:
+   Reference basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 2 2 ]
@@ -295,7 +295,7 @@ O R I G I N A L     S P A C E
 
 ===============================================================
 R E F I N E D     S P A C E
-   Reference space:
+   Reference basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 4 ]
@@ -441,7 +441,7 @@ R E F I N E D     S P A C E
 
 ===============================================================
 O R I G I N A L     S P A C E
-   Reference space:
+   Reference basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 2 2 2 ]
@@ -562,7 +562,7 @@ O R I G I N A L     S P A C E
 
 ===============================================================
 R E F I N E D     S P A C E
-   Reference space:
+   Reference basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 4 4 ]

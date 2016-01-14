@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __PHYSICAL_SPACE_H_
-#define __PHYSICAL_SPACE_H_
+#ifndef __PHYSICAL_BASIS_H_
+#define __PHYSICAL_BASIS_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/basis.h>
@@ -82,7 +82,7 @@ public:
 
   static const int rank = rank_;
 
-  static const bool is_physical_space = true;
+  static const bool is_physical_basis = true;
 
   static constexpr int n_components = constexpr_pow(range, rank);
 
@@ -122,7 +122,7 @@ public:
    */
   PhysicalBasis() = default;
 
-  PhysicalBasis(const self_t &phys_space) = delete;
+  PhysicalBasis(const self_t &phys_basis) = delete;
 
   virtual ~PhysicalBasis() = default;
 
@@ -144,7 +144,7 @@ public:
 
 
   template <int k>
-  using SubSpace = PhysicalBasis<k, range, rank, codim + dim-k>;
+  using SubBasis = PhysicalBasis<k, range, rank, codim + dim-k>;
 
   template <int sdim>
   using SubGridMap = typename RefBasis::GridType::template SubGridMap<sdim>;
@@ -157,8 +157,8 @@ public:
 
 
   template<int k>
-  std::shared_ptr<const SubSpace<k> >
-  get_sub_space(const int s_id, InterBasisMap<k> &dof_map,
+  std::shared_ptr<const SubBasis<k> >
+  get_sub_basis(const int s_id, InterBasisMap<k> &dof_map,
                 const std::shared_ptr<const Grid<k>> &sub_grid,
                 SubGridMap<k> &elem_map,
                 EnableIf<(dim_ != 0) &&(k>=0)> * = nullptr) const;
@@ -240,7 +240,7 @@ public:
 
   virtual void refine_h(const Size n_subdivisions = 2) override final;
 
-  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
+  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &basis);
 
 
   std::shared_ptr<const base_t> get_basis_previous_refinement() const;
@@ -268,4 +268,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif
+#endif // __PHYSICAL_BASIS_H_

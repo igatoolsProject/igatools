@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef REFERENCE_SPACE_H_
-#define REFERENCE_SPACE_H_
+#ifndef __REFERENCE_BASIS_H_
+#define __REFERENCE_BASIS_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/array_utils.h>
@@ -47,7 +47,7 @@ template <int,int,int> class DofDistribution;
 
 
 /**
- * @brief Base abstract class for reference spaces (i.e BSpline and NURBS).
+ * @brief Base abstract class for reference bases (i.e BSpline and NURBS).
  *
  * @ingroup containers
  * @ingroup serializable
@@ -65,7 +65,7 @@ public:
   static const int space_dim = dim_;
   static const int range     = range_;
   static const int rank      = rank_;
-  static const bool is_physical_space = false;
+  static const bool is_physical_basis = false;
 
   /**
    * See documentation in \ref Basis
@@ -126,10 +126,10 @@ public:
   using InterBasisMap = SafeSTLVector<Index>;
 
   template <int k>
-  using SubRefSpace = ReferenceBasis<k, range, rank>;
+  using SubRefBasis = ReferenceBasis<k, range, rank>;
 
   template <int k>
-  using SubSpace = PhysicalBasis<k,range,rank, dim-k>;
+  using SubBasis = PhysicalBasis<k,range,rank, dim-k>;
 
   virtual bool is_bspline() const = 0;
 
@@ -138,7 +138,7 @@ public:
 
 
   /**
-   * Returns a const reference to the end behaviour table of the BSpline space.
+   * Returns a const reference to the end behaviour table of the BSpline basis.
    */
   virtual const EndBehaviourTable &get_end_behaviour_table() const = 0;
 
@@ -149,14 +149,14 @@ public:
 
 
   template<int sdim>
-  std::shared_ptr<const SubRefSpace<sdim> >
-  get_ref_sub_space(const int s_id,
+  std::shared_ptr<const SubRefBasis<sdim> >
+  get_ref_sub_basis(const int s_id,
                     InterBasisMap<sdim> &dof_map,
                     const std::shared_ptr<const Grid<sdim>> &sub_grid = nullptr) const;
 
   template<int sdim>
-  std::shared_ptr<const SubSpace<sdim> >
-  get_sub_space(const int s_id, InterBasisMap<sdim> &dof_map,
+  std::shared_ptr<const SubBasis<sdim> >
+  get_sub_basis(const int s_id, InterBasisMap<sdim> &dof_map,
                 SubGridMap<sdim> &elem_map) const;
 
 
@@ -177,7 +177,7 @@ protected:
 public:
   std::shared_ptr<const self_t> get_basis_previous_refinement() const;
 
-  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
+  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &basis);
 
 
 #endif // MESH_REFINEMENT
@@ -200,4 +200,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // #ifndef REFERENCE_SPACE_H_
+#endif // #ifndef __REFERENCE_BASIS_H_

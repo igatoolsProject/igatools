@@ -2,8 +2,8 @@
 
 ===============================================================
 O R I G I N A L     S P A C E
-Reference space:
-   BSpline Space:
+Reference basis:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 2 2 ]
@@ -231,7 +231,7 @@ Physical domain:
    GridFunction<2,2>
       IgGridFunction<2,2>
          ReferenceBasis<2,1,2>:
-            BSpline Space:
+            BSpline Basis:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 2 2 ]
@@ -499,8 +499,8 @@ Physical domain:
 
 ===============================================================
 R E F I N E D     S P A C E (2 elements each old element)
-Reference space:
-   BSpline Space:
+Reference basis:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 4 ]
@@ -832,7 +832,7 @@ Physical domain:
    GridFunction<2,2>
       IgGridFunction<2,2>
          ReferenceBasis<2,1,2>:
-            BSpline Space:
+            BSpline Basis:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 4 ]
@@ -1244,8 +1244,8 @@ Physical domain:
 
 ===============================================================
 R E F I N E D     S P A C E (6 elements each old element)
-Reference space:
-   BSpline Space:
+Reference basis:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 12 12 ]
@@ -2553,7 +2553,7 @@ Physical domain:
    GridFunction<2,2>
       IgGridFunction<2,2>
          ReferenceBasis<2,1,2>:
-            BSpline Space:
+            BSpline Basis:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 12 12 ]

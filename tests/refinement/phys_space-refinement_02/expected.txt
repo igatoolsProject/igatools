@@ -3,8 +3,8 @@
 
 ===============================================================
 O R I G I N A L     S P A C E
-Reference space:
-   BSpline Space:
+Reference basis:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 2 ]
@@ -181,8 +181,8 @@ Physical domain:
 
 ===============================================================
 R E F I N E D     S P A C E
-Reference space:
-   BSpline Space:
+Reference basis:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -381,8 +381,8 @@ Physical domain:
 
 ===============================================================
 O R I G I N A L     S P A C E
-Reference space:
-   BSpline Space:
+Reference basis:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 2 2 ]
@@ -597,8 +597,8 @@ Physical domain:
 
 ===============================================================
 R E F I N E D     S P A C E
-Reference space:
-   BSpline Space:
+Reference basis:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 4 ]
@@ -917,8 +917,8 @@ Physical domain:
 
 ===============================================================
 O R I G I N A L     S P A C E
-Reference space:
-   BSpline Space:
+Reference basis:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 2 2 2 ]
@@ -1219,8 +1219,8 @@ Physical domain:
 
 ===============================================================
 R E F I N E D     S P A C E
-Reference space:
-   BSpline Space:
+Reference basis:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 4 4 ]

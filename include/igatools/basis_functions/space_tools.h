@@ -749,7 +749,7 @@ project_boundary_values(
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
     InterBasisMap  dof_map;
-    const auto sub_basis = basis.template get_sub_space<sdim>(s_id, dof_map,sub_grid,elem_map);
+    const auto sub_basis = basis.template get_sub_basis<sdim>(s_id, dof_map,sub_grid,elem_map);
 
     const auto coeffs = projection_l2_function(
                           bndry_func,*sub_basis,quad,DofProperties::active);

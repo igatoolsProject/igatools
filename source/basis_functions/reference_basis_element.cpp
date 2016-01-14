@@ -35,7 +35,7 @@ ReferenceBasisElement(const std::shared_ptr<ConstBasis> &basis)
   parent_t(basis),
   basis_(basis)
 {
-//    Assert(this->get_space() != nullptr,ExcNullPtr());
+//    Assert(this->get_basis() != nullptr,ExcNullPtr());
 
   //-------------------------------------------------
   const auto &degree_table = basis->get_spline_space()->get_degree_table();

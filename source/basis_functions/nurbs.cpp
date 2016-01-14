@@ -57,7 +57,7 @@ NURBS(const SharedPtrConstnessHandler<BSpBasis> &bsp_basis,
 
   const auto w_func_basis = w_as_ig_func->get_basis();
   Assert(w_func_basis->is_bspline(),
-         ExcMessage("The space for the weight function is not BSpline."));
+         ExcMessage("The basis for the weight function is not BSpline."));
 
   const auto &n_basis_table = this->get_spline_space()->get_dof_distribution()->get_num_dofs_table();
   int comp_id = 0;
@@ -77,11 +77,11 @@ NURBS(const SharedPtrConstnessHandler<BSpBasis> &bsp_basis,
 template <int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
-create(const std::shared_ptr<BSpBasis> &bs_space,
+create(const std::shared_ptr<BSpBasis> &bs_basis,
        const std::shared_ptr<WeightFunction> &weight_func) -> shared_ptr<self_t>
 {
   auto sp = shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<BSpBasis>(bs_space),
+    new self_t(SharedPtrConstnessHandler<BSpBasis>(bs_basis),
   SharedPtrConstnessHandler<WeightFunction>(weight_func)));
   Assert(sp != nullptr, ExcNullPtr());
 
@@ -95,11 +95,11 @@ create(const std::shared_ptr<BSpBasis> &bs_space,
 template <int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
-const_create(const std::shared_ptr<const BSpBasis> &bs_space,
+const_create(const std::shared_ptr<const BSpBasis> &bs_basis,
              const std::shared_ptr<const WeightFunction> &weight_func) -> shared_ptr<const self_t>
 {
   auto sp = shared_ptr<self_t>(
-    new self_t(SharedPtrConstnessHandler<BSpBasis>(bs_space),
+    new self_t(SharedPtrConstnessHandler<BSpBasis>(bs_basis),
   SharedPtrConstnessHandler<WeightFunction>(weight_func)));
   Assert(sp != nullptr, ExcNullPtr());
 
@@ -113,10 +113,10 @@ NURBS<dim_, range_, rank_>::
 get_this_basis() const -> std::shared_ptr<const self_t >
 {
   auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
-  auto nrb_space = std::dynamic_pointer_cast<self_t>(ref_sp);
-  Assert(nrb_space != nullptr,ExcNullPtr());
+  auto nrb_basis = std::dynamic_pointer_cast<self_t>(ref_sp);
+  Assert(nrb_basis != nullptr,ExcNullPtr());
 
-  return nrb_space;
+  return nrb_basis;
 }
 
 
@@ -209,29 +209,29 @@ reset_weights(const WeightsTable &weights)
 template<int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
-get_ref_face_space(const Index face_id,
+get_ref_face_basis(const Index face_id,
                    SafeSTLVector<Index> &face_to_element_dofs,
                    typename GridType::FaceGridMap &elem_map) const
--> std::shared_ptr<RefFaceSpace>
+-> std::shared_ptr<RefFaceBasis>
 {
-  auto f_space = bsp_basis_->get_ref_face_space(face_id, face_to_element_dofs, elem_map);
+  auto f_basis = bsp_basis_->get_ref_face_basis(face_id, face_to_element_dofs, elem_map);
 
   // TODO (pauletti, Jun 11, 2014): this should be put and completed in
   // get_face_weigjts()
   const auto &v_weights = weights_;
   //const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
-  typename RefFaceSpace::WeightsTable f_weights(v_weights.get_comp_map());
+  typename RefFaceBasis::WeightsTable f_weights(v_weights.get_comp_map());
 
-  const auto n_basis = f_space->get_num_basis_table();
+  const auto n_basis = f_basis->get_num_basis_table();
   for (int comp : f_weights.get_active_components_id())
   {
     f_weights[comp].resize(n_basis[comp],1.0);
-    //        for (auto j : RefFaceSpace::dims)
+    //        for (auto j : RefFaceBasis::dims)
     //            f_weights(comp).copy_data_direction(j, v_weights(comp).get_data_direction(active_dirs[j]));
   }
 
 
-  return RefFaceSpace::create(f_space, f_weights);
+  return RefFaceBasis::create(f_basis, f_weights);
 }
 
 
@@ -239,20 +239,20 @@ get_ref_face_space(const Index face_id,
 template<int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
-get_face_space(const Index face_id,
+get_face_basis(const Index face_id,
                SafeSTLVector<Index> &face_to_element_dofs) const
--> std::shared_ptr<FaceSpace>
+-> std::shared_ptr<FaceBasis>
 {
   auto elem_map = std::make_shared<typename GridType::FaceGridMap>();
-  auto face_ref_sp = get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
+  auto face_ref_sp = get_ref_face_basis(face_id, face_to_element_dofs, *elem_map);
   auto map  = get_push_forward()->get_mapping();
 
-  auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
+  auto fmap = MappingSlice<FaceBasis::PushForwardType::dim, FaceBasis::PushForwardType::codim>::
   create(map, face_id, face_ref_sp->get_grid(), elem_map);
-  auto fpf = FaceSpace::PushForwardType::create(fmap);
-  auto face_space = FaceSpace::create(face_ref_sp,fpf);
+  auto fpf = FaceBasis::PushForwardType::create(fmap);
+  auto face_basis = FaceBasis::create(face_ref_sp,fpf);
 
-  return face_space;
+  return face_basis;
 }
 
 template <int dim_, int range_, int rank_>
@@ -284,7 +284,7 @@ refine_h_weights(
 
         SafeSTLVector<Real> knots_added(Ubar.size());
 
-        // find the knots in the refined space that are not present in the old space
+        // find the knots in the refined basis that are not present in the old basis
         auto it = std::set_difference(
                     Ubar.begin(),Ubar.end(),
                     U.begin(),U.end(),
@@ -387,7 +387,7 @@ template<int dim_, int range_, int rank_>
 template<int sdim>
 auto
 NURBS<dim_, range_, rank_>::
-get_sub_nurbs_space(const int s_id,
+get_sub_nurbs_basis(const int s_id,
                     InterBasisMap<sdim> &dof_map,
                     const std::shared_ptr<const Grid<sdim>> &sub_grid) const
 -> std::shared_ptr<const NURBS<sdim,range_,rank_> >
@@ -395,14 +395,14 @@ get_sub_nurbs_space(const int s_id,
   static_assert(sdim == 0 || (sdim > 0 && sdim < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
-  auto sub_bsp_basis = bsp_basis_->template get_sub_bspline_space<sdim>(s_id,dof_map,sub_grid);
-  auto space_sub_grid = sub_bsp_basis->get_grid();
+  auto sub_bsp_basis = bsp_basis_->template get_sub_bspline_basis<sdim>(s_id,dof_map,sub_grid);
+  auto basis_sub_grid = sub_bsp_basis->get_grid();
 
-  auto sub_w_func = weight_func_->template get_sub_function<sdim>(s_id,space_sub_grid);
+  auto sub_w_func = weight_func_->template get_sub_function<sdim>(s_id,basis_sub_grid);
 
-  auto sub_nrb_space = NURBS<sdim,range_,rank_>::const_create(sub_bsp_basis,sub_w_func);
+  auto sub_nrb_basis = NURBS<sdim,range_,rank_>::const_create(sub_bsp_basis,sub_w_func);
 
-  return sub_nrb_space;
+  return sub_nrb_basis;
 }
 
 
@@ -411,9 +411,9 @@ template<int dim_, int range_, int rank_>
 template<int k>
 auto
 NURBS<dim_, range_, rank_>::
-get_sub_space(const int s_id, InterBasisMap<k> &dof_map,
+get_sub_basis(const int s_id, InterBasisMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
--> std::shared_ptr<SubSpace<k> >
+-> std::shared_ptr<SubBasis<k> >
 {
   //TODO (martinelli Nov 27,2014): implement this function
   static_assert(k == 0 || (k > 0 && k < dim_),
@@ -425,11 +425,11 @@ get_sub_space(const int s_id, InterBasisMap<k> &dof_map,
 //    typename GridType::template InterGridMap<k> elem_map;
 //    auto sub_grid = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
 
-  auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
+  auto sub_ref_basis = get_ref_sub_basis(s_id, dof_map, sub_grid);
   auto F = IdentityFunction<dim>::create(grid);
   auto sub_map_func = SubMap::create(sub_grid, F, s_id, *elem_map);
-  auto sub_space = SubSpace<k>::create(sub_ref_space, sub_map_func);
-  return sub_space;
+  auto sub_basis = SubBasis<k>::create(sub_ref_basis, sub_map_func);
+  return sub_basis;
 #endif
   Assert(false,ExcNotImplemented());
   AssertThrow(false,ExcNotImplemented());
@@ -442,7 +442,7 @@ void
 NURBS<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
-  out.begin_item("BSpline Space:");
+  out.begin_item("BSpline Basis:");
   bsp_basis_->print_info(out);
   out.end_item();
 
@@ -565,7 +565,7 @@ serialize(Archive &ar)
                                 to_string(range_) + "_" +
                                 to_string(rank_);
 
-  ar &make_nvp(base_name,base_class<BaseSpace>(this));
+  ar &make_nvp(base_name,base_class<RefBasis>(this));
   ar &make_nvp("bsp_basis_",bsp_basis_);
 
   ar &make_nvp("weight_func_",weight_func_);

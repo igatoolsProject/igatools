@@ -1,7 +1,7 @@
 ========================================================================
 do_test
 ========================================================================
-BSpline Space:
+BSpline Basis:
    Spline Space:
       Knots without repetition:
          Number of intervals per direction: [ 4 ]
@@ -189,7 +189,7 @@ Weight function :
 ========================================================================
 do_test
 ========================================================================
-BSpline Space:
+BSpline Basis:
    Spline Space:
       Knots without repetition:
          Number of intervals per direction: [ 4 ]
@@ -395,7 +395,7 @@ Weight function :
 ========================================================================
 do_test
 ========================================================================
-BSpline Space:
+BSpline Basis:
    Spline Space:
       Knots without repetition:
          Number of intervals per direction: [ 4 ]
@@ -619,7 +619,7 @@ Weight function :
 ========================================================================
 do_test
 ========================================================================
-BSpline Space:
+BSpline Basis:
    Spline Space:
       Knots without repetition:
          Number of intervals per direction: [ 4 3 ]
@@ -899,7 +899,7 @@ Weight function :
 ========================================================================
 do_test
 ========================================================================
-BSpline Space:
+BSpline Basis:
    Spline Space:
       Knots without repetition:
          Number of intervals per direction: [ 4 3 ]
@@ -1203,7 +1203,7 @@ Weight function :
 ========================================================================
 do_test
 ========================================================================
-BSpline Space:
+BSpline Basis:
    Spline Space:
       Knots without repetition:
          Number of intervals per direction: [ 4 3 ]
@@ -1531,7 +1531,7 @@ Weight function :
 ========================================================================
 do_test
 ========================================================================
-BSpline Space:
+BSpline Basis:
    Spline Space:
       Knots without repetition:
          Number of intervals per direction: [ 4 3 2 ]
@@ -1967,7 +1967,7 @@ Weight function :
 ========================================================================
 do_test
 ========================================================================
-BSpline Space:
+BSpline Basis:
    Spline Space:
       Knots without repetition:
          Number of intervals per direction: [ 4 3 2 ]

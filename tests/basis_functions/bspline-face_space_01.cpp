@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSpline class reference subspace extraction
+ *  Test for the BSpline class reference subbasis extraction
  *
  *  author: pauletti
  *  date: 2014-11-18
@@ -31,7 +31,7 @@
 
 
 template<int sub_dim, int dim, int range=1, int rank=1>
-void sub_ref_space(TensorSize<dim> n, const int degree = 1)
+void sub_ref_basis(TensorSize<dim> n, const int degree = 1)
 {
   OUTSTART
 
@@ -48,10 +48,10 @@ void sub_ref_space(TensorSize<dim> n, const int degree = 1)
   for (auto i : UnitElement<dim>::template elems_ids<sub_dim>())
   {
     out.begin_item(to_string(i) + "-th " + "sub basis:");
-    auto sub_space =
-      basis->template get_ref_sub_space<sub_dim>(i, dof_map);
+    auto sub_basis =
+      basis->template get_ref_sub_basis<sub_dim>(i, dof_map);
     out.begin_item("Reference Basis:");
-    sub_space->print_info(out);
+    sub_basis->print_info(out);
     out.end_item();
 
     out.begin_item("Dofs sub element to basis mapping:");
@@ -68,9 +68,9 @@ void sub_ref_space(TensorSize<dim> n, const int degree = 1)
 int main()
 {
 
-  sub_ref_space<0,1>(TensorSize<1>(sequence<1>(2)));
-  sub_ref_space<1,2>(TensorSize<2>(sequence<2>(2)));
-  sub_ref_space<2,3>(TensorSize<3>(sequence<3>(2)));
+  sub_ref_basis<0,1>(TensorSize<1>(sequence<1>(2)));
+  sub_ref_basis<1,2>(TensorSize<2>(sequence<2>(2)));
+  sub_ref_basis<2,3>(TensorSize<3>(sequence<3>(2)));
 
   return  0;
 }

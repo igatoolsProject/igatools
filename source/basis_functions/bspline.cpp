@@ -146,10 +146,10 @@ BSpline<dim_, range_, rank_>::
 get_this_basis() const -> shared_ptr<const self_t>
 {
   auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
-  auto bsp_space = std::dynamic_pointer_cast<self_t>(ref_sp);
-  Assert(bsp_space != nullptr,ExcNullPtr());
+  auto bsp_basis = std::dynamic_pointer_cast<self_t>(ref_sp);
+  Assert(bsp_basis != nullptr,ExcNullPtr());
 
-  return bsp_space;
+  return bsp_basis;
 }
 
 template<int dim_, int range_, int rank_>
@@ -235,7 +235,7 @@ template<int dim_, int range_, int rank_>
 template<int sdim>
 auto
 BSpline<dim_, range_, rank_>::
-get_sub_bspline_space(const int s_id,
+get_sub_bspline_basis(const int s_id,
                       InterBasisMap<sdim> &dof_map,
                       const std::shared_ptr<const Grid<sdim>> &sub_grid_in) const
 -> std::shared_ptr<const BSpline<sdim, range_, rank_> >

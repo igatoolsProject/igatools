@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef SPACE_ELEMENT_HANDLER_H_
-#define SPACE_ELEMENT_HANDLER_H_
+#ifndef __BASIS_ELEMENT_HANDLER_H_
+#define __BASIS_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/basis.h>
@@ -64,7 +64,7 @@ protected:
   BasisHandler() = delete;
 
 
-  BasisHandler(const std::shared_ptr<const Sp> &space);
+  BasisHandler(const std::shared_ptr<const Sp> &basis);
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -145,10 +145,10 @@ public:
   virtual void print_info(LogStream &out) const = 0;
 
 
-  std::shared_ptr<const Sp> get_space() const;
+  std::shared_ptr<const Sp> get_basis() const;
 
 private:
-  std::shared_ptr<const Sp> space_;
+  std::shared_ptr<const Sp> basis_;
 
 
 
@@ -163,4 +163,4 @@ protected:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // SPACE_ELEMENT_HANDLER_H_
+#endif // __BASIS_ELEMENT_HANDLER_H_

@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef PHYSICAL_SPACE_ELEMENT_H
-#define PHYSICAL_SPACE_ELEMENT_H
+#ifndef __PHYSICAL_BASIS_ELEMENT_H
+#define __PHYSICAL_BASIS_ELEMENT_H
 
 #include <igatools/base/config.h>
 
@@ -49,13 +49,13 @@ class PhysicalBasisElement
   using parent_t = BasisElement<dim_,codim_,range_,rank_>;
 
 public :
-  using PhysSpace = PhysicalBasis<dim_,range_,rank_,codim_>;
+  using PhysBasis = PhysicalBasis<dim_,range_,rank_,codim_>;
   /** Type required by the GridIterator templated iterator */
-  using ContainerType = const PhysSpace;
+  using ContainerType = const PhysBasis;
 
-  using Basis = PhysSpace;
-  using RefBasis = typename PhysSpace::RefBasis;
-  using PushFwd = typename PhysSpace::PushFwd;
+  using Basis = PhysBasis;
+  using RefBasis = typename PhysBasis::RefBasis;
+  using PushFwd = typename PhysBasis::PushFwd;
 //    using RefElemAccessor = BasisElement<RefBasis::dim,0,RefBasis::range,RefBasis::rank,Transformation::h_grad>;
   using RefElemAccessor = ReferenceBasisElement<RefBasis::dim,RefBasis::range,RefBasis::rank>;
 
@@ -85,8 +85,8 @@ public:
    */
   PhysicalBasisElement() = delete;
 
-  PhysicalBasisElement(const std::shared_ptr<ContainerType> &space,
-                       GridIterator<RefElemAccessor> &&ref_space_element,
+  PhysicalBasisElement(const std::shared_ptr<ContainerType> &basis,
+                       GridIterator<RefElemAccessor> &&ref_basis_element,
                        GridIterator<PhysDomainElem> &&phys_domain_element);
 
 
@@ -179,14 +179,14 @@ public:
   virtual const GridElement<dim_> &get_grid_element() const override final;
 
   /**
-   * Return a const reference of the reference space element.
+   * Return a const reference of the reference basis element.
    */
-  const RefElemAccessor &get_ref_space_element() const;
+  const RefElemAccessor &get_ref_basis_element() const;
 
   /**
-   * Return a non-const reference of the reference space element.
+   * Return a non-const reference of the reference basis element.
    */
-  RefElemAccessor &get_ref_space_element();
+  RefElemAccessor &get_ref_basis_element();
 
 
   /**
@@ -226,7 +226,7 @@ public:
    *
    * @brief The comparison operators compares the <em>position</em> of the element in the grid.
    *
-   * @warning To be comparable, two BasisElement objects must be defined on the same space
+   * @warning To be comparable, two BasisElement objects must be defined on the same basis
    * (and therefore on the same grid),
    * otherwise an assertion will be raised (in Debug mode).
    */
@@ -240,18 +240,18 @@ public:
   ///@}
 
 
-  std::shared_ptr<const PhysSpace> get_physical_space() const;
+  std::shared_ptr<const PhysBasis> get_physical_basis() const;
 
 
 private:
   template <class Accessor> friend class GridIteratorBase;
   template <int,int,int,int> friend class PhysicalBasisHandler;
 
-  GridIterator<RefElemAccessor> ref_space_element_;
+  GridIterator<RefElemAccessor> ref_basis_element_;
 
   GridIterator<PhysDomainElem> phys_domain_element_;
 
-  std::shared_ptr<const PhysSpace> phys_space_;
+  std::shared_ptr<const PhysBasis> phys_basis_;
 
   /**
    * Returns true if two elements belongs from the same Basis.

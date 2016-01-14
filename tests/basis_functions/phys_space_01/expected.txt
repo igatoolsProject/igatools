@@ -2,7 +2,7 @@
 create_phys_space
 ========================================================================
 PhysicalBasis<1,1,1,0,Transformation::h_grad>
-   Reference space:
+   Reference basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 1 ]

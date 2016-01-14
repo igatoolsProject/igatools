@@ -35,12 +35,12 @@ using MapFunc= Function<dim, 0, dim + codim, 1>;
 
 template<int dim_,int range_,int rank_,int codim_>
 PhysicalBasisHandler<dim_,range_,rank_,codim_>::
-PhysicalBasisHandler(std::shared_ptr<const PhysSpace> space)
+PhysicalBasisHandler(std::shared_ptr<const PhysBasis> basis)
   :
-  base_t(space),
-  ref_space_handler_(space->get_reference_basis()->create_cache_handler()),
-  phys_domain_handler_(space->get_domain()->create_cache_handler()),
-  phys_space_(space)
+  base_t(basis),
+  ref_basis_handler_(basis->get_reference_basis()->create_cache_handler()),
+  phys_domain_handler_(basis->get_domain()->create_cache_handler()),
+  phys_basis_(basis)
 {}
 
 
@@ -52,7 +52,7 @@ auto
 PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 print_info(LogStream &out) const -> void
 {
-  ref_space_handler_->print_info(out);
+  ref_basis_handler_->print_info(out);
   //  PFCache::print_info(out);
 }
 
@@ -63,13 +63,13 @@ PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 SetFlagsDispatcher::
 SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
                   const Transformation &transformation_type,
-                  RefElemHandler &ref_space_handler,
+                  RefElemHandler &ref_basis_handler,
                   PhysDomainHandler &phys_domain_handler,
                   SafeSTLArray<typename space_element::Flags, dim+1> &flags)
   :
   phys_elem_flag_(phys_elem_flag),
   transformation_type_(transformation_type),
-  ref_space_handler_(ref_space_handler),
+  ref_basis_handler_(ref_basis_handler),
   phys_domain_handler_(phys_domain_handler),
   flags_(flags)
 {}
@@ -82,11 +82,11 @@ PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 SetFlagsDispatcher::
 operator()(const Topology<sdim> &topology)
 {
-  ref_space_handler_.template set_flags<sdim>(
-    phys_space_to_reference_space_flag(transformation_type_,phys_elem_flag_));
+  ref_basis_handler_.template set_flags<sdim>(
+    phys_basis_to_reference_basis_flag(transformation_type_,phys_elem_flag_));
 
   phys_domain_handler_.template set_flags<sdim>(
-    phys_space_to_domain_flag(transformation_type_,phys_elem_flag_));
+    phys_basis_to_domain_flag(transformation_type_,phys_elem_flag_));
 
   flags_[sdim] = phys_elem_flag_;
 }
@@ -95,12 +95,12 @@ operator()(const Topology<sdim> &topology)
 template<int dim_,int range_,int rank_,int codim_>
 PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 InitCacheDispatcher::
-InitCacheDispatcher(const RefElemHandler &ref_space_handler,
+InitCacheDispatcher(const RefElemHandler &ref_basis_handler,
                     const PhysDomainHandler &phys_domain_handler,
                     const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
                     BaseElem &elem)
   :
-  ref_space_handler_(ref_space_handler),
+  ref_basis_handler_(ref_basis_handler),
   phys_domain_handler_(phys_domain_handler),
   flags_(flags),
   elem_(elem)
@@ -114,19 +114,19 @@ PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 InitCacheDispatcher::
 operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 {
-  using PhysSpaceElem = PhysicalBasisElement<dim_,range_,rank_,codim_>;
-  auto &phys_space_elem  = dynamic_cast<PhysSpaceElem &>(elem_);
+  using PhysBasisElem = PhysicalBasisElement<dim_,range_,rank_,codim_>;
+  auto &phys_basis_elem  = dynamic_cast<PhysBasisElem &>(elem_);
 
-  ref_space_handler_.template init_cache<sdim>(
-    *phys_space_elem.ref_space_element_,quad);
+  ref_basis_handler_.template init_cache<sdim>(
+    *phys_basis_elem.ref_basis_element_,quad);
 
   phys_domain_handler_.init_cache(
-    *phys_space_elem.phys_domain_element_,quad);
+    *phys_basis_elem.phys_domain_element_,quad);
 
 
-  auto &cache = phys_space_elem.all_sub_elems_cache_;
+  auto &cache = phys_basis_elem.all_sub_elems_cache_;
 
-  const auto n_basis = phys_space_elem.get_num_basis(DofProperties::active);
+  const auto n_basis = phys_basis_elem.get_num_basis(DofProperties::active);
 
   const auto n_pts = quad->get_num_points();
 
@@ -144,15 +144,15 @@ template<int dim_,int range_,int rank_,int codim_>
 PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 FillCacheDispatcher::
 FillCacheDispatcher(const int s_id,
-                    const RefElemHandler &ref_space_handler,
+                    const RefElemHandler &ref_basis_handler,
                     const PhysDomainHandler &phys_domain_handler,
-                    const self_t &phys_space_handler,
+                    const self_t &phys_basis_handler,
                     BaseElem &elem)
   :
   s_id_(s_id),
-  ref_space_handler_(ref_space_handler),
+  ref_basis_handler_(ref_basis_handler),
   phys_domain_handler_(phys_domain_handler),
-  phys_space_handler_(phys_space_handler),
+  phys_basis_handler_(phys_basis_handler),
   elem_(elem)
 {}
 
@@ -164,17 +164,17 @@ PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 FillCacheDispatcher::
 operator()(const Topology<sdim> &topology)
 {
-  using PhysSpaceElem = PhysicalBasisElement<dim_,range_,rank_,codim_>;
-  auto &phys_space_elem  = dynamic_cast<PhysSpaceElem &>(elem_);
+  using PhysBasisElem = PhysicalBasisElement<dim_,range_,rank_,codim_>;
+  auto &phys_basis_elem  = dynamic_cast<PhysBasisElem &>(elem_);
 
-  auto &ref_space_elem = *phys_space_elem.ref_space_element_;
-  auto &phys_domain_elem = *phys_space_elem.phys_domain_element_;
+  auto &ref_basis_elem = *phys_basis_elem.ref_basis_element_;
+  auto &phys_domain_elem = *phys_basis_elem.phys_domain_element_;
 
-  ref_space_handler_.template fill_cache<sdim>(ref_space_elem,s_id_);
+  ref_basis_handler_.template fill_cache<sdim>(ref_basis_elem,s_id_);
 
   phys_domain_handler_.template fill_cache<sdim>(phys_domain_elem,s_id_);
 
-  auto &all_sub_elems_cache = phys_space_elem.all_sub_elems_cache_;
+  auto &all_sub_elems_cache = phys_basis_elem.all_sub_elems_cache_;
   auto &sub_elem_cache = all_sub_elems_cache.template get_sub_elem_cache<sdim>(s_id_);
 
   using _Value = typename BaseElem::_Value;
@@ -182,14 +182,14 @@ operator()(const Topology<sdim> &topology)
   using _Hessian = typename BaseElem::_Hessian;
   using _Divergence = typename BaseElem::_Divergence;
 
-  const auto phys_space = phys_space_elem.get_physical_space();
-  const typename PhysSpace::PushFwd push_fwd(phys_space->get_transformation_type());
+  const auto phys_basis = phys_basis_elem.get_physical_basis();
+  const typename PhysBasis::PushFwd push_fwd(phys_basis->get_transformation_type());
   if (sub_elem_cache.template status_fill<_Value>())
   {
     push_fwd.template
     transform_0<RefBasis::range,RefBasis::rank,sdim>(
       s_id_,
-      ref_space_elem,
+      ref_basis_elem,
       phys_domain_elem,
       sub_elem_cache);
   }
@@ -197,13 +197,13 @@ operator()(const Topology<sdim> &topology)
   {
     push_fwd.template
     transform_1<RefBasis::range,RefBasis::rank,sdim>(
-      s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
+      s_id_,ref_basis_elem,phys_domain_elem,sub_elem_cache);
   }
   if (sub_elem_cache.template status_fill<_Hessian>())
   {
     push_fwd.template
     transform_2<RefBasis::range,RefBasis::rank,sdim>(
-      s_id_,ref_space_elem,phys_domain_elem,sub_elem_cache);
+      s_id_,ref_basis_elem,phys_domain_elem,sub_elem_cache);
   }
   if (sub_elem_cache.template status_fill<_Divergence>())
   {
@@ -228,8 +228,8 @@ set_flags_impl(const topology_variant &topology,
 {
   auto set_flag_dispatcher = SetFlagsDispatcher(
                                flag,
-                               phys_space_->get_transformation_type(),
-                               *ref_space_handler_,
+                               phys_basis_->get_transformation_type(),
+                               *ref_basis_handler_,
                                *phys_domain_handler_,
                                this->flags_);
   boost::apply_visitor(set_flag_dispatcher,topology);
@@ -243,7 +243,7 @@ init_cache_impl(BaseElem &elem,
                 const eval_pts_variant &quad) const
 {
   auto init_cache_dispatcher =
-    InitCacheDispatcher(*ref_space_handler_,*phys_domain_handler_,this->flags_,elem);
+    InitCacheDispatcher(*ref_basis_handler_,*phys_domain_handler_,this->flags_,elem);
   boost::apply_visitor(init_cache_dispatcher,quad);
 }
 
@@ -256,7 +256,7 @@ fill_cache_impl(const topology_variant &topology,
                 const int s_id) const
 {
   auto fill_cache_dispatcher =
-    FillCacheDispatcher(s_id,*ref_space_handler_,*phys_domain_handler_,*this,elem);
+    FillCacheDispatcher(s_id,*ref_basis_handler_,*phys_domain_handler_,*this,elem);
   boost::apply_visitor(fill_cache_dispatcher,topology);
 }
 

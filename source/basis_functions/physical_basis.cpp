@@ -51,7 +51,7 @@ PhysicalBasis(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
   transformation_type_(transformation_type)
 {
   Assert(this->get_grid() == phys_domain_->get_grid_function()->get_grid(),
-         ExcMessage("The space and the physical domain must have the same grid!"));
+         ExcMessage("The basis and the physical domain must have the same grid!"));
 
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
 }
@@ -99,10 +99,10 @@ PhysicalBasis<dim_, range_, rank_, codim_>::
 get_this_basis() const -> std::shared_ptr<const self_t >
 {
   auto sp = const_cast<self_t *>(this)->shared_from_this();
-  auto this_space = std::dynamic_pointer_cast<self_t>(sp);
-  Assert(this_space != nullptr,ExcNullPtr());
+  auto this_basis = std::dynamic_pointer_cast<self_t>(sp);
+  Assert(this_basis != nullptr,ExcNullPtr());
 
-  return this_space;
+  return this_basis;
 }
 
 #if 0
@@ -186,22 +186,22 @@ template <int dim_, int range_, int rank_, int codim_>
 template<int sdim>
 auto
 PhysicalBasis<dim_, range_, rank_, codim_>::
-get_sub_space(const int s_id, InterBasisMap<sdim> &dof_map,
+get_sub_basis(const int s_id, InterBasisMap<sdim> &dof_map,
               const std::shared_ptr<const Grid<sdim>> &sub_grid,
               SubGridMap<sdim> &elem_map,
               EnableIf<(dim_ != 0) &&(sdim>=0)> *) const
--> std::shared_ptr<const SubSpace<sdim> >
+-> std::shared_ptr<const SubBasis<sdim> >
 {
   static_assert((dim_ == 0 && sdim == 0) || (dim_ > 0 && sdim < dim_),
   "The dimensionality of the sub_grid is not valid.");
 
 
-  const auto sub_ref_basis = ref_basis_->get_ref_sub_space(s_id, dof_map, sub_grid);
+  const auto sub_ref_basis = ref_basis_->get_ref_sub_basis(s_id, dof_map, sub_grid);
 
   const auto sub_domain = this->phys_domain_->get_sub_domain(s_id,elem_map,sub_grid);
 
 
-  auto sub_phys_basis = SubSpace<sdim>::const_create(sub_ref_basis, sub_domain);
+  auto sub_phys_basis = SubBasis<sdim>::const_create(sub_ref_basis, sub_domain);
 
   return sub_phys_basis;
 }
@@ -212,19 +212,19 @@ get_sub_space(const int s_id, InterBasisMap<sdim> &dof_map,
 template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalBasis<dim_, range_, rank_, codim_>::
-get_face_space(const Index face_id,
-               SafeSTLVector<Index> &face_to_element_dofs) const -> shared_ptr<FaceSpace>
+get_face_basis(const Index face_id,
+               SafeSTLVector<Index> &face_to_element_dofs) const -> shared_ptr<FaceBasis>
 {
   auto elem_map = std::make_shared<typename GridType::FaceGridMap >();
-  auto face_ref_sp = ref_basis_->get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
+  auto face_ref_sp = ref_basis_->get_ref_face_basis(face_id, face_to_element_dofs, *elem_map);
   auto map  = push_forward_->get_mapping();
 
-  auto fmap = MappingSlice<FaceSpace::PushForwardType::dim, FaceSpace::PushForwardType::codim>::
+  auto fmap = MappingSlice<FaceBasis::PushForwardType::dim, FaceBasis::PushForwardType::codim>::
   create(map, face_id, face_ref_sp->get_grid(), elem_map);
-  auto fpf = FaceSpace::PushForwardType::create(fmap);
-  auto face_space = FaceSpace::create(face_ref_sp,fpf);
+  auto fpf = FaceBasis::PushForwardType::create(fmap);
+  auto face_basis = FaceBasis::create(face_ref_sp,fpf);
 
-  return face_space;
+  return face_basis;
 }
 
 
@@ -249,7 +249,7 @@ void
 PhysicalBasis<dim_, range_, rank_, codim_>::
 print_info(LogStream &out) const
 {
-  out.begin_item("Reference space:");
+  out.begin_item("Reference basis:");
   ref_basis_->print_info(out);
   out.end_item();
 
@@ -324,19 +324,19 @@ rebuild_after_insert_knots(
 template <int dim_, int range_, int rank_, int codim_>
 void
 PhysicalBasis<dim_, range_, rank_, codim_>::
-create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &basis)
 {
-  Assert(space != nullptr, ExcNullPtr());
-  Assert(&(*space) == &(*this), ExcMessage("Different objects."));
+  Assert(basis != nullptr, ExcNullPtr());
+  Assert(&(*basis) == &(*this), ExcMessage("Different objects."));
 
   auto func_to_connect =
     std::bind(&self_t::rebuild_after_insert_knots,
-              space.get(),
+              basis.get(),
               std::placeholders::_1,
               std::placeholders::_2);
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  std::const_pointer_cast<Grid<dim>>(ref_basis_->get_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
+  std::const_pointer_cast<Grid<dim>>(ref_basis_->get_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(basis));
 }
 
 template <int dim_, int range_, int rank_, int codim_>
@@ -358,7 +358,7 @@ PhysicalBasis<dim_, range_, rank_, codim_>::
 serialize(Archive &ar)
 {
   using std::to_string;
-  const std::string base_name = "Space_" +
+  const std::string base_name = "Basis_" +
                                 to_string(dim_) + "_" +
                                 to_string(codim_) + "_" +
                                 to_string(range_) + "_" +

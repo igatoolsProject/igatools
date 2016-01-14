@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef REFERENCE_ELEMENT_HANDLER_H_
-#define REFERENCE_ELEMENT_HANDLER_H_
+#ifndef __REFERENCE_BASIS_HANDLER_H_
+#define __REFERENCE_BASIS_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/flags_handler.h>
@@ -65,7 +65,7 @@ protected:
   ReferenceBasisHandler() = default;
 
 
-  ReferenceBasisHandler(const std::shared_ptr<const Basis> &space);
+  ReferenceBasisHandler(const std::shared_ptr<const Basis> &basis);
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -146,5 +146,5 @@ eval_divergences_from_gradients(const ValueVector<Grad> &gradients, ValueVector<
 IGA_NAMESPACE_CLOSE
 
 
-#endif // REFERENCE_ELEMENT_HANDLER_H_
+#endif // __REFERENCE_BASIS_HANDLER_H_
 

@@ -30,22 +30,22 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_,int range_,int rank_,int codim_>
 PhysicalBasisElement<dim_,range_,rank_,codim_>::
-PhysicalBasisElement(const std::shared_ptr<ContainerType> &phys_space,
-                     GridIterator<RefElemAccessor> &&ref_space_element,
+PhysicalBasisElement(const std::shared_ptr<ContainerType> &phys_basis,
+                     GridIterator<RefElemAccessor> &&ref_basis_element,
                      GridIterator<PhysDomainElem> &&phys_domain_element)
   :
-  parent_t(phys_space),
-  ref_space_element_(std::move(ref_space_element)),
+  parent_t(phys_basis),
+  ref_basis_element_(std::move(ref_basis_element)),
   phys_domain_element_(std::move(phys_domain_element)),
-  phys_space_(phys_space)
+  phys_basis_(phys_basis)
 {}
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
 PhysicalBasisElement<dim_,range_,rank_,codim_>::
-get_physical_space() const -> std::shared_ptr<const PhysSpace>
+get_physical_basis() const -> std::shared_ptr<const PhysBasis>
 {
-  return phys_space_;
+  return phys_basis_;
 }
 
 template<int dim_,int range_,int rank_,int codim_>
@@ -75,12 +75,12 @@ PhysicalBasisElement(const PhysicalBasisElement<dim_,range_,rank_,codim_> &in,
 {
   if (copy_policy == CopyPolicy::shallow)
   {
-    ref_space_element_ = in.ref_space_element_;
+    ref_basis_element_ = in.ref_basis_element_;
     phys_domain_element_ = in.phys_domain_element_;
   }
   else
   {
-    ref_space_element_ = std::dynamic_pointer_cast<RefElemAccessor>(in.ref_space_element_->clone());
+    ref_basis_element_ = std::dynamic_pointer_cast<RefElemAccessor>(in.ref_basis_element_->clone());
     phys_domain_element_ = make_shared<PhysDomainElem>(*in.phys_domain_element_);
   }
 
@@ -97,7 +97,7 @@ operator++()
 {
   ++(*phys_domain_element_);
 
-  ++(*ref_space_element_);
+  ++(*ref_basis_element_);
 }
 
 template<int dim_,int range_,int rank_,int codim_>
@@ -105,7 +105,7 @@ void
 PhysicalBasisElement<dim_,range_,rank_,codim_>::
 move_to(const IndexType &elem_id)
 {
-  ref_space_element_->move_to(elem_id);
+  ref_basis_element_->move_to(elem_id);
   phys_domain_element_->move_to(elem_id);
 }
 
@@ -154,7 +154,7 @@ PhysicalBasisElement<dim_,range_,rank_,codim_>::
 move_to(const Index flat_index)
 {
   this->get_grid_element().move_to(flat_index);
-  ref_space_element_->move_to(flat_index);
+  ref_basis_element_->move_to(flat_index);
   phys_domain_element_->move_to(flat_index);
 }
 #endif
@@ -164,17 +164,17 @@ move_to(const Index flat_index)
 template<int dim_,int range_,int rank_,int codim_>
 auto
 PhysicalBasisElement<dim_,range_,rank_,codim_>::
-get_ref_space_element() const -> const RefElemAccessor &
+get_ref_basis_element() const -> const RefElemAccessor &
 {
-  return dynamic_cast<const RefElemAccessor &>(*ref_space_element_);
+  return dynamic_cast<const RefElemAccessor &>(*ref_basis_element_);
 }
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
 PhysicalBasisElement<dim_,range_,rank_,codim_>::
-get_ref_space_element() -> RefElemAccessor &
+get_ref_basis_element() -> RefElemAccessor &
 {
-  return dynamic_cast<RefElemAccessor &>(*ref_space_element_);
+  return dynamic_cast<RefElemAccessor &>(*ref_basis_element_);
 }
 
 #if 0
@@ -183,7 +183,7 @@ auto
 PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_grid() const -> const std::shared_ptr<const Grid<dim> >
 {
-  return this->get_ref_space_element().get_grid();
+  return this->get_ref_basis_element().get_grid();
 }
 #endif
 
@@ -221,7 +221,7 @@ print_info(LogStream &out) const
                  to_string(RefBasis::dim) + "," +
                  to_string(RefBasis::range) + "," +
                  to_string(RefBasis::rank) + ">");
-  ref_space_element_->print_info(out);
+  ref_basis_element_->print_info(out);
   out.end_item();
 
   out.begin_item("DomainElement<" +
@@ -231,7 +231,7 @@ print_info(LogStream &out) const
   out.end_item();
 
   std::string transf_type;
-  auto type = phys_space_->get_transformation_type();
+  auto type = phys_basis_->get_transformation_type();
   if (type == Transformation::h_grad)
     transf_type = "h_grad";
   else if (type == Transformation::h_div)
@@ -255,7 +255,7 @@ print_cache_info(LogStream &out) const
                  to_string(RefBasis::dim) + "," +
                  to_string(RefBasis::range) + "," +
                  to_string(RefBasis::rank) + "> cache:");
-  ref_space_element_->print_cache_info(out);
+  ref_basis_element_->print_cache_info(out);
   out.end_item();
 
   out.begin_item("DomainElement<" +
@@ -283,7 +283,7 @@ operator!=(const parent_t &a) const
   const self_t &elem = dynamic_cast<const self_t &>(a);
   Assert(this->is_comparable_with(elem),
          ExcMessage("The elements are not comparable"));
-  return (ref_space_element_ != elem.ref_space_element_) ||
+  return (ref_basis_element_ != elem.ref_basis_element_) ||
          (phys_domain_element_ != elem.phys_domain_element_);
 }
 
@@ -294,7 +294,7 @@ bool
 PhysicalBasisElement<dim_,range_,rank_,codim_>::
 is_comparable_with(const self_t &elem) const
 {
-  return (this->get_space_basis() == elem.get_space_basis());
+  return (this->get_basis() == elem.get_basis());
 }
 
 

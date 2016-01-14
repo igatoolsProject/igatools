@@ -131,7 +131,7 @@ public:
   /**
    * Number of non-zero scalar basis functions associated
    * with the i-th space component on the element.
-   * This makes sense as a reference B-spline space
+   * This makes sense as a reference B-spline basis
    * is only allowed to be of the cartesian product type
    * V = V1 x V2 x ... X Vn.
    */

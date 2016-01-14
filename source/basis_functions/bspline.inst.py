@@ -27,44 +27,44 @@ data = Instantiation(include_files)
 
 sub_dim_members = \
  ['std::shared_ptr<const typename class::template BSpline<sdim,range,rank>> ' + 
-  'class::get_sub_bspline_space<sdim>(const int s_id, ' + 
+  'class::get_sub_bspline_basis<sdim>(const int s_id, ' + 
   'InterBasisMap<sdim> &dof_map, ' +
   'const std::shared_ptr<const Grid<sdim>> &sub_grid) const'
 #  ,
-#  'std::shared_ptr<typename class::template SubSpace<k>> ' + 
-#  'class::get_sub_space<k>(const int sub_elem_id, ' + 
+#  'std::shared_ptr<typename class::template SubBasis<k>> ' + 
+#  'class::get_sub_basis<k>(const int sub_elem_id, ' + 
 #  'InterBasisMap<k> &dof_map, SubGridMap<k> &elem_map) const;'
   ]
  
 
 
-spaces = ['BSpline<0,0,1>']
+bases = ['BSpline<0,0,1>']
 templated_funcs = []
 
 for x in inst.sub_ref_sp_dims:
-    space = 'BSpline<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    spaces.append(space)
+    basis = 'BSpline<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    bases.append(basis)
     for fun in sub_dim_members:
         for k in range(0,max(x.dim-1,0)+1):
 #        k = max(x.dim-1,0)
-            s = fun.replace('class', space).replace('sdim','%d' % (k)).replace('range','%d' % (x.range)).replace('rank','%d' % (x.rank));
+            s = fun.replace('class', basis).replace('sdim','%d' % (k)).replace('range','%d' % (x.range)).replace('rank','%d' % (x.rank));
             templated_funcs.append(s)
 
 
 for x in inst.ref_sp_dims:
-    space = 'BSpline<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    spaces.append(space)
+    basis = 'BSpline<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    bases.append(basis)
     for fun in sub_dim_members:
         for k in range(0,max(x.dim-1,0)+1):
 #        for k in inst.sub_dims(x.dim):
 #            if (k < x.dim):
-                s = fun.replace('class', space).replace('sdim','%d' % (k)).replace('range','%d' % (x.range)).replace('rank','%d' % (x.rank));
+                s = fun.replace('class', basis).replace('sdim','%d' % (k)).replace('range','%d' % (x.range)).replace('rank','%d' % (x.rank));
                 templated_funcs.append(s)
             
             
             
-for space in unique(spaces):
-    f.write('template class %s ;\n' %space)
+for basis in unique(bases):
+    f.write('template class %s ;\n' %basis)
 
 for func in unique(templated_funcs):
     f.write('template %s ;\n' %func)
@@ -76,9 +76,9 @@ f.write('#ifdef SERIALIZATION\n')
 
 archives = ['OArchive','IArchive']
 
-for space in unique(spaces):
+for basis in unique(bases):
     for ar in archives:
-        f.write('template void %s::serialize(%s&);\n' %(space,ar))
+        f.write('template void %s::serialize(%s&);\n' %(basis,ar))
 f.write('#endif // SERIALIZATION\n')
 #---------------------------------------------------
 

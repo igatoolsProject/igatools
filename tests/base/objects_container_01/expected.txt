@@ -999,7 +999,7 @@ const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
       
    
    Object Id: 6
-      BSpline Space:
+      BSpline Basis:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 ]
@@ -1458,7 +1458,7 @@ const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
       
    
    Object Id: 17
-      BSpline Space:
+      BSpline Basis:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 ]
@@ -1785,7 +1785,7 @@ const ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
       
    
    Object Id: 28
-      BSpline Space:
+      BSpline Basis:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 ]
@@ -2386,7 +2386,7 @@ const ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
       
    
    Object Id: 39
-      BSpline Space:
+      BSpline Basis:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 3 ]
@@ -2855,7 +2855,7 @@ const ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
       
    
    Object Id: 50
-      BSpline Space:
+      BSpline Basis:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 3 ]
@@ -3564,7 +3564,7 @@ const ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
       
    
    Object Id: 61
-      BSpline Space:
+      BSpline Basis:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 3 2 ]
@@ -5184,8 +5184,8 @@ PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
 
 const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
    Object Id: 9
-      Reference space:
-         BSpline Space:
+      Reference basis:
+         BSpline Basis:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
@@ -5397,8 +5397,8 @@ PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
 
 const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 1
    Object Id: 20
-      Reference space:
-         BSpline Space:
+      Reference basis:
+         BSpline Basis:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
@@ -5624,8 +5624,8 @@ PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
 
 const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 1
    Object Id: 31
-      Reference space:
-         BSpline Space:
+      Reference basis:
+         BSpline Basis:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
@@ -5869,8 +5869,8 @@ PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
 
 const PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
    Object Id: 42
-      Reference space:
-         BSpline Space:
+      Reference basis:
+         BSpline Basis:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 ]
@@ -6190,8 +6190,8 @@ PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
 
 const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 1
    Object Id: 53
-      Reference space:
-         BSpline Space:
+      Reference basis:
+         BSpline Basis:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 ]
@@ -6535,8 +6535,8 @@ PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
 
 const PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
    Object Id: 64
-      Reference space:
-         BSpline Space:
+      Reference basis:
+         BSpline Basis:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 2 ]

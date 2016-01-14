@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSpline class subspace extraction
+ *  Test for the BSpline class subbasis extraction
  *
  *  author: pauletti
  *  date: 2014-11-18
@@ -31,7 +31,7 @@
 
 
 template<int sub_dim, int dim, int range=1, int rank=1>
-void sub_space(TensorSize<dim> n, const int degree = 1)
+void sub_basis(TensorSize<dim> n, const int degree = 1)
 {
   OUTSTART
 
@@ -51,7 +51,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
 //    auto sub_grid = space->get_grid()->template get_sub_grid<sub_dim>(i, elem_map);
     out.begin_item(to_string(i) + "-th " + "sub basis:");
     auto sub_basis =
-      basis->template get_sub_space<sub_dim>(i, dof_map, elem_map);
+      basis->template get_sub_basis<sub_dim>(i, dof_map, elem_map);
     out.begin_item("Basis:");
     sub_basis->print_info(out);
     out.end_item();
@@ -70,9 +70,9 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
 int main()
 {
 
-  sub_space<0,1>(TensorSize<1>(sequence<1>(2)));
-  sub_space<1,2>(TensorSize<2>(sequence<2>(2)));
-  sub_space<2,3>(TensorSize<3>(sequence<3>(2)));
+  sub_basis<0,1>(TensorSize<1>(sequence<1>(2)));
+  sub_basis<1,2>(TensorSize<2>(sequence<2>(2)));
+  sub_basis<2,3>(TensorSize<3>(sequence<3>(2)));
 
   return  0;
 }

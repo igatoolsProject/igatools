@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __BSPLINE_SPACE_H_
-#define __BSPLINE_SPACE_H_
+#ifndef __BSPLINE_H_
+#define __BSPLINE_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
@@ -36,7 +36,7 @@ template <int, int, int> class BSplineElement;
 template <int, int, int> class BSplineHandler;
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
- * valued B-spline space.
+ * valued B-spline basis.
  * This object can be thought of as providing the
  * B-spline basis functions of a spline space.
  * The space is determined by:
@@ -53,7 +53,7 @@ template <int, int, int> class BSplineHandler;
  * the class provides.
  * @todo enter a glossary for create idiom technique and refer from here
  * \code
- * auto space = BSpline<dim>::create();
+ * auto basis = BSpline<dim>::create();
  * \endcode
  *
  * \section eval Evaluating basis function
@@ -67,13 +67,12 @@ template <int, int, int> class BSplineHandler;
  * They are internally stored in a grid-like multiarray container,
  * called the index space.
  * It works together with the index_space_offset which for each element
- * provides a view of the index
- * space to know which
+ * provides a view of the index space to know which
  * are the non-zero basis function on each element, what we generally
  * refer to as the local to global mapping.
  *
  * \section bezier Storage of the basis functions (Bezier Extraction)
- * The basis functions on each element are stored in the Bspline space
+ * The basis functions on each element are stored in the Bspline basis
  * as the 1D Bezier extraction operator.
  * When they need to be evaluated the operator applied to the
  * Berenstein polynomials,
@@ -81,7 +80,7 @@ template <int, int, int> class BSplineHandler;
  *
  * @todo write a module about cache optimization and handling.
  *
- * \section hom_range Optimizing homogeneous range type vector spaces
+ * \section hom_range Optimizing homogeneous range type vector basis
  *
  * \author martinelli, 2012, 2013, 2014
  * \author pauletti, 2012, 2013, 2014
@@ -112,7 +111,7 @@ public:
   static const int space_dim = dim_;
   static const int range     = range_;
   static const int rank      = rank_;
-  static const bool is_physical_space = false;
+  static const bool is_physical_basis = false;
 
 public:
   using typename RefBasis::Point;
@@ -214,14 +213,14 @@ protected:
   /**
    * Copy constructor. Not allowed to be used.
    */
-  BSpline(const self_t &space) = delete;
+  BSpline(const self_t &basis) = delete;
   ///@}
 
   /** @name Assignment operators */
   ///@{
   /** Copy assignment. Not allowed to be used. */
   self_t &
-  operator=(const self_t &space) = delete;
+  operator=(const self_t &basis) = delete;
   ///@}
 
 public:
@@ -235,21 +234,21 @@ public:
 
 
   /**
-   * Construct a sub space of dimension k conforming to
-   * the subspace sub element sub_elem_id and a map from the elements of
+   * Construct a sub basis of dimension k conforming to
+   * the subbasis sub element sub_elem_id and a map from the elements of
    * the sub_element grid to the corresponding element of the current
    * grid.
    */
   template<int sdim>
   std::shared_ptr<const BSpline<sdim,range_,rank_> >
-  get_sub_bspline_space(const int sub_elem_id,
+  get_sub_bspline_basis(const int sub_elem_id,
                         InterBasisMap<sdim> &dof_map,
                         const std::shared_ptr<const Grid<sdim>> &sub_grid) const;
 
 #if 0
   template<int k>
-  std::shared_ptr<SubSpace<k> >
-  get_sub_space(const int s_id, InterBasisMap<k> &dof_map,
+  std::shared_ptr<SubBasis<k> >
+  get_sub_basis(const int s_id, InterBasisMap<k> &dof_map,
                 SubGridMap<k> &elem_map) const;
 #endif
 
@@ -268,12 +267,12 @@ public:
 
 
   /**
-   * Returns a reference to the end behaviour table of the BSpline space.
+   * Returns a reference to the end behaviour table of the BSpline basis.
    */
   virtual const EndBehaviourTable &get_end_behaviour_table() const override final;
 
   /**
-   * Prints internal information about the space.
+   * Prints internal information about the basis.
    * @note Mostly used for debugging and testing.
    */
   virtual void print_info(LogStream &out) const override final;
@@ -333,7 +332,7 @@ public:
 public:
   DeclException1(ExcScalarRange, int,
                  << "Range " << arg1 << "should be 0 for a scalar valued"
-                 << " space.");
+                 << " basis.");
 
 
   virtual bool is_bspline() const override final;
@@ -379,5 +378,5 @@ IGA_NAMESPACE_CLOSE
 
 
 
-#endif /* __BSPLINE_SPACE_H_ */
+#endif /* __BSPLINE_H_ */
 

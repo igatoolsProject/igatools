@@ -74,9 +74,9 @@ protected:
   using ElementIterator = typename Basis::ElementIterator;
   using ElementAccessor = typename Basis::ElementAccessor;
 
-  using BaseSpace = ReferenceBasis<dim_,range_,rank_>;
-  using RefElementIterator = typename BaseSpace::ElementIterator;
-  using RefElementAccessor = typename BaseSpace::ElementAccessor;
+  using RefBasis = ReferenceBasis<dim_,range_,rank_>;
+  using RefElementIterator = typename RefBasis::ElementIterator;
+  using RefElementAccessor = typename RefBasis::ElementAccessor;
 
 
 public:
@@ -92,7 +92,7 @@ public:
    */
   NURBSHandler() = delete;
 
-  NURBSHandler(std::shared_ptr<const Basis> space);
+  NURBSHandler(std::shared_ptr<const Basis> basis);
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -149,7 +149,7 @@ private:
   /**
    * Returns the NURBS used to define the NURBSHandler object.
    */
-  std::shared_ptr<const Basis> get_nurbs_space() const;
+  std::shared_ptr<const Basis> get_nurbs_basis() const;
 
 
 

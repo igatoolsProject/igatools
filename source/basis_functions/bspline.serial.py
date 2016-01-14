@@ -28,7 +28,7 @@ data = Instantiation(include_files)
 
 types = ['BasisEndBehaviour']
 
-spaces = []
+bases = []
 arrays = [] 
 operators = []
 
@@ -36,8 +36,8 @@ dim = 0
 range = 0
 rank = 1
 n_components = range ** rank
-space = 'BSpline<%d,%d,%d>' %(dim,range,rank)
-spaces.append(space)
+basis = 'BSpline<%d,%d,%d>' %(dim,range,rank)
+bases.append(basis)
 for t in types:
     arr = 'SafeSTLArray<%s,%d>' %(t,dim)
     arrays.append(arr)
@@ -48,8 +48,8 @@ for t in types:
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    space = 'BSpline<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    spaces.append(space)
+    basis = 'BSpline<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    bases.append(basis)
     n_components = x.range ** x.rank
     for t in types:
         arr = 'SafeSTLArray<%s,%d>' %(t,x.dim)
@@ -74,9 +74,9 @@ f.write('using VecBernstOp = iga::SafeSTLVector<iga::BernsteinOperator>;\n');
 #    f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(%s,VecBernstOp,cereal::specialization::member_serialize)\n' %(ar));
 
 id = 0 
-for space in unique(spaces):
+for basis in unique(bases):
     sp_alias = 'BSplineAlias%d' %(id)
-    f.write('using %s = iga::%s;\n' % (sp_alias, space));
+    f.write('using %s = iga::%s;\n' % (sp_alias, basis));
     f.write('CEREAL_REGISTER_TYPE(%s)\n' %sp_alias);
     id += 1 
 

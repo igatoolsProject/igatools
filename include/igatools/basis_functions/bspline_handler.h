@@ -61,9 +61,9 @@ class BSplineHandler
 
 protected:
 
-  using BaseSpace = ReferenceBasis<dim_,range_,rank_>;
-  using RefElementIterator = typename BaseSpace::ElementIterator;
-  using RefElementAccessor = typename BaseSpace::ElementAccessor;
+  using RefBasis = ReferenceBasis<dim_,range_,rank_>;
+  using RefElementIterator = typename RefBasis::ElementIterator;
+  using RefElementAccessor = typename RefBasis::ElementAccessor;
 
 
 public:
@@ -89,7 +89,7 @@ public:
 
   BSplineHandler() = delete;
 
-  BSplineHandler(std::shared_ptr<const Basis> space);
+  BSplineHandler(std::shared_ptr<const Basis> basis);
 
   /**
    * Copy constructor. Not allowed to be used.
@@ -110,7 +110,7 @@ public:
    */
   virtual ~BSplineHandler() = default;
 
-//  static std::unique_ptr<self_t> create(std::shared_ptr<const Basis> space);
+//  static std::unique_ptr<self_t> create(std::shared_ptr<const Basis> basis);
 
   using topology_variant = typename base_t::topology_variant;
   using eval_pts_variant = typename base_t::eval_pts_variant;

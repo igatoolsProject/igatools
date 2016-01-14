@@ -1,9 +1,9 @@
 ========================================================================
-sub_space
+sub_basis
 ========================================================================
 Dim: 1     Sub-Dim: 0
    Original NURBS:
-      BSpline Space:
+      BSpline Basis:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 1 ]
@@ -158,10 +158,10 @@ Dim: 1     Sub-Dim: 0
          
       
    
-   0-th sub space:
+   0-th sub basis:
       Basis:
-         Reference space:
-            BSpline Space:
+         Reference basis:
+            BSpline Basis:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ ]
@@ -316,10 +316,10 @@ Dim: 1     Sub-Dim: 0
             Name: 
          
       
-      1-th sub space:
+      1-th sub basis:
          Basis:
-            Reference space:
-               BSpline Space:
+            Reference basis:
+               BSpline Basis:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ ]
@@ -478,11 +478,11 @@ Dim: 1     Sub-Dim: 0
       ========================================================================
       
       ========================================================================
-      sub_space
+      sub_basis
       ========================================================================
       Dim: 2     Sub-Dim: 1
          Original NURBS:
-            BSpline Space:
+            BSpline Basis:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 1 2 ]
@@ -661,10 +661,10 @@ Dim: 1     Sub-Dim: 0
                
             
          
-         0-th sub space:
+         0-th sub basis:
             Basis:
-               Reference space:
-                  BSpline Space:
+               Reference basis:
+                  BSpline Basis:
                      Spline Space:
                         Knots without repetition:
                            Number of intervals per direction: [ 2 ]
@@ -841,10 +841,10 @@ Dim: 1     Sub-Dim: 0
                   Name: 
                
             
-            1-th sub space:
+            1-th sub basis:
                Basis:
-                  Reference space:
-                     BSpline Space:
+                  Reference basis:
+                     BSpline Basis:
                         Spline Space:
                            Knots without repetition:
                               Number of intervals per direction: [ 2 ]
@@ -1021,10 +1021,10 @@ Dim: 1     Sub-Dim: 0
                      Name: 
                   
                
-               2-th sub space:
+               2-th sub basis:
                   Basis:
-                     Reference space:
-                        BSpline Space:
+                     Reference basis:
+                        BSpline Basis:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 1 ]
@@ -1192,10 +1192,10 @@ Dim: 1     Sub-Dim: 0
                         Name: 
                      
                   
-                  3-th sub space:
+                  3-th sub basis:
                      Basis:
-                        Reference space:
-                           BSpline Space:
+                        Reference basis:
+                           BSpline Basis:
                               Spline Space:
                                  Knots without repetition:
                                     Number of intervals per direction: [ 1 ]
@@ -1367,11 +1367,11 @@ Dim: 1     Sub-Dim: 0
                   ========================================================================
                   
                   ========================================================================
-                  sub_space
+                  sub_basis
                   ========================================================================
                   Dim: 3     Sub-Dim: 2
                      Original NURBS:
-                        BSpline Space:
+                        BSpline Basis:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 1 2 3 ]
@@ -1608,10 +1608,10 @@ Dim: 1     Sub-Dim: 0
                            
                         
                      
-                     0-th sub space:
+                     0-th sub basis:
                         Basis:
-                           Reference space:
-                              BSpline Space:
+                           Reference basis:
+                              BSpline Basis:
                                  Spline Space:
                                     Knots without repetition:
                                        Number of intervals per direction: [ 2 3 ]
@@ -1837,10 +1837,10 @@ Dim: 1     Sub-Dim: 0
                               Name: 
                            
                         
-                        1-th sub space:
+                        1-th sub basis:
                            Basis:
-                              Reference space:
-                                 BSpline Space:
+                              Reference basis:
+                                 BSpline Basis:
                                     Spline Space:
                                        Knots without repetition:
                                           Number of intervals per direction: [ 2 3 ]
@@ -2066,10 +2066,10 @@ Dim: 1     Sub-Dim: 0
                                  Name: 
                               
                            
-                           2-th sub space:
+                           2-th sub basis:
                               Basis:
-                                 Reference space:
-                                    BSpline Space:
+                                 Reference basis:
+                                    BSpline Basis:
                                        Spline Space:
                                           Knots without repetition:
                                              Number of intervals per direction: [ 1 3 ]
@@ -2271,10 +2271,10 @@ Dim: 1     Sub-Dim: 0
                                     Name: 
                                  
                               
-                              3-th sub space:
+                              3-th sub basis:
                                  Basis:
-                                    Reference space:
-                                       BSpline Space:
+                                    Reference basis:
+                                       BSpline Basis:
                                           Spline Space:
                                              Knots without repetition:
                                                 Number of intervals per direction: [ 1 3 ]
@@ -2476,10 +2476,10 @@ Dim: 1     Sub-Dim: 0
                                        Name: 
                                     
                                  
-                                 4-th sub space:
+                                 4-th sub basis:
                                     Basis:
-                                       Reference space:
-                                          BSpline Space:
+                                       Reference basis:
+                                          BSpline Basis:
                                              Spline Space:
                                                 Knots without repetition:
                                                    Number of intervals per direction: [ 1 2 ]
@@ -2671,10 +2671,10 @@ Dim: 1     Sub-Dim: 0
                                           Name: 
                                        
                                     
-                                    5-th sub space:
+                                    5-th sub basis:
                                        Basis:
-                                          Reference space:
-                                             BSpline Space:
+                                          Reference basis:
+                                             BSpline Basis:
                                                 Spline Space:
                                                    Knots without repetition:
                                                       Number of intervals per direction: [ 1 2 ]

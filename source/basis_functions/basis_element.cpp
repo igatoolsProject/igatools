@@ -30,9 +30,9 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_,int codim_,int range_,int rank_>
 BasisElement<dim_,codim_,range_,rank_>::
-BasisElement(const std::shared_ptr<Sp> &space_basis)
+BasisElement(const std::shared_ptr<Sp> &basis)
   :
-  space_basis_(space_basis)
+  basis_(basis)
 {}
 
 
@@ -83,7 +83,7 @@ get_local_to_global(const std::string &dofs_property) const
   SafeSTLVector<Index> dofs_global;
   SafeSTLVector<Index> dofs_loc_to_patch;
   SafeSTLVector<Index> dofs_loc_to_elem;
-  this->space_basis_->get_spline_space()->get_element_dofs(
+  this->basis_->get_spline_space()->get_element_dofs(
     this->get_index(),
     dofs_global,
     dofs_loc_to_patch,
@@ -101,7 +101,7 @@ get_local_to_patch(const std::string &dofs_property) const
   SafeSTLVector<Index> dofs_global;
   SafeSTLVector<Index> dofs_loc_to_patch;
   SafeSTLVector<Index> dofs_loc_to_elem;
-  this->space_basis_->get_spline_space()->get_element_dofs(
+  this->basis_->get_spline_space()->get_element_dofs(
     this->get_index(),
     dofs_global,
     dofs_loc_to_patch,
@@ -119,7 +119,7 @@ get_local_dofs(const std::string &dofs_property) const
   SafeSTLVector<Index> dofs_global;
   SafeSTLVector<Index> dofs_loc_to_patch;
   SafeSTLVector<Index> dofs_loc_to_elem;
-  this->space_basis_->get_spline_space()->get_element_dofs(
+  this->basis_->get_spline_space()->get_element_dofs(
     this->get_index(),
     dofs_global,
     dofs_loc_to_patch,
@@ -194,9 +194,9 @@ get_element_w_measures() const
 template<int dim_,int codim_,int range_,int rank_>
 auto
 BasisElement<dim_,codim_,range_,rank_>::
-get_space_basis() const -> std::shared_ptr<Sp>
+get_basis() const -> std::shared_ptr<Sp>
 {
-  return space_basis_;
+  return basis_;
 }
 
 
@@ -205,7 +205,7 @@ bool
 BasisElement<dim_,codim_,range_,rank_>::
 has_same_basis_of(const self_t &elem) const
 {
-  return (space_basis_ == elem.space_basis_);
+  return (basis_ == elem.basis_);
 }
 
 

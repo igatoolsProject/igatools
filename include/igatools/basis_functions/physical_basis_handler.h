@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef PHYS_SPACE_ELEMENT_HANDLER_H_
-#define PHYS_SPACE_ELEMENT_HANDLER_H_
+#ifndef __PHYS_BASIS_HANDLER_H_
+#define __PHYS_BASIS_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_handler.h>
@@ -32,9 +32,9 @@ IGA_NAMESPACE_OPEN
 
 inline
 auto
-phys_space_to_reference_space_flag(
+phys_basis_to_reference_basis_flag(
   const Transformation transformation_type,
-  const typename space_element::Flags phys_space_flag)
+  const typename space_element::Flags phys_basis_flag)
 -> typename space_element::Flags
 {
   using space_element::Flags;
@@ -47,13 +47,13 @@ phys_space_to_reference_space_flag(
   bool fill_divergences = false;
 
 
-  if (contains(phys_space_flag,Flags::value))
+  if (contains(phys_basis_flag,Flags::value))
     fill_values = true;
-  if (contains(phys_space_flag,Flags::gradient))
+  if (contains(phys_basis_flag,Flags::gradient))
     fill_gradients = true;
-  if (contains(phys_space_flag,Flags::hessian))
+  if (contains(phys_basis_flag,Flags::hessian))
     fill_hessians = true;
-  if (contains(phys_space_flag,Flags::divergence))
+  if (contains(phys_basis_flag,Flags::divergence))
     fill_divergences = true;
 
   bool fill_D0_phi_hat = false;
@@ -88,9 +88,9 @@ phys_space_to_reference_space_flag(
 
 inline
 domain_element::Flags
-phys_space_to_domain_flag(
+phys_basis_to_domain_flag(
   const Transformation &transformation_type,
-  const typename space_element::Flags phys_space_flag)
+  const typename space_element::Flags phys_basis_flag)
 {
   /*
   ValueFlags transfer_flag =
@@ -109,24 +109,24 @@ phys_space_to_domain_flag(
   using DomainFlags = domain_element::Flags;
   DomainFlags domain_flag = DomainFlags::none;
 
-  if (contains(phys_space_flag, SpaceFlags::point))
+  if (contains(phys_basis_flag, SpaceFlags::point))
     domain_flag |= DomainFlags::point;
-  if (contains(phys_space_flag, SpaceFlags::w_measure))
+  if (contains(phys_basis_flag, SpaceFlags::w_measure))
     domain_flag |= DomainFlags::w_measure;
 
 
   if (transformation_type == Transformation::h_grad)
   {
-    if (contains(phys_space_flag, SpaceFlags::value))
+    if (contains(phys_basis_flag, SpaceFlags::value))
     {}
 
-    if (contains(phys_space_flag, SpaceFlags::gradient))
+    if (contains(phys_basis_flag, SpaceFlags::gradient))
       domain_flag |= (DomainFlags::inv_jacobian);
 
-    if (contains(phys_space_flag, SpaceFlags::hessian))
+    if (contains(phys_basis_flag, SpaceFlags::hessian))
       domain_flag |= (DomainFlags::hessian | DomainFlags::inv_jacobian);
 
-//    if (contains(phys_space_flag, SpaceFlags::divergence))
+//    if (contains(phys_basis_flag, SpaceFlags::divergence))
 //      AssertThrow(false,ExcNotImplemented());
 //      domain_flag |= (DomainFlags::inv_gradient);
 
@@ -147,7 +147,7 @@ template<int dim, int range, int rank, int codim>
 class PhysicalBasis;
 
 /**
- * Element handler for an isogeometric space
+ * Element handler for an isogeometric basis
  *
  * @ingroup handlers
  */
@@ -157,13 +157,13 @@ class PhysicalBasisHandler
   public BasisHandler<dim_,codim_,range_,rank_>
 {
 
-  using PhysSpace = PhysicalBasis<dim_,range_,rank_,codim_>;
-  using RefBasis =  typename PhysSpace::RefBasis;
-  using RefPhysicalBasisHandler = typename PhysSpace::RefBasis::Handler;
-//    using PFCache = typename PhysSpace::PushForwardType;
+  using PhysBasis = PhysicalBasis<dim_,range_,rank_,codim_>;
+  using RefBasis =  typename PhysBasis::RefBasis;
+  using RefPhysicalBasisHandler = typename PhysBasis::RefBasis::Handler;
+//    using PFCache = typename PhysBasis::PushForwardType;
 
-  using ElementIterator = typename PhysSpace::ElementIterator;
-  using ElementAccessor = typename PhysSpace::ElementAccessor;
+  using ElementIterator = typename PhysBasis::ElementIterator;
+  using ElementAccessor = typename PhysBasis::ElementAccessor;
 
   using base_t = BasisHandler<dim_,codim_,range_,rank_>;
   using self_t = PhysicalBasisHandler<dim_,range_,rank_,codim_>;
@@ -174,7 +174,7 @@ class PhysicalBasisHandler
 public:
   static const int dim = dim_;
 
-//    using PhysSpace::PushForwardType::type;
+//    using PhysBasis::PushForwardType::type;
 
   /**
    * @name Constructors
@@ -188,7 +188,7 @@ public:
    */
   PhysicalBasisHandler() = delete;
 
-  PhysicalBasisHandler(std::shared_ptr<const PhysSpace> space);
+  PhysicalBasisHandler(std::shared_ptr<const PhysBasis> basis);
   /**
    * Copy constructor. Not allowed to be used.
    */
@@ -227,10 +227,10 @@ public:
 private:
 
   using RefElemHandler = BasisHandler<RefBasis::dim,0,RefBasis::range,RefBasis::rank>;
-  std::unique_ptr<RefElemHandler> ref_space_handler_;
+  std::unique_ptr<RefElemHandler> ref_basis_handler_;
 
 
-  using PhysDomainHandler = typename PhysSpace::PhysDomain::Handler;
+  using PhysDomainHandler = typename PhysBasis::PhysDomain::Handler;
   std::unique_ptr<PhysDomainHandler> phys_domain_handler_;
 
 
@@ -243,7 +243,7 @@ private:
   {
     SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
                        const Transformation &transformation_type,
-                       RefElemHandler &ref_space_handler,
+                       RefElemHandler &ref_basis_handler,
                        PhysDomainHandler &phys_domain_handler,
                        SafeSTLArray<typename space_element::Flags, dim+1> &flags);
 
@@ -254,7 +254,7 @@ private:
   private:
     const typename  space_element::Flags   phys_elem_flag_;
     const Transformation transformation_type_;
-    RefElemHandler &ref_space_handler_;
+    RefElemHandler &ref_basis_handler_;
     PhysDomainHandler &phys_domain_handler_;
     SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
   };
@@ -267,7 +267,7 @@ private:
 
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
-    InitCacheDispatcher(const RefElemHandler &ref_space_handler,
+    InitCacheDispatcher(const RefElemHandler &ref_basis_handler,
                         const PhysDomainHandler &phys_domain_handler,
                         const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
                         BaseElem &elem);
@@ -277,7 +277,7 @@ private:
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
 
   private:
-    const RefElemHandler &ref_space_handler_;
+    const RefElemHandler &ref_basis_handler_;
     const PhysDomainHandler &phys_domain_handler_;
     const SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
     BaseElem &elem_;
@@ -292,9 +292,9 @@ private:
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
     FillCacheDispatcher(const int s_id,
-                        const RefElemHandler &ref_space_handler,
+                        const RefElemHandler &ref_basis_handler,
                         const PhysDomainHandler &phys_domain_handler,
-                        const self_t &phys_space_handler,
+                        const self_t &phys_basis_handler,
                         BaseElem &elem);
 
     template<int sdim>
@@ -303,17 +303,17 @@ private:
   private:
 
     const int s_id_;
-    const RefElemHandler &ref_space_handler_;
+    const RefElemHandler &ref_basis_handler_;
     const PhysDomainHandler &phys_domain_handler_;
-    const self_t &phys_space_handler_;
+    const self_t &phys_basis_handler_;
     BaseElem &elem_;
   };
 
 
-  std::shared_ptr<const PhysSpace> phys_space_;
+  std::shared_ptr<const PhysBasis> phys_basis_;
 };
 
 
 IGA_NAMESPACE_CLOSE
 
-#endif
+#endif // __PHYS_BASIS_HANDLER_H_

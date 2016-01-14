@@ -51,7 +51,7 @@ public:
   /** Type required by the GridIterator templated iterator */
   using ContainerType = const BSpline<dim, range, rank> ;
 
-  /** Type required for the generic algorithm on the spaces (plots??) */
+  /** Type required for the generic algorithm on the basis (plots??) */
   using Basis = BSpline<dim, range, rank> ;
 
 
@@ -80,9 +80,9 @@ public:
 
   /**
    * Constructs an accessor to element number index of a
-   * BSpline space.
+   * BSpline basis.
    */
-  BSplineElement(const std::shared_ptr<ContainerType> &space,
+  BSplineElement(const std::shared_ptr<ContainerType> &basis,
                  std::unique_ptr<GridElement<dim>> &&grid_elem);
 
   /**

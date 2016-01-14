@@ -64,7 +64,7 @@ public:
   /** Type required by the GridIterator templated iterator */
   using ContainerType = const NURBS<dim, range, rank> ;
 
-  /** Type required for the generic algorithm on the spaces (plots??) */
+  /** Type required for the generic algorithm on the basis (plots??) */
   using Basis = NURBS<dim, range, rank> ;
 
 
@@ -100,9 +100,9 @@ protected:
 public:
   /**
    * Constructs an accessor to element number index of a
-   * BSpline space.
+   * BSpline basis.
    */
-  NURBSElement(const std::shared_ptr<ContainerType> space,
+  NURBSElement(const std::shared_ptr<ContainerType> basis,
                std::unique_ptr<BSpElem> &&bspline_elem,
                std::unique_ptr<WeightElem> &&weight_elem);
 

@@ -1,6 +1,6 @@
 IgFunction<2,0,1,1>
    PhysicalBasis<2,1,1,0>
-      Reference space:
+      Reference basis:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 9 9 ]

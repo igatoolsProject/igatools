@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef SPACE_ELEMENT_H_
-#define SPACE_ELEMENT_H_
+#ifndef __BASIS_ELEMENT_H_
+#define __BASIS_ELEMENT_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/values_cache.h>
@@ -128,7 +128,7 @@ private:
 
 public:
 
-  BasisElement(const std::shared_ptr<Sp> &space_basis);
+  BasisElement(const std::shared_ptr<Sp> &basis);
 
 
 
@@ -271,7 +271,7 @@ public:
     SafeSTLVector<Index> dofs_local_to_patch;
     SafeSTLVector<Index> dofs_local_to_elem;
 
-    this->space_basis_->get_spline_space()->get_element_dofs(
+    this->basis_->get_spline_space()->get_element_dofs(
       this->get_index(),
       dofs_global,
       dofs_local_to_patch,
@@ -404,7 +404,7 @@ public:
     const std::shared_ptr<const Quadrature<dim_>> &points,
     const std::string &dofs_property)
   {
-    auto elem_handler = this->space_basis_->create_cache_handler();
+    auto elem_handler = this->basis_->create_cache_handler();
     elem_handler->template set_flags<dim_>(ValueType::flag);
     elem_handler->init_element_cache(*this,points);
     elem_handler->fill_element_cache(*this);
@@ -493,7 +493,7 @@ private:
   /**
    * \brief Basis upon which the element refers from.
    */
-  std::shared_ptr<Sp> space_basis_;
+  std::shared_ptr<Sp> basis_;
 
 public:
   using _Value =  space_element::_Value;
@@ -524,7 +524,7 @@ public:
   /**
    * \brief Returns the Basis upon which the element refers from.
    */
-  std::shared_ptr<Sp> get_space_basis() const;
+  std::shared_ptr<Sp> get_basis() const;
 
 
 
@@ -550,5 +550,5 @@ IGA_NAMESPACE_CLOSE
 
 
 
-#endif // #ifndef SPACE_ELEMENT_H_
+#endif // #ifndef __BASIS_ELEMENT_H_
 

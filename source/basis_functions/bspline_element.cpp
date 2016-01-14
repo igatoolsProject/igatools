@@ -45,10 +45,10 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank>
 BSplineElement<dim, range, rank>::
-BSplineElement(const std::shared_ptr<ContainerType> &space,
+BSplineElement(const std::shared_ptr<ContainerType> &basis,
                std::unique_ptr<GridElement<dim>> &&grid_elem)
   :
-  parent_t(space),
+  parent_t(basis),
   grid_elem_(std::move(grid_elem))
 {}
 

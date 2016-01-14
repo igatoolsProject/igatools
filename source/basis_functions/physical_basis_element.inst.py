@@ -43,8 +43,8 @@ element_funcs.add(func)
 
 
 
-for space in inst.SubPhysSpaces + inst.PhysSpaces:
-    x = space.spec
+for basis in inst.SubPhysSpaces + inst.PhysSpaces:
+    x = basis.spec
     space_dim = x.dim + x.codim
     elem = 'PhysicalBasisElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
     elements.add(elem)

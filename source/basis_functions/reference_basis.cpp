@@ -40,35 +40,35 @@ template<int dim_,int range_,int rank_>
 template<int sdim>
 auto
 ReferenceBasis<dim_,range_,rank_>::
-get_ref_sub_space(const int sub_elem_id,
+get_ref_sub_basis(const int sub_elem_id,
                   InterBasisMap<sdim> &dof_map,
                   const std::shared_ptr<const Grid<sdim>> &sub_grid) const
--> std::shared_ptr<const SubRefSpace<sdim> >
+-> std::shared_ptr<const SubRefBasis<sdim> >
 {
   static_assert(sdim == 0 || (sdim > 0 && sdim < dim),
   "The dimensionality of the sub_grid is not valid.");
 
-  std::shared_ptr< const SubRefSpace<sdim> > sub_ref_space;
+  std::shared_ptr< const SubRefBasis<sdim> > sub_ref_basis;
   if (this->is_bspline())
   {
-    const auto bsp_space = dynamic_cast<const BSpline<dim,range,rank> *>(this);
-    Assert(bsp_space != nullptr,ExcNullPtr());
-    sub_ref_space = bsp_space->template get_sub_bspline_space<sdim>(sub_elem_id,dof_map,sub_grid);
+    const auto bsp_basis = dynamic_cast<const BSpline<dim,range,rank> *>(this);
+    Assert(bsp_basis != nullptr,ExcNullPtr());
+    sub_ref_basis = bsp_basis->template get_sub_bspline_basis<sdim>(sub_elem_id,dof_map,sub_grid);
   }
   else
   {
 #ifdef USE_NURBS
-    const auto nrb_space = dynamic_cast<const NURBS<dim,range,rank> *>(this);
-    Assert(nrb_space != nullptr,ExcNullPtr());
-    sub_ref_space = nrb_space->template get_sub_nurbs_space<sdim>(sub_elem_id,dof_map,sub_grid);
+    const auto nrb_basis = dynamic_cast<const NURBS<dim,range,rank> *>(this);
+    Assert(nrb_basis != nullptr,ExcNullPtr());
+    sub_ref_basis = nrb_basis->template get_sub_nurbs_basis<sdim>(sub_elem_id,dof_map,sub_grid);
 #else
     Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
     AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
 #endif
   }
 
-  Assert(sub_ref_space != nullptr, ExcNullPtr());
-  return sub_ref_space;
+  Assert(sub_ref_basis != nullptr, ExcNullPtr());
+  return sub_ref_basis;
 }
 
 
@@ -77,10 +77,10 @@ template<int dim_,int range_,int rank_>
 template<int k>
 auto
 ReferenceBasis<dim_,range_,rank_>::
-get_sub_space(const int s_id,
+get_sub_basis(const int s_id,
               InterBasisMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
--> std::shared_ptr<const SubSpace<k> >
+-> std::shared_ptr<const SubBasis<k> >
 {
   static_assert(k == 0 || (k > 0 && k < dim),
   "The dimensionality of the sub_grid is not valid.");
@@ -115,9 +115,9 @@ get_sub_space(const int s_id,
     knots_const_direction.back();
   }
 
-  auto sub_ref_space = this->template get_ref_sub_space<k>(s_id,dof_map,nullptr);
+  auto sub_ref_basis = this->template get_ref_sub_basis<k>(s_id,dof_map,nullptr);
 
-  auto sub_grid = sub_ref_space->get_grid();
+  auto sub_grid = sub_ref_basis->get_grid();
 
   auto sub_grid_func = SubGridFunc::const_create(sub_grid,A,b);
 
@@ -125,10 +125,10 @@ get_sub_space(const int s_id,
   auto sub_domain = SubDomain::const_create(sub_grid_func);
 
 
-  auto sub_space = SubSpace<k>::const_create(sub_ref_space, sub_domain);
+  auto sub_basis = SubBasis<k>::const_create(sub_ref_basis, sub_domain);
 
-  Assert(sub_space != nullptr, ExcNullPtr());
-  return sub_space;
+  Assert(sub_basis != nullptr, ExcNullPtr());
+  return sub_basis;
 }
 
 
@@ -152,19 +152,19 @@ get_max_degree() const
 template<int dim_,int range_,int rank_>
 void
 ReferenceBasis<dim_,range_,rank_>::
-create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
+create_connection_for_insert_knots(const std::shared_ptr<self_t> &basis)
 {
-  Assert(space != nullptr, ExcNullPtr());
-  Assert(&(*space) == &(*this), ExcMessage("Different objects."));
+  Assert(basis != nullptr, ExcNullPtr());
+  Assert(&(*basis) == &(*this), ExcMessage("Different objects."));
 
   auto func_to_connect =
     std::bind(&self_t::rebuild_after_insert_knots,
-              space.get(),
+              basis.get(),
               std::placeholders::_1,
               std::placeholders::_2);
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
-  std::const_pointer_cast<Grid<dim>>(this->get_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
+  std::const_pointer_cast<Grid<dim>>(this->get_grid())->connect_insert_knots(SlotType(func_to_connect).track_foreign(basis));
 }
 
 
@@ -189,7 +189,7 @@ ReferenceBasis<dim_,range_,rank_>::
 serialize(Archive &ar)
 {
   using std::to_string;
-  const std::string base_name = "Space_" +
+  const std::string base_name = "Basis_" +
                                 to_string(dim_) + "_" +
                                 to_string(0) + "_" +
                                 to_string(range_) + "_" +

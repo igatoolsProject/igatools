@@ -29,11 +29,11 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int codim,int range,int rank>
 BasisHandler<dim,codim,range,rank>::
-BasisHandler(const std::shared_ptr<const Sp> &space)
+BasisHandler(const std::shared_ptr<const Sp> &basis)
   :
-  space_(space)
+  basis_(basis)
 {
-  Assert(space != nullptr,ExcNullPtr());
+  Assert(basis != nullptr,ExcNullPtr());
 }
 
 
@@ -42,9 +42,9 @@ BasisHandler(const std::shared_ptr<const Sp> &space)
 template<int dim,int codim,int range,int rank>
 auto
 BasisHandler<dim,codim,range,rank>::
-get_space() const -> std::shared_ptr<const Sp>
+get_basis() const -> std::shared_ptr<const Sp>
 {
-  return space_;
+  return basis_;
 }
 
 

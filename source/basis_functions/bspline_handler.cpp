@@ -163,9 +163,9 @@ public:
 
 template<int dim_, int range_ , int rank_>
 BSplineHandler<dim_, range_, rank_>::
-BSplineHandler(shared_ptr<const Basis> space)
+BSplineHandler(shared_ptr<const Basis> basis)
   :
-  base_t(space)
+  base_t(basis)
 {}
 
 
@@ -234,7 +234,7 @@ InitCacheDispatcher::
 init_cache_1D()
 {
   const auto &quad = *bsp_elem_.get_grid_element().template get_quad<sdim>();
-  const auto &bsp_basis = dynamic_cast<const Basis &>(*bsp_elem_.get_space_basis());
+  const auto &bsp_basis = dynamic_cast<const Basis &>(*bsp_elem_.get_basis());
 
   const auto &spline_space = *bsp_basis.spline_space_;
 
@@ -281,7 +281,7 @@ init_cache_multiD()
 {
   auto &cache = bsp_elem_.all_sub_elems_cache_;
 
-  const auto n_basis = bsp_elem_.get_basis_offset()[BaseSpace::n_components];
+  const auto n_basis = bsp_elem_.get_basis_offset()[RefBasis::n_components];
 
   const auto n_pts = bsp_elem_.get_grid_element().template get_quad<sdim>()->get_num_points();
 
@@ -347,9 +347,9 @@ copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
 {
   const auto &comp_offset = bsp_elem_.get_basis_offset();
 
-  Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
+  Assert(D_phi.get_num_functions() == comp_offset[RefBasis::n_components],
          ExcDimensionMismatch(D_phi.get_num_functions(),
-                              comp_offset[BaseSpace::n_components]));
+                              comp_offset[RefBasis::n_components]));
 
 
   const Size n_points = D_phi.get_num_points();
@@ -385,9 +385,9 @@ copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
 {
   const auto &comp_offset = bsp_elem_.get_basis_offset();
 
-  Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
+  Assert(D_phi.get_num_functions() == comp_offset[RefBasis::n_components],
          ExcDimensionMismatch(D_phi.get_num_functions(),
-                              comp_offset[BaseSpace::n_components]));
+                              comp_offset[RefBasis::n_components]));
 
   const Size n_points = D_phi.get_num_points();
   const Size n_ders = Derivative<order>::size;
@@ -430,9 +430,9 @@ evaluate_bspline_values(
 {
   const auto &comp_offset = bsp_elem_.get_basis_offset();
 
-  Assert(phi.get_num_functions() == comp_offset[BaseSpace::n_components],
+  Assert(phi.get_num_functions() == comp_offset[RefBasis::n_components],
          ExcDimensionMismatch(phi.get_num_functions(),
-                              comp_offset[BaseSpace::n_components]));
+                              comp_offset[RefBasis::n_components]));
 
   const Size n_points = phi.get_num_points();
   const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
@@ -483,9 +483,9 @@ evaluate_bspline_derivatives(
 
   const auto &comp_offset = bsp_elem_.get_basis_offset();
 
-  Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
+  Assert(D_phi.get_num_functions() == comp_offset[RefBasis::n_components],
          ExcDimensionMismatch(D_phi.get_num_functions(),
-                              comp_offset[BaseSpace::n_components]));
+                              comp_offset[RefBasis::n_components]));
 
   TensorFunctionDerivativesSymmetry<dim,order> sym;
   const auto n_der = TensorFunctionDerivativesSymmetry<dim,order>::num_entries_eval;
@@ -563,7 +563,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
   const auto elem_size = grid_elem.template get_side_lengths<dim>(0);
   const auto &elem_tensor_id = grid_elem.get_index().get_tensor_index();
 
-  const auto &bsp_basis = dynamic_cast<const Basis &>(*bsp_elem_.get_space_basis());
+  const auto &bsp_basis = dynamic_cast<const Basis &>(*bsp_elem_.get_basis());
 
   const auto &spline_space = *bsp_basis.spline_space_;
 
@@ -769,7 +769,7 @@ auto
 BSplineHandler<dim_, range_, rank_>::
 get_bspline_basis() const -> std::shared_ptr<const Basis>
 {
-  auto bsp_basis = std::dynamic_pointer_cast<const Basis>(this->get_space());
+  auto bsp_basis = std::dynamic_pointer_cast<const Basis>(this->get_basis());
   Assert(bsp_basis != nullptr,ExcNullPtr());
   return bsp_basis;
 }

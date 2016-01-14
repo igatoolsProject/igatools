@@ -33,10 +33,10 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int range , int rank>
 ReferenceBasisHandler<dim, range, rank>::
-ReferenceBasisHandler(const shared_ptr<const Basis> &space)
+ReferenceBasisHandler(const shared_ptr<const Basis> &basis)
   :
-  base_t(space),
-  grid_handler_(space->get_grid())
+  base_t(basis),
+  grid_handler_(basis->get_grid())
 {}
 
 

@@ -29,13 +29,13 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_ , int rank_>
 NURBSHandler<dim_, range_, rank_>::
-NURBSHandler(shared_ptr<const Basis> space)
+NURBSHandler(shared_ptr<const Basis> basis)
   :
-  base_t(space),
-  bsp_elem_handler_(space->get_bspline_basis()->create_cache_handler()),
+  base_t(basis),
+  bsp_elem_handler_(basis->get_bspline_basis()->create_cache_handler()),
   w_func_elem_handler_(
    dynamic_cast<IgGridFunctionHandler<dim_,1> *>(
-     space->get_weight_func()->create_cache_handler().release()))
+     basis->get_weight_func()->create_cache_handler().release()))
 {
   Assert(w_func_elem_handler_ != nullptr, ExcNullPtr());
 }
@@ -113,11 +113,11 @@ fill_cache_impl(const topology_variant &sdim,
 template<int dim_, int range_ , int rank_>
 auto
 NURBSHandler<dim_, range_, rank_>::
-get_nurbs_space() const -> std::shared_ptr<const Basis>
+get_nurbs_basis() const -> std::shared_ptr<const Basis>
 {
-  auto nrb_space = std::dynamic_pointer_cast<const Basis>(this->get_space());
-  Assert(nrb_space != nullptr,ExcNullPtr());
-  return nrb_space;
+  auto nrb_basis = std::dynamic_pointer_cast<const Basis>(this->get_basis());
+  Assert(nrb_basis != nullptr,ExcNullPtr());
+  return nrb_basis;
 }
 
 template<int dim_, int range_ , int rank_>
@@ -317,7 +317,7 @@ evaluate_nurbs_values_from_bspline(
    *            Q
    *
    * with P_i a basis function of a BSpline
-   * and Q an IgGridFunction built over a scalar BSpline space
+   * and Q an IgGridFunction built over a scalar BSpline basis
    *
    */
   Assert(!phi.empty(), ExcEmptyObject());
@@ -383,7 +383,7 @@ evaluate_nurbs_gradients_from_bspline(
    *            Q
    *
    * with P_i a basis function of a BSpline
-   * and Q an IgFunction built over a scalar space.
+   * and Q an IgFunction built over a scalar basis.
    *
    * Then the gradient dR_i is:
    *               _                     _
@@ -479,7 +479,7 @@ evaluate_nurbs_hessians_from_bspline(
    *         Q
    *
    * with Pk a basis function of a BSpline
-   * and Q an IgFunction built over a scalar space.
+   * and Q an IgFunction built over a scalar basis.
    *
    * Then the gradient dRk is defined by the partial derivatives:
    *
@@ -511,7 +511,7 @@ evaluate_nurbs_hessians_from_bspline(
   for (int comp = 0 ; comp < n_components ; ++comp)
   {
 //    Assert(bsp_basis->get_num_basis(comp) == bsp_basis.size(),
-//           ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
+//           ExcDimensionMismatch(nrb_basis->get_num_basis(comp),w_coefs.size()));
 
     for (int pt = 0 ; pt < n_pts ; ++pt)
     {

@@ -34,19 +34,19 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = \
- ['std::shared_ptr<const typename class::SubSpace<k> > ' +
-   'class::get_sub_space(const int s_id, InterBasisMap<k> &dof_map, ' +
+ ['std::shared_ptr<const typename class::SubBasis<k> > ' +
+   'class::get_sub_basis(const int s_id, InterBasisMap<k> &dof_map, ' +
    'const std::shared_ptr<const Grid<k>> &sub_grid, ' + 
    'SubGridMap<k> &elem_map, void *) const;']
 
 
-spaces = ['PhysicalBasis<0,0,1,0>']
+bases = ['PhysicalBasis<0,0,1,0>']
 templated_funcs = []
 
 for sp in inst.SubPhysSpaces:
     x = sp.spec
 #    f.write( 'template class %s;\n' %sp.name)
-    spaces.append(sp.name)
+    bases.append(sp.name)
     for fun in sub_dim_members:
         for k in range(0,max(x.dim-1,0)+1):
             if ((x.dim != 0) and (k>=0)):
@@ -58,7 +58,7 @@ for sp in inst.SubPhysSpaces:
 for sp in inst.PhysSpaces:
     x = sp.spec
 #    f.write( 'template class %s;\n' %sp.name)
-    spaces.append(sp.name)
+    bases.append(sp.name)
     for fun in sub_dim_members:
 #         for k in inst.sub_dims(x.dim):
         for k in range(0,max(x.dim-1,0)+1):
@@ -69,8 +69,8 @@ for sp in inst.PhysSpaces:
 
 
 
-for space in unique(spaces):
-    f.write( 'template class %s;\n' %space)
+for basis in unique(bases):
+    f.write( 'template class %s;\n' %basis)
 
 for func in unique(templated_funcs):
     f.write('template ' + func + '\n')
@@ -82,9 +82,9 @@ f.write('#ifdef SERIALIZATION\n')
 
 archives = ['OArchive','IArchive']
 
-for space in unique(spaces):
+for basis in unique(bases):
     for ar in archives:
-        f.write('template void %s::serialize(%s&);\n' %(space,ar))
+        f.write('template void %s::serialize(%s&);\n' %(basis,ar))
 f.write('#endif // SERIALIZATION\n')
 #---------------------------------------------------
 
