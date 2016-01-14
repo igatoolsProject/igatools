@@ -28,10 +28,6 @@ using namespace iga;
 using namespace std;
 // [using]
 
-// [logstream]
-LogStream out;
-// [logstream]
-
 int main()
 {
   // [dim]
@@ -40,20 +36,23 @@ int main()
 
   // [grid]
   const int n_knots = 3;
-  shared_ptr<const Grid<dim>> grid = Grid<dim>::const_create(n_knots);
+  auto grid = Grid<dim>::const_create(n_knots); // the type of the variable grid is shared_ptr<const Grid<dim>>
   // [grid]
 
+  // [logstream]
+  LogStream out;
+  // [logstream]
   // [grid_print]
   out << "Grid: " << endl;
   out << "  number of elements:  " << endl;
-  out << "    " << grid->get_num_all_elems(); 
-  out << " = " << grid->get_num_intervals() << endl;
+  out << "    " << grid->get_num_all_elems();        // total number of elements in the grid
+  out << " = " << grid->get_num_intervals() << endl; // number of intervals in each coordinate direction
   out << "  knots:  " << endl;
-  auto knots = grid->get_knots();
-  for (const auto & knot_vect : knots)
+  auto knots = grid->get_knots();                    // the type for knots is SafeSTLArray<shared_ptr<SafeSTLVector<Real>>.dim>
+  for (const auto &knot_vect : knots)                // SafeSTLArray can be used ad std::array --> the range-based for loops works fine
   {
     out << "   ";
-    for (const auto & knot : *knot_vect)
+    for (const auto &knot : *knot_vect)
       out << " " << knot;
     out << endl;
   }
