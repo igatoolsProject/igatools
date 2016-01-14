@@ -21,15 +21,17 @@ the documentation pertaining to each of them:
 
    - the @subpage containers i.e. the classes that represents <em>global data</em>. 
 The classes in this group have an underlying grid-like structure (intended as union of elements) 
-and usually have a big memory footprint. They are not intended to be used to perform computations.
+and may have a big memory footprint. They are not intended to be used to perform computations.
 
    - the @subpage elements classes describe the properties of a finite element space as defined as
   mapping of the unit cell. 
   This includes, for example, how many and which basis function have support in the interior of element. 
   In addition to this, element classes of course have to provide values and gradients of 
-  individual shape functions at points on the unit cell;
+  individual shape functions at points on the unit cell. 
+  
 
-   - the @subpage handlers i.e. the classes that performs heavy computations and fills the local <em>cache</em> of the elements
+   - the @subpage handlers uses the information from the @subpage containers,
+   performs heavy computations and fills the local <em>cache</em> of the @subpage elements.
 
 
    For each class in a given module, there could be an associated class in each of the other two modules,
@@ -38,14 +40,38 @@ as described by the following table:
 Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
 Grid                 | GridElement           | GridHandler
-ReferenceSpace       | ReferenceElement      | ReferenceElementHandler
-BSpline         | BSplineElement        | BSplineElementHandler 
-NURBS           | NURBSElement          | NURBSElementHandler
-Mapping              | MappingElement        | not defined
-PushForward          | PushForwardElement    | not defined
-PhysicalSpaceBasis        | PhysicalSpaceElement  | PhysSpaceElementHandler
+Basis       | BasisElement      | BasisHandler
+ReferenceBasis       | ReferenceBasisElement      | ReferenceBasisHandler
+BSpline         | BSplineElement        | BSplineHandler 
+NURBS           | NURBSElement          | NURBSHandler
+PhysicalBasis        | PhysicalBasisElement  | PhysicalBasisHandler
+Domain              | DomainElement        | DomainHandler
+GridFunction              | GridFunctionElement        | GridFunctionHandler
+IgGridFunction              | IgGridFunctionElement        | IgGridFunctionHandler
+FormulaGridFunction              | FormulaGridFunctionElement        | FormulaGridFunctionHandler
+SubGridFunction              | SubGridFunctionElement        | SubGridFunctionHandler
+Function              | FunctionElement        | FunctionHandler
+IgFunction              | IgFunctionElement        | IgFunctionHandler
+FormulaFunction              | FormulaFunctionElement        | FormulaFunctionHandler
 </center>
-   For the Mapping and the PushForward, the element filler is the container itself.
+
+<center>
+Element Containers   | Elements              | Element's cache fillers/handlers
+-------------------- | ----------------------|---------------------
+Basis       | BasisElement      | BasisHandler
+ReferenceBasis       | ReferenceBasisElement      | ReferenceBasisHandler
+BSpline         | BSplineElement        | BSplineHandler 
+NURBS           | NURBSElement          | NURBSHandler
+PhysicalBasis        | PhysicalBasisElement  | PhysicalBasisHandler
+</center>
+
+<center>
+Element Containers   | Elements              | Element's cache fillers/handlers
+-------------------- | ----------------------|---------------------
+ReferenceBasis       | ReferenceBasisElement      | ReferenceBasisHandler
+BSpline         | BSplineElement        | BSplineHandler 
+NURBS           | NURBSElement          | NURBSHandler
+</center>
    
 
 - the @subpage iterators  i.e. the classes that are used to iterate over the elements of a given
@@ -96,12 +122,12 @@ there is an associated accessor, as shown in the following table:
 Elements             | Element Containers    
 -------------------- | ----------------------
 GridElement          | Grid  
-ReferenceElement     | ReferenceSpace      
+ReferenceBasisElement     | ReferenceSpace      
 BSplineElement       | BSpline         
 NURBSElement         | NURBS          
 MappingElement       | Mapping        
 PushForwardElement   | PushForward    
-PhysicalSpaceElement | PhysicalSpaceBasis
+PhysicalBasisElement | PhysicalBasis
 </center>
 - they have an identifier in order to specify which element in the associated container they are representing;
 - they have @subpage iterators as friend classes (because the an iterator must be able to modify the 
@@ -180,7 +206,7 @@ that is the base class for the other different type of evaluation points contain
 
 
 /**
-@defgroup containers Elements Containers
+@defgroup containers Containers
 @ingroup infrastructure
 @{
 */

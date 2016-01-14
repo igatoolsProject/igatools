@@ -52,7 +52,7 @@ public:
 
   using FuncType = const Function<dim_, codim_, range_, rank_>;
   using DomainType = const Domain<dim_, codim_>;
-  using DomainHandlerType = typename DomainType::ElementHandler;
+  using DomainHandlerType = typename DomainType::Handler;
 
   using ElementAccessor = typename FuncType::ElementAccessor;
   using ElementIterator = typename FuncType::ElementIterator;
@@ -121,7 +121,7 @@ public:
 //  /**
 //   * Copy constructor.
 //   */
-//  FunctionElementHandler(const self_t &func);
+//  FunctionHandler(const self_t &func);
 
 public:
   /** Destructor */

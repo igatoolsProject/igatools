@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim_, int range_, int rank_ , int codim_>
-class PhysicalSpaceBasis;
+class PhysicalBasis;
 
 
 template<int dim, int codim = 0, class T = double>

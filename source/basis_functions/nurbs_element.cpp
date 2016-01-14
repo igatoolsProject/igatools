@@ -21,7 +21,7 @@
 
 #include <igatools/basis_functions/nurbs_element.h>
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/basis_functions/nurbs_element_handler.h>
+#include <igatools/basis_functions/nurbs_handler.h>
 
 #ifdef USE_NURBS
 

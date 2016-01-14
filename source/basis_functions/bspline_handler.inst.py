@@ -26,46 +26,34 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
- 
- 
 
-elements = set()
-element_funcs = set()
-
-elem = 'PhysicalSpaceElement<0,0,1,0>'
-elements.add(elem)
+handlers = set()
+handler_funcs = set()
 
 
-func = 'const ValueVector<Real> %s::get_w_measures<0>(const int) const' % (elem)
-element_funcs.add(func)
-func = 'const ValueVector<Real> & %s::get_measures<0>(const int) const' % (elem)
-element_funcs.add(func)
+handler = 'BSplineHandler<0,0,1>'
+handlers.add(handler)
 
 
 
-for space in inst.SubPhysSpaces + inst.PhysSpaces:
-    x = space.spec
-    space_dim = x.dim + x.codim
-    elem = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    elements.add(elem)
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
+    handler = 'BSplineHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    handlers.add(handler)
     for k in range(0,x.dim+1):
-        func = 'const ValueVector<Real> %s::get_w_measures<%d>(const int) const' % (elem,k)
-        element_funcs.add(func)
-        func = 'const ValueVector<Real> & %s::get_measures<%d>(const int) const' % (elem,k)
-        element_funcs.add(func)
-        if (k+1 == x.dim):
-            func = 'const ValueVector<Points<%d>> & %s::get_boundary_normals<%d>(const int) const' % (space_dim,elem,k)
-            element_funcs.add(func)
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const shared_ptr<const Quadrature<%d>> &)' % (handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::FillCacheDispatcherNoGlobalCache::operator()(const Topology<%d> &)' % (handler,k)
+        handler_funcs.add(func)
+        
+        
+        
+for handler in handlers:
+    f.write('template class %s;\n' %handler)
 
-
-
-
-
-for elem in elements:
-    f.write('template class %s;\n' %elem)
-
-
-for func in element_funcs:
+for func in handler_funcs:        
     f.write('template %s;\n' %func)
-
-      
+        
+        
+   

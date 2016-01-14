@@ -87,7 +87,7 @@ BSpline Space:
 
 Weight function :
    IgGridFunction<1,1>
-      ReferenceSpaceBasis<1,1,1>:
+      ReferenceBasis<1,1,1>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 ]
@@ -293,7 +293,7 @@ BSpline Space:
 
 Weight function :
    IgGridFunction<1,1>
-      ReferenceSpaceBasis<1,1,1>:
+      ReferenceBasis<1,1,1>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 ]
@@ -517,7 +517,7 @@ BSpline Space:
 
 Weight function :
    IgGridFunction<1,1>
-      ReferenceSpaceBasis<1,1,1>:
+      ReferenceBasis<1,1,1>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 ]
@@ -737,7 +737,7 @@ BSpline Space:
 
 Weight function :
    IgGridFunction<2,1>
-      ReferenceSpaceBasis<2,1,1>:
+      ReferenceBasis<2,1,1>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 3 ]
@@ -1041,7 +1041,7 @@ BSpline Space:
 
 Weight function :
    IgGridFunction<2,1>
-      ReferenceSpaceBasis<2,1,1>:
+      ReferenceBasis<2,1,1>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 3 ]
@@ -1369,7 +1369,7 @@ BSpline Space:
 
 Weight function :
    IgGridFunction<2,1>
-      ReferenceSpaceBasis<2,1,1>:
+      ReferenceBasis<2,1,1>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 3 ]
@@ -1692,7 +1692,7 @@ BSpline Space:
 
 Weight function :
    IgGridFunction<3,1>
-      ReferenceSpaceBasis<3,1,1>:
+      ReferenceBasis<3,1,1>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 3 2 ]
@@ -2186,7 +2186,7 @@ BSpline Space:
 
 Weight function :
    IgGridFunction<3,1>
-      ReferenceSpaceBasis<3,1,1>:
+      ReferenceBasis<3,1,1>:
          Spline Space:
             Knots without repetition:
                Number of intervals per direction: [ 4 3 2 ]

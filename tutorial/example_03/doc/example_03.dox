@@ -73,7 +73,7 @@ passing the appropriate flags.
   Elements Family | BaseClass | Flags
   ----------------|--------------|--------------------
   Grid            | GridElement  | grid_element::Flags
-  Space           | SpaceElement | space_element::Flags
+  Space           | BasisElement | space_element::Flags
   Domain          | DomainElement| domain_element::Flags
   GridFunction    | GridFunctionElement | grid_function_element::Flags
   FunctionElement | FunctionElement | function_element::Flags  

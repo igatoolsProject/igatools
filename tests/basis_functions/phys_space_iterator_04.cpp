@@ -33,9 +33,9 @@
 #include <igatools/functions/grid_function_lib.h>
 
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/physical_space_basis.h>
-#include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis.h>
+#include <igatools/basis_functions/physical_basis_element.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 
 template<int dim, int codim=0>
 auto
@@ -67,7 +67,7 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
   auto map_func = create_function(grid);
 
   auto phys_basis =
-    PhysicalSpaceBasis<dim,range,rank,codim>::const_create(
+    PhysicalBasis<dim,range,rank,codim>::const_create(
       bsp_basis,
       Domain<dim,0>::const_create(map_func), Transformation::h_grad);
 

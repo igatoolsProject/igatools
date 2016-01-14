@@ -1,7 +1,7 @@
 ========================================================================
 space_cache_fill_elem
 ========================================================================
-ReferenceElement<1,1,1>
+ReferenceBasisElement<1,1,1>
    Element global connectivity (property="active"):
    [ 0 1 ]
    Number of element basis: 
@@ -48,7 +48,7 @@ BSplineElement<1,1,1> cache:
          
       
    
-   SpaceElement's cache:
+   BasisElement's cache:
       GridElement<1> cache:
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
             Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
@@ -182,7 +182,7 @@ BSplineElement<1,1,1> cache:
 ========================================================================
 space_cache_fill_elem
 ========================================================================
-ReferenceElement<1,1,1>
+ReferenceBasisElement<1,1,1>
    Element global connectivity (property="active"):
    [ 0 1 ]
    Number of element basis: 
@@ -229,7 +229,7 @@ BSplineElement<1,1,1> cache:
          
       
    
-   SpaceElement's cache:
+   BasisElement's cache:
       GridElement<1> cache:
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
             Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
@@ -363,7 +363,7 @@ BSplineElement<1,1,1> cache:
 ========================================================================
 space_cache_fill_elem
 ========================================================================
-ReferenceElement<1,1,1>
+ReferenceBasisElement<1,1,1>
    Element global connectivity (property="active"):
    [ 0 1 ]
    Number of element basis: 
@@ -410,7 +410,7 @@ BSplineElement<1,1,1> cache:
          
       
    
-   SpaceElement's cache:
+   BasisElement's cache:
       GridElement<1> cache:
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
             Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.

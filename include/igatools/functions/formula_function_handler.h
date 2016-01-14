@@ -38,7 +38,7 @@ private:
   using self_t = FormulaFunctionHandler<dim, codim, range, rank>;
 protected:
   using typename parent_t::DomainType;
-  ///using typename ElementHandler = FormulaFunctionHandler<dim, codim, range, rank>;
+  ///using typename Handler = FormulaFunctionHandler<dim, codim, range, rank>;
 public:
   using FuncType = const FormulaFunction<dim, codim, range, rank>;
   using typename parent_t::ElementAccessor;

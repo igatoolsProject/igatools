@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/basis.h>
-#include <igatools/basis_functions/reference_space_basis.h>
+#include <igatools/basis_functions/reference_basis.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/grid_iterator.h>
@@ -35,9 +35,9 @@ class SpaceManager;
 
 template <int,int> class PushForward;
 
-template <int,int,int,int> class PhysicalSpaceElement;
+template <int,int,int,int> class PhysicalBasisElement;
 
-template <int,int,int,int> class PhysSpaceElementHandler;
+template <int,int,int,int> class PhysicalBasisHandler;
 
 /**
  *
@@ -47,12 +47,12 @@ template <int,int,int,int> class PhysSpaceElementHandler;
  *
  */
 template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0>
-class PhysicalSpaceBasis :
+class PhysicalBasis :
   public Basis<dim_,codim_,range_,rank_>
 {
 private:
   using base_t = Basis<dim_,codim_,range_,rank_>;
-  using self_t = PhysicalSpaceBasis<dim_, range_, rank_, codim_>;
+  using self_t = PhysicalBasis<dim_, range_, rank_, codim_>;
 
 public:
   ///@{
@@ -65,11 +65,11 @@ public:
 
   using PhysDomain = Domain<dim_, codim_>;
 
-  using RefBasis = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using RefBasis = ReferenceBasis<dim_,range_,rank_>;
 
   using GridType = Grid<dim_>;
   ///@}
-  using ElementHandler = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
+  using Handler = PhysicalBasisHandler<dim_,range_,rank_,codim_>;
 
   static const int dim = dim_;
 
@@ -113,18 +113,18 @@ public:
 public:
 
 
-  using ElementAccessor = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
+  using ElementAccessor = PhysicalBasisElement<dim_,range_,rank_,codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
   /**
    * Default constructor. It does nothing but it is needed for the serialization
    * mechanism.
    */
-  PhysicalSpaceBasis() = default;
+  PhysicalBasis() = default;
 
-  PhysicalSpaceBasis(const self_t &phys_space) = delete;
+  PhysicalBasis(const self_t &phys_space) = delete;
 
-  virtual ~PhysicalSpaceBasis() = default;
+  virtual ~PhysicalBasis() = default;
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<RefBasis> &ref_basis,
@@ -136,15 +136,15 @@ public:
                const std::shared_ptr<const PhysDomain> &phys_domain,
                const Transformation &transformation_type = Transformation::h_grad);
 
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
   create_element_begin(const PropId &property) const override final;
 
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
   create_element_end(const PropId &property) const override final;
 
 
   template <int k>
-  using SubSpace = PhysicalSpaceBasis<k, range, rank, codim + dim-k>;
+  using SubSpace = PhysicalBasis<k, range, rank, codim + dim-k>;
 
   template <int sdim>
   using SubGridMap = typename RefBasis::GridType::template SubGridMap<sdim>;
@@ -171,7 +171,7 @@ public:
 
   void print_info(LogStream &out) const override final;
 
-  std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisHandler<dim_,codim_,range_,rank_> >
   create_cache_handler() const override final;
 
 
@@ -194,9 +194,9 @@ public:
 private:
 
 
-  PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
-                     const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
-                     const Transformation &transformation_type);
+  PhysicalBasis(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
+                const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
+                const Transformation &transformation_type);
 
 
 

@@ -26,26 +26,46 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-handlers = ['ReferenceElementHandler<0,0,1>']
-handler_funcs = set()
+ 
+ 
+
+elements = set()
+element_funcs = set()
+
+elem = 'PhysicalBasisElement<0,0,1,0>'
+elements.add(elem)
 
 
-for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    handler = 'ReferenceElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    handlers.append(handler)
-#    for k in range(0,x.dim+1):
-#        func = 'int %s::get_num_points<%d>() const;' % (handler,k)
-#        handler_funcs.add(func)
-
-        
-                
-    
-for handler in unique(handlers):
-    f.write('template class %s;\n' %handler)
-
-for func in handler_funcs:        
-    f.write('template %s;\n' %func)        
-   
+func = 'const ValueVector<Real> %s::get_w_measures<0>(const int) const' % (elem)
+element_funcs.add(func)
+func = 'const ValueVector<Real> & %s::get_measures<0>(const int) const' % (elem)
+element_funcs.add(func)
 
 
 
+for space in inst.SubPhysSpaces + inst.PhysSpaces:
+    x = space.spec
+    space_dim = x.dim + x.codim
+    elem = 'PhysicalBasisElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
+    elements.add(elem)
+    for k in range(0,x.dim+1):
+        func = 'const ValueVector<Real> %s::get_w_measures<%d>(const int) const' % (elem,k)
+        element_funcs.add(func)
+        func = 'const ValueVector<Real> & %s::get_measures<%d>(const int) const' % (elem,k)
+        element_funcs.add(func)
+        if (k+1 == x.dim):
+            func = 'const ValueVector<Points<%d>> & %s::get_boundary_normals<%d>(const int) const' % (space_dim,elem,k)
+            element_funcs.add(func)
+
+
+
+
+
+for elem in elements:
+    f.write('template class %s;\n' %elem)
+
+
+for func in element_funcs:
+    f.write('template %s;\n' %func)
+
+      

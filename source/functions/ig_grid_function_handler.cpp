@@ -21,7 +21,7 @@
 #include <igatools/functions/ig_grid_function_handler.h>
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/functions/grid_function_element.h>
-#include <igatools/basis_functions/reference_element_handler.h>
+#include <igatools/basis_functions/reference_basis_handler.h>
 
 IGA_NAMESPACE_OPEN
 

@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/physical_basis_element.h>
 #include <igatools/base/exceptions.h>
 
 
@@ -29,8 +29,8 @@ using std::make_unique;
 IGA_NAMESPACE_OPEN
 
 template<int dim_,int range_,int rank_,int codim_>
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
-PhysicalSpaceElement(const std::shared_ptr<ContainerType> &phys_space,
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement(const std::shared_ptr<ContainerType> &phys_space,
                      GridIterator<RefElemAccessor> &&ref_space_element,
                      GridIterator<PhysDomainElem> &&phys_domain_element)
   :
@@ -42,7 +42,7 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> &phys_space,
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_physical_space() const -> std::shared_ptr<const PhysSpace>
 {
   return phys_space_;
@@ -50,7 +50,7 @@ get_physical_space() const -> std::shared_ptr<const PhysSpace>
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_grid_element() -> GridElement<dim_> &
 {
   return get_domain_element().get_grid_function_element().get_grid_element();
@@ -58,7 +58,7 @@ get_grid_element() -> GridElement<dim_> &
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_grid_element() const -> const GridElement<dim_> &
 {
   return get_domain_element().get_grid_function_element().get_grid_element();
@@ -67,8 +67,8 @@ get_grid_element() const -> const GridElement<dim_> &
 
 #if 0
 template<int dim_,int range_,int rank_,int codim_>
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
-PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &in,
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement(const PhysicalBasisElement<dim_,range_,rank_,codim_> &in,
                      const CopyPolicy &copy_policy)
   :
   parent_t(in,copy_policy)
@@ -92,7 +92,7 @@ PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &in,
 
 template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 operator++()
 {
   ++(*phys_domain_element_);
@@ -102,7 +102,7 @@ operator++()
 
 template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 move_to(const IndexType &elem_id)
 {
   ref_space_element_->move_to(elem_id);
@@ -114,7 +114,7 @@ move_to(const IndexType &elem_id)
 template<int dim_,int range_,int rank_,int codim_>
 template <int sdim>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_points(const int s_id) const -> const ValueVector<PhysPoint>
 {
 //  using _Point = typename PhysDomainElem::_Point;
@@ -123,7 +123,7 @@ get_points(const int s_id) const -> const ValueVector<PhysPoint>
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_element_points() const -> const ValueVector<PhysPoint>
 {
   return this->template get_points<dim>(0);
@@ -132,7 +132,7 @@ get_element_points() const -> const ValueVector<PhysPoint>
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_element_w_measures() const -> const ValueVector<Real>
 {
   return this->template get_w_measures<dim>(0);
@@ -141,7 +141,7 @@ get_element_w_measures() const -> const ValueVector<Real>
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_index() const -> IndexType
 {
   return parent_t::get_index();
@@ -150,7 +150,7 @@ get_index() const -> IndexType
 #if 0
 template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 move_to(const Index flat_index)
 {
   this->get_grid_element().move_to(flat_index);
@@ -163,7 +163,7 @@ move_to(const Index flat_index)
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_ref_space_element() const -> const RefElemAccessor &
 {
   return dynamic_cast<const RefElemAccessor &>(*ref_space_element_);
@@ -171,7 +171,7 @@ get_ref_space_element() const -> const RefElemAccessor &
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_ref_space_element() -> RefElemAccessor &
 {
   return dynamic_cast<RefElemAccessor &>(*ref_space_element_);
@@ -180,7 +180,7 @@ get_ref_space_element() -> RefElemAccessor &
 #if 0
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_grid() const -> const std::shared_ptr<const Grid<dim> >
 {
   return this->get_ref_space_element().get_grid();
@@ -189,7 +189,7 @@ get_grid() const -> const std::shared_ptr<const Grid<dim> >
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_domain_element() const -> const PhysDomainElem &
 {
   return *phys_domain_element_;
@@ -197,7 +197,7 @@ get_domain_element() const -> const PhysDomainElem &
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_domain_element() -> PhysDomainElem &
 {
   return *phys_domain_element_;
@@ -207,17 +207,17 @@ get_domain_element() -> PhysDomainElem &
 
 template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 print_info(LogStream &out) const
 {
   using std::to_string;
-  out.begin_item("PhysicalSpaceElement<" +
+  out.begin_item("PhysicalBasisElement<" +
                  to_string(dim_) + "," +
                  to_string(range_) + "," +
                  to_string(rank_) + "," +
                  to_string(codim_) + ">:");
 
-  out.begin_item("ReferenceElement<" +
+  out.begin_item("ReferenceBasisElement<" +
                  to_string(RefBasis::dim) + "," +
                  to_string(RefBasis::range) + "," +
                  to_string(RefBasis::rank) + ">");
@@ -247,11 +247,11 @@ print_info(LogStream &out) const
 
 template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 print_cache_info(LogStream &out) const
 {
   using std::to_string;
-  out.begin_item("ReferenceElement<" +
+  out.begin_item("ReferenceBasisElement<" +
                  to_string(RefBasis::dim) + "," +
                  to_string(RefBasis::range) + "," +
                  to_string(RefBasis::rank) + "> cache:");
@@ -269,7 +269,7 @@ print_cache_info(LogStream &out) const
 
 template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 operator==(const parent_t &a) const
 {
   return !((*this) != a);
@@ -277,7 +277,7 @@ operator==(const parent_t &a) const
 
 template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 operator!=(const parent_t &a) const
 {
   const self_t &elem = dynamic_cast<const self_t &>(a);
@@ -291,7 +291,7 @@ operator!=(const parent_t &a) const
 
 template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 is_comparable_with(const self_t &elem) const
 {
   return (this->get_space_basis() == elem.get_space_basis());
@@ -301,7 +301,7 @@ is_comparable_with(const self_t &elem) const
 template<int dim_,int range_,int rank_,int codim_>
 template <int k>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_w_measures(const int j) const -> const ValueVector<Real>
 {
   return phys_domain_element_->template get_w_measures<k>(j);
@@ -310,7 +310,7 @@ get_w_measures(const int j) const -> const ValueVector<Real>
 template<int dim_,int range_,int rank_,int codim_>
 template <int k>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_measures(const int j) const -> const ValueVector<Real> &
 {
   return phys_domain_element_->template get_measures<k>(j);
@@ -320,7 +320,7 @@ get_measures(const int j) const -> const ValueVector<Real> &
 template<int dim_,int range_,int rank_,int codim_>
 template <int k>
 auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
 get_boundary_normals(const int s_id) const
 -> const ValueVector<Points<space_dim> > &
 {
@@ -330,4 +330,4 @@ get_boundary_normals(const int s_id) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/physical_space_element.inst>
+#include <igatools/basis_functions/physical_basis_element.inst>

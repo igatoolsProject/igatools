@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSpline ElementHandler functions
+ *  Test for the BSpline Handler functions
  *  init_element_cache() and fill_element_cache()
  *
  *  author: pauletti
@@ -30,7 +30,7 @@
 #include "../tests.h"
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 
 template <int dim, int range=1, int rank=1>
 void space_cache_init_fill_elem(

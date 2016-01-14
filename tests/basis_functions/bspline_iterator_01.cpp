@@ -31,7 +31,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 template<int dim, int k=dim, int range = 1, int rank = 1>

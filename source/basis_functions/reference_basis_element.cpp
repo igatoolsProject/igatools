@@ -19,18 +19,18 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/basis_functions/reference_element.h>
-#include <igatools/basis_functions/reference_space_basis.h>
-#include <igatools/basis_functions/space_element.h>
-#include <igatools/basis_functions/reference_element_handler.h>
+#include <igatools/basis_functions/reference_basis_element.h>
+#include <igatools/basis_functions/reference_basis.h>
+#include <igatools/basis_functions/basis_element.h>
+#include <igatools/basis_functions/reference_basis_handler.h>
 
 IGA_NAMESPACE_OPEN
 
 
 
 template <int dim, int range, int rank>
-ReferenceElement<dim, range, rank>::
-ReferenceElement(const std::shared_ptr<ConstBasis> &basis)
+ReferenceBasisElement<dim, range, rank>::
+ReferenceBasisElement(const std::shared_ptr<ConstBasis> &basis)
   :
   parent_t(basis),
   basis_(basis)
@@ -68,7 +68,7 @@ ReferenceElement(const std::shared_ptr<ConstBasis> &basis)
 
 template <int dim, int range, int rank>
 int
-ReferenceElement<dim, range, rank>::
+ReferenceBasisElement<dim, range, rank>::
 get_num_basis_comp(const int i) const
 {
   return this->n_basis_direction_[i].flat_size();
@@ -78,7 +78,7 @@ get_num_basis_comp(const int i) const
 
 template <int dim, int range, int rank>
 auto
-ReferenceElement<dim, range, rank>::
+ReferenceBasisElement<dim, range, rank>::
 get_basis_offset() const -> OffsetTable
 {
   return this->comp_offset_;
@@ -89,7 +89,7 @@ get_basis_offset() const -> OffsetTable
 
 template <int dim, int range, int rank>
 void
-ReferenceElement<dim, range, rank>::
+ReferenceBasisElement<dim, range, rank>::
 print_info(LogStream &out) const
 {
   parent_t::print_info(out);
@@ -104,7 +104,7 @@ print_info(LogStream &out) const
 template <int dim, int range, int rank>
 template <int sdim>
 ValueVector<Real>
-ReferenceElement<dim, range, rank>::
+ReferenceBasisElement<dim, range, rank>::
 get_w_measures(const int s_id) const
 {
   return this->get_grid_element().template get_weights<sdim>(s_id);
@@ -114,7 +114,7 @@ get_w_measures(const int s_id) const
 
 template <int dim, int range, int rank>
 auto
-ReferenceElement<dim, range, rank>::
+ReferenceBasisElement<dim, range, rank>::
 get_element_w_measures() const -> ValueVector<Real>
 {
   return this->template get_w_measures<dim>(0);
@@ -122,7 +122,7 @@ get_element_w_measures() const -> ValueVector<Real>
 #if 0
 template <int dim, int range, int rank>
 auto
-ReferenceElement<dim, range, rank>::
+ReferenceBasisElement<dim, range, rank>::
 get_ig_basis() const -> std::shared_ptr<const Basis>
 {
   return basis_;
@@ -131,6 +131,6 @@ get_ig_basis() const -> std::shared_ptr<const Basis>
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/reference_element.inst>
+#include <igatools/basis_functions/reference_basis_element.inst>
 
 

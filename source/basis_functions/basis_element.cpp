@@ -20,17 +20,17 @@
 
 
 
-#include <igatools/basis_functions/space_element.h>
-#include <igatools/basis_functions/reference_element.h>
-#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/basis_element.h>
+#include <igatools/basis_functions/reference_basis_element.h>
+#include <igatools/basis_functions/physical_basis_element.h>
 
 
 IGA_NAMESPACE_OPEN
 
 
 template<int dim_,int codim_,int range_,int rank_>
-SpaceElement<dim_,codim_,range_,rank_>::
-SpaceElement(const std::shared_ptr<Sp> &space_basis)
+BasisElement<dim_,codim_,range_,rank_>::
+BasisElement(const std::shared_ptr<Sp> &space_basis)
   :
   space_basis_(space_basis)
 {}
@@ -39,7 +39,7 @@ SpaceElement(const std::shared_ptr<Sp> &space_basis)
 
 template<int dim_,int codim_,int range_,int rank_>
 void
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 print_info(LogStream &out) const
 {
   out.begin_item("Element global connectivity (property=\"" + DofProperties::active + "\"):");
@@ -51,7 +51,7 @@ print_info(LogStream &out) const
 
 template<int dim_,int codim_,int range_,int rank_>
 void
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 print_cache_info(LogStream &out) const
 {
   out.begin_item("GridElement<" + std::to_string(dim) + "> cache:");
@@ -66,7 +66,7 @@ print_cache_info(LogStream &out) const
 
 template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_index() const -> const IndexType &
 {
   return this->get_grid_element().get_index();
@@ -77,7 +77,7 @@ get_index() const -> const IndexType &
 
 template<int dim_,int codim_,int range_,int rank_>
 SafeSTLVector<Index>
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_local_to_global(const std::string &dofs_property) const
 {
   SafeSTLVector<Index> dofs_global;
@@ -95,7 +95,7 @@ get_local_to_global(const std::string &dofs_property) const
 
 template<int dim_,int codim_,int range_,int rank_>
 SafeSTLVector<Index>
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_local_to_patch(const std::string &dofs_property) const
 {
   SafeSTLVector<Index> dofs_global;
@@ -113,7 +113,7 @@ get_local_to_patch(const std::string &dofs_property) const
 
 template<int dim_,int codim_,int range_,int rank_>
 SafeSTLVector<Index>
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_local_dofs(const std::string &dofs_property) const
 {
   SafeSTLVector<Index> dofs_global;
@@ -131,7 +131,7 @@ get_local_dofs(const std::string &dofs_property) const
 
 template<int dim_,int codim_,int range_,int rank_>
 Size
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_num_basis(const std::string &dofs_property) const
 {
   const auto dofs_global = this->get_local_to_global(dofs_property);
@@ -141,7 +141,7 @@ get_num_basis(const std::string &dofs_property) const
 
 template<int dim_,int codim_,int range_,int rank_>
 bool
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 operator==(const self_t &a) const
 {
   Assert(this->has_same_basis_of(a),
@@ -151,7 +151,7 @@ operator==(const self_t &a) const
 
 template<int dim_,int codim_,int range_,int rank_>
 bool
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 operator!=(const self_t &a) const
 {
   Assert(this->has_same_basis_of(a),
@@ -164,17 +164,17 @@ operator!=(const self_t &a) const
 template<int dim_,int codim_,int range_,int rank_>
 template <int k>
 ValueVector<Real>
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_w_measures(const int j) const
 {
   ValueVector<Real> w_measures;
 
-  using RefElem = const ReferenceElement<dim_,range_,rank_>;
+  using RefElem = const ReferenceBasisElement<dim_,range_,rank_>;
   RefElem *as_ref_elem = dynamic_cast<RefElem *>(this);
   if (as_ref_elem)
     w_measures = as_ref_elem->template get_w_measures<k>(j);
 
-  using PhysElem = const PhysicalSpaceElement<dim_,range_,rank_,codim_>;
+  using PhysElem = const PhysicalBasisElement<dim_,range_,rank_,codim_>;
   PhysElem *as_phys_elem = dynamic_cast<PhysElem *>(this);
   if (as_phys_elem)
     w_measures = as_phys_elem->template get_w_measures<k>(j);
@@ -185,7 +185,7 @@ get_w_measures(const int j) const
 
 template<int dim_,int codim_,int range_,int rank_>
 ValueVector<Real>
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_element_w_measures() const
 {
   return this->template get_w_measures<dim>(0);
@@ -193,7 +193,7 @@ get_element_w_measures() const
 
 template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_space_basis() const -> std::shared_ptr<Sp>
 {
   return space_basis_;
@@ -202,7 +202,7 @@ get_space_basis() const -> std::shared_ptr<Sp>
 
 template<int dim_,int codim_,int range_,int rank_>
 bool
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 has_same_basis_of(const self_t &elem) const
 {
   return (space_basis_ == elem.space_basis_);
@@ -211,7 +211,7 @@ has_same_basis_of(const self_t &elem) const
 
 template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_element_values(const std::string &dofs_property) const
 -> ValueTable<Value>
 {
@@ -220,7 +220,7 @@ get_element_values(const std::string &dofs_property) const
 
 template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_element_gradients(const std::string &dofs_property) const
 -> ValueTable<Derivative<1>>
 {
@@ -229,7 +229,7 @@ get_element_gradients(const std::string &dofs_property) const
 
 template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_element_hessians(const std::string &dofs_property) const
 -> ValueTable<Derivative<2>>
 {
@@ -238,7 +238,7 @@ get_element_hessians(const std::string &dofs_property) const
 
 template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 get_element_divergences(const std::string &dofs_property) const
 -> ValueTable<Div>
 {
@@ -247,7 +247,7 @@ get_element_divergences(const std::string &dofs_property) const
 
 template<int dim_,int codim_,int range_,int rank_>
 DenseMatrix
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 integrate_u_v(const PropId &dofs_property)
 {
   const auto &w_meas = this->get_element_w_measures();
@@ -280,7 +280,7 @@ integrate_u_v(const PropId &dofs_property)
 
 template<int dim_,int codim_,int range_,int rank_>
 DenseMatrix
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 integrate_gradu_gradv(const PropId &dofs_property)
 {
   const auto &w_meas = this->get_element_w_measures();
@@ -313,7 +313,7 @@ integrate_gradu_gradv(const PropId &dofs_property)
 
 template<int dim_,int codim_,int range_,int rank_>
 DenseVector
-SpaceElement<dim_,codim_,range_,rank_>::
+BasisElement<dim_,codim_,range_,rank_>::
 integrate_u_func(const ValueVector<Value> &func_at_points,
                  const PropId &dofs_property)
 {
@@ -344,6 +344,6 @@ integrate_u_func(const ValueVector<Value> &func_at_points,
 IGA_NAMESPACE_CLOSE
 
 
-#include <igatools/basis_functions/space_element.inst>
+#include <igatools/basis_functions/basis_element.inst>
 
 

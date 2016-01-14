@@ -31,9 +31,9 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/grid_function_lib.h>
 
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/physical_basis_element.h>
 //#include <igatools/geometry/push_forward_element.h>
 
 
@@ -44,7 +44,7 @@ void cache_init(const space_element::Flags flag,
   OUTSTART
 
   using BspSpace = BSpline<dim, range, rank>;
-  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis    = PhysicalBasis<dim,range,rank,codim>;
   auto grid      = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
@@ -83,7 +83,7 @@ void cache_init_elem(const space_element::Flags flag,
   OUTSTART
 
   using BspSpace = BSpline<dim, range, rank>;
-  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis    = PhysicalBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
@@ -124,7 +124,7 @@ void cache_fill_elem(const space_element::Flags flag,
 
 //   const int k = dim;
   using BspSpace = BSpline<dim, range, rank>;
-  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis    = PhysicalBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
@@ -170,7 +170,7 @@ void cache_get_elem_values(const space_element::Flags flag,
   OUTSTART
   const int k = dim;
   using BspSpace = BSpline<dim, range, rank>;
-  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis    = PhysicalBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));

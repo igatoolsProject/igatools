@@ -31,9 +31,9 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/grid_function_lib.h>
 
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/physical_basis_element.h>
 
 
 
@@ -65,9 +65,9 @@ void elem_values(const int n_knots = 5, const int deg=1)
   OUTSTART
   const int k = dim;
   using BspSpace = BSpline<dim, range, rank>;
-  using RefSpace = ReferenceSpaceBasis<dim, range,rank>;
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
-//    using ElementHandler = typename Basis::ElementHandler;
+  using RefSpace = ReferenceBasis<dim, range,rank>;
+  using Basis = PhysicalBasis<dim,range,rank,codim>;
+//    using Handler = typename Basis::Handler;
 
   auto grid  = Grid<dim>::const_create(n_knots);
 

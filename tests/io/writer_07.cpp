@@ -58,7 +58,7 @@ create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
 
 
 template<int dim,int codim,int range>
-std::shared_ptr<const PhysicalSpaceBasis<dim,range,1,codim> >
+std::shared_ptr<const PhysicalBasis<dim,range,1,codim> >
 create_phys_space(const shared_ptr<const Domain<dim,codim>> &domain)
 {
   const int deg = 2;
@@ -68,7 +68,7 @@ create_phys_space(const shared_ptr<const Domain<dim,codim>> &domain)
   auto bsp_space = BSpline<dim,range,1>::const_create(
                      SplineSpace<dim,range,1>::const_create(deg,grid));
 
-  auto phys_space = PhysicalSpaceBasis<dim,range,1,codim>::const_create(bsp_space,domain);
+  auto phys_space = PhysicalBasis<dim,range,1,codim>::const_create(bsp_space,domain);
 
   return phys_space;
 }

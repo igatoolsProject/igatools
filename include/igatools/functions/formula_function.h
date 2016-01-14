@@ -40,7 +40,7 @@ private:
   using self_t = FormulaFunction<dim, codim, range, rank>;
 protected:
   using typename parent_t::DomainType;
-  using ElementHandler = FormulaFunctionHandler<dim, codim, range, rank>;
+  using Handler = FormulaFunctionHandler<dim, codim, range, rank>;
 public:
   using typename parent_t::Value;
   using typename parent_t::Point;
@@ -54,7 +54,7 @@ public:
 
   virtual ~FormulaFunction() = default;
 
-  std::unique_ptr<typename parent_t::ElementHandler>
+  std::unique_ptr<typename parent_t::Handler>
   create_cache_handler() const override final;
 
 public:

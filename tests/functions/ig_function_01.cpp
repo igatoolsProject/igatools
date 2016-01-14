@@ -47,7 +47,7 @@ void test()
   auto grid_func = grid_functions::IdentityGridFunction<dim>::create(grid);
   auto domain = Domain<dim>::create(grid_func);
 
-  auto phys_basis = PhysicalSpaceBasis<dim,range>::create(ref_basis,domain);
+  auto phys_basis = PhysicalBasis<dim,range>::create(ref_basis,domain);
 
 
   Epetra_SerialComm comm;

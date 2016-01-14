@@ -18,10 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 #include <igatools/functions/formula_grid_function.h>
-//#include <igatools/functions/sub_function.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 #include <igatools/geometry/push_forward.h>
 
 
@@ -36,16 +35,16 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim_, int range_, int rank_, int codim_>
-const SafeSTLArray<int, PhysicalSpaceBasis<dim_, range_, rank_, codim_>::n_components>
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::components =
-  sequence<PhysicalSpaceBasis<dim_, range_, rank_, codim_>::n_components>();
+const SafeSTLArray<int, PhysicalBasis<dim_, range_, rank_, codim_>::n_components>
+PhysicalBasis<dim_, range_, rank_, codim_>::components =
+  sequence<PhysicalBasis<dim_, range_, rank_, codim_>::n_components>();
 
 
 template <int dim_, int range_, int rank_, int codim_>
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
-PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
-                   const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
-                   const Transformation &transformation_type)
+PhysicalBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
+              const SharedPtrConstnessHandler<PhysDomain> &phys_domain,
+              const Transformation &transformation_type)
   :
   ref_basis_(ref_basis),
   phys_domain_(phys_domain),
@@ -61,7 +60,7 @@ PhysicalSpaceBasis(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
 
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 create(const shared_ptr<RefBasis> &ref_basis,
        const shared_ptr<PhysDomain> &phys_domain,
        const Transformation &transformation_type) -> shared_ptr<self_t>
@@ -81,7 +80,7 @@ create(const shared_ptr<RefBasis> &ref_basis,
 
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 const_create(const shared_ptr<const RefBasis> &ref_basis,
              const shared_ptr<const PhysDomain> &phys_domain,
              const Transformation &transformation_type) -> shared_ptr<const self_t>
@@ -96,7 +95,7 @@ const_create(const shared_ptr<const RefBasis> &ref_basis,
 
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 get_this_basis() const -> std::shared_ptr<const self_t >
 {
   auto sp = const_cast<self_t *>(this)->shared_from_this();
@@ -109,9 +108,9 @@ get_this_basis() const -> std::shared_ptr<const self_t >
 #if 0
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 create_element(const ListIt &index, const PropId &prop) const
--> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+-> std::unique_ptr<BasisElement<dim_,codim_,range_,rank_>>
 {
   return std::unique_ptr<ElementAccessor>(
     new ElementAccessor(this->get_this_basis(),
@@ -124,9 +123,9 @@ create_element(const ListIt &index, const PropId &prop) const
 
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 create_element_begin(const PropId &prop) const
--> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+-> std::unique_ptr<BasisElement<dim_,codim_,range_,rank_>>
 {
   return std::unique_ptr<ElementAccessor>(
     new ElementAccessor(this->get_this_basis(),
@@ -136,9 +135,9 @@ create_element_begin(const PropId &prop) const
 
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 create_element_end(const PropId &prop) const
--> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+-> std::unique_ptr<BasisElement<dim_,codim_,range_,rank_>>
 {
   return std::unique_ptr<ElementAccessor>(
     new ElementAccessor(this->get_this_basis(),
@@ -149,7 +148,7 @@ create_element_end(const PropId &prop) const
 
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 get_reference_basis() const -> shared_ptr<const RefBasis>
 {
   return ref_basis_.get_ptr_const_data();
@@ -157,7 +156,7 @@ get_reference_basis() const -> shared_ptr<const RefBasis>
 
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 get_domain() const -> std::shared_ptr<const Domain<dim_,codim_>>
 {
   return phys_domain_.get_ptr_const_data();
@@ -165,7 +164,7 @@ get_domain() const -> std::shared_ptr<const Domain<dim_,codim_>>
 
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 get_grid() const -> std::shared_ptr<const Grid<dim_>>
 {
   return ref_basis_->get_grid();
@@ -175,7 +174,7 @@ get_grid() const -> std::shared_ptr<const Grid<dim_>>
 #if 0
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 get_reference_basis() -> shared_ptr<RefBasis>
 {
   return ref_basis_.get_ptr_data();
@@ -186,7 +185,7 @@ get_reference_basis() -> shared_ptr<RefBasis>
 template <int dim_, int range_, int rank_, int codim_>
 template<int sdim>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
               const std::shared_ptr<const Grid<sdim>> &sub_grid,
               SubGridMap<sdim> &elem_map,
@@ -212,7 +211,7 @@ get_sub_space(const int s_id, InterSpaceMap<sdim> &dof_map,
 #if 0
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 get_face_space(const Index face_id,
                SafeSTLVector<Index> &face_to_element_dofs) const -> shared_ptr<FaceSpace>
 {
@@ -231,7 +230,7 @@ get_face_space(const Index face_id,
 
 template <int dim_, int range_, int rank_, int codim_>
 Index
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 get_id() const
 {
   return ref_basis_->get_id();
@@ -247,7 +246,7 @@ get_id() const
 
 template <int dim_, int range_, int rank_, int codim_>
 void
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 print_info(LogStream &out) const
 {
   out.begin_item("Reference space:");
@@ -263,12 +262,12 @@ print_info(LogStream &out) const
 
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 create_cache_handler() const
--> std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>>
+-> std::unique_ptr<BasisHandler<dim_,codim_,range_,rank_>>
 {
-  return std::unique_ptr<ElementHandler>(
-    new ElementHandler(this->get_this_basis()));
+  return std::unique_ptr<Handler>(
+    new Handler(this->get_this_basis()));
 }
 
 
@@ -277,7 +276,7 @@ create_cache_handler() const
 
 template <int dim_, int range_, int rank_, int codim_>
 Transformation
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 get_transformation_type() const
 {
   return transformation_type_;
@@ -286,7 +285,7 @@ get_transformation_type() const
 
 template <int dim_, int range_, int rank_, int codim_>
 std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
-                                                   PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+                                                   PhysicalBasis<dim_, range_, rank_, codim_>::
                                                    get_spline_space() const
 {
   return ref_basis_->get_spline_space();
@@ -297,17 +296,17 @@ std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
 
 template <int dim_, int range_, int rank_, int codim_>
 void
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 refine_h(const Size n_subdivisions)
 {
-  //the refinement of the ReferenceSpaceBasis also refines the Domain (they share the same Grid)
+  //the refinement of the ReferenceBasis also refines the Domain (they share the same Grid)
   ref_basis_.get_ptr_data()->refine_h(n_subdivisions);
 }
 
 
 template <int dim_, int range_, int rank_, int codim_>
 void
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
@@ -324,7 +323,7 @@ rebuild_after_insert_knots(
 
 template <int dim_, int range_, int rank_, int codim_>
 void
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 {
   Assert(space != nullptr, ExcNullPtr());
@@ -342,7 +341,7 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 
 template <int dim_, int range_, int rank_, int codim_>
 auto
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 get_basis_previous_refinement() const -> std::shared_ptr<const base_t>
 {
   return phys_basis_previous_refinement_;
@@ -355,7 +354,7 @@ get_basis_previous_refinement() const -> std::shared_ptr<const base_t>
 template <int dim_, int range_, int rank_, int codim_>
 template<class Archive>
 void
-PhysicalSpaceBasis<dim_, range_, rank_, codim_>::
+PhysicalBasis<dim_, range_, rank_, codim_>::
 serialize(Archive &ar)
 {
   using std::to_string;
@@ -387,6 +386,6 @@ serialize(Archive &ar)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/physical_space_basis.inst>
+#include <igatools/basis_functions/physical_basis.inst>
 
 

@@ -22,8 +22,8 @@
 #define PHYS_SPACE_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
-#include <igatools/basis_functions/nurbs_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
+#include <igatools/basis_functions/nurbs_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -144,7 +144,7 @@ phys_space_to_domain_flag(
 
 
 template<int dim, int range, int rank, int codim>
-class PhysicalSpaceBasis;
+class PhysicalBasis;
 
 /**
  * Element handler for an isogeometric space
@@ -152,21 +152,21 @@ class PhysicalSpaceBasis;
  * @ingroup handlers
  */
 template<int dim_,int range_,int rank_,int codim_>
-class PhysSpaceElementHandler
+class PhysicalBasisHandler
   :
-  public SpaceElementHandler<dim_,codim_,range_,rank_>
+  public BasisHandler<dim_,codim_,range_,rank_>
 {
 
-  using PhysSpace = PhysicalSpaceBasis<dim_,range_,rank_,codim_>;
+  using PhysSpace = PhysicalBasis<dim_,range_,rank_,codim_>;
   using RefBasis =  typename PhysSpace::RefBasis;
-  using RefPhysSpaceElementHandler = typename PhysSpace::RefBasis::ElementHandler;
+  using RefPhysicalBasisHandler = typename PhysSpace::RefBasis::Handler;
 //    using PFCache = typename PhysSpace::PushForwardType;
 
   using ElementIterator = typename PhysSpace::ElementIterator;
   using ElementAccessor = typename PhysSpace::ElementAccessor;
 
-  using base_t = SpaceElementHandler<dim_,codim_,range_,rank_>;
-  using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
+  using base_t = BasisHandler<dim_,codim_,range_,rank_>;
+  using self_t = PhysicalBasisHandler<dim_,range_,rank_,codim_>;
 
   using eval_pts_variant = QuadVariants<dim_>;
   using topology_variant = TopologyVariants<dim_>;
@@ -186,24 +186,24 @@ public:
   /**
    * Default constructor. Not allowed to be used.
    */
-  PhysSpaceElementHandler() = delete;
+  PhysicalBasisHandler() = delete;
 
-  PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space);
+  PhysicalBasisHandler(std::shared_ptr<const PhysSpace> space);
   /**
    * Copy constructor. Not allowed to be used.
    */
-  PhysSpaceElementHandler(const self_t &) = delete;
+  PhysicalBasisHandler(const self_t &) = delete;
 
   /**
    * Move constructor. Not allowed to be used.
    */
-  PhysSpaceElementHandler(self_t &&) = delete;
+  PhysicalBasisHandler(self_t &&) = delete;
 
 public:
   /**
    * Destructor.
    */
-  virtual ~PhysSpaceElementHandler() = default;
+  virtual ~PhysicalBasisHandler() = default;
   ///@}
 
   /**
@@ -226,11 +226,11 @@ public:
 
 private:
 
-  using RefElemHandler = SpaceElementHandler<RefBasis::dim,0,RefBasis::range,RefBasis::rank>;
+  using RefElemHandler = BasisHandler<RefBasis::dim,0,RefBasis::range,RefBasis::rank>;
   std::unique_ptr<RefElemHandler> ref_space_handler_;
 
 
-  using PhysDomainHandler = typename PhysSpace::PhysDomain::ElementHandler;
+  using PhysDomainHandler = typename PhysSpace::PhysDomain::Handler;
   std::unique_ptr<PhysDomainHandler> phys_domain_handler_;
 
 
@@ -242,10 +242,10 @@ private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
     SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
-                      const Transformation &transformation_type,
-                      RefElemHandler &ref_space_handler,
-                      PhysDomainHandler &phys_domain_handler,
-                      SafeSTLArray<typename space_element::Flags, dim+1> &flags);
+                       const Transformation &transformation_type,
+                       RefElemHandler &ref_space_handler,
+                       PhysDomainHandler &phys_domain_handler,
+                       SafeSTLArray<typename space_element::Flags, dim+1> &flags);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);
@@ -260,7 +260,7 @@ private:
   };
 
 
-  using BaseElem = SpaceElement<dim_,codim_,range_,rank_>;
+  using BaseElem = BasisElement<dim_,codim_,range_,rank_>;
 
   virtual void init_cache_impl(BaseElem &elem,
                                const eval_pts_variant &quad) const override final;

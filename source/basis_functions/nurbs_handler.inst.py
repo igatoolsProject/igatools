@@ -31,12 +31,12 @@ sub_dim_members = []
         
         
 handlers = set()
-handlers.add('NURBSElementHandler<0,0,1>')
+handlers.add('NURBSHandler<0,0,1>')
 handler_funcs = set()
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    handler = 'NURBSElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    handler = 'NURBSHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.add(handler)
     for k in range(0,x.dim+1):
         func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)

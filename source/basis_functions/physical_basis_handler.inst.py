@@ -30,13 +30,13 @@ data = Instantiation(include_files)
 
 
 handlers = set()
-handlers.add('PhysSpaceElementHandler<0,0,1,0>')
+handlers.add('PhysicalBasisHandler<0,0,1,0>')
 
 handler_funcs = set()
 
 for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
-    handler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
+    handler = 'PhysicalBasisHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
     handlers.add(handler)
     for k in range(0,x.dim+1):
         func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' %(handler,k)

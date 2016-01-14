@@ -24,14 +24,14 @@
 
 #include <igatools/functions/grid_function.h>
 #include <igatools/functions/ig_coefficients.h>
-#include <igatools/basis_functions/reference_space_basis.h>
+#include <igatools/basis_functions/reference_basis.h>
 #include <igatools/linear_algebra/epetra_vector.h>
 
 IGA_NAMESPACE_OPEN
 
 
 /**
- * @brief GridFunction built as linear combination of basis functions from ReferenceSpaceBasis
+ * @brief GridFunction built as linear combination of basis functions from ReferenceBasis
  *
  * @ingroup serializable
  */
@@ -44,11 +44,11 @@ private:
   using self_t = IgGridFunction<dim, range>;
 protected:
   using typename parent_t::GridType;
-  using ElementHandler = typename parent_t::ElementHandler;
+  using Handler = typename parent_t::Handler;
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
-  using RefBasis = ReferenceSpaceBasis<dim,range,1>;
+  using RefBasis = ReferenceBasis<dim,range,1>;
 
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
@@ -72,7 +72,7 @@ protected:
                  const std::string &dofs_property);
 
 public:
-  std::unique_ptr<ElementHandler>
+  std::unique_ptr<Handler>
   create_cache_handler() const override final;
 
   static std::shared_ptr<const self_t>

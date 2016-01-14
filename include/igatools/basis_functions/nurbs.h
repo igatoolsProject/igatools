@@ -32,7 +32,7 @@
 IGA_NAMESPACE_OPEN
 
 template <int, int, int> class NURBSElement;
-template <int, int, int> class NURBSElementHandler;
+template <int, int, int> class NURBSHandler;
 
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
@@ -43,10 +43,10 @@ template <int, int, int> class NURBSElementHandler;
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
 class NURBS :
-  public ReferenceSpaceBasis<dim_,range_,rank_>
+  public ReferenceBasis<dim_,range_,rank_>
 {
 private:
-  using BaseSpace = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using BaseSpace = ReferenceBasis<dim_,range_,rank_>;
   using self_t = NURBS<dim_, range_, rank_>;
 
 public:
@@ -96,9 +96,9 @@ public:
   using ElementAccessor = NURBSElement<dim, range, rank> ;
 
   /** Type for iterator over the elements.  */
-  using ElementIterator = GridIterator<ReferenceElement<dim,range,rank> >;
+  using ElementIterator = GridIterator<ReferenceBasisElement<dim,range,rank> >;
 
-  using ElementHandler = NURBSElementHandler<dim_, range_, rank_>;
+  using Handler = NURBSHandler<dim_, range_, rank_>;
 
 
 
@@ -160,18 +160,18 @@ public:
   ///@}
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
   create_element_begin(const PropId &property) const  override final;
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
   create_element_end(const PropId &property) const  override final;
 
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_begin(const PropId &property) const override final;
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_end(const PropId &property) const override final;
 
 
@@ -255,7 +255,7 @@ private:
 
 
   friend class NURBSElement<dim, range, rank>;
-  friend class NURBSElementHandler<dim, range, rank>;
+  friend class NURBSHandler<dim, range, rank>;
 
 
   /**
@@ -267,7 +267,7 @@ private:
 
 
 public:
-  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_> >
+  virtual std::unique_ptr<BasisHandler<dim_,0,range_,rank_> >
   create_cache_handler() const override final;
 
 

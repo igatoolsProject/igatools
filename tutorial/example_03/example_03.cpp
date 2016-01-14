@@ -29,7 +29,7 @@
 // [includes]
 #include <igatools/geometry/grid_element.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/base/quadrature_lib.h>
 // [includes]
 
@@ -39,7 +39,8 @@ using namespace std;
 LogStream out;
 
 // [quarter_annulus]
-shared_ptr<const Domain<2>> quarter_annulus(const Size nel) {
+shared_ptr<const Domain<2>> quarter_annulus(const Size nel)
+{
   using numbers::PI;
   BBox<2> box;
   box[0] = {{1.0,2.0}};
@@ -52,13 +53,15 @@ shared_ptr<const Domain<2>> quarter_annulus(const Size nel) {
 
 // [grid_loop]
 template <int dim>
-void grid_loop(shared_ptr<const Grid<dim>> grid) {
+void grid_loop(shared_ptr<const Grid<dim>> grid)
+{
 
   auto grid_el     = grid->begin();
   auto grid_el_end = grid->end();
 
   out << "Traversing the elements of a " << dim << "-dimensional grid." << endl;
-  for (; grid_el!=grid_el_end; ++grid_el) {
+  for (; grid_el!=grid_el_end; ++grid_el)
+  {
     out << "The flat/tensor indices of the current element are:  " << grid_el->get_index() << endl;
   }
   out << endl;
@@ -67,7 +70,8 @@ void grid_loop(shared_ptr<const Grid<dim>> grid) {
 
 // [basis_loop_start]
 template <int dim, int codim=0, int range=1, int rank=1>
-void basis_loop_with_cache(shared_ptr<const Basis<dim,codim,range,rank>> basis) {
+void basis_loop_with_cache(shared_ptr<const Basis<dim,codim,range,rank>> basis)
+{
 
   auto basis_el      = basis->begin();
   auto basis_el_end  = basis->end();
@@ -85,7 +89,8 @@ void basis_loop_with_cache(shared_ptr<const Basis<dim,codim,range,rank>> basis) 
 // [basis_loop_init]
 
 // [basis_loop_loop]
-  for (; basis_el!=basis_el_end; ++basis_el) {
+  for (; basis_el!=basis_el_end; ++basis_el)
+  {
     cache_handler->fill_element_cache(basis_el);
 // [basis_loop_loop]
 
@@ -125,7 +130,7 @@ int main()
   auto grid      = annulus->get_grid_function()->get_grid();
   auto ref_space = SplineSpace<2>::const_create(2,grid);
   auto ref_basis = BSpline<2>::const_create(ref_space);
-  auto phy_basis = PhysicalSpaceBasis<2>::const_create(ref_basis,annulus);
+  auto phy_basis = PhysicalBasis<2>::const_create(ref_basis,annulus);
 
   out << "Traversing basis functions on the annulus domain:" << endl;
   basis_loop_with_cache<2>(dynamic_pointer_cast<const Basis<2,0,1,1>>(phy_basis));

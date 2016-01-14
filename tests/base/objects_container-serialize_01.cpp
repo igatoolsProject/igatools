@@ -106,12 +106,12 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   static const int rank = 1;
   using GridType = Grid<dim>;
   using SpSpaceType = SplineSpace<dim, range, rank>;
-  using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
+  using RefSpaceType = ReferenceBasis<dim, range, rank>;
   using BSplineType = BSpline<dim, range, rank>;
   using NURBSType = NURBS<dim, range, rank>;
   using ScalarSpSpaceType = SplineSpace<dim, 1, 1>;
   using ScalarBSplineType = BSpline<dim, 1, 1>;
-  using ScalarRefSpaceType = ReferenceSpaceBasis<dim, 1, 1>;
+  using ScalarRefSpaceType = ReferenceBasis<dim, 1, 1>;
   using WeightFuncType = IgGridFunction<dim, 1>;
   using ScalarGridFuncType = GridFunction<dim, 1>;
   using GridFuncType = GridFunction<dim, range>;
@@ -119,7 +119,7 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   using IgGridFunc = IgGridFunction<dim, dim+codim>;
   using IgFuncType = IgFunction<dim, codim, range, rank>;
   using FuncType = Function<dim, codim, range, rank>;
-  using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
+  using PhysSpaceType = PhysicalBasis<dim, range, rank, codim>;
 
   auto grid = GridType::create(coord);
   container->insert_const_object<GridType>(grid);

@@ -25,7 +25,7 @@
 // [old includes]
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/base/quadrature_lib.h>
 
 //#include <igatools/linear_algebra/dense_matrix.h>
@@ -65,7 +65,7 @@ private:
 
   // [members]
 private:
-  using RefSpace = ReferenceSpaceBasis<dim>;
+  using RefSpace = ReferenceBasis<dim>;
   using Basis = BSpline<dim>;
   shared_ptr<const Basis> basis;
 

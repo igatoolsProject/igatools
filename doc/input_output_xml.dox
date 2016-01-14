@@ -96,7 +96,7 @@ that can be defined are:
  - @ref grid_functions::LinearGridFunction
  - @ref IgGridFunction
  - @ref Domain
- - @ref PhysicalSpaceBasis
+ - @ref PhysicalBasis
  - @ref functions::ConstantFunction
  - @ref functions::LinearFunction
  - @ref IgFunction
@@ -214,7 +214,7 @@ By default, if <tt>Name</tt> is not defined, it is set to a void string.
 Description of the @ref IgGridFunction XML format:
 @code{.xml}
 <IgGridFunction LocalObjectId="7" Dim="2" Range="2">
-  <ReferenceSpaceBasis GetFromLocalObjectId="6"/>
+  <ReferenceBasis GetFromLocalObjectId="6"/>
   <IgCoefficients Size="24">
     <Indices>
       0 1 2 3 4 5 6 7 8 9 10 11
@@ -245,14 +245,14 @@ Description of the @ref Domain XML format:
 @endcode
 By default, if the <tt>Name</tt> is not defined, it is set to a void string.
 
-Description of the @ref PhysicalSpaceBasis XML format:
+Description of the @ref PhysicalBasis XML format:
 @code{.xml}
-<PhysicalSpaceBasis LocalObjectId="9" Dim="2" Range="2" Rank="1" Codim="0">
-  <ReferenceSpaceBasis GetFromLocalObjectId="6"/>
+<PhysicalBasis LocalObjectId="9" Dim="2" Range="2" Rank="1" Codim="0">
+  <ReferenceBasis GetFromLocalObjectId="6"/>
   <Domain GetFromLocalObjectId="8"/>
   <!-- The following entry is optional. -->
   <Transformation>h_grad</Transformation>
-</PhysicalSpaceBasis>
+</PhysicalBasis>
 @endcode
 By default, if <tt>Transformation</tt> is not defined,
 it is set to <tt>h_grad</tt>.
@@ -285,7 +285,7 @@ By default, if <tt>Name</tt> is not defined, it is set to a void string.
 Description of the @ref IgFunction XML format:
 @code{.xml}
 <IgFunction LocalObjectId="10" Dim="2" Range="2" Rank="1" Codim="0">
-  <PhysicalSpaceBasis GetFromLocalObjectId="9"/>
+  <PhysicalBasis GetFromLocalObjectId="9"/>
   <IgCoefficients Size="24">
     <Indices>
       0 1 2 3 4 5 6 7 8 9 10 11

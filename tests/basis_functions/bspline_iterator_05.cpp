@@ -64,7 +64,7 @@ void sub_elem_values(const int n_knots, const int deg)
   for (; elem != end; ++elem)
   {
     auto &grid_elem =
-      dynamic_cast<ReferenceElement<dim,1,1> &>(*elem).get_grid_element();
+      dynamic_cast<ReferenceBasisElement<dim,1,1> &>(*elem).get_grid_element();
     if (grid_elem.is_boundary())
     {
       elem_handler->template fill_cache<dim>(*elem,0);

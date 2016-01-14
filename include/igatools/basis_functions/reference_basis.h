@@ -27,17 +27,17 @@
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/basis_functions/basis.h>
 #include <igatools/geometry/grid.h>
-#include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/basis_element.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/utils/multi_array_utils.h>
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, int ,int> class PhysicalSpaceBasis;
+template <int, int, int ,int> class PhysicalBasis;
 
-template <int, int, int> class ReferenceElement;
-template <int,int,int> class ReferenceElementHandler;
+template <int, int, int> class ReferenceBasisElement;
+template <int,int,int> class ReferenceBasisHandler;
 
 template <int, int, int> class BSpline;
 template <int, int, int> class NURBS;
@@ -53,12 +53,12 @@ template <int,int,int> class DofDistribution;
  * @ingroup serializable
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class ReferenceSpaceBasis :
+class ReferenceBasis :
   public Basis<dim_,0,range_,rank_>
 {
 public:
   using base_t = Basis<dim_,0,range_,rank_>;
-  using self_t = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using self_t = ReferenceBasis<dim_,range_,rank_>;
 
   static const int dim       = dim_;
   static const int codim     = 0;
@@ -73,7 +73,7 @@ public:
    * @see Basis
    */
 
-  using RefBasis = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using RefBasis = ReferenceBasis<dim_,range_,rank_>;
 
   template <int order>
   using Derivative = typename base_t::template Derivative<order>;
@@ -88,12 +88,12 @@ public:
 
 
   /** Type for the element accessor. */
-  using ElementAccessor = ReferenceElement<dim,range,rank>;
+  using ElementAccessor = ReferenceBasisElement<dim,range,rank>;
 
   /** Type for iterator over the elements.  */
   using ElementIterator = GridIterator<ElementAccessor>;
 
-  using ElementHandler = ReferenceElementHandler<dim_, range_, rank_>;
+  using Handler = ReferenceBasisHandler<dim_, range_, rank_>;
 
   using SpSpace = SplineSpace<dim_,range_,rank_>;
 
@@ -112,11 +112,11 @@ protected:
    * Default constructor. It does nothing but it is needed for the serialization
    * mechanism.
    */
-  ReferenceSpaceBasis() = default;
+  ReferenceBasis() = default;
 
 
 public:
-  virtual ~ReferenceSpaceBasis() = default;
+  virtual ~ReferenceBasis() = default;
 
 
   template <int sdim>
@@ -126,10 +126,10 @@ public:
   using InterSpaceMap = SafeSTLVector<Index>;
 
   template <int k>
-  using SubRefSpace = ReferenceSpaceBasis<k, range, rank>;
+  using SubRefSpace = ReferenceBasis<k, range, rank>;
 
   template <int k>
-  using SubSpace = PhysicalSpaceBasis<k,range,rank, dim-k>;
+  using SubSpace = PhysicalBasis<k,range,rank, dim-k>;
 
   virtual bool is_bspline() const = 0;
 
@@ -160,10 +160,10 @@ public:
                 SubGridMap<sdim> &elem_map) const;
 
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_begin(const PropId &property) const = 0;
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_end(const PropId &property) const = 0;
 
 protected:

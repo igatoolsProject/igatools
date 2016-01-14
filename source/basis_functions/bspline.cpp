@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/functions/sub_function.h>
 //#include <igatools/functions/identity_function.h>
 //#include <igatools/functions/grid_function_lib.h>
@@ -57,7 +57,7 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   {
     const auto &rep_knots_i = rep_knots[i];
 
-    auto & end_interval_i = end_interval_[i];
+    auto &end_interval_i = end_interval_[i];
 
     for (int dir=0; dir<dim; ++dir)
     {
@@ -65,9 +65,9 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
 
       const auto &knots_coord_dir = *knots_coord[dir];
 
-      const auto & rep_knots_i_dir = rep_knots_i[dir];
+      const auto &rep_knots_i_dir = rep_knots_i[dir];
 
-      auto & end_interval_i_dir = end_interval_i[dir];
+      auto &end_interval_i_dir = end_interval_i[dir];
 
       const auto x1 = knots_coord_dir[1];
       const auto a = knots_coord_dir[0];
@@ -156,7 +156,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_element_begin(const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+-> std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -170,7 +170,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_element_end(const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+-> std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -185,7 +185,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_ref_element_begin(const PropId &property) const
--> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+-> std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -197,7 +197,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_ref_element_end(const PropId &property) const
--> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+-> std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -417,9 +417,9 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_cache_handler() const
--> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
+-> std::unique_ptr<BasisHandler<dim_,0,range_,rank_>>
 {
-  using Handler = BSplineElementHandler<dim_,range_,rank_>;
+  using Handler = BSplineHandler<dim_,range_,rank_>;
   return std::unique_ptr<Handler>(new Handler(this->get_this_basis()));
 }
 
@@ -443,7 +443,7 @@ BSpline<dim_, range_, rank_>::
 serialize(Archive &ar)
 {
   using std::to_string;
-  const std::string base_name = "ReferenceSpaceBasis_" +
+  const std::string base_name = "ReferenceBasis_" +
                                 to_string(dim_) + "_" +
                                 to_string(0) + "_" +
                                 to_string(range_) + "_" +

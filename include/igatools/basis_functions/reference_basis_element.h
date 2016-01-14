@@ -22,29 +22,29 @@
 #define REFERENCE_ELEMENT_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/space_element.h>
-#include <igatools/basis_functions/reference_element_handler.h>
+#include <igatools/basis_functions/basis_element.h>
+#include <igatools/basis_functions/reference_basis_handler.h>
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, int> class ReferenceSpaceBasis;
+template <int, int, int> class ReferenceBasis;
 
 /**
  *
  * @ingroup elements
  */
 template <int dim, int range, int rank>
-class ReferenceElement : public SpaceElement<dim,0,range,rank>
+class ReferenceBasisElement : public BasisElement<dim,0,range,rank>
 {
 public:
 
   /** Type required by the GridForwardIterator templated iterator */
-  using ContainerType = const ReferenceSpaceBasis<dim,range,rank> ;
+  using ContainerType = const ReferenceBasis<dim,range,rank> ;
 
-  using Basis = ReferenceSpaceBasis<dim,range,rank>;
-  using ConstBasis = const ReferenceSpaceBasis<dim,range,rank>;
+  using Basis = ReferenceBasis<dim,range,rank>;
+  using ConstBasis = const ReferenceBasis<dim,range,rank>;
 
-  using parent_t = SpaceElement<dim,0,range,rank>;
+  using parent_t = BasisElement<dim,0,range,rank>;
 
   using RefPoint = typename Basis::RefPoint;
   using Point = typename Basis::Point;
@@ -64,21 +64,21 @@ public:
   using GridElem = GridElement<dim>;
 
 public:
-  ReferenceElement() = delete;
+  ReferenceBasisElement() = delete;
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  ReferenceElement(const ReferenceElement<dim,range,rank> &elem) = delete;
+  ReferenceBasisElement(const ReferenceBasisElement<dim,range,rank> &elem) = delete;
 
   /**
    * Constructs an accessor to element number index of a
-   * ReferenceSpaceBasis basis.
+   * ReferenceBasis basis.
    */
-  ReferenceElement(const std::shared_ptr<ConstBasis> &basis);
+  ReferenceBasisElement(const std::shared_ptr<ConstBasis> &basis);
 
 
-  virtual ~ReferenceElement() = default;
+  virtual ~ReferenceBasisElement() = default;
 
   /**
    * Returns the <tt>k</tt> dimensional j-th sub-element measure

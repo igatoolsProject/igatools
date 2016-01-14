@@ -26,34 +26,26 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-
-handlers = set()
+handlers = ['ReferenceBasisHandler<0,0,1>']
 handler_funcs = set()
 
 
-handler = 'BSplineElementHandler<0,0,1>'
-handlers.add(handler)
-
-
-
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    handler = 'BSplineElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    handlers.add(handler)
-    for k in range(0,x.dim+1):
-        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)
-        handler_funcs.add(func)
-        func = 'void %s::InitCacheDispatcher::operator()(const shared_ptr<const Quadrature<%d>> &)' % (handler,k)
-        handler_funcs.add(func)
-        func = 'void %s::FillCacheDispatcherNoGlobalCache::operator()(const Topology<%d> &)' % (handler,k)
-        handler_funcs.add(func)
+    handler = 'ReferenceBasisHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    handlers.append(handler)
+#    for k in range(0,x.dim+1):
+#        func = 'int %s::get_num_points<%d>() const;' % (handler,k)
+#        handler_funcs.add(func)
+
         
-        
-        
-for handler in handlers:
+                
+    
+for handler in unique(handlers):
     f.write('template class %s;\n' %handler)
 
 for func in handler_funcs:        
-    f.write('template %s;\n' %func)
-        
-        
+    f.write('template %s;\n' %func)        
    
+
+
+

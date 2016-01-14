@@ -115,7 +115,7 @@ Reference space:
    
    Weight function :
       IgGridFunction<2,1>
-         ReferenceSpaceBasis<2,1,1>:
+         ReferenceBasis<2,1,1>:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 2 2 ]
@@ -230,7 +230,7 @@ Reference space:
 Physical domain:
    GridFunction<2,2>
       IgGridFunction<2,2>
-         ReferenceSpaceBasis<2,1,2>:
+         ReferenceBasis<2,1,2>:
             BSpline Space:
                Spline Space:
                   Knots without repetition:
@@ -343,7 +343,7 @@ Physical domain:
             
             Weight function :
                IgGridFunction<2,1>
-                  ReferenceSpaceBasis<2,1,1>:
+                  ReferenceBasis<2,1,1>:
                      Spline Space:
                         Knots without repetition:
                            Number of intervals per direction: [ 2 2 ]
@@ -656,7 +656,7 @@ Reference space:
    
    Weight function :
       IgGridFunction<2,1>
-         ReferenceSpaceBasis<2,1,1>:
+         ReferenceBasis<2,1,1>:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 4 ]
@@ -831,7 +831,7 @@ Reference space:
 Physical domain:
    GridFunction<2,2>
       IgGridFunction<2,2>
-         ReferenceSpaceBasis<2,1,2>:
+         ReferenceBasis<2,1,2>:
             BSpline Space:
                Spline Space:
                   Knots without repetition:
@@ -988,7 +988,7 @@ Physical domain:
             
             Weight function :
                IgGridFunction<2,1>
-                  ReferenceSpaceBasis<2,1,1>:
+                  ReferenceBasis<2,1,1>:
                      Spline Space:
                         Knots without repetition:
                            Number of intervals per direction: [ 4 4 ]
@@ -1817,7 +1817,7 @@ Reference space:
    
    Weight function :
       IgGridFunction<2,1>
-         ReferenceSpaceBasis<2,1,1>:
+         ReferenceBasis<2,1,1>:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 12 12 ]
@@ -2552,7 +2552,7 @@ Reference space:
 Physical domain:
    GridFunction<2,2>
       IgGridFunction<2,2>
-         ReferenceSpaceBasis<2,1,2>:
+         ReferenceBasis<2,1,2>:
             BSpline Space:
                Spline Space:
                   Knots without repetition:
@@ -3125,7 +3125,7 @@ Physical domain:
             
             Weight function :
                IgGridFunction<2,1>
-                  ReferenceSpaceBasis<2,1,1>:
+                  ReferenceBasis<2,1,1>:
                      Spline Space:
                         Knots without repetition:
                            Number of intervals per direction: [ 12 12 ]

@@ -42,7 +42,7 @@ private:
   using self_t = FormulaGridFunction<dim, range>;
 protected:
   using typename parent_t::GridType;
-  using ElementHandler = FormulaGridFunctionHandler<dim, range>;
+  using Handler = FormulaGridFunctionHandler<dim, range>;
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
@@ -54,7 +54,7 @@ public:
 
   virtual ~FormulaGridFunction() = default;
 
-  std::unique_ptr<typename parent_t::ElementHandler>
+  std::unique_ptr<typename parent_t::Handler>
   create_cache_handler() const;
 
 

@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/nurbs_element_handler.h>
+#include <igatools/basis_functions/nurbs_handler.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
 #include <algorithm>
@@ -28,8 +28,8 @@ using std::shared_ptr;
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_ , int rank_>
-NURBSElementHandler<dim_, range_, rank_>::
-NURBSElementHandler(shared_ptr<const Basis> space)
+NURBSHandler<dim_, range_, rank_>::
+NURBSHandler(shared_ptr<const Basis> space)
   :
   base_t(space),
   bsp_elem_handler_(space->get_bspline_basis()->create_cache_handler()),
@@ -42,7 +42,7 @@ NURBSElementHandler(shared_ptr<const Basis> space)
 
 template<int dim_, int range_ , int rank_>
 void
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 set_flags_impl(const topology_variant &sdim,
                const typename space_element::Flags &flag)
 {
@@ -84,7 +84,7 @@ set_flags_impl(const topology_variant &sdim,
 
 template<int dim_, int range_ , int rank_>
 void
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 init_cache_impl(BaseElem &elem,
                 const eval_pts_variant &quad) const
 {
@@ -95,7 +95,7 @@ init_cache_impl(BaseElem &elem,
 
 template<int dim_, int range_ , int rank_>
 void
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 fill_cache_impl(const topology_variant &sdim,
                 BaseElem &elem,
                 const int s_id) const
@@ -112,7 +112,7 @@ fill_cache_impl(const topology_variant &sdim,
 
 template<int dim_, int range_ , int rank_>
 auto
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 get_nurbs_space() const -> std::shared_ptr<const Basis>
 {
   auto nrb_space = std::dynamic_pointer_cast<const Basis>(this->get_space());
@@ -122,7 +122,7 @@ get_nurbs_space() const -> std::shared_ptr<const Basis>
 
 template<int dim_, int range_ , int rank_>
 void
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
   Assert(false,ExcNotImplemented());
@@ -142,10 +142,10 @@ print_info(LogStream &out) const
 
 
 template<int dim_, int range_ , int rank_>
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 SetFlagsDispatcher::
 SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
-                  self_t &nrb_handler)
+                   self_t &nrb_handler)
   :
   nrb_flag_(nrb_flag),
   nrb_handler_(nrb_handler)
@@ -155,7 +155,7 @@ SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 SetFlagsDispatcher::
 operator()(const Topology<sdim> &topology)
 {
@@ -164,10 +164,10 @@ operator()(const Topology<sdim> &topology)
 
 
 template<int dim_, int range_ , int rank_>
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 InitCacheDispatcher(const self_t &nrb_handler,
-                    SpaceElement<dim_,0,range_,rank_> &elem)
+                    BasisElement<dim_,0,range_,rank_> &elem)
   :
   nrb_handler_(nrb_handler),
   nrb_elem_(dynamic_cast<NURBSElement<dim_,range_,rank_> &>(elem))
@@ -177,7 +177,7 @@ InitCacheDispatcher(const self_t &nrb_handler,
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 {
@@ -209,10 +209,10 @@ operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 
 
 template<int dim_, int range_ , int rank_>
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 FillCacheDispatcher(const self_t &nrb_handler,
-                    SpaceElement<dim_,0,range_,rank_> &elem,
+                    BasisElement<dim_,0,range_,rank_> &elem,
                     const int s_id)
   :
   nrb_handler_(nrb_handler),
@@ -224,7 +224,7 @@ FillCacheDispatcher(const self_t &nrb_handler,
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 operator()(const Topology<sdim> &topology)
 {
@@ -297,7 +297,7 @@ operator()(const Topology<sdim> &topology)
 
 template<int dim_, int range_ , int rank_>
 void
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 evaluate_nurbs_values_from_bspline(
   const BSplineElem &bspline_elem,
@@ -361,7 +361,7 @@ evaluate_nurbs_values_from_bspline(
 
 template<int dim_, int range_ , int rank_>
 void
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 evaluate_nurbs_gradients_from_bspline(
   const BSplineElem &bspline_elem,
@@ -455,7 +455,7 @@ evaluate_nurbs_gradients_from_bspline(
 
 template<int dim_, int range_ , int rank_>
 void
-NURBSElementHandler<dim_, range_, rank_>::
+NURBSHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 evaluate_nurbs_hessians_from_bspline(
   const BSplineElem &bspline_elem,
@@ -597,6 +597,6 @@ evaluate_nurbs_hessians_from_bspline(
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/nurbs_element_handler.inst>
+#include <igatools/basis_functions/nurbs_handler.inst>
 
 #endif // #ifdef USE_NURBS

@@ -29,7 +29,7 @@ BSplineElement<1,1,1> cache:
          
       
    
-   SpaceElement's cache:
+   BasisElement's cache:
       GridElement<1> cache:
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
             Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
@@ -191,7 +191,7 @@ BSplineElement<1,1,1> cache:
          
       
    
-   SpaceElement's cache:
+   BasisElement's cache:
       GridElement<1> cache:
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
             Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
@@ -353,7 +353,7 @@ BSplineElement<1,1,1> cache:
          
       
    
-   SpaceElement's cache:
+   BasisElement's cache:
       GridElement<1> cache:
          Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
             Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
@@ -525,7 +525,7 @@ BSplineElement<2,1,1> cache:
          
       
    
-   SpaceElement's cache:
+   BasisElement's cache:
       GridElement<2> cache:
          Cache for all sub-elements in all dimensions: (memory consumption: 756 bytes)
             Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
@@ -897,7 +897,7 @@ BSplineElement<2,1,1> cache:
          
       
    
-   SpaceElement's cache:
+   BasisElement's cache:
       GridElement<2> cache:
          Cache for all sub-elements in all dimensions: (memory consumption: 756 bytes)
             Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
@@ -1269,7 +1269,7 @@ BSplineElement<2,1,1> cache:
          
       
    
-   SpaceElement's cache:
+   BasisElement's cache:
       GridElement<2> cache:
          Cache for all sub-elements in all dimensions: (memory consumption: 756 bytes)
             Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.

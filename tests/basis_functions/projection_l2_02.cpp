@@ -39,9 +39,9 @@
 #include <igatools/basis_functions/space_tools.h>
 
 #include <igatools/io/writer.h>
-#include <igatools/basis_functions/physical_space_basis.h>
-#include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis.h>
+#include <igatools/basis_functions/physical_basis_element.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 
 using numbers::PI;
 
@@ -65,7 +65,7 @@ void do_test(const int p, const int num_knots = 10)
   auto map = F::const_create(grid,A, b);
   auto domain = Domain<dim,codim>::const_create(map);
 
-  auto basis = PhysicalSpaceBasis<dim,range,1,codim>::const_create(ref_basis,domain);
+  auto basis = PhysicalBasis<dim,range,1,codim>::const_create(ref_basis,domain);
 
   const int n_qpoints = 4;
   auto quad = QGauss<dim>::const_create(n_qpoints);

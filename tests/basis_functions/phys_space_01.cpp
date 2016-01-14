@@ -32,14 +32,14 @@
 //#include <igatools/functions/function_lib.h>
 //#include <igatools/functions/identity_function.h>
 
-//#include <igatools/basis_functions/phys_space_element_handler.h>
+//#include <igatools/basis_functions/physical_basis_handler.h>
 //#include <igatools/basis_functions/bspline_element.h>
-//#include <igatools/basis_functions/physical_space_element.h>
+//#include <igatools/basis_functions/physical_basis_element.h>
 //#include <igatools/geometry/push_forward_element.h>
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/functions/grid_function_lib.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 
 #if 0
 template <int dim, int range=1, int rank=1, int codim = 0>
@@ -49,7 +49,7 @@ void cache_init(const ValueFlags flag,
   OUTSTART
 
   using BspSpace = BSpline<dim, range, rank>;
-  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim, Transformation::h_grad>;
+  using Basis    = PhysicalBasis<dim,range,rank,codim, Transformation::h_grad>;
   auto grid      = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(deg, grid);
 
@@ -87,7 +87,7 @@ void cache_init_elem(const ValueFlags flag,
   OUTSTART
 
   using BspSpace = BSpline<dim, range, rank>;
-  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim, Transformation::h_grad>;
+  using Basis    = PhysicalBasis<dim,range,rank,codim, Transformation::h_grad>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(deg, grid);
@@ -127,7 +127,7 @@ void cache_fill_elem(const ValueFlags flag,
 
 //   const int k = dim;
   using BspSpace = BSpline<dim, range, rank>;
-  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim, Transformation::h_grad>;
+  using Basis    = PhysicalBasis<dim,range,rank,codim, Transformation::h_grad>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(deg, grid);
@@ -172,7 +172,7 @@ void cache_get_elem_values(const ValueFlags flag,
   OUTSTART
   const int k = dim;
   using BspSpace = BSpline<dim, range, rank>;
-  using Basis    = PhysicalSpaceBasis<dim,range,rank,codim, Transformation::h_grad>;
+  using Basis    = PhysicalBasis<dim,range,rank,codim, Transformation::h_grad>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
   auto ref_space = BspSpace::const_create(deg, grid);
@@ -212,8 +212,8 @@ void cache_get_elem_values(const ValueFlags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-std::shared_ptr<const PhysicalSpaceBasis<dim,range,rank,codim>>
-    create_phys_space()
+std::shared_ptr<const PhysicalBasis<dim,range,rank,codim>>
+                                                        create_phys_space()
 {
   OUTSTART
   auto grid = Grid<dim>::const_create();
@@ -227,12 +227,12 @@ std::shared_ptr<const PhysicalSpaceBasis<dim,range,rank,codim>>
   using Domain = Domain<dim,codim>;
   auto domain = Domain::const_create(grid_func);
 
-  using PhysSpace = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using PhysSpace = PhysicalBasis<dim,range,rank,codim>;
   auto phys_space = PhysSpace::const_create(ref_space,domain,Transformation::h_grad);
 
 
   using std::to_string;
-  out.begin_item("PhysicalSpaceBasis<"
+  out.begin_item("PhysicalBasis<"
                  + to_string(dim) + ","
                  + to_string(range) + ","
                  + to_string(rank) + ","

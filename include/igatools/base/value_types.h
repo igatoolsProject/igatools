@@ -370,7 +370,7 @@ struct _W_Measure
 
 //---------------------------------------------------------------------------------------
 /**
- * @name Admissible flags for the classes that are derived from SpaceElement.
+ * @name Admissible flags for the classes that are derived from BasisElement.
  */
 namespace space_element
 {

@@ -720,7 +720,7 @@ write_ig_grid_function(const shared_ptr<IgGridFunc> ig_func,
   obj_elem->add_attribute("Dim", dim);
   obj_elem->add_attribute("Range", range);
 
-  const auto rb_elem = xml_doc->create_new_element("ReferenceSpaceBasis");
+  const auto rb_elem = xml_doc->create_new_element("ReferenceBasis");
   rb_elem->add_attribute("GetFromLocalObjectId",
                          ig_func->get_basis()->get_object_id());
   obj_elem->append_child_element(rb_elem);
@@ -779,18 +779,18 @@ write_domain(const shared_ptr<Domain> domain,
 
 
 
-template <class PhysSpaceBasis>
+template <class PhysicalBasis>
 void
 ObjectsContainerXMLWriter::
-write_phys_space_basis(const shared_ptr<PhysSpaceBasis> phys_space,
+write_phys_space_basis(const shared_ptr<PhysicalBasis> phys_space,
                        const XMLDocPtr_ xml_doc)
 {
-  const auto obj_elem = xml_doc->create_new_element("PhysicalSpaceBasis");
+  const auto obj_elem = xml_doc->create_new_element("PhysicalBasis");
 
-  static const int dim   = PhysSpaceBasis::dim;
-  static const int range = PhysSpaceBasis::range;
-  static const int rank  = PhysSpaceBasis::rank;
-  static const int codim = PhysSpaceBasis::codim;
+  static const int dim   = PhysicalBasis::dim;
+  static const int range = PhysicalBasis::range;
+  static const int rank  = PhysicalBasis::rank;
+  static const int codim = PhysicalBasis::codim;
 
   obj_elem->add_attribute("LocalObjectId", phys_space->get_object_id());
   obj_elem->add_attribute("Dim", dim);
@@ -798,7 +798,7 @@ write_phys_space_basis(const shared_ptr<PhysSpaceBasis> phys_space,
   obj_elem->add_attribute("Rank", rank);
   obj_elem->add_attribute("Codim", codim);
 
-  const auto rb_elem = xml_doc->create_new_element("ReferenceSpaceBasis");
+  const auto rb_elem = xml_doc->create_new_element("ReferenceBasis");
   rb_elem->add_attribute("GetFromLocalObjectId",
                          phys_space->get_reference_basis()->get_object_id());
   obj_elem->append_child_element(rb_elem);
@@ -855,7 +855,7 @@ write_ig_function(const shared_ptr<IgFunction> ig_function,
   obj_elem->add_attribute("Rank", rank);
   obj_elem->add_attribute("Codim", codim);
 
-  const auto ps_elem = xml_doc->create_new_element("PhysicalSpaceBasis");
+  const auto ps_elem = xml_doc->create_new_element("PhysicalBasis");
   ps_elem->add_attribute("GetFromLocalObjectId",
                          ig_function->get_basis()->get_object_id());
   obj_elem->append_child_element(ps_elem);

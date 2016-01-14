@@ -23,8 +23,8 @@
 #include <igatools/functions/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/physical_space_basis.h>
-#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/physical_basis.h>
+#include <igatools/basis_functions/physical_basis_element.h>
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/linear_algebra/dense_vector.h>
@@ -60,7 +60,7 @@ private:
   // [type aliases]
 private:
   using RefSpace = BSpline<dim>;
-  using Basis    = PhysicalSpaceBasis<dim>;
+  using Basis    = PhysicalBasis<dim>;
   using Value = typename Function<dim>::Value;
   // [type aliases]
 

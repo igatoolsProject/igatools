@@ -51,10 +51,10 @@ template <class T> class SafeSTLSet;
  * The objects that can be stored inside are:
  * - @ref Grid
  * - @ref SplineSpace
- * - @ref ReferenceSpaceBasis
+ * - @ref ReferenceBasis
  * - @ref GridFunction
  * - @ref Domain
- * - @ref PhysicalSpaceBasis
+ * - @ref PhysicalBasis
  * - @ref Function
 
  * All the instantiated dimensions of the above listed types can be

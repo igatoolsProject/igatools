@@ -180,7 +180,7 @@ public:
   using ElementIterator = GridIterator<ElementAccessor>;
 
 
-  using ElementHandler = GridHandler<dim_>;
+  using Handler = GridHandler<dim_>;
 
 
   using Point = Points<dim_>;
@@ -430,7 +430,7 @@ public:
   ///@}
 
 
-  std::unique_ptr<ElementHandler> create_cache_handler() const;
+  std::unique_ptr<Handler> create_cache_handler() const;
 
   /**
    * @name Iterating of grid elements

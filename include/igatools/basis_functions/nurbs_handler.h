@@ -33,7 +33,7 @@
 
 #include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_handler.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/functions/ig_grid_function_handler.h>
 
 
@@ -52,11 +52,11 @@ template<int,int,int> class NURBSElement;
  * @ingroup handlers
  */
 template<int dim_, int range_, int rank_>
-class NURBSElementHandler
-  : public ReferenceElementHandler<dim_,range_,rank_>
+class NURBSHandler
+  : public ReferenceBasisHandler<dim_,range_,rank_>
 {
-  using base_t = ReferenceElementHandler<dim_,range_,rank_>;
-  using self_t = NURBSElementHandler<dim_,range_,rank_>;
+  using base_t = ReferenceBasisHandler<dim_,range_,rank_>;
+  using self_t = NURBSHandler<dim_,range_,rank_>;
   using Basis = NURBS<dim_,range_,rank_>;
   static const Size n_components =  Basis::n_components;
 
@@ -74,7 +74,7 @@ protected:
   using ElementIterator = typename Basis::ElementIterator;
   using ElementAccessor = typename Basis::ElementAccessor;
 
-  using BaseSpace = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using BaseSpace = ReferenceBasis<dim_,range_,rank_>;
   using RefElementIterator = typename BaseSpace::ElementIterator;
   using RefElementAccessor = typename BaseSpace::ElementAccessor;
 
@@ -90,19 +90,19 @@ public:
   /**
    * Default constructor. Not allowed to be used.
    */
-  NURBSElementHandler() = delete;
+  NURBSHandler() = delete;
 
-  NURBSElementHandler(std::shared_ptr<const Basis> space);
+  NURBSHandler(std::shared_ptr<const Basis> space);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  NURBSElementHandler(const self_t &) = delete;
+  NURBSHandler(const self_t &) = delete;
 
   /**
    * Move constructor. Not allowed to be used.
    */
-  NURBSElementHandler(self_t &&) = delete;
+  NURBSHandler(self_t &&) = delete;
   ///@}
 
   /**
@@ -123,7 +123,7 @@ public:
   /**
    * Destructor.
    */
-  virtual ~NURBSElementHandler() = default;
+  virtual ~NURBSHandler() = default;
 
 
   using topology_variant = typename base_t::topology_variant;
@@ -136,7 +136,7 @@ public:
 private:
 
 
-  std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>> bsp_elem_handler_;
+  std::unique_ptr<BasisHandler<dim_,0,range_,rank_>> bsp_elem_handler_;
 
   std::unique_ptr<IgGridFunctionHandler<dim_,1>> w_func_elem_handler_;
 
@@ -147,7 +147,7 @@ private:
 
 
   /**
-   * Returns the NURBS used to define the NURBSElementHandler object.
+   * Returns the NURBS used to define the NURBSHandler object.
    */
   std::shared_ptr<const Basis> get_nurbs_space() const;
 
@@ -155,7 +155,7 @@ private:
 
 private:
 
-  using BaseElem = SpaceElement<dim_,0,range_,rank_>;
+  using BaseElem = BasisElement<dim_,0,range_,rank_>;
 
   virtual void set_flags_impl(const topology_variant &topology,
                               const typename space_element::Flags &flag) override final;
@@ -172,7 +172,7 @@ private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
     SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
-                      self_t &nrb_handler);
+                       self_t &nrb_handler);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);
@@ -186,7 +186,7 @@ private:
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
     InitCacheDispatcher(const self_t &nrb_handler,
-                        SpaceElement<dim_,0,range_,rank_> &elem);
+                        BasisElement<dim_,0,range_,rank_> &elem);
 
     template<int sdim>
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
@@ -200,7 +200,7 @@ private:
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
     FillCacheDispatcher(const self_t &nrb_handler,
-                        SpaceElement<dim_,0,range_,rank_> &elem,
+                        BasisElement<dim_,0,range_,rank_> &elem,
                         const int s_id);
 
     template<int sdim>

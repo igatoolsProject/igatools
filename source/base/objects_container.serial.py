@@ -44,11 +44,11 @@ for x in inst.ref_sp_dims:
     valid_types.append('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
 
 # Reference spaces
-valid_types.append('ReferenceSpaceBasis<%d, %d, %d>' % (0, 0, 1))
+valid_types.append('ReferenceBasis<%d, %d, %d>' % (0, 0, 1))
 for x in inst.sub_ref_sp_dims:
-    valid_types.append('ReferenceSpaceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    valid_types.append('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
 for x in inst.ref_sp_dims:
-    valid_types.append('ReferenceSpaceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    valid_types.append('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
 
 # Grid functions
 for x in inst.sub_mapping_dims:
@@ -65,11 +65,11 @@ for x in inst.mapping_dims:
     valid_types.append('Domain<%d, %d>' % (x.dim, x.codim))
 
 # Physical spaces
-valid_types.append('PhysicalSpaceBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
+valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
 for sp in inst.SubPhysSpaces:
-    valid_types.append('PhysicalSpaceBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
+    valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 for sp in inst.PhysSpaces:
-    valid_types.append('PhysicalSpaceBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
+    valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 
 # Functions
 for dims in inst.all_function_dims:

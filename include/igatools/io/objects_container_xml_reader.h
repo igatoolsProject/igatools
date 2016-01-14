@@ -68,7 +68,7 @@ template <class T1, class T2> class SafeSTLMap;
  * - @ref grid_functions::LinearGridFunction
  * - @ref IgGridFunction
  * - @ref Domain
- * - @ref PhysicalSpaceBasis
+ * - @ref PhysicalBasis
  * - @ref functions::ConstantFunction
  * - @ref functions::LinearFunction
  * - @ref IgFunction
@@ -369,7 +369,7 @@ private:
                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Reads all the @ref PhysicalSpaceBasis
+   * @brief Reads all the @ref PhysicalBasis
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -652,7 +652,7 @@ private:
                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Reads a single @ref PhysicalSpaceBasis XML element contained
+   * @brief Reads a single @ref PhysicalBasis XML element contained
    * in @p xml_elem and inserts it into the objects @p container.
    *
    * @tparam dim Dimension of the physical space basis.

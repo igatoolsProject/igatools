@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 //#include <igatools/basis_functions/bernstein_basis.h>
 
 
@@ -162,19 +162,19 @@ public:
 
 
 template<int dim_, int range_ , int rank_>
-BSplineElementHandler<dim_, range_, rank_>::
-BSplineElementHandler(shared_ptr<const Basis> space)
+BSplineHandler<dim_, range_, rank_>::
+BSplineHandler(shared_ptr<const Basis> space)
   :
   base_t(space)
 {}
 
 
 template<int dim_, int range_ , int rank_>
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 SetFlagsDispatcher::
 SetFlagsDispatcher(const typename space_element::Flags flag_in,
-                  GridHandler<dim_> &grid_handler,
-                  SafeSTLArray<typename space_element::Flags, dim+1> &flags)
+                   GridHandler<dim_> &grid_handler,
+                   SafeSTLArray<typename space_element::Flags, dim+1> &flags)
   :
   flag_in_(flag_in),
   grid_handler_(grid_handler),
@@ -184,7 +184,7 @@ SetFlagsDispatcher(const typename space_element::Flags flag_in,
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 SetFlagsDispatcher::
 operator()(const Topology<sdim> &topology)
 {
@@ -200,7 +200,7 @@ operator()(const Topology<sdim> &topology)
 
 template<int dim_, int range_ , int rank_>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 set_flags_impl(const topology_variant &topology,
                const typename space_element::Flags &flag)
 {
@@ -215,7 +215,7 @@ set_flags_impl(const topology_variant &topology,
 
 
 template<int dim_, int range_ , int rank_>
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 InitCacheDispatcher(const GridHandler<dim_> &grid_handler,
                     const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
@@ -229,7 +229,7 @@ InitCacheDispatcher(const GridHandler<dim_> &grid_handler,
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 init_cache_1D()
 {
@@ -275,7 +275,7 @@ init_cache_1D()
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 init_cache_multiD()
 {
@@ -297,7 +297,7 @@ init_cache_multiD()
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 {
@@ -311,7 +311,7 @@ operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 
 template<int dim_, int range_ , int rank_>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 init_cache_impl(BaseElem &elem,
                 const eval_pts_variant &quad) const
 {
@@ -326,7 +326,7 @@ init_cache_impl(BaseElem &elem,
 
 
 template <int dim_, int range_, int rank_>
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 FillCacheDispatcherNoGlobalCache::
 FillCacheDispatcherNoGlobalCache(const int s_id,
                                  const GridHandler<dim_> &grid_handler,
@@ -339,7 +339,7 @@ FillCacheDispatcherNoGlobalCache(const int s_id,
 
 template <int dim, int range, int rank>
 void
-BSplineElementHandler<dim, range, rank>::
+BSplineHandler<dim, range, rank>::
 FillCacheDispatcherNoGlobalCache::
 copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
                                    const SafeSTLArray<Index, n_components> &active_map,
@@ -377,7 +377,7 @@ copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
 template <int dim, int range, int rank>
 template <int order>
 void
-BSplineElementHandler<dim, range, rank>::
+BSplineHandler<dim, range, rank>::
 FillCacheDispatcherNoGlobalCache::
 copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
                             const SafeSTLArray<Index, n_components> &active_map,
@@ -422,7 +422,7 @@ copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
 
 template <int dim, int range, int rank>
 void
-BSplineElementHandler<dim, range, rank>::
+BSplineHandler<dim, range, rank>::
 FillCacheDispatcherNoGlobalCache::
 evaluate_bspline_values(
   const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
@@ -464,7 +464,7 @@ evaluate_bspline_values(
 template <int dim, int range, int rank>
 template <int order>
 void
-BSplineElementHandler<dim, range, rank>::
+BSplineHandler<dim, range, rank>::
 FillCacheDispatcherNoGlobalCache::
 evaluate_bspline_derivatives(
   const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
@@ -546,7 +546,7 @@ evaluate_bspline_derivatives(
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 FillCacheDispatcherNoGlobalCache::
 fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
 {
@@ -665,7 +665,7 @@ fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 FillCacheDispatcherNoGlobalCache::
 fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
 {
@@ -691,7 +691,7 @@ fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
     bsp_elem_.all_sub_elems_cache_.template get_sub_elem_cache<sdim>(s_id_);
 
 
-  using Elem = SpaceElement<dim_,0,range_,rank_>;
+  using Elem = BasisElement<dim_,0,range_,rank_>;
   using _Value      = typename Elem::_Value;
   using _Gradient   = typename Elem::_Gradient;
   using _Hessian    = typename Elem::_Hessian;
@@ -730,7 +730,7 @@ fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 FillCacheDispatcherNoGlobalCache::
 operator()(const Topology<sdim> &topology)
 {
@@ -751,7 +751,7 @@ operator()(const Topology<sdim> &topology)
 
 template<int dim_, int range_ , int rank_>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 fill_cache_impl(const topology_variant &topology,
                 BaseElem &elem,
                 const int s_id) const
@@ -766,7 +766,7 @@ fill_cache_impl(const topology_variant &topology,
 
 template<int dim_, int range_ , int rank_>
 auto
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 get_bspline_basis() const -> std::shared_ptr<const Basis>
 {
   auto bsp_basis = std::dynamic_pointer_cast<const Basis>(this->get_space());
@@ -780,7 +780,7 @@ get_bspline_basis() const -> std::shared_ptr<const Basis>
 
 template<int dim_, int range_ , int rank_>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
   /*
@@ -801,7 +801,7 @@ print_info(LogStream &out) const
 
 #if 0
 template<int dim_, int range_ , int rank_>
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 GlobalCache::
 GlobalCache(const std::shared_ptr<const Quadrature<dim>> &quad, const ComponentMap &component_map)
   :
@@ -811,7 +811,7 @@ GlobalCache(const std::shared_ptr<const Quadrature<dim>> &quad, const ComponentM
 
 template<int dim_, int range_ , int rank_>
 auto
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 GlobalCache::
 entry(const int comp, const int dir, const Index interval_id) -> BasisValues1d &
 {
@@ -821,7 +821,7 @@ entry(const int comp, const int dir, const Index interval_id) -> BasisValues1d &
 
 template<int dim_, int range_ , int rank_>
 void
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 GlobalCache::
 print_info(LogStream &out) const
 {
@@ -852,7 +852,7 @@ print_info(LogStream &out) const
 
 template<int dim_, int range_ , int rank_>
 auto
-BSplineElementHandler<dim_, range_, rank_>::
+BSplineHandler<dim_, range_, rank_>::
 GlobalCache::
 get_element_values(const TensorIndex<dim> &elem_tensor_id) const
 -> ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>>
@@ -876,4 +876,4 @@ get_element_values(const TensorIndex<dim> &elem_tensor_id) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/bspline_element_handler.inst>
+#include <igatools/basis_functions/bspline_handler.inst>

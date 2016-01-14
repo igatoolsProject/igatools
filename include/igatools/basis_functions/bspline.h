@@ -24,16 +24,16 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 
-#include <igatools/basis_functions/reference_space_basis.h>
+#include <igatools/basis_functions/reference_basis.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
 //#include <igatools/geometry/domain.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 
 IGA_NAMESPACE_OPEN
 
 
 template <int, int, int> class BSplineElement;
-template <int, int, int> class BSplineElementHandler;
+template <int, int, int> class BSplineHandler;
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
  * valued B-spline space.
@@ -92,10 +92,10 @@ template <int, int, int> class BSplineElementHandler;
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSpline :
-  public ReferenceSpaceBasis<dim_, range_, rank_>
+  public ReferenceBasis<dim_, range_, rank_>
 {
 private:
-  using BaseSpace = ReferenceSpaceBasis<dim_, range_, rank_>;
+  using BaseSpace = ReferenceBasis<dim_, range_, rank_>;
 
   /** Type for current class. */
   using self_t = BSpline<dim_,range_,rank_>;
@@ -104,7 +104,7 @@ public:
   /** see documentation in \ref Basis */
 
   using GridType = Grid<dim_>;
-  using ElementHandler = BSplineElementHandler<dim_, range_, rank_>;
+  using Handler = BSplineHandler<dim_, range_, rank_>;
 
 
   static const int dim       = dim_;
@@ -138,7 +138,7 @@ public:
   using ElementAccessor = BSplineElement<dim,range,rank>;
 
   /** Type for iterator over the elements.  */
-  using ElementIterator = GridIterator<SpaceElement<dim,0,range,rank>>;
+  using ElementIterator = GridIterator<BasisElement<dim,0,range,rank>>;
 
 
   using SpSpace = SplineSpace<dim_,range_,rank_>;
@@ -177,19 +177,19 @@ public:
   ///@}
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
   create_element_begin(const PropId &property) const  override final;
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
   create_element_end(const PropId &property) const  override final;
 
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_begin(const PropId &property) const override final;
 
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_end(const PropId &property) const override final;
 
 
@@ -309,7 +309,7 @@ private:
 
 
   friend class BSplineElement<dim, range, rank>;
-  friend class BSplineElementHandler<dim, range, rank>;
+  friend class BSplineHandler<dim, range, rank>;
 
 #ifdef MESH_REFINEMENT
   /**
@@ -346,8 +346,8 @@ public:
 
   virtual bool is_bspline() const override final;
 
-  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
-      create_cache_handler() const override final;
+  virtual std::unique_ptr<BasisHandler<dim_,0,range_,rank_>>
+                                                          create_cache_handler() const override final;
 
 
 private:

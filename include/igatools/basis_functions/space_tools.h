@@ -25,8 +25,8 @@
 #include <igatools/geometry/grid_tools.h>
 #include <igatools/functions/sub_function.h>
 
-#include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_element.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 
 #include <igatools/linear_algebra/epetra_solver.h>
 
@@ -233,7 +233,7 @@ projection_l2(const Function<Basis::dim,Basis::codim,Basis::range,Basis::rank> &
 template<int dim,int codim,int range,int rank>
 IgCoefficients
 projection_l2_function(const Function<dim,codim,range,rank> &function,
-                       const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+                       const PhysicalBasis<dim,range,rank,codim> &basis,
                        const std::shared_ptr<const Quadrature<dim>> &quad,
                        const std::string &dofs_property = DofProperties::active)
 {
@@ -372,7 +372,7 @@ template<int dim,int range, LAPack la_pack = LAPack::trilinos_epetra>
 IgCoefficients
 projection_l2_ig_grid_function(
   const IgGridFunction<dim,range> &ig_grid_function,
-  const ReferenceSpaceBasis<dim,range,1> &ref_basis,
+  const ReferenceBasis<dim,range,1> &ref_basis,
   const std::shared_ptr<const Quadrature<dim>> &quad,
   const std::string &dofs_property = DofProperties::active)
 {
@@ -569,7 +569,7 @@ template<int dim,int range>
 IgCoefficients
 projection_l2_grid_function(
   const GridFunction<dim,range> &grid_function,
-  const ReferenceSpaceBasis<dim,range,1> &ref_basis,
+  const ReferenceBasis<dim,range,1> &ref_basis,
   const std::shared_ptr<const Quadrature<dim>> &quad,
   const std::string &dofs_property = DofProperties::active)
 {
@@ -715,7 +715,7 @@ template<int dim,int codim, int range, int rank>
 void
 project_boundary_values(
   std::map<int, std::shared_ptr<const Function<dim-1,codim+1,range,rank>>> &bndry_funcs,
-  const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+  const PhysicalBasis<dim,range,rank,codim> &basis,
   const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
   std::map<Index, Real>  &boundary_values)
 {
@@ -724,7 +724,7 @@ project_boundary_values(
 
   const int sdim = dim - 1;
 
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis = PhysicalBasis<dim,range,rank,codim>;
   using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
 
   using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
@@ -767,7 +767,7 @@ template<int dim,int range>
 void
 project_boundary_values(
   std::map<int, std::shared_ptr<const SubGridFunction<dim-1,dim,range>>> &bndry_funcs,
-  const ReferenceSpaceBasis<dim,range,1> &ref_basis,
+  const ReferenceBasis<dim,range,1> &ref_basis,
   const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
   std::map<Index, Real>  &boundary_values)
 {
@@ -776,7 +776,7 @@ project_boundary_values(
 
   const int sdim = (dim >=1) ? dim - 1 : 0;
 
-  using Basis = ReferenceSpaceBasis<dim,range,1>;
+  using Basis = ReferenceBasis<dim,range,1>;
   using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
 
   using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
@@ -818,7 +818,7 @@ void
 project_boundary_values(
 //    std::map<int, std::shared_ptr<const GridFunction<dim-1,codim+1,range,rank>>> &bndry_funcs,
   const GridFunction<dim,range> &grid_func,
-  const ReferenceSpaceBasis<dim,range> &basis,
+  const ReferenceBasis<dim,range> &basis,
   const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:1>> &quad,
   const std::set<boundary_id>  &boundary_ids,
   std::map<Index, Real>  &boundary_values)
@@ -831,7 +831,7 @@ project_boundary_values(
 
   const int sdim = dim - 1;
 
-  using Basis = ReferenceSpaceBasis<dim,range>;
+  using Basis = ReferenceBasis<dim,range>;
   using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
 
   using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
@@ -915,7 +915,7 @@ template<int dim,int codim, int range, int rank>
 void
 project_function_on_boundary(
   const Function<dim,codim,range,rank> &func_to_project,
-  const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+  const PhysicalBasis<dim,range,rank,codim> &basis,
   const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
   const std::set<int> &boundary_ids,
   std::map<Index, Real> &boundary_values)
@@ -932,7 +932,7 @@ project_function_on_boundary(
 
   const int sdim = dim-1;
 
-//  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
+//  using Basis = PhysicalBasis<dim,range,rank,codim>;
 //  using InterSpaceMap = typename Basis::template InterSpaceMap<dim>;
 //  using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
 

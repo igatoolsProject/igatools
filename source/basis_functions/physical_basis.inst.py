@@ -27,7 +27,7 @@ include_files = ['basis_functions/bspline.h',
 #                 'geometry/mapping_element.h',
                  'geometry/push_forward.h',
                  'basis_functions/bspline_element.h',
-                 'basis_functions/physical_space_element.h']
+                 'basis_functions/physical_basis_element.h']
 
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
@@ -40,7 +40,7 @@ sub_dim_members = \
    'SubGridMap<k> &elem_map, void *) const;']
 
 
-spaces = ['PhysicalSpaceBasis<0,0,1,0>']
+spaces = ['PhysicalBasis<0,0,1,0>']
 templated_funcs = []
 
 for sp in inst.SubPhysSpaces:
