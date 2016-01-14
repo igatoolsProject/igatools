@@ -42,6 +42,8 @@ namespace paraview_plugin
  *  - @ref grid_type_ that is a @ref VtkGridType of the grid.
  *  - @ref cells_per_element_ the number of VTK cells in each
  *    parametric direction for each Bezier element of an IGA domain.
+ *    The number of cells in each direction must be greather than 0 (on
+ *    the contrary, an exception will be thrown).
  *
  * The number of VTK cells in each direction is defined for the 3 physical
  * directions. For 1D and 2D domains, only the first or the two first
