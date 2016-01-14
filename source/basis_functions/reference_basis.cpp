@@ -20,7 +20,7 @@
 
 
 #include <igatools/basis_functions/reference_basis.h>
-#include <igatools/basis_functions/reference_element.h>
+#include <igatools/basis_functions/reference_basis_element.h>
 #include <igatools/base/array_utils.h>
 
 #include <igatools/basis_functions/bspline.h>

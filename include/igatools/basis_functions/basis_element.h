@@ -529,7 +529,7 @@ public:
 
 
 
-  friend class BasisElementHandler<dim_,codim_,range_,rank_>;
+  friend class BasisHandler<dim_,codim_,range_,rank_>;
 
 
   /**

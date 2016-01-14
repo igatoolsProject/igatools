@@ -458,9 +458,9 @@ get_elements_with_property(const PropId &prop)
 template<int dim_>
 auto
 Grid<dim_>::create_cache_handler() const
--> std::unique_ptr<ElementHandler>
+-> std::unique_ptr<Handler>
 {
-  return std::unique_ptr<ElementHandler>(new ElementHandler(this->shared_from_this()));
+  return std::unique_ptr<Handler>(new Handler(this->shared_from_this()));
 }
 
 #if 0

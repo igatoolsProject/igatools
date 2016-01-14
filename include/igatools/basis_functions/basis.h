@@ -34,7 +34,7 @@ template <int,int> class Domain;
 template <int,int,int,int> class Function;
 //template <int> class NonConstGridElement;
 template <int,int,int,int> class BasisElement;
-template <int,int,int,int> class BasisElementHandler;
+template <int,int,int,int> class BasisHandler;
 
 
 template <int,int,int> class SplineSpace;
@@ -194,7 +194,7 @@ public:
   create_element_end(const PropId &property) const = 0;
 
 
-  virtual std::unique_ptr<BasisElementHandler<dim_,codim_,range_,rank_> >
+  virtual std::unique_ptr<BasisHandler<dim_,codim_,range_,rank_> >
   create_cache_handler() const = 0;
 
 

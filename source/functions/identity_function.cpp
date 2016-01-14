@@ -34,9 +34,9 @@ IGA_NAMESPACE_OPEN
 template<int dim,int space_dim>
 auto
 IdentityFunction<dim,space_dim>::
-create_cache_handler() const -> std::shared_ptr<typename parent_t::ElementHandler>
+create_cache_handler() const -> std::shared_ptr<typename parent_t::Handler>
 {
-  return ElementHandler::create(grid_);
+  return Handler::create(grid_);
 }
 
 

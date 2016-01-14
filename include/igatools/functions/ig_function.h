@@ -46,16 +46,16 @@ class PhysicalBasis;
 
 
 template <int,int,int,int>
-class BasisElementHandler;
+class BasisHandler;
 
 template <int,int,int>
-class BSplineElementHandler;
+class BSplineHandler;
 
 template <int,int,int>
-class NURBSElementHandler;
+class NURBSHandler;
 
 template <int,int,int,int>
-class PhysicalBasisElementHandler;
+class PhysicalBasisHandler;
 
 template <int,int,int,int>
 class BasisElement;
@@ -126,7 +126,7 @@ public:
 public:
 
 
-  std::unique_ptr<typename parent_t::ElementHandler>
+  std::unique_ptr<typename parent_t::Handler>
   create_cache_handler() const override final;
 
 

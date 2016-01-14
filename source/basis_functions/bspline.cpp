@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/functions/sub_function.h>
 //#include <igatools/functions/identity_function.h>
 //#include <igatools/functions/grid_function_lib.h>
@@ -185,7 +185,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_ref_element_begin(const PropId &property) const
--> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+-> std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -197,7 +197,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_ref_element_end(const PropId &property) const
--> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+-> std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -417,9 +417,9 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_cache_handler() const
--> std::unique_ptr<BasisElementHandler<dim_,0,range_,rank_>>
+-> std::unique_ptr<BasisHandler<dim_,0,range_,rank_>>
 {
-  using Handler = BSplineElementHandler<dim_,range_,rank_>;
+  using Handler = BSplineHandler<dim_,range_,rank_>;
   return std::unique_ptr<Handler>(new Handler(this->get_this_basis()));
 }
 

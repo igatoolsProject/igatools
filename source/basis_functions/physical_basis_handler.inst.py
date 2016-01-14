@@ -26,26 +26,32 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-handlers = ['ReferenceElementHandler<0,0,1>']
+ 
+
+
+handlers = set()
+handlers.add('PhysicalBasisHandler<0,0,1,0>')
+
 handler_funcs = set()
 
+for space in inst.SubPhysSpaces + inst.PhysSpaces:
+    x = space.spec
+    handler = 'PhysicalBasisHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
+    handlers.add(handler)
+    for k in range(0,x.dim+1):
+        func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' %(handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::InitCacheDispatcher::operator()(const std::shared_ptr<const Quadrature<%d>> &)' %(handler,k)
+        handler_funcs.add(func)
+        func = 'void %s::FillCacheDispatcher::operator()(const Topology<%d> &)' %(handler,k)
+        handler_funcs.add(func)
 
-for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    handler = 'ReferenceElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    handlers.append(handler)
-#    for k in range(0,x.dim+1):
-#        func = 'int %s::get_num_points<%d>() const;' % (handler,k)
-#        handler_funcs.add(func)
 
-        
-                
-    
-for handler in unique(handlers):
+
+for handler in handlers:
     f.write('template class %s;\n' %handler)
 
 for func in handler_funcs:        
-    f.write('template %s;\n' %func)        
-   
+    f.write('template %s;\n' %func)
 
-
-
+      

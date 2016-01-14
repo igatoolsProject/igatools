@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/physical_basis_element_handler.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 #include <igatools/basis_functions/physical_basis_element.h>
 
 #include <functional>
@@ -34,8 +34,8 @@ using MapFunc= Function<dim, 0, dim + codim, 1>;
 
 
 template<int dim_,int range_,int rank_,int codim_>
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
-PhysicalBasisElementHandler(std::shared_ptr<const PhysSpace> space)
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler(std::shared_ptr<const PhysSpace> space)
   :
   base_t(space),
   ref_space_handler_(space->get_reference_basis()->create_cache_handler()),
@@ -49,7 +49,7 @@ PhysicalBasisElementHandler(std::shared_ptr<const PhysSpace> space)
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 print_info(LogStream &out) const -> void
 {
   ref_space_handler_->print_info(out);
@@ -59,7 +59,7 @@ print_info(LogStream &out) const -> void
 
 
 template<int dim_,int range_,int rank_,int codim_>
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 SetFlagsDispatcher::
 SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
                   const Transformation &transformation_type,
@@ -78,7 +78,7 @@ SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
 template<int dim_,int range_,int rank_,int codim_>
 template<int sdim>
 void
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 SetFlagsDispatcher::
 operator()(const Topology<sdim> &topology)
 {
@@ -93,7 +93,7 @@ operator()(const Topology<sdim> &topology)
 
 
 template<int dim_,int range_,int rank_,int codim_>
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 InitCacheDispatcher::
 InitCacheDispatcher(const RefElemHandler &ref_space_handler,
                     const PhysDomainHandler &phys_domain_handler,
@@ -110,7 +110,7 @@ InitCacheDispatcher(const RefElemHandler &ref_space_handler,
 template<int dim_,int range_,int rank_,int codim_>
 template<int sdim>
 void
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 InitCacheDispatcher::
 operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 {
@@ -141,7 +141,7 @@ operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 
 
 template<int dim_,int range_,int rank_,int codim_>
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 FillCacheDispatcher::
 FillCacheDispatcher(const int s_id,
                     const RefElemHandler &ref_space_handler,
@@ -160,7 +160,7 @@ FillCacheDispatcher(const int s_id,
 template<int dim_,int range_,int rank_,int codim_>
 template<int sdim>
 void
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 FillCacheDispatcher::
 operator()(const Topology<sdim> &topology)
 {
@@ -222,7 +222,7 @@ operator()(const Topology<sdim> &topology)
 
 template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 set_flags_impl(const topology_variant &topology,
                const typename space_element::Flags &flag)
 {
@@ -238,7 +238,7 @@ set_flags_impl(const topology_variant &topology,
 
 template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 init_cache_impl(BaseElem &elem,
                 const eval_pts_variant &quad) const
 {
@@ -250,7 +250,7 @@ init_cache_impl(BaseElem &elem,
 
 template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalBasisElementHandler<dim_,range_,rank_,codim_>::
+PhysicalBasisHandler<dim_,range_,rank_,codim_>::
 fill_cache_impl(const topology_variant &topology,
                 BaseElem &elem,
                 const int s_id) const
@@ -262,4 +262,4 @@ fill_cache_impl(const topology_variant &topology,
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/physical_basis_element_handler.inst>
+#include <igatools/basis_functions/physical_basis_handler.inst>

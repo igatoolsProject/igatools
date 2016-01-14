@@ -18,13 +18,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/reference_element_handler.h>
+#include <igatools/basis_functions/reference_basis_handler.h>
 
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/basis_functions/nurbs_element_handler.h>
+#include <igatools/basis_functions/nurbs_handler.h>
 
 using std::shared_ptr;
 
@@ -32,8 +32,8 @@ IGA_NAMESPACE_OPEN
 
 
 template<int dim, int range , int rank>
-ReferenceElementHandler<dim, range, rank>::
-ReferenceElementHandler(const shared_ptr<const Basis> &space)
+ReferenceBasisHandler<dim, range, rank>::
+ReferenceBasisHandler(const shared_ptr<const Basis> &space)
   :
   base_t(space),
   grid_handler_(space->get_grid())
@@ -44,7 +44,7 @@ ReferenceElementHandler(const shared_ptr<const Basis> &space)
 template<int dim, int range , int rank>
 template <int sdim>
 int
-ReferenceElementHandler<dim, range, rank>::
+ReferenceBasisHandler<dim, range, rank>::
 get_num_points() const
 {
   return grid_handler_.template get_num_points<sdim>();
@@ -53,4 +53,4 @@ get_num_points() const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/reference_element_handler.inst>
+#include <igatools/basis_functions/reference_basis_handler.inst>

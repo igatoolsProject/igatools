@@ -217,7 +217,7 @@ print_info(LogStream &out) const
                  to_string(rank_) + "," +
                  to_string(codim_) + ">:");
 
-  out.begin_item("ReferenceElement<" +
+  out.begin_item("ReferenceBasisElement<" +
                  to_string(RefBasis::dim) + "," +
                  to_string(RefBasis::range) + "," +
                  to_string(RefBasis::rank) + ">");
@@ -251,7 +251,7 @@ PhysicalBasisElement<dim_,range_,rank_,codim_>::
 print_cache_info(LogStream &out) const
 {
   using std::to_string;
-  out.begin_item("ReferenceElement<" +
+  out.begin_item("ReferenceBasisElement<" +
                  to_string(RefBasis::dim) + "," +
                  to_string(RefBasis::range) + "," +
                  to_string(RefBasis::rank) + "> cache:");

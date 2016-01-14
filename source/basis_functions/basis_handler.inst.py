@@ -33,7 +33,7 @@ sub_dim_members = \
 handlers = set()
 handler_methods = set()
 
-handler = 'BasisElementHandler<0,0,0,1>'
+handler = 'BasisHandler<0,0,0,1>'
 handlers.add(handler)
 
 handler_method = 'void %s::set_flags<0>(const typename space_element::Flags &flag)' % (handler)
@@ -51,7 +51,7 @@ handler_methods.add(handler_method)
 #--------------------------------------------------------------------------------------
 # BasisElement used by ReferenceBasisElement 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    handler = 'BasisElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
+    handler = 'BasisHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.add(handler)
     for k in range(0,x.dim+1):
         handler_method = 'void %s::set_flags<%d>(const typename space_element::Flags &flag)' % (handler,k)
@@ -73,7 +73,7 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 # BasisElement used by PhysicalBasisElement 
 for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
-    handler = 'BasisElementHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
+    handler = 'BasisHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
     handlers.add(handler)
     for k in range(0,x.dim+1):
         handler_method = 'void %s::set_flags<%d>(const typename space_element::Flags &flag)' % (handler,k)

@@ -31,13 +31,13 @@ handlers = set()
 handler_funcs = set()
 
 
-handler = 'BSplineElementHandler<0,0,1>'
+handler = 'BSplineHandler<0,0,1>'
 handlers.add(handler)
 
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    handler = 'BSplineElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    handler = 'BSplineHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.add(handler)
     for k in range(0,x.dim+1):
         func = 'void %s::SetFlagsDispatcher::operator()(const Topology<%d> &)' % (handler,k)

@@ -26,55 +26,54 @@ data = Instantiation(include_files)
 
 
 # Creating all possible types in the container.
-valid_types = []
+valid_types = set()
 
 # Grids
 for dim in inst.domain_dims:
-    valid_types.append('Grid<%d>' % (dim))
+    valid_types.add('Grid<%d>' % (dim))
 for dim in inst.sub_domain_dims:
-    valid_types.append('Grid<%d>' % (dim))
+    valid_types.add('Grid<%d>' % (dim))
 
 # Spline spaces
-valid_types.append('SplineSpace<%d, %d, %d>' % (0, 0, 1))
+valid_types.add('SplineSpace<%d, %d, %d>' % (0, 0, 1))
 for x in inst.sub_ref_sp_dims:
-    valid_types.append('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    valid_types.add('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
 for x in inst.ref_sp_dims:
-    valid_types.append('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    valid_types.add('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
 
 # Reference spaces
-valid_types.append('ReferenceBasis<%d, %d, %d>' % (0, 0, 1))
+valid_types.add('ReferenceBasis<%d, %d, %d>' % (0, 0, 1))
 for x in inst.sub_ref_sp_dims:
-    valid_types.append('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    valid_types.add('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
 for x in inst.ref_sp_dims:
-    valid_types.append('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    valid_types.add('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
 
 # Grid functions
 for x in inst.sub_mapping_dims:
-    valid_types.append('GridFunction<%d, %d>' % (x.dim, x.space_dim))
+    valid_types.add('GridFunction<%d, %d>' % (x.dim, x.space_dim))
 for x in inst.mapping_dims:
-    valid_types.append('GridFunction<%d, %d>' % (x.dim, x.space_dim))
+    valid_types.add('GridFunction<%d, %d>' % (x.dim, x.space_dim))
     # The next dimensions are needed by NURBS
-    valid_types.append('GridFunction<%d, %d>' % (x.dim, 1))
+    valid_types.add('GridFunction<%d, %d>' % (x.dim, 1))
 
 # Domains
 for x in inst.sub_mapping_dims:
-    valid_types.append('Domain<%d, %d>' % (x.dim, x.codim))
+    valid_types.add('Domain<%d, %d>' % (x.dim, x.codim))
 for x in inst.mapping_dims:
-    valid_types.append('Domain<%d, %d>' % (x.dim, x.codim))
+    valid_types.add('Domain<%d, %d>' % (x.dim, x.codim))
 
 # Physical spaces
-valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
+valid_types.add('PhysicalBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
 for sp in inst.SubPhysSpaces:
-    valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
+    valid_types.add('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 for sp in inst.PhysSpaces:
-    valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
+    valid_types.add('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 
 # Functions
 for dims in inst.all_function_dims:
-    valid_types.append('Function<%d, %d, %d, %d>' % (dims.dim, dims.codim, dims.range, dims.rank))
+    valid_types.add('Function<%d, %d, %d, %d>' % (dims.dim, dims.codim, dims.range, dims.rank))
 
 
-valid_types = unique(valid_types)
 
 # Writing to file
 

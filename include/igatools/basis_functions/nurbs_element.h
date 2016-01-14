@@ -26,7 +26,7 @@
 
 #ifdef USE_NURBS
 
-#include <igatools/basis_functions/reference_element.h>
+#include <igatools/basis_functions/reference_basis_element.h>
 
 
 //#include <igatools/linear_algebra/dense_matrix.h>
@@ -41,7 +41,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim, int range, int rank> class NURBS;
-template <int,int,int> class NURBSElementHandler;
+template <int,int,int> class NURBSHandler;
 template <class Accessor> class GridIterator;
 
 /**
@@ -53,11 +53,11 @@ template <class Accessor> class GridIterator;
  */
 template <int dim, int range, int rank>
 class NURBSElement :
-  public ReferenceElement<dim,range,rank>
+  public ReferenceBasisElement<dim,range,rank>
 {
 private:
   using self_t = NURBSElement<dim,range,rank>;
-  using parent_t = ReferenceElement<dim,range,rank>;
+  using parent_t = ReferenceBasisElement<dim,range,rank>;
 
 public:
 
@@ -170,7 +170,7 @@ private:
 
 public:
 
-  friend class NURBSElementHandler<dim, range, rank>;
+  friend class NURBSHandler<dim, range, rank>;
 
 
   /**
@@ -185,7 +185,7 @@ public:
 
 
 
-  friend class NURBSElementHandler<dim,range,rank>;
+  friend class NURBSHandler<dim,range,rank>;
 
 };
 

@@ -22,8 +22,8 @@
 #define PHYS_SPACE_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
-#include <igatools/basis_functions/nurbs_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
+#include <igatools/basis_functions/nurbs_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -152,21 +152,21 @@ class PhysicalBasis;
  * @ingroup handlers
  */
 template<int dim_,int range_,int rank_,int codim_>
-class PhysicalBasisElementHandler
+class PhysicalBasisHandler
   :
-  public BasisElementHandler<dim_,codim_,range_,rank_>
+  public BasisHandler<dim_,codim_,range_,rank_>
 {
 
   using PhysSpace = PhysicalBasis<dim_,range_,rank_,codim_>;
   using RefBasis =  typename PhysSpace::RefBasis;
-  using RefPhysicalBasisElementHandler = typename PhysSpace::RefBasis::ElementHandler;
+  using RefPhysicalBasisHandler = typename PhysSpace::RefBasis::Handler;
 //    using PFCache = typename PhysSpace::PushForwardType;
 
   using ElementIterator = typename PhysSpace::ElementIterator;
   using ElementAccessor = typename PhysSpace::ElementAccessor;
 
-  using base_t = BasisElementHandler<dim_,codim_,range_,rank_>;
-  using self_t = PhysicalBasisElementHandler<dim_,range_,rank_,codim_>;
+  using base_t = BasisHandler<dim_,codim_,range_,rank_>;
+  using self_t = PhysicalBasisHandler<dim_,range_,rank_,codim_>;
 
   using eval_pts_variant = QuadVariants<dim_>;
   using topology_variant = TopologyVariants<dim_>;
@@ -186,24 +186,24 @@ public:
   /**
    * Default constructor. Not allowed to be used.
    */
-  PhysicalBasisElementHandler() = delete;
+  PhysicalBasisHandler() = delete;
 
-  PhysicalBasisElementHandler(std::shared_ptr<const PhysSpace> space);
+  PhysicalBasisHandler(std::shared_ptr<const PhysSpace> space);
   /**
    * Copy constructor. Not allowed to be used.
    */
-  PhysicalBasisElementHandler(const self_t &) = delete;
+  PhysicalBasisHandler(const self_t &) = delete;
 
   /**
    * Move constructor. Not allowed to be used.
    */
-  PhysicalBasisElementHandler(self_t &&) = delete;
+  PhysicalBasisHandler(self_t &&) = delete;
 
 public:
   /**
    * Destructor.
    */
-  virtual ~PhysicalBasisElementHandler() = default;
+  virtual ~PhysicalBasisHandler() = default;
   ///@}
 
   /**
@@ -226,11 +226,11 @@ public:
 
 private:
 
-  using RefElemHandler = BasisElementHandler<RefBasis::dim,0,RefBasis::range,RefBasis::rank>;
+  using RefElemHandler = BasisHandler<RefBasis::dim,0,RefBasis::range,RefBasis::rank>;
   std::unique_ptr<RefElemHandler> ref_space_handler_;
 
 
-  using PhysDomainHandler = typename PhysSpace::PhysDomain::ElementHandler;
+  using PhysDomainHandler = typename PhysSpace::PhysDomain::Handler;
   std::unique_ptr<PhysDomainHandler> phys_domain_handler_;
 
 

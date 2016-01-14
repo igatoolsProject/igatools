@@ -30,7 +30,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 
 template <int dim, int range=1, int rank=1>
 void space_cache_fill_elem(const space_element::Flags flag,

@@ -1,7 +1,7 @@
 ========================================================================
 space_cache_fill_elem
 ========================================================================
-ReferenceElement<1,1,1>
+ReferenceBasisElement<1,1,1>
    Element global connectivity (property="active"):
    [ 0 1 ]
    Number of element basis: 
@@ -182,7 +182,7 @@ BSplineElement<1,1,1> cache:
 ========================================================================
 space_cache_fill_elem
 ========================================================================
-ReferenceElement<1,1,1>
+ReferenceBasisElement<1,1,1>
    Element global connectivity (property="active"):
    [ 0 1 ]
    Number of element basis: 
@@ -363,7 +363,7 @@ BSplineElement<1,1,1> cache:
 ========================================================================
 space_cache_fill_elem
 ========================================================================
-ReferenceElement<1,1,1>
+ReferenceBasisElement<1,1,1>
    Element global connectivity (property="active"):
    [ 0 1 ]
    Number of element basis: 

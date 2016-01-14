@@ -26,7 +26,7 @@
 //TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
 #include <igatools/utils/cartesian_product_array-template.h>
 
-#include <igatools/basis_functions/reference_element_handler.h>
+#include <igatools/basis_functions/reference_basis_handler.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 #include <igatools/basis_functions/values1d_const_view.h>
@@ -39,11 +39,11 @@ IGA_NAMESPACE_OPEN
  * @ingroup handlers
  */
 template<int dim_, int range_, int rank_>
-class BSplineElementHandler
-  : public ReferenceElementHandler<dim_,range_,rank_>
+class BSplineHandler
+  : public ReferenceBasisHandler<dim_,range_,rank_>
 {
-  using base_t = ReferenceElementHandler<dim_,range_,rank_>;
-  using self_t = BSplineElementHandler<dim_,range_,rank_>;
+  using base_t = ReferenceBasisHandler<dim_,range_,rank_>;
+  using self_t = BSplineHandler<dim_,range_,rank_>;
   using Basis = BSpline<dim_,range_,rank_>;
   static const Size n_components =  SplineSpace<dim_,range_,rank_>::n_components;
 
@@ -87,19 +87,19 @@ public:
    */
   ///@{
 
-  BSplineElementHandler() = delete;
+  BSplineHandler() = delete;
 
-  BSplineElementHandler(std::shared_ptr<const Basis> space);
+  BSplineHandler(std::shared_ptr<const Basis> space);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  BSplineElementHandler(const self_t &) = delete;
+  BSplineHandler(const self_t &) = delete;
 
   /**
    * Move constructor. Not allowed to be used.
    */
-  BSplineElementHandler(self_t &&) = delete;
+  BSplineHandler(self_t &&) = delete;
   ///@}
 
 public:
@@ -108,7 +108,7 @@ public:
   /**
    * Destructor.
    */
-  virtual ~BSplineElementHandler() = default;
+  virtual ~BSplineHandler() = default;
 
 //  static std::unique_ptr<self_t> create(std::shared_ptr<const Basis> space);
 
@@ -316,7 +316,7 @@ private:
 
 
   /**
-   * Returns the BSpline used to define the BSplineElementHandler object.
+   * Returns the BSpline used to define the BSplineHandler object.
    */
   std::shared_ptr<const Basis> get_bspline_basis() const;
 };

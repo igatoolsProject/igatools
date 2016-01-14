@@ -62,7 +62,7 @@ public:
   using ElementAccessor = DomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
-  using ElementHandler = DomainHandler<dim_, codim_>;
+  using Handler = DomainHandler<dim_, codim_>;
 
   using List = typename GridFuncType::List;
   using ListIt = typename GridFuncType::ListIt;
@@ -118,7 +118,7 @@ public:
 
 
 public:
-  std::unique_ptr<ElementHandler>
+  std::unique_ptr<Handler>
   create_cache_handler() const;
 
 #if 0

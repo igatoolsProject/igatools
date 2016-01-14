@@ -36,8 +36,8 @@ IGA_NAMESPACE_OPEN
 
 template <int, int, int ,int> class PhysicalBasis;
 
-template <int, int, int> class ReferenceElement;
-template <int,int,int> class ReferenceElementHandler;
+template <int, int, int> class ReferenceBasisElement;
+template <int,int,int> class ReferenceBasisHandler;
 
 template <int, int, int> class BSpline;
 template <int, int, int> class NURBS;
@@ -88,12 +88,12 @@ public:
 
 
   /** Type for the element accessor. */
-  using ElementAccessor = ReferenceElement<dim,range,rank>;
+  using ElementAccessor = ReferenceBasisElement<dim,range,rank>;
 
   /** Type for iterator over the elements.  */
   using ElementIterator = GridIterator<ElementAccessor>;
 
-  using ElementHandler = ReferenceElementHandler<dim_, range_, rank_>;
+  using Handler = ReferenceBasisHandler<dim_, range_, rank_>;
 
   using SpSpace = SplineSpace<dim_,range_,rank_>;
 
@@ -160,10 +160,10 @@ public:
                 SubGridMap<sdim> &elem_map) const;
 
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_begin(const PropId &property) const = 0;
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_end(const PropId &property) const = 0;
 
 protected:

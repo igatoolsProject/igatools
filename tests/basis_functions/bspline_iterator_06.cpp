@@ -29,7 +29,7 @@
 #include "../tests.h"
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 
 template <int dim, int range=1, int rank=1>
 void uniform_space_cache(const space_element::Flags flag,
@@ -46,7 +46,7 @@ void uniform_space_cache(const space_element::Flags flag,
 
   auto quad = QGauss<dim>::create(2);
   /*
-  using ElemHandler = typename Basis::ElementHandler;
+  using ElemHandler = typename Basis::Handler;
   auto value_handler = ElemHandler::const_create(basis);
   value_handler->reset(flag, quad);
   value_handler->print_info(out);

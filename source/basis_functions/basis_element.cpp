@@ -21,7 +21,7 @@
 
 
 #include <igatools/basis_functions/basis_element.h>
-#include <igatools/basis_functions/reference_element.h>
+#include <igatools/basis_functions/reference_basis_element.h>
 #include <igatools/basis_functions/physical_basis_element.h>
 
 
@@ -169,7 +169,7 @@ get_w_measures(const int j) const
 {
   ValueVector<Real> w_measures;
 
-  using RefElem = const ReferenceElement<dim_,range_,rank_>;
+  using RefElem = const ReferenceBasisElement<dim_,range_,rank_>;
   RefElem *as_ref_elem = dynamic_cast<RefElem *>(this);
   if (as_ref_elem)
     w_measures = as_ref_elem->template get_w_measures<k>(j);

@@ -29,7 +29,7 @@
 // [includes]
 #include <igatools/geometry/grid_element.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/base/quadrature_lib.h>
 // [includes]
 

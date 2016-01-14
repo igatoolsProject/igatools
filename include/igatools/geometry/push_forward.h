@@ -84,7 +84,7 @@ public:
 #endif
 
   template <int range,int rank>
-  using RefSpaceElem = ReferenceElement<dim_,range,rank>;
+  using RefSpaceElem = ReferenceBasisElement<dim_,range,rank>;
 
 
   template <int range,int rank>

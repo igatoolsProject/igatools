@@ -6,6 +6,14 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const Grid Dim : 1. Number of objects: 0
    
+   Grid Dim : 3. Number of objects: 0
+   
+   const Grid Dim : 3. Number of objects: 0
+   
+   Grid Dim : 0. Number of objects: 0
+   
+   const Grid Dim : 0. Number of objects: 0
+   
    Grid Dim : 2. Number of objects: 1
       Object Id: 16
          Number of intervals per direction: [ 3 3 ]
@@ -51,117 +59,8 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const Grid Dim : 2. Number of objects: 0
    
-   Grid Dim : 3. Number of objects: 0
-   
-   const Grid Dim : 3. Number of objects: 0
-   
-   Grid Dim : 0. Number of objects: 0
-   
-   const Grid Dim : 0. Number of objects: 0
-   
-   SplineSpace Dim : 0 Range : 0 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 0 Range : 0 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 0 Range : 1 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 0 Range : 1 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 0 Range : 2 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 0 Range : 2 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 1
-      Object Id: 17
-         Knots without repetition:
-            Number of intervals per direction: [ 3 3 ]
-            Knot coordinates:
-               Direction 0: 
-               [ 0 0.333333 0.666667 1.00000 ]
-               Direction 1: 
-               [ 0 0.333333 0.666667 1.00000 ]
-            
-            Element properties:
-               IDs with property "active":
-                  Entry id: 0
-                     Flat ID: 0    Tensor ID: [0,0]
-                  
-                  Entry id: 1
-                     Flat ID: 3    Tensor ID: [0,1]
-                  
-                  Entry id: 2
-                     Flat ID: 6    Tensor ID: [0,2]
-                  
-                  Entry id: 3
-                     Flat ID: 1    Tensor ID: [1,0]
-                  
-                  Entry id: 4
-                     Flat ID: 4    Tensor ID: [1,1]
-                  
-                  Entry id: 5
-                     Flat ID: 7    Tensor ID: [1,2]
-                  
-                  Entry id: 6
-                     Flat ID: 2    Tensor ID: [2,0]
-                  
-                  Entry id: 7
-                     Flat ID: 5    Tensor ID: [2,1]
-                  
-                  Entry id: 8
-                     Flat ID: 8    Tensor ID: [2,2]
-                  
-               
-            
-            Name: grid_2
-         
-         Degrees:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 2 2 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
-         
-         Interior multiplicities:
-            Entry id: 0
-            [ 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
-         
-         Dimensionality Table:
-            Entry id: 0
-            [ 5 5 ]
-            Scalar components dimensions:
-            [ 25 ]
-            Total Dimension: 25
-         
-      
-   
-   const SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 0
-   
    SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 1
-      Object Id: 18
+      Object Id: 17
          Knots without repetition:
             Number of intervals per direction: [ 3 3 ]
             Knot coordinates:
@@ -241,41 +140,118 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 1
+      Object Id: 18
+         Knots without repetition:
+            Number of intervals per direction: [ 3 3 ]
+            Knot coordinates:
+               Direction 0: 
+               [ 0 0.333333 0.666667 1.00000 ]
+               Direction 1: 
+               [ 0 0.333333 0.666667 1.00000 ]
+            
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                     Flat ID: 0    Tensor ID: [0,0]
+                  
+                  Entry id: 1
+                     Flat ID: 3    Tensor ID: [0,1]
+                  
+                  Entry id: 2
+                     Flat ID: 6    Tensor ID: [0,2]
+                  
+                  Entry id: 3
+                     Flat ID: 1    Tensor ID: [1,0]
+                  
+                  Entry id: 4
+                     Flat ID: 4    Tensor ID: [1,1]
+                  
+                  Entry id: 5
+                     Flat ID: 7    Tensor ID: [1,2]
+                  
+                  Entry id: 6
+                     Flat ID: 2    Tensor ID: [2,0]
+                  
+                  Entry id: 7
+                     Flat ID: 5    Tensor ID: [2,1]
+                  
+                  Entry id: 8
+                     Flat ID: 8    Tensor ID: [2,2]
+                  
+               
+            
+            Name: grid_2
+         
+         Degrees:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 2 2 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+         
+         Interior multiplicities:
+            Entry id: 0
+            [ 1 1 ]
+            Entry id: 1
+            [ 1 1 ]
+         
+         Dimensionality Table:
+            Entry id: 0
+            [ 5 5 ]
+            Scalar components dimensions:
+            [ 25 ]
+            Total Dimension: 25
+         
+      
    
-   const SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 0
    
-   SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
-   const SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
    SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
    const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   const SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+   
+   const SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
    ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
@@ -390,6 +366,30 @@ Parsing writing/reading filetest_2_0_2_1.xml
       
    
    const ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
+   
+   ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   
+   const ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   
+   ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   const ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   
+   const ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   
+   ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   const ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
+   
+   const ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
+   
+   ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+   
+   const ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
    ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
       Object Id: 20
@@ -794,45 +794,49 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
-   
-   GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
-   
-   const GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
-   
-   GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
-   
-   const GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
-   
-   GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
-   
-   const GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
-   
-   GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
-   
-   const GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
+   const ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
    GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
    
    const GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
    
-   GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
+   GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
    
-   const GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
+   const GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
+   
+   GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
+   
+   const GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
    
    GridFunction Dim : 1 Spacedim : 3. Number of objects: 0
    
    const GridFunction Dim : 1 Spacedim : 3. Number of objects: 0
+   
+   GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
+   
+   const GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
+   
+   GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
+   
+   const GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
+   
+   GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
+   
+   const GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
+   
+   GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
+   
+   const GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
    
    GridFunction Dim : 2 Spacedim : 2. Number of objects: 4
       Object Id: 21
@@ -1187,6 +1191,14 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
    
+   GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
+   
+   const GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
+   
+   GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
+   
+   const GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
+   
    GridFunction Dim : 2 Spacedim : 1. Number of objects: 1
       Object Id: 24
          IgGridFunction<2,1>
@@ -1330,41 +1342,13 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
    
-   GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
-   
-   const GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
-   
-   GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
-   
-   const GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
-   
-   GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
-   
-   const GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
-   
-   Domain Dim : 0 Codim : 1. Number of objects: 0
-   
-   const Domain Dim : 0 Codim : 1. Number of objects: 0
-   
-   Domain Dim : 0 Codim : 3. Number of objects: 0
-   
-   const Domain Dim : 0 Codim : 3. Number of objects: 0
-   
    Domain Dim : 0 Codim : 0. Number of objects: 0
    
    const Domain Dim : 0 Codim : 0. Number of objects: 0
    
-   Domain Dim : 0 Codim : 2. Number of objects: 0
+   Domain Dim : 0 Codim : 3. Number of objects: 0
    
-   const Domain Dim : 0 Codim : 2. Number of objects: 0
-   
-   Domain Dim : 1 Codim : 0. Number of objects: 0
-   
-   const Domain Dim : 1 Codim : 0. Number of objects: 0
-   
-   Domain Dim : 1 Codim : 1. Number of objects: 0
-   
-   const Domain Dim : 1 Codim : 1. Number of objects: 0
+   const Domain Dim : 0 Codim : 3. Number of objects: 0
    
    Domain Dim : 1 Codim : 2. Number of objects: 0
    
@@ -1705,53 +1689,37 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const Domain Dim : 2 Codim : 0. Number of objects: 0
    
+   Domain Dim : 0 Codim : 2. Number of objects: 0
+   
+   const Domain Dim : 0 Codim : 2. Number of objects: 0
+   
+   Domain Dim : 1 Codim : 0. Number of objects: 0
+   
+   const Domain Dim : 1 Codim : 0. Number of objects: 0
+   
    Domain Dim : 2 Codim : 1. Number of objects: 0
    
    const Domain Dim : 2 Codim : 1. Number of objects: 0
+   
+   Domain Dim : 0 Codim : 1. Number of objects: 0
+   
+   const Domain Dim : 0 Codim : 1. Number of objects: 0
+   
+   Domain Dim : 1 Codim : 1. Number of objects: 0
+   
+   const Domain Dim : 1 Codim : 1. Number of objects: 0
    
    Domain Dim : 3 Codim : 0. Number of objects: 0
    
    const Domain Dim : 3 Codim : 0. Number of objects: 0
    
-   PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
-   
-   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
    PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
    const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
-   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
    PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
    const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
-   
-   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
    PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
@@ -1761,21 +1729,9 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
    PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
       Object Id: 28
@@ -2384,73 +2340,133 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
-   
-   PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
    
    PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
-   
-   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
    PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   
+   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
    PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   
+   Function Dim : 3 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 3 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
+   
+   Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   
+   Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 0 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 0 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
+   
+   Function Dim : 0 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 0 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   
+   Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
    
    Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
    const Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   Function Dim : 0 Codim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   const Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   const Function Dim : 0 Codim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   Function Dim : 1 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   Function Dim : 0 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   const Function Dim : 1 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
-   
-   Function Dim : 1 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 1 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
-   
-   Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
-   
-   Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   const Function Dim : 0 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
    
    Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 3
       Object Id: 29
@@ -3133,81 +3149,65 @@ Parsing writing/reading filetest_2_0_2_1.xml
    
    const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
+   Function Dim : 1 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
    
-   const Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
+   const Function Dim : 1 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
    
-   Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   const Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   const Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   Function Dim : 3 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   const Function Dim : 3 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   const Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
-   
-   Function Dim : 1 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 1 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   Function Dim : 2 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 2 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
    Function Dim : 0 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
    const Function Dim : 0 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   Function Dim : 0 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
+   Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   const Function Dim : 0 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
+   const Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   Function Dim : 0 Codim : 2 Range : 2 Rank : 1. Number of objects: 0
+   Function Dim : 0 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   const Function Dim : 0 Codim : 2 Range : 2 Rank : 1. Number of objects: 0
-   
-   Function Dim : 0 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 0 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
-   
-   Function Dim : 0 Codim : 3 Range : 1 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 0 Codim : 3 Range : 1 Rank : 1. Number of objects: 0
-   
-   Function Dim : 0 Codim : 3 Range : 3 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 0 Codim : 3 Range : 3 Rank : 1. Number of objects: 0
-   
-   Function Dim : 0 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 0 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   const Function Dim : 0 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
    
    Function Dim : 0 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
    
    const Function Dim : 0 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   Function Dim : 0 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   Function Dim : 0 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   const Function Dim : 0 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   const Function Dim : 0 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
    Function Dim : 0 Codim : 0 Range : 0 Rank : 1. Number of objects: 0
    
    const Function Dim : 0 Codim : 0 Range : 0 Rank : 1. Number of objects: 0
    
-   Function Dim : 0 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   Function Dim : 2 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   const Function Dim : 0 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   const Function Dim : 2 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   Function Dim : 0 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   Function Dim : 0 Codim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   const Function Dim : 0 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   const Function Dim : 0 Codim : 2 Range : 2 Rank : 1. Number of objects: 0
+   
+   Function Dim : 0 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 0 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 0 Codim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 0 Codim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
    
 
 ========================================================================
@@ -3219,10 +3219,6 @@ Parsing writing/reading filetest_3_0_3_1.xml
    Grid Dim : 1. Number of objects: 0
    
    const Grid Dim : 1. Number of objects: 0
-   
-   Grid Dim : 2. Number of objects: 0
-   
-   const Grid Dim : 2. Number of objects: 0
    
    Grid Dim : 3. Number of objects: 1
       Object Id: 48
@@ -3329,179 +3325,24 @@ Parsing writing/reading filetest_3_0_3_1.xml
    
    const Grid Dim : 0. Number of objects: 0
    
-   SplineSpace Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   Grid Dim : 2. Number of objects: 0
    
-   const SplineSpace Dim : 0 Range : 0 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 0 Range : 1 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 0 Range : 1 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 0 Range : 2 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 0 Range : 2 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 0
-   
-   SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 0
-   
-   const SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 0
+   const Grid Dim : 2. Number of objects: 0
    
    SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
    const SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 0
    
-   const SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 2 Range : 1 Rank : 1. Number of objects: 0
    
-   SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 1
-      Object Id: 49
-         Knots without repetition:
-            Number of intervals per direction: [ 3 3 3 ]
-            Knot coordinates:
-               Direction 0: 
-               [ 0 0.333333 0.666667 1.00000 ]
-               Direction 1: 
-               [ 0 0.333333 0.666667 1.00000 ]
-               Direction 2: 
-               [ 0 0.333333 0.666667 1.00000 ]
-            
-            Element properties:
-               IDs with property "active":
-                  Entry id: 0
-                     Flat ID: 0    Tensor ID: [0,0,0]
-                  
-                  Entry id: 1
-                     Flat ID: 9    Tensor ID: [0,0,1]
-                  
-                  Entry id: 2
-                     Flat ID: 18    Tensor ID: [0,0,2]
-                  
-                  Entry id: 3
-                     Flat ID: 3    Tensor ID: [0,1,0]
-                  
-                  Entry id: 4
-                     Flat ID: 12    Tensor ID: [0,1,1]
-                  
-                  Entry id: 5
-                     Flat ID: 21    Tensor ID: [0,1,2]
-                  
-                  Entry id: 6
-                     Flat ID: 6    Tensor ID: [0,2,0]
-                  
-                  Entry id: 7
-                     Flat ID: 15    Tensor ID: [0,2,1]
-                  
-                  Entry id: 8
-                     Flat ID: 24    Tensor ID: [0,2,2]
-                  
-                  Entry id: 9
-                     Flat ID: 1    Tensor ID: [1,0,0]
-                  
-                  Entry id: 10
-                     Flat ID: 10    Tensor ID: [1,0,1]
-                  
-                  Entry id: 11
-                     Flat ID: 19    Tensor ID: [1,0,2]
-                  
-                  Entry id: 12
-                     Flat ID: 4    Tensor ID: [1,1,0]
-                  
-                  Entry id: 13
-                     Flat ID: 13    Tensor ID: [1,1,1]
-                  
-                  Entry id: 14
-                     Flat ID: 22    Tensor ID: [1,1,2]
-                  
-                  Entry id: 15
-                     Flat ID: 7    Tensor ID: [1,2,0]
-                  
-                  Entry id: 16
-                     Flat ID: 16    Tensor ID: [1,2,1]
-                  
-                  Entry id: 17
-                     Flat ID: 25    Tensor ID: [1,2,2]
-                  
-                  Entry id: 18
-                     Flat ID: 2    Tensor ID: [2,0,0]
-                  
-                  Entry id: 19
-                     Flat ID: 11    Tensor ID: [2,0,1]
-                  
-                  Entry id: 20
-                     Flat ID: 20    Tensor ID: [2,0,2]
-                  
-                  Entry id: 21
-                     Flat ID: 5    Tensor ID: [2,1,0]
-                  
-                  Entry id: 22
-                     Flat ID: 14    Tensor ID: [2,1,1]
-                  
-                  Entry id: 23
-                     Flat ID: 23    Tensor ID: [2,1,2]
-                  
-                  Entry id: 24
-                     Flat ID: 8    Tensor ID: [2,2,0]
-                  
-                  Entry id: 25
-                     Flat ID: 17    Tensor ID: [2,2,1]
-                  
-                  Entry id: 26
-                     Flat ID: 26    Tensor ID: [2,2,2]
-                  
-               
-            
-            Name: grid_3
-         
-         Degrees:
-            Raw components: 
-               Size: [ 1 ]  Weights: [1]
-               Entry id: 0
-               [ 2 2 2 ]
-            
-            Components map: 
-            [ 0 ]
-            Active components ids: 
-            [ 0 ]
-            Inactive components ids: 
-            [ ]
-         
-         Interior multiplicities:
-            Entry id: 0
-            [ 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
-            Entry id: 2
-            [ 1 1 ]
-         
-         Dimensionality Table:
-            Entry id: 0
-            [ 5 5 5 ]
-            Scalar components dimensions:
-            [ 125 ]
-            Total Dimension: 125
-         
-      
+   SplineSpace Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
-   const SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
    SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 1
-      Object Id: 50
+      Object Id: 49
          Knots without repetition:
             Number of intervals per direction: [ 3 3 3 ]
             Knot coordinates:
@@ -3651,29 +3492,164 @@ Parsing writing/reading filetest_3_0_3_1.xml
    
    const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+   SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+   const SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 1
+      Object Id: 50
+         Knots without repetition:
+            Number of intervals per direction: [ 3 3 3 ]
+            Knot coordinates:
+               Direction 0: 
+               [ 0 0.333333 0.666667 1.00000 ]
+               Direction 1: 
+               [ 0 0.333333 0.666667 1.00000 ]
+               Direction 2: 
+               [ 0 0.333333 0.666667 1.00000 ]
+            
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                     Flat ID: 0    Tensor ID: [0,0,0]
+                  
+                  Entry id: 1
+                     Flat ID: 9    Tensor ID: [0,0,1]
+                  
+                  Entry id: 2
+                     Flat ID: 18    Tensor ID: [0,0,2]
+                  
+                  Entry id: 3
+                     Flat ID: 3    Tensor ID: [0,1,0]
+                  
+                  Entry id: 4
+                     Flat ID: 12    Tensor ID: [0,1,1]
+                  
+                  Entry id: 5
+                     Flat ID: 21    Tensor ID: [0,1,2]
+                  
+                  Entry id: 6
+                     Flat ID: 6    Tensor ID: [0,2,0]
+                  
+                  Entry id: 7
+                     Flat ID: 15    Tensor ID: [0,2,1]
+                  
+                  Entry id: 8
+                     Flat ID: 24    Tensor ID: [0,2,2]
+                  
+                  Entry id: 9
+                     Flat ID: 1    Tensor ID: [1,0,0]
+                  
+                  Entry id: 10
+                     Flat ID: 10    Tensor ID: [1,0,1]
+                  
+                  Entry id: 11
+                     Flat ID: 19    Tensor ID: [1,0,2]
+                  
+                  Entry id: 12
+                     Flat ID: 4    Tensor ID: [1,1,0]
+                  
+                  Entry id: 13
+                     Flat ID: 13    Tensor ID: [1,1,1]
+                  
+                  Entry id: 14
+                     Flat ID: 22    Tensor ID: [1,1,2]
+                  
+                  Entry id: 15
+                     Flat ID: 7    Tensor ID: [1,2,0]
+                  
+                  Entry id: 16
+                     Flat ID: 16    Tensor ID: [1,2,1]
+                  
+                  Entry id: 17
+                     Flat ID: 25    Tensor ID: [1,2,2]
+                  
+                  Entry id: 18
+                     Flat ID: 2    Tensor ID: [2,0,0]
+                  
+                  Entry id: 19
+                     Flat ID: 11    Tensor ID: [2,0,1]
+                  
+                  Entry id: 20
+                     Flat ID: 20    Tensor ID: [2,0,2]
+                  
+                  Entry id: 21
+                     Flat ID: 5    Tensor ID: [2,1,0]
+                  
+                  Entry id: 22
+                     Flat ID: 14    Tensor ID: [2,1,1]
+                  
+                  Entry id: 23
+                     Flat ID: 23    Tensor ID: [2,1,2]
+                  
+                  Entry id: 24
+                     Flat ID: 8    Tensor ID: [2,2,0]
+                  
+                  Entry id: 25
+                     Flat ID: 17    Tensor ID: [2,2,1]
+                  
+                  Entry id: 26
+                     Flat ID: 26    Tensor ID: [2,2,2]
+                  
+               
+            
+            Name: grid_3
+         
+         Degrees:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 2 2 2 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+         
+         Interior multiplicities:
+            Entry id: 0
+            [ 1 1 ]
+            Entry id: 1
+            [ 1 1 ]
+            Entry id: 2
+            [ 1 1 ]
+         
+         Dimensionality Table:
+            Entry id: 0
+            [ 5 5 5 ]
+            Scalar components dimensions:
+            [ 125 ]
+            Total Dimension: 125
+         
+      
+   
+   const SplineSpace Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+   
+   const SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
    ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
@@ -3682,10 +3658,6 @@ Parsing writing/reading filetest_3_0_3_1.xml
    ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
    
    const ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
-   
-   ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
-   
-   const ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
    ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
@@ -3862,6 +3834,14 @@ Parsing writing/reading filetest_3_0_3_1.xml
       
    
    const ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   
+   const ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   
+   ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   const ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
    
    ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
       Object Id: 52
@@ -4622,45 +4602,33 @@ Parsing writing/reading filetest_3_0_3_1.xml
    
    const ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
+   ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   const GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
+   const ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
+   ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   const GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
+   const ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
+   ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   const GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
+   const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
+   ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   const GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
+   const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+   
+   const ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
    GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
    
    const GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
    
-   GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
+   GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
    
-   const GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
-   
-   GridFunction Dim : 1 Spacedim : 3. Number of objects: 0
-   
-   const GridFunction Dim : 1 Spacedim : 3. Number of objects: 0
-   
-   GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
-   
-   const GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
-   
-   GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
-   
-   const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
-   
-   GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
-   
-   const GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
+   const GridFunction Dim : 0 Spacedim : 2. Number of objects: 0
    
    GridFunction Dim : 3 Spacedim : 3. Number of objects: 4
       Object Id: 53
@@ -5599,6 +5567,14 @@ Parsing writing/reading filetest_3_0_3_1.xml
    
    const GridFunction Dim : 3 Spacedim : 3. Number of objects: 0
    
+   GridFunction Dim : 1 Spacedim : 3. Number of objects: 0
+   
+   const GridFunction Dim : 1 Spacedim : 3. Number of objects: 0
+   
+   GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
+   
+   const GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
+   
    GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
       Object Id: 56
          IgGridFunction<3,1>
@@ -5904,29 +5880,37 @@ Parsing writing/reading filetest_3_0_3_1.xml
    
    const GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
    
-   Domain Dim : 0 Codim : 1. Number of objects: 0
+   GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
    
-   const Domain Dim : 0 Codim : 1. Number of objects: 0
+   const GridFunction Dim : 0 Spacedim : 3. Number of objects: 0
    
-   Domain Dim : 0 Codim : 3. Number of objects: 0
+   GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
    
-   const Domain Dim : 0 Codim : 3. Number of objects: 0
+   const GridFunction Dim : 0 Spacedim : 1. Number of objects: 0
+   
+   GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
+   
+   const GridFunction Dim : 2 Spacedim : 2. Number of objects: 0
+   
+   GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
+   
+   const GridFunction Dim : 0 Spacedim : 0. Number of objects: 0
+   
+   GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
+   
+   const GridFunction Dim : 1 Spacedim : 2. Number of objects: 0
+   
+   GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
+   
+   const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
    
    Domain Dim : 0 Codim : 0. Number of objects: 0
    
    const Domain Dim : 0 Codim : 0. Number of objects: 0
    
-   Domain Dim : 0 Codim : 2. Number of objects: 0
+   Domain Dim : 0 Codim : 3. Number of objects: 0
    
-   const Domain Dim : 0 Codim : 2. Number of objects: 0
-   
-   Domain Dim : 1 Codim : 0. Number of objects: 0
-   
-   const Domain Dim : 1 Codim : 0. Number of objects: 0
-   
-   Domain Dim : 1 Codim : 1. Number of objects: 0
-   
-   const Domain Dim : 1 Codim : 1. Number of objects: 0
+   const Domain Dim : 0 Codim : 3. Number of objects: 0
    
    Domain Dim : 1 Codim : 2. Number of objects: 0
    
@@ -5936,9 +5920,25 @@ Parsing writing/reading filetest_3_0_3_1.xml
    
    const Domain Dim : 2 Codim : 0. Number of objects: 0
    
+   Domain Dim : 0 Codim : 2. Number of objects: 0
+   
+   const Domain Dim : 0 Codim : 2. Number of objects: 0
+   
+   Domain Dim : 1 Codim : 0. Number of objects: 0
+   
+   const Domain Dim : 1 Codim : 0. Number of objects: 0
+   
    Domain Dim : 2 Codim : 1. Number of objects: 0
    
    const Domain Dim : 2 Codim : 1. Number of objects: 0
+   
+   Domain Dim : 0 Codim : 1. Number of objects: 0
+   
+   const Domain Dim : 0 Codim : 1. Number of objects: 0
+   
+   Domain Dim : 1 Codim : 1. Number of objects: 0
+   
+   const Domain Dim : 1 Codim : 1. Number of objects: 0
    
    Domain Dim : 3 Codim : 0. Number of objects: 1
       Object Id: 59
@@ -6859,45 +6859,13 @@ Parsing writing/reading filetest_3_0_3_1.xml
    
    const Domain Dim : 3 Codim : 0. Number of objects: 0
    
-   PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
-   
-   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
    PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
    const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
-   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
    PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
    const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
-   
-   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
-   
-   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
    PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
@@ -6906,38 +6874,6 @@ Parsing writing/reading filetest_3_0_3_1.xml
    PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
    
    const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
-   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
-   
-   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
-   
-   PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
-   
-   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
-   
-   PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
    PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
       Object Id: 60
@@ -8389,73 +8325,101 @@ Parsing writing/reading filetest_3_0_3_1.xml
    
    const PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
+   PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+   
    PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
-   
-   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
-   
-   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
    PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   
+   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   
+   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   
+   PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   
+   const PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
    PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
    const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
-   
-   Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
-   
-   Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
-   
-   Function Dim : 1 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 1 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
-   
-   Function Dim : 1 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 1 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
-   
-   Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
-   
-   Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
-   
-   Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
-   
-   Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
-   
-   Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
    Function Dim : 3 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
    const Function Dim : 3 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
    
    Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 3
       Object Id: 61
@@ -10306,65 +10270,101 @@ Parsing writing/reading filetest_3_0_3_1.xml
    
    const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
+   Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   const Function Dim : 1 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
-   
-   Function Dim : 1 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 1 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   Function Dim : 2 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 2 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
-   
-   Function Dim : 0 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 0 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
-   
-   Function Dim : 0 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 0 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
-   
-   Function Dim : 0 Codim : 2 Range : 2 Rank : 1. Number of objects: 0
-   
-   const Function Dim : 0 Codim : 2 Range : 2 Rank : 1. Number of objects: 0
+   const Function Dim : 2 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
    Function Dim : 0 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
    
    const Function Dim : 0 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   Function Dim : 0 Codim : 3 Range : 1 Rank : 1. Number of objects: 0
+   Function Dim : 0 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   const Function Dim : 0 Codim : 3 Range : 1 Rank : 1. Number of objects: 0
+   const Function Dim : 0 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   
+   Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 2 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
    
    Function Dim : 0 Codim : 3 Range : 3 Rank : 1. Number of objects: 0
    
    const Function Dim : 0 Codim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   Function Dim : 0 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   Function Dim : 0 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   const Function Dim : 0 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   const Function Dim : 0 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   
+   Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 2 Range : 3 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 0 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 0 Codim : 1 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 2 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 0 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 0 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
    
    Function Dim : 0 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
    
    const Function Dim : 0 Codim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   Function Dim : 0 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   Function Dim : 0 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   const Function Dim : 0 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
+   const Function Dim : 0 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
    Function Dim : 0 Codim : 0 Range : 0 Rank : 1. Number of objects: 0
    
    const Function Dim : 0 Codim : 0 Range : 0 Rank : 1. Number of objects: 0
    
-   Function Dim : 0 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   Function Dim : 2 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   const Function Dim : 0 Codim : 1 Range : 2 Rank : 1. Number of objects: 0
+   const Function Dim : 2 Codim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   Function Dim : 0 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   Function Dim : 0 Codim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   const Function Dim : 0 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   const Function Dim : 0 Codim : 2 Range : 2 Rank : 1. Number of objects: 0
+   
+   Function Dim : 0 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 0 Codim : 2 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 0 Codim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 0 Codim : 3 Range : 1 Rank : 1. Number of objects: 0
+   
+   Function Dim : 1 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
+   
+   const Function Dim : 1 Codim : 1 Range : 3 Rank : 1. Number of objects: 0
    
 
 ========================================================================

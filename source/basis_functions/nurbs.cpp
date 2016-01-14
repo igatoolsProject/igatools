@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/basis_functions/nurbs_element_handler.h>
+#include <igatools/basis_functions/nurbs_handler.h>
 //#include <igatools/basis_functions/space_tools.h>
 
 //#include <igatools/base/sub_function.h>
@@ -155,7 +155,7 @@ template<int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
 create_ref_element_begin(const PropId &property) const
--> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+-> std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
 {
   using Elem = NURBSElement<dim_,range_,rank_>;
 
@@ -168,7 +168,7 @@ template<int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
 create_ref_element_end(const PropId &property) const
--> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+-> std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
 {
   using Elem = NURBSElement<dim_,range_,rank_>;
 
@@ -497,9 +497,9 @@ get_end_behaviour_table() const -> const EndBehaviourTable &
 template <int dim_, int range_, int rank_>
 auto
 NURBS<dim_, range_, rank_>::
-create_cache_handler() const -> std::unique_ptr<BasisElementHandler<dim_,0,range_,rank_>>
+create_cache_handler() const -> std::unique_ptr<BasisHandler<dim_,0,range_,rank_>>
 {
-  return std::unique_ptr<ElementHandler>(new ElementHandler(this->get_this_basis()));
+  return std::unique_ptr<Handler>(new Handler(this->get_this_basis()));
 }
 
 

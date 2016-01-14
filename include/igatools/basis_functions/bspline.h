@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <int, int, int> class BSplineElement;
-template <int, int, int> class BSplineElementHandler;
+template <int, int, int> class BSplineHandler;
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
  * valued B-spline space.
@@ -104,7 +104,7 @@ public:
   /** see documentation in \ref Basis */
 
   using GridType = Grid<dim_>;
-  using ElementHandler = BSplineElementHandler<dim_, range_, rank_>;
+  using Handler = BSplineHandler<dim_, range_, rank_>;
 
 
   static const int dim       = dim_;
@@ -185,11 +185,11 @@ public:
   create_element_end(const PropId &property) const  override final;
 
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_begin(const PropId &property) const override final;
 
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_end(const PropId &property) const override final;
 
 
@@ -309,7 +309,7 @@ private:
 
 
   friend class BSplineElement<dim, range, rank>;
-  friend class BSplineElementHandler<dim, range, rank>;
+  friend class BSplineHandler<dim, range, rank>;
 
 #ifdef MESH_REFINEMENT
   /**
@@ -346,8 +346,8 @@ public:
 
   virtual bool is_bspline() const override final;
 
-  virtual std::unique_ptr<BasisElementHandler<dim_,0,range_,rank_>>
-      create_cache_handler() const override final;
+  virtual std::unique_ptr<BasisHandler<dim_,0,range_,rank_>>
+                                                          create_cache_handler() const override final;
 
 
 private:

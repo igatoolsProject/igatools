@@ -6,7 +6,7 @@ cache_init
 ========================================================================
 cache_init_elem
 ========================================================================
-ReferenceElement<1,1,1> cache:
+ReferenceBasisElement<1,1,1> cache:
    BSplineElement<1,1,1> cache:
       Splines 1D table:
          Sub-element dimension: 0
@@ -394,7 +394,7 @@ DomainElement<1,0> cache:
 ========================================================================
 cache_fill_elem
 ========================================================================
-ReferenceElement<1,1,1> cache:
+ReferenceBasisElement<1,1,1> cache:
    BSplineElement<1,1,1> cache:
       Splines 1D table:
          Sub-element dimension: 0
@@ -797,7 +797,7 @@ DomainElement<1,0> cache:
       
    
 
-ReferenceElement<1,1,1> cache:
+ReferenceBasisElement<1,1,1> cache:
    BSplineElement<1,1,1> cache:
       Splines 1D table:
          Sub-element dimension: 0
@@ -1200,7 +1200,7 @@ DomainElement<1,0> cache:
       
    
 
-ReferenceElement<1,1,1> cache:
+ReferenceBasisElement<1,1,1> cache:
    BSplineElement<1,1,1> cache:
       Splines 1D table:
          Sub-element dimension: 0
@@ -1603,7 +1603,7 @@ DomainElement<1,0> cache:
       
    
 
-ReferenceElement<1,1,1> cache:
+ReferenceBasisElement<1,1,1> cache:
    BSplineElement<1,1,1> cache:
       Splines 1D table:
          Sub-element dimension: 0

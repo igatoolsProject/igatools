@@ -79,7 +79,7 @@ GridFunctionHandler<dim_, range_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
-  using GridFlags = typename GridType::ElementHandler::Flags;
+  using GridFlags = typename GridType::Handler::Flags;
   GridFlags  grid_flag = GridFlags::none;
   Flags dom_flag = Flags::none;
 
@@ -184,7 +184,7 @@ template <int sdim>
 void
 GridFunctionHandler<dim_, range_>::
 fill_cache(ElementIterator &elem,
-                const int s_id) const
+           const int s_id) const
 {
   this->fill_cache(Topology<sdim>(), elem, s_id);
 }
@@ -194,7 +194,7 @@ template <int sdim>
 void
 GridFunctionHandler<dim_, range_>::
 fill_cache(ElementAccessor &elem,
-                const int s_id) const
+           const int s_id) const
 {
   this->fill_cache(Topology<sdim>(), elem, s_id);
 }

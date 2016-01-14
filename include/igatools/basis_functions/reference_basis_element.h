@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/basis_element.h>
-#include <igatools/basis_functions/reference_element_handler.h>
+#include <igatools/basis_functions/reference_basis_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -34,7 +34,7 @@ template <int, int, int> class ReferenceBasis;
  * @ingroup elements
  */
 template <int dim, int range, int rank>
-class ReferenceElement : public BasisElement<dim,0,range,rank>
+class ReferenceBasisElement : public BasisElement<dim,0,range,rank>
 {
 public:
 
@@ -64,21 +64,21 @@ public:
   using GridElem = GridElement<dim>;
 
 public:
-  ReferenceElement() = delete;
+  ReferenceBasisElement() = delete;
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  ReferenceElement(const ReferenceElement<dim,range,rank> &elem) = delete;
+  ReferenceBasisElement(const ReferenceBasisElement<dim,range,rank> &elem) = delete;
 
   /**
    * Constructs an accessor to element number index of a
    * ReferenceBasis basis.
    */
-  ReferenceElement(const std::shared_ptr<ConstBasis> &basis);
+  ReferenceBasisElement(const std::shared_ptr<ConstBasis> &basis);
 
 
-  virtual ~ReferenceElement() = default;
+  virtual ~ReferenceBasisElement() = default;
 
   /**
    * Returns the <tt>k</tt> dimensional j-th sub-element measure

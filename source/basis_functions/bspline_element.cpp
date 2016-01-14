@@ -21,7 +21,7 @@
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 
 #include <igatools/utils/multi_array_utils.h>
@@ -76,7 +76,7 @@ print_info(LogStream &out) const
 {
   using std::to_string;
 
-  out.begin_item("ReferenceElement<" +
+  out.begin_item("ReferenceBasisElement<" +
                  to_string(dim) + "," +
                  to_string(range) + "," +
                  to_string(rank) + ">");

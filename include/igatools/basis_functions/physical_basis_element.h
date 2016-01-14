@@ -57,7 +57,7 @@ public :
   using RefBasis = typename PhysSpace::RefBasis;
   using PushFwd = typename PhysSpace::PushFwd;
 //    using RefElemAccessor = BasisElement<RefBasis::dim,0,RefBasis::range,RefBasis::rank,Transformation::h_grad>;
-  using RefElemAccessor = ReferenceElement<RefBasis::dim,RefBasis::range,RefBasis::rank>;
+  using RefElemAccessor = ReferenceBasisElement<RefBasis::dim,RefBasis::range,RefBasis::rank>;
 
   using PhysDomain = Domain<dim_, codim_>;
   using PhysDomainElem = DomainElement<dim_, codim_>;
@@ -245,7 +245,7 @@ public:
 
 private:
   template <class Accessor> friend class GridIteratorBase;
-  template <int,int,int,int> friend class PhysicalBasisElementHandler;
+  template <int,int,int,int> friend class PhysicalBasisHandler;
 
   GridIterator<RefElemAccessor> ref_space_element_;
 

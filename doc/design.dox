@@ -40,11 +40,11 @@ as described by the following table:
 Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
 Grid                 | GridElement           | GridHandler
-Basis       | BasisElement      | BasisElementHandler
-ReferenceBasis       | ReferenceElement      | ReferenceElementHandler
-BSpline         | BSplineElement        | BSplineElementHandler 
-NURBS           | NURBSElement          | NURBSElementHandler
-PhysicalBasis        | PhysicalBasisElement  | PhysicalBasisElementHandler
+Basis       | BasisElement      | BasisHandler
+ReferenceBasis       | ReferenceBasisElement      | ReferenceBasisHandler
+BSpline         | BSplineElement        | BSplineHandler 
+NURBS           | NURBSElement          | NURBSHandler
+PhysicalBasis        | PhysicalBasisElement  | PhysicalBasisHandler
 Domain              | DomainElement        | DomainHandler
 GridFunction              | GridFunctionElement        | GridFunctionHandler
 IgGridFunction              | IgGridFunctionElement        | IgGridFunctionHandler
@@ -58,19 +58,19 @@ FormulaFunction              | FormulaFunctionElement        | FormulaFunctionHa
 <center>
 Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
-Basis       | BasisElement      | BasisElementHandler
-ReferenceBasis       | ReferenceElement      | ReferenceElementHandler
-BSpline         | BSplineElement        | BSplineElementHandler 
-NURBS           | NURBSElement          | NURBSElementHandler
-PhysicalBasis        | PhysicalBasisElement  | PhysicalBasisElementHandler
+Basis       | BasisElement      | BasisHandler
+ReferenceBasis       | ReferenceBasisElement      | ReferenceBasisHandler
+BSpline         | BSplineElement        | BSplineHandler 
+NURBS           | NURBSElement          | NURBSHandler
+PhysicalBasis        | PhysicalBasisElement  | PhysicalBasisHandler
 </center>
 
 <center>
 Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
-ReferenceBasis       | ReferenceElement      | ReferenceElementHandler
-BSpline         | BSplineElement        | BSplineElementHandler 
-NURBS           | NURBSElement          | NURBSElementHandler
+ReferenceBasis       | ReferenceBasisElement      | ReferenceBasisHandler
+BSpline         | BSplineElement        | BSplineHandler 
+NURBS           | NURBSElement          | NURBSHandler
 </center>
    
 
@@ -122,7 +122,7 @@ there is an associated accessor, as shown in the following table:
 Elements             | Element Containers    
 -------------------- | ----------------------
 GridElement          | Grid  
-ReferenceElement     | ReferenceSpace      
+ReferenceBasisElement     | ReferenceSpace      
 BSplineElement       | BSpline         
 NURBSElement         | NURBS          
 MappingElement       | Mapping        

@@ -23,7 +23,7 @@
 
 #include <igatools/functions/function_handler.h>
 #include <igatools/functions/ig_function.h>
-#include <igatools/basis_functions/basis_element_handler.h>
+#include <igatools/basis_functions/basis_handler.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -94,7 +94,7 @@ private:
 
 //  friend struct FillCacheDispatcher;
 
-  using IgBasisHandler = BasisElementHandler<dim,codim,range,rank>;
+  using IgBasisHandler = BasisHandler<dim,codim,range,rank>;
   std::unique_ptr<IgBasisHandler> ig_basis_handler_;
 
   std::shared_ptr<FunctionType> ig_function_;

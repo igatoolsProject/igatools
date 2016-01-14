@@ -112,7 +112,7 @@ template<int dim,int range>
 auto
 IgGridFunction<dim,range>::
 create_cache_handler() const
--> std::unique_ptr<ElementHandler>
+-> std::unique_ptr<Handler>
 {
   using Handler = IgGridFunctionHandler<dim,range>;
   return std::unique_ptr<Handler>(new Handler(

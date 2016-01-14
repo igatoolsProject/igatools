@@ -33,7 +33,7 @@
 
 #include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_handler.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/functions/ig_grid_function_handler.h>
 
 
@@ -52,11 +52,11 @@ template<int,int,int> class NURBSElement;
  * @ingroup handlers
  */
 template<int dim_, int range_, int rank_>
-class NURBSElementHandler
-  : public ReferenceElementHandler<dim_,range_,rank_>
+class NURBSHandler
+  : public ReferenceBasisHandler<dim_,range_,rank_>
 {
-  using base_t = ReferenceElementHandler<dim_,range_,rank_>;
-  using self_t = NURBSElementHandler<dim_,range_,rank_>;
+  using base_t = ReferenceBasisHandler<dim_,range_,rank_>;
+  using self_t = NURBSHandler<dim_,range_,rank_>;
   using Basis = NURBS<dim_,range_,rank_>;
   static const Size n_components =  Basis::n_components;
 
@@ -90,19 +90,19 @@ public:
   /**
    * Default constructor. Not allowed to be used.
    */
-  NURBSElementHandler() = delete;
+  NURBSHandler() = delete;
 
-  NURBSElementHandler(std::shared_ptr<const Basis> space);
+  NURBSHandler(std::shared_ptr<const Basis> space);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  NURBSElementHandler(const self_t &) = delete;
+  NURBSHandler(const self_t &) = delete;
 
   /**
    * Move constructor. Not allowed to be used.
    */
-  NURBSElementHandler(self_t &&) = delete;
+  NURBSHandler(self_t &&) = delete;
   ///@}
 
   /**
@@ -123,7 +123,7 @@ public:
   /**
    * Destructor.
    */
-  virtual ~NURBSElementHandler() = default;
+  virtual ~NURBSHandler() = default;
 
 
   using topology_variant = typename base_t::topology_variant;
@@ -136,7 +136,7 @@ public:
 private:
 
 
-  std::unique_ptr<BasisElementHandler<dim_,0,range_,rank_>> bsp_elem_handler_;
+  std::unique_ptr<BasisHandler<dim_,0,range_,rank_>> bsp_elem_handler_;
 
   std::unique_ptr<IgGridFunctionHandler<dim_,1>> w_func_elem_handler_;
 
@@ -147,7 +147,7 @@ private:
 
 
   /**
-   * Returns the NURBS used to define the NURBSElementHandler object.
+   * Returns the NURBS used to define the NURBSHandler object.
    */
   std::shared_ptr<const Basis> get_nurbs_space() const;
 

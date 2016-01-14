@@ -48,7 +48,7 @@ public:
 
   using ElementAccessor = SubGridFunctionElement<sdim,dim,range>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ElementHandler = SubGridFunctionHandler<sdim,dim,range>;
+  using Handler = SubGridFunctionHandler<sdim,dim,range>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;

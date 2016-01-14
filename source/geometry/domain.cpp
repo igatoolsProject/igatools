@@ -151,9 +151,9 @@ template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
 create_cache_handler() const
--> std::unique_ptr<ElementHandler>
+-> std::unique_ptr<Handler>
 {
-  return std::unique_ptr<ElementHandler>(new ElementHandler(this->shared_from_this()));
+  return std::unique_ptr<Handler>(new Handler(this->shared_from_this()));
 }
 
 

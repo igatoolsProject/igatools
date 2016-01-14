@@ -30,15 +30,15 @@ data = Instantiation(include_files)
 member_functions = set()
 
 
-elements = ['ReferenceElement<0,0,1>']#, 'ReferenceElement<0,1,1>']
+elements = ['ReferenceBasisElement<0,0,1>']#, 'ReferenceBasisElement<0,1,1>']
 
-member_func = 'ValueVector<Real> ReferenceElement<0,0,1>::get_w_measures<0>(const int s_id) const'
+member_func = 'ValueVector<Real> ReferenceBasisElement<0,0,1>::get_w_measures<0>(const int s_id) const'
 member_functions.add(member_func)
 
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    elem = 'ReferenceElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    elem = 'ReferenceBasisElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
     elements.append(elem)
     for k in range(0,x.dim+1):
         member_func = 'ValueVector<Real> %s::get_w_measures<%d>(const int s_id) const' % (elem,k)

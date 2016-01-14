@@ -44,7 +44,7 @@ private:
   using self_t = IgGridFunction<dim, range>;
 protected:
   using typename parent_t::GridType;
-  using ElementHandler = typename parent_t::ElementHandler;
+  using Handler = typename parent_t::Handler;
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
@@ -72,7 +72,7 @@ protected:
                  const std::string &dofs_property);
 
 public:
-  std::unique_ptr<ElementHandler>
+  std::unique_ptr<Handler>
   create_cache_handler() const override final;
 
   static std::shared_ptr<const self_t>

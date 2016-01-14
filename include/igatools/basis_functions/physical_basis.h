@@ -37,7 +37,7 @@ template <int,int> class PushForward;
 
 template <int,int,int,int> class PhysicalBasisElement;
 
-template <int,int,int,int> class PhysicalBasisElementHandler;
+template <int,int,int,int> class PhysicalBasisHandler;
 
 /**
  *
@@ -69,7 +69,7 @@ public:
 
   using GridType = Grid<dim_>;
   ///@}
-  using ElementHandler = PhysicalBasisElementHandler<dim_,range_,rank_,codim_>;
+  using Handler = PhysicalBasisHandler<dim_,range_,rank_,codim_>;
 
   static const int dim = dim_;
 
@@ -171,7 +171,7 @@ public:
 
   void print_info(LogStream &out) const override final;
 
-  std::unique_ptr<BasisElementHandler<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisHandler<dim_,codim_,range_,rank_> >
   create_cache_handler() const override final;
 
 

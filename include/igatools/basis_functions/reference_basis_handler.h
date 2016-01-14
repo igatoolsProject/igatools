@@ -25,7 +25,7 @@
 #include <igatools/base/flags_handler.h>
 #include <igatools/base/quadrature.h>
 
-#include <igatools/basis_functions/basis_element_handler.h>
+#include <igatools/basis_functions/basis_handler.h>
 #include <igatools/geometry/grid_handler.h>
 #include <igatools/basis_functions/reference_basis.h>
 
@@ -37,12 +37,12 @@ IGA_NAMESPACE_OPEN
  * @ingroup handlers
  */
 template<int dim, int range = 1, int rank = 1>
-class ReferenceElementHandler
+class ReferenceBasisHandler
   :
-  public BasisElementHandler<dim,0,range,rank>
+  public BasisHandler<dim,0,range,rank>
 {
 private:
-  using base_t = BasisElementHandler<dim,0,range,rank>;
+  using base_t = BasisHandler<dim,0,range,rank>;
 public:
   using Basis = ReferenceBasis<dim,range,rank>;
   using ElementIterator = typename Basis::ElementIterator;
@@ -62,27 +62,27 @@ protected:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  ReferenceElementHandler() = default;
+  ReferenceBasisHandler() = default;
 
 
-  ReferenceElementHandler(const std::shared_ptr<const Basis> &space);
+  ReferenceBasisHandler(const std::shared_ptr<const Basis> &space);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  ReferenceElementHandler(const ReferenceElementHandler<dim,range,rank> &elem_handler) = delete;
+  ReferenceBasisHandler(const ReferenceBasisHandler<dim,range,rank> &elem_handler) = delete;
 
   /**
    * Move constructor. Not allowed to be used.
    */
-  ReferenceElementHandler(ReferenceElementHandler<dim,range,rank> &&elem_handler) = delete;
+  ReferenceBasisHandler(ReferenceBasisHandler<dim,range,rank> &&elem_handler) = delete;
 
 public:
 
   /**
    * Destructor.
    */
-  virtual ~ReferenceElementHandler() = default;
+  virtual ~ReferenceBasisHandler() = default;
 
   ///@}
 
@@ -99,7 +99,7 @@ protected:
 
 public:
   /**
-   * Returns the const reference of the GridHandler used by the current ReferenceElementHandler.
+   * Returns the const reference of the GridHandler used by the current ReferenceBasisHandler.
    * @return
    */
 //    const GridHandler<dim> &get_grid_handler() const;

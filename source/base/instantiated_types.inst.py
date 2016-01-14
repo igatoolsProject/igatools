@@ -67,13 +67,14 @@ f.write("""
   /** All grid instantiations. */
   typedef boost::mpl::vector<""")
 
-types = []
+types = set()
 for dim in inst.domain_dims:
-    types.append('Grid<%d>' % (dim))
+    types.add('Grid<%d>' % (dim))
 for dim in inst.sub_domain_dims:
-    types.append('Grid<%d>' % (dim))
+    types.add('Grid<%d>' % (dim))
 
-types = unique(types)
+
+types = list(types)
 f.write(" %s,\n" % (types[0]));
 for i in range(1, len(types) - 1):
   f.write("                              %s,\n" % (types[i]));
@@ -87,14 +88,15 @@ f.write("""
   /** All spline space instantiations. */
   typedef boost::mpl::vector<""")
 
-types = []
-types.append('SplineSpace<%d, %d, %d>' % (0, 0, 1))
+types = set()
+types.add('SplineSpace<%d, %d, %d>' % (0, 0, 1))
 for x in inst.sub_ref_sp_dims:
-    types.append('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    types.add('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
 for x in inst.ref_sp_dims:
-    types.append('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    types.add('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
 
-types = unique(types)
+
+types = list(types)
 f.write(" %s,\n" % (types[0]));
 for i in range(1, len(types) - 1):
   f.write("                              %s,\n" % (types[i]));
@@ -110,14 +112,16 @@ f.write("""
   /** All reference space basis instantiations. */
   typedef boost::mpl::vector<""")
 
-types = []
-types.append('ReferenceBasis<%d, %d, %d>' % (0, 0, 1))
-for x in inst.sub_ref_sp_dims:
-    types.append('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
-for x in inst.ref_sp_dims:
-    types.append('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+types = set()
 
-types = unique(types)
+types.add('ReferenceBasis<%d, %d, %d>' % (0, 0, 1))
+for x in inst.sub_ref_sp_dims:
+    types.add('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+for x in inst.ref_sp_dims:
+    types.add('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+
+
+types = list(types)
 f.write(" %s,\n" % (types[0]));
 for i in range(1, len(types) - 1):
   f.write("                              %s,\n" % (types[i]));
@@ -133,15 +137,16 @@ f.write("""
   /** All grid function instantiations. */
   typedef boost::mpl::vector<""")
 
-types = []
+types = set()
 for x in inst.sub_mapping_dims:
-    types.append('GridFunction<%d, %d>' % (x.dim, x.space_dim))
+    types.add('GridFunction<%d, %d>' % (x.dim, x.space_dim))
 for x in inst.mapping_dims:
-    types.append('GridFunction<%d, %d>' % (x.dim, x.space_dim))
+    types.add('GridFunction<%d, %d>' % (x.dim, x.space_dim))
     # The next dimensions are needed by NURBS
-    types.append('GridFunction<%d, %d>' % (x.dim, 1))
+    types.add('GridFunction<%d, %d>' % (x.dim, 1))
 
-types = unique(types)
+
+types = list(types)
 f.write(" %s,\n" % (types[0]));
 for i in range(1, len(types) - 1):
   f.write("                              %s,\n" % (types[i]));
@@ -157,13 +162,15 @@ f.write("""
   /** All domain instantiations. */
   typedef boost::mpl::vector<""")
 
-types = []
+types = set()
 for x in inst.sub_mapping_dims:
-    types.append('Domain<%d, %d>' % (x.dim, x.codim))
+    types.add('Domain<%d, %d>' % (x.dim, x.codim))
 for x in inst.mapping_dims:
-    types.append('Domain<%d, %d>' % (x.dim, x.codim))
+    types.add('Domain<%d, %d>' % (x.dim, x.codim))
 
-types = unique(types)
+
+
+types = list(types)
 f.write(" %s,\n" % (types[0]));
 for i in range(1, len(types) - 1):
   f.write("                              %s,\n" % (types[i]));
@@ -179,14 +186,15 @@ f.write("""
   /** All physical space basis instantiations. */
   typedef boost::mpl::vector<""")
 
-types = []
-types.append('PhysicalBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
+types = set()
+types.add('PhysicalBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
 for sp in inst.SubPhysSpaces:
-    types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
+    types.add('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 for sp in inst.PhysSpaces:
-    types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
+    types.add('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 
-types = unique(types)
+
+types = list(types)
 f.write(" %s,\n" % (types[0]));
 for i in range(1, len(types) - 1):
   f.write("                              %s,\n" % (types[i]));
@@ -201,11 +209,13 @@ f.write("""
 
   /** All function instantiations. */
   typedef boost::mpl::vector<""")
-types = []
+types = set()
 # Functions
 for dims in inst.all_function_dims:
-    types.append('Function<%d, %d, %d, %d>' % (dims.dim, dims.codim, dims.range, dims.rank))
+    types.add('Function<%d, %d, %d, %d>' % (dims.dim, dims.codim, dims.range, dims.rank))
 
+
+types = list(types)
 f.write(" %s,\n" % (types[0]));
 for i in range(1, len(types) - 1):
   f.write("                              %s,\n" % (types[i]));

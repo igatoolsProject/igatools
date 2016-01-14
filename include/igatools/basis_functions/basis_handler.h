@@ -36,10 +36,10 @@ IGA_NAMESPACE_OPEN
  * @ingroup handlers
  */
 template <int dim,int codim,int range,int rank>
-class BasisElementHandler
+class BasisHandler
 {
 private:
-  using self_t = BasisElementHandler<dim,codim,range,rank>;
+  using self_t = BasisHandler<dim,codim,range,rank>;
 
 public:
   using Sp = Basis<dim,codim,range,rank>;
@@ -61,27 +61,27 @@ protected:
   /**
    * Default constructor. Not allowed to be used
    */
-  BasisElementHandler() = delete;
+  BasisHandler() = delete;
 
 
-  BasisElementHandler(const std::shared_ptr<const Sp> &space);
+  BasisHandler(const std::shared_ptr<const Sp> &space);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  BasisElementHandler(const self_t &elem_handler) = delete;
+  BasisHandler(const self_t &elem_handler) = delete;
 
   /**
    * Move constructor. Not allowed to be used.
    */
-  BasisElementHandler(self_t &&elem_handler) = delete;
+  BasisHandler(self_t &&elem_handler) = delete;
 
 public:
 
   /**
    * Destructor.
    */
-  virtual ~BasisElementHandler() = default;
+  virtual ~BasisHandler() = default;
 
   ///@}
 

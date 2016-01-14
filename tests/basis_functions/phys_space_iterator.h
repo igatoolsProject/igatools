@@ -36,7 +36,7 @@
 
 #include <igatools/basis_functions/physical_basis.h>
 #include <igatools/basis_functions/physical_basis_element.h>
-#include <igatools/basis_functions/physical_basis_element_handler.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 
 #include <igatools/basis_functions/space_tools.h>
 
@@ -134,7 +134,7 @@ void elem_values(shared_ptr<PhysicalBasis<dim,range,rank,codim>> phys_basis,
 
 
 //    using PhysBasis = PhysicalBasis<dim,range,rank,codim>;
-//    using ElementHandler = typename PhysBasis::ElementHandler;
+//    using Handler = typename PhysBasis::Handler;
 
   auto quad = QGauss<k>::create(n_qp);
   using space_element::Flags;

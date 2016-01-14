@@ -21,7 +21,7 @@
 #include <igatools/functions/ig_function_handler.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/function_element.h>
-#include <igatools/basis_functions/physical_basis_element_handler.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 
 IGA_NAMESPACE_OPEN
 
