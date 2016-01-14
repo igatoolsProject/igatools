@@ -46,15 +46,21 @@ int main()
   // [logstream]
 
   // [grid_print]
+
+  // [total_elems]
   out << "Grid: " << endl;
   out << "  number of elements:  " << endl;
   //
   // total number of elements in the grid
   out << "    " << grid->get_num_all_elems();
+  // [total_elems]
   //
+  // [n_intervals]
   // number of intervals in each coordinate direction
   out << " = " << grid->get_num_intervals() << endl;
+  // [n_intervals]
   //
+  // [knots]
   out << "  knots:  " << endl;
   //
   // the type for knots is SafeSTLArray<shared_ptr<SafeSTLVector<Real>>,dim>
@@ -68,6 +74,7 @@ int main()
     out << endl;
   }
   out << endl;
+  // [knots]
   // [grid_print]
 
   // [space]
