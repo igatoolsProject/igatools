@@ -9,7 +9,7 @@ over the grid and finally an instance of the class representing the B-spline bas
 We briefly recall from the \ref tutorial page the command for compiling and
 running the examples:
 \code{.bash}
-cd tutorial/example_01
+cd IGA_WS/tutorial/example_01
 make run-example_01
 \endcode
 
@@ -20,8 +20,8 @@ Grid:
   number of elements:  
     4 = [ 2 2 ]
   knots:  
-    0.00000 0.500000 1.00000
-    0.00000 0.500000 1.00000
+    [ 0.00000 0.500000 1.00000 ]
+    [ 0.00000 0.500000 1.00000 ]
 
 Spline Space:
 \endcode
@@ -35,36 +35,78 @@ the declaration of a class for, among other features, streaming data to file or 
 There exists a header for the Grid class altough it is not necessary: the Grid
 class is required for almost every igatools high-level object.
 
+\note Each igatools major class is declared in a different <tt>.h</tt> file.
+The naming convention is camel-case for the class name and lower-case
+with underscores for the file name. For example, 
+the declaration for the class <tt>PhysicalBasisElement</tt>
+can be found in the file <tt>physical_basis_element.h</tt>.
+
+
 In order to save some typing, we use two handy namespaces:
 \snippet example_01.cpp using
 
-As first instruction, we define an integer constant that represents the dimensionality of 
+
+Igatools is designed to be <b>dimension-independent</b> as much as possible. 
+This means that if you have a mathematical problem that can be formulated in <tt>d</tt>-dimension, 
+then (with some special care) you can write a single piece of code that works for any
+dimension. We will see an example of this approach in the tutorial \subpage example_04.
+In order to implement this feature, almost every igatools object is templetized with 
+one (or more) dimension parameter(s).
+
+For simplicity, in this first example we don't want to code a program that is 
+dimension-independent, so, 
+as first instruction, we define an integer constant that represents the dimensionality of 
 our problem (2 in this case):
 \snippet example_01.cpp dim
-As a fundamental concept in igatools, almost every object is
-a template on the dimension.
 
-Then we create a uniform bidimensional cartesian grid with 3 nodes (or knots)
+Then we create a uniform bidimensional cartesian grid (representend by the class Grid) with 3 nodes (or knots)
 in each direction.
 \snippet example_01.cpp grid
-We underline the use of the template parameter <tt>dim</tt> and notice the construction
-philosophy: in igatools, C++ constructors exist but are deprecated in favor of
-creators, static methods that return the desired object wrapped in a smart pointer
-(igatools makes an extensive use of smart pointers). We also notice that we don't want
-to modify the grid, hence we call the static method <tt>const_create</tt> instead 
-of the non-const version <tt>create</tt> (see \ref example_02 for more details).
+From the previous lines we can comment some facts that help to illustrate the igatools philosophy:
+  - the class Grid is templetized with the constant integer <tt>dim</tt> that, int this case, has the value 2
+  - to create an instance of Grid, we do not use a Grid constructor but we use a <b>creator</b>, i.e. a 
+    static method that returns the desired object wrapped in a <b>shared pointer</b> 
+    (i.e. a container for a raw pointer that maintains reference-counted ownership of its contained 
+    pointer in cooperation with all copies of the shared pointer). 
+    One of the key feature of a shared pointer is the fact that the object referenced by the 
+    contained raw pointer will be destroyed when and only when all 
+    copies of the shared pointer have been destroyed (this means that the probability of a memory is vastly reduced).
+    \note By design, in igatools the use of raw pointers is <em><b>strongly discouraged</b></em> (read id "prohibited"):
+      use only smart pointers (i.e. <tt>std::shared_ptr</tt> and <tt>std::unique_ptr</tt>)!
+  - for the classes that implements the <b>creator idiom</b>, we have two sets of static functions:
+    - the static functions <tt>create()</tt> return a <b>non-const object</b> wrapped by a shared pointer
+    - the static functions <tt>const_create()</tt> return a <b>const object</b> wrapped by a shared pointer
+  - not every class implements the <b>creator idiom</b>: it is necessary only for classes for which the
+    object instances can be used in cooperation with other objects. 
+    Being Grid one of such classes, and due to the fact that we don't want to modify the grid, 
+    we call the static method <tt>const_create</tt> instead of the non-const version <tt>create</tt> 
+    (see \ref example_02 for more details).
+  - A class with the <b>create idiom</b> has at least one <tt>create()/const_create()</tt> static functions pair. 
+    
+
+Going back to our example, we instantiate an object of type LogStream
+that, for now, can be tought as a <tt>std::cout</tt> with extra capabilities:
+\snippet example_01.cpp logstream
 
 In the next lines we see some examples of how to access the data inside an igatools
-object:
-\snippet example_01.cpp grid_print
-We notice that the LogStream variable <tt>out</tt> is used as <tt>std::cout</tt> and
-permits to stream the library's basic objects such as the TensorIndex.
+object. First of all we want to print the total number of elements in the <tt>grid</tt>.
+\snippet example_01.cpp total_elems
+
+Then we want to know how many intervals are present along each coordinate direction.
+In order to retrieve this information we use the method <tt>grid->get_num_intervals()</tt>, that
+returns an object of type TensorSize.
+\snippet example_01.cpp n_intervals
+We can notice that LogStream variable <tt>out</tt> is used (in conjunction with the <tt><<</tt> operator) 
+as one usually do with <tt>std::cout</tt> and
+permits to stream the library's basic objects as TensorSize.
+
 In the following lines, we directly access to the grid knots by the variable
 <tt>knots</tt>. As one can see from its declaration, KnotCoordinates is an alias for an
 SafeSTLArray of SafeSTLVector (wrapped in a smart pointer). These two classes are
 the analogous of <tt>std::array</tt> and <tt>std::vector</tt>, and provide bound
 check if igatools is compiled in debug mode. The data therein is accessed via 
 <tt>range-based for-loop</tt> or iterators.
+\snippet example_01.cpp knots
 
 With the Grid structure and the polynomial degrees in our hands we can create a SplineSpace:
 \snippet example_01.cpp space
