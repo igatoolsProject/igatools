@@ -449,7 +449,7 @@ serialize(Archive &ar)
                                 to_string(range_) + "_" +
                                 to_string(rank_);
 
-  ar &make_nvp(base_name,base_class<BaseSpace>(this));
+  ar &make_nvp(base_name,base_class<RefBasis>(this));
 
   ar &make_nvp("spline_space_",spline_space_);
 
@@ -472,7 +472,7 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-//using BSpSpaceAlias0_1_1 = iga::BSpline<0,1,1>;
-//CEREAL_REGISTER_DYNAMIC_INIT(BSpSpaceAlias0_1_1);
+//using BSpAlias0_1_1 = iga::BSpline<0,1,1>;
+//CEREAL_REGISTER_DYNAMIC_INIT(BSpAlias0_1_1);
 
 #endif // SERIALIZATION

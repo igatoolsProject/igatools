@@ -95,7 +95,7 @@ class BSpline :
   public ReferenceBasis<dim_, range_, rank_>
 {
 private:
-  using BaseSpace = ReferenceBasis<dim_, range_, rank_>;
+  using RefBasis = ReferenceBasis<dim_, range_, rank_>;
 
   /** Type for current class. */
   using self_t = BSpline<dim_,range_,rank_>;
@@ -115,21 +115,13 @@ public:
   static const bool is_physical_space = false;
 
 public:
-  using typename BaseSpace::Point;
-  using typename BaseSpace::Value;
+  using typename RefBasis::Point;
+  using typename RefBasis::Value;
 
   template <int order>
-  using Derivative = typename BaseSpace::template Derivative<order>;
+  using Derivative = typename RefBasis::template Derivative<order>;
 
-  using typename BaseSpace::Div;
-
-  /**
-   * See documentation in \ref Basis
-   *
-   * @see Basis
-   */
-
-//  using RefBasis = typename BaseSpace::RefBasis;
+  using typename RefBasis::Div;
 
   using RefPoint = Point;
 
@@ -145,7 +137,7 @@ public:
   using EndBehaviour = typename SpSpace::EndBehaviour;
   using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
-  using BaseSpace::ComponentContainer;
+  using RefBasis::ComponentContainer;
 
   using IndexType = typename GridType::IndexType;
   using PropertyList = PropertiesIdContainer<IndexType>;
@@ -238,7 +230,7 @@ public:
 
 
   template <int k>
-  using InterSpaceMap = typename BaseSpace::template InterSpaceMap<k>;
+  using InterSpaceMap = typename RefBasis::template InterSpaceMap<k>;
 
 
 
@@ -302,7 +294,7 @@ private:
 
 
   /** If end knots are not in the repeated knot vector */
-  using EndIntervalTable = typename BaseSpace::template
+  using EndIntervalTable = typename RefBasis::template
                            ComponentContainer<SafeSTLArray<SafeSTLArray<Real,2>,dim>>;
   EndIntervalTable end_interval_;
 
