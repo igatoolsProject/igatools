@@ -118,7 +118,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
   auto elem_handler = basis->create_cache_handler();
 
-  using Flags = space_element::Flags;
+  using Flags = basis_element::Flags;
 
   auto flag = Flags::value | Flags::gradient | Flags::w_measure;
   elem_handler->set_element_flags(flag);

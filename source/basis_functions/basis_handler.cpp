@@ -52,7 +52,7 @@ template<int dim,int codim,int range,int rank>
 template<int sdim>
 void
 BasisHandler<dim,codim,range,rank>::
-set_flags(const typename space_element::Flags &flag)
+set_flags(const typename basis_element::Flags &flag)
 {
   this->set_flags_impl(Topology<sdim>(),flag);
 }
@@ -60,7 +60,7 @@ set_flags(const typename space_element::Flags &flag)
 template<int dim,int codim,int range,int rank>
 void
 BasisHandler<dim,codim,range,rank>::
-set_element_flags(const typename space_element::Flags &flag)
+set_element_flags(const typename basis_element::Flags &flag)
 {
   this->set_flags_impl(Topology<dim>(),flag);
 }

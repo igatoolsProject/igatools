@@ -2,7 +2,7 @@
 do_test
 ========================================================================
 Original NURBS:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -187,7 +187,7 @@ Original NURBS:
    
 
 NURBS after serialize-deserialize:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -377,7 +377,7 @@ NURBS after serialize-deserialize:
 do_test
 ========================================================================
 Original NURBS:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -580,7 +580,7 @@ Original NURBS:
    
 
 NURBS after serialize-deserialize:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -788,7 +788,7 @@ NURBS after serialize-deserialize:
 do_test
 ========================================================================
 Original NURBS:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -1009,7 +1009,7 @@ Original NURBS:
    
 
 NURBS after serialize-deserialize:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 ]
@@ -1235,7 +1235,7 @@ NURBS after serialize-deserialize:
 do_test
 ========================================================================
 Original NURBS:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -1512,7 +1512,7 @@ Original NURBS:
    
 
 NURBS after serialize-deserialize:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -1794,7 +1794,7 @@ NURBS after serialize-deserialize:
 do_test
 ========================================================================
 Original NURBS:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -2095,7 +2095,7 @@ Original NURBS:
    
 
 NURBS after serialize-deserialize:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -2401,7 +2401,7 @@ NURBS after serialize-deserialize:
 do_test
 ========================================================================
 Original NURBS:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -2726,7 +2726,7 @@ Original NURBS:
    
 
 NURBS after serialize-deserialize:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 ]
@@ -3056,7 +3056,7 @@ NURBS after serialize-deserialize:
 do_test
 ========================================================================
 Original NURBS:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]
@@ -3489,7 +3489,7 @@ Original NURBS:
    
 
 NURBS after serialize-deserialize:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]
@@ -3927,7 +3927,7 @@ NURBS after serialize-deserialize:
 do_test
 ========================================================================
 Original NURBS:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]
@@ -4418,7 +4418,7 @@ Original NURBS:
    
 
 NURBS after serialize-deserialize:
-   BSpline Space:
+   BSpline Basis:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 4 3 2 ]

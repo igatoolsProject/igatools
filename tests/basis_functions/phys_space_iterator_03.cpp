@@ -78,7 +78,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
   const int n_qp = 2;
   auto quad = QGauss<k>::create(n_qp);
-  using Flags = space_element::Flags;
+  using Flags = basis_element::Flags;
   auto flag = Flags::value |
               Flags::gradient |
               Flags::hessian;

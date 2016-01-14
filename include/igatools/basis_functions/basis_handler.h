@@ -87,12 +87,12 @@ public:
 
 
   virtual void set_flags_impl(const topology_variant &topology,
-                              const typename space_element::Flags &flag) = 0;
+                              const typename basis_element::Flags &flag) = 0;
 
   template<int sdim>
-  void set_flags(const typename space_element::Flags &flag);
+  void set_flags(const typename basis_element::Flags &flag);
 
-  void set_element_flags(const typename space_element::Flags &flag);
+  void set_element_flags(const typename basis_element::Flags &flag);
 
   virtual void init_cache_impl(ElementAccessor &elem,
                                const eval_pts_variant &quad) const = 0;
@@ -155,7 +155,7 @@ private:
 
 
 protected:
-  SafeSTLArray<typename space_element::Flags, dim + 1> flags_;
+  SafeSTLArray<typename basis_element::Flags, dim + 1> flags_;
 
 
 

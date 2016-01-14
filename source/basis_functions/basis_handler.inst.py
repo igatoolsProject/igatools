@@ -36,7 +36,7 @@ handler_methods = set()
 handler = 'BasisHandler<0,0,0,1>'
 handlers.add(handler)
 
-handler_method = 'void %s::set_flags<0>(const typename space_element::Flags &flag)' % (handler)
+handler_method = 'void %s::set_flags<0>(const typename basis_element::Flags &flag)' % (handler)
 handler_methods.add(handler_method)
 handler_method = 'void %s::init_cache<0>(ElementAccessor &elem,const std::shared_ptr<const Quadrature<0>> &quad) const' % (handler)
 handler_methods.add(handler_method)
@@ -54,7 +54,7 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     handler = 'BasisHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.add(handler)
     for k in range(0,x.dim+1):
-        handler_method = 'void %s::set_flags<%d>(const typename space_element::Flags &flag)' % (handler,k)
+        handler_method = 'void %s::set_flags<%d>(const typename basis_element::Flags &flag)' % (handler,k)
         handler_methods.add(handler_method)
 
         handler_method = 'void %s::init_cache<%d>(ElementAccessor &elem,const std::shared_ptr<const Quadrature<%d>> &quad) const' % (handler,k,k)
@@ -76,7 +76,7 @@ for basis in inst.SubPhysSpaces + inst.PhysSpaces:
     handler = 'BasisHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
     handlers.add(handler)
     for k in range(0,x.dim+1):
-        handler_method = 'void %s::set_flags<%d>(const typename space_element::Flags &flag)' % (handler,k)
+        handler_method = 'void %s::set_flags<%d>(const typename basis_element::Flags &flag)' % (handler,k)
         handler_methods.add(handler_method)
 
         handler_method = 'void %s::init_cache<%d>(ElementAccessor &elem,const std::shared_ptr<const Quadrature<%d>> &quad) const' % (handler,k,k)

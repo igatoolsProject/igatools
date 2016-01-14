@@ -71,9 +71,9 @@ void test()
   auto elem     = space->begin();
   auto end = space->end();
 
-  using _Value = space_element::_Value;
-  using _Gradient = space_element::_Gradient;
-  using _Hessian = space_element::_Hessian;
+  using _Value = basis_element::_Value;
+  using _Gradient = basis_element::_Gradient;
+  using _Hessian = basis_element::_Hessian;
 
   int elem_id = 0;
   for (; elem != end; ++elem)

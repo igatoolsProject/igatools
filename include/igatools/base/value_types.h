@@ -372,7 +372,7 @@ struct _W_Measure
 /**
  * @name Admissible flags for the classes that are derived from BasisElement.
  */
-namespace space_element
+namespace basis_element
 {
 enum class Flags
 {
@@ -480,7 +480,7 @@ public:
   static const auto flag = Flags::divergence;
 };
 
-} // end namespace space_element
+} // end namespace basis_element
 //---------------------------------------------------------------------------------------
 
 

@@ -52,7 +52,7 @@ public:
   using eval_pts_variant = QuadVariants<dim>;
 
 
-  using Flags = space_element::Flags;
+  using Flags = basis_element::Flags;
 
 protected:
   /** @name Constructors */

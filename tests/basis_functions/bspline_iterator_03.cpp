@@ -66,10 +66,10 @@ void evaluate_field(const int deg = 1)
   }
 
   auto quad = QGauss<dim>::create(2);
-  auto flag = space_element::Flags::value |
-              space_element::Flags::gradient |
-              space_element::Flags::hessian |
-              space_element::Flags::divergence;
+  auto flag = basis_element::Flags::value |
+              basis_element::Flags::gradient |
+              basis_element::Flags::hessian |
+              basis_element::Flags::divergence;
 
 
   auto elem = basis->begin();

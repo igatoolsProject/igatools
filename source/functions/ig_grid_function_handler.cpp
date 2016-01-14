@@ -56,7 +56,7 @@ set_flags(const topology_variant &sdim,
   parent_t::set_flags(sdim,flag);
 
 
-  using SpFlags = space_element::Flags;
+  using SpFlags = basis_element::Flags;
   SpFlags ig_space_elem_flags = SpFlags::none;
   if (contains(flag,Flags::D0))
     ig_space_elem_flags |= SpFlags::value;
@@ -147,21 +147,21 @@ operator()(const Topology<sdim> &sub_elem)
 
     if (cache.template status_fill<_D<0>>())
     {
-      using space_element::_Value;
+      using basis_element::_Value;
       auto &F = cache.template get_data<_D<0>>();
       F.fill(ig_space_elem->template linear_combination<_Value,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
     }
 
     if (cache.template status_fill<_D<1>>())
     {
-      using space_element::_Gradient;
+      using basis_element::_Gradient;
       auto &DF = cache.template get_data<_D<1>>();
       DF.fill(ig_space_elem->template linear_combination<_Gradient,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
     }
 
     if (cache.template status_fill<_D<2>>())
     {
-      using space_element::_Hessian;
+      using basis_element::_Hessian;
       auto &D2F = cache.template get_data<_D<2>>();
       D2F.fill(ig_space_elem->template linear_combination<_Hessian,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
     }

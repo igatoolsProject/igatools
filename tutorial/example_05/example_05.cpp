@@ -172,9 +172,9 @@ void PoissonProblem<dim>::assemble()
   auto basis_el      = phy_basis->begin();
   auto basis_el_end  = phy_basis->end();
   auto basis_handler = phy_basis->create_cache_handler();
-  auto flag = space_element::Flags::value |
-              space_element::Flags::gradient |
-              space_element::Flags::w_measure;
+  auto flag = basis_element::Flags::value |
+              basis_element::Flags::gradient |
+              basis_element::Flags::w_measure;
   basis_handler->set_element_flags(flag);
   basis_handler->init_element_cache(basis_el,quad);
 

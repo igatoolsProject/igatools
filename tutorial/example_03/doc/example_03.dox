@@ -73,7 +73,7 @@ passing the appropriate flags.
   Elements Family | BaseClass | Flags
   ----------------|--------------|--------------------
   Grid            | GridElement  | grid_element::Flags
-  Space           | BasisElement | space_element::Flags
+  Space           | BasisElement | basis_element::Flags
   Domain          | DomainElement| domain_element::Flags
   GridFunction    | GridFunctionElement | grid_function_element::Flags
   FunctionElement | FunctionElement | function_element::Flags  
@@ -139,8 +139,8 @@ requires for the last step a Domain and a ReferenceSpaceBasis.
  <a href="#show31" class="show" id="show31">Hide hint</a>
  <div class="list">
 \code{.cpp}
-auto flag = space_element::Flags::value |
-            space_element::Flags::gradient;
+auto flag = basis_element::Flags::value |
+            basis_element::Flags::gradient;
 \endcode
 \code{.cpp}
 auto grads = basis_el->get_element_gradients();

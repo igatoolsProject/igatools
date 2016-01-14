@@ -79,7 +79,7 @@ void basis_loop_with_cache(shared_ptr<const Basis<dim,codim,range,rank>> basis)
 // [basis_loop_start]
 
 // [basis_loop_set]
-  auto flag = space_element::Flags::value;
+  auto flag = basis_element::Flags::value;
   cache_handler->set_element_flags(flag);
 // [basis_loop_set]
 

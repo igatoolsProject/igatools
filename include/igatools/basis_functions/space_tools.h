@@ -71,7 +71,7 @@ projection_l2(const Function<Basis::dim,Basis::codim,Basis::range,Basis::rank> &
   const int dim = Basis::dim;
 
 
-  using SpFlags = space_element::Flags;
+  using SpFlags = basis_element::Flags;
   auto sp_flag = SpFlags::value |
                  SpFlags::w_measure;
   auto space_elem_handler = basis->create_cache_handler();
@@ -85,7 +85,7 @@ projection_l2(const Function<Basis::dim,Basis::codim,Basis::range,Basis::rank> &
 
   const int n_qp = quad->get_num_points();
 
-  using space_element::_Value;
+  using basis_element::_Value;
 
   if (space_grid == func_grid)
   {
@@ -254,7 +254,7 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
   Assert(space_grid->same_knots_or_refinement_of(*func_grid),
          ExcMessage("The space grid is not a refinement of the function grid."));
 
-  using SpFlags = space_element::Flags;
+  using SpFlags = basis_element::Flags;
   auto sp_flag = SpFlags::value |
                  SpFlags::w_measure;
   auto space_elem_handler = basis.create_cache_handler();
@@ -267,7 +267,7 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
   space_elem_handler->init_element_cache(*elem,quad);
 
 
-  using space_element::_Value;
+  using basis_element::_Value;
 
   using _D0 = function_element::template _D<0>;
   if (space_grid == func_grid)
@@ -394,7 +394,7 @@ projection_l2_ig_grid_function(
          ExcMessage("The space grid is not a refinement of the function grid."));
 
 
-  using SpFlags = space_element::Flags;
+  using SpFlags = basis_element::Flags;
   auto sp_flag = SpFlags::value |
                  SpFlags::w_measure;
   auto space_elem_handler = ref_basis.create_cache_handler();
@@ -408,7 +408,7 @@ projection_l2_ig_grid_function(
 
   const int n_qp = quad->get_num_points();
 
-  using space_element::_Value;
+  using basis_element::_Value;
 
   using D0 = grid_function_element::_D<0>;
   if (space_grid == func_grid)
@@ -593,7 +593,7 @@ projection_l2_grid_function(
          ExcMessage("The space grid is not a refinement of the function grid."));
 
 
-  using SpFlags = space_element::Flags;
+  using SpFlags = basis_element::Flags;
   auto sp_flag = SpFlags::value |
                  SpFlags::w_measure;
   auto space_elem_handler = ref_basis.create_cache_handler();

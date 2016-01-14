@@ -70,7 +70,7 @@ void test()
   auto elem     = space->begin();
   auto end_element = space->end();
 
-  using Flags = space_element::Flags;
+  using Flags = basis_element::Flags;
   const auto flag = Flags::value|
                     Flags::gradient|
                     Flags::hessian;
@@ -80,9 +80,9 @@ void test()
   auto elem_handler = space->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
 
-  using _Value = space_element::_Value;
-  using _Gradient = space_element::_Gradient;
-  using _Hessian = space_element::_Hessian;
+  using _Value = basis_element::_Value;
+  using _Gradient = basis_element::_Gradient;
+  using _Hessian = basis_element::_Hessian;
 
   elem_handler->template init_cache<dim>(*elem,quad);
 

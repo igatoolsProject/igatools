@@ -137,7 +137,7 @@ void elem_values(shared_ptr<PhysicalBasis<dim,range,rank,codim>> phys_basis,
 //    using Handler = typename PhysBasis::Handler;
 
   auto quad = QGauss<k>::create(n_qp);
-  using space_element::Flags;
+  using basis_element::Flags;
   auto flag = Flags::value|
               Flags::gradient |
               Flags::hessian |
@@ -153,9 +153,9 @@ void elem_values(shared_ptr<PhysicalBasis<dim,range,rank,codim>> phys_basis,
   auto end  = phys_basis->end();
   elem_filler->template init_cache<k>(elem,quad);
 
-  using space_element::_Value;
-  using space_element::_Gradient;
-  using space_element::_Hessian;
+  using basis_element::_Value;
+  using basis_element::_Gradient;
+  using basis_element::_Hessian;
 
   int elem_id = 0;
   for (; elem != end; ++elem)

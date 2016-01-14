@@ -121,7 +121,7 @@ void PoissonProblem<dim>::assemble()
   auto basis_elem_handler = basis->create_cache_handler();
   auto f_elem_handler = f->create_cache_handler();
 
-  using Flags = space_element::Flags;
+  using Flags = basis_element::Flags;
   auto flag = Flags::value |
               Flags::gradient |
               Flags::w_measure;

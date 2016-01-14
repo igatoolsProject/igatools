@@ -158,7 +158,7 @@ private:
   using BaseElem = BasisElement<dim_,0,range_,rank_>;
 
   virtual void set_flags_impl(const topology_variant &topology,
-                              const typename space_element::Flags &flag) override final;
+                              const typename basis_element::Flags &flag) override final;
 
   virtual void init_cache_impl(BaseElem &elem,
                                const eval_pts_variant &quad) const override final;
@@ -171,14 +171,14 @@ private:
 
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
+    SetFlagsDispatcher(const typename basis_element::Flags nrb_flag,
                        self_t &nrb_handler);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);
 
   private:
-    const typename space_element::Flags nrb_flag_;
+    const typename basis_element::Flags nrb_flag_;
     self_t &nrb_handler_;
   };
 

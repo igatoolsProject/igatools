@@ -46,9 +46,9 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 
 
   auto quad = QGauss<k>::create(n_qp);
-  auto flag = space_element::Flags::value |
-              space_element::Flags::gradient |
-              space_element::Flags::hessian;
+  auto flag = basis_element::Flags::value |
+              basis_element::Flags::gradient |
+              basis_element::Flags::hessian;
 
   auto elem = basis->begin();
 
@@ -104,9 +104,9 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
       dof_distribution->set_dof_property_status(DofProperties::active,dof,false);
 
   auto quad = QGauss<k>::create(n_qp);
-  auto flag = space_element::Flags::value |
-              space_element::Flags::gradient |
-              space_element::Flags::hessian;
+  auto flag = basis_element::Flags::value |
+              basis_element::Flags::gradient |
+              basis_element::Flags::hessian;
 
   auto elem = basis->begin();
 

@@ -78,7 +78,7 @@ void elem_values(const int n_knots = 5, const int deg=1)
                  ref_space,
                  Domain<dim,codim>::const_create(map_func), Transformation::h_grad);
 
-  using space_element::Flags;
+  using basis_element::Flags;
 
   auto flag = Flags::none;
   switch (order)
@@ -101,7 +101,7 @@ void elem_values(const int n_knots = 5, const int deg=1)
 
   auto elem = space->begin();
   auto end = space->end();
-  using space_element::_Value;
+  using basis_element::_Value;
   elem_filler->init_element_cache(elem,quad);
   for (; elem != end; ++elem)
   {

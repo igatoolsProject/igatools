@@ -110,7 +110,7 @@ void PoissonProblem<dim>::assemble()
 
   auto basis_elem_handler = basis->create_cache_handler();
 
-  using BasisFlags = space_element::Flags;
+  using BasisFlags = basis_element::Flags;
   auto basis_flags = BasisFlags::value | BasisFlags::gradient |
                      BasisFlags::w_measure;
   basis_elem_handler->set_element_flags(basis_flags);

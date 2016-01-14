@@ -124,23 +124,23 @@ public:
 
 
   virtual void set_flags_impl(const topology_variant &topology,
-                              const typename space_element::Flags &flag) override final;
+                              const typename basis_element::Flags &flag) override final;
 
 private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const typename space_element::Flags flag_in,
+    SetFlagsDispatcher(const typename basis_element::Flags flag_in,
                        GridHandler<dim_> &grid_handler,
-                       SafeSTLArray<typename space_element::Flags, dim+1> &flags);
+                       SafeSTLArray<typename basis_element::Flags, dim+1> &flags);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);
 
 
   private:
-    const typename space_element::Flags flag_in_;
+    const typename basis_element::Flags flag_in_;
     GridHandler<dim_> &grid_handler_;
-    SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
+    SafeSTLArray<typename basis_element::Flags, dim+1> &flags_;
   };
 
 public:
@@ -154,7 +154,7 @@ private:
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
     InitCacheDispatcher(const GridHandler<dim_> &grid_handler,
-                        const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
+                        const SafeSTLArray<typename basis_element::Flags, dim+1> &flags,
                         BSplineElem &elem);
 
 
@@ -163,7 +163,7 @@ private:
 
   private:
     const GridHandler<dim_> &grid_handler_;
-    const SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
+    const SafeSTLArray<typename basis_element::Flags, dim+1> &flags_;
     BSplineElem &bsp_elem_;
 
     template<int sdim>

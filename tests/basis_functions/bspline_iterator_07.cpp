@@ -34,7 +34,7 @@
 
 template <int dim, int range=1, int rank=1>
 void space_cache_init_fill_elem(
-  const space_element::Flags flag,
+  const basis_element::Flags flag,
   const int n_knots = 5, const int deg=1)
 {
   OUTSTART
@@ -66,13 +66,13 @@ void space_cache_init_fill_elem(
 int main()
 {
   out.depth_console(10);
-  space_cache_init_fill_elem<1>(space_element::Flags::value, 2);
-  space_cache_init_fill_elem<1>(space_element::Flags::gradient, 3);
-  space_cache_init_fill_elem<1>(space_element::Flags::hessian, 3);
+  space_cache_init_fill_elem<1>(basis_element::Flags::value, 2);
+  space_cache_init_fill_elem<1>(basis_element::Flags::gradient, 3);
+  space_cache_init_fill_elem<1>(basis_element::Flags::hessian, 3);
 
-  space_cache_init_fill_elem<2>(space_element::Flags::value);
-  space_cache_init_fill_elem<2>(space_element::Flags::gradient);
-  space_cache_init_fill_elem<2>(space_element::Flags::hessian);
+  space_cache_init_fill_elem<2>(basis_element::Flags::value);
+  space_cache_init_fill_elem<2>(basis_element::Flags::gradient);
+  space_cache_init_fill_elem<2>(basis_element::Flags::hessian);
 
   return  0;
 }

@@ -38,7 +38,7 @@
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_init(const space_element::Flags flag,
+void cache_init(const basis_element::Flags flag,
                 const int n_knots = 5, const int deg=1)
 {
   OUTSTART
@@ -76,7 +76,7 @@ void cache_init(const space_element::Flags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_init_elem(const space_element::Flags flag,
+void cache_init_elem(const basis_element::Flags flag,
                      const int n_knots = 5, const int deg=1)
 {
 //    const int k = dim;
@@ -117,7 +117,7 @@ void cache_init_elem(const space_element::Flags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_fill_elem(const space_element::Flags flag,
+void cache_fill_elem(const basis_element::Flags flag,
                      const int n_knots = 5, const int deg=1)
 {
   OUTSTART
@@ -164,7 +164,7 @@ void cache_fill_elem(const space_element::Flags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_get_elem_values(const space_element::Flags flag,
+void cache_get_elem_values(const basis_element::Flags flag,
                            const int n_knots = 5, const int deg=1)
 {
   OUTSTART
@@ -195,7 +195,7 @@ void cache_get_elem_values(const space_element::Flags flag,
   auto elem_handler = space->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
 
-  using space_element::_Value;
+  using basis_element::_Value;
 
   auto elem = space->begin();
   auto end = space->end();
@@ -215,10 +215,10 @@ int main()
 {
   out.depth_console(10);
 
-  cache_init<1>(space_element::Flags::value);
-  cache_init_elem<1>(space_element::Flags::value);
-  cache_fill_elem<1>(space_element::Flags::value);
-  cache_get_elem_values<1>(space_element::Flags::value);
+  cache_init<1>(basis_element::Flags::value);
+  cache_init_elem<1>(basis_element::Flags::value);
+  cache_fill_elem<1>(basis_element::Flags::value);
+  cache_get_elem_values<1>(basis_element::Flags::value);
 
   return  0;
 }

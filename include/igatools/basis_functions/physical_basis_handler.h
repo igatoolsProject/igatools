@@ -34,10 +34,10 @@ inline
 auto
 phys_basis_to_reference_basis_flag(
   const Transformation transformation_type,
-  const typename space_element::Flags phys_basis_flag)
--> typename space_element::Flags
+  const typename basis_element::Flags phys_basis_flag)
+-> typename basis_element::Flags
 {
-  using space_element::Flags;
+  using basis_element::Flags;
 
   Flags ref_flag = Flags::none;
 
@@ -90,7 +90,7 @@ inline
 domain_element::Flags
 phys_basis_to_domain_flag(
   const Transformation &transformation_type,
-  const typename space_element::Flags phys_basis_flag)
+  const typename basis_element::Flags phys_basis_flag)
 {
   /*
   ValueFlags transfer_flag =
@@ -104,7 +104,7 @@ phys_basis_to_domain_flag(
   map_flags = flags & transfer_flag;
   //*/
 
-  using SpaceFlags = space_element::Flags;
+  using SpaceFlags = basis_element::Flags;
 
   using DomainFlags = domain_element::Flags;
   DomainFlags domain_flag = DomainFlags::none;
@@ -237,26 +237,26 @@ private:
 
 
   virtual void set_flags_impl(const topology_variant &topology,
-                              const typename space_element::Flags &flag) override final;
+                              const typename basis_element::Flags &flag) override final;
 
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
+    SetFlagsDispatcher(const typename basis_element::Flags phys_elem_flag,
                        const Transformation &transformation_type,
                        RefElemHandler &ref_basis_handler,
                        PhysDomainHandler &phys_domain_handler,
-                       SafeSTLArray<typename space_element::Flags, dim+1> &flags);
+                       SafeSTLArray<typename basis_element::Flags, dim+1> &flags);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);
 
 
   private:
-    const typename  space_element::Flags   phys_elem_flag_;
+    const typename  basis_element::Flags   phys_elem_flag_;
     const Transformation transformation_type_;
     RefElemHandler &ref_basis_handler_;
     PhysDomainHandler &phys_domain_handler_;
-    SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
+    SafeSTLArray<typename basis_element::Flags, dim+1> &flags_;
   };
 
 
@@ -269,7 +269,7 @@ private:
   {
     InitCacheDispatcher(const RefElemHandler &ref_basis_handler,
                         const PhysDomainHandler &phys_domain_handler,
-                        const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
+                        const SafeSTLArray<typename basis_element::Flags, dim+1> &flags,
                         BaseElem &elem);
 
 
@@ -279,7 +279,7 @@ private:
   private:
     const RefElemHandler &ref_basis_handler_;
     const PhysDomainHandler &phys_domain_handler_;
-    const SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
+    const SafeSTLArray<typename basis_element::Flags, dim+1> &flags_;
     BaseElem &elem_;
   };
 

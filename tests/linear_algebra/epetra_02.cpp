@@ -52,7 +52,7 @@ void matrix_map(const int deg, const int n_knots)
   auto rhs = EpetraTools::create_vector(matrix->RangeMap());
   auto sol = EpetraTools::create_vector(matrix->DomainMap());
 
-  using Flags = space_element::Flags;
+  using Flags = basis_element::Flags;
   auto flag = Flags::value | Flags::w_measure;
   auto elem_handler = basis->create_cache_handler();
   elem_handler->set_element_flags(flag);

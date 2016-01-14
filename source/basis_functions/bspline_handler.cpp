@@ -172,9 +172,9 @@ BSplineHandler(shared_ptr<const Basis> basis)
 template<int dim_, int range_ , int rank_>
 BSplineHandler<dim_, range_, rank_>::
 SetFlagsDispatcher::
-SetFlagsDispatcher(const typename space_element::Flags flag_in,
+SetFlagsDispatcher(const typename basis_element::Flags flag_in,
                    GridHandler<dim_> &grid_handler,
-                   SafeSTLArray<typename space_element::Flags, dim+1> &flags)
+                   SafeSTLArray<typename basis_element::Flags, dim+1> &flags)
   :
   flag_in_(flag_in),
   grid_handler_(grid_handler),
@@ -202,11 +202,11 @@ template<int dim_, int range_ , int rank_>
 void
 BSplineHandler<dim_, range_, rank_>::
 set_flags_impl(const topology_variant &topology,
-               const typename space_element::Flags &flag)
+               const typename basis_element::Flags &flag)
 {
   auto elem_flags = flag;
-  if (contains(flag,space_element::Flags::divergence))
-    elem_flags |= space_element::Flags::gradient;
+  if (contains(flag,basis_element::Flags::divergence))
+    elem_flags |= basis_element::Flags::gradient;
 
 
   auto set_flag_dispatcher = SetFlagsDispatcher(elem_flags,this->grid_handler_,this->flags_);
@@ -218,7 +218,7 @@ template<int dim_, int range_ , int rank_>
 BSplineHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 InitCacheDispatcher(const GridHandler<dim_> &grid_handler,
-                    const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
+                    const SafeSTLArray<typename basis_element::Flags, dim+1> &flags,
                     BSplineElem &elem)
   :
   grid_handler_(grid_handler),

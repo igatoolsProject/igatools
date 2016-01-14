@@ -44,12 +44,12 @@ template<int dim_, int range_ , int rank_>
 void
 NURBSHandler<dim_, range_, rank_>::
 set_flags_impl(const topology_variant &sdim,
-               const typename space_element::Flags &flag)
+               const typename basis_element::Flags &flag)
 {
-  using BasisFlags = space_element::Flags;
+  using BasisFlags = basis_element::Flags;
   auto nrb_elem_flags = flag;
-  if (contains(flag,space_element::Flags::divergence))
-    nrb_elem_flags |= space_element::Flags::gradient;
+  if (contains(flag,basis_element::Flags::divergence))
+    nrb_elem_flags |= basis_element::Flags::gradient;
 
 
   auto bsp_elem_flags = BasisFlags::none;
@@ -144,7 +144,7 @@ print_info(LogStream &out) const
 template<int dim_, int range_ , int rank_>
 NURBSHandler<dim_, range_, rank_>::
 SetFlagsDispatcher::
-SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
+SetFlagsDispatcher(const typename basis_element::Flags nrb_flag,
                    self_t &nrb_handler)
   :
   nrb_flag_(nrb_flag),
@@ -240,9 +240,9 @@ operator()(const Topology<sdim> &topology)
   auto &cache =
     nrb_handler_.get_element_cache(nrb_elem_).template get_sub_elem_cache<sdim>(s_id_);
 
-  using space_element::_Value;
-  using space_element::_Gradient;
-  using space_element::_Hessian;
+  using basis_element::_Value;
+  using basis_element::_Gradient;
+  using basis_element::_Hessian;
   using _D0 = grid_function_element::template _D<0>;
   using _D1 = grid_function_element::template _D<1>;
   using _D2 = grid_function_element::template _D<2>;
@@ -284,7 +284,7 @@ operator()(const Topology<sdim> &topology)
     evaluate_nurbs_hessians_from_bspline(bsp_elem,bsp_local_to_patch,P,dP,d2P,w_coefs,Q,dQ,d2Q, hessians);
   }
 
-  using space_element::_Divergence;
+  using basis_element::_Divergence;
   if (cache.template status_fill<_Divergence>())
   {
     const auto &gradient = cache.template get_data<_Gradient>();

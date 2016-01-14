@@ -39,7 +39,7 @@ elements.add('BasisElement<0,0,0,1>')
 element_funcs = set()
 
 
-VTypes = ['space_element::_Value','space_element::_Gradient','space_element::_Hessian','space_element::_Divergence']
+VTypes = ['basis_element::_Value','basis_element::_Gradient','basis_element::_Hessian','basis_element::_Divergence']
 
 
 

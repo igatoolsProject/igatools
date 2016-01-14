@@ -90,7 +90,7 @@ public:
   ///@}
 
 
-  using Flags = space_element::Flags;
+  using Flags = basis_element::Flags;
 
 
 private:
@@ -496,10 +496,10 @@ private:
   std::shared_ptr<Sp> basis_;
 
 public:
-  using _Value =  space_element::_Value;
-  using _Gradient = space_element::_Gradient;
-  using _Hessian = space_element::_Hessian;
-  using _Divergence = space_element::_Divergence;
+  using _Value =  basis_element::_Value;
+  using _Gradient = basis_element::_Gradient;
+  using _Hessian = basis_element::_Hessian;
+  using _Divergence = basis_element::_Divergence;
 
 protected:
 
