@@ -63,13 +63,15 @@ private:
   typedef std::shared_ptr<Self_> SelfPtr_;
 
   /**
-   * Grid generator type for @p dim and @p codim.
+   * VTK IGA grid type for @p dim and @p codim.
    */
   template <class Dmn>
   using GridGenPtr_ = std::shared_ptr<VtkIgaGrid<Dmn>>;
 
+  /// Container for the number of VTK cells by Bezier element in each direction.
   typedef SafeSTLArray<int, 3> NumCells_;
 
+  /// TODO: to document.
   template <class T>
   struct IsInValidDim :
     boost::mpl::or_<
@@ -77,6 +79,7 @@ private:
   boost::mpl::bool_<(T::dim > 3)>>
                                 {};
 
+  /// TODO: to document.
   template <class T>
   struct IsInValidSpaceDim :
     boost::mpl::or_<
@@ -84,6 +87,7 @@ private:
   boost::mpl::bool_<(T::space_dim > 3)>>
                                       {};
 
+  /// TODO: to document.
   template <class T>
   struct IsInValidDomain :
     boost::mpl::or_<
@@ -91,6 +95,7 @@ private:
     IsInValidSpaceDim<T>>
   {};
 
+  /// TODO: to document.
   template <class T>
   struct IsInValidFunction :
     boost::mpl::or_<
@@ -98,6 +103,7 @@ private:
     IsInValidSpaceDim<T>>
   {};
 
+  /// TODO: to document.
   template< class T >
   struct as_fusion_vector_shared_ptr
   {
@@ -174,16 +180,25 @@ private:
                           boost::mpl::lambda< boost::mpl::not_<IsInValidDomain< boost::mpl::_1 >> >::type
                           >::type;
 
+  /// TODO: to document.
   using GridPtrs_ = as_fusion_vector_shared_ptr<ValidGrids_>::type;
+  /// TODO: to document.
   using GridFuncPtrs_ = as_fusion_vector_shared_ptr<ValidGridFuncs_>::type;
+  /// TODO: to document.
   using DomainPtrs_ = as_fusion_vector_shared_ptr<ValidDomains_>::type;
+  /// TODO: to document.
   using FunctionPtrs_ = as_fusion_vector_shared_ptr<ValidFunctions_>::type;
 
+  /// TODO: to document.
   using InvalidGridPtrs_ = as_fusion_vector_shared_ptr<InvalidGrids_>::type;
+  /// TODO: to document.
   using InvalidGridFuncPtrs_ = as_fusion_vector_shared_ptr<InvalidGridFuncs_>::type;
+  /// TODO: to document.
   using InvalidDomainPtrs_ = as_fusion_vector_shared_ptr<InvalidDomains_>::type;
+  /// TODO: to document.
   using InvalidFunctionPtrs_ = as_fusion_vector_shared_ptr<InvalidFunctions_>::type;
 
+  /// TODO: to document.
   template< class T >
   struct as_fusion_vector_const_shared_ptr
   {
@@ -198,6 +213,7 @@ private:
 
 
 
+  /// TODO: to document.
   template <class T, class Domain>
   struct IsInValidFunctionForDomain_ :
     boost::mpl::or_<
@@ -205,6 +221,7 @@ private:
   boost::mpl::bool_<(T::space_dim != Domain::space_dim)>>
                                                        {};
 
+  /// TODO: to document.
   template <class T, class Domain>
   struct IsInValidGridFunctionForDomain_ :
     boost::mpl::or_<
@@ -239,9 +256,9 @@ private:
 
 
   /**
-   * Basic container for grid generators.
+   * Basic container for VTK IGA grids.
    */
-  using GridGensContainer_ = as_fusion_vector_const_shared_ptr<ValidDomains_>::type;
+  using VtkIgaGridsContainer_ = as_fusion_vector_const_shared_ptr<ValidDomains_>::type;
 
   /// Grid information shared pointer type.
   typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
@@ -256,16 +273,19 @@ private:
   /** @name Constructors*/
   ///@{
   /**
-   * Constructor.
-   * @param[in] num_cells Number of VTK cells in each direction
-   * for each Bezier element.
-   * @param[in] grid_type Type of the VTK grid.
-   */
-  VtkIgaGridContainer();
-
-  /**
-   * Default constructor.
-   * @warning Not allowed to be used.
+   * Constructor constructor.
+   * @param[in] objs_container Container of all the domains to be
+   * represented and it associated functions.
+   * @param[in] phys_solid_info VTK grid information for the solid meshes
+   * of physical domains.
+   * @param[in] phys_knot_info VTK grid information for the knot meshes
+   * of physical domains.
+   * @param[in] phys_control_info VTK grid information for the control
+   * polygon meshes of physical domains.
+   * @param[in] parm_solid_info VTK grid information for the solid meshes
+   * of parametric domains.
+   * @param[in] parm_knot_info VTK grid information for the knot meshes
+   * of parametric domains.
    */
   VtkIgaGridContainer(const ObjContPtr_ objs_container,
                       const GridInfoPtr_ phys_solid_info,
@@ -273,6 +293,11 @@ private:
                       const ControlGridInfoPtr_ phys_control_info,
                       const GridInfoPtr_ parm_solid_info,
                       const GridInfoPtr_ parm_knot_info);
+
+  /**
+   * Void constructor.
+   */
+  VtkIgaGridContainer();
 
   /**
    * Copy constructor.
@@ -308,7 +333,29 @@ public:
   /** @name Creators*/
   ///@{
   /**
-   * TODO: to document.
+   * @brief This methods creates a new instance of the class and returns
+   * it wrapped into a shared pointer.
+   *
+   * It parses an objects container from the given file (by calling
+   * @ref parse_objects_container) and takes the VTK grid options passed
+   * from @ref IgatoolsParaViewReader for creating the
+   * @ref VtkIgaGridInformation and @ref VtkIgaControlGridInformation for
+   * all the grid types.
+   *
+   * @param[in] file_name Input file containing the objects container.
+   * @param[in] n_cells_phs_sol Number of VTK cells in each parametric
+   * direction for each Bezier element of the physical domain solid meshes.
+   * @param[in] n_cells_phs_knt Number of VTK cells in each parametric
+   * direction for each Bezier element of the physical domain knot meshes.
+   * @param[in] n_cells_phs_ctr Number of VTK cells in each parametric
+   * direction for each Bezier element of the physical domain control
+   * polygon meshes.
+   * @param[in] n_cells_prm_sol Number of VTK cells in each parametric
+   * direction for each Bezier element of the parametric domain solid meshes.
+   * @param[in] n_cells_phs_knt Number of VTK cells in each parametric
+   * direction for each Bezier element of the parametric domain knot meshes.
+   *
+   * @return New instance of the class wrapped into a shared pointer.
    */
   static SelfPtr_ create(const std::string &file_name,
                          const NumCells_   &n_cells_phs_sol,
@@ -322,81 +369,18 @@ public:
                          const VtkGridType &grid_type_prm_knt);
 
   /**
-   * TODO: to document.
+   * @brief This methods creates a new empty instance of the class and
+   * returns it wrapped into a shared pointer.
+   *
+   * All the options are set to default, and the objects container is
+   * empty, so, it will not be able to create any geometry.
+   * @return New instance of the class wrapped into a shared pointer.
    */
   static SelfPtr_ create_void();
 
   ///@}
 
-  /**
-   * TODO: to document.
-   */
-  void update(const NumCells_   &n_cells_phs_sol,
-              const VtkGridType &grid_type_phs_sol,
-              const NumCells_   &n_cells_phs_knt,
-              const VtkGridType &grid_type_phs_knt,
-              const VtkGridType &grid_type_phs_ctr,
-              const NumCells_   &n_cells_prm_sol,
-              const VtkGridType &grid_type_prm_sol,
-              const NumCells_   &n_cells_prm_knt,
-              const VtkGridType &grid_type_prm_knt);
-
-  /**
-   * TODO: to document.
-   */
-  void create_multiblock_grid(const bool phys_mesh,
-                              const bool sol_phys_mesh,
-                              const bool knt_phys_mesh,
-                              const bool ctr_phys_mesh,
-                              const bool prm_mesh,
-                              const bool sol_prm_mesh,
-                              const bool knt_prm_mesh,
-                              vtkMultiBlockDataSet *const mb) const;
-
-
-  /**
-   * TODO to document.
-   */
-  static void check_file (const std::string &file_name);
-
 private:
-
-  /**
-   * TODO to document.
-   */
-  static bool is_file_binary(const std::string &file_name);
-
-  /**
-   * TODO to document.
-   */
-  static ObjContPtr_ parse_objects_container(const std::string &file_name);
-
-  /**
-   * TODO to document.
-   */
-  static SafeSTLVector<std::string>
-  get_invalid_dimension_objects(const ObjContPtr_ obj_container);
-
-  /**
-   * TODO to document.
-   */
-  void fill_objects_container(const ObjContPtr_ objs_container);
-
-  /**
-   * TODO to document.
-   */
-  void set_names();
-
-  /**
-   * TODO to document.
-   */
-  void build_generators();
-
-  /**
-   * TODO to document.
-   */
-  template <class Domain>
-  void insert_generator(const std::shared_ptr<const Domain> domain);
 
   /// Objects container.
   ObjContPtr_ objs_container_;
@@ -416,68 +400,133 @@ private:
   /// Grids information for the parametric knot mesh.
   const GridInfoPtr_ parm_knot_info_;
 
-  /// Collection of physical grid generators.
-  GridGensContainer_ phys_generators_;
+  /// Collection of physical VTK IGA grids.
+  VtkIgaGridsContainer_ phys_grids_;
 
-  /// Collection of parametric grid generators.
-  GridGensContainer_ parm_generators_;
+  /// Collection of parametric VTK IGA grid.
+  VtkIgaGridsContainer_ parm_grids_;
 
-  /**
-   * Container for numbering the generators included in the container.
-   * Each entry of the vector is a tuple, whose components are:
-   *   - 1st: global id of domain (global in the igatools framework).
-   *   - 2nd: name associated to the domain function.
-   *   - 3rd: flag for indicating if it is active or not.
-   *   - 4rd: flag for indicating if it is an ig grid function or not.
-   */
-  SafeSTLVector<std::tuple<Index, std::string, bool, bool>> generators_numbering_;
 
 public:
+  /**
+   * @brief Updates the VTK grid information for all grid types.
+   *
+   * Once all the @ref VtkGridInformation and @ref VtkControlGridInformation
+   * have been updated, all the @ref VtkIgaGrid (all the ones
+   * contained in @ref phys_grids_ and @ref parm_grids_) are
+   * also updated.
+   *
+   * @param[in] n_cells_phs_sol Number of VTK cells in each parametric
+   * direction for each Bezier element of the physical domain solid meshes.
+   * @param[in] n_cells_phs_knt Number of VTK cells in each parametric
+   * direction for each Bezier element of the physical domain knot meshes.
+   * @param[in] n_cells_phs_ctr Number of VTK cells in each parametric
+   * direction for each Bezier element of the physical domain control
+   * polygon meshes.
+   * @param[in] n_cells_prm_sol Number of VTK cells in each parametric
+   * direction for each Bezier element of the parametric domain solid meshes.
+   * @param[in] n_cells_phs_knt Number of VTK cells in each parametric
+   * direction for each Bezier element of the parametric domain knot meshes.
+   */
+  void update(const NumCells_   &n_cells_phs_sol,
+              const VtkGridType &grid_type_phs_sol,
+              const NumCells_   &n_cells_phs_knt,
+              const VtkGridType &grid_type_phs_knt,
+              const VtkGridType &grid_type_phs_ctr,
+              const NumCells_   &n_cells_prm_sol,
+              const VtkGridType &grid_type_prm_sol,
+              const NumCells_   &n_cells_prm_knt,
+              const VtkGridType &grid_type_prm_knt);
 
   /**
-   * Returns the number of physical grids.
+   * @brief Computes the required VTK grid and fills them into the
+   * multiblock data set.
+   *
+   * Given indicating which grid types are active, this method creates
+   * the required VTK grids and inserts them into the multiblock structure.
+   *
+   * @param[in] phys_mesh Flag indicating if the physical mesh is active.
+   * @param[in] sol_phys_mesh Flag indicating if the solid physical mesh is active.
+   * @param[in] knot_phys_mesh Flag indicating if the knot physical mesh is active.
+   * @param[in] ctr_phys_mesh Flag indicating if the control polygon physical mesh is active.
+   * @param[in] prm_mesh Flag indicating if the parametric mesh is active.
+   * @param[in] sol_prm_mesh Flag indicating if the solid parametric mesh is active.
+   * @param[in] knot_prm_mesh Flag indicating if the knot parametric mesh is active.
+   * @param[out] mb VTK multiblock data set to be filled with the corresponding grids.
    */
-  Size get_number_physical_grids() const;
+  void create_multiblock_grid(const bool phys_mesh,
+                              const bool sol_phys_mesh,
+                              const bool knt_phys_mesh,
+                              const bool ctr_phys_mesh,
+                              const bool prm_mesh,
+                              const bool sol_prm_mesh,
+                              const bool knt_prm_mesh,
+                              vtkMultiBlockDataSet *const mb) const;
+
 
   /**
-   * Returns the number of parametric grids.
+   * @brief Checks if a given file can be read.
+   *
+   * It check that the file exists, is not corrupted, has the right
+   * permissions, etc.
+   *
+   * If the file is binary, check that igatools serialization capabilities
+   * are activated, elsewhere, if it is an ascii file, checks that
+   * the XML igatools capabilities are activated.
+   *
+   * If the file can not be read, a @ref ExcVtkError exception is thrown,
+   * that will be captured by @ref IgatoolsParaviewReader and shown
+   * in the ParaView log window.
    */
-  Size get_number_parametric_grids() const;
+  static void check_file (const std::string &file_name);
+
+  /** @name Methods for querying and setting information of the VTK grids.*/
+  ///@{
+
+  /**
+   * Returns the number of physical domains.
+   */
+  Size get_number_physical_domains() const;
+
+  /**
+   * Returns the number of parametric domains.
+   */
+  Size get_number_parametric_domains() const;
 
   /**
    * Returns the name of the @p id physical grid.
    * */
-  const char *get_physical_grid_name(const Index &id) const;
+  const char *get_physical_domain_name(const Index &id) const;
 
   /**
    * Returns the name of the @p id parametric grid.
    */
-  const char *get_parametric_grid_name(const Index &id) const;
+  const char *get_parametric_domain_name(const Index &id) const;
 
   /**
    * Returns the status (active/inactive) of the physical grid named
    * @p name.
    */
-  bool get_physical_grid_status(const std::string &name) const;
+  bool get_physical_domain_status(const std::string &name) const;
 
   /**
    * Returns the status (active/inactive) of the parametric grid named
    * @p name.
    */
-  bool get_parametric_grid_status(const std::string &name) const;
+  bool get_parametric_domain_status(const std::string &name) const;
 
   /**
    * Set the @p status (active/inactive) of the physical grid named
    * @p name.
    */
-  void set_physical_grid_status(const std::string &name,
+  void set_physical_domain_status(const std::string &name,
                                 const bool status);
 
   /**
    * Set the @p status (active/inactive) of the parametric grid named
    * @p name.
    */
-  void set_parametric_grid_status(const std::string &name,
+  void set_parametric_domain_status(const std::string &name,
                                   const bool status);
 
 private:
@@ -485,49 +534,140 @@ private:
   /**
    * TODO: to document.
    */
-  static Size get_number_grids(const GridGensContainer_ generators);
+  static Size get_number_domains(const VtkIgaGridsContainer_ grid_container);
 
   /**
    * TODO: to document.
    */
-  static Size get_number_active_grids(const GridGensContainer_ generators);
+  static Size get_number_active_domains(const VtkIgaGridsContainer_ grid_container);
 
   /**
    * TODO: to document.
    */
-  static const char *get_grid_name(const GridGensContainer_ generators,
+  static const char *get_domain_name(const VtkIgaGridsContainer_ grid_container,
                                    const Index &id);
 
   /**
    * TODO: to document.
    */
-  static bool get_grid_status(const GridGensContainer_ generators,
+  static bool get_domain_status(const VtkIgaGridsContainer_ grid_container,
                               const std::string &name);
 
   /**
    * TODO: to document.
    */
-  static void set_grid_status(const GridGensContainer_ generators,
+  static void set_domain_status(const VtkIgaGridsContainer_ grid_container,
                               const std::string &name,
                               const bool status);
 
   /**
    * TODO: to document.
    */
-  static void set_solid_grids(const GridGensContainer_ generators,
+  static void set_solid_domains(const VtkIgaGridsContainer_ grid_container,
                               vtkMultiBlockDataSet *const mb);
 
   /**
    * TODO: to document.
    */
-  static void set_knot_grids(const GridGensContainer_ generators,
+  static void set_knot_domains(const VtkIgaGridsContainer_ grid_container,
                              vtkMultiBlockDataSet *const mb);
 
   /**
    * TODO: to document.
    */
-  static void set_control_grids(const GridGensContainer_ generators,
+  static void set_control_domains(const VtkIgaGridsContainer_ grid_container,
                                 vtkMultiBlockDataSet *const mb);
+
+  ///@}
+
+
+  /**
+   * @brief Checks if a given file is written in binary format or not.
+   * @param[in] file_name Name of the file to be checked.
+   * @return true if the file is written in binary format, false elsewhere.
+   */
+  static bool is_file_binary(const std::string &file_name);
+
+  /**
+   * TODO to document.
+   */
+  static ObjContPtr_ parse_objects_container(const std::string &file_name);
+
+  /**
+   * @brief Extracts all the objects with invalid dimensions in an objects
+   * container and returns a description of each o them in a string.
+   *
+   * The plugin is unable to visualize objects (grids, grid functions,
+   * domains and functions) that have dimension 0 or greater than 3.
+   *
+   * Given an objects container, this methods identifies all the
+   * that have an invalid dimension and writes a description of each of
+   * them in a string. The description similar to:
+   * <tt>
+   *    "Grid<0>, Name: grid_0, ObjectId: 12"
+   * </tt>
+   *
+   * @param[in] obj_container Objects container.
+   * @return Vector containing the description in a string of all the
+   * invalid dimension objects.
+   */
+  static SafeSTLVector<std::string>
+  get_invalid_dimension_objects(const ObjContPtr_ obj_container);
+
+  /**
+   * @brief Given an @ref ObjectsContainer, creates a new complete.
+   *
+   * By receiving the objects container parsed from the input file,
+   * this method creates a new objects container will all the dependencies
+   * include (see @ref ObjectsContainer for further details) and
+   * stores it in @ref objects_container_.
+   *
+   * E.g. in an objects container where only a @ref Domain has been
+   * inserted, its associated @ref Grid will be also inserted
+   * (this can occur when the objects container has been serialized to
+   * a file that is loaded by the plugin).
+   *
+   * All the objects inserted in the new container @ref objects_container_
+   * are inserted as @p const.
+   *
+   * For those objects with invalid dimensions (extracted by calling
+   * @ref get_invalid_dimension_objects) a warning will be thrown
+   * and shown in the ParaView log window.
+   *
+   * @param[in] obj_container Objects container to be completed.
+   */
+  void fill_objects_container(const ObjContPtr_ objs_container);
+
+  /**
+   * @brief Sets the names of all the objects inside the container.
+   *
+   * The already existing names are preserved.
+   *
+   * For those object missing a name, a new one will be created.
+   * The new name will be related in its relationship with other objects
+   * present in the container.
+   * E.g. if there exits a domain called 'MyDomain', but its grid does not
+   * have a name, the grid will be renamed as 'Grid of the Domain "MyDomain"'.
+   *
+   * When no possible relationship is found, the object will be renamed
+   * based on its unique object id number, e.g. 'Function Id=14'.
+   *
+   *
+   * In the case of repetition, the name is slightly modified for noting
+   * this repetition. E.g. if two domains are called 'MyDomain', one of
+   * them will be called 'MyDomain (2)'.
+   */
+  void set_container_names();
+
+  /**
+   * @brief Builds and stores all the @ref VtkIgaGrid associated to each
+   * IGA domain.
+   *
+   * All the created @ref VtkIgaGrids are stored in two containers:
+   * @ref  phys_grids_ (for physical domains) and @ref parm_grids_
+   * for (parametric domains).
+   */
+  void build_vtk_iga_grids();
 
 };
 

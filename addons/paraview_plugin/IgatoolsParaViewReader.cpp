@@ -556,7 +556,7 @@ GetNumberOfPhysGeomArrays()
 {
   if (iga_grid_gen_ == nullptr)
     return 0;
-  return iga_grid_gen_->get_number_physical_grids();
+  return iga_grid_gen_->get_number_physical_domains();
 }
 
 
@@ -566,7 +566,7 @@ IgatoolsParaViewReader::
 GetPhysGeomArrayName(int index)
 {
   Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
-  const char *name = iga_grid_gen_->get_physical_grid_name(index);
+  const char *name = iga_grid_gen_->get_physical_domain_name(index);
   return name;
 }
 
@@ -577,7 +577,7 @@ IgatoolsParaViewReader::
 GetPhysGeomArrayStatus(const char *name)
 {
   Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
-  return iga_grid_gen_->get_physical_grid_status(string(name));
+  return iga_grid_gen_->get_physical_domain_status(string(name));
 }
 
 
@@ -592,9 +592,9 @@ SetPhysGeomArrayStatus(const char *name, int enable)
   if (iga_grid_gen_ != nullptr)
   {
     const auto name_str = string(name);
-    if (iga_grid_gen_->get_physical_grid_status(name_str) != enable)
+    if (iga_grid_gen_->get_physical_domain_status(name_str) != enable)
     {
-      iga_grid_gen_->set_physical_grid_status(name_str, enable);
+      iga_grid_gen_->set_physical_domain_status(name_str, enable);
       this->Modified();
     }
   }
@@ -608,7 +608,7 @@ GetNumberOfParmGeomArrays()
 {
   if (iga_grid_gen_ == nullptr)
     return 0;
-  return iga_grid_gen_->get_number_parametric_grids();
+  return iga_grid_gen_->get_number_parametric_domains();
 }
 
 
@@ -618,7 +618,7 @@ IgatoolsParaViewReader::
 GetParmGeomArrayName(int index)
 {
   Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
-  const char *name = iga_grid_gen_->get_parametric_grid_name(index);
+  const char *name = iga_grid_gen_->get_parametric_domain_name(index);
   return name;
 }
 
@@ -629,7 +629,7 @@ IgatoolsParaViewReader::
 GetParmGeomArrayStatus(const char *name)
 {
   Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
-  return iga_grid_gen_->get_parametric_grid_status(string(name));
+  return iga_grid_gen_->get_parametric_domain_status(string(name));
 }
 
 
@@ -644,9 +644,9 @@ SetParmGeomArrayStatus(const char *name, int enable)
   if (iga_grid_gen_ != nullptr)
   {
     const auto name_str = string(name);
-    if (iga_grid_gen_->get_parametric_grid_status(name_str) != enable)
+    if (iga_grid_gen_->get_parametric_domain_status(name_str) != enable)
     {
-      iga_grid_gen_->set_parametric_grid_status(name_str, enable);
+      iga_grid_gen_->set_parametric_domain_status(name_str, enable);
       this->Modified();
     }
   }

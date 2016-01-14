@@ -42,7 +42,7 @@ class VtkIgaGridContainer;
 }
 
 /**
- * @brief This is main class called from the ParaView xml plugin.
+ * @brief This is main class called from the igatools-ParaView plugin.
  *
  * Once a igatools file (containing the serialization of a \ref ObjectsContainer
  * class instance) has been selected, it receives some information from the
