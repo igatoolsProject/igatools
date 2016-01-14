@@ -1,16 +1,16 @@
 /**
    
 @defgroup iga_paraview_plugin Igatools ParaView visualization plugin
+@brief In this section we describe the main capabilities
+of Igatools ParaView visualization plugin and we explain the code
+architecture.
+@{
 
-@brief In this section we describe some details about the Igatools ParaView visualization plugin
-used for post-processing purposes.
 
 
 blablabla
 
 @todo to document
-
-- @subpage input_v1
 
 */
 

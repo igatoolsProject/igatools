@@ -39,10 +39,73 @@ class ObjectsContainer;
 namespace paraview_plugin
 {
 
+template <class Domain> class VtkIgaGrid;
+struct VtkGridInformation;
+struct VtkControlGridInformation;
+
+
 /**
- * @brief To be defined.
+ * @brief Creates the VTK grids for all the IGA domains contained
+ * in the input file.
  *
- * @todo To be defined.
+ * The main purpose of this class is to parse an objects container defined
+ * in an input file and create, when required, the VTK grids of the
+ * solid, knot and control polygon meshes for all the physical and
+ * parametric domains in the container.
+ *
+ * All the created will be inserted into a single VTK multiblock data set.
+ * The structure of the multiblock is:
+ *  - Multiblock
+ *      - Physical domains
+ *          - Solid meshes
+ *          - Knot meshes
+ *          - Control polygon meshes
+ *      - Parametric domains
+ *          - Solid meshes
+ *          - Knot meshes
+ *
+ * All the physical domains will be created by means of a group
+ * of @ref VtkGridType stored in @ref phys_grids_. For the parametric
+ * domains, @ref parm_grids_ will create the grids.
+ *
+ * It takes as input the input file, the VTK information about
+ * the number of cells per direction and the @ref VtkGridType
+ * for each type mesh.
+ *
+ * This class also provides methods for communicating with ParaView.
+ * Thus, the different domains (physical or parametric) can be activated
+ * or de-activated (they will be visualized or not).
+ *
+ * It also provide methods for querying how many domains exists and
+ * querying their names.
+ *
+ * Currently, the plugin is able to visualize domains whose parametric
+ * and space dimensions are 1, 2 or 3 (that hereinafter we call them
+ * \a valid \a domains).
+ * 0D entities are not supported yet.
+ * ParaView is not able to visualize 4D (or higher) geometrical objects.
+ *
+ * @note The \a valid domains and functions that can be visualized are
+ * a subset of the instantiated dimensions in igatools.
+ *
+ * Therefore, warnings will be thrown if \a invalid \a domains are found.
+ *
+ * In addition to the representation of the domains, this class also takes
+ * care of the functions defined over those domains to be visualized also
+ * in ParaView as data associated to the grids.
+ *
+ * Once the class has been constructed, the VTK grid information can
+ * be modified. In such case, only those grids that need to be recomputed
+ * will be created again.
+ *
+ * On the other hand, it is not possible to update the objects container
+ * (by means of a new input file). In that case, a new class must be
+ * created.
+ *
+ * The input file can be written in ascii format as a XML human readable
+ * objects container file (see @subpage in_out for further details);
+ * or in binary format as the result of the serialization of an objects
+ * container.
  *
  * @warning Cases have been found in which trying to de-serialize
  * an objects container from a binary file (that has not been written
@@ -53,10 +116,6 @@ namespace paraview_plugin
  *
  * @ingroup paraview_plugin
  */
-template <class Domain> class VtkIgaGrid;
-struct VtkGridInformation;
-struct VtkControlGridInformation;
-
 class VtkIgaGridContainer
 {
 private:

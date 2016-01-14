@@ -429,7 +429,7 @@ create_multiblock_grid(const bool phys_mesh,
   unsigned int block_index = 0;
   if (new_create_physical_mesh)
   {
-    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Physical mesh");
+    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Physical domains");
 
     vtkMultiBlockDataSet *const phys_block =
       vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
@@ -443,7 +443,7 @@ create_multiblock_grid(const bool phys_mesh,
       const auto solid_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
       phys_block->SetBlock(subblock_index, solid_block);
       phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
-                                                   "Solid mesh");
+                                                   "Solid meshes");
       Self_::set_solid_domains(phys_grids_, solid_block);
 
 //      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
@@ -456,7 +456,7 @@ create_multiblock_grid(const bool phys_mesh,
       const auto knot_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
       phys_block->SetBlock(subblock_index, knot_block);
       phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
-                                                   "Knot mesh");
+                                                   "Knot meshes");
       Self_::set_knot_domains(phys_grids_, knot_block);
 
 //      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
@@ -469,7 +469,7 @@ create_multiblock_grid(const bool phys_mesh,
       const auto control_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
       phys_block->SetBlock(subblock_index, control_block);
       phys_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
-                                                   "Control mesh");
+                                                   "Control polygon meshes");
       Self_::set_control_domains(phys_grids_, control_block);
 
 //      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
@@ -481,7 +481,7 @@ create_multiblock_grid(const bool phys_mesh,
 
   if (new_create_parametric_mesh)
   {
-    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Parametric mesh");
+    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Parametric domains");
 
     vtkMultiBlockDataSet *const parm_block =
       vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
@@ -495,7 +495,7 @@ create_multiblock_grid(const bool phys_mesh,
       const auto solid_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
       parm_block->SetBlock(subblock_index, solid_block);
       parm_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
-                                                   "Solid mesh");
+                                                   "Solid meshes");
       Self_::set_solid_domains(parm_grids_, solid_block);
 
 //      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
@@ -508,7 +508,7 @@ create_multiblock_grid(const bool phys_mesh,
       const auto knot_block = vtkSmartPointer <vtkMultiBlockDataSet>::New();
       parm_block->SetBlock(subblock_index, knot_block);
       parm_block->GetMetaData(subblock_index)->Set(vtkCompositeDataSet::NAME(),
-                                                   "Knot mesh");
+                                                   "Knot meshes");
       Self_::set_knot_domains(parm_grids_, knot_block);
 
 //      this->UpdateProgress(double (++progress_index) / double (total_number_blocks));
