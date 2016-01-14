@@ -213,7 +213,7 @@ print_info(LogStream &out) const
   });
 
   // Reference space basis
-  RefSpacePtrs valid_rsp_ptr_types;
+  RefBasisPtrs valid_rsp_ptr_types;
   for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
   {
     using SSType = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
@@ -266,7 +266,7 @@ print_info(LogStream &out) const
   });
 
   // Physical space basis
-  PhysSpacePtrs valid_ps_ptr_types;
+  PhysBasisPtrs valid_ps_ptr_types;
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
@@ -381,7 +381,7 @@ fill_not_inserted_dependencies()
 
 
   // Filling all physical space bases.
-  PhysSpacePtrs valid_ps_ptr_types;
+  PhysBasisPtrs valid_ps_ptr_types;
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -506,7 +506,7 @@ fill_not_inserted_dependencies()
 
 
   // Filling all reference space bases.
-  RefSpacePtrs valid_rs_ptr_types;
+  RefBasisPtrs valid_rs_ptr_types;
   for_each(valid_rs_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -730,7 +730,7 @@ serialize(Archive &ar)
   });
 
   // Serializing reference space basis
-  RefSpacePtrs valid_rsp_ptr_types;
+  RefBasisPtrs valid_rsp_ptr_types;
   for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
@@ -815,7 +815,7 @@ serialize(Archive &ar)
   });
 
   // Physical space basis
-  PhysSpacePtrs valid_ps_ptr_types;
+  PhysBasisPtrs valid_ps_ptr_types;
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;

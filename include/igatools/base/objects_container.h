@@ -120,7 +120,7 @@ private:
   using SpSpaces = typename InstantiatedTypes::SplineSpaces;
 
   /** Alias for all instantiated reference space bases. */
-  using RefSpaces = typename InstantiatedTypes::RefSpaceBases;
+  using RefBases = typename InstantiatedTypes::RefBases;
 
   /** Alias for all instantiated grids functions. */
   using GridFunc = typename InstantiatedTypes::GridFunctions;
@@ -129,7 +129,7 @@ private:
   using Domains = typename InstantiatedTypes::Domains;
 
   /** Alias for all instantiated physical space bases. */
-  using PhysSpaces = typename InstantiatedTypes::PhysSpaces;
+  using PhysBases = typename InstantiatedTypes::PhysBases;
 
   /** Alias for all instantiated  functions.*/
   using Functions = typename InstantiatedTypes::Functions;
@@ -151,7 +151,7 @@ public:
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated reference space bases.
    */
-  using RefSpacePtrs = as_fusion_vector_shared_ptr_t<RefSpaces>;
+  using RefBasisPtrs = as_fusion_vector_shared_ptr_t<RefBases>;
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
@@ -169,7 +169,7 @@ public:
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
    * instantiated physical spaces.
    */
-  using PhysSpacePtrs = as_fusion_vector_shared_ptr_t<PhysSpaces>;
+  using PhysBasisPtrs = as_fusion_vector_shared_ptr_t<PhysBases>;
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
@@ -194,10 +194,10 @@ private:
    */
   typedef boost_mpl_copy_t<Grids,
           boost_mpl_copy_t<SpSpaces,
-          boost_mpl_copy_t<RefSpaces,
+          boost_mpl_copy_t<RefBases,
           boost_mpl_copy_t<GridFunc,
           boost_mpl_copy_t<Domains,
-          boost_mpl_copy_t<PhysSpaces,Functions>
+          boost_mpl_copy_t<PhysBases,Functions>
           > > > > > JointTypes_;
 
   /** @ref JointTypes_ converted to constant types. */

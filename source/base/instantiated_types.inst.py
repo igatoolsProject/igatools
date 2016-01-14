@@ -127,7 +127,7 @@ types.sort()
 f.write(" %s,\n" % (types[0]));
 for i in range(1, len(types) - 1):
   f.write("                              %s,\n" % (types[i]));
-f.write("                              %s >  RefSpaceBases;\n" % (types[-1]));
+f.write("                              %s >  RefBases;\n" % (types[-1]));
 
 
 
@@ -203,7 +203,7 @@ types.sort()
 f.write(" %s,\n" % (types[0]));
 for i in range(1, len(types) - 1):
   f.write("                              %s,\n" % (types[i]));
-f.write("                              %s >  PhysSpaces;\n" % (types[-1]));
+f.write("                              %s >  PhysBases;\n" % (types[-1]));
 
 
 

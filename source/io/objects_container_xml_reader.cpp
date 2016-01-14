@@ -226,7 +226,7 @@ parse_bsplines(const shared_ptr<XMLElement> xml_elem,
     const int bs_range = bs->get_attribute<int>("Range");
     const int bs_rank = bs->get_attribute<int>("Rank");
 
-    using BSplinePtrs = typename ObjectsContainer::RefSpacePtrs;
+    using BSplinePtrs = typename ObjectsContainer::RefBasisPtrs;
     BSplinePtrs valid_bs_ptr_types;
 
     bool found = false;
@@ -273,7 +273,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
     const int nr_range = nr->get_attribute<int>("Range");
     const int nr_rank = nr->get_attribute<int>("Rank");
 
-    using NURBSPtrs = typename ObjectsContainer::RefSpacePtrs;
+    using NURBSPtrs = typename ObjectsContainer::RefBasisPtrs;
     NURBSPtrs valid_nr_ptr_types;
 
     bool found = false;
@@ -585,8 +585,8 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
     const int ps_range = ps->get_attribute<int>("Range");
     const int ps_rank = ps->get_attribute<int>("Rank");
 
-    using PhysSpacePtrs = typename ObjectsContainer::PhysSpacePtrs;
-    PhysSpacePtrs valid_ps_ptr_types;
+    using PhysBasisPtrs = typename ObjectsContainer::PhysBasisPtrs;
+    PhysBasisPtrs valid_ps_ptr_types;
 
     bool found = false;
     boost::fusion::for_each(valid_ps_ptr_types, [&](const auto &ps_ptr_type)
@@ -594,12 +594,12 @@ parse_phys_spaces(const shared_ptr<XMLElement> xml_elem,
       if (found)
         return;
 
-      using PhysSpaceType = typename
+      using PhysBasisType = typename
                             remove_reference<decltype(ps_ptr_type)>::type::element_type;
-      static const int dim = PhysSpaceType::dim;
-      static const int range = PhysSpaceType::range;
-      static const int rank = PhysSpaceType::rank;
-      static const int codim = PhysSpaceType::codim;
+      static const int dim = PhysBasisType::dim;
+      static const int range = PhysBasisType::range;
+      static const int rank = PhysBasisType::rank;
+      static const int codim = PhysBasisType::codim;
 
       if (ps_dim == dim && ps_range == range && ps_rank == rank && ps_codim == codim)
       {
@@ -1082,7 +1082,7 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
 
   using BSplineType = BSpline<dim, range, rank>;
-  using RefSpaceType = ReferenceBasis<dim, range, rank>;
+  using RefBasisType = ReferenceBasis<dim, range, rank>;
   using SplineSpaceType = SplineSpace<dim, range, rank>;
   using EndBehaviourTable = typename SplineSpaceType::EndBehaviourTable;
   static const int n_components = SplineSpaceType::n_components;
@@ -1213,7 +1213,7 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
     const auto unique_id = bspline->get_object_id();
     id_map[local_object_id] = unique_id;
 
-    container->insert_const_object<RefSpaceType>(bspline);
+    container->insert_const_object<RefBasisType>(bspline);
   }
   else
   {
@@ -1221,7 +1221,7 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
     const auto unique_id = bspline->get_object_id();
     id_map[local_object_id] = unique_id;
 
-    container->insert_object<RefSpaceType>(bspline);
+    container->insert_object<RefBasisType>(bspline);
   }
 }
 
@@ -1483,7 +1483,7 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
   static const int rank = 1;
   using IgGridFunctionType = IgGridFunction<dim, range>;
   using GridFunctionType = GridFunction<dim, range>;
-  using RefSpaceType     = ReferenceBasis<dim, range, rank>;
+  using RefBasisType     = ReferenceBasis<dim, range, rank>;
 
   const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
 
@@ -1508,8 +1508,8 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
   const bool ref_space_parsed =
     id_map.find(local_rs_id) != id_map.cend() &&
     (parse_as_constant ?
-     container->is_const_object_present<RefSpaceType> (id_map.at(local_rs_id)) :
-     container->is_object_present<RefSpaceType> (id_map.at(local_rs_id)));
+     container->is_const_object_present<RefBasisType> (id_map.at(local_rs_id)) :
+     container->is_object_present<RefBasisType> (id_map.at(local_rs_id)));
 
   if (!ref_space_parsed)
   {
@@ -1530,13 +1530,13 @@ parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
 
   }
 
-  SharedPtrConstnessHandler<RefSpaceType> rs;
+  SharedPtrConstnessHandler<RefBasisType> rs;
   if (parse_as_constant)
-    rs = SharedPtrConstnessHandler<RefSpaceType>
-         (container->get_const_object<RefSpaceType>(id_map.at(local_rs_id)));
+    rs = SharedPtrConstnessHandler<RefBasisType>
+         (container->get_const_object<RefBasisType>(id_map.at(local_rs_id)));
   else
-    rs = SharedPtrConstnessHandler<RefSpaceType>
-         (container->get_object<RefSpaceType>(id_map.at(local_rs_id)));
+    rs = SharedPtrConstnessHandler<RefBasisType>
+         (container->get_object<RefBasisType>(id_map.at(local_rs_id)));
 
   const auto name = parse_name(xml_elem);
 
@@ -1606,7 +1606,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
   using NURBSType   = NURBS<dim, range, rank>;
   using WeightIgFunctionType = IgGridFunction<dim, 1>;
   using WeightFunctionType = GridFunction<dim, 1>;
-  using RefSpaceType = ReferenceBasis<dim, range, rank>;
+  using RefBasisType = ReferenceBasis<dim, range, rank>;
 
   const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
   Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
@@ -1620,20 +1620,20 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
   // Checking the bspline with the proper dimensions and id exists.
   AssertThrow(id_map.find(local_bs_id) != id_map.cend() &&
               (parse_as_constant ?
-               container->is_const_object_present<RefSpaceType> (id_map.at(local_bs_id)) :
-               container->is_object_present<RefSpaceType> (id_map.at(local_bs_id))),
+               container->is_const_object_present<RefBasisType> (id_map.at(local_bs_id)) :
+               container->is_object_present<RefBasisType> (id_map.at(local_bs_id))),
               ExcMessage("Parsing " + parsing_msg + " not matching "
                          "definition for " +
                          Self_::get_type_id_string("BSpline", local_bs_id,
   {{dim, range, rank}}) + "."));
 
-  SharedPtrConstnessHandler<RefSpaceType> rs;
+  SharedPtrConstnessHandler<RefBasisType> rs;
   if (parse_as_constant)
-    rs = SharedPtrConstnessHandler<RefSpaceType>
-         (container->get_const_object<RefSpaceType>(id_map.at(local_bs_id)));
+    rs = SharedPtrConstnessHandler<RefBasisType>
+         (container->get_const_object<RefBasisType>(id_map.at(local_bs_id)));
   else
-    rs = SharedPtrConstnessHandler<RefSpaceType>
-         (container->get_object<RefSpaceType>(id_map.at(local_bs_id)));
+    rs = SharedPtrConstnessHandler<RefBasisType>
+         (container->get_object<RefBasisType>(id_map.at(local_bs_id)));
 
   // Checking that the reference space is a BSpline.
   AssertThrow(rs->is_bspline(),
@@ -1641,7 +1641,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
                          "definition for " +
                          Self_::get_type_id_string("BSplineBasis", local_bs_id,
   {{dim, range, rank}}) + ". It is a "
-  "ReferenceBasisSpace, but not a BSpline."
+  "ReferenceBasis, but not a BSpline."
   "BSpline space basis must be used for "
   "defining IgGridFunctions used as weight "
   "functions for NURBS space basis."));
@@ -1719,7 +1719,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
     const auto unique_id = nurbs->get_object_id();
     id_map[local_object_id] = unique_id;
 
-    container->insert_const_object<RefSpaceType>(nurbs);
+    container->insert_const_object<RefBasisType>(nurbs);
   }
   else
   {
@@ -1729,7 +1729,7 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
     const auto unique_id = nurbs->get_object_id();
     id_map[local_object_id] = unique_id;
 
-    container->insert_object<RefSpaceType>(nurbs);
+    container->insert_object<RefBasisType>(nurbs);
   }
 }
 
@@ -1821,7 +1821,7 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
   Assert(xml_elem->get_attribute<int>("Codim") == codim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
 
-  using PhysSpaceType = PhysicalBasis<dim, range, rank, codim>;
+  using PhysBasisType = PhysicalBasis<dim, range, rank, codim>;
   using IgFunctionType = IgFunction<dim, codim, range, rank>;
   using FunctionType = Function<dim, codim, range, rank>;
 
@@ -1837,20 +1837,20 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
   // Checking if the physical space exists.
   AssertThrow(id_map.find(local_ps_id) != id_map.cend() &&
               (parse_as_constant ?
-               container->is_const_object_present<PhysSpaceType> (id_map.at(local_ps_id)) :
-               container->is_object_present<PhysSpaceType> (id_map.at(local_ps_id))),
+               container->is_const_object_present<PhysBasisType> (id_map.at(local_ps_id)) :
+               container->is_object_present<PhysBasisType> (id_map.at(local_ps_id))),
               ExcMessage("Parsing " + parsing_msg + " not matching "
                          "definition for " +
                          Self_::get_type_id_string("PhysicalBasis", local_ps_id,
   {{dim, range, rank, codim}}) + "."));
 
-  SharedPtrConstnessHandler<PhysSpaceType> ps;
+  SharedPtrConstnessHandler<PhysBasisType> ps;
   if (parse_as_constant)
-    ps = SharedPtrConstnessHandler<PhysSpaceType>
-         (container->get_const_object<PhysSpaceType>(id_map.at(local_ps_id)));
+    ps = SharedPtrConstnessHandler<PhysBasisType>
+         (container->get_const_object<PhysBasisType>(id_map.at(local_ps_id)));
   else
-    ps = SharedPtrConstnessHandler<PhysSpaceType>
-         (container->get_object<PhysSpaceType>(id_map.at(local_ps_id)));
+    ps = SharedPtrConstnessHandler<PhysBasisType>
+         (container->get_object<PhysBasisType>(id_map.at(local_ps_id)));
 
   const auto name = parse_name(xml_elem);
 
@@ -2107,8 +2107,8 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
   Assert(xml_elem->get_attribute<int>("Codim") == codim,
          ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
 
-  using PhysSpaceType = PhysicalBasis<dim, range, rank, codim>;
-  using RefSpaceType = ReferenceBasis<dim, range, rank>;
+  using PhysBasisType = PhysicalBasis<dim, range, rank, codim>;
+  using RefBasisType = ReferenceBasis<dim, range, rank>;
   using DomainType = Domain<dim, codim>;
 
   Transformation transf = Transformation::h_grad;
@@ -2138,20 +2138,20 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
 
   AssertThrow(id_map.find(local_rs_id) != id_map.cend() &&
               (parse_as_constant ?
-               container->is_const_object_present<RefSpaceType> (id_map.at(local_rs_id)) :
-               container->is_object_present<RefSpaceType> (id_map.at(local_rs_id))),
+               container->is_const_object_present<RefBasisType> (id_map.at(local_rs_id)) :
+               container->is_object_present<RefBasisType> (id_map.at(local_rs_id))),
               ExcMessage("Parsing " + parsing_msg + " not matching "
                          "definition for " +
                          Self_::get_type_id_string("ReferenceBasis", local_rs_id,
   {{dim, range, rank}}) + "."));
 
-  SharedPtrConstnessHandler<RefSpaceType> rs;
+  SharedPtrConstnessHandler<RefBasisType> rs;
   if (parse_as_constant)
-    rs = SharedPtrConstnessHandler<RefSpaceType>
-         (container->get_const_object<RefSpaceType>(id_map.at(local_rs_id)));
+    rs = SharedPtrConstnessHandler<RefBasisType>
+         (container->get_const_object<RefBasisType>(id_map.at(local_rs_id)));
   else
-    rs = SharedPtrConstnessHandler<RefSpaceType>
-         (container->get_object<RefSpaceType>(id_map.at(local_rs_id)));
+    rs = SharedPtrConstnessHandler<RefBasisType>
+         (container->get_object<RefBasisType>(id_map.at(local_rs_id)));
 
   const auto dm_tag = xml_elem->get_single_element("Domain");
   const auto local_dm_id = dm_tag->get_attribute<Index>("GetFromLocalObjectId");
@@ -2180,19 +2180,19 @@ parse_phys_space(const shared_ptr<XMLElement> xml_elem,
 
   if (parse_as_constant)
   {
-    const auto ps = PhysSpaceType::const_create(rs.get_ptr_const_data(), dm.get_ptr_const_data(), transf);
+    const auto ps = PhysBasisType::const_create(rs.get_ptr_const_data(), dm.get_ptr_const_data(), transf);
     const auto unique_id = ps->get_object_id();
     id_map[local_object_id] = unique_id;
 
-    container->insert_const_object<PhysSpaceType>(ps);
+    container->insert_const_object<PhysBasisType>(ps);
   }
   else
   {
-    const auto ps = PhysSpaceType::create(rs.get_ptr_data(), dm.get_ptr_data(), transf);
+    const auto ps = PhysBasisType::create(rs.get_ptr_data(), dm.get_ptr_data(), transf);
     const auto unique_id = ps->get_object_id();
     id_map[local_object_id] = unique_id;
 
-    container->insert_object<PhysSpaceType>(ps);
+    container->insert_object<PhysBasisType>(ps);
   }
 }
 

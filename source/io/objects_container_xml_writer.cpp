@@ -132,9 +132,9 @@ ObjectsContainerXMLWriter::
 write_reference_space_bases(const ContPtr_ container,
                             const XMLDocPtr_ xml_doc)
 {
-  using RefSpacePtrs = typename ObjectsContainer::RefSpacePtrs;
+  using RefBasisPtrs = typename ObjectsContainer::RefBasisPtrs;
 
-  RefSpacePtrs valid_ref_space_ptr_types;
+  RefBasisPtrs valid_ref_space_ptr_types;
   for_each(valid_ref_space_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -289,9 +289,9 @@ ObjectsContainerXMLWriter::
 write_physical_space_bases(const ContPtr_ container,
                            const XMLDocPtr_ xml_doc)
 {
-  using PhysSpacePtrs = typename ObjectsContainer::PhysSpacePtrs;
+  using PhysBasisPtrs = typename ObjectsContainer::PhysBasisPtrs;
 
-  PhysSpacePtrs valid_ps_ptr_types;
+  PhysBasisPtrs valid_ps_ptr_types;
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
