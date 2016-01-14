@@ -811,25 +811,25 @@ const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 1
       
    
 
-ReferenceSpaceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+const ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
 
-ReferenceSpaceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+const ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
 
-ReferenceSpaceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+const ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
 
-ReferenceSpaceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+const ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
 
-ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
+const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
    Object Id: 2
       Spline Space:
          Knots without repetition:
@@ -1085,7 +1085,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
       
       Weight function :
          IgGridFunction<1,1>
-            ReferenceSpaceBasis<1,1,1>:
+            ReferenceBasis<1,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 ]
@@ -1352,9 +1352,9 @@ const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
       
    
 
-ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
+const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
    Object Id: 13
       Spline Space:
          Knots without repetition:
@@ -1562,7 +1562,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
       
       Weight function :
          IgGridFunction<1,1>
-            ReferenceSpaceBasis<1,1,1>:
+            ReferenceBasis<1,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 ]
@@ -1661,9 +1661,9 @@ const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
       
    
 
-ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
+const ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
    Object Id: 24
       Spline Space:
          Knots without repetition:
@@ -1907,7 +1907,7 @@ const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
       
       Weight function :
          IgGridFunction<1,1>
-            ReferenceSpaceBasis<1,1,1>:
+            ReferenceBasis<1,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 ]
@@ -2006,9 +2006,9 @@ const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
       
    
 
-ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 2
+const ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 2
    Object Id: 37
       Spline Space:
          Knots without repetition:
@@ -2242,9 +2242,9 @@ const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 2
       
    
 
-ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
+const ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
    Object Id: 35
       Spline Space:
          Knots without repetition:
@@ -2528,7 +2528,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
       
       Weight function :
          IgGridFunction<2,1>
-            ReferenceSpaceBasis<2,1,1>:
+            ReferenceBasis<2,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 3 ]
@@ -2687,9 +2687,9 @@ const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
       
    
 
-ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
+const ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
    Object Id: 46
       Spline Space:
          Knots without repetition:
@@ -3021,7 +3021,7 @@ const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
       
       Weight function :
          IgGridFunction<2,1>
-            ReferenceSpaceBasis<2,1,1>:
+            ReferenceBasis<2,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 3 ]
@@ -3180,9 +3180,9 @@ const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
       
    
 
-ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
+const ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
    Object Id: 59
       Spline Space:
          Knots without repetition:
@@ -3343,9 +3343,9 @@ const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
       
    
 
-ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
+ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
 
-const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
+const ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
    Object Id: 57
       Spline Space:
          Knots without repetition:
@@ -3783,7 +3783,7 @@ const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
       
       Weight function :
          IgGridFunction<3,1>
-            ReferenceSpaceBasis<3,1,1>:
+            ReferenceBasis<3,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 3 2 ]
@@ -4076,7 +4076,7 @@ GridFunction Dim : 1 Spacedim : 1. Number of objects: 0
 const GridFunction Dim : 1 Spacedim : 1. Number of objects: 4
    Object Id: 5
       IgGridFunction<1,1>
-         ReferenceSpaceBasis<1,1,1>:
+         ReferenceBasis<1,1,1>:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
@@ -4182,7 +4182,7 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 4
    
    Object Id: 16
       IgGridFunction<1,1>
-         ReferenceSpaceBasis<1,1,1>:
+         ReferenceBasis<1,1,1>:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
@@ -4281,7 +4281,7 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 4
    
    Object Id: 27
       IgGridFunction<1,1>
-         ReferenceSpaceBasis<1,1,1>:
+         ReferenceBasis<1,1,1>:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 ]
@@ -4417,7 +4417,7 @@ GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
 const GridFunction Dim : 2 Spacedim : 1. Number of objects: 2
    Object Id: 38
       IgGridFunction<2,1>
-         ReferenceSpaceBasis<2,1,1>:
+         ReferenceBasis<2,1,1>:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 ]
@@ -4576,7 +4576,7 @@ const GridFunction Dim : 2 Spacedim : 1. Number of objects: 2
    
    Object Id: 49
       IgGridFunction<2,1>
-         ReferenceSpaceBasis<2,1,1>:
+         ReferenceBasis<2,1,1>:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 ]
@@ -4761,7 +4761,7 @@ GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
 const GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
    Object Id: 60
       IgGridFunction<3,1>
-         ReferenceSpaceBasis<3,1,1>:
+         ReferenceBasis<3,1,1>:
             Spline Space:
                Knots without repetition:
                   Number of intervals per direction: [ 4 3 2 ]
@@ -5132,45 +5132,45 @@ const Domain Dim : 3 Codim : 0. Number of objects: 1
       Name: my_domain
    
 
-PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
+const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
    Object Id: 9
       Reference space:
          BSpline Space:
@@ -5259,7 +5259,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects
          
          Weight function :
             IgGridFunction<1,1>
-               ReferenceSpaceBasis<1,1,1>:
+               ReferenceBasis<1,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 ]
@@ -5369,13 +5369,13 @@ const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects
       
    
 
-PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 1
+const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 1
    Object Id: 20
       Reference space:
          BSpline Space:
@@ -5482,7 +5482,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects
          
          Weight function :
             IgGridFunction<1,1>
-               ReferenceSpaceBasis<1,1,1>:
+               ReferenceBasis<1,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 ]
@@ -5592,17 +5592,17 @@ const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects
       
    
 
-PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 1
+const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 1
    Object Id: 31
       Reference space:
          BSpline Space:
@@ -5727,7 +5727,7 @@ const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects
          
          Weight function :
             IgGridFunction<1,1>
-               ReferenceSpaceBasis<1,1,1>:
+               ReferenceBasis<1,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 ]
@@ -5837,13 +5837,13 @@ const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects
       
    
 
-PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
+const PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
    Object Id: 42
       Reference space:
          BSpline Space:
@@ -5988,7 +5988,7 @@ const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects
          
          Weight function :
             IgGridFunction<2,1>
-               ReferenceSpaceBasis<2,1,1>:
+               ReferenceBasis<2,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 3 ]
@@ -6158,13 +6158,13 @@ const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects
       
    
 
-PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 1
+const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 1
    Object Id: 53
       Reference space:
          BSpline Space:
@@ -6333,7 +6333,7 @@ const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects
          
          Weight function :
             IgGridFunction<2,1>
-               ReferenceSpaceBasis<2,1,1>:
+               ReferenceBasis<2,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 3 ]
@@ -6503,13 +6503,13 @@ const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects
       
    
 
-PhysicalSpaceBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+const PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
+const PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
    Object Id: 64
       Reference space:
          BSpline Space:
@@ -6731,7 +6731,7 @@ const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects
          
          Weight function :
             IgGridFunction<3,1>
-               ReferenceSpaceBasis<3,1,1>:
+               ReferenceBasis<3,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 3 2 ]
@@ -7014,29 +7014,29 @@ const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects
       
    
 
-PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
 
-PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
 
-const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
 
 Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
 

@@ -41,10 +41,10 @@ Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
 Grid                 | GridElement           | GridHandler
 Basis       | SpaceElement      | SpaceElementHandler
-ReferenceSpaceBasis       | ReferenceElement      | ReferenceElementHandler
+ReferenceBasis       | ReferenceElement      | ReferenceElementHandler
 BSpline         | BSplineElement        | BSplineElementHandler 
 NURBS           | NURBSElement          | NURBSElementHandler
-PhysicalSpaceBasis        | PhysicalSpaceElement  | PhysSpaceElementHandler
+PhysicalBasis        | PhysicalSpaceElement  | PhysSpaceElementHandler
 Domain              | DomainElement        | DomainHandler
 GridFunction              | GridFunctionElement        | GridFunctionHandler
 IgGridFunction              | IgGridFunctionElement        | IgGridFunctionHandler
@@ -59,16 +59,16 @@ FormulaFunction              | FormulaFunctionElement        | FormulaFunctionHa
 Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
 Basis       | SpaceElement      | SpaceElementHandler
-ReferenceSpaceBasis       | ReferenceElement      | ReferenceElementHandler
+ReferenceBasis       | ReferenceElement      | ReferenceElementHandler
 BSpline         | BSplineElement        | BSplineElementHandler 
 NURBS           | NURBSElement          | NURBSElementHandler
-PhysicalSpaceBasis        | PhysicalSpaceElement  | PhysSpaceElementHandler
+PhysicalBasis        | PhysicalSpaceElement  | PhysSpaceElementHandler
 </center>
 
 <center>
 Element Containers   | Elements              | Element's cache fillers/handlers
 -------------------- | ----------------------|---------------------
-ReferenceSpaceBasis       | ReferenceElement      | ReferenceElementHandler
+ReferenceBasis       | ReferenceElement      | ReferenceElementHandler
 BSpline         | BSplineElement        | BSplineElementHandler 
 NURBS           | NURBSElement          | NURBSElementHandler
 </center>
@@ -127,7 +127,7 @@ BSplineElement       | BSpline
 NURBSElement         | NURBS          
 MappingElement       | Mapping        
 PushForwardElement   | PushForward    
-PhysicalSpaceElement | PhysicalSpaceBasis
+PhysicalSpaceElement | PhysicalBasis
 </center>
 - they have an identifier in order to specify which element in the associated container they are representing;
 - they have @subpage iterators as friend classes (because the an iterator must be able to modify the 

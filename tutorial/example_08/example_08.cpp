@@ -21,7 +21,7 @@
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 
 #include <igatools/io/writer.h>
 
@@ -33,7 +33,7 @@ template<int dim>
 void physical_space(const int deg)
 {
   using RefSpace = BSpline<dim>;
-  using Basis    = PhysicalSpaceBasis<dim>;
+  using Basis    = PhysicalBasis<dim>;
 
   BBox<dim> box;
   box[0] = {{0.5, 1}};

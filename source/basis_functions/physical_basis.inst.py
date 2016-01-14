@@ -40,7 +40,7 @@ sub_dim_members = \
    'SubGridMap<k> &elem_map, void *) const;']
 
 
-spaces = ['PhysicalSpaceBasis<0,0,1,0>']
+spaces = ['PhysicalBasis<0,0,1,0>']
 templated_funcs = []
 
 for sp in inst.SubPhysSpaces:

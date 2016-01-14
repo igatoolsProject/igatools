@@ -217,9 +217,9 @@ print_info(LogStream &out) const
   for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
   {
     using SSType = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    using Type = ReferenceSpaceBasis<SSType::dim, SSType::range, SSType::rank>;
+    using Type = ReferenceBasis<SSType::dim, SSType::range, SSType::rank>;
 
-    const string msg = "ReferenceSpaceBasis"
+    const string msg = "ReferenceBasis"
                        " Dim : " + to_string(Type::dim) +
                        " Range : " + to_string(Type::range) +
                        " Rank : "+ to_string(Type::rank)
@@ -271,7 +271,7 @@ print_info(LogStream &out) const
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
-    const string msg = "PhysicalSpaceBasis"
+    const string msg = "PhysicalBasis"
                        " Dim : " + to_string(Type::dim) +
                        " Range : " + to_string(Type::range) +
                        " Rank : " + to_string(Type::rank) +
@@ -335,7 +335,7 @@ fill_not_inserted_dependencies()
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
     using DomainType = Domain<Type::dim, Type::codim>;
     using IgFunctionType = IgFunction<Type::dim, Type::codim, Type::range, Type::rank>;
-    using PhysBasisType = PhysicalSpaceBasis<Type::dim, Type::range, Type::rank, Type::codim>;
+    using PhysBasisType = PhysicalBasis<Type::dim, Type::range, Type::rank, Type::codim>;
 
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())

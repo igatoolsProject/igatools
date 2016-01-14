@@ -502,25 +502,25 @@ Original ObjectsContainer.
          
       
    
-   ReferenceSpaceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 3
+   const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 3
       Object Id: 2
          Spline Space:
             Knots without repetition:
@@ -776,7 +776,7 @@ Original ObjectsContainer.
          
          Weight function :
             IgGridFunction<1,1>
-               ReferenceSpaceBasis<1,1,1>:
+               ReferenceBasis<1,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 ]
@@ -875,17 +875,17 @@ Original ObjectsContainer.
          
       
    
-   ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 1
+   const ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 1
       Object Id: 15
          Spline Space:
             Knots without repetition:
@@ -1003,9 +1003,9 @@ Original ObjectsContainer.
          
       
    
-   ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
+   const ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
       Object Id: 13
          Spline Space:
             Knots without repetition:
@@ -1289,7 +1289,7 @@ Original ObjectsContainer.
          
          Weight function :
             IgGridFunction<2,1>
-               ReferenceSpaceBasis<2,1,1>:
+               ReferenceBasis<2,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 3 ]
@@ -1448,13 +1448,13 @@ Original ObjectsContainer.
          
       
    
-   ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
+   const ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
       Object Id: 26
          Spline Space:
             Knots without repetition:
@@ -1615,9 +1615,9 @@ Original ObjectsContainer.
          
       
    
-   ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
+   const ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
       Object Id: 24
          Spline Space:
             Knots without repetition:
@@ -2055,7 +2055,7 @@ Original ObjectsContainer.
          
          Weight function :
             IgGridFunction<3,1>
-               ReferenceSpaceBasis<3,1,1>:
+               ReferenceBasis<3,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 3 2 ]
@@ -2348,7 +2348,7 @@ Original ObjectsContainer.
    const GridFunction Dim : 1 Spacedim : 1. Number of objects: 2
       Object Id: 5
          IgGridFunction<1,1>
-            ReferenceSpaceBasis<1,1,1>:
+            ReferenceBasis<1,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 ]
@@ -2447,7 +2447,7 @@ Original ObjectsContainer.
       
       Object Id: 7
          IgGridFunction<1,1>
-            ReferenceSpaceBasis<1,1,1>:
+            ReferenceBasis<1,1,1>:
                BSpline Space:
                   Spline Space:
                      Knots without repetition:
@@ -2534,7 +2534,7 @@ Original ObjectsContainer.
                
                Weight function :
                   IgGridFunction<1,1>
-                     ReferenceSpaceBasis<1,1,1>:
+                     ReferenceBasis<1,1,1>:
                         Spline Space:
                            Knots without repetition:
                               Number of intervals per direction: [ 4 ]
@@ -2659,7 +2659,7 @@ Original ObjectsContainer.
    const GridFunction Dim : 2 Spacedim : 2. Number of objects: 1
       Object Id: 18
          IgGridFunction<2,2>
-            ReferenceSpaceBasis<2,1,2>:
+            ReferenceBasis<2,1,2>:
                BSpline Space:
                   Spline Space:
                      Knots without repetition:
@@ -2802,7 +2802,7 @@ Original ObjectsContainer.
                
                Weight function :
                   IgGridFunction<2,1>
-                     ReferenceSpaceBasis<2,1,1>:
+                     ReferenceBasis<2,1,1>:
                         Spline Space:
                            Knots without repetition:
                               Number of intervals per direction: [ 4 3 ]
@@ -3042,7 +3042,7 @@ Original ObjectsContainer.
    const GridFunction Dim : 2 Spacedim : 1. Number of objects: 1
       Object Id: 16
          IgGridFunction<2,1>
-            ReferenceSpaceBasis<2,1,1>:
+            ReferenceBasis<2,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 3 ]
@@ -3209,7 +3209,7 @@ Original ObjectsContainer.
    const GridFunction Dim : 3 Spacedim : 3. Number of objects: 1
       Object Id: 29
          IgGridFunction<3,3>
-            ReferenceSpaceBasis<3,1,3>:
+            ReferenceBasis<3,1,3>:
                BSpline Space:
                   Spline Space:
                      Knots without repetition:
@@ -3429,7 +3429,7 @@ Original ObjectsContainer.
                
                Weight function :
                   IgGridFunction<3,1>
-                     ReferenceSpaceBasis<3,1,1>:
+                     ReferenceBasis<3,1,1>:
                         Spline Space:
                            Knots without repetition:
                               Number of intervals per direction: [ 4 3 2 ]
@@ -4027,7 +4027,7 @@ Original ObjectsContainer.
    const GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
       Object Id: 27
          IgGridFunction<3,1>
-            ReferenceSpaceBasis<3,1,1>:
+            ReferenceBasis<3,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 3 2 ]
@@ -4320,7 +4320,7 @@ Original ObjectsContainer.
       Object Id: 8
          GridFunction<1,1>
             IgGridFunction<1,1>
-               ReferenceSpaceBasis<1,1,1>:
+               ReferenceBasis<1,1,1>:
                   BSpline Space:
                      Spline Space:
                         Knots without repetition:
@@ -4407,7 +4407,7 @@ Original ObjectsContainer.
                   
                   Weight function :
                      IgGridFunction<1,1>
-                        ReferenceSpaceBasis<1,1,1>:
+                        ReferenceBasis<1,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 ]
@@ -4535,7 +4535,7 @@ Original ObjectsContainer.
       Object Id: 19
          GridFunction<2,2>
             IgGridFunction<2,2>
-               ReferenceSpaceBasis<2,1,2>:
+               ReferenceBasis<2,1,2>:
                   BSpline Space:
                      Spline Space:
                         Knots without repetition:
@@ -4678,7 +4678,7 @@ Original ObjectsContainer.
                   
                   Weight function :
                      IgGridFunction<2,1>
-                        ReferenceSpaceBasis<2,1,1>:
+                        ReferenceBasis<2,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 3 ]
@@ -4925,7 +4925,7 @@ Original ObjectsContainer.
       Object Id: 30
          GridFunction<3,3>
             IgGridFunction<3,3>
-               ReferenceSpaceBasis<3,1,3>:
+               ReferenceBasis<3,1,3>:
                   BSpline Space:
                      Spline Space:
                         Knots without repetition:
@@ -5145,7 +5145,7 @@ Original ObjectsContainer.
                   
                   Weight function :
                      IgGridFunction<3,1>
-                        ReferenceSpaceBasis<3,1,1>:
+                        ReferenceBasis<3,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 3 2 ]
@@ -5740,45 +5740,45 @@ Original ObjectsContainer.
          Name: my_domain
       
    
-   PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
+   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
       Object Id: 9
          Reference space:
             BSpline Space:
@@ -5867,7 +5867,7 @@ Original ObjectsContainer.
             
             Weight function :
                IgGridFunction<1,1>
-                  ReferenceSpaceBasis<1,1,1>:
+                  ReferenceBasis<1,1,1>:
                      Spline Space:
                         Knots without repetition:
                            Number of intervals per direction: [ 4 ]
@@ -5968,7 +5968,7 @@ Original ObjectsContainer.
          Physical domain:
             GridFunction<1,1>
                IgGridFunction<1,1>
-                  ReferenceSpaceBasis<1,1,1>:
+                  ReferenceBasis<1,1,1>:
                      BSpline Space:
                         Spline Space:
                            Knots without repetition:
@@ -6055,7 +6055,7 @@ Original ObjectsContainer.
                      
                      Weight function :
                         IgGridFunction<1,1>
-                           ReferenceSpaceBasis<1,1,1>:
+                           ReferenceBasis<1,1,1>:
                               Spline Space:
                                  Knots without repetition:
                                     Number of intervals per direction: [ 4 ]
@@ -6170,33 +6170,33 @@ Original ObjectsContainer.
          
       
    
-   PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
+   const PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
       Object Id: 20
          Reference space:
             BSpline Space:
@@ -6341,7 +6341,7 @@ Original ObjectsContainer.
             
             Weight function :
                IgGridFunction<2,1>
-                  ReferenceSpaceBasis<2,1,1>:
+                  ReferenceBasis<2,1,1>:
                      Spline Space:
                         Knots without repetition:
                            Number of intervals per direction: [ 4 3 ]
@@ -6502,7 +6502,7 @@ Original ObjectsContainer.
          Physical domain:
             GridFunction<2,2>
                IgGridFunction<2,2>
-                  ReferenceSpaceBasis<2,1,2>:
+                  ReferenceBasis<2,1,2>:
                      BSpline Space:
                         Spline Space:
                            Knots without repetition:
@@ -6645,7 +6645,7 @@ Original ObjectsContainer.
                      
                      Weight function :
                         IgGridFunction<2,1>
-                           ReferenceSpaceBasis<2,1,1>:
+                           ReferenceBasis<2,1,1>:
                               Spline Space:
                                  Knots without repetition:
                                     Number of intervals per direction: [ 4 3 ]
@@ -6883,21 +6883,21 @@ Original ObjectsContainer.
          
       
    
-   PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
+   const PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
       Object Id: 31
          Reference space:
             BSpline Space:
@@ -7119,7 +7119,7 @@ Original ObjectsContainer.
             
             Weight function :
                IgGridFunction<3,1>
-                  ReferenceSpaceBasis<3,1,1>:
+                  ReferenceBasis<3,1,1>:
                      Spline Space:
                         Knots without repetition:
                            Number of intervals per direction: [ 4 3 2 ]
@@ -7393,7 +7393,7 @@ Original ObjectsContainer.
          Physical domain:
             GridFunction<3,3>
                IgGridFunction<3,3>
-                  ReferenceSpaceBasis<3,1,3>:
+                  ReferenceBasis<3,1,3>:
                      BSpline Space:
                         Spline Space:
                            Knots without repetition:
@@ -7613,7 +7613,7 @@ Original ObjectsContainer.
                      
                      Weight function :
                         IgGridFunction<3,1>
-                           ReferenceSpaceBasis<3,1,1>:
+                           ReferenceBasis<3,1,1>:
                               Spline Space:
                                  Knots without repetition:
                                     Number of intervals per direction: [ 4 3 2 ]
@@ -8209,36 +8209,36 @@ Original ObjectsContainer.
          
       
    
-   PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
    Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
    const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 1
       Object Id: 10
          IgFunction<1,0,1,1>
-            PhysicalSpaceBasis<1,1,1,0>
+            PhysicalBasis<1,1,1,0>
                Reference space:
                   BSpline Space:
                      Spline Space:
@@ -8326,7 +8326,7 @@ Original ObjectsContainer.
                   
                   Weight function :
                      IgGridFunction<1,1>
-                        ReferenceSpaceBasis<1,1,1>:
+                        ReferenceBasis<1,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 ]
@@ -8427,7 +8427,7 @@ Original ObjectsContainer.
                Physical domain:
                   GridFunction<1,1>
                      IgGridFunction<1,1>
-                        ReferenceSpaceBasis<1,1,1>:
+                        ReferenceBasis<1,1,1>:
                            BSpline Space:
                               Spline Space:
                                  Knots without repetition:
@@ -8514,7 +8514,7 @@ Original ObjectsContainer.
                            
                            Weight function :
                               IgGridFunction<1,1>
-                                 ReferenceSpaceBasis<1,1,1>:
+                                 ReferenceBasis<1,1,1>:
                                     Spline Space:
                                        Knots without repetition:
                                           Number of intervals per direction: [ 4 ]
@@ -8671,7 +8671,7 @@ Original ObjectsContainer.
    const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 1
       Object Id: 21
          IgFunction<2,0,2,1>
-            PhysicalSpaceBasis<2,2,1,0>
+            PhysicalBasis<2,2,1,0>
                Reference space:
                   BSpline Space:
                      Spline Space:
@@ -8815,7 +8815,7 @@ Original ObjectsContainer.
                   
                   Weight function :
                      IgGridFunction<2,1>
-                        ReferenceSpaceBasis<2,1,1>:
+                        ReferenceBasis<2,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 3 ]
@@ -8976,7 +8976,7 @@ Original ObjectsContainer.
                Physical domain:
                   GridFunction<2,2>
                      IgGridFunction<2,2>
-                        ReferenceSpaceBasis<2,1,2>:
+                        ReferenceBasis<2,1,2>:
                            BSpline Space:
                               Spline Space:
                                  Knots without repetition:
@@ -9119,7 +9119,7 @@ Original ObjectsContainer.
                            
                            Weight function :
                               IgGridFunction<2,1>
-                                 ReferenceSpaceBasis<2,1,1>:
+                                 ReferenceBasis<2,1,1>:
                                     Spline Space:
                                        Knots without repetition:
                                           Number of intervals per direction: [ 4 3 ]
@@ -9450,7 +9450,7 @@ Original ObjectsContainer.
    const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 1
       Object Id: 32
          IgFunction<3,0,3,1>
-            PhysicalSpaceBasis<3,3,1,0>
+            PhysicalBasis<3,3,1,0>
                Reference space:
                   BSpline Space:
                      Spline Space:
@@ -9671,7 +9671,7 @@ Original ObjectsContainer.
                   
                   Weight function :
                      IgGridFunction<3,1>
-                        ReferenceSpaceBasis<3,1,1>:
+                        ReferenceBasis<3,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 3 2 ]
@@ -9945,7 +9945,7 @@ Original ObjectsContainer.
                Physical domain:
                   GridFunction<3,3>
                      IgGridFunction<3,3>
-                        ReferenceSpaceBasis<3,1,3>:
+                        ReferenceBasis<3,1,3>:
                            BSpline Space:
                               Spline Space:
                                  Knots without repetition:
@@ -10165,7 +10165,7 @@ Original ObjectsContainer.
                            
                            Weight function :
                               IgGridFunction<3,1>
-                                 ReferenceSpaceBasis<3,1,1>:
+                                 ReferenceBasis<3,1,1>:
                                     Spline Space:
                                        Knots without repetition:
                                           Number of intervals per direction: [ 4 3 2 ]
@@ -11370,25 +11370,25 @@ ObjectsContainer after serialize-deserialize.
    
    const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 0 Range : 0 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 0 Range : 1 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 0 Range : 2 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 0 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 3
+   const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 3
       Object Id: 2
          Spline Space:
             Knots without repetition:
@@ -11644,7 +11644,7 @@ ObjectsContainer after serialize-deserialize.
          
          Weight function :
             IgGridFunction<1,1>
-               ReferenceSpaceBasis<1,1,1>:
+               ReferenceBasis<1,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 ]
@@ -11743,17 +11743,17 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 1
+   const ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 1
       Object Id: 15
          Spline Space:
             Knots without repetition:
@@ -11871,9 +11871,9 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
+   const ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
       Object Id: 13
          Spline Space:
             Knots without repetition:
@@ -12157,7 +12157,7 @@ ObjectsContainer after serialize-deserialize.
          
          Weight function :
             IgGridFunction<2,1>
-               ReferenceSpaceBasis<2,1,1>:
+               ReferenceBasis<2,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 3 ]
@@ -12316,13 +12316,13 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
+   const ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 0
    
-   ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
+   const ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
       Object Id: 26
          Spline Space:
             Knots without repetition:
@@ -12483,9 +12483,9 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
+   ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 0
    
-   const ReferenceSpaceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
+   const ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
       Object Id: 24
          Spline Space:
             Knots without repetition:
@@ -12923,7 +12923,7 @@ ObjectsContainer after serialize-deserialize.
          
          Weight function :
             IgGridFunction<3,1>
-               ReferenceSpaceBasis<3,1,1>:
+               ReferenceBasis<3,1,1>:
                   Spline Space:
                      Knots without repetition:
                         Number of intervals per direction: [ 4 3 2 ]
@@ -13216,7 +13216,7 @@ ObjectsContainer after serialize-deserialize.
    const GridFunction Dim : 1 Spacedim : 1. Number of objects: 2
       Object Id: 41
          IgGridFunction<1,1>
-            ReferenceSpaceBasis<1,1,1>:
+            ReferenceBasis<1,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 ]
@@ -13315,7 +13315,7 @@ ObjectsContainer after serialize-deserialize.
       
       Object Id: 54
          IgGridFunction<1,1>
-            ReferenceSpaceBasis<1,1,1>:
+            ReferenceBasis<1,1,1>:
                BSpline Space:
                   Spline Space:
                      Knots without repetition:
@@ -13402,7 +13402,7 @@ ObjectsContainer after serialize-deserialize.
                
                Weight function :
                   IgGridFunction<1,1>
-                     ReferenceSpaceBasis<1,1,1>:
+                     ReferenceBasis<1,1,1>:
                         Spline Space:
                            Knots without repetition:
                               Number of intervals per direction: [ 4 ]
@@ -13527,7 +13527,7 @@ ObjectsContainer after serialize-deserialize.
    const GridFunction Dim : 2 Spacedim : 2. Number of objects: 1
       Object Id: 55
          IgGridFunction<2,2>
-            ReferenceSpaceBasis<2,1,2>:
+            ReferenceBasis<2,1,2>:
                BSpline Space:
                   Spline Space:
                      Knots without repetition:
@@ -13670,7 +13670,7 @@ ObjectsContainer after serialize-deserialize.
                
                Weight function :
                   IgGridFunction<2,1>
-                     ReferenceSpaceBasis<2,1,1>:
+                     ReferenceBasis<2,1,1>:
                         Spline Space:
                            Knots without repetition:
                               Number of intervals per direction: [ 4 3 ]
@@ -13910,7 +13910,7 @@ ObjectsContainer after serialize-deserialize.
    const GridFunction Dim : 2 Spacedim : 1. Number of objects: 1
       Object Id: 47
          IgGridFunction<2,1>
-            ReferenceSpaceBasis<2,1,1>:
+            ReferenceBasis<2,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 3 ]
@@ -14077,7 +14077,7 @@ ObjectsContainer after serialize-deserialize.
    const GridFunction Dim : 3 Spacedim : 3. Number of objects: 1
       Object Id: 56
          IgGridFunction<3,3>
-            ReferenceSpaceBasis<3,1,3>:
+            ReferenceBasis<3,1,3>:
                BSpline Space:
                   Spline Space:
                      Knots without repetition:
@@ -14297,7 +14297,7 @@ ObjectsContainer after serialize-deserialize.
                
                Weight function :
                   IgGridFunction<3,1>
-                     ReferenceSpaceBasis<3,1,1>:
+                     ReferenceBasis<3,1,1>:
                         Spline Space:
                            Knots without repetition:
                               Number of intervals per direction: [ 4 3 2 ]
@@ -14895,7 +14895,7 @@ ObjectsContainer after serialize-deserialize.
    const GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
       Object Id: 53
          IgGridFunction<3,1>
-            ReferenceSpaceBasis<3,1,1>:
+            ReferenceBasis<3,1,1>:
                Spline Space:
                   Knots without repetition:
                      Number of intervals per direction: [ 4 3 2 ]
@@ -15188,7 +15188,7 @@ ObjectsContainer after serialize-deserialize.
       Object Id: 8
          GridFunction<1,1>
             IgGridFunction<1,1>
-               ReferenceSpaceBasis<1,1,1>:
+               ReferenceBasis<1,1,1>:
                   BSpline Space:
                      Spline Space:
                         Knots without repetition:
@@ -15275,7 +15275,7 @@ ObjectsContainer after serialize-deserialize.
                   
                   Weight function :
                      IgGridFunction<1,1>
-                        ReferenceSpaceBasis<1,1,1>:
+                        ReferenceBasis<1,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 ]
@@ -15403,7 +15403,7 @@ ObjectsContainer after serialize-deserialize.
       Object Id: 19
          GridFunction<2,2>
             IgGridFunction<2,2>
-               ReferenceSpaceBasis<2,1,2>:
+               ReferenceBasis<2,1,2>:
                   BSpline Space:
                      Spline Space:
                         Knots without repetition:
@@ -15546,7 +15546,7 @@ ObjectsContainer after serialize-deserialize.
                   
                   Weight function :
                      IgGridFunction<2,1>
-                        ReferenceSpaceBasis<2,1,1>:
+                        ReferenceBasis<2,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 3 ]
@@ -15793,7 +15793,7 @@ ObjectsContainer after serialize-deserialize.
       Object Id: 30
          GridFunction<3,3>
             IgGridFunction<3,3>
-               ReferenceSpaceBasis<3,1,3>:
+               ReferenceBasis<3,1,3>:
                   BSpline Space:
                      Spline Space:
                         Knots without repetition:
@@ -16013,7 +16013,7 @@ ObjectsContainer after serialize-deserialize.
                   
                   Weight function :
                      IgGridFunction<3,1>
-                        ReferenceSpaceBasis<3,1,1>:
+                        ReferenceBasis<3,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 3 2 ]
@@ -16608,45 +16608,45 @@ ObjectsContainer after serialize-deserialize.
          Name: my_domain
       
    
-   PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 0 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 3. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 2. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 3. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
+   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
       Object Id: 9
          Reference space:
             BSpline Space:
@@ -16735,7 +16735,7 @@ ObjectsContainer after serialize-deserialize.
             
             Weight function :
                IgGridFunction<1,1>
-                  ReferenceSpaceBasis<1,1,1>:
+                  ReferenceBasis<1,1,1>:
                      Spline Space:
                         Knots without repetition:
                            Number of intervals per direction: [ 4 ]
@@ -16836,7 +16836,7 @@ ObjectsContainer after serialize-deserialize.
          Physical domain:
             GridFunction<1,1>
                IgGridFunction<1,1>
-                  ReferenceSpaceBasis<1,1,1>:
+                  ReferenceBasis<1,1,1>:
                      BSpline Space:
                         Spline Space:
                            Knots without repetition:
@@ -16923,7 +16923,7 @@ ObjectsContainer after serialize-deserialize.
                      
                      Weight function :
                         IgGridFunction<1,1>
-                           ReferenceSpaceBasis<1,1,1>:
+                           ReferenceBasis<1,1,1>:
                               Spline Space:
                                  Knots without repetition:
                                     Number of intervals per direction: [ 4 ]
@@ -17038,33 +17038,33 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 2. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
+   const PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
       Object Id: 20
          Reference space:
             BSpline Space:
@@ -17209,7 +17209,7 @@ ObjectsContainer after serialize-deserialize.
             
             Weight function :
                IgGridFunction<2,1>
-                  ReferenceSpaceBasis<2,1,1>:
+                  ReferenceBasis<2,1,1>:
                      Spline Space:
                         Knots without repetition:
                            Number of intervals per direction: [ 4 3 ]
@@ -17370,7 +17370,7 @@ ObjectsContainer after serialize-deserialize.
          Physical domain:
             GridFunction<2,2>
                IgGridFunction<2,2>
-                  ReferenceSpaceBasis<2,1,2>:
+                  ReferenceBasis<2,1,2>:
                      BSpline Space:
                         Spline Space:
                            Knots without repetition:
@@ -17513,7 +17513,7 @@ ObjectsContainer after serialize-deserialize.
                      
                      Weight function :
                         IgGridFunction<2,1>
-                           ReferenceSpaceBasis<2,1,1>:
+                           ReferenceBasis<2,1,1>:
                               Spline Space:
                                  Knots without repetition:
                                     Number of intervals per direction: [ 4 3 ]
@@ -17751,21 +17751,21 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 2 Range : 1 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
+   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 3 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
+   const PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
       Object Id: 31
          Reference space:
             BSpline Space:
@@ -17987,7 +17987,7 @@ ObjectsContainer after serialize-deserialize.
             
             Weight function :
                IgGridFunction<3,1>
-                  ReferenceSpaceBasis<3,1,1>:
+                  ReferenceBasis<3,1,1>:
                      Spline Space:
                         Knots without repetition:
                            Number of intervals per direction: [ 4 3 2 ]
@@ -18261,7 +18261,7 @@ ObjectsContainer after serialize-deserialize.
          Physical domain:
             GridFunction<3,3>
                IgGridFunction<3,3>
-                  ReferenceSpaceBasis<3,1,3>:
+                  ReferenceBasis<3,1,3>:
                      BSpline Space:
                         Spline Space:
                            Knots without repetition:
@@ -18481,7 +18481,7 @@ ObjectsContainer after serialize-deserialize.
                      
                      Weight function :
                         IgGridFunction<3,1>
-                           ReferenceSpaceBasis<3,1,1>:
+                           ReferenceBasis<3,1,1>:
                               Spline Space:
                                  Knots without repetition:
                                     Number of intervals per direction: [ 4 3 2 ]
@@ -19077,36 +19077,36 @@ ObjectsContainer after serialize-deserialize.
          
       
    
-   PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 1 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 2 Rank : 1 Codim : 0. Number of objects: 0
    
-   PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
-   const PhysicalSpaceBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
+   const PhysicalBasis Dim : 0 Range : 3 Rank : 1 Codim : 0. Number of objects: 0
    
    Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 0
    
    const Function Dim : 1 Codim : 0 Range : 1 Rank : 1. Number of objects: 1
       Object Id: 10
          IgFunction<1,0,1,1>
-            PhysicalSpaceBasis<1,1,1,0>
+            PhysicalBasis<1,1,1,0>
                Reference space:
                   BSpline Space:
                      Spline Space:
@@ -19194,7 +19194,7 @@ ObjectsContainer after serialize-deserialize.
                   
                   Weight function :
                      IgGridFunction<1,1>
-                        ReferenceSpaceBasis<1,1,1>:
+                        ReferenceBasis<1,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 ]
@@ -19295,7 +19295,7 @@ ObjectsContainer after serialize-deserialize.
                Physical domain:
                   GridFunction<1,1>
                      IgGridFunction<1,1>
-                        ReferenceSpaceBasis<1,1,1>:
+                        ReferenceBasis<1,1,1>:
                            BSpline Space:
                               Spline Space:
                                  Knots without repetition:
@@ -19382,7 +19382,7 @@ ObjectsContainer after serialize-deserialize.
                            
                            Weight function :
                               IgGridFunction<1,1>
-                                 ReferenceSpaceBasis<1,1,1>:
+                                 ReferenceBasis<1,1,1>:
                                     Spline Space:
                                        Knots without repetition:
                                           Number of intervals per direction: [ 4 ]
@@ -19539,7 +19539,7 @@ ObjectsContainer after serialize-deserialize.
    const Function Dim : 2 Codim : 0 Range : 2 Rank : 1. Number of objects: 1
       Object Id: 21
          IgFunction<2,0,2,1>
-            PhysicalSpaceBasis<2,2,1,0>
+            PhysicalBasis<2,2,1,0>
                Reference space:
                   BSpline Space:
                      Spline Space:
@@ -19683,7 +19683,7 @@ ObjectsContainer after serialize-deserialize.
                   
                   Weight function :
                      IgGridFunction<2,1>
-                        ReferenceSpaceBasis<2,1,1>:
+                        ReferenceBasis<2,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 3 ]
@@ -19844,7 +19844,7 @@ ObjectsContainer after serialize-deserialize.
                Physical domain:
                   GridFunction<2,2>
                      IgGridFunction<2,2>
-                        ReferenceSpaceBasis<2,1,2>:
+                        ReferenceBasis<2,1,2>:
                            BSpline Space:
                               Spline Space:
                                  Knots without repetition:
@@ -19987,7 +19987,7 @@ ObjectsContainer after serialize-deserialize.
                            
                            Weight function :
                               IgGridFunction<2,1>
-                                 ReferenceSpaceBasis<2,1,1>:
+                                 ReferenceBasis<2,1,1>:
                                     Spline Space:
                                        Knots without repetition:
                                           Number of intervals per direction: [ 4 3 ]
@@ -20318,7 +20318,7 @@ ObjectsContainer after serialize-deserialize.
    const Function Dim : 3 Codim : 0 Range : 3 Rank : 1. Number of objects: 1
       Object Id: 32
          IgFunction<3,0,3,1>
-            PhysicalSpaceBasis<3,3,1,0>
+            PhysicalBasis<3,3,1,0>
                Reference space:
                   BSpline Space:
                      Spline Space:
@@ -20539,7 +20539,7 @@ ObjectsContainer after serialize-deserialize.
                   
                   Weight function :
                      IgGridFunction<3,1>
-                        ReferenceSpaceBasis<3,1,1>:
+                        ReferenceBasis<3,1,1>:
                            Spline Space:
                               Knots without repetition:
                                  Number of intervals per direction: [ 4 3 2 ]
@@ -20813,7 +20813,7 @@ ObjectsContainer after serialize-deserialize.
                Physical domain:
                   GridFunction<3,3>
                      IgGridFunction<3,3>
-                        ReferenceSpaceBasis<3,1,3>:
+                        ReferenceBasis<3,1,3>:
                            BSpline Space:
                               Spline Space:
                                  Knots without repetition:
@@ -21033,7 +21033,7 @@ ObjectsContainer after serialize-deserialize.
                            
                            Weight function :
                               IgGridFunction<3,1>
-                                 ReferenceSpaceBasis<3,1,1>:
+                                 ReferenceBasis<3,1,1>:
                                     Spline Space:
                                        Knots without repetition:
                                           Number of intervals per direction: [ 4 3 2 ]

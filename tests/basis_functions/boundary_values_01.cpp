@@ -20,7 +20,7 @@
 
 /*
  *  Test for the boundary l2 projection function.
- *  On a PhysicalSpaceBasis
+ *  On a PhysicalBasis
  *
  *  author: pauletti
  *  date: 2014-11-14
@@ -48,7 +48,7 @@ void do_test(const int p, const int num_knots = 10)
   auto ref_basis = BSpline<dim,range,rank>::create(space) ;
   auto map = grid_functions::IdentityGridFunction<dim>::create(grid);
   auto domain = Domain<dim,codim>::create(map);
-  auto basis = PhysicalSpaceBasis<dim,range,rank,codim>::create(ref_basis, domain);
+  auto basis = PhysicalBasis<dim,range,rank,codim>::create(ref_basis, domain);
 
 
   const int sdim = dim-1;

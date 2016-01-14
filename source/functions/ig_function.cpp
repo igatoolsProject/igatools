@@ -22,7 +22,7 @@
 #include <igatools/functions/ig_function_handler.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 #include <igatools/basis_functions/space_tools.h>
 
 
@@ -271,7 +271,7 @@ print_info(LogStream &out) const
                                          to_string(dim) + "," + to_string(range) + "," +
                                          to_string(rank) + "," + to_string(codim) + ">";
 
-  out.begin_item("PhysicalSpaceBasis" + basis_template_args);
+  out.begin_item("PhysicalBasis" + basis_template_args);
   basis_->print_info(out);
   out.end_item();
 

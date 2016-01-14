@@ -144,7 +144,7 @@ phys_space_to_domain_flag(
 
 
 template<int dim, int range, int rank, int codim>
-class PhysicalSpaceBasis;
+class PhysicalBasis;
 
 /**
  * Element handler for an isogeometric space
@@ -157,7 +157,7 @@ class PhysSpaceElementHandler
   public SpaceElementHandler<dim_,codim_,range_,rank_>
 {
 
-  using PhysSpace = PhysicalSpaceBasis<dim_,range_,rank_,codim_>;
+  using PhysSpace = PhysicalBasis<dim_,range_,rank_,codim_>;
   using RefBasis =  typename PhysSpace::RefBasis;
   using RefPhysSpaceElementHandler = typename PhysSpace::RefBasis::ElementHandler;
 //    using PFCache = typename PhysSpace::PushForwardType;
@@ -242,10 +242,10 @@ private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
     SetFlagsDispatcher(const typename space_element::Flags phys_elem_flag,
-                      const Transformation &transformation_type,
-                      RefElemHandler &ref_space_handler,
-                      PhysDomainHandler &phys_domain_handler,
-                      SafeSTLArray<typename space_element::Flags, dim+1> &flags);
+                       const Transformation &transformation_type,
+                       RefElemHandler &ref_space_handler,
+                       PhysDomainHandler &phys_domain_handler,
+                       SafeSTLArray<typename space_element::Flags, dim+1> &flags);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);

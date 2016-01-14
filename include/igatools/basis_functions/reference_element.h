@@ -27,7 +27,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, int> class ReferenceSpaceBasis;
+template <int, int, int> class ReferenceBasis;
 
 /**
  *
@@ -39,10 +39,10 @@ class ReferenceElement : public SpaceElement<dim,0,range,rank>
 public:
 
   /** Type required by the GridForwardIterator templated iterator */
-  using ContainerType = const ReferenceSpaceBasis<dim,range,rank> ;
+  using ContainerType = const ReferenceBasis<dim,range,rank> ;
 
-  using Basis = ReferenceSpaceBasis<dim,range,rank>;
-  using ConstBasis = const ReferenceSpaceBasis<dim,range,rank>;
+  using Basis = ReferenceBasis<dim,range,rank>;
+  using ConstBasis = const ReferenceBasis<dim,range,rank>;
 
   using parent_t = SpaceElement<dim,0,range,rank>;
 
@@ -73,7 +73,7 @@ public:
 
   /**
    * Constructs an accessor to element number index of a
-   * ReferenceSpaceBasis basis.
+   * ReferenceBasis basis.
    */
   ReferenceElement(const std::shared_ptr<ConstBasis> &basis);
 

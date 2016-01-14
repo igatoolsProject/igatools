@@ -27,7 +27,7 @@
 #include <igatools/basis_functions/reference_space_basis.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
 //#include <igatools/geometry/domain.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -92,10 +92,10 @@ template <int, int, int> class BSplineElementHandler;
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSpline :
-  public ReferenceSpaceBasis<dim_, range_, rank_>
+  public ReferenceBasis<dim_, range_, rank_>
 {
 private:
-  using BaseSpace = ReferenceSpaceBasis<dim_, range_, rank_>;
+  using BaseSpace = ReferenceBasis<dim_, range_, rank_>;
 
   /** Type for current class. */
   using self_t = BSpline<dim_,range_,rank_>;

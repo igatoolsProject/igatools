@@ -33,7 +33,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
@@ -47,7 +47,7 @@ void serialize_deserialize(std::shared_ptr<Basis> space)
 {
   OUTSTART
 
-  out.begin_item("Original PhysicalSpaceBasis:");
+  out.begin_item("Original PhysicalBasis:");
   space->print_info(out);
   out.end_item();
 
@@ -58,9 +58,9 @@ void serialize_deserialize(std::shared_ptr<Basis> space)
     "_rank" + std::to_string(Basis::rank) +
     "_codim" + std::to_string(Basis::codim);
   std::string filename = "phys_space" + template_args + ".xml";
-  std::string tag_name = "PhysicalSpaceBasis" + template_args;
+  std::string tag_name = "PhysicalBasis" + template_args;
   {
-    // serialize the PhysicalSpaceBasis object to an xml file
+    // serialize the PhysicalBasis object to an xml file
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 
@@ -70,14 +70,14 @@ void serialize_deserialize(std::shared_ptr<Basis> space)
 
   space.reset();
   {
-    // de-serialize the PhysicalSpaceBasis object from an xml file
+    // de-serialize the PhysicalBasis object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
 
     xml_in >> BOOST_SERIALIZATION_NVP(space);
     xml_istream.close();
   }
-  out.begin_item("PhysicalSpaceBasis after serialize-deserialize:");
+  out.begin_item("PhysicalBasis after serialize-deserialize:");
   space->print_info(out);
   out.end_item();
 //*/
@@ -163,7 +163,7 @@ template<int dim,int range=dim,int rank=1,int codim=0>
 auto
 create_phys_space(shared_ptr<const BSpline<dim,range,rank>> ref_space)
 {
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using Basis = PhysicalBasis<dim,range,rank,codim>;
 
   return Basis::const_create(
            ref_space,

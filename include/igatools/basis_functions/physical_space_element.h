@@ -27,7 +27,7 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 #include <igatools/geometry/push_forward.h>
 
 
@@ -49,7 +49,7 @@ class PhysicalSpaceElement
   using parent_t = SpaceElement<dim_,codim_,range_,rank_>;
 
 public :
-  using PhysSpace = PhysicalSpaceBasis<dim_,range_,rank_,codim_>;
+  using PhysSpace = PhysicalBasis<dim_,range_,rank_,codim_>;
   /** Type required by the GridIterator templated iterator */
   using ContainerType = const PhysSpace;
 

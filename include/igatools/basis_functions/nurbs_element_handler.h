@@ -74,7 +74,7 @@ protected:
   using ElementIterator = typename Basis::ElementIterator;
   using ElementAccessor = typename Basis::ElementAccessor;
 
-  using BaseSpace = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using BaseSpace = ReferenceBasis<dim_,range_,rank_>;
   using RefElementIterator = typename BaseSpace::ElementIterator;
   using RefElementAccessor = typename BaseSpace::ElementAccessor;
 
@@ -172,7 +172,7 @@ private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
     SetFlagsDispatcher(const typename space_element::Flags nrb_flag,
-                      self_t &nrb_handler);
+                       self_t &nrb_handler);
 
     template<int sdim>
     void operator()(const Topology<sdim> &topology);

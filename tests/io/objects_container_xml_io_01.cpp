@@ -40,7 +40,7 @@ using namespace iga;
 using namespace std;
 
 template <int dim, int codim, int range, int rank>
-void write_container (const string &file_path)
+void write_container(const string &file_path)
 {
   Epetra_SerialComm comm;
 
@@ -75,7 +75,7 @@ void write_container (const string &file_path)
   domain->set_name("my_domain");
 
   // Creating phys space
-  auto phys_basis = PhysicalSpaceBasis<dim,range>::create(ref_basis_3, domain);
+  auto phys_basis = PhysicalBasis<dim,range>::create(ref_basis_3, domain);
 
   auto map_3 = EpetraTools::create_map(*phys_basis, "active", comm);
   auto coeff = EpetraTools::create_vector(*map_3);
@@ -118,7 +118,7 @@ void write_container (const string &file_path)
 };
 
 
-void read_container (const string &file_path)
+void read_container(const string &file_path)
 {
   const auto container = ObjectsContainerXMLReader::parse(file_path);
   container->print_info(out);
@@ -130,18 +130,18 @@ int main()
   string file_path;
   OUTSTART
   file_path = "test_2_0_2_1.xml";
-  out.begin_item (string("Parsing writing/reading file") + file_path);
+  out.begin_item(string("Parsing writing/reading file") + file_path);
   write_container<2, 0, 2, 1>(file_path);
-  read_container (file_path);
-  out.end_item ();
+  read_container(file_path);
+  out.end_item();
   OUTEND
 
   OUTSTART
   file_path = "test_3_0_3_1.xml";
-  out.begin_item (string("Parsing writing/reading file") + file_path);
+  out.begin_item(string("Parsing writing/reading file") + file_path);
   write_container<3, 0, 3, 1>(file_path);
-  read_container (file_path);
-  out.end_item ();
+  read_container(file_path);
+  out.end_item();
   OUTEND
 
   return 0;

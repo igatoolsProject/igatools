@@ -30,7 +30,7 @@
 template < int dim, int range, int rank>
 void serialize_deserialize(std::shared_ptr<NURBS<dim,range,rank>> space_in)
 {
-  std::shared_ptr<ReferenceSpaceBasis<dim,range,rank>> space = space_in;
+  std::shared_ptr<ReferenceBasis<dim,range,rank>> space = space_in;
   out.begin_item("Original NURBS:");
   space->print_info(out);
   out.end_item();

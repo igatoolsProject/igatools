@@ -31,7 +31,7 @@ IGA_NAMESPACE_OPEN
 
 
 /**
- * @brief GridFunction built as linear combination of basis functions from ReferenceSpaceBasis
+ * @brief GridFunction built as linear combination of basis functions from ReferenceBasis
  *
  * @ingroup serializable
  */
@@ -48,7 +48,7 @@ protected:
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
-  using RefBasis = ReferenceSpaceBasis<dim,range,1>;
+  using RefBasis = ReferenceBasis<dim,range,1>;
 
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;

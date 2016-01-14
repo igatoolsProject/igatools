@@ -34,7 +34,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, int ,int> class PhysicalSpaceBasis;
+template <int, int, int ,int> class PhysicalBasis;
 
 template <int, int, int> class ReferenceElement;
 template <int,int,int> class ReferenceElementHandler;
@@ -53,12 +53,12 @@ template <int,int,int> class DofDistribution;
  * @ingroup serializable
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class ReferenceSpaceBasis :
+class ReferenceBasis :
   public Basis<dim_,0,range_,rank_>
 {
 public:
   using base_t = Basis<dim_,0,range_,rank_>;
-  using self_t = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using self_t = ReferenceBasis<dim_,range_,rank_>;
 
   static const int dim       = dim_;
   static const int codim     = 0;
@@ -73,7 +73,7 @@ public:
    * @see Basis
    */
 
-  using RefBasis = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using RefBasis = ReferenceBasis<dim_,range_,rank_>;
 
   template <int order>
   using Derivative = typename base_t::template Derivative<order>;
@@ -112,11 +112,11 @@ protected:
    * Default constructor. It does nothing but it is needed for the serialization
    * mechanism.
    */
-  ReferenceSpaceBasis() = default;
+  ReferenceBasis() = default;
 
 
 public:
-  virtual ~ReferenceSpaceBasis() = default;
+  virtual ~ReferenceBasis() = default;
 
 
   template <int sdim>
@@ -126,10 +126,10 @@ public:
   using InterSpaceMap = SafeSTLVector<Index>;
 
   template <int k>
-  using SubRefSpace = ReferenceSpaceBasis<k, range, rank>;
+  using SubRefSpace = ReferenceBasis<k, range, rank>;
 
   template <int k>
-  using SubSpace = PhysicalSpaceBasis<k,range,rank, dim-k>;
+  using SubSpace = PhysicalBasis<k,range,rank, dim-k>;
 
   virtual bool is_bspline() const = 0;
 

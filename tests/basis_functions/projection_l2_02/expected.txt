@@ -1,5 +1,5 @@
 IgFunction<2,0,1,1>
-   PhysicalSpaceBasis<2,1,1,0>
+   PhysicalBasis<2,1,1,0>
       Reference space:
          Spline Space:
             Knots without repetition:

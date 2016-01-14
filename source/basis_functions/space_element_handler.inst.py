@@ -49,7 +49,7 @@ handler_methods.add(handler_method)
 
 
 #--------------------------------------------------------------------------------------
-# SpaceElement used by ReferenceSpaceBasisElement 
+# SpaceElement used by ReferenceBasisElement 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     handler = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.add(handler)

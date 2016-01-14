@@ -47,7 +47,7 @@ template <int,int,int> class DofDistribution;
  * @brief This is an auxiliary class used represent the "concept" of isogeometric basis function
  * in which its space is defined over <tt>dim</tt>-dimensional Grid.
  *
- * It is used as base class of ReferenceSpaceBasis and PhysicalSpaceBasis.
+ * It is used as base class of ReferenceBasis and PhysicalBasis.
  *
  * @author martinelli, 2015.
  *

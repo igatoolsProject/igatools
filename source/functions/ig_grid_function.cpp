@@ -207,7 +207,7 @@ print_info(LogStream &out) const
                  to_string(dim) + "," +
                  to_string(range) + ">");
 
-  out.begin_item("ReferenceSpaceBasis<" +
+  out.begin_item("ReferenceBasis<" +
                  to_string(dim) + ",1," +
                  to_string(range) + ">:");
   ref_basis_->print_info(out);

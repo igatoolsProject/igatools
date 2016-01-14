@@ -44,7 +44,7 @@ class ReferenceElementHandler
 private:
   using base_t = SpaceElementHandler<dim,0,range,rank>;
 public:
-  using Basis = ReferenceSpaceBasis<dim,range,rank>;
+  using Basis = ReferenceBasis<dim,range,rank>;
   using ElementIterator = typename Basis::ElementIterator;
   using ElementAccessor = typename Basis::ElementAccessor;
 
@@ -87,10 +87,10 @@ public:
   ///@}
 
 
-/*
-  template <int sdim = dim>
-  int get_num_points() const;
-//*/
+  /*
+    template <int sdim = dim>
+    int get_num_points() const;
+  //*/
 
 protected:
 

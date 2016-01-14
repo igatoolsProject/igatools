@@ -44,7 +44,7 @@ VTypes = ['space_element::_Value','space_element::_Gradient','space_element::_He
 
 
 #--------------------------------------------------------------------------------------
-# SpaceElement used by ReferenceSpaceBasisElement 
+# SpaceElement used by ReferenceBasisElement 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
     elements.add(elem)

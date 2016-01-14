@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test refinement of a basic PhysicalSpaceBasis using the NURBS as reference space
+ *  Test refinement of a basic PhysicalBasis using the NURBS as reference space
  *  and the IdentityFunction as mapping.
  *
  *  author: pauletti
@@ -31,7 +31,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/functions/grid_function_lib.h>
@@ -69,7 +69,7 @@ void test_evaluate()
   auto ref_space = NURBS<dim>::create(bsp_space,w_func);
 
   auto phys_space =
-    PhysicalSpaceBasis<dim,1,1,0>::create(
+    PhysicalBasis<dim,1,1,0>::create(
       ref_space,
       Domain<dim,0>::create(grid_functions::IdentityGridFunction<dim>::create(grid)));
 

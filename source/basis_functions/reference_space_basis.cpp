@@ -39,7 +39,7 @@ IGA_NAMESPACE_OPEN
 template<int dim_,int range_,int rank_>
 template<int sdim>
 auto
-ReferenceSpaceBasis<dim_,range_,rank_>::
+ReferenceBasis<dim_,range_,rank_>::
 get_ref_sub_space(const int sub_elem_id,
                   InterSpaceMap<sdim> &dof_map,
                   const std::shared_ptr<const Grid<sdim>> &sub_grid) const
@@ -76,7 +76,7 @@ get_ref_sub_space(const int sub_elem_id,
 template<int dim_,int range_,int rank_>
 template<int k>
 auto
-ReferenceSpaceBasis<dim_,range_,rank_>::
+ReferenceBasis<dim_,range_,rank_>::
 get_sub_space(const int s_id,
               InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
@@ -140,7 +140,7 @@ get_sub_space(const int s_id,
 #if 0
 template<int dim_,int range_,int rank_>
 int
-ReferenceSpaceBasis<dim_,range_,rank_>::
+ReferenceBasis<dim_,range_,rank_>::
 get_max_degree() const
 {
   return this->get_spline_space()->get_max_degree();
@@ -151,7 +151,7 @@ get_max_degree() const
 #ifdef MESH_REFINEMENT
 template<int dim_,int range_,int rank_>
 void
-ReferenceSpaceBasis<dim_,range_,rank_>::
+ReferenceBasis<dim_,range_,rank_>::
 create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 {
   Assert(space != nullptr, ExcNullPtr());
@@ -170,7 +170,7 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &space)
 
 template<int dim_,int range_,int rank_>
 auto
-ReferenceSpaceBasis<dim_,range_,rank_>::
+ReferenceBasis<dim_,range_,rank_>::
 get_basis_previous_refinement() const -> std::shared_ptr<const self_t>
 {
   return ref_basis_previous_refinement_;
@@ -185,7 +185,7 @@ get_basis_previous_refinement() const -> std::shared_ptr<const self_t>
 template<int dim_,int range_,int rank_>
 template<class Archive>
 void
-ReferenceSpaceBasis<dim_,range_,rank_>::
+ReferenceBasis<dim_,range_,rank_>::
 serialize(Archive &ar)
 {
   using std::to_string;

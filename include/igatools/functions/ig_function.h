@@ -42,7 +42,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <int,int,int,int>
-class PhysicalSpaceBasis;
+class PhysicalBasis;
 
 
 template <int,int,int,int>
@@ -71,7 +71,7 @@ class PhysicalSpaceElement;
 
 
 /**
- * @brief Function built as linear combination of basis functions from PhysicalSpaceBasis
+ * @brief Function built as linear combination of basis functions from PhysicalBasis
  *
  * @ingroup serializable
  */
@@ -88,7 +88,7 @@ private:
   using base_t = Function<dim,codim,range,rank>;
   using parent_t = Function<dim,codim,range,rank>;
   using self_t = IgFunction<dim,codim,range,rank>;
-  using PhysBasis = PhysicalSpaceBasis<dim,range,rank,codim>;
+  using PhysBasis = PhysicalBasis<dim,range,rank,codim>;
 
 public:
   /**

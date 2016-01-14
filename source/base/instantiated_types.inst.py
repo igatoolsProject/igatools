@@ -35,8 +35,8 @@ template <int dim, int codim> class Domain;
 template <int dim, int range, int rank> class SplineSpace;
 template <int dim, int range, int rank> class BSpline;
 template <int dim, int range, int rank> class NURBS;
-template <int dim, int range, int rank> class ReferenceSpaceBasis;
-template <int dim, int range, int rank, int codim> class PhysicalSpaceBasis;
+template <int dim, int range, int rank> class ReferenceBasis;
+template <int dim, int range, int rank, int codim> class PhysicalBasis;
 template <int dim, int codim, int range, int rank> class Function;
 
 """)
@@ -111,11 +111,11 @@ f.write("""
   typedef boost::mpl::vector<""")
 
 types = []
-types.append('ReferenceSpaceBasis<%d, %d, %d>' % (0, 0, 1))
+types.append('ReferenceBasis<%d, %d, %d>' % (0, 0, 1))
 for x in inst.sub_ref_sp_dims:
-    types.append('ReferenceSpaceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    types.append('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
 for x in inst.ref_sp_dims:
-    types.append('ReferenceSpaceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    types.append('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
 
 types = unique(types)
 f.write(" %s,\n" % (types[0]));
@@ -180,11 +180,11 @@ f.write("""
   typedef boost::mpl::vector<""")
 
 types = []
-types.append('PhysicalSpaceBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
+types.append('PhysicalBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
 for sp in inst.SubPhysSpaces:
-    types.append('PhysicalSpaceBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
+    types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 for sp in inst.PhysSpaces:
-    types.append('PhysicalSpaceBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
+    types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 
 types = unique(types)
 f.write(" %s,\n" % (types[0]));

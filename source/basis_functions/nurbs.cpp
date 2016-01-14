@@ -559,7 +559,7 @@ NURBS<dim_, range_, rank_>::
 serialize(Archive &ar)
 {
   using std::to_string;
-  const std::string base_name = "ReferenceSpaceBasis_" +
+  const std::string base_name = "ReferenceBasis_" +
                                 to_string(dim_) + "_" +
                                 to_string(0) + "_" +
                                 to_string(range_) + "_" +

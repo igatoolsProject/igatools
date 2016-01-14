@@ -57,7 +57,7 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   {
     const auto &rep_knots_i = rep_knots[i];
 
-    auto & end_interval_i = end_interval_[i];
+    auto &end_interval_i = end_interval_[i];
 
     for (int dir=0; dir<dim; ++dir)
     {
@@ -65,9 +65,9 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
 
       const auto &knots_coord_dir = *knots_coord[dir];
 
-      const auto & rep_knots_i_dir = rep_knots_i[dir];
+      const auto &rep_knots_i_dir = rep_knots_i[dir];
 
-      auto & end_interval_i_dir = end_interval_i[dir];
+      auto &end_interval_i_dir = end_interval_i[dir];
 
       const auto x1 = knots_coord_dir[1];
       const auto a = knots_coord_dir[0];
@@ -443,7 +443,7 @@ BSpline<dim_, range_, rank_>::
 serialize(Archive &ar)
 {
   using std::to_string;
-  const std::string base_name = "ReferenceSpaceBasis_" +
+  const std::string base_name = "ReferenceBasis_" +
                                 to_string(dim_) + "_" +
                                 to_string(0) + "_" +
                                 to_string(range_) + "_" +

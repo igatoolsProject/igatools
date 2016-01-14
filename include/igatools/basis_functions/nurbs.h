@@ -43,10 +43,10 @@ template <int, int, int> class NURBSElementHandler;
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
 class NURBS :
-  public ReferenceSpaceBasis<dim_,range_,rank_>
+  public ReferenceBasis<dim_,range_,rank_>
 {
 private:
-  using BaseSpace = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using BaseSpace = ReferenceBasis<dim_,range_,rank_>;
   using self_t = NURBS<dim_, range_, rank_>;
 
 public:
