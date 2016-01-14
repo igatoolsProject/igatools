@@ -190,7 +190,7 @@ void PoissonProblem<dim>::save() {
     xml_out << *objs_container;
   }
 #else
-#if XML_IO
+#ifdef XML_IO
   const auto objs_container = ObjectsContainer::create();
   objs_container->insert_const_object<GridFunction<dim, 1>>(solution);
   ObjectsContainerXMLWriter::write(filename + ".iga", objs_container);

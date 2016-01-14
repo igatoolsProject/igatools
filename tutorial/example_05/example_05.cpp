@@ -274,7 +274,7 @@ Values<2,1,1> f(Points<2> x) {
 // [functions_g2]
 Values<1,1,1> g2(Points<2> x) {
   Values<1,1,1> y;
-  y  = 0.1*sin(2.0*PI*SQR(x[0],x[1]))+x[0];
+  y  = 0.1*sin(2.0*PI*x[0]*x[0])+x[0];
   return y;
 }
 // [functions_g2]
@@ -282,7 +282,7 @@ Values<1,1,1> g2(Points<2> x) {
 // [functions_g3]
 Values<1,1,1> g3(Points<2> x) {
   Values<1,1,1> y;
-  y  = 0.1*sin(2.0*PI*SQR(x[0],x[1]))+x[1];
+  y  = 0.1*sin(2.0*PI*x[1]*x[1])+x[1];
   return y;
 }
 // [functions_g3]
