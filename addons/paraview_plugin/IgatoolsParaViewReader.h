@@ -48,20 +48,23 @@ namespace iga
  *
  * The plugin receives from the ParaView GUI an input file name
  * and group of options for building the information for building the VTK
- * geometries.
- * With this information creates and returns the VTK grids packed into
- * MultiBlockDataSet.
+ * geometries. With this information creates and returns the VTK grids packed
+ * into MultiBlockDataSet.
  *
- * The domains to be visualized are retrieved from an @ref ObjectsContainer
- * that is defined in the input file that must be parsed (or de-serialized).
- *
- * The options set in the ParaView GUI can be updated. In such a case,
- * only needed grids are recomputed (see @ref paraview_plugin::VtkIgaGrid for further details).
+ * The interaction between this class and ParaView is performed basically
+ * throw two methods:
+ *  - @ref RequestInformation: once it is called, the plugin creates new
+ *    @ref paraview_plugin::VtkIgaGridContainer objects
+ *    (@ref iga_grid_container_), that will parse the input file,
+ *    and create a @ref paraview_plugin::VtkIgaGrid associated to each
+ *    domain present in the input file.
+ *  - @ref RequestData: when it is called, @ref iga_grid_container_
+ *    is requested to create the VTK multi block object containing all
+ *    the active domains.
  *
  * @see paraview_plugin::VtkIgaGrid
  * @see paraview_plugin::VtkIgaGridContainer
  * @see paraview_plugin::VtkGridInformation
- * @see paraview_plugin::VtkGridTypes
  *
  * @author P. Antolin, 2016.
  *
