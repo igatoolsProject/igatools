@@ -20,8 +20,8 @@ Grid:
   number of elements:  
     4 = [ 2 2 ]
   knots:  
-    0.00000 0.500000 1.00000
-    0.00000 0.500000 1.00000
+    [ 0.00000 0.500000 1.00000 ]
+    [ 0.00000 0.500000 1.00000 ]
 
 Spline Space:
 \endcode
@@ -62,7 +62,7 @@ our problem (2 in this case):
 Then we create a uniform bidimensional cartesian grid (representend by the class Grid) with 3 nodes (or knots)
 in each direction.
 \snippet example_01.cpp grid
-From the previous lines we can comment some interesting facts that help to illustrate the igatools philosophy:
+From the previous lines we can comment some facts that help to illustrate the igatools philosophy:
   - the class Grid is templetized with the constant integer <tt>dim</tt> that, int this case, has the value 2
   - to create an instance of Grid, we do not use a Grid constructor but we use a <b>creator</b>, i.e. a 
     static method that returns the desired object wrapped in a <b>shared pointer</b> 
@@ -71,8 +71,8 @@ From the previous lines we can comment some interesting facts that help to illus
     One of the key feature of a shared pointer is the fact that the object referenced by the 
     contained raw pointer will be destroyed when and only when all 
     copies of the shared pointer have been destroyed (this means that the probability of a memory is vastly reduced).
-    \note By design, in igatools the use of raw pointers is discouraged (read id "prohibited"):
-      use only smart pointers (i.e. <tt>std::shared_ptr</tt> and <tt>std::unique_ptr</tt>)
+    \note By design, in igatools the use of raw pointers is <em><b>strongly discouraged</b></em> (read id "prohibited"):
+      use only smart pointers (i.e. <tt>std::shared_ptr</tt> and <tt>std::unique_ptr</tt>)!
   - for the classes that implements the <b>creator idiom</b>, we have two sets of static functions:
     - the static functions <tt>create()</tt> return a <b>non-const object</b> wrapped by a shared pointer
     - the static functions <tt>const_create()</tt> return a <b>const object</b> wrapped by a shared pointer
@@ -92,7 +92,8 @@ In the next lines we see some examples of how to access the data inside an igato
 object:
 \snippet example_01.cpp grid_print
 We notice that the LogStream variable <tt>out</tt> is used as <tt>std::cout</tt> and
-permits to stream the library's basic objects such as the TensorIndex.
+permits to stream the library's basic objects such as value returned by <tt>grid->get_num_intervals()</tt>
+(i.e an object of type TensorSize).
 In the following lines, we directly access to the grid knots by the variable
 <tt>knots</tt>. As one can see from its declaration, KnotCoordinates is an alias for an
 SafeSTLArray of SafeSTLVector (wrapped in a smart pointer). These two classes are

@@ -36,24 +36,35 @@ int main()
 
   // [grid]
   const int n_knots = 3;
-  auto grid = Grid<dim>::const_create(n_knots); // the type of the variable grid is shared_ptr<const Grid<dim>>
+
+  // the type of the variable grid is shared_ptr<const Grid<dim>>
+  auto grid = Grid<dim>::const_create(n_knots);
   // [grid]
 
   // [logstream]
   LogStream out;
   // [logstream]
+
   // [grid_print]
   out << "Grid: " << endl;
   out << "  number of elements:  " << endl;
-  out << "    " << grid->get_num_all_elems();        // total number of elements in the grid
-  out << " = " << grid->get_num_intervals() << endl; // number of intervals in each coordinate direction
+  //
+  // total number of elements in the grid
+  out << "    " << grid->get_num_all_elems();
+  //
+  // number of intervals in each coordinate direction
+  out << " = " << grid->get_num_intervals() << endl;
+  //
   out << "  knots:  " << endl;
-  auto knots = grid->get_knots();                    // the type for knots is SafeSTLArray<shared_ptr<SafeSTLVector<Real>>.dim>
-  for (const auto &knot_vect : knots)                // SafeSTLArray can be used ad std::array --> the range-based for loops works fine
+  //
+  // the type for knots is SafeSTLArray<shared_ptr<SafeSTLVector<Real>>,dim>
+  auto knots = grid->get_knots();
+  //
+  // SafeSTLArray can be used ad std::array --> the range-based for loops works fine
+  for (const auto &knot_vect : knots)
   {
-    out << "   ";
-    for (const auto &knot : *knot_vect)
-      out << " " << knot;
+    out << "    ";
+    knot_vect->print_info(out);
     out << endl;
   }
   out << endl;
