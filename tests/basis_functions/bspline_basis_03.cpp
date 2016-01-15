@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for building a matrix on a space of an const igfunction
+ *  Test for building a matrix on a basis of an const igfunction
  *
  *  author: pauletti
  *  date: 2015-03-17
@@ -38,7 +38,7 @@
 
 
 template<int dim, int sp_dim>
-void using_const_space(shared_ptr<const IgGridFunction<dim,sp_dim>> fun)
+void using_const_basis(shared_ptr<const IgGridFunction<dim,sp_dim>> fun)
 {
   OUTSTART
 
@@ -80,7 +80,7 @@ int main()
   using IgGridFunc = IgGridFunction<dim,1>;
   auto fun = dynamic_pointer_cast<const IgGridFunc>(IgGridFunc::const_create(basis,coeffs));
 
-  using_const_space<2,1>(fun);
+  using_const_basis<2,1>(fun);
   using_const_function<2,1>(fun);
 
   return 0;

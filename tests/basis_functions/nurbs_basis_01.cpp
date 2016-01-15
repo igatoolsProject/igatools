@@ -92,8 +92,8 @@ void do_test()
 
   const auto w_func = WeightFunc::const_create(scalar_space,weights);
 
-  auto nurbs_space = Basis::const_create(bsp, w_func);
-  nurbs_space->print_info(out);
+  auto nurbs_basis = Basis::const_create(bsp, w_func);
+  nurbs_basis->print_info(out);
 //*/
   OUTEND
 

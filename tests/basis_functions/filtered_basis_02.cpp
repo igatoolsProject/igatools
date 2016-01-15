@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for building a matrix on a filtered space
+ *  Test for building a matrix on a filtered basis
  *
  *  author: pauletti
  *  date: 2015-03-17

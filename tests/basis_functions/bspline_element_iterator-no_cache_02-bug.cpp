@@ -27,7 +27,7 @@
  *  date: May 08, 2014
  *
  */
-// TODO (pauletti, Jun 2, 2014): no need to print info of the spaces
+// TODO (pauletti, Jun 2, 2014): no need to print info of the bases
 // TODO (pauletti, Jun 2, 2014): rename this file to have 04 at the end
 #include "../tests.h"
 

@@ -1,5 +1,5 @@
 ========================================================================
-create_phys_space
+create_phys_basis
 ========================================================================
 PhysicalBasis<1,1,1,0,Transformation::h_grad>
    Reference basis:

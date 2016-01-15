@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for physical space
+ *  Test for physical basis
  *
  *  author: pauletti
  *  date: Oct 08, 2014
@@ -43,10 +43,10 @@ void cache_init(const basis_element::Flags flag,
 {
   OUTSTART
 
-  using BspSpace = BSpline<dim, range, rank>;
+  using BspBasis = BSpline<dim, range, rank>;
   using Basis    = PhysicalBasis<dim,range,rank,codim>;
   auto grid      = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
+  auto ref_basis = BspBasis::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -61,12 +61,12 @@ void cache_init(const basis_element::Flags flag,
 
 //  auto quad = QGauss<dim>::create(2);
   auto map_func = Function::const_create(grid,A, b);
-  auto space = Basis::const_create(
-                 ref_space,
+  auto basis = Basis::const_create(
+                 ref_basis,
                  Domain<dim,codim>::const_create(map_func),Transformation::h_grad);
 
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
   elem_handler->print_info(out);
 
@@ -82,11 +82,11 @@ void cache_init_elem(const basis_element::Flags flag,
 //    const int k = dim;
   OUTSTART
 
-  using BspSpace = BSpline<dim, range, rank>;
+  using BspBasis = BSpline<dim, range, rank>;
   using Basis    = PhysicalBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
+  auto ref_basis = BspBasis::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -101,14 +101,14 @@ void cache_init_elem(const basis_element::Flags flag,
 
   auto quad = QGauss<dim>::create(2);
   auto map_func = Function::const_create(grid, A, b);
-  auto space = Basis::const_create(
-                 ref_space,
+  auto basis = Basis::const_create(
+                 ref_basis,
                  Domain<dim,codim>::const_create(map_func), Transformation::h_grad);
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
 
-  auto elem = space->begin();
+  auto elem = basis->begin();
   elem_handler->init_element_cache(elem,quad);
   elem->print_cache_info(out);
 
@@ -123,11 +123,11 @@ void cache_fill_elem(const basis_element::Flags flag,
   OUTSTART
 
 //   const int k = dim;
-  using BspSpace = BSpline<dim, range, rank>;
+  using BspBasis = BSpline<dim, range, rank>;
   using Basis    = PhysicalBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
+  auto ref_basis = BspBasis::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -142,15 +142,15 @@ void cache_fill_elem(const basis_element::Flags flag,
 
   auto quad = QGauss<dim>::create(2);
   auto map_func = Function::const_create(grid,A, b);
-  auto space = Basis::const_create(
-                 ref_space,
+  auto basis = Basis::const_create(
+                 ref_basis,
                  Domain<dim,codim>::const_create(map_func), Transformation::h_grad);
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
 
-  auto elem = space->begin();
-  auto end = space->end();
+  auto elem = basis->begin();
+  auto end = basis->end();
   elem_handler->init_element_cache(elem,quad);
   for (; elem != end; ++elem)
   {
@@ -169,11 +169,11 @@ void cache_get_elem_values(const basis_element::Flags flag,
 {
   OUTSTART
   const int k = dim;
-  using BspSpace = BSpline<dim, range, rank>;
+  using BspBasis = BSpline<dim, range, rank>;
   using Basis    = PhysicalBasis<dim,range,rank,codim>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
+  auto ref_basis = BspBasis::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -188,17 +188,17 @@ void cache_get_elem_values(const basis_element::Flags flag,
 
   auto quad = QGauss<dim>::create(2);
   auto map_func = Function::const_create(grid,  A, b);
-  auto space = Basis::const_create(
-                 ref_space,
+  auto basis = Basis::const_create(
+                 ref_basis,
                  Domain<dim,codim>::const_create(map_func), Transformation::h_grad);
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
 
   using basis_element::_Value;
 
-  auto elem = space->begin();
-  auto end = space->end();
+  auto elem = basis->begin();
+  auto end = basis->end();
   elem_handler->init_element_cache(elem,quad);
   for (; elem != end; ++elem)
   {

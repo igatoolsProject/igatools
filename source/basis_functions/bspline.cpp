@@ -145,8 +145,8 @@ auto
 BSpline<dim_, range_, rank_>::
 get_this_basis() const -> shared_ptr<const self_t>
 {
-  auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
-  auto bsp_basis = std::dynamic_pointer_cast<self_t>(ref_sp);
+  auto ref_bs = const_cast<self_t *>(this)->shared_from_this();
+  auto bsp_basis = std::dynamic_pointer_cast<self_t>(ref_bs);
   Assert(bsp_basis != nullptr,ExcNullPtr());
 
   return bsp_basis;

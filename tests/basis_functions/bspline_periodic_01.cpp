@@ -55,8 +55,8 @@ void plot_basis(const int n_knots, const int deg)
   basis->print_info(out);
 
 #if 0
-  using RefSpace  = ReferenceBasis<dim, range>;
-  using Coeffs = typename IgFunction<RefSpace>::CoeffType;
+  using RefBasis  = ReferenceBasis<dim, range>;
+  using Coeffs = typename IgFunction<RefBasis>::CoeffType;
   Coeffs coeffs(n_basis);
 
   for (int basis_index = 0; basis_index < space->get_num_basis(); ++basis_index)
@@ -68,7 +68,7 @@ void plot_basis(const int n_knots, const int deg)
 
     string field_name = "basis " + to_string(basis_index);
 
-    auto basis = IgFunction<RefSpace>::const_create(space, coeffs);
+    auto basis = IgFunction<RefBasis>::const_create(space, coeffs);
     output.template add_field<1,1>(basis, field_name);
 
     string file_name = "bspline_basis-" + to_string(basis_index);

@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for BSplineVecSpace, constructing a component space
+ *  Test for BSplineVecBasis, constructing a component space
  *
  *  author: pauletti
  *  date: 2015-03-17

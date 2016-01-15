@@ -37,7 +37,7 @@ template<int dim, int range = 1, int rank = 1>
 void get_bdry_dof(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
-  using RefSpace = ReferenceBasis<dim, range, rank>;
+  using RefBasis = ReferenceBasis<dim, range, rank>;
   using Basis = BSpline<dim, range, rank>;
   auto grid = Grid<dim>::create(n_knots);
 //  grid->set_boundary_id(0,1);
@@ -52,8 +52,8 @@ void get_bdry_dof(const int deg = 1, const int n_knots = 3)
   for (int face_id = 1; face_id < UnitElement<dim>::n_faces ; ++face_id)
     piece_zero.insert(face_id);
 
-  auto one_dofs = get_boundary_dofs<RefSpace>(basis, piece_one);
-  auto zero_dofs = get_boundary_dofs<RefSpace>(basis, piece_zero);
+  auto one_dofs = get_boundary_dofs<RefBasis>(basis, piece_one);
+  auto zero_dofs = get_boundary_dofs<RefBasis>(basis, piece_zero);
 
   // TODO (pauletti, Mar 27, 2015): we should create iga::set with print_info
   for (auto &x : one_dofs)
