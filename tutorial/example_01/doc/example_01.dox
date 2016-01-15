@@ -13,7 +13,7 @@ cd IGA_WS/tutorial/example_01
 make run-example_01
 \endcode
 
-If igatools is installed correctely, you should see the following lines as first
+If igatools is installed correctly, you should see the following lines as first
 lines of the printed output:
 \code{.bash}
 Grid: 
@@ -55,7 +55,7 @@ one (or more) dimension parameter(s).
 
 For simplicity, in this first example we don't want to code a program that is 
 dimension-independent, so, 
-as first instruction, we define an integer constant that represents the dimensionality of 
+as first instruction, we define an integer static constant that represents the dimensionality of 
 our problem (2 in this case):
 \snippet example_01.cpp dim
 
@@ -63,25 +63,29 @@ Then we create a uniform bidimensional cartesian grid (representend by the class
 in each direction.
 \snippet example_01.cpp grid
 From the previous lines we can comment some facts that help to illustrate the igatools philosophy:
-  - the class Grid is templetized with the constant integer <tt>dim</tt> that, int this case, has the value 2.
+  - the class Grid is templetized with the static constant integer <tt>dim</tt> that, int this case, has the value 2.
   - To create an instance of Grid, we do not use a Grid constructor but we use a <b>creator</b>, i.e. a 
-    static method that returns the desired object wrapped in a <b>shared pointer</b> 
-    (i.e. a container for a raw pointer that maintains reference-counted ownership of its contained 
-    pointer in cooperation with all copies of the shared pointer). 
-    One of the key feature of a shared pointer is the fact that the object referenced by the 
-    contained raw pointer will be destroyed when and only when all 
-    copies of the shared pointer have been destroyed (this means that the probability of a memory is vastly reduced).
-    \note By design, in igatools the use of raw pointers is <em><b>strongly discouraged</b></em> (read it "prohibited"):
-      use only smart pointers (i.e. <tt>std::shared_ptr</tt> and <tt>std::unique_ptr</tt>)!
+    static method that returns the desired object wrapped in a <b>shared pointer</b>.
   - For the classes that implements the <b>creator idiom</b>, we have two sets of static functions:
-    - the static functions <tt>create()</tt> return a <b>non-const object</b> wrapped by a shared pointer;
-    - the static functions <tt>const_create()</tt> return a <b>const object</b> wrapped by a shared pointer.
+    - the static functions <tt>create()</tt> return a <b>non-const object</b> wrapped by a shared pointer
+      (<tt>std::shared_ptr<Type></tt>);
+    - the static functions <tt>const_create()</tt> return a <b>const object</b> wrapped by a shared pointer
+      (<tt>std::shared_ptr<const Type></tt>).
   - Not every class implements the <b>creator idiom</b>: it is necessary only for classes for which the
     object instances can be used in cooperation with other objects. 
     Being Grid one of such classes, and due to the fact that we don't want to modify the grid, 
     we call the static method <tt>const_create</tt> instead of the non-const version <tt>create</tt> 
     (see \ref example_02 for more details).
   - A class with the <b>create idiom</b> has at least one <tt>create()/const_create()</tt> static functions pair. 
+
+\note A <b>shared pointer</b> is a container for a raw pointer that maintains
+reference-counted ownership of its contained pointer in cooperation with all
+copies of the shared pointer. 
+One of the key feature of a shared pointer is the fact that the object referenced by the 
+contained raw pointer will be destroyed when and only when all 
+copies of the shared pointer have been destroyed (this means that the probability of a memory leak is vastly reduced).
+By design, in igatools the use of raw pointers is <em><b>strongly discouraged</b></em> (read it "prohibited"):
+use only smart pointers (i.e. <tt>std::shared_ptr</tt> and <tt>std::unique_ptr</tt>)!
     
 
 Going back to our example, we instantiate an object of type LogStream
@@ -117,7 +121,7 @@ SplineSpace is a spline space. The SplineSpace is then used to create the BSplin
 a basis of splines spanning the spline space:
 \snippet example_01.cpp basis
 We finally notice how the data inside a BSpline variable is printed to screen.
-Every igatools object has the method <tt>print_info</tt>. It has to be used in
+Every high-level igatools object has the method <tt>print_info</tt>. It has to be used in
 combination with a LogStream variable as the last lines of this example show.
 
 With this first tutorial we have just scratched the tip of the iceberg. 
@@ -135,7 +139,7 @@ you obtain the expected output.
  <a href="#show11" class="show" id="show11">Hide hint</a>
  <div class="list">
 \code{.cpp}
-const int dim = 3;
+static const int dim = 3;
 const int n_knots = 5;
 \endcode
  </div>

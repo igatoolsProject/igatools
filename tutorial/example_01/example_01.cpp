@@ -31,7 +31,7 @@ using namespace std;
 int main()
 {
   // [dim]
-  const int dim = 2;
+  static const int dim = 2;
   // [dim]
 
   // [grid]
