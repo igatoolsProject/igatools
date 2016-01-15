@@ -947,7 +947,7 @@ CylindricalAnnulusGridFunction(
 
 auto
 CylindricalAnnulusGridFunction::
-create(std::shared_ptr<GridType> grid,
+create(const std::shared_ptr<GridType> &grid,
        const Real r0,
        const Real r1,
        const Real h0,
@@ -968,7 +968,7 @@ create(std::shared_ptr<GridType> grid,
 
 auto
 CylindricalAnnulusGridFunction::
-const_create(std::shared_ptr<const GridType> grid,
+const_create(const std::shared_ptr<const GridType> &grid,
              const Real r0,
              const Real r1,
              const Real h0,
@@ -994,10 +994,10 @@ rebuild_after_insert_knots(
 #endif // MESH_REFINEMENT
 
 
-auto
+void
 CylindricalAnnulusGridFunction::
 evaluate_0(const ValueVector<GridPoint> &points,
-           ValueVector<Value> &values) const -> void
+           ValueVector<Value> &values) const
 {
 
   const int n_points = points.size();
@@ -1020,10 +1020,10 @@ evaluate_0(const ValueVector<GridPoint> &points,
 
 
 
-auto
+void
 CylindricalAnnulusGridFunction::
 evaluate_1(const ValueVector<GridPoint> &points,
-           ValueVector<Derivative<1>> &values) const -> void
+           ValueVector<Derivative<1>> &values) const
 {
 
   const int n_points = points.size();
@@ -1056,10 +1056,10 @@ evaluate_1(const ValueVector<GridPoint> &points,
 
 
 
-auto
+void
 CylindricalAnnulusGridFunction::
 evaluate_2(const ValueVector<GridPoint> &points,
-           ValueVector<Derivative<2>> &values) const -> void
+           ValueVector<Derivative<2>> &values) const
 {
   const int n_points = points.size();
 
@@ -1133,6 +1133,179 @@ print_info(LogStream &out) const
 }
 
 //------------------------------------------------------------------------------
+
+
+
+
+
+//------------------------------------------------------------------------------
+template <int range>
+TriangleGridFunction<range>::
+TriangleGridFunction(
+  const SharedPtrConstnessHandler<GridType> &grid,
+  const Points<range> &vertex_0,
+  const Points<range> &vertex_1,
+  const Points<range> &vertex_2)
+  :
+  parent_t(grid),
+  vertices_{vertex_0,vertex_1,vertex_2}
+{}
+
+
+template <int range>
+auto
+TriangleGridFunction<range>::
+create(const std::shared_ptr<GridType> &grid,
+       const Points<range> &vertex_0,
+       const Points<range> &vertex_1,
+       const Points<range> &vertex_2) ->  std::shared_ptr<self_t>
+{
+  auto func = std::shared_ptr<self_t>(
+    new self_t(SharedPtrConstnessHandler<GridType>(grid),vertex_0,vertex_1,vertex_2));
+
+#ifdef MESH_REFINEMENT
+  func->create_connection_for_insert_knots(func);
+#endif
+
+  return func;
+}
+
+
+template <int range>
+auto
+TriangleGridFunction<range>::
+const_create(const std::shared_ptr<const GridType> &grid,
+             const Points<range> &vertex_0,
+             const Points<range> &vertex_1,
+             const Points<range> &vertex_2) ->  std::shared_ptr<const self_t>
+{
+  return std::shared_ptr<self_t>(new self_t(
+    SharedPtrConstnessHandler<GridType>(grid),vertex_0,vertex_1,vertex_2));
+}
+
+
+#ifdef MESH_REFINEMENT
+template <int range>
+void
+TriangleGridFunction<range>::
+rebuild_after_insert_knots(
+  const SafeSTLArray<SafeSTLVector<Real>,2> &knots_to_insert,
+  const Grid<2> &old_grid)
+{
+  this->grid_function_previous_refinement_ =
+    self_t::const_create(
+      this->get_grid()->get_grid_pre_refinement(),vertices_[0],vertices_[1],vertices_[2]);
+}
+#endif // MESH_REFINEMENT
+
+
+
+template <int range>
+void
+TriangleGridFunction<range>::
+evaluate_0(const ValueVector<GridPoint> &points,
+           ValueVector<Value> &values) const
+{
+  const auto &knots = this->get_grid()->get_knots();
+
+  const auto h0 = knots[0]->back() - knots[0]->front();
+  const auto h1 = knots[1]->back() - knots[1]->front();
+
+  const int n_points = points.size();
+
+  Points<range> A = vertices_[0];
+  Points<range> B = (vertices_[1] - vertices_[0]) / h0;
+  Points<range> C = (vertices_[2] - vertices_[0]) / h1;
+  Points<range> D = (vertices_[2] - A - h0 * B - h1 * C) / (h0 * h1);
+
+  for (int qp = 0; qp < n_points; ++qp)
+  {
+    auto &f = values[qp];
+    const auto &pt = points[qp];
+
+    const Real &u = pt[0];
+    const Real &v = pt[1];
+
+    f = A + u * B + v * C + u * v * D;
+  }
+}
+
+
+template <int range>
+void
+TriangleGridFunction<range>::
+evaluate_1(const ValueVector<GridPoint> &points,
+           ValueVector<Derivative<1>> &values) const
+{
+  const auto &knots = this->get_grid()->get_knots();
+
+  const auto h0 = knots[0]->back() - knots[0]->front();
+  const auto h1 = knots[1]->back() - knots[1]->front();
+
+  const int n_points = points.size();
+
+  Points<range> A = vertices_[0];
+  Points<range> B = (vertices_[1] - vertices_[0]) / h0;
+  Points<range> C = (vertices_[2] - vertices_[0]) / h1;
+  Points<range> D = (vertices_[2] - A - h0 * B - h1 * C) / (h0 * h1);
+
+  for (int qp = 0; qp < n_points; ++qp)
+  {
+    auto &df = values[qp];
+    const auto &pt = points[qp];
+
+    const Real &u = pt[0];
+    const Real &v = pt[1];
+
+    df[0] = B + v * D;
+    df[1] = C + u * D;
+  }
+}
+
+template <int range>
+void
+TriangleGridFunction<range>::
+evaluate_2(const ValueVector<GridPoint> &points,
+           ValueVector<Derivative<2>> &values) const
+{
+  const auto &knots = this->get_grid()->get_knots();
+
+  const auto h0 = knots[0]->back() - knots[0]->front();
+  const auto h1 = knots[1]->back() - knots[1]->front();
+
+
+  Points<range> A = vertices_[0];
+  Points<range> B = (vertices_[1] - vertices_[0]) / h0;
+  Points<range> C = (vertices_[2] - vertices_[0]) / h1;
+  Points<range> D = (vertices_[2] - A - h0 * B - h1 * C) / (h0 * h1);
+
+  for (auto &d2f : values)
+  {
+    d2f[0][0] = 0.0;
+    d2f[1][0] = D;
+    d2f[0][1] = D;
+    d2f[1][1] = 0.0;
+  }
+}
+
+template <int range>
+void
+TriangleGridFunction<range>::
+print_info(LogStream &out) const
+{
+  using std::endl;
+  out.begin_item("TriangleGridFunction");
+  out << "Vertices: " << vertices_ << endl;
+  out.end_item();
+
+  out << "Name: " << this->name_ << std::endl;
+}
+
+
+
+//------------------------------------------------------------------------------
+
+
 } // of namespace functions.
 
 IGA_NAMESPACE_CLOSE

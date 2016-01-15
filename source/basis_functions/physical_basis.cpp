@@ -216,13 +216,13 @@ get_face_basis(const Index face_id,
                SafeSTLVector<Index> &face_to_element_dofs) const -> shared_ptr<FaceBasis>
 {
   auto elem_map = std::make_shared<typename GridType::FaceGridMap >();
-  auto face_ref_sp = ref_basis_->get_ref_face_basis(face_id, face_to_element_dofs, *elem_map);
+  auto face_ref_bs = ref_basis_->get_ref_face_basis(face_id, face_to_element_dofs, *elem_map);
   auto map  = push_forward_->get_mapping();
 
   auto fmap = MappingSlice<FaceBasis::PushForwardType::dim, FaceBasis::PushForwardType::codim>::
-  create(map, face_id, face_ref_sp->get_grid(), elem_map);
+  create(map, face_id, face_ref_bs->get_grid(), elem_map);
   auto fpf = FaceBasis::PushForwardType::create(fmap);
-  auto face_basis = FaceBasis::create(face_ref_sp,fpf);
+  auto face_basis = FaceBasis::create(face_ref_bs,fpf);
 
   return face_basis;
 }

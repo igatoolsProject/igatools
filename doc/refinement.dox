@@ -66,16 +66,16 @@
   @code{.cpp}
     auto grid_shared = Grid::create(); // initial grid made by 1x1 element
     
-    using RefSpace = BSpline<dim,1,1>;
-    auto ref_space = RefSpace::create(grid_shared); // space of scalar BSpline functions
+    using RefBasis = BSpline<dim,1,1>;
+    auto ref_basis = RefBasis::create(grid_shared); // space of scalar BSpline functions
     
     auto map = SphereMapping<dim>::create(grid_shared); // dim-dimensional sphere of radius = 1
 
     using PushFwd = PushForward<Transformation::h_grad,dim,dim>; 
     auto push_fwd = PushFwd::create(map); // push-forward built using the map above
     
-    using PhysSpace = PhysicalBasis<RefSpace,PushFwd>;
-    auto phys_space = PhysSpace::create(ref_space,push_fwd);
+    using PhysBasis = PhysicalBasis<RefBasis,PushFwd>;
+    auto phys_basis = PhysBasis::create(ref_basis,push_fwd);
   @endcode
   
   Then we refine the grid in order to have a 3x3 mesh    
@@ -84,17 +84,17 @@
   @endcode
   Due to the fact that some objects are based/built using grid_shared, then the h-refinement is
   not performed only to grid_shared, but it is propagated to those objects.
-  In other words, the objects <tt>ref_space</tt>, <tt>map</tt>, <tt>push_fwd</tt> 
-  and <tt>phys_space</tt> are internally modified in 
+  In other words, the objects <tt>ref_basis</tt>, <tt>map</tt>, <tt>push_fwd</tt> 
+  and <tt>phys_basis</tt> are internally modified in 
   order to be defined used on the same 3x3 mesh.
   
   This mechanism works also in the opposite sense, i.e. if we h-refine the object representing the 
-  physical space <tt>phys_space</tt>
+  physical space <tt>phys_basis</tt>
   @code{.cpp}
-  phys_space->refine_h(4); //now phys_space is defined on a 12x12 mesh
+  phys_basis->refine_h(4); //now phys_basis is defined on a 12x12 mesh
   @endcode
-  also the objects needed for the construction of <tt>phys_space</tt> 
-  (i.e. <tt>ref_space</tt>, <tt>push_fwd</tt>, <tt>map</tt> and <tt>grid_shared</tt>) are h-refined
+  also the objects needed for the construction of <tt>phys_basis</tt> 
+  (i.e. <tt>ref_basis</tt>, <tt>push_fwd</tt>, <tt>map</tt> and <tt>grid_shared</tt>) are h-refined
   accordingly.
   
   <div class="row">

@@ -122,7 +122,7 @@ there is an associated accessor, as shown in the following table:
 Elements             | Element Containers    
 -------------------- | ----------------------
 GridElement          | Grid  
-ReferenceBasisElement     | ReferenceSpace      
+ReferenceBasisElement     | ReferenceBasis      
 BSplineElement       | BSpline         
 NURBSElement         | NURBS          
 MappingElement       | Mapping        

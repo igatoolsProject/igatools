@@ -326,7 +326,7 @@ private:
    * @param[in] xml_doc XML Document where the object is appended to.
    */
   template <class PhysicalBasis>
-  static void write_phys_basis(const std::shared_ptr<PhysicalBasis> phys_space,
+  static void write_phys_basis(const std::shared_ptr<PhysicalBasis> phys_basis,
                                const XMLDocPtr_ xml_doc);
 
   /**

@@ -20,7 +20,7 @@
 
 /*
  *  Test for the boundary l2 projection function.
- *  On a BSpline (a reference space)
+ *  On a BSpline (a reference basis)
  *
  *  author: pauletti
  *  date: 2014-11-14

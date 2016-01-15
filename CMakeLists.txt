@@ -247,28 +247,12 @@ endif()
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Compiler and compile flags
-
-if(CMAKE_BUILD_TYPE MATCHES Release)
-	message("-- IGATOOLS build type: RELEASE")
-else ()
-	message("-- IGATOOLS build type: DEBUG")
-endif()
-
-init_cxx_flags()
-#
-#-------------------------------------------------------------------------------
-
-
-
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#  spaces dimensions and ranks to compile the library for
+#  bases dimensions and ranks to compile the library for
 #
 set(dim   CACHE STRINGS "list of domain dimensions")
 set(codim CACHE STRINGS "list of domain codimension")
-set(range CACHE STRINGS "list of reference space range dim")
-set(rank  CACHE STRINGS "list of reference space rank")
+set(range CACHE STRINGS "list of reference basis range dim")
+set(rank  CACHE STRINGS "list of reference basis rank")
 set(trans_type  CACHE STRINGS "list of transformation type")
 set(max_der_order 2 CACHE STRINGS "maximum order of derivatives")
 set(num_sub_elem 1 CACHE STRINGS "number of sub element to consider 1 for faces")

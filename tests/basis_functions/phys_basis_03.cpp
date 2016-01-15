@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for physical space element values
+ *  Test for physical basis element values
  *
  *  author: pauletti
  *  date: 2014-11-08
@@ -64,18 +64,18 @@ void elem_values(const int n_knots = 5, const int deg=1)
 {
   OUTSTART
   const int k = dim;
-  using BspSpace = BSpline<dim, range, rank>;
-  using RefSpace = ReferenceBasis<dim, range,rank>;
+  using BspBasis = BSpline<dim, range, rank>;
+  using RefBasis = ReferenceBasis<dim, range,rank>;
   using Basis = PhysicalBasis<dim,range,rank,codim>;
 //    using Handler = typename Basis::Handler;
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
-  auto ref_space = BspSpace::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
+  auto ref_basis = BspBasis::const_create(SplineSpace<dim,range,rank>::const_create(deg,grid));
   auto map_func = create_function(grid);
 
-  auto space = Basis::const_create(
-                 ref_space,
+  auto basis = Basis::const_create(
+                 ref_basis,
                  Domain<dim,codim>::const_create(map_func), Transformation::h_grad);
 
   using basis_element::Flags;
@@ -96,11 +96,11 @@ void elem_values(const int n_knots = 5, const int deg=1)
 
   auto quad = QGauss<k>::create(2);
 
-  auto elem_filler = space->create_cache_handler();
+  auto elem_filler = basis->create_cache_handler();
   elem_filler->template set_flags<dim>(flag);
 
-  auto elem = space->begin();
-  auto end = space->end();
+  auto elem = basis->begin();
+  auto end = basis->end();
   using basis_element::_Value;
   elem_filler->init_element_cache(elem,quad);
   for (; elem != end; ++elem)

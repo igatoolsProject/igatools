@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for solving on a filtered space
+ *  Test for solving on a filtered basis
  *
  *  author: pauletti
  *  date: 2015-03-17
@@ -65,7 +65,7 @@ template<int dim, int range = 1, int rank = 1>
 void filtered_dofs(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
-  using RefSpace = ReferenceBasis<dim, range, rank>;
+  using RefBasis = ReferenceBasis<dim, range, rank>;
   using Basis = BSpline<dim, range, rank>;
 
   auto grid = Grid<dim>::create(n_knots);
@@ -79,8 +79,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   auto basis = Basis::create(space);
 
 //  std::set<boundary_id>  dir_ids = {bc::dir};
-//  auto dir_dofs = get_boundary_dofs<RefSpace>(basis, dir_ids);
-  auto dir_dofs = get_boundary_dofs<RefSpace>(basis, dir_face);
+//  auto dir_dofs = get_boundary_dofs<RefBasis>(basis, dir_ids);
+  auto dir_dofs = get_boundary_dofs<RefBasis>(basis, dir_face);
 
 
   auto dof_dist = space->get_dof_distribution();
@@ -88,8 +88,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
 
 //  std::set<boundary_id>  neu_ids = {bc::neu};
-//  auto neu_dofs = get_boundary_dofs<RefSpace>(basis, neu_ids);
-  auto neu_dofs = get_boundary_dofs<RefSpace>(basis, neu_face);
+//  auto neu_dofs = get_boundary_dofs<RefBasis>(basis, neu_ids);
+  auto neu_dofs = get_boundary_dofs<RefBasis>(basis, neu_face);
   SafeSTLVector<Index> common(dim*range);
   auto end1 =
     std::set_intersection(neu_dofs.begin(), neu_dofs.end(),

@@ -48,6 +48,11 @@ funcs.add('grid_functions::SphereGridFunction<1>')
 funcs.add('grid_functions::SphereGridFunction<2>')
 
 
+funcs.add('grid_functions::TriangleGridFunction<2>')
+funcs.add('grid_functions::TriangleGridFunction<3>')
+
+
+
 for func in funcs:
     f.write('template class %s;\n' %(func))
 

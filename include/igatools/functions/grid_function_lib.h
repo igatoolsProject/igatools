@@ -435,7 +435,7 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<GridType> grid,
+  create(const std::shared_ptr<GridType> &grid,
          const Real r0,
          const Real r1,
          const Real h0,
@@ -444,7 +444,7 @@ public:
          const Real theta1);
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<const GridType> grid,
+  const_create(const std::shared_ptr<const GridType> &grid,
                const Real r0,
                const Real r1,
                const Real h0,
@@ -505,6 +505,110 @@ private:
     const Grid<3> &old_grid) override final;
 #endif // MESH_REFINEMENT
 };
+
+
+
+/**
+ * @brief Linear parametrization of the plane triangle.
+ *
+ * The parametrization maps a general Grid onto the plane triangle of vertices
+ * \f$ \mathbf{P}_0, \mathbf{P}_1, \mathbf{P}_2 \in \mathbb{R}^{range}\f$.
+ *
+ *
+ * The parametrization we adopted is the following:
+ * \f[ \hat{\Omega} \ni (u,v) \mapsto \mathbf{P}_0 + u \mathbf{A}_u + v \mathbf{A}_v + u v \mathbf{A}_{uv}\f]
+ * where \f$\mathbf{A}_u = \frac{1}{h_u} (\mathbf{P}_1 - \mathbf{P}_0)\f$,
+ * \f$\mathbf{A}_v = \frac{1}{h_v} (\mathbf{P}_2 - \mathbf{P}_0)\f$,
+ * \f$\mathbf{A}_{uv} = \frac{1}{h_u h_v} (\mathbf{P}_2 - \mathbf{P}_0 - h_u \mathbf{A}_u - h_v \mathbf{A}_v)\f$
+ * and \f$ h_u, h_v\f$ are the length of the Grid sides along the coordinate directions \f$ u \f$ and \f$ v \f$.
+ *
+ * @author M. Martinelli, 2016
+ */
+template<int range>
+class TriangleGridFunction :
+  public FormulaGridFunction<2,range>
+{
+  using base_t = GridFunction<2,range>;
+  using parent_t = FormulaGridFunction<2,range>;
+  using self_t = TriangleGridFunction<range>;
+  using typename base_t::GridType;
+public:
+  using typename parent_t::Value;
+  using typename parent_t::GridPoint;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+
+public:
+  /**
+   * @brief Creates and returns a non-const triangle
+   * (wrapped in a <tt>std::shared_ptr</tt>) given its 3 vertices.
+   */
+  static std::shared_ptr<self_t>
+  create(const std::shared_ptr<GridType> &grid,
+         const Points<range> &vertex_0,
+         const Points<range> &vertex_1,
+         const Points<range> &vertex_2);
+
+  /**
+   * @brief Creates and returns a const triangle
+   * (wrapped in a <tt>std::shared_ptr</tt>) given its 3 vertices.
+   */
+  static std::shared_ptr<const self_t>
+  const_create(const std::shared_ptr<const GridType> &grid,
+               const Points<range> &vertex_0,
+               const Points<range> &vertex_1,
+               const Points<range> &vertex_2);
+
+
+  TriangleGridFunction(const self_t &) = default;
+
+  virtual ~TriangleGridFunction() = default;
+
+  virtual void print_info(LogStream &out) const override final;
+
+protected:
+  /**
+   * @brief Build the triangle given its 3 vertices.
+   */
+  TriangleGridFunction(
+    const SharedPtrConstnessHandler<GridType> &grid,
+    const Points<range> &vertex_0,
+    const Points<range> &vertex_1,
+    const Points<range> &vertex_2);
+
+private:
+  void evaluate_0(const ValueVector<GridPoint> &points,
+                  ValueVector<Value> &values) const override;
+
+  void evaluate_1(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<1>> &values) const override;
+
+  void evaluate_2(const ValueVector<GridPoint> &points,
+                  ValueVector<Derivative<2>> &values) const override;
+
+  /**
+   * @brief Vertices of the triangle.
+   */
+  SafeSTLArray<Points<range>,3> vertices_;
+
+#ifdef MESH_REFINEMENT
+  /**
+   * Rebuild the internal state of the object after an Grid::insert_knots() function is invoked.
+   *
+   * @pre Before invoking this function, must be invoked the function grid_->insert_knots().
+   * @note This function is connected to the Grid's signal for the refinement, and
+   * it is necessary in order to avoid infinite loops in the insert_knots() function calls.
+   *
+   * @ingroup h_refinement
+   */
+  virtual void rebuild_after_insert_knots(
+    const SafeSTLArray<SafeSTLVector<Real>,2> &knots_to_insert,
+    const Grid<2> &old_grid) override final;
+#endif // MESH_REFINEMENT
+
+};
+
+
 
 #endif
 } // of namespace functions.

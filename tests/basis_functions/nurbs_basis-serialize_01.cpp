@@ -28,41 +28,41 @@
 
 
 template < int dim, int range, int rank>
-void serialize_deserialize(std::shared_ptr<NURBS<dim,range,rank>> space_in)
+void serialize_deserialize(std::shared_ptr<NURBS<dim,range,rank>> basis_in)
 {
-  std::shared_ptr<ReferenceBasis<dim,range,rank>> space = space_in;
+  std::shared_ptr<ReferenceBasis<dim,range,rank>> basis = basis_in;
   out.begin_item("Original NURBS:");
-  space->print_info(out);
+  basis->print_info(out);
   out.end_item();
 
 
   std::string template_string_info = "_dim" + std::to_string(dim) +
                                      "_range" + std::to_string(range) +
                                      "_rank" + std::to_string(rank);
-  std::string filename = "nurbs_space" + template_string_info + ".xml";
+  std::string filename = "nurbs_basis" + template_string_info + ".xml";
   std::string tag_name = "NURBS" + template_string_info;
   {
     // serialize the NURBS object to an xml file
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
-//    xml_out.template register_type<NRBSpace>();
+//    xml_out.template register_type<NRBBasis>();
 
-    xml_out << space;
+    xml_out << basis;
 //    xml_ostream.close();
   }
 
-  space.reset();
+  basis.reset();
   {
     // de-serialize the NURBS object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
-//    xml_in.template register_type<NRBSpace>();
+//    xml_in.template register_type<NRBBasis>();
 
-    xml_in >> space;
+    xml_in >> basis;
 //    xml_istream.close();
   }
   out.begin_item("NURBS after serialize-deserialize:");
-  space->print_info(out);
+  basis->print_info(out);
   out.end_item();
   //*/
 //*/
@@ -125,11 +125,11 @@ void do_test()
 
   auto w_func = WeightFunc::create(scalar_space,weights);
 
-  auto nurbs_space = Basis::create(bsp, w_func);
-//    nurbs_space->print_info(out);
+  auto nurbs_basis = Basis::create(bsp, w_func);
+//    nurbs_basis->print_info(out);
 
 
-  serialize_deserialize(nurbs_space);
+  serialize_deserialize(nurbs_basis);
 
 
   OUTEND

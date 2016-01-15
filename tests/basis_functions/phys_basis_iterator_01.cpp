@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /**
- *  Physical space element evaluation
+ *  Physical basis element evaluation
  *  Function map is the identity function
  *
  *  author: pauletti
@@ -105,11 +105,11 @@ identity_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
 
   auto grid  = Grid<dim>::create(n_knots);
   auto grid_func = create_identity_function(grid);
-  auto space = create_basis_prop<dim>(grid, grid_func, deg);
+  auto basis = create_basis_prop<dim>(grid, grid_func, deg);
   const int n_qp = 1;
-  elem_values<dim, sub_dim>(space, n_qp, DofProp::interior, use_bdry);
-  elem_values<dim, sub_dim>(space, n_qp, DofProp::dirichlet, use_bdry);
-  elem_values<dim, sub_dim>(space, n_qp, DofProp::neumman, use_bdry);
+  elem_values<dim, sub_dim>(basis, n_qp, DofProp::interior, use_bdry);
+  elem_values<dim, sub_dim>(basis, n_qp, DofProp::dirichlet, use_bdry);
+  elem_values<dim, sub_dim>(basis, n_qp, DofProp::neumman, use_bdry);
   OUTEND
 }
 

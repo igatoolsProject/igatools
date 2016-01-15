@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the Bspline space element iterator using
+ *  Test for the Bspline basis element iterator using
  *  the uniform quad global cache, passing flags one at a time
  *
  *  author: pauletti

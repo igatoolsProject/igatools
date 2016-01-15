@@ -36,7 +36,7 @@ for k in args.keys():
 
 # Openning the output file.
 file_output = open('instantiation_table.txt', 'w')
-file_output.write('# Each line describes a physical discrete space that the\n')
+file_output.write('# Each line describes a physical basis that the\n')
 file_output.write('# library want to be compile for. \n')
 file_output.write('# dim   codim  range  rank trans_type\n')
 
