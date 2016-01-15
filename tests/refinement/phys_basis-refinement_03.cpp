@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the refinement of a physical space
+ *  Test for the refinement of a physical basis
  8 in which the function mapping is an IgGridFunction
  *
  *  author: pauletti
@@ -43,7 +43,7 @@ template <int dim>
 using PushFwd = PushForward<Transformation::h_grad,dim,0> ;
 
 template <int dim>
-using PhysSpace = PhysicalBasis< ReferenceBasis<dim>, PushFwd<dim> > ;
+using PhysBasis = PhysicalBasis< ReferenceBasis<dim>, PushFwd<dim> > ;
 
 template <class T, int dim>
 using ComponentTable = StaticMultiArray<T, ReferenceBasis<dim>::range, ReferenceBasis<dim>::rank >;
@@ -57,12 +57,12 @@ void test_evaluate()
   grid->refine();
 
   const int deg = 2;
-  auto bsp_space = BSpline<dim,dim>::create(SplineSpace<dim,dim>::create(deg,grid));
+  auto bsp_basis = BSpline<dim,dim>::create(SplineSpace<dim,dim>::create(deg,grid));
 
-  using ScalarSpSpace = BSpline<dim,1,1>;
-  auto scalar_bsp_space = ScalarSpSpace::create(SplineSpace<dim>::create(deg,grid));
+  using ScalarSpBasis = BSpline<dim,1,1>;
+  auto scalar_bsp_basis = ScalarSpBasis::create(SplineSpace<dim>::create(deg,grid));
 
-  const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
+  const auto n_scalar_basis = scalar_bsp_basis->get_num_basis();
 
   IgCoefficients weights_coef;
   for (int i = 0 ; i < n_scalar_basis ;)
@@ -74,9 +74,9 @@ void test_evaluate()
   }
 
   using WeightFunc = IgGridFunction<dim,1>;
-  auto w_func = WeightFunc::create(scalar_bsp_space,weights_coef);
+  auto w_func = WeightFunc::create(scalar_bsp_basis,weights_coef);
 
-  auto ref_space = NURBS<dim,dim>::create(bsp_space,w_func);
+  auto ref_basis = NURBS<dim,dim>::create(bsp_basis,w_func);
 
   IgCoefficients control_pts;
   if (dim == 1)
@@ -142,10 +142,10 @@ void test_evaluate()
     AssertThrow(false,ExcNotImplemented());
   }
 
-  auto func_mapping = IgGridFunction<dim,dim>::create(ref_space,control_pts);
+  auto func_mapping = IgGridFunction<dim,dim>::create(ref_basis,control_pts);
 
-  auto phys_space =
-    PhysicalBasis<dim,dim,1,0>::create(ref_space,Domain<dim,0>::create(func_mapping));
+  auto phys_basis =
+    PhysicalBasis<dim,dim,1,0>::create(ref_basis,Domain<dim,0>::create(func_mapping));
 
 
 
@@ -153,23 +153,23 @@ void test_evaluate()
   out << endl;
 
   out << "===============================================================" << endl;
-  out << "O R I G I N A L     S P A C E" << endl;
-  phys_space->print_info(out);
+  out << "O R I G I N A L     B A S I S" << endl;
+  phys_basis->print_info(out);
   out << "===============================================================" << endl;
   out << endl;
 
   out << "===============================================================" << endl;
-  out << "R E F I N E D     S P A C E (2 elements each old element)" << endl;
-  phys_space->refine_h();
-  phys_space->print_info(out);
+  out << "R E F I N E D     B A S I S (2 elements each old element)" << endl;
+  phys_basis->refine_h();
+  phys_basis->print_info(out);
   out << "===============================================================" << endl;
   out << endl;
 
 
   out << "===============================================================" << endl;
-  out << "R E F I N E D     S P A C E (6 elements each old element)" << endl;
-  phys_space->refine_h(3);
-  phys_space->print_info(out);
+  out << "R E F I N E D     B A S I S (6 elements each old element)" << endl;
+  phys_basis->refine_h(3);
+  phys_basis->print_info(out);
   out << "===============================================================" << endl;
   out << endl;
 }

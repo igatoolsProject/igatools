@@ -2,7 +2,7 @@
 
 
 ===============================================================
-O R I G I N A L     S P A C E
+O R I G I N A L     B A S I S
    Reference basis:
       Spline Space:
          Knots without repetition:
@@ -91,7 +91,7 @@ O R I G I N A L     S P A C E
 ===============================================================
 
 ===============================================================
-R E F I N E D     S P A C E
+R E F I N E D     B A S I S
    Reference basis:
       Spline Space:
          Knots without repetition:
@@ -192,7 +192,7 @@ R E F I N E D     S P A C E
 
 
 ===============================================================
-O R I G I N A L     S P A C E
+O R I G I N A L     B A S I S
    Reference basis:
       Spline Space:
          Knots without repetition:
@@ -294,7 +294,7 @@ O R I G I N A L     S P A C E
 ===============================================================
 
 ===============================================================
-R E F I N E D     S P A C E
+R E F I N E D     B A S I S
    Reference basis:
       Spline Space:
          Knots without repetition:
@@ -440,7 +440,7 @@ R E F I N E D     S P A C E
 
 
 ===============================================================
-O R I G I N A L     S P A C E
+O R I G I N A L     B A S I S
    Reference basis:
       Spline Space:
          Knots without repetition:
@@ -561,7 +561,7 @@ O R I G I N A L     S P A C E
 ===============================================================
 
 ===============================================================
-R E F I N E D     S P A C E
+R E F I N E D     B A S I S
    Reference basis:
       Spline Space:
          Knots without repetition:

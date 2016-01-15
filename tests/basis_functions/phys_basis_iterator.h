@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /**
- *  Common code to use in the phys_space_iterators_* tests
+ *  Common code to use in the phys_basis_iterators_* tests
  *
  *   author: pauletti
  *   date: 2015-04-17
@@ -73,7 +73,7 @@ enum  bc : boundary_id
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalBasis<dim,range,rank,codim> >
-create_space_prop(const shared_ptr<Grid<dim>> &grid,
+create_basis_prop(const shared_ptr<Grid<dim>> &grid,
                   const shared_ptr<GridFunction<dim,dim+codim>> &grid_func,
                   const int deg=1)
 {

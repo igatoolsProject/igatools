@@ -62,9 +62,9 @@ VectorPtr create_vector(const Map &map);
 
 template <class Basis>
 VectorPtr
-create_vector(const Basis &space, const std::string &prop,const Comm &comm)
+create_vector(const Basis &basis, const std::string &prop,const Comm &comm)
 {
-  return create_vector(*create_map(space, prop, comm));
+  return create_vector(*create_map(basis, prop, comm));
 }
 
 }

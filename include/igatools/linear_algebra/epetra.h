@@ -157,12 +157,12 @@ using MatrixPtr = std::shared_ptr<Matrix>;
 using VectorPtr = std::shared_ptr<Vector>;
 
 
-template<class SpacePtr>
-MapPtr create_map(const SpacePtr space,
+template<class BasisPtr>
+MapPtr create_map(const BasisPtr basis,
                   const std::string &property,
                   Comm &comm)
 {
-  const auto dof_dist = space->get_ptr_const_dof_distribution();
+  const auto dof_dist = basis->get_ptr_const_dof_distribution();
   const auto dofs = dof_dist->get_global_dofs(property);
   //TODO (pauletti, Mar 28, 2015): this is double copy of data
   const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
@@ -170,17 +170,17 @@ MapPtr create_map(const SpacePtr space,
   return map;
 }
 
-template<class RowSpacePtr, class ColSpacePtr>
+template<class RowBasisPtr, class ColBasisPtr>
 GraphPtr
-create_graph(const RowSpacePtr row_space, const std::string &row_property,
-             const ColSpacePtr col_space, const std::string &col_property,
+create_graph(const RowBasisPtr row_basis, const std::string &row_property,
+             const ColBasisPtr col_basis, const std::string &col_property,
              MapPtr row_map_, MapPtr col_map_)
 {
   const auto n_rows = row_map_->NumMyElements();
   SafeSTLVector<SafeSTLVector<Index>> loc_dofs(n_rows);
-  auto r_elem = row_space->begin();
-  auto c_elem = col_space->begin();
-  const auto end = row_space->end();
+  auto r_elem = row_basis->begin();
+  auto c_elem = col_basis->begin();
+  const auto end = row_basis->end();
   for (; r_elem != end; ++r_elem, ++c_elem)
   {
     auto r_dofs = r_elem->get_local_to_global(row_property);

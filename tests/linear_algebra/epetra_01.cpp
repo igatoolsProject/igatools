@@ -69,9 +69,9 @@ void matrix_map1(const int deg, const int n_knots)
 {
   OUTSTART
   auto grid = Grid<dim>::create(n_knots);
-  auto r_space = BSpline<dim>::create(deg, grid);
-  auto c_space = BSpline<dim>::create(deg+1, grid);
-  MatrixGraph<LAPack::trilinos_epetra> graph(r_space, "active", c_space, "active");
+  auto r_basis = BSpline<dim>::create(deg, grid);
+  auto c_basis = BSpline<dim>::create(deg+1, grid);
+  MatrixGraph<LAPack::trilinos_epetra> graph(r_basis, "active", c_basis, "active");
   graph.print_info(out);
 
   OUTEND
@@ -106,15 +106,15 @@ void matrix_map2(const int deg, const int n_knots)
 
   grid->set_boundary_id(0, 1);
 
-  auto space = BSpline<dim>::create(deg, grid);
+  auto basis = BSpline<dim>::create(deg, grid);
 
   std::set<boundary_id>  dir_ids = {0};
-  auto dir_dofs = get_boundary_dofs<Basis>(space, dir_ids);
+  auto dir_dofs = get_boundary_dofs<Basis>(basis, dir_ids);
 
-  auto int_dofs = space->get_interior_dofs();
+  auto int_dofs = basis->get_interior_dofs();
 
   std::set<boundary_id>  neu_ids = {1};
-  auto neu_dofs = get_boundary_dofs<Basis>(space, neu_ids);
+  auto neu_dofs = get_boundary_dofs<Basis>(basis, neu_ids);
   SafeSTLVector<Index> common(dim*range);
   auto end1 =
     std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
@@ -123,7 +123,7 @@ void matrix_map2(const int deg, const int n_knots)
   for (auto &id : common)
     neu_dofs.erase(id);
 
-  auto dof_dist = space->get_ptr_dof_distribution();
+  auto dof_dist = basis->get_ptr_dof_distribution();
   dof_dist->add_dofs_property(DofProp::interior);
   dof_dist->add_dofs_property(DofProp::dirichlet);
   dof_dist->add_dofs_property(DofProp::neumman);
@@ -133,8 +133,8 @@ void matrix_map2(const int deg, const int n_knots)
   dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs, true);
   dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs, true);
 
-  MatrixGraph<LAPack::trilinos_epetra> graph(space, DofProp::interior,
-                                             space, DofProp::neumman);
+  MatrixGraph<LAPack::trilinos_epetra> graph(basis, DofProp::interior,
+                                             basis, DofProp::neumman);
 
   graph.print_info(out);
 

@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test refinement of a basic PhysicalBasis using the BSpline as reference space
+ *  Test refinement of a basic PhysicalBasis using the NURBS as reference basis
  *  and the IdentityFunction as mapping.
  *
  *  author: pauletti
@@ -30,13 +30,11 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/push_forward.h>
-#include <igatools/basis_functions/bspline.h>
+#include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/physical_basis.h>
 #include <igatools/basis_functions/physical_basis_element.h>
+#include <igatools/functions/ig_grid_function.h>
 #include <igatools/functions/grid_function_lib.h>
-
-
-
 
 
 template <int dim>
@@ -46,14 +44,33 @@ void test_evaluate()
   grid->refine();
   out << endl;
 
-  const int deg = 2;
 
-  using RefSpace = ReferenceBasis<dim>;
-  using RefSpacePtr = std::shared_ptr<RefSpace>;
-  RefSpacePtr ref_space = BSpline<dim>::create(SplineSpace<dim>::create(deg,grid));
-  auto phys_space =
+  const int deg = 2;
+  auto bsp_basis = BSpline<dim>::create(SplineSpace<dim>::create(deg,grid));
+
+
+  using ScalarSpBasis = BSpline<dim,1,1>;
+  auto scalar_bsp_basis = ScalarSpBasis::create(SplineSpace<dim>::create(deg,grid));
+
+  const auto n_scalar_basis = scalar_bsp_basis->get_num_basis();
+
+  IgCoefficients weights_coef;
+  for (int i = 0 ; i < n_scalar_basis ;)
+  {
+    weights_coef[i++] = 1.0;
+    weights_coef[i++] = 0.4;
+    weights_coef[i++] = 0.65;
+    weights_coef[i++] = 1.0;
+  }
+
+  using WeightFunc = IgGridFunction<dim,1>;
+  auto w_func = WeightFunc::create(scalar_bsp_basis,weights_coef);
+
+  auto ref_basis = NURBS<dim>::create(bsp_basis,w_func);
+
+  auto phys_basis =
     PhysicalBasis<dim,1,1,0>::create(
-      ref_space,
+      ref_basis,
       Domain<dim,0>::create(grid_functions::IdentityGridFunction<dim>::create(grid)));
 
 
@@ -61,19 +78,18 @@ void test_evaluate()
   out << endl;
 
   out << "===============================================================" << endl;
-  out.begin_item("O R I G I N A L     S P A C E");
-  phys_space->print_info(out);
-  out.end_item();
+  out << "O R I G I N A L     B A S I S" << endl;
+  phys_basis->print_info(out);
   out << "===============================================================" << endl;
   out << endl;
 
   out << "===============================================================" << endl;
-  out.begin_item("R E F I N E D     S P A C E");
-  phys_space->refine_h();
-  phys_space->print_info(out);
-  out.end_item();
+  out << "R E F I N E D     B A S I S" << endl;
+  phys_basis->refine_h();
+  phys_basis->print_info(out);
   out << "===============================================================" << endl;
   out << endl;
+  //*/
 }
 
 int main()
@@ -88,6 +104,6 @@ int main()
 
   test_evaluate<3>();
   out << endl ;
-
+//*/
   return 0;
 }

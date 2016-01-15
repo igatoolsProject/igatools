@@ -42,7 +42,7 @@ void ig_grid_function_bspline(const int deg = 2)
   using Function = IgGridFunction<dim,dim+codim>;
 
   auto grid = Grid<dim>::create(2);
-  auto space = Basis::create(SplineSpace<dim,dim+codim>::create(deg,grid));
+  auto basis = Basis::create(SplineSpace<dim,dim+codim>::create(deg,grid));
 
   IgCoefficients control_pts;
 
@@ -169,7 +169,7 @@ void ig_grid_function_bspline(const int deg = 2)
 
   }
 
-  auto F = Function::create(space, control_pts);
+  auto F = Function::create(basis, control_pts);
 
 
   auto quad = QGauss<sub_dim>::create(3);

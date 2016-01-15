@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 /*
  *  Test for definition of non-square Epetra Matrices using sparsity pattern
- *  created by using two different spaces.
+ *  created by using two different basis.
  *  this test i going to be an adaptation of:
  *  matrix_definition01.cpp
  *  author: antolin
@@ -44,23 +44,23 @@ void fill_matrix_and_vector()
 
   out << " Domain dim: " << dim;
   out << " Range dim: " << range <<endl;
-  out << " Degree of rows space: " << p_r <<endl;
-  out << " Degree of columns space: " << p_c <<endl;
+  out << " Degree of rows basis: " << p_r <<endl;
+  out << " Degree of columns basis: " << p_c <<endl;
 
   auto grid = Grid<dim>::create();
-  auto r_space = Basis::create(SplineSpace<dim,range,rank>::create(p_r, grid));
-  auto c_space = Basis::create(SplineSpace<dim,range,rank>::create(p_c, grid));
+  auto r_basis = Basis::create(SplineSpace<dim,range,rank>::create(p_r, grid));
+  auto c_basis = Basis::create(SplineSpace<dim,range,rank>::create(p_c, grid));
 
-  const auto n_basis_sp_rows = r_space->get_num_basis();
-  const auto n_basis_sp_cols = c_space->get_num_basis();
+  const auto n_basis_sp_rows = r_basis->get_num_basis();
+  const auto n_basis_sp_cols = c_basis->get_num_basis();
   out << endl;
-  out << "Number of dofs of rows space: " << n_basis_sp_rows << endl;
-  out << "Number of dofs of columns space: " << n_basis_sp_cols << endl;
+  out << "Number of dofs of rows basis: " << n_basis_sp_rows << endl;
+  out << "Number of dofs of columns basis: " << n_basis_sp_cols << endl;
   out << endl;
 
   Epetra_SerialComm comm;
-  auto graph = create_graph(*r_space, DofProperties::active,
-                            *c_space, DofProperties::active, comm);
+  auto graph = create_graph(*r_basis, DofProperties::active,
+                            *c_basis, DofProperties::active, comm);
 
 
   auto A = create_matrix(*graph);

@@ -75,12 +75,12 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   static const int codim = range - dim;
   using GridType = Grid<dim>;
   using SpSpaceType = SplineSpace<dim, range, rank>;
-  using RefSpaceType = ReferenceBasis<dim, range, rank>;
+  using RefBasisType = ReferenceBasis<dim, range, rank>;
   using BSplineType = BSpline<dim, range, rank>;
   using NURBSType = NURBS<dim, range, rank>;
   using ScalarSpSpaceType = SplineSpace<dim, 1, 1>;
   using ScalarBSplineType = BSpline<dim, 1, 1>;
-  using ScalarRefSpaceType = ReferenceBasis<dim, 1, 1>;
+  using ScalarRefBasisType = ReferenceBasis<dim, 1, 1>;
   using WeightFuncType = IgGridFunction<dim, 1>;
   using ScalarGridFuncType = GridFunction<dim, 1>;
   using GridFuncType = GridFunction<dim, range>;
@@ -88,7 +88,7 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   using ConstGridFunc = grid_functions::ConstantGridFunction<dim, range>;
   using ConstFuncType = functions::ConstantFunction<dim, codim, range, rank>;
   using FuncType = Function<dim, codim, range, rank>;
-  using PhysSpaceType = PhysicalBasis<dim, range, rank, codim>;
+  using PhysBasisType = PhysicalBasis<dim, range, rank, codim>;
 
   auto grid = GridType::create(coord);
   container->insert_const_object<GridType>(grid);
@@ -97,25 +97,25 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   container->insert_const_object<SpSpaceType>(ssp);
 
   auto  bsp = BSplineType::create(ssp);
-  container->insert_const_object<RefSpaceType>(bsp);
+  container->insert_const_object<RefBasisType>(bsp);
 
-  auto scalar_space = ScalarBSplineType::create(ScalarSpSpaceType::create(degree, grid));
+  auto scalar_basis = ScalarBSplineType::create(ScalarSpSpaceType::create(degree, grid));
 
-  container->insert_const_object<ScalarRefSpaceType>(scalar_space);
+  container->insert_const_object<ScalarRefBasisType>(scalar_basis);
 
-  const auto n_scalar_basis = scalar_space->get_num_basis();
+  const auto n_scalar_basis = scalar_basis->get_num_basis();
 
   IgCoefficients weights;
   for (int dof = 0 ; dof < n_scalar_basis ; ++dof)
     weights[dof] = 1.0;
 
-  const auto w_func = WeightFuncType::create(scalar_space,weights);
+  const auto w_func = WeightFuncType::create(scalar_basis,weights);
   w_func->set_name("my_weight_function");
 
   container->insert_const_object<ScalarGridFuncType>(w_func);
 
-  auto nurbs_space = NURBSType::create(bsp, w_func);
-  container->insert_const_object<RefSpaceType>(nurbs_space);
+  auto nurbs_basis = NURBSType::create(bsp, w_func);
+  container->insert_const_object<RefBasisType>(nurbs_basis);
 
   Values<dim, range, 1> val;
   const auto const_grid_func = ConstGridFunc::create(grid, val);
@@ -126,8 +126,8 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   domain->set_name("my_domain");
   container->insert_const_object<DomainType>(domain);
 
-  const auto phys_space = PhysSpaceType::create(nurbs_space, domain);
-  container->insert_const_object<PhysSpaceType>(phys_space);
+  const auto phys_basis = PhysBasisType::create(nurbs_basis, domain);
+  container->insert_const_object<PhysBasisType>(phys_basis);
 
   const auto const_func = ConstFuncType::create(domain, val);
   container->insert_const_object<FuncType>(const_func);
