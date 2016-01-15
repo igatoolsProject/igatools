@@ -33,8 +33,8 @@ convention described in \ref example_04. We have:
   \begin{aligned}
     g_0:\Gamma_0\longrightarrow\mathbb{R},\quad g_0(x,y) &= 1,\\
     g_1:\Gamma_1\longrightarrow\mathbb{R},\quad g_1(x,y) &= 2,\\
-    g_2:\Gamma_2\longrightarrow\mathbb{R},\quad g_2(x,y) &= \frac{1}{10}\sin\left(2\pi\left(x^2+y^2\right)\right)+x,\\
-    g_3:\Gamma_3\longrightarrow\mathbb{R},\quad g_3(x,y) &= \frac{1}{10}\sin\left(2\pi\left(x^2+y^2\right)\right)+y.
+    g_2:\Gamma_2\longrightarrow\mathbb{R},\quad g_2(x,y) &= \frac{1}{10}\sin\left(2\pi x^2\right)+x,\\
+    g_3:\Gamma_3\longrightarrow\mathbb{R},\quad g_3(x,y) &= \frac{1}{10}\sin\left(2\pi y^2\right)+y.
   \end{aligned}
 \f}
 
