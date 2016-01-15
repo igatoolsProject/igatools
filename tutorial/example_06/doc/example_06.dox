@@ -120,7 +120,7 @@ and the function \f$h_3\f$ for the Neumann boundary conditions:
 This is the code for the assignemt of the boundary conditions:
 \snippet example_06.cpp impose_boundary_conds
 For the sake of brevity we put the three assignements of the Dirichlet boundary functions inside a loop. The 
-function fot the Neumann condition goes straightforwardly.
+assignement for the Neumann condition goes straightforwardly.
 
 
 
