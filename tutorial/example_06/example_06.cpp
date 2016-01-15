@@ -62,7 +62,6 @@ private:
   CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain,
                  Value (*f_D0)(const Point))
     : FormulaFunction<dim,codim,range,rank>(domain), funct_D0(f_D0) {};
-  // evaluators
   void evaluate_0(const ValueVector<Point> &points, ValueVector<Value> &values) const {
     auto point = points.begin();
     for (auto &val : values ) {
