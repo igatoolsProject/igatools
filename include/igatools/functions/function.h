@@ -61,7 +61,7 @@ public:
   using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
-  using ElementHandler = FunctionHandler<dim_, codim_, range_, rank_>;
+  using Handler = FunctionHandler<dim_, codim_, range_, rank_>;
 
   using List = typename DomainType::List;
   using ListIt = typename DomainType::ListIt;
@@ -145,7 +145,7 @@ public:
 
 
 public:
-  virtual std::unique_ptr<ElementHandler>
+  virtual std::unique_ptr<Handler>
   create_cache_handler() const;
 
 #if 0

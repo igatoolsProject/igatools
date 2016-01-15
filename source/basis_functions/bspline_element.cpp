@@ -21,7 +21,7 @@
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 
 #include <igatools/utils/multi_array_utils.h>
@@ -45,10 +45,10 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank>
 BSplineElement<dim, range, rank>::
-BSplineElement(const std::shared_ptr<ContainerType> &space,
+BSplineElement(const std::shared_ptr<ContainerType> &basis,
                std::unique_ptr<GridElement<dim>> &&grid_elem)
   :
-  parent_t(space),
+  parent_t(basis),
   grid_elem_(std::move(grid_elem))
 {}
 
@@ -76,7 +76,7 @@ print_info(LogStream &out) const
 {
   using std::to_string;
 
-  out.begin_item("ReferenceElement<" +
+  out.begin_item("ReferenceBasisElement<" +
                  to_string(dim) + "," +
                  to_string(range) + "," +
                  to_string(rank) + ">");
@@ -109,8 +109,8 @@ print_cache_info(LogStream &out) const
   }
   out.end_item();
 //*/
-  out.begin_item("SpaceElement's cache:");
-  SpaceElement<dim,0,range,rank>::print_cache_info(out);
+  out.begin_item("BasisElement's cache:");
+  BasisElement<dim,0,range,rank>::print_cache_info(out);
   out.end_item();
 
   out.end_item();

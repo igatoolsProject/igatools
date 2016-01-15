@@ -43,12 +43,12 @@ for x in inst.sub_ref_sp_dims:
 for x in inst.ref_sp_dims:
     valid_types.append('SplineSpace<%d, %d, %d>' % (x.dim, x.range, x.rank))
 
-# Reference spaces
-valid_types.append('ReferenceSpaceBasis<%d, %d, %d>' % (0, 0, 1))
+# Reference bases
+valid_types.append('ReferenceBasis<%d, %d, %d>' % (0, 0, 1))
 for x in inst.sub_ref_sp_dims:
-    valid_types.append('ReferenceSpaceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    valid_types.append('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
 for x in inst.ref_sp_dims:
-    valid_types.append('ReferenceSpaceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
+    valid_types.append('ReferenceBasis<%d, %d, %d>' % (x.dim, x.range, x.rank))
 
 # Grid functions
 for x in inst.sub_mapping_dims:
@@ -64,12 +64,12 @@ for x in inst.sub_mapping_dims:
 for x in inst.mapping_dims:
     valid_types.append('Domain<%d, %d>' % (x.dim, x.codim))
 
-# Physical spaces
-valid_types.append('PhysicalSpaceBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
+# Physical bases
+valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
 for sp in inst.SubPhysSpaces:
-    valid_types.append('PhysicalSpaceBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
+    valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 for sp in inst.PhysSpaces:
-    valid_types.append('PhysicalSpaceBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
+    valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 
 # Functions
 for dims in inst.all_function_dims:
@@ -88,7 +88,8 @@ f.write('#ifdef SERIALIZATION\n')
 i = 0
 for vt in valid_types:
   f.write('using Alias%d = iga::SafeSTLVector<std::shared_ptr<iga::%s>>;\n' % (i, vt));
-  f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Alias%d,cereal::specialization::member_serialize);\n' % (i));
+  f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,Alias%d,cereal::specialization::member_serialize);\n' % (i));
+  f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,Alias%d,cereal::specialization::member_serialize);\n' % (i));
   i += 1
 
 f.write('#endif // SERIALIZATION\n')

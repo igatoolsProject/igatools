@@ -22,16 +22,16 @@
 #define __IG_GRID_FUNCTION_H
 
 
-#include <igatools/geometry/grid_function.h>
+#include <igatools/functions/grid_function.h>
 #include <igatools/functions/ig_coefficients.h>
-#include <igatools/basis_functions/reference_space_basis.h>
+#include <igatools/basis_functions/reference_basis.h>
 #include <igatools/linear_algebra/epetra_vector.h>
 
 IGA_NAMESPACE_OPEN
 
 
 /**
- * @brief GridFunction built as linear combination of basis functions from ReferenceSpaceBasis
+ * @brief GridFunction built as linear combination of basis functions from ReferenceBasis
  *
  * @ingroup serializable
  */
@@ -44,11 +44,11 @@ private:
   using self_t = IgGridFunction<dim, range>;
 protected:
   using typename parent_t::GridType;
-  using ElementHandler = typename parent_t::ElementHandler;
+  using Handler = typename parent_t::Handler;
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
-  using RefBasis = ReferenceSpaceBasis<dim,range,1>;
+  using RefBasis = ReferenceBasis<dim,range,1>;
 
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
@@ -72,7 +72,7 @@ protected:
                  const std::string &dofs_property);
 
 public:
-  std::unique_ptr<ElementHandler>
+  std::unique_ptr<Handler>
   create_cache_handler() const override final;
 
   static std::shared_ptr<const self_t>
@@ -107,15 +107,15 @@ public:
                   "The dimensionality of the sub_grid is not valid.");
 
 
-    typename RefBasis::template InterSpaceMap<sdim> dof_map;
-    auto sub_ref_space = ref_basis_->template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
+    typename RefBasis::template InterBasisMap<sdim> dof_map;
+    auto sub_ref_basis = ref_basis_->template get_ref_sub_basis<sdim>(s_id,dof_map,sub_grid);
 
     IgCoefficients sub_coeffs;
     const int n_sub_dofs = dof_map.size();
     for (int sub_dof = 0 ; sub_dof < n_sub_dofs ; ++ sub_dof)
       sub_coeffs[sub_dof] = coeffs_[dof_map[sub_dof]];
 
-    auto sub_func = IgGridFunction<sdim,range>::const_create(sub_ref_space,sub_coeffs);
+    auto sub_func = IgGridFunction<sdim,range>::const_create(sub_ref_basis,sub_coeffs);
 
     return sub_func;
   }

@@ -29,14 +29,14 @@
 #include <igatools/base/print_info_utils.h>
 
 
-class A
+class clA
 {
 public:
   void print_info(LogStream &) {}
 };
 
 
-class B
+class clB
 {};
 
 
@@ -54,9 +54,9 @@ print_info(LogStream &out)
 
 int main()
 {
-  out << has_print_info<A>(0) << endl;
-  out << has_print_info<B>(0) << endl;
-  print_info<A>(out);
-  print_info<B>(out);
+  out << has_print_info<clA>(0) << endl;
+  out << has_print_info<clB>(0) << endl;
+  print_info<clA>(out);
+  print_info<clB>(out);
   return 0;
 }

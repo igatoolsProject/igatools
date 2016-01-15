@@ -27,7 +27,7 @@
 #include "../tests.h"
 
 #include <igatools/functions/ig_function.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/basis_functions/bspline.h>
@@ -47,7 +47,7 @@ void test()
   auto grid_func = grid_functions::IdentityGridFunction<dim>::create(grid);
   auto domain = Domain<dim>::create(grid_func);
 
-  auto phys_basis = PhysicalSpaceBasis<dim,range>::create(ref_basis,domain);
+  auto phys_basis = PhysicalBasis<dim,range>::create(ref_basis,domain);
 
 
   Epetra_SerialComm comm;

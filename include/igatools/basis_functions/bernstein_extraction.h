@@ -157,7 +157,8 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(iga::BernsteinOperator,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,iga::BernsteinOperator,cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,iga::BernsteinOperator,cereal::specialization::member_serialize)
 
 //#include <igatools/basis_functions/bernstein_extraction.serial>
 

@@ -29,7 +29,7 @@
 #include "./common_functions.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/formula_grid_function.h>
+#include <igatools/functions/formula_grid_function.h>
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>

@@ -61,7 +61,7 @@ public:
 
   using DomainType = const Domain<dim_, codim_>;
   using GridFuncType =  typename DomainType::GridFuncType;
-  using GridFuncHandler = typename GridFuncType::ElementHandler;
+  using GridFuncHandler = typename GridFuncType::Handler;
 
   using ElementAccessor = DomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;

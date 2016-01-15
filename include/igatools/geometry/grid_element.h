@@ -128,7 +128,7 @@ public:
   virtual void operator++();
 
   /**
-   * Move the element to the one specified by <tt>elem_id</tt>.
+   * @brief Move the element to the position specified by the index <tt>elem_id</tt>.
    *
    * In Debug mode an assertion will be raised
    * if the GridElement specified by <tt>elem_id</tt> has not the same property of the
@@ -374,6 +374,15 @@ public:
     return this->template get_values_from_cache<ValueType,dim>(0);
   }
 
+
+public:
+  /**
+   * Return TRUE if the element index is referring to a valid element in the Grid.
+   *
+   * @note An element with non valid position can happens when we use the ++ operator
+   * on an element that is the last in the list.
+   */
+  bool has_valid_position() const;
 };
 
 

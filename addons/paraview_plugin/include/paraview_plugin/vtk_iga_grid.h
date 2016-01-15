@@ -27,28 +27,64 @@
 
 class vtkPointSet;
 
-
 IGA_NAMESPACE_OPEN
 
 class ObjectsContainer;
+template <int dim, int space_dim> class IgGridFunction;
+
+namespace paraview_plugin
+{
+
 struct VtkGridInformation;
 struct VtkControlGridInformation;
 
-template <int dim, int space_dim> class IgGridFunction;
 
-
+/**
+ * @brief This class is in charge of generating the solid, knot and
+ * control polygon meshes associated to an IGA @ref Domain.
+ *
+ * It takes as arguments of the constructor the IGA @ref Domain,
+ * the needed information for creating the VTK grids and
+ * igatools objects container. Given this information,
+ * it will build and return the different VTK grids (solid, knot
+ * and control polygon) when required.
+ *
+ * @note The control polygon grids will be only created for physical domains.
+ *
+ * The class is aware of the possible change in the VTK grid information,
+ * therefore, the different grids only will be computed (or recomputed)
+ * when needed.
+ *
+ * For a example, if after creating a VTK grid, the type of VTK grid
+ * (or the number of cells per direction) changes, the grid is recomputed.
+ *
+ * On the other hand, if after created, the grid is set to active,
+ * when it is activated again, the grid is not recomputed.
+ *
+ * This considerations are done independently for the solid, not and control
+ * polygon meshes.
+ *
+ * @todo To be defined.
+ *
+ * @see VtkIgaSolidGrid
+ * @see VtkIgaKnotGrid
+ * @see VtkIgaControlGrid
+ * @author P. Antolin, 2016.
+ *
+ * @ingroup paraview_plugin
+ */
 template <class Domain>
 class VtkIgaGrid
 {
 private:
 
-  /// Dimension.
+  /// Dimension of the @ref Domain.
   static const int dim = Domain::dim;
 
-  /// Space dimensions.
+  /// Space dimension of the @ref Domain.
   static const int space_dim = Domain::space_dim;
 
-  /// Codimension.
+  /// Codimension of the @ref Domain.
   static const int codim = space_dim - dim;
 
   /// Self type.
@@ -57,41 +93,38 @@ private:
   /// Self shared pointer type.
   typedef std::shared_ptr<Self_> SelfPtr_;
 
-  /// Alias for a shared pointer of a map function type.
+  /// Alias for a shared pointer of the @ref Domain type.
   typedef std::shared_ptr<const Domain> DomainPtr_;
 
-  /// Alias for mesh grid information shared pointer.
+  /// Alias for VTK grid information shared pointer.
   typedef std::shared_ptr<VtkGridInformation> GridInfoPtr_;
 
-  /// Alias for Ig grid function of a physical grid.
-  typedef IgGridFunction<Domain::dim, Domain::space_dim> IgGridFunc_;
-
-  /**
-   * Alias for vtk grid object for visualization.
-   */
-  typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
-
-  /**
-   * Functions container shared pointer type.
-   */
-  typedef std::shared_ptr<ObjectsContainer> ObjContPtr_;
-
-  /**
-   * Alias for control mesh grid information shared pointer.
-   */
+  /// Alias for VTK control grid information shared pointer.
   using ControlGridInfoPtr_ = std::shared_ptr<VtkControlGridInformation>;
 
-  /**
-   * Constructor, copy and assignment operators not allowed to be used.
-   */
-  VtkIgaGrid() = delete;
-  VtkIgaGrid(const Self_ &) = delete;
-  VtkIgaGrid(const Self_ &&) = delete;
-  Self_ &operator=(const Self_ &) = delete;
-  Self_ &operator=(const Self_ &&) = delete;
+  /// Alias for @ref IgGridFunction.
+  typedef IgGridFunction<Domain::dim, Domain::space_dim> IgGridFunc_;
+
+  /// Alias for VTK grid object to be created.
+  typedef vtkSmartPointer<vtkPointSet> VtkGridPtr_;
+
+  /// Alias for the igatools objects container class.
+  typedef std::shared_ptr<ObjectsContainer> ObjContPtr_;
+
+  /** @name Constructors*/
+  ///@{
 
   /**
-   * Constructor for grids.
+   * @brief Constructor.
+   * @param[in] domain IGA domain to be represented.
+   * @param[in] id Id number associated to the VTK grid.
+   * @param[in] solid_grid_info VTK grid information for the solid mesh.
+   * @param[in] knot_grid_info VTK grid information for the knot mesh.
+   * @param[in] control_grid_info VTK grid information for the control polygon mesh.
+   * @param[in] obj_container Container storing the domains and functions
+   * defined over them.
+   * @param[in] Flag indicating if the VTK grid is active, or not.
+   * @param[in] Flag indicating if domain is physical or parametric.
    */
   VtkIgaGrid(const DomainPtr_ domain,
              const Index &id,
@@ -102,10 +135,55 @@ private:
              const bool is_active,
              const bool is_physical);
 
-public:
+  /**
+   * Default constructor.
+   * @warning Not allowed to be used.
+   */
+  VtkIgaGrid() = delete;
 
   /**
-   * TODO: to document.
+   * Copy constructor.
+   * @warning Not allowed to be used.
+   */
+  VtkIgaGrid(const Self_ &) = delete;
+
+  /**
+   * Move constructor.
+   * @warning Not allowed to be used.
+   */
+  VtkIgaGrid(const Self_ &&) = delete;
+  ///@}
+
+  /** @name Assignment operators*/
+  ///@{
+  /**
+   * Copy assignment operator.
+   * @warning Not allowed to be used.
+   */
+  Self_ &operator=(const Self_ &) = delete;
+
+  /**
+   * Move assignment operator.
+   * @warning Not allowed to be used.
+   */
+  Self_ &operator=(const Self_ &&) = delete;
+  ///@}
+
+public:
+
+  /** @name Creators*/
+  ///@{
+  /**
+   * @brief Creates a new object of the class wrapped into a shared pointer.
+   * @param[in] domain IGA domain to be represented.
+   * @param[in] id Id number associated to the VTK grid.
+   * @param[in] solid_grid_info VTK grid information for the solid mesh.
+   * @param[in] knot_grid_info VTK grid information for the knot mesh.
+   * @param[in] control_grid_info VTK grid information for the control polygon mesh.
+   * @param[in] obj_container Container storing the domains and functions
+   * defined over them.
+   * @param[in] Flag indicating if the VTK grid is active, or not.
+   * @param[in] Flag indicating if domain is physical or parametric.
    */
   static SelfPtr_ create(const DomainPtr_ domain,
                          const Index &id,
@@ -115,82 +193,95 @@ public:
                          const ObjContPtr_ obj_container,
                          const bool is_active,
                          const bool is_physical);
+  ///@}
 
   /**
-   * Updates the grid information.
+   * @brief Updating information about which VTK grid information has changed.
+   * @param[in] solid_udpated Flag indicating if the VTK grid information
+   * corresponding to the solid mesh was changed.
+   * @param[in] knot_udpated Flag indicating if the VTK grid information
+   * corresponding to the knot mesh was changed.
+   * @param[in] control_udpated Flag indicating if the VTK grid information
+   * corresponding to the control polygon mesh was changed.
    */
   void update(const bool solid_updated,
               const bool knot_updated,
               const bool control_updated);
 
   /**
-   * Returns TRUE if the object is for the physical domain.
+   * @brief Returns true if the domain is physical.
+   * @return true if the domain is physical, false elsewhere.
    */
   bool is_physical() const;
 
   /**
-   * Computes (if necessary) and returns the vtk grid the solid geometry.
+   * @brief Computes and retrieves the VTK grid of the geometry of the domain.
+   * @return Pointer to the VTK of the geometry of the domain.
    */
   VtkGridPtr_ get_solid_grid();
 
   /**
-   * Computes (if necessary) and returns the vtk grid the knot geometry.
+   * @brief Computes and retrieves the VTK grid of the knot mesh.
+   * @return Pointer to the VTK of the knot mesh.
    */
   VtkGridPtr_ get_knot_grid();
 
   /**
-   * Computes (if necessary) and returns the vtk grid the control geometry.
+   * @brief Computes and retrieves the VTK grid of the control polygon.
+   * @return Pointer to the VTK of the control polygon.
    */
   VtkGridPtr_ get_control_grid();
 
   /**
-   * Retrieves the domain name.
+   * @brief Retrieves the name of the grid.
+   * @return Name of the grid.
    */
   const std::string &get_name() const;
 
   /**
-   * Retrieves the id.
+   * @brief Retrieves the id number associated to the VTK grid.
+   * @return Id of the grid.
    */
   const Index &get_id() const;
 
-  /// Checks if the grid is active.
+  /**
+   * @brief Checks if the grid is active or not.
+   * @return true if it is active, false elsewhere.
+   */
   bool is_active() const;
 
-  /// Set is_active flag.
+  /**
+   * @brief Sets and status flag.
+   * @param[in] Status flag.
+   */
   void set_status(const bool status_flag);
 
-  /// Checks if the grid corresponds to an ig grid funciton.
+  /**
+   * @brief Checks if the grid corresponds to an @ref IgGridFunction.
+   * @return true, if it corresponds to an @ref IgGridFunction, false
+   * elsewhere.
+   */
   bool is_ig_grid_func() const;
 
 
 protected:
 
-  /**
-   * Mapping function for which the grids are built.
-   */
+  /// IGA domain to be represented.
   const DomainPtr_ domain_;
 
-  /// Id of the Vtk grid.
+  /// Id associated to the VTK grid.
   const Index id_;
 
-  /**
-   * Grids information for the solid grid.
-   */
+  /// VTK Grid information for the solid grid.
   GridInfoPtr_ solid_grid_info_;
 
-  /**
-   * Grids information for the knot grid.
-   */
+  /// VTK Grid information for the knot grid.
   GridInfoPtr_ knot_grid_info_;
 
-  /**
-   * Grids information for the control grid.
-   */
+  /// VTK Grid information for the control grid.
   ControlGridInfoPtr_ control_grid_info_;
 
-  /**
-   * Container for the domain and field functions.
-   */
+  /// Container for all the domains and function defined over them.
   const ObjContPtr_ objs_container_;
 
   /// Vtk solid grid smart pointer.
@@ -217,10 +308,15 @@ protected:
   /// Flag for indicating if the generator corresponds to physical grids.
   const bool is_physical_;
 
-  /// Flag for indicating if the generator corresponds to an ig grid func.
+  /**
+   * Flag for indicating if the generator corresponds to an
+   * @ref IgGridFunction.
+   */
   const bool is_ig_grid_func_;
 
 };
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

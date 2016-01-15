@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef NURBS_SPACE_H_
-#define NURBS_SPACE_H_
+#ifndef NURBS_H_
+#define NURBS_H_
 
 #include <igatools/base/config.h>
 
@@ -32,21 +32,21 @@
 IGA_NAMESPACE_OPEN
 
 template <int, int, int> class NURBSElement;
-template <int, int, int> class NURBSElementHandler;
+template <int, int, int> class NURBSHandler;
 
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
- * valued NURBS space.
+ * valued NURBS basis.
  *
  * @ingroup containers
  * @ingroup serializable
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
 class NURBS :
-  public ReferenceSpaceBasis<dim_,range_,rank_>
+  public ReferenceBasis<dim_,range_,rank_>
 {
 private:
-  using BaseSpace = ReferenceSpaceBasis<dim_,range_,rank_>;
+  using RefBasis = ReferenceBasis<dim_,range_,rank_>;
   using self_t = NURBS<dim_, range_, rank_>;
 
 public:
@@ -61,18 +61,9 @@ public:
   static const int space_dim = dim_;
   static const int range     = range_;
   static const int rank      = rank_;
-  static const bool is_physical_space = false;
+  static const bool is_physical_basis = false;
 
   static const auto n_components = SplineSpace<dim_, range_, rank_>::n_components;
-
-
-  /**
-   * See documentation in \ref Basis
-   *
-   * @see Basis
-   */
-
-//  using RefBasis = typename BaseSpace::RefBasis;
 
 
   using IndexType = typename GridType::IndexType;
@@ -96,37 +87,37 @@ public:
   using ElementAccessor = NURBSElement<dim, range, rank> ;
 
   /** Type for iterator over the elements.  */
-  using ElementIterator = GridIterator<ReferenceElement<dim,range,rank> >;
+  using ElementIterator = GridIterator<ReferenceBasisElement<dim,range,rank> >;
 
-  using ElementHandler = NURBSElementHandler<dim_, range_, rank_>;
+  using Handler = NURBSHandler<dim_, range_, rank_>;
 
 
 
 
   template <int k>
-  using InterSpaceMap = typename BaseSpace::template InterSpaceMap<k>;
+  using InterBasisMap = typename RefBasis::template InterBasisMap<k>;
 
 
   /**
-   * Construct a sub space of dimension <tt>sdim</tt> conforming to
-   * the subspace sub element sub_elem_id and a map from the elements of
+   * Construct a sub basis of dimension <tt>sdim</tt> conforming to
+   * the subbasis sub element sub_elem_id and a map from the elements of
    * the sub_element grid to the corresponding element of the current
    * grid.
    */
   template<int sdim>
   std::shared_ptr<const NURBS<sdim,range_,rank_> >
-  get_sub_nurbs_space(const int sub_elem_id,
-                      InterSpaceMap<sdim> &dof_map,
+  get_sub_nurbs_basis(const int sub_elem_id,
+                      InterBasisMap<sdim> &dof_map,
                       const std::shared_ptr<const Grid<sdim>> &sub_grid) const;
 #if 0
   template<int k>
-  std::shared_ptr<SubSpace<k> >
-  get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+  std::shared_ptr<SubBasis<k> >
+  get_sub_basis(const int s_id, InterBasisMap<k> &dof_map,
                 SubGridMap<k> &elem_map) const;
 #endif
 
 public:
-//    /** Container indexed by the components of the space */
+//    /** Container indexed by the components of the basis */
   template< class T>
   using ComponentContainer = typename BSpBasis::template ComponentContainer<T>;
 
@@ -134,7 +125,7 @@ public:
   using EndBehaviourTable = typename BSpBasis::EndBehaviourTable;
 
 
-  using WeightSpace = BSpline<dim_,1,1>;
+  using WeightBasis = BSpline<dim_,1,1>;
   using WeightFunction = IgGridFunction<dim_,1>;
   using WeightFunctionPtr = std::shared_ptr<WeightFunction>;
   using Weights = DynamicMultiArray<Real,dim>;
@@ -146,7 +137,7 @@ public:
    * (non-const) BSpline and a scalar weight function.
    */
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<BSpBasis> &bs_space,
+  create(const std::shared_ptr<BSpBasis> &bs_basis,
          const std::shared_ptr<WeightFunction> &weight_func);
 
   /**
@@ -154,24 +145,24 @@ public:
    * (const) BSpline and a scalar weight function.
    */
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const BSpBasis> &bs_space,
+  const_create(const std::shared_ptr<const BSpBasis> &bs_basis,
                const std::shared_ptr<const WeightFunction> &weight_func);
 
   ///@}
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
   create_element_begin(const PropId &property) const  override final;
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
   create_element_end(const PropId &property) const  override final;
 
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_begin(const PropId &property) const override final;
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_end(const PropId &property) const override final;
 
 
@@ -196,12 +187,12 @@ protected:
   /**
    * Copy constructor. Not allowed to be used.
    */
-  NURBS(const self_t &space) = delete;
+  NURBS(const self_t &basis) = delete;
 
   ///@}
 
 public:
-  /** @name Getting information about the space */
+  /** @name Getting information about the basis */
   ///@{
 
   virtual bool is_bspline() const override final;
@@ -221,13 +212,13 @@ public:
 
 
   /**
-   * Returns a const reference to the end behaviour table of the BSpline space.
+   * Returns a const reference to the end behaviour table of the BSpline basis.
    */
   virtual const EndBehaviourTable &get_end_behaviour_table() const override final;
 
 
   /**
-   * Prints internal information about the space.
+   * Prints internal information about the basis.
    * @note Mostly used for debugging and testing.
    */
   virtual void print_info(LogStream &out) const override final;
@@ -243,7 +234,7 @@ public:
 
 private:
   /**
-   * B-spline space
+   * B-spline basis
    */
   SharedPtrConstnessHandler<BSpBasis> bsp_basis_;
 
@@ -255,7 +246,7 @@ private:
 
 
   friend class NURBSElement<dim, range, rank>;
-  friend class NURBSElementHandler<dim, range, rank>;
+  friend class NURBSHandler<dim, range, rank>;
 
 
   /**
@@ -267,7 +258,7 @@ private:
 
 
 public:
-  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_> >
+  virtual std::unique_ptr<BasisHandler<dim_,0,range_,rank_> >
   create_cache_handler() const override final;
 
 
@@ -290,7 +281,7 @@ private:
 public:
   virtual void refine_h(const Size n_subdivisions = 2) override final;
 
-//  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
+//  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &basis);
 #endif // MESH_REFINEMENT
 
 
@@ -325,6 +316,6 @@ IGA_NAMESPACE_CLOSE
 #endif /* #ifdef USE_NURBS */
 
 
-#endif /* NURBS_SPACE_H_ */
+#endif /* NURBS_H_ */
 
 

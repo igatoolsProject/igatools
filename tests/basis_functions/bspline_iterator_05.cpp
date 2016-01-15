@@ -43,9 +43,9 @@ void sub_elem_values(const int n_knots, const int deg)
   const int n_qp = 2;
   auto k_quad = QGauss<k>::create(n_qp);
   auto quad = QGauss<dim>::create(n_qp);
-  auto flag = space_element::Flags::value |
-              space_element::Flags::gradient|
-              space_element::Flags::hessian;
+  auto flag = basis_element::Flags::value |
+              basis_element::Flags::gradient|
+              basis_element::Flags::hessian;
 
   auto elem_handler = basis->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
@@ -64,7 +64,7 @@ void sub_elem_values(const int n_knots, const int deg)
   for (; elem != end; ++elem)
   {
     auto &grid_elem =
-      dynamic_cast<ReferenceElement<dim,1,1> &>(*elem).get_grid_element();
+      dynamic_cast<ReferenceBasisElement<dim,1,1> &>(*elem).get_grid_element();
     if (grid_elem.is_boundary())
     {
       elem_handler->template fill_cache<dim>(*elem,0);

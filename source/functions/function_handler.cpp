@@ -43,7 +43,7 @@ FunctionHandler<dim_, codim_, range_, rank_ >::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
-  using DomainFlags = typename DomainType::ElementHandler::Flags;
+  using DomainFlags = typename DomainType::Handler::Flags;
   DomainFlags  dom_flag = DomainFlags::none;
   Flags func_flag = Flags::none;
 

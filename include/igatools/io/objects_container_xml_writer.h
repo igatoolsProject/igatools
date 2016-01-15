@@ -52,7 +52,7 @@ class IgCoefficients;
  * - @ref grid_functions::LinearGridFunction
  * - @ref IgGridFunction
  * - @ref Domain
- * - @ref PhysicalSpaceBasis
+ * - @ref PhysicalBasis
  * - @ref functions::ConstantFunction
  * - @ref functions::LinearFunction
  * - @ref IgFunction
@@ -169,14 +169,14 @@ private:
                                   const XMLDocPtr_ xml_doc);
 
   /**
-   * @brief Appends all the @ref ReferenceSpaceBasis
+   * @brief Appends all the @ref ReferenceBasis
    * present in the @p container to the XML Document @p xml_doc.
    *
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_reference_space_bases(const ContPtr_ container,
-                                          const XMLDocPtr_ xml_doc);
+  static void write_reference_bases(const ContPtr_ container,
+                                    const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends all the @ref GridFunction
@@ -199,14 +199,14 @@ private:
                             const XMLDocPtr_ xml_doc);
 
   /**
-   * @brief Appends all the @ref PhysicalSpaceBasis
+   * @brief Appends all the @ref PhysicalBasis
    * present in the @p container to the XML Document @p xml_doc.
    *
    * @param[in] container Container of the objects to be added.
    * @param[in] xml_doc XML Document where the objects are written to.
    */
-  static void write_physical_space_bases(const ContPtr_ container,
-                                         const XMLDocPtr_ xml_doc);
+  static void write_physical_bases(const ContPtr_ container,
+                                   const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends all the @ref Function
@@ -319,15 +319,15 @@ private:
                            const XMLDocPtr_ xml_doc);
 
   /**
-   * @brief Appends a single @ref PhysicalSpaceBasis
+   * @brief Appends a single @ref PhysicalBasis
    * to the XML Document @p xml_doc.
    *
-   * @tparam PhysSpaceBasis Type of the @ref PhysicalSpaceBasis to be appended.
+   * @tparam PhysicalBasis Type of the @ref PhysicalBasis to be appended.
    * @param[in] xml_doc XML Document where the object is appended to.
    */
-  template <class PhysSpaceBasis>
-  static void write_phys_space_basis(const std::shared_ptr<PhysSpaceBasis> phys_space,
-                                     const XMLDocPtr_ xml_doc);
+  template <class PhysicalBasis>
+  static void write_phys_basis(const std::shared_ptr<PhysicalBasis> phys_space,
+                               const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref functions::ConstantFunction

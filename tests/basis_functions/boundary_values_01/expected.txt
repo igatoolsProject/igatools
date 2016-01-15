@@ -4,6 +4,7 @@ Boundary Domain
          Sup. function:
             IdentityGridFunction<2>
             
+            Name: 
          
          Sub-element topology ID: 0
          Sub elements ID:
@@ -66,6 +67,7 @@ Boundary Domain
          
       
    
+   Name: 
 
 basis index 	 value
 0	0.999875

@@ -11,7 +11,7 @@ theory of isogeometric methods or at least with the finite element methods.
 A more theoretical overview is given in the igatools paper \cite PMCA2014 and
 technical details about the classes can be found in the 
 \ref index "reference manual".
-It also assumes a basic knowledge of C++ or object oriented programming.
+It also assumes a basic knowledge of C++11 or object oriented programming.
 
 Before we start, if you haven't done it yet, it is a good
 idea to install the visualizer [Paraview](http://www.paraview.org/),
@@ -19,12 +19,15 @@ as we will use it to show outputs.
 
 \section ex_run Running the examples
 To run example 1, first go the tutorial directory in the
-igatools build path
-\code
-cd $IGA_WS/iga_lib/tutorial/example_01
+igatools build path 
+\note Here and in the following we assume the igatools build directory to be stored in the
+environment variable <tt>IGA_WS</tt>.
+
+\code{.bash}
+cd $IGA_WS/tutorial/example_01
 \endcode
 to compile, link and run the example program
-\code
+\code{.bash}
 make run-example_01
 \endcode
 With a trivial modification the commands apply
@@ -35,13 +38,13 @@ The examples invite the user to test his understanding by
 solving some exercises. Usually requiring modification of the
 original example code.
 In order to modify \ref example_01, you have to edit the file
-(replace edit by your favorite editor or IDE).
-\code
-cd $IGA_WS/iga_lib/tutorial/example_01
+(replace <tt>edit</tt> by your favorite editor or IDE).
+\code{.bash}
+cd $IGA_WS/tutorial/example_01
 edit example_01.cpp
 \endcode
 After editing to compile and run
-\code
+\code{.bash}
 make run-example_01
 \endcode
 We recommend that if you plan to develop with igatools
@@ -56,7 +59,7 @@ http://matley.imati.cnr.it/igatools/wiki/IgatoolsProjects
 
 The examples are organized by number with a pedagogical order
 from simpler to more difficult.
-so it is crucial to study them in order.
+It is crucial to study them in order.
 
 Tutorial examples:
 - \subpage example_01

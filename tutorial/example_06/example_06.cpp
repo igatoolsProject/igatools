@@ -20,12 +20,12 @@
 
 // [functions]
 //#include <igatools/functions/identity_function.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 // [functions]
 // [old includes]
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/base/quadrature_lib.h>
 
 //#include <igatools/linear_algebra/dense_matrix.h>
@@ -65,7 +65,7 @@ private:
 
   // [members]
 private:
-  using RefSpace = ReferenceSpaceBasis<dim>;
+  using RefBasis = ReferenceBasis<dim>;
   using Basis = BSpline<dim>;
   shared_ptr<const Basis> basis;
 
@@ -110,7 +110,7 @@ void PoissonProblem<dim>::assemble()
 
   auto basis_elem_handler = basis->create_cache_handler();
 
-  using BasisFlags = space_element::Flags;
+  using BasisFlags = basis_element::Flags;
   auto basis_flags = BasisFlags::value | BasisFlags::gradient |
                      BasisFlags::w_measure;
   basis_elem_handler->set_element_flags(basis_flags);

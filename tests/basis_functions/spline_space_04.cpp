@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for bezier extraction
+ *  Test for the SplineSpace class homogeneous range
  *  author: pauletti
  *  date:
  *
@@ -26,101 +26,26 @@
 
 #include "../tests.h"
 #include <igatools/basis_functions/spline_space.h>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/ublas/io.hpp>
 
-using boost::numeric::ublas::matrix;
-using boost::numeric::ublas::matrix_row;
-
-matrix<Real> compute(const matrix<Real> &M_j_1,
-                     typename SafeSTLVector<Real>::const_iterator  y,
-                     const Real a,
-                     const Real b)
+template<int dim, int range, int rank>
+void test(const int deg1)
 {
+  using SplineSpace = SplineSpace<dim, range, rank>;
 
-  const int j = M_j_1.size1() + 1;
-  matrix<Real> M_j(j,j);
+  auto grid = Grid<dim>::const_create(4);
+  typename SplineSpace::Degrees deg2(deg1);
+  typename SplineSpace::DegreeTable deg(deg2);
 
-  SafeSTLVector<Real> alpha(j);
-  SafeSTLVector<Real> one_alpha(j,1);
-  SafeSTLVector<Real> beta(j, b-a);
+  deg.get_active_components_id().print_info(out);
+  out << endl;
+  deg.get_inactive_components_id().print_info(out);
+  out << endl;
 
-  for (int k = 0; k < j; ++k)
-  {
-    alpha[k] = (y[k+j] - a)/(y[k+j]-y[k]);
-    one_alpha[k] -= alpha[k];
-
-    beta[k] /= (y[k+j]-y[k]);
-  }
-
-  for (int l = 0; l < j-1; ++l)
-  {
-    //k = 0
-    M_j(0, l) = alpha[0] * M_j_1(0, l);
-    //k = 1,...,j-2
-    for (int k = 1; k < j-1; ++k)
-    {
-      M_j(k, l) = alpha[k] * M_j_1(k, l) + one_alpha[k] * M_j_1(k-1, l);
-    }
-    //k = j-1
-    M_j(j-1, l) = one_alpha[j-1] * M_j_1(j-2, l);
-  }
-
-
-  const int l = j-1;
-
-  //k = 0
-  M_j(0, l) = M_j(0, l-1) - beta[0] * M_j_1(0, l-1);
-  //k = 1,...,j-2
-  for (int k = 1; k < j-1; ++k)
-  {
-    M_j(k, l) = M_j(k, l-1) + beta[k] * (M_j_1(k-1, l-1) - M_j_1(k, l-1));
-  }
-  //k = j-1
-  M_j(j-1, l) = M_j(j-1, l-1) + beta[j-1] * M_j_1(j-2, j-2);
-
-  return M_j;
+  auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                  deg, grid->get_num_intervals());
+  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
+  sp_spec->print_info(out);
 }
-
-void fill_extraction(const int degree,
-                     const SafeSTLVector<Real>    &knots,
-                     const SafeSTLVector<Real>    &rep_knots,
-                     const SafeSTLVector<Index>   &acum_mult)
-//,                    SafeSTLVector<matrix<Real>>  &extraction_operators)
-{
-  // interval n
-  const int n=0;
-  const int m = degree+1;
-
-  const auto &x = knots;
-  const auto &y = rep_knots;
-
-  const auto a = x[n];
-  const auto b = x[n+1];
-
-  matrix<Real> M(1,1);
-  M(0,0) = 1/(b-a);
-  for (int j = 2; j<=m; ++j)
-  {
-    const int s = acum_mult[n+1] - j;
-
-    auto M1 = compute(M, y.begin()+s, a, b);
-    M.assign_temporary(M1);
-  }
-
-  //Normalized
-  auto M2(M);
-  const int s = acum_mult[n+1] - m;
-  for (int k = 0; k < m; ++k)
-  {
-    matrix_row<matrix<double> > mr(M2, k);
-    mr *= (y[s+k+m]-y[s+k]);
-  }
-  out << M << endl;
-
-}
-
 
 
 
@@ -128,35 +53,10 @@ int main()
 {
   out.depth_console(10);
 
-  {
-    int degree = 1;
-    SafeSTLVector<Real>    knots = {0,1};
-    SafeSTLVector<Real>    rep_knots = {0,0,1,1};
-    SafeSTLVector<Index>   acum_mult = {0,2,4};
-
-    fill_extraction(degree,knots,rep_knots, acum_mult);
-  }
-
-
-  {
-    int degree = 2;
-    SafeSTLVector<Real>    knots = {0,1};
-    SafeSTLVector<Real>    rep_knots = {0,0,0,1,1,1};
-    SafeSTLVector<Index>   acum_mult = {0,3,6};
-
-    fill_extraction(degree,knots,rep_knots, acum_mult);
-  }
-
-
-  {
-    int degree = 3;
-    SafeSTLVector<Real>    knots = {0,1};
-    SafeSTLVector<Real>    rep_knots = {0,0,0,0,1,1,1,1};
-    SafeSTLVector<Index>   acum_mult = {0,4,8};
-
-    fill_extraction(degree,knots,rep_knots, acum_mult);
-  }
-
+  test<1, 1, 1>(1);
+  test<1, 2, 1>(1);
+  test<2, 2, 1>(3);
+  test<2, 2, 1>(2);
 
   return 0;
 }

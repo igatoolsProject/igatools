@@ -60,9 +60,9 @@ create_matrix(const Graph &graph);
  */
 template<class Basis>
 MatrixPtr
-create_matrix(const Basis &space, const std::string &prop, const Epetra_SerialComm &comm)
+create_matrix(const Basis &basis, const std::string &prop, const Epetra_SerialComm &comm)
 {
-  return create_matrix(*create_graph(space, prop, space, prop, comm));
+  return create_matrix(*create_graph(basis, prop, basis, prop, comm));
 }
 
 }

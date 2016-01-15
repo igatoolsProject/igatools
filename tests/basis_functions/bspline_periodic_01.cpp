@@ -55,7 +55,7 @@ void plot_basis(const int n_knots, const int deg)
   basis->print_info(out);
 
 #if 0
-  using RefSpace  = ReferenceSpaceBasis<dim, range>;
+  using RefSpace  = ReferenceBasis<dim, range>;
   using Coeffs = typename IgFunction<RefSpace>::CoeffType;
   Coeffs coeffs(n_basis);
 

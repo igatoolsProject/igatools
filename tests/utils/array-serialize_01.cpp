@@ -66,8 +66,8 @@ int main()
   array_serialization(arr_3);
 
 
-  SafeSTLArray<int,0> arr_0;
-  array_serialization(arr_0);
+//  SafeSTLArray<int,0> arr_0;
+//  array_serialization(arr_0);
 
   return 0;
 }

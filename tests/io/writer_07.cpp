@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 #include "igatools/io/writer.h"
-#include "igatools/geometry/grid_function_lib.h"
+#include "igatools/functions/grid_function_lib.h"
 #include "igatools/basis_functions/bspline.h"
 #include "igatools/functions/ig_function.h"
 //#include "igatools/functions/function_lib.h"
@@ -58,19 +58,19 @@ create_domain_from_grid(const shared_ptr<const Grid<dim>> &grid)
 
 
 template<int dim,int codim,int range>
-std::shared_ptr<const PhysicalSpaceBasis<dim,range,1,codim> >
-create_phys_space(const shared_ptr<const Domain<dim,codim>> &domain)
+std::shared_ptr<const PhysicalBasis<dim,range,1,codim> >
+create_phys_basis(const shared_ptr<const Domain<dim,codim>> &domain)
 {
   const int deg = 2;
 
   const auto grid = domain->get_grid_function()->get_grid();
 
-  auto bsp_space = BSpline<dim,range,1>::const_create(
+  auto bsp_basis = BSpline<dim,range,1>::const_create(
                      SplineSpace<dim,range,1>::const_create(deg,grid));
 
-  auto phys_space = PhysicalSpaceBasis<dim,range,1,codim>::const_create(bsp_space,domain);
+  auto phys_basis = PhysicalBasis<dim,range,1,codim>::const_create(bsp_basis,domain);
 
-  return phys_space;
+  return phys_basis;
 }
 
 
@@ -78,15 +78,15 @@ template<int dim,int codim,int range>
 std::shared_ptr<const Function<dim,codim,range,1> >
 create_ig_function(const shared_ptr<const Domain<dim,codim>> &domain)
 {
-  auto phys_space = create_phys_space<dim,codim,range>(domain);
+  auto phys_basis = create_phys_basis<dim,codim,range>(domain);
 
-  int n_basis = phys_space->get_num_basis();
+  int n_basis = phys_basis->get_num_basis();
 
   IgCoefficients coeffs;
   for (int dof = 0 ; dof < n_basis ; ++dof)
     coeffs[dof] = 1.0;
 
-  auto ig_func = IgFunction<dim,codim,range,1>::const_create(phys_space,coeffs);
+  auto ig_func = IgFunction<dim,codim,range,1>::const_create(phys_basis,coeffs);
 
   return ig_func;
 }

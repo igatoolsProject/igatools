@@ -25,8 +25,8 @@
 #include <igatools/geometry/grid_tools.h>
 #include <igatools/functions/sub_function.h>
 
-#include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_element.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 
 #include <igatools/linear_algebra/epetra_solver.h>
 
@@ -71,9 +71,9 @@ projection_l2(const Function<Basis::dim,Basis::codim,Basis::range,Basis::rank> &
   const int dim = Basis::dim;
 
 
-  using SpFlags = space_element::Flags;
-  auto sp_flag = SpFlags::value |
-                 SpFlags::w_measure;
+  using BsFlags = basis_element::Flags;
+  auto sp_flag = BsFlags::value |
+                 BsFlags::w_measure;
   auto space_elem_handler = basis->create_cache_handler();
   space_elem_handler->template set_flags<dim>(sp_flag);
 
@@ -85,7 +85,7 @@ projection_l2(const Function<Basis::dim,Basis::codim,Basis::range,Basis::rank> &
 
   const int n_qp = quad->get_num_points();
 
-  using space_element::_Value;
+  using basis_element::_Value;
 
   if (space_grid == func_grid)
   {
@@ -233,7 +233,7 @@ projection_l2(const Function<Basis::dim,Basis::codim,Basis::range,Basis::rank> &
 template<int dim,int codim,int range,int rank>
 IgCoefficients
 projection_l2_function(const Function<dim,codim,range,rank> &function,
-                       const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+                       const PhysicalBasis<dim,range,rank,codim> &basis,
                        const std::shared_ptr<const Quadrature<dim>> &quad,
                        const std::string &dofs_property = DofProperties::active)
 {
@@ -254,9 +254,9 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
   Assert(space_grid->same_knots_or_refinement_of(*func_grid),
          ExcMessage("The space grid is not a refinement of the function grid."));
 
-  using SpFlags = space_element::Flags;
-  auto sp_flag = SpFlags::value |
-                 SpFlags::w_measure;
+  using BsFlags = basis_element::Flags;
+  auto sp_flag = BsFlags::value |
+                 BsFlags::w_measure;
   auto space_elem_handler = basis.create_cache_handler();
   space_elem_handler->set_element_flags(sp_flag);
 
@@ -267,7 +267,7 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
   space_elem_handler->init_element_cache(*elem,quad);
 
 
-  using space_element::_Value;
+  using basis_element::_Value;
 
   using _D0 = function_element::template _D<0>;
   if (space_grid == func_grid)
@@ -372,7 +372,7 @@ template<int dim,int range, LAPack la_pack = LAPack::trilinos_epetra>
 IgCoefficients
 projection_l2_ig_grid_function(
   const IgGridFunction<dim,range> &ig_grid_function,
-  const ReferenceSpaceBasis<dim,range,1> &ref_basis,
+  const ReferenceBasis<dim,range,1> &ref_basis,
   const std::shared_ptr<const Quadrature<dim>> &quad,
   const std::string &dofs_property = DofProperties::active)
 {
@@ -394,9 +394,9 @@ projection_l2_ig_grid_function(
          ExcMessage("The space grid is not a refinement of the function grid."));
 
 
-  using SpFlags = space_element::Flags;
-  auto sp_flag = SpFlags::value |
-                 SpFlags::w_measure;
+  using BsFlags = basis_element::Flags;
+  auto sp_flag = BsFlags::value |
+                 BsFlags::w_measure;
   auto space_elem_handler = ref_basis.create_cache_handler();
   space_elem_handler->template set_flags<dim>(sp_flag);
 
@@ -408,7 +408,7 @@ projection_l2_ig_grid_function(
 
   const int n_qp = quad->get_num_points();
 
-  using space_element::_Value;
+  using basis_element::_Value;
 
   using D0 = grid_function_element::_D<0>;
   if (space_grid == func_grid)
@@ -569,7 +569,7 @@ template<int dim,int range>
 IgCoefficients
 projection_l2_grid_function(
   const GridFunction<dim,range> &grid_function,
-  const ReferenceSpaceBasis<dim,range,1> &ref_basis,
+  const ReferenceBasis<dim,range,1> &ref_basis,
   const std::shared_ptr<const Quadrature<dim>> &quad,
   const std::string &dofs_property = DofProperties::active)
 {
@@ -593,9 +593,9 @@ projection_l2_grid_function(
          ExcMessage("The space grid is not a refinement of the function grid."));
 
 
-  using SpFlags = space_element::Flags;
-  auto sp_flag = SpFlags::value |
-                 SpFlags::w_measure;
+  using BsFlags = basis_element::Flags;
+  auto sp_flag = BsFlags::value |
+                 BsFlags::w_measure;
   auto space_elem_handler = ref_basis.create_cache_handler();
   space_elem_handler->set_element_flags(sp_flag);
 
@@ -715,7 +715,7 @@ template<int dim,int codim, int range, int rank>
 void
 project_boundary_values(
   std::map<int, std::shared_ptr<const Function<dim-1,codim+1,range,rank>>> &bndry_funcs,
-  const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+  const PhysicalBasis<dim,range,rank,codim> &basis,
   const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
   std::map<Index, Real>  &boundary_values)
 {
@@ -724,8 +724,8 @@ project_boundary_values(
 
   const int sdim = dim - 1;
 
-  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
-  using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
+  using Basis = PhysicalBasis<dim,range,rank,codim>;
+  using InterBasisMap = typename Basis::template InterBasisMap<sdim>;
 
   using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
 
@@ -734,20 +734,22 @@ project_boundary_values(
 
   boundary_values.clear();
 
+//  LogStream myout;
   for (const auto &bndry : bndry_funcs)
   {
     InterGridMap elem_map;
 
     const int s_id = bndry.first;
 
+//    myout.begin_item("SubElem ID: " + std::to_string(s_id));
+
     Assert(bndry.second != nullptr,ExcNullPtr());
     const auto &bndry_func = *bndry.second;
 
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
-    InterSpaceMap  dof_map;
-    const auto sub_basis = basis.template get_sub_space<sdim>(s_id, dof_map,sub_grid,elem_map);
-
+    InterBasisMap  dof_map;
+    const auto sub_basis = basis.template get_sub_basis<sdim>(s_id, dof_map,sub_grid,elem_map);
 
     const auto coeffs = projection_l2_function(
                           bndry_func,*sub_basis,quad,DofProperties::active);
@@ -755,6 +757,8 @@ project_boundary_values(
     const int face_n_dofs = dof_map.size();
     for (Index i = 0; i< face_n_dofs; ++i)
       boundary_values[dof_map[i]] = coeffs[i];
+
+//    myout.end_item();
   }
 }
 
@@ -763,7 +767,7 @@ template<int dim,int range>
 void
 project_boundary_values(
   std::map<int, std::shared_ptr<const SubGridFunction<dim-1,dim,range>>> &bndry_funcs,
-  const ReferenceSpaceBasis<dim,range,1> &ref_basis,
+  const ReferenceBasis<dim,range,1> &ref_basis,
   const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
   std::map<Index, Real>  &boundary_values)
 {
@@ -772,8 +776,8 @@ project_boundary_values(
 
   const int sdim = (dim >=1) ? dim - 1 : 0;
 
-  using Basis = ReferenceSpaceBasis<dim,range,1>;
-  using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
+  using Basis = ReferenceBasis<dim,range,1>;
+  using InterBasisMap = typename Basis::template InterBasisMap<sdim>;
 
   using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
 
@@ -795,7 +799,7 @@ project_boundary_values(
 
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
-    InterSpaceMap  dof_map;
+    InterBasisMap  dof_map;
     const auto sub_basis = ref_basis.template get_ref_sub_space<sdim>(s_id, dof_map,sub_grid);
 
     const auto coeffs = projection_l2_grid_function(
@@ -814,7 +818,7 @@ void
 project_boundary_values(
 //    std::map<int, std::shared_ptr<const GridFunction<dim-1,codim+1,range,rank>>> &bndry_funcs,
   const GridFunction<dim,range> &grid_func,
-  const ReferenceSpaceBasis<dim,range> &basis,
+  const ReferenceBasis<dim,range> &basis,
   const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:1>> &quad,
   const std::set<boundary_id>  &boundary_ids,
   std::map<Index, Real>  &boundary_values)
@@ -827,8 +831,8 @@ project_boundary_values(
 
   const int sdim = dim - 1;
 
-  using Basis = ReferenceSpaceBasis<dim,range>;
-  using InterSpaceMap = typename Basis::template InterSpaceMap<sdim>;
+  using Basis = ReferenceBasis<dim,range>;
+  using InterBasisMap = typename Basis::template InterBasisMap<sdim>;
 
   using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
 
@@ -851,7 +855,7 @@ project_boundary_values(
 
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
-    InterSpaceMap  dof_map;
+    InterBasisMap  dof_map;
     const auto sub_basis = basis.template get_ref_sub_space<sdim>(s_id, dof_map,sub_grid);
 
 //    const auto sub_func = ig_grid_func.get_sub_function(s_id,sub_grid);
@@ -869,33 +873,35 @@ project_boundary_values(
 
 /**
  * Returns the list of global ids of the non zero basis functions
- * on the faces with the given boundary ids.
+ * on the faces with the given ids.
  */
 template<class Basis>
 std::set<Index>
 get_boundary_dofs(std::shared_ptr<const Basis> basis,
-                  const std::set<boundary_id>  &boundary_ids)
+                  const std::set<int> &boundary_ids)
 {
   const int dim   = Basis::dim;
   std::set<Index> dofs;
+
   const int sub_dim = dim - 1;
+  /*
+    auto grid = basis->get_grid();
 
-  auto grid = basis->get_grid();
-
-  std::set<int> sub_elems;
-  auto bdry_begin = boundary_ids.begin();
-  auto bdry_end   = boundary_ids.end();
-  for (auto &s_id : UnitElement<Basis::dim>::template elems_ids<sub_dim>())
-  {
-    const auto bdry_id = grid->get_boundary_id(s_id);
-    if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
-      sub_elems.insert(s_id);
-  }
+    std::set<int> sub_elems;
+    auto bdry_begin = boundary_ids.begin();
+    auto bdry_end   = boundary_ids.end();
+    for (auto &s_id : UnitElement<Basis::dim>::template elems_ids<sub_dim>())
+    {
+      const auto bdry_id = grid->get_boundary_id(s_id);
+      if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
+        sub_elems.insert(s_id);
+    }
+  //*/
 
   const auto &dof_distribution =
     *basis->get_spline_space()->get_dof_distribution();
   Topology<sub_dim> sub_elem_topology;
-  for (const Index &s_id : sub_elems)
+  for (const int s_id : boundary_ids)
   {
     auto s_dofs = dof_distribution.get_boundary_dofs(s_id,sub_elem_topology);
     dofs.insert(s_dofs.begin(), s_dofs.end());
@@ -909,7 +915,7 @@ template<int dim,int codim, int range, int rank>
 void
 project_function_on_boundary(
   const Function<dim,codim,range,rank> &func_to_project,
-  const PhysicalSpaceBasis<dim,range,rank,codim> &basis,
+  const PhysicalBasis<dim,range,rank,codim> &basis,
   const std::shared_ptr<const Quadrature<(dim > 1)?dim-1:0>> &quad,
   const std::set<int> &boundary_ids,
   std::map<Index, Real> &boundary_values)
@@ -926,8 +932,8 @@ project_function_on_boundary(
 
   const int sdim = dim-1;
 
-//  using Basis = PhysicalSpaceBasis<dim,range,rank,codim>;
-//  using InterSpaceMap = typename Basis::template InterSpaceMap<dim>;
+//  using Basis = PhysicalBasis<dim,range,rank,codim>;
+//  using InterBasisMap = typename Basis::template InterBasisMap<dim>;
 //  using InterGridMap = typename Grid<dim>::template SubGridMap<sdim>;
 
   using BndryFunc = Function<sdim,codim+1,range,rank>;
@@ -942,7 +948,7 @@ project_function_on_boundary(
 
     const std::shared_ptr<const Grid<sdim>> sub_grid = grid->template get_sub_grid<sdim>(s_id,elem_map);
 
-    InterSpaceMap  dof_map;
+    InterBasisMap  dof_map;
     const auto sub_basis = basis.template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
     //*/
     boundary_functions[s_id] = func_to_project.get_sub_function(s_id);

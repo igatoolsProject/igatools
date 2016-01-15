@@ -25,75 +25,131 @@
 
 IGA_NAMESPACE_OPEN
 
+namespace paraview_plugin
+{
+
 /**
-* Bit field flags for specifying which VTK grid type must be used.
-*/
+ * Bit field flags for specifying which VTK grid type must be used.
+ *
+ * The VTK grid can be structured or unstructured. And for unstructured
+ * meshes, each of the cells of the mesh can be linear in each direction,
+ * or quadratic.
+ *
+ * @author P. Antolin, 2016.
+ *
+ * @ingroup paraview_plugin
+ */
 enum class VtkGridType : std::int64_t
 {
-  /** VTK structured grid */
+  /// VTK structured grid.
   Structured             = 1 << 0,
 
-  /** VTK unstructured grid with linear cells */
+  /// VTK unstructured grid with linear cells.
   UnstructuredLinear     = 1 << 1,
 
-  /** VTK unstructured grid with quadratic cells */
+  /// VTK unstructured grid with quadratic cells.
   UnstructuredQuadratic  = 1 << 2,
 
-  /** None */
+  /// None.
   None                   = 1 << 3,
 };
 
 
+
 /**
- * TODO: to ducment
- * When throwing this exception,
- * you can give a message as a
- * <tt>std::string</tt> as argument to the
- * exception that is then
- * displayed. The argument can, of
- * course, be constructed at run-time,
- * for example including the name of a
- * file that can't be opened, or any
- * other text you may want to assemble
- * from different pieces.
+ * @brief Exception for throwing errors that are caught by ParaView.
  *
- * This is exception is intended to be
- * used as vtk runtime warning to be
- * caught by ParaView
+ * This class derives directly from the standard @p exception class.
+ *
+ * It just overrides the @ref what method, who retrieves a message
+ * explaining the error.
+ *
+ * @author P. Antolin, 2016.
+ *
+ * @ingroup paraview_plugin
  */
-class ExcVtkWarning: public std::exception
+class ExcVtkError: public std::exception
 {
 public:
 
-  /**
-   * Constructor
-   * @param message The error message.
-   */
-  explicit ExcVtkWarning(const std::string &message):
-    error_msg_(message)
-  {}
+    /**
+     * @brief Constructor.
+     * @param message The error message.
+     */
+    explicit ExcVtkError(const std::string& message):
+      error_msg_(message)
+    {}
 
-  /** Destructor.
-   * Virtual to allow for subclassing.
-   */
-  virtual ~ExcVtkWarning() throw () {};
+    /**
+     * @brief Destructor.
+     *
+     * This is virtual to allow for subclassing.
+     */
+    virtual ~ExcVtkError() throw (){};
 
-  /**
-   *  Returns a pointer to the (constant) error description.
-   *  @return A pointer to a \c const \c char*. The underlying memory
-   *          is in posession of the \c ExcVtkWarning object. Callers \a must
-   *          not attempt to free the memory.
-   */
-  virtual const char *what() const throw ()
-  {
-    return error_msg_.c_str();
-  }
+    /**
+     *  @brief Returns a pointer to the (constant) error description.
+     *  @return A pointer to a \c const \c char*. The underlying memory
+     *          is in possession of the \c ExcVtkError object.
+     *          Callers \a must not attempt to free the memory.
+     */
+    virtual const char* what() const throw ()
+    {
+       return error_msg_.c_str();
+    }
 
-protected:
-  /** Error message.
-   */
-  std::string error_msg_;
+private:
+    /// Error message.
+    std::string error_msg_;
 };
+
+
+
+/**
+ * @brief Macro to popping up error messages in the ParaView log window.
+ *
+ * @author P. Antolin, 2016.
+ *
+ * @ingroup paraview_plugin
+ */
+#define VtkIgaErrorMacro(x)                                       \
+{                                                                 \
+    if (vtkObject::GetGlobalWarningDisplay())                     \
+    {                                                             \
+        vtkOStreamWrapper::EndlType endl;                         \
+        vtkOStreamWrapper::UseEndl(endl);                         \
+        vtkOStrStreamWrapper vtkmsg;                              \
+        vtkmsg << "IGATOOLS PLUGIN ERROR!!:\n" x << "\n\n";       \
+        vtkOutputWindowDisplayErrorText(vtkmsg.str());            \
+        vtkmsg.rdbuf()->freeze(0);                                \
+        vtkObject::BreakOnError();                                \
+    }                                                             \
+}
+
+
+
+/**
+ * @brief Macro to popping up warnings in the ParaView log window.
+ *
+ * @author P. Antolin, 2016.
+ *
+ * @ingroup paraview_plugin
+ */
+#define VtkIgaWarningMacro(x)                                     \
+{                                                                 \
+    if (vtkObject::GetGlobalWarningDisplay())                     \
+    {                                                             \
+        vtkOStreamWrapper::EndlType endl;                         \
+        vtkOStreamWrapper::UseEndl(endl);                         \
+        vtkOStrStreamWrapper vtkmsg;                              \
+        vtkmsg << "IGATOOLS PLUGIN WARNING!!:\n" x << "\n\n";     \
+        vtkOutputWindowDisplayErrorText(vtkmsg.str());            \
+        vtkmsg.rdbuf()->freeze(0);                                \
+        vtkObject::BreakOnError();                                \
+    }                                                             \
+}
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

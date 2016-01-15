@@ -61,8 +61,8 @@ DomainHandler<dim_, codim_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
-  using GridFuncFlags = typename GridFuncType::ElementHandler::Flags;
-  using GridFlags = typename GridFuncType::GridType::ElementHandler::Flags;
+  using GridFuncFlags = typename GridFuncType::Handler::Flags;
+  using GridFlags = typename GridFuncType::GridType::Handler::Flags;
 
   GridFlags  grid_flag = GridFlags::none;
   GridFuncFlags  grid_func_flag = GridFuncFlags::none;

@@ -1,3 +1,254 @@
-[2,2]((1.00000,0.00000),(0.00000,1.00000))
-[3,3]((1.00000,0.00000,0.00000),(0.00000,1.00000,0.00000),(0.00000,0.00000,1.00000))
-[4,4]((1.00000,0.00000,0.00000,0.00000),(0.00000,1.00000,0.00000,0.00000),(0.00000,0.00000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
+[ 0 ]
+[ ]
+Knots without repetition:
+   Number of intervals per direction: [ 3 ]
+   Knot coordinates:
+      Direction 0: 
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+            Flat ID: 0    Tensor ID: [0]
+         
+         Entry id: 1
+            Flat ID: 1    Tensor ID: [1]
+         
+         Entry id: 2
+            Flat ID: 2    Tensor ID: [2]
+         
+      
+   
+   Name: 
+
+Degrees:
+   Raw components: 
+      Size: [ 1 ]  Weights: [1]
+      Entry id: 0
+      [ 1 ]
+   
+   Components map: 
+   [ 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ ]
+
+Interior multiplicities:
+   Entry id: 0
+   [ 1 1 ]
+
+Dimensionality Table:
+   Entry id: 0
+   [ 4 ]
+   Scalar components dimensions:
+   [ 4 ]
+   Total Dimension: 4
+
+[ 0 ]
+[ 1 ]
+Knots without repetition:
+   Number of intervals per direction: [ 3 ]
+   Knot coordinates:
+      Direction 0: 
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+            Flat ID: 0    Tensor ID: [0]
+         
+         Entry id: 1
+            Flat ID: 1    Tensor ID: [1]
+         
+         Entry id: 2
+            Flat ID: 2    Tensor ID: [2]
+         
+      
+   
+   Name: 
+
+Degrees:
+   Raw components: 
+      Size: [ 2 ]  Weights: [2]
+      Entry id: 0
+      [ 1 ]
+      Entry id: 1
+      [ 0 ]
+   
+   Components map: 
+   [ 0 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ 1 ]
+
+Interior multiplicities:
+   Entry id: 0
+   [ 1 1 ]
+   Entry id: 0
+   [ 1 1 ]
+
+Dimensionality Table:
+   Entry id: 0
+   [ 4 ]
+   Entry id: 1
+   [ 4 ]
+   Scalar components dimensions:
+   [ 4 4 ]
+   Total Dimension: 8
+
+[ 0 ]
+[ 1 ]
+Knots without repetition:
+   Number of intervals per direction: [ 3 3 ]
+   Knot coordinates:
+      Direction 0: 
+      [ 0 0.333333 0.666667 1.00000 ]
+      Direction 1: 
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+            Flat ID: 0    Tensor ID: [0,0]
+         
+         Entry id: 1
+            Flat ID: 3    Tensor ID: [0,1]
+         
+         Entry id: 2
+            Flat ID: 6    Tensor ID: [0,2]
+         
+         Entry id: 3
+            Flat ID: 1    Tensor ID: [1,0]
+         
+         Entry id: 4
+            Flat ID: 4    Tensor ID: [1,1]
+         
+         Entry id: 5
+            Flat ID: 7    Tensor ID: [1,2]
+         
+         Entry id: 6
+            Flat ID: 2    Tensor ID: [2,0]
+         
+         Entry id: 7
+            Flat ID: 5    Tensor ID: [2,1]
+         
+         Entry id: 8
+            Flat ID: 8    Tensor ID: [2,2]
+         
+      
+   
+   Name: 
+
+Degrees:
+   Raw components: 
+      Size: [ 2 ]  Weights: [2]
+      Entry id: 0
+      [ 3 3 ]
+      Entry id: 1
+      [ 0 0 ]
+   
+   Components map: 
+   [ 0 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ 1 ]
+
+Interior multiplicities:
+   Entry id: 0
+   [ 1 1 ]
+   Entry id: 1
+   [ 1 1 ]
+   Entry id: 0
+   [ 1 1 ]
+   Entry id: 1
+   [ 1 1 ]
+
+Dimensionality Table:
+   Entry id: 0
+   [ 6 6 ]
+   Entry id: 1
+   [ 6 6 ]
+   Scalar components dimensions:
+   [ 36 36 ]
+   Total Dimension: 72
+
+[ 0 ]
+[ 1 ]
+Knots without repetition:
+   Number of intervals per direction: [ 3 3 ]
+   Knot coordinates:
+      Direction 0: 
+      [ 0 0.333333 0.666667 1.00000 ]
+      Direction 1: 
+      [ 0 0.333333 0.666667 1.00000 ]
+   
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+            Flat ID: 0    Tensor ID: [0,0]
+         
+         Entry id: 1
+            Flat ID: 3    Tensor ID: [0,1]
+         
+         Entry id: 2
+            Flat ID: 6    Tensor ID: [0,2]
+         
+         Entry id: 3
+            Flat ID: 1    Tensor ID: [1,0]
+         
+         Entry id: 4
+            Flat ID: 4    Tensor ID: [1,1]
+         
+         Entry id: 5
+            Flat ID: 7    Tensor ID: [1,2]
+         
+         Entry id: 6
+            Flat ID: 2    Tensor ID: [2,0]
+         
+         Entry id: 7
+            Flat ID: 5    Tensor ID: [2,1]
+         
+         Entry id: 8
+            Flat ID: 8    Tensor ID: [2,2]
+         
+      
+   
+   Name: 
+
+Degrees:
+   Raw components: 
+      Size: [ 2 ]  Weights: [2]
+      Entry id: 0
+      [ 2 2 ]
+      Entry id: 1
+      [ 0 0 ]
+   
+   Components map: 
+   [ 0 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ 1 ]
+
+Interior multiplicities:
+   Entry id: 0
+   [ 1 1 ]
+   Entry id: 1
+   [ 1 1 ]
+   Entry id: 0
+   [ 1 1 ]
+   Entry id: 1
+   [ 1 1 ]
+
+Dimensionality Table:
+   Entry id: 0
+   [ 5 5 ]
+   Entry id: 1
+   [ 5 5 ]
+   Scalar components dimensions:
+   [ 25 25 ]
+   Total Dimension: 50
+

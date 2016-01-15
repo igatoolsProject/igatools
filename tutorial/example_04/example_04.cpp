@@ -22,14 +22,16 @@
 #include <igatools/base/logstream.h>
 
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/io/writer.h>
+#include <igatools/io/objects_container_xml_writer.h>
 
 #include <igatools/geometry/grid_element.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/base/objects_container.h>
 
 // [include]
 #include <igatools/linear_algebra/dof_tools.h>
@@ -61,6 +63,8 @@ private:
   shared_ptr<Vector> sol;
 // [system]
 
+  using IgGridFunc_t = IgGridFunction<dim,1>;
+
 public:
   PoissonProblem(const Size nel, const Index deg)
   {
@@ -77,6 +81,7 @@ public:
 
   void assemble();
   void solve();
+  std::shared_ptr<const IgGridFunc_t> get_solution();
   void save();
   void run();
 };
@@ -88,9 +93,9 @@ void PoissonProblem<dim>::assemble()
   auto basis_el      = basis->begin();
   auto basis_el_end  = basis->end();
   auto cache_handler = basis->create_cache_handler();
-  auto flag = space_element::Flags::value |
-              space_element::Flags::gradient |
-              space_element::Flags::w_measure;
+  auto flag = basis_element::Flags::value |
+              basis_element::Flags::gradient |
+              basis_element::Flags::w_measure;
   cache_handler->set_element_flags(flag);
   cache_handler->init_element_cache(basis_el,quad);
 
@@ -174,13 +179,42 @@ void PoissonProblem<dim>::solve()
 // [solve]
 
 template<int dim>
+auto
+PoissonProblem<dim>::get_solution() ->
+std::shared_ptr<const IgGridFunc_t>
+{
+  return IgGridFunc_t::const_create(basis, *sol);
+}
+
+template<int dim>
 void PoissonProblem<dim>::save()
 {
-  Writer<dim> writer(grid,5);
-  auto solution = IgGridFunction<dim,1>::const_create(basis, *sol);
-  writer.add_field(*solution, "solution");
+
+  const auto solution = this->get_solution();
   string filename = "problem_" + to_string(dim) + "d" ;
+
+  const auto solution_non_const = std::const_pointer_cast<IgGridFunc_t>(solution);
+  solution_non_const->set_name("solution");
+
+#ifdef SERIALIZATION
+  const auto objs_container = ObjectsContainer::create();
+  objs_container->insert_const_object<GridFunction<dim, 1>>(solution);
+  {
+    std::ofstream xml_ostream(filename + ".iga");
+    OArchive xml_out(xml_ostream);
+    xml_out << *objs_container;
+  }
+#else
+#if XML_IO
+  const auto objs_container = ObjectsContainer::create();
+  objs_container->insert_const_object<GridFunction<dim, 1>>(solution);
+  ObjectsContainerXMLWriter::write(filename + ".iga", objs_container);
+#else
+  Writer<dim> writer(grid,5);
+  writer.add_field(*solution, "solution");
   writer.save(filename);
+#endif
+#endif
 }
 
 template<int dim>

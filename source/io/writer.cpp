@@ -19,11 +19,11 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/io/writer.h>
-#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/physical_basis_element.h>
 #include <igatools/utils/multi_array_utils.h>
 //#include <igatools/functions/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 
 
 #include <fstream>

@@ -23,7 +23,7 @@
 
 // [headers]
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/io/writer.h>
 // [headers]
@@ -109,7 +109,7 @@ int main()
   auto grid  = annulus->get_grid_function()->get_grid();
   auto space = SplineSpace<2>::const_create(3,grid);
   auto ref_basis = BSpline<2>::const_create(space);
-  auto phy_basis = PhysicalSpaceBasis<2>::const_create(ref_basis,annulus);
+  auto phy_basis = PhysicalBasis<2>::const_create(ref_basis,annulus);
   // [basis]
 
   // [basis_funct]

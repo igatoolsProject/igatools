@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Igatools FormatVersion="2.0">
-    <IgMapping Dim="2" Codim="0" RefSpaceType="NURBS">
+    <IgMapping Dim="2" Codim="0" RefBasisType="NURBS">
         <NURBS Dim="2" Range="2" Rank="1">
             <Grid Dim="2">
                 <Knots Direction="0" Size="2">

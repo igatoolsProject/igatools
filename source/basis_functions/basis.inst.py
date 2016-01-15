@@ -24,33 +24,33 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-spaces = []
+bases = []
 
 
 
 
 
-spaces = ['Basis<0,0,0,1>']
+bases = ['Basis<0,0,0,1>']
 
 for x in inst.all_phy_sp_dims:
-    space = 'Basis<%d,%d,%d,%d>' %(x.dim,x.codim,x.range,x.rank)
-    spaces.append(space)
+    basis = 'Basis<%d,%d,%d,%d>' %(x.dim,x.codim,x.range,x.rank)
+    bases.append(basis)
 
 for x in inst.all_ref_sp_dims:
-    space = 'Basis<%d,0,%d,%d>' %(x.dim,x.range,x.rank)
-    spaces.append(space)
+    basis = 'Basis<%d,0,%d,%d>' %(x.dim,x.range,x.rank)
+    bases.append(basis)
     
-for space in unique(spaces):
-    f.write("template class %s ;\n" %(space))
+for basis in unique(bases):
+    f.write("template class %s ;\n" %(basis))
 
 
 #---------------------------------------------------
 f.write('#ifdef SERIALIZATION\n')
 archives = ['OArchive','IArchive']
 
-for space in unique(spaces):
+for basis in unique(bases):
     for ar in archives:
-        f.write('template void %s::serialize(%s&);\n' %(space,ar))
+        f.write('template void %s::serialize(%s&);\n' %(basis,ar))
 f.write('#endif // SERIALIZATION\n')
 #---------------------------------------------------
 

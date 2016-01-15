@@ -45,21 +45,21 @@ public:
 
   template <class Basis>
   IgCoefficients(
-    const Basis &space,
+    const Basis &basis,
     const std::string &dofs_property,
     const SafeSTLVector<Real> &coeffs)
     :
-    IgCoefficients(space.get_ptr_const_dof_distribution()->get_global_dofs(dofs_property),coeffs)
+    IgCoefficients(basis.get_ptr_const_dof_distribution()->get_global_dofs(dofs_property),coeffs)
   {}
 
   template <class Basis>
   IgCoefficients(
-    const Basis &space,
+    const Basis &basis,
     const std::string &dofs_property)
     :
     IgCoefficients(
-     space.get_ptr_const_dof_distribution()->get_global_dofs(dofs_property),
-     SafeSTLVector<Real>(space.get_ptr_const_dof_distribution()->
+     basis.get_ptr_const_dof_distribution()->get_global_dofs(dofs_property),
+     SafeSTLVector<Real>(basis.get_ptr_const_dof_distribution()->
                          get_global_dofs(dofs_property).size(),0.0))
   {}
 

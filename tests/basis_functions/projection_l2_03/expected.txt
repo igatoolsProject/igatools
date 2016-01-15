@@ -2,7 +2,7 @@
 test_proj
 ========================================================================
 IgGridFunction<1,1>
-   ReferenceSpaceBasis<1,1,1>:
+   ReferenceBasis<1,1,1>:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 3 ]
@@ -99,7 +99,7 @@ IgGridFunction<1,1>
 test_proj
 ========================================================================
 IgGridFunction<2,1>
-   ReferenceSpaceBasis<2,1,1>:
+   ReferenceBasis<2,1,1>:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 3 3 ]
@@ -252,7 +252,7 @@ IgGridFunction<2,1>
 test_proj
 ========================================================================
 IgGridFunction<3,1>
-   ReferenceSpaceBasis<3,1,1>:
+   ReferenceBasis<3,1,1>:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 3 3 3 ]
@@ -495,7 +495,7 @@ IgGridFunction<3,1>
 test_proj
 ========================================================================
 IgGridFunction<2,3>
-   ReferenceSpaceBasis<2,1,3>:
+   ReferenceBasis<2,1,3>:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 3 3 ]

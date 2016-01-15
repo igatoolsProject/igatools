@@ -27,7 +27,7 @@
 
 #include "../tests.h"
 #include <igatools/base/objects_container.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/function_lib.h>
@@ -53,11 +53,11 @@ void write_container(const string &file_path)
   auto space_1 = SplineSpace<dim,range>::create(deg, grid);
   auto space_2 = SplineSpace<dim,1>::create(deg, grid);
 
-  // Creating bspline spaces
+  // Creating bspline bases
   auto ref_basis_1 = BSpline<dim,range>::create(space_1);
   auto ref_basis_2 = BSpline<dim,1>::create(space_2);
 
-  // Creating nurbs space
+  // Creating nurbs basis
   auto map_1 = EpetraTools::create_map(*ref_basis_2, "active", comm);
   const auto w = EpetraTools::create_vector(*map_1);
   (*w)[0] = 1.;
@@ -74,8 +74,8 @@ void write_container(const string &file_path)
   auto domain = Domain<dim>::create(grid_func);
   domain->set_name("my_domain");
 
-  // Creating phys space
-  auto phys_basis = PhysicalSpaceBasis<dim,range>::create(ref_basis_3, domain);
+  // Creating phys basis
+  auto phys_basis = PhysicalBasis<dim,range>::create(ref_basis_3, domain);
 
   auto map_3 = EpetraTools::create_map(*phys_basis, "active", comm);
   auto coeff = EpetraTools::create_vector(*map_3);

@@ -22,13 +22,13 @@
 #include <igatools/base/logstream.h>
 
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/io/writer.h>
 
 #include <igatools/geometry/grid_element.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/base/quadrature_lib.h>
 
 #include <igatools/linear_algebra/dof_tools.h>
@@ -64,11 +64,11 @@ private:
 
 // [custom_constructor]
   CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain)
-    : FormulaFunction<dim,codim,range,rank>(domain,"") {};
+    : FormulaFunction<dim,codim,range,rank>(domain) {};
 
   CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain,
                  Value(*f_D0)(const Point))
-    : FormulaFunction<dim,codim,range,rank>(domain,""), funct_D0(f_D0) {};
+    : FormulaFunction<dim,codim,range,rank>(domain), funct_D0(f_D0) {};
 // [custom_constructor]
 
 // [custom_evaluator]
@@ -125,9 +125,9 @@ template<int dim>
 class PoissonProblem
 {
 private:
-  shared_ptr<const SplineSpace<dim>>        ref_space;
+  shared_ptr<const SplineSpace<dim>>        spl_space;
   shared_ptr<const BSpline<dim>>            ref_basis;
-  shared_ptr<const PhysicalSpaceBasis<dim>> phy_basis;
+  shared_ptr<const PhysicalBasis<dim>> phy_basis;
   shared_ptr<const QGauss<dim>>             quad;
   shared_ptr<const QGauss<dim-1>>           face_quad;
   shared_ptr<const Function<dim>>           source_term;
@@ -146,9 +146,9 @@ public:
     source_term    = source;
     dirichlet_cond = dirichlet;
     auto grid = domain->get_grid_function()->get_grid();
-    ref_space = SplineSpace<dim>::const_create(deg,grid);
-    ref_basis = BSpline<dim>::const_create(ref_space);
-    phy_basis = PhysicalSpaceBasis<dim>::const_create(ref_basis,domain);
+    spl_space = SplineSpace<dim>::const_create(deg,grid);
+    ref_basis = BSpline<dim>::const_create(spl_space);
+    phy_basis = PhysicalBasis<dim>::const_create(ref_basis,domain);
     quad      = QGauss<dim>::const_create(deg+1);
     face_quad = QGauss<dim-1>::const_create(deg+1);
     mat = create_matrix(*phy_basis,DofProperties::active,Epetra_SerialComm());
@@ -172,9 +172,9 @@ void PoissonProblem<dim>::assemble()
   auto basis_el      = phy_basis->begin();
   auto basis_el_end  = phy_basis->end();
   auto basis_handler = phy_basis->create_cache_handler();
-  auto flag = space_element::Flags::value |
-              space_element::Flags::gradient |
-              space_element::Flags::w_measure;
+  auto flag = basis_element::Flags::value |
+              basis_element::Flags::gradient |
+              basis_element::Flags::w_measure;
   basis_handler->set_element_flags(flag);
   basis_handler->init_element_cache(basis_el,quad);
 
@@ -217,7 +217,7 @@ void PoissonProblem<dim>::solve()
 template<int dim>
 void PoissonProblem<dim>::save()
 {
-  auto domain = phy_basis->get_physical_domain();
+  auto domain = phy_basis->get_domain();
   Writer<dim> writer(domain,5);
   auto solution = IgFunction<dim,0,1,1>::const_create(phy_basis, *sol);
   writer.add_field(*solution, "solution");
@@ -229,7 +229,7 @@ template<int dim>
 Real PoissonProblem<dim>::error(shared_ptr<const Function<dim>> exact_solution)
 {
 
-  auto domain         = phy_basis->get_physical_domain();
+  auto domain         = phy_basis->get_domain();
   auto domain_el      = domain->begin();
   auto domain_el_end  = domain->end();
   auto domain_handler = domain->create_cache_handler();
@@ -270,7 +270,6 @@ Real PoissonProblem<dim>::error(shared_ptr<const Function<dim>> exact_solution)
 // [functions_u]]
 #define SQR(x,y) (((x)*(x))+((y)*(y)))
 using numbers::PI;
-// exact solution
 Values<2,1,1> u(Points<2> x)
 {
   Values<2,1,1> y;
@@ -321,30 +320,28 @@ int main()
 // [main]
 
 // [main_pre_dirichlet]
+  auto grid = annulus->get_grid_function()->get_grid();
   using SubGridElemMap = typename Grid<2>::template SubGridMap<1>;
   SubGridElemMap sub_grid_elem_map;
-  auto grid = annulus->get_grid_function()->get_grid();
   std::map<Index,shared_ptr<const Function<1,1,1>>> dirichlet;
 // [main_pre_dirichlet]
 
-// [main_dirichlet_cond]
   const auto sub_grid_0    = grid->template get_sub_grid<1>(0,sub_grid_elem_map);
   const auto sub_annulus_0 = annulus->template get_sub_domain<1>(0,sub_grid_elem_map,sub_grid_0);
   auto g_0 = functions::ConstantFunction<1,1,1>::const_create(sub_annulus_0, {1.0});
   dirichlet[0] = dynamic_pointer_cast<const Function<1,1,1>>(g_0);
-// [main_dirichlet_cond]
 
   const auto sub_grid_1    = grid->template get_sub_grid<1>(1,sub_grid_elem_map);
   const auto sub_annulus_1 = annulus->template get_sub_domain<1>(1,sub_grid_elem_map,sub_grid_1);
   auto g_1 = functions::ConstantFunction<1,1,1>::const_create(sub_annulus_1, {2.0});
   dirichlet[1] = dynamic_pointer_cast<const Function<1,1,1>>(g_1);
 
+// [main_dirichlet_cond]
   const auto sub_grid_2    = grid->template get_sub_grid<1>(2,sub_grid_elem_map);
   const auto sub_annulus_2 = annulus->template get_sub_domain<1>(2,sub_grid_elem_map,sub_grid_2);
   auto g_2 = CustomFunction<1,1,1>::const_create(sub_annulus_2,g2);
-// [main_dirichlet_cond_custom]
   dirichlet[2] = dynamic_pointer_cast<const Function<1,1,1>>(g_2);
-// [main_dirichlet_cond_custom]
+// [main_dirichlet_cond]
 
   const auto sub_grid_3    = grid->template get_sub_grid<1>(3,sub_grid_elem_map);
   const auto sub_annulus_3 = annulus->template get_sub_domain<1>(3,sub_grid_elem_map,sub_grid_3);

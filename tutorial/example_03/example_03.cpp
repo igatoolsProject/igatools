@@ -22,14 +22,14 @@
 #include <igatools/base/logstream.h>
 
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/io/writer.h>
 
 // [includes]
 #include <igatools/geometry/grid_element.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/base/quadrature_lib.h>
 // [includes]
 
@@ -79,7 +79,7 @@ void basis_loop_with_cache(shared_ptr<const Basis<dim,codim,range,rank>> basis)
 // [basis_loop_start]
 
 // [basis_loop_set]
-  auto flag = space_element::Flags::value;
+  auto flag = basis_element::Flags::value;
   cache_handler->set_element_flags(flag);
 // [basis_loop_set]
 
@@ -128,9 +128,9 @@ int main()
 // [main_basis_loop_phy]
   auto annulus   = quarter_annulus(2);
   auto grid      = annulus->get_grid_function()->get_grid();
-  auto ref_space = SplineSpace<2>::const_create(2,grid);
-  auto ref_basis = BSpline<2>::const_create(ref_space);
-  auto phy_basis = PhysicalSpaceBasis<2>::const_create(ref_basis,annulus);
+  auto spl_space = SplineSpace<2>::const_create(2,grid);
+  auto ref_basis = BSpline<2>::const_create(spl_space);
+  auto phy_basis = PhysicalBasis<2>::const_create(ref_basis,annulus);
 
   out << "Traversing basis functions on the annulus domain:" << endl;
   basis_loop_with_cache<2>(dynamic_pointer_cast<const Basis<2,0,1,1>>(phy_basis));

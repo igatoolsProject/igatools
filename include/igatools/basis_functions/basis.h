@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __SPACE_H_
-#define __SPACE_H_
+#ifndef __BASIS_H_
+#define __BASIS_H_
 
 #include <igatools/base/config.h>
 #include <igatools/utils/shared_ptr_constness_handler.h>
@@ -33,8 +33,8 @@ template <int,int> class Domain;
 
 template <int,int,int,int> class Function;
 //template <int> class NonConstGridElement;
-template <int,int,int,int> class SpaceElement;
-template <int,int,int,int> class SpaceElementHandler;
+template <int,int,int,int> class BasisElement;
+template <int,int,int,int> class BasisHandler;
 
 
 template <int,int,int> class SplineSpace;
@@ -45,9 +45,9 @@ template <int,int,int> class DofDistribution;
 
 /**
  * @brief This is an auxiliary class used represent the "concept" of isogeometric basis function
- * in which its space is defined over <tt>dim</tt>-dimensional Grid.
+ * in which its basis is defined over <tt>dim</tt>-dimensional Grid.
  *
- * It is used as base class of ReferenceSpaceBasis and PhysicalSpaceBasis.
+ * It is used as base class of ReferenceBasis and PhysicalBasis.
  *
  * @author martinelli, 2015.
  *
@@ -160,7 +160,7 @@ public:
 
 
   /**
-   * \brief Returns the Grid upon which the space is built.
+   * \brief Returns the Grid upon which the bases are built.
    */
   virtual std::shared_ptr<const Grid<dim_>> get_grid() const = 0;
 
@@ -186,15 +186,15 @@ public:
 
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
   create_element_begin(const PropId &property) const = 0;
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
   create_element_end(const PropId &property) const = 0;
 
 
-  virtual std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_> >
+  virtual std::unique_ptr<BasisHandler<dim_,codim_,range_,rank_> >
   create_cache_handler() const = 0;
 
 
@@ -206,7 +206,7 @@ public:
   get_spline_space() const = 0;
 
 
-  using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_>;
+  using ElementAccessor = BasisElement<dim_,codim_,range_,rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
   /** @name Functions involving the element iterator */
@@ -242,7 +242,7 @@ public:
 #ifdef MESH_REFINEMENT
 
   /**
-   * Perform the h-refinement of the space in all the directions.
+   * Perform the h-refinement of the basis in all the directions.
    *
    * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions
    * sub-intervals.
@@ -265,11 +265,11 @@ public:
     const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
     const Grid<dim_> &old_grid) = 0;
 
-//  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &space);
+//  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &basis);
 
 
 #if 0
-  virtual std::shared_ptr<const self_t> get_space_previous_refinement() const = 0;
+  virtual std::shared_ptr<const self_t> get_basis_previous_refinement() const = 0;
 #endif
 
 #endif
@@ -314,4 +314,4 @@ private:
 IGA_NAMESPACE_CLOSE
 
 
-#endif // __SPACE_H_
+#endif // __BASIS_H_

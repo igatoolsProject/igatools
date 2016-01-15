@@ -21,7 +21,7 @@
 #include <igatools/functions/ig_function_handler.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/function_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -59,16 +59,16 @@ set_flags(const topology_variant &sdim,
   parent_t::set_flags(sdim,flag);
 
 
-  using SpFlags = space_element::Flags;
-  SpFlags ig_space_elem_flags = SpFlags::none;
+  using BsFlags = basis_element::Flags;
+  BsFlags ig_basis_elem_flags = BsFlags::none;
   if (contains(flag,Flags::D0))
-    ig_space_elem_flags |= SpFlags::value;
+    ig_basis_elem_flags |= BsFlags::value;
   if (contains(flag,Flags::D1))
-    ig_space_elem_flags |= SpFlags::gradient;
+    ig_basis_elem_flags |= BsFlags::gradient;
   if (contains(flag,Flags::D2))
-    ig_space_elem_flags |= SpFlags::hessian;
+    ig_basis_elem_flags |= BsFlags::hessian;
 
-  ig_basis_handler_->set_flags_impl(sdim,ig_space_elem_flags);
+  ig_basis_handler_->set_flags_impl(sdim,ig_basis_elem_flags);
   //*/
 }
 
@@ -135,45 +135,45 @@ operator()(const Topology<sdim> &sub_elem)
     const auto &grid_elem = domain_elem.get_grid_function_element().get_grid_element();
     const auto &grid_elem_id = grid_elem.get_index();
 
-    const auto ig_space = ig_function.get_basis();
+    const auto ig_basis = ig_function.get_basis();
     const auto &ig_basis_handler = *ig_function_handler_.ig_basis_handler_;
-    auto ig_space_elem = ig_space->begin();
-    ig_space_elem->move_to(grid_elem_id);
+    auto ig_basis_elem = ig_basis->begin();
+    ig_basis_elem->move_to(grid_elem_id);
 
-    ig_basis_handler.template init_cache<sdim>(*ig_space_elem,grid_elem.template get_quad<sdim>());
-    ig_basis_handler.template fill_cache<sdim>(*ig_space_elem,s_id_);
+    ig_basis_handler.template init_cache<sdim>(*ig_basis_elem,grid_elem.template get_quad<sdim>());
+    ig_basis_handler.template fill_cache<sdim>(*ig_basis_elem,s_id_);
 
 
     const auto &dofs_property = ig_function.get_dofs_property();
 
-    const auto &ig_space_elem_global_dofs = ig_space_elem->get_local_to_global(dofs_property);
+    const auto &ig_basis_elem_global_dofs = ig_basis_elem->get_local_to_global(dofs_property);
     const auto &ig_func_coeffs = ig_function.get_coefficients();
     SafeSTLVector<Real> ig_func_elem_coeffs; // coefficients of the IgGridFunction restricted to the element
-    for (const auto &global_dof : ig_space_elem_global_dofs)
+    for (const auto &global_dof : ig_basis_elem_global_dofs)
       ig_func_elem_coeffs.emplace_back(ig_func_coeffs[global_dof]);
 
     using _D0 = function_element::template _D<0>;
     if (cache.template status_fill<_D0>())
     {
-      using space_element::_Value;
+      using basis_element::_Value;
       auto &F = cache.template get_data<_D0>();
-      F.fill(ig_space_elem->template linear_combination<_Value,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
+      F.fill(ig_basis_elem->template linear_combination<_Value,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
     }
 
     using _D1 = function_element::template _D<1>;
     if (cache.template status_fill<_D1>())
     {
-      using space_element::_Gradient;
+      using basis_element::_Gradient;
       auto &DF = cache.template get_data<_D1>();
-      DF.fill(ig_space_elem->template linear_combination<_Gradient,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
+      DF.fill(ig_basis_elem->template linear_combination<_Gradient,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
     }
 
     using _D2 = function_element::template _D<2>;
     if (cache.template status_fill<_D2>())
     {
-      using space_element::_Hessian;
+      using basis_element::_Hessian;
       auto &D2F = cache.template get_data<_D2>();
-      D2F.fill(ig_space_elem->template linear_combination<_Hessian,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
+      D2F.fill(ig_basis_elem->template linear_combination<_Hessian,sdim>(ig_func_elem_coeffs,s_id_,dofs_property));
     }
 
 //    Assert(cache.template status_fill<_D<3>>(),ExcNotImplemented());

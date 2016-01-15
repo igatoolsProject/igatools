@@ -30,7 +30,7 @@
 
 #include <igatools/geometry/domain_element.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #endif
 
 #include "domain_values.h"

@@ -1,37 +1,6 @@
 ========================================================================
 serialize_grid
 ========================================================================
-Grid<0> before serialize-deserialize.
-   Number of intervals per direction: [ ]
-   Knot coordinates:
-   
-   Element properties:
-      IDs with property "active":
-         Entry id: 0
-            Flat ID: 0    Tensor ID: []
-         
-      
-   
-   Name: 
-
-Grid<0> after serialize-deserialize.
-   Number of intervals per direction: [ ]
-   Knot coordinates:
-   
-   Element properties:
-      IDs with property "active":
-         Entry id: 0
-            Flat ID: 0    Tensor ID: []
-         
-      
-   
-   Name: 
-
-========================================================================
-
-========================================================================
-serialize_grid
-========================================================================
 Grid<1> before serialize-deserialize.
    Number of intervals per direction: [ 3 ]
    Knot coordinates:

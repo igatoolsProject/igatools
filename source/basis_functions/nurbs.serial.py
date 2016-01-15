@@ -27,19 +27,19 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-spaces = []
+bases = []
 
 
 dim = 0
 range = 0
 rank = 1
-space = 'NURBS<%d,%d,%d>' %(dim,range,rank)
-spaces.append(space)
+basis = 'NURBS<%d,%d,%d>' %(dim,range,rank)
+bases.append(basis)
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    space = 'NURBS<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    spaces.append(space)
+    basis = 'NURBS<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    bases.append(basis)
 
 
          
@@ -52,12 +52,13 @@ f.write('#ifdef SERIALIZATION\n')
 
 
 #f.write('using VecBernstOp = iga::SafeSTLVector<iga::BernsteinOperator>;\n');
-#f.write('CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(VecBernstOp,cereal::specialization::member_serialize);\n');
+#f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,VecBernstOp,cereal::specialization::member_serialize);\n');
+#f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,VecBernstOp,cereal::specialization::member_serialize);\n');
 
 id = 0 
-for space in unique(spaces):
+for basis in unique(bases):
     sp_alias = 'NURBSAlias%d' %(id)
-    f.write('using %s = iga::%s;\n' % (sp_alias, space));
+    f.write('using %s = iga::%s;\n' % (sp_alias, basis));
     f.write('CEREAL_REGISTER_TYPE(%s)\n' %sp_alias);
     id += 1 
 

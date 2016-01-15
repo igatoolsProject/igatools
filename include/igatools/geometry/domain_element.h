@@ -23,7 +23,7 @@
 
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_handler.h>
-#include <igatools/geometry/grid_function_element.h>
+#include <igatools/functions/grid_function_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -315,6 +315,18 @@ public:
   {
     return grid_func_elem_->template
            evaluate_at_points<typename ValueType::GridFuncElemType>(quad);
+  }
+
+
+  /**
+   * Return TRUE if the element index is referring to a valid element in the Grid.
+   *
+   * @note An element with non valido position can happens when we use the ++ operator
+   * on an element that is the last in the list.
+   */
+  bool has_valid_position() const
+  {
+    return grid_func_elem_->has_valid_position();
   }
 
 

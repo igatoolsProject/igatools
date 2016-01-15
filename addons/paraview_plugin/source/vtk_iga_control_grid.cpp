@@ -18,13 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <paraview_plugin/vtk_iga_control_grid.h>
-
-#include <paraview_plugin/vtk_iga_grid_information.h>
-#include <igatools/functions/ig_grid_function.h>
-#include <igatools/geometry/domain.h>
-#include <igatools/basis_functions/dof_distribution.h>
-
 #include <vtkSmartPointer.h>
 #include <vtkStructuredGrid.h>
 #include <vtkUnstructuredGrid.h>
@@ -32,8 +25,18 @@
 #include <vtkCellArray.h>
 #include <vtkPolyLine.h>
 
+#include <paraview_plugin/vtk_iga_control_grid.h>
+
+#include <paraview_plugin/vtk_iga_grid_information.h>
+#include <igatools/functions/ig_grid_function.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/basis_functions/dof_distribution.h>
+
 
 IGA_NAMESPACE_OPEN
+
+namespace paraview_plugin
+{
 
 template <class Domain>
 auto
@@ -91,6 +94,8 @@ VtkIgaControlGrid<Domain>::
 create_grid_vts(const IgGridFunPtr_ ig_grid_fun,
                 const vtkSmartPointer<vtkPoints> points) -> VtkGridPtr_
 {
+  AssertThrow (dim == 1, ExcNotImplemented());
+
   const auto &dofs = ig_grid_fun->get_basis()->get_dof_distribution();
   const auto &dofs_table = dofs->get_num_dofs_table();
   const auto n_pts_dir = dofs_table[0];
@@ -202,6 +207,8 @@ create_grid_vtu(const IgGridFunPtr_ ig_grid_fun,
 
   return grid;
 }
+
+}; // namespace paraview_plugin
 
 IGA_NAMESPACE_CLOSE
 

@@ -25,7 +25,7 @@
 #include <igatools/geometry/grid.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/unit_element.h>
-#include <igatools/geometry/grid_function_element.h>
+#include <igatools/functions/grid_function_element.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/functions/function_element.h>
 
@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim_, int range_, int rank_ , int codim_>
-class PhysicalSpaceBasis;
+class PhysicalBasis;
 
 
 template<int dim, int codim = 0, class T = double>

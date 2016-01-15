@@ -22,7 +22,7 @@
 #include <igatools/functions/ig_function_handler.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 #include <igatools/basis_functions/space_tools.h>
 
 
@@ -32,16 +32,16 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
-IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
+IgFunction(const SharedPtrConstnessHandler<PhysicalBasis> &basis,
            const EpetraTools::Vector &coeff,
            const std::string &dofs_property)
   :
   parent_t::Function(
-   space.data_is_const() ?
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_domain()) :
+   basis.data_is_const() ?
+   SharedPtrConstnessHandler<DomainType>(basis.get_ptr_const_data()->get_domain()) :
    SharedPtrConstnessHandler<DomainType>(
-     std::const_pointer_cast<Domain<dim,codim>>(space.get_ptr_data()->get_domain()))),
-  basis_(space),
+     std::const_pointer_cast<Domain<dim,codim>>(basis.get_ptr_data()->get_domain()))),
+  basis_(basis),
   dofs_property_(dofs_property)
 {
   const auto &dof_distribution = *(basis_->get_spline_space()->get_dof_distribution());
@@ -61,15 +61,15 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
-IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
+IgFunction(const SharedPtrConstnessHandler<PhysicalBasis> &basis,
            const IgCoefficients &coeff,
            const std::string &dofs_property)
   :
   parent_t::Function(
-   space.data_is_const() ?
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_const_data()->get_domain()) :
-   SharedPtrConstnessHandler<DomainType>(space.get_ptr_data()->get_domain())),
-  basis_(space),
+   basis.data_is_const() ?
+   SharedPtrConstnessHandler<DomainType>(basis.get_ptr_const_data()->get_domain()) :
+   SharedPtrConstnessHandler<DomainType>(basis.get_ptr_data()->get_domain())),
+  basis_(basis),
   dofs_property_(dofs_property)
 {
 
@@ -89,11 +89,11 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-const_create(const std::shared_ptr<const PhysBasis> &space,
+const_create(const std::shared_ptr<const PhysicalBasis> &basis,
              const EpetraTools::Vector &coeff,
              const std::string &dofs_property) ->  std::shared_ptr<const self_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysicalBasis>(basis),
   coeff, dofs_property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
@@ -104,11 +104,11 @@ const_create(const std::shared_ptr<const PhysBasis> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-const_create(const std::shared_ptr<const PhysBasis> &space,
+const_create(const std::shared_ptr<const PhysicalBasis> &basis,
              const IgCoefficients &coeff,
              const std::string &dofs_property) ->  std::shared_ptr<const self_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysicalBasis>(basis),
   coeff, dofs_property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
@@ -119,11 +119,11 @@ const_create(const std::shared_ptr<const PhysBasis> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(const std::shared_ptr<PhysBasis> &space,
+create(const std::shared_ptr<PhysicalBasis> &basis,
        const EpetraTools::Vector &coeff,
        const std::string &dofs_property) ->  std::shared_ptr<self_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysicalBasis>(basis),
   coeff, dofs_property);
 
   Assert(ig_func != nullptr, ExcNullPtr());
@@ -137,11 +137,11 @@ create(const std::shared_ptr<PhysBasis> &space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(const std::shared_ptr<PhysBasis> &space,
+create(const std::shared_ptr<PhysicalBasis> &basis,
        const IgCoefficients &coeff,
        const std::string &dofs_property) ->  std::shared_ptr<self_t>
 {
-  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysBasis>(space),
+  auto ig_func = std::make_shared<self_t>(SharedPtrConstnessHandler<PhysicalBasis>(basis),
   coeff, dofs_property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
@@ -158,7 +158,7 @@ template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
 create_cache_handler() const
--> std::unique_ptr<typename parent_t::ElementHandler>
+-> std::unique_ptr<typename parent_t::Handler>
 {
   using Handler = IgFunctionHandler<dim,codim,range,rank>;
   return std::unique_ptr<Handler>(new Handler(
@@ -169,7 +169,7 @@ create_cache_handler() const
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-get_basis() const -> std::shared_ptr<const PhysBasis>
+get_basis() const -> std::shared_ptr<const PhysicalBasis>
 {
   return basis_.get_ptr_const_data();
 }
@@ -192,7 +192,7 @@ IgFunction<dim,codim,range,rank>::
 operator +=(const self_t &fun) -> self_t &
 {
   Assert(basis_.get_ptr_const_data() == fun.basis_.get_ptr_const_data(),
-  ExcMessage("Functions defined on different spaces."));
+  ExcMessage("Functions defined on different bases."));
 
   for (const auto &f_dof_value : fun.coeffs_)
     coeffs_[f_dof_value.first] += f_dof_value.second;
@@ -213,7 +213,7 @@ rebuild_after_insert_knots(
   using std::const_pointer_cast;
   this->function_previous_refinement_ =
     IgFunction<dim,codim,range,rank>::const_create(
-      std::dynamic_pointer_cast<const PhysBasis>(basis_->get_basis_previous_refinement()),
+      std::dynamic_pointer_cast<const PhysicalBasis>(basis_->get_basis_previous_refinement()),
       coeffs_,
       dofs_property_);
 
@@ -271,7 +271,7 @@ print_info(LogStream &out) const
                                          to_string(dim) + "," + to_string(range) + "," +
                                          to_string(rank) + "," + to_string(codim) + ">";
 
-  out.begin_item("PhysicalSpaceBasis" + basis_template_args);
+  out.begin_item("PhysicalBasis" + basis_template_args);
   basis_->print_info(out);
   out.end_item();
 

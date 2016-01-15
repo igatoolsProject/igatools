@@ -37,9 +37,9 @@ template<int dim, int codim, int range, int rank>
 auto
 FormulaFunction<dim, codim, range, rank>::
 create_cache_handler() const
--> std::unique_ptr<typename parent_t::ElementHandler>
+-> std::unique_ptr<typename parent_t::Handler>
 {
-  return std::unique_ptr<ElementHandler>(new ElementHandler(
+  return std::unique_ptr<Handler>(new Handler(
     std::dynamic_pointer_cast<const self_t>(this->shared_from_this())));
 }
 

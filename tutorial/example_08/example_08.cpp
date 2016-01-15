@@ -21,7 +21,7 @@
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 
 #include <igatools/io/writer.h>
 
@@ -30,10 +30,10 @@ using namespace std;
 using numbers::PI;
 
 template<int dim>
-void physical_space(const int deg)
+void physical_basis(const int deg)
 {
-  using RefSpace = BSpline<dim>;
-  using Basis    = PhysicalSpaceBasis<dim>;
+  using RefBasis = BSpline<dim>;
+  using Basis    = PhysicalBasis<dim>;
 
   BBox<dim> box;
   box[0] = {{0.5, 1}};
@@ -42,15 +42,15 @@ void physical_space(const int deg)
 
   const int n_knots = 3;
   auto grid = Grid<dim>::create(box, n_knots);
-  auto ref_space = RefSpace::create(deg, grid);
+  auto ref_basis = RefBasis::create(deg, grid);
 
   using Function = functions::BallFunction<dim>;
-  const auto space = Basis::create(
-                       ref_space,
+  const auto basis = Basis::create(
+                       ref_basis,
                        Function::create(grid, IdentityFunction<dim>::create(grid)));
 
   const int n_plot_points = 2;
-  Writer<dim> writer(space->get_ptr_const_map_func(), n_plot_points);
+  Writer<dim> writer(basis->get_ptr_const_map_func(), n_plot_points);
   string filename = "ball_geometry-" + to_string(dim) + "d" ;
   writer.save(filename, true);
 }
@@ -58,6 +58,6 @@ void physical_space(const int deg)
 
 int main()
 {
-  physical_space<2>(1);
+  physical_basis<2>(1);
   return  0;
 }

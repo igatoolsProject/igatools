@@ -29,8 +29,8 @@
 #cmakedefine SERIALIZATION
 #cmakedefine PARAVIEW_PLUGIN
 #cmakedefine MESH_REFINEMENT
-#cmakedefine USE_CEREAL
 #cmakedefine XML_IO
+#cmakedefine USE_DEPRECATED
 
 #define MAX_NUM_DERIVATIVES @max_der_order@ + 1
 #define num_sub_elem @num_sub_elem@
@@ -52,7 +52,6 @@
 //--------------------------------------------------------------------
 #ifdef SERIALIZATION
 
-#ifdef USE_CEREAL
 
 #include <cereal/cereal.hpp>
 #include <cereal/access.hpp>
@@ -66,15 +65,13 @@
 #include <cereal/types/memory.hpp>
 #include <cereal/types/polymorphic.hpp>
 
-//#ifndef NDEBUG
-#include <cereal/archives/xml.hpp>
-using OArchiveCereal = cereal::XMLOutputArchive;
-using IArchiveCereal = cereal::XMLInputArchive;
-//#else
-//#include <cereal/archives/binary.hpp>
-//using OArchiveCereal = cereal::BinaryOutputArchive;
-//using IArchiveCereal = cereal::BinaryInputArchive;
-//#endif // NDEBUG
+// #include <cereal/archives/xml.hpp>
+// using OArchiveCereal = cereal::XMLOutputArchive;
+// using IArchiveCereal = cereal::XMLInputArchive;
+
+#include <cereal/archives/binary.hpp>
+using OArchiveCereal = cereal::BinaryOutputArchive;
+using IArchiveCereal = cereal::BinaryInputArchive;
 
 using namespace cereal;
 
@@ -83,7 +80,6 @@ using IArchive = IArchiveCereal;
 
 using serialization_access = cereal::access;
 
-#endif // USE_CEREAL
 
 #endif // SERIALIZATION
 //--------------------------------------------------------------------
