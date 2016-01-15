@@ -387,7 +387,7 @@ public:
    */
   ///@{
   /**
-   * Returns the number of elements with the <tt>property</tt> specified
+   * @brief Returns the number of elements with the <tt>property</tt> specified
    * as input argument.
    */
   Size get_num_elements(const PropId &prop = ElementProperties::active) const;
@@ -396,24 +396,23 @@ public:
   Size get_num_all_elems() const;
 
   /**
-   * Total number of one dimensional intervals along each
+   * @brief Total number of one-dimensional intervals along each
    * coordinate direction.
    */
   TensorSize<dim_> get_num_intervals() const;
 
   /**
-   * Query the number of knot values along each coordinate direction
-   * represented by the Grid.
+   * @brief Returns the number of knots along each coordinate direction.
    */
   TensorSize<dim_> get_num_knots_dim() const;
 
   /**
-   * Returns the knot coordinates along the direction @p i.
+   * @brief Returns the knot coordinates along the direction @p i.
    */
   SafeSTLVector<Real> const &get_knot_coordinates(const int i) const;
 
   /**
-   * Returns the knots along all the directions (const version).
+   * @brief Returns the knots along all the directions (const version).
    */
   KnotCoordinates const &get_knots() const;
 #if 0
