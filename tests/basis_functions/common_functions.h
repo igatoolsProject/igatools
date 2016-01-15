@@ -20,7 +20,7 @@
 
 /*
  *  Test for the l2_projection function.
- *  Bspline spaces case
+ *  Bspline bases case
  *
  *  author: pauletti
  *  date: 2013-10-10

@@ -91,13 +91,13 @@ void do_test(const int p, TensorSize<dim> n_knots)
 
   /*
     auto grid = Grid<dim>::create(n_knots);
-    auto space = Basis::create(SplineSpace<dim,range,rank>::const(p, grid)) ;
+    auto basis = Basis::create(SplineSpace<dim,range,rank>::const(p, grid)) ;
     auto f = XProject<dim>::const_create(grid);
   //*/
 
   auto grid = Grid<dim>::create(n_knots);
-  auto space = SplineSpace<dim,range,rank>::create(p,grid);
-  auto ref_basis = BSpline<dim,range,rank>::create(space) ;
+  auto basis = SplineSpace<dim,range,rank>::create(p,grid);
+  auto ref_basis = BSpline<dim,range,rank>::create(basis) ;
   auto map = grid_functions::IdentityGridFunction<dim>::create(grid);
   auto domain = Domain<dim,0>::create(map);
   auto basis = PhysicalBasis<dim,range,rank,0>::create(ref_basis, domain);

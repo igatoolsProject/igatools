@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for physical space using a BSpline as reference space.
+ *  Test for physical basis using a BSpline as reference basis.
  *
  *  author: martinelli
  *  date: Sep 24, 2015
@@ -48,10 +48,10 @@ void cache_init(const ValueFlags flag,
 {
   OUTSTART
 
-  using BspSpace = BSpline<dim, range, rank>;
+  using BspBasis = BSpline<dim, range, rank>;
   using Basis    = PhysicalBasis<dim,range,rank,codim, Transformation::h_grad>;
   auto grid      = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(deg, grid);
+  auto ref_basis = BspBasis::const_create(deg, grid);
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -67,10 +67,10 @@ void cache_init(const ValueFlags flag,
   auto quad = QGauss<dim>(2);
   auto linear_func = Function::const_create(grid,A, b);
   auto phys_domain = Domain<dim,codim>::const_create(linear_func);
-  auto space = Basis::const_create(ref_space, phys_domain);
+  auto basis = Basis::const_create(ref_basis, phys_domain);
 
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->reset(flag, quad);
   elem_handler->print_info(out);
 
@@ -86,11 +86,11 @@ void cache_init_elem(const ValueFlags flag,
 //    const int k = dim;
   OUTSTART
 
-  using BspSpace = BSpline<dim, range, rank>;
+  using BspBasis = BSpline<dim, range, rank>;
   using Basis    = PhysicalBasis<dim,range,rank,codim, Transformation::h_grad>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(deg, grid);
+  auto ref_basis = BspBasis::const_create(deg, grid);
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -106,12 +106,12 @@ void cache_init_elem(const ValueFlags flag,
   auto quad = QGauss<dim>(2);
   auto linear_func = Function::const_create(grid,A, b);
   auto phys_domain = Domain<dim,codim>::const_create(linear_func);
-  auto space = Basis::const_create(ref_space, phys_domain);
+  auto basis = Basis::const_create(ref_basis, phys_domain);
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->reset(flag, quad);
 
-  auto elem = space->begin();
+  auto elem = basis->begin();
   elem_handler->init_element_cache(elem);
   elem->print_cache_info(out);
 
@@ -126,11 +126,11 @@ void cache_fill_elem(const ValueFlags flag,
   OUTSTART
 
 //   const int k = dim;
-  using BspSpace = BSpline<dim, range, rank>;
+  using BspBasis = BSpline<dim, range, rank>;
   using Basis    = PhysicalBasis<dim,range,rank,codim, Transformation::h_grad>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(deg, grid);
+  auto ref_basis = BspBasis::const_create(deg, grid);
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -146,13 +146,13 @@ void cache_fill_elem(const ValueFlags flag,
   auto quad = QGauss<dim>(2);
   auto linear_func = Function::const_create(grid,A, b);
   auto phys_domain = Domain<dim,codim>::const_create(linear_func);
-  auto space = Basis::const_create(ref_space, phys_domain);
+  auto basis = Basis::const_create(ref_basis, phys_domain);
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->reset(flag, quad);
 
-  auto elem = space->begin();
-  auto end = space->end();
+  auto elem = basis->begin();
+  auto end = basis->end();
   elem_handler->init_element_cache(elem);
   for (; elem != end; ++elem)
   {
@@ -171,11 +171,11 @@ void cache_get_elem_values(const ValueFlags flag,
 {
   OUTSTART
   const int k = dim;
-  using BspSpace = BSpline<dim, range, rank>;
+  using BspBasis = BSpline<dim, range, rank>;
   using Basis    = PhysicalBasis<dim,range,rank,codim, Transformation::h_grad>;
 
   auto grid  = Grid<dim>::const_create(n_knots);
-  auto ref_space = BspSpace::const_create(deg, grid);
+  auto ref_basis = BspBasis::const_create(deg, grid);
 
   using Function = grid_functions::LinearGridFunction<dim,dim+codim>;
   typename Function::Value    b;
@@ -191,13 +191,13 @@ void cache_get_elem_values(const ValueFlags flag,
   auto quad = QGauss<dim>(2);
   auto linear_func = Function::const_create(grid,A, b);
   auto phys_domain = Domain<dim,codim>::const_create(linear_func);
-  auto space = Basis::const_create(ref_space, phys_domain);
+  auto basis = Basis::const_create(ref_basis, phys_domain);
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->reset(flag, quad);
 
-  auto elem = space->begin();
-  auto end = space->end();
+  auto elem = basis->begin();
+  auto end = basis->end();
   elem_handler->init_element_cache(elem);
   for (; elem != end; ++elem)
   {
@@ -213,12 +213,12 @@ void cache_get_elem_values(const ValueFlags flag,
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 std::shared_ptr<const PhysicalBasis<dim,range,rank,codim>>
-                                                        create_phys_space()
+                                                        create_phys_basis()
 {
   OUTSTART
   auto grid = Grid<dim>::const_create();
   const int deg = 2;
-  auto ref_space = BSpline<dim,range,rank>::const_create(
+  auto ref_basis = BSpline<dim,range,rank>::const_create(
                      SplineSpace<dim,range,rank>::const_create(deg,grid));
 
   using GridFunc = grid_functions::BallGridFunction<dim>;
@@ -227,8 +227,8 @@ std::shared_ptr<const PhysicalBasis<dim,range,rank,codim>>
   using Domain = Domain<dim,codim>;
   auto domain = Domain::const_create(grid_func);
 
-  using PhysSpace = PhysicalBasis<dim,range,rank,codim>;
-  auto phys_space = PhysSpace::const_create(ref_space,domain,Transformation::h_grad);
+  using PhysBasis = PhysicalBasis<dim,range,rank,codim>;
+  auto phys_basis = PhysBasis::const_create(ref_basis,domain,Transformation::h_grad);
 
 
   using std::to_string;
@@ -237,19 +237,19 @@ std::shared_ptr<const PhysicalBasis<dim,range,rank,codim>>
                  + to_string(range) + ","
                  + to_string(rank) + ","
                  + to_string(codim) + ",Transformation::h_grad>");
-  phys_space->print_info(out);
+  phys_basis->print_info(out);
   out.end_item();
 
   OUTEND
 
-  return phys_space;
+  return phys_basis;
 }
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 void
-test_phys_space_accessor()
+test_phys_basis_accessor()
 {
-  auto phys_space = create_phys_space<dim,range,rank,codim>();
+  auto phys_basis = create_phys_basis<dim,range,rank,codim>();
 
 }
 
@@ -258,9 +258,9 @@ int main()
 {
   out.depth_console(10);
 
-  test_phys_space_accessor<1>();
-//  create_space<2>();
-//  create_space<3>();
+  test_phys_basis_accessor<1>();
+//  create_basis<2>();
+//  create_basis<3>();
 
   return  0;
 }

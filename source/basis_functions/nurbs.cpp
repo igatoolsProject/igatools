@@ -112,8 +112,8 @@ auto
 NURBS<dim_, range_, rank_>::
 get_this_basis() const -> std::shared_ptr<const self_t >
 {
-  auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
-  auto nrb_basis = std::dynamic_pointer_cast<self_t>(ref_sp);
+  auto ref_bs = const_cast<self_t *>(this)->shared_from_this();
+  auto nrb_basis = std::dynamic_pointer_cast<self_t>(ref_bs);
   Assert(nrb_basis != nullptr,ExcNullPtr());
 
   return nrb_basis;
@@ -244,13 +244,13 @@ get_face_basis(const Index face_id,
 -> std::shared_ptr<FaceBasis>
 {
   auto elem_map = std::make_shared<typename GridType::FaceGridMap>();
-  auto face_ref_sp = get_ref_face_basis(face_id, face_to_element_dofs, *elem_map);
+  auto face_ref_bs = get_ref_face_basis(face_id, face_to_element_dofs, *elem_map);
   auto map  = get_push_forward()->get_mapping();
 
   auto fmap = MappingSlice<FaceBasis::PushForwardType::dim, FaceBasis::PushForwardType::codim>::
-  create(map, face_id, face_ref_sp->get_grid(), elem_map);
+  create(map, face_id, face_ref_bs->get_grid(), elem_map);
   auto fpf = FaceBasis::PushForwardType::create(fmap);
-  auto face_basis = FaceBasis::create(face_ref_sp,fpf);
+  auto face_basis = FaceBasis::create(face_ref_bs,fpf);
 
   return face_basis;
 }

@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the evaluation of physical space basis functions
+ *  Test for the evaluation of physical basis functions
  *  with the ball function as a map.
  *
  *  author: pauletti

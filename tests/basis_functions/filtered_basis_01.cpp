@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for building a matrix on a space of an igfunction
+ *  Test for building a matrix on a basis of an igfunction
  *
  *  author: pauletti
  *  date: 2015-03-17

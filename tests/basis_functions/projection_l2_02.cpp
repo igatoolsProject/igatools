@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 /*
  *  Test for the boundary projection function.
- *  Physical spaces version
+ *  Physical bases version
  *  author: pauletti
  *  date: 2013-10-10
  *

@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for bernstein extraction class for periodic spaces
+ *  Test for bernstein extraction class for periodic bases
  *  author: pauletti
  *  date: 2014-12-22
  *

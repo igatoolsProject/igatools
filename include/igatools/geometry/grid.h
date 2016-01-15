@@ -593,7 +593,7 @@ public:
 
   /**
    * Refine the cartesian grid and the objects connected to it (if any),
-   * e.g. maps, spaces, etc.
+   * e.g. domains, bases, etc.
    * along the directions specified by the true values in the entries of the
    * array of bools @p refinement_directions,
    * and with a number of subdivisions for each interval
@@ -610,7 +610,7 @@ public:
 
   /**
    * Refine the cartesian grid and the objects connected to it (if any),
-   * e.g. maps, spaces, etc.
+   * e.g. domains, bases, etc.
    *
    * Each interval in the unrefined grid is uniformly divided
    * in @p n_subdivisions sub-intervals.

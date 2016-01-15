@@ -20,7 +20,7 @@
 
 
 /*
- *  Test for the NURBS space iterator
+ *  Test for the NURBS basis iterator
  *
  *  author: pauletti
  *  date: Jun 11, 2014
@@ -48,14 +48,14 @@ void test()
   auto  knots = Grid<dim>::const_create(3);
 
   auto degree = TensorIndex<dim>(r);
-  auto bsp_space = BSpline<dim,range,rank>::const_create(
+  auto bsp_basis = BSpline<dim,range,rank>::const_create(
                      SplineSpace<dim,range,rank>::const_create(degree,knots));
 
-  using ScalarSpSpace = BSpline<dim,1,1>;
-  auto scalar_bsp_space = ScalarSpSpace::const_create(
+  using ScalarBspBasis = BSpline<dim,1,1>;
+  auto scalar_bsp_basis = ScalarBspBasis::const_create(
                             SplineSpace<dim,1,1>::const_create(degree,knots));
 
-  const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
+  const auto n_scalar_basis = scalar_bsp_basis->get_num_basis();
 
 
   IgCoefficients weights;
@@ -63,15 +63,15 @@ void test()
     weights[dof] = (dof + 1) * (1.0 / n_scalar_basis) ;
 
   using WeightFunc = IgGridFunction<dim,1>;
-  const auto w_func = WeightFunc::const_create(scalar_bsp_space,weights);
+  const auto w_func = WeightFunc::const_create(scalar_bsp_basis,weights);
 
-  auto space = Basis::const_create(bsp_space,w_func);
+  auto basis = Basis::const_create(bsp_basis,w_func);
 
   const int n_points = 3;
   auto quad = QGauss<dim>::create(n_points);
 
-  auto elem     = space->begin();
-  auto end_element = space->end();
+  auto elem     = basis->begin();
+  auto end_element = basis->end();
 
   using Flags = basis_element::Flags;
   const auto flag = Flags::value|
@@ -80,7 +80,7 @@ void test()
 
 
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
 
   using _Value = basis_element::_Value;

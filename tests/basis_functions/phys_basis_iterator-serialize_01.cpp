@@ -20,7 +20,7 @@
 
 /*
  *
- *  Test for the evaluation of physical space basis functions
+ *  Test for the evaluation of physical basis basis functions
  *  values and gradients with an ig function for the map
  *  author:
  *  date: 2014-11-08
@@ -37,18 +37,15 @@
 #include <igatools/basis_functions/physical_basis_element.h>
 #include <igatools/basis_functions/physical_basis_handler.h>
 
-//using namespace EpetraTools;
-
-
 
 
 template <class Basis>
-void serialize_deserialize(std::shared_ptr<Basis> space)
+void serialize_deserialize(std::shared_ptr<Basis> basis)
 {
   OUTSTART
 
   out.begin_item("Original PhysicalBasis:");
-  space->print_info(out);
+  basis->print_info(out);
   out.end_item();
 
 
@@ -57,28 +54,28 @@ void serialize_deserialize(std::shared_ptr<Basis> space)
     "_range" + std::to_string(Basis::range) +
     "_rank" + std::to_string(Basis::rank) +
     "_codim" + std::to_string(Basis::codim);
-  std::string filename = "phys_space" + template_args + ".xml";
+  std::string filename = "phys_basis" + template_args + ".xml";
   std::string tag_name = "PhysicalBasis" + template_args;
   {
     // serialize the PhysicalBasis object to an xml file
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 
-    xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
+    xml_out << boost::serialization::make_nvp(tag_name.c_str(),basis);
     xml_ostream.close();
   }
 
-  space.reset();
+  basis.reset();
   {
     // de-serialize the PhysicalBasis object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
 
-    xml_in >> BOOST_SERIALIZATION_NVP(space);
+    xml_in >> BOOST_SERIALIZATION_NVP(basis);
     xml_istream.close();
   }
   out.begin_item("PhysicalBasis after serialize-deserialize:");
-  space->print_info(out);
+  basis->print_info(out);
   out.end_item();
 //*/
 
@@ -88,7 +85,7 @@ void serialize_deserialize(std::shared_ptr<Basis> space)
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<const BSpline<dim, dim + codim>> space)
+create_function(shared_ptr<const BSpline<dim, dim + codim>> basis)
 {
   IgCoefficients control_pts;
 
@@ -155,19 +152,19 @@ create_function(shared_ptr<const BSpline<dim, dim + codim>> space)
   }
 
   using Function = IgGridFunction<dim,dim+codim>;
-  return Function::const_create(space, control_pts);
+  return Function::const_create(basis, control_pts);
 }
 
 
 template<int dim,int range=dim,int rank=1,int codim=0>
 auto
-create_phys_space(shared_ptr<const BSpline<dim,range,rank>> ref_space)
+create_phys_basis(shared_ptr<const BSpline<dim,range,rank>> ref_basis)
 {
   using Basis = PhysicalBasis<dim,range,rank,codim>;
 
   return Basis::const_create(
-           ref_space,
-           Domain<dim,codim>::const_create(create_function(ref_space)),
+           ref_basis,
+           Domain<dim,codim>::const_create(create_function(ref_basis)),
            Transformation::h_grad);
 }
 
@@ -177,18 +174,18 @@ void elem_values(const int n_knots = 2, const int deg=1)
 {
   OUTSTART
   const int k = dim;
-  using BspSpace = BSpline<dim, range, rank>;
+  using BspBasis = BSpline<dim, range, rank>;
 
 
   auto grid  = Grid<dim>::const_create(n_knots);
 
-  auto ref_space = BspSpace::const_create(
+  auto ref_basis = BspBasis::const_create(
                      SplineSpace<dim,range,rank>::const_create(deg,grid));
 
 
-  auto space = create_phys_space(ref_space);
+  auto basis = create_phys_basis(ref_basis);
 
-//  serialize_deserialize(space);
+//  serialize_deserialize(basis);
 
 
   const int n_qp = 3;
@@ -201,7 +198,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
               Flags::divergence |
               Flags::w_measure;
 
-  auto elem_handler = space->create_cache_handler();
+  auto elem_handler = basis->create_cache_handler();
   elem_handler->template set_flags<k>(flag);
 
   using basis_element::_Value;
@@ -209,8 +206,8 @@ void elem_values(const int n_knots = 2, const int deg=1)
   using basis_element::_Hessian;
   using basis_element::_Divergence;
 
-  auto elem = space->begin();
-  auto end = space->end();
+  auto elem = basis->begin();
+  auto end = basis->end();
   elem_handler->init_element_cache(elem,quad);
   int elem_id = 0;
   for (; elem != end; ++elem)
