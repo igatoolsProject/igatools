@@ -247,6 +247,20 @@ endif()
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Compiler and compile flags
+
+if(CMAKE_BUILD_TYPE MATCHES Release)
+    message("-- IGATOOLS build type: RELEASE")
+else ()
+    message("-- IGATOOLS build type: DEBUG")
+endif()
+
+init_cxx_flags()
+#
+#-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #  bases dimensions and ranks to compile the library for
 #
 set(dim   CACHE STRINGS "list of domain dimensions")
