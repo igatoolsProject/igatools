@@ -62,7 +62,6 @@ private:
   CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain,
                  Value (*f_D0)(const Point))
     : FormulaFunction<dim,codim,range,rank>(domain), funct_D0(f_D0) {};
-  // evaluators
   void evaluate_0(const ValueVector<Point> &points, ValueVector<Value> &values) const {
     auto point = points.begin();
     for (auto &val : values ) {
@@ -82,7 +81,7 @@ public:
     return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<DomainType>(domain),f_D0));
   };
   void print_info(LogStream &out) const {
-    std::cout << "Sometimes it pays to stay in bed on Monday, rather than" <<;
+    std::cout << "Sometimes it pays to stay in bed on Monday, rather than" << std::endl;
     std::cout << "spending the rest of the week debugging Monday's code." << std::endl;
   };
 };
@@ -90,9 +89,9 @@ public:
 template<int dim>
 class PoissonProblem {
   private:
-    shared_ptr<const SplineSpace<dim>>        ref_space;
-    shared_ptr<const BSpline<dim>>            ref_basis;
-    shared_ptr<const PhysicalSpaceBasis<dim>> phy_basis;
+    shared_ptr<const SplineSpace<dim>>   ref_space;
+    shared_ptr<const BSpline<dim>>       ref_basis;
+    shared_ptr<const PhysicalBasis<dim>> phy_basis;
     shared_ptr<const QGauss<dim>>   quad;
     shared_ptr<const QGauss<dim-1>> face_quad;
     shared_ptr<const Function<dim>> source_term;
@@ -116,7 +115,7 @@ class PoissonProblem {
       auto grid = domain->get_grid_function()->get_grid();
       ref_space = SplineSpace<dim>::const_create(deg,grid);
       ref_basis = BSpline<dim>::const_create(ref_space);
-      phy_basis = PhysicalSpaceBasis<dim>::const_create(ref_basis,domain);
+      phy_basis = PhysicalBasis<dim>::const_create(ref_basis,domain);
       quad      = QGauss<dim>::const_create(deg+1);
       face_quad = QGauss<dim-1>::const_create(deg+1);
       mat = create_matrix(*phy_basis,DofProperties::active,Epetra_SerialComm());
@@ -135,9 +134,9 @@ void PoissonProblem<dim>::assemble() {
   auto basis_el      = phy_basis->begin();
   auto basis_el_end  = phy_basis->end();
   auto basis_handler = phy_basis->create_cache_handler();
-  auto flag = space_element::Flags::value |
-              space_element::Flags::gradient |
-              space_element::Flags::w_measure;
+  auto flag = basis_element::Flags::value |
+              basis_element::Flags::gradient |
+              basis_element::Flags::w_measure;
   basis_handler->set_element_flags(flag);
   basis_handler->init_element_cache(basis_el,quad);
 
@@ -191,7 +190,7 @@ void PoissonProblem<dim>::assemble() {
 
 // [basis_handler_init]
     auto basis_el = phy_basis->begin();
-    basis_handler->template set_flags<dim-1>(space_element::Flags::value);
+    basis_handler->template set_flags<dim-1>(basis_element::Flags::value);
     basis_handler->init_face_cache(basis_el,face_quad);
 // [basis_handler_init]
 
@@ -216,7 +215,7 @@ void PoissonProblem<dim>::assemble() {
 // [feel_da_cash]
       
 // [get_data]
-      auto vals   = basis_el->template get_basis_data<space_element::_Value,dim-1>(face);
+      auto vals   = basis_el->template get_basis_data<basis_element::_Value,dim-1>(face);
       auto w_meas = s_dom_el->get_element_w_measures();
       auto funct  = funct_el->get_element_values_D0();
 // [get_data]
