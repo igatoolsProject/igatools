@@ -20,7 +20,7 @@
 
 
 #include <igatools/geometry/domain.h>
-#include <igatools/geometry/grid_function_lib.h>
+#include <igatools/functions/grid_function_lib.h>
 #include <igatools/io/writer.h>
 #include "../tests.h"
 
@@ -134,8 +134,8 @@ void write_domain(const string &filename, const Domain<2,codim> &domain)
   auto elem = domain->begin();
   const auto end = domain->end();
 
-  const auto quad = QTrapez<2>::create();
-  domain_handler->init_element_cache(elem,quad);
+//  const auto quad = QTrapez<2>::create();
+//  domain_handler->init_element_cache(elem,quad);
 
   Assert(false,ExcNotImplemented());
 
