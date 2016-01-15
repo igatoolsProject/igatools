@@ -59,7 +59,7 @@ private:
 
   // [type aliases]
 private:
-  using RefSpace = BSpline<dim>;
+  using RefBasis = BSpline<dim>;
   using Basis    = PhysicalBasis<dim>;
   using Value = typename Function<dim>::Value;
   // [type aliases]

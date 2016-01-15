@@ -127,9 +127,9 @@ Any basis in igatools is derived from the pure abstract Basis class, and every
 method for element loops (the set/init/fill trio) are virtually implemented therein.
 
 As last remark, please notice the difference between the construction of a 
-ReferenceSpaceBasis (derived with the class BSpline) and PhysicalSpaceBasis: 
+ReferenceBasis (derived with the class BSpline) and PhysicalBasis: 
 the former is simply built upon a Grid and then a SplineSpace, while the latter 
-requires for the last step a Domain and a ReferenceSpaceBasis.
+requires for the last step a Domain and a ReferenceBasis.
 
 \section Exercises
 <ol>

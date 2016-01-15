@@ -65,7 +65,7 @@ private:
 
   // [members]
 private:
-  using RefSpace = ReferenceBasis<dim>;
+  using RefBasis = ReferenceBasis<dim>;
   using Basis = BSpline<dim>;
   shared_ptr<const Basis> basis;
 

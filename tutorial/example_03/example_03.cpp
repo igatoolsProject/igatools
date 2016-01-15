@@ -128,8 +128,8 @@ int main()
 // [main_basis_loop_phy]
   auto annulus   = quarter_annulus(2);
   auto grid      = annulus->get_grid_function()->get_grid();
-  auto ref_space = SplineSpace<2>::const_create(2,grid);
-  auto ref_basis = BSpline<2>::const_create(ref_space);
+  auto spl_space = SplineSpace<2>::const_create(2,grid);
+  auto ref_basis = BSpline<2>::const_create(spl_space);
   auto phy_basis = PhysicalBasis<2>::const_create(ref_basis,annulus);
 
   out << "Traversing basis functions on the annulus domain:" << endl;

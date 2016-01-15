@@ -125,7 +125,7 @@ template<int dim>
 class PoissonProblem
 {
 private:
-  shared_ptr<const SplineSpace<dim>>        ref_space;
+  shared_ptr<const SplineSpace<dim>>        spl_space;
   shared_ptr<const BSpline<dim>>            ref_basis;
   shared_ptr<const PhysicalBasis<dim>> phy_basis;
   shared_ptr<const QGauss<dim>>             quad;
@@ -146,8 +146,8 @@ public:
     source_term    = source;
     dirichlet_cond = dirichlet;
     auto grid = domain->get_grid_function()->get_grid();
-    ref_space = SplineSpace<dim>::const_create(deg,grid);
-    ref_basis = BSpline<dim>::const_create(ref_space);
+    spl_space = SplineSpace<dim>::const_create(deg,grid);
+    ref_basis = BSpline<dim>::const_create(spl_space);
     phy_basis = PhysicalBasis<dim>::const_create(ref_basis,domain);
     quad      = QGauss<dim>::const_create(deg+1);
     face_quad = QGauss<dim-1>::const_create(deg+1);
