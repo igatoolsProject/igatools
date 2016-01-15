@@ -18,25 +18,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __BSPLINE_SPACE_H_
-#define __BSPLINE_SPACE_H_
+#ifndef __BSPLINE_H_
+#define __BSPLINE_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 
-#include <igatools/basis_functions/reference_space_basis.h>
+#include <igatools/basis_functions/reference_basis.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
 //#include <igatools/geometry/domain.h>
-#include <igatools/basis_functions/physical_space_basis.h>
+#include <igatools/basis_functions/physical_basis.h>
 
 IGA_NAMESPACE_OPEN
 
 
 template <int, int, int> class BSplineElement;
-template <int, int, int> class BSplineElementHandler;
+template <int, int, int> class BSplineHandler;
 /**
  * Multivariate (tensor product) scalar, vector or k-tensor
- * valued B-spline space.
+ * valued B-spline basis.
  * This object can be thought of as providing the
  * B-spline basis functions of a spline space.
  * The space is determined by:
@@ -53,7 +53,7 @@ template <int, int, int> class BSplineElementHandler;
  * the class provides.
  * @todo enter a glossary for create idiom technique and refer from here
  * \code
- * auto space = BSpline<dim>::create();
+ * auto basis = BSpline<dim>::create();
  * \endcode
  *
  * \section eval Evaluating basis function
@@ -67,13 +67,12 @@ template <int, int, int> class BSplineElementHandler;
  * They are internally stored in a grid-like multiarray container,
  * called the index space.
  * It works together with the index_space_offset which for each element
- * provides a view of the index
- * space to know which
+ * provides a view of the index space to know which
  * are the non-zero basis function on each element, what we generally
  * refer to as the local to global mapping.
  *
  * \section bezier Storage of the basis functions (Bezier Extraction)
- * The basis functions on each element are stored in the Bspline space
+ * The basis functions on each element are stored in the Bspline basis
  * as the 1D Bezier extraction operator.
  * When they need to be evaluated the operator applied to the
  * Berenstein polynomials,
@@ -81,7 +80,7 @@ template <int, int, int> class BSplineElementHandler;
  *
  * @todo write a module about cache optimization and handling.
  *
- * \section hom_range Optimizing homogeneous range type vector spaces
+ * \section hom_range Optimizing homogeneous range type vector basis
  *
  * \author martinelli, 2012, 2013, 2014
  * \author pauletti, 2012, 2013, 2014
@@ -92,10 +91,10 @@ template <int, int, int> class BSplineElementHandler;
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSpline :
-  public ReferenceSpaceBasis<dim_, range_, rank_>
+  public ReferenceBasis<dim_, range_, rank_>
 {
 private:
-  using BaseSpace = ReferenceSpaceBasis<dim_, range_, rank_>;
+  using RefBasis = ReferenceBasis<dim_, range_, rank_>;
 
   /** Type for current class. */
   using self_t = BSpline<dim_,range_,rank_>;
@@ -104,7 +103,7 @@ public:
   /** see documentation in \ref Basis */
 
   using GridType = Grid<dim_>;
-  using ElementHandler = BSplineElementHandler<dim_, range_, rank_>;
+  using Handler = BSplineHandler<dim_, range_, rank_>;
 
 
   static const int dim       = dim_;
@@ -112,24 +111,16 @@ public:
   static const int space_dim = dim_;
   static const int range     = range_;
   static const int rank      = rank_;
-  static const bool is_physical_space = false;
+  static const bool is_physical_basis = false;
 
 public:
-  using typename BaseSpace::Point;
-  using typename BaseSpace::Value;
+  using typename RefBasis::Point;
+  using typename RefBasis::Value;
 
   template <int order>
-  using Derivative = typename BaseSpace::template Derivative<order>;
+  using Derivative = typename RefBasis::template Derivative<order>;
 
-  using typename BaseSpace::Div;
-
-  /**
-   * See documentation in \ref Basis
-   *
-   * @see Basis
-   */
-
-//  using RefBasis = typename BaseSpace::RefBasis;
+  using typename RefBasis::Div;
 
   using RefPoint = Point;
 
@@ -138,14 +129,14 @@ public:
   using ElementAccessor = BSplineElement<dim,range,rank>;
 
   /** Type for iterator over the elements.  */
-  using ElementIterator = GridIterator<SpaceElement<dim,0,range,rank>>;
+  using ElementIterator = GridIterator<BasisElement<dim,0,range,rank>>;
 
 
   using SpSpace = SplineSpace<dim_,range_,rank_>;
   using EndBehaviour = typename SpSpace::EndBehaviour;
   using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
-  using BaseSpace::ComponentContainer;
+  using RefBasis::ComponentContainer;
 
   using IndexType = typename GridType::IndexType;
   using PropertyList = PropertiesIdContainer<IndexType>;
@@ -177,19 +168,19 @@ public:
   ///@}
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
   create_element_begin(const PropId &property) const  override final;
 
   virtual
-  std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+  std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
   create_element_end(const PropId &property) const  override final;
 
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_begin(const PropId &property) const override final;
 
 
-  virtual std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+  virtual std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
   create_ref_element_end(const PropId &property) const override final;
 
 
@@ -222,14 +213,14 @@ protected:
   /**
    * Copy constructor. Not allowed to be used.
    */
-  BSpline(const self_t &space) = delete;
+  BSpline(const self_t &basis) = delete;
   ///@}
 
   /** @name Assignment operators */
   ///@{
   /** Copy assignment. Not allowed to be used. */
   self_t &
-  operator=(const self_t &space) = delete;
+  operator=(const self_t &basis) = delete;
   ///@}
 
 public:
@@ -238,26 +229,26 @@ public:
 
 
   template <int k>
-  using InterSpaceMap = typename BaseSpace::template InterSpaceMap<k>;
+  using InterBasisMap = typename RefBasis::template InterBasisMap<k>;
 
 
 
   /**
-   * Construct a sub space of dimension k conforming to
-   * the subspace sub element sub_elem_id and a map from the elements of
+   * Construct a sub basis of dimension k conforming to
+   * the subbasis sub element sub_elem_id and a map from the elements of
    * the sub_element grid to the corresponding element of the current
    * grid.
    */
   template<int sdim>
   std::shared_ptr<const BSpline<sdim,range_,rank_> >
-  get_sub_bspline_space(const int sub_elem_id,
-                        InterSpaceMap<sdim> &dof_map,
+  get_sub_bspline_basis(const int sub_elem_id,
+                        InterBasisMap<sdim> &dof_map,
                         const std::shared_ptr<const Grid<sdim>> &sub_grid) const;
 
 #if 0
   template<int k>
-  std::shared_ptr<SubSpace<k> >
-  get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+  std::shared_ptr<SubBasis<k> >
+  get_sub_basis(const int s_id, InterBasisMap<k> &dof_map,
                 SubGridMap<k> &elem_map) const;
 #endif
 
@@ -276,12 +267,12 @@ public:
 
 
   /**
-   * Returns a reference to the end behaviour table of the BSpline space.
+   * Returns a reference to the end behaviour table of the BSpline basis.
    */
   virtual const EndBehaviourTable &get_end_behaviour_table() const override final;
 
   /**
-   * Prints internal information about the space.
+   * Prints internal information about the basis.
    * @note Mostly used for debugging and testing.
    */
   virtual void print_info(LogStream &out) const override final;
@@ -302,14 +293,14 @@ private:
 
 
   /** If end knots are not in the repeated knot vector */
-  using EndIntervalTable = typename BaseSpace::template
+  using EndIntervalTable = typename RefBasis::template
                            ComponentContainer<SafeSTLArray<SafeSTLArray<Real,2>,dim>>;
   EndIntervalTable end_interval_;
 
 
 
   friend class BSplineElement<dim, range, rank>;
-  friend class BSplineElementHandler<dim, range, rank>;
+  friend class BSplineHandler<dim, range, rank>;
 
 #ifdef MESH_REFINEMENT
   /**
@@ -341,13 +332,13 @@ public:
 public:
   DeclException1(ExcScalarRange, int,
                  << "Range " << arg1 << "should be 0 for a scalar valued"
-                 << " space.");
+                 << " basis.");
 
 
   virtual bool is_bspline() const override final;
 
-  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
-      create_cache_handler() const override final;
+  virtual std::unique_ptr<BasisHandler<dim_,0,range_,rank_>>
+                                                          create_cache_handler() const override final;
 
 
 private:
@@ -387,5 +378,5 @@ IGA_NAMESPACE_CLOSE
 
 
 
-#endif /* __BSPLINE_SPACE_H_ */
+#endif /* __BSPLINE_H_ */
 

@@ -26,7 +26,7 @@
 
 #ifdef USE_NURBS
 
-#include <igatools/basis_functions/reference_element.h>
+#include <igatools/basis_functions/reference_basis_element.h>
 
 
 //#include <igatools/linear_algebra/dense_matrix.h>
@@ -41,7 +41,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim, int range, int rank> class NURBS;
-template <int,int,int> class NURBSElementHandler;
+template <int,int,int> class NURBSHandler;
 template <class Accessor> class GridIterator;
 
 /**
@@ -53,18 +53,18 @@ template <class Accessor> class GridIterator;
  */
 template <int dim, int range, int rank>
 class NURBSElement :
-  public ReferenceElement<dim,range,rank>
+  public ReferenceBasisElement<dim,range,rank>
 {
 private:
   using self_t = NURBSElement<dim,range,rank>;
-  using parent_t = ReferenceElement<dim,range,rank>;
+  using parent_t = ReferenceBasisElement<dim,range,rank>;
 
 public:
 
   /** Type required by the GridIterator templated iterator */
   using ContainerType = const NURBS<dim, range, rank> ;
 
-  /** Type required for the generic algorithm on the spaces (plots??) */
+  /** Type required for the generic algorithm on the basis (plots??) */
   using Basis = NURBS<dim, range, rank> ;
 
 
@@ -100,9 +100,9 @@ protected:
 public:
   /**
    * Constructs an accessor to element number index of a
-   * BSpline space.
+   * BSpline basis.
    */
-  NURBSElement(const std::shared_ptr<ContainerType> space,
+  NURBSElement(const std::shared_ptr<ContainerType> basis,
                std::unique_ptr<BSpElem> &&bspline_elem,
                std::unique_ptr<WeightElem> &&weight_elem);
 
@@ -170,7 +170,7 @@ private:
 
 public:
 
-  friend class NURBSElementHandler<dim, range, rank>;
+  friend class NURBSHandler<dim, range, rank>;
 
 
   /**
@@ -185,7 +185,7 @@ public:
 
 
 
-  friend class NURBSElementHandler<dim,range,rank>;
+  friend class NURBSHandler<dim,range,rank>;
 
 };
 

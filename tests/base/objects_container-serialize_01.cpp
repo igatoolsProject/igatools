@@ -106,12 +106,12 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   static const int rank = 1;
   using GridType = Grid<dim>;
   using SpSpaceType = SplineSpace<dim, range, rank>;
-  using RefSpaceType = ReferenceSpaceBasis<dim, range, rank>;
+  using RefBasisType = ReferenceBasis<dim, range, rank>;
   using BSplineType = BSpline<dim, range, rank>;
   using NURBSType = NURBS<dim, range, rank>;
   using ScalarSpSpaceType = SplineSpace<dim, 1, 1>;
   using ScalarBSplineType = BSpline<dim, 1, 1>;
-  using ScalarRefSpaceType = ReferenceSpaceBasis<dim, 1, 1>;
+  using ScalarRefBasisType = ReferenceBasis<dim, 1, 1>;
   using WeightFuncType = IgGridFunction<dim, 1>;
   using ScalarGridFuncType = GridFunction<dim, 1>;
   using GridFuncType = GridFunction<dim, range>;
@@ -119,7 +119,7 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   using IgGridFunc = IgGridFunction<dim, dim+codim>;
   using IgFuncType = IgFunction<dim, codim, range, rank>;
   using FuncType = Function<dim, codim, range, rank>;
-  using PhysSpaceType = PhysicalSpaceBasis<dim, range, rank, codim>;
+  using PhysBasisType = PhysicalBasis<dim, range, rank, codim>;
 
   auto grid = GridType::create(coord);
   container->insert_const_object<GridType>(grid);
@@ -128,43 +128,43 @@ void insert_objects(const std::shared_ptr<ObjectsContainer> container)
   container->insert_const_object<SpSpaceType>(ssp);
 
   auto  bsp = BSplineType::create(ssp);
-  container->insert_const_object<RefSpaceType>(bsp);
+  container->insert_const_object<RefBasisType>(bsp);
 
-  auto scalar_space = ScalarBSplineType::create(ScalarSpSpaceType::create(degree, grid));
+  auto scalar_basis = ScalarBSplineType::create(ScalarSpSpaceType::create(degree, grid));
 
-  container->insert_const_object<ScalarRefSpaceType>(scalar_space);
+  container->insert_const_object<ScalarRefBasisType>(scalar_basis);
 
-  const auto n_scalar_basis = scalar_space->get_num_basis();
+  const auto n_scalar_basis = scalar_basis->get_num_basis();
 
   IgCoefficients weights;
   for (int dof = 0 ; dof < n_scalar_basis ; ++dof)
     weights[dof] = 1.0;
 
-  const auto w_func = WeightFuncType::create(scalar_space,weights);
+  const auto w_func = WeightFuncType::create(scalar_basis,weights);
 
   container->insert_const_object<ScalarGridFuncType>(w_func);
 
-  auto nurbs_space = NURBSType::create(bsp, w_func);
-  container->insert_const_object<RefSpaceType>(nurbs_space);
+  auto nurbs_basis = NURBSType::create(bsp, w_func);
+  container->insert_const_object<RefBasisType>(nurbs_basis);
 
   Epetra_SerialComm comm;
-  auto map = EpetraTools::create_map(*nurbs_space, "active", comm);
+  auto map = EpetraTools::create_map(*nurbs_basis, "active", comm);
   const auto pts = EpetraTools::create_vector(*map);
   (*pts)[0] = 1.;
-  auto ig_grid_func = IgGridFunc::create(nurbs_space, *pts, "active");
+  auto ig_grid_func = IgGridFunc::create(nurbs_basis, *pts, "active");
   container->insert_const_object<GridFuncType>(ig_grid_func);
 
   const auto domain = DomainType::create(ig_grid_func);
   domain->set_name("my_domain");
   container->insert_const_object<DomainType>(domain);
 
-  const auto phys_space = PhysSpaceType::create(nurbs_space, domain);
-  container->insert_const_object<PhysSpaceType>(phys_space);
+  const auto phys_basis = PhysBasisType::create(nurbs_basis, domain);
+  container->insert_const_object<PhysBasisType>(phys_basis);
 
-  auto map_2 = EpetraTools::create_map(*phys_space, "active", comm);
+  auto map_2 = EpetraTools::create_map(*phys_basis, "active", comm);
   auto coeff = EpetraTools::create_vector(*map_2);
   (*coeff)[0] = 2.;
-  auto ig_func = IgFuncType::create(phys_space, *coeff);
+  auto ig_func = IgFuncType::create(phys_basis, *coeff);
   ig_func->set_name("my_function");
   container->insert_const_object<FuncType>(ig_func);
 

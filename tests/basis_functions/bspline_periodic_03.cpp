@@ -81,7 +81,7 @@ void assemble_matrix(const int n_knots, const int deg)
   auto elem_handler = basis->create_cache_handler();
   auto f_handler = f->create_cache_handler();
 
-  using Flags = space_element::Flags;
+  using Flags = basis_element::Flags;
   auto flag = Flags::value | Flags::gradient |Flags::w_measure;
   elem_handler->set_element_flags(flag);
 

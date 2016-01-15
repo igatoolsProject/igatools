@@ -53,15 +53,15 @@ MapPtr
 create_map(const std::set<Index> &dofs,const Comm &comm);
 
 /**
- * Create an Epetra_Map object (wrapped by a shared pointer) from a @p space and the @p dofs_property
- * used to extract the dofs from the space.
+ * Create an Epetra_Map object (wrapped by a shared pointer) from a @p basis and the @p dofs_property
+ * used to extract the dofs from the basis.
  */
 template<class Basis>
-MapPtr create_map(const Basis &space,
+MapPtr create_map(const Basis &basis,
                   const std::string &property,
                   const Comm &comm)
 {
-  const auto &dof_dist = *space.get_spline_space()->get_dof_distribution();
+  const auto &dof_dist = *basis.get_spline_space()->get_dof_distribution();
 
   return create_map(dof_dist.get_global_dofs(property),comm);
 }

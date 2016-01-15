@@ -29,10 +29,10 @@
 #include "../tests.h"
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 
 template <int dim, int range=1, int rank=1>
-void uniform_space_cache(const space_element::Flags flag,
+void uniform_space_cache(const basis_element::Flags flag,
                          const int n_knots = 5, const int deg=1)
 {
   OUTSTART
@@ -46,7 +46,7 @@ void uniform_space_cache(const space_element::Flags flag,
 
   auto quad = QGauss<dim>::create(2);
   /*
-  using ElemHandler = typename Basis::ElementHandler;
+  using ElemHandler = typename Basis::Handler;
   auto value_handler = ElemHandler::const_create(basis);
   value_handler->reset(flag, quad);
   value_handler->print_info(out);
@@ -69,9 +69,9 @@ int main()
   out.depth_console(10);
 
 
-  uniform_space_cache<1>(space_element::Flags::value);
-  uniform_space_cache<2>(space_element::Flags::value);
+  uniform_space_cache<1>(basis_element::Flags::value);
+  uniform_space_cache<2>(basis_element::Flags::value);
 
-  uniform_space_cache<1>(space_element::Flags::gradient);
+  uniform_space_cache<1>(basis_element::Flags::gradient);
   return  0;
 }

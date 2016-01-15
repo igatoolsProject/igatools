@@ -66,7 +66,7 @@ void ts_serialization()
 
 int main()
 {
-  ts_serialization<0>();
+//  ts_serialization<0>();
   ts_serialization<1>();
   ts_serialization<2>();
   ts_serialization<3>();

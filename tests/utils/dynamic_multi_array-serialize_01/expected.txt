@@ -1,17 +1,6 @@
 ========================================================================
 dyamic_multiarray_serialization
 ========================================================================
-DynamicMultiArray<int,0> before serialization
-   Size: [ ]  Weights: []
-[ 0 ]
-DynamicMultiArray<int,0> after serialization
-   Size: [ ]  Weights: []
-[ 0 ]
-========================================================================
-
-========================================================================
-dyamic_multiarray_serialization
-========================================================================
 DynamicMultiArray<int,1> before serialization
    Size: [ 4 ]  Weights: [4]
 [ 0 1 2 3 ]

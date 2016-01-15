@@ -967,9 +967,9 @@ DeclException1(ExcCompatibility,
 
 /**
  * Exception used when a function argument is supposed to be
- * derived from FunctionSpace and it is not.
+ * derived from FunctionBasis and it is not.
  */
-DeclException0(ExcArgNotFunctionSpace) ;
+DeclException0(ExcArgNotFunctionBasis) ;
 
 /**
  * Some of our numerical classes

@@ -152,7 +152,7 @@ In other words, if we create these objects
 then a basis function \f$\phi_i\f$ maps \f$ \text{dom} \; \phi_i \subseteq \mathbb{R}^{dim} \f$ to
 \f$ \underbrace{\mathbb{R}^{range} \times \dots \times \mathbb{R}^{range} }_{ rank \; \text{times} } \f$.
 Along with tensor fields, igatools supports numerical analysis on manifolds, so that
-certain objects such as PhysicalSpaceBasis require the four integer template parameters
+certain objects such as PhysicalBasis require the four integer template parameters
 <tt>dimension</tt>, <tt>codimension</tt>, <tt>range</tt> and <tt>rank</tt>, where
 the codimension is the difference between the manifold dimension and the embedding space
 dimension.
@@ -184,8 +184,8 @@ per element, the class Writer is in charge of saving the data:
 \snippet example_02.cpp cube_plot
 
 We want now to save the annulus domain with an example of a B-spline basis function
-on it. In order to do so we need a PhysicalSpaceBasis on the annulus. Its creation
-follows the usual creation procedure: Grid, SplineSpace, BSpline, PhysicalSpaceBasis:
+on it. In order to do so we need a PhysicalBasis on the annulus. Its creation
+follows the usual creation procedure: Grid, SplineSpace, BSpline, PhysicalBasis:
 \snippet example_02.cpp basis
 Notice here that we create a spline space of cubic B-splines. The degree of a basis
 in physical domain is independent from the degree of the geometry, whenever the 

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef IGATOOLS_READER_H_
-#define IGATOOLS_READER_H_
+#ifndef __IGATOOLS_READER_H_
+#define __IGATOOLS_READER_H_
 
 #include <vtkMultiBlockDataSetAlgorithm.h>
 
@@ -28,94 +28,86 @@
 
 class vtkObjectBase;
 
-/** Forward declarations. */
-
 namespace iga
 {
-template <class T, int d> class SafeSTLArray;
-namespace paraview_plugin
-{
-struct VtkGridInformation;
-struct VtkControlGridInformation;
-class VtkIgaGridContainer;
-}
+    template <class T, int d> class SafeSTLArray;
+    namespace paraview_plugin
+    {
+        class VtkIgaGridContainer;
+    }
 }
 
 /**
- * @brief This is main class called from the ParaView xml plugin.
+ * @brief Main class of the igatools-ParaView plugin.
  *
- * Once a igatools file (containing the serialization of a \ref ObjectsContainer
- * class instance) has been selected, it receives some information from the
- * ParaView GUI (the file name itself, information for building the vtk
- * geometries, etc) and creates and returns the vtk grids packed into
- * MultiBlockDataSet.
+ * The main purpose of this class is receiving and sending information
+ * to ParaView. Thus, it receives the input (the input file and VTK grid
+ * options) and information for activating or de-activating each
+ * IGA domain, and returns the VTK multiblock grid itself, and information
+ * about the number of domains, their names, etc.
  *
- * Each mapping, i.e. the function
- * \f$ \mathbf{F} \colon \hat{\Omega}\in\mathbb{R}^{\text{dim}} \to
- * \Omega\in\mathbb{R}^{\text{dim}+\text{codim}} \f$
- * representing the geometry, is represented in ParaView by a vtk grid.
+ * The plugin receives from the ParaView GUI an input file name
+ * and group of options for building the information for building the VTK
+ * geometries. With this information creates and returns the VTK grids packed
+ * into MultiBlockDataSet.
  *
- * For each mapping, different functions
- * \f$ \mathbf{g} \colon \hat{\Omega}\in\mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{range}\times\text{rank}} \f$
- * can be associated to it, being represented in ParaView throw vtk point data.
+ * The interaction between this class and ParaView is performed basically
+ * throw two methods:
+ *  - @ref RequestInformation: once it is called, the plugin creates new
+ *    @ref paraview_plugin::VtkIgaGridContainer objects
+ *    (@ref iga_grid_container_), that will parse the input file,
+ *    and create a @ref paraview_plugin::VtkIgaGrid associated to each
+ *    domain present in the input file.
+ *  - @ref RequestData: when it is called, @ref iga_grid_container_
+ *    is requested to create the VTK multi block object containing all
+ *    the active domains.
  *
- * The plugin it is also capable of visualizing the parametric representation
- * of the mapping throw the use of \ref IdentityFunction
- * \f$ \mathbf{Id} \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}} \f$
- * representing the geometry, is represented in ParaView by a vtk grid.
+ * @see paraview_plugin::VtkIgaGrid
+ * @see paraview_plugin::VtkIgaGridContainer
+ * @see paraview_plugin::VtkGridInformation
  *
- * If the options set in the ParaView GUI are updated, only needed grids
- * are recomputed.
- *
- *
- * @author P. Antolin, 2015.
+ * @author P. Antolin, 2016.
  *
  * @ingroup paraview_plugin
  */
-
-// class VTK_EXPORT IgatoolsParaViewReader : public vtkMultiBlockDataSetAlgorithm
 class IgatoolsParaViewReader : public vtkMultiBlockDataSetAlgorithm
 {
 
 private:
 
-  /** @name Types definition. */
-  ///@{
-
-  /** Type of the class itself. */
+  /// Type of the class itself.
   typedef IgatoolsParaViewReader Self_;
 
-  /** Type for shared pointer of @ref vtkGridInformation.  */
-  typedef std::shared_ptr<iga::paraview_plugin::VtkGridInformation> GridInfoPtr_;
+  /// Type for shared pointer of @ref VtkIgaGridContainer.
+  typedef std::shared_ptr<iga::paraview_plugin::VtkIgaGridContainer> IgaGridContPtr_;
 
-  /** Type for shared pointer of @ref vtkControlGridInformation.  */
-  typedef std::shared_ptr<iga::paraview_plugin::VtkControlGridInformation> ControlGridInfoPtr_;
-
-  /** Type for shared pointer of @ref VtkGridGeneratorContainer.  */
-  typedef std::shared_ptr<iga::paraview_plugin::VtkIgaGridContainer> GridGenPtr_;
-
-  /** Type for containing the number of cells per side of each Bezier element.  */
+  /// Type for containing the number of cells per side of each Bezier element.
   typedef iga::SafeSTLArray<int, 3> NumCells_;
-
-
-  ///@}
-
 
 
   /** @name Constructor and destructor. */
   ///@{
-
-  /** Default constructor. */
+  /**
+   * Constructor.
+   */
   IgatoolsParaViewReader();
 
 
-  /** Default destructor. */
+  /**
+   * Default destructor.
+   */
   ~IgatoolsParaViewReader() = default;
 
-  /** Copy constructor. Not allowed to be used. */
+  /**
+   * Copy constructor.
+   * @warning Not allowed to be used.
+   */
   IgatoolsParaViewReader(const Self_ &) = delete;
 
-  /** Move constructor. Not allowed to be used. */
+  /**
+   * Move constructor.
+   * @warning Not allowed to be used.
+   */
   IgatoolsParaViewReader(const Self_ &&) = delete;
 
   ///@}
@@ -124,10 +116,16 @@ private:
   /** @name Assignment operator. */
   ///@{
 
-  /** Copy assignment operator. Not allowed to be used. */
+  /**
+   * Copy assignment operator.
+   * @warning Not allowed to be used.
+   */
   Self_ operator=(const Self_ &) = delete;
 
-  /** Move assignment operator. Not allowed to be used. */
+  /**
+   * Move assignment operator.
+   * @warning Not allowed to be used.
+   */
   Self_ operator=(const Self_ &&) = delete;
 
   ///@}
@@ -138,26 +136,26 @@ protected:
   /** @name ParaView plugin requested methods. */
   ///@{
 
-
   /**
-   * This method is called by the vtk superclass and is the one
-   * in charge of building the vtk objects (in this case, a
-   * vtkMultiBlockDataSet) and store it in @p output_vec.
+   * @brief Creates the IGA geometries.
    *
-   * The returned vtkMultiBlockDataSet is a block of blocks.
-   * That is, the returned block is composed by two blocks: one for the
-   * physical mappings and another one for the parametric ones.
+   * This method is called by the VTK superclass and is the one
+   * in charge of building the VTK objects (in this case, a
+   * @ref vtkMultiBlockDataSet) and store it in @p output_vec.
    *
-   * The physical mappings block is itself a vtkMultiBlockDataSet composed
-   * by the blocks of the solid, knot mesh and control mesh representation.
-   * Every of these objects themselves are a vtkMultiBlockDataSet containing
-   * one grid for every active mapping.
+   * The returned @ref vtkMultiBlockDataSet is a block of blocks
+   * (see @ref VtkIgaGrid for the details of its internal structure).
    *
-   * In the same way, the parametric mappings blocks, is composed by the
-   * solid and knot mesh blocks, that are also vtkMultiBlockDataSet.
+   * Before creating the VTK grids, this method internally updates all
+   * VTK grid information and communicates if to the class @ref VtkIgaGrid.
    *
-   * This method internally updates all the grid generators, that, if needed,
-   * compute the new grids.
+   * @note Required by the ParaView plugin.
+   *
+   * @param[in] request Requested information.
+   * @param[in] input_vec Passed input information
+   * @param[out] output_vec Object receiving the output.
+   * In this case receives nothing.
+   * @return 1 if the process succeeded, 0 otherwise.
    */
   virtual int RequestData(vtkInformation *,
                           vtkInformationVector **,
@@ -165,141 +163,188 @@ protected:
 
 
   /**
-   * This vtk method in thought to be in charge of testing the input file
+   * @brief Loads the plugin input file.
+   *
+   * This VTK method in thought to be in charge of testing the input file
    * and obtaining minimal information from it (i.e. number of grids, types,
    * etc).
    *
    * However, due to the structure and the current capabilities of igatools
    * I/O functions, this method actually full parses the input file,
-   * retrieves the func_container_, and creates the phys_gen_ and parm_gen_
-   * generators.
+   * retrieves an objects container and creates the @ref iga_grid_container_.
+   *
    * Due to the fact that isogeometric geometries and results should not
-   * be very memory consuming (compared to other methods), this actions should
-   * be too expensive.
+   * be very memory consuming (compared to other methods), this actions
+   * should not be too expensive.
+   *
+   * @note Required by the ParaView plugin.
+   *
+   * @param[in] request Requested information.
+   * @param[in] input_vec Passed input information
+   * @param[out] output_vec Object receiving the output.
+   * In this case receives nothing.
+   * @return 1 if the process succeeded, 0 otherwise.
    *
    */
   virtual int RequestInformation(vtkInformation *request,
-                                 vtkInformationVector **inputVector,
+                                 vtkInformationVector **input_vec,
                                  vtkInformationVector *output_vec) override final;
 
 public:
 
-  /** Required by the ParaView plugin. */
+  /**
+   * @brief Retrieves the class name.
+   * @note Required by the ParaView plugin.
+   * @return Class name.
+   */
   static IgatoolsParaViewReader *New();
-
-  /** Required by the ParaView plugin. */
 
 private:
   /**
-   * Retrieves the class name.
+   * @brief Retrieves the class name.
    * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
    * @note Required by the ParaView plugin.
+   * @return Class name.
    */
   virtual const char *GetClassNameInternal() const override final;
 
 public:
   /**
-   * Returns true if the class is of the given type.
+   * @brief Returns true if the class is of the given type.
    * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
    * @note Required by the ParaView plugin.
+   * @return true, if the current class is of the given type, false,
+   * otherwise.
    */
   static int IsTypeOf(const char *type);
 
   /**
-   * Returns true if the class is of the given type.
+   * @brief Returns true if the current class is of the given type.
    * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
    * @note Required by the ParaView plugin.
+   * @return true, if the current class is of the given type, false,
+   * otherwise.
    */
   virtual int IsA(const char *type) override final;
 
   /**
-   * Performs a safe down cast from a @ref vtkObjectBase to the current
-   * type.
+   * @brief Perform a safe down cast of a given @ref vtkObjectBase
+   * to the current type.
+   *
    * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
    * @note Required by the ParaView plugin.
+   *
+   * @return Casted object.
    */
   static IgatoolsParaViewReader* SafeDownCast(vtkObjectBase *o);
 
 
   /**
+   * @brief Creates a new instance of the class.
+   *
    * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
    * @note Required by the ParaView plugin.
+   *
+   * @return New instance.
    */
   IgatoolsParaViewReader *NewInstance() const;
 
 protected:
 
   /**
+   * @brief Creates a new instance of the class down casted to a
+   * @ref vtkObjectBase.
+   *
    * @note Implementation extracted from <tt>common/vtkGetSet.h</tt>
    * @note Required by the ParaView plugin.
+   *
+   * @return New instance.
    */
   virtual vtkObjectBase *NewInstanceInternal() const override final;
 
 public:
 
   /**
-   * Prints the information of the class in the stream @p using the
+   * @brief Prints the information of the class in the stream @p using the
    * indentation @p indent
+   * @param[in] os Stream for writing the information.
+   * @param[in] indent Indentation to be used for the writing.
    */
   void PrintSelf(ostream &os, vtkIndent indent) override;
 
 
   /**
-   * Return the status (active/inactive) of the physical mapping defined by
-   * its @p name
+   * @brief Return the status (active/inactive) of the physical domain
+   * defined by its @p name
+   * @param[in] name Name of the domain to be checked.
+   * @return Status of the domain (1 active, 0 inactive).
    */
   int GetPhysGeomArrayStatus(const char *name);
 
   /**
-   * Sets the @p status (active/inactive) for the current ParaView
-   * visualization of the physical mapping defined by its @p name
+   * @brief Sets the @p status (active/inactive) for the current ParaView
+   * visualization of the physical domain defined by its @p name
+   * @param[in] name Name of the domain.
+   * @param[in] status Status to be set.
    */
   void SetPhysGeomArrayStatus(const char *name, int status);
 
   /**
-   * Returns the number of physical mappings that can be visualized.
+   * @brief Returns the number of physical domains.
+   * @return Number of the physical domains.
    */
   int GetNumberOfPhysGeomArrays();
 
   /**
-   * Returns the name of the physical mapping with number @p index
+   * @brief Returns the name of the physical domain with number @p index
+   *
+   * @param[in] Number of the physical domain.
    */
   const char *GetPhysGeomArrayName(int index);
 
 
   /**
-   * Return the status (active/inactive) of the parametric mapping defined by
-   * its @p name
+   * @brief Return the status (active/inactive) of the parametric domain
+   * defined by its @p name
+   * @param[in] name Name of the domain to be checked.
+   * @return Status of the domain (1 active, 0 inactive).
    */
   int GetParmGeomArrayStatus(const char *name);
 
   /**
-   * Sets the @p status (active/inactive) for the current ParaView
-   * visualization of the parametric mapping defined by its @p name
+   * @brief Sets the @p status (active/inactive) for the current ParaView
+   * visualization of the parametric domain defined by its @p name
+   * @param[in] name Name of the domain.
+   * @param[in] status Status to be set.
    */
   void SetParmGeomArrayStatus(const char *name, int status);
 
   /**
-   * Returns the number of parametric mappings that can be visualized.
+   * @brief Returns the number of parametric domains.
+   * @return Number of the parametric domains.
    */
   int GetNumberOfParmGeomArrays();
 
   /**
-   * Returns the name of the physical mapping with number @p index
+   * @brief Returns the name of the physical domain with number @p index
+   *
+   * @param[in] Number of the parametric domain.
    */
   const char *GetParmGeomArrayName(int index);
 
 
   /**
-   * Sets the @p name of the igatools input file containing a serialization
-   * of a \ref ObjectsContainer class instance.
+   * @brief Sets the @p name of the igatools input file containing the
+   * @ref ObjectsContainer class instance.
+   *
+   * @param[in] name Name of the input file.
    */
   virtual void SetFileName(const char *name);
 
   /**
-   * Sets the number of vtk cells in each direction (i.e. @p arg1, @p arg2,
+   * @brief Sets the number of VTK cells in each direction (i.e. @p arg1, @p arg2,
    * @p arg3) that will be used for visualizing each Bezier element
-   * for the solid representation of a physical mapping.
+   * for the solid representation of a physical domain.
    *
    * For dimension 2, the number of cells will be (@p arg1, @p arg2) and
    * for dim = 1, @p arg1 cells will be used in each direction.
@@ -308,9 +353,9 @@ public:
 
 
   /**
-   * Sets the number of vtk cells in each direction (i.e. @p arg1, @p arg2,
+   * @brief Sets the number of VTK cells in each direction (i.e. @p arg1, @p arg2,
    * @p arg3) that will be used for visualizing each Bezier element
-   * for the solid representation of a parametric mapping.
+   * for the solid representation of a parametric domain.
    *
    * For dimension 2, the number of cells will be (@p arg1, @p arg2) and
    * for dim = 1, @p arg1 cells will be used in each direction.
@@ -318,127 +363,192 @@ public:
   virtual void SetNumVisualizationElementsParametricSolid(int arg1, int arg2, int arg3);
 
   /**
-   * Sets the number of vtk cells in each direction (i.e. @p arg1, @p arg2,
-   * @p arg3) that will be used for visualizing each Bezier element
-   * for the knot mesh representation of a physical mapping.
+   * @brief Sets the number of VTK cells in each direction (i.e. @p arg1,
+   * @p arg2, @p arg3) that will be used for visualizing each Bezier
+   * element for the knot mesh representation of a physical domain.
    *
    * For dimension 2, the number of cells will be (@p arg1, @p arg2) and
    * for dim = 1, @p arg1 cells will be used in each direction.
+   *
+   * @param[in] arg1 Number of VTK cells in the first parametric
+   * direction for each Bezier element.
+   * @param[in] arg2 Number of VTK cells in the second parametric
+   * direction for each Bezier element.
+   * @param[in] arg3 Number of VTK cells in the third parametric
+   * direction for each Bezier element.
    */
   virtual void SetNumVisualizationElementsPhysicalKnot(int arg1, int arg2, int arg3);
 
   /**
-   * Sets the number of vtk cells in each direction (i.e. @p arg1, @p arg2,
-   * @p arg3) that will be used for visualizing each Bezier element
-   * for the knot mesh representation of a parametric mapping.
+   * @brief Sets the number of VTK cells in each direction (i.e. @p arg1,
+   * @p arg2, @p arg3) that will be used for visualizing each Bezier
+   * element for the knot mesh representation of a parametric domain.
    *
    * For dimension 2, the number of cells will be (@p arg1, @p arg2) and
    * for dim = 1, @p arg1 cells will be used in each direction.
+   *
+   * @param[in] arg1 Number of VTK cells in the first parametric
+   * direction for each Bezier element.
+   * @param[in] arg2 Number of VTK cells in the second parametric
+   * direction for each Bezier element.
+   * @param[in] arg3 Number of VTK cells in the third parametric
+   * direction for each Bezier element.
    */
   virtual void SetNumVisualizationElementsParametricKnot(int arg1, int arg2, int arg3);
 
-  /*
-   * Sets the \ref vtkGridType for the solid representation of the
-   * physical mappings. The possible different values of @p arg are:
-   *  - 0: unstructured vtk grid : quadratic cells.
-   *  - 1: unstructured vtk grid : linear cells.
-   *  - 2: structured vtk grid.
+  /**
+   * @brief Sets the @ref VtkGridType for the solid mesh
+   * representation of the physical domains.
+   *
+   * The possible different values of @p arg are:
+   *  - 0: unstructured VTK grid : quadratic cells.
+   *  - 1: unstructured VTK grid : linear cells.
+   *  - 2: structured VTK grid.
+   *
+   *  @param[in] arg Value to be set.
    */
   virtual void SetGridTypePhysicalSolid(int arg);
 
-  /*
-   * Sets the \ref vtkGridType for the solid representation of the
-   * parametric mappings. The possible different values of @p arg are:
-   *  - 0: unstructured vtk grid : quadratic cells.
-   *  - 1: unstructured vtk grid : linear cells.
-   *  - 2: structured vtk grid.
+  /**
+   * @brief Sets the @ref VtkGridType for the solid mesh
+   * representation of the parametric domains.
+   *
+   * The possible different values of @p arg are:
+   *  - 0: unstructured VTK grid : quadratic cells.
+   *  - 1: unstructured VTK grid : linear cells.
+   *  - 2: structured VTK grid.
+   *
+   *  @param[in] arg Value to be set.
    */
   virtual void SetGridTypeParametricSolid(int arg);
 
-  /*
-   * Sets the \ref vtkGridType for the knot mesh representation of the
-   * physical mappings. The possible different values of @p arg are:
-   *  - 0: unstructured vtk grid : quadratic cells.
-   *  - 1: unstructured vtk grid : linear cells.
+  /**
+   * @brief Sets the @ref VtkGridType for the knot mesh
+   * representation of the physical domains.
+   *
+   * The possible different values of @p arg are:
+   *  - 0: unstructured VTK grid : quadratic cells.
+   *  - 1: unstructured VTK grid : linear cells.
+   *
+   *  @param[in] arg Value to be set.
    */
   virtual void SetGridTypePhysicalKnot(int arg);
 
-  /*
-   * Sets the \ref vtkGridType for the knot mesh representation of the
-   * parametric mappings. The possible different values of @p arg are:
-   *  - 0: unstructured vtk grid : quadratic cells.
-   *  - 1: unstructured vtk grid : linear cells.
+  /**
+   * @brief Sets the @ref VtkGridType for the knot mesh
+   * representation of the parametric domains.
+   *
+   * The possible different values of @p arg are:
+   *  - 0: unstructured VTK grid : quadratic cells.
+   *  - 1: unstructured VTK grid : linear cells.
+   *
+   *  @param[in] arg Value to be set.
    */
   virtual void SetGridTypeParametricKnot(int arg);
 
-  /*
-   * Sets the \ref vtkGridType for the control mesh representation of the
-   * physical mappings. The possible different values of @p arg are:
-   *  - 1: unstructured vtk grid : linear cells.
+  /**
+   * @brief Sets the @ref VtkGridType for the control polygon mesh
+   * representation of the physical domains.
+   *
+   * The possible different values of @p arg are:
+   *  - 1: unstructured VTK grid : linear cells.
    *  - 2: structured grid.
+   *
+   *  @param[in] arg Value to be set.
    */
   virtual void SetGridTypePhysicalControl(int arg);
 
 
-  /*
-   * Sets active/inactive the creation of the solid representation of the
-   * physical mappings. The two possible values of @p arg are:
-   *  - true:  create the vtk grids.
-   *  - false: do not create vtk grids.
+  /**
+   * @brief Sets active/inactive the creation of the solid mesh
+   * representation of the physical domains.
+   *
+   * The two possible values of @p arg are:
+   *  - true:  create the VTK grids.
+   *  - false: do not create VTK grids.
+   *
+   *  @param[in] arg Value to be set, true or false.
    */
   virtual void SetSolidMeshPhysical(bool arg);
 
-  /*
-   * Sets active/inactive the creation of the solid representation of the
-   * parametric mappings. The two possible values of @p arg are:
-   *  - true:  create the vtk grids.
-   *  - false: do not create vtk grids.
+  /**
+   * @brief Sets active/inactive the creation of the solid mesh
+   * representation of the parametric domains.
+   *
+   * The two possible values of @p arg are:
+   *  - true:  create the VTK grids.
+   *  - false: do not create VTK grids.
+   *
+   *  @param[in] arg Value to be set, true or false.
    */
   virtual void SetSolidMeshParametric(bool arg);
 
-  /*
-   * Sets active/inactive the creation of the control mesh representation of
-   * the physical mappings. The two possible values of @p arg are:
-   *  - true:  create the vtk grids.
-   *  - false: do not create vtk grids.
+  /**
+   * @brief Sets active/inactive the creation of the control polygon mesh
+   * representation of the physical domains.
+   *
+   * The two possible values of @p arg are:
+   *  - true:  create the VTK grids.
+   *  - false: do not create VTK grids.
+   *
+   *  @param[in] arg Value to be set, true or false.
    */
   virtual void SetControlMeshPhysical(bool arg);
 
-  /*
-   * Sets active/inactive the creation of the knot mesh representation of the
-   * physical mappings. The two possible values of @p arg are:
-   *  - true:  create the vtk grids.
-   *  - false: do not create vtk grids.
+  /**
+   * @brief Sets active/inactive the creation of the knot mesh
+   * representation of the physical domains.
+   *
+   * The two possible values of @p arg are:
+   *  - true:  create the VTK grids.
+   *  - false: do not create VTK grids.
+   *
+   *  @param[in] arg Value to be set, true or false.
    */
   virtual void SetKnotMeshPhysical(bool arg);
 
-  /*
-   * Sets active/inactive the creation of the knot mesh representation of the
-   * parametric mappings. The two possible values of @p arg are:
-   *  - true:  create the vtk grids.
-   *  - false: do not create vtk grids.
+  /**
+   * @brief Sets active/inactive the creation of the knot mesh
+   * representation of the parametric domains.
+   *
+   * The two possible values of @p arg are:
+   *  - true:  create the VTK grids.
+   *  - false: do not create VTK grids.
+   *
+   *  @param[in] arg Value to be set, true or false.
    */
   virtual void SetKnotMeshParametric(bool arg);
 
-  /*
-   * Sets active/inactive the creation of the of the physical mapping
-   * representations. The two possible values of @p arg are:
-   *  - true:  create the vtk grids.
-   *  - false: do not create vtk grids.
+  /**
+   * @brief Sets active/inactive the creation of the of the physical domain
+   * representations.
+   *
+   * The two possible values of @p arg are:
+   *  - true:  create the VTK grids.
+   *  - false: do not create VTK grids.
+   *
+   *  @param[in] arg Value to be set, true or false.
    */
   virtual void SetPhysicalMesh(bool arg);
 
-  /*
-   * Sets active/inactive the creation of the of the parametric mapping
-   * representations. The two possible values of @p arg are:
-   *  - true:  create the vtk grids.
-   *  - false: do not create vtk grids.
+  /**
+   * @brief Sets active/inactive the creation of the of the parametric domain
+   * representations.
+   *
+   * The two possible values of @p arg are:
+   *  - true:  create the VTK grids.
+   *  - false: do not create VTK grids.
+   *
+   *  @param[in] arg Value to be set, true or false.
    */
   virtual void SetParametricMesh(bool arg);
 
-  /*
+  /**
    * Test whether the file with the given @p name exists and can be read by
-   * this reader. If the file is Ok, returns 1, elsewhere, returns 0.
+   * this reader. If the file is Ok, returns 1, elsewhere, returns 0
+   * and shows an error in the ParaView log window.
+   *
+   * @param[in] name Name of the file.
    */
   int CanReadFile(const char *name);
 
@@ -447,163 +557,143 @@ public:
 
 private:
 
-  /*
-   * This method is used by others (all the SetNumVisualizationElementsXXX)
-   * to fill the passed by argument variable @p arr, with the values @p arg1,
-   * @p arg2 and @ arg2.
+  /**
+   * @brief Sets the number of cells for each Bezier element to the
+   * given @p arr.
    *
-   * It also uses the @p name of the variable and the @p mesh_type for
-   * debugging purposes.
+   * This method is used by others (all the @p SetNumVisualizationElementsXXX)
+   * to fill the passed by argument variable @p arr, with the values @p arg1,
+   * @p arg2 and @ arg3.
+   *
+   * @param[in] arg1 Number of VTK cells in the first parametric
+   * direction for each Bezier element.
+   * @param[in] arg2 Number of VTK cells in the second parametric
+   * direction for each Bezier element.
+   * @param[in] arg3 Number of VTK cells in the third parametric
+   * direction for each Bezier element.
+   * @param[in] name Name of the variable for being set, for debugging
+   * purposes.
+   * @param[in] mesh_type Type of the mesh, for debugging purposes.
+   * @param[out] arr Variable where the number VTK cells are set.
    */
   void set_num_vis_elements(int arg1, int arg2, int arg3,
                             const char *const name,
                             const char *const mesh_type,
                             NumCells_ &arr);
 
-  /*
-   * This method is used by others (all the SetGridTypeXXX)
-   * to fill the passed by argument vtkGridType @p type, as a function
+  /**
+   * @brief Sets the grid type to the given @p type.
+   *
+   * This method is used by others (all the @p SetGridTypeXXX)
+   * to fill the passed by argument @ref VtkGridType @p type, as a function
    * of the value @p arg1. The values of @p arg1 correspond to:
    *
-   *  - 0: unstructured vtk grid : quadratic cells.
-   *  - 1: unstructured vtk grid : linear cells.
-   *  - 2: structured vtk grid.
+   *  - 0: unstructured VTK grid : quadratic cells.
+   *  - 1: unstructured VTK grid : linear cells.
+   *  - 2: structured VTK grid.
    *
-   * It also uses the @p name of the variable for debugging purposes.
+   * @param[in] arg1 Value of the grid type to be set.
+   * @param[in] name Name of the variable for being set, for debugging
+   * purposes.
+   * @param[out] type Variable where the value is set.
    */
   void set_grid_type(int arg1,
                      const char *const name,
                      iga::paraview_plugin::VtkGridType &type);
 
-  /** vtkGridType for the solid representation of the physical mappings. */
+  /// VtkGridType for the solid representation of the physical domains.
   iga::paraview_plugin::VtkGridType phys_sol_grid_type_ = iga::paraview_plugin::VtkGridType::None;
 
-  /** vtkGridType for the solid representation of the parametric mappings. */
+  /// VtkGridType for the solid representation of the parametric domains.
   iga::paraview_plugin::VtkGridType parm_sol_grid_type_ = iga::paraview_plugin::VtkGridType::None;
 
-  /** vtkGridType for the knot mesh representation of the physical mappings. */
+  /// VtkGridType for the knot mesh representation of the physical domains.
   iga::paraview_plugin::VtkGridType phys_knt_grid_type_ = iga::paraview_plugin::VtkGridType::None;
 
-  /** vtkGridType for the knot mesh representation of the parametric mappings. */
+  /// VtkGridType for the knot mesh representation of the parametric domains.
   iga::paraview_plugin::VtkGridType parm_knt_grid_type_ = iga::paraview_plugin::VtkGridType::None;
 
-  /** vtkGridType for the control mesh representation of the physical mappings. */
+  /// VtkGridType for the control polygon mesh representation of the physical domains.
   iga::paraview_plugin::VtkGridType phys_ctr_grid_type_ = iga::paraview_plugin::VtkGridType::None;
 
   /**
    *  Flag for determining if the solid representation of the physical
-   *  mapping grids must be created (true) or not (false).
+   *  domains must be created (true) or not (false).
    */
   bool create_sol_mesh_phys_ = false;
 
   /**
    *  Flag for determining if the solid representation of the parametric
-   *  mapping grids must be created (true) or not (false).
+   *  domains must be created (true) or not (false).
    */
   bool create_sol_mesh_parm_ = false;
 
   /**
    *  Flag for determining if the knot mesh representation of the
-   *  physical grids mappings must be created (true) or not (false).
+   *  physical domains must be created (true) or not (false).
    */
   bool create_knt_mesh_phys_ = false;
 
   /**
    *  Flag for determining if the knot mesh representation of the
-   *  parametric mapping grids must be created (true) or not (false).
+   *  parametric domains must be created (true) or not (false).
    */
   bool create_knt_mesh_parm_ = false;
 
   /**
-   *  Flag for determining if the control mesh representation of the
-   *  physical mapping grids must be created (true) or not (false).
+   *  Flag for determining if the control polygon mesh representation of the
+   *  physical domains must be created (true) or not (false).
    */
   bool create_ctr_mesh_phys_ = false;
 
   /**
-   *  Flag for determining if the physical mapping grids must be
+   *  Flag for determining if the physical domains must be
    *  created (true) or not (false).
    */
   bool create_physical_mesh_ = false;
 
   /**
-   *  Flag for determining if the parametric mapping grids must be
+   *  Flag for determining if the parametric domains must be
    *  created (true) or not (false).
    */
   bool create_parametric_mesh_ = false;
 
   /**
-   * Flag for indicating if the file must be parsed.
+   * Flag for indicating if the input file must be parsed.
    *
-   * @Note: the file must be parsed every time a new input file is set.
+   * @Note: The input file must be parsed every time a new input file is set.
    */
-  bool parse_file_ = true;
+  bool parse_input_file_ = true;
 
-  /**
-   * Full name (including path) for the input file.
-   */
+  /// Full name (including path) for the input file.
   char *file_name_ = NULL;
 
   /**
-   * Sets the number of vtk cells in each direction that will be used for
-   * visualizing each Bezier element for the solid representation of the
-   * the physical mappings.
-   *
-   * For dimension 3, all the components of the tensor will be used.
-   *
-   * For dimension 2, the number of cells will be
-   * (@p n_vis_elem_phys_solid_[0], @p @p n_vis_elem_phys_solid_[1]) and
-   * for dim = 1, @p n_vis_elem_phys_solid_[0] cells will be used in each
-   * direction.
+   * Number of VTK cells in each parametric direction for every Bezier
+   * element for the solid mesh of the physical domain.
    */
   NumCells_ n_vis_elem_phys_solid_;
 
   /**
-   * Sets the number of vtk cells in each direction that will be used for
-   * visualizing each Bezier element for the solid representation of the
-   * the parametric mappings.
-   *
-   * For dimension 3, all the components of the tensor will be used.
-   *
-   * For dimension 2, the number of cells will be
-   * (@p n_vis_elem_phys_solid_[0], @p @p n_vis_elem_phys_solid_[1]) and
-   * for dim = 1, @p n_vis_elem_phys_solid_[0] cells will be used in each
-   * direction.
+   * Number of VTK cells in each parametric direction for every Bezier
+   * element for the solid mesh of the parametric domain.
    */
   NumCells_ n_vis_elem_parm_solid_;
 
   /**
-   * Sets the number of vtk cells in each direction that will be used for
-   * visualizing each Bezier element for the knot mesh representation of the
-   * the physical mappings.
-   *
-   * For dimension 3, all the components of the tensor will be used.
-   *
-   * For dimension 2, the number of cells will be
-   * (@p n_vis_elem_phys_solid_[0], @p @p n_vis_elem_phys_solid_[1]) and
-   * for dim = 1, @p n_vis_elem_phys_solid_[0] cells will be used in each
-   * direction.
+   * Number of VTK cells in each parametric direction for every Bezier
+   * element for the knot mesh of the physical domain.
    */
   NumCells_ n_vis_elem_phys_knot_;
 
   /**
-   * Sets the number of vtk cells in each direction that will be used for
-   * visualizing each Bezier element for the knot mesh representation of the
-   * the parametric mappings.
-   *
-   * For dimension 3, all the components of the tensor will be used.
-   *
-   * For dimension 2, the number of cells will be
-   * (@p n_vis_elem_phys_solid_[0], @p @p n_vis_elem_phys_solid_[1]) and
-   * for dim = 1, @p n_vis_elem_phys_solid_[0] cells will be used in each
-   * direction.
+   * Number of VTK cells in each parametric direction for every Bezier
+   * element for the knot mesh of the parametric domain.
    */
   NumCells_ n_vis_elem_parm_knot_;
 
-  /**
-   * @todo to document.
-   */
-  GridGenPtr_ iga_grid_gen_;
+  /// Iga grid container for creating VTK grids.
+  IgaGridContPtr_ iga_grid_container_;
 };
 
-#endif // IGATOOLS_READER_H_
+#endif // __IGATOOLS_READER_H_

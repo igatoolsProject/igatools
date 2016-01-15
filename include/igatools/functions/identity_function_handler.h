@@ -54,16 +54,16 @@ create_id_tensor()
  * @author pauletti 2015
  */
 template<int dim, int space_dim = dim>
-class IdentityFunctionElementHandler :
+class IdentityFunctionHandler :
   public FunctionHandler<dim, 0, space_dim, 1>
 {
 private:
   using parent_t = FunctionHandler<dim, 0, space_dim, 1>;
-  using self_t = IdentityFunctionElementHandler<dim,space_dim>;
+  using self_t = IdentityFunctionHandler<dim,space_dim>;
 
 protected:
   using GridType = Grid<dim>;
-  using GridHandlerType = typename GridType::ElementHandler;
+  using GridHandlerType = typename GridType::Handler;
 
   using FuncType = Function<dim, 0, space_dim, 1>;
 
@@ -89,18 +89,18 @@ public:
 
 //    template <int order>
 //    using Derivative = typename parent_t::template Derivative<order>;
-  // IdentityFunctionElementHandler(std::shared_ptr<GridType> grid);
+  // IdentityFunctionHandler(std::shared_ptr<GridType> grid);
 
 private:
   /**
    * Default constructor. Not allowed to be used.
    */
-  IdentityFunctionElementHandler() = delete;
+  IdentityFunctionHandler() = delete;
 
 public:
-  IdentityFunctionElementHandler(std::shared_ptr<const GridType> grid);
+  IdentityFunctionHandler(std::shared_ptr<const GridType> grid);
 
-  virtual ~IdentityFunctionElementHandler() = default;
+  virtual ~IdentityFunctionHandler() = default;
 
   static std::shared_ptr<parent_t>
   create(std::shared_ptr<const GridType> grid)
@@ -196,7 +196,7 @@ private:
 #if 0
 #ifdef SERIALIZATION
   /**
-   * @name FunctionElementHandlers needed for boost::serialization
+   * @name FunctionHandlers needed for boost::serialization
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    */
   ///@{
@@ -206,7 +206,7 @@ private:
   void
   serialize(Archive &ar, const unsigned int version)
   {
-    ar &boost::serialization::make_nvp("IdentityFunctionElementHandler_base_t",
+    ar &boost::serialization::make_nvp("IdentityFunctionHandler_base_t",
                                        boost::serialization::base_object<parent_t>(*this));
   }
   ///@}

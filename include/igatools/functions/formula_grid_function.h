@@ -42,7 +42,7 @@ private:
   using self_t = FormulaGridFunction<dim, range>;
 protected:
   using typename parent_t::GridType;
-  using ElementHandler = FormulaGridFunctionHandler<dim, range>;
+  using Handler = FormulaGridFunctionHandler<dim, range>;
 public:
   using typename parent_t::Value;
   using typename parent_t::GridPoint;
@@ -54,7 +54,7 @@ public:
 
   virtual ~FormulaGridFunction() = default;
 
-  std::unique_ptr<typename parent_t::ElementHandler>
+  std::unique_ptr<typename parent_t::Handler>
   create_cache_handler() const;
 
 
@@ -74,15 +74,15 @@ public:
                       this->shared_from_this(),s_id,sub_grid_elem_map,sub_grid);
 //    AssertThrow(false,ExcNotImplemented());
     /*
-        typename RefBasis::template InterSpaceMap<sdim> dof_map;
-        auto sub_ref_space = ref_basis_->template get_ref_sub_space<sdim>(s_id,dof_map,sub_grid);
+        typename RefBasis::template InterBasisMap<sdim> dof_map;
+        auto sub_ref_basis = ref_basis_->template get_ref_sub_basis<sdim>(s_id,dof_map,sub_grid);
 
         IgCoefficients sub_coeffs;
         const int n_sub_dofs = dof_map.size();
         for (int sub_dof = 0 ; sub_dof < n_sub_dofs ; ++ sub_dof)
           sub_coeffs[sub_dof] = coeffs_[dof_map[sub_dof]];
 
-        auto sub_func = IgGridFunction<sdim,range>::const_create(sub_ref_space,sub_coeffs);
+        auto sub_func = IgGridFunction<sdim,range>::const_create(sub_ref_basis,sub_coeffs);
 
         return sub_func;
       //*/

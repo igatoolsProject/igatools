@@ -30,13 +30,13 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 
-const SafeSTLArray<space_element::Flags, 3> der_flag =
+const SafeSTLArray<basis_element::Flags, 3> der_flag =
 {
-  space_element::Flags::value,
-  space_element::Flags::gradient,
-  space_element::Flags::hessian
+  basis_element::Flags::value,
+  basis_element::Flags::gradient,
+  basis_element::Flags::hessian
 };
 
 template <int der, int dim, int range=1, int rank=1>

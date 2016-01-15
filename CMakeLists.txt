@@ -102,6 +102,8 @@ find_doxygen()
 # Optional features for building  igatools
 #
 
+option(USE_DEPRECATED "Use the part of the igatools code marked as deprecated" OFF)
+
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
 
 option(USE_NURBS "Enable NURBS support" ON)
@@ -141,16 +143,8 @@ endif(MESH_REFINEMENT)
 
 
 option(SERIALIZATION "Enable serialization support" OFF)
-option(USE_CEREAL "Use the Cereal serialization library" ON)
 if (SERIALIZATION)
-    message("-- Serialization support (EXPERIMENTAL) is enabled.")
-   
-  if (USE_CEREAL)
-    	message("----- Serialization with CEREAL library (EXPERIMENTAL) is enabled.")    
-	else (USE_CEREAL)
-    	message("----- Serialization with CEREAL library (EXPERIMENTAL) is not enabled.")    
-	endif (USE_CEREAL)
-    
+    message("-- Serialization support (EXPERIMENTAL) with CEREAL library is enabled.")    
 else(SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) is not enabled.")    
 endif(SERIALIZATION)
@@ -238,15 +232,15 @@ foreach(dir ${source_dirs})
 endforeach()
 
 # igatools include directories
-if (USE_CEREAL)
+if (SERIALIZATION)
    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
                        ${CMAKE_CURRENT_SOURCE_DIR}/include/igatools/contrib/cereal/include 
                        ${CMAKE_CURRENT_BINARY_DIR}/include
                        ${CMAKE_CURRENT_BINARY_DIR}/include/igatools/contrib/cereal/include )
-else (USE_CEREAL)                    
+else (SERIALIZATION)                    
    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
                        ${CMAKE_CURRENT_BINARY_DIR}/include)
-endif(USE_CEREAL)
+endif(SERIALIZATION)
 
 
 # the igatools library target

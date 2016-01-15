@@ -68,10 +68,10 @@ write(const string &file_path,
 
   Self_::write_grids(full_container, xml_doc);
   Self_::write_spline_spaces(full_container, xml_doc);
-  Self_::write_reference_space_bases(full_container, xml_doc);
+  Self_::write_reference_bases(full_container, xml_doc);
   Self_::write_grid_functions(full_container, xml_doc);
   Self_::write_domains(full_container, xml_doc);
-  Self_::write_physical_space_bases(full_container, xml_doc);
+  Self_::write_physical_bases(full_container, xml_doc);
   Self_::write_functions(full_container, xml_doc);
 
   xml_doc->write_to_file(file_path);
@@ -129,13 +129,13 @@ write_spline_spaces(const ContPtr_ container,
 
 void
 ObjectsContainerXMLWriter::
-write_reference_space_bases(const ContPtr_ container,
-                            const XMLDocPtr_ xml_doc)
+write_reference_bases(const ContPtr_ container,
+                      const XMLDocPtr_ xml_doc)
 {
-  using RefSpacePtrs = typename ObjectsContainer::RefSpacePtrs;
+  using RefBasisPtrs = typename ObjectsContainer::RefBasisPtrs;
 
-  RefSpacePtrs valid_ref_space_ptr_types;
-  for_each(valid_ref_space_ptr_types, [&](const auto &ptr_type)
+  RefBasisPtrs valid_ref_basis_ptr_types;
+  for_each(valid_ref_basis_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
 
@@ -148,38 +148,38 @@ write_reference_space_bases(const ContPtr_ container,
 
     for (const auto &id : container->template get_object_ids<Type>())
     {
-      const auto ref_space = container->template get_object<Type>(id);
+      const auto ref_basis = container->template get_object<Type>(id);
 
-      const auto bs_space = dynamic_pointer_cast<BSplineType>(ref_space);
-      const auto nr_space = dynamic_pointer_cast<NURBSType>(ref_space);
+      const auto bs_basis = dynamic_pointer_cast<BSplineType>(ref_basis);
+      const auto nr_basis = dynamic_pointer_cast<NURBSType>(ref_basis);
 
 #ifndef NDEBUG
-      AssertThrow(bs_space != nullptr || nr_space != nullptr,
-                  ExcMessage("Invalid reference space type."));
+      AssertThrow(bs_basis != nullptr || nr_basis != nullptr,
+                  ExcMessage("Invalid reference basis type."));
 #endif
 
-      if (bs_space != nullptr)
-        Self_::write_bspline<BSplineType>(bs_space, xml_doc);
+      if (bs_basis != nullptr)
+        Self_::write_bspline<BSplineType>(bs_basis, xml_doc);
       else
-        Self_::write_nurbs<NURBSType>(nr_space, xml_doc);
+        Self_::write_nurbs<NURBSType>(nr_basis, xml_doc);
     }
 
     for (const auto &id : container->template get_const_object_ids<Type>())
     {
-      const auto ref_space = container->template get_const_object<Type>(id);
+      const auto ref_basis = container->template get_const_object<Type>(id);
 
-      const auto bs_space = dynamic_pointer_cast<const BSplineType>(ref_space);
-      const auto nr_space = dynamic_pointer_cast<const NURBSType>(ref_space);
+      const auto bs_basis = dynamic_pointer_cast<const BSplineType>(ref_basis);
+      const auto nr_basis = dynamic_pointer_cast<const NURBSType>(ref_basis);
 
 #ifndef NDEBUG
-      AssertThrow(bs_space != nullptr || nr_space != nullptr,
-                  ExcMessage("Invalid reference space type."));
+      AssertThrow(bs_basis != nullptr || nr_basis != nullptr,
+                  ExcMessage("Invalid reference basis type."));
 #endif
 
-      if (bs_space != nullptr)
-        Self_::write_bspline<const BSplineType>(bs_space, xml_doc);
+      if (bs_basis != nullptr)
+        Self_::write_bspline<const BSplineType>(bs_basis, xml_doc);
       else
-        Self_::write_nurbs<const NURBSType>(nr_space, xml_doc);
+        Self_::write_nurbs<const NURBSType>(nr_basis, xml_doc);
     }
   });
 }
@@ -286,22 +286,22 @@ write_domains(const ContPtr_ container,
 
 void
 ObjectsContainerXMLWriter::
-write_physical_space_bases(const ContPtr_ container,
-                           const XMLDocPtr_ xml_doc)
+write_physical_bases(const ContPtr_ container,
+                     const XMLDocPtr_ xml_doc)
 {
-  using PhysSpacePtrs = typename ObjectsContainer::PhysSpacePtrs;
+  using PhysBasisPtrs = typename ObjectsContainer::PhysBasisPtrs;
 
-  PhysSpacePtrs valid_ps_ptr_types;
+  PhysBasisPtrs valid_ps_ptr_types;
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
 
     for (const auto &id : container->template get_object_ids<Type>())
-      Self_::write_phys_space_basis<Type>(container->template get_object<Type>(id),
+      Self_::write_phys_basis<Type>(container->template get_object<Type>(id),
                                           xml_doc);
 
     for (const auto &id : container->template get_const_object_ids<Type>())
-      Self_::write_phys_space_basis<const Type>(container->template get_const_object<Type>(id),
+      Self_::write_phys_basis<const Type>(container->template get_const_object<Type>(id),
                                                 xml_doc);
   });
 }
@@ -720,7 +720,7 @@ write_ig_grid_function(const shared_ptr<IgGridFunc> ig_func,
   obj_elem->add_attribute("Dim", dim);
   obj_elem->add_attribute("Range", range);
 
-  const auto rb_elem = xml_doc->create_new_element("ReferenceSpaceBasis");
+  const auto rb_elem = xml_doc->create_new_element("ReferenceBasis");
   rb_elem->add_attribute("GetFromLocalObjectId",
                          ig_func->get_basis()->get_object_id());
   obj_elem->append_child_element(rb_elem);
@@ -779,36 +779,36 @@ write_domain(const shared_ptr<Domain> domain,
 
 
 
-template <class PhysSpaceBasis>
+template <class PhysicalBasis>
 void
 ObjectsContainerXMLWriter::
-write_phys_space_basis(const shared_ptr<PhysSpaceBasis> phys_space,
-                       const XMLDocPtr_ xml_doc)
+write_phys_basis(const shared_ptr<PhysicalBasis> phys_basis,
+                 const XMLDocPtr_ xml_doc)
 {
-  const auto obj_elem = xml_doc->create_new_element("PhysicalSpaceBasis");
+  const auto obj_elem = xml_doc->create_new_element("PhysicalBasis");
 
-  static const int dim   = PhysSpaceBasis::dim;
-  static const int range = PhysSpaceBasis::range;
-  static const int rank  = PhysSpaceBasis::rank;
-  static const int codim = PhysSpaceBasis::codim;
+  static const int dim   = PhysicalBasis::dim;
+  static const int range = PhysicalBasis::range;
+  static const int rank  = PhysicalBasis::rank;
+  static const int codim = PhysicalBasis::codim;
 
-  obj_elem->add_attribute("LocalObjectId", phys_space->get_object_id());
+  obj_elem->add_attribute("LocalObjectId", phys_basis->get_object_id());
   obj_elem->add_attribute("Dim", dim);
   obj_elem->add_attribute("Range", range);
   obj_elem->add_attribute("Rank", rank);
   obj_elem->add_attribute("Codim", codim);
 
-  const auto rb_elem = xml_doc->create_new_element("ReferenceSpaceBasis");
+  const auto rb_elem = xml_doc->create_new_element("ReferenceBasis");
   rb_elem->add_attribute("GetFromLocalObjectId",
-                         phys_space->get_reference_basis()->get_object_id());
+                         phys_basis->get_reference_basis()->get_object_id());
   obj_elem->append_child_element(rb_elem);
 
   const auto dm_elem = xml_doc->create_new_element("Domain");
   dm_elem->add_attribute("GetFromLocalObjectId",
-                         phys_space->get_domain()->get_object_id());
+                         phys_basis->get_domain()->get_object_id());
   obj_elem->append_child_element(dm_elem);
 
-  const auto trans = phys_space->get_transformation_type();
+  const auto trans = phys_basis->get_transformation_type();
   string trans_str = "";
   switch (trans)
   {
@@ -855,7 +855,7 @@ write_ig_function(const shared_ptr<IgFunction> ig_function,
   obj_elem->add_attribute("Rank", rank);
   obj_elem->add_attribute("Codim", codim);
 
-  const auto ps_elem = xml_doc->create_new_element("PhysicalSpaceBasis");
+  const auto ps_elem = xml_doc->create_new_element("PhysicalBasis");
   ps_elem->add_attribute("GetFromLocalObjectId",
                          ig_function->get_basis()->get_object_id());
   obj_elem->append_child_element(ps_elem);

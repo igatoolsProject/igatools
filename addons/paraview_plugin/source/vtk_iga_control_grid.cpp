@@ -94,6 +94,8 @@ VtkIgaControlGrid<Domain>::
 create_grid_vts(const IgGridFunPtr_ ig_grid_fun,
                 const vtkSmartPointer<vtkPoints> points) -> VtkGridPtr_
 {
+  AssertThrow (dim == 1, ExcNotImplemented());
+
   const auto &dofs = ig_grid_fun->get_basis()->get_dof_distribution();
   const auto &dofs_table = dofs->get_num_dofs_table();
   const auto n_pts_dir = dofs_table[0];

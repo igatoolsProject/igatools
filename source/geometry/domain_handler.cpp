@@ -61,8 +61,8 @@ DomainHandler<dim_, codim_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
-  using GridFuncFlags = typename GridFuncType::ElementHandler::Flags;
-  using GridFlags = typename GridFuncType::GridType::ElementHandler::Flags;
+  using GridFuncFlags = typename GridFuncType::Handler::Flags;
+  using GridFlags = typename GridFuncType::GridType::Handler::Flags;
 
   GridFlags  grid_flag = GridFlags::none;
   GridFuncFlags  grid_func_flag = GridFuncFlags::none;
@@ -150,7 +150,7 @@ template <int sdim>
 void
 DomainHandler<dim_, codim_>::
 fill_cache(ElementAccessor &elem,
-                const int s_id) const
+           const int s_id) const
 {
   this->fill_cache(Topology<sdim>(), elem, s_id);
 }
@@ -160,7 +160,7 @@ template <int sdim>
 void
 DomainHandler<dim_, codim_>::
 fill_cache(ElementIterator &elem,
-                const int s_id) const
+           const int s_id) const
 {
   this->fill_cache(Topology<sdim>(), elem, s_id);
 }

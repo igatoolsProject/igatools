@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test the serialization IgGridFunction class on Bspline space
+ *  Test the serialization IgGridFunction class on Bspline basis
  *  The map is the identity of degree one.
  *
  *  author: pauletti
@@ -80,7 +80,7 @@ void ig_grid_function_bspline(const int deg = 1)
   using Function = IgGridFunction<dim,dim+codim>;
 
   auto grid = Grid<dim>::create(2);
-  auto space = Basis::create(SplineSpace<dim,dim+codim>::create(deg,grid));
+  auto basis = Basis::create(SplineSpace<dim,dim+codim>::create(deg,grid));
 
   IgCoefficients control_pts;
 
@@ -146,7 +146,7 @@ void ig_grid_function_bspline(const int deg = 1)
 
   }
 
-  auto F = Function::create(space, control_pts);
+  auto F = Function::create(basis, control_pts);
 
 
   serialize_deserialize<dim,codim>(F);

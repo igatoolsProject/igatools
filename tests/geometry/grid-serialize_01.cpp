@@ -72,7 +72,7 @@ void serialize_grid(const int n_knots = 4)
 
 int main()
 {
-  serialize_grid<0>();
+//  serialize_grid<0>();
   serialize_grid<1>();
   serialize_grid<2>();
   serialize_grid<3>();

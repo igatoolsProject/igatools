@@ -29,10 +29,11 @@ macro(init_cxx_flags)
 
   # Compiler-specific C++14 activation.
   if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-    execute_process(
-      COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+  
+    execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+
 #    set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -mtune=native -DNDEBUG -floop-parallelize-all -ftree-vectorize -fpeel-loops")
-    set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -mtune=native -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -mtune=native -DNDEBUG")
     
     if (XML_IO)
 	    if (NOT GCC_VERSION VERSION_GREATER 5.3.0)
@@ -47,19 +48,25 @@ macro(init_cxx_flags)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=gold \
       -Woverloaded-virtual")
 #     -Wdelete-non-virtual-dtor -Wnon-virtual-dtor -Wctor-dtor-privacy -Woverloaded-virtual -Wpedantic")
+
   elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+  
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     else()
-#      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-#      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
     endif()
-    set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -mtune=native -DNDEBUG -ftree-vectorize")
+    
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -mtune=native -DNDEBUG -ftree-vectorize")
+
   elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")
+
 #    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     message(FATAL_ERROR "Currently, the INTEL C++ compiler is not supported by igatools")
+
   else()
+
     message(FATAL_ERROR "Your C++ compiler is not supported by igatools")
+
   endif()
 endmacro(init_cxx_flags)

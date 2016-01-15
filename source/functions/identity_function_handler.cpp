@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 
 //template<int dim,int space_dim>
 //auto
-//IdentityFunctionElementHandler<dim,space_dim>::
+//IdentityFunctionHandler<dim,space_dim>::
 //create(std::shared_ptr<GridType> grid) -> std::shared_ptr<parent_t>
 //{
 //    auto identity_function = std::make_shared<self_t>(grid);
@@ -46,7 +46,7 @@ IGA_NAMESPACE_OPEN
 
 //template<int dim,int space_dim>
 //auto
-//IdentityFunctionElementHandler<dim,space_dim>::
+//IdentityFunctionHandler<dim,space_dim>::
 //clone() const -> std::shared_ptr<parent_t>
 //{
 //
@@ -54,15 +54,15 @@ IGA_NAMESPACE_OPEN
 //}
 
 template<int dim,int space_dim>
-IdentityFunctionElementHandler<dim,space_dim>::
-IdentityFunctionElementHandler(std::shared_ptr<const GridType> grid)
+IdentityFunctionHandler<dim,space_dim>::
+IdentityFunctionHandler(std::shared_ptr<const GridType> grid)
   : grid_handler_(GridHandlerType::create(grid))
 {}
 
 
 template<int dim,int space_dim>
 void
-IdentityFunctionElementHandler<dim,space_dim>::
+IdentityFunctionHandler<dim,space_dim>::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
@@ -71,7 +71,7 @@ set_flags(const topology_variant &sdim,
 
 template<int dim,int space_dim>
 void
-IdentityFunctionElementHandler<dim,space_dim>::
+IdentityFunctionHandler<dim,space_dim>::
 init_cache(ConstElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
@@ -82,7 +82,7 @@ init_cache(ConstElementAccessor &elem,
 
 template<int dim,int space_dim>
 auto
-IdentityFunctionElementHandler<dim,space_dim>::
+IdentityFunctionHandler<dim,space_dim>::
 fill_cache(const topology_variant &sdim,
            ConstElementAccessor &elem,
            const int s_id) const -> void
@@ -102,7 +102,7 @@ fill_cache(const topology_variant &sdim,
 #ifdef MESH_REFINEMENT
 template<int dim,int space_dim>
 void
-IdentityFunctionElementHandler<dim,space_dim>::
+IdentityFunctionHandler<dim,space_dim>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &grid_old)
@@ -113,12 +113,12 @@ rebuild_after_insert_knots(
   Assert(previous_grid != nullptr,ExcNullPtr());
 
   this->function_previous_refinement_ =
-    IdentityFunctionElementHandler<dim,space_dim>::create(previous_grid);
+    IdentityFunctionHandler<dim,space_dim>::create(previous_grid);
 }
 
 template<int dim,int space_dim>
 void
-IdentityFunctionElementHandler<dim,space_dim>::
+IdentityFunctionHandler<dim,space_dim>::
 create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
 {
   Assert(identity_function != nullptr, ExcNullPtr());

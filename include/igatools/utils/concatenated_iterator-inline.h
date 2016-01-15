@@ -45,18 +45,12 @@ ConcatenatedIteratorData(
   :
   ranges_(ranges)
 {
-  const int n_ranges = ranges.size();
-  Assert(n_ranges != 0 , ExcEmptyObject());
+//  const int n_ranges = ranges.size();
+  Assert(!ranges_.empty(), ExcEmptyObject());
 
 #ifndef NDEBUG
-  for (int i = 0 ; i < n_ranges ; ++i)
-  {
-    //TODO (mm): maybe it is better to assert  ranges_[i].begin() < ranges_[i].end()
-    Assert(ranges_[i].begin() < ranges_[i].end(),
-           ExcInvalidIterator());
-//        Assert(ranges_[i].begin() < ranges_[i].end() || ranges_[i].begin() == ranges_[i].end(),
-//              ExcInvalidIterator());
-  }
+  for (const auto &range : ranges_)
+    Assert(range.begin() < range.end(),ExcInvalidIterator());
 #endif
 
   Assert(index == 0 || index == IteratorState::pass_the_end,ExcInvalidIterator());
@@ -68,7 +62,7 @@ ConcatenatedIteratorData(
   else if (index == IteratorState::pass_the_end)
   {
     iterator_current_ = ranges_.back().end();
-    range_id_ = n_ranges - 1;
+    range_id_ = ranges.size() - 1;
   }
 }
 

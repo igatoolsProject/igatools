@@ -93,7 +93,7 @@ as much as the public methods:
 \snippet example_05.cpp poisson_methods
 
 The system assemble is almost the same of \ref example_04. We show it again so that that the user can meet two
-useful methods of the SpaceElement class, <tt>integrate_gradu_gradv</tt> and <tt>integrate_u_func</tt>:
+useful methods of the BasisElement class, <tt>integrate_gradu_gradv</tt> and <tt>integrate_u_func</tt>:
 \snippet example_05.cpp poisson_assemble
 
 One of the variables of the class is the <tt>std::map</tt> container <tt>dirichlet_cond</tt>, which stores Functions

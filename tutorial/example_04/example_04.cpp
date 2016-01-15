@@ -29,7 +29,7 @@
 
 #include <igatools/geometry/grid_element.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/objects_container.h>
 
@@ -49,50 +49,53 @@ using namespace EpetraTools;
 LogStream out;
 
 template<int dim>
-class PoissonProblem {
+class PoissonProblem
+{
 
-  private:
-    shared_ptr<const Grid<dim>>        grid;
-    shared_ptr<const SplineSpace<dim>> space;
-    shared_ptr<const BSpline<dim>>     basis;
-    shared_ptr<const QGauss<dim>>      quad;
+private:
+  shared_ptr<const Grid<dim>>        grid;
+  shared_ptr<const SplineSpace<dim>> space;
+  shared_ptr<const BSpline<dim>>     basis;
+  shared_ptr<const QGauss<dim>>      quad;
 // [system]
-    shared_ptr<Matrix> mat;
-    shared_ptr<Vector> rhs;
-    shared_ptr<Vector> sol;
+  shared_ptr<Matrix> mat;
+  shared_ptr<Vector> rhs;
+  shared_ptr<Vector> sol;
 // [system]
 
-    using IgGridFunc_t = IgGridFunction<dim,1>;
+  using IgGridFunc_t = IgGridFunction<dim,1>;
 
-  public:
-    PoissonProblem(const Size nel, const Index deg) {
-      grid  = Grid<dim>::const_create(nel+1);
-      space = SplineSpace<dim>::const_create(deg,grid);
-      basis = BSpline<dim>::const_create(space);
-      quad  = QGauss<dim>::const_create(deg+1);
+public:
+  PoissonProblem(const Size nel, const Index deg)
+  {
+    grid  = Grid<dim>::const_create(nel+1);
+    space = SplineSpace<dim>::const_create(deg,grid);
+    basis = BSpline<dim>::const_create(space);
+    quad  = QGauss<dim>::const_create(deg+1);
 // [sys_create]
-      mat   = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
-      rhs   = create_vector(mat->RangeMap());
-      sol   = create_vector(mat->DomainMap());
+    mat   = create_matrix(*basis,DofProperties::active,Epetra_SerialComm());
+    rhs   = create_vector(mat->RangeMap());
+    sol   = create_vector(mat->DomainMap());
 // [sys_create]
-    };
+  };
 
-    void assemble();
-    void solve();
-    std::shared_ptr<const IgGridFunc_t> get_solution();
-    void save();
-    void run();
+  void assemble();
+  void solve();
+  std::shared_ptr<const IgGridFunc_t> get_solution();
+  void save();
+  void run();
 };
 
 template<int dim>
-void PoissonProblem<dim>::assemble() {
+void PoissonProblem<dim>::assemble()
+{
 
   auto basis_el      = basis->begin();
   auto basis_el_end  = basis->end();
   auto cache_handler = basis->create_cache_handler();
-  auto flag = space_element::Flags::value |
-              space_element::Flags::gradient |
-              space_element::Flags::w_measure;
+  auto flag = basis_element::Flags::value |
+              basis_element::Flags::gradient |
+              basis_element::Flags::w_measure;
   cache_handler->set_element_flags(flag);
   cache_handler->init_element_cache(basis_el,quad);
 
@@ -100,11 +103,14 @@ void PoissonProblem<dim>::assemble() {
   const auto num_quad  = quad->get_num_points();
   const auto num_basis = basis_el->get_num_basis(DofProperties::active);
   const auto source = 1.0;
-  for (; basis_el!=basis_el_end; ++basis_el) {
+  for (; basis_el!=basis_el_end; ++basis_el)
+  {
     cache_handler->fill_element_cache(basis_el);
 
-    DenseMatrix loc_mat(num_basis,num_basis); loc_mat = 0.0;
-    DenseVector loc_rhs(num_basis);           loc_rhs = 0.0;
+    DenseMatrix loc_mat(num_basis,num_basis);
+    loc_mat = 0.0;
+    DenseVector loc_rhs(num_basis);
+    loc_rhs = 0.0;
 
     auto values = basis_el->get_element_values();
     auto grads  = basis_el->get_element_gradients();
@@ -112,11 +118,14 @@ void PoissonProblem<dim>::assemble() {
 // [loop_init]
 
 // [stiffness]
-    for (int i=0; i<num_basis; i++) {
+    for (int i=0; i<num_basis; i++)
+    {
       const auto &grd_i = grads.get_function_view(i);
-      for (int j=0; j<num_basis; j++) {
+      for (int j=0; j<num_basis; j++)
+      {
         const auto &grd_j = grads.get_function_view(j);
-        for (int q=0; q<num_quad; q++) {
+        for (int q=0; q<num_quad; q++)
+        {
           loc_mat(i,j) += scalar_product(grd_i[q], grd_j[q]) * w_meas[q];
         }
       }
@@ -124,9 +133,11 @@ void PoissonProblem<dim>::assemble() {
 // [stiffness]
 
 // [rhs]
-    for (int i=0; i<num_basis; i++) {
+    for (int i=0; i<num_basis; i++)
+    {
       const auto &vals = values.get_function_view(i);
-      for (int q=0; q<num_quad; q++) {
+      for (int q=0; q<num_quad; q++)
+      {
         loc_rhs(i) += source * vals[q][0] * w_meas[q];
       }
     }
@@ -135,7 +146,7 @@ void PoissonProblem<dim>::assemble() {
 // [add_block]
     const auto loc_dofs = basis_el->get_local_to_global();
     mat->add_block(loc_dofs, loc_dofs,loc_mat);
-    rhs->add_block(loc_dofs, loc_rhs);  
+    rhs->add_block(loc_dofs, loc_rhs);
   }
   mat->FillComplete();
 // [add_block]
@@ -145,10 +156,12 @@ void PoissonProblem<dim>::assemble() {
   Topology<dim-1> sub_elem_topology;
   std::map<Index,Real> bdr_vals;
 
-  for (int face=0; face<2*dim; face++) {
+  for (int face=0; face<2*dim; face++)
+  {
     auto bdr_dofs = dof_distribution->get_boundary_dofs(face,sub_elem_topology);
-    
-    for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++) {
+
+    for (set<Index>::iterator it=bdr_dofs.begin(); it!=bdr_dofs.end(); it++)
+    {
       bdr_vals.insert(std::pair<Index,Real>(*it,0.0));
     }
   }
@@ -158,7 +171,8 @@ void PoissonProblem<dim>::assemble() {
 
 // [solve]
 template<int dim>
-void PoissonProblem<dim>::solve() {
+void PoissonProblem<dim>::solve()
+{
   auto solver = create_solver(*mat,*sol,*rhs);
   solver->solve();
 }
@@ -173,7 +187,8 @@ std::shared_ptr<const IgGridFunc_t>
 }
 
 template<int dim>
-void PoissonProblem<dim>::save() {
+void PoissonProblem<dim>::save()
+{
 
   const auto solution = this->get_solution();
   string filename = "problem_" + to_string(dim) + "d" ;
@@ -203,7 +218,8 @@ void PoissonProblem<dim>::save() {
 }
 
 template<int dim>
-void PoissonProblem<dim>::run() {
+void PoissonProblem<dim>::run()
+{
   assemble();
   solve();
   save();

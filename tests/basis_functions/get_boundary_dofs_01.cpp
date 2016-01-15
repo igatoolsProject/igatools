@@ -37,18 +37,21 @@ template<int dim, int range = 1, int rank = 1>
 void get_bdry_dof(const int deg = 1, const int n_knots = 3)
 {
   OUTSTART
-  using RefSpace = ReferenceSpaceBasis<dim, range, rank>;
+  using RefSpace = ReferenceBasis<dim, range, rank>;
   using Basis = BSpline<dim, range, rank>;
   auto grid = Grid<dim>::create(n_knots);
-  grid->set_boundary_id(0,1);
+//  grid->set_boundary_id(0,1);
 
   auto space = SplineSpace<dim,range,rank>::create(deg, grid);
   auto basis = Basis::create(space);
 
 
 
-  std::set<boundary_id>  piece_one  = {1};
-  std::set<boundary_id>  piece_zero = {0};
+  std::set<int>  piece_one  = {0};
+  std::set<int>  piece_zero;
+  for (int face_id = 1; face_id < UnitElement<dim>::n_faces ; ++face_id)
+    piece_zero.insert(face_id);
+
   auto one_dofs = get_boundary_dofs<RefSpace>(basis, piece_one);
   auto zero_dofs = get_boundary_dofs<RefSpace>(basis, piece_zero);
 

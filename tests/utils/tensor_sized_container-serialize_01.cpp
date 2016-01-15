@@ -28,34 +28,6 @@
 #include "../tests.h"
 #include <igatools/utils/tensor_sized_container.h>
 
-/*
-template <int M>
-class Test
-{
-public:
-  Test() = default;
-  Test(const int N)
-  :
-    N_(N)
-  {
-    array_.fill(N);
-  }
-
-private:
-  int N_;
-
-  SafeSTLArray<int,M> array_;
-
-  friend class cereal::access;
-
-  template<class Archive>
-  void serialize(Archive &ar)
-  {
-    ar & make_nvp("N_",N_);
-    ar & make_nvp("array_",array_);
-  }
-};
-//*/
 
 template <int N>
 void tsc_serialization()
@@ -95,7 +67,7 @@ void tsc_serialization()
 
 int main()
 {
-  tsc_serialization<0>();
+//  tsc_serialization<0>();
   tsc_serialization<1>();
   tsc_serialization<2>();
   tsc_serialization<3>();

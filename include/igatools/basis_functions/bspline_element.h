@@ -22,7 +22,7 @@
 #define BSPLINE_ELEMENT_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/reference_element.h>
+#include <igatools/basis_functions/reference_basis_element.h>
 
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
@@ -31,7 +31,7 @@
 IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank> class BSpline;
-template <int dim, int range, int rank> class BSplineElementHandler;
+template <int dim, int range, int rank> class BSplineHandler;
 template <class Accessor> class GridIterator;
 
 /**
@@ -40,18 +40,18 @@ template <class Accessor> class GridIterator;
  */
 template <int dim, int range, int rank>
 class BSplineElement :
-  public ReferenceElement<dim,range,rank>
+  public ReferenceBasisElement<dim,range,rank>
 {
 private:
   using self_t = BSplineElement<dim,range,rank>;
-  using parent_t = ReferenceElement<dim,range,rank>;
+  using parent_t = ReferenceBasisElement<dim,range,rank>;
 
 public:
 
   /** Type required by the GridIterator templated iterator */
   using ContainerType = const BSpline<dim, range, rank> ;
 
-  /** Type required for the generic algorithm on the spaces (plots??) */
+  /** Type required for the generic algorithm on the basis (plots??) */
   using Basis = BSpline<dim, range, rank> ;
 
 
@@ -80,9 +80,9 @@ public:
 
   /**
    * Constructs an accessor to element number index of a
-   * BSpline space.
+   * BSpline basis.
    */
-  BSplineElement(const std::shared_ptr<ContainerType> &space,
+  BSplineElement(const std::shared_ptr<ContainerType> &basis,
                  std::unique_ptr<GridElement<dim>> &&grid_elem);
 
   /**
@@ -126,7 +126,7 @@ public:
 private:
 
   template <class Accessor> friend class GridIterator;
-  friend class BSplineElementHandler<dim, range, rank>;
+  friend class BSplineHandler<dim, range, rank>;
 
 
   template<class T>

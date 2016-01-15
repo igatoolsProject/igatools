@@ -28,9 +28,9 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/physical_basis_handler.h>
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 
@@ -52,7 +52,7 @@ void loc_mass_matrix(const int n_knots, const int deg)
   auto elem_handler = basis->create_cache_handler();
 
 
-  using Flags = space_element::Flags;
+  using Flags = basis_element::Flags;
   auto flag = Flags::value | Flags::w_measure;
   elem_handler->template set_flags<dim>(flag);
 

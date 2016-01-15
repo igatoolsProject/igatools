@@ -51,10 +51,10 @@ template <class T> class SafeSTLSet;
  * The objects that can be stored inside are:
  * - @ref Grid
  * - @ref SplineSpace
- * - @ref ReferenceSpaceBasis
+ * - @ref ReferenceBasis
  * - @ref GridFunction
  * - @ref Domain
- * - @ref PhysicalSpaceBasis
+ * - @ref PhysicalBasis
  * - @ref Function
 
  * All the instantiated dimensions of the above listed types can be
@@ -119,8 +119,8 @@ private:
   /** Alias for all instantiated spline spaces. */
   using SpSpaces = typename InstantiatedTypes::SplineSpaces;
 
-  /** Alias for all instantiated reference space bases. */
-  using RefSpaces = typename InstantiatedTypes::RefSpaceBases;
+  /** Alias for all instantiated reference bases. */
+  using RefBases = typename InstantiatedTypes::RefBases;
 
   /** Alias for all instantiated grids functions. */
   using GridFunc = typename InstantiatedTypes::GridFunctions;
@@ -128,8 +128,8 @@ private:
   /** Alias for all instantiated domains. */
   using Domains = typename InstantiatedTypes::Domains;
 
-  /** Alias for all instantiated physical space bases. */
-  using PhysSpaces = typename InstantiatedTypes::PhysSpaces;
+  /** Alias for all instantiated physical bases. */
+  using PhysBases = typename InstantiatedTypes::PhysBases;
 
   /** Alias for all instantiated  functions.*/
   using Functions = typename InstantiatedTypes::Functions;
@@ -149,9 +149,9 @@ public:
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
-   * instantiated reference space bases.
+   * instantiated reference bases.
    */
-  using RefSpacePtrs = as_fusion_vector_shared_ptr_t<RefSpaces>;
+  using RefBasisPtrs = as_fusion_vector_shared_ptr_t<RefBases>;
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
@@ -167,9 +167,9 @@ public:
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
-   * instantiated physical spaces.
+   * instantiated physical bases.
    */
-  using PhysSpacePtrs = as_fusion_vector_shared_ptr_t<PhysSpaces>;
+  using PhysBasisPtrs = as_fusion_vector_shared_ptr_t<PhysBases>;
 
   /**
    * <tt>boost::fusion::vector</tt> of <tt>shared_ptr</tt> of all
@@ -194,10 +194,10 @@ private:
    */
   typedef boost_mpl_copy_t<Grids,
           boost_mpl_copy_t<SpSpaces,
-          boost_mpl_copy_t<RefSpaces,
+          boost_mpl_copy_t<RefBases,
           boost_mpl_copy_t<GridFunc,
           boost_mpl_copy_t<Domains,
-          boost_mpl_copy_t<PhysSpaces,Functions>
+          boost_mpl_copy_t<PhysBases,Functions>
           > > > > > JointTypes_;
 
   /** @ref JointTypes_ converted to constant types. */

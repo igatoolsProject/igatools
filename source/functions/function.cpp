@@ -53,9 +53,9 @@ template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
 create_cache_handler() const
--> std::unique_ptr<ElementHandler>
+-> std::unique_ptr<Handler>
 {
-  return std::unique_ptr<ElementHandler>(new ElementHandler(this->shared_from_this()));
+  return std::unique_ptr<Handler>(new Handler(this->shared_from_this()));
 }
 
 

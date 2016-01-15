@@ -1,5 +1,5 @@
 IgGridFunction<2,3>
-   ReferenceSpaceBasis<2,1,3>:
+   ReferenceBasis<2,1,3>:
       Spline Space:
          Knots without repetition:
             Number of intervals per direction: [ 3 3 ]

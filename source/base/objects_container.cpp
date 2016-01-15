@@ -212,14 +212,14 @@ print_info(LogStream &out) const
                       at_key<const Type>(objects_));
   });
 
-  // Reference space basis
-  RefSpacePtrs valid_rsp_ptr_types;
+  // Reference basis
+  RefBasisPtrs valid_rsp_ptr_types;
   for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
   {
     using SSType = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
-    using Type = ReferenceSpaceBasis<SSType::dim, SSType::range, SSType::rank>;
+    using Type = ReferenceBasis<SSType::dim, SSType::range, SSType::rank>;
 
-    const string msg = "ReferenceSpaceBasis"
+    const string msg = "ReferenceBasis"
                        " Dim : " + to_string(Type::dim) +
                        " Range : " + to_string(Type::range) +
                        " Rank : "+ to_string(Type::rank)
@@ -265,13 +265,13 @@ print_info(LogStream &out) const
                       at_key<const Type>(objects_));
   });
 
-  // Physical space basis
-  PhysSpacePtrs valid_ps_ptr_types;
+  // Physical basis
+  PhysBasisPtrs valid_ps_ptr_types;
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
 
-    const string msg = "PhysicalSpaceBasis"
+    const string msg = "PhysicalBasis"
                        " Dim : " + to_string(Type::dim) +
                        " Range : " + to_string(Type::range) +
                        " Rank : " + to_string(Type::rank) +
@@ -328,14 +328,14 @@ void
 ObjectsContainer::
 fill_not_inserted_dependencies()
 {
-  // Adding members depending on functions (domains and physical space bases).
+  // Adding members depending on functions (domains and physical bases).
   FunctionPtrs valid_f_ptr_types;
   for_each(valid_f_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
     using DomainType = Domain<Type::dim, Type::codim>;
     using IgFunctionType = IgFunction<Type::dim, Type::codim, Type::range, Type::rank>;
-    using PhysBasisType = PhysicalSpaceBasis<Type::dim, Type::range, Type::rank, Type::codim>;
+    using PhysicalBasisType = PhysicalBasis<Type::dim, Type::range, Type::rank, Type::codim>;
 
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
@@ -349,16 +349,16 @@ fill_not_inserted_dependencies()
       Assert(domain != nullptr, ExcNullPtr());
       this->template insert_object<DomainType> (domain);
 
-      // If the function is an ig function, its physical space basis is also inserted.
+      // If the function is an ig function, its physical basis is also inserted.
       const auto const_ig_func = dynamic_pointer_cast<IgFunctionType>(obj);
       if (const_ig_func != nullptr)
       {
         const auto ig_func = const_pointer_cast<IgFunctionType>(const_ig_func);
         Assert(ig_func != nullptr, ExcNullPtr());
 
-        const auto phys_space = const_pointer_cast<PhysBasisType>(ig_func->get_basis());
-        Assert(phys_space != nullptr, ExcNullPtr());
-        this->template insert_object<PhysBasisType> (phys_space);
+        const auto phys_basis = const_pointer_cast<PhysicalBasisType>(ig_func->get_basis());
+        Assert(phys_basis != nullptr, ExcNullPtr());
+        this->template insert_object<PhysicalBasisType> (phys_basis);
       }
     }
 
@@ -372,16 +372,16 @@ fill_not_inserted_dependencies()
       // Inserting the domain of the function into the this.
       this->insert_const_object<DomainType> (obj->get_domain());
 
-      // If the function is an ig function, its physical space basis is also inserted.
+      // If the function is an ig function, its physical basis is also inserted.
       const auto ig_func = dynamic_pointer_cast<const IgFunctionType>(obj);
       if (ig_func != nullptr)
-        this->insert_const_object<PhysBasisType> (ig_func->get_basis());
+        this->insert_const_object<PhysicalBasisType> (ig_func->get_basis());
     }
   });
 
 
-  // Filling all physical space bases.
-  PhysSpacePtrs valid_ps_ptr_types;
+  // Filling all physical bases.
+  PhysBasisPtrs valid_ps_ptr_types;
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -391,32 +391,32 @@ fill_not_inserted_dependencies()
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
-      // Inserting the physical space basis into the this.
+      // Inserting the physical basis into the this.
       const auto obj = this->template get_object<Type>(id);
       this->template insert_object<Type> (obj);
 
-      // Inserting the domain of the physical space basis into the this.
+      // Inserting the domain of the physical basis into the this.
       const auto domain = const_pointer_cast<DomainType>(obj->get_domain());
       Assert(domain != nullptr, ExcNullPtr());
       this->template insert_object<DomainType> (domain);
 
-      // Inserting the reference space basis of the physical space basis into the this.
-      const auto ref_space = const_pointer_cast<RefBasisType>(obj->get_reference_basis());
-      Assert(ref_space != nullptr, ExcNullPtr());
-      this->template insert_object<RefBasisType> (ref_space);
+      // Inserting the reference basis of the physical basis into the this.
+      const auto ref_basis = const_pointer_cast<RefBasisType>(obj->get_reference_basis());
+      Assert(ref_basis != nullptr, ExcNullPtr());
+      this->template insert_object<RefBasisType> (ref_basis);
     }
 
     // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
-      // Inserting the physical space basis into the this.
+      // Inserting the physical basis into the this.
       const auto obj = this->template get_const_object<Type>(id);
       this->insert_const_object<Type> (obj);
 
-      // Inserting the domain of the physical space basis into the this.
+      // Inserting the domain of the physical basis into the this.
       this->insert_const_object<DomainType> (obj->get_domain());
 
-      // Inserting the reference space basis of the physical space basis into the this.
+      // Inserting the reference basis of the physical basis into the this.
       this->insert_const_object<RefBasisType> (obj->get_reference_basis());
     }
   });
@@ -476,13 +476,13 @@ fill_not_inserted_dependencies()
       this->template insert_object<GridType> (grid);
 
       // If the grid function is an ig grid function, its
-      // reference space basis is also inserted.
+      // reference basis is also inserted.
       const auto ig_g_f = dynamic_pointer_cast<IgGridFuncType>(obj);
       if (ig_g_f != nullptr)
       {
-        const auto ref_space = const_pointer_cast<RefBasisType> (ig_g_f->get_basis());
-        Assert(ref_space != nullptr, ExcNullPtr());
-        this->template insert_object<RefBasisType> (ref_space);
+        const auto ref_basis = const_pointer_cast<RefBasisType> (ig_g_f->get_basis());
+        Assert(ref_basis != nullptr, ExcNullPtr());
+        this->template insert_object<RefBasisType> (ref_basis);
       }
     }
 
@@ -497,7 +497,7 @@ fill_not_inserted_dependencies()
       this->insert_const_object<GridType> (obj->get_grid());
 
       // If the grid function is an ig grid function, its
-      // reference space basis is also inserted.
+      // reference basis is also inserted.
       const auto ig_g_f = dynamic_pointer_cast<const IgGridFuncType>(obj);
       if (ig_g_f != nullptr)
         this->insert_const_object<RefBasisType> (ig_g_f->get_basis());
@@ -505,8 +505,8 @@ fill_not_inserted_dependencies()
   });
 
 
-  // Filling all reference space bases.
-  RefSpacePtrs valid_rs_ptr_types;
+  // Filling all reference bases.
+  RefBasisPtrs valid_rs_ptr_types;
   for_each(valid_rs_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
@@ -524,7 +524,7 @@ fill_not_inserted_dependencies()
     // Adding non-const objects.
     for (const auto &id : this->template get_object_ids<Type>())
     {
-      // Inserting reference space basis function into the this.
+      // Inserting reference basis function into the this.
       const auto obj = this->template get_object<Type>(id);
       this->template insert_object<Type> (obj);
 
@@ -532,18 +532,18 @@ fill_not_inserted_dependencies()
       const auto bs = dynamic_pointer_cast<BSplineType>(obj);
 
       Assert(bs != nullptr || nr != nullptr,
-             ExcMessage("Invalid reference space basis type."));
+             ExcMessage("Invalid reference basis type."));
 
-      // If the reference space is a BSpline, the spline space is also inserted.
+      // If the reference basis is a BSpline, the spline space is also inserted.
       if (bs != nullptr) // BSpline
       {
         // Inserting spline space into the this.
         const auto ss = const_pointer_cast<SpSpaceType> (bs->get_spline_space());
         this->template insert_object<SpSpaceType> (ss);
       }
-      // If the reference space is a NURBS, its BSpline space, the
-      // spline space, the weight grid function, the reference space of
-      // the weights and spline space space of the weights are also
+      // If the reference basis is a NURBS, its BSpline basis, the
+      // spline space, the weight grid function, the reference basis of
+      // the weights and spline space of the weights are also
       // inserted.
       else // NURBS
       {
@@ -551,19 +551,19 @@ fill_not_inserted_dependencies()
         const auto ss = const_pointer_cast<SpSpaceType> (nr->get_spline_space());
         this->template insert_object<SpSpaceType> (ss);
 
-        // Inserting the BSpline space of the NURBS into the this.
+        // Inserting the BSpline basis of the NURBS into the this.
         const auto nr_bs = const_pointer_cast<BSplineType> (nr->get_bspline_basis());
         this->template insert_object<Type> (nr_bs);
 
         // Adding the weight related quantities: grid function,
-        // reference space basis and its spline space.
+        // reference basis and its spline space.
 
         // Inserting the grid function of the weights.
         const auto wf = const_pointer_cast<WeightFuncType>(nr->get_weight_func());
         Assert(wf != nullptr, ExcNullPtr());
         this->template insert_object<GridFuncType>(wf);
 
-        // Inserting the reference space basis of the weights.
+        // Inserting the reference basis of the weights.
         const auto rs = const_pointer_cast<WeightFuncBasisType>(wf->get_basis());
         Assert(rs != nullptr, ExcNullPtr());
         this->template insert_object<WeightFuncBasisType>(rs);
@@ -577,7 +577,7 @@ fill_not_inserted_dependencies()
     // Adding const objects.
     for (const auto &id : this->template get_const_object_ids<Type>())
     {
-      // Inserting reference space basis function into the this.
+      // Inserting reference basis function into the this.
       const auto obj = this->template get_const_object<Type>(id);
       this->insert_const_object<Type> (obj);
 
@@ -585,28 +585,28 @@ fill_not_inserted_dependencies()
       const auto bs = dynamic_pointer_cast<const BSplineType>(obj);
 
       Assert(bs != nullptr || nr != nullptr,
-             ExcMessage("Invalid reference space basis type."));
+             ExcMessage("Invalid reference basis type."));
 
-      // If the reference space is a BSpline, the spline space is also inserted.
+      // If the reference basis is a BSpline, the spline space is also inserted.
       if (bs != nullptr) // BSpline
       {
         // Inserting spline space into the this.
         this->insert_const_object<SpSpaceType> (bs->get_spline_space());
       }
-      // If the reference space is a NURBS, its BSpline space, the
-      // spline space, the weight grid function, the reference space of
-      // the weights and spline space space of the weights are also
+      // If the reference basis is a NURBS, its BSpline basis, the
+      // spline space, the weight grid function, the reference basis of
+      // the weights and spline space of the weights are also
       // inserted.
       else // NURBS
       {
         // Inserting spline space into the this.
         this->insert_const_object<SpSpaceType> (nr->get_spline_space());
 
-        // Inserting the BSpline space of the NURBS into the this.
+        // Inserting the BSpline basis of the NURBS into the this.
         this->insert_const_object<Type> (nr->get_bspline_basis());
 
         // Adding the weight related quantities: grid function,
-        // reference space basis and its spline space.
+        // reference basis and its spline space.
 
         const auto wf = nr->get_weight_func();
         const auto rs = wf->get_basis();
@@ -616,7 +616,7 @@ fill_not_inserted_dependencies()
         // Inserting the grid function of the weights.
         this->insert_const_object<GridFuncType>(gf);
 
-        // Inserting the reference space basis of the weights.
+        // Inserting the reference basis of the weights.
         this->insert_const_object<WeightFuncBasisType>(rs);
 
         // Inserting the spline space basis of the weights.
@@ -729,13 +729,13 @@ serialize(Archive &ar)
     ar &at_key<Type>(objects_);
   });
 
-  // Serializing reference space basis
-  RefSpacePtrs valid_rsp_ptr_types;
+  // Serializing reference basis
+  RefBasisPtrs valid_rsp_ptr_types;
   for_each(valid_rsp_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     /*
-        const string name = "reference_space_basis_"
+        const string name = "reference_basis_"
                             + to_string(Type::dim) + "_"
                             + to_string(Type::range) + "_"
                             + to_string(Type::rank);
@@ -814,13 +814,13 @@ serialize(Archive &ar)
         const_objects.push_back(obj);
   });
 
-  // Physical space basis
-  PhysSpacePtrs valid_ps_ptr_types;
+  // Physical basis
+  PhysBasisPtrs valid_ps_ptr_types;
   for_each(valid_ps_ptr_types, [&](const auto &ptr_type)
   {
     using Type = typename std::remove_reference<decltype(ptr_type)>::type::element_type;
     /*
-        const string name = "physical_space_basis_"
+        const string name = "physical_basis_"
                             + to_string(Type::dim) + "_"
                             + to_string(Type::range) + "_"
                             + to_string(Type::rank) + "_"

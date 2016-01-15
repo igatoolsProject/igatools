@@ -68,7 +68,7 @@ template <class T1, class T2> class SafeSTLMap;
  * - @ref grid_functions::LinearGridFunction
  * - @ref IgGridFunction
  * - @ref Domain
- * - @ref PhysicalSpaceBasis
+ * - @ref PhysicalBasis
  * - @ref functions::ConstantFunction
  * - @ref functions::LinearFunction
  * - @ref IgFunction
@@ -369,7 +369,7 @@ private:
                             const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Reads all the @ref PhysicalSpaceBasis
+   * @brief Reads all the @ref PhysicalBasis
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -381,7 +381,7 @@ private:
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
    */
-  static void parse_phys_spaces(const std::shared_ptr<XMLElement> xml_elem,
+  static void parse_phys_bases(const std::shared_ptr<XMLElement> xml_elem,
                                 const bool parse_as_constant,
                                 IdMap_ &id_map,
                                 const std::shared_ptr<ObjectsContainer> container);
@@ -502,9 +502,9 @@ private:
    * @brief Reads a single @ref BSpline XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
-   * @tparam dim Dimension of the BSpline space basis.
-   * @tparam range Range of the BSpline space basis.
-   * @tparam rank Rank of the BSpline space basis.
+   * @tparam dim Dimension of the BSpline basis.
+   * @tparam range Range of the BSpline basis.
+   * @tparam rank Rank of the BSpline basis.
    * @param[in] xml_elem XML element to be parsed.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
@@ -523,9 +523,9 @@ private:
    * @brief Reads a single @ref NURBS XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
-   * @tparam dim Dimension of the NURBS space basis.
-   * @tparam range Range of the NURBS space basis.
-   * @tparam rank Rank of the NURBS space basis.
+   * @tparam dim Dimension of the NURBS basis.
+   * @tparam range Range of the NURBS basis.
+   * @tparam rank Rank of the NURBS basis.
    * @param[in] xml_elem XML element to be parsed.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
@@ -652,13 +652,13 @@ private:
                            const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Reads a single @ref PhysicalSpaceBasis XML element contained
+   * @brief Reads a single @ref PhysicalBasis XML element contained
    * in @p xml_elem and inserts it into the objects @p container.
    *
-   * @tparam dim Dimension of the physical space basis.
-   * @tparam range Range of the physical space basis.
-   * @tparam rank Rank of the physical space basis.
-   * @tparam codim Codimension of the physical space basis.
+   * @tparam dim Dimension of the physical basis.
+   * @tparam range Range of the physical basis.
+   * @tparam rank Rank of the physical basis.
+   * @tparam codim Codimension of the physical basis.
    * @param[in] xml_elem XML element to be parsed.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
@@ -668,7 +668,7 @@ private:
    *                and also retrieving other ones needed.
    */
   template <int dim, int codim, int range, int rank>
-  static void parse_phys_space(const std::shared_ptr<XMLElement> xml_elem,
+  static void parse_phys_basis(const std::shared_ptr<XMLElement> xml_elem,
                                const bool parse_as_constant,
                                IdMap_ &id_map,
                                const std::shared_ptr<ObjectsContainer> container);

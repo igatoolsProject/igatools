@@ -21,7 +21,7 @@
 
 #include <igatools/basis_functions/nurbs_element.h>
 #include <igatools/basis_functions/nurbs.h>
-#include <igatools/basis_functions/nurbs_element_handler.h>
+#include <igatools/basis_functions/nurbs_handler.h>
 
 #ifdef USE_NURBS
 
@@ -30,11 +30,11 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank>
 NURBSElement<dim, range, rank>::
-NURBSElement(const std::shared_ptr<ContainerType> space,
+NURBSElement(const std::shared_ptr<ContainerType> basis,
              std::unique_ptr<BSpElem> &&bspline_elem,
              std::unique_ptr<WeightElem> &&weight_elem)
   :
-  parent_t(space),
+  parent_t(basis),
   bspline_elem_(std::move(bspline_elem)),
   weight_elem_(std::move(weight_elem))
 {}

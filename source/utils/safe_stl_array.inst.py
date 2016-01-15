@@ -59,7 +59,7 @@ types = ['int',
 
 flags = ['grid_element::Flags',
          'domain_element::Flags',
-         'space_element::Flags',
+         'basis_element::Flags',
          'grid_function_element::Flags',
          'function_element::Flags'];
 

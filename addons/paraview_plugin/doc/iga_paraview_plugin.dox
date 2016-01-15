@@ -1,0 +1,161 @@
+/**
+   
+@defgroup iga_paraview_plugin Igatools ParaView visualization plugin
+@brief In this section we describe the main capabilities
+of Igatools ParaView visualization plugin and we explain the code
+architecture.
+@{
+
+\section plugin Main ParaView plugin features
+
+The ParaView plugin has been developed with the idea of simplifying
+the graphical visualization of igatools produced objects, more precisely,
+@ref Grid and @ref Domain objects (parametric and physical domains)
+and the functions defined on them.
+It provides a simple and friendly environment for loading directly from
+ParaView the igatools domains and functions and visualize them.
+
+Currently the ParaView plugin allows to visualize 1D, 2D and 3D parametric and
+physical domains, and the functions defined on them (@ref GridFunction and
+@ref Function classes, respectively).
+Each domain is associated to a VTK grid and the functions are visualized
+as data associated to the points of the grid.
+@note Currently it is not possible to visualize with 0D domains, but it will be
+possible in the future.
+Only domains that has been properly instantiated when igatools was compiled
+can be visualized.
+
+For every domain it is possible to visualize the domain itself (called solid mesh),
+the image of its associated knot mesh (or grid mesh for non IGA objects)
+and the control polygon mesh (only for IGA physical domains).
+
+From the ParaView GUI it is possible to select which domains must be visualized,
+hiding the others.
+
+
+The process for visualizing igatools domains using the plugin is:
+  - Save the objects to visualize in an @ref ObjectsContainer.
+  - Save the @ref ObjectsContainer to a file by means
+    of the serialization capabilities or with a XML format using
+    @ref ObjectsContainerXMLWriter.
+  - Visualize them in ParaView by loading the @ref ObjectsContainer
+    using the plugin.
+
+From the ParaView GUI it is possible to adjust the desired resolution for
+its visualization without creating new igatools objects.
+The resolution can be adjusted for every parametric direction for every mesh type.
+I.e. the solid meshes of the physical domains can have a visualization resolution
+different from the knot meshes, or the solid meshes of the parametric domains.
+However, the solid meshes of two different physical domains are limited
+to have the same resolution.
+@note Currently, this limitation can be overcome by copying inside ParaView
+the VTK grids, and managing them individually.
+
+As for the mesh resolution, it is possible to choose from the ParaView GUI
+what types of VTK grids must be use for every mesh type.
+The VTK grid types are:
+  - For solid meshes:
+    - Structured
+    - Unstructured with linear cells
+    - Unstructured with quadratic cells
+
+  - For knot meshes:
+    - Unstructured with linear cells
+    - Unstructured with quadratic cells
+
+  - For control polygon meshes:
+    - Structured
+    - Unstructured with linear cells
+    
+@note The main advantages of the VTK structured grids are the smaller memory footprint
+and computational cost for its creation and a better result when
+the renderization is set to be translucent.
+In addition, its outline representation is fitted to the grid boundaries,
+in contraposition to the VTK unstructured grids.
+However, not all the VTK filters accept a VTK structured grid as input, but a
+VTK unstructured grid. VTK unstructured grids with quadratic cells provide a smoother
+representation of not flat geometries, but at a higher cost.
+
+Once the VTK grids representing the domains have been created and visualized in
+ParaView it is possible to change the meshes resolution and VTK grid types,
+and the grids will be created automatically.
+@note When the resolution or VTK grid type are changed in the ParaView GUI,
+only the affected VTK grids are recomputed.
+
+Despite the fact that the plugin has been develop for visualizing IGA or spline
+quantities, it can visualized other igatools objects that are not splines but
+are based on a @ref Grid or a @ref Domain, e.g. @ref LinearFunction.
+
+Currently, the plugin presents some limitations that are:
+  - Not possible to visualize 0D domains.
+  - It is not possible to visualize element related data.
+  - It is not possible to visualize functions that vary on time.
+  - It only can be visualized functions that are serializable inside
+    and @ref ObjectsContainer or that can be written using the XML writer.
+    I.e., user defined functions deriving from @ref FormulaFunction
+    or @ref FormulaGridFunction can not visualized without extra work.
+  - The functions values cannot be visualized on the knot and control polygon
+    meshes, only on the solid meshes.
+  - When a function associated to a domain is visualized, but this function
+    (or a function with the same name) does not exist for the other domains,
+    the fields values shown for the other domains are flat and meaningless.
+
+
+\section plugin_build Building and loading the ParaView plugin
+
+@todo To be written
+
+blablab lab
+ 
+\section plugin_code ParaView plugin code architecture
+
+This section explain briefly the relationship between the main different
+classes that compound the ParaView plugin.
+For a more complete explanation of every class, visit the documentation
+page \subpage paraview_plugin.
+
+The ParaView plugin is a library itself that is dinamically loaded from
+ParaView. This library loads dynamically igatools at the same time.
+@note This dynamic loading could change in the future.
+
+The main class of the library is @ref IgatoolsParaViewReader that 
+is an interface between other classes and ParaView.
+Some methods of this class receive the input information from ParaView
+and expect to receive the VTK grids to be visualized as output.
+
+It basically gets the input file where the @ref ObjectsContainer container
+is defined, and the options for creating the VTK grids, and returns
+a VTK <tt>multiblock data set</tt>.
+
+This class is able to manage the load of new input file, receives the options
+of the VTK grids set in the ParaView GUI and interacts with ParaView
+in order to activate or de-activate the visualization of each of the
+domains defined in the input.
+
+When the class @ref IgatoolsParaViewReader receives an input file
+as argument, it creates a new @ref paraview_plugin::VtkIgaGridContainer object,
+that is in charge of parsing the input file containing the objects container.
+Once the objects container is read, it creates a series of @ref paraview_plugin::IgaVtkGrid
+(every one containing a single @ref Domain), that will be the ones responsible
+of creating the VTK grids for every domain mesh (parametric or physical).
+@note The creation of VTK grids for parametric domains is managed by creating
+a @ref Domain for each @ref Grid by mapping it using a
+@ref grid_functions::IdentityGridFunction.
+
+The class @ref paraview_plugin::VtkIgaGrid is responsible of creating the solid, knot and
+control polygon meshes for each domain. When requested, this function
+will use the helper classes @ref paraview_plugin::VtkIgaSolidGrid, @ref paraview_plugin::VtkIgaKnotGrid and
+@ref paraview_plugin::VtkIgaControlGrid for creating them.
+
+The helper classes @ref paraview_plugin::VtkIgaSolidGrid, @ref paraview_plugin::VtkIgaKnotGrid and
+@ref paraview_plugin::VtkIgaControlGrid create the VTK grids, given a @ref Domain and @ref paraview_plugin::VtkGridInformation
+(containing the number of VTK cells per Bezier
+element in each direction and the type of the VTK grid).
+
+In the case of solid meshes, in addition to the creation of the VTK grid,
+it also creates data information associated to each point in the VTK
+grid that allows to visualize all the functions defined on the domain.
+
+*/
+
+/** @}*/ //end of group iga_paraview_plugin

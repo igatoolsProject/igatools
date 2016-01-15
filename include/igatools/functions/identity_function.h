@@ -26,7 +26,7 @@
 
 IGA_NAMESPACE_OPEN
 #if 0
-template <int, int> class IdentityFunctionElementHandler;
+template <int, int> class IdentityFunctionHandler;
 
 /**
  * The identity function from R^dim to R^spacedim,
@@ -54,7 +54,7 @@ protected:
 
 public:
   using typename parent_t::ElementAccessor;
-  using ElementHandler = IdentityFunctionElementHandler<dim, space_dim>;
+  using Handler = IdentityFunctionHandler<dim, space_dim>;
 
 
 private:
@@ -77,7 +77,7 @@ public:
     return std::make_shared<const self_t>(grid);
   }
 
-  std::shared_ptr<typename parent_t::ElementHandler>
+  std::shared_ptr<typename parent_t::Handler>
   create_cache_handler() const override final;
 
 private:

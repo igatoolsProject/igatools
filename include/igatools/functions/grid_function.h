@@ -53,7 +53,7 @@ public:
   using ElementAccessor = GridFunctionElement<dim_,range_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
-  using ElementHandler = GridFunctionHandler<dim_,range_>;
+  using Handler = GridFunctionHandler<dim_,range_>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
@@ -85,7 +85,7 @@ public:
   std::shared_ptr<const GridType> get_grid() const;
 
 
-  virtual std::unique_ptr<ElementHandler>
+  virtual std::unique_ptr<Handler>
   create_cache_handler() const = 0;
 
   virtual std::unique_ptr<ElementAccessor>

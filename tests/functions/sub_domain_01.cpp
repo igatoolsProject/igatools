@@ -38,91 +38,6 @@
 #include "function_test.h"
 
 
-template<int dim, int codim>
-class CustomFunction
-  : public FormulaFunction<dim,codim,1,1>
-{
-
-public:
-  using base_t = Function<dim, codim, 1, 1>;
-  using parent_t = FormulaFunction<dim, codim, 1, 1>;
-  using self_t = CustomFunction<dim, codim>;
-  using typename base_t::DomainType;
-  using typename parent_t::Point;
-  using typename parent_t::Value;
-  template <int order>
-  using Derivative = typename parent_t::template Derivative<order>;
-
-public:
-  static std::shared_ptr<self_t>
-  create(const std::shared_ptr<DomainType> &domain)
-  {
-    return std::shared_ptr<self_t>(new
-                                   self_t(SharedPtrConstnessHandler<DomainType>(domain)));
-  }
-
-  static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const DomainType> &domain)
-  {
-    return std::shared_ptr<self_t>(new
-                                   self_t(SharedPtrConstnessHandler<DomainType>(domain)));
-  }
-
-  CustomFunction(const self_t &) = default;
-
-  virtual ~CustomFunction() = default;
-
-  virtual void print_info(LogStream &out) const override final
-  {
-    Assert(false,ExcNotImplemented());
-  }
-
-
-protected:
-  CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain)
-    :
-    parent_t(domain)
-  {}
-
-private:
-  void evaluate_0(const ValueVector<Point> &points,
-                  ValueVector<Value> &values) const override
-  {
-    const int sp_dim = dim+codim;
-
-    int pt = 0;
-    for (auto &val : values)
-    {
-      const auto &point = points[pt];
-
-      val[0] = 0.0;
-      for (int i = 0 ; i < sp_dim ; ++i)
-        val[0] += point[i];
-
-      ++pt;
-    }
-  }
-
-  void evaluate_1(const ValueVector<Point> &points,
-                  ValueVector<Derivative<1>> &values) const override
-  {
-    const int sp_dim = dim+codim;
-
-    for (auto &val : values)
-    {
-
-      for (int i = 0 ; i < sp_dim ; ++i)
-        val[i][0] = 1.0;
-    }
-  }
-
-  void evaluate_2(const ValueVector<Point> &points,
-                  ValueVector<Derivative<2>> &values) const override
-  {
-    //The hessian is zero.
-  }
-};
-
 
 template<int dim, int codim>
 void test_sub_domain(const int s_id)
@@ -197,11 +112,11 @@ void test_sub_domain(const int s_id)
                "_codim_" + std::to_string(codim) +
                "_s_id_" + std::to_string(s_id);
 
-  std::string filename_grid = "new_grid" + msg;
+  std::string filename_grid = "grid" + msg;
   Writer<dim,codim> writer_grid(grid,5);
   writer_grid.save(filename_grid);
 
-  std::string filename_domain = "new_domain" + msg;
+  std::string filename_domain = "domain" + msg;
   Writer<dim,codim> writer_domain(domain,5);
   writer_domain.save(filename_domain);
   //*/
@@ -227,14 +142,9 @@ void do_test()
 
 int main()
 {
-//  test_custom_function<1, 0, 1>();
-//  test_custom_function<2, 0, 2>();
-//  test_custom_function<3, 0, 3>();
 
   do_test<1>();
   do_test<2>();
-
-
 
   return 0;
 }

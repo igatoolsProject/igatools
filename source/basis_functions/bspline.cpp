@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
+#include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/functions/sub_function.h>
 //#include <igatools/functions/identity_function.h>
 //#include <igatools/functions/grid_function_lib.h>
@@ -57,7 +57,7 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   {
     const auto &rep_knots_i = rep_knots[i];
 
-    auto & end_interval_i = end_interval_[i];
+    auto &end_interval_i = end_interval_[i];
 
     for (int dir=0; dir<dim; ++dir)
     {
@@ -65,9 +65,9 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
 
       const auto &knots_coord_dir = *knots_coord[dir];
 
-      const auto & rep_knots_i_dir = rep_knots_i[dir];
+      const auto &rep_knots_i_dir = rep_knots_i[dir];
 
-      auto & end_interval_i_dir = end_interval_i[dir];
+      auto &end_interval_i_dir = end_interval_i[dir];
 
       const auto x1 = knots_coord_dir[1];
       const auto a = knots_coord_dir[0];
@@ -146,17 +146,17 @@ BSpline<dim_, range_, rank_>::
 get_this_basis() const -> shared_ptr<const self_t>
 {
   auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
-  auto bsp_space = std::dynamic_pointer_cast<self_t>(ref_sp);
-  Assert(bsp_space != nullptr,ExcNullPtr());
+  auto bsp_basis = std::dynamic_pointer_cast<self_t>(ref_sp);
+  Assert(bsp_basis != nullptr,ExcNullPtr());
 
-  return bsp_space;
+  return bsp_basis;
 }
 
 template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_element_begin(const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+-> std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -170,7 +170,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_element_end(const PropId &property) const
--> std::unique_ptr<SpaceElement<dim_,0,range_,rank_> >
+-> std::unique_ptr<BasisElement<dim_,0,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -185,7 +185,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_ref_element_begin(const PropId &property) const
--> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+-> std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -197,7 +197,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_ref_element_end(const PropId &property) const
--> std::unique_ptr<ReferenceElement<dim_,range_,rank_> >
+-> std::unique_ptr<ReferenceBasisElement<dim_,range_,rank_> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -235,8 +235,8 @@ template<int dim_, int range_, int rank_>
 template<int sdim>
 auto
 BSpline<dim_, range_, rank_>::
-get_sub_bspline_space(const int s_id,
-                      InterSpaceMap<sdim> &dof_map,
+get_sub_bspline_basis(const int s_id,
+                      InterBasisMap<sdim> &dof_map,
                       const std::shared_ptr<const Grid<sdim>> &sub_grid_in) const
 -> std::shared_ptr<const BSpline<sdim, range_, rank_> >
 {
@@ -417,9 +417,9 @@ template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::
 create_cache_handler() const
--> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
+-> std::unique_ptr<BasisHandler<dim_,0,range_,rank_>>
 {
-  using Handler = BSplineElementHandler<dim_,range_,rank_>;
+  using Handler = BSplineHandler<dim_,range_,rank_>;
   return std::unique_ptr<Handler>(new Handler(this->get_this_basis()));
 }
 
@@ -443,13 +443,13 @@ BSpline<dim_, range_, rank_>::
 serialize(Archive &ar)
 {
   using std::to_string;
-  const std::string base_name = "ReferenceSpaceBasis_" +
+  const std::string base_name = "ReferenceBasis_" +
                                 to_string(dim_) + "_" +
                                 to_string(0) + "_" +
                                 to_string(range_) + "_" +
                                 to_string(rank_);
 
-  ar &make_nvp(base_name,base_class<BaseSpace>(this));
+  ar &make_nvp(base_name,base_class<RefBasis>(this));
 
   ar &make_nvp("spline_space_",spline_space_);
 
@@ -472,7 +472,7 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-//using BSpSpaceAlias0_1_1 = iga::BSpline<0,1,1>;
-//CEREAL_REGISTER_DYNAMIC_INIT(BSpSpaceAlias0_1_1);
+//using BSpAlias0_1_1 = iga::BSpline<0,1,1>;
+//CEREAL_REGISTER_DYNAMIC_INIT(BSpAlias0_1_1);
 
 #endif // SERIALIZATION

@@ -48,7 +48,7 @@ public:
 
   using GridFunctionType = const GridFunction<dim_, range_>;
   using GridType = const Grid<dim_>;
-  using GridHandler = typename GridType::ElementHandler;
+  using GridHandler = typename GridType::Handler;
 
   using ElementAccessor = GridFunctionElement<dim_, range_>;
   using ElementIterator = GridIterator<ElementAccessor>;

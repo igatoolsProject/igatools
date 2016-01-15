@@ -40,7 +40,7 @@ using namespace iga;
 using namespace std;
 
 template <int dim, int codim, int range, int rank>
-void write_container (const string &file_path)
+void write_container(const string &file_path)
 {
   Epetra_SerialComm comm;
 
@@ -53,11 +53,11 @@ void write_container (const string &file_path)
   auto space_1 = SplineSpace<dim,range>::create(deg, grid);
   auto space_2 = SplineSpace<dim,1>::create(deg, grid);
 
-  // Creating bspline spaces
+  // Creating bspline bases
   auto ref_basis_1 = BSpline<dim,range>::create(space_1);
   auto ref_basis_2 = BSpline<dim,1>::create(space_2);
 
-  // Creating nurbs space
+  // Creating nurbs basis
   auto map_1 = EpetraTools::create_map(*ref_basis_2, "active", comm);
   const auto w = EpetraTools::create_vector(*map_1);
   (*w)[0] = 1.;
@@ -74,8 +74,8 @@ void write_container (const string &file_path)
   auto domain = Domain<dim>::create(grid_func);
   domain->set_name("my_domain");
 
-  // Creating phys space
-  auto phys_basis = PhysicalSpaceBasis<dim,range>::create(ref_basis_3, domain);
+  // Creating phys basis
+  auto phys_basis = PhysicalBasis<dim,range>::create(ref_basis_3, domain);
 
   auto map_3 = EpetraTools::create_map(*phys_basis, "active", comm);
   auto coeff = EpetraTools::create_vector(*map_3);
@@ -118,7 +118,7 @@ void write_container (const string &file_path)
 };
 
 
-void read_container (const string &file_path)
+void read_container(const string &file_path)
 {
   const auto container = ObjectsContainerXMLReader::parse(file_path);
   container->print_info(out);
@@ -130,18 +130,18 @@ int main()
   string file_path;
   OUTSTART
   file_path = "test_2_0_2_1.xml";
-  out.begin_item (string("Parsing writing/reading file") + file_path);
+  out.begin_item(string("Parsing writing/reading file") + file_path);
   write_container<2, 0, 2, 1>(file_path);
-  read_container (file_path);
-  out.end_item ();
+  read_container(file_path);
+  out.end_item();
   OUTEND
 
   OUTSTART
   file_path = "test_3_0_3_1.xml";
-  out.begin_item (string("Parsing writing/reading file") + file_path);
+  out.begin_item(string("Parsing writing/reading file") + file_path);
   write_container<3, 0, 3, 1>(file_path);
-  read_container (file_path);
-  out.end_item ();
+  read_container(file_path);
+  out.end_item();
   OUTEND
 
   return 0;

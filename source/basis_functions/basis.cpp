@@ -20,7 +20,7 @@
 
 #include <igatools/basis_functions/basis.h>
 #include <igatools/utils/unique_id_generator.h>
-#include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/basis_element.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/basis_functions/dof_distribution.h>

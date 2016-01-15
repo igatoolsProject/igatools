@@ -44,7 +44,7 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
   n_vis_elem_parm_solid_(1),
   n_vis_elem_phys_knot_(1),
   n_vis_elem_parm_knot_(1),
-  iga_grid_gen_(iga::paraview_plugin::VtkIgaGridContainer::create_void ())
+  iga_grid_container_(iga::paraview_plugin::VtkIgaGridContainer::create_void ())
 {
 #ifndef NDEBUG
   this->DebugOn();
@@ -118,7 +118,7 @@ NewInstanceInternal() const
 
 int IgatoolsParaViewReader::RequestInformation(
   vtkInformation *vtkNotUsed(request),
-  vtkInformationVector **vtkNotUsed(inputVector),
+  vtkInformationVector **vtkNotUsed(input_vec),
   vtkInformationVector *output_vec)
 {
   vtkInformation *info = output_vec->GetInformationObject(0);
@@ -127,14 +127,14 @@ int IgatoolsParaViewReader::RequestInformation(
     return 0;
 
   // If the file is not parse, it is parsed now.
-  if (!parse_file_)
+  if (!parse_input_file_)
       return 1;
 
   try
   {
       this->SetProgressText("Parsing igatools file.");
 
-      iga_grid_gen_ = iga::paraview_plugin::VtkIgaGridContainer::create
+      iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create
               (file_name_,
                n_vis_elem_phys_solid_, phys_sol_grid_type_,
                n_vis_elem_phys_knot_,  phys_knt_grid_type_,
@@ -142,7 +142,7 @@ int IgatoolsParaViewReader::RequestInformation(
                n_vis_elem_parm_solid_, parm_sol_grid_type_,
                n_vis_elem_parm_knot_,  parm_knt_grid_type_);
 
-      parse_file_ = false;
+      parse_input_file_ = false;
 
       return 1;
   }
@@ -151,7 +151,7 @@ int IgatoolsParaViewReader::RequestInformation(
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << e.what());
 
-    iga_grid_gen_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
+    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
 
     return 0;
   }
@@ -160,7 +160,7 @@ int IgatoolsParaViewReader::RequestInformation(
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << "AN UNKNOWN EXCEPTION OCCUR!");
 
-    iga_grid_gen_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
+    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
 
     return 0;
   }
@@ -171,7 +171,7 @@ int IgatoolsParaViewReader::RequestInformation(
 
 int IgatoolsParaViewReader::RequestData(
   vtkInformation *vtkNotUsed(request),
-  vtkInformationVector **vtkNotUsed(inputVector),
+  vtkInformationVector **vtkNotUsed(input_vec),
   vtkInformationVector *output_vec)
 {
   vtkInformation *info = output_vec->GetInformationObject(0);
@@ -182,7 +182,7 @@ int IgatoolsParaViewReader::RequestData(
 
   this->UpdateProgress(0.0);
 
-  iga_grid_gen_->update(n_vis_elem_phys_solid_, phys_sol_grid_type_,
+  iga_grid_container_->update(n_vis_elem_phys_solid_, phys_sol_grid_type_,
                     n_vis_elem_phys_knot_,  phys_knt_grid_type_,
                                             phys_ctr_grid_type_,
                     n_vis_elem_parm_solid_, parm_sol_grid_type_,
@@ -190,7 +190,7 @@ int IgatoolsParaViewReader::RequestData(
 
   try
   {
-      iga_grid_gen_->create_multiblock_grid(create_physical_mesh_,
+      iga_grid_container_->create_multiblock_grid(create_physical_mesh_,
                                   create_sol_mesh_phys_,
                                   create_knt_mesh_phys_,
                                   create_ctr_mesh_phys_,
@@ -238,7 +238,7 @@ CanReadFile(const char *name)
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << e.what());
 
-    iga_grid_gen_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
+    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
 
     return 0;
   }
@@ -247,7 +247,7 @@ CanReadFile(const char *name)
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << "AN UNKNOWN EXCEPTION OCCUR!");
 
-    iga_grid_gen_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
+    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
 
     return 0;
   }
@@ -538,7 +538,7 @@ SetFileName(const char *arg)
     this->file_name_ = new char[strlen(arg)+1];
     strcpy(this->file_name_, arg);
 
-    parse_file_ = true;
+    parse_input_file_ = true;
   }
   else
   {
@@ -554,9 +554,9 @@ int
 IgatoolsParaViewReader::
 GetNumberOfPhysGeomArrays()
 {
-  if (iga_grid_gen_ == nullptr)
+  if (iga_grid_container_ == nullptr)
     return 0;
-  return iga_grid_gen_->get_number_physical_grids();
+  return iga_grid_container_->get_number_physical_domains();
 }
 
 
@@ -565,8 +565,8 @@ const char *
 IgatoolsParaViewReader::
 GetPhysGeomArrayName(int index)
 {
-  Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
-  const char *name = iga_grid_gen_->get_physical_grid_name(index);
+  Assert(iga_grid_container_ != nullptr, iga::ExcNullPtr());
+  const char *name = iga_grid_container_->get_physical_domain_name(index);
   return name;
 }
 
@@ -576,8 +576,8 @@ int
 IgatoolsParaViewReader::
 GetPhysGeomArrayStatus(const char *name)
 {
-  Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
-  return iga_grid_gen_->get_physical_grid_status(string(name));
+  Assert(iga_grid_container_ != nullptr, iga::ExcNullPtr());
+  return iga_grid_container_->get_physical_domain_status(string(name));
 }
 
 
@@ -589,12 +589,12 @@ SetPhysGeomArrayStatus(const char *name, int enable)
   // Note: sometimes this function is called before parsing and
   // names gotten from Previous ParaView session are parsed.
   // The if is introduced for fixing this problem.
-  if (iga_grid_gen_ != nullptr)
+  if (iga_grid_container_ != nullptr)
   {
     const auto name_str = string(name);
-    if (iga_grid_gen_->get_physical_grid_status(name_str) != enable)
+    if (iga_grid_container_->get_physical_domain_status(name_str) != enable)
     {
-      iga_grid_gen_->set_physical_grid_status(name_str, enable);
+      iga_grid_container_->set_physical_domain_status(name_str, enable);
       this->Modified();
     }
   }
@@ -606,9 +606,9 @@ int
 IgatoolsParaViewReader::
 GetNumberOfParmGeomArrays()
 {
-  if (iga_grid_gen_ == nullptr)
+  if (iga_grid_container_ == nullptr)
     return 0;
-  return iga_grid_gen_->get_number_parametric_grids();
+  return iga_grid_container_->get_number_parametric_domains();
 }
 
 
@@ -617,8 +617,8 @@ const char *
 IgatoolsParaViewReader::
 GetParmGeomArrayName(int index)
 {
-  Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
-  const char *name = iga_grid_gen_->get_parametric_grid_name(index);
+  Assert(iga_grid_container_ != nullptr, iga::ExcNullPtr());
+  const char *name = iga_grid_container_->get_parametric_domain_name(index);
   return name;
 }
 
@@ -628,8 +628,8 @@ int
 IgatoolsParaViewReader::
 GetParmGeomArrayStatus(const char *name)
 {
-  Assert(iga_grid_gen_ != nullptr, iga::ExcNullPtr());
-  return iga_grid_gen_->get_parametric_grid_status(string(name));
+  Assert(iga_grid_container_ != nullptr, iga::ExcNullPtr());
+  return iga_grid_container_->get_parametric_domain_status(string(name));
 }
 
 
@@ -641,12 +641,12 @@ SetParmGeomArrayStatus(const char *name, int enable)
   // Note: sometimes this function is called before parsing and
   // names gotten from Previous ParaView session are parsed.
   // The if is introduced for fixing this problem.
-  if (iga_grid_gen_ != nullptr)
+  if (iga_grid_container_ != nullptr)
   {
     const auto name_str = string(name);
-    if (iga_grid_gen_->get_parametric_grid_status(name_str) != enable)
+    if (iga_grid_container_->get_parametric_domain_status(name_str) != enable)
     {
-      iga_grid_gen_->set_parametric_grid_status(name_str, enable);
+      iga_grid_container_->set_parametric_domain_status(name_str, enable);
       this->Modified();
     }
   }

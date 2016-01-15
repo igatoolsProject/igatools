@@ -22,13 +22,13 @@
 #define NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 
 #include <igatools/geometry/domain_element.h>
-#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/basis_functions/physical_basis_element.h>
 
 IGA_NAMESPACE_OPEN
 
 
 template <int,int,int,int>
-class PhysicalSpaceElement;
+class PhysicalBasisElement;
 
 constexpr
 int physical_range(const int ref_range, const int space_dim, const Transformation type)
@@ -84,20 +84,20 @@ public:
 #endif
 
   template <int range,int rank>
-  using RefSpaceElem = ReferenceElement<dim_,range,rank>;
+  using RefBasisElem = ReferenceBasisElement<dim_,range,rank>;
 
 
   template <int range,int rank>
-  using PhysSpaceElem = PhysicalSpaceElement<dim_,range,rank,codim>;
+  using PhysBasisElem = PhysicalBasisElement<dim_,range,rank,codim>;
 
 public:
 
   template <int range, int rank, int sdim>
   void
   transform_0(const int s_id,
-              const RefSpaceElem<range,rank> &ref_elem,
+              const RefBasisElem<range,rank> &ref_elem,
               const PhysDomainElem &phys_domain_elem,
-              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
+              typename PhysBasisElem<range,rank>::Cache &phys_sub_elem_cache) const
   {
     if (transformation_type_ == Transformation::h_grad)
     {
@@ -125,9 +125,9 @@ public:
   template <int range, int rank, int sdim>
   void
   transform_1(const int s_id,
-              const RefSpaceElem<range,rank> &ref_elem,
+              const RefBasisElem<range,rank> &ref_elem,
               const PhysDomainElem &phys_domain_elem,
-              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
+              typename PhysBasisElem<range,rank>::Cache &phys_sub_elem_cache) const
   {
     if (transformation_type_ == Transformation::h_grad)
     {
@@ -155,9 +155,9 @@ public:
   template <int range, int rank, int sdim>
   void
   transform_2(const int s_id,
-              const RefSpaceElem<range,rank> &ref_elem,
+              const RefBasisElem<range,rank> &ref_elem,
               const PhysDomainElem &phys_domain_elem,
-              typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
+              typename PhysBasisElem<range,rank>::Cache &phys_sub_elem_cache) const
   {
     if (transformation_type_ == Transformation::h_grad)
     {
@@ -186,10 +186,10 @@ private:
   template <int range, int rank, int sdim>
   void
   hgrad_transform_0(const int s_id,
-                    const RefSpaceElem<range,rank> &ref_elem,
-                    typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
+                    const RefBasisElem<range,rank> &ref_elem,
+                    typename PhysBasisElem<range,rank>::Cache &phys_sub_elem_cache) const
   {
-    using PhysElem = PhysSpaceElem<range,rank>;
+    using PhysElem = PhysBasisElem<range,rank>;
     using _Value = typename PhysElem::_Value;
     auto &v = phys_sub_elem_cache.template get_data<_Value>();
     const auto &v_hat = ref_elem.template get_basis_data<_Value,sdim>(s_id,DofProperties::active);
@@ -201,11 +201,11 @@ private:
   template <int range, int rank, int sdim>
   void
   hgrad_transform_1(const int s_id,
-                    const RefSpaceElem<range,rank> &ref_elem,
+                    const RefBasisElem<range,rank> &ref_elem,
                     const PhysDomainElem &phys_domain_elem,
-                    typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
+                    typename PhysBasisElem<range,rank>::Cache &phys_sub_elem_cache) const
   {
-    using PhysElem = PhysSpaceElem<range,rank>;
+    using PhysElem = PhysBasisElem<range,rank>;
     using _Gradient = typename PhysElem::_Gradient;
 
     using _InvJacobian = typename PhysDomainElem::_InvJacobian;
@@ -231,11 +231,11 @@ private:
   template <int range, int rank, int sdim>
   void
   hgrad_transform_2(const int s_id,
-                    const RefSpaceElem<range,rank> &ref_elem,
+                    const RefBasisElem<range,rank> &ref_elem,
                     const PhysDomainElem &phys_domain_elem,
-                    typename PhysSpaceElem<range,rank>::Cache &phys_sub_elem_cache) const
+                    typename PhysBasisElem<range,rank>::Cache &phys_sub_elem_cache) const
   {
-    using PhysElem = PhysSpaceElem<range,rank>;
+    using PhysElem = PhysBasisElem<range,rank>;
     using _Gradient = typename PhysElem::_Gradient;
     using _Hessian = typename PhysElem::_Hessian;
 

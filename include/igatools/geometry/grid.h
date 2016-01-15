@@ -180,7 +180,7 @@ public:
   using ElementIterator = GridIterator<ElementAccessor>;
 
 
-  using ElementHandler = GridHandler<dim_>;
+  using Handler = GridHandler<dim_>;
 
 
   using Point = Points<dim_>;
@@ -430,7 +430,7 @@ public:
   ///@}
 
 
-  std::unique_ptr<ElementHandler> create_cache_handler() const;
+  std::unique_ptr<Handler> create_cache_handler() const;
 
   /**
    * @name Iterating of grid elements
@@ -461,6 +461,7 @@ public:
    * @name Dealing with boundary information
    */
   ///@{
+#ifdef USE_DEPRECATED
   /**
    * Get the patch @p face boundary id.
    */
@@ -470,6 +471,7 @@ public:
    * Set the patch @p face to have the boundary @p id.
    */
   void set_boundary_id(const int face, const boundary_id id);
+#endif // USE_DEPRECATED
 
   template<int sdim>
   using BoundaryNormals = SafeSTLArray<Points<dim_>, dim_-sdim>;
@@ -649,12 +651,14 @@ private:
    */
   KnotCoordinates knot_coordinates_;
 
+#ifdef USE_DEPRECATED
   /**
    * Boundary ids, one id per face
    *
    * TODO (martinelli dec 23, 2015): discuss about the usefulness of this member variable
    */
   SafeSTLArray<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
+#endif
 
   /**
    * Properties assigned to the elements.
