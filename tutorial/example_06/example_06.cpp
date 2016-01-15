@@ -184,7 +184,6 @@ void PoissonProblem<dim>::assemble() {
     s_dom_handler->init_element_cache(s_dom_el,face_quad);
 
     auto funct_el      = funct->begin();
-    auto funct_el_end  = funct->end();
     auto funct_handler = funct->create_cache_handler();
     funct_handler->set_element_flags(function_element::Flags::D0);
     funct_handler->init_cache(funct_el,face_quad);

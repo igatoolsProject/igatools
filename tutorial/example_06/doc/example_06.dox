@@ -1,11 +1,11 @@
 /**
-\page example_06 Example 6: non-homogenous Neumann conditions
+\page example_06 Example 6: non-homogeneous Neumann conditions
 
 \section Introduction
-In \ref Example_05 we applied non-homogenous boundary conditions to a simple Poisson problem. In this
+In \ref example_05 we applied non-homogeneous boundary conditions to a simple Poisson problem. In this
 example we will apply mixed boundary conditions. The toy problem is again the Poisson equation on the
 quarter annulus domain. If we denote the splitting of the boundary with 
-\f$\partial\Omega=\partial\Omega_N\cup\partial\Omega_N\f$, the equation reads:
+\f$\partial\Omega=\partial\Omega_D\cup\partial\Omega_N\f$, the equation reads:
 \f{equation}{
   \left\{
     \begin{aligned}
@@ -18,9 +18,9 @@ quarter annulus domain. If we denote the splitting of the boundary with
 With full generality, in variational form we have
 \f{equation}{
   a(u,v) = \int_{\Omega} \nabla u\cdot\nabla v\,dx=\int_{\Omega} fv\,dx + \int_{\partial\Omega_N}hv\,d\Sigma = F(v)
-  \qquad\forall v\in H^1_0({[0,1]^d})
+  \qquad\forall v\in H^1_0({\O})
 \f}
-Once again we provide a simple strong solution
+Once again we provide a simple strong solution:
 \f{equation}{
   u(x,y)=e^x\sin(y).
 \f}
@@ -31,12 +31,12 @@ for the Dirichlet boundary conditions and one function for the Neumann ones:
     g_0:\Gamma_0\longrightarrow\mathbb{R},\quad g_0(x,y) &= e^x\sin(y),\\
     g_1:\Gamma_1\longrightarrow\mathbb{R},\quad g_1(x,y) &= e^x\sin(y),\\
     g_2:\Gamma_2\longrightarrow\mathbb{R},\quad g_2(x,y) &= e^x\sin(y),\\
-    h_3:\Gamma_3\longrightarrow\mathbb{R},\quad g_3(x,y) &= \sin(y).
+    h_3:\Gamma_3\longrightarrow\mathbb{R},\quad h_3(x,y) &= \sin(y).
   \end{aligned}
 \f}
 
-Dirichlet boundary conditions have already been explained in \ref exeample_05, hence we will mainly focus on the
-Neumann conditions. This Example makes use of the CustomFunction and quarter annulus domain. The reader is supposed
+Dirichlet boundary conditions have already been explained in \ref example_05, hence we will mainly focus on the
+Neumann conditions. This example makes use of the CustomFunction and quarter annulus domain. The reader is supposed
 to be familiar with these objects.
 
 \section code06 Description of the program
@@ -44,34 +44,36 @@ There are no new headers to be included, therefore we can jump directly to the m
 the PoissonProblem class. The definition and the constructor are almost identical to the ones in \ref example_05.
 There are two differences: we add a container for the Neumann boundary conditions:
 \snippet example_06.cpp neumann_data
-and we store it with the call of the constructor:
+and we store it with the call of the constructor. Here are its first lines:
 \snippet example_06.cpp constructor
 
 There are no news (i.e. good news) on the system matrix assemble. With the right igatools objects in the hand, 
 Dirichlet boundary conditions can be applied in just three lines of code. Unfortunately, Neumann conditions have
 to by applied manually.
 
-First of all, we use the <tt>std::map</tt> to instantiate a loop on the faces with Neumann conditions:
+After the matrix and right hand side assemble, we use the <tt>std::map</tt> to instantiate a loop on the faces 
+with Neumann conditions:
 \snippet example_06.cpp neu_loop_init
 Before going farther with the code analysis, we explain the conceptual structure of igatools boundary integration.
-In order to get the computational data, we need to create cache handlers of three objects:
+In order to get the computational data, we need to create the cache handlers of three objects:
  - the face of the domain
  - the boundary function
  - the basis
+
 The first two are objects with dimension 1 (and codimension 1), therefore they naturally live with the correct
 dimension. Their cache handlers are created as normal.
 The last one, the basis, lives in dimension 2 (and codimension 0), therefore the cache handler has to be reset and
 reinitialized for dimension 1. 
-For the sake of performance, the element loop is traverses the face element only. During the element loop, the 
-basis element cannot be pushed forward with uses  of <tt>operator++</tt>, as it would move on the whole grid. 
-It has to be manually moved to the proper element on the face.
+For the sake of performance, the element loop itraverses the boundary <tt>dim</tt>-dimensional elements only.
+During the element loop, the basis element cannot be pushed forward with uses  of <tt>operator++</tt>, as it would 
+move on the whole grid. It has to be manually moved to the proper element on the face.
 
 It is now time to inspect the code. The first step is something the reader should already have seen:
 \snippet example_06.cpp sub_grid_init
-We are not going to need the grid or the subgrid (face grid). The needed variable is <tt>sub_grid_elem_map</tt>. This
-variable stores a mapping between two indexing systems: the former is the indexing of the elements on the face, while the 
-latter is the indexing of the elements on the whole grid. We will use this mapping to move the basis element in 
-the right place.
+We are not going to need the <tt>grid</tt> or the <tt>sub_grid</tt> (face grid). The needed variable is 
+<tt>sub_grid_elem_map</tt>. This variable stores a mapping between two indexing systems: the former is the
+indexing of the elements on the face, while the latter is the indexing of the elements on the whole grid. 
+We will use this mapping to move the basis element in the right place.
 
 As already stated, the handlers of the subdomain (face domain) and of the function have the "right" dimension so that
 their implementation is canonical:
@@ -79,14 +81,16 @@ their implementation is canonical:
 
 For the setting and initialization of the basis cache handler, we need these lines:
 \snippet example_06.cpp basis_handler_init
-A new instantiation of <tt>basis_el</tt> is required while the <tt>basis_handler</tt> can be recycled.
-We have to call the template function <tt>set_flags</tt> in order to have the cache handler computing the data with
-the correct dimension. Then <tt>init_element_cache</tt> is substituted with <tt>init_face_cache</tt>. Note the
+%A new instantiation of <tt>basis_el</tt> is required while the <tt>basis_handler</tt> can be recycled.
+We have to call the template function <tt>set_flags</tt> in order to have the cache handler managing the data with
+the correct dimension. Then <tt>init_element_cache</tt> is replaced with <tt>init_face_cache</tt>. Note the
 input quadrature rule.
 
 The three cache handlers are set and initialize. The element loop is initialized as usual, as much as the cache fillings
 for the domain element and the function element:
 \snippet example_06.cpp neu_el_loop_init
+Notice that in the initialization of the <tt>for</tt>-loop the increment on the basis element <tt>++basis_el</tt> is missing.
+
 A little care is required for the filling of the basis element. As previously introduced, we need to move the basis
 element on the proper face element. First of all we retrieve the subgrid index from the function element:
 \snippet example_06.cpp get_func_elem_id
@@ -99,17 +103,18 @@ The basis element is in the right position, hence we can feel the cash:
 In order to get the requested data, we need these three lines of code the reader is supposed to be familiar with:
 \snippet example_06.cpp get_data
 We just notice here that the basis functions values need to be retrieved with the template method 
-<tt>get_basis_data</tt> with the face index as input parameter.
+<tt>get_basis_data</tt> with the face index as input parameter. The number of basis functions (<tt>num_basis</tt>) and
+the number of quadrature points (<tt>num_quad</tt>) agrees with dimension \f$d-1=1\f$ for this 2D problem.
 
 The computational kernel of the Neumann loop is identical to previous examples:
 \snippet example_06.cpp computational_kernel
 
 We spend few words for the main body, but first we list the implementations of the problem's functions. We have
-the exact solution:
+the exact solution \f$u\f$:
 \snippet example_06.cpp exact_solution
-the functions for the Dirichlet boundary conditions:
+the functions \f$g_i,\,\,i=0,1,2\f$ for the Dirichlet boundary conditions:
 \snippet example_06.cpp dirichlet_conds
-and the function for the Neumann boundary conditions:
+and the function \f$h_3\f$ for the Neumann boundary conditions:
 \snippet example_06.cpp neumann_conds
 
 This is the code for the assignemt of the boundary conditions:
