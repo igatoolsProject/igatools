@@ -71,7 +71,7 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 
 #--------------------------------------------------------------------------------------
 # BasisElement used by PhysicalBasisElement 
-for basis in inst.SubPhysSpaces + inst.PhysSpaces:
+for basis in inst.SubPhysBases + inst.PhysBases:
     x = basis.spec
     handler = 'BasisHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
     handlers.add(handler)

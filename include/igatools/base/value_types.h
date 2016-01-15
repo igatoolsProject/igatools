@@ -429,14 +429,14 @@ enum class CacheFlags
 
 struct activate
 {
-  using SpaceFlagsToSpaceCache = std::map<Flags, CacheFlags>;
-  static SpaceFlagsToSpaceCache phys_basis_flags_to_phys_basis_cache;
+  using BasisFlagsToBasisCache = std::map<Flags, CacheFlags>;
+  static BasisFlagsToBasisCache phys_basis_flags_to_phys_basis_cache;
 
-  using SpaceFlagsToDomainFlags = std::map<Flags,domain_element::Flags>;
-  static SpaceFlagsToDomainFlags phys_basis_flags_to_domain_flags;
+  using BasisFlagsToDomainFlags = std::map<Flags,domain_element::Flags>;
+  static BasisFlagsToDomainFlags phys_basis_flags_to_domain_flags;
 
-  using SpaceCacheToDomainFlags = std::map<CacheFlags,domain_element::Flags>;
-  static SpaceCacheToDomainFlags phys_basis_cache_to_domain_flags;
+  using BasisCacheToDomainFlags = std::map<CacheFlags,domain_element::Flags>;
+  static BasisCacheToDomainFlags phys_basis_cache_to_domain_flags;
 };
 #endif
 

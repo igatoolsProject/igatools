@@ -104,29 +104,29 @@ phys_basis_to_domain_flag(
   map_flags = flags & transfer_flag;
   //*/
 
-  using SpaceFlags = basis_element::Flags;
+  using BasisFlags = basis_element::Flags;
 
   using DomainFlags = domain_element::Flags;
   DomainFlags domain_flag = DomainFlags::none;
 
-  if (contains(phys_basis_flag, SpaceFlags::point))
+  if (contains(phys_basis_flag, BasisFlags::point))
     domain_flag |= DomainFlags::point;
-  if (contains(phys_basis_flag, SpaceFlags::w_measure))
+  if (contains(phys_basis_flag, BasisFlags::w_measure))
     domain_flag |= DomainFlags::w_measure;
 
 
   if (transformation_type == Transformation::h_grad)
   {
-    if (contains(phys_basis_flag, SpaceFlags::value))
+    if (contains(phys_basis_flag, BasisFlags::value))
     {}
 
-    if (contains(phys_basis_flag, SpaceFlags::gradient))
+    if (contains(phys_basis_flag, BasisFlags::gradient))
       domain_flag |= (DomainFlags::inv_jacobian);
 
-    if (contains(phys_basis_flag, SpaceFlags::hessian))
+    if (contains(phys_basis_flag, BasisFlags::hessian))
       domain_flag |= (DomainFlags::hessian | DomainFlags::inv_jacobian);
 
-//    if (contains(phys_basis_flag, SpaceFlags::divergence))
+//    if (contains(phys_basis_flag, BasisFlags::divergence))
 //      AssertThrow(false,ExcNotImplemented());
 //      domain_flag |= (DomainFlags::inv_gradient);
 

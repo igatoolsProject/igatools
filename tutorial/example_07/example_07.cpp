@@ -86,7 +86,7 @@ class LinearElasticity {
     // spaces
     shared_ptr<const SplineSpace<dim,dim,1>>          ref_space;
     shared_ptr<const BSpline<dim,dim,1>>              ref_basis;
-    shared_ptr<const PhysicalSpaceBasis<dim,dim,1,0>> phy_basis;
+    shared_ptr<const PhysicalBasis<dim,dim,1,0>> phy_basis;
     // quadrature rules
     shared_ptr<const QGauss<dim>>   quad;
     shared_ptr<const QGauss<dim-1>> face_quad;
@@ -119,7 +119,7 @@ class LinearElasticity {
       auto grid = domain->get_grid_function()->get_grid();
       ref_space = SplineSpace<dim,dim,1>::const_create(deg,grid);
       ref_basis = BSpline<dim,dim,1>::const_create(ref_space);
-      phy_basis = PhysicalSpaceBasis<dim,dim,1,0>::const_create(ref_basis,domain);
+      phy_basis = PhysicalBasis<dim,dim,1,0>::const_create(ref_basis,domain);
       quad      = QGauss<dim>::const_create(deg+1);
       face_quad = QGauss<dim-1>::const_create(deg+1);
       mat = create_matrix(*phy_basis,DofProperties::active,Epetra_SerialComm());

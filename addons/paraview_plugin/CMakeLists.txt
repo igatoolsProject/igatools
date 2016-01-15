@@ -106,7 +106,7 @@ create_paraview_plugin_configuration_target ()
 
 set(max_der_order 2 CACHE STRINGS "maximum order of derivatives")
 message("Configuring instantiations")
-create_space_table()
+create_basis_table()
 generate_plugin_instantiations()
 
 create_paraview_plugin_install_target()

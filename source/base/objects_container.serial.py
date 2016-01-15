@@ -66,9 +66,9 @@ for x in inst.mapping_dims:
 
 # Physical bases
 valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
-for sp in inst.SubPhysSpaces:
+for sp in inst.SubPhysBases:
     valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
-for sp in inst.PhysSpaces:
+for sp in inst.PhysBases:
     valid_types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 
 # Functions

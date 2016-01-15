@@ -58,7 +58,7 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
 #--------------------------------------------------------------------------------------
 # BasisElement used by PhysicalBasisElement 
 
-for space in inst.SubPhysSpaces + inst.PhysSpaces:
+for space in inst.SubPhysBases + inst.PhysBases:
     x = space.spec
     elem = 'BasisElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
     elements.add(elem)

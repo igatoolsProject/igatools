@@ -1,6 +1,6 @@
 /**
 
-\page example_08 Example 8: Physical space = PushForwad + Reference Space
+\page example_08 Example 8: Physical space = PushForwad + Reference Basis
 
 \section Introduction
    We show the creation of a physical space, a physical space is given by a push forward of a reference space. A push fordward is an operator that transforms functions from a reference space using a Mapping and a rule (the transformation type).

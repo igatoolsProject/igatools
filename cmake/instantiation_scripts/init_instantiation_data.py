@@ -30,22 +30,22 @@ Instantiation rational
 
 Instantiation dependencies
 
-The user supplies at configure time the physical spaces that 
+The user supplies at configure time the physical bases that 
 the library shall be used for.
 
-1) The user physical spaces require a face physical space
+1) The user physical bases require a face physical basis
 
-2) Each physical space requires:
-   - A ref space
-   - A mapping
+2) Each physical basis requires:
+   - A ref basis
+   - A domain
    - a push-foward
 
-3) Each mapping of the physical spaces can be an Igmapping
-   that requires a refspace of the appropriate type
+3) Each domain of the physical bases can be based on a IgGridFunction
+   that requires a ReferenceBasis of the appropriate type
    
-4) In igatools each reference space is treated as a special physical space,
+4) In igatools each reference basis is treated as a special physical basis,
    requiring:
-   - an identity mapping of codimenion  0
+   - an identity domain of codimenion  0
    - a push-foward of h_grad type
    
 
@@ -59,8 +59,8 @@ def unique(seq):
          checked.append(e)
    return checked
 
-# Class specifying the description of a physical space.
-class PhysSpaceSpecs:
+# Class specifying the description of a physical basis.
+class PhysBasisSpecs:
    # Constructor of the class.
    def __init__(self, arg_list):
       self.dim        = arg_list[0]
@@ -74,7 +74,7 @@ class PhysSpaceSpecs:
       self.phys_rank  = self.physical_rank(self.rank)
       return None
    def __eq__(self, other):
-        if isinstance(other, PhysSpaceSpecs):
+        if isinstance(other, PhysBasisSpecs):
             return(self.dim == other.dim) and \
               (self.codim == other.codim) and \
               (self.range == other.range) and \
@@ -96,17 +96,17 @@ class PhysSpaceSpecs:
       return ref_rank
 
 
-class PhysSpace:
-    def __init__(self, specs, ref_space, name):
+class PhysBasis:
+    def __init__(self, specs, ref_basis, name):
        self.spec   = specs
        self.name   = ( '%s <' %name + 
                        '%d,%d,%d,' % (specs.dim, specs.range, specs.rank) +
                        '%d>' %(specs.codim) )
 
-class RefSpace:
-    def __init__(self, specs, ref_space):
+class RefBasis:
+    def __init__(self, specs, ref_basis):
        self.spec   = specs
-       self.name   = ref_space + '<%d,%d,%d>' % (specs.dim, specs.range, specs.rank)     
+       self.name   = ref_basis + '<%d,%d,%d>' % (specs.dim, specs.range, specs.rank)     
 
 
 class FunctionRow:
@@ -162,7 +162,7 @@ class PForwRow:
               and (self.trans_type == other.trans_type)
       return NotImplemented
   
-class RefSpaceRow:
+class RefBasisRow:
     def __init__(self, arg_list):
       self.dim        = arg_list[0]
       self.range      = arg_list[1]  
@@ -170,7 +170,7 @@ class RefSpaceRow:
       return None
   
     def __eq__(self, other):
-       if isinstance(other, RefSpaceRow):
+       if isinstance(other, RefBasisRow):
            return(self.dim == other.dim)  \
                and (self.range == other.range) \
                and (self.rank == other.rank)
@@ -182,7 +182,7 @@ class InstantiationInfo:
    """ Stores "tables" with useful entries to be used for instantiations.
    
    This information is generated using a table of
-   physical spaces that was genererated at configure time
+   physical bases that was genererated at configure time
    by user passed options.
 
    """
@@ -191,14 +191,14 @@ class InstantiationInfo:
       """The constructor."""
       self.n_sub_element = 1 #1 for faces, 2 for faces and faces-1, max dim for all
       
-      self.phy_sp_dims  =[] # Physical spaces that the library is suppussed to be used on
+      self.phy_sp_dims  =[] # Physical bases that the library is suppussed to be used on
       self.ref_sp_dims  =[]
       self.mapping_dims =[]
       self.push_fw_dims =[]
       self.function_dims=[]
       self.domain_dims = []
       
-      self.all_phy_sp_dims  =[] # Physical spaces that the library is suppussed to be used on
+      self.all_phy_sp_dims  =[] # Physical bases that the library is suppussed to be used on
       self.all_ref_sp_dims  =[]
       self.all_mapping_dims =[]
       self.all_push_fw_dims =[]
@@ -206,9 +206,9 @@ class InstantiationInfo:
       self.all_domain_dims = []
       
       
-      self.ig_spaces = ['ReferenceSpace']
-#      self.ig_spaces = ['BSplineSpace'] if nurbs == 'OFF' \
-#      else ['BSplineSpace', 'NURBSSpace']
+      self.ig_bases = ['ReferenceBasis']
+#      self.ig_bases = ['BSplineBasis'] if nurbs == 'OFF' \
+#      else ['BSplineBasis', 'NURBSBasis']
 
       self.deriv_order = range(int(max_der_order)+1)
       self.derivatives=[]  # allderivative classes
@@ -219,9 +219,9 @@ class InstantiationInfo:
                                'GridIterator<Accessor>',
                                'ConstGridIterator<Accessor>']
 #---------------------------------------
-      self.RefSpaces=[]     # all required reference spaces
-      self.UserPhysSpaces=[]
-      self.PhysSpaces=[]
+      self.RefBases=[]     # all required reference bases
+      self.UserPhysBases=[]
+      self.PhysBases=[]
  #---------------------------------------
  
       
@@ -231,8 +231,8 @@ class InstantiationInfo:
       self.create_derivatives()
       
       
-      self.create_ref_spaces()
-      self.create_PhysSpaces()
+      self.create_ref_bases()
+      self.create_PhysBases()
       
       
       return None
@@ -241,68 +241,68 @@ class InstantiationInfo:
        return range(max(0, dim - self.n_sub_element), dim + 1)
 
    def read_dimensions_file(self, filename):
-      '''Reads a text file where each line describes a physical space and
+      '''Reads a text file where each line describes a physical basis and
             genereate the main tables '''
 
       file_input = open(filename, 'r')
-      user_spaces=[]
+      user_bases=[]
       for i in file_input:
          row = i.strip().split()
          if (len(row) > 0) and (row[0] != '#') :
-            user_spaces.append( [int(x) for x in row[0:4]] + row[-1:])
+            user_bases.append( [int(x) for x in row[0:4]] + row[-1:])
       file_input.close()
-      phy_sp_dims = [PhysSpaceSpecs(row)  for row in user_spaces]
+      phy_sp_dims = [PhysBasisSpecs(row)  for row in user_bases]
       
                             
       #------------------------------------------
       for k in range(0, self.n_sub_element + 1):   
-          spaces     = [ PhysSpaceSpecs([x.dim-k, x.codim+k, x.range, x.rank, x.trans_type])
+          bases     = [ PhysBasisSpecs([x.dim-k, x.codim+k, x.range, x.rank, x.trans_type])
                          for x in phy_sp_dims if x.dim>=k]
           
-          ref_spaces = unique( [RefSpaceRow([x.dim, x.range, x.rank])
-                                for x in spaces] )
+          ref_bases = unique( [RefBasisRow([x.dim, x.range, x.rank])
+                                for x in bases] )
           mappings   = unique( [MappingRow([x.dim,  x.codim]) 
-                                for x in spaces] )
+                                for x in bases] )
           functions  = unique( [FunctionRow([x.dim,  x.codim, x.phys_range, x.phys_rank]) 
-                                for x in spaces] )
+                                for x in bases] )
       
           functions = unique( functions +
                               [FunctionRow([x.dim,  0, x.range, x.rank]) 
-                               for x in ref_spaces] +
+                               for x in ref_bases] +
                               [FunctionRow([x.dim,  0, x.dim, 1]) 
-                               for x in ref_spaces])
+                               for x in ref_bases])
           
           map_funcs = unique([FunctionRow([x.dim,  0, x.space_dim, 1]) 
                               for x in mappings] )
           
           functions = unique(functions + map_funcs)
           
-          ref_spaces = unique(ref_spaces + 
-                              [RefSpaceRow([x.dim, x.range, 1]) for x in map_funcs]) 
+          ref_bases = unique(ref_bases + 
+                              [RefBasisRow([x.dim, x.range, 1]) for x in map_funcs]) 
          
           if k == 0:
-             self.phy_sp_dims   = unique(spaces)
-             self.ref_sp_dims   = unique(ref_spaces)
+             self.phy_sp_dims   = unique(bases)
+             self.ref_sp_dims   = unique(ref_bases)
              self.mapping_dims  = unique(mappings)
              self.function_dims = unique(functions)
              
              
-          self.all_phy_sp_dims   = unique(self.all_phy_sp_dims + spaces)
-          self.all_ref_sp_dims   = unique(self.all_ref_sp_dims + ref_spaces)
+          self.all_phy_sp_dims   = unique(self.all_phy_sp_dims + bases)
+          self.all_ref_sp_dims   = unique(self.all_ref_sp_dims + ref_bases)
           self.all_mapping_dims  = unique(self.all_mapping_dims + mappings)
           self.all_function_dims = unique(self.all_function_dims + functions)
 
 
-      # for the get sub spaces of the reference spaces    
+      # for the get sub bases of the reference bases    
       self.all_phy_sp_dims = unique(self.all_phy_sp_dims +
-                                    [PhysSpaceSpecs([x.dim, 0, x.range, x.rank, 'h_grad'])
+                                    [PhysBasisSpecs([x.dim, 0, x.range, x.rank, 'h_grad'])
                                       for x in self.all_ref_sp_dims])    
       self.phy_sp_dims = unique(self.phy_sp_dims +
-                                    [PhysSpaceSpecs([x.dim, 0, x.range, x.rank, 'h_grad'])
+                                    [PhysBasisSpecs([x.dim, 0, x.range, x.rank, 'h_grad'])
                                       for x in self.all_ref_sp_dims])
       for k in range(1, self.n_sub_element + 1):
          self.all_phy_sp_dims = unique(self.all_phy_sp_dims +
-                                    [PhysSpaceSpecs([x.dim-k, k, x.range, x.rank, 'h_grad']) 
+                                    [PhysBasisSpecs([x.dim-k, k, x.range, x.rank, 'h_grad']) 
                                      for x in self.ref_sp_dims  if x.dim>=k])
 
       self.all_mapping_dims = unique(self.all_mapping_dims +
@@ -325,30 +325,30 @@ class InstantiationInfo:
 
 
 
-   def create_ref_spaces(self):
-      ''' Creates a list of Reference spaces as table and as classes'''
+   def create_ref_bases(self):
+      ''' Creates a list of Reference bases as table and as classes'''
     
       return None
 
   
-   def create_PhysSpaces(self):
+   def create_PhysBases(self):
        
-      self.PhysSpaces   = unique( [PhysSpace(x,sp,'PhysicalBasis')
-                                 for sp in self.ig_spaces
+      self.PhysBases   = unique( [PhysBasis(x,sp,'PhysicalBasis')
+                                 for sp in self.ig_bases
                                  for x in self.phy_sp_dims] )
-      self.AllPhysSpaces = unique( [PhysSpace(x,sp,'PhysicalBasis')
-                                 for sp in self.ig_spaces
+      self.AllPhysBases = unique( [PhysBasis(x,sp,'PhysicalBasis')
+                                 for sp in self.ig_bases
                                  for x in self.all_phy_sp_dims] )
       
-      self.SubPhysSpaces = unique( [PhysSpace(x,sp,'PhysicalBasis')
-                                 for sp in self.ig_spaces
+      self.SubPhysBases = unique( [PhysBasis(x,sp,'PhysicalBasis')
+                                 for sp in self.ig_bases
                                  for x in self.sub_phy_sp_dims] )
       
-      self.RefSpaces = unique( [RefSpace(x,sp)
-                                for sp in self.ig_spaces
+      self.RefBases = unique( [RefBasis(x,sp)
+                                for sp in self.ig_bases
                                 for x in self.ref_sp_dims ] )
-      self.AllRefSpaces = unique( [RefSpace(x,sp)
-                                   for sp in self.ig_spaces
+      self.AllRefBases = unique( [RefBasis(x,sp)
+                                   for sp in self.ig_bases
                                    for x in self.all_ref_sp_dims ] )
 
 

@@ -192,9 +192,9 @@ f.write("""
 
 types = []
 types.append('PhysicalBasis<%d, %d, %d, %d>' % (0, 0, 1, 0))
-for sp in inst.SubPhysSpaces:
+for sp in inst.SubPhysBases:
     types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
-for sp in inst.PhysSpaces:
+for sp in inst.PhysBases:
     types.append('PhysicalBasis<%d, %d, %d, %d>' % (sp.spec.dim, sp.spec.range, sp.spec.rank, sp.spec.codim))
 
 

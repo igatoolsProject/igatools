@@ -327,7 +327,7 @@ configure_file(
 
 # Create the instantiation files
 message("Configuring instantiations")
-create_space_table()
+create_basis_table()
 generate_instantiations()
 generate_serial()
 #

@@ -43,7 +43,7 @@ sub_dim_members = \
 bases = ['PhysicalBasis<0,0,1,0>']
 templated_funcs = []
 
-for sp in inst.SubPhysSpaces:
+for sp in inst.SubPhysBases:
     x = sp.spec
 #    f.write( 'template class %s;\n' %sp.name)
     bases.append(sp.name)
@@ -55,7 +55,7 @@ for sp in inst.SubPhysSpaces:
 #        f.write('template ' + s + '\n')
 
 
-for sp in inst.PhysSpaces:
+for sp in inst.PhysBases:
     x = sp.spec
 #    f.write( 'template class %s;\n' %sp.name)
     bases.append(sp.name)

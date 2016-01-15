@@ -34,7 +34,7 @@ handlers.add('PhysicalBasisHandler<0,0,1,0>')
 
 handler_funcs = set()
 
-for basis in inst.SubPhysSpaces + inst.PhysSpaces:
+for basis in inst.SubPhysBases + inst.PhysBases:
     x = basis.spec
     handler = 'PhysicalBasisHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
     handlers.add(handler)
