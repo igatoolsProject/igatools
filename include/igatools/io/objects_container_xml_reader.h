@@ -382,9 +382,9 @@ private:
    *                and also retrieving other ones needed.
    */
   static void parse_phys_bases(const std::shared_ptr<XMLElement> xml_elem,
-                                const bool parse_as_constant,
-                                IdMap_ &id_map,
-                                const std::shared_ptr<ObjectsContainer> container);
+                               const bool parse_as_constant,
+                               IdMap_ &id_map,
+                               const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @brief Reads all the @ref Function

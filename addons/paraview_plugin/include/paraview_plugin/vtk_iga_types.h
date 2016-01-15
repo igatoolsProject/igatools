@@ -72,35 +72,35 @@ class ExcVtkError: public std::exception
 {
 public:
 
-    /**
-     * @brief Constructor.
-     * @param message The error message.
-     */
-    explicit ExcVtkError(const std::string& message):
-      error_msg_(message)
-    {}
+  /**
+   * @brief Constructor.
+   * @param message The error message.
+   */
+  explicit ExcVtkError(const std::string &message):
+    error_msg_(message)
+  {}
 
-    /**
-     * @brief Destructor.
-     *
-     * This is virtual to allow for subclassing.
-     */
-    virtual ~ExcVtkError() throw (){};
+  /**
+   * @brief Destructor.
+   *
+   * This is virtual to allow for subclassing.
+   */
+  virtual ~ExcVtkError() throw () {};
 
-    /**
-     *  @brief Returns a pointer to the (constant) error description.
-     *  @return A pointer to a \c const \c char*. The underlying memory
-     *          is in possession of the \c ExcVtkError object.
-     *          Callers \a must not attempt to free the memory.
-     */
-    virtual const char* what() const throw ()
-    {
-       return error_msg_.c_str();
-    }
+  /**
+   *  @brief Returns a pointer to the (constant) error description.
+   *  @return A pointer to a \c const \c char*. The underlying memory
+   *          is in possession of the \c ExcVtkError object.
+   *          Callers \a must not attempt to free the memory.
+   */
+  virtual const char *what() const throw ()
+  {
+    return error_msg_.c_str();
+  }
 
 private:
-    /// Error message.
-    std::string error_msg_;
+  /// Error message.
+  std::string error_msg_;
 };
 
 
@@ -113,18 +113,18 @@ private:
  * @ingroup paraview_plugin
  */
 #define VtkIgaErrorMacro(x)                                       \
-{                                                                 \
+  {                                                                 \
     if (vtkObject::GetGlobalWarningDisplay())                     \
     {                                                             \
-        vtkOStreamWrapper::EndlType endl;                         \
-        vtkOStreamWrapper::UseEndl(endl);                         \
-        vtkOStrStreamWrapper vtkmsg;                              \
-        vtkmsg << "IGATOOLS PLUGIN ERROR!!:\n" x << "\n\n";       \
-        vtkOutputWindowDisplayErrorText(vtkmsg.str());            \
-        vtkmsg.rdbuf()->freeze(0);                                \
-        vtkObject::BreakOnError();                                \
+      vtkOStreamWrapper::EndlType endl;                         \
+      vtkOStreamWrapper::UseEndl(endl);                         \
+      vtkOStrStreamWrapper vtkmsg;                              \
+      vtkmsg << "IGATOOLS PLUGIN ERROR!!:\n" x << "\n\n";       \
+      vtkOutputWindowDisplayErrorText(vtkmsg.str());            \
+      vtkmsg.rdbuf()->freeze(0);                                \
+      vtkObject::BreakOnError();                                \
     }                                                             \
-}
+  }
 
 
 
@@ -136,18 +136,18 @@ private:
  * @ingroup paraview_plugin
  */
 #define VtkIgaWarningMacro(x)                                     \
-{                                                                 \
+  {                                                                 \
     if (vtkObject::GetGlobalWarningDisplay())                     \
     {                                                             \
-        vtkOStreamWrapper::EndlType endl;                         \
-        vtkOStreamWrapper::UseEndl(endl);                         \
-        vtkOStrStreamWrapper vtkmsg;                              \
-        vtkmsg << "IGATOOLS PLUGIN WARNING!!:\n" x << "\n\n";     \
-        vtkOutputWindowDisplayErrorText(vtkmsg.str());            \
-        vtkmsg.rdbuf()->freeze(0);                                \
-        vtkObject::BreakOnError();                                \
+      vtkOStreamWrapper::EndlType endl;                         \
+      vtkOStreamWrapper::UseEndl(endl);                         \
+      vtkOStrStreamWrapper vtkmsg;                              \
+      vtkmsg << "IGATOOLS PLUGIN WARNING!!:\n" x << "\n\n";     \
+      vtkOutputWindowDisplayErrorText(vtkmsg.str());            \
+      vtkmsg.rdbuf()->freeze(0);                                \
+      vtkObject::BreakOnError();                                \
     }                                                             \
-}
+  }
 
 }; // namespace paraview_plugin
 

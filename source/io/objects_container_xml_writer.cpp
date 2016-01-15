@@ -298,11 +298,11 @@ write_physical_bases(const ContPtr_ container,
 
     for (const auto &id : container->template get_object_ids<Type>())
       Self_::write_phys_basis<Type>(container->template get_object<Type>(id),
-                                          xml_doc);
+                                    xml_doc);
 
     for (const auto &id : container->template get_const_object_ids<Type>())
       Self_::write_phys_basis<const Type>(container->template get_const_object<Type>(id),
-                                                xml_doc);
+                                          xml_doc);
   });
 }
 

@@ -168,8 +168,8 @@ private:
    */
   template<int aux_dim>
   static EnableIf<aux_dim == 1, VtkGridPtr_>
-      create_grid(const DomainPtr_ domain,
-                  const GridInfoPtr_ grid_info);
+  create_grid(const DomainPtr_ domain,
+              const GridInfoPtr_ grid_info);
 
   /**
    * @brief Creates and returns the VTK grid for visualizing the knot
@@ -184,8 +184,8 @@ private:
    */
   template<int aux_dim>
   static EnableIf<aux_dim == 2 || aux_dim == 3, VtkGridPtr_>
-      create_grid(const DomainPtr_ domain,
-                  const GridInfoPtr_ grid_info);
+  create_grid(const DomainPtr_ domain,
+              const GridInfoPtr_ grid_info);
   ///@}
 
 };

@@ -574,9 +574,9 @@ parse_domains(const shared_ptr<XMLElement> xml_elem,
 void
 ObjectsContainerXMLReader::
 parse_phys_bases(const shared_ptr<XMLElement> xml_elem,
-                  const bool parse_as_constant,
-                  IdMap_ &id_map,
-                  const shared_ptr<ObjectsContainer> container)
+                 const bool parse_as_constant,
+                 IdMap_ &id_map,
+                 const shared_ptr<ObjectsContainer> container)
 {
   for (const auto &ps : xml_elem->get_children_elements("PhysicalBasis"))
   {

@@ -138,8 +138,8 @@ private:
   template <class T>
   struct IsInValidDim :
     boost::mpl::or_<
-        boost::mpl::bool_<(T::dim < 1)>,
-        boost::mpl::bool_<(T::dim > 3)>>{};
+  boost::mpl::bool_<(T::dim < 1)>,
+  boost::mpl::bool_<(T::dim > 3)>> {};
 
   /**
    * @brief Struct for determining if a type @p T has a wrong space
@@ -150,8 +150,8 @@ private:
   template <class T>
   struct IsInValidSpaceDim :
     boost::mpl::or_<
-        boost::mpl::bool_<(T::space_dim < 1)>,
-        boost::mpl::bool_<(T::space_dim > 3)>> {};
+  boost::mpl::bool_<(T::space_dim < 1)>,
+  boost::mpl::bool_<(T::space_dim > 3)>> {};
 
   /**
    * @brief Struct for determining if a type @ref Domain has invalid
@@ -186,8 +186,8 @@ private:
   template <class Function, class Domain>
   struct IsInValidFunctionForDomain_ :
     boost::mpl::or_<
-        boost::mpl::bool_<(Function::dim != Domain::dim)>,
-        boost::mpl::bool_<(Function::space_dim != Domain::space_dim)>> {};
+  boost::mpl::bool_<(Function::dim != Domain::dim)>,
+  boost::mpl::bool_<(Function::space_dim != Domain::space_dim)>> {};
 
   /**
    * @brief Struct for determining if the dimensions of a @ref GridFunction
@@ -200,8 +200,8 @@ private:
   template <class GridFunction, class Domain>
   struct IsInValidGridFunctionForDomain_ :
     boost::mpl::or_<
-        boost::mpl::bool_<(GridFunction::dim != Domain::dim)>,
-        boost::mpl::bool_<(Domain::space_dim != Domain::dim)>> {};
+  boost::mpl::bool_<(GridFunction::dim != Domain::dim)>,
+  boost::mpl::bool_<(Domain::space_dim != Domain::dim)>> {};
 
   /**
    * Alias for a <tt>boost::mpl vector</tt> containing all the valid
@@ -243,36 +243,36 @@ private:
    * @ref Domain classes for the plugin.
    */
   using InvalidDomains_ = boost::mpl::remove_if<
-                        InstantiatedTypes::Domains,
-                        boost::mpl::lambda< boost::mpl::not_<IsInValidDomain< boost::mpl::_1 >> >::type
-                        >::type;
+                          InstantiatedTypes::Domains,
+                          boost::mpl::lambda< boost::mpl::not_<IsInValidDomain< boost::mpl::_1 >> >::type
+                          >::type;
 
   /**
    * Alias for a <tt>boost::mpl vector</tt> containing all the \a invalid
    * @ref Grid classes for the plugin.
    */
   using InvalidGrids_ = boost::mpl::remove_if<
-                      InstantiatedTypes::Grids,
-                      boost::mpl::lambda< boost::mpl::not_<IsInValidDim< boost::mpl::_1 >> >::type
-                      >::type;
+                        InstantiatedTypes::Grids,
+                        boost::mpl::lambda< boost::mpl::not_<IsInValidDim< boost::mpl::_1 >> >::type
+                        >::type;
 
   /**
    * Alias for a <tt>boost::mpl vector</tt> containing all the \a invalid
    * @ref GridFunction classes for the plugin.
    */
   using InvalidGridFuncs_ = typename boost::mpl::remove_if<
-                          InstantiatedTypes::GridFunctions,
-                          boost::mpl::lambda< boost::mpl::not_<IsInValidDim< boost::mpl::_1 >> >::type
-                          >::type;
+                            InstantiatedTypes::GridFunctions,
+                            boost::mpl::lambda< boost::mpl::not_<IsInValidDim< boost::mpl::_1 >> >::type
+                            >::type;
 
   /**
    * Alias for a <tt>boost::mpl vector</tt> containing all the \a invalid
    * @ref Function classes for the plugin.
    */
   using InvalidFunctions_ = typename boost::mpl::remove_if<
-                          InstantiatedTypes::Functions,
-                          boost::mpl::lambda< boost::mpl::not_<IsInValidDomain< boost::mpl::_1 >> >::type
-                          >::type;
+                            InstantiatedTypes::Functions,
+                            boost::mpl::lambda< boost::mpl::not_<IsInValidDomain< boost::mpl::_1 >> >::type
+                            >::type;
 
 
   /**
@@ -353,7 +353,7 @@ private:
     /// Alias of a shared pointer of the VTK IGA grid type for a given @ref Domain type.
     template <class Domain>
     using Pair_ = boost::fusion::pair<Domain,
-                                      SafeSTLVector<std::shared_ptr<VtkIgaGrid<Domain>>>>;
+          SafeSTLVector<std::shared_ptr<VtkIgaGrid<Domain>>>>;
 
   public:
     typedef typename boost::fusion::result_of::as_map<
@@ -582,7 +582,7 @@ public:
    * that will be captured by @ref IgatoolsParaviewReader and shown
    * in the ParaView log window.
    */
-  static void check_file (const std::string &file_name);
+  static void check_file(const std::string &file_name);
 
   /** @name Methods for querying and setting information of the VTK grids.*/
   ///@{
@@ -667,7 +667,7 @@ public:
    * @param[in] status Status to be set in the domain.
    */
   void set_parametric_domain_status(const std::string &name,
-                                  const bool status);
+                                    const bool status);
 
 private:
   /**
@@ -721,8 +721,8 @@ private:
    * @param[in] status Status (active or inactive) to be set.
    */
   static void set_domain_status(const VtkIgaGridsContainer_ grid_container,
-                              const std::string &name,
-                              const bool status);
+                                const std::string &name,
+                                const bool status);
 
   /**
    * @brief Creates the VTK grids of the solid meshes of the
@@ -756,7 +756,7 @@ private:
    * @param[out] mb Multiblock data set for inserting the created VTK grids.
    */
   static void set_knot_domains(const VtkIgaGridsContainer_ grid_container,
-                             vtkMultiBlockDataSet *const mb);
+                               vtkMultiBlockDataSet *const mb);
 
   /**
    * @brief Creates the VTK grids of the control polygon meshes of the
@@ -773,7 +773,7 @@ private:
    * @param[out] mb Multiblock data set for inserting the created VTK grids.
    */
   static void set_control_domains(const VtkIgaGridsContainer_ grid_container,
-                                vtkMultiBlockDataSet *const mb);
+                                  vtkMultiBlockDataSet *const mb);
 
   ///@}
 

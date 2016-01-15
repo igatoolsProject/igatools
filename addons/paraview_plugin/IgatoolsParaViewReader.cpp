@@ -44,7 +44,7 @@ IgatoolsParaViewReader::IgatoolsParaViewReader()
   n_vis_elem_parm_solid_(1),
   n_vis_elem_phys_knot_(1),
   n_vis_elem_parm_knot_(1),
-  iga_grid_container_(iga::paraview_plugin::VtkIgaGridContainer::create_void ())
+  iga_grid_container_(iga::paraview_plugin::VtkIgaGridContainer::create_void())
 {
 #ifndef NDEBUG
   this->DebugOn();
@@ -128,21 +128,21 @@ int IgatoolsParaViewReader::RequestInformation(
 
   // If the file is not parse, it is parsed now.
   if (!parse_input_file_)
-      return 1;
+    return 1;
 
   try
   {
-      this->SetProgressText("Parsing igatools file.");
+    this->SetProgressText("Parsing igatools file.");
 
-      iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create
-              (file_name_,
-               n_vis_elem_phys_solid_, phys_sol_grid_type_,
-               n_vis_elem_phys_knot_,  phys_knt_grid_type_,
-                                       phys_ctr_grid_type_,
-               n_vis_elem_parm_solid_, parm_sol_grid_type_,
-               n_vis_elem_parm_knot_,  parm_knt_grid_type_);
+    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create
+                          (file_name_,
+                           n_vis_elem_phys_solid_, phys_sol_grid_type_,
+                           n_vis_elem_phys_knot_,  phys_knt_grid_type_,
+                           phys_ctr_grid_type_,
+                           n_vis_elem_parm_solid_, parm_sol_grid_type_,
+                           n_vis_elem_parm_knot_,  parm_knt_grid_type_);
 
-      parse_input_file_ = false;
+    parse_input_file_ = false;
 
     return 1;
   }
@@ -151,7 +151,7 @@ int IgatoolsParaViewReader::RequestInformation(
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << e.what());
 
-    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
+    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void();
 
     return 0;
   }
@@ -160,7 +160,7 @@ int IgatoolsParaViewReader::RequestInformation(
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << "AN UNKNOWN EXCEPTION OCCUR!");
 
-    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
+    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void();
 
     return 0;
   }
@@ -183,32 +183,32 @@ int IgatoolsParaViewReader::RequestData(
   this->UpdateProgress(0.0);
 
   iga_grid_container_->update(n_vis_elem_phys_solid_, phys_sol_grid_type_,
-                    n_vis_elem_phys_knot_,  phys_knt_grid_type_,
-                                            phys_ctr_grid_type_,
-                    n_vis_elem_parm_solid_, parm_sol_grid_type_,
-                    n_vis_elem_parm_knot_,  parm_knt_grid_type_);
+                              n_vis_elem_phys_knot_,  phys_knt_grid_type_,
+                              phys_ctr_grid_type_,
+                              n_vis_elem_parm_solid_, parm_sol_grid_type_,
+                              n_vis_elem_parm_knot_,  parm_knt_grid_type_);
 
   try
   {
-      iga_grid_container_->create_multiblock_grid(create_physical_mesh_,
-                                  create_sol_mesh_phys_,
-                                  create_knt_mesh_phys_,
-                                  create_ctr_mesh_phys_,
-                                  create_parametric_mesh_,
-                                  create_sol_mesh_parm_,
-                                  create_knt_mesh_parm_,
-                                  output);
-      return 1;
+    iga_grid_container_->create_multiblock_grid(create_physical_mesh_,
+                                                create_sol_mesh_phys_,
+                                                create_knt_mesh_phys_,
+                                                create_ctr_mesh_phys_,
+                                                create_parametric_mesh_,
+                                                create_sol_mesh_parm_,
+                                                create_knt_mesh_parm_,
+                                                output);
+    return 1;
   }
   catch (std::exception &exc)
   {
-      VtkIgaErrorMacro(<< exc.what());
-      return 0;
+    VtkIgaErrorMacro(<< exc.what());
+    return 0;
   }
   catch (...)
   {
-      VtkIgaErrorMacro("AN UNKNOWN EXCEPTION OCCUR!");
-      return 0;
+    VtkIgaErrorMacro("AN UNKNOWN EXCEPTION OCCUR!");
+    return 0;
   }
 }
 
@@ -230,15 +230,15 @@ CanReadFile(const char *name)
 {
   try
   {
-      iga::paraview_plugin::VtkIgaGridContainer::check_file(name);
-      return 1;
+    iga::paraview_plugin::VtkIgaGridContainer::check_file(name);
+    return 1;
   }
   catch (std::exception &e)
   {
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << e.what());
 
-    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
+    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void();
 
     return 0;
   }
@@ -247,7 +247,7 @@ CanReadFile(const char *name)
     VtkIgaErrorMacro("Parsing file " << string(file_name_) << ":\n"
                      << "AN UNKNOWN EXCEPTION OCCUR!");
 
-    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void ();
+    iga_grid_container_ = iga::paraview_plugin::VtkIgaGridContainer::create_void();
 
     return 0;
   }

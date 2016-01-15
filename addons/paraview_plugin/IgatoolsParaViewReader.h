@@ -30,11 +30,11 @@ class vtkObjectBase;
 
 namespace iga
 {
-    template <class T, int d> class SafeSTLArray;
-    namespace paraview_plugin
-    {
-        class VtkIgaGridContainer;
-    }
+template <class T, int d> class SafeSTLArray;
+namespace paraview_plugin
+{
+class VtkIgaGridContainer;
+}
 }
 
 /**
