@@ -72,8 +72,10 @@ and computational cost for its creation and a better result when
 the renderization is set to be translucent.
 In addition, its outline representation is fitted to the grid boundaries,
 in contraposition to the VTK unstructured grids.
-However, not all the VTK filters accept a VTK structured grid as input, but a
-VTK unstructured grid. VTK unstructured grids with quadratic cells provide a smoother
+However, structured VTK grids are unable to represent discontinuous point data fields.
+In such a case, it is recommended to use VTK unstructured grids, that are able
+to represent discontinuous fields.
+VTK unstructured grids with quadratic cells provide a smoother
 representation of not flat geometries, but at a higher cost.
 
 Once the VTK grids representing the domains have been created and visualized in
