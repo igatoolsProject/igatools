@@ -835,7 +835,7 @@ Parsing writing/reading filetest_2_0_2_1.xml
    const GridFunction Dim : 1 Spacedim : 3. Number of objects: 0
    
    GridFunction Dim : 2 Spacedim : 1. Number of objects: 1
-      Object Id: 24
+      Object Id: 21
          IgGridFunction<2,1>
             ReferenceBasis<2,1,1>:
                Spline Space:
@@ -978,19 +978,19 @@ Parsing writing/reading filetest_2_0_2_1.xml
    const GridFunction Dim : 2 Spacedim : 1. Number of objects: 0
    
    GridFunction Dim : 2 Spacedim : 2. Number of objects: 4
-      Object Id: 21
+      Object Id: 22
          IdentityGridFunction<2>
          
          Name: id_grid_func_2
       
-      Object Id: 22
+      Object Id: 23
          ConstantGridFunction<2,2>
             b:
             [ 0 0 ] 
             Name: ct_grid_func_2
          
       
-      Object Id: 23
+      Object Id: 24
          LinearGridFunction<2,2>
             A:
             [ [ 0 0 ]  [ 0 0 ]  ] 
@@ -4663,7 +4663,7 @@ Parsing writing/reading filetest_3_0_3_1.xml
    const GridFunction Dim : 2 Spacedim : 3. Number of objects: 0
    
    GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
-      Object Id: 56
+      Object Id: 53
          IgGridFunction<3,1>
             ReferenceBasis<3,1,1>:
                Spline Space:
@@ -4968,19 +4968,19 @@ Parsing writing/reading filetest_3_0_3_1.xml
    const GridFunction Dim : 3 Spacedim : 1. Number of objects: 0
    
    GridFunction Dim : 3 Spacedim : 3. Number of objects: 4
-      Object Id: 53
+      Object Id: 54
          IdentityGridFunction<3>
          
          Name: id_grid_func_3
       
-      Object Id: 54
+      Object Id: 55
          ConstantGridFunction<3,3>
             b:
             [ 0 0 0 ] 
             Name: ct_grid_func_3
          
       
-      Object Id: 55
+      Object Id: 56
          LinearGridFunction<3,3>
             A:
             [ [ 0 0 0 ]  [ 0 0 0 ]  [ 0 0 0 ]  ] 

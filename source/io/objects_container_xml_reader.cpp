@@ -76,8 +76,7 @@ parse(const string &file_path)
   const bool parse_as_constant = false;
   Self_::parse_grids(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_spline_spaces(xml_elem, parse_as_constant, id_map, container);
-  Self_::parse_bsplines(xml_elem, parse_as_constant, id_map, container);
-  Self_::parse_grid_functions_and_nurbs(xml_elem, parse_as_constant, id_map, container);
+  Self_::parse_ref_bases_and_grid_functions(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_domains(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_phys_bases(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_functions(xml_elem, parse_as_constant, id_map, container);
@@ -112,8 +111,7 @@ parse_const(const string &file_path)
   const bool parse_as_constant = true;
   Self_::parse_grids(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_spline_spaces(xml_elem, parse_as_constant, id_map, container);
-  Self_::parse_bsplines(xml_elem, parse_as_constant, id_map, container);
-  Self_::parse_grid_functions_and_nurbs(xml_elem, parse_as_constant, id_map, container);
+  Self_::parse_ref_bases_and_grid_functions(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_domains(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_phys_bases(xml_elem, parse_as_constant, id_map, container);
   Self_::parse_functions(xml_elem, parse_as_constant, id_map, container);
@@ -215,46 +213,123 @@ parse_spline_spaces(const shared_ptr<XMLElement> xml_elem,
 
 void
 ObjectsContainerXMLReader::
-parse_bsplines(const shared_ptr<XMLElement> xml_elem,
-               const bool parse_as_constant,
-               IdMap_ &id_map,
-               const shared_ptr<ObjectsContainer> container)
+parse_ref_bases_and_grid_functions(const shared_ptr<XMLElement> xml_elem,
+                                   const bool parse_as_constant,
+                                   IdMap_ &id_map,
+                                   const shared_ptr<ObjectsContainer> container)
 {
-  for (const auto &bs : xml_elem->get_children_elements("BSpline"))
-  {
-    const int bs_dim = bs->get_attribute<int>("Dim");
-    const int bs_range = bs->get_attribute<int>("Range");
-    const int bs_rank = bs->get_attribute<int>("Rank");
+  // Due to the relationship between ig grid functions and NURBS,
+  // the parsing of the reference basis and the grid functions must be
+  // done in a specific order. That is:
+  //
+  //   1 - parse Reference basis based on BSpline
+  //   2 - parse grid functions, excep the ig grid function based on NURBS.
+  //   3 - parse NURBS
+  //   4 - parse ig grid functions based on NURBS
 
-    using BSplinePtrs = typename ObjectsContainer::RefBasisPtrs;
-    BSplinePtrs valid_bs_ptr_types;
+  // Parsing reference basis based on bsplines.
+  parse_ref_bases(xml_elem, parse_as_constant, true, id_map, container);
+
+  // Parsing grid functions, except for ig grid function based on NURBS.
+  parse_grid_functions(xml_elem, parse_as_constant, true, id_map, container);
+
+  // Parsing reference basis based on NURBS.
+  parse_ref_bases(xml_elem, parse_as_constant, false, id_map, container);
+
+  // Parsing ig grid function based on NURBS.
+  parse_grid_functions(xml_elem, parse_as_constant, false, id_map, container);
+}
+
+
+
+void
+ObjectsContainerXMLReader::
+parse_ref_bases(const shared_ptr<XMLElement> xml_elem,
+                const bool parse_as_constant,
+                const bool &first_parsing,
+                IdMap_ &id_map,
+                const shared_ptr<ObjectsContainer> container)
+{
+  // Due to the relationship between ig grid functions and NURBS,
+  // the parsing of the reference basis.
+  // The argument first_parsing defines indicates if it is the first
+  // time that the function is called, or not.
+  //
+  //   1 - The BSpline basis are parsed.
+  //   2 - The NURBS basis are parsed.
+
+  for (const auto &rb : xml_elem->get_children_elements("ReferenceBasis"))
+  {
+    // In the first call, BSplines are parsed.
+    if (first_parsing && rb->has_element("NURBS"))
+        continue;
+    // In the second call, NURBS are parsed.
+    else if (!first_parsing && rb->has_element("BSpline"))
+        continue;
+
+    const int rb_dim   = rb->get_attribute<int>("Dim");
+    const int rb_range = rb->get_attribute<int>("Range");
+    const int rb_rank  = rb->get_attribute<int>("Rank");
+
+    const auto local_object_id = rb->get_attribute<Index>("LocalObjectId");
+    Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
+
+    typename ObjectsContainer::RefBasisPtrs valid_bs_ptr_types;
 
     bool found = false;
-    boost::fusion::for_each(valid_bs_ptr_types, [&](const auto &bs_ptr_type)
+    boost::fusion::for_each(valid_bs_ptr_types, [&](const auto &rb_ptr_type)
     {
       if (found)
         return;
 
-      using BSplineType = typename
-                          remove_reference<decltype(bs_ptr_type)>::type::element_type;
-      static const int dim = BSplineType::dim;
-      static const int range = BSplineType::range;
-      static const int rank = BSplineType::rank;
+      using RefBasisType = typename
+                          remove_reference<decltype(rb_ptr_type)>::type::element_type;
+      static const int dim   = RefBasisType::dim;
+      static const int range = RefBasisType::range;
+      static const int rank  = RefBasisType::rank;
 
-      if (bs_dim == dim && bs_range == range && bs_rank == rank)
+      if (rb_dim == dim && rb_range == range && rb_rank == rank)
       {
         found = true;
-        parse_bspline<dim, range, rank>(bs, parse_as_constant, id_map, container);
+
+        RefBasisPtr_<dim, range, rank> basis;
+        if (rb->has_element("NURBS"))
+        {
+            const auto nr = rb->get_single_element("NURBS");
+            basis = parse_nurbs<dim, range, rank>
+                (rb->get_single_element("NURBS"),
+                 local_object_id, parse_as_constant, container, id_map);
+        }
+        else if (rb->has_element("BSpline"))
+        {
+            basis = parse_bspline<dim, range, rank>
+                (rb->get_single_element("BSpline"),
+                 local_object_id, parse_as_constant, container, id_map);
+        }
+        else
+        {
+            Assert (false, ExcMessage("Not valid ReferenceSpace type."));
+        }
+
+        Assert (basis != nullptr, ExcNullPtr());
+
+        using RefBas_ = ReferenceBasis<dim, range, rank>;
+        id_map[local_object_id] = basis->get_object_id();
+        if (parse_as_constant)
+            container->insert_const_object<RefBas_>(basis);
+        else
+            container->insert_object<RefBas_>(
+                    std::const_pointer_cast<RefBas_>(basis));
       }
+
     });
 
-    // BSpline dimensions not found
-    AssertThrow(found,
-                ExcMessage(Self_::get_type_id_string("BSpline",
-                                                     bs->get_attribute<Index>("LocalObjectId"),
-    {{bs_dim, bs_range, bs_rank}})
-    + " is not a valid type. Possibly the type was not "
-    "instantiated for the specified dimensions."));
+    // ReferenceBasis dimensions not found
+    AssertThrow(found, ExcMessage(
+            Self_::get_type_id_string("ReferenceBasis", local_object_id,
+            {{rb_dim, rb_range, rb_rank}}) +
+            " is not a valid type. Possibly the type was not "
+            "instantiated for the specified dimensions."));
   }
 }
 
@@ -262,265 +337,132 @@ parse_bsplines(const shared_ptr<XMLElement> xml_elem,
 
 void
 ObjectsContainerXMLReader::
-parse_nurbs(const shared_ptr<XMLElement> xml_elem,
-            const bool parse_as_constant,
-            IdMap_ &id_map,
-            const shared_ptr<ObjectsContainer> container)
+parse_grid_functions(const shared_ptr<XMLElement> xml_elem,
+                     const bool parse_as_constant,
+                     const bool &first_parsing,
+                     IdMap_ &id_map,
+                     const shared_ptr<ObjectsContainer> container)
 {
-  for (const auto &nr : xml_elem->get_children_elements("NURBS"))
-  {
-    const int nr_dim = nr->get_attribute<int>("Dim");
-    const int nr_range = nr->get_attribute<int>("Range");
-    const int nr_rank = nr->get_attribute<int>("Rank");
+  // Due to the relationship between ig grid functions and NURBS,
+  // the parsing of the grid functions must be done in two calls.
+  // The argument first_parsing defines indicates if it is the first time
+  // that the function is called, or not.
+  //
+  //   1 - All the grid functions, except for those based on ig grid
+  //       functions defined with NURBS are parsed.
+  //   2 - The NURBS ig grid function are parsed.
 
-    using NURBSPtrs = typename ObjectsContainer::RefBasisPtrs;
-    NURBSPtrs valid_nr_ptr_types;
-
-    bool found = false;
-    boost::fusion::for_each(valid_nr_ptr_types, [&](const auto &nr_ptr_type)
-    {
-      if (found)
-        return;
-
-      using NURBSType = typename
-                        remove_reference<decltype(nr_ptr_type)>::type::element_type;
-      static const int dim   = NURBSType::dim;
-      static const int range = NURBSType::range;
-      static const int rank  = NURBSType::rank;
-
-      if (nr_dim == dim && nr_range == range && nr_rank == rank)
-      {
-        found = true;
-        parse_nurbs<dim, range, rank>(nr, parse_as_constant, id_map, container);
-      }
-    });
-
-    // NURBS dimensions not found
-    AssertThrow(found,
-                ExcMessage(Self_::get_type_id_string("NURBS",
-                                                     nr->get_attribute<Index>("LocalObjectId"),
-    {{nr_dim, nr_range, nr_rank}})
-    + " is not a valid type. Possibly the type was not "
-    "instantiated for the specified dimensions."));
-  }
-}
-
-
-
-void
-ObjectsContainerXMLReader::
-parse_identity_grid_functions(const shared_ptr<XMLElement> xml_elem,
-                              const bool parse_as_constant,
-                              IdMap_ &id_map,
-                              const shared_ptr<ObjectsContainer> container)
-{
-  for (const auto &id : xml_elem->get_children_elements("IdentityGridFunction"))
-  {
-    const int id_dim = id->get_attribute<int>("Dim");
-
-    using GridPtrs = typename ObjectsContainer::GridPtrs;
-    GridPtrs valid_id_ptr_types;
-
-    bool found = false;
-    boost::fusion::for_each(valid_id_ptr_types, [&](const auto &id_ptr_type)
-    {
-      if (found)
-        return;
-
-      using GridType = typename
-                       remove_reference<decltype(id_ptr_type)>::type::element_type;
-      static const int dim   = GridType::dim;
-
-      if (id_dim == dim)
-      {
-        found = true;
-        parse_identity_grid_function<dim>(id, parse_as_constant, id_map, container);
-      }
-    });
-
-    // IdentityGridFunction dimensions not found
-    AssertThrow(found,
-                ExcMessage(Self_::get_type_id_string("IdentityGridFunction",
-                                                     id->get_attribute<Index>("LocalObjectId"),
-                                                     SafeSTLVector<int>(1, id_dim))
-                           + " is not a valid type. Possibly the type was not "
-                           "instantiated for the specified dimensions."));
-  }
-}
-
-
-
-void
-ObjectsContainerXMLReader::
-parse_constant_grid_functions(const shared_ptr<XMLElement> xml_elem,
-                              const bool parse_as_constant,
-                              IdMap_ &id_map,
-                              const shared_ptr<ObjectsContainer> container)
-{
-  for (const auto &cgf : xml_elem->get_children_elements("ConstantGridFunction"))
-  {
-    const int cgf_dim = cgf->get_attribute<int>("Dim");
-    const int cgf_range = cgf->get_attribute<int>("Range");
-
-    using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
-    GridFunctionPtrs valid_cgf_ptr_types;
-
-    bool found = false;
-    boost::fusion::for_each(valid_cgf_ptr_types, [&](const auto &cgf_ptr_type)
-    {
-      if (found)
-        return;
-
-      using GridFuncType = typename
-                           remove_reference<decltype(cgf_ptr_type)>::type::element_type;
-      static const int dim   = GridFuncType::dim;
-      static const int range  = GridFuncType::range;
-
-      if (cgf_dim == dim && cgf_range == range)
-      {
-        found = true;
-        parse_constant_grid_function<dim, range>(cgf, parse_as_constant, id_map, container);
-      }
-    });
-
-    // ConstantGridFunction dimensions not found
-    AssertThrow(found,
-                ExcMessage(Self_::get_type_id_string("ConstantGridFunction",
-                                                     cgf->get_attribute<Index>("LocalObjectId"),
-    {{cgf_dim, cgf_range}})
-    + " is not a valid type. Possibly the type was not "
-    "instantiated for the specified dimensions."));
-  }
-}
-
-
-
-void
-ObjectsContainerXMLReader::
-parse_linear_grid_functions(const shared_ptr<XMLElement> xml_elem,
-                            const bool parse_as_constant,
-                            IdMap_ &id_map,
-                            const shared_ptr<ObjectsContainer> container)
-{
-  for (const auto &cgf : xml_elem->get_children_elements("LinearGridFunction"))
-  {
-    const int cgf_dim = cgf->get_attribute<int>("Dim");
-    const int cgf_range = cgf->get_attribute<int>("Range");
-
-    using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
-    GridFunctionPtrs valid_cgf_ptr_types;
-
-    bool found = false;
-    boost::fusion::for_each(valid_cgf_ptr_types, [&](const auto &cgf_ptr_type)
-    {
-      if (found)
-        return;
-
-      using GridFuncType = typename
-                           remove_reference<decltype(cgf_ptr_type)>::type::element_type;
-      static const int dim   = GridFuncType::dim;
-      static const int range  = GridFuncType::range;
-
-      if (cgf_dim == dim && cgf_range == range)
-      {
-        found = true;
-        parse_linear_grid_function<dim, range>(cgf, parse_as_constant, id_map, container);
-      }
-    });
-
-    // LinearGridFunction dimensions not found
-    AssertThrow(found,
-                ExcMessage(Self_::get_type_id_string("LinearGridFunction",
-                                                     cgf->get_attribute<Index>("LocalObjectId"),
-    {{cgf_dim, cgf_range}})
-    + " is not a valid type. Possibly the type was not "
-    "instantiated for the specified dimensions."));
-  }
-}
-
-
-
-void
-ObjectsContainerXMLReader::
-parse_ig_grid_functions(const shared_ptr<XMLElement> xml_elem,
-                        const bool parse_as_constant,
-                        const bool &first_parsing,
-                        IdMap_ &id_map,
-                        const shared_ptr<ObjectsContainer> container)
-{
-  for (const auto &gf : xml_elem->get_children_elements("IgGridFunction"))
+  for (const auto &gf : xml_elem->get_children_elements("GridFunction"))
   {
     const int gf_dim = gf->get_attribute<int>("Dim");
     const int gf_range = gf->get_attribute<int>("Range");
 
-    using GridFunctionPtrs = typename ObjectsContainer::GridFuncPtrs;
-    GridFunctionPtrs valid_gf_ptr_types;
+    const auto local_object_id = gf->get_attribute<Index>("LocalObjectId");
+
+    typename ObjectsContainer::GridFuncPtrs valid_cgf_ptr_types;
 
     bool found = false;
-    boost::fusion::for_each(valid_gf_ptr_types, [&](const auto &gf_ptr_type)
+    boost::fusion::for_each(valid_cgf_ptr_types, [&](const auto &cgf_ptr_type)
     {
       if (found)
         return;
 
-      using GridFuncType = typename
-                           remove_reference<decltype(gf_ptr_type)>::type::element_type;
+      using GridFuncType = typename remove_reference<decltype(cgf_ptr_type)>::type::element_type;
       static const int dim   = GridFuncType::dim;
-      static const int range = GridFuncType::range;
+      static const int range  = GridFuncType::range;
 
       if (gf_dim == dim && gf_range == range)
       {
         found = true;
-        parse_ig_grid_function<dim, range>(gf, parse_as_constant, first_parsing, id_map, container);
+
+        GridFuncPtr_<dim, range> grid_func;
+        // Second call.
+        if (!first_parsing)
+        {
+            if (gf->has_element("IgGridFunction"))
+            {
+                if (id_map.find(local_object_id) != id_map.cend())
+                    // GridFunction already parsed.
+                    return;
+                else
+                {
+                    const auto igf = gf->get_single_element("IgGridFunction");
+                    grid_func = parse_ig_grid_function<dim, range>(
+                            gf->get_single_element("IgGridFunction"),
+                            local_object_id, parse_as_constant, container, id_map);
+                }
+            }
+            else
+                return;
+        }
+        // First call.
+        else
+        {
+            if (gf->has_element("IgGridFunction"))
+            {
+                const auto igf = gf->get_single_element("IgGridFunction");
+                const bool is_ref_space_parse =
+                        is_ref_basis_for_ig_grid_function_parsed<dim, range>
+                (igf, parse_as_constant, container, id_map);
+
+                if (is_ref_space_parse)
+                    // Ig grid function built with a BSpline
+                    grid_func = parse_ig_grid_function<dim, range>(
+                            igf, local_object_id, parse_as_constant, container, id_map);
+                else
+                    // Ig grid function built with a NURBS (that is not parsed yet).
+                    return;
+            }
+            else if (gf->has_element("IdentityGridFunction"))
+            {
+                grid_func = parse_identity_grid_function<dim, range>(
+                        gf->get_single_element("IdentityGridFunction"), local_object_id,
+                        parse_as_constant, container, id_map);
+            }
+            else if (gf->has_element("ConstantGridFunction"))
+            {
+                grid_func = parse_constant_grid_function<dim, range>(
+                        gf->get_single_element("ConstantGridFunction"), local_object_id,
+                        parse_as_constant, container, id_map);
+            }
+            else if (gf->has_element("LinearGridFunction"))
+            {
+                grid_func = parse_linear_grid_function<dim, range>(
+                        gf->get_single_element("LinearGridFunction"), local_object_id,
+                        parse_as_constant, container, id_map);
+            }
+            else
+            {
+                Assert (false, ExcMessage("Not valid GridFunction type."));
+            }
+        }
+
+        Assert (grid_func != nullptr, ExcNullPtr());
+
+        Assert(id_map.find(local_object_id) == id_map.cend(),
+               ExcMessage("Repeated object id."));
+        id_map[local_object_id] = grid_func->get_object_id();
+
+        const auto grid_non_const =
+                    std::const_pointer_cast<GridFuncType>(grid_func);
+        grid_non_const->set_name(parse_name(gf));
+
+        if (parse_as_constant)
+            container->insert_const_object<GridFuncType>(grid_func);
+        else
+            container->insert_object<GridFuncType>(grid_non_const);
+
+        return;
       }
     });
 
-    // NURBS dimensions not found
-    AssertThrow(found,
-                ExcMessage(Self_::get_type_id_string("IgGridFunction",
-                                                     gf->get_attribute<Index>("LocalObjectId"),
-    {{gf_dim, gf_range}})
-    + " is not a valid type. Possibly the type was not "
-    "instantiated for the specified dimensions."));
+    // GridFunction dimensions not found
+    AssertThrow(found, ExcMessage(
+            Self_::get_type_id_string("GridFunction", local_object_id,
+            {{gf_dim, gf_range}}) +
+            " is not a valid type. Possibly the type was not "
+            "instantiated for the specified dimensions."));
   }
-}
-
-
-
-void
-ObjectsContainerXMLReader::
-parse_grid_functions_and_nurbs(const shared_ptr<XMLElement> xml_elem,
-                               const bool parse_as_constant,
-                               IdMap_ &id_map,
-                               const shared_ptr<ObjectsContainer> container)
-{
-  // Due to the relationship between ig grid functions and NURBS,
-  // their parsing must be done in a specific order. That is:
-  //
-  //   1 - parse grid functions that are not ig.
-  //   2 - parse ig grid functions built upon a BSpline.
-  //   3 - parse nurbs
-  //   4 - parse the remaning ig grid functions.
-
-
-  // Parsing identity grid functions.
-  parse_identity_grid_functions(xml_elem, parse_as_constant, id_map, container);
-
-  // Parsing constant grid functions.
-  parse_constant_grid_functions(xml_elem, parse_as_constant, id_map, container);
-
-  // Parsing linear grid functions.
-  parse_linear_grid_functions(xml_elem, parse_as_constant, id_map, container);
-
-  // Parsing ig grid functions built upon a BSpline.
-  bool first_parsing = true;
-  parse_ig_grid_functions(xml_elem, parse_as_constant, first_parsing, id_map, container);
-
-  // Parsing NURBS.
-  Self_::parse_nurbs(xml_elem, parse_as_constant, id_map, container);
-
-  // Parsing the remaining ig grid functions.
-  first_parsing = false;
-  parse_ig_grid_functions(xml_elem, parse_as_constant, first_parsing, id_map, container);
 }
 
 
@@ -627,29 +569,17 @@ parse_functions(const shared_ptr<XMLElement> xml_elem,
                 IdMap_ &id_map,
                 const shared_ptr<ObjectsContainer> container)
 {
-  parse_ig_functions(xml_elem, parse_as_constant, id_map, container);
-  parse_constant_functions(xml_elem, parse_as_constant, id_map, container);
-  parse_linear_functions(xml_elem, parse_as_constant, id_map, container);
-}
-
-
-
-void
-ObjectsContainerXMLReader::
-parse_ig_functions(const shared_ptr<XMLElement> xml_elem,
-                   const bool parse_as_constant,
-                   IdMap_ &id_map,
-                   const shared_ptr<ObjectsContainer> container)
-{
-  for (const auto &fn : xml_elem->get_children_elements("IgFunction"))
+  for (const auto &fn : xml_elem->get_children_elements("Function"))
   {
     const int fn_dim = fn->get_attribute<int>("Dim");
     const int fn_codim = fn->get_attribute<int>("Codim");
     const int fn_range = fn->get_attribute<int>("Range");
     const int fn_rank = fn->get_attribute<int>("Rank");
 
-    using FunctionPtrs = typename ObjectsContainer::FunctionPtrs;
-    FunctionPtrs valid_fn_ptr_types;
+    const auto local_object_id = fn->get_attribute<Index>("LocalObjectId");
+    Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
+
+    typename ObjectsContainer::FunctionPtrs valid_fn_ptr_types;
 
     bool found = false;
     boost::fusion::for_each(valid_fn_ptr_types, [&](const auto &fn_ptr_type)
@@ -667,111 +597,56 @@ parse_ig_functions(const shared_ptr<XMLElement> xml_elem,
       if (fn_dim == dim && fn_range == range && fn_rank == rank && fn_codim == codim)
       {
         found = true;
-        parse_ig_function<dim, codim, range, rank>(fn, parse_as_constant, id_map, container);
+
+        FuncPtr_<dim, codim, range, rank> func;
+        if (fn->has_element("IgFunction"))
+        {
+            func = parse_ig_function<dim, codim, range, rank>(
+                fn->get_single_element("IgFunction"), local_object_id,
+                parse_as_constant, container, id_map);
+        }
+        else if (fn->has_element("ConstantFunction"))
+        {
+            func = parse_constant_function<dim, codim, range, rank>(
+                fn->get_single_element("ConstantFunction"), local_object_id,
+                parse_as_constant, container, id_map);
+        }
+        else if (fn->has_element("LinearFunction"))
+        {
+            func = parse_linear_function<dim, codim, range, rank>(
+                fn->get_single_element("LinearFunction"), local_object_id,
+                parse_as_constant, container, id_map);
+        }
+        else
+        {
+            Assert (false, ExcMessage("Not valid Function type."));
+        }
+
+        Assert (func != nullptr, ExcNullPtr());
+
+        using Func_ = Function<dim, codim, range, rank>;
+        id_map[local_object_id] = func->get_object_id();
+
+        const auto func_non_const =
+                    std::const_pointer_cast<Func_>(func);
+        func_non_const->set_name(parse_name(fn));
+
+        if (parse_as_constant)
+            container->insert_const_object<Func_>(func);
+        else
+            container->insert_object<Func_>(func_non_const);
+
+        return;
+
+
       }
     });
 
     // Function dimensions not found
     AssertThrow(found,
                 ExcMessage(Self_::get_type_id_string("IgFunction",
-                                                     fn->get_attribute<Index>("LocalObjectId"),
-    {{fn_dim, fn_codim, fn_range, fn_rank}})
-    + " is not a valid type. Possibly the type was not "
-    "instantiated for the specified dimensions."));
-  }
-}
-
-
-
-void
-ObjectsContainerXMLReader::
-parse_constant_functions(const shared_ptr<XMLElement> xml_elem,
-                         const bool parse_as_constant,
-                         IdMap_ &id_map,
-                         const shared_ptr<ObjectsContainer> container)
-{
-  for (const auto &fn : xml_elem->get_children_elements("ConstantFunction"))
-  {
-    const int fn_dim = fn->get_attribute<int>("Dim");
-    const int fn_codim = fn->get_attribute<int>("Codim");
-    const int fn_range = fn->get_attribute<int>("Range");
-    const int fn_rank = fn->get_attribute<int>("Rank");
-
-    using FunctionPtrs = typename ObjectsContainer::FunctionPtrs;
-    FunctionPtrs valid_fn_ptr_types;
-
-    bool found = false;
-    boost::fusion::for_each(valid_fn_ptr_types, [&](const auto &fn_ptr_type)
-    {
-      if (found)
-        return;
-
-      using FunctionType = typename
-                           remove_reference<decltype(fn_ptr_type)>::type::element_type;
-      static const int dim = FunctionType::dim;
-      static const int range = FunctionType::range;
-      static const int rank = FunctionType::rank;
-      static const int codim = FunctionType::codim;
-
-      if (fn_dim == dim && fn_range == range && fn_rank == rank && fn_codim == codim)
-      {
-        found = true;
-        parse_constant_function<dim, codim, range, rank>(fn, parse_as_constant, id_map, container);
-      }
-    });
-
-    // Function dimensions not found
-    AssertThrow(found,
-                ExcMessage(Self_::get_type_id_string("ConstantFunction",
-                                                     fn->get_attribute<Index>("LocalObjectId"),
-    {{fn_dim, fn_codim, fn_range, fn_rank}})
-    + " is not a valid type. Possibly the type was not "
-    "instantiated for the specified dimensions."));
-  }
-}
-
-
-
-void
-ObjectsContainerXMLReader::
-parse_linear_functions(const shared_ptr<XMLElement> xml_elem,
-                       const bool parse_as_constant,
-                       IdMap_ &id_map,
-                       const shared_ptr<ObjectsContainer> container)
-{
-  for (const auto &fn : xml_elem->get_children_elements("LinearFunction"))
-  {
-    const int fn_dim = fn->get_attribute<int>("Dim");
-    const int fn_codim = fn->get_attribute<int>("Codim");
-    const int fn_range = fn->get_attribute<int>("Range");
-
-    using FunctionPtrs = typename ObjectsContainer::FunctionPtrs;
-    FunctionPtrs valid_fn_ptr_types;
-
-    bool found = false;
-    boost::fusion::for_each(valid_fn_ptr_types, [&](const auto &fn_ptr_type)
-    {
-      if (found)
-        return;
-
-      using FunctionType = typename
-                           remove_reference<decltype(fn_ptr_type)>::type::element_type;
-      static const int dim = FunctionType::dim;
-      static const int range = FunctionType::range;
-      static const int codim = FunctionType::codim;
-
-      if (fn_dim == dim && fn_range == range && fn_codim == codim)
-      {
-        found = true;
-        parse_linear_function<dim, codim, range>(fn, parse_as_constant, id_map, container);
-      }
-    });
-
-    // Function dimensions not found
-    AssertThrow(found,
-                ExcMessage(Self_::get_type_id_string("LinearFunction",
-                                                     fn->get_attribute<Index>("LocalObjectId"),
-    {{fn_dim, fn_codim, fn_range}})
+                                                     local_object_id,
+                                                     {{fn_dim, fn_codim, fn_range, fn_rank}})
     + " is not a valid type. Possibly the type was not "
     "instantiated for the specified dimensions."));
   }
@@ -1064,25 +939,17 @@ parse_spline_space(const shared_ptr<XMLElement> xml_elem,
 
 
 template <int dim, int range, int rank>
-void
+auto
 ObjectsContainerXMLReader::
-parse_bspline(const shared_ptr<XMLElement> xml_elem,
+parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
+              const Index &local_object_id,
               const bool parse_as_constant,
-              IdMap_ &id_map,
-              const shared_ptr<ObjectsContainer> container)
+              const std::shared_ptr<const ObjectsContainer> container,
+              IdMap_ &id_map) -> RefBasisPtr_<dim, range, rank>
 {
-  Assert(xml_elem->get_name() == "BSpline",
-         ExcMessage("Invalid XML tag."));
-
-  Assert(xml_elem->get_attribute<int>("Dim") == dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Range") == range,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-  Assert(xml_elem->get_attribute<int>("Rank") == rank,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
+  Assert(xml_elem->get_name() == "BSpline", ExcMessage("Invalid XML tag."));
 
   using BSplineType = BSpline<dim, range, rank>;
-  using RefBasisType = ReferenceBasis<dim, range, rank>;
   using SplineSpaceType = SplineSpace<dim, range, rank>;
   using EndBehaviourTable = typename SplineSpaceType::EndBehaviourTable;
   static const int n_components = SplineSpaceType::n_components;
@@ -1092,10 +959,6 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
   for (auto &eb_c : end_beh_table)
     for (auto &eb : eb_c)
       eb = BasisEndBehaviour::interpolatory;
-
-
-  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
-  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const auto ssp_tag = xml_elem->get_single_element("SplineSpace");
   const auto local_ssp_id = ssp_tag->get_attribute<Index>("GetFromLocalObjectId");
@@ -1108,9 +971,9 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
               (parse_as_constant ?
                container->is_const_object_present<SplineSpaceType> (id_map.at(local_ssp_id)) :
                container->is_object_present<SplineSpaceType> (id_map.at(local_ssp_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching "
-                         "definition for " +
-                         Self_::get_type_id_string("SplineSpace", local_ssp_id,
+               ExcMessage("Parsing " + parsing_msg + " not matching "
+                          "definition for " +
+                          Self_::get_type_id_string("SplineSpace", local_ssp_id,
   {{dim, range, rank}}) + "."));
 
   SharedPtrConstnessHandler<SplineSpaceType> ssp;
@@ -1208,408 +1071,30 @@ parse_bspline(const shared_ptr<XMLElement> xml_elem,
   }
 
   if (parse_as_constant)
-  {
-    const auto bspline = BSplineType::const_create(ssp.get_ptr_const_data(), end_beh_table);
-    const auto unique_id = bspline->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    container->insert_const_object<RefBasisType>(bspline);
-  }
+    return BSplineType::const_create(ssp.get_ptr_const_data(), end_beh_table);
   else
-  {
-    const auto bspline = BSplineType::create(ssp.get_ptr_data(), end_beh_table);
-    const auto unique_id = bspline->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    container->insert_object<RefBasisType>(bspline);
-  }
-}
-
-
-
-template <int dim>
-void
-ObjectsContainerXMLReader::
-parse_identity_grid_function(const shared_ptr<XMLElement> xml_elem,
-                             const bool parse_as_constant,
-                             IdMap_ &id_map,
-                             const shared_ptr<ObjectsContainer> container)
-{
-  Assert(xml_elem->get_name() == "IdentityGridFunction",
-         ExcMessage("Invalid XML tag."));
-
-  Assert(xml_elem->get_attribute<int>("Dim") == dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-
-  using IdentityGridFunctionType = grid_functions::IdentityGridFunction<dim>;
-  using GridFunctionType = GridFunction<dim, dim>;
-  using GridType = Grid<dim>;
-
-  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
-  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
-
-  const string parsing_msg = Self_::get_type_id_string("IdentityGridFunction",
-                                                       local_object_id, SafeSTLVector<int>(1, dim));
-
-  const auto gr_tag = xml_elem->get_single_element("Grid");
-  const auto local_gr_id = gr_tag->get_attribute<Index>("GetFromLocalObjectId");
-
-  // Checking the grid with proper dimension and id exists.
-  AssertThrow(id_map.find(local_gr_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
-               container->is_object_present<GridType> (id_map.at(local_gr_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching definition" +
-                         "for " + Self_::get_type_id_string("Grid", local_gr_id,
-                                                            SafeSTLVector<Index>(dim)) + "."));
-
-  const auto name = parse_name(xml_elem);
-
-  if (parse_as_constant)
-  {
-    const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
-    const auto id_func = IdentityGridFunctionType::const_create(grid);
-    const auto unique_id = id_func->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    const_pointer_cast<IdentityGridFunctionType>(id_func)->set_name(name);
-
-    container->insert_const_object<GridFunctionType>(id_func);
-  }
-  else
-  {
-    const auto grid = container->get_object<GridType>(id_map.at(local_gr_id));
-    const auto id_func = IdentityGridFunctionType::create(grid);
-    const auto unique_id = id_func->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    id_func->set_name(name);
-
-    container->insert_object<GridFunctionType>(id_func);
-  }
-}
-
-
-
-template <int dim, int range>
-void
-ObjectsContainerXMLReader::
-parse_constant_grid_function(const shared_ptr<XMLElement> xml_elem,
-                             const bool parse_as_constant,
-                             IdMap_ &id_map,
-                             const shared_ptr<ObjectsContainer> container)
-{
-  Assert(xml_elem->get_name() == "ConstantGridFunction",
-         ExcMessage("Invalid XML tag."));
-
-  Assert(xml_elem->get_attribute<int>("Dim") == dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Range") == range,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-
-  using GridType = Grid<dim>;
-  using ConstGridFunctionType = grid_functions::ConstantGridFunction<dim,range>;
-  using GridFunctionType = GridFunction<dim,range>;
-  using Values = typename GridFunctionType::Value;
-
-  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
-  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
-
-  const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
-  local_object_id, {{dim, range}});
-
-  // Getting grid.
-  const auto gr_tag = xml_elem->get_single_element("Grid");
-  const auto local_gr_id = gr_tag->get_attribute<Index>("GetFromLocalObjectId");
-
-  // Checking the grid with proper dimension and id exists.
-  AssertThrow(id_map.find(local_gr_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
-               container->is_object_present<GridType> (id_map.at(local_gr_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching definition" +
-                         "for " + Self_::get_type_id_string("Grid", local_gr_id,
-                                                            SafeSTLVector<Index>(dim)) + "."));
-
-  // Parsing values.
-  const auto vals_tag = xml_elem->get_single_element("Values");
-
-  const auto vals_vec = vals_tag->get_values_vector<Real>();
-  AssertThrow(vals_vec.size() == Values::n_entries,
-              ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in Values XML does not match "
-                         "with the number of components of the GridFunction."));
-  SafeSTLArray<Real, Values::n_entries> vals_arr;
-  std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
-  Values values(vals_arr);
-
-  const auto name = parse_name(xml_elem);
-
-  if (parse_as_constant)
-  {
-    const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
-    const auto cgf = ConstGridFunctionType::const_create(grid, values);
-    const auto unique_id = cgf->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    const_pointer_cast<ConstGridFunctionType>(cgf)->set_name(name);
-
-    container->insert_const_object<GridFunctionType>(cgf);
-  }
-  else
-  {
-    const auto grid = container->get_object<GridType>(id_map.at(local_gr_id));
-    const auto cgf = ConstGridFunctionType::create(grid, values);
-    const auto unique_id = cgf->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    cgf->set_name(name);
-
-    container->insert_object<GridFunctionType>(cgf);
-  }
-}
-
-
-
-template <int dim, int range>
-void
-ObjectsContainerXMLReader::
-parse_linear_grid_function(const shared_ptr<XMLElement> xml_elem,
-                           const bool parse_as_constant,
-                           IdMap_ &id_map,
-                           const shared_ptr<ObjectsContainer> container)
-{
-  Assert(xml_elem->get_name() == "LinearGridFunction",
-         ExcMessage("Invalid XML tag."));
-
-  Assert(xml_elem->get_attribute<int>("Dim") == dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Range") == range,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-
-  using GridType = Grid<dim>;
-  using LinearGridFunctionType = grid_functions::LinearGridFunction<dim,range>;
-  using GridFunctionType = GridFunction<dim,range>;
-  using Values = typename LinearGridFunctionType::Value;
-  using Ders = typename LinearGridFunctionType::template Derivative<1>;
-
-  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
-  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
-
-  const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
-  local_object_id, {{dim, range}});
-
-  // Getting grid.
-  const auto gr_tag = xml_elem->get_single_element("Grid");
-  const auto local_gr_id = gr_tag->get_attribute<Index>("GetFromLocalObjectId");
-
-  // Checking the grid with proper dimension and id exists.
-  AssertThrow(id_map.find(local_gr_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
-               container->is_object_present<GridType> (id_map.at(local_gr_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching definition" +
-                         "for " + Self_::get_type_id_string("Grid", local_gr_id,
-                                                            SafeSTLVector<Index>(dim)) + "."));
-
-  // Parsing b.
-  const auto b_tag = xml_elem->get_single_element("b");
-
-  const auto b_vec = b_tag->get_values_vector<Real>();
-  AssertThrow(b_vec.size() == Values::n_entries,
-              ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in Values XML does not match "
-                         "with the number of components of the GridFunction."));
-  SafeSTLArray<Real, Values::n_entries> b_arr;
-  std::copy(b_vec.cbegin(), b_vec.cend(), b_arr.begin());
-  Values b(b_arr);
-
-  // Parsing A.
-  const auto A_tag = xml_elem->get_single_element("A");
-
-  const auto A_vec = A_tag->get_values_vector<Real>();
-  AssertThrow(A_vec.size() == Ders::n_entries,
-              ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in Derivative<1> XML does not match "
-                         "with the number of components of the Function."));
-  SafeSTLArray<Real, Ders::n_entries> A_arr;
-  std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
-  Ders A(A_arr);
-
-  const auto name = parse_name(xml_elem);
-
-  if (parse_as_constant)
-  {
-    const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
-    const auto lgf = LinearGridFunctionType::const_create(grid, A, b);
-    const auto unique_id = lgf->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    const_pointer_cast<LinearGridFunctionType>(lgf)->set_name(name);
-
-    container->insert_const_object<GridFunctionType>(lgf);
-  }
-  else
-  {
-    const auto grid = container->get_object<GridType>(id_map.at(local_gr_id));
-    const auto lgf = LinearGridFunctionType::create(grid, A, b);
-    const auto unique_id = lgf->get_object_id();
-    id_map[local_object_id] = unique_id;
-    lgf->set_name(name);
-
-    container->insert_object<GridFunctionType>(lgf);
-  }
-}
-
-
-
-template <int dim, int range>
-void
-ObjectsContainerXMLReader::
-parse_ig_grid_function(const shared_ptr<XMLElement> xml_elem,
-                       const bool parse_as_constant,
-                       const bool &first_parsing,
-                       IdMap_ &id_map,
-                       const shared_ptr<ObjectsContainer> container)
-{
-  Assert(xml_elem->get_name() == "IgGridFunction",
-         ExcMessage("Invalid XML tag."));
-
-  Assert(xml_elem->get_attribute<int>("Dim") == dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Range") == range,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-
-  static const int rank = 1;
-  using IgGridFunctionType = IgGridFunction<dim, range>;
-  using GridFunctionType = GridFunction<dim, range>;
-  using RefBasisType     = ReferenceBasis<dim, range, rank>;
-
-  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
-
-  const bool already_parsed =
-    id_map.find(local_object_id) != id_map.cend() &&
-    (parse_as_constant ?
-     container->is_const_object_present<GridFunctionType> (id_map.at(local_object_id)) :
-     container->is_object_present<GridFunctionType> (id_map.at(local_object_id)));
-
-  if (!first_parsing && already_parsed)
-    return;
-
-  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
-
-  const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
-  local_object_id, {{dim, range}});
-
-  const auto rs_tag = xml_elem->get_single_element("ReferenceBasis");
-  const auto local_rs_id = rs_tag->get_attribute<Index>("GetFromLocalObjectId");
-
-  // Checking the reference basis with proper dimension and id exists.
-  const bool ref_basis_parsed =
-    id_map.find(local_rs_id) != id_map.cend() &&
-    (parse_as_constant ?
-     container->is_const_object_present<RefBasisType> (id_map.at(local_rs_id)) :
-     container->is_object_present<RefBasisType> (id_map.at(local_rs_id)));
-
-  if (!ref_basis_parsed)
-  {
-    // If does not exist there are two possibiities:
-    if (first_parsing)
-      // It is the first parsing time for the ig grid function.
-      // It is assumed that the reference basis is a NURBS that
-      // has not been parsed yet.
-      return;
-    else
-      // It is not the first parsing time for the ig grid function.
-      // There is an error in the input file
-      AssertThrow(false,
-                  ExcMessage("Parsing " + parsing_msg + " not matching "
-                             "definition for " +
-                             Self_::get_type_id_string("ReferenceBasis", local_rs_id,
-    {{dim, range, rank}}) + "."));
-
-  }
-
-  SharedPtrConstnessHandler<RefBasisType> rs;
-  if (parse_as_constant)
-    rs = SharedPtrConstnessHandler<RefBasisType>
-         (container->get_const_object<RefBasisType>(id_map.at(local_rs_id)));
-  else
-    rs = SharedPtrConstnessHandler<RefBasisType>
-         (container->get_object<RefBasisType>(id_map.at(local_rs_id)));
-
-  const auto name = parse_name(xml_elem);
-
-  const string dofs_property = parse_dofs_property(xml_elem);
-  const auto dof_distribution = rs->get_spline_space()->get_dof_distribution();
-  AssertThrow(dof_distribution->is_property_defined(dofs_property),
-              ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
-                         dofs_property + "\" not defined for " +
-                         Self_::get_type_id_string("ReferenceBasis", local_rs_id,
-  {{dim, range, rank}}) + "."));
-
-  const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
-  const auto ig_coefs = parse_ig_coefficients(xml_elem, parsing_msg, global_dofs);
-
-  AssertThrow(rs->get_num_basis() == ig_coefs->size(),
-              ExcMessage("Parsing " + parsing_msg + " the cardinality "
-                         "of the ReferenceBasis (" +
-                         to_string(rs->get_num_basis()) + ") is "
-                         "different to the dimension of the "
-                         "IgCoefficients (" + to_string(ig_coefs->size())
-                         + ")."));
-
-  if (parse_as_constant)
-  {
-    const auto igf = IgGridFunctionType::const_create
-                     (rs.get_ptr_const_data(), *ig_coefs, dofs_property);
-    const auto unique_id = igf->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    const_pointer_cast<IgGridFunctionType>(igf)->set_name(name);
-
-    container->insert_const_object<GridFunctionType>(igf);
-  }
-  else
-  {
-    const auto igf = IgGridFunctionType::create(rs.get_ptr_data(), *ig_coefs, dofs_property);
-    const auto unique_id = igf->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    igf->set_name(name);
-
-    container->insert_object<GridFunctionType>(igf);
-  }
+    return BSplineType::create(ssp.get_ptr_data(), end_beh_table);
 }
 
 
 
 template <int dim, int range, int rank>
-void
+auto
 ObjectsContainerXMLReader::
-parse_nurbs(const shared_ptr<XMLElement> xml_elem,
+parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
+            const Index &local_object_id,
             const bool parse_as_constant,
-            IdMap_ &id_map,
-            const shared_ptr<ObjectsContainer> container)
+            const std::shared_ptr<const ObjectsContainer> container,
+            IdMap_ &id_map) -> RefBasisPtr_<dim, range, rank>
 {
   Assert(xml_elem->get_name() == "NURBS",
          ExcMessage("Invalid XML tag."));
-
-  Assert(xml_elem->get_attribute<int>("Dim") == dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Range") == range,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-  Assert(xml_elem->get_attribute<int>("Rank") == rank,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
 
   using BSplineType = BSpline<dim, range, rank>;
   using NURBSType   = NURBS<dim, range, rank>;
   using WeightIgFunctionType = IgGridFunction<dim, 1>;
   using WeightFunctionType = GridFunction<dim, 1>;
   using RefBasisType = ReferenceBasis<dim, range, rank>;
-
-  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
-  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const string parsing_msg = Self_::get_type_id_string("NURBS",
   local_object_id, {{dim, range, rank}});
@@ -1714,25 +1199,307 @@ parse_nurbs(const shared_ptr<XMLElement> xml_elem,
   if (parse_as_constant)
   {
     const auto bs = dynamic_pointer_cast<const BSplineType>(rs.get_ptr_const_data());
-    const auto nurbs = NURBSType::const_create(bs, wf.get_ptr_const_data());
-    Assert(nurbs != nullptr, ExcNullPtr());
-    const auto unique_id = nurbs->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    container->insert_const_object<RefBasisType>(nurbs);
+    return NURBSType::const_create(bs, wf.get_ptr_const_data());
   }
   else
   {
     const auto bs = dynamic_pointer_cast<BSplineType>(rs.get_ptr_data());
-    const auto nurbs = NURBSType::create(bs, wf.get_ptr_data());
-    Assert(nurbs != nullptr, ExcNullPtr());
-    const auto unique_id = nurbs->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    container->insert_object<RefBasisType>(nurbs);
+    return NURBSType::create(bs, wf.get_ptr_data());
   }
 }
 
+
+
+template <int dim, int range>
+auto
+ObjectsContainerXMLReader::
+parse_identity_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                             const Index &local_object_id,
+                             const bool parse_as_constant,
+                             const std::shared_ptr<const ObjectsContainer> container,
+                             IdMap_ &id_map,
+                             typename std::enable_if_t<dim == range> *) ->
+GridFuncPtr_<dim, range>
+{
+  Assert(xml_elem->get_name() == "IdentityGridFunction",
+         ExcMessage("Invalid XML tag."));
+
+  using IdentityGridFunctionType = grid_functions::IdentityGridFunction<dim>;
+  using GridType = Grid<dim>;
+
+  const string parsing_msg = Self_::get_type_id_string("IdentityGridFunction",
+                                                       local_object_id, SafeSTLVector<int>(1, dim));
+
+  const auto gr_tag = xml_elem->get_single_element("Grid");
+  const auto local_gr_id = gr_tag->get_attribute<Index>("GetFromLocalObjectId");
+
+  // Checking the grid with proper dimension and id exists.
+  AssertThrow(id_map.find(local_gr_id) != id_map.cend() &&
+              (parse_as_constant ?
+               container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
+               container->is_object_present<GridType> (id_map.at(local_gr_id))),
+              ExcMessage("Parsing " + parsing_msg + " not matching definition" +
+                         "for " + Self_::get_type_id_string("Grid", local_gr_id,
+                                                            SafeSTLVector<Index>(dim)) + "."));
+
+  if (parse_as_constant)
+  {
+    const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
+    return IdentityGridFunctionType::const_create(grid);
+  }
+  else
+  {
+    const auto grid = container->get_object<GridType>(id_map.at(local_gr_id));
+    return IdentityGridFunctionType::create(grid);
+  }
+}
+
+
+
+template <int dim, int range>
+auto
+ObjectsContainerXMLReader::
+parse_identity_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                             const Index &local_object_id,
+                             const bool parse_as_constant,
+                             const std::shared_ptr<const ObjectsContainer> container,
+                             IdMap_ &id_map,
+                             typename std::enable_if_t<dim != range> *) ->
+GridFuncPtr_<dim, range>
+{
+  AssertThrow (dim == range,
+               ExcMessage("For IdentityGridFunction Dim and "
+                          "Range must be equal."));
+
+  return GridFuncPtr_<dim, range>(); // to avoid the compilation warning.
+}
+
+
+
+template <int dim, int range>
+auto
+ObjectsContainerXMLReader::
+parse_constant_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                             const Index &local_object_id,
+                             const bool parse_as_constant,
+                             const std::shared_ptr<const ObjectsContainer> container,
+                             IdMap_ &id_map) -> GridFuncPtr_<dim, range>
+{
+  Assert(xml_elem->get_name() == "ConstantGridFunction",
+         ExcMessage("Invalid XML tag."));
+
+  using GridType = Grid<dim>;
+  using ConstGridFunctionType = grid_functions::ConstantGridFunction<dim,range>;
+  using GridFunctionType = GridFunction<dim,range>;
+  using Values = typename GridFunctionType::Value;
+
+  const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
+  local_object_id, {{dim, range}});
+
+  // Getting grid.
+  const auto gr_tag = xml_elem->get_single_element("Grid");
+  const auto local_gr_id = gr_tag->get_attribute<Index>("GetFromLocalObjectId");
+
+  // Checking the grid with proper dimension and id exists.
+  AssertThrow(id_map.find(local_gr_id) != id_map.cend() &&
+              (parse_as_constant ?
+               container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
+               container->is_object_present<GridType> (id_map.at(local_gr_id))),
+              ExcMessage("Parsing " + parsing_msg + " not matching definition" +
+                         "for " + Self_::get_type_id_string("Grid", local_gr_id,
+                                                            SafeSTLVector<Index>(dim)) + "."));
+
+  // Parsing values.
+  const auto vals_tag = xml_elem->get_single_element("Values");
+
+  const auto vals_vec = vals_tag->get_values_vector<Real>();
+  AssertThrow(vals_vec.size() == Values::n_entries,
+              ExcMessage("Parsing " + parsing_msg + ", the number of "
+                         "components in Values XML does not match "
+                         "with the number of components of the GridFunction."));
+  SafeSTLArray<Real, Values::n_entries> vals_arr;
+  std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
+  Values values(vals_arr);
+
+  if (parse_as_constant)
+  {
+    const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
+    return ConstGridFunctionType::const_create(grid, values);
+  }
+  else
+  {
+    const auto grid = container->get_object<GridType>(id_map.at(local_gr_id));
+    return ConstGridFunctionType::create(grid, values);
+  }
+}
+
+
+
+template <int dim, int range>
+auto
+ObjectsContainerXMLReader::
+parse_linear_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                           const Index &local_object_id,
+                           const bool parse_as_constant,
+                           const std::shared_ptr<const ObjectsContainer> container,
+                           IdMap_ &id_map) -> GridFuncPtr_<dim, range>
+{
+  Assert(xml_elem->get_name() == "LinearGridFunction",
+         ExcMessage("Invalid XML tag."));
+
+  using GridType = Grid<dim>;
+  using LinearGridFunctionType = grid_functions::LinearGridFunction<dim,range>;
+  using Values = typename LinearGridFunctionType::Value;
+  using Ders = typename LinearGridFunctionType::template Derivative<1>;
+
+  const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
+  local_object_id, {{dim, range}});
+
+  // Getting grid.
+  const auto gr_tag = xml_elem->get_single_element("Grid");
+  const auto local_gr_id = gr_tag->get_attribute<Index>("GetFromLocalObjectId");
+
+  // Checking the grid with proper dimension and id exists.
+  AssertThrow(id_map.find(local_gr_id) != id_map.cend() &&
+              (parse_as_constant ?
+               container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
+               container->is_object_present<GridType> (id_map.at(local_gr_id))),
+              ExcMessage("Parsing " + parsing_msg + " not matching definition" +
+                         "for " + Self_::get_type_id_string("Grid", local_gr_id,
+                                                            SafeSTLVector<Index>(dim)) + "."));
+
+  // Parsing b.
+  const auto b_tag = xml_elem->get_single_element("b");
+
+  const auto b_vec = b_tag->get_values_vector<Real>();
+  AssertThrow(b_vec.size() == Values::n_entries,
+              ExcMessage("Parsing " + parsing_msg + ", the number of "
+                         "components in Values XML does not match "
+                         "with the number of components of the GridFunction."));
+  SafeSTLArray<Real, Values::n_entries> b_arr;
+  std::copy(b_vec.cbegin(), b_vec.cend(), b_arr.begin());
+  Values b(b_arr);
+
+  // Parsing A.
+  const auto A_tag = xml_elem->get_single_element("A");
+
+  const auto A_vec = A_tag->get_values_vector<Real>();
+  AssertThrow(A_vec.size() == Ders::n_entries,
+              ExcMessage("Parsing " + parsing_msg + ", the number of "
+                         "components in Derivative<1> XML does not match "
+                         "with the number of components of the Function."));
+  SafeSTLArray<Real, Ders::n_entries> A_arr;
+  std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
+  Ders A(A_arr);
+
+  if (parse_as_constant)
+  {
+    const auto grid = container->get_const_object<GridType>(id_map.at(local_gr_id));
+    return LinearGridFunctionType::const_create(grid, A, b);
+  }
+  else
+  {
+    const auto grid = container->get_object<GridType>(id_map.at(local_gr_id));
+    return LinearGridFunctionType::create(grid, A, b);
+  }
+}
+
+
+
+template <int dim, int range>
+auto
+ObjectsContainerXMLReader::
+parse_ig_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                       const Index &local_object_id,
+                       const bool parse_as_constant,
+                       const std::shared_ptr<const ObjectsContainer> container,
+                       IdMap_ &id_map) -> GridFuncPtr_<dim, range>
+{
+  Assert(xml_elem->get_name() == "IgGridFunction",
+         ExcMessage("Invalid XML tag."));
+
+  static const int rank = 1;
+  using IgGridFunctionType = IgGridFunction<dim, range>;
+  using RefBasisType     = ReferenceBasis<dim, range, rank>;
+
+  const string parsing_msg = Self_::get_type_id_string("IgGridFunction",
+  local_object_id, {{dim, range}});
+
+  const auto rs_tag = xml_elem->get_single_element("ReferenceBasis");
+  const auto local_rs_id = rs_tag->get_attribute<Index>("GetFromLocalObjectId");
+
+  // Checking the reference basis with proper dimension and id exists.
+  const bool ref_basis_parsed =
+    id_map.find(local_rs_id) != id_map.cend() &&
+    (parse_as_constant ?
+     container->is_const_object_present<RefBasisType> (id_map.at(local_rs_id)) :
+     container->is_object_present<RefBasisType> (id_map.at(local_rs_id)));
+
+  AssertThrow (ref_basis_parsed,
+                  ExcMessage("Parsing " + parsing_msg + " not matching "
+                             "definition for " +
+                             Self_::get_type_id_string("ReferenceBasis", local_rs_id,
+                                                       {{dim, range, rank}}) + "."));
+  SharedPtrConstnessHandler<RefBasisType> rs;
+  if (parse_as_constant)
+    rs = SharedPtrConstnessHandler<RefBasisType>
+         (container->get_const_object<RefBasisType>(id_map.at(local_rs_id)));
+  else
+    rs = SharedPtrConstnessHandler<RefBasisType>
+         (container->get_object<RefBasisType>(id_map.at(local_rs_id)));
+
+  const string dofs_property = parse_dofs_property(xml_elem);
+  const auto dof_distribution = rs->get_spline_space()->get_dof_distribution();
+  AssertThrow(dof_distribution->is_property_defined(dofs_property),
+              ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
+                         dofs_property + "\" not defined for " +
+                         Self_::get_type_id_string("ReferenceBasis", local_rs_id,
+  {{dim, range, rank}}) + "."));
+
+  const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
+  const auto ig_coefs = parse_ig_coefficients(xml_elem, parsing_msg, global_dofs);
+
+  AssertThrow(rs->get_num_basis() == ig_coefs->size(),
+              ExcMessage("Parsing " + parsing_msg + " the cardinality "
+                         "of the ReferenceBasis (" +
+                         to_string(rs->get_num_basis()) + ") is "
+                         "different to the dimension of the "
+                         "IgCoefficients (" + to_string(ig_coefs->size())
+                         + ")."));
+
+  if (parse_as_constant)
+    return  IgGridFunctionType::const_create
+                     (rs.get_ptr_const_data(), *ig_coefs, dofs_property);
+  else
+    return IgGridFunctionType::create(rs.get_ptr_data(), *ig_coefs, dofs_property);
+}
+
+
+
+template <int dim, int range>
+bool
+ObjectsContainerXMLReader::
+is_ref_basis_for_ig_grid_function_parsed(
+                         const std::shared_ptr<XMLElement> xml_elem,
+                         const bool parse_as_constant,
+                         const std::shared_ptr<const ObjectsContainer> container,
+                         IdMap_ &id_map)
+{
+  Assert(xml_elem->get_name() == "IgGridFunction",
+         ExcMessage("Invalid XML tag."));
+
+  static const int rank = 1;
+  using RefBasisType     = ReferenceBasis<dim, range, rank>;
+
+  const auto rs_tag = xml_elem->get_single_element("ReferenceBasis");
+  const auto local_rs_id = rs_tag->get_attribute<Index>("GetFromLocalObjectId");
+
+  // Checking the reference basis with proper dimension and id exists.
+  return id_map.find(local_rs_id) != id_map.cend() &&
+    (parse_as_constant ?
+     container->is_const_object_present<RefBasisType> (id_map.at(local_rs_id)) :
+     container->is_object_present<RefBasisType> (id_map.at(local_rs_id)));
+}
 
 
 template <int dim, int codim>
@@ -1802,31 +1569,19 @@ parse_domain(const shared_ptr<XMLElement> xml_elem,
 
 
 template <int dim, int codim, int range, int rank>
-void
+auto
 ObjectsContainerXMLReader::
-parse_ig_function(const shared_ptr<XMLElement> xml_elem,
+parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
+                  const Index &local_object_id,
                   const bool parse_as_constant,
-                  IdMap_ &id_map,
-                  const shared_ptr<ObjectsContainer> container)
+                  const std::shared_ptr<ObjectsContainer> container,
+                  IdMap_ &id_map) -> FuncPtr_<dim, codim, range, rank>
 {
   Assert(xml_elem->get_name() == "IgFunction",
          ExcMessage("Invalid XML tag."));
 
-  Assert(xml_elem->get_attribute<int>("Dim") == dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Range") == range,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-  Assert(xml_elem->get_attribute<int>("Rank") == rank,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
-  Assert(xml_elem->get_attribute<int>("Codim") == codim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
-
   using PhysBasisType = PhysicalBasis<dim, range, rank, codim>;
   using IgFunctionType = IgFunction<dim, codim, range, rank>;
-  using FunctionType = Function<dim, codim, range, rank>;
-
-  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
-  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const string parsing_msg = Self_::get_type_id_string("IgFunction",
   local_object_id, {{dim, codim, range, rank}});
@@ -1852,8 +1607,6 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
     ps = SharedPtrConstnessHandler<PhysBasisType>
          (container->get_object<PhysBasisType>(id_map.at(local_ps_id)));
 
-  const auto name = parse_name(xml_elem);
-
   const string dofs_property = parse_dofs_property(xml_elem);
   const auto dof_distribution = ps->get_spline_space()->get_dof_distribution();
   AssertThrow(dof_distribution->is_property_defined(dofs_property),
@@ -1874,56 +1627,29 @@ parse_ig_function(const shared_ptr<XMLElement> xml_elem,
                          + ")."));
 
   if (parse_as_constant)
-  {
-    const auto igf = IgFunctionType::const_create(ps.get_ptr_const_data(), *ig_coefs, dofs_property);
-    const auto unique_id = igf->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    const_pointer_cast<IgFunctionType>(igf)->set_name(name);
-
-    container->insert_const_object<FunctionType>(igf);
-  }
+    return IgFunctionType::const_create(ps.get_ptr_const_data(), *ig_coefs, dofs_property);
   else
-  {
-    const auto igf = IgFunctionType::create(ps.get_ptr_data(), *ig_coefs, dofs_property);
-    const auto unique_id = igf->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    igf->set_name(name);
-
-    container->insert_object<FunctionType>(igf);
-  }
+    return IgFunctionType::create(ps.get_ptr_data(), *ig_coefs, dofs_property);
 }
 
 
 
 template <int dim, int codim, int range, int rank>
-void
+auto
 ObjectsContainerXMLReader::
-parse_constant_function(const shared_ptr<XMLElement> xml_elem,
-                        const bool parse_as_constant,
-                        IdMap_ &id_map,
-                        const shared_ptr<ObjectsContainer> container)
+parse_constant_function(const std::shared_ptr<XMLElement> xml_elem,
+                       const Index &local_object_id,
+                       const bool parse_as_constant,
+                       const std::shared_ptr<ObjectsContainer> container,
+                       IdMap_ &id_map) -> FuncPtr_<dim, codim, range, rank>
 {
   Assert(xml_elem->get_name() == "ConstantFunction",
          ExcMessage("Invalid XML tag."));
-
-  Assert(xml_elem->get_attribute<int>("Dim") == dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Range") == range,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-  Assert(xml_elem->get_attribute<int>("Rank") == rank,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Rank"), rank));
-  Assert(xml_elem->get_attribute<int>("Codim") == codim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
 
   using DomainType = Domain<dim, codim>;
   using FunctionType = Function<dim, codim, range, rank>;
   using ConstFunctionType = functions::ConstantFunction<dim, codim, range, rank>;
   using Values = typename FunctionType::Value;
-
-  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
-  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const string parsing_msg = Self_::get_type_id_string("ConstantFunction",
   local_object_id, {{dim, codim, range, rank}});
@@ -1960,59 +1686,33 @@ parse_constant_function(const shared_ptr<XMLElement> xml_elem,
   std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
   Values values(vals_arr);
 
-  const auto name = parse_name(xml_elem);
-
   if (parse_as_constant)
-  {
-    const auto cf = ConstFunctionType::const_create(dm.get_ptr_const_data(), values);
-    const auto unique_id = cf->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    const_pointer_cast<ConstFunctionType>(cf)->set_name(name);
-
-    container->insert_const_object<FunctionType>(cf);
-  }
+    return ConstFunctionType::const_create(dm.get_ptr_const_data(), values);
   else
-  {
-    const auto cf = ConstFunctionType::create(dm.get_ptr_data(), values);
-    const auto unique_id = cf->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    cf->set_name(name);
-
-    container->insert_object<FunctionType>(cf);
-  }
+    return ConstFunctionType::create(dm.get_ptr_data(), values);
 }
 
 
 
-template <int dim, int codim, int range>
-void
+template <int dim, int codim, int range, int rank>
+auto
 ObjectsContainerXMLReader::
-parse_linear_function(const shared_ptr<XMLElement> xml_elem,
+parse_linear_function(const std::shared_ptr<XMLElement> xml_elem,
+                      const Index &local_object_id,
                       const bool parse_as_constant,
+                      const std::shared_ptr<ObjectsContainer> container,
                       IdMap_ &id_map,
-                      const shared_ptr<ObjectsContainer> container)
+                      typename std::enable_if_t<rank == 1> *) ->
+FuncPtr_<dim, codim, range, rank>
 {
   Assert(xml_elem->get_name() == "LinearFunction",
          ExcMessage("Invalid XML tag."));
 
-  Assert(xml_elem->get_attribute<int>("Dim") == dim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Dim"), dim));
-  Assert(xml_elem->get_attribute<int>("Range") == range,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Range"), range));
-  Assert(xml_elem->get_attribute<int>("Codim") == codim,
-         ExcDimensionMismatch(xml_elem->get_attribute<int>("Codim"), codim));
-
-  static const int rank = 1;
   using DomainType = Domain<dim, codim>;
   using FunctionType = Function<dim, codim, range, rank>;
   using LinearFunctionType = functions::LinearFunction<dim, codim, range>;
   using Values = typename FunctionType::Value;
   using Ders = typename FunctionType::template Derivative<1>;
-
-  const auto local_object_id = xml_elem->get_attribute<Index>("LocalObjectId");
-  Assert(id_map.find(local_object_id) == id_map.cend(), ExcMessage("Repeated object id."));
 
   const string parsing_msg = Self_::get_type_id_string("LinearFunction",
   local_object_id, {{dim, codim, range, rank}});
@@ -2061,28 +1761,29 @@ parse_linear_function(const shared_ptr<XMLElement> xml_elem,
   std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
   Ders A(A_arr);
 
-  const auto name = parse_name(xml_elem);
-
   if (parse_as_constant)
-  {
-    const auto cf = LinearFunctionType::const_create(dm.get_ptr_const_data(), A, b);
-    const auto unique_id = cf->get_object_id();
-    id_map[local_object_id] = unique_id;
-
-    const_pointer_cast<LinearFunctionType>(cf)->set_name(name);
-
-    container->insert_const_object<FunctionType>(cf);
-  }
+    return LinearFunctionType::const_create(dm.get_ptr_const_data(), A, b);
   else
-  {
-    const auto cf = LinearFunctionType::create(dm.get_ptr_data(), A, b);
-    const auto unique_id = cf->get_object_id();
-    id_map[local_object_id] = unique_id;
+    return LinearFunctionType::create(dm.get_ptr_data(), A, b);
+}
 
-    cf->set_name(name);
 
-    container->insert_object<FunctionType>(cf);
-  }
+
+template <int dim, int codim, int range, int rank>
+auto
+ObjectsContainerXMLReader::
+parse_linear_function(const std::shared_ptr<XMLElement> xml_elem,
+                      const Index &local_object_id,
+                      const bool parse_as_constant,
+                      const std::shared_ptr<ObjectsContainer> container,
+                      IdMap_ &id_map,
+                      typename std::enable_if_t<rank != 1> *) ->
+FuncPtr_<dim, codim, range, rank>
+{
+  AssertThrow (rank == 1,
+               ExcMessage("For LinearFunction Rank must be equal to 1."));
+
+  return FuncPtr_<dim, codim, range, rank>(); // to avoid the compilation warning.
 }
 
 

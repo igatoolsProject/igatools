@@ -37,6 +37,9 @@ template <class T> class SafeSTLVector;
 class IgCoefficients;
 class LogStream;
 template <class T1, class T2> class SafeSTLMap;
+template <int dim, int range, int rank> class ReferenceBasis;
+template <int dim, int range> class GridFunction;
+template <int dim, int codim, int range, int rank> class Function;
 
 /**
  * @brief Helper class for creating an @ref ObjectsContainer parsed from
@@ -110,6 +113,18 @@ private:
   /** Type for mapping between @p Id numbers local to the input file and
    *  object unique @p Id. */
   typedef SafeSTLMap<Index, Index> IdMap_;
+
+  /// Alias for a shared pointer of const @ref ReferenceBasis
+  template <int dim, int range, int rank>
+  using RefBasisPtr_ = std::shared_ptr<const ReferenceBasis<dim, range, rank>>;
+
+  /// Alias for a shared pointer of const @ref GridFunction
+  template <int dim, int range>
+  using GridFuncPtr_ = std::shared_ptr<const GridFunction<dim, range>>;
+
+  /// Alias for a shared pointer of const @ref Function
+  template <int dim, int codim, int range, int rank>
+  using FuncPtr_ = std::shared_ptr<const Function<dim, codim, range, rank>>;
 
 public:
   /// Current igatools file format version.
@@ -224,43 +239,7 @@ private:
                                   const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Reads all the @ref BSpline
-   * contained into the XML document @p xml_elem and stores them into
-   * the @p container.
-   *
-   * @param[in] xml_elem XML element to be parsed.
-   * @param[in] parse_as_constant Flag indicating if the objects must be
-   *            parsed as constant, or not.
-   * @param[in,out] id_map Map between the local Ids of the input file and
-   *                the unique object Id.
-   * @param[in,out] container Container for inserting the objects
-   *                and also retrieving other ones needed.
-   */
-  static void parse_bsplines(const std::shared_ptr<XMLElement> xml_elem,
-                             const bool parse_as_constant,
-                             IdMap_ &id_map,
-                             const std::shared_ptr<ObjectsContainer> container);
-
-  /**
-   * @brief Reads all the @ref NURBS
-   * contained into the XML document @p xml_elem and stores them into
-   * the @p container.
-   *
-   * @param[in] xml_elem XML element to be parsed.
-   * @param[in] parse_as_constant Flag indicating if the objects must be
-   *            parsed as constant, or not.
-   * @param[in,out] id_map Map between the local Ids of the input file and
-   *                the unique object Id.
-   * @param[in,out] container Container for inserting the objects
-   *                and also retrieving other ones needed.
-   */
-  static void parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
-                          const bool parse_as_constant,
-                          IdMap_ &id_map,
-                          const std::shared_ptr<ObjectsContainer> container);
-
-  /**
-   * @brief Reads all the @ref GridFunction and @ref NURBS
+   * @brief Reads all the @ref ReferenceBasis and @ref GridFunction
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
@@ -275,80 +254,63 @@ private:
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
    */
-  static void parse_grid_functions_and_nurbs(const std::shared_ptr<XMLElement> xml_elem,
+  static void parse_ref_bases_and_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
                                              const bool parse_as_constant,
                                              IdMap_ &id_map,
                                              const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Reads all the @ref grid_functions::IdentityGridFunction
-   * contained into the XML document and stores them into the container.
-   *
-   * @param[in] xml_elem XML element to be parsed.
-   * @param[in] parse_as_constant Flag indicating if the objects must be
-   *            parsed as constant, or not.
-   * @param[in,out] id_map Map between the local Ids of the input file and
-   *                the unique object Id.
-   * @param[in,out] container Container for inserting the objects
-   *                and also retrieving other ones needed.
-   */
-  static void parse_identity_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
-                                            const bool parse_as_constant,
-                                            IdMap_ &id_map,
-                                            const std::shared_ptr<ObjectsContainer> container);
-
-  /**
-   * @brief Reads all the @ref grid_functions::ConstantGridFunction
-   * contained into the XML document and stores them into the container.
-   *
-   * @param[in] xml_elem XML element to be parsed.
-   * @param[in] parse_as_constant Flag indicating if the objects must be
-   *            parsed as constant, or not.
-   * @param[in,out] id_map Map between the local Ids of the input file and
-   *                the unique object Id.
-   * @param[in,out] container Container for inserting the objects
-   *                and also retrieving other ones needed.
-   */
-  static void parse_constant_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
-                                            const bool parse_as_constant,
-                                            IdMap_ &id_map,
-                                            const std::shared_ptr<ObjectsContainer> container);
-
-  /**
-   * @brief Reads all the @ref grid_functions::LinearGridFunction
-   * contained into the XML document and stores them into the container.
-   *
-   * @param[in] xml_elem XML element to be parsed.
-   * @param[in] parse_as_constant Flag indicating if the objects must be
-   *            parsed as constant, or not.
-   * @param[in,out] id_map Map between the local Ids of the input file and
-   *                the unique object Id.
-   * @param[in,out] container Container for inserting the objects
-   *                and also retrieving other ones needed.
-   */
-  static void parse_linear_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
-                                          const bool parse_as_constant,
-                                          IdMap_ &id_map,
-                                          const std::shared_ptr<ObjectsContainer> container);
-
-  /**
-   * @brief Reads all the @ref IgGridFunction
+   * @brief Reads all the @ref RerenceBasis
    * contained into the XML document @p xml_elem and stores them into
    * the @p container.
    *
+   * This function must be called twice. The first time, all the @ref
+   * ReferenceBasis based on @ref BSpline are parsed.
+   * During the second call, the @ref NURBS basis are parsed.
+   *
    * @param[in] xml_elem XML element to be parsed.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
+   * @param[in] indicates if this the first time that the function is called,
+   * or not.
    * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
    * @param[in,out] container Container for inserting the objects
    *                and also retrieving other ones needed.
    */
-  static void parse_ig_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
-                                      const bool parse_as_constant,
-                                      const bool &first_parsing,
-                                      IdMap_ &id_map,
-                                      const std::shared_ptr<ObjectsContainer> container);
+  static void parse_ref_bases(const std::shared_ptr<XMLElement> xml_elem,
+                              const bool parse_as_constant,
+                              const bool &first_parsing,
+                              IdMap_ &id_map,
+                              const std::shared_ptr<ObjectsContainer> container);
+
+  /**
+   * @brief Reads all the @ref GridFunction
+   * contained into the XML document @p xml_elem and stores them into
+   * the @p container.
+   *
+   * This function must be called twice. The first time, all the @ref
+   * GridFunction, except for the @ref IgGridFunction build upon @ref NURBS
+   * basis, are parsed.
+   *
+   * In the second call, the @ref IgGridFunction depending on
+   * @ref NURBS basis are parsed.
+   *
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in] indicates if this the first time that the function is called,
+   * or not.
+   * @param[in,out] id_map Map between the local Ids of the input file and
+   *                the unique object Id.
+   * @param[in,out] container Container for inserting the objects
+   *                and also retrieving other ones needed.
+   */
+  static void parse_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
+                                   const bool parse_as_constant,
+                                   const bool &first_parsing,
+                                   IdMap_ &id_map,
+                                   const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @brief Reads all the @ref Domain
@@ -405,60 +367,6 @@ private:
                               const std::shared_ptr<ObjectsContainer> container);
 
   /**
-   * @brief Reads all the @ref IgFunction
-   * contained into the XML document @p xml_elem and stores them into
-   * the @p container.
-   *
-   * @param[in] xml_elem XML element to be parsed.
-   * @param[in] parse_as_constant Flag indicating if the objects must be
-   *            parsed as constant, or not.
-   * @param[in,out] id_map Map between the local Ids of the input file and
-   *                the unique object Id.
-   * @param[in,out] container Container for inserting the objects
-   *                and also retrieving other ones needed.
-   */
-  static void parse_ig_functions(const std::shared_ptr<XMLElement> xml_elem,
-                                 const bool parse_as_constant,
-                                 IdMap_ &id_map,
-                                 const std::shared_ptr<ObjectsContainer> container);
-
-  /**
-   * @brief Reads all the @ref functions::ConstantFunction
-   * contained into the XML document @p xml_elem and stores them into
-   * the @p container.
-   *
-   * @param[in] xml_elem XML element to be parsed.
-   * @param[in] parse_as_constant Flag indicating if the objects must be
-   *            parsed as constant, or not.
-   * @param[in,out] id_map Map between the local Ids of the input file and
-   *                the unique object Id.
-   * @param[in,out] container Container for inserting the objects
-   *                and also retrieving other ones needed.
-   */
-  static void parse_constant_functions(const std::shared_ptr<XMLElement> xml_elem,
-                                       const bool parse_as_constant,
-                                       IdMap_ &id_map,
-                                       const std::shared_ptr<ObjectsContainer> container);
-
-  /**
-   * @brief Reads all the @ref functions::LinearFunction
-   * contained into the XML document @p xml_elem and stores them into
-   * the @p container.
-   *
-   * @param[in] xml_elem XML element to be parsed.
-   * @param[in] parse_as_constant Flag indicating if the objects must be
-   *            parsed as constant, or not.
-   * @param[in,out] id_map Map between the local Ids of the input file and
-   *                the unique object Id.
-   * @param[in,out] container Container for inserting the objects
-   *                and also retrieving other ones needed.
-   */
-  static void parse_linear_functions(const std::shared_ptr<XMLElement> xml_elem,
-                                     const bool parse_as_constant,
-                                     IdMap_ &id_map,
-                                     const std::shared_ptr<ObjectsContainer> container);
-
-  /**
    * @brief Reads a single @ref Grid XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
@@ -506,18 +414,21 @@ private:
    * @tparam range Range of the BSpline basis.
    * @tparam rank Rank of the BSpline basis.
    * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
    * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
-   * @param[in,out] container Container for inserting the object
-   *                and also retrieving other ones needed.
    */
   template <int dim, int range, int rank>
-  static void parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
-                            const bool parse_as_constant,
-                            IdMap_ &id_map,
-                            const std::shared_ptr<ObjectsContainer> container);
+  static RefBasisPtr_<dim, range, rank>
+  parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
+                const Index &local_object_id,
+                const bool parse_as_constant,
+                const std::shared_ptr<const ObjectsContainer> container,
+                IdMap_ &id_map);
 
   /**
    * @brief Reads a single @ref NURBS XML element contained in
@@ -527,18 +438,22 @@ private:
    * @tparam range Range of the NURBS basis.
    * @tparam rank Rank of the NURBS basis.
    * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
    * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
-   * @param[in,out] container Container for inserting the object
-   *                and also retrieving other ones needed.
+   * @return Shared pointer wrapping the parsed object.
    */
   template <int dim, int range, int rank>
-  static void parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
-                          const bool parse_as_constant,
-                          IdMap_ &id_map,
-                          const std::shared_ptr<ObjectsContainer> container);
+  static RefBasisPtr_<dim, range, rank>
+  parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
+                const Index &local_object_id,
+                const bool parse_as_constant,
+                const std::shared_ptr<const ObjectsContainer> container,
+                IdMap_ &id_map);
 
   /**
    * @brief Reads a single @ref grid_functions::IdentityGridFunction XML
@@ -547,18 +462,52 @@ private:
    *
    * @tparam dim Dimension of the grid function.
    * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
    * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
-   * @param[in,out] container Container for inserting the object
-   *                and also retrieving other ones needed.
+   * @return Shared pointer wrapping the parsed object.
    */
-  template <int dim>
-  static void parse_identity_grid_function(const std::shared_ptr<XMLElement> xml_elem,
-                                           const bool parse_as_constant,
-                                           IdMap_ &id_map,
-                                           const std::shared_ptr<ObjectsContainer> container);
+  template <int dim, int range>
+  static GridFuncPtr_<dim, range>
+  parse_identity_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                               const Index &local_object_id,
+                               const bool parse_as_constant,
+                               const std::shared_ptr<const ObjectsContainer> container,
+                               IdMap_ &id_map,
+                               typename std::enable_if_t<dim == range> * = 0);
+
+  /**
+   * @brief Reads a single @ref grid_functions::IdentityGridFunction XML
+   * element contained in
+   * @p xml_elem and inserts it into the objects @p container.
+   *
+   * @tparam dim Dimension of the grid function.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
+   * @param[in,out] id_map Map between the local Ids of the input file and
+   *                the unique object Id.
+   * @return Shared pointer wrapping the parsed object.
+   *
+   * @warning This version of the method corresponds to the case
+   * in which <tt> dim != range </tt>, that is not valid for
+   * @ref IdentityGridFunction. An exception will be thrown.
+   */
+  template <int dim, int range>
+  static GridFuncPtr_<dim, range>
+  parse_identity_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                               const Index &local_object_id,
+                               const bool parse_as_constant,
+                               const std::shared_ptr<const ObjectsContainer> container,
+                               IdMap_ &id_map,
+                               typename std::enable_if_t<dim != range> * = 0);
 
   /**
    * @brief Reads a single @ref grid_functions::ConstantGridFunction XML
@@ -568,18 +517,22 @@ private:
    * @tparam dim Dimension of the grid function.
    * @tparam range Range of the grid function.
    * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
    * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
-   * @param[in,out] container Container for inserting the object
-   *                and also retrieving other ones needed.
+   * @return Shared pointer wrapping the parsed object.
    */
   template <int dim, int range>
-  static void parse_constant_grid_function(const std::shared_ptr<XMLElement> xml_elem,
-                                           const bool parse_as_constant,
-                                           IdMap_ &id_map,
-                                           const std::shared_ptr<ObjectsContainer> container);
+  static GridFuncPtr_<dim, range>
+  parse_constant_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                               const Index &local_object_id,
+                               const bool parse_as_constant,
+                               const std::shared_ptr<const ObjectsContainer> container,
+                               IdMap_ &id_map);
 
   /**
    * @brief Reads a single @ref grid_functions::LinearGridFunction XML
@@ -589,47 +542,69 @@ private:
    * @tparam dim Dimension of the grid function.
    * @tparam range Range of the grid function.
    * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
    * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
-   * @param[in,out] container Container for inserting the object
-   *                and also retrieving other ones needed.
+   * @return Shared pointer wrapping the parsed object.
    */
   template <int dim, int range>
-  static void parse_linear_grid_function(const std::shared_ptr<XMLElement> xml_elem,
-                                         const bool parse_as_constant,
-                                         IdMap_ &id_map,
-                                         const std::shared_ptr<ObjectsContainer> container);
+  static GridFuncPtr_<dim, range>
+  parse_linear_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                             const Index &local_object_id,
+                             const bool parse_as_constant,
+                             const std::shared_ptr<const ObjectsContainer> container,
+                             IdMap_ &id_map);
 
   /**
    * @brief Reads a single @ref IgGridFunction XML element contained in
    * @p xml_elem and inserts it into the objects @p container.
    *
-   * This function is called twice:
-   * - During the first time (<tt>first_parsing == true</tt>) the
-   *   grid functions based on @ref BSpline are parsed.
-   * - In the second time (<tt>first_parsing == false</tt>) the
-   *   grid functions based on @ref NURBS are parsed.
+   * @tparam dim Dimension of the grid function.
+   * @tparam range Range of the grid function.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
+   * @param[in,out] id_map Map between the local Ids of the input file and
+   *                the unique object Id.
+   * @return Shared pointer wrapping the parsed object.
+   */
+  template <int dim, int range>
+  static GridFuncPtr_<dim, range>
+  parse_ig_grid_function(const std::shared_ptr<XMLElement> xml_elem,
+                         const Index &local_object_id,
+                         const bool parse_as_constant,
+                         const std::shared_ptr<const ObjectsContainer> container,
+                         IdMap_ &id_map);
+
+  /**
+   * @brief Checks if the @ref ReferenceBasis reference
+   * from an @ref IgGridFunction has already being parsed.
    *
    * @tparam dim Dimension of the grid function.
    * @tparam range Range of the grid function.
    * @param[in] xml_elem XML element to be parsed.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
    * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
-   * @param[in] first_parsing Indicates if the function is called for
-   *                          first time, or not.
-   * @param[in,out] container Container for inserting the object
-   *                and also retrieving other ones needed.
+   * @return True if the reference space has already being parsed, false
+   * otherwise
    */
-  template <int dim, int rang>
-  static void parse_ig_grid_function(const std::shared_ptr<XMLElement> xml_elem,
-                                     const bool parse_as_constant,
-                                     const bool &first_parsing,
-                                     IdMap_ &id_map,
-                                     const std::shared_ptr<ObjectsContainer> container);
+  template <int dim, int range>
+  static bool is_ref_basis_for_ig_grid_function_parsed
+      (const std::shared_ptr<XMLElement> xml_elem,
+       const bool parse_as_constant,
+       const std::shared_ptr<const ObjectsContainer> container,
+       IdMap_ &id_map);
 
   /**
    * @brief Reads a single @ref Domain XML element contained in
@@ -682,18 +657,22 @@ private:
    * @tparam range Range of the function.
    * @tparam rank Rank of the function.
    * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
    * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
-   * @param[in,out] container Container for inserting the object
-   *                and also retrieving other ones needed.
+   * @return Shared pointer wrapping the parsed object.
    */
   template <int dim, int codim, int range, int rank>
-  static void parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
-                                const bool parse_as_constant,
-                                IdMap_ &id_map,
-                                const std::shared_ptr<ObjectsContainer> container);
+  static FuncPtr_<dim, codim, range, rank>
+  parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
+                    const Index &local_object_id,
+                    const bool parse_as_constant,
+                    const std::shared_ptr<ObjectsContainer> container,
+                    IdMap_ &id_map);
 
   /**
    * @brief Reads an single @ref functions::ConstantFunction XML element
@@ -704,18 +683,22 @@ private:
    * @tparam range Range of the function.
    * @tparam rank Rank of the function.
    * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
    * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
-   * @param[in,out] container Container for inserting the object
-   *                and also retrieving other ones needed.
+   * @return Shared pointer wrapping the parsed object.
    */
   template <int dim, int codim, int range, int rank>
-  static void parse_constant_function(const std::shared_ptr<XMLElement> xml_elem,
-                                      const bool parse_as_constant,
-                                      IdMap_ &id_map,
-                                      const std::shared_ptr<ObjectsContainer> container);
+  static FuncPtr_<dim, codim, range, rank>
+  parse_constant_function(const std::shared_ptr<XMLElement> xml_elem,
+                          const Index &local_object_id,
+                          const bool parse_as_constant,
+                          const std::shared_ptr<ObjectsContainer> container,
+                          IdMap_ &id_map);
 
   /**
    * @brief Reads an single @ref functions::LinearFunction XML element
@@ -724,19 +707,56 @@ private:
    * @tparam dim Dimension of the function.
    * @tparam codim Codimension of the function.
    * @tparam range Range of the function.
+   * @tparam rank Rank of the function.
    * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
    * @param[in] parse_as_constant Flag indicating if the objects must be
    *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
    * @param[in,out] id_map Map between the local Ids of the input file and
    *                the unique object Id.
-   * @param[in,out] container Container for inserting the object
-   *                and also retrieving other ones needed.
+   * @return Shared pointer wrapping the parsed object.
    */
-  template <int dim, int codim, int range>
-  static void parse_linear_function(const std::shared_ptr<XMLElement> xml_elem,
-                                    const bool parse_as_constant,
-                                    IdMap_ &id_map,
-                                    const std::shared_ptr<ObjectsContainer> container);
+  template <int dim, int codim, int range, int rank>
+  static FuncPtr_<dim, codim, range, rank>
+  parse_linear_function(const std::shared_ptr<XMLElement> xml_elem,
+                        const Index &local_object_id,
+                        const bool parse_as_constant,
+                        const std::shared_ptr<ObjectsContainer> container,
+                        IdMap_ &id_map,
+                        typename std::enable_if_t<rank == 1> * = 0);
+
+  /**
+   * @brief Reads an single @ref functions::LinearFunction XML element
+   * and inserts it into the objects container.
+   *
+   * @tparam dim Dimension of the function.
+   * @tparam codim Codimension of the function.
+   * @tparam range Range of the function.
+   * @tparam rank Rank of the function.
+   * @param[in] xml_elem XML element to be parsed.
+   * @param[in] local_object_id Local object id number.
+   * @param[in] parse_as_constant Flag indicating if the objects must be
+   *            parsed as constant, or not.
+   * @param[in] container Container for retrieving previously defined
+   *            objects.
+   * @param[in,out] id_map Map between the local Ids of the input file and
+   *                the unique object Id.
+   * @return Shared pointer wrapping the parsed object.
+   *
+   * @warning This version of the method corresponds to the case
+   * in which <tt> rank != 1 </tt>, that is not valid for
+   * @ref LinearFunction. An exception will be thrown.
+   */
+  template <int dim, int codim, int range, int rank>
+  static FuncPtr_<dim, codim, range, rank>
+  parse_linear_function(const std::shared_ptr<XMLElement> xml_elem,
+                        const Index &local_object_id,
+                        const bool parse_as_constant,
+                        const std::shared_ptr<ObjectsContainer> container,
+                        IdMap_ &id_map,
+                        typename std::enable_if_t<rank != 1> * = 0);
 
   ///@}
 

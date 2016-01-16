@@ -158,10 +158,26 @@ write_reference_bases(const ContPtr_ container,
                   ExcMessage("Invalid reference basis type."));
 #endif
 
+      const XMLElemPtr_ rb_elem = xml_doc->create_new_element("ReferenceBasis");
+
+      rb_elem->add_attribute("Dim", dim);
+      rb_elem->add_attribute("Range", range);
+      rb_elem->add_attribute("Rank", rank);
+      rb_elem->add_attribute("LocalObjectId", ref_basis->get_object_id());
+
       if (bs_basis != nullptr)
-        Self_::write_bspline<BSplineType>(bs_basis, xml_doc);
+      {
+        const auto bs_elem = Self_::write_bspline<BSplineType>(bs_basis, xml_doc);
+        rb_elem->append_child_element(bs_elem);
+      }
       else
-        Self_::write_nurbs<NURBSType>(nr_basis, xml_doc);
+      {
+        const auto nr_elem = Self_::write_nurbs<NURBSType>(nr_basis, xml_doc);
+        rb_elem->append_child_element(nr_elem);
+      }
+
+      const auto igt_elem = xml_doc->get_document_element();
+      igt_elem->append_child_element(rb_elem);
     }
 
     for (const auto &id : container->template get_const_object_ids<Type>())
@@ -176,10 +192,26 @@ write_reference_bases(const ContPtr_ container,
                   ExcMessage("Invalid reference basis type."));
 #endif
 
+      const XMLElemPtr_ rb_elem = xml_doc->create_new_element("ReferenceBasis");
+
+      rb_elem->add_attribute("Dim", dim);
+      rb_elem->add_attribute("Range", range);
+      rb_elem->add_attribute("Rank", rank);
+      rb_elem->add_attribute("LocalObjectId", ref_basis->get_object_id());
+
       if (bs_basis != nullptr)
-        Self_::write_bspline<const BSplineType>(bs_basis, xml_doc);
+      {
+        const auto bs_elem = Self_::write_bspline<const BSplineType>(bs_basis, xml_doc);
+        rb_elem->append_child_element(bs_elem);
+      }
       else
-        Self_::write_nurbs<const NURBSType>(nr_basis, xml_doc);
+      {
+        const auto nr_elem = Self_::write_nurbs<const NURBSType>(nr_basis, xml_doc);
+        rb_elem->append_child_element(nr_elem);
+      }
+
+      const auto igt_elem = xml_doc->get_document_element();
+      igt_elem->append_child_element(rb_elem);
     }
   });
 }
@@ -221,14 +253,45 @@ write_grid_functions(const ContPtr_ container,
                   ExcMessage("Invalid grid function type."));
 #endif
 
+      const XMLElemPtr_ gf_elem = xml_doc->create_new_element("GridFunction");
+
+      gf_elem->add_attribute("Dim", dim);
+      gf_elem->add_attribute("Range", range);
+      gf_elem->add_attribute("LocalObjectId", grid_func->get_object_id());
+
       if (id_f != nullptr)
-        Self_::write_identity_grid_function<IdGridFunc>(id_f, xml_doc);
+      {
+        const auto elem = Self_::write_identity_grid_function<IdGridFunc>(id_f, xml_doc);
+        gf_elem->append_child_element(elem);
+      }
       else if (li_f != nullptr)
-        Self_::write_linear_grid_function<LinearGridFunc>(li_f, xml_doc);
+      {
+        const auto elem = Self_::write_linear_grid_function<LinearGridFunc>(li_f, xml_doc);
+        gf_elem->append_child_element(elem);
+      }
       else if (ct_f != nullptr)
-        Self_::write_constant_grid_function<ConstantGridFunc>(ct_f, xml_doc);
+      {
+        const auto elem = Self_::write_constant_grid_function<ConstantGridFunc>(ct_f, xml_doc);
+        gf_elem->append_child_element(elem);
+      }
+      else if (ig_f != nullptr)
+      {
+        const auto elem = Self_::write_ig_grid_function<IgGridFunc>(ig_f, xml_doc);
+        gf_elem->append_child_element(elem);
+      }
       else
-        Self_::write_ig_grid_function<IgGridFunc>(ig_f, xml_doc);
+          AssertThrow (false,
+                       ExcMessage("Not valid GridFunction type to be written to XML."));
+
+      const auto &name = grid_func->get_name();
+      if (name.size() > 0)
+      {
+          const auto name_elem = xml_doc->create_new_text_element("Name", name);
+          gf_elem->append_child_element(name_elem);
+      }
+
+      const auto igt_elem = xml_doc->get_document_element();
+      igt_elem->append_child_element(gf_elem);
     }
 
     for (const auto &id : container->template get_const_object_ids<Type>())
@@ -246,14 +309,38 @@ write_grid_functions(const ContPtr_ container,
                   ExcMessage("Invalid grid function type."));
 #endif
 
+      const XMLElemPtr_ gf_elem = xml_doc->create_new_element("GridFunction");
+
+      gf_elem->add_attribute("Dim", dim);
+      gf_elem->add_attribute("Range", range);
+      gf_elem->add_attribute("LocalObjectId", grid_func->get_object_id());
+
       if (id_f != nullptr)
-        Self_::write_identity_grid_function<const IdGridFunc>(id_f, xml_doc);
+      {
+        const auto elem = Self_::write_identity_grid_function<const IdGridFunc>(id_f, xml_doc);
+        gf_elem->append_child_element(elem);
+      }
       else if (li_f != nullptr)
-        Self_::write_linear_grid_function<const LinearGridFunc>(li_f, xml_doc);
+      {
+        const auto elem = Self_::write_linear_grid_function<const LinearGridFunc>(li_f, xml_doc);
+        gf_elem->append_child_element(elem);
+      }
       else if (ct_f != nullptr)
-        Self_::write_constant_grid_function<const ConstantGridFunc>(ct_f, xml_doc);
+      {
+        const auto elem = Self_::write_constant_grid_function<const ConstantGridFunc>(ct_f, xml_doc);
+        gf_elem->append_child_element(elem);
+      }
+      else if (ig_f != nullptr)
+      {
+        const auto elem = Self_::write_ig_grid_function<const IgGridFunc>(ig_f, xml_doc);
+        gf_elem->append_child_element(elem);
+      }
       else
-        Self_::write_ig_grid_function<const IgGridFunc>(ig_f, xml_doc);
+          AssertThrow (false,
+                       ExcMessage("Not valid GridFunction type to be written to XML."));
+
+      const auto igt_elem = xml_doc->get_document_element();
+      igt_elem->append_child_element(gf_elem);
     }
   });
 }
@@ -342,12 +429,42 @@ write_functions(const ContPtr_ container,
                   ExcMessage("Invalid function type."));
 #endif
 
+      const XMLElemPtr_ f_elem = xml_doc->create_new_element("Function");
+
+      f_elem->add_attribute("LocalObjectId", func->get_object_id());
+      f_elem->add_attribute("Dim", dim);
+      f_elem->add_attribute("Range", range);
+      f_elem->add_attribute("Rank", rank);
+      f_elem->add_attribute("Codim", codim);
+
       if (li_f != nullptr)
-        Self_::write_linear_function<LinearFunc>(li_f, xml_doc);
+      {
+        const auto elem = Self_::write_linear_function<LinearFunc>(li_f, xml_doc);
+        f_elem->append_child_element(elem);
+      }
       else if (ct_f != nullptr)
-        Self_::write_constant_function<ConstantFunc>(ct_f, xml_doc);
+      {
+        const auto elem = Self_::write_constant_function<ConstantFunc>(ct_f, xml_doc);
+        f_elem->append_child_element(elem);
+      }
+      else if (ig_f != nullptr)
+      {
+        const auto elem = Self_::write_ig_function<IgFunc>(ig_f, xml_doc);
+        f_elem->append_child_element(elem);
+      }
       else
-        Self_::write_ig_function<IgFunc>(ig_f, xml_doc);
+          AssertThrow (false,
+                       ExcMessage("Not valid Function type to be written to XML."));
+
+      const auto &name = func->get_name();
+      if (name.size() > 0)
+      {
+          const auto name_elem = xml_doc->create_new_text_element("Name", name);
+          f_elem->append_child_element(name_elem);
+      }
+
+      const auto igt_elem = xml_doc->get_document_element();
+      igt_elem->append_child_element(f_elem);
     }
 
     for (const auto &id : container->template get_const_object_ids<Type>())
@@ -363,12 +480,42 @@ write_functions(const ContPtr_ container,
                   ExcMessage("Invalid function type."));
 #endif
 
+      const XMLElemPtr_ f_elem = xml_doc->create_new_element("Function");
+
+      f_elem->add_attribute("LocalObjectId", func->get_object_id());
+      f_elem->add_attribute("Dim", dim);
+      f_elem->add_attribute("Range", range);
+      f_elem->add_attribute("Rank", rank);
+      f_elem->add_attribute("Codim", codim);
+
       if (li_f != nullptr)
-        Self_::write_linear_function<const LinearFunc>(li_f, xml_doc);
+      {
+        const auto elem = Self_::write_linear_function<const LinearFunc>(li_f, xml_doc);
+        f_elem->append_child_element(elem);
+      }
       else if (ct_f != nullptr)
-        Self_::write_constant_function<const ConstantFunc>(ct_f, xml_doc);
+      {
+        const auto elem = Self_::write_constant_function<const ConstantFunc>(ct_f, xml_doc);
+        f_elem->append_child_element(elem);
+      }
+      else if (ig_f != nullptr)
+      {
+        const auto elem = Self_::write_ig_function<const IgFunc>(ig_f, xml_doc);
+        f_elem->append_child_element(elem);
+      }
       else
-        Self_::write_ig_function<const IgFunc>(ig_f, xml_doc);
+          AssertThrow (false,
+                       ExcMessage("Not valid Function type to be written to XML."));
+
+      const auto &name = func->get_name();
+      if (name.size() > 0)
+      {
+          const auto name_elem = xml_doc->create_new_text_element("Name", name);
+          f_elem->append_child_element(name_elem);
+      }
+
+      const auto igt_elem = xml_doc->get_document_element();
+      igt_elem->append_child_element(f_elem);
     }
   });
 }
@@ -497,22 +644,12 @@ write_spline_space(const shared_ptr<SpSpace> spline_space,
 
 
 template <class BSpline>
-void
+auto
 ObjectsContainerXMLWriter::
 write_bspline(const shared_ptr<BSpline> bspline,
-              const XMLDocPtr_ xml_doc)
+              const XMLDocPtr_ xml_doc) -> XMLElemPtr_
 {
   const auto obj_elem = xml_doc->create_new_element("BSpline");
-
-  static const int dim    = BSpline::dim;
-  static const int range  = BSpline::range;
-  static const int rank   = BSpline::rank;
-  static const int n_comp = BSpline::n_components;
-
-  obj_elem->add_attribute("LocalObjectId", bspline->get_object_id());
-  obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("Range", range);
-  obj_elem->add_attribute("Rank", rank);
 
   const auto ssp_elem = xml_doc->create_new_element("SplineSpace");
   ssp_elem->add_attribute("GetFromLocalObjectId",
@@ -521,6 +658,7 @@ write_bspline(const shared_ptr<BSpline> bspline,
 
   const auto &end_beh_table = bspline->get_end_behaviour_table();
 
+  static const int n_comp = BSpline::n_components;
   const auto end_beh_elem = xml_doc->create_new_element("EndBehaviour");
   for (int comp_id = 0; comp_id < n_comp; ++comp_id)
   {
@@ -550,29 +688,18 @@ write_bspline(const shared_ptr<BSpline> bspline,
   }
   obj_elem->append_child_element(end_beh_elem);
 
-
-  const auto igt_elem = xml_doc->get_document_element();
-  igt_elem->append_child_element(obj_elem);
+  return obj_elem;
 }
 
 
 
 template <class NURBS>
-void
+auto
 ObjectsContainerXMLWriter::
 write_nurbs(const shared_ptr<NURBS> nurbs,
-            const XMLDocPtr_ xml_doc)
+            const XMLDocPtr_ xml_doc) -> XMLElemPtr_
 {
   const auto obj_elem = xml_doc->create_new_element("NURBS");
-
-  static const int dim   = NURBS::dim;
-  static const int range = NURBS::range;
-  static const int rank  = NURBS::rank;
-
-  obj_elem->add_attribute("LocalObjectId", nurbs->get_object_id());
-  obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("Range", range);
-  obj_elem->add_attribute("Rank", rank);
 
   const auto bs_elem = xml_doc->create_new_element("BSpline");
   bs_elem->add_attribute("GetFromLocalObjectId",
@@ -584,57 +711,36 @@ write_nurbs(const shared_ptr<NURBS> nurbs,
                          nurbs->get_weight_func()->get_object_id());
   obj_elem->append_child_element(wf_elem);
 
-  const auto igt_elem = xml_doc->get_document_element();
-  igt_elem->append_child_element(obj_elem);
+  return obj_elem;
 }
 
 
 
 template <class IdGridFunc>
-void
+auto
 ObjectsContainerXMLWriter::
 write_identity_grid_function(const shared_ptr<IdGridFunc> id_func,
-                             const XMLDocPtr_ xml_doc)
+                             const XMLDocPtr_ xml_doc) -> XMLElemPtr_
 {
   const auto obj_elem = xml_doc->create_new_element("IdentityGridFunction");
-
-  static const int dim   = IdGridFunc::dim;
-
-  obj_elem->add_attribute("LocalObjectId", id_func->get_object_id());
-  obj_elem->add_attribute("Dim", dim);
 
   const auto grid_elem = xml_doc->create_new_element("Grid");
   grid_elem->add_attribute("GetFromLocalObjectId",
                            id_func->get_grid()->get_object_id());
   obj_elem->append_child_element(grid_elem);
 
-  const auto &name = id_func->get_name();
-  if (name.size() > 0)
-  {
-    const auto name_elem = xml_doc->create_new_text_element("Name", name);
-    obj_elem->append_child_element(name_elem);
-  }
-
-  const auto igt_elem = xml_doc->get_document_element();
-  igt_elem->append_child_element(obj_elem);
+  return obj_elem;
 }
 
 
 
 template <class ConstGridFunc>
-void
+auto
 ObjectsContainerXMLWriter::
 write_constant_grid_function(const shared_ptr<ConstGridFunc> const_func,
-                             const XMLDocPtr_ xml_doc)
+                             const XMLDocPtr_ xml_doc) -> XMLElemPtr_
 {
   const auto obj_elem = xml_doc->create_new_element("ConstantGridFunction");
-
-  static const int dim     = ConstGridFunc::dim;
-  static const int range   = ConstGridFunc::range;
-
-  obj_elem->add_attribute("LocalObjectId", const_func->get_object_id());
-  obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("Range", range);
 
   const auto grid_elem = xml_doc->create_new_element("Grid");
   grid_elem->add_attribute("GetFromLocalObjectId",
@@ -647,33 +753,18 @@ write_constant_grid_function(const shared_ptr<ConstGridFunc> const_func,
   const auto values_elem = xml_doc->create_vector_element("Values", values_vec);
   obj_elem->append_child_element(values_elem);
 
-  const auto &name = const_func->get_name();
-  if (name.size() > 0)
-  {
-    const auto name_elem = xml_doc->create_new_text_element("Name", name);
-    obj_elem->append_child_element(name_elem);
-  }
-
-  const auto igt_elem = xml_doc->get_document_element();
-  igt_elem->append_child_element(obj_elem);
+  return obj_elem;
 }
 
 
 
 template <class LinearGridFunc>
-void
+auto
 ObjectsContainerXMLWriter::
 write_linear_grid_function(const shared_ptr<LinearGridFunc> linear_func,
-                           const XMLDocPtr_ xml_doc)
+                           const XMLDocPtr_ xml_doc) -> XMLElemPtr_
 {
   const auto obj_elem = xml_doc->create_new_element("LinearGridFunction");
-
-  static const int dim     = LinearGridFunc::dim;
-  static const int range   = LinearGridFunc::range;
-
-  obj_elem->add_attribute("LocalObjectId", linear_func->get_object_id());
-  obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("Range", range);
 
   const auto grid_elem = xml_doc->create_new_element("Grid");
   grid_elem->add_attribute("GetFromLocalObjectId",
@@ -692,33 +783,18 @@ write_linear_grid_function(const shared_ptr<LinearGridFunc> linear_func,
   const auto b_elem = xml_doc->create_vector_element("b", b_vec);
   obj_elem->append_child_element(b_elem);
 
-  const auto &name = linear_func->get_name();
-  if (name.size() > 0)
-  {
-    const auto name_elem = xml_doc->create_new_text_element("Name", name);
-    obj_elem->append_child_element(name_elem);
-  }
-
-  const auto igt_elem = xml_doc->get_document_element();
-  igt_elem->append_child_element(obj_elem);
+  return obj_elem;
 }
 
 
 
 template <class IgGridFunc>
-void
+auto
 ObjectsContainerXMLWriter::
 write_ig_grid_function(const shared_ptr<IgGridFunc> ig_func,
-                       const XMLDocPtr_ xml_doc)
+                       const XMLDocPtr_ xml_doc) -> XMLElemPtr_
 {
   const auto obj_elem = xml_doc->create_new_element("IgGridFunction");
-
-  static const int dim     = IgGridFunc::dim;
-  static const int range   = IgGridFunc::range;
-
-  obj_elem->add_attribute("LocalObjectId", ig_func->get_object_id());
-  obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("Range", range);
 
   const auto rb_elem = xml_doc->create_new_element("ReferenceBasis");
   rb_elem->add_attribute("GetFromLocalObjectId",
@@ -729,19 +805,11 @@ write_ig_grid_function(const shared_ptr<IgGridFunc> ig_func,
   const auto coefs_elem = Self_::create_ig_coefs_xml_element(coefs, xml_doc);
   obj_elem->append_child_element(coefs_elem);
 
-  const auto &name = ig_func->get_name();
-  if (name.size() > 0)
-  {
-    const auto name_elem = xml_doc->create_new_text_element("Name", name);
-    obj_elem->append_child_element(name_elem);
-  }
-
   const auto &dofs_prop = ig_func->get_dofs_property();
   const auto dofs_prop_elem = xml_doc->create_new_text_element("DofsProperty", dofs_prop);
   obj_elem->append_child_element(dofs_prop_elem);
 
-  const auto igt_elem = xml_doc->get_document_element();
-  igt_elem->append_child_element(obj_elem);
+  return obj_elem;
 }
 
 
@@ -837,23 +905,12 @@ write_phys_basis(const shared_ptr<PhysicalBasis> phys_basis,
 
 
 template <class IgFunction>
-void
+auto
 ObjectsContainerXMLWriter::
 write_ig_function(const shared_ptr<IgFunction> ig_function,
-                  const XMLDocPtr_ xml_doc)
+                  const XMLDocPtr_ xml_doc) -> XMLElemPtr_
 {
   const auto obj_elem = xml_doc->create_new_element("IgFunction");
-
-  static const int dim   = IgFunction::dim;
-  static const int range = IgFunction::range;
-  static const int rank  = IgFunction::rank;
-  static const int codim = IgFunction::codim;
-
-  obj_elem->add_attribute("LocalObjectId", ig_function->get_object_id());
-  obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("Range", range);
-  obj_elem->add_attribute("Rank", rank);
-  obj_elem->add_attribute("Codim", codim);
 
   const auto ps_elem = xml_doc->create_new_element("PhysicalBasis");
   ps_elem->add_attribute("GetFromLocalObjectId",
@@ -864,41 +921,22 @@ write_ig_function(const shared_ptr<IgFunction> ig_function,
   const auto coefs_elem = Self_::create_ig_coefs_xml_element(coefs, xml_doc);
   obj_elem->append_child_element(coefs_elem);
 
-  const auto &name = ig_function->get_name();
-  if (name.size() > 0)
-  {
-    const auto name_elem = xml_doc->create_new_text_element("Name", name);
-    obj_elem->append_child_element(name_elem);
-  }
-
   const auto &dofs_prop = ig_function->get_dofs_property();
   const auto dofs_prop_elem = xml_doc->create_new_text_element("DofsProperty", dofs_prop);
   obj_elem->append_child_element(dofs_prop_elem);
 
-  const auto igt_elem = xml_doc->get_document_element();
-  igt_elem->append_child_element(obj_elem);
+  return obj_elem;
 }
 
 
 
 template <class ConstantFunction>
-void
+auto
 ObjectsContainerXMLWriter::
 write_constant_function(const shared_ptr<ConstantFunction> const_function,
-                        const XMLDocPtr_ xml_doc)
+                        const XMLDocPtr_ xml_doc) -> XMLElemPtr_
 {
   const auto obj_elem = xml_doc->create_new_element("ConstantFunction");
-
-  static const int dim   = ConstantFunction::dim;
-  static const int range = ConstantFunction::range;
-  static const int rank  = ConstantFunction::rank;
-  static const int codim = ConstantFunction::codim;
-
-  obj_elem->add_attribute("LocalObjectId", const_function->get_object_id());
-  obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("Range", range);
-  obj_elem->add_attribute("Rank", rank);
-  obj_elem->add_attribute("Codim", codim);
 
   const auto dm_elem = xml_doc->create_new_element("Domain");
   dm_elem->add_attribute("GetFromLocalObjectId",
@@ -911,35 +949,18 @@ write_constant_function(const shared_ptr<ConstantFunction> const_function,
   const auto values_elem = xml_doc->create_vector_element("Values", values_vec);
   obj_elem->append_child_element(values_elem);
 
-  const auto &name = const_function->get_name();
-  if (name.size() > 0)
-  {
-    const auto name_elem = xml_doc->create_new_text_element("Name", name);
-    obj_elem->append_child_element(name_elem);
-  }
-
-  const auto igt_elem = xml_doc->get_document_element();
-  igt_elem->append_child_element(obj_elem);
+  return obj_elem;
 }
 
 
 
 template <class LinearFunction>
-void
+auto
 ObjectsContainerXMLWriter::
 write_linear_function(const shared_ptr<LinearFunction> linear_function,
-                      const XMLDocPtr_ xml_doc)
+                      const XMLDocPtr_ xml_doc) -> XMLElemPtr_
 {
   const auto obj_elem = xml_doc->create_new_element("LinearFunction");
-
-  static const int dim   = LinearFunction::dim;
-  static const int range = LinearFunction::range;
-  static const int codim = LinearFunction::codim;
-
-  obj_elem->add_attribute("LocalObjectId", linear_function->get_object_id());
-  obj_elem->add_attribute("Dim", dim);
-  obj_elem->add_attribute("Codim", codim);
-  obj_elem->add_attribute("Range", range);
 
   const auto dm_elem = xml_doc->create_new_element("Domain");
   dm_elem->add_attribute("GetFromLocalObjectId",
@@ -958,15 +979,7 @@ write_linear_function(const shared_ptr<LinearFunction> linear_function,
   const auto b_elem = xml_doc->create_vector_element("b", b_vec);
   obj_elem->append_child_element(b_elem);
 
-  const auto &name = linear_function->get_name();
-  if (name.size() > 0)
-  {
-    const auto name_elem = xml_doc->create_new_text_element("Name", name);
-    obj_elem->append_child_element(name_elem);
-  }
-
-  const auto igt_elem = xml_doc->get_document_element();
-  igt_elem->append_child_element(obj_elem);
+  return obj_elem;
 }
 
 

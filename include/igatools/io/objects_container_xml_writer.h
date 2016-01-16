@@ -45,23 +45,26 @@ class IgCoefficients;
  * Currently, this class is able to write the following classes:
  * - @ref Grid
  * - @ref SplineSpace
- * - @ref BSpline
- * - @ref NURBS
- * - @ref grid_functions::IdentityGridFunction
- * - @ref grid_functions::ConstantGridFunction
- * - @ref grid_functions::LinearGridFunction
- * - @ref IgGridFunction
+ * - @ref ReferenceBasis
+ *   - @ref BSpline
+ *   - @ref NURBS
+ * - @ref GridFunction
+ *   - @ref grid_functions::IdentityGridFunction
+ *   - @ref grid_functions::ConstantGridFunction
+ *   - @ref grid_functions::LinearGridFunction
+ *   - @ref IgGridFunction
  * - @ref Domain
  * - @ref PhysicalBasis
- * - @ref functions::ConstantFunction
- * - @ref functions::LinearFunction
- * - @ref IgFunction
+ * - @ref Function
+ *   - @ref functions::ConstantFunction
+ *   - @ref functions::LinearFunction
+ *   - @ref IgFunction
  *
  * If any type different from the ones above is found, an exception
  * is thrown.
  *
  * The files written by using this class can be parsed with the
- * @ref ObjectsContainerXMLParser class.
+ * @ref ObjectsContainerXMLReader class.
  *
  * The current igatools file format version is specified by static
  * variable @p IGATOOLS_FILE_FORMAT_VERSION of the class
@@ -70,7 +73,7 @@ class IgCoefficients;
  * The XML format is detailed here @subpage in_out.
  *
  * @see ObjectsContainer
- * @see ObjectsContainerXMLWriter
+ * @see ObjectsContainerXMLReader
  * @see XMLDocument
  * @see XMLElement
  *
@@ -92,6 +95,9 @@ private:
 
   /** Type for a shared pointer of @ref XMLDocument. */
   typedef std::shared_ptr<XMLDocument> XMLDocPtr_;
+
+  /** Type for a shared pointer of @ref XMLElement. */
+  typedef std::shared_ptr<XMLElement> XMLElemPtr_;
 
   /** Type for a shared pointer of @ref ObjectsContainer. */
   typedef std::shared_ptr<ObjectsContainer> ContPtr_;
@@ -243,69 +249,71 @@ private:
 
   /**
    * @brief Appends a single @ref BSpline
-   * to the XML Document @p xml_doc.
+   * to the XML Element @p xml_elem.
    *
    * @tparam BSpline Type of the @ref BSpline to be appended.
-   * @param[in] xml_doc XML Document where the object is appended to.
+   * @param[in] xml_doc XML Document for creating new elements.
+   * @return XML element created.
    */
   template <class BSpline>
-  static void write_bspline(const std::shared_ptr<BSpline> bspline,
-                            const XMLDocPtr_ xml_doc);
+  static XMLElemPtr_ write_bspline(const std::shared_ptr<BSpline> bspline,
+                                   const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref NURBS
-   * to the XML Document @p xml_doc.
+   * to the XML Element @p xml_elem.
    *
-   * @tparam NURBS Type of the @ref NURBS to be appended.
-   * @param[in] xml_doc XML Document where the object is appended to.
+   * @tparam BSpline Type of the @ref BSpline to be appended.
+   * @param[in] xml_doc XML Document for creating new elements.
+   * @return XML element created.
    */
   template <class NURBS>
-  static void write_nurbs(const std::shared_ptr<NURBS> nurbs,
-                          const XMLDocPtr_ xml_doc);
+  static XMLElemPtr_ write_nurbs(const std::shared_ptr<NURBS> nurbs,
+                                 const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref grid_functions::IdentityGridFunction
    * to the XML Document @p xml_doc.
    *
    * @tparam IdGridFunc Type of the @ref grid_functions::IdentityGridFunction to be appended.
-   * @param[in] xml_doc XML Document where the object is appended to.
+   * @param[in] xml_doc XML Document for creating new elements.
    */
   template <class IdGridFunc>
-  static void write_identity_grid_function(const std::shared_ptr<IdGridFunc> id_func,
-                                           const XMLDocPtr_ xml_doc);
+  static XMLElemPtr_ write_identity_grid_function(const std::shared_ptr<IdGridFunc> id_func,
+                                                  const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref grid_functions::ConstantGridFunction
    * to the XML Document @p xml_doc.
    *
    * @tparam ConstGridFunc Type of the @ref grid_functions::ConstantGridFunction to be appended.
-   * @param[in] xml_doc XML Document where the object is appended to.
+   * @param[in] xml_doc XML Document for creating new elements.
    */
   template <class ConstGridFunc>
-  static void write_constant_grid_function(const std::shared_ptr<ConstGridFunc> const_func,
-                                           const XMLDocPtr_ xml_doc);
+  static XMLElemPtr_ write_constant_grid_function(const std::shared_ptr<ConstGridFunc> const_func,
+                                                  const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref grid_functions::LinearGridFunction
    * to the XML Document @p xml_doc.
    *
    * @tparam LinearGridFunc Type of the @ref grid_functions::LinearGridFunction to be appended.
-   * @param[in] xml_doc XML Document where the object is appended to.
+   * @param[in] xml_doc XML Document for creating new elements.
    */
   template <class LinearGridFunc>
-  static void write_linear_grid_function(const std::shared_ptr<LinearGridFunc> linear_func,
-                                         const XMLDocPtr_ xml_doc);
+  static XMLElemPtr_ write_linear_grid_function(const std::shared_ptr<LinearGridFunc> linear_func,
+                                                const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref IgGridFunction
    * to the XML Document @p xml_doc.
    *
    * @tparam IgGridFunc Type of the @ref IgGridFunction to be appended.
-   * @param[in] xml_doc XML Document where the object is appended to.
+   * @param[in] xml_doc XML Document for creating new elements.
    */
   template <class IgGridFunc>
-  static void write_ig_grid_function(const std::shared_ptr<IgGridFunc> ig_func,
-                                     const XMLDocPtr_ xml_doc);
+  static XMLElemPtr_ write_ig_grid_function(const std::shared_ptr<IgGridFunc> ig_func,
+                                            const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref Domain
@@ -334,33 +342,33 @@ private:
    * to the XML Document @p xml_doc.
    *
    * @tparam ConstantFunction Type of the @ref functions::ConstantFunction to be appended.
-   * @param[in] xml_doc XML Document where the object is appended to.
+   * @param[in] xml_doc XML Document for creating new elements.
    */
   template <class ConstantFunction>
-  static void write_constant_function(const std::shared_ptr<ConstantFunction> const_function,
-                                      const XMLDocPtr_ xml_doc);
+  static XMLElemPtr_ write_constant_function(const std::shared_ptr<ConstantFunction> const_function,
+                                             const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref functions::LinearFunction
    * to the XML Document @p xml_doc.
    *
    * @tparam LinearFunc Type of the @ref functions::LinearFunction to be appended.
-   * @param[in] xml_doc XML Document where the object is appended to.
+   * @param[in] xml_doc XML Document for creating new elements.
    */
   template <class LinearFunc>
-  static void write_linear_function(const std::shared_ptr<LinearFunc> linear_func,
-                                    const XMLDocPtr_ xml_doc);
+  static XMLElemPtr_ write_linear_function(const std::shared_ptr<LinearFunc> linear_func,
+                                           const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Appends a single @ref IgFunction
    * to the XML Document @p xml_doc.
    *
    * @tparam IgFunction Type of the @ref IgFunction to be appended.
-   * @param[in] xml_doc XML Document where the object is appended to.
+   * @param[in] xml_doc XML Document for creating new elements.
    */
   template <class IgFunction>
-  static void write_ig_function(const std::shared_ptr<IgFunction> ig_function,
-                                const XMLDocPtr_ xml_doc);
+  static XMLElemPtr_ write_ig_function(const std::shared_ptr<IgFunction> ig_function,
+                                       const XMLDocPtr_ xml_doc);
 
   /**
    * @brief Creates a new @ref XMLElement containing
