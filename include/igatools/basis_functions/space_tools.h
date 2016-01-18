@@ -1033,8 +1033,8 @@ integrate(const Function<dim, codim, range, rank> &f,
  * functions
  */
 template<int order,int dim,int codim,int range,int rank>
-void norm_difference_functions(Function<dim, codim, range, rank> &f,
-                               Function<dim, codim, range, rank> &g,
+void norm_difference_functions(const Function<dim, codim, range, rank> &f,
+                               const Function<dim, codim, range, rank> &g,
                                const std::shared_ptr<const Quadrature<dim>> &quad,
                                const Real p,
                                SafeSTLMap<ElementIndex<dim>,Real> &element_error)
