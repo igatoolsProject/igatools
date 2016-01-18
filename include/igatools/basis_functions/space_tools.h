@@ -1083,7 +1083,7 @@ void norm_difference_functions(const Function<dim, codim, range, rank> &f,
 
     auto f_val = elem_f->template get_values_from_cache<_Val,dim>(0);
     auto g_val = elem_g->template get_values_from_cache<_Val,dim>(0);
-    auto w_meas = elem_f->get_element_w_measures();
+    auto w_meas = elem_f->get_domain_element().get_element_w_measures();
 
     Real elem_diff_pow_p = 0.0;
     Real val;

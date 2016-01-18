@@ -34,9 +34,9 @@
 
 
 template<int dim, int range = 1>
-void norm_difference(const int deg, const int n_knots = 10)
+void norm_difference_grid_func(const int deg, const int n_knots = 10)
 {
-  out.begin_item("norm_difference<"
+  out.begin_item("norm_difference_grid_func<"
                  + to_string(dim) + ">("
                  + to_string(deg) + ","
                  + to_string(n_knots) + ")");
@@ -75,9 +75,9 @@ void norm_difference(const int deg, const int n_knots = 10)
 }
 
 template<int dim>
-void norm_difference_p(const int deg, const int n_knots, const Real p)
+void norm_difference_p_grid_func(const int deg, const int n_knots, const Real p)
 {
-  out.begin_item("norm_difference_p<"
+  out.begin_item("norm_difference_p_grid_func<"
                  + to_string(dim) + ">("
                  + to_string(deg) + ","
                  + to_string(n_knots) + ","
@@ -108,18 +108,60 @@ void norm_difference_p(const int deg, const int n_knots, const Real p)
 }
 
 
+template<int dim>
+void norm_difference_p_func(const int deg, const int n_knots, const Real p)
+{
+  out.begin_item("norm_difference_p_func<"
+                 + to_string(dim) + ">("
+                 + to_string(deg) + ","
+                 + to_string(n_knots) + ","
+                 + to_string(p) + ")");
+  auto grid = Grid<dim>::create(n_knots);
+  auto domain = Domain<dim,0>::create(grid_functions::IdentityGridFunction<dim>::create(grid));
+
+
+  const int n_qpoints = ceil((2*dim + 1)/2.);
+  auto quad = QGauss<dim>::const_create(n_qpoints);
+
+  auto f = functions::ConstantFunction<dim,0,1,1>::const_create(domain, {1.});
+  auto g = functions::ConstantFunction<dim,0,1,1>::const_create(domain, {0.});
+
+  SafeSTLMap<ElementIndex<dim>,Real> elem_err;
+  space_tools::norm_difference_functions<0,dim,0,1,1>(*f, *g, quad, p, elem_err);
+
+  Real err = 0.;
+  for (const auto &loc_err : elem_err)
+    err += loc_err.second;
+
+  err = std::pow(err,1./p);
+
+  out.begin_item("Error L2:");
+  out << "Expected: " << 1.0 << endl;
+  out << "Computed: " << err << endl;
+  out.end_item();
+
+  out.end_item();
+}
+
+
 
 int main()
 {
   out.depth_console(20);
 
-  norm_difference<1>(3);
-  norm_difference<2>(3);
-  norm_difference<3>(1);
+  norm_difference_grid_func<1>(3);
+  norm_difference_grid_func<2>(3);
+  norm_difference_grid_func<3>(1);
 
-  norm_difference_p<1>(3, 10, 1);
-  norm_difference_p<2>(3, 10, 1);
-  norm_difference_p<3>(3, 10, 1);
+  norm_difference_p_grid_func<1>(3, 10, 1);
+  norm_difference_p_grid_func<2>(3, 10, 1);
+  norm_difference_p_grid_func<3>(3, 10, 1);
+
+
+  norm_difference_p_func<1>(3, 10, 1);
+  norm_difference_p_func<2>(3, 10, 1);
+  norm_difference_p_func<3>(3, 10, 1);
+
   return 0;
 }
 

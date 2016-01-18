@@ -298,7 +298,7 @@ public:
 
 private:
   void evaluate_0(const ValueVector<GridPoint> &points,
-                  ValueVector<Value> &values) const
+                  ValueVector<Value> &values) const override
   {
     auto pt = points.begin();
     auto val = values.begin();
@@ -312,7 +312,7 @@ private:
   }
 
   void evaluate_1(const ValueVector<GridPoint> &points,
-                  ValueVector<Derivative<1>> &gradients) const
+                  ValueVector<Derivative<1>> &gradients) const override
   {
     auto pt = points.begin();
     auto grad = gradients.begin();
@@ -329,7 +329,7 @@ private:
   }
 
   void evaluate_2(const ValueVector<GridPoint> &points,
-                  ValueVector<Derivative<2>> &values) const
+                  ValueVector<Derivative<2>> &values) const override
   {
     Assert(false,ExcNotImplemented());
   }
