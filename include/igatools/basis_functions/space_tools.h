@@ -1087,15 +1087,24 @@ void norm_difference_functions(const Function<dim, codim, range, rank> &f,
 
     Real elem_diff_pow_p = 0.0;
     Real val;
-    for (int pt = 0; pt < n_points; ++pt)
+    if (is_inf)
     {
-      const auto err = f_val[pt] - g_val[pt];
-      val = err.norm_square();
-      if (is_inf)
+      for (int pt = 0; pt < n_points; ++pt)
+      {
+        const auto err = f_val[pt] - g_val[pt];
+        val = err.norm_square();
         elem_diff_pow_p = std::max(elem_diff_pow_p, fabs(sqrt(val)));
-      else
+      } // end loop pt
+    } // end if (is_inf)
+    else
+    {
+      for (int pt = 0; pt < n_points; ++pt)
+      {
+        const auto err = f_val[pt] - g_val[pt];
+        val = err.norm_square();
         elem_diff_pow_p += std::pow(val,p/2.) * w_meas[pt];
-    }
+      } // end loop pt
+    } // end if (!is_inf)
     element_error[ elem_id ] += elem_diff_pow_p;
   }
 }
@@ -1161,15 +1170,24 @@ void norm_difference_grid_functions(
 
     Real elem_diff_pow_p = 0.0;
     Real val;
-    for (int pt = 0; pt < n_points; ++pt)
+    if (is_inf)
     {
-      const auto err = f_val[pt] - g_val[pt];
-      val = err.norm_square();
-      if (is_inf)
+      for (int pt = 0; pt < n_points; ++pt)
+      {
+        const auto err = f_val[pt] - g_val[pt];
+        val = err.norm_square();
         elem_diff_pow_p = std::max(elem_diff_pow_p, fabs(sqrt(val)));
-      else
+      } // end loop pt
+    } // end if (is_inf)
+    else
+    {
+      for (int pt = 0; pt < n_points; ++pt)
+      {
+        const auto err = f_val[pt] - g_val[pt];
+        val = err.norm_square();
         elem_diff_pow_p += std::pow(val,p/2.) * w_meas[pt];
-    }
+      } // end loop pt
+    } // end if (!is_inf)
     element_error[ elem_id ] += elem_diff_pow_p;
   }
 }

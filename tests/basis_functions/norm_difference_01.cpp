@@ -123,7 +123,17 @@ void norm_difference_p_func(const int deg, const int n_knots, const Real p)
   const int n_qpoints = ceil((2*dim + 1)/2.);
   auto quad = QGauss<dim>::const_create(n_qpoints);
 
-  auto f = functions::ConstantFunction<dim,0,1,1>::const_create(domain, {1.});
+
+  using LinFunc = functions::LinearFunction<dim,0,1>;
+  using Grad = typename LinFunc::Gradient;
+  using Value = typename LinFunc::Value;
+
+  Grad A;
+  A[0][0] = 1.0;
+  Value b;
+
+//  auto f = functions::ConstantFunction<dim,0,1,1>::const_create(domain, {1.});
+  auto f = LinFunc::const_create(domain, A,b);
   auto g = functions::ConstantFunction<dim,0,1,1>::const_create(domain, {0.});
 
   SafeSTLMap<ElementIndex<dim>,Real> elem_err;
@@ -136,7 +146,7 @@ void norm_difference_p_func(const int deg, const int n_knots, const Real p)
   err = std::pow(err,1./p);
 
   out.begin_item("Error L2:");
-  out << "Expected: " << 1.0 << endl;
+  out << "Expected: " << 0.5 << endl;
   out << "Computed: " << err << endl;
   out.end_item();
 
@@ -144,6 +154,56 @@ void norm_difference_p_func(const int deg, const int n_knots, const Real p)
 }
 
 
+template<int dim>
+void norm_difference_func(const int deg, const int n_knots = 10)
+{
+  out.begin_item("norm_difference_func<"
+                 + to_string(dim) + ">("
+                 + to_string(deg) + ","
+                 + to_string(n_knots) + ")");
+  const Real p=2.;
+
+
+  auto grid = Grid<dim>::create(n_knots);
+  auto domain = Domain<dim,0>::create(grid_functions::IdentityGridFunction<dim>::create(grid));
+
+  const int n_qpoints = ceil((2*dim + 1)/2.);
+  auto quad = QGauss<dim>::const_create(n_qpoints);
+
+  using LinFunc = functions::LinearFunction<dim,0,1>;
+  using Grad = typename LinFunc::Gradient;
+  using Value = typename LinFunc::Value;
+
+  Grad A;
+  A[0][0] = 1.0;
+  Value b;
+
+  auto f = LinFunc::const_create(domain, A,b);
+  auto g = functions::ConstantFunction<dim,0,1,1>::const_create(domain, {0.});
+
+  SafeSTLMap<ElementIndex<dim>,Real> elem_err;
+  auto err = space_tools::l2_norm_difference<dim,0,1,1>(*f,*g,quad,elem_err);
+  out.begin_item("Error L2:");
+  out << "Expected: " << 1.0 / sqrt(3.0) << endl;
+  out << "Computed: " << err << endl;
+  out.end_item();
+
+  SafeSTLMap<ElementIndex<dim>,Real> elem_err_h1;
+  auto err_h1 = space_tools::h1_norm_difference<dim,0,1,1>(*f,*g,quad,elem_err_h1);
+  out.begin_item("Error H1:");
+  out << "Expected: " << 2.0 / sqrt(3.0) << endl;
+  out << "Computed: " <<  err_h1 << endl;
+  out.end_item();
+
+  SafeSTLMap<ElementIndex<dim>,Real> elem_err_inf;
+  auto err_inf = space_tools::inf_norm_difference<dim,0,1,1>(*f,*g,quad,elem_err_inf);
+  out.begin_item("Error inf:");
+  out <<  err_inf << endl;
+  out.end_item();
+
+  out.end_item();
+
+}
 
 int main()
 {
@@ -157,6 +217,10 @@ int main()
   norm_difference_p_grid_func<2>(3, 10, 1);
   norm_difference_p_grid_func<3>(3, 10, 1);
 
+
+  norm_difference_func<1>(3);
+  norm_difference_func<2>(3);
+  norm_difference_func<3>(1);
 
   norm_difference_p_func<1>(3, 10, 1);
   norm_difference_p_func<2>(3, 10, 1);
