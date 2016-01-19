@@ -20,7 +20,7 @@
 
 /*
  *  Test for the creation of the subdomain from a domain
- *  built using an IdentityGridFunction
+ *  built using an LinearGridFunction
  *  author: martinelli
  *  date: Jan 12, 2016
  */
@@ -36,7 +36,6 @@
 
 
 #include "function_test.h"
-
 
 
 template<int dim, int codim>
@@ -57,56 +56,29 @@ void test_sub_domain(const int s_id)
 
   std::shared_ptr<const Domain<dim,codim>> domain;
 
-  bool use_custom_formula_func = false;
 
-  if (use_custom_formula_func)
-  {
-    grid = Grid<dim>::create(3);
+  auto sup_grid = Grid<sp_dim>::create(3);
 
-    using GridF = grid_functions::LinearGridFunction<dim,sp_dim>;
-    using Grad = typename GridF::Gradient;
-    using Val = typename GridF::Value;
-    Grad A;
-    Val b;
+  using SubGridElemMap = typename Grid<sp_dim>::template SubGridMap<dim>;
+  SubGridElemMap grid_elem_map;
 
-    const auto &sub_elem = UnitElement<sp_dim>::template get_elem<dim>(s_id);
-    const auto &active_dirs = sub_elem.active_directions;
-    const auto &constant_dirs = sub_elem.constant_directions;
-    const auto &constant_vals = sub_elem.constant_values;
-    int i = 0;
-    for (const auto active_dir : active_dirs)
-    {
-      A[i][active_dir] = 1.0;
-      ++i;
-    }
+  grid = sup_grid->template get_sub_grid<dim>(s_id,grid_elem_map);
 
-    i = 0;
-    for (const auto constant_dir : constant_dirs)
-    {
-      b[constant_dir] = constant_vals[i];
-      ++i;
-    }
-    auto grid_func = GridF::create(grid,A,b);
+  using GridF = grid_functions::LinearGridFunction<sp_dim,sp_dim>;
+  using Grad = typename GridF::Gradient;
+  using Val = typename GridF::Value;
+  Grad A;
+  Val b;
 
-    domain = Domain<dim,codim>::const_create(grid_func);
-  }
-  else
-  {
-//#endif
-
-    auto sup_grid = Grid<sp_dim>::create(3);
-
-    using SubGridElemMap = typename Grid<sp_dim>::template SubGridMap<dim>;
-    SubGridElemMap grid_elem_map;
+  for (int i = 0 ; i < sp_dim ; ++i)
+    A[i][i] = 1.0 * (i+1);
 
 
-    grid = sup_grid->template get_sub_grid<dim>(s_id,grid_elem_map);
+  auto sup_domain =
+    Domain<sp_dim,0>::create(GridF::create(sup_grid,A,b));
+  domain = sup_domain->template get_sub_domain<dim>(s_id,grid_elem_map,grid);
 
-    auto sup_domain =
-      Domain<sp_dim,0>::create(
-        grid_functions::IdentityGridFunction<sp_dim>::create(sup_grid));
-    domain = sup_domain->template get_sub_domain<dim>(s_id,grid_elem_map,grid);
-  }
+
 
   string msg = "_dim_" + std::to_string(dim) +
                "_codim_" + std::to_string(codim) +
@@ -124,6 +96,9 @@ void test_sub_domain(const int s_id)
 
   out.begin_item("SubElem ID: " + std::to_string(s_id));
   function_values(*F);
+
+  out << "Measure = " << compute_measure<dim,codim>(*domain);
+
   out.end_item();
 
   out.end_item();

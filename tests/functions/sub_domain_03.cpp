@@ -76,9 +76,6 @@ void test_sub_domain(const int s_id)
   auto sup_domain =
     Domain<sp_dim,0>::create(GridFunc::create(sup_grid,r0,r1,h0,h1,theta0,theta1));
 
-//  auto sup_domain =
-//    Domain<sp_dim,0>::create(
-//      grid_functions::BallGridFunction<sp_dim>::create(sup_grid));
   domain = sup_domain->template get_sub_domain<dim>(s_id,grid_elem_map,grid);
 
 
@@ -100,6 +97,9 @@ void test_sub_domain(const int s_id)
 
   out.begin_item("SubElem ID: " + std::to_string(s_id));
   function_values(*F);
+
+  out << "Measure = " << compute_measure<dim,codim>(*domain);
+
   out.end_item();
 
   out.end_item();

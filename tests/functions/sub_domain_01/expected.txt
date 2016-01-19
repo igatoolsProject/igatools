@@ -4,7 +4,7 @@ test_sub_domain<dim=1,codim=1>
          Flat ID: 0    Tensor ID: [0]
          Values:
             ValueVector (num_points=2) :
-            [ [ 0.105662 ]  [ 0.394338 ]  ]
+            [ [ 0.211325 ]  [ 0.788675 ]  ]
          
          Gradients:
             ValueVector (num_points=2) :
@@ -19,7 +19,7 @@ test_sub_domain<dim=1,codim=1>
          Flat ID: 1    Tensor ID: [1]
          Values:
             ValueVector (num_points=2) :
-            [ [ 0.605662 ]  [ 0.894338 ]  ]
+            [ [ 1.21132 ]  [ 1.78868 ]  ]
          
          Gradients:
             ValueVector (num_points=2) :
@@ -30,7 +30,7 @@ test_sub_domain<dim=1,codim=1>
             [ [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  ]
          
       
-   
+   Measure = 2.00000
 
 test_sub_domain<dim=1,codim=1>
    SubElem ID: 1
@@ -38,7 +38,7 @@ test_sub_domain<dim=1,codim=1>
          Flat ID: 0    Tensor ID: [0]
          Values:
             ValueVector (num_points=2) :
-            [ [ 1.10566 ]  [ 1.39434 ]  ]
+            [ [ 1.21132 ]  [ 1.78868 ]  ]
          
          Gradients:
             ValueVector (num_points=2) :
@@ -53,7 +53,7 @@ test_sub_domain<dim=1,codim=1>
          Flat ID: 1    Tensor ID: [1]
          Values:
             ValueVector (num_points=2) :
-            [ [ 1.60566 ]  [ 1.89434 ]  ]
+            [ [ 2.21133 ]  [ 2.78868 ]  ]
          
          Gradients:
             ValueVector (num_points=2) :
@@ -64,7 +64,7 @@ test_sub_domain<dim=1,codim=1>
             [ [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  ]
          
       
-   
+   Measure = 2.00000
 
 test_sub_domain<dim=1,codim=1>
    SubElem ID: 2
@@ -98,7 +98,7 @@ test_sub_domain<dim=1,codim=1>
             [ [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  ]
          
       
-   
+   Measure = 1.00000
 
 test_sub_domain<dim=1,codim=1>
    SubElem ID: 3
@@ -106,7 +106,7 @@ test_sub_domain<dim=1,codim=1>
          Flat ID: 0    Tensor ID: [0]
          Values:
             ValueVector (num_points=2) :
-            [ [ 1.10566 ]  [ 1.39434 ]  ]
+            [ [ 2.10566 ]  [ 2.39434 ]  ]
          
          Gradients:
             ValueVector (num_points=2) :
@@ -121,7 +121,7 @@ test_sub_domain<dim=1,codim=1>
          Flat ID: 1    Tensor ID: [1]
          Values:
             ValueVector (num_points=2) :
-            [ [ 1.60566 ]  [ 1.89434 ]  ]
+            [ [ 2.60566 ]  [ 2.89434 ]  ]
          
          Gradients:
             ValueVector (num_points=2) :
@@ -132,7 +132,7 @@ test_sub_domain<dim=1,codim=1>
             [ [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  ]
          
       
-   
+   Measure = 1.00000
 
 test_sub_domain<dim=2,codim=1>
    SubElem ID: 0
@@ -140,7 +140,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 0    Tensor ID: [0,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 0.211325 ]  [ 0.500000 ]  [ 0.500000 ]  [ 0.788675 ]  ]
+            [ [ 0.528312 ]  [ 1.10566 ]  [ 1.39434 ]  [ 1.97169 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -155,7 +155,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 2    Tensor ID: [0,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 0.711325 ]  [ 1.00000 ]  [ 1.00000 ]  [ 1.28868 ]  ]
+            [ [ 2.02831 ]  [ 2.60566 ]  [ 2.89434 ]  [ 3.47169 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -170,7 +170,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 1    Tensor ID: [1,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 0.711325 ]  [ 1.00000 ]  [ 1.00000 ]  [ 1.28868 ]  ]
+            [ [ 1.52831 ]  [ 2.10566 ]  [ 2.39434 ]  [ 2.97169 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -185,7 +185,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 3    Tensor ID: [1,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.21132 ]  [ 1.50000 ]  [ 1.50000 ]  [ 1.78868 ]  ]
+            [ [ 3.02831 ]  [ 3.60566 ]  [ 3.89434 ]  [ 4.47169 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -196,7 +196,7 @@ test_sub_domain<dim=2,codim=1>
             [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
          
       
-   
+   Measure = 6.00000
 
 test_sub_domain<dim=2,codim=1>
    SubElem ID: 1
@@ -204,7 +204,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 0    Tensor ID: [0,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.21132 ]  [ 1.50000 ]  [ 1.50000 ]  [ 1.78868 ]  ]
+            [ [ 1.52831 ]  [ 2.10566 ]  [ 2.39434 ]  [ 2.97169 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -219,7 +219,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 2    Tensor ID: [0,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.71133 ]  [ 2.00000 ]  [ 2.00000 ]  [ 2.28868 ]  ]
+            [ [ 3.02831 ]  [ 3.60566 ]  [ 3.89434 ]  [ 4.47169 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -234,7 +234,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 1    Tensor ID: [1,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.71133 ]  [ 2.00000 ]  [ 2.00000 ]  [ 2.28868 ]  ]
+            [ [ 2.52831 ]  [ 3.10566 ]  [ 3.39434 ]  [ 3.97169 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -249,7 +249,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 3    Tensor ID: [1,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 2.21133 ]  [ 2.50000 ]  [ 2.50000 ]  [ 2.78868 ]  ]
+            [ [ 4.02831 ]  [ 4.60566 ]  [ 4.89434 ]  [ 5.47169 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -260,7 +260,7 @@ test_sub_domain<dim=2,codim=1>
             [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
          
       
-   
+   Measure = 6.00000
 
 test_sub_domain<dim=2,codim=1>
    SubElem ID: 2
@@ -268,7 +268,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 0    Tensor ID: [0,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 0.211325 ]  [ 0.500000 ]  [ 0.500000 ]  [ 0.788675 ]  ]
+            [ [ 0.422650 ]  [ 0.711325 ]  [ 1.28868 ]  [ 1.57735 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -283,7 +283,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 2    Tensor ID: [0,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 0.711325 ]  [ 1.00000 ]  [ 1.00000 ]  [ 1.28868 ]  ]
+            [ [ 1.92265 ]  [ 2.21133 ]  [ 2.78868 ]  [ 3.07735 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -298,7 +298,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 1    Tensor ID: [1,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 0.711325 ]  [ 1.00000 ]  [ 1.00000 ]  [ 1.28868 ]  ]
+            [ [ 0.922650 ]  [ 1.21132 ]  [ 1.78868 ]  [ 2.07735 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -313,7 +313,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 3    Tensor ID: [1,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.21132 ]  [ 1.50000 ]  [ 1.50000 ]  [ 1.78868 ]  ]
+            [ [ 2.42265 ]  [ 2.71133 ]  [ 3.28868 ]  [ 3.57735 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -324,7 +324,7 @@ test_sub_domain<dim=2,codim=1>
             [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
          
       
-   
+   Measure = 3.00000
 
 test_sub_domain<dim=2,codim=1>
    SubElem ID: 3
@@ -332,7 +332,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 0    Tensor ID: [0,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.21132 ]  [ 1.50000 ]  [ 1.50000 ]  [ 1.78868 ]  ]
+            [ [ 2.42265 ]  [ 2.71133 ]  [ 3.28868 ]  [ 3.57735 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -347,7 +347,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 2    Tensor ID: [0,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.71133 ]  [ 2.00000 ]  [ 2.00000 ]  [ 2.28868 ]  ]
+            [ [ 3.92265 ]  [ 4.21133 ]  [ 4.78868 ]  [ 5.07735 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -362,7 +362,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 1    Tensor ID: [1,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.71133 ]  [ 2.00000 ]  [ 2.00000 ]  [ 2.28868 ]  ]
+            [ [ 2.92265 ]  [ 3.21133 ]  [ 3.78868 ]  [ 4.07735 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -377,7 +377,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 3    Tensor ID: [1,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 2.21133 ]  [ 2.50000 ]  [ 2.50000 ]  [ 2.78868 ]  ]
+            [ [ 4.42265 ]  [ 4.71133 ]  [ 5.28868 ]  [ 5.57735 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -388,7 +388,7 @@ test_sub_domain<dim=2,codim=1>
             [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
          
       
-   
+   Measure = 3.00000
 
 test_sub_domain<dim=2,codim=1>
    SubElem ID: 4
@@ -396,7 +396,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 0    Tensor ID: [0,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 0.211325 ]  [ 0.500000 ]  [ 0.500000 ]  [ 0.788675 ]  ]
+            [ [ 0.316987 ]  [ 0.605662 ]  [ 0.894338 ]  [ 1.18301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -411,7 +411,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 2    Tensor ID: [0,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 0.711325 ]  [ 1.00000 ]  [ 1.00000 ]  [ 1.28868 ]  ]
+            [ [ 1.31699 ]  [ 1.60566 ]  [ 1.89434 ]  [ 2.18301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -426,7 +426,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 1    Tensor ID: [1,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 0.711325 ]  [ 1.00000 ]  [ 1.00000 ]  [ 1.28868 ]  ]
+            [ [ 0.816987 ]  [ 1.10566 ]  [ 1.39434 ]  [ 1.68301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -441,7 +441,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 3    Tensor ID: [1,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.21132 ]  [ 1.50000 ]  [ 1.50000 ]  [ 1.78868 ]  ]
+            [ [ 1.81699 ]  [ 2.10566 ]  [ 2.39434 ]  [ 2.68301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -452,7 +452,7 @@ test_sub_domain<dim=2,codim=1>
             [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
          
       
-   
+   Measure = 2.00000
 
 test_sub_domain<dim=2,codim=1>
    SubElem ID: 5
@@ -460,7 +460,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 0    Tensor ID: [0,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.21132 ]  [ 1.50000 ]  [ 1.50000 ]  [ 1.78868 ]  ]
+            [ [ 3.31699 ]  [ 3.60566 ]  [ 3.89434 ]  [ 4.18301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -475,7 +475,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 2    Tensor ID: [0,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.71133 ]  [ 2.00000 ]  [ 2.00000 ]  [ 2.28868 ]  ]
+            [ [ 4.31699 ]  [ 4.60566 ]  [ 4.89434 ]  [ 5.18301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -490,7 +490,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 1    Tensor ID: [1,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.71133 ]  [ 2.00000 ]  [ 2.00000 ]  [ 2.28868 ]  ]
+            [ [ 3.81699 ]  [ 4.10566 ]  [ 4.39434 ]  [ 4.68301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -505,7 +505,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 3    Tensor ID: [1,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 2.21133 ]  [ 2.50000 ]  [ 2.50000 ]  [ 2.78868 ]  ]
+            [ [ 4.81699 ]  [ 5.10566 ]  [ 5.39434 ]  [ 5.68301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -516,5 +516,5 @@ test_sub_domain<dim=2,codim=1>
             [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
          
       
-   
+   Measure = 2.00000
 

@@ -20,6 +20,38 @@
 
 #include <igatools/functions/formula_function.h>
 
+
+template <int dim,int codim>
+Real
+compute_measure(const Domain<dim,codim> &domain)
+{
+  auto handler = domain.create_cache_handler();
+
+  handler->set_element_flags(domain_element::Flags::w_measure);
+
+  auto elem = domain.begin();
+  auto elem_end = domain.end();
+
+  auto quad = QGauss<dim>::const_create(10);
+
+  handler->init_element_cache(elem,quad);
+
+  Real measure = 0.0;
+  for (; elem != elem_end ; ++elem)
+  {
+    handler->fill_element_cache(elem);
+
+    const auto w_meas = elem->get_element_w_measures();
+
+    for (const auto &w :w_meas)
+      measure += w;
+  }
+
+  return measure;
+}
+
+
+
 template<int dim, int codim>
 class CustomFunction
   : public FormulaFunction<dim,codim,1,1>
