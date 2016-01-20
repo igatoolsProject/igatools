@@ -62,7 +62,8 @@ dilate(const Points<dim> &dilation_factor)
 }
 
 template<int dim>
-bool BBox<dim>::
+bool
+BBox<dim>::
 is_unit() const
 {
   return std::all_of(this->begin(),this->end(),
@@ -71,6 +72,39 @@ is_unit() const
     return (interv[0] == 0.0 && interv[1] == 1.0);
   });
 }
+
+template<int dim>
+SafeSTLArray<Real,dim>
+BBox<dim>::
+get_side_lengths() const
+{
+  SafeSTLArray<Real,dim> side_lengths;
+  for (int i = 0 ; i < dim ; ++i)
+  {
+    side_lengths[i] = (*this)[i][1] - (*this)[i][0];
+  }
+  return side_lengths;
+}
+
+
+template<int dim>
+bool
+BBox<dim>::
+is_point_inside(const Points<dim> &point) const
+{
+  bool is_point_inside = true;
+  for (int i = 0 ; i < dim ; ++i)
+  {
+    if (point[i] < (*this)[i][0] || point[i] > (*this)[i][1])
+    {
+      is_point_inside = false;
+      break;
+    }
+  }
+  return is_point_inside;
+
+}
+
 
 IGA_NAMESPACE_CLOSE
 
