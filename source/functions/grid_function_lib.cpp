@@ -941,7 +941,9 @@ CylindricalAnnulusGridFunction(
   dR_(r1_-r0_),
   dT_(theta1_-theta0_),
   dH_(h1_-h0_)
-{}
+{
+  Assert(grid->get_bounding_box().is_unit(),ExcMessage("The grid is not the unit hypercube [0,1]^3"));
+}
 
 
 
@@ -1002,18 +1004,28 @@ evaluate_0(const ValueVector<GridPoint> &points,
 
   const int n_points = points.size();
 
+  const auto bounding_box = this->get_grid()->get_bounding_box();
+  const auto lengths = bounding_box.get_side_lengths();
+
+  // x[0] = theta
+  // x[1] = r
+  // x[2] = zeta
+  SafeSTLArray<Real,3> x;
+
   for (int qp = 0; qp < n_points; ++qp)
   {
     auto &F = values[qp];
     const auto &pt = points[qp];
 
-    const Real theta = pt[0];
-    const Real r     = pt[1];
-    const Real z     = pt[2];
+    for (int i = 0 ; i  < 3 ; ++i)
+      x[i] = (pt[i] - bounding_box[i][0]) / lengths[i];
 
-    F[0] = (dR_ * r + r0_) * cos(dT_ * theta);
-    F[1] = (dR_ * r + r0_) * sin(dT_ * theta);
-    F[2] = h0_ + z * dH_;
+    const Real dT_x0 = dT_ * x[0];
+    const Real dR_x1 = dR_ * x[1] + r0_;
+
+    F[0] = dR_x1 * cos(dT_x0);
+    F[1] = dR_x1 * sin(dT_x0);
+    F[2] = h0_ + x[2] * dH_;
   }
 }
 
@@ -1028,28 +1040,69 @@ evaluate_1(const ValueVector<GridPoint> &points,
 
   const int n_points = points.size();
 
+  const auto bounding_box = this->get_grid()->get_bounding_box();
+  const auto lengths = bounding_box.get_side_lengths();
+
+  // x[0] = theta
+  // x[1] = r
+  // x[2] = zeta
+  SafeSTLArray<Real,3> x;
+  SafeSTLArray<Real,3> dx;
+
   for (int qp = 0; qp < n_points; ++qp)
   {
     auto &dF = values[qp];
     const auto &pt = points[qp];
 
-    const Real theta = pt[0];
-    const Real r     = pt[1];
 
-    const auto s_dt_theta = sin(dT_ * theta);
-    const auto c_dt_theta = cos(dT_ * theta);
+    for (int i = 0 ; i  < 3 ; ++i)
+    {
+      x[i] = (pt[i] - bounding_box[i][0]) / lengths[i];
+      dx[i] = 1.0 / lengths[i];
+    }
 
-    dF[0][0] = - dT_ * (dR_ * r + r0_) * s_dt_theta;
-    dF[0][1] =   dT_ * (dR_ * r + r0_) * c_dt_theta;
-    dF[0][2] = 0.0;
+    const Real dT_x0 = dT_ * x[0];
+    const Real dT_dx0 = dT_ * dx[0];
 
-    dF[1][0] = dR_ * c_dt_theta;
-    dF[1][1] = dR_ * s_dt_theta;
-    dF[1][2] = 0.0;
+    const Real dR_x1 = dR_ * x[1] + r0_;
+    const Real dR_dx1 = dR_ * dx[1];
 
+    const auto s = sin(dT_x0);
+    const auto c = cos(dT_x0);
+
+    const auto dR_x1_dT_dx0 = dR_x1 * dT_dx0;
+
+    dF[0][0] = - s * dR_x1_dT_dx0;
+    dF[1][0] =   c * dR_dx1;
     dF[2][0] = 0.0;
+
+
+    dF[0][1] = c * dR_x1_dT_dx0;
+    dF[1][1] = s * dR_dx1;
     dF[2][1] = 0.0;
-    dF[2][2] = dH_;
+
+    dF[0][2] = 0.0;
+    dF[1][2] = 0.0;
+    dF[2][2] = dx[2] * dH_;
+
+    /*
+
+        const auto s_dt_theta = sin(dT_ * x[0]);
+        const auto c_dt_theta = cos(dT_ * x[0]);
+
+
+        dF[0][0] = - dT_ * (dR_ * x[1] + r0_) * s_dt_theta;
+        dF[0][1] =   dT_ * (dR_ * x[1] + r0_) * c_dt_theta;
+        dF[0][2] = 0.0;
+
+        dF[1][0] = dR_ * c_dt_theta;
+        dF[1][1] = dR_ * s_dt_theta;
+        dF[1][2] = 0.0;
+
+        dF[2][0] = 0.0;
+        dF[2][1] = 0.0;
+        dF[2][2] = dH_;
+        //*/
   }
 }
 
@@ -1063,57 +1116,163 @@ evaluate_2(const ValueVector<GridPoint> &points,
 {
   const int n_points = points.size();
 
+  const auto bounding_box = this->get_grid()->get_bounding_box();
+  const auto lengths = bounding_box.get_side_lengths();
+
+  // x[0] = theta
+  // x[1] = r
+  // x[2] = zeta
+  SafeSTLArray<Real,3> x;
+  SafeSTLArray<Real,3> dx;
+
   for (int qp = 0; qp < n_points; ++qp)
   {
     auto &d2F = values[qp];
     const auto &pt = points[qp];
 
-    const Real theta = pt[0];
-    const Real r     = pt[1];
 
-    const auto s_dt_theta = sin(dT_ * theta);
-    const auto c_dt_theta = cos(dT_ * theta);
+    for (int i = 0 ; i  < 3 ; ++i)
+    {
+      x[i] = (pt[i] - bounding_box[i][0]) / lengths[i];
+      dx[i] = 1.0 / lengths[i];
+    }
 
-    d2F[0][0][0] = - dT_ * dT_ * (dR_ * r + r0_) * c_dt_theta;
-    d2F[0][0][1] = - dT_ * dT_ * (dR_ * r + r0_) * s_dt_theta;
+
+    const Real dT_x0 = dT_ * x[0];
+    const Real dT_dx0 = dT_ * dx[0];
+
+    const Real dR_x1 = dR_ * x[1] + r0_;
+    const Real dR_dx1 = dR_ * dx[1];
+
+    const auto s = sin(dT_x0);
+    const auto c = cos(dT_x0);
+
+    const auto dR_x1_dT_dx0 = dR_x1 * dT_dx0;
+    const auto c_dT_dx0 = c * dT_dx0;
+    const auto s_dT_dx0 = s * dT_dx0;
+
+    d2F[0][0][0] = - c_dT_dx0 * dR_x1_dT_dx0;
+    d2F[0][0][1] = - s_dT_dx0 * dR_x1_dT_dx0;
     d2F[0][0][2] = 0.0;
 
-    d2F[1][0][0] = -dT_ * dR_ * s_dt_theta;
-    d2F[1][0][1] =  dT_ * dR_ * c_dt_theta;
-    d2F[1][0][2] = 0.0;
-
-    d2F[2][0][0] = 0.0;
-    d2F[2][0][1] = 0.0;
-    d2F[2][0][2] = 0.0;
-
-
-    d2F[0][1][0] = - dT_ * dR_ * s_dt_theta;
-    d2F[0][1][1] =   dT_ * dR_ * c_dt_theta;
+    d2F[0][1][0] = - dR_dx1 * s_dT_dx0;
+    d2F[0][1][1] =   dR_dx1 * c_dT_dx0;
     d2F[0][1][2] = 0.0;
-
-    d2F[1][1][0] = 0.0;
-    d2F[1][1][1] = 0.0;
-    d2F[1][1][2] = 0.0;
-
-    d2F[2][1][0] = 0.0;
-    d2F[2][1][1] = 0.0;
-    d2F[2][1][2] = 0.0;
-
 
     d2F[0][2][0] = 0.0;
     d2F[0][2][1] = 0.0;
     d2F[0][2][2] = 0.0;
 
+    d2F[1][0][0] = - dR_dx1 * s_dT_dx0;
+    d2F[1][0][1] =   dR_dx1 * c_dT_dx0;
+    d2F[1][0][2] = 0.0;
+
+    d2F[1][1][0] = 0.0;
+    d2F[1][1][1] = 0.0;
+    d2F[1][1][2] = 0.0;
+
     d2F[1][2][0] = 0.0;
     d2F[1][2][1] = 0.0;
     d2F[1][2][2] = 0.0;
 
+    d2F[2][0][0] = 0.0;
+    d2F[2][0][1] = 0.0;
+    d2F[2][0][2] = 0.0;
+
+    d2F[2][1][0] = 0.0;
+    d2F[2][1][1] = 0.0;
+    d2F[2][1][2] = 0.0;
+
     d2F[2][2][0] = 0.0;
     d2F[2][2][1] = 0.0;
     d2F[2][2][2] = 0.0;
+
+
+    /*
+        const Real theta = pt[0];
+        const Real r     = pt[1];
+
+        const auto s_dt_theta = sin(dT_ * theta);
+        const auto c_dt_theta = cos(dT_ * theta);
+
+        d2F[0][0][0] = - dT_ * dT_ * (dR_ * r + r0_) * c_dt_theta;
+        d2F[0][0][1] = - dT_ * dT_ * (dR_ * r + r0_) * s_dt_theta;
+        d2F[0][0][2] = 0.0;
+
+        d2F[1][0][0] = -dT_ * dR_ * s_dt_theta;
+        d2F[1][0][1] =  dT_ * dR_ * c_dt_theta;
+        d2F[1][0][2] = 0.0;
+
+        d2F[2][0][0] = 0.0;
+        d2F[2][0][1] = 0.0;
+        d2F[2][0][2] = 0.0;
+
+
+        d2F[0][1][0] = - dT_ * dR_ * s_dt_theta;
+        d2F[0][1][1] =   dT_ * dR_ * c_dt_theta;
+        d2F[0][1][2] = 0.0;
+
+        d2F[1][1][0] = 0.0;
+        d2F[1][1][1] = 0.0;
+        d2F[1][1][2] = 0.0;
+
+        d2F[2][1][0] = 0.0;
+        d2F[2][1][1] = 0.0;
+        d2F[2][1][2] = 0.0;
+
+
+        d2F[0][2][0] = 0.0;
+        d2F[0][2][1] = 0.0;
+        d2F[0][2][2] = 0.0;
+
+        d2F[1][2][0] = 0.0;
+        d2F[1][2][1] = 0.0;
+        d2F[1][2][2] = 0.0;
+
+        d2F[2][2][0] = 0.0;
+        d2F[2][2][1] = 0.0;
+        d2F[2][2][2] = 0.0;
+        //*/
   }
 }
 
+auto
+CylindricalAnnulusGridFunction::
+evaluate_preimage(const ValueVector<Value> &phys_points) const
+-> ValueVector<GridPoint>
+{
+  const int n_pts = phys_points.get_num_points();
+  Assert(n_pts > 0,ExcEmptyObject());
+
+  ValueVector<GridPoint> param_points(n_pts);
+
+  const auto bounding_box = this->get_grid()->get_bounding_box();
+  const auto lengths = bounding_box.get_side_lengths();
+
+  SafeSTLArray<Real,3> l_tmp;
+  l_tmp[0] = lengths[0] / dT_;
+  l_tmp[1] = lengths[1] / dR_;
+  l_tmp[2] = lengths[2] / dH_;
+
+  for (int pt = 0 ; pt < n_pts ; ++pt)
+  {
+    const auto &phys_pt = phys_points[pt];
+    auto &param_pt = param_points[pt];
+
+    const auto &x = phys_pt[0];
+    const auto &y = phys_pt[1];
+    const auto &z = phys_pt[2];
+
+    param_pt[0] = bounding_box[0][0] + l_tmp[0] * std::atan2(y,x);
+    param_pt[1] = bounding_box[1][0] + l_tmp[1] * (sqrt(x*x + y*y) - r0_);
+    param_pt[2] = bounding_box[2][0] + l_tmp[2] * (z - h0_);
+
+
+    AssertThrow(bounding_box.is_point_inside(param_pt),
+    ExcMessage("The pre-image of the point " + std::to_string(pt) + " is not in the parametric domain."));
+  }
+  return param_points;
+}
 
 void
 CylindricalAnnulusGridFunction::

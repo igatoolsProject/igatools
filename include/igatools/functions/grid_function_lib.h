@@ -459,6 +459,18 @@ public:
 
   virtual void print_info(LogStream &out) const override final;
 
+
+  /**
+   * @brief This function compute the preimage of the points <tt>phys_points</tt>.
+   *
+   * @warning If an input point is not in the image of the Grid under the CylindricalAnnulusGridFunction,
+   * an assertion will be raised (in Debug and Release mode)
+   *
+   */
+  ValueVector<GridPoint>
+  evaluate_preimage(const ValueVector<Value> &phys_points) const;
+
+
 protected:
   CylindricalAnnulusGridFunction(const SharedPtrConstnessHandler<GridType> &grid,
                                  const Real r0,
