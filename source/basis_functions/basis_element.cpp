@@ -246,12 +246,14 @@ get_element_divergences(const std::string &dofs_property) const
 }
 
 template<int dim_,int codim_,int range_,int rank_>
+template <int sdim>
 DenseMatrix
 BasisElement<dim_,codim_,range_,rank_>::
-integrate_u_v(const PropId &dofs_property)
+integrate_u_v(const int s_id,
+              const PropId &dofs_property)
 {
-  const auto &w_meas = this->get_element_w_measures();
-  const auto &u = this->get_element_values(dofs_property);
+  const auto &w_meas = this->template get_w_measures<sdim>(s_id);
+  const auto &u = this->template get_basis_data<basis_element::_Value,sdim>(s_id,dofs_property);
 
   const int n_pts = u.get_num_points();
 
@@ -279,12 +281,14 @@ integrate_u_v(const PropId &dofs_property)
 }
 
 template<int dim_,int codim_,int range_,int rank_>
+template <int sdim>
 DenseMatrix
 BasisElement<dim_,codim_,range_,rank_>::
-integrate_gradu_gradv(const PropId &dofs_property)
+integrate_gradu_gradv(const int s_id,
+                      const PropId &dofs_property)
 {
-  const auto &w_meas = this->get_element_w_measures();
-  const auto &gradu = this->get_element_gradients(dofs_property);
+  const auto &w_meas = this->template get_w_measures<sdim>(s_id);
+  const auto &gradu = this->template get_basis_data<basis_element::_Gradient,sdim>(s_id,dofs_property);
 
   const int n_pts = gradu.get_num_points();
 
@@ -312,12 +316,15 @@ integrate_gradu_gradv(const PropId &dofs_property)
 }
 
 template<int dim_,int codim_,int range_,int rank_>
+template <int sdim>
 DenseVector
 BasisElement<dim_,codim_,range_,rank_>::
 integrate_u_func(const ValueVector<Value> &func_at_points,
+                 const int s_id,
                  const PropId &dofs_property)
 {
-  const auto &u = this->get_element_values(dofs_property);
+  const auto &w_meas = this->template get_w_measures<sdim>(s_id);
+  const auto &u = this->template get_basis_data<basis_element::_Value,sdim>(s_id,dofs_property);
 
   const int n_pts = u.get_num_points();
   Assert(n_pts == func_at_points.get_num_points(),
@@ -327,7 +334,6 @@ integrate_u_func(const ValueVector<Value> &func_at_points,
   DenseVector R(n_basis);
   R = 0.0;
 
-  const auto &w_meas = this->get_element_w_measures();
 
   for (int i = 0; i < n_basis; ++i)
   {

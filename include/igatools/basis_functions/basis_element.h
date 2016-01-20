@@ -419,7 +419,14 @@ public:
    * \brief Computes and returns the <b>local mass-matrix</b> for the basis function
    * with the given <tt>dofs_property</tt>, i.e. the matrix \f$M\f$ in which
    * its (i,j) entry is:
-   * \f$ m_{ij} = \int_{\Omega^e} \varphi_i \cdot \varphi_j \; d\Omega \f$
+   * \f$ m_{ij} = \int_{\omega} \varphi_i \cdot \varphi_j \; d\omega \f$
+   *
+   * The integration domain \f$ \omega \f$ depends on the value of the template parameter <tt>sdim</tt>
+   * and on the input argument <tt>s\_id</tt>.
+   * If <tt>sdim == dim </tt> the unique valid value for <tt>s_id</tt> is <tt>0</tt> and
+   * the integration is made on the element \f$ \Omega^e \f$,
+   * otherwise the integration is perfomed in the sub-elements of topological
+   * dimension <tt>sdim</tt>, identified by <tt>s_id</tt>
    *
    * \note If the <tt>dofs_property</tt> is omitted, then the mass matrix refers to
    * all basis function that have support on the element.
@@ -430,15 +437,24 @@ public:
    * - weights multiplied by element's measure (w_measures)
    *
    */
+  template <int sdim>
   DenseMatrix
-  integrate_u_v(const PropId &dofs_property = DofProperties::active);
+  integrate_u_v(const int s_id,
+                const PropId &dofs_property = DofProperties::active);
 
   /**
    * \brief Computes and returns the <b>local stiffness-matrix</b> (of the Poisson problem)
    * for the basis function
    * with the given <tt>dofs_property</tt>, i.e. the matrix \f$M\f$ in which
    * its (i,j) entry is:
-   * \f$ m_{ij} = \int_{\Omega^e} \nabla \varphi_i \cdot \nabla \varphi_j \; d\Omega \f$
+   * \f$ m_{ij} = \int_{\omega} \nabla \varphi_i \cdot \nabla \varphi_j \; d\omega \f$
+   *
+   * The integration domain \f$ \omega \f$ depends on the value of the template parameter <tt>sdim</tt>
+   * and on the input argument <tt>s\_id</tt>.
+   * If <tt>sdim == dim </tt> the unique valid value for <tt>s_id</tt> is <tt>0</tt> and
+   * the integration is made on the element \f$ \Omega^e \f$,
+   * otherwise the integration is perfomed in the sub-elements of topological
+   * dimension <tt>sdim</tt>, identified by <tt>s_id</tt>
    *
    * \note If the <tt>dofs_property</tt> is omitted, then the stiffness matrix refers to
    * all basis function that have support on the element.
@@ -449,13 +465,23 @@ public:
    * - weights multiplied by element's measure (w_measures)
    *
    */
+  template <int sdim>
   DenseMatrix
-  integrate_gradu_gradv(const PropId &dofs_property = DofProperties::active);
+  integrate_gradu_gradv(const int s_id,
+                        const PropId &dofs_property = DofProperties::active);
 
   /**
    * \brief Computes and returns the vector \f$R\f$ in which
    * its (i) entry is:
-   * \f$ R_{i} = \int_{\Omega^e} \nabla \varphi_i \cdot f \; d\Omega \f$
+   * \f$ R_{i} = \int_{\omega} \nabla \varphi_i \cdot f \; d\omega \f$
+   *
+   * The integration domain \f$ \omega \f$ depends on the value of the template parameter <tt>sdim</tt>
+   * and on the input argument <tt>s\_id</tt>.
+   * If <tt>sdim == dim </tt> the unique valid value for <tt>s_id</tt> is <tt>0</tt> and
+   * the integration is made on the element \f$ \Omega^e \f$,
+   * otherwise the integration is perfomed in the sub-elements of topological
+   * dimension <tt>sdim</tt>, identified by <tt>s_id</tt>
+   *
    *
    * \note If the <tt>dofs_property</tt> is omitted, then the stiffness matrix refers to
    * all basis function that have support on the element.
@@ -466,8 +492,10 @@ public:
    * - weights multiplied by element's measure (w_measures)
    *
    */
+  template <int sdim>
   DenseVector
   integrate_u_func(const ValueVector<Value> &func_at_points,
+                   const int s_id,
                    const PropId &dofs_property = DofProperties::active);
 
 

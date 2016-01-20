@@ -88,7 +88,7 @@ private:
   using base_t = Function<dim,codim,range,rank>;
   using parent_t = Function<dim,codim,range,rank>;
   using self_t = IgFunction<dim,codim,range,rank>;
-  using PhysicalBasis = PhysicalBasis<dim,range,rank,codim>;
+  using PhysBasis = PhysicalBasis<dim,range,rank,codim>;
 
 public:
   /**
@@ -99,11 +99,11 @@ public:
 
 
   //TODO (pauletti, Mar 23, 2015): should we make this private?
-  IgFunction(const SharedPtrConstnessHandler<PhysicalBasis> &basis,
+  IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const EpetraTools::Vector &coeff,
              const std::string &dofs_property);
 
-  IgFunction(const SharedPtrConstnessHandler<PhysicalBasis> &basis,
+  IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const IgCoefficients &coeff,
              const std::string &dofs_property);
 
@@ -131,28 +131,28 @@ public:
 
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const PhysicalBasis> &basis,
+  const_create(const std::shared_ptr<const PhysBasis> &basis,
                const EpetraTools::Vector &coeff,
                const std::string &dofs_property = DofProperties::active);
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const PhysicalBasis> &basis,
+  const_create(const std::shared_ptr<const PhysBasis> &basis,
                const IgCoefficients &coeff,
                const std::string &dofs_property = DofProperties::active);
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<PhysicalBasis> &basis,
+  create(const std::shared_ptr<PhysBasis> &basis,
          const EpetraTools::Vector &coeff,
          const std::string &dofs_property = DofProperties::active);
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<PhysicalBasis> &basis,
+  create(const std::shared_ptr<PhysBasis> &basis,
          const IgCoefficients &coeff,
          const std::string &dofs_property = DofProperties::active);
 
 
 
-  std::shared_ptr<const PhysicalBasis> get_basis() const;
+  std::shared_ptr<const PhysBasis> get_basis() const;
 
   const CoeffType &get_coefficients() const;
 
@@ -186,7 +186,7 @@ public:
 
 
 
-    typename PhysicalBasis::template InterBasisMap<sdim> dof_map;
+    typename PhysBasis::template InterBasisMap<sdim> dof_map;
     typename Grid<dim>::template SubGridMap<sdim> elem_map;
     auto sub_basis = basis_->template get_sub_basis<sdim>(s_id,dof_map,sub_grid,elem_map);
 
@@ -213,7 +213,7 @@ public:
 
 private:
 
-  SharedPtrConstnessHandler<PhysicalBasis> basis_;
+  SharedPtrConstnessHandler<PhysBasis> basis_;
 
   CoeffType coeffs_;
 

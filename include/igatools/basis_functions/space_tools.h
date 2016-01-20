@@ -285,8 +285,8 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
 
       auto f_at_qp = f_elem->template get_values_from_cache<_D0,dim>(0);
 
-      const auto loc_mat = elem->integrate_u_v(dofs_property);
-      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
+      const auto loc_mat = elem->template integrate_u_v<dim>(0,dofs_property);
+      const auto loc_rhs = elem->template integrate_u_func<dim>(f_at_qp,0,dofs_property);
 
       const auto elem_dofs = elem->get_local_to_global(dofs_property);
       matrix->add_block(elem_dofs,elem_dofs,loc_mat);
@@ -334,8 +334,8 @@ projection_l2_function(const Function<dim,codim,range,rank> &function,
       //---------------------------------------------------------------------------
 
 
-      const auto loc_mat = elem->integrate_u_v(dofs_property);
-      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
+      const auto loc_mat = elem->template integrate_u_v<dim>(0,dofs_property);
+      const auto loc_rhs = elem->template integrate_u_func<dim>(f_at_qp,0,dofs_property);
 
       const auto elem_dofs = elem->get_local_to_global(dofs_property);
       matrix->add_block(elem_dofs,elem_dofs,loc_mat);
@@ -620,8 +620,8 @@ projection_l2_grid_function(
 
       auto f_at_qp = f_elem->template get_values_from_cache<D0,dim>(0);
 
-      const auto loc_mat = elem->integrate_u_v(dofs_property);
-      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
+      const auto loc_mat = elem->template integrate_u_v<dim>(0,dofs_property);
+      const auto loc_rhs = elem->template integrate_u_func<dim>(f_at_qp,0,dofs_property);
 
       const auto elem_dofs = elem->get_local_to_global(dofs_property);
       matrix->add_block(elem_dofs,elem_dofs,loc_mat);
@@ -666,8 +666,8 @@ projection_l2_grid_function(
       //---------------------------------------------------------------------------
 
 
-      const auto loc_mat = elem->integrate_u_v(dofs_property);
-      const auto loc_rhs = elem->integrate_u_func(f_at_qp,dofs_property);
+      const auto loc_mat = elem->template integrate_u_v<dim>(0,dofs_property);
+      const auto loc_rhs = elem->template integrate_u_func<dim>(f_at_qp,0,dofs_property);
 
       const auto elem_dofs = elem->get_local_to_global(dofs_property);
       matrix->add_block(elem_dofs,elem_dofs,loc_mat);
