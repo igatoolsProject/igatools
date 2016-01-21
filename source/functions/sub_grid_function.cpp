@@ -260,6 +260,35 @@ get_sup_element_id(const typename Grid<sdim>::IndexType &sub_elem_id) const
 //  return sub_grid_elem_map_.at(sub_elem_id);
 }
 
+template<int sdim,int dim,int range>
+auto
+SubGridFunction<sdim,dim,range>::
+evaluate_preimage(const ValueVector<Points<range>> &phys_points) const
+-> ValueVector<Points<sdim>>
+{
+  const auto param_points_sup_func = sup_func_->evaluate_preimage(phys_points);
+
+  const auto n_pts = phys_points.get_num_points();
+
+  const auto &sub_unit_elem = UnitElement<dim>::template get_elem<sdim>(sup_grid_func_s_id_);
+  const auto &active_directions = sub_unit_elem.active_directions;
+
+  ValueVector<Points<sdim>> param_points(n_pts);
+  for (int pt = 0 ; pt < n_pts ; ++pt)
+  {
+    const auto &param_pt_sup_func = param_points_sup_func[pt];
+    auto &param_pt_sub_func = param_points[pt];
+
+    for (int i = 0 ; i < sdim ; ++i)
+      param_pt_sub_func[i] = param_pt_sup_func[active_directions[i]];
+
+  }
+
+//  Assert(false,ExcNotImplemented());
+  return param_points;
+}
+
+
 /*
 template<int sdim,int dim,int range>
 auto

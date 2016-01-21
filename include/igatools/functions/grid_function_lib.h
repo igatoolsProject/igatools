@@ -463,12 +463,13 @@ public:
   /**
    * @brief This function compute the preimage of the points <tt>phys_points</tt>.
    *
-   * @warning If an input point is not in the image of the Grid under the CylindricalAnnulusGridFunction,
+   * @warning If an input point is not in the image of the Grid under the
+   * action of CylindricalAnnulusGridFunction,
    * an assertion will be raised (in Debug and Release mode)
    *
    */
-  ValueVector<GridPoint>
-  evaluate_preimage(const ValueVector<Value> &phys_points) const;
+  virtual ValueVector<GridPoint>
+  evaluate_preimage(const ValueVector<Value> &phys_points) const override final;
 
 
 protected:

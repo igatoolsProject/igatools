@@ -222,6 +222,18 @@ public:
     return grid_->get_elements_with_property(elems_property);
   }
 
+
+  /**
+   * @brief This function compute the preimage of the points <tt>phys_points</tt>.
+   *
+   * @warning If an input point is not in the image of the Grid under the
+   * action of the instantiated GridFunction,
+   * an assertion will be raised (in Debug and Release mode)
+   *
+   */
+  virtual ValueVector<GridPoint>
+  evaluate_preimage(const ValueVector<Value> &phys_points) const;
+
 };
 
 

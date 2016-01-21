@@ -126,6 +126,17 @@ public:
 
 
 
+  /**
+   * @brief This function compute the preimage of the points <tt>phys_points</tt>.
+   *
+   * @warning If an input point is not in the image of the Grid under the
+   * action of the instantiated SubGridFunction,
+   * an assertion will be raised (in Debug and Release mode)
+   *
+   */
+  virtual ValueVector<Points<sdim>>
+                                 evaluate_preimage(const ValueVector<Points<range>> &phys_points) const override final;
+
 private:
   SharedPtrConstnessHandler<SupFunc> sup_func_;
   const int sup_grid_func_s_id_;

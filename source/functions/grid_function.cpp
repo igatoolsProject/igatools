@@ -195,6 +195,19 @@ get_grid_function_previous_refinement() const -> std::shared_ptr<const self_t>
 }
 
 
+template<int dim_, int range_>
+auto
+GridFunction<dim_,range_>::
+evaluate_preimage(const ValueVector<Value> &phys_points) const
+-> ValueVector<GridPoint>
+{
+  ValueVector<GridPoint> param_point;
+  AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
+
+  return param_point;
+}
+
+
 #endif // MESH_REFINEMENT
 
 
