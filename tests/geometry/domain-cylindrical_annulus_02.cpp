@@ -37,7 +37,7 @@ auto create_mapping1(const shared_ptr<const Grid<3>> &grid)
 {
   using Cyl = grid_functions::CylindricalAnnulusGridFunction;
 
-  return Cyl::const_create(grid,1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
+  return Cyl::const_create(grid);
 }
 
 template <int dim>
@@ -51,7 +51,7 @@ auto create_mapping2(const shared_ptr<const Grid<dim>> &grid)
 template <int sub_dim>
 void boundary_normals()
 {
-  auto grid = Grid<3>::const_create();
+  auto grid = Grid<3>::const_create({{0.,numbers::PI/2.0},{1.,2.},{0.,2.}});
   auto map_func = create_mapping1(grid);
   auto domain = Domain<3,0>::const_create(map_func);
 

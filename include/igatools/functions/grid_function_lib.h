@@ -402,7 +402,7 @@ private:
  * The mapping is
  * \f{equation*}{
  *    \begin{aligned}
- *    F(\hat{\theta},\hat{r},\hat{z}) \colon [0,1] \times[0,1]\times[0,1] & \to \Omega \\
+ *    F(\hat{\theta},\hat{r},\hat{z}) \colon [\theta_0,\theta_1] \times [r_0,r_1] \times[h_0,h_1] & \to \Omega \\
  *    (\hat{\theta},\hat{r},\hat{z}) & \mapsto
  *    F(\hat{\theta},\hat{r},\hat{z}) =
  *    \begin{pmatrix}
@@ -435,22 +435,10 @@ public:
   using Derivative = typename parent_t::template Derivative<order>;
 
   static std::shared_ptr<self_t>
-  create(const std::shared_ptr<GridType> &grid,
-         const Real r0,
-         const Real r1,
-         const Real h0,
-         const Real h1,
-         const Real theta0,
-         const Real theta1);
+  create(const std::shared_ptr<GridType> &grid);
 
   static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const GridType> &grid,
-               const Real r0,
-               const Real r1,
-               const Real h0,
-               const Real h1,
-               const Real theta0,
-               const Real theta1);
+  const_create(const std::shared_ptr<const GridType> &grid);
 
 
   CylindricalAnnulusGridFunction(const self_t &) = default;
@@ -473,13 +461,7 @@ public:
 
 
 protected:
-  CylindricalAnnulusGridFunction(const SharedPtrConstnessHandler<GridType> &grid,
-                                 const Real r0,
-                                 const Real r1,
-                                 const Real h0,
-                                 const Real h1,
-                                 const Real theta0,
-                                 const Real theta1);
+  CylindricalAnnulusGridFunction(const SharedPtrConstnessHandler<GridType> &grid);
 
 private:
   void evaluate_0(const ValueVector<GridPoint> &points,
@@ -491,17 +473,6 @@ private:
   void evaluate_2(const ValueVector<GridPoint> &points,
                   ValueVector<Derivative<2>> &values) const override final;
 
-
-  const Real r0_;
-  const Real r1_;
-  const Real h0_;
-  const Real h1_;
-  const Real theta0_;
-  const Real theta1_;
-
-  const Real dR_;
-  const Real dT_;
-  const Real dH_;
 
 #ifdef MESH_REFINEMENT
   /**
