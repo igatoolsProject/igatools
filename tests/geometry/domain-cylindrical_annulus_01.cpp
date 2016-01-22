@@ -32,7 +32,7 @@
 std::shared_ptr<const GridFunction<3,3> >
 create_cylinder_function()
 {
-  auto grid = Grid<3>::create({{0.,numbers::PI/2.},{1.,2.},{0.,2.}});
+  auto grid = Grid<3>::create({{1.,2.},{0.,numbers::PI/2.},{0.,2.}});
 
   using Cyl = grid_functions::CylindricalAnnulusGridFunction;
   auto cylinder = Cyl::create(grid);

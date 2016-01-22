@@ -4,134 +4,6 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 0    Tensor ID: [0,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.31699 ]  [ 1.60566 ]  [ 1.89434 ]  [ 2.18301 ]  ]
-         
-         Gradients:
-            ValueVector (num_points=4) :
-            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
-         
-         Hessians:
-            ValueVector (num_points=4) :
-            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
-         
-      
-      FunctionElement:
-         Flat ID: 2    Tensor ID: [0,1]
-         Values:
-            ValueVector (num_points=4) :
-            [ [ 2.31699 ]  [ 2.60566 ]  [ 2.89434 ]  [ 3.18301 ]  ]
-         
-         Gradients:
-            ValueVector (num_points=4) :
-            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
-         
-         Hessians:
-            ValueVector (num_points=4) :
-            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
-         
-      
-      FunctionElement:
-         Flat ID: 1    Tensor ID: [1,0]
-         Values:
-            ValueVector (num_points=4) :
-            [ [ 1.81699 ]  [ 2.10566 ]  [ 2.39434 ]  [ 2.68301 ]  ]
-         
-         Gradients:
-            ValueVector (num_points=4) :
-            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
-         
-         Hessians:
-            ValueVector (num_points=4) :
-            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
-         
-      
-      FunctionElement:
-         Flat ID: 3    Tensor ID: [1,1]
-         Values:
-            ValueVector (num_points=4) :
-            [ [ 2.81699 ]  [ 3.10566 ]  [ 3.39434 ]  [ 3.68301 ]  ]
-         
-         Gradients:
-            ValueVector (num_points=4) :
-            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
-         
-         Hessians:
-            ValueVector (num_points=4) :
-            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
-         
-      
-   Measure = 2.00000
-
-test_sub_domain<dim=2,codim=1>
-   SubElem ID: 1
-      FunctionElement:
-         Flat ID: 0    Tensor ID: [0,0]
-         Values:
-            ValueVector (num_points=4) :
-            [ [ 1.31699 ]  [ 1.60566 ]  [ 1.89434 ]  [ 2.18301 ]  ]
-         
-         Gradients:
-            ValueVector (num_points=4) :
-            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
-         
-         Hessians:
-            ValueVector (num_points=4) :
-            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
-         
-      
-      FunctionElement:
-         Flat ID: 2    Tensor ID: [0,1]
-         Values:
-            ValueVector (num_points=4) :
-            [ [ 2.31699 ]  [ 2.60566 ]  [ 2.89434 ]  [ 3.18301 ]  ]
-         
-         Gradients:
-            ValueVector (num_points=4) :
-            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
-         
-         Hessians:
-            ValueVector (num_points=4) :
-            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
-         
-      
-      FunctionElement:
-         Flat ID: 1    Tensor ID: [1,0]
-         Values:
-            ValueVector (num_points=4) :
-            [ [ 1.81699 ]  [ 2.10566 ]  [ 2.39434 ]  [ 2.68301 ]  ]
-         
-         Gradients:
-            ValueVector (num_points=4) :
-            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
-         
-         Hessians:
-            ValueVector (num_points=4) :
-            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
-         
-      
-      FunctionElement:
-         Flat ID: 3    Tensor ID: [1,1]
-         Values:
-            ValueVector (num_points=4) :
-            [ [ 2.81699 ]  [ 3.10566 ]  [ 3.39434 ]  [ 3.68301 ]  ]
-         
-         Gradients:
-            ValueVector (num_points=4) :
-            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
-         
-         Hessians:
-            ValueVector (num_points=4) :
-            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
-         
-      
-   Measure = 2.00000
-
-test_sub_domain<dim=2,codim=1>
-   SubElem ID: 2
-      FunctionElement:
-         Flat ID: 0    Tensor ID: [0,0]
-         Values:
-            ValueVector (num_points=4) :
             [ [ 1.36280 ]  [ 1.60610 ]  [ 1.94015 ]  [ 2.18345 ]  ]
          
          Gradients:
@@ -191,7 +63,7 @@ test_sub_domain<dim=2,codim=1>
    Measure = 3.14159
 
 test_sub_domain<dim=2,codim=1>
-   SubElem ID: 3
+   SubElem ID: 1
       FunctionElement:
          Flat ID: 0    Tensor ID: [0,0]
          Values:
@@ -255,12 +127,12 @@ test_sub_domain<dim=2,codim=1>
    Measure = 6.28319
 
 test_sub_domain<dim=2,codim=1>
-   SubElem ID: 4
+   SubElem ID: 2
       FunctionElement:
          Flat ID: 0    Tensor ID: [0,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.27314 ]  [ 1.54216 ]  [ 1.60554 ]  [ 1.94479 ]  ]
+            [ [ 1.31699 ]  [ 1.60566 ]  [ 1.89434 ]  [ 2.18301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -275,7 +147,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 2    Tensor ID: [0,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.84887 ]  [ 2.23954 ]  [ 2.18128 ]  [ 2.64218 ]  ]
+            [ [ 2.31699 ]  [ 2.60566 ]  [ 2.89434 ]  [ 3.18301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -290,7 +162,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 1    Tensor ID: [1,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 1.54216 ]  [ 1.27314 ]  [ 1.94479 ]  [ 1.60554 ]  ]
+            [ [ 1.81699 ]  [ 2.10566 ]  [ 2.39434 ]  [ 2.68301 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -305,7 +177,135 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 3    Tensor ID: [1,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 2.23954 ]  [ 1.84887 ]  [ 2.64218 ]  [ 2.18128 ]  ]
+            [ [ 2.81699 ]  [ 3.10566 ]  [ 3.39434 ]  [ 3.68301 ]  ]
+         
+         Gradients:
+            ValueVector (num_points=4) :
+            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
+         
+         Hessians:
+            ValueVector (num_points=4) :
+            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
+         
+      
+   Measure = 2.00000
+
+test_sub_domain<dim=2,codim=1>
+   SubElem ID: 3
+      FunctionElement:
+         Flat ID: 0    Tensor ID: [0,0]
+         Values:
+            ValueVector (num_points=4) :
+            [ [ 1.31699 ]  [ 1.60566 ]  [ 1.89434 ]  [ 2.18301 ]  ]
+         
+         Gradients:
+            ValueVector (num_points=4) :
+            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
+         
+         Hessians:
+            ValueVector (num_points=4) :
+            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
+         
+      
+      FunctionElement:
+         Flat ID: 2    Tensor ID: [0,1]
+         Values:
+            ValueVector (num_points=4) :
+            [ [ 2.31699 ]  [ 2.60566 ]  [ 2.89434 ]  [ 3.18301 ]  ]
+         
+         Gradients:
+            ValueVector (num_points=4) :
+            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
+         
+         Hessians:
+            ValueVector (num_points=4) :
+            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
+         
+      
+      FunctionElement:
+         Flat ID: 1    Tensor ID: [1,0]
+         Values:
+            ValueVector (num_points=4) :
+            [ [ 1.81699 ]  [ 2.10566 ]  [ 2.39434 ]  [ 2.68301 ]  ]
+         
+         Gradients:
+            ValueVector (num_points=4) :
+            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
+         
+         Hessians:
+            ValueVector (num_points=4) :
+            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
+         
+      
+      FunctionElement:
+         Flat ID: 3    Tensor ID: [1,1]
+         Values:
+            ValueVector (num_points=4) :
+            [ [ 2.81699 ]  [ 3.10566 ]  [ 3.39434 ]  [ 3.68301 ]  ]
+         
+         Gradients:
+            ValueVector (num_points=4) :
+            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
+         
+         Hessians:
+            ValueVector (num_points=4) :
+            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
+         
+      
+   Measure = 2.00000
+
+test_sub_domain<dim=2,codim=1>
+   SubElem ID: 4
+      FunctionElement:
+         Flat ID: 0    Tensor ID: [0,0]
+         Values:
+            ValueVector (num_points=4) :
+            [ [ 1.27314 ]  [ 1.60554 ]  [ 1.54216 ]  [ 1.94479 ]  ]
+         
+         Gradients:
+            ValueVector (num_points=4) :
+            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
+         
+         Hessians:
+            ValueVector (num_points=4) :
+            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
+         
+      
+      FunctionElement:
+         Flat ID: 2    Tensor ID: [0,1]
+         Values:
+            ValueVector (num_points=4) :
+            [ [ 1.54216 ]  [ 1.94479 ]  [ 1.27314 ]  [ 1.60554 ]  ]
+         
+         Gradients:
+            ValueVector (num_points=4) :
+            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
+         
+         Hessians:
+            ValueVector (num_points=4) :
+            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
+         
+      
+      FunctionElement:
+         Flat ID: 1    Tensor ID: [1,0]
+         Values:
+            ValueVector (num_points=4) :
+            [ [ 1.84887 ]  [ 2.18128 ]  [ 2.23954 ]  [ 2.64218 ]  ]
+         
+         Gradients:
+            ValueVector (num_points=4) :
+            [ [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 1.00000 ]  [ 1.00000 ]  ]  ]
+         
+         Hessians:
+            ValueVector (num_points=4) :
+            [ [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  [ 0 ]  ]  ]  ]
+         
+      
+      FunctionElement:
+         Flat ID: 3    Tensor ID: [1,1]
+         Values:
+            ValueVector (num_points=4) :
+            [ [ 2.23954 ]  [ 2.64218 ]  [ 1.84887 ]  [ 2.18128 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -324,7 +324,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 0    Tensor ID: [0,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 3.27314 ]  [ 3.54216 ]  [ 3.60554 ]  [ 3.94479 ]  ]
+            [ [ 3.27314 ]  [ 3.60554 ]  [ 3.54216 ]  [ 3.94479 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -339,7 +339,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 2    Tensor ID: [0,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 3.84887 ]  [ 4.23955 ]  [ 4.18128 ]  [ 4.64218 ]  ]
+            [ [ 3.54216 ]  [ 3.94479 ]  [ 3.27314 ]  [ 3.60554 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -354,7 +354,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 1    Tensor ID: [1,0]
          Values:
             ValueVector (num_points=4) :
-            [ [ 3.54216 ]  [ 3.27314 ]  [ 3.94479 ]  [ 3.60554 ]  ]
+            [ [ 3.84887 ]  [ 4.18128 ]  [ 4.23955 ]  [ 4.64218 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :
@@ -369,7 +369,7 @@ test_sub_domain<dim=2,codim=1>
          Flat ID: 3    Tensor ID: [1,1]
          Values:
             ValueVector (num_points=4) :
-            [ [ 4.23955 ]  [ 3.84887 ]  [ 4.64218 ]  [ 4.18128 ]  ]
+            [ [ 4.23955 ]  [ 4.64218 ]  [ 3.84887 ]  [ 4.18128 ]  ]
          
          Gradients:
             ValueVector (num_points=4) :

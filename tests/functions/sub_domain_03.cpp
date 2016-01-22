@@ -57,21 +57,21 @@ void test_sub_domain(const int s_id)
 
 
   auto sup_grid = Grid<sp_dim>::create(
-		  {{0.,numbers::PI/4.,numbers::PI/2.},{1.,1.5,2.},{0.,1.,2.}});
+  {{1.,1.5,2.},{0.,numbers::PI/4.,numbers::PI/2.},{0.,1.,2.}});
 
   using SubGridElemMap = typename Grid<sp_dim>::template SubGridMap<dim>;
   SubGridElemMap grid_elem_map;
 
 
   grid = sup_grid->template get_sub_grid<dim>(s_id,grid_elem_map);
-/*
-  const Real r0 = 1.0;
-  const Real r1 = 2.0;
-  const Real h0 = 0.0;
-  const Real h1 = 2.0;
-  const Real theta0 = 0.0;
-  const Real theta1 = numbers::PI / 2.0;
-//*/
+  /*
+    const Real r0 = 1.0;
+    const Real r1 = 2.0;
+    const Real h0 = 0.0;
+    const Real h1 = 2.0;
+    const Real theta0 = 0.0;
+    const Real theta1 = numbers::PI / 2.0;
+  //*/
   using GridFunc = grid_functions::CylindricalAnnulusGridFunction;
 
   auto sup_domain =

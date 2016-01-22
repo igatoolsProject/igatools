@@ -51,7 +51,7 @@ auto create_mapping2(const shared_ptr<const Grid<dim>> &grid)
 template <int sub_dim>
 void boundary_normals()
 {
-  auto grid = Grid<3>::const_create({{0.,numbers::PI/2.0},{1.,2.},{0.,2.}});
+  auto grid = Grid<3>::const_create({{1.,2.},{0.,numbers::PI/2.0},{0.,2.}});
   auto map_func = create_mapping1(grid);
   auto domain = Domain<3,0>::const_create(map_func);
 

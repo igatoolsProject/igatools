@@ -43,13 +43,6 @@ template<int dim, int codim=0>
 auto
 create_domain(const shared_ptr<const Grid<dim>> &grid)
 {
-  /*
-  using Function = functions::CylindricalAnnulus<dim>;
-  auto map = Function::const_create(grid, IdentityFunction<dim>::const_create(grid),
-                              1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
-  return map;
-  //*/
-
   using GridFunc = grid_functions::CylindricalAnnulusGridFunction;
   auto grid_func = GridFunc::const_create(grid);
 
@@ -67,7 +60,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
   using BspBasis = BSpline<dim, range, rank>;
   using PhysBasis = PhysicalBasis<dim,range,rank,codim>;
 
-  auto grid  = Grid<dim>::const_create({{0.0,numbers::PI/3},{1.,2.},{0.,1.}});
+  auto grid  = Grid<dim>::const_create({{1.,2.},{0.0,numbers::PI/3},{0.,1.}});
 
   auto space = SplineSpace<dim,range,rank>::const_create(deg,grid);
   auto bsp_basis = BspBasis::const_create(space);

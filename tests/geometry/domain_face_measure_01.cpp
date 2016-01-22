@@ -39,7 +39,7 @@ void test_evaluate()
   const int dim = 3;
   const int sdim = 2;
 
-  auto grid = Grid<dim>::const_create({{0.0,numbers::PI/2.0},{1.,2.},{0.0,1.0}});
+  auto grid = Grid<dim>::const_create({{1.,2.},{0.0,numbers::PI/2.0},{0.0,1.0}});
 
   using Cyl = grid_functions::CylindricalAnnulusGridFunction;
   auto cyl = Cyl::const_create(grid);

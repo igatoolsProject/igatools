@@ -974,8 +974,8 @@ evaluate_0(const ValueVector<GridPoint> &points,
 {
   const int n_points = points.size();
 
-  // x[0] = theta
-  // x[1] = r
+  // x[0] = r
+  // x[1] = theta
   // x[2] = zeta
 
   for (int qp = 0; qp < n_points; ++qp)
@@ -983,8 +983,8 @@ evaluate_0(const ValueVector<GridPoint> &points,
     auto &F = values[qp];
     const auto &x = points[qp];
 
-    F[0] = x[1] * cos(x[0]);
-    F[1] = x[1] * sin(x[0]);
+    F[0] = x[0] * cos(x[1]);
+    F[1] = x[0] * sin(x[1]);
     F[2] = x[2];
   }
 }
@@ -999,8 +999,8 @@ evaluate_1(const ValueVector<GridPoint> &points,
 {
   const int n_points = points.size();
 
-  // x[0] = theta
-  // x[1] = r
+  // x[0] = r
+  // x[1] = theta
   // x[2] = zeta
 
   for (int qp = 0; qp < n_points; ++qp)
@@ -1008,15 +1008,15 @@ evaluate_1(const ValueVector<GridPoint> &points,
     auto &dF = values[qp];
     const auto &x = points[qp];
 
-    const Real s = sin(x[0]);
-    const Real c = cos(x[0]);
+    const Real s = sin(x[1]);
+    const Real c = cos(x[1]);
 
-    dF[0][0] = - x[1] * s;
-    dF[0][1] =   x[1] * c;
+    dF[0][0] = c;
+    dF[0][1] = s;
     dF[0][2] = 0.0;
 
-    dF[1][0] = c;
-    dF[1][1] = s;
+    dF[1][0] = - x[0] * s;
+    dF[1][1] =   x[0] * c;
     dF[1][2] = 0.0;
 
     dF[2][0] = 0.0;
@@ -1036,8 +1036,8 @@ evaluate_2(const ValueVector<GridPoint> &points,
   const int n_points = points.size();
 
 
-  // x[0] = theta
-  // x[1] = r
+  // x[0] = r
+  // x[1] = theta
   // x[2] = zeta
   SafeSTLArray<Real,3> x;
   SafeSTLArray<Real,3> dx;
@@ -1047,11 +1047,11 @@ evaluate_2(const ValueVector<GridPoint> &points,
     auto &d2F = values[qp];
     const auto &x = points[qp];
 
-    const Real s = sin(x[0]);
-    const Real c = cos(x[0]);
+    const Real s = sin(x[1]);
+    const Real c = cos(x[1]);
 
-    d2F[0][0][0] = - x[1] * c;
-    d2F[0][0][1] = - x[1] * s;
+    d2F[0][0][0] = 0.0;
+    d2F[0][0][1] = 0.0;
     d2F[0][0][2] = 0.0;
 
     d2F[0][1][0] = - s;
@@ -1066,8 +1066,8 @@ evaluate_2(const ValueVector<GridPoint> &points,
     d2F[1][0][1] =   c;
     d2F[1][0][2] = 0.0;
 
-    d2F[1][1][0] = 0.0;
-    d2F[1][1][1] = 0.0;
+    d2F[1][1][0] = - x[0] * c;
+    d2F[1][1][1] = - x[0] * s;
     d2F[1][1][2] = 0.0;
 
     d2F[1][2][0] = 0.0;
@@ -1109,8 +1109,8 @@ evaluate_preimage(const ValueVector<Value> &phys_points) const
     const auto &y = phys_pt[1];
     const auto &z = phys_pt[2];
 
-    param_pt[0] = std::atan2(y,x);
-    param_pt[1] = sqrt(x*x + y*y);
+    param_pt[0] = sqrt(x*x + y*y);
+    param_pt[1] = std::atan2(y,x);
     param_pt[2] = z;
 
 
@@ -1128,12 +1128,12 @@ print_info(LogStream &out) const
 
   using std::endl;
   out.begin_item("CylindricalAnnulusGridFunction");
-  out << "r0 = " << box[1][0] << endl;
-  out << "r1 = " << box[1][1] << endl;
+  out << "r0 = " << box[0][0] << endl;
+  out << "r1 = " << box[0][1] << endl;
   out << "h0 = " << box[2][0] << endl;
   out << "h1 = " << box[2][1] << endl;
-  out << "theta0 = " << box[0][0] << endl;
-  out << "theta1 = " << box[0][1] << endl;
+  out << "theta0 = " << box[2][0] << endl;
+  out << "theta1 = " << box[2][1] << endl;
   out.end_item();
 
   out << "Name: " << this->name_ << std::endl;

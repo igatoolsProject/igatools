@@ -402,7 +402,7 @@ private:
  * The mapping is
  * \f{equation*}{
  *    \begin{aligned}
- *    F(\hat{\theta},\hat{r},\hat{z}) \colon [\theta_0,\theta_1] \times [r_0,r_1] \times[h_0,h_1] & \to \Omega \\
+ *    F(\hat{r},\hat{\theta},\hat{z}) \colon [\theta_0,\theta_1] \times [r_0,r_1] \times[h_0,h_1] & \to \Omega \\
  *    (\hat{\theta},\hat{r},\hat{z}) & \mapsto
  *    F(\hat{\theta},\hat{r},\hat{z}) =
  *    \begin{pmatrix}
