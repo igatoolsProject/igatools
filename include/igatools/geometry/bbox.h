@@ -76,9 +76,13 @@ public:
   SafeSTLArray<Real,dim> get_side_lengths() const;
 
   /**
-   * @brief Returns TRUE if the <tt>point</tt> is inside or on the boundary,
+   * @brief Returns TRUE if the <tt>point</tt> is inside or on the boundary.
+   *
+   * @note The optional non-negative parameter <tt>eps</tt> is to perform the test on an box that is enlarged
+   * by an amount <tt>eps</tt> along all the coordinate direction,
+   * in order to fix numerical problems when the <tt>point</tt> is very close to the box boundary.
    */
-  bool is_point_inside(const Points<dim> &point) const;
+  bool is_point_inside(const Points<dim> &point,const Real eps = 0.0) const;
 };
 
 

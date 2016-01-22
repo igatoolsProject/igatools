@@ -90,12 +90,24 @@ get_side_lengths() const
 template<int dim>
 bool
 BBox<dim>::
-is_point_inside(const Points<dim> &point) const
+is_point_inside(const Points<dim> &point,const Real eps) const
 {
+#ifndef NDEBUG
+  const auto lengths = this->get_side_lengths();
+  Assert(eps >= 0.0,ExcLowerRange(eps,0.0));
+  for (int i = 0 ; i < dim ; ++i)
+  {
+    const auto half_length = lengths[i]/2.0;
+    Assert(eps < half_length,
+           ExcMessage("The \"eps\" parameter must be smaller of " + std::to_string(half_length) +
+                      " (problem occurred along direction " + std::to_string(i) + ")"));
+  }
+#endif
+
   bool is_point_inside = true;
   for (int i = 0 ; i < dim ; ++i)
   {
-    if (point[i] < (*this)[i][0] || point[i] > (*this)[i][1])
+    if (point[i] < ((*this)[i][0]-eps) || point[i] > ((*this)[i][1])+eps)
     {
       is_point_inside = false;
       break;

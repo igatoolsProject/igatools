@@ -1035,8 +1035,6 @@ evaluate_2(const ValueVector<GridPoint> &points,
 {
   const int n_points = points.size();
 
-  const auto bounding_box = this->get_grid()->get_bounding_box();
-  const auto lengths = bounding_box.get_side_lengths();
 
   // x[0] = theta
   // x[1] = r
