@@ -21,13 +21,12 @@
 #include <igatools/operators/interface_operator.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/base/function.h>
 #include <igatools/geometry/grid_tools.h>
-#include <igatools/basis_functions/physical_space.h>
+//#include <igatools/basis_functions/physical_space.h>
 
 
 IGA_NAMESPACE_OPEN
-
+#if 0
 using namespace iga;
 using std::shared_ptr;
 using std::array;
@@ -718,8 +717,8 @@ Form (const shared_ptr<const PhysSpace> space_0,
   Assert (space_1 != nullptr, ExcNullPtr ());
 };
 
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/operators/interface_operator.inst>
+//#include <igatools/operators/interface_operator.inst>

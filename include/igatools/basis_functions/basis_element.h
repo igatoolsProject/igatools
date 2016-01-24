@@ -442,6 +442,16 @@ public:
   integrate_u_v(const int s_id,
                 const PropId &dofs_property = DofProperties::active);
 
+  virtual
+  DenseMatrix
+  integrate_element_u_v(const PropId &dofs_property = DofProperties::active)
+  {
+	  AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
+	  DenseMatrix mat;
+	  return mat;
+  }
+
+
   /**
    * \brief Computes and returns the <b>local stiffness-matrix</b> (of the Poisson problem)
    * for the basis function

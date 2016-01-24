@@ -23,8 +23,9 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/basis_functions/bernstein_basis.h>
-
 #include <igatools/utils/multi_array_utils.h>
+#include <igatools/operators/elliptic_operators_sf_integration.h>
+
 
 #include <algorithm>
 #include <numeric>
@@ -148,6 +149,20 @@ BSplineElement<dim, range, rank>::
 move_to(const IndexType &elem_id)
 {
   grid_elem_->move_to(elem_id);
+}
+
+
+template <int dim, int range, int rank>
+DenseMatrix
+BSplineElement<dim, range, rank>::
+integrate_element_u_v(const PropId &dofs_property)
+{
+  DenseMatrix mat;
+  EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
+
+  AssertThrow(false,ExcNotImplemented());
+
+  return mat;
 }
 
 

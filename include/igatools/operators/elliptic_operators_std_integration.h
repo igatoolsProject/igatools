@@ -28,7 +28,7 @@
 
 IGA_NAMESPACE_OPEN
 
-
+#if 0
 /**
  * @brief Class containing the methods for the evaluation of some elliptic operators
  * (mass matrix, stiffness matrix, etc.) on a Bezier element
@@ -88,11 +88,11 @@ public:
        \f]
      * The matrix \f$ A_e \f$ is commonly referred as <em>local mass-matrix</em>.
      */
-    virtual void eval_operator_u_v(
+    void eval_operator_u_v(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const ValueVector<Real> &c,
-        DenseMatrix &operator_u_v) const override final;
+        DenseMatrix &operator_u_v) const;
 
     /**
      * This function evaluates the local (i.e. element-based) matrix \f$ A_e \f$
@@ -105,11 +105,11 @@ public:
        \f]
      * The matrix \f$ A_e \f$ is commonly referred as <em>local stiffness-matrix</em>.
      */
-    virtual void eval_operator_gradu_gradv(
+     void eval_operator_gradu_gradv(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const vector<TMatrix<space_dim,space_dim>> &coeffs,
-        DenseMatrix &operator_gradu_gradv) const override final;
+        DenseMatrix &operator_gradu_gradv) const;
 
     /**
      * This function evaluates the local (i.e. element-based) vector \f$ f_e \f$
@@ -119,10 +119,10 @@ public:
           f(x)  \; d \Omega.
        \f]
      */
-    virtual void eval_operator_rhs_v(
+    void eval_operator_rhs_v(
         const ElemTest &elem_test,
         const ValueVector<typename PhysSpaceTrial::Value> &f,
-        DenseVector &operator_rhs_v) const override final;
+        DenseVector &operator_rhs_v) const;
 
     /**
      * This function evaluates the local (i.e. element-based) matrix \f$ A_e \f$
@@ -138,11 +138,11 @@ public:
           \nabla \phi^{e,\text{trial}}_j \; d \Omega .
        \f]
      */
-    virtual void eval_operator_gradu_v(
+    void eval_operator_gradu_v(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const ValueVector<typename PhysSpaceTrial::Gradient> &beta,
-        DenseMatrix &operator_gradu_v) const override final;
+        DenseMatrix &operator_gradu_v) const;
 
 };
 
@@ -467,7 +467,7 @@ eval_operator_gradu_v(
     // Assembly of the local mass matrix using the standard quadrature -- begin
     //----------------------------------------------------
 }
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

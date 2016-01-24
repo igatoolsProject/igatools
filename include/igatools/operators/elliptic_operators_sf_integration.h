@@ -25,6 +25,7 @@
 #include <igatools/operators/elliptic_operators.h>
 #include <igatools/operators/integrator_sum_factorization.h>
 #include <igatools/utils/multi_array_utils.h>
+#include <igatools/basis_functions/bspline_element.h>
 
 #include <vector>
 
@@ -48,12 +49,14 @@ IGA_NAMESPACE_OPEN
  * @date 16 Apr 2014
  */
 
-template <class PhysSpaceTest,class PhysSpaceTrial>
-class EllipticOperatorsSFIntegration :
-    public EllipticOperators<PhysSpaceTest,PhysSpaceTrial>
+template <int dim_,int range_,int rank_>
+class EllipticOperatorsSFIntegrationBSpline
+	: public EllipticOperators<dim_,0,range_,rank_>
 {
 public:
-    using base_t = EllipticOperators<PhysSpaceTest,PhysSpaceTrial>;
+	using base_t = EllipticOperators<dim_,0,range_,rank_>;
+    using self_t = EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>;
+
 
     using base_t::dim;
     using base_t::space_dim;
@@ -64,10 +67,10 @@ public:
 
 
     /** Type for the element accessor of the <em>test</em> physical space. */
-    using ElemTest = typename base_t::ElemTest;
+    using ElemTest = BSplineElement<dim_,range_,rank_>;
 
     /** Type for the element accessor of the <em>trial</em> physical space. */
-    using ElemTrial = typename base_t::ElemTest;
+    using ElemTrial = ElemTest;
 
     /** The constructors and destructor are inherithed from the base class. */
     using base_t::base_t;
@@ -76,13 +79,13 @@ public:
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial> &
-    operator=(const EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial> &in) = default;
+    self_t &
+    operator=(const self_t &in) = delete;
 
 
     /** Move assignment operator. */
-    EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial> &
-    operator=(EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial> &&in) = default;
+    self_t &
+    operator=(self_t &&in) = delete;
     ///@}
 
 
@@ -94,11 +97,11 @@ public:
        \f]
      * The matrix \f$ A_e \f$ is commonly referred as <em>local mass-matrix</em>.
      */
-    virtual void eval_operator_u_v(
+    void eval_operator_u_v(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const ValueVector<Real> &c,
-        DenseMatrix &operator_u_v) const override final;
+        DenseMatrix &operator_u_v) const;
 
     /**
      * This function evaluates the local (i.e. element-based) matrix \f$ A_e \f$
@@ -111,11 +114,11 @@ public:
        \f]
      * The matrix \f$ A_e \f$ is commonly referred as <em>local stiffness-matrix</em>.
      */
-    virtual void eval_operator_gradu_gradv(
+    void eval_operator_gradu_gradv(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
-        const vector<TMatrix<space_dim,space_dim>> &coeffs,
-        DenseMatrix &operator_gradu_gradv) const override final;
+        const std::vector<TMatrix<space_dim,space_dim>> &coeffs,
+        DenseMatrix &operator_gradu_gradv) const;
 
 
     /**
@@ -126,10 +129,10 @@ public:
           f(x)  \; d \Omega.
        \f]
      */
-    virtual void eval_operator_rhs_v(
+    void eval_operator_rhs_v(
         const ElemTest &elem_test,
-        const ValueVector<typename PhysSpaceTrial::Value> &f,
-        DenseVector &operator_rhs_v) const override final;
+        const ValueVector<typename BSpline<dim_,range_,rank_>::Value> &f,
+        DenseVector &operator_rhs_v) const;
 
 
     /**
@@ -146,11 +149,11 @@ public:
           \nabla \phi^{e,\text{trial}}_j \; d \Omega .
        \f]
      */
-    virtual void eval_operator_gradu_v(
+    void eval_operator_gradu_v(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
-        const ValueVector<typename PhysSpaceTrial::Gradient> &beta,
-        DenseMatrix &operator_gradu_v) const override final;
+        const ValueVector<typename BSpline<dim_,range_,rank_>::Gradient> &beta,
+        DenseMatrix &operator_gradu_v) const;
 
 protected:
 
@@ -185,10 +188,10 @@ protected:
 
 
 
-template<class PhysSpaceTest, class PhysSpaceTrial>
+template <int dim_,int range_,int rank_>
 inline
 auto
-EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
+EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 evaluate_w_phi1Dtrial_phi1Dtest(
     const std::array<ValueTable<Real>,dim> &phi_1D_test,
     const std::array<ValueTable<Real>,dim> &phi_1D_trial,
@@ -221,7 +224,7 @@ evaluate_w_phi1Dtrial_phi1Dtest(
         ExcDimensionMismatch(phi_trial.get_num_points(),n_pts));
 
 
-        vector<Real> w_times_edge_length(n_pts);
+        std::vector<Real> w_times_edge_length(n_pts);
 
         const Real edge_length = length_element_edge[dir];
         for (int jpt = 0 ; jpt < n_pts ; ++jpt)
@@ -248,10 +251,10 @@ evaluate_w_phi1Dtrial_phi1Dtest(
 }
 
 
-template<class PhysSpaceTest, class PhysSpaceTrial>
+template <int dim_,int range_,int rank_>
 inline
 void
-EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
+EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 eval_operator_u_v(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
@@ -379,8 +382,8 @@ eval_operator_u_v(
 
 
     // checks that the elements on the grid are the same
-    Assert(static_cast<const CartesianGridElementAccessor<dim> &>(elem_test.get_ref_space_accessor()) ==
-           static_cast<const CartesianGridElementAccessor<dim> &>(elem_trial.get_ref_space_accessor()),
+    Assert(static_cast<const GridElement<dim> &>(elem_test.get_ref_space_accessor()) ==
+           static_cast<const GridElement<dim> &>(elem_trial.get_ref_space_accessor()),
            ExcMessage("Different elements for test space and trial space."));
 
 
@@ -504,14 +507,14 @@ eval_operator_u_v(
 
 
 
-template<class PhysSpaceTest, class PhysSpaceTrial>
+template <int dim_,int range_,int rank_>
 inline
 void
-EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
+EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 eval_operator_gradu_gradv(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
-    const vector<TMatrix<space_dim,space_dim>> &coeffs,
+    const std::vector<TMatrix<space_dim,space_dim>> &coeffs,
     DenseMatrix &operator_gradu_gradv) const
 {
 
@@ -630,8 +633,8 @@ eval_operator_gradu_gradv(
 
 
     // checks that the elements on the grid are the same
-    Assert(static_cast<const CartesianGridElementAccessor<dim> &>(elem_test.get_ref_space_accessor()) ==
-           static_cast<const CartesianGridElementAccessor<dim> &>(elem_trial.get_ref_space_accessor()),
+    Assert(static_cast<const GridElement<dim> &>(elem_test.get_ref_space_accessor()) ==
+           static_cast<const GridElement<dim> &>(elem_trial.get_ref_space_accessor()),
            ExcMessage("Different elements for test space and trial space."));
 
 
@@ -652,7 +655,7 @@ eval_operator_gradu_gradv(
            ExcDimensionMismatch(n_points_1D.flat_size(),n_points));
 
 //    LogStream out;
-    vector<TMatrix<dim,dim>> C_hat(n_points);
+    std::vector<TMatrix<dim,dim>> C_hat(n_points);
     for (Index ipt = 0 ; ipt < n_points ; ++ipt)
     {
         TMatrix<dim,dim> &C_hat_ipt = C_hat[ipt];
@@ -823,13 +826,13 @@ eval_operator_gradu_gradv(
 }
 
 
-template <class PhysSpaceTest,class PhysSpaceTrial>
+template <int dim_,int range_,int rank_>
 inline
 void
-EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
+EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 eval_operator_rhs_v(
     const ElemTest &elem_test,
-    const ValueVector<typename PhysSpaceTrial::Value> &f,
+    const ValueVector<typename BSpline<dim_,range_,rank_>::Value> &f,
     DenseVector &operator_rhs_v) const
 {
     //TODO: (martinelli 22 Sep 2014): this function is not implemented using sum_factorization. Fix it!
@@ -846,7 +849,7 @@ eval_operator_rhs_v(
     const Size n_qp = f.get_num_points();
     Assert(n_qp == phi_test.get_num_points(),ExcDimensionMismatch(n_qp,phi_test.get_num_points()));
 
-    vector<Real> f_times_w_meas(n_qp);
+    std::vector<Real> f_times_w_meas(n_qp);
     for (int qp = 0; qp < n_qp; ++qp)
         f_times_w_meas[qp] = f[qp](0) * w_meas[qp];
 
@@ -861,14 +864,14 @@ eval_operator_rhs_v(
 }
 
 
-template <class PhysSpaceTest,class PhysSpaceTrial>
+template <int dim_,int range_,int rank_>
 inline
 void
-EllipticOperatorsSFIntegration<PhysSpaceTest,PhysSpaceTrial>::
+EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 eval_operator_gradu_v(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
-    const ValueVector<typename PhysSpaceTrial::Gradient> &beta,
+    const ValueVector<typename BSpline<dim_,range_,rank_>::Gradient> &beta,
     DenseMatrix &operator_gradu_v) const
 {
 
@@ -978,8 +981,8 @@ eval_operator_gradu_v(
 
 
     // checks that the elements on the grid are the same
-    Assert(static_cast<const CartesianGridElementAccessor<dim> &>(elem_test.get_ref_space_accessor()) ==
-           static_cast<const CartesianGridElementAccessor<dim> &>(elem_trial.get_ref_space_accessor()),
+    Assert(static_cast<const GridElement<dim> &>(elem_test.get_ref_space_accessor()) ==
+           static_cast<const GridElement<dim> &>(elem_trial.get_ref_space_accessor()),
            ExcMessage("Different elements for test space and trial space."));
 
 
@@ -1000,7 +1003,7 @@ eval_operator_gradu_v(
            ExcDimensionMismatch(n_points_1D.flat_size(),n_points));
 
 //    LogStream out;
-    ValueVector<typename PhysSpaceTrial::Gradient> vel_hat(n_points);
+    ValueVector<typename BSpline<dim_,range_,rank_>::Gradient> vel_hat(n_points);
     for (Index ipt = 0 ; ipt < n_points ; ++ipt)
     {
         auto &vel_hat_ipt = vel_hat[ipt];

@@ -40,7 +40,7 @@ IGA_NAMESPACE_OPEN
  * @brief Base class containing the interfaces for the evaluation of some elliptic operators
  * (mass matrix, stiffness matrix, etc.) on a Bezier element.
  *
- * All public methods take as input two PhysicalSpaceElementAccessor object
+ * All public methods take as input two BasisElement object
  * (one for the test space and the other for the trial space) and has an output argument that is
  * the local matrix relative to the elliptic operator that is evaluated.
  *
@@ -49,18 +49,20 @@ IGA_NAMESPACE_OPEN
  * @author M. Martinelli
  * @date 16 Apr 2014
  */
-template <class PhysSpaceTest,class PhysSpaceTrial>
+template <int dim_,int codim_,int range_,int rank_>
 class EllipticOperators
 {
+	using self_t = EllipticOperators<dim_,codim_,range_,rank_>;
+
 public:
     /** Type for the element accessor of the <em>test</em> physical space. */
-    using ElemTest = typename PhysSpaceTest::ElementAccessor;
+    using ElemTest = BasisElement<dim_,codim_,range_,rank_>;
 
     /** Type for the element accessor of the <em>trial</em> physical space. */
-    using ElemTrial = typename PhysSpaceTrial::ElementAccessor;
+    using ElemTrial = ElemTest;
 
-    static const int       dim = PhysSpaceTest::dim;
-    static const int space_dim = PhysSpaceTest::space_dim;
+    static const int       dim = dim_;
+    static const int space_dim = dim_ + codim_;
 
 
     using Clock = std::chrono::high_resolution_clock;
@@ -77,11 +79,11 @@ public:
 
 
     /** Copy constructor. */
-    EllipticOperators(const EllipticOperators<PhysSpaceTest,PhysSpaceTrial> &in) = default;
+    EllipticOperators(const self_t &in) = delete;
 
 
     /** Move constructor. */
-    EllipticOperators(EllipticOperators<PhysSpaceTest,PhysSpaceTrial> &&in) = default;
+    EllipticOperators(self_t &&in) = delete;
 
     /** Destructor. */
     ~EllipticOperators() = default;
@@ -91,15 +93,15 @@ public:
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
-    EllipticOperators<PhysSpaceTest,PhysSpaceTrial> &
-    operator=(const EllipticOperators<PhysSpaceTest,PhysSpaceTrial> &in) = default;
+    self_t &
+    operator=(const self_t &in) = delete;
 
 
     /** Move assignment operator. */
-    EllipticOperators<PhysSpaceTest,PhysSpaceTrial> &
-    operator=(EllipticOperators<PhysSpaceTest,PhysSpaceTrial> &&in) = default;
+    self_t &
+    operator=(self_t &&in) = delete;
     ///@}
-
+#if 0
     /**
      * This function evaluates the local (i.e. element-based) matrix \f$ A_e \f$
      * for witch its entries are
@@ -112,7 +114,10 @@ public:
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const ValueVector<Real> &c,
-        DenseMatrix &operator_u_v) const = 0;
+        DenseMatrix &operator_u_v) const
+    {
+    	AssertThrow(false,ExcDeprecated());
+    }
 
     /**
      * This function evaluates the local (i.e. element-based) matrix \f$ A_e \f$
@@ -128,8 +133,11 @@ public:
     virtual void eval_operator_gradu_gradv(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
-        const vector<TMatrix<space_dim,space_dim>> &coeffs,
-        DenseMatrix &operator_gradu_gradv) const = 0;
+        const std::vector<TMatrix<space_dim,space_dim>> &coeffs,
+        DenseMatrix &operator_gradu_gradv) const
+    {
+    	AssertThrow(false,ExcDeprecated());
+    }
 
     /**
      * This function evaluates the local (i.e. element-based) vector \f$ f_e \f$
@@ -141,8 +149,11 @@ public:
      */
     virtual void eval_operator_rhs_v(
         const ElemTest &elem_test,
-        const ValueVector<typename PhysSpaceTrial::Value> &f,
-        DenseVector &operator_rhs_v) const = 0;
+        const ValueVector<typename Basis<dim_,codim_,range_,rank_>::Value> &f,
+        DenseVector &operator_rhs_v) const
+    {
+    	AssertThrow(false,ExcDeprecated());
+    }
 
 
     /**
@@ -162,8 +173,12 @@ public:
     virtual void eval_operator_gradu_v(
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
-        const ValueVector<typename PhysSpaceTrial::Gradient> &beta,
-        DenseMatrix &operator_gradu_v) const = 0;
+        const ValueVector<typename Basis<dim_,codim_,range_,rank_>::Gradient> &beta,
+        DenseMatrix &operator_gradu_v) const
+    {
+    	AssertThrow(false,ExcDeprecated());
+    }
+#endif
 
 
 protected:
@@ -179,15 +194,18 @@ protected:
 
 };
 
-template <class PhysSpaceTest,class PhysSpaceTrial>
+template <int dim_,int codim_,int range_,int rank_>
 inline
-EllipticOperators<PhysSpaceTest,PhysSpaceTrial>::
+EllipticOperators<dim_,codim_,range_,rank_>::
 EllipticOperators()
     :
     elapsed_time_operator_u_v_(0.0),
     elapsed_time_operator_gradu_gradv_(0.0),
     elapsed_time_operator_gradu_v_(0.0)
 {
+//	  AssertThrow(false,ExcNotImplemented());
+	#if 0
+
     //-----------------------------------------------------------------
     Assert(PhysSpaceTest::dim == PhysSpaceTrial::dim,
            ExcDimensionMismatch(PhysSpaceTest::dim,PhysSpaceTrial::dim));
@@ -199,16 +217,19 @@ EllipticOperators()
            ExcDimensionMismatch(PhysSpaceTest::rank,PhysSpaceTrial::rank));
 
 //    Assert(PhysSpaceTest::range == 1,ExcDimensionMismatch(PhysSpaceTest::range,1));
-    Assert(PhysSpaceTest::rank == 1,ExcDimensionMismatch(PhysSpaceTest::rank,1));
     //-----------------------------------------------------------------
+#endif
+    Assert(rank_ == 1,ExcDimensionMismatch(rank_,1));
 }
 
 
-template <class PhysSpaceTest,class PhysSpaceTrial>
+template <int dim_,int codim_,int range_,int rank_>
 bool
-EllipticOperators<PhysSpaceTest,PhysSpaceTrial>::
+EllipticOperators<dim_,codim_,range_,rank_>::
 test_if_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const
 {
+  AssertThrow(false,ExcNotImplemented());
+#if 0
     //--------------------------------------------------------------------------
     // checks that the mapping used in the test space and in the trial space is the same
     Assert(elem_test.get_physical_space()->get_push_forward()->get_mapping() ==
@@ -236,6 +257,9 @@ test_if_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const
     // a comparison of iterator index, grid, knots values and multiplicities of the underlying
     // reference space and also push-forward and mapping.
     return (&elem_test==&elem_trial)?true:false;
+#endif
+
+  return false;
 }
 
 
