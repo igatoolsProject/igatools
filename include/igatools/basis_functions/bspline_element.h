@@ -154,6 +154,8 @@ public:
   }
 #endif
 
+  const Splines1DTable &get_splines1D_table(const int sdim, const int s_id) const;
+
   virtual void print_cache_info(LogStream &out) const override final;
 
 

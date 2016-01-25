@@ -153,6 +153,20 @@ move_to(const IndexType &elem_id)
 
 
 template <int dim, int range, int rank>
+auto
+BSplineElement<dim, range, rank>::
+get_splines1D_table(const int sdim, const int s_id) const
+-> const Splines1DTable &
+{
+  Assert(sdim > 0 && sdim <= dim,ExcIndexRange(sdim,1,dim+1));
+//  Assert(s_id >= 0 && sdim < UnitElement<dim>::num_elem<sdim>(),
+//      ExcIndexRange(s_id,0,UnitElement<dim>::num_elem<sdim>()));
+
+  return all_splines_1D_table_[sdim][s_id];
+}
+
+
+template <int dim, int range, int rank>
 DenseMatrix
 BSplineElement<dim, range, rank>::
 integrate_element_u_v(const PropId &dofs_property)
@@ -164,10 +178,10 @@ integrate_element_u_v(const PropId &dofs_property)
   EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
 
   elliptic_operators.eval_operator_u_v(
-      *this,
-      *this,
-	  non_tensor_prod_coeffs,
-      operator_u_v);
+    *this,
+    *this,
+    non_tensor_prod_coeffs,
+    operator_u_v);
 
   AssertThrow(false,ExcNotImplemented());
 
