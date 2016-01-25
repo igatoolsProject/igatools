@@ -157,12 +157,21 @@ DenseMatrix
 BSplineElement<dim, range, rank>::
 integrate_element_u_v(const PropId &dofs_property)
 {
-  DenseMatrix mat;
+  DenseMatrix operator_u_v;
+
+  ValueVector<Real> non_tensor_prod_coeffs;
+
   EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
+
+  elliptic_operators.eval_operator_u_v(
+      *this,
+      *this,
+	  non_tensor_prod_coeffs,
+      operator_u_v);
 
   AssertThrow(false,ExcNotImplemented());
 
-  return mat;
+  return operator_u_v;
 }
 
 
