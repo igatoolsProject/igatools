@@ -172,8 +172,10 @@ protected:
    */
   std::array<DynamicMultiArray<Real,3>,dim_>
   evaluate_w_phi1Dtrial_phi1Dtest(
-    const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_test,
-    const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_trial,
+    const SafeSTLArray<BasisValues1d,dim_> &phi_1D_test,
+	const int der_order_test_funcs,
+    const SafeSTLArray<BasisValues1d,dim_> &phi_1D_trial,
+	const int der_order_trial_funcs,
     const TensorProductArray<dim_> &quad_weights,
     const std::array<Real,dim_> &length_element_edge) const;
 };
@@ -193,8 +195,10 @@ inline
 auto
 EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 evaluate_w_phi1Dtrial_phi1Dtest(
-  const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_test,
-  const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_trial,
+  const SafeSTLArray<BasisValues1d,dim_> &phi_1D_test,
+  const int der_order_test_funcs,
+  const SafeSTLArray<BasisValues1d,dim_> &phi_1D_trial,
+  const int der_order_trial_funcs,
   const TensorProductArray<dim_> &quad_weights,
   const std::array<Real,dim_> &length_element_edge) const -> std::array<DynamicMultiArray<Real,3>,dim_>
 {
@@ -448,8 +452,8 @@ eval_operator_u_v(
   const auto length_element_edge = grid_elem.template get_side_lengths<dim>(0);
 
   const auto w_phi1Dtrial_phi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest(
-                                        phi_1D_test,
-                                        phi_1D_trial,
+                                        phi_1D_test,0,
+                                        phi_1D_trial,0,
                                         quad_scheme->get_weights(),
                                         length_element_edge);
 
