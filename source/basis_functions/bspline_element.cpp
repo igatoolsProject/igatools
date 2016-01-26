@@ -171,19 +171,25 @@ DenseMatrix
 BSplineElement<dim, range, rank>::
 integrate_element_u_v(const PropId &dofs_property)
 {
-  DenseMatrix operator_u_v;
+  const auto quad_scheme = grid_elem_->template get_quad<dim>();
+  Assert(quad_scheme != nullptr, ExcNullPtr());
+  const auto n_pts = quad_scheme->get_num_points();
+  ValueVector<Real> non_tensor_prod_coeffs(n_pts);
+  for (int pt = 0 ; pt < n_pts ; ++pt)
+    non_tensor_prod_coeffs[pt] = 1.0;
 
-  ValueVector<Real> non_tensor_prod_coeffs;
+  Assert(range == 1 && rank == 1,ExcMessage("Temporary case"));
+  const int n_basis_comp = this->get_num_basis_comp(0); // only valid if range == 1 && rank == 1
+  DenseMatrix operator_u_v(n_basis_comp,n_basis_comp);
 
   EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
-
   elliptic_operators.eval_operator_u_v(
     *this,
     *this,
     non_tensor_prod_coeffs,
     operator_u_v);
 
-  AssertThrow(false,ExcNotImplemented());
+//  AssertThrow(false,ExcNotImplemented());
 
   return operator_u_v;
 }

@@ -170,12 +170,12 @@ protected:
    * relative to the the point \f$x_{\theta_i}\f$
    * along the \f$i\f$-th direction.
    */
-  std::array<DynamicMultiArray<Real,3>,dim_>
+  SafeSTLArray<DynamicMultiArray<Real,3>,dim_>
   evaluate_w_phi1Dtrial_phi1Dtest(
     const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_test,
     const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_trial,
     const TensorProductArray<dim_> &quad_weights,
-    const std::array<Real,dim_> &length_element_edge) const;
+    const SafeSTLArray<Real,dim_> &length_element_edge) const;
 };
 
 
@@ -196,9 +196,10 @@ evaluate_w_phi1Dtrial_phi1Dtest(
   const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_test,
   const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_trial,
   const TensorProductArray<dim_> &quad_weights,
-  const std::array<Real,dim_> &length_element_edge) const -> std::array<DynamicMultiArray<Real,3>,dim_>
+  const SafeSTLArray<Real,dim_> &length_element_edge) const
+-> SafeSTLArray<DynamicMultiArray<Real,3>,dim_>
 {
-  std::array<DynamicMultiArray<Real,3>,dim_> moments;
+  SafeSTLArray<DynamicMultiArray<Real,3>,dim_> moments;
 
   for (int dir = 0 ; dir < dim ; ++dir)
   {
@@ -224,7 +225,7 @@ evaluate_w_phi1Dtrial_phi1Dtest(
     ExcDimensionMismatch(phi_trial.get_num_points(),n_pts));
 
 
-    std::vector<Real> w_times_edge_length(n_pts);
+    SafeSTLVector<Real> w_times_edge_length(n_pts);
 
     const Real edge_length = length_element_edge[dir];
     for (int jpt = 0 ; jpt < n_pts ; ++jpt)
@@ -240,9 +241,11 @@ evaluate_w_phi1Dtrial_phi1Dtest(
       {
         const auto phi_1D_trial = phi_trial.get_function_view(f_id_trial);
 
-        for (int jpt = 0 ; jpt < n_pts ; ++jpt)
+        for (int pt = 0 ; pt < n_pts ; ++pt)
+        {
           moments1D[flat_id_I++] =
-          w_times_edge_length[jpt] * phi_1D_test[jpt] * phi_1D_trial[jpt];
+          w_times_edge_length[pt] * phi_1D_test[pt] * phi_1D_trial[pt];
+        } // end loop pt
       } // end loop mu1
     } // end loop mu2
   } // end loop dir
@@ -280,9 +283,6 @@ eval_operator_u_v(
 
 
 
-  //--------------------------------------------------------------------------
-  bool is_symmetric = this->test_if_same_space(elem_test,elem_trial);
-  //--------------------------------------------------------------------------
 
 
 
@@ -302,12 +302,10 @@ eval_operator_u_v(
 
   // test space -- begin
   const auto test_basis = elem_test.get_bspline_basis();
-  const auto basis_t_size_elem_test = test_basis->get_spline_space()->get_num_basis_table()[comp];
-
+  const auto basis_t_size_elem_test = elem_test.get_num_splines_1D(comp);
   Assert(basis_t_size_elem_test.flat_size() == elem_test.get_num_basis(),
          ExcDimensionMismatch(basis_t_size_elem_test.flat_size(),elem_test.get_num_basis()));
 
-//  const auto weight_basis_test = MultiArrayUtils<dim>::compute_weight(basis_t_size_elem_test);
 
   const auto &grid_elem_test = elem_test.get_grid_element();
   const auto quad_elem_test = grid_elem_test.template get_quad<dim>();
@@ -317,12 +315,10 @@ eval_operator_u_v(
 
   // trial space -- begin
   const auto trial_basis = elem_trial.get_bspline_basis();
-  const auto basis_t_size_elem_trial = trial_basis->get_spline_space()->get_num_basis_table()[comp];
-
+  const auto basis_t_size_elem_trial = elem_trial.get_num_splines_1D(comp);
   Assert(basis_t_size_elem_trial.flat_size()==elem_trial.get_num_basis(),
          ExcDimensionMismatch(basis_t_size_elem_trial.flat_size(),elem_trial.get_num_basis()));
 
-//  const auto weight_basis_trial = MultiArrayUtils<dim>::compute_weight(basis_t_size_elem_trial);
 
   const auto &grid_elem_trial = elem_trial.get_grid_element();
   const auto quad_elem_trial = grid_elem_trial.template get_quad<dim>();
@@ -347,6 +343,11 @@ eval_operator_u_v(
   const auto n_points = quad_scheme->get_num_points();
   const auto points_t_size = quad_scheme->get_num_coords_direction();
 //    const Size n_basis = n_basis_elem.flat_size();
+  //--------------------------------------------------------------------------
+
+
+  //--------------------------------------------------------------------------
+  const bool is_symmetric = (test_basis == trial_basis);
   //--------------------------------------------------------------------------
 
 
@@ -416,17 +417,18 @@ eval_operator_u_v(
 
 
 
-
-  // performs the evaluation of the function coeffs*det(DF) at the quadrature points
-
-  const Real det_DF = grid_elem_test.template get_measure<dim>(0) ;
-
   Assert(coeffs.size() == n_points,ExcDimensionMismatch(coeffs.size(),n_points));
 
+  // performs the evaluation of the function coeffs*det(DF) at the quadrature points
+  /*
+  const Real det_DF = grid_elem_test.template get_measure<dim>(0) ;
 
   DynamicMultiArray<Real,dim> c_times_detDF(points_t_size);
   for (Index ipt = 0 ; ipt < n_points ; ++ipt)
     c_times_detDF[ipt] = coeffs[ipt] * det_DF;
+  //*/
+  const auto &c_times_detDF = coeffs;
+
 
 
 #ifdef TIME_PROFILING

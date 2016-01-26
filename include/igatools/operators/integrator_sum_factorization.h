@@ -43,7 +43,7 @@ public:
     const TensorSize<dim> &t_size_theta,
     const TensorSize<dim> &t_size_alpha,
     const TensorSize<dim> &t_size_beta,
-    const std::array<DynamicMultiArray<Real,3>,dim> &J,
+    const SafeSTLArray<DynamicMultiArray<Real,3>,dim> &J,
     const DynamicMultiArray<Real,3> &Cpre,
     DenseMatrix &local_operator) const;
 };
@@ -58,7 +58,7 @@ public:
     const TensorSize<dim> &t_size_theta,
     const TensorSize<dim> &t_size_alpha,
     const TensorSize<dim> &t_size_beta,
-    const std::array<DynamicMultiArray<Real,3>,dim> &J,
+    const SafeSTLArray<DynamicMultiArray<Real,3>,dim> &J,
     const DynamicMultiArray<Real,3> &Cpre,
     DenseMatrix &local_operator) const;
 };
@@ -72,7 +72,7 @@ public:
     const TensorSize<0> &t_size_theta,
     const TensorSize<0> &t_size_alpha,
     const TensorSize<0> &t_size_beta,
-    const std::array<DynamicMultiArray<Real,3>,0> &J,
+    const SafeSTLArray<DynamicMultiArray<Real,3>,0> &J,
     const DynamicMultiArray<Real,3> &C,
     DenseMatrix &local_operator) const;
 };
@@ -87,7 +87,7 @@ public:
     const TensorSize<1> &t_size_theta,
     const TensorSize<1> &t_size_alpha,
     const TensorSize<1> &t_size_beta,
-    const std::array<DynamicMultiArray<Real,3>,1> &J,
+    const SafeSTLArray<DynamicMultiArray<Real,3>,1> &J,
     const DynamicMultiArray<Real,3> &C,
     DenseMatrix &local_operator) const;
 };
@@ -101,7 +101,7 @@ public:
     const TensorSize<2> &t_size_theta,
     const TensorSize<2> &t_size_alpha,
     const TensorSize<2> &t_size_beta,
-    const std::array<DynamicMultiArray<Real,3>,2> &J,
+    const SafeSTLArray<DynamicMultiArray<Real,3>,2> &J,
     const DynamicMultiArray<Real,3> &C,
     DenseMatrix &local_operator) const;
 };
@@ -116,7 +116,7 @@ public:
     const TensorSize<3> &t_size_theta,
     const TensorSize<3> &t_size_alpha,
     const TensorSize<3> &t_size_beta,
-    const std::array<DynamicMultiArray<Real,3>,3> &J,
+    const SafeSTLArray<DynamicMultiArray<Real,3>,3> &J,
     const DynamicMultiArray<Real,3> &C,
     DenseMatrix &local_operator) const;
 };

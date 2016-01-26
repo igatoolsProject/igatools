@@ -347,6 +347,22 @@ integrate_u_func(const ValueVector<Value> &func_at_points,
 }
 
 
+template<int dim_,int codim_,int range_,int rank_>
+TensorSize<dim_>
+BasisElement<dim_,codim_,range_,rank_>::
+get_num_splines_1D(const int comp) const
+{
+  TensorSize<dim_> num_splines_1D;
+
+  const auto deg_comp = this->basis_->get_spline_space()->get_degree_table()[comp];
+
+  for (int i = 0 ; i < dim_ ; ++i)
+    num_splines_1D[i] = deg_comp[i] + 1;
+
+  return num_splines_1D;
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 

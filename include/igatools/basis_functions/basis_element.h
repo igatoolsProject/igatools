@@ -446,9 +446,9 @@ public:
   DenseMatrix
   integrate_element_u_v(const PropId &dofs_property = DofProperties::active)
   {
-	  AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
-	  DenseMatrix mat;
-	  return mat;
+    AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
+    DenseMatrix mat;
+    return mat;
   }
 
 
@@ -581,6 +581,15 @@ public:
     return this->get_grid_element().has_valid_position();
   }
 
+
+  /**
+   * Returns the number of 1D spline functions in the space component <tt>comp</tt>,
+   * along each coordinate direction.
+   *
+   * @note The returned numbers refer to all 1D splines in the element, without distinction
+   * between their property (if any).
+   */
+  TensorSize<dim_> get_num_splines_1D(const int comp) const;
 };
 
 

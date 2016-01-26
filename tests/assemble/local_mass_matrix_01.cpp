@@ -37,17 +37,17 @@
 //#include <igatools/linear_algebra/dense_matrix.h>
 
 
-template<int dim>
+template<int dim,int range>
 void loc_mass_matrix(const int n_knots, const int deg)
 {
 
   OUTSTART
 
-  out.begin_item("local_mass_matrix<" + std::to_string(dim) + ">");
+  out.begin_item("local_mass_matrix<" + std::to_string(dim) + "," + std::to_string(range) + ">");
 
   auto grid = Grid<dim>::create(n_knots);
-  using Basis = BSpline<dim>;
-  auto basis = Basis::create(SplineSpace<dim>::create(deg, grid)) ;
+  auto space = SplineSpace<dim,range>::create(deg, grid)
+               auto basis = BSpline<dim,range>::create(space) ;
 
   auto elem_handler = basis->create_cache_handler();
 
@@ -94,9 +94,12 @@ int main()
   const int n_knots = 6;
   const int deg = 1;
 
-  loc_mass_matrix<1>(n_knots, deg);
-  loc_mass_matrix<2>(n_knots, deg);
-  loc_mass_matrix<3>(n_knots, deg);
+  loc_mass_matrix<1,1>(n_knots, deg);
+  loc_mass_matrix<2,1>(n_knots, deg);
+  loc_mass_matrix<3,1>(n_knots, deg);
+
+  loc_mass_matrix<2,2>(n_knots, deg);
+  loc_mass_matrix<3,3>(n_knots, deg);
 
   return  0;
 }
