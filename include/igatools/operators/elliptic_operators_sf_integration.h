@@ -172,10 +172,8 @@ protected:
    */
   std::array<DynamicMultiArray<Real,3>,dim_>
   evaluate_w_phi1Dtrial_phi1Dtest(
-    const SafeSTLArray<BasisValues1d,dim_> &phi_1D_test,
-	const int der_order_test_funcs,
-    const SafeSTLArray<BasisValues1d,dim_> &phi_1D_trial,
-	const int der_order_trial_funcs,
+    const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_test,
+    const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_trial,
     const TensorProductArray<dim_> &quad_weights,
     const std::array<Real,dim_> &length_element_edge) const;
 };
@@ -195,10 +193,8 @@ inline
 auto
 EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 evaluate_w_phi1Dtrial_phi1Dtest(
-  const SafeSTLArray<BasisValues1d,dim_> &phi_1D_test,
-  const int der_order_test_funcs,
-  const SafeSTLArray<BasisValues1d,dim_> &phi_1D_trial,
-  const int der_order_trial_funcs,
+  const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_test,
+  const SafeSTLArray<ValueTable<Real>,dim_> &phi_1D_trial,
   const TensorProductArray<dim_> &quad_weights,
   const std::array<Real,dim_> &length_element_edge) const -> std::array<DynamicMultiArray<Real,3>,dim_>
 {
@@ -306,14 +302,12 @@ eval_operator_u_v(
 
   // test space -- begin
   const auto test_basis = elem_test.get_bspline_basis();
-  const auto n_basis_elem_test = test_basis->get_spline_space()->get_num_basis_table()[comp];
+  const auto basis_t_size_elem_test = test_basis->get_spline_space()->get_num_basis_table()[comp];
 
-  Assert(n_basis_elem_test.flat_size() == elem_test.get_num_basis(),
-         ExcDimensionMismatch(n_basis_elem_test.flat_size(),elem_test.get_num_basis()));
+  Assert(basis_t_size_elem_test.flat_size() == elem_test.get_num_basis(),
+         ExcDimensionMismatch(basis_t_size_elem_test.flat_size(),elem_test.get_num_basis()));
 
-  const auto weight_basis_test = MultiArrayUtils<dim>::compute_weight(n_basis_elem_test);
-
-  const TensorSize<dim> n_basis_test = n_basis_elem_test;
+//  const auto weight_basis_test = MultiArrayUtils<dim>::compute_weight(basis_t_size_elem_test);
 
   const auto &grid_elem_test = elem_test.get_grid_element();
   const auto quad_elem_test = grid_elem_test.template get_quad<dim>();
@@ -323,14 +317,12 @@ eval_operator_u_v(
 
   // trial space -- begin
   const auto trial_basis = elem_trial.get_bspline_basis();
-  const auto n_basis_elem_trial = trial_basis->get_spline_space()->get_num_basis_table()[comp];
+  const auto basis_t_size_elem_trial = trial_basis->get_spline_space()->get_num_basis_table()[comp];
 
-  Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),
-         ExcDimensionMismatch(n_basis_elem_trial.flat_size(),elem_trial.get_num_basis()));
+  Assert(basis_t_size_elem_trial.flat_size()==elem_trial.get_num_basis(),
+         ExcDimensionMismatch(basis_t_size_elem_trial.flat_size(),elem_trial.get_num_basis()));
 
-  const auto weight_basis_trial = MultiArrayUtils<dim>::compute_weight(n_basis_elem_trial);
-
-  const TensorSize<dim> n_basis_trial = n_basis_elem_trial;
+//  const auto weight_basis_trial = MultiArrayUtils<dim>::compute_weight(basis_t_size_elem_trial);
 
   const auto &grid_elem_trial = elem_trial.get_grid_element();
   const auto quad_elem_trial = grid_elem_trial.template get_quad<dim>();
@@ -350,40 +342,59 @@ eval_operator_u_v(
   Assert(quad_elem_test == quad_elem_trial,
          ExcMessage("Test and trial elements have different quadrature schemes."));
   const auto quad_scheme = quad_elem_test;
+  Assert(quad_scheme->is_tensor_product(),
+         ExcMessage("The quadrature scheme has not the tensor-product structure."))
+  const auto n_points = quad_scheme->get_num_points();
+  const auto points_t_size = quad_scheme->get_num_coords_direction();
 //    const Size n_basis = n_basis_elem.flat_size();
   //--------------------------------------------------------------------------
 
 
   //--------------------------------------------------------------------------
-  // getting the 1D values for the test space -- begin
-  SafeSTLArray<BasisValues1d,dim> phi_1D_test;
+  // getting the 1D values for the test and trial space -- begin
+  SafeSTLArray<ValueTable<Real>,dim> phi_1D_test;
+  SafeSTLArray<ValueTable<Real>,dim> phi_1D_trial;
+
+  const auto &phi_1D_test_table = elem_test.template get_splines1D_table(dim,0);
+  const auto &phi_1D_trial_table = elem_test.template get_splines1D_table(dim,0);
+
+  for (int i = 0 ; i < dim ; ++i)
   {
-//        const auto &ref_elem_accessor = elem_test.get_ref_space_accessor().get_bspline_accessor();
+    const int n_pts_1D = points_t_size[i];
 
-//        const auto &quad_points = ref_elem_accessor.get_quad_points();
+    const auto &v_test = phi_1D_test_table[0][i].get_derivative(0);  // only valid for scalar spaces
+    Assert(v_test.get_num_rows() == basis_t_size_elem_test [i],
+           ExcDimensionMismatch(v_test.get_num_rows(),basis_t_size_elem_test[i]));
+    Assert(v_test.get_num_cols() == n_pts_1D,
+           ExcDimensionMismatch(v_test.get_num_cols(),n_pts_1D));
 
-    const auto &phi_1D_test_table = elem_test.template get_splines1D_table(dim,0);
+    const auto &v_trial = phi_1D_trial_table[0][i].get_derivative(0);  // only valid for scalar spaces
+    Assert(v_trial.get_num_rows() == basis_t_size_elem_trial[i],
+           ExcDimensionMismatch(v_trial.get_num_rows(),basis_t_size_elem_trial[i]));
+    Assert(v_trial.get_num_cols() == n_pts_1D,
+           ExcDimensionMismatch(v_trial.get_num_cols(),n_pts_1D));
 
-    phi_1D_test = phi_1D_test_table[0]; // only valid for scalar spaces
+    phi_1D_test [i].resize(basis_t_size_elem_test [i],n_pts_1D);
+    phi_1D_trial[i].resize(basis_t_size_elem_trial[i],n_pts_1D);
+
+    for (int fn = 0 ; fn < basis_t_size_elem_test[i] ; ++fn)
+    {
+      auto phi_1D_test_fn = phi_1D_test[i].get_function_view(fn);
+      for (int pt = 0 ; pt < n_pts_1D ; ++pt)
+        phi_1D_test_fn[pt] = v_test(fn,pt); // only valid for scalar spaces
+    }
+
+    for (int fn = 0 ; fn < basis_t_size_elem_trial[i] ; ++fn)
+    {
+      auto phi_1D_trial_fn = phi_1D_trial[i].get_function_view(fn);
+      for (int pt = 0 ; pt < n_pts_1D ; ++pt)
+        phi_1D_trial_fn[pt] = v_trial(fn,pt); // only valid for scalar spaces
+    }
   }
-  // getting the 1D values for the test space -- end
+  // getting the 1D values for the test and trial space -- end
   //--------------------------------------------------------------------------
 
 
-  //--------------------------------------------------------------------------
-  // getting the 1D values for the trial space -- begin
-  SafeSTLArray<BasisValues1d,dim> phi_1D_trial;
-  {
-//        const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor().get_bspline_accessor();
-
-//        const auto &quad_points = ref_elem_accessor.get_quad_points();
-
-    const auto &phi_1D_trial_table = elem_test.template get_splines1D_table(dim,0);
-
-    phi_1D_trial = phi_1D_trial_table[0]; // only valid for scalar spaces
-  }
-  // getting the 1D values for the trial space -- end
-  //--------------------------------------------------------------------------
 
 
 #ifdef TIME_PROFILING
@@ -410,20 +421,10 @@ eval_operator_u_v(
 
   const Real det_DF = grid_elem_test.template get_measure<dim>(0) ;
 
-  const auto n_points = quad_scheme->get_num_points();
   Assert(coeffs.size() == n_points,ExcDimensionMismatch(coeffs.size(),n_points));
-  TensorSize<dim> n_points_1D;
-  for (int i = 0 ; i < dim ; ++i)
-  {
-    Assert(phi_1D_test[i].get_num_points() == phi_1D_trial[i].get_num_points(),
-           ExcDimensionMismatch(phi_1D_test[i].get_num_points(),phi_1D_trial[i].get_num_points()));
-    n_points_1D[i] = phi_1D_test[i].get_num_points();
-  }
-  Assert(n_points_1D.flat_size() == n_points,
-         ExcDimensionMismatch(n_points_1D.flat_size(),n_points));
 
 
-  DynamicMultiArray<Real,dim> c_times_detDF(n_points_1D);
+  DynamicMultiArray<Real,dim> c_times_detDF(points_t_size);
   for (Index ipt = 0 ; ipt < n_points ; ++ipt)
     c_times_detDF[ipt] = coeffs[ipt] * det_DF;
 
@@ -449,13 +450,16 @@ eval_operator_u_v(
   const auto start_compute_phi1Dtest_phi1Dtrial = Clock::now();
 #endif //#ifdef TIME_PROFILING
 
-  const auto length_element_edge = grid_elem.template get_side_lengths<dim>(0);
+  const auto &l_tmp = grid_elem.template get_side_lengths<dim>(0);
+  SafeSTLArray<Real,dim> length_element_edges;
+  for (int i = 0 ; i < dim ; ++i)
+    length_element_edges[i] = l_tmp[i];
 
   const auto w_phi1Dtrial_phi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest(
-                                        phi_1D_test,0,
-                                        phi_1D_trial,0,
-                                        quad_scheme->get_weights(),
-                                        length_element_edge);
+                                        phi_1D_test,
+                                        phi_1D_trial,
+                                        quad_scheme->get_weights_1d(),
+                                        length_element_edges);
 
 #ifdef TIME_PROFILING
   const auto end_compute_phi1Dtest_phi1Dtrial = Clock::now();
@@ -476,7 +480,7 @@ eval_operator_u_v(
 #endif //#ifdef TIME_PROFILING
 
   TensorSize<3> tensor_size_C0;
-  tensor_size_C0[0] = n_points_1D.flat_size(); // theta size
+  tensor_size_C0[0] = points_t_size.flat_size(); // theta size
   tensor_size_C0[1] = 1; // alpha size
   tensor_size_C0[2] = 1; // beta size
 
@@ -491,9 +495,9 @@ eval_operator_u_v(
 
   IntegratorSumFactorization<dim> integrate_sf;
   integrate_sf(is_symmetric,
-               n_points_1D,
-               n_basis_trial,
-               n_basis_test,
+               points_t_size,
+               basis_t_size_elem_test,
+               basis_t_size_elem_trial,
                w_phi1Dtrial_phi1Dtest,
                C0,
                operator_u_v);
