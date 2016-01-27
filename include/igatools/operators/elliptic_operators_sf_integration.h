@@ -32,7 +32,7 @@
 IGA_NAMESPACE_OPEN
 
 
-//#define TIME_PROFILING
+#define TIME_PROFILING
 
 
 /**
@@ -275,9 +275,12 @@ eval_operator_u_v(
 
 
 
-  //----------------------------------------------------
-  // Assembly of the local mass matrix using sum-factorization -- begin
 #ifdef TIME_PROFILING
+  Duration elapsed_time_initialization;
+  Duration elapsed_time_coefficient_evaluation;
+  Duration elapsed_time_compute_phi1Dtest_phi1Dtrial;
+  Duration elapsed_time_sum_factorization;
+
   const TimePoint start_assembly_mass_matrix = Clock::now();
 #endif //#ifdef TIME_PROFILING
 
@@ -289,9 +292,6 @@ eval_operator_u_v(
 
 
   //--------------------------------------------------------------------------
-#ifdef TIME_PROFILING
-  const auto start_initialization = Clock::now();
-#endif //#ifdef TIME_PROFILING
 
 
   const auto test_basis = elem_test.get_bspline_basis();
@@ -332,7 +332,6 @@ eval_operator_u_v(
   const auto quad_scheme = quad_elem_test;
   Assert(quad_scheme->is_tensor_product(),
          ExcMessage("The quadrature scheme has not the tensor-product structure."))
-  const auto n_points = quad_scheme->get_num_points();
   const auto points_t_size = quad_scheme->get_num_coords_direction();
 
 
@@ -340,6 +339,10 @@ eval_operator_u_v(
   int row_id_last = 0;
   for (int comp_test = 0 ; comp_test < n_components ; ++comp_test)
   {
+#ifdef TIME_PROFILING
+    const auto start_initialization = Clock::now();
+#endif //#ifdef TIME_PROFILING
+
     // getting the number of basis along each coordinate direction of the current scalar component of the test space
     const int n_rows = elem_test.get_num_basis_comp(comp_test);
     const auto basis_t_size_elem_test = elem_test.get_num_splines_1D(comp_test);
@@ -415,8 +418,7 @@ eval_operator_u_v(
 
 #ifdef TIME_PROFILING
         const auto end_initialization = Clock::now();
-        const Duration elapsed_time_initialization = end_initialization - start_initialization;
-        std::cout << "Elapsed_seconds initialization = " << elapsed_time_initialization.count() << std::endl;
+        elapsed_time_initialization += end_initialization - start_initialization;
 #endif //#ifdef TIME_PROFILING
         //--------------------------------------------------------------------------
 
@@ -429,30 +431,16 @@ eval_operator_u_v(
 #endif //#ifdef TIME_PROFILING
 
 
+        Assert(coeffs_test_trial->size() == quad_scheme->get_num_points(),
+               ExcDimensionMismatch(coeffs_test_trial->size(),quad_scheme->get_num_points()));
 
-
-
-        Assert(coeffs_test_trial->size() == n_points,
-               ExcDimensionMismatch(coeffs_test_trial->size(),n_points));
-
-        // performs the evaluation of the function coeffs*det(DF) at the quadrature points
-        /*
-        const Real det_DF = grid_elem_test.template get_measure<dim>(0) ;
-
-        DynamicMultiArray<Real,dim> c_times_detDF(points_t_size);
-        for (Index ipt = 0 ; ipt < n_points ; ++ipt)
-          c_times_detDF[ipt] = coeffs[ipt] * det_DF;
-        //*/
         const auto &c_times_detDF = *coeffs_test_trial;
 
 
 
 #ifdef TIME_PROFILING
         const TimePoint end_coefficient_evaluation = Clock::now();
-        const Duration elapsed_time_coefficient_evaluation =
-          end_coefficient_evaluation - start_coefficient_evaluation;
-        std::cout << "Elapsed seconds coefficient evaluation mass= "
-                  << elapsed_time_coefficient_evaluation.count() << std::endl;
+        elapsed_time_coefficient_evaluation += end_coefficient_evaluation - start_coefficient_evaluation;
 #endif //#ifdef TIME_PROFILING
         // Coefficient evaluation phase -- end
         //----------------------------------------------------
@@ -481,10 +469,8 @@ eval_operator_u_v(
 
 #ifdef TIME_PROFILING
         const auto end_compute_phi1Dtest_phi1Dtrial = Clock::now();
-        Duration elapsed_time_compute_phi1Dtest_phi1Dtrial =
+        elapsed_time_compute_phi1Dtest_phi1Dtrial +=
           end_compute_phi1Dtest_phi1Dtrial- start_compute_phi1Dtest_phi1Dtrial;
-        std::cout << "Elapsed seconds w * phi1d_trial * phi1d_test = "
-                  << elapsed_time_compute_phi1Dtest_phi1Dtrial.count() << std::endl;
 #endif //#ifdef TIME_PROFILING
         //----------------------------------------------------
 
@@ -525,28 +511,7 @@ eval_operator_u_v(
 
 #ifdef TIME_PROFILING
         const auto end_sum_factorization = Clock::now();
-        Duration elapsed_time_sum_factorization = end_sum_factorization - start_sum_factorization;
-        std::cout << "Elapsed seconds sum-factorization = " << elapsed_time_sum_factorization.count() << std::endl;
-#endif //#ifdef TIME_PROFILING
-        // Assembly of the local mass matrix using sum-factorization -- end
-        //----------------------------------------------------
-
-
-#ifdef TIME_PROFILING
-        const Duration elapsed_time_assemble = elapsed_time_sum_factorization +
-                                               elapsed_time_compute_phi1Dtest_phi1Dtrial +
-                                               elapsed_time_coefficient_evaluation +
-                                               elapsed_time_initialization ;
-        std::cout << "Elapsed seconds assemblying = " << elapsed_time_assemble.count() << std::endl;
-
-
-        const TimePoint end_assembly_mass_matrix = Clock::now();
-
-        const_cast<Duration &>(this->elapsed_time_operator_u_v_) += end_assembly_mass_matrix - start_assembly_mass_matrix;
-        std::cout << "Elapsed seconds operator u_v sum-factorization= "
-                  << this->elapsed_time_operator_u_v_.count() << std::endl;
-
-        std::cout << std::endl;
+        elapsed_time_sum_factorization += end_sum_factorization - start_sum_factorization;
 #endif //#ifdef TIME_PROFILING
         // Assembly of the local mass matrix using sum-factorization -- end
         //----------------------------------------------------
@@ -558,6 +523,35 @@ eval_operator_u_v(
 
     row_id_begin = row_id_last + 1;
   } // end loop comp_test
+
+
+#ifdef TIME_PROFILING
+  std::cout << "Elapsed_seconds initialization = " << elapsed_time_initialization.count() << std::endl;
+  std::cout << "Elapsed seconds coefficient evaluation mass= "
+            << elapsed_time_coefficient_evaluation.count() << std::endl;
+  std::cout << "Elapsed seconds w * phi1d_trial * phi1d_test = "
+            << elapsed_time_compute_phi1Dtest_phi1Dtrial.count() << std::endl;
+
+  std::cout << "Elapsed seconds sum-factorization = " << elapsed_time_sum_factorization.count() << std::endl;
+
+  const Duration elapsed_time_assemble = elapsed_time_sum_factorization +
+                                         elapsed_time_compute_phi1Dtest_phi1Dtrial +
+                                         elapsed_time_coefficient_evaluation +
+                                         elapsed_time_initialization ;
+  std::cout << "Elapsed seconds assemblying = " << elapsed_time_assemble.count() << std::endl;
+
+
+  const TimePoint end_assembly_mass_matrix = Clock::now();
+
+  const_cast<Duration &>(this->elapsed_time_operator_u_v_) += end_assembly_mass_matrix - start_assembly_mass_matrix;
+  std::cout << "Elapsed seconds operator u_v sum-factorization= "
+            << this->elapsed_time_operator_u_v_.count() << std::endl;
+
+  std::cout << std::endl;
+#endif //#ifdef TIME_PROFILING
+  // Assembly of the local mass matrix using sum-factorization -- end
+  //----------------------------------------------------
+
 }
 
 
