@@ -514,6 +514,9 @@ operator()(
   //--------------------------------------------------------------
 
   //--------------------------------------------------------------
+  t_id_C2[0] = 0;
+  t_id_J[0] = 0;
+
   for (Index beta_2 = 0 ; beta_2 < t_size_beta[2] ; ++beta_2)
   {
     t_id_J[2] = beta_2;
@@ -538,23 +541,18 @@ operator()(
 
           const Index a_tmp_2 = alpha_2*t_size_alpha[1];
 
-          Index alpha_0_1 = 0;
+          t_id_C2[1] = 0;
           for (Index alpha_1 = 0 ; alpha_1 < t_size_alpha[1] ; ++alpha_1)
           {
             const Index a_tmp_1 = (a_tmp_2 + alpha_1) * t_size_alpha[0];
 
             Real *row_it = &local_operator(beta_0_1_2,a_tmp_1 + col_id_begin);
             const Real *const row_it_end = row_it + t_size_alpha[0];
-            for (; row_it != row_it_end ; ++alpha_0_1, ++row_it)
+            for (; row_it != row_it_end ; ++t_id_C2[1], ++row_it)
             {
-              t_id_C2[1] = alpha_0_1;
-
-
-              t_id_C2[0] = 0;
               const Real *C2_it = &C2(t_id_C2);
               const Real *const C2_it_end = C2_it + t_size_theta[2];
 
-              t_id_J[0] = 0;
               const Real *J2_it = &J[2](t_id_J);
 
               Real sum = 0.0;
@@ -581,10 +579,7 @@ operator()(
       Real *const row_it_target_end = row_it_target + loc_row;
       const Real *row_it_source = &local_operator(row_id_begin,loc_row+ col_id_begin);
       for (; row_it_target != row_it_target_end ; ++row_it_target, row_it_source += stride_source)
-      {
         (*row_it_target) = (*row_it_source);
-
-      }
     }
     /*
     for (int loc_row = 0 ; loc_row < n_rows ; ++loc_row)

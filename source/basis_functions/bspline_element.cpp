@@ -188,6 +188,7 @@ integrate_element_u_v(const PropId &dofs_property)
 
   const int n_basis = this->get_num_basis();
   DenseMatrix operator_u_v(n_basis,n_basis);
+  operator_u_v = 0.0;
 
   EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
   elliptic_operators.eval_operator_u_v(
