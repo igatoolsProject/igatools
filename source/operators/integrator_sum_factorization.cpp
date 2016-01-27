@@ -110,10 +110,26 @@ operator()(
   const int col_id_last,
   DenseMatrix &local_operator) const
 {
-  Assert(t_size_alpha.flat_size() == local_operator.get_num_cols(),
-         ExcDimensionMismatch(t_size_alpha.flat_size(),local_operator.get_num_cols()));
-  Assert(t_size_beta.flat_size() == local_operator.get_num_rows(),
-         ExcDimensionMismatch(t_size_beta.flat_size(),local_operator.get_num_rows()));
+  const int n_rows = row_id_last - row_id_begin + 1;
+  Assert(n_rows >= 1,ExcLowerRange(n_rows,1));
+  Assert(n_rows <= local_operator.get_num_rows(),
+         ExcUpperRange(n_rows,local_operator.get_num_rows()));
+  Assert(t_size_beta.flat_size() == n_rows,
+         ExcDimensionMismatch(t_size_beta.flat_size(),n_rows));
+  Assert(row_id_begin >= 0,ExcLowerRange(row_id_begin,0));
+  Assert(row_id_last <= (local_operator.get_num_rows()-1),
+         ExcUpperRange(row_id_last,local_operator.get_num_rows()-1));
+
+
+  const int n_cols = col_id_last - col_id_begin + 1;
+  Assert(n_cols >= 1,ExcLowerRange(n_cols,1));
+  Assert(n_cols <= local_operator.get_num_cols(),
+         ExcUpperRange(n_cols,local_operator.get_num_cols()));
+  Assert(t_size_alpha.flat_size() == n_cols,
+         ExcDimensionMismatch(t_size_alpha.flat_size(),n_cols));
+  Assert(col_id_begin >= 0,ExcLowerRange(col_id_begin,0));
+  Assert(col_id_last <= (local_operator.get_num_cols()-1),
+         ExcUpperRange(col_id_last,local_operator.get_num_cols()-1));
 
 
   TensorIndex<3> t_id_J;
@@ -127,10 +143,10 @@ operator()(
 
     for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
     {
-      t_id_J[2] = beta_0;
+      t_id_J[2] = beta_0 + row_id_begin;
       for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
       {
-        t_id_J[1] = alpha_0;
+        t_id_J[1] = alpha_0 + col_id_begin;
 
         Real sum = 0.0;
         for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0)
@@ -152,10 +168,10 @@ operator()(
     t_id_C[2] = 0;
     for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
     {
-      t_id_J[2] = beta_0;
+      t_id_J[2] = beta_0 + row_id_begin;
       for (Index alpha_0 = beta_0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
       {
-        t_id_J[1] = alpha_0;
+        t_id_J[1] = alpha_0 + col_id_begin;
 
         Real sum = 0.0;
         for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0)
@@ -169,12 +185,15 @@ operator()(
       }
     }
 
-    // here we copy the upper triangular part of the matrix on the lower triangular part
-    const Size n_basis_test = local_operator.get_num_rows();
-    for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
-      for (int trial_id = 0; trial_id < test_id ; ++trial_id)
-        local_operator(test_id,trial_id) = local_operator(trial_id,test_id);
-
+    // here we copy the upper triangular part of the current block on the lower triangular part
+    for (int loc_row = 0 ; loc_row < n_rows ; ++loc_row)
+    {
+      for (int loc_col = 0 ; loc_col < loc_row ; ++loc_col)
+      {
+        local_operator(loc_row + row_id_begin,loc_col + col_id_begin) =
+          local_operator(loc_col + row_id_begin,loc_row+ col_id_begin);
+      }
+    }
     //--------------------------------------------------------------
 
   } // end if (is_symmetric)
@@ -337,12 +356,15 @@ operator()(
     } // end loop beta_1
 
 
-    // here we copy the upper triangular part of the matrix on the lower triangular part
-    const Size n_basis_test = local_operator.get_num_rows();
-    for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
-      for (int trial_id = 0; trial_id < test_id ; ++trial_id)
-        local_operator(test_id,trial_id) = local_operator(trial_id,test_id);
-
+    // here we copy the upper triangular part of the current block on the lower triangular part
+    for (int loc_row = 0 ; loc_row < n_rows ; ++loc_row)
+    {
+      for (int loc_col = 0 ; loc_col < loc_row ; ++loc_col)
+      {
+        local_operator(loc_row + row_id_begin,loc_col + col_id_begin) =
+          local_operator(loc_col + row_id_begin,loc_row+ col_id_begin);
+      }
+    }
     //--------------------------------------------------------------
   }//end if (is_symmetric)
 }
@@ -493,12 +515,17 @@ operator()(
     for (Index beta_2 = 0 ; beta_2 < t_size_beta[2] ; ++beta_2)
     {
       t_id_J[2] = beta_2;
+
+      const Index b_tmp_2 = beta_2 * t_size_beta[1];
+
       for (Index beta_1 = 0 ; beta_1 < t_size_beta[1] ; ++beta_1)
       {
+        const Index b_tmp_1 = (b_tmp_2 + beta_1) * t_size_beta[0];
+
         for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
         {
           Index beta_0_1 = beta_1 * t_size_beta[0] + beta_0 ;
-          Index beta_0_1_2 = (beta_2*t_size_beta[1] + beta_1) * t_size_beta[0] + beta_0 + row_id_begin;
+          Index beta_0_1_2 = b_tmp_1 + beta_0 + row_id_begin;
 
           t_id_C2[2] = beta_0_1 ;
 
@@ -507,12 +534,14 @@ operator()(
             t_id_J[1] = alpha_2;
             for (Index alpha_1 = 0 ; alpha_1 < t_size_alpha[1] ; ++alpha_1)
             {
+              const Index alpha_1_2 = (alpha_2*t_size_alpha[1] + alpha_1) * t_size_alpha[0];
+              const Index alpha1_tsize_alpha0 = alpha_1 * t_size_alpha[0];
+
               for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
               {
-                Index alpha_0_1 = alpha_1 * t_size_alpha[0] + alpha_0 ;
-                Index alpha_0_1_2 = (alpha_2*t_size_alpha[1] + alpha_1) * t_size_alpha[0] + alpha_0 + col_id_begin;
+                t_id_C2[1] = alpha1_tsize_alpha0 + alpha_0 ;
+                Index alpha_0_1_2 = alpha_1_2 + alpha_0 + col_id_begin;
 
-                t_id_C2[1] = alpha_0_1 ;
 
                 Real sum = 0.0;
                 for (Index theta_2 = 0; theta_2 < t_size_theta[2] ; ++theta_2)
@@ -547,10 +576,9 @@ operator()(
       {
         const Index b_tmp_1 = (b_tmp_2 + beta_1) * t_size_beta[0];
 
-        for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0, ++beta_0_1)
+        Index beta_0_1_2 = b_tmp_1 + row_id_begin;
+        for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0, ++beta_0_1, ++beta_0_1_2)
         {
-          Index beta_0_1_2 = b_tmp_1 + beta_0 + row_id_begin;
-
           t_id_C2[2] = beta_0_1;
 
           for (Index alpha_2 = beta_2 ; alpha_2 < t_size_alpha[2] ; ++alpha_2)
@@ -564,10 +592,9 @@ operator()(
             {
               const Index a_tmp_1 = (a_tmp_2 + alpha_1) * t_size_alpha[0];
 
-              for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0,++alpha_0_1)
+              Index alpha_0_1_2 = a_tmp_1 + col_id_begin;
+              for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0,++alpha_0_1, ++alpha_0_1_2)
               {
-                const Index alpha_0_1_2 = a_tmp_1 + alpha_0 + col_id_begin;
-
                 t_id_C2[1] = alpha_0_1;
 
                 Real sum = 0.0;
@@ -587,12 +614,15 @@ operator()(
       } // end loop beta_1
     } // end loop beta_2
 
-    // here we copy the upper triangular part of the matrix on the lower triangular part
-    const Size n_basis_test = local_operator.get_num_rows();
-    for (int test_id = 0 ; test_id < n_basis_test ; ++test_id)
-      for (int trial_id = 0; trial_id < test_id ; ++trial_id)
-        local_operator(test_id,trial_id) = local_operator(trial_id,test_id);
-
+    // here we copy the upper triangular part of the current block on the lower triangular part
+    for (int loc_row = 0 ; loc_row < n_rows ; ++loc_row)
+    {
+      for (int loc_col = 0 ; loc_col < loc_row ; ++loc_col)
+      {
+        local_operator(loc_row + row_id_begin,loc_col + col_id_begin) =
+          local_operator(loc_col + row_id_begin,loc_row+ col_id_begin);
+      }
+    }
     //--------------------------------------------------------------
   } // end if (is_symmetric)
 }
