@@ -37,6 +37,18 @@ ValueVector(const Index num_points)
   this->zero();
 }
 
+
+template <class T>
+ValueVector<T>::
+ValueVector(const Index num_points, const T &val)
+  : ValueContainer<T>(1,num_points)
+{
+  Assert(num_points >= 0,ExcLowerRange(num_points,0));
+
+  for (int pt = 0 ; pt < num_points ; ++pt)
+    (*this)[pt] = val;
+}
+
 template <class T>
 ValueVector<T>::
 ValueVector(const SafeSTLVector<T> &vector_in)

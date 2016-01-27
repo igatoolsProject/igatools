@@ -54,20 +54,27 @@ public :
   explicit ValueVector() ;
 
   /**
-   * Constructor. It builds a vector with num_points elements of type T, initialized using
+   * @brief Constructor. It builds a vector with <tt>num_points</tt> entries of type T, initialized using
    * the default constructor T().
    */
   explicit ValueVector(const Index num_points) ;
 
+
   /**
-   * Constructor from a SafeSTLVector<T> object.
+   * @brief Constructor. It builds a vector with <tt>num_points</tt> entries of type T, initialized using
+   * the user-provided value <tt>val</tt>.
+   */
+  explicit ValueVector(const Index num_points, const T &val) ;
+
+  /**
+   * @brief Constructor from a SafeSTLVector<T> object.
    * Performs a deep copy of the elements in @p vector_in.
    */
   explicit ValueVector(const SafeSTLVector<T> &vector_in) ;
 
 
   /**
-   * Constructor from an initializer list.
+   * @brief Constructor from an initializer list.
    */
   ValueVector(const std::initializer_list<T> &list);
 
