@@ -46,8 +46,8 @@ void loc_mass_matrix(const int n_knots, const int deg)
   out.begin_item("local_mass_matrix<" + std::to_string(dim) + "," + std::to_string(range) + ">");
 
   auto grid = Grid<dim>::create(n_knots);
-  auto space = SplineSpace<dim,range>::create(deg, grid)
-               auto basis = BSpline<dim,range>::create(space) ;
+  auto space = SplineSpace<dim,range>::create(deg, grid);
+  auto basis = BSpline<dim,range>::create(space) ;
 
   auto elem_handler = basis->create_cache_handler();
 
@@ -71,8 +71,8 @@ void loc_mass_matrix(const int n_knots, const int deg)
 
     elem_handler->fill_element_cache(elem);
 
-//    auto loc_mat = elem->template integrate_u_v<dim>(0);
-    auto loc_mat = elem->integrate_element_u_v();
+    auto loc_mat = elem->template integrate_u_v<dim>(0);
+//    auto loc_mat = elem->integrate_element_u_v();
     out.begin_item("Mass matrix:");
     loc_mat.print_info(out);
     out.end_item();
@@ -99,6 +99,8 @@ int main()
   loc_mass_matrix<3,1>(n_knots, deg);
 
   loc_mass_matrix<2,2>(n_knots, deg);
+  loc_mass_matrix<2,3>(n_knots, deg);
+
   loc_mass_matrix<3,3>(n_knots, deg);
 
   return  0;
