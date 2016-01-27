@@ -94,8 +94,8 @@ int main()
   const int n_knots = 6;
   const int deg = 1;
 
-//  const int n_knots = 2;
-//  const int deg = 10;
+// const int n_knots = 2;
+//  const int deg = 11;
 
 
   loc_mass_matrix<1,1>(n_knots, deg);
