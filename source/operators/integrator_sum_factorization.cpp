@@ -111,6 +111,7 @@ operator()(
   DenseMatrix &local_operator) const
 {
   const int n_rows = row_id_last - row_id_begin + 1;
+#ifndef NDEBUG
   Assert(n_rows >= 1,ExcLowerRange(n_rows,1));
   Assert(n_rows <= local_operator.get_num_rows(),
          ExcUpperRange(n_rows,local_operator.get_num_rows()));
@@ -130,7 +131,7 @@ operator()(
   Assert(col_id_begin >= 0,ExcLowerRange(col_id_begin,0));
   Assert(col_id_last <= (local_operator.get_num_cols()-1),
          ExcUpperRange(col_id_last,local_operator.get_num_cols()-1));
-
+#endif
 
   TensorIndex<3> t_id_J;
   TensorIndex<3> t_id_C;
@@ -215,6 +216,7 @@ operator()(
   DenseMatrix &local_operator) const
 {
   const int n_rows = row_id_last - row_id_begin + 1;
+#ifndef NDEBUG
   Assert(n_rows >= 1,ExcLowerRange(n_rows,1));
   Assert(n_rows <= local_operator.get_num_rows(),
          ExcUpperRange(n_rows,local_operator.get_num_rows()));
@@ -234,6 +236,7 @@ operator()(
   Assert(col_id_begin >= 0,ExcLowerRange(col_id_begin,0));
   Assert(col_id_last <= (local_operator.get_num_cols()-1),
          ExcUpperRange(col_id_last,local_operator.get_num_cols()-1));
+#endif
 
 
 
@@ -386,6 +389,7 @@ operator()(
   DenseMatrix &local_operator) const
 {
   const int n_rows = row_id_last - row_id_begin + 1;
+#ifndef NDEBUG
   Assert(n_rows >= 1,ExcLowerRange(n_rows,1));
   Assert(n_rows <= local_operator.get_num_rows(),
          ExcUpperRange(n_rows,local_operator.get_num_rows()));
@@ -405,6 +409,7 @@ operator()(
   Assert(col_id_begin >= 0,ExcLowerRange(col_id_begin,0));
   Assert(col_id_last <= (local_operator.get_num_cols()-1),
          ExcUpperRange(col_id_last,local_operator.get_num_cols()-1));
+#endif
 
 
 
@@ -598,12 +603,17 @@ operator()(
                 t_id_C2[1] = alpha_0_1;
 
                 Real sum = 0.0;
-                for (Index theta_2 = 0; theta_2 < t_size_theta[2] ; ++theta_2)
-                {
-                  t_id_J [0] = theta_2;
-                  t_id_C2[0] = theta_2;
 
-                  sum += C2(t_id_C2) * J[2](t_id_J);
+                t_id_C2[0] = 0;
+                const Real *C2_it = &C2(t_id_C2);
+                const Real *const C2_it_end = C2_it + t_size_theta[2];
+
+                t_id_J[0] = 0;
+                const Real *J2_it = &J[2](t_id_J);
+//                for (Index theta_2 = 0; theta_2 < t_size_theta[2] ; ++theta_2, ++C2_it, ++J2_it)
+                for (; C2_it != C2_it_end ; ++C2_it, ++J2_it)
+                {
+                  sum += (*C2_it) * (*J2_it);
                 } // end loop theta_1
 
                 local_operator(beta_0_1_2,alpha_0_1_2) = sum;
