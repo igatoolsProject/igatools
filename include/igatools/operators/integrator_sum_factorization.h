@@ -45,6 +45,10 @@ public:
     const TensorSize<dim> &t_size_beta,
     const SafeSTLArray<DynamicMultiArray<Real,3>,dim> &J,
     const DynamicMultiArray<Real,3> &Cpre,
+    const int row_id_begin,
+    const int row_id_last,
+    const int col_id_begin,
+    const int col_id_last,
     DenseMatrix &local_operator) const;
 };
 
@@ -60,6 +64,10 @@ public:
     const TensorSize<dim> &t_size_beta,
     const SafeSTLArray<DynamicMultiArray<Real,3>,dim> &J,
     const DynamicMultiArray<Real,3> &Cpre,
+    const int row_id_begin,
+    const int row_id_last,
+    const int col_id_begin,
+    const int col_id_last,
     DenseMatrix &local_operator) const;
 };
 
@@ -74,6 +82,10 @@ public:
     const TensorSize<0> &t_size_beta,
     const SafeSTLArray<DynamicMultiArray<Real,3>,0> &J,
     const DynamicMultiArray<Real,3> &C,
+    const int row_id_begin,
+    const int row_id_last,
+    const int col_id_begin,
+    const int col_id_last,
     DenseMatrix &local_operator) const;
 };
 
@@ -89,6 +101,10 @@ public:
     const TensorSize<1> &t_size_beta,
     const SafeSTLArray<DynamicMultiArray<Real,3>,1> &J,
     const DynamicMultiArray<Real,3> &C,
+    const int row_id_begin,
+    const int row_id_last,
+    const int col_id_begin,
+    const int col_id_last,
     DenseMatrix &local_operator) const;
 };
 
@@ -103,6 +119,10 @@ public:
     const TensorSize<2> &t_size_beta,
     const SafeSTLArray<DynamicMultiArray<Real,3>,2> &J,
     const DynamicMultiArray<Real,3> &C,
+    const int row_id_begin,
+    const int row_id_last,
+    const int col_id_begin,
+    const int col_id_last,
     DenseMatrix &local_operator) const;
 };
 
@@ -118,6 +138,10 @@ public:
     const TensorSize<3> &t_size_beta,
     const SafeSTLArray<DynamicMultiArray<Real,3>,3> &J,
     const DynamicMultiArray<Real,3> &C,
+    const int row_id_begin,
+    const int row_id_last,
+    const int col_id_begin,
+    const int col_id_last,
     DenseMatrix &local_operator) const;
 };
 

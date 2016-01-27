@@ -40,6 +40,10 @@ operator()(
   const TensorSize<dim> &t_size_beta,
   const SafeSTLArray<DynamicMultiArray<Real,3>,dim> &J,
   const DynamicMultiArray<Real,3> &Cpre,
+  const int row_id_begin,
+  const int row_id_last,
+  const int col_id_begin,
+  const int col_id_last,
   DenseMatrix &local_operator) const
 {
   Assert(false,ExcNotImplemented());
@@ -59,6 +63,10 @@ operator()(
   const TensorSize<dim> &t_size_beta,
   const SafeSTLArray<DynamicMultiArray<Real,3>,dim> &J,
   const DynamicMultiArray<Real,3> &Cpre,
+  const int row_id_begin,
+  const int row_id_last,
+  const int col_id_begin,
+  const int col_id_last,
   DenseMatrix &local_operator) const
 {
   Assert(false,ExcNotImplemented());
@@ -76,6 +84,10 @@ operator()(
   const TensorSize<0> &t_size_beta,
   const SafeSTLArray<DynamicMultiArray<Real,3>,0> &J,
   const DynamicMultiArray<Real,3> &Cpre,
+  const int row_id_begin,
+  const int row_id_last,
+  const int col_id_begin,
+  const int col_id_last,
   DenseMatrix &local_operator) const
 {
   Assert(false,ExcNotImplemented());
@@ -92,6 +104,10 @@ operator()(
   const TensorSize<1> &t_size_beta,
   const SafeSTLArray<DynamicMultiArray<Real,3>,1> &J,
   const DynamicMultiArray<Real,3> &C,
+  const int row_id_begin,
+  const int row_id_last,
+  const int col_id_begin,
+  const int col_id_last,
   DenseMatrix &local_operator) const
 {
   Assert(t_size_alpha.flat_size() == local_operator.get_num_cols(),
@@ -173,12 +189,35 @@ operator()(
   const TensorSize<2> &t_size_beta,
   const SafeSTLArray<DynamicMultiArray<Real,3>,2> &J,
   const DynamicMultiArray<Real,3> &C,
+  const int row_id_begin,
+  const int row_id_last,
+  const int col_id_begin,
+  const int col_id_last,
   DenseMatrix &local_operator) const
 {
-  Assert(t_size_alpha.flat_size() == local_operator.get_num_cols(),
-         ExcDimensionMismatch(t_size_alpha.flat_size(),local_operator.get_num_cols()));
-  Assert(t_size_beta.flat_size() == local_operator.get_num_rows(),
-         ExcDimensionMismatch(t_size_beta.flat_size(),local_operator.get_num_rows()));
+  const int n_rows = row_id_last - row_id_begin + 1;
+  Assert(n_rows >= 1,ExcLowerRange(n_rows,1));
+  Assert(n_rows <= local_operator.get_num_rows(),
+         ExcUpperRange(n_rows,local_operator.get_num_rows()));
+  Assert(t_size_beta.flat_size() == n_rows,
+         ExcDimensionMismatch(t_size_beta.flat_size(),n_rows));
+  Assert(row_id_begin >= 0,ExcLowerRange(row_id_begin,0));
+  Assert(row_id_last <= (local_operator.get_num_rows()-1),
+         ExcUpperRange(row_id_last,local_operator.get_num_rows()-1));
+
+
+  const int n_cols = col_id_last - col_id_begin + 1;
+  Assert(n_cols >= 1,ExcLowerRange(n_cols,1));
+  Assert(n_cols <= local_operator.get_num_cols(),
+         ExcUpperRange(n_cols,local_operator.get_num_cols()));
+  Assert(t_size_alpha.flat_size() == n_cols,
+         ExcDimensionMismatch(t_size_alpha.flat_size(),n_cols));
+  Assert(col_id_begin >= 0,ExcLowerRange(col_id_begin,0));
+  Assert(col_id_last <= (local_operator.get_num_cols()-1),
+         ExcUpperRange(col_id_last,local_operator.get_num_cols()-1));
+
+
+
 
 
   TensorIndex<3> t_id_J;
@@ -234,7 +273,7 @@ operator()(
       t_id_J[2] = beta_1;
       for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
       {
-        Index beta_0_1 = beta_1*t_size_beta[0] + beta_0;
+        Index beta_0_1 = beta_1*t_size_beta[0] + beta_0 + row_id_begin;
 
         t_id_C1[2] = beta_0;
 
@@ -243,7 +282,7 @@ operator()(
           t_id_J[1] = alpha_1;
           for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
           {
-            Index alpha_0_1 = alpha_1*t_size_alpha[0] + alpha_0;
+            Index alpha_0_1 = alpha_1*t_size_alpha[0] + alpha_0 + col_id_begin;
 
             t_id_C1[1] = alpha_0;
 
@@ -270,7 +309,7 @@ operator()(
       t_id_J[2] = beta_1;
       for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
       {
-        Index beta_0_1 = beta_1*t_size_beta[0] + beta_0;
+        Index beta_0_1 = beta_1*t_size_beta[0] + beta_0 + row_id_begin;
 
         t_id_C1[2] = beta_0;
 
@@ -279,7 +318,7 @@ operator()(
           t_id_J[1] = alpha_1;
           for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
           {
-            Index alpha_0_1 = alpha_1*t_size_alpha[0] + alpha_0;
+            Index alpha_0_1 = alpha_1*t_size_alpha[0] + alpha_0 + col_id_begin;
 
             t_id_C1[1] = alpha_0;
 
@@ -318,12 +357,32 @@ operator()(
   const TensorSize<3> &t_size_beta,
   const SafeSTLArray<DynamicMultiArray<Real,3>,3> &J,
   const DynamicMultiArray<Real,3> &C,
+  const int row_id_begin,
+  const int row_id_last,
+  const int col_id_begin,
+  const int col_id_last,
   DenseMatrix &local_operator) const
 {
-  Assert(t_size_alpha.flat_size() == local_operator.get_num_cols(),
-         ExcDimensionMismatch(t_size_alpha.flat_size(),local_operator.get_num_cols()));
-  Assert(t_size_beta.flat_size() == local_operator.get_num_rows(),
-         ExcDimensionMismatch(t_size_beta.flat_size(),local_operator.get_num_rows()));
+  const int n_rows = row_id_last - row_id_begin + 1;
+  Assert(n_rows >= 1,ExcLowerRange(n_rows,1));
+  Assert(n_rows <= local_operator.get_num_rows(),
+         ExcUpperRange(n_rows,local_operator.get_num_rows()));
+  Assert(t_size_beta.flat_size() == n_rows,
+         ExcDimensionMismatch(t_size_beta.flat_size(),n_rows));
+  Assert(row_id_begin >= 0,ExcLowerRange(row_id_begin,0));
+  Assert(row_id_last <= (local_operator.get_num_rows()-1),
+         ExcUpperRange(row_id_last,local_operator.get_num_rows()-1));
+
+
+  const int n_cols = col_id_last - col_id_begin + 1;
+  Assert(n_cols >= 1,ExcLowerRange(n_cols,1));
+  Assert(n_cols <= local_operator.get_num_cols(),
+         ExcUpperRange(n_cols,local_operator.get_num_cols()));
+  Assert(t_size_alpha.flat_size() == n_cols,
+         ExcDimensionMismatch(t_size_alpha.flat_size(),n_cols));
+  Assert(col_id_begin >= 0,ExcLowerRange(col_id_begin,0));
+  Assert(col_id_last <= (local_operator.get_num_cols()-1),
+         ExcUpperRange(col_id_last,local_operator.get_num_cols()-1));
 
 
 
@@ -439,7 +498,7 @@ operator()(
         for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
         {
           Index beta_0_1 = beta_1 * t_size_beta[0] + beta_0 ;
-          Index beta_0_1_2 = (beta_2*t_size_beta[1] + beta_1) * t_size_beta[0] + beta_0 ;
+          Index beta_0_1_2 = (beta_2*t_size_beta[1] + beta_1) * t_size_beta[0] + beta_0 + row_id_begin;
 
           t_id_C2[2] = beta_0_1 ;
 
@@ -451,7 +510,7 @@ operator()(
               for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
               {
                 Index alpha_0_1 = alpha_1 * t_size_alpha[0] + alpha_0 ;
-                Index alpha_0_1_2 = (alpha_2*t_size_alpha[1] + alpha_1) * t_size_alpha[0] + alpha_0 ;
+                Index alpha_0_1_2 = (alpha_2*t_size_alpha[1] + alpha_1) * t_size_alpha[0] + alpha_0 + col_id_begin;
 
                 t_id_C2[1] = alpha_0_1 ;
 
@@ -490,7 +549,7 @@ operator()(
 
         for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0, ++beta_0_1)
         {
-          Index beta_0_1_2 = b_tmp_1 + beta_0 ;
+          Index beta_0_1_2 = b_tmp_1 + beta_0 + row_id_begin;
 
           t_id_C2[2] = beta_0_1;
 
@@ -507,7 +566,7 @@ operator()(
 
               for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0,++alpha_0_1)
               {
-                const Index alpha_0_1_2 = a_tmp_1 + alpha_0 ;
+                const Index alpha_0_1_2 = a_tmp_1 + alpha_0 + col_id_begin;
 
                 t_id_C2[1] = alpha_0_1;
 

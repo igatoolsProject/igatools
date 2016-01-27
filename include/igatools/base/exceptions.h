@@ -852,6 +852,13 @@ DeclException2(ExcLowerRange, int, int,
                << " must be larger or equal " << arg2);
 
 /**
+ * A number is too big.
+ */
+DeclException2(ExcUpperRange, int, int,
+               << "Number " << arg1
+               << " must be smaller or equal " << arg2);
+
+/**
  * This exception indicates that
  * the first argument should be an
  * integer multiple of the second,

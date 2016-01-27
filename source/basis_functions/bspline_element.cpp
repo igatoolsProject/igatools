@@ -176,22 +176,18 @@ integrate_element_u_v(const PropId &dofs_property)
   const auto n_pts = quad_scheme->get_num_points();
 
 
-  using Vec = SafeSTLVector<Real>;
+  using Vec = ValueVector<Real>;
   using VecPtr = std::unique_ptr<Vec>;
   const int n_components = Basis::n_components;
 
   SafeSTLArray<SafeSTLArray<VecPtr,n_components>,n_components> non_tensor_prod_coeffs;
   for (int comp = 0 ; comp < n_components ; ++comp)
   {
-    auto &coeffs = non_tensor_prod_coeffs[comp][comp];
-    coeffs = std::make_unique<Vec>(n_pts,1.0);
+    non_tensor_prod_coeffs[comp][comp] = std::make_unique<Vec>(n_pts,1.0);
   }
 
-
-  Assert(range == 1 && rank == 1,ExcMessage("Temporary case"));
-  const int n_basis_comp = this->get_num_basis_comp(0); // only valid if range == 1 && rank == 1
-  DenseMatrix operator_u_v(n_basis_comp,n_basis_comp);
-#if 0
+  const int n_basis = this->get_num_basis();
+  DenseMatrix operator_u_v(n_basis,n_basis);
 
   EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
   elliptic_operators.eval_operator_u_v(
@@ -199,8 +195,6 @@ integrate_element_u_v(const PropId &dofs_property)
     *this,
     non_tensor_prod_coeffs,
     operator_u_v);
-#endif
-  AssertThrow(false,ExcNotImplemented());
 
   return operator_u_v;
 }

@@ -76,6 +76,11 @@ public:
   using base_t::base_t;
 
 
+
+  static const int n_components = BSpline<dim_,range_,rank_>::n_components;
+  using VecPtr = std::unique_ptr<ValueVector<Real>>;
+  using NonTensorProdCoeffs = SafeSTLArray<SafeSTLArray<VecPtr,n_components>,n_components>;
+
   /** @name Assignment operators */
   ///@{
   /** Copy assignment operator. */
@@ -100,7 +105,7 @@ public:
   void eval_operator_u_v(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
-    const ValueVector<Real> &c,
+    const NonTensorProdCoeffs &c,
     DenseMatrix &operator_u_v) const;
 
   /**
@@ -261,16 +266,12 @@ EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 eval_operator_u_v(
   const ElemTest &elem_test,
   const ElemTrial &elem_trial,
-  const ValueVector<Real> &coeffs,
+  const NonTensorProdCoeffs &coeffs,
   DenseMatrix &operator_u_v) const
 {
-  // TODO (martinelli, Jan 25, 2016): for the moment, only the scalar case is treated
-  Assert(range_ == 1,ExcDimensionMismatch(range_,1));
+  // TODO (martinelli, Jan 25, 2016): for the moment, only the vector case is treated
   Assert(rank_ == 1,ExcDimensionMismatch(rank_,1));
 
-  //TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
-  // the physical space iterators have the same grid, map, reference space, index, etc.
-  Assert(&elem_test == &elem_trial,ExcNotImplemented());
 
 
 
@@ -293,37 +294,28 @@ eval_operator_u_v(
 #endif //#ifdef TIME_PROFILING
 
 
-
+  const auto test_basis = elem_test.get_bspline_basis();
+  const auto trial_basis = elem_trial.get_bspline_basis();
 
   //--------------------------------------------------------------------------
-  // getting the number of basis along each coordinate direction for the test and trial space
+  //TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
+  // the physical space iterators have the same grid, map, reference space, index, etc.
+  const bool is_symmetric = (test_basis == trial_basis);
 
-  const Index comp = 0; // only scalar spaces for the moment
+  Assert(is_symmetric,ExcNotImplemented());
+  //--------------------------------------------------------------------------
 
-  // test space -- begin
-  const auto test_basis = elem_test.get_bspline_basis();
-  const auto basis_t_size_elem_test = elem_test.get_num_splines_1D(comp);
-  Assert(basis_t_size_elem_test.flat_size() == elem_test.get_num_basis(),
-         ExcDimensionMismatch(basis_t_size_elem_test.flat_size(),elem_test.get_num_basis()));
+
 
 
   const auto &grid_elem_test = elem_test.get_grid_element();
   const auto quad_elem_test = grid_elem_test.template get_quad<dim>();
   Assert(quad_elem_test != nullptr,ExcNullPtr());
-  // test space -- end
-
-
-  // trial space -- begin
-  const auto trial_basis = elem_trial.get_bspline_basis();
-  const auto basis_t_size_elem_trial = elem_trial.get_num_splines_1D(comp);
-  Assert(basis_t_size_elem_trial.flat_size()==elem_trial.get_num_basis(),
-         ExcDimensionMismatch(basis_t_size_elem_trial.flat_size(),elem_trial.get_num_basis()));
 
 
   const auto &grid_elem_trial = elem_trial.get_grid_element();
   const auto quad_elem_trial = grid_elem_trial.template get_quad<dim>();
   Assert(quad_elem_trial != nullptr,ExcNullPtr());
-  // trial space -- end
 
 
   // checks that the elements on the grid are the same
@@ -342,196 +334,230 @@ eval_operator_u_v(
          ExcMessage("The quadrature scheme has not the tensor-product structure."))
   const auto n_points = quad_scheme->get_num_points();
   const auto points_t_size = quad_scheme->get_num_coords_direction();
-//    const Size n_basis = n_basis_elem.flat_size();
-  //--------------------------------------------------------------------------
 
 
-  //--------------------------------------------------------------------------
-  const bool is_symmetric = (test_basis == trial_basis);
-  //--------------------------------------------------------------------------
-
-
-  //--------------------------------------------------------------------------
-  // getting the 1D values for the test and trial space -- begin
-  SafeSTLArray<ValueTable<Real>,dim> phi_1D_test;
-  SafeSTLArray<ValueTable<Real>,dim> phi_1D_trial;
-
-  const auto &phi_1D_test_table = elem_test.template get_splines1D_table(dim,0);
-  const auto &phi_1D_trial_table = elem_test.template get_splines1D_table(dim,0);
-
-  for (int i = 0 ; i < dim ; ++i)
+  int row_id_begin = 0;
+  int row_id_last = 0;
+  for (int comp_test = 0 ; comp_test < n_components ; ++comp_test)
   {
-    const int n_pts_1D = points_t_size[i];
+    // getting the number of basis along each coordinate direction of the current scalar component of the test space
+    const int n_rows = elem_test.get_num_basis_comp(comp_test);
+    const auto basis_t_size_elem_test = elem_test.get_num_splines_1D(comp_test);
+    Assert(basis_t_size_elem_test.flat_size() == n_rows,
+           ExcDimensionMismatch(basis_t_size_elem_test.flat_size(),n_rows));
+    row_id_last = row_id_begin + n_rows - 1;
 
-    const auto &v_test = phi_1D_test_table[0][i].get_derivative(0);  // only valid for scalar spaces
-    Assert(v_test.get_num_rows() == basis_t_size_elem_test [i],
-           ExcDimensionMismatch(v_test.get_num_rows(),basis_t_size_elem_test[i]));
-    Assert(v_test.get_num_cols() == n_pts_1D,
-           ExcDimensionMismatch(v_test.get_num_cols(),n_pts_1D));
 
-    const auto &v_trial = phi_1D_trial_table[0][i].get_derivative(0);  // only valid for scalar spaces
-    Assert(v_trial.get_num_rows() == basis_t_size_elem_trial[i],
-           ExcDimensionMismatch(v_trial.get_num_rows(),basis_t_size_elem_trial[i]));
-    Assert(v_trial.get_num_cols() == n_pts_1D,
-           ExcDimensionMismatch(v_trial.get_num_cols(),n_pts_1D));
-
-    phi_1D_test [i].resize(basis_t_size_elem_test [i],n_pts_1D);
-    phi_1D_trial[i].resize(basis_t_size_elem_trial[i],n_pts_1D);
-
-    for (int fn = 0 ; fn < basis_t_size_elem_test[i] ; ++fn)
+    int col_id_begin = 0;
+    int col_id_last = 0;
+    for (int comp_trial = 0 ; comp_trial < n_components ; ++comp_trial)
     {
-      auto phi_1D_test_fn = phi_1D_test[i].get_function_view(fn);
-      for (int pt = 0 ; pt < n_pts_1D ; ++pt)
-        phi_1D_test_fn[pt] = v_test(fn,pt); // only valid for scalar spaces
-    }
+      // getting the number of basis along each coordinate direction of the current scalar component of the trial space
+      const int n_cols = elem_trial.get_num_basis_comp(comp_trial);
+      const auto basis_t_size_elem_trial = elem_trial.get_num_splines_1D(comp_trial);
+      Assert(basis_t_size_elem_trial.flat_size() == n_cols,
+             ExcDimensionMismatch(basis_t_size_elem_trial.flat_size(),n_cols));
+      col_id_last = col_id_begin + n_cols - 1;
 
-    for (int fn = 0 ; fn < basis_t_size_elem_trial[i] ; ++fn)
-    {
-      auto phi_1D_trial_fn = phi_1D_trial[i].get_function_view(fn);
-      for (int pt = 0 ; pt < n_pts_1D ; ++pt)
-        phi_1D_trial_fn[pt] = v_trial(fn,pt); // only valid for scalar spaces
-    }
-  }
-  // getting the 1D values for the test and trial space -- end
-  //--------------------------------------------------------------------------
+
+      const auto &coeffs_test_trial = coeffs[comp_test][comp_trial];
+      if (coeffs_test_trial != nullptr)
+      {
+        //--------------------------------------------------------------------------
+        // getting the 1D values for the test and trial space -- begin
+        SafeSTLArray<ValueTable<Real>,dim> phi_1D_test;
+        SafeSTLArray<ValueTable<Real>,dim> phi_1D_trial;
+
+        const auto &phi_1D_table_test  = elem_test.template get_splines1D_table(dim_,0); // the 0 index is because sdim == dim
+        const auto &phi_1D_table_trial = elem_test.template get_splines1D_table(dim_,0); // the 0 index is because sdim == dim
+
+        const auto &phi_1D_comp_test  = phi_1D_table_test [comp_test];
+        const auto &phi_1D_comp_trial = phi_1D_table_trial[comp_trial];
+
+        for (int i = 0 ; i < dim ; ++i)
+        {
+          const int n_pts_1D = points_t_size[i];
+
+          const auto &v_test = phi_1D_comp_test[i].get_derivative(0);
+          Assert(v_test.get_num_rows() == basis_t_size_elem_test [i],
+                 ExcDimensionMismatch(v_test.get_num_rows(),basis_t_size_elem_test[i]));
+          Assert(v_test.get_num_cols() == n_pts_1D,
+                 ExcDimensionMismatch(v_test.get_num_cols(),n_pts_1D));
+
+          const auto &v_trial = phi_1D_comp_trial[i].get_derivative(0);  // only valid for scalar spaces
+          Assert(v_trial.get_num_rows() == basis_t_size_elem_trial[i],
+                 ExcDimensionMismatch(v_trial.get_num_rows(),basis_t_size_elem_trial[i]));
+          Assert(v_trial.get_num_cols() == n_pts_1D,
+                 ExcDimensionMismatch(v_trial.get_num_cols(),n_pts_1D));
+
+          phi_1D_test [i].resize(basis_t_size_elem_test [i],n_pts_1D);
+          phi_1D_trial[i].resize(basis_t_size_elem_trial[i],n_pts_1D);
+
+          for (int fn = 0 ; fn < basis_t_size_elem_test[i] ; ++fn)
+          {
+            auto phi_1D_test_fn = phi_1D_test[i].get_function_view(fn);
+            for (int pt = 0 ; pt < n_pts_1D ; ++pt)
+              phi_1D_test_fn[pt] = v_test(fn,pt); // only valid for scalar spaces
+          }
+
+          for (int fn = 0 ; fn < basis_t_size_elem_trial[i] ; ++fn)
+          {
+            auto phi_1D_trial_fn = phi_1D_trial[i].get_function_view(fn);
+            for (int pt = 0 ; pt < n_pts_1D ; ++pt)
+              phi_1D_trial_fn[pt] = v_trial(fn,pt); // only valid for scalar spaces
+          }
+        }
+        // getting the 1D values for the test and trial space -- end
+        //--------------------------------------------------------------------------
 
 
 
 
 #ifdef TIME_PROFILING
-  const auto end_initialization = Clock::now();
-  const Duration elapsed_time_initialization = end_initialization - start_initialization;
-  std::cout << "Elapsed_seconds initialization = " << elapsed_time_initialization.count() << std::endl;
+        const auto end_initialization = Clock::now();
+        const Duration elapsed_time_initialization = end_initialization - start_initialization;
+        std::cout << "Elapsed_seconds initialization = " << elapsed_time_initialization.count() << std::endl;
 #endif //#ifdef TIME_PROFILING
-  //--------------------------------------------------------------------------
+        //--------------------------------------------------------------------------
 
 
 
-  //----------------------------------------------------
-  // Coefficient evaluation phase -- begin
+        //----------------------------------------------------
+        // Coefficient evaluation phase -- begin
 #ifdef TIME_PROFILING
-  const TimePoint start_coefficient_evaluation = Clock::now();
+        const TimePoint start_coefficient_evaluation = Clock::now();
 #endif //#ifdef TIME_PROFILING
 
 
 
 
 
-  Assert(coeffs.size() == n_points,ExcDimensionMismatch(coeffs.size(),n_points));
+        Assert(coeffs_test_trial->size() == n_points,
+               ExcDimensionMismatch(coeffs_test_trial->size(),n_points));
 
-  // performs the evaluation of the function coeffs*det(DF) at the quadrature points
-  /*
-  const Real det_DF = grid_elem_test.template get_measure<dim>(0) ;
+        // performs the evaluation of the function coeffs*det(DF) at the quadrature points
+        /*
+        const Real det_DF = grid_elem_test.template get_measure<dim>(0) ;
 
-  DynamicMultiArray<Real,dim> c_times_detDF(points_t_size);
-  for (Index ipt = 0 ; ipt < n_points ; ++ipt)
-    c_times_detDF[ipt] = coeffs[ipt] * det_DF;
-  //*/
-  const auto &c_times_detDF = coeffs;
+        DynamicMultiArray<Real,dim> c_times_detDF(points_t_size);
+        for (Index ipt = 0 ; ipt < n_points ; ++ipt)
+          c_times_detDF[ipt] = coeffs[ipt] * det_DF;
+        //*/
+        const auto &c_times_detDF = *coeffs_test_trial;
 
-
-
-#ifdef TIME_PROFILING
-  const TimePoint end_coefficient_evaluation = Clock::now();
-  const Duration elapsed_time_coefficient_evaluation =
-    end_coefficient_evaluation - start_coefficient_evaluation;
-  std::cout << "Elapsed seconds coefficient evaluation mass= "
-            << elapsed_time_coefficient_evaluation.count() << std::endl;
-#endif //#ifdef TIME_PROFILING
-  // Coefficient evaluation phase -- end
-  //----------------------------------------------------
-
-
-
-
-
-  //----------------------------------------------------
-  // precalculation of the J[i](theta_i,alpha_i,beta_i) terms
-  // (i.e. the weigths[theta_i] * phi_trial[alpha_i] * phi_test[beta_i] )
-#ifdef TIME_PROFILING
-  const auto start_compute_phi1Dtest_phi1Dtrial = Clock::now();
-#endif //#ifdef TIME_PROFILING
-
-  const auto &l_tmp = grid_elem.template get_side_lengths<dim>(0);
-  SafeSTLArray<Real,dim> length_element_edges;
-  for (int i = 0 ; i < dim ; ++i)
-    length_element_edges[i] = l_tmp[i];
-
-  const auto w_phi1Dtrial_phi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest(
-                                        phi_1D_test,
-                                        phi_1D_trial,
-                                        quad_scheme->get_weights_1d(),
-                                        length_element_edges);
-
-#ifdef TIME_PROFILING
-  const auto end_compute_phi1Dtest_phi1Dtrial = Clock::now();
-  Duration elapsed_time_compute_phi1Dtest_phi1Dtrial =
-    end_compute_phi1Dtest_phi1Dtrial- start_compute_phi1Dtest_phi1Dtrial;
-  std::cout << "Elapsed seconds w * phi1d_trial * phi1d_test = "
-            << elapsed_time_compute_phi1Dtest_phi1Dtrial.count() << std::endl;
-#endif //#ifdef TIME_PROFILING
-  //----------------------------------------------------
-
-
-
-
-  //----------------------------------------------------
-  // Assembly of the local mass matrix using sum-factorization -- begin
-#ifdef TIME_PROFILING
-  const auto start_sum_factorization = Clock::now();
-#endif //#ifdef TIME_PROFILING
-
-  TensorSize<3> tensor_size_C0;
-  tensor_size_C0[0] = points_t_size.flat_size(); // theta size
-  tensor_size_C0[1] = 1; // alpha size
-  tensor_size_C0[2] = 1; // beta size
-
-  DynamicMultiArray<Real,3> C0(tensor_size_C0);
-  const Size n_entries = tensor_size_C0.flat_size();
-
-  Assert(n_entries == c_times_detDF.flat_size(),
-         ExcDimensionMismatch(n_entries,c_times_detDF.flat_size()));
-  for (Index entry_id = 0 ; entry_id < n_entries ; ++entry_id)
-    C0[entry_id] = c_times_detDF[entry_id];
-
-
-  IntegratorSumFactorization<dim> integrate_sf;
-  integrate_sf(is_symmetric,
-               points_t_size,
-               basis_t_size_elem_test,
-               basis_t_size_elem_trial,
-               w_phi1Dtrial_phi1Dtest,
-               C0,
-               operator_u_v);
 
 
 #ifdef TIME_PROFILING
-  const auto end_sum_factorization = Clock::now();
-  Duration elapsed_time_sum_factorization = end_sum_factorization - start_sum_factorization;
-  std::cout << "Elapsed seconds sum-factorization = " << elapsed_time_sum_factorization.count() << std::endl;
+        const TimePoint end_coefficient_evaluation = Clock::now();
+        const Duration elapsed_time_coefficient_evaluation =
+          end_coefficient_evaluation - start_coefficient_evaluation;
+        std::cout << "Elapsed seconds coefficient evaluation mass= "
+                  << elapsed_time_coefficient_evaluation.count() << std::endl;
 #endif //#ifdef TIME_PROFILING
-  // Assembly of the local mass matrix using sum-factorization -- end
-  //----------------------------------------------------
+        // Coefficient evaluation phase -- end
+        //----------------------------------------------------
+
+
+
+
+
+        //----------------------------------------------------
+        // precalculation of the J[i](theta_i,alpha_i,beta_i) terms
+        // (i.e. the weigths[theta_i] * phi_trial[alpha_i] * phi_test[beta_i] )
+#ifdef TIME_PROFILING
+        const auto start_compute_phi1Dtest_phi1Dtrial = Clock::now();
+#endif //#ifdef TIME_PROFILING
+
+        const auto &l_tmp = grid_elem.template get_side_lengths<dim>(0);
+        SafeSTLArray<Real,dim> length_element_edges;
+        for (int i = 0 ; i < dim ; ++i)
+          length_element_edges[i] = l_tmp[i];
+
+        const auto w_phi1Dtrial_phi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest(
+                                              phi_1D_test,
+                                              phi_1D_trial,
+                                              quad_scheme->get_weights_1d(),
+                                              length_element_edges);
+
+#ifdef TIME_PROFILING
+        const auto end_compute_phi1Dtest_phi1Dtrial = Clock::now();
+        Duration elapsed_time_compute_phi1Dtest_phi1Dtrial =
+          end_compute_phi1Dtest_phi1Dtrial- start_compute_phi1Dtest_phi1Dtrial;
+        std::cout << "Elapsed seconds w * phi1d_trial * phi1d_test = "
+                  << elapsed_time_compute_phi1Dtest_phi1Dtrial.count() << std::endl;
+#endif //#ifdef TIME_PROFILING
+        //----------------------------------------------------
+
+
+
+
+        //----------------------------------------------------
+        // Assembly of the local mass matrix using sum-factorization -- begin
+#ifdef TIME_PROFILING
+        const auto start_sum_factorization = Clock::now();
+#endif //#ifdef TIME_PROFILING
+
+        TensorSize<3> tensor_size_C0;
+        tensor_size_C0[0] = points_t_size.flat_size(); // theta size
+        tensor_size_C0[1] = 1; // alpha size
+        tensor_size_C0[2] = 1; // beta size
+
+        DynamicMultiArray<Real,3> C0(tensor_size_C0);
+        const Size n_entries = tensor_size_C0.flat_size();
+
+        Assert(n_entries == c_times_detDF.flat_size(),
+               ExcDimensionMismatch(n_entries,c_times_detDF.flat_size()));
+        for (Index entry_id = 0 ; entry_id < n_entries ; ++entry_id)
+          C0[entry_id] = c_times_detDF[entry_id];
+
+
+        IntegratorSumFactorization<dim> integrate_sf;
+        integrate_sf(is_symmetric,
+                     points_t_size,
+                     basis_t_size_elem_test,
+                     basis_t_size_elem_trial,
+                     w_phi1Dtrial_phi1Dtest,
+                     C0,
+                     row_id_begin, row_id_last,
+                     col_id_begin, col_id_last,
+                     operator_u_v);
 
 
 #ifdef TIME_PROFILING
-  const Duration elapsed_time_assemble = elapsed_time_sum_factorization +
-                                         elapsed_time_compute_phi1Dtest_phi1Dtrial +
-                                         elapsed_time_coefficient_evaluation +
-                                         elapsed_time_initialization ;
-  std::cout << "Elapsed seconds assemblying = " << elapsed_time_assemble.count() << std::endl;
-
-
-  const TimePoint end_assembly_mass_matrix = Clock::now();
-
-  const_cast<Duration &>(this->elapsed_time_operator_u_v_) += end_assembly_mass_matrix - start_assembly_mass_matrix;
-  std::cout << "Elapsed seconds operator u_v sum-factorization= "
-            << this->elapsed_time_operator_u_v_.count() << std::endl;
-
-  std::cout << std::endl;
+        const auto end_sum_factorization = Clock::now();
+        Duration elapsed_time_sum_factorization = end_sum_factorization - start_sum_factorization;
+        std::cout << "Elapsed seconds sum-factorization = " << elapsed_time_sum_factorization.count() << std::endl;
 #endif //#ifdef TIME_PROFILING
-  // Assembly of the local mass matrix using sum-factorization -- end
-  //----------------------------------------------------
+        // Assembly of the local mass matrix using sum-factorization -- end
+        //----------------------------------------------------
+
+
+#ifdef TIME_PROFILING
+        const Duration elapsed_time_assemble = elapsed_time_sum_factorization +
+                                               elapsed_time_compute_phi1Dtest_phi1Dtrial +
+                                               elapsed_time_coefficient_evaluation +
+                                               elapsed_time_initialization ;
+        std::cout << "Elapsed seconds assemblying = " << elapsed_time_assemble.count() << std::endl;
+
+
+        const TimePoint end_assembly_mass_matrix = Clock::now();
+
+        const_cast<Duration &>(this->elapsed_time_operator_u_v_) += end_assembly_mass_matrix - start_assembly_mass_matrix;
+        std::cout << "Elapsed seconds operator u_v sum-factorization= "
+                  << this->elapsed_time_operator_u_v_.count() << std::endl;
+
+        std::cout << std::endl;
+#endif //#ifdef TIME_PROFILING
+        // Assembly of the local mass matrix using sum-factorization -- end
+        //----------------------------------------------------
+
+      } // end if (coeffs_test_trial != nullptr)
+
+      col_id_begin = col_id_last + 1;
+    } // end loop comp_trial
+
+    row_id_begin = row_id_last + 1;
+  } // end loop comp_test
 }
 
 

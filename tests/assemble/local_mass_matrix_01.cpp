@@ -92,12 +92,13 @@ void loc_mass_matrix(const int n_knots, const int deg)
 int main()
 {
   const int n_knots = 6;
+//  const int n_knots = 2;
   const int deg = 1;
 
   loc_mass_matrix<1,1>(n_knots, deg);
   loc_mass_matrix<2,1>(n_knots, deg);
   loc_mass_matrix<3,1>(n_knots, deg);
-
+//*/
   loc_mass_matrix<2,2>(n_knots, deg);
   loc_mass_matrix<2,3>(n_knots, deg);
 
