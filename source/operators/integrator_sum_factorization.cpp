@@ -521,50 +521,54 @@ operator()(
     {
       t_id_J[2] = beta_2;
 
-      const Index b_tmp_2 = beta_2 * t_size_beta[1];
+      const Index b_tmp_2 = beta_2*t_size_beta[1];
 
+      Index beta_0_1 = 0;
       for (Index beta_1 = 0 ; beta_1 < t_size_beta[1] ; ++beta_1)
       {
         const Index b_tmp_1 = (b_tmp_2 + beta_1) * t_size_beta[0];
 
-        for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
+        Index beta_0_1_2 = b_tmp_1 + row_id_begin;
+        for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0, ++beta_0_1, ++beta_0_1_2)
         {
-          Index beta_0_1 = beta_1 * t_size_beta[0] + beta_0 ;
-          Index beta_0_1_2 = b_tmp_1 + beta_0 + row_id_begin;
-
-          t_id_C2[2] = beta_0_1 ;
+          t_id_C2[2] = beta_0_1;
 
           for (Index alpha_2 = 0 ; alpha_2 < t_size_alpha[2] ; ++alpha_2)
           {
             t_id_J[1] = alpha_2;
+
+            const Index a_tmp_2 = alpha_2*t_size_alpha[1];
+
+            Index alpha_0_1 = 0;
             for (Index alpha_1 = 0 ; alpha_1 < t_size_alpha[1] ; ++alpha_1)
             {
-              const Index alpha_1_2 = (alpha_2*t_size_alpha[1] + alpha_1) * t_size_alpha[0];
-              const Index alpha1_tsize_alpha0 = alpha_1 * t_size_alpha[0];
+              const Index a_tmp_1 = (a_tmp_2 + alpha_1) * t_size_alpha[0];
 
-              for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
+              Real *row_it = &local_operator(beta_0_1_2,a_tmp_1 + col_id_begin);
+              const Real *const row_it_end = row_it + t_size_alpha[0];
+              for (; row_it != row_it_end ; ++alpha_0_1, ++row_it)
               {
-                t_id_C2[1] = alpha1_tsize_alpha0 + alpha_0 ;
-                Index alpha_0_1_2 = alpha_1_2 + alpha_0 + col_id_begin;
+                t_id_C2[1] = alpha_0_1;
 
+
+                t_id_C2[0] = 0;
+                const Real *C2_it = &C2(t_id_C2);
+                const Real *const C2_it_end = C2_it + t_size_theta[2];
+
+                t_id_J[0] = 0;
+                const Real *J2_it = &J[2](t_id_J);
 
                 Real sum = 0.0;
-                for (Index theta_2 = 0; theta_2 < t_size_theta[2] ; ++theta_2)
-                {
-                  t_id_J [0] = theta_2;
-                  t_id_C2[0] = theta_2;
-                  sum += C2(t_id_C2) * J[2](t_id_J);
-                } // end loop theta_1
+                for (; C2_it != C2_it_end ; ++C2_it, ++J2_it)
+                  sum += (*C2_it) * (*J2_it);
 
-                local_operator(beta_0_1_2,alpha_0_1_2) = sum;
-
-              } // end loop alpha_0
+                (*row_it) = sum;
+              } // end loop row_it
             } // end loop alpha_1
           } // end loop alpha_2
         } // end loop beta_0
       } // end loop beta_1
-    } // end loop beta_2
-    //--------------------------------------------------------------
+    } // end loop beta_2    //--------------------------------------------------------------
   } //end if (!is_symmetric)
   else
   {
