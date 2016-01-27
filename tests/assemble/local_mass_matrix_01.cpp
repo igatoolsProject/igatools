@@ -100,8 +100,8 @@ int main()
   }
   else
   {
-    const int n_knots = 6;
-    const int deg = 1;
+    const int n_knots = 3;
+    const int deg = 3;
 
     loc_mass_matrix<1,1>(n_knots, deg);
     loc_mass_matrix<2,1>(n_knots, deg);
