@@ -44,8 +44,12 @@ void loc_mass_matrix(const int n_knots, const int deg)
   OUTSTART
 
   TensorIndex<dim> deg_dir;
+  TensorSize<dim> num_pts;
   for (int i = 0 ; i < dim ; ++i)
+  {
     deg_dir[i] = deg+i;
+    num_pts[i] = deg_dir[i] + 1;
+  }
 
   out.begin_item("local_mass_matrix<" + std::to_string(dim) + "," + std::to_string(range) + ">");
 
@@ -63,7 +67,7 @@ void loc_mass_matrix(const int n_knots, const int deg)
   auto elem           = basis->begin();
   const auto elem_end = basis->end();
 
-  auto quad = QGauss<dim>::create(deg+dim+1);
+  auto quad = QGauss<dim>::create(num_pts);
   elem_handler->init_element_cache(elem,quad);
 
   int elem_id = 0;
@@ -75,8 +79,8 @@ void loc_mass_matrix(const int n_knots, const int deg)
 
     elem_handler->fill_element_cache(elem);
 
-//    auto loc_mat = elem->template integrate_u_v<dim>(0);
-    auto loc_mat = elem->integrate_element_u_v();
+    auto loc_mat = elem->template integrate_u_v<dim>(0);
+//    auto loc_mat = elem->integrate_element_u_v();
     out.begin_item("Mass matrix:");
     loc_mat.print_info(out);
     out.end_item();
