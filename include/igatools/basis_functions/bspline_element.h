@@ -191,6 +191,11 @@ public:
   virtual
   DenseMatrix
   integrate_element_u_v(const PropId &dofs_property = DofProperties::active) override final;
+
+  virtual
+  DenseMatrix
+  integrate_element_gradu_gradv(const PropId &dofs_property = DofProperties::active) override final;
+
 };
 
 IGA_NAMESPACE_CLOSE

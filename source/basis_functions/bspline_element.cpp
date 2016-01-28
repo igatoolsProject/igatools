@@ -171,6 +171,8 @@ DenseMatrix
 BSplineElement<dim, range, rank>::
 integrate_element_u_v(const PropId &dofs_property)
 {
+  Assert(dofs_property == DofProperties::active,
+         ExcMessage("This function is implemented (temporarly) only if dofs_property==\"active\""));
   const auto quad_scheme = grid_elem_->template get_quad<dim>();
   Assert(quad_scheme != nullptr, ExcNullPtr());
   const auto n_pts = quad_scheme->get_num_points();
@@ -198,6 +200,45 @@ integrate_element_u_v(const PropId &dofs_property)
     operator_u_v);
 
   return operator_u_v;
+}
+
+
+template <int dim, int range, int rank>
+DenseMatrix
+BSplineElement<dim, range, rank>::
+integrate_element_gradu_gradv(const PropId &dofs_property)
+{
+  Assert(dofs_property == DofProperties::active,
+         ExcMessage("This function is implemented (temporarly) only if dofs_property==\"active\""));
+  const auto quad_scheme = grid_elem_->template get_quad<dim>();
+  Assert(quad_scheme != nullptr, ExcNullPtr());
+  const auto n_pts = quad_scheme->get_num_points();
+
+
+  using Vec = ValueVector<Real>;
+  using VecPtr = std::unique_ptr<Vec>;
+  const int n_components = Basis::n_components;
+
+  SafeSTLArray<SafeSTLArray<VecPtr,n_components>,n_components> non_tensor_prod_coeffs;
+  for (int comp = 0 ; comp < n_components ; ++comp)
+  {
+    non_tensor_prod_coeffs[comp][comp] = std::make_unique<Vec>(n_pts,1.0);
+  }
+
+  const int n_basis = this->get_num_basis();
+  DenseMatrix operator_gradu_gradv(n_basis,n_basis);
+  operator_gradu_gradv = 0.0;
+
+  AssertThrow(false,ExcNotImplemented());
+  /*
+  EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
+  elliptic_operators.eval_operator_gradu_gradv(
+    *this,
+    *this,
+    non_tensor_prod_coeffs,
+    operator_gradu_gradv);
+  //*/
+  return operator_gradu_gradv;
 }
 
 

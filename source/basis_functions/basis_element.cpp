@@ -269,8 +269,11 @@ integrate_u_v(const int s_id,
     {
       const auto u_j = u.get_function_view(j);
 
+      Real sum = 0.0;
       for (int pt = 0; pt < n_pts; ++pt)
-        M(i,j) += scalar_product(u_i[pt],u_j[pt]) * w_meas[pt];
+        sum += scalar_product(u_i[pt],u_j[pt]) * w_meas[pt];
+
+      M(i,j) = sum;
     } // end loop j
 
     for (int j = 0; j < i; ++j)
@@ -304,8 +307,11 @@ integrate_gradu_gradv(const int s_id,
     {
       const auto gradu_j = gradu.get_function_view(j);
 
+      Real sum = 0.0;
       for (int pt = 0; pt < n_pts; ++pt)
-        M(i,j) += scalar_product(gradu_i[pt],gradu_j[pt]) * w_meas[pt];
+        sum += scalar_product(gradu_i[pt],gradu_j[pt]) * w_meas[pt];
+
+      M(i,j) = sum;
     } // end loop j
 
     for (int j = 0; j < i; ++j)
@@ -339,8 +345,11 @@ integrate_u_func(const ValueVector<Value> &func_at_points,
   {
     const auto u_i = u.get_function_view(i);
 
+    Real sum = 0.0;
     for (int pt = 0; pt < n_pts; ++pt)
-      R(i) += scalar_product(u_i[pt],func_at_points[pt]) * w_meas[pt];
+      sum += scalar_product(u_i[pt],func_at_points[pt]) * w_meas[pt];
+
+    R(i) = sum;
   } // end loop i
 
   return R;

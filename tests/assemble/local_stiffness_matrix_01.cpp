@@ -69,7 +69,9 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 
     elem_handler->fill_element_cache(elem);
 
-    auto loc_mat = elem->template integrate_gradu_gradv<dim>(0);
+//    auto loc_mat = elem->template integrate_gradu_gradv<dim>(0);
+    auto loc_mat = elem->integrate_element_gradu_gradv();
+
     out.begin_item("Stiffnes matrix:");
     loc_mat.print_info(out);
     out.end_item();

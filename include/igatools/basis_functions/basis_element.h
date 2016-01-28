@@ -451,6 +451,15 @@ public:
     return mat;
   }
 
+  virtual
+  DenseMatrix
+  integrate_element_gradu_gradv(const PropId &dofs_property = DofProperties::active)
+  {
+    AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
+    DenseMatrix mat;
+    return mat;
+  }
+
 
   /**
    * \brief Computes and returns the <b>local stiffness-matrix</b> (of the Poisson problem)
