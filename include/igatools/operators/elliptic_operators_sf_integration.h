@@ -389,8 +389,6 @@ integrate_add_operator_general_order(
   const auto &phi_1D_comp_test  = phi_1D_table_test [comp_test];
   const auto &phi_1D_comp_trial = phi_1D_table_trial[comp_trial];
 
-  LogStream out;
-
   for (int i = 0 ; i < dim ; ++i)
   {
     const int n_pts_1D = points_t_size[i];
@@ -423,18 +421,6 @@ integrate_add_operator_general_order(
       for (int pt = 0 ; pt < n_pts_1D ; ++pt)
         phi_1D_trial_fn[pt] = v_trial(fn,pt); // only valid for scalar spaces
     }
-
-    out.begin_item("Direction: " + std::to_string(i));
-
-    out.begin_item("Test values (order " + std::to_string(deriv_order_test[i]));
-    v_test.print_info(out);
-    out.end_item();
-
-    out.begin_item("Trial values (order " + std::to_string(deriv_order_trial[i]));
-    v_trial.print_info(out);
-    out.end_item();
-
-    out.end_item();
   }
   // getting the 1D values for the test and trial space -- end
   //--------------------------------------------------------------------------
@@ -468,10 +454,6 @@ integrate_add_operator_general_order(
                                         phi_1D_trial,
                                         quad_scheme->get_weights_1d(),
                                         length_element_edges);
-
-  out.begin_item("w_phi1Dtrial_phi1Dtest");
-  w_phi1Dtrial_phi1Dtest.print_info(out);
-  out.end_item();
 
 #ifdef TIME_PROFILING
   this->elapsed_time_compute_phi1Dtest_phi1Dtrial_ +=

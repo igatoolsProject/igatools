@@ -182,7 +182,7 @@ operator()(
           sum += C(t_id_C) * J[0](t_id_J);
         }
 
-        local_operator(beta_0,alpha_0) = sum;
+        local_operator(beta_0,alpha_0) += sum;
       }
     }
 
@@ -320,7 +320,7 @@ operator()(
           for (; C1_it != C1_it_end ; ++C1_it, ++J1_it)
             sum += (*C1_it) * (*J1_it);
 
-          (*row_it) = sum;
+          (*row_it) += sum;
         } //end loop row_it
       } //end loop alpha_1
     } // end loop beta_0
@@ -552,7 +552,7 @@ operator()(
                    ++C2_it, ++J2_it)
                 sum += (*C2_it) * (*J2_it);
 
-              (*row_it) = sum;
+              (*row_it) += sum;
             } // end loop row_it
           } // end loop alpha_1
         } // end loop alpha_2
