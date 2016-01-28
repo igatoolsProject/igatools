@@ -434,20 +434,22 @@ operator()(
       {
         for (Index theta_1 = 0; theta_1 < t_size_theta[1] ; ++theta_1, ++C1_it)
         {
-
-          const Real *J0_it = J0_it_begin;
-
           C_it_begin += t_size_theta[0];
+          /*
+                    const Real *J0_it = J0_it_begin;
 
-          Real sum = 0.0;
-          for (const Real *C_it = C_it_begin;
-               J0_it != J0_it_end ;
-               ++J0_it, ++C_it)
-          {
-            sum += (*C_it) * (*J0_it);
-          }
 
-          (*C1_it) = sum;
+                    Real sum = 0.0;
+                    for (const Real *C_it = C_it_begin;
+                         J0_it != J0_it_end ;
+                         ++J0_it, ++C_it)
+                    {
+                      sum += (*C_it) * (*J0_it);
+                    }
+
+                    (*C1_it) = sum;
+           //*/
+          (*C1_it) = std::inner_product(J0_it_begin,J0_it_end,C_it_begin,0.0);
         } // end loop theta_1
       } // end loop theta_2
     } // end loop alpha_0
@@ -485,14 +487,18 @@ operator()(
           const Real *const C2_it_end = C2_it_begin + t_size_C2[0];
           for (Real *C2_it = C2_it_begin; C2_it != C2_it_end ; ++C2_it)
           {
+            /*
+                        const Real *J1_it = J1_it_begin;
 
-            const Real *J1_it = J1_it_begin;
+                        Real sum = 0.0;
+                        for (const Real *C1_it = C1_it_begin ;
+                            C1_it != C1_it_end ;
+                            ++C1_it, ++J1_it)
+                          sum += (*C1_it) * (*J1_it);
 
-            Real sum = 0.0;
-            for (const Real *C1_it = C1_it_begin ; C1_it != C1_it_end ; ++C1_it, ++J1_it)
-              sum += (*C1_it) * (*J1_it);
-
-            (*C2_it) = sum;
+                        (*C2_it) = sum;
+              //*/
+            (*C2_it) = std::inner_product(C1_it_begin,C1_it_end,J1_it_begin,0.0);
           } // end loop C2_it
         } //end loop t_id_C1[1]
       } //end loop t_id_J[1]
@@ -505,6 +511,11 @@ operator()(
   t_id_C2[1] = 0;
   t_id_J[0] = 0;
 
+  const int n_pts = t_size_C2[0];
+
+  const int size_alpha_0 = t_size_alpha[0];
+  const int size_alpha_1 = t_size_alpha[1];
+
   for (t_id_J[2] = 0 ; t_id_J[2] < t_size_beta[2] ; ++t_id_J[2])
   {
     const Index b_tmp_2 = t_id_J[2]*t_size_beta[1];
@@ -512,14 +523,18 @@ operator()(
     t_id_C2[2] = 0;
     for (Index beta_1 = 0 ; beta_1 < t_size_beta[1] ; ++beta_1)
     {
-      Index beta_0_1_2 = (b_tmp_2 + beta_1) * t_size_beta[0] + row_id_begin;
+      const Index beta_0_1_2 = (b_tmp_2 + beta_1) * t_size_beta[0] + row_id_begin;
+
+      int r_id = beta_0_1_2;
 
       for (Index beta_0 = 0;
            beta_0 < t_size_beta[0] ;
            ++beta_0,
            ++t_id_C2[2],
-           ++beta_0_1_2)
+           ++r_id)
       {
+        Real *const row_it_begin_0 = &local_operator(r_id,0);
+
         for (t_id_J[1] = (is_symmetric ? t_id_J[2] : 0) ;
              t_id_J[1] < t_size_alpha[2] ;
              ++t_id_J[1])
@@ -527,24 +542,26 @@ operator()(
           const Real *const J2_it_begin = &J[2](t_id_J);
 
           const Real *C2_it_begin = &C2(t_id_C2);
-          const Real *C2_it_end = C2_it_begin + t_size_C2[0];
+          const Real *C2_it_end = C2_it_begin + n_pts;
 
           const int c_begin = t_id_J[1] * t_size_alpha[1] * t_size_alpha[0] + col_id_begin;
-          Real *row_it_begin = &local_operator(beta_0_1_2,c_begin);
+//          Real *row_it_begin = &local_operator(r_id,c_begin);
+          Real *row_it_begin = row_it_begin_0 + c_begin;
           const Real *row_it_end = row_it_begin + t_size_alpha[0];
 
           for (Index alpha_1 = 0 ;
-               alpha_1 < t_size_alpha[1] ;
+               alpha_1 < size_alpha_1 ;
                ++alpha_1,
-               row_it_begin += t_size_alpha[0],
-               row_it_end   += t_size_alpha[0])
+               row_it_begin += size_alpha_0,
+               row_it_end   += size_alpha_0)
           {
             for (Real *row_it = row_it_begin ;
                  row_it != row_it_end ;
-                 C2_it_begin += t_size_C2[0],
-                 C2_it_end += t_size_C2[0],
+                 C2_it_begin += n_pts,
+                 C2_it_end += n_pts,
                  ++row_it)
             {
+              /*
               Real sum = 0.0;
               for (const Real *C2_it = C2_it_begin,
                    *J2_it = J2_it_begin;
@@ -553,6 +570,8 @@ operator()(
                 sum += (*C2_it) * (*J2_it);
 
               (*row_it) += sum;
+              //*/
+              (*row_it) += std::inner_product(C2_it_begin,C2_it_end,J2_it_begin,0.0);
             } // end loop row_it
           } // end loop alpha_1
         } // end loop alpha_2
