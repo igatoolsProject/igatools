@@ -104,7 +104,8 @@ int main()
   {
     const int n_knots = 2;
     const int deg = 15;
-    loc_mass_matrix<3,3>(n_knots, deg);
+    loc_mass_matrix<3,1>(n_knots, deg);
+//    loc_mass_matrix<3,3>(n_knots, deg);
   }
   else
   {

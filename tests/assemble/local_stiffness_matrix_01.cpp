@@ -43,9 +43,18 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 
   out.begin_item("local_stiff_matrix<" + std::to_string(dim) + ">");
 
+  TensorIndex<dim> deg_dir;
+  TensorSize<dim> num_pts;
+  for (int i = 0 ; i < dim ; ++i)
+  {
+    deg_dir[i] = deg+i;
+    num_pts[i] = deg_dir[i] + 1;
+  }
+
+
   auto grid = Grid<dim>::create(n_knots);
   using Basis = BSpline<dim>;
-  auto basis = Basis::create(SplineSpace<dim>::create(deg, grid)) ;
+  auto basis = Basis::create(SplineSpace<dim>::create(deg_dir, grid)) ;
 
   auto elem_handler = basis->create_cache_handler();
 
@@ -57,7 +66,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
   auto elem           = basis->begin();
   const auto elem_end = basis->end();
 
-  auto quad = QGauss<dim>::create(deg+1);
+  auto quad = QGauss<dim>::create(num_pts);
   elem_handler->init_element_cache(elem,quad);
 
   int elem_id = 0;
@@ -93,10 +102,10 @@ int main()
   if (false)
   {
     const int n_knots = 2;
-    const int deg = 1;
+    const int deg = 15;
 
-    loc_stiff_matrix<1>(n_knots, deg);
-    loc_stiff_matrix<2>(n_knots, deg);
+//    loc_stiff_matrix<1>(n_knots, deg);
+//    loc_stiff_matrix<2>(n_knots, deg);
     loc_stiff_matrix<3>(n_knots, deg);
   }
   else

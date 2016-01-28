@@ -78,9 +78,6 @@ public:
 
 
   static const int n_components = BSpline<dim_,range_,rank_>::n_components;
-  using Vec = ValueVector<Real>;
-  using VecPtr = std::unique_ptr<Vec>;
-  using NonTensorProdCoeffs = SafeSTLArray<SafeSTLArray<VecPtr,n_components>,n_components>;
 
 
 
@@ -108,7 +105,7 @@ public:
   void eval_operator_u_v(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
-    const NonTensorProdCoeffs &c,
+    const ValueVector<Real> &c,
     DenseMatrix &operator_u_v) const;
 
   /**
@@ -125,7 +122,7 @@ public:
   void eval_operator_gradu_gradv(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
-    const NonTensorProdCoeffs &coeffs,
+    const SafeSTLArray<ValueVector<Real>,dim_> &coeffs,
     DenseMatrix &operator_gradu_gradv) const;
 
 
@@ -198,7 +195,7 @@ protected:
     const int col_id_begin,
     const int col_id_last,
     const TensorIndex<dim_> &deriv_order_trial,
-    const Vec &c,
+    const ValueVector<Real> &c,
     DenseMatrix &op) const;
 };
 
@@ -294,7 +291,7 @@ integrate_add_operator_general_order(
   const int col_id_begin,
   const int col_id_last,
   const TensorIndex<dim_> &deriv_order_trial,
-  const Vec &coeffs_test_trial,
+  const ValueVector<Real> &coeffs_test_trial,
   DenseMatrix &op) const
 {
 
@@ -347,20 +344,20 @@ integrate_add_operator_general_order(
 
   //--------------------------------------------------------------------------
   // getting the number of basis along each coordinate direction of the current scalar component of the test space
-  const int n_rows = elem_test.get_num_basis_comp(comp_test);
+//  const int n_rows = elem_test.get_num_basis_comp(comp_test);
   const auto basis_t_size_elem_test = elem_test.get_num_splines_1D(comp_test);
-  Assert(basis_t_size_elem_test.flat_size() == n_rows,
-         ExcDimensionMismatch(basis_t_size_elem_test.flat_size(),n_rows));
+  Assert(basis_t_size_elem_test.flat_size() == elem_test.get_num_basis_comp(comp_test),
+         ExcDimensionMismatch(basis_t_size_elem_test.flat_size(),elem_test.get_num_basis_comp(comp_test)));
   //--------------------------------------------------------------------------
 
 
 
   //--------------------------------------------------------------------------
   // getting the number of basis along each coordinate direction of the current scalar component of the trial space
-  const int n_cols = elem_trial.get_num_basis_comp(comp_trial);
+//  const int n_cols = elem_trial.get_num_basis_comp(comp_trial);
   const auto basis_t_size_elem_trial = elem_trial.get_num_splines_1D(comp_trial);
-  Assert(basis_t_size_elem_trial.flat_size() == n_cols,
-         ExcDimensionMismatch(basis_t_size_elem_trial.flat_size(),n_cols));
+  Assert(basis_t_size_elem_trial.flat_size() == elem_trial.get_num_basis_comp(comp_trial),
+         ExcDimensionMismatch(basis_t_size_elem_trial.flat_size(),elem_trial.get_num_basis_comp(comp_trial)));
   //--------------------------------------------------------------------------
 
 
@@ -516,7 +513,7 @@ EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 eval_operator_u_v(
   const ElemTest &elem_test,
   const ElemTrial &elem_trial,
-  const NonTensorProdCoeffs &coeffs,
+  const ValueVector<Real> &coeffs,
   DenseMatrix &operator_u_v) const
 {
   // TODO (martinelli, Jan 25, 2016): for the moment, only the vector case is treated
@@ -551,11 +548,8 @@ eval_operator_u_v(
       const int n_cols = elem_trial.get_num_basis_comp(comp_trial);
       col_id_last = col_id_begin + n_cols - 1;
 
-
-      const auto &coeffs_test_trial = coeffs[comp_test][comp_trial];
-      if (coeffs_test_trial != nullptr)
+      if (comp_test == comp_trial)
       {
-
         this->integrate_add_operator_general_order(
           elem_test,
           comp_test,
@@ -565,11 +559,9 @@ eval_operator_u_v(
           comp_trial,
           col_id_begin,col_id_last,
           deriv_order_trial,
-          *coeffs_test_trial,
+          coeffs,
           operator_u_v);
-
-      } // end if (coeffs_test_trial != nullptr)
-
+      }
       col_id_begin = col_id_last + 1;
     } // end loop comp_trial
 
@@ -607,7 +599,7 @@ EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 eval_operator_gradu_gradv(
   const ElemTest &elem_test,
   const ElemTrial &elem_trial,
-  const NonTensorProdCoeffs &coeffs,
+  const SafeSTLArray<ValueVector<Real>,dim_> &coeffs,
   DenseMatrix &operator_gradu_gradv) const
 {
   // TODO (martinelli, Jan 25, 2016): for the moment, only the scalar case is treated
@@ -641,19 +633,16 @@ eval_operator_gradu_gradv(
       const int n_cols = elem_trial.get_num_basis_comp(comp_trial);
       col_id_last = col_id_begin + n_cols - 1;
 
-
-      for (int k = 0 ; k < dim_ ; ++k)
+      if (comp_test == comp_trial)
       {
-        TensorIndex<dim_> deriv_order_test(0);
-        TensorIndex<dim_> deriv_order_trial(0);
-
-        deriv_order_test[k] = 1;
-        deriv_order_trial[k] = 1;
-
-        const auto &coeffs_test_trial = coeffs[comp_test][comp_trial];
-
-        if (coeffs_test_trial != nullptr)
+        for (int k = 0 ; k < dim_ ; ++k)
         {
+          TensorIndex<dim_> deriv_order_test(0);
+          TensorIndex<dim_> deriv_order_trial(0);
+
+          deriv_order_test[k] = 1;
+          deriv_order_trial[k] = 1;
+
 
           this->integrate_add_operator_general_order(
             elem_test,
@@ -664,10 +653,10 @@ eval_operator_gradu_gradv(
             comp_trial,
             col_id_begin,col_id_last,
             deriv_order_trial,
-            *coeffs_test_trial,
+            coeffs[k],
             operator_gradu_gradv);
-        } // end if (coeffs_test_trial != nullptr)
-      } // end loop k
+        } // end loop k
+      } // end if (comp_test == comp_trial)
 
       col_id_begin = col_id_last + 1;
     } // end loop comp_trial

@@ -178,15 +178,7 @@ integrate_element_u_v(const PropId &dofs_property)
   const auto n_pts = quad_scheme->get_num_points();
 
 
-  using Vec = ValueVector<Real>;
-  using VecPtr = std::unique_ptr<Vec>;
-  const int n_components = Basis::n_components;
-
-  SafeSTLArray<SafeSTLArray<VecPtr,n_components>,n_components> non_tensor_prod_coeffs;
-  for (int comp = 0 ; comp < n_components ; ++comp)
-  {
-    non_tensor_prod_coeffs[comp][comp] = std::make_unique<Vec>(n_pts,1.0);
-  }
+  ValueVector<Real> non_tensor_prod_coeffs(n_pts,1.0);
 
   const int n_basis = this->get_num_basis();
   DenseMatrix operator_u_v(n_basis,n_basis);
@@ -220,19 +212,13 @@ integrate_element_gradu_gradv(const PropId &dofs_property)
 
 
   using Vec = ValueVector<Real>;
-  using VecPtr = std::unique_ptr<Vec>;
-  const int n_components = Basis::n_components;
-
-  SafeSTLArray<SafeSTLArray<VecPtr,n_components>,n_components> non_tensor_prod_coeffs;
-  for (int comp = 0 ; comp < n_components ; ++comp)
-  {
-    non_tensor_prod_coeffs[comp][comp] = std::make_unique<Vec>(n_pts,1.0);
-  }
+  SafeSTLArray<Vec,dim> non_tensor_prod_coeffs;
+  for (int i = 0 ; i < dim ; ++i)
+    non_tensor_prod_coeffs[i] = Vec(n_pts,1.0);
 
   const int n_basis = this->get_num_basis();
   DenseMatrix operator_gradu_gradv(n_basis,n_basis);
   operator_gradu_gradv = 0.0;
-
 
   EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
   elliptic_operators.eval_operator_gradu_gradv(
