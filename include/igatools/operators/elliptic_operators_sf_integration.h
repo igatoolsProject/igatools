@@ -125,7 +125,7 @@ public:
   void eval_operator_gradu_gradv(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
-    const std::vector<TMatrix<space_dim,space_dim>> &coeffs,
+    const NonTensorProdCoeffs &coeffs,
     DenseMatrix &operator_gradu_gradv) const;
 
 
@@ -192,12 +192,12 @@ protected:
     const int comp_test,
     const int row_id_begin,
     const int row_id_last,
-    const int deriv_order_test,
+    const TensorIndex<dim_> &deriv_order_test,
     const ElemTrial &elem_trial,
     const int comp_trial,
     const int col_id_begin,
     const int col_id_last,
-    const int deriv_order_trial,
+    const TensorIndex<dim_> &deriv_order_trial,
     const Vec &c,
     DenseMatrix &op) const;
 };
@@ -288,12 +288,12 @@ integrate_add_operator_general_order(
   const int comp_test,
   const int row_id_begin,
   const int row_id_last,
-  const int deriv_order_test,
+  const TensorIndex<dim_> &deriv_order_test,
   const ElemTrial &elem_trial,
   const int comp_trial,
   const int col_id_begin,
   const int col_id_last,
-  const int deriv_order_trial,
+  const TensorIndex<dim_> &deriv_order_trial,
   const Vec &coeffs_test_trial,
   DenseMatrix &op) const
 {
@@ -383,23 +383,25 @@ integrate_add_operator_general_order(
   SafeSTLArray<ValueTable<Real>,dim> phi_1D_test;
   SafeSTLArray<ValueTable<Real>,dim> phi_1D_trial;
 
-  const auto &phi_1D_table_test  = elem_test.template get_splines1D_table(dim_,deriv_order_test); // the 0 index is because sdim == dim
-  const auto &phi_1D_table_trial = elem_test.template get_splines1D_table(dim_,deriv_order_trial); // the 0 index is because sdim == dim
+  const auto &phi_1D_table_test  = elem_test.template get_splines1D_table(dim_,0); // the 0 index is because sdim == dim
+  const auto &phi_1D_table_trial = elem_test.template get_splines1D_table(dim_,0); // the 0 index is because sdim == dim
 
   const auto &phi_1D_comp_test  = phi_1D_table_test [comp_test];
   const auto &phi_1D_comp_trial = phi_1D_table_trial[comp_trial];
+
+  LogStream out;
 
   for (int i = 0 ; i < dim ; ++i)
   {
     const int n_pts_1D = points_t_size[i];
 
-    const auto &v_test = phi_1D_comp_test[i].get_derivative(0);
+    const auto &v_test = phi_1D_comp_test[i].get_derivative(deriv_order_test[i]);
     Assert(v_test.get_num_rows() == basis_t_size_elem_test [i],
            ExcDimensionMismatch(v_test.get_num_rows(),basis_t_size_elem_test[i]));
     Assert(v_test.get_num_cols() == n_pts_1D,
            ExcDimensionMismatch(v_test.get_num_cols(),n_pts_1D));
 
-    const auto &v_trial = phi_1D_comp_trial[i].get_derivative(0);  // only valid for scalar spaces
+    const auto &v_trial = phi_1D_comp_trial[i].get_derivative(deriv_order_trial[i]);
     Assert(v_trial.get_num_rows() == basis_t_size_elem_trial[i],
            ExcDimensionMismatch(v_trial.get_num_rows(),basis_t_size_elem_trial[i]));
     Assert(v_trial.get_num_cols() == n_pts_1D,
@@ -421,6 +423,18 @@ integrate_add_operator_general_order(
       for (int pt = 0 ; pt < n_pts_1D ; ++pt)
         phi_1D_trial_fn[pt] = v_trial(fn,pt); // only valid for scalar spaces
     }
+
+    out.begin_item("Direction: " + std::to_string(i));
+
+    out.begin_item("Test values (order " + std::to_string(deriv_order_test[i]));
+    v_test.print_info(out);
+    out.end_item();
+
+    out.begin_item("Trial values (order " + std::to_string(deriv_order_trial[i]));
+    v_trial.print_info(out);
+    out.end_item();
+
+    out.end_item();
   }
   // getting the 1D values for the test and trial space -- end
   //--------------------------------------------------------------------------
@@ -454,6 +468,10 @@ integrate_add_operator_general_order(
                                         phi_1D_trial,
                                         quad_scheme->get_weights_1d(),
                                         length_element_edges);
+
+  out.begin_item("w_phi1Dtrial_phi1Dtest");
+  w_phi1Dtrial_phi1Dtest.print_info(out);
+  out.end_item();
 
 #ifdef TIME_PROFILING
   this->elapsed_time_compute_phi1Dtest_phi1Dtrial_ +=
@@ -531,6 +549,8 @@ eval_operator_u_v(
 #endif //#ifdef TIME_PROFILING
 
 
+  const TensorIndex<dim_> deriv_order_test(0);
+  const TensorIndex<dim_> deriv_order_trial(0);
 
   int row_id_begin = 0;
   int row_id_last = 0;
@@ -558,11 +578,11 @@ eval_operator_u_v(
           elem_test,
           comp_test,
           row_id_begin,row_id_last,
-          0,
+          deriv_order_test,
           elem_trial,
           comp_trial,
           col_id_begin,col_id_last,
-          0,
+          deriv_order_trial,
           *coeffs_test_trial,
           operator_u_v);
 
@@ -605,9 +625,93 @@ EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
 eval_operator_gradu_gradv(
   const ElemTest &elem_test,
   const ElemTrial &elem_trial,
-  const std::vector<TMatrix<space_dim,space_dim>> &coeffs,
+  const NonTensorProdCoeffs &coeffs,
   DenseMatrix &operator_gradu_gradv) const
 {
+  // TODO (martinelli, Jan 25, 2016): for the moment, only the scalar case is treated
+  Assert(range_ == 1,ExcDimensionMismatch(range_,1));
+  Assert(rank_ == 1,ExcDimensionMismatch(rank_,1));
+
+
+#ifdef TIME_PROFILING
+  this->elapsed_time_initialization_.zero();
+  this->elapsed_time_compute_phi1Dtest_phi1Dtrial_.zero();
+  this->elapsed_time_sum_factorization_.zero();
+
+#endif //#ifdef TIME_PROFILING
+
+
+
+  int row_id_begin = 0;
+  int row_id_last = 0;
+  for (int comp_test = 0 ; comp_test < n_components ; ++comp_test)
+  {
+    // getting the number of basis along each coordinate direction of the current scalar component of the test space
+    const int n_rows = elem_test.get_num_basis_comp(comp_test);
+    row_id_last = row_id_begin + n_rows - 1;
+
+
+    int col_id_begin = 0;
+    int col_id_last = 0;
+    for (int comp_trial = 0 ; comp_trial < n_components ; ++comp_trial)
+    {
+      // getting the number of basis along each coordinate direction of the current scalar component of the trial space
+      const int n_cols = elem_trial.get_num_basis_comp(comp_trial);
+      col_id_last = col_id_begin + n_cols - 1;
+
+
+      for (int k = 0 ; k < dim_ ; ++k)
+      {
+        TensorIndex<dim_> deriv_order_test(0);
+        TensorIndex<dim_> deriv_order_trial(0);
+
+        deriv_order_test[k] = 1;
+        deriv_order_trial[k] = 1;
+
+        const auto &coeffs_test_trial = coeffs[comp_test][comp_trial];
+
+        if (coeffs_test_trial != nullptr)
+        {
+
+          this->integrate_add_operator_general_order(
+            elem_test,
+            comp_test,
+            row_id_begin,row_id_last,
+            deriv_order_test,
+            elem_trial,
+            comp_trial,
+            col_id_begin,col_id_last,
+            deriv_order_trial,
+            *coeffs_test_trial,
+            operator_gradu_gradv);
+        } // end if (coeffs_test_trial != nullptr)
+      } // end loop k
+
+      col_id_begin = col_id_last + 1;
+    } // end loop comp_trial
+
+    row_id_begin = row_id_last + 1;
+  } // end loop comp_test
+
+
+#ifdef TIME_PROFILING
+  std::cout << "Elapsed_seconds initialization = " << this->elapsed_time_initialization_.count() << std::endl;
+  std::cout << "Elapsed seconds w * phi1d_trial * phi1d_test = "
+            << this->elapsed_time_compute_phi1Dtest_phi1Dtrial_.count() << std::endl;
+
+  std::cout << "Elapsed seconds sum-factorization = " << this->elapsed_time_sum_factorization_.count() << std::endl;
+
+  const Duration elapsed_time_assemble = this->elapsed_time_sum_factorization_ +
+                                         this->elapsed_time_compute_phi1Dtest_phi1Dtrial_ +
+                                         this->elapsed_time_initialization_ ;
+  std::cout << "Elapsed seconds assemblying = " << elapsed_time_assemble.count() << std::endl;
+
+
+
+  std::cout << std::endl;
+#endif //#ifdef TIME_PROFILING
+  // Assembly of the local mass matrix using sum-factorization -- end
+  //----------------------------------------------------
 
 
 #if 0
@@ -915,8 +1019,8 @@ eval_operator_gradu_gradv(
   //----------------------------------------------------
 
 #endif
-  Assert(false,ExcNotImplemented());
-  AssertThrow(false,ExcNotImplemented());
+//  Assert(false,ExcNotImplemented());
+//  AssertThrow(false,ExcNotImplemented());
 }
 
 

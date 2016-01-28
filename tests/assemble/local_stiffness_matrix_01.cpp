@@ -90,12 +90,23 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 
 int main()
 {
-  const int n_knots = 6;
-  const int deg = 1;
+  if (true)
+  {
+    const int n_knots = 2;
+    const int deg = 1;
 
-  loc_stiff_matrix<1>(n_knots, deg);
-  loc_stiff_matrix<2>(n_knots, deg);
-  loc_stiff_matrix<3>(n_knots, deg);
+//    loc_stiff_matrix<1>(n_knots, deg);
+    loc_stiff_matrix<2>(n_knots, deg);
+//    loc_stiff_matrix<3>(n_knots, deg);
+  }
+  else
+  {
+    const int n_knots = 6;
+    const int deg = 1;
 
+    loc_stiff_matrix<1>(n_knots, deg);
+    loc_stiff_matrix<2>(n_knots, deg);
+    loc_stiff_matrix<3>(n_knots, deg);
+  }
   return  0;
 }

@@ -215,6 +215,10 @@ integrate_element_gradu_gradv(const PropId &dofs_property)
   const auto n_pts = quad_scheme->get_num_points();
 
 
+  AssertThrow(range == 1,ExcNotImplemented());
+  AssertThrow(rank == 1,ExcNotImplemented());
+
+
   using Vec = ValueVector<Real>;
   using VecPtr = std::unique_ptr<Vec>;
   const int n_components = Basis::n_components;
@@ -229,8 +233,7 @@ integrate_element_gradu_gradv(const PropId &dofs_property)
   DenseMatrix operator_gradu_gradv(n_basis,n_basis);
   operator_gradu_gradv = 0.0;
 
-  AssertThrow(false,ExcNotImplemented());
-  /*
+
   EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
   elliptic_operators.eval_operator_gradu_gradv(
     *this,
