@@ -43,10 +43,14 @@ void loc_mass_matrix(const int n_knots, const int deg)
 
   OUTSTART
 
+  TensorIndex<dim> deg_dir;
+  for (int i = 0 ; i < dim ; ++i)
+    deg_dir[i] = deg+i;
+
   out.begin_item("local_mass_matrix<" + std::to_string(dim) + "," + std::to_string(range) + ">");
 
   auto grid = Grid<dim>::create(n_knots);
-  auto space = SplineSpace<dim,range>::create(deg, grid);
+  auto space = SplineSpace<dim,range>::create(deg_dir, grid);
   auto basis = BSpline<dim,range>::create(space) ;
 
   auto elem_handler = basis->create_cache_handler();
@@ -59,7 +63,7 @@ void loc_mass_matrix(const int n_knots, const int deg)
   auto elem           = basis->begin();
   const auto elem_end = basis->end();
 
-  auto quad = QGauss<dim>::create(deg+1);
+  auto quad = QGauss<dim>::create(deg+dim+1);
   elem_handler->init_element_cache(elem,quad);
 
   int elem_id = 0;
@@ -109,7 +113,7 @@ int main()
 
     loc_mass_matrix<2,2>(n_knots, deg);
     loc_mass_matrix<2,3>(n_knots, deg);
-  //*/
+    //*/
     loc_mass_matrix<3,3>(n_knots, deg);
   }
   return  0;
