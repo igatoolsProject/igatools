@@ -22,8 +22,20 @@
 #include <igatools/base/exceptions.h>
 
 
+#include <chrono>
+
+
+#define TIME_PROFILING
+
 IGA_NAMESPACE_OPEN
 
+
+
+#ifdef TIME_PROFILING
+using Clock = std::chrono::high_resolution_clock;
+using TimePoint = std::chrono::time_point<Clock>;
+using Duration = std::chrono::duration<Real>;
+#endif // TIME_PROFILING
 
 
 
@@ -390,6 +402,10 @@ operator()(
 
 
   //--------------------------------------------------------------
+#ifdef TIME_PROFILING
+  const auto start_l1 = Clock::now();
+#endif // TIME_PROFILING
+
   t_id_J[0] = 0;
 
   t_id_C[0] = 0;
@@ -424,11 +440,20 @@ operator()(
       } // end loop theta_2
     } // end loop alpha_0
   } // end loop beta_0
+#ifdef TIME_PROFILING
+  const Duration time_l1 = Clock::now() - start_l1;
+  std::cout << "Elapsed_seconds loop1 = " << time_l1.count() << std::endl;
+#endif // TIME_PROFILING
+
   //--------------------------------------------------------------
 
 
 
   //--------------------------------------------------------------
+#ifdef TIME_PROFILING
+  const auto start_l2 = Clock::now();
+#endif // TIME_PROFILING
+
   t_id_C2[0] = 0;
   t_id_C1[0] = 0;
   t_id_J[0] = 0;
@@ -465,9 +490,20 @@ operator()(
       } //end loop t_id_J[1]
     } // end loop beta_0
   } // end loop beta_1
-  //--------------------------------------------------------------
+#ifdef TIME_PROFILING
+  const Duration time_l2 = Clock::now() - start_l2;
+  std::cout << "Elapsed_seconds loop2 = " << time_l2.count() << std::endl;
+#endif // TIME_PROFILING
 
   //--------------------------------------------------------------
+
+
+  //--------------------------------------------------------------
+#ifdef TIME_PROFILING
+  const auto start_l3 = Clock::now();
+#endif // TIME_PROFILING
+
+
   t_id_C2[0] = 0;
   t_id_C2[1] = 0;
   t_id_J[0] = 0;
@@ -476,6 +512,8 @@ operator()(
 
   const int size_alpha_0 = t_size_alpha[0];
   const int size_alpha_1 = t_size_alpha[1];
+
+//  bool not_symm =false;
 
   for (t_id_J[2] = 0 ; t_id_J[2] < t_size_beta[2] ; ++t_id_J[2])
   {
@@ -521,7 +559,7 @@ operator()(
                  row_it != row_it_end ;
                  C2_it_begin += n_pts,
                  C2_it_end += n_pts,
-                 ++row_it)
+                 ++row_it) // loop of size_alpha_0 iterations
             {
               (*row_it) += std::inner_product(C2_it_begin,C2_it_end,J2_it_begin,0.0);
             } // end loop row_it
@@ -530,32 +568,44 @@ operator()(
       } // end loop beta_0
     } // end loop beta_1
   } // end loop beta_2
+#ifdef TIME_PROFILING
+  const Duration time_l3 = Clock::now() - start_l3;
+  std::cout << "Elapsed_seconds loop3 = " << time_l3.count() << std::endl;
+#endif // TIME_PROFILING
+
   //--------------------------------------------------------------
 
 
   if (is_symmetric)
   {
+#ifdef TIME_PROFILING
+    const auto start_l4 = Clock::now();
+#endif // TIME_PROFILING
+
     // here we copy the upper triangular part of the current block on the lower triangular part
-    const int stride_source = local_operator.get_num_cols();
+
     for (int loc_row = 0 ; loc_row < n_rows ; ++loc_row)
     {
-      Real *row_it_target = &local_operator(loc_row + row_id_begin,col_id_begin);
-      Real *const row_it_target_end = row_it_target + loc_row;
-      const Real *row_it_source = &local_operator(row_id_begin,loc_row+ col_id_begin);
-      for (; row_it_target != row_it_target_end ; ++row_it_target, row_it_source += stride_source)
-        (*row_it_target) = (*row_it_source);
-    }
-    /*
-    for (int loc_row = 0 ; loc_row < n_rows ; ++loc_row)
-    {
-      for (int loc_col = 0 ; loc_col < loc_row ; ++loc_col, ++row_it_target, row_it_source += stride_source)
+      const int r_src = loc_row + row_id_begin;
+      const int c_tgt = loc_row + col_id_begin;
+      for (int loc_col = loc_row+1 ; loc_col < n_rows ; ++loc_col)
       {
-        local_operator(loc_row + row_id_begin,loc_col + col_id_begin) =
-          local_operator(loc_col + row_id_begin,loc_row+ col_id_begin);
+        const int r_tgt = loc_col + row_id_begin;
+        const int c_src = loc_col + col_id_begin;
+        local_operator(r_tgt,c_tgt) =
+          local_operator(r_src,loc_col + col_id_begin);
       }
     }
     //*/
+
+    //*/
     //--------------------------------------------------------------
+#ifdef TIME_PROFILING
+    const Duration time_l4 = Clock::now() - start_l4;
+    std::cout << "Elapsed_seconds loop4 = " << time_l4.count() << std::endl;
+#endif // TIME_PROFILING
+
+
   } // end if (is_symmetric)
 }
 

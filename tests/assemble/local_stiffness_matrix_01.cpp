@@ -99,7 +99,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 
 int main()
 {
-  if (false)
+  if (true)
   {
     const int n_knots = 2;
     const int deg = 15;

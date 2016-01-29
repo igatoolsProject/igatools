@@ -190,7 +190,7 @@ endif(XML_IO)
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-option(USE_VTK "Enable VTK support" ON)
+option(USE_VTK "Enable VTK support" OFF)
 if (USE_VTK)
 		find_package(VTK REQUIRED)
     if (VTK_FOUND)
@@ -206,7 +206,7 @@ endif(USE_VTK)
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-option(USE_CGAL "Enable CGAL support" ON)
+option(USE_CGAL "Enable CGAL support" OFF)
 if (USE_CGAL)
 		find_cgal()
     if (CGAL_FOUND)
