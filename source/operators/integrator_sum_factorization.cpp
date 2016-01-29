@@ -505,16 +505,17 @@ operator()(
           const Real *C2_it_begin = &C2(t_id_C2);
           const Real *C2_it_end = C2_it_begin + n_pts;
 
-          const int c_begin = t_id_J[1] * t_size_alpha[1] * t_size_alpha[0] + col_id_begin;
+          const int c_begin = t_id_J[1] * size_alpha_1 * size_alpha_0 + col_id_begin;
 
           Real *row_it_begin = row_it_begin_0 + c_begin;
-          const Real *row_it_end = row_it_begin + t_size_alpha[0];
+          const Real *row_it_end = row_it_begin + size_alpha_0;
 
-          for (Index alpha_1 = 0 ;
-               alpha_1 < size_alpha_1 ;
-               ++alpha_1,
+          const Real *const block_end = row_it_begin + size_alpha_0 * size_alpha_1;
+
+          for (;
+               row_it_begin != block_end ;
                row_it_begin += size_alpha_0,
-               row_it_end   += size_alpha_0)
+               row_it_end   += size_alpha_0) // loop of size_alpha_1 iterations
           {
             for (Real *row_it = row_it_begin ;
                  row_it != row_it_end ;
