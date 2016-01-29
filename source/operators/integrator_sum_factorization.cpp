@@ -28,34 +28,11 @@ IGA_NAMESPACE_OPEN
 
 
 
-
-
-template <int dim, int r>
-void
-IntegratorSumFactorization<dim,r>::
-operator()(
-  const bool is_symmetric,
-  const TensorSize<dim> &t_size_theta,
-  const TensorSize<dim> &t_size_alpha,
-  const TensorSize<dim> &t_size_beta,
-  const SafeSTLArray<DynamicMultiArray<Real,3>,dim> &J,
-  const DynamicMultiArray<Real,3> &Cpre,
-  const int row_id_begin,
-  const int row_id_last,
-  const int col_id_begin,
-  const int col_id_last,
-  DenseMatrix &local_operator) const
-{
-  Assert(false,ExcNotImplemented());
-  AssertThrow(false,ExcNotImplemented());
-}
-
-
-
+/*
 
 template <int dim>
 void
-IntegratorSumFactorization<dim,1>::
+IntegratorSumFactorization<dim>::
 operator()(
   const bool is_symmetric,
   const TensorSize<dim> &t_size_theta,
@@ -72,11 +49,14 @@ operator()(
   Assert(false,ExcNotImplemented());
   AssertThrow(false,ExcNotImplemented());
 }
+//*/
+
+
 
 
 
 void
-IntegratorSumFactorization<0,0>::
+IntegratorSumFactorization<0>::
 operator()(
   const bool is_symmetric,
   const TensorSize<0> &t_size_theta,
@@ -96,7 +76,7 @@ operator()(
 
 
 void
-IntegratorSumFactorization<1,1>::
+IntegratorSumFactorization<1>::
 operator()(
   const bool is_symmetric,
   const TensorSize<1> &t_size_theta,
@@ -201,7 +181,7 @@ operator()(
 }
 
 void
-IntegratorSumFactorization<2,2>::
+IntegratorSumFactorization<2>::
 operator()(
   const bool is_symmetric,
   const TensorSize<2> &t_size_theta,
@@ -311,16 +291,22 @@ operator()(
         const Real *const row_it_end = row_it + t_size_alpha[0];
         for (; row_it != row_it_end ; ++t_id_C1[1], ++row_it)
         {
-          const Real *C1_it = &C1(t_id_C1);
-          const Real *const C1_it_end = C1_it + t_size_theta[1];
+          const Real *C1_it_begin = &C1(t_id_C1);
+          const Real *const C1_it_end = C1_it_begin + t_size_theta[1];
 
-          const Real *J1_it = &J[1](t_id_J);
+          const Real *J1_it_begin = &J[1](t_id_J);
+
+          /*
+          const Real *J1_it = J1_it_begin;
 
           Real sum = 0.0;
-          for (; C1_it != C1_it_end ; ++C1_it, ++J1_it)
+          for (const Real *C1_it = C1_it_begin; C1_it != C1_it_end ; ++C1_it, ++J1_it)
             sum += (*C1_it) * (*J1_it);
 
           (*row_it) += sum;
+          //*/
+          (*row_it) += std::inner_product(C1_it_begin,C1_it_end,J1_it_begin,0.0);
+
         } //end loop row_it
       } //end loop alpha_1
     } // end loop beta_0
@@ -343,7 +329,7 @@ operator()(
 
 
 void
-IntegratorSumFactorization<3,3>::
+IntegratorSumFactorization<3>::
 operator()(
   const bool is_symmetric,
   const TensorSize<3> &t_size_theta,

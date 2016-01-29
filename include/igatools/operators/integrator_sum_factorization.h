@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
 
 
 
-template <int dim, int r=dim>
+template <int dim>
 class IntegratorSumFactorization
 {
 public:
@@ -53,26 +53,9 @@ public:
 };
 
 
-template <int dim>
-class IntegratorSumFactorization<dim,1>
-{
-public:
-  void operator()(
-    const bool is_symmetric,
-    const TensorSize<dim> &t_size_theta,
-    const TensorSize<dim> &t_size_alpha,
-    const TensorSize<dim> &t_size_beta,
-    const SafeSTLArray<DynamicMultiArray<Real,3>,dim> &J,
-    const DynamicMultiArray<Real,3> &Cpre,
-    const int row_id_begin,
-    const int row_id_last,
-    const int col_id_begin,
-    const int col_id_last,
-    DenseMatrix &local_operator) const;
-};
 
 template <>
-class IntegratorSumFactorization<0,0>
+class IntegratorSumFactorization<0>
 {
 public:
   void operator()(
@@ -91,7 +74,7 @@ public:
 
 
 template <>
-class IntegratorSumFactorization<1,1>
+class IntegratorSumFactorization<1>
 {
 public:
   void operator()(
@@ -109,7 +92,7 @@ public:
 };
 
 template <>
-class IntegratorSumFactorization<2,2>
+class IntegratorSumFactorization<2>
 {
 public:
   void operator()(
@@ -128,7 +111,7 @@ public:
 
 
 template <>
-class IntegratorSumFactorization<3,3>
+class IntegratorSumFactorization<3>
 {
 public:
   void operator()(
