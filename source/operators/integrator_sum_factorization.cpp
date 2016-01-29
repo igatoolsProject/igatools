@@ -25,7 +25,7 @@
 #include <chrono>
 
 
-#define TIME_PROFILING
+//#define TIME_PROFILING
 
 IGA_NAMESPACE_OPEN
 
