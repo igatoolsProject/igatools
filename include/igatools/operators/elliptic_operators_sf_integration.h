@@ -366,9 +366,13 @@ integrate_add_operator_general_order(
 
 
   //--------------------------------------------------------------------------
+  //TODO (martinelli, Jan 29, 2016): up to now the cost of copying the matrix entries for the
+  // symmetric part is equal to compute the entries of the non-symmetric case.
+
   const bool is_symmetric = same_basis &&
                             (comp_test == comp_trial) &&
-                            (deriv_order_test == deriv_order_trial);
+                            (deriv_order_test == deriv_order_trial) &&
+							false;
   //--------------------------------------------------------------------------
 
 

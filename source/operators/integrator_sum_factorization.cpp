@@ -181,12 +181,16 @@ operator()(
     // here we copy the upper triangular part of the current block on the lower triangular part
     for (int loc_row = 0 ; loc_row < n_rows ; ++loc_row)
     {
-      for (int loc_col = 0 ; loc_col < loc_row ; ++loc_col)
+      const int r_src = loc_row + row_id_begin;
+      const int c_tgt = loc_row + col_id_begin;
+      for (int loc_col = loc_row+1 ; loc_col < n_rows ; ++loc_col)
       {
-        local_operator(loc_row + row_id_begin,loc_col + col_id_begin) =
-          local_operator(loc_col + row_id_begin,loc_row+ col_id_begin);
-      }
-    }
+        const int r_tgt = loc_col + row_id_begin;
+        const int c_src = loc_col + col_id_begin;
+        local_operator(r_tgt,c_tgt) =
+          local_operator(r_src,c_src);
+      } // end loop loc_col
+    } // end_loop loc_row
     //--------------------------------------------------------------
 
   } // end if (is_symmetric)
@@ -327,13 +331,16 @@ operator()(
     // here we copy the upper triangular part of the current block on the lower triangular part
     for (int loc_row = 0 ; loc_row < n_rows ; ++loc_row)
     {
-      for (int loc_col = 0 ; loc_col < loc_row ; ++loc_col)
+      const int r_src = loc_row + row_id_begin;
+      const int c_tgt = loc_row + col_id_begin;
+      for (int loc_col = loc_row+1 ; loc_col < n_rows ; ++loc_col)
       {
-        local_operator(loc_row + row_id_begin,loc_col + col_id_begin) =
-          local_operator(loc_col + row_id_begin,loc_row+ col_id_begin);
-      }
-    }
-    //--------------------------------------------------------------
+        const int r_tgt = loc_col + row_id_begin;
+        const int c_src = loc_col + col_id_begin;
+        local_operator(r_tgt,c_tgt) =
+          local_operator(r_src,c_src);
+      } // end loop loc_col
+    } // end_loop loc_row
   }//end if (is_symmetric)
 }
 
@@ -583,7 +590,6 @@ operator()(
 #endif // TIME_PROFILING
 
     // here we copy the upper triangular part of the current block on the lower triangular part
-
     for (int loc_row = 0 ; loc_row < n_rows ; ++loc_row)
     {
       const int r_src = loc_row + row_id_begin;
@@ -593,9 +599,9 @@ operator()(
         const int r_tgt = loc_col + row_id_begin;
         const int c_src = loc_col + col_id_begin;
         local_operator(r_tgt,c_tgt) =
-          local_operator(r_src,loc_col + col_id_begin);
-      }
-    }
+          local_operator(r_src,c_src);
+      } // end loop loc_col
+    } // end_loop loc_row
     //*/
 
     //*/
