@@ -25,7 +25,7 @@
 #include <chrono>
 
 
-//#define TIME_PROFILING
+#define TIME_PROFILING
 
 IGA_NAMESPACE_OPEN
 
@@ -38,30 +38,6 @@ using Duration = std::chrono::duration<Real>;
 #endif // TIME_PROFILING
 
 
-
-
-/*
-
-template <int dim>
-void
-IntegratorSumFactorization<dim>::
-operator()(
-  const bool is_symmetric,
-  const TensorSize<dim> &t_size_theta,
-  const TensorSize<dim> &t_size_alpha,
-  const TensorSize<dim> &t_size_beta,
-  const SafeSTLArray<DynamicMultiArray<Real,3>,dim> &J,
-  const DynamicMultiArray<Real,3> &Cpre,
-  const int row_id_begin,
-  const int row_id_last,
-  const int col_id_begin,
-  const int col_id_last,
-  DenseMatrix &local_operator) const
-{
-  Assert(false,ExcNotImplemented());
-  AssertThrow(false,ExcNotImplemented());
-}
-//*/
 
 
 
@@ -82,7 +58,6 @@ operator()(
   const int col_id_last,
   DenseMatrix &local_operator) const
 {
-  Assert(false,ExcNotImplemented());
   AssertThrow(false,ExcNotImplemented());
 }
 
@@ -128,56 +103,33 @@ operator()(
   TensorIndex<3> t_id_J;
   TensorIndex<3> t_id_C;
 
-  if (!is_symmetric)
+  //--------------------------------------------------------------
+  t_id_C[0] = 0;
+  t_id_C[1] = 0;
+  t_id_C[2] = 0;
+
+  t_id_J[0] = 0;
+
+  const Real *const C_it_begin = &C(t_id_C);
+  const Real *const C_it_end = C_it_begin + t_size_theta[0];
+
+  for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
   {
-    //--------------------------------------------------------------
-    t_id_C[1] = 0;
-    t_id_C[2] = 0;
-
-    for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
+    t_id_J[2] = beta_0 + row_id_begin;
+    for (Index alpha_0 = (is_symmetric ? beta_0 : 0) ;
+         alpha_0 < t_size_alpha[0] ;
+         ++alpha_0)
     {
-      t_id_J[2] = beta_0 + row_id_begin;
-      for (Index alpha_0 = 0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
-      {
-        t_id_J[1] = alpha_0 + col_id_begin;
+      t_id_J[1] = alpha_0 + col_id_begin;
 
-        Real sum = 0.0;
-        for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0)
-        {
-          t_id_J[0] = theta_0;
-          t_id_C[0] = theta_0;
-          sum += C(t_id_C) * J[0](t_id_J);
-        }
+      const Real *const J0_it_begin = &J[0](t_id_J);
 
-        local_operator(beta_0,alpha_0) = sum;
-      }
+      local_operator(beta_0,alpha_0) += std::inner_product(C_it_begin,C_it_end,J0_it_begin,0.0);
     }
-    //--------------------------------------------------------------
-  } // end if (!is_symmetric)
-  else
+  }
+
+  if (is_symmetric)
   {
-    //--------------------------------------------------------------
-    t_id_C[1] = 0;
-    t_id_C[2] = 0;
-    for (Index beta_0 = 0 ; beta_0 < t_size_beta[0] ; ++beta_0)
-    {
-      t_id_J[2] = beta_0 + row_id_begin;
-      for (Index alpha_0 = beta_0 ; alpha_0 < t_size_alpha[0] ; ++alpha_0)
-      {
-        t_id_J[1] = alpha_0 + col_id_begin;
-
-        Real sum = 0.0;
-        for (Index theta_0 = 0; theta_0 < t_size_theta[0] ; ++theta_0)
-        {
-          t_id_J[0] = theta_0;
-          t_id_C[0] = theta_0;
-          sum += C(t_id_C) * J[0](t_id_J);
-        }
-
-        local_operator(beta_0,alpha_0) += sum;
-      }
-    }
-
     // here we copy the upper triangular part of the current block on the lower triangular part
     for (int loc_row = 0 ; loc_row < n_rows ; ++loc_row)
     {
@@ -434,7 +386,7 @@ operator()(
 
       const Real *C_it_begin = &C(t_id_C);
 
-      const Real *const J0_it_begin = &J[0](t_id_J);
+      const Real *J0_it_begin = &J[0](t_id_J);
       const Real *const J0_it_end = J0_it_begin + t_size_theta[0];
 
       for (Index theta_2 = 0; theta_2 < t_size_theta[2] ; ++theta_2)
@@ -442,7 +394,11 @@ operator()(
         const Real *const C1_it_end = C1_it + t_size_theta[1];
         for (; C1_it != C1_it_end ; ++C1_it, C_it_begin += t_size_theta[0])
         {
-          (*C1_it) = std::inner_product(J0_it_begin,J0_it_end,C_it_begin,0.0);
+          (*C1_it) = std::inner_product(
+                       J0_it_begin + 1,
+                       J0_it_end,
+                       C_it_begin + 1,
+                       (*C_it_begin) * (*J0_it_begin));
         } // end loop theta_1
       } // end loop theta_2
     } // end loop alpha_0
@@ -491,7 +447,11 @@ operator()(
           const Real *const C2_it_end = C2_it_begin + t_size_C2[0];
           for (Real *C2_it = C2_it_begin; C2_it != C2_it_end ; ++C2_it)
           {
-            (*C2_it) = std::inner_product(C1_it_begin,C1_it_end,J1_it_begin,0.0);
+            (*C2_it) = std::inner_product(
+                         C1_it_begin + 1,
+                         C1_it_end,
+                         J1_it_begin + 1,
+                         (*C1_it_begin) * (*J1_it_begin));
           } // end loop C2_it
         } //end loop t_id_C1[1]
       } //end loop t_id_J[1]
@@ -545,10 +505,9 @@ operator()(
              t_id_J[1] < t_size_alpha[2] ;
              ++t_id_J[1])
         {
-          const Real *const J2_it_begin = &J[2](t_id_J);
+          const Real *J2_it_begin = &J[2](t_id_J);
 
           const Real *C2_it_begin = &C2(t_id_C2);
-          const Real *C2_it_end = C2_it_begin + n_pts;
 
           const int c_begin = t_id_J[1] * size_alpha_1 * size_alpha_0 + col_id_begin;
 
@@ -565,10 +524,15 @@ operator()(
             for (Real *row_it = row_it_begin ;
                  row_it != row_it_end ;
                  C2_it_begin += n_pts,
-                 C2_it_end += n_pts,
                  ++row_it) // loop of size_alpha_0 iterations
             {
-              (*row_it) += std::inner_product(C2_it_begin,C2_it_end,J2_it_begin,0.0);
+//              (*row_it) += std::inner_product(C2_it_begin,C2_it_begin+n_pts,J2_it_begin,0.0);
+
+              (*row_it) += std::inner_product(
+                             C2_it_begin + 1,
+                             C2_it_begin + n_pts,
+                             J2_it_begin + 1,
+                             (*C2_it_begin) * (*J2_it_begin));
             } // end loop row_it
           } // end loop alpha_1
         } // end loop alpha_2

@@ -37,6 +37,8 @@
 //#include <igatools/linear_algebra/dense_matrix.h>
 
 
+//#define TIME_PROFILING
+
 template<int dim,int range>
 void loc_mass_matrix(const int n_knots, const int deg)
 {
@@ -81,9 +83,11 @@ void loc_mass_matrix(const int n_knots, const int deg)
 
 //    auto loc_mat = elem->template integrate_u_v<dim>(0);
     auto loc_mat = elem->integrate_element_u_v();
+#ifndef TIME_PROFILING
     out.begin_item("Mass matrix:");
     loc_mat.print_info(out);
     out.end_item();
+#endif
 
     out.end_item();
   }
@@ -100,26 +104,26 @@ void loc_mass_matrix(const int n_knots, const int deg)
 int main()
 {
 
-  if (false)
-  {
-    const int n_knots = 2;
-    const int deg = 15;
-    loc_mass_matrix<3,1>(n_knots, deg);
+#ifdef TIME_PROFILING
+
+  const int n_knots = 2;
+  const int deg = 20;
+  loc_mass_matrix<3,1>(n_knots, deg);
 //    loc_mass_matrix<3,3>(n_knots, deg);
-  }
-  else
-  {
-    const int n_knots = 3;
-    const int deg = 3;
 
-    loc_mass_matrix<1,1>(n_knots, deg);
-    loc_mass_matrix<2,1>(n_knots, deg);
-    loc_mass_matrix<3,1>(n_knots, deg);
+#else
+  const int n_knots = 3;
+  const int deg = 3;
 
-    loc_mass_matrix<2,2>(n_knots, deg);
-    loc_mass_matrix<2,3>(n_knots, deg);
-    //*/
-    loc_mass_matrix<3,3>(n_knots, deg);
-  }
+  loc_mass_matrix<1,1>(n_knots, deg);
+  loc_mass_matrix<2,1>(n_knots, deg);
+  loc_mass_matrix<3,1>(n_knots, deg);
+
+  loc_mass_matrix<2,2>(n_knots, deg);
+  loc_mass_matrix<2,3>(n_knots, deg);
+  //*/
+  loc_mass_matrix<3,3>(n_knots, deg);
+#endif
+
   return  0;
 }

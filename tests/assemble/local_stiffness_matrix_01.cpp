@@ -35,6 +35,8 @@
 #include <igatools/base/quadrature_lib.h>
 
 
+//#define TIME_PROFILING
+
 template<int dim>
 void loc_stiff_matrix(const int n_knots, const int deg)
 {
@@ -81,9 +83,11 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 //    auto loc_mat = elem->template integrate_gradu_gradv<dim>(0);
     auto loc_mat = elem->integrate_element_gradu_gradv();
 
+#ifndef TIME_PROFILING
     out.begin_item("Stiffnes matrix:");
     loc_mat.print_info(out);
     out.end_item();
+#endif
 
     out.end_item();
   }
@@ -99,23 +103,25 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 
 int main()
 {
-  if (false)
-  {
-    const int n_knots = 2;
-    const int deg = 15;
+#ifdef TIME_PROFILING
+
+  const int n_knots = 2;
+  const int deg = 20;
 
 //    loc_stiff_matrix<1>(n_knots, deg);
 //    loc_stiff_matrix<2>(n_knots, deg);
-    loc_stiff_matrix<3>(n_knots, deg);
-  }
-  else
-  {
-    const int n_knots = 3;
-    const int deg = 3;
+  loc_stiff_matrix<3>(n_knots, deg);
 
-    loc_stiff_matrix<1>(n_knots, deg);
-    loc_stiff_matrix<2>(n_knots, deg);
-    loc_stiff_matrix<3>(n_knots, deg);
-  }
+#else
+
+  const int n_knots = 3;
+  const int deg = 3;
+
+  loc_stiff_matrix<1>(n_knots, deg);
+  loc_stiff_matrix<2>(n_knots, deg);
+  loc_stiff_matrix<3>(n_knots, deg);
+
+#endif
+
   return  0;
 }
