@@ -28,7 +28,7 @@
 IGA_NAMESPACE_OPEN
 
 
-#define SUM_FACTORIZATION
+//#define SUM_FACTORIZATION
 
 template<int dim_,int codim_,int range_,int rank_>
 BasisElement<dim_,codim_,range_,rank_>::

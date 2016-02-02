@@ -55,8 +55,8 @@ public :
    * Default Constructor. It fills the <tt>N</tt> entries of the array with <tt>N</tt> copies
    * of the default-construced object of type <tt>T</tt>.
    */
-  SafeSTLArray() {};
-
+  SafeSTLArray()
+  {};
 
   /**
    * Constructor. It fills the <tt>N</tt> entries of the array with <tt>N</tt> copies

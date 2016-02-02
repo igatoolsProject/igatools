@@ -197,8 +197,8 @@ get_active_components_id() const
 	active_components_id.push_back(id);
 
 
-  return active_components_id;
-//  return active_components_id_;
+//  return active_components_id;
+  return active_components_id_;
 }
 
 template<int dim_, int range_, int rank_>
