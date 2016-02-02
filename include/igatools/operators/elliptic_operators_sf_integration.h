@@ -500,8 +500,8 @@ integrate_add_operator_general_order(
   const Size n_entries = tensor_size_C0.flat_size();
 
 
-  Assert(coeffs_test_trial.size() == quad_scheme->get_num_points(),
-         ExcDimensionMismatch(coeffs_test_trial.size(),quad_scheme->get_num_points()));
+  Assert(coeffs_test_trial.size() == quad_scheme.get_num_points(),
+         ExcDimensionMismatch(coeffs_test_trial.size(),quad_scheme.get_num_points()));
   Assert(n_entries == coeffs_test_trial.flat_size(),
          ExcDimensionMismatch(n_entries,coeffs_test_trial.flat_size()));
   for (Index entry_id = 0 ; entry_id < n_entries ; ++entry_id)

@@ -573,7 +573,7 @@ public:
 
     Index active(const Index i) const;
 
-    const SafeSTLVector<Index> &get_active_components_id() const;
+    SafeSTLVector<Index> get_active_components_id() const;
 
     const SafeSTLVector<Index> &get_inactive_components_id() const;
 

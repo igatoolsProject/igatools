@@ -183,12 +183,22 @@ active(const Index i) const
 
 template<int dim_, int range_, int rank_>
 template<class T>
-const SafeSTLVector<Index> &
+SafeSTLVector<Index>
 SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 get_active_components_id() const
 {
-  return active_components_id_;
+  SafeSTLSet<int> unique_ids;
+  for (const int id : comp_map_)
+	unique_ids.insert(id);
+
+  SafeSTLVector<int> active_components_id;
+  for (const int id : unique_ids)
+	active_components_id.push_back(id);
+
+
+  return active_components_id;
+//  return active_components_id_;
 }
 
 template<int dim_, int range_, int rank_>
@@ -288,11 +298,13 @@ print_info(LogStream &out) const
   out.end_item();
 
   out.begin_item("Active components ids: ");
-  active_components_id_.print_info(out);
+  this->get_active_components_id().print_info(out);
+//  active_components_id_.print_info(out);
   out.end_item();
 
   out.begin_item("Inactive components ids: ");
-  inactive_components_id_.print_info(out);
+  this->get_inactive_components_id().print_info(out);
+//  inactive_components_id_.print_info(out);
   out.end_item();
 }
 
