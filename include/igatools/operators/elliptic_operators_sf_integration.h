@@ -102,10 +102,12 @@ public:
      \f]
    * The matrix \f$ A_e \f$ is commonly referred as <em>local mass-matrix</em>.
    */
+  template <int sdim>
   void eval_operator_u_v(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
     const ValueVector<Real> &c,
+	const int s_id,
     DenseMatrix &operator_u_v) const;
 
   /**
@@ -119,10 +121,12 @@ public:
      \f]
    * The matrix \f$ A_e \f$ is commonly referred as <em>local stiffness-matrix</em>.
    */
+  template <int sdim>
   void eval_operator_gradu_gradv(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
     const SafeSTLArray<ValueVector<Real>,dim_> &coeffs,
+	const int s_id,
     DenseMatrix &operator_gradu_gradv) const;
 
 
@@ -183,6 +187,7 @@ protected:
     const SafeSTLArray<Real,dim_> &length_element_edge) const;
 
 
+  template <int sdim>
   void
   integrate_add_operator_general_order(
     const ElemTest &elem_test,
@@ -196,6 +201,7 @@ protected:
     const int col_id_last,
     const TensorIndex<dim_> &deriv_order_trial,
     const ValueVector<Real> &c,
+	const int s_id,
     DenseMatrix &op) const;
 };
 
@@ -277,6 +283,7 @@ evaluate_w_phi1Dtrial_phi1Dtest(
 
 
 template <int dim_,int range_,int rank_>
+template <int sdim>
 inline
 void
 EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
@@ -292,6 +299,7 @@ integrate_add_operator_general_order(
   const int col_id_last,
   const TensorIndex<dim_> &deriv_order_trial,
   const ValueVector<Real> &coeffs_test_trial,
+  const int s_id,
   DenseMatrix &op) const
 {
 
@@ -313,12 +321,12 @@ integrate_add_operator_general_order(
 
   //--------------------------------------------------------------------------
   const auto &grid_elem_test = elem_test.get_grid_element();
-  const auto quad_elem_test = grid_elem_test.template get_quad<dim>();
+  const auto quad_elem_test = grid_elem_test.template get_quad<sdim>();
   Assert(quad_elem_test != nullptr,ExcNullPtr());
 
 
   const auto &grid_elem_trial = elem_trial.get_grid_element();
-  const auto quad_elem_trial = grid_elem_trial.template get_quad<dim>();
+  const auto quad_elem_trial = grid_elem_trial.template get_quad<sdim>();
   Assert(quad_elem_trial != nullptr,ExcNullPtr());
 
 
@@ -333,10 +341,13 @@ integrate_add_operator_general_order(
 
   Assert(quad_elem_test == quad_elem_trial,
          ExcMessage("Test and trial elements have different quadrature schemes."));
-  const auto quad_scheme = quad_elem_test;
-  Assert(quad_scheme->is_tensor_product(),
+
+  const auto quad_scheme = extend_sub_elem_quad<sdim,dim_>(*quad_elem_test,s_id);
+
+//  const auto quad_scheme = quad_elem_test;
+  Assert(quad_scheme.is_tensor_product(),
          ExcMessage("The quadrature scheme has not the tensor-product structure."))
-  const auto points_t_size = quad_scheme->get_num_coords_direction();
+  const auto points_t_size = quad_scheme.get_num_coords_direction();
   //--------------------------------------------------------------------------
 
 
@@ -445,15 +456,24 @@ integrate_add_operator_general_order(
   const auto start_compute_phi1Dtest_phi1Dtrial = Clock::now();
 #endif //#ifdef TIME_PROFILING
 
-  const auto &l_tmp = grid_elem.template get_side_lengths<dim>(0);
-  SafeSTLArray<Real,dim> length_element_edges;
-  for (int i = 0 ; i < dim ; ++i)
-    length_element_edges[i] = l_tmp[i];
+
+
+  const auto &l_tmp = grid_elem.template get_side_lengths<sdim>(s_id);
+  const auto &sub_element = UnitElement<dim>::template get_elem<sdim>(s_id);
+  const auto &active_directions = sub_element.active_directions;
+
+  SafeSTLArray<Real,dim> length_element_edges(1.0);
+  for (int i = 0 ; i < sdim ; ++i)
+  {
+	const auto active_dir = active_directions[i];
+    length_element_edges[active_dir] = l_tmp[i];
+  }
+
 
   const auto w_phi1Dtrial_phi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest(
                                         phi_1D_test,
                                         phi_1D_trial,
-                                        quad_scheme->get_weights_1d(),
+                                        quad_scheme.get_weights_1d(),
                                         length_element_edges);
 
 #ifdef TIME_PROFILING
@@ -511,6 +531,7 @@ integrate_add_operator_general_order(
 
 
 template <int dim_,int range_,int rank_>
+template <int sdim>
 inline
 void
 EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
@@ -518,6 +539,7 @@ eval_operator_u_v(
   const ElemTest &elem_test,
   const ElemTrial &elem_trial,
   const ValueVector<Real> &coeffs,
+  const int s_id,
   DenseMatrix &operator_u_v) const
 {
   // TODO (martinelli, Jan 25, 2016): for the moment, only the vector case is treated
@@ -554,7 +576,7 @@ eval_operator_u_v(
 
       if (comp_test == comp_trial)
       {
-        this->integrate_add_operator_general_order(
+        this->integrate_add_operator_general_order<sdim>(
           elem_test,
           comp_test,
           row_id_begin,row_id_last,
@@ -564,6 +586,7 @@ eval_operator_u_v(
           col_id_begin,col_id_last,
           deriv_order_trial,
           coeffs,
+		  s_id,
           operator_u_v);
       }
       col_id_begin = col_id_last + 1;
@@ -597,6 +620,7 @@ eval_operator_u_v(
 
 
 template <int dim_,int range_,int rank_>
+template<int sdim>
 inline
 void
 EllipticOperatorsSFIntegrationBSpline<dim_,range_,rank_>::
@@ -604,6 +628,7 @@ eval_operator_gradu_gradv(
   const ElemTest &elem_test,
   const ElemTrial &elem_trial,
   const SafeSTLArray<ValueVector<Real>,dim_> &coeffs,
+  const int s_id,
   DenseMatrix &operator_gradu_gradv) const
 {
   // TODO (martinelli, Jan 25, 2016): for the moment, only the scalar case is treated
@@ -648,7 +673,7 @@ eval_operator_gradu_gradv(
           deriv_order_trial[k] = 1;
 
 
-          this->integrate_add_operator_general_order(
+          this->integrate_add_operator_general_order<sdim>(
             elem_test,
             comp_test,
             row_id_begin,row_id_last,
@@ -658,6 +683,7 @@ eval_operator_gradu_gradv(
             col_id_begin,col_id_last,
             deriv_order_trial,
             coeffs[k],
+			s_id,
             operator_gradu_gradv);
         } // end loop k
       } // end if (comp_test == comp_trial)

@@ -136,7 +136,6 @@ private:
                    const Real a,
                    const Real b);
 
-private:
   OperatorsTable ext_operators_;
 
 #ifdef SERIALIZATION

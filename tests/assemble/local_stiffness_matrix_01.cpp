@@ -80,8 +80,8 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 
     elem_handler->fill_element_cache(elem);
 
-//    auto loc_mat = elem->template integrate_gradu_gradv<dim>(0);
-    auto loc_mat = elem->integrate_element_gradu_gradv();
+    auto loc_mat = elem->template integrate_gradu_gradv<dim>(0);
+//    auto loc_mat = elem->integrate_gradu_gradv_sum_factorization_impl(Topology<dim>(),0);
 
 #ifndef TIME_PROFILING
     out.begin_item("Stiffnes matrix:");

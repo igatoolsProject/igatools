@@ -81,8 +81,8 @@ void loc_mass_matrix(const int n_knots, const int deg)
 
     elem_handler->fill_element_cache(elem);
 
-//    auto loc_mat = elem->template integrate_u_v<dim>(0);
-    auto loc_mat = elem->integrate_element_u_v();
+    auto loc_mat = elem->template integrate_u_v<dim>(0);
+//    auto loc_mat = elem->integrate_u_v_sum_factorization_impl(Topology<dim>(),0);
 #ifndef TIME_PROFILING
     out.begin_item("Mass matrix:");
     loc_mat.print_info(out);

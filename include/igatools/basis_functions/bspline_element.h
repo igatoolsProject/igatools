@@ -190,12 +190,52 @@ public:
 
   virtual
   DenseMatrix
-  integrate_element_u_v(const PropId &dofs_property = DofProperties::active) override final;
+  integrate_u_v_sum_factorization_impl(const TopologyVariants<dim> &topology,
+		  const int s_id,
+		  const PropId &dofs_property = DofProperties::active) override final;
 
   virtual
   DenseMatrix
-  integrate_element_gradu_gradv(const PropId &dofs_property = DofProperties::active) override final;
+  integrate_gradu_gradv_sum_factorization_impl(const TopologyVariants<dim> &topology,
+		  const int s_id,
+		  const PropId &dofs_property = DofProperties::active) override final;
 
+
+  struct SumFactorizationDispatcher : boost::static_visitor<DenseMatrix>
+  {
+    enum class OperatorType
+	{
+      U_V = 0,
+      gradU_gradV = 1
+	};
+
+	SumFactorizationDispatcher(
+			const BSplineElement<dim,range,rank> &bsp_elem,
+			const int s_id,
+			const OperatorType &operator_type,
+			const PropId &dofs_property = DofProperties::active)
+	  :
+	  bsp_elem_(bsp_elem),
+	  s_id_(s_id),
+	  operator_type_(operator_type),
+	  dofs_property_(dofs_property)
+	{
+	  Assert(dofs_property_ == DofProperties::active,
+		     ExcMessage("This function is implemented (temporarly) only if dofs_property==\"active\""));
+
+//	  AssertThrow(false,ExcNotImplemented());
+	}
+
+
+    template<int sdim>
+    DenseMatrix operator()(const Topology<sdim> &topology);
+
+  private:
+    const BSplineElement<dim,range,rank> &bsp_elem_;
+    const int s_id_;
+    const OperatorType operator_type_;
+    const PropId dofs_property_;
+  };
 };
 
 IGA_NAMESPACE_CLOSE

@@ -170,6 +170,23 @@ public:
     //*/
 
 
+    /**
+     * @brief Returns TRUE if all components of the table are equal.
+     */
+    bool is_component_uniform() const
+    {
+      bool is_comp_uniform = true;
+      const auto & t_size_0 = (*this)[0];
+      for (int comp = 1 ; comp < n_components ; ++comp)
+      {
+    	if ((*this)[0] != t_size_0)
+    	{
+    	  is_comp_uniform = false;
+    	  break;
+    	}
+      }
+      return is_comp_uniform;
+    }
 
     Size get_component_size(const int comp) const;
 
@@ -351,6 +368,25 @@ public:
   ///@}
 
 
+  /**
+   * @brief Returns TRUE if all scalar components of the space are equal.
+   */
+  bool is_component_uniform() const
+  {
+	const bool is_degree_uniform = deg_.is_component_uniform();
+	const bool is_multiplicity_uniform = interior_mult_.is_component_uniform();
+	const bool is_periodicity_uniform = periodic_.is_component_uniform();
+	const bool is_dimension_uniform = space_dim_.is_component_uniform();
+
+    const bool is_component_uniform = is_degree_uniform &&
+    		is_multiplicity_uniform &&
+			is_periodicity_uniform &&
+			is_dimension_uniform;
+
+    return is_component_uniform;
+  }
+
+
   int get_max_degree() const ;
 
 
@@ -449,6 +485,7 @@ public:
   /** Returns the multiplicity of the internal knots that defines the space. */
   const MultiplicityTable &get_interior_mult() const;
 
+  /** Returns the periodicity of the space. */
   const PeriodicityTable &get_periodic_table() const;
 
 
@@ -549,6 +586,12 @@ public:
      * Equality comparison operator.
      */
     bool operator==(const self_t &table) const;
+
+
+    /**
+     * @brief Returns TRUE if all components are equal.
+     */
+    bool is_component_uniform() const;
 
 
   private:

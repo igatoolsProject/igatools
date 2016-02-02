@@ -169,67 +169,91 @@ get_splines1D_table(const int sdim, const int s_id) const
 template <int dim, int range, int rank>
 DenseMatrix
 BSplineElement<dim, range, rank>::
-integrate_element_u_v(const PropId &dofs_property)
+integrate_u_v_sum_factorization_impl(
+		  const TopologyVariants<dim> &topology,
+		  const int s_id,
+		  const PropId &dofs_property)
 {
-  Assert(dofs_property == DofProperties::active,
-         ExcMessage("This function is implemented (temporarly) only if dofs_property==\"active\""));
-  const auto quad_scheme = grid_elem_->template get_quad<dim>();
-  Assert(quad_scheme != nullptr, ExcNullPtr());
-  const auto n_pts = quad_scheme->get_num_points();
-
-
-  ValueVector<Real> non_tensor_prod_coeffs(n_pts,1.0);
-
-  const int n_basis = this->get_num_basis();
-  DenseMatrix operator_u_v(n_basis,n_basis);
-  operator_u_v = 0.0;
-
-  EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
-  elliptic_operators.eval_operator_u_v(
-    *this,
-    *this,
-    non_tensor_prod_coeffs,
-    operator_u_v);
-
-  return operator_u_v;
+  SumFactorizationDispatcher sum_factorization_dispatcher(
+		  *this,
+		  s_id,
+		  SumFactorizationDispatcher::OperatorType::U_V);
+  return boost::apply_visitor(sum_factorization_dispatcher,topology);
 }
 
 
 template <int dim, int range, int rank>
 DenseMatrix
 BSplineElement<dim, range, rank>::
-integrate_element_gradu_gradv(const PropId &dofs_property)
+integrate_gradu_gradv_sum_factorization_impl(
+		  const TopologyVariants<dim> &topology,
+		  const int s_id,
+		  const PropId &dofs_property)
 {
-  Assert(dofs_property == DofProperties::active,
-         ExcMessage("This function is implemented (temporarly) only if dofs_property==\"active\""));
-  const auto quad_scheme = grid_elem_->template get_quad<dim>();
-  Assert(quad_scheme != nullptr, ExcNullPtr());
-  const auto n_pts = quad_scheme->get_num_points();
-
-
-  AssertThrow(range == 1,ExcNotImplemented());
-  AssertThrow(rank == 1,ExcNotImplemented());
-
-
-  using Vec = ValueVector<Real>;
-  SafeSTLArray<Vec,dim> non_tensor_prod_coeffs;
-  for (int i = 0 ; i < dim ; ++i)
-    non_tensor_prod_coeffs[i] = Vec(n_pts,1.0);
-
-  const int n_basis = this->get_num_basis();
-  DenseMatrix operator_gradu_gradv(n_basis,n_basis);
-  operator_gradu_gradv = 0.0;
-
-  EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
-  elliptic_operators.eval_operator_gradu_gradv(
-    *this,
-    *this,
-    non_tensor_prod_coeffs,
-    operator_gradu_gradv);
-  //*/
-  return operator_gradu_gradv;
+  SumFactorizationDispatcher sum_factorization_dispatcher(
+			  *this,
+			  s_id,
+			  SumFactorizationDispatcher::OperatorType::gradU_gradV);
+  return boost::apply_visitor(sum_factorization_dispatcher,topology);
 }
 
+
+
+template <int dim, int range, int rank>
+template<int sdim>
+DenseMatrix
+BSplineElement<dim, range, rank>::
+SumFactorizationDispatcher::
+operator()(const Topology<sdim> &topology)
+{
+  Assert(s_id_ >= 0 && s_id_ < UnitElement<dim>::sub_elements_size[sdim],
+		  ExcIndexRange(s_id_, 0, UnitElement<dim>::sub_elements_size[sdim]));
+
+//  const auto & grid_elem = bsp_elem_.get_grid_element();
+  const auto n_pts = bsp_elem_.
+		  get_grid_element().template get_quad<sdim>()->get_num_points();
+
+  const int n_basis = bsp_elem_.get_num_basis();
+  DenseMatrix op(n_basis,n_basis);
+  op = 0.0;
+
+  EllipticOperatorsSFIntegrationBSpline<dim,range,rank> elliptic_operators;
+
+  using Vec = ValueVector<Real>;
+
+  if (operator_type_ == OperatorType::U_V)
+  {
+	Vec non_tensor_prod_coeffs(n_pts,1.0);
+
+	elliptic_operators.template eval_operator_u_v<sdim>(
+		bsp_elem_,
+		bsp_elem_,
+	    non_tensor_prod_coeffs,
+		s_id_,
+		op);
+  }
+  else if (operator_type_ == OperatorType::gradU_gradV)
+  {
+	SafeSTLArray<Vec,dim> non_tensor_prod_coeffs;
+	for (int i = 0 ; i < dim ; ++i)
+	  non_tensor_prod_coeffs[i] = Vec(n_pts,1.0);
+
+	elliptic_operators.template eval_operator_gradu_gradv<sdim>(
+		bsp_elem_,
+		bsp_elem_,
+	    non_tensor_prod_coeffs,
+		s_id_,
+	    op);
+  }
+  else
+  {
+	AssertThrow(false,ExcNotImplemented());
+  }
+
+//  AssertThrow(false,ExcNotImplemented());
+
+  return op;
+}
 
 IGA_NAMESPACE_CLOSE
 

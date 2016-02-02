@@ -444,7 +444,9 @@ public:
 
   virtual
   DenseMatrix
-  integrate_element_u_v(const PropId &dofs_property = DofProperties::active)
+  integrate_u_v_sum_factorization_impl(const TopologyVariants<dim_> &topology,
+		  const int s_id,
+		  const PropId &dofs_property = DofProperties::active)
   {
     AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
     DenseMatrix mat;
@@ -453,7 +455,9 @@ public:
 
   virtual
   DenseMatrix
-  integrate_element_gradu_gradv(const PropId &dofs_property = DofProperties::active)
+  integrate_gradu_gradv_sum_factorization_impl(const TopologyVariants<dim_> &topology,
+		  const int s_id,
+		  const PropId &dofs_property = DofProperties::active)
   {
     AssertThrow(false,ExcMessage("This function must be implemented in a derived class."));
     DenseMatrix mat;

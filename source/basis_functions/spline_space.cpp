@@ -296,6 +296,18 @@ print_info(LogStream &out) const
   out.end_item();
 }
 
+
+template<int dim_, int range_, int rank_>
+template<class T>
+bool
+SplineSpace<dim_, range_, rank_>::
+ComponentContainer<T>::
+is_component_uniform() const
+{
+  const bool is_component_uniform = (active_components_id_.size() == 1);
+  return is_component_uniform;
+}
+
 #if 0
 #if SERIALIZATION
 template<int dim_, int range_, int rank_>
