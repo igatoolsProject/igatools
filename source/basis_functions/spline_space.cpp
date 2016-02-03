@@ -1241,6 +1241,11 @@ get_active_components_id() const -> SafeSTLVector<Index>
   periodic_.get_active_components_id().end());
 
   SafeSTLVector<int> active_components_id(tmp.begin(),tmp.end());
+#ifndef NDEBUG
+  for (int id : active_components_id)
+	Assert(id >= 0 && id < n_components,ExcIndexRange(id,0,n_components));
+#endif
+
   return active_components_id;
 
 #if 0

@@ -247,7 +247,8 @@ init_cache_1D()
 
   const int n_sub_elems = UnitElement<dim>::template num_elem<sdim>();
   splines_1D_table.resize(n_sub_elems);
-
+  LogStream myout;
+  myout << "init_cache_1D" <<std::endl;
   for (auto s_id = 0 ; s_id < n_sub_elems ; ++s_id)
   {
     auto &splines_1D_table_sub_elem = splines_1D_table[s_id];
@@ -258,6 +259,9 @@ init_cache_1D()
     for (int dir = 0 ; dir < sdim ; ++dir)
       n_coords[sub_elem.active_directions[dir]] = n_pts[dir];
 
+    myout.begin_item("active_components_id --- s_id:" + std::to_string(s_id));
+    active_components_id.print_info(myout);
+    myout.end_item();
 
     for (auto comp : active_components_id)
     {
