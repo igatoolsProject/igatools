@@ -54,16 +54,12 @@ ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map)
   :
   base_t(),
-  comp_map_(comp_map),
-  active_components_id_(unique_container<Index, n_entries>(comp_map)),
-  inactive_components_id_(n_entries)
+  comp_map_(comp_map)
 {
-  auto all = sequence<n_entries>();
-  auto it=std::set_difference(all.begin(), all.end(),
-                              active_components_id_.begin(),active_components_id_.end(),
-                              inactive_components_id_.begin());
-
-  inactive_components_id_.resize(it-inactive_components_id_.begin());
+#ifndef NDEBUG
+  for (const int i : comp_map_)
+	  Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
+#endif
 }
 
 
@@ -76,19 +72,20 @@ ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map, const T1 &val, EnableIf<(std::is_copy_assignable<T1>::value)> *)
   :
   base_t(),
-  comp_map_(comp_map),
-  active_components_id_(unique_container<Index, n_entries>(comp_map)),
-  inactive_components_id_(n_entries)
+  comp_map_(comp_map)
 {
-  auto all = sequence<n_entries>();
-  auto it=std::set_difference(all.begin(), all.end(),
-                              active_components_id_.begin(),active_components_id_.end(),
-                              inactive_components_id_.begin());
+#ifndef NDEBUG
+  for (const int i : comp_map_)
+	  Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
+#endif
 
-  inactive_components_id_.resize(it-inactive_components_id_.begin());
+  const auto active_components_id = this->get_active_components_id();
 
-  for (auto i : active_components_id_)
+  for (auto i : active_components_id)
+  {
+	Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
     base_t::operator[](i) = val;
+  }
 }
 
 
@@ -100,10 +97,11 @@ ComponentContainer<T>::
 ComponentContainer(std::initializer_list<T> list,EnableIf<(std::is_copy_assignable<T1>::value)> *)
   :
   base_t(list),
-  comp_map_(sequence<n_entries>()),
-  active_components_id_(unique_container<Index, n_entries>(comp_map_))
-{}
-
+  comp_map_(sequence<n_entries>())
+{
+  Assert(list.size() == n_entries,ExcDimensionMismatch(list.size(),n_entries));
+}
+//*/
 
 
 template<int dim_, int range_, int rank_>
@@ -113,14 +111,10 @@ SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 ComponentContainer(const T &val,EnableIf<(std::is_copy_assignable<T1>::value)> *)
   :
-  comp_map_(0),
-  active_components_id_(1,0),
-  inactive_components_id_(n_entries-1)
+	ComponentContainer(ComponentMap(0),val)
+//  comp_map_(0)
 {
-  for (int i=1; i<n_entries; ++i)
-    inactive_components_id_[i-1] = i;
-
-  base_t::operator[](0) = val;
+//  base_t::operator[](0) = val;
 }
 
 
@@ -133,15 +127,16 @@ operator==(const self_t &table) const
 {
   const bool same_comp_map = (comp_map_ == table.comp_map_);
 
-  const bool same_active_components_id = (active_components_id_ == table.active_components_id_);
+//  const bool same_active_components_id = (this->get_active_components_id() == table.get_active_components_id());
 
-  const bool same_inactive_components_id = (inactive_components_id_ == table.inactive_components_id_);
+//  const bool same_inactive_components_id = (this->get_inactive_components_id() == table.get_inactive_components_id());
 
   bool same_data = false;
-  if (same_comp_map && same_active_components_id && same_inactive_components_id)
+  if (same_comp_map )//&& same_active_components_id && same_inactive_components_id)
   {
+	const auto active_components_id = this->get_active_components_id();
     same_data = true;
-    for (const auto comp : active_components_id_)
+    for (const auto comp : active_components_id)
       same_data = same_data && (base_t::operator[](comp) == table[comp]);
   }
 
@@ -183,22 +178,38 @@ active(const Index i) const
 
 template<int dim_, int range_, int rank_>
 template<class T>
-const SafeSTLVector<Index> &
+SafeSTLVector<Index>
 SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 get_active_components_id() const
 {
-  return active_components_id_;
+	/*
+  SafeSTLSet<int> unique_ids(comp_map_.begin(),comp_map_.end());
+  SafeSTLVector<int> active_components_id(unique_ids.begin(),unique_ids.end());
+//*/
+  auto active_components_id = unique_container(comp_map_);
+
+  return active_components_id;
+	//  return active_components_id_;
 }
 
 template<int dim_, int range_, int rank_>
 template<class T>
-const SafeSTLVector<Index> &
+SafeSTLVector<Index>
 SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 get_inactive_components_id() const
 {
-  return inactive_components_id_;
+  const auto active_components_id = this->get_active_components_id();
+  const auto all = sequence<n_entries>();
+  SafeSTLVector<Index> inactive_components_id(all.size());
+  auto it = std::set_difference(all.begin(), all.end(),
+	                            active_components_id.begin(),active_components_id.end(),
+	                            inactive_components_id.begin());
+
+  inactive_components_id.resize(it-inactive_components_id.begin());
+
+  return inactive_components_id;
 }
 
 template<int dim_, int range_, int rank_>
@@ -210,7 +221,7 @@ get_comp_map() const -> const ComponentMap &
 {
   return comp_map_;
 }
-
+/*
 template<int dim_, int range_, int rank_>
 template<class T>
 auto
@@ -271,6 +282,7 @@ end() -> iterator
 {
   return iterator(*this,IteratorState::pass_the_end);
 }
+//*/
 
 template<int dim_, int range_, int rank_>
 template<class T>
@@ -288,35 +300,14 @@ print_info(LogStream &out) const
   out.end_item();
 
   out.begin_item("Active components ids: ");
-  active_components_id_.print_info(out);
+  this->get_active_components_id().print_info(out);
   out.end_item();
 
   out.begin_item("Inactive components ids: ");
-  inactive_components_id_.print_info(out);
+  this->get_inactive_components_id().print_info(out);
   out.end_item();
 }
 
-#if 0
-#if SERIALIZATION
-template<int dim_, int range_, int rank_>
-template<class T>
-template<class Archive>
-void
-SplineSpace<dim_, range_, rank_>::
-ComponentContainer<T>::
-serialize(Archive &ar)
-{
-  ar &make_nvp("ComponentContainer_base_t",base_class<base_t>(this));
-
-  ar &make_nvp("comp_map_",comp_map_);
-
-  ar &make_nvp("active_components_id_", active_components_id_);
-
-  ar &make_nvp("inactive_components_id_", inactive_components_id_);
-}
-#endif
-#endif
-// SERIALIZATION
 
 template<int dim_, int range_, int rank_>
 const Size SplineSpace<dim_, range_, rank_>::n_components;
@@ -383,11 +374,11 @@ SplineSpace(const Degrees &deg,
             const InteriorReg interior_reg,
             const Periodicity &periodic)
   :
-  SplineSpace(DegreeTable(true,deg),
+  SplineSpace(DegreeTable(deg),
              grid,
-             self_t::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
+             self_t::get_multiplicity_from_regularity(interior_reg,DegreeTable(deg),
                                                       grid->get_num_intervals()),
-             PeriodicityTable(true,periodic))
+             PeriodicityTable(periodic))
 {}
 
 
@@ -542,6 +533,7 @@ init()
 {
 //    Assert(grid_ != nullptr,ExcNullPtr());
 
+	/*
   //------------------------------------------------------------------------------
   // the default value of a bool variable is undefined, so we need to set
   // set the values of the inactive components of the perodicity table to true or false (we use false)
@@ -550,7 +542,7 @@ init()
   for (const auto inactive_id : periodic_.get_inactive_components_id())
     periodic_as_static_m_array[inactive_id] = Periodicity(false);
   //------------------------------------------------------------------------------
-
+//*/
 
 
   //------------------------------------------------------------------------------
@@ -811,7 +803,6 @@ create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim_,range_,rank_
 #endif // MESH_REFINEMENT
 
 
-
 template<int dim_, int range_, int rank_>
 auto
 SplineSpace<dim_, range_, rank_>::
@@ -952,7 +943,6 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 
   return result;
 }
-
 
 
 template<int dim_, int range_, int rank_>
@@ -1176,9 +1166,10 @@ print_info(LogStream &out) const
   out.end_item();
 
   out.begin_item("Interior multiplicities:");
-  const MultiplicityTable &interior_mult_ref = interior_mult_;
-  for (const auto &v : interior_mult_ref)
-    v.print_info(out);
+  interior_mult_.print_info(out);
+//  const MultiplicityTable &interior_mult_ref = interior_mult_;
+//  for (const auto &v : interior_mult_ref)
+//    v.print_info(out);
   out.end_item();
 
   out.begin_item("Dimensionality Table:");

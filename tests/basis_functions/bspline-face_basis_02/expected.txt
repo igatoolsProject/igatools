@@ -32,6 +32,17 @@ sub_basis
                [ ]
             
             Interior multiplicities:
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -116,6 +127,17 @@ sub_basis
                [ ]
             
             Interior multiplicities:
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -210,8 +232,19 @@ sub_basis
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -304,8 +337,19 @@ sub_basis
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -395,7 +439,18 @@ sub_basis
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
                [ ]
             
             Dimensionality Table:
@@ -485,7 +540,18 @@ sub_basis
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
                [ ]
             
             Dimensionality Table:
@@ -597,10 +663,21 @@ sub_basis
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 ]
-               Entry id: 1
-               [ 1 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 ]
+                     Entry id: 1
+                     [ 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -711,10 +788,21 @@ sub_basis
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 ]
-               Entry id: 1
-               [ 1 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 ]
+                     Entry id: 1
+                     [ 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -816,10 +904,21 @@ sub_basis
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
                [ ]
-               Entry id: 1
-               [ 1 1 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -920,10 +1019,21 @@ sub_basis
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
                [ ]
-               Entry id: 1
-               [ 1 1 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -1021,10 +1131,21 @@ sub_basis
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
                [ ]
-               Entry id: 1
-               [ 1 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -1121,10 +1242,21 @@ sub_basis
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
                [ ]
-               Entry id: 1
-               [ 1 ]
             
             Dimensionality Table:
                Entry id: 0

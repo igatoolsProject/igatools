@@ -38,11 +38,14 @@ template<int dim, int k=dim, int range = 1, int rank = 1>
 void bspline_iterator(const int deg = 2,const int n_qp = 3)
 {
   OUTSTART
-
+out << "a" << std::endl;
   auto grid = Grid<dim>::create();
+  out << "b" << std::endl;
   auto space = SplineSpace<dim,range,rank>::create(deg,grid);
+  out << "c" << std::endl;
   using Basis = BSpline<dim, range, rank>;
   auto basis = Basis::create(space);
+  out << "d" << std::endl;
 
 
   auto quad = QGauss<k>::create(n_qp);

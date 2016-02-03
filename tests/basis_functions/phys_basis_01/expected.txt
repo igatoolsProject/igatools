@@ -33,7 +33,18 @@ PhysicalBasis<1,1,1,0,Transformation::h_grad>
             [ ]
          
          Interior multiplicities:
-            Entry id: 0
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                  [ ]
+               
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
             [ ]
          
          Dimensionality Table:

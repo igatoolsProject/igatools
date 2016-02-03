@@ -41,8 +41,19 @@ BSpline Basis:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ ]
       
       Dimensionality Table:
          Entry id: 0
@@ -127,8 +138,19 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -231,10 +253,23 @@ BSpline Basis:
          [ 1 ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
+         Raw components: 
+            Size: [ 2 ]  Weights: [2]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+            
+            Entry id: 1
+               Entry id: 0
+               [ ]
+            
+         
+         Components map: 
+         [ 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 ]
       
       Dimensionality Table:
          Entry id: 0
@@ -333,8 +368,19 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -439,12 +485,27 @@ BSpline Basis:
          [ 1 2 ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
+         Raw components: 
+            Size: [ 3 ]  Weights: [3]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+            
+            Entry id: 1
+               Entry id: 0
+               [ ]
+            
+            Entry id: 2
+               Entry id: 0
+               [ ]
+            
+         
+         Components map: 
+         [ 0 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 2 ]
       
       Dimensionality Table:
          Entry id: 0
@@ -557,8 +618,19 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -685,10 +757,21 @@ BSpline Basis:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+               Entry id: 1
+               [ 1 1 ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ ]
       
       Dimensionality Table:
          Entry id: 0
@@ -803,10 +886,21 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                     Entry id: 1
+                     [ 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -967,14 +1061,27 @@ BSpline Basis:
          [ 1 ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
+         Raw components: 
+            Size: [ 2 ]  Weights: [2]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+               Entry id: 1
+               [ 1 1 ]
+            
+            Entry id: 1
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+         
+         Components map: 
+         [ 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 ]
       
       Dimensionality Table:
          Entry id: 0
@@ -1107,10 +1214,21 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                     Entry id: 1
+                     [ 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -1273,18 +1391,33 @@ BSpline Basis:
          [ 1 2 ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
+         Raw components: 
+            Size: [ 3 ]  Weights: [3]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+               Entry id: 1
+               [ 1 1 ]
+            
+            Entry id: 1
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+            Entry id: 2
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+         
+         Components map: 
+         [ 0 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 2 ]
       
       Dimensionality Table:
          Entry id: 0
@@ -1435,10 +1568,21 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                     Entry id: 1
+                     [ 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -1635,12 +1779,23 @@ BSpline Basis:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 2
-         [ 1 ]
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+               Entry id: 1
+               [ 1 1 ]
+               Entry id: 2
+               [ 1 ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ ]
       
       Dimensionality Table:
          Entry id: 0
@@ -1796,12 +1951,23 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
-               Entry id: 2
-               [ 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                     Entry id: 1
+                     [ 1 1 ]
+                     Entry id: 2
+                     [ 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -2075,24 +2241,39 @@ BSpline Basis:
          [ 1 2 ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 2
-         [ 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 2
-         [ 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 2
-         [ 1 ]
+         Raw components: 
+            Size: [ 3 ]  Weights: [3]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+               Entry id: 1
+               [ 1 1 ]
+               Entry id: 2
+               [ 1 ]
+            
+            Entry id: 1
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+               Entry id: 2
+               [ ]
+            
+            Entry id: 2
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+               Entry id: 2
+               [ ]
+            
+         
+         Components map: 
+         [ 0 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 2 ]
       
       Dimensionality Table:
          Entry id: 0
@@ -2290,12 +2471,23 @@ Weight function :
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
-               Entry id: 2
-               [ 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                     Entry id: 1
+                     [ 1 1 ]
+                     Entry id: 2
+                     [ 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
