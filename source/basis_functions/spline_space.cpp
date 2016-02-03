@@ -1233,12 +1233,15 @@ SplineSpace<dim_, range_, rank_>::
 get_active_components_id() const -> SafeSTLVector<Index>
 {
   SafeSTLSet<int> tmp;
-  tmp.insert(interior_mult_.get_active_components_id().begin(),
-  interior_mult_.get_active_components_id().end());
-  tmp.insert(deg_.get_active_components_id().begin(),
-  deg_.get_active_components_id().end());
-  tmp.insert(periodic_.get_active_components_id().begin(),
-  periodic_.get_active_components_id().end());
+  const auto mult_comp_id = interior_mult_.get_active_components_id();
+  tmp.insert(mult_comp_id.begin(),mult_comp_id.end());
+
+  const auto deg_comp_id = deg_.get_active_components_id();
+  tmp.insert(deg_comp_id.begin(),deg_comp_id.end());
+
+
+  const auto periodic_comp_id = periodic_.get_active_components_id();
+  tmp.insert(periodic_comp_id.begin(),periodic_comp_id.end());
 
   SafeSTLVector<int> active_components_id(tmp.begin(),tmp.end());
 #ifndef NDEBUG
