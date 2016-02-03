@@ -31,6 +31,7 @@
 using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
+using std::to_string;
 
 IGA_NAMESPACE_OPEN
 
@@ -430,46 +431,6 @@ const_create(const Degrees &deg,
   return sp;
 }
 
-#if 0
-template<int dim_,int range_,int rank_>
-auto
-BSpline<dim_,range_,rank_>::
-create(const DegreeTable &deg,
-       const std::shared_ptr<GridType> &grid,
-       const MultiplicityTable &interior_mult,
-       const PeriodicityTable &periodic,
-       const EndBehaviourTable &end_b)
--> shared_ptr<self_t>
-{
-  auto sp = shared_ptr<self_t>(
-    new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_mult, periodic, end_b));
-  Assert(sp != nullptr, ExcNullPtr());
-
-#ifdef MESH_REFINEMENT
-  sp->create_connection_for_insert_knots(sp);
-#endif
-
-  return sp;
-}
-
-template<int dim_,int range_,int rank_>
-auto
-BSpline<dim_,range_,rank_>::
-const_create(const DegreeTable &deg,
-             const std::shared_ptr<const GridType> &grid,
-             const MultiplicityTable &interior_mult,
-             const PeriodicityTable &periodic,
-             const EndBehaviourTable &end_b)
--> shared_ptr<const self_t>
-{
-  auto sp = shared_ptr<const self_t>(
-    new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_mult, periodic, end_b));
-  Assert(sp != nullptr, ExcNullPtr());
-
-  return sp;
-}
-#endif
-
 
 
 template<int dim_, int range_, int rank_>
@@ -528,10 +489,10 @@ const_create(const DegreeTable &deg,
              const PeriodicityTable &periodic)
 {
   using SpSpace = SplineSpace<dim_,range_,rank_>;
-  auto sp = std::shared_ptr<const SpSpace>(new SpSpace(
-                                             deg,
-                                             SharedPtrConstnessHandler<Grid<dim_>>(grid),
-                                             interior_mult,periodic));
+  auto sp = std::shared_ptr<const SpSpace>(new
+		  SpSpace(deg,
+				  SharedPtrConstnessHandler<Grid<dim_>>(grid),
+                  interior_mult,periodic));
   Assert(sp != nullptr, ExcNullPtr());
 
   return sp;
@@ -559,12 +520,15 @@ init()
 
   //------------------------------------------------------------------------------
   // Determine the dimensionality of the spline space --- begin
+
 //  typename TensorSizeTable::base_t n_basis;
   for (const auto comp : components)
   {
     const auto &deg_comp = deg_[comp];
     const auto &mult_comp = interior_mult_[comp];
 
+    //TODO (martinelli, Feb 3, 2016): the periodicity is hardcoded to be FALSE. Fix the periodic case.
+    periodic_[comp] = false;
     const auto &periodic_comp = periodic_[comp];
 
     auto &n_basis_comp = space_dim_[comp];
@@ -592,10 +556,17 @@ init()
                             mult.end(),
                             periodic_comp[dir] ? 0 : order);
 
+
 #ifndef NDEBUG
       if (periodic_comp[dir])
+      {
+    	std::string err_msg = "Not enough basis functions "
+    	  "along component " + to_string(comp) + ", direction " + to_string(dir) +
+		  " (got " + to_string(n_basis_comp[dir]) + " functions but expected at least " +
+		  to_string(order+1) + ")";
         Assert(n_basis_comp[dir] > order,
-               ExcMessage("Not enough basis functions"));
+               ExcMessage(err_msg));
+      }
 #endif
 
     } // end loop dir

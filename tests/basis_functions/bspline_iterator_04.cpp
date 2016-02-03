@@ -46,10 +46,12 @@ void elem_derivatives(const int n_knots,
   OUTSTART
 
   using Basis = BSpline<dim, range, rank>;
+  using EndBehaviour = typename Basis::EndBehaviour;
+  using EndBehaviourTable = typename Basis::EndBehaviourTable;
   auto grid  = Grid<dim>::create(n_knots);
 
 //  typename Basis::PeriodicityTable periodic((typename Basis::Periodicity(SafeSTLArray<bool, dim>(false))));
-  typename Basis::EndBehaviourTable ebt((typename Basis::EndBehaviour(SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory))));
+  EndBehaviourTable ebt(EndBehaviour(BasisEndBehaviour::interpolatory));
   auto int_mult = SplineSpace<dim,range,rank>::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
   auto space = SplineSpace<dim,range,rank>::create(deg,grid,int_mult);

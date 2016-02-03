@@ -278,7 +278,7 @@ public:
   const_create(const DegreeTable &deg,
                const std::shared_ptr<const GridType> &grid,
                const MultiplicityTable &interior_mult,
-               const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim_>(false)));
+               const PeriodicityTable &periodic = PeriodicityTable(false));
 
 
 private:
