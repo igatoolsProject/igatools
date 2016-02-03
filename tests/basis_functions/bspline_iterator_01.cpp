@@ -38,12 +38,10 @@ template<int dim, int k=dim, int range = 1, int rank = 1>
 void bspline_iterator(const int deg = 2,const int n_qp = 3)
 {
   OUTSTART
-
   auto grid = Grid<dim>::create();
   auto space = SplineSpace<dim,range,rank>::create(deg,grid);
   using Basis = BSpline<dim, range, rank>;
   auto basis = Basis::create(space);
-
 
   auto quad = QGauss<k>::create(n_qp);
   auto flag = basis_element::Flags::value |

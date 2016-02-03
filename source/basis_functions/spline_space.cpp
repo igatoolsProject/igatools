@@ -54,16 +54,12 @@ ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map)
   :
   base_t(),
-  comp_map_(comp_map),
-  active_components_id_(unique_container<Index, n_entries>(comp_map)),
-  inactive_components_id_(n_entries)
+  comp_map_(comp_map)
 {
-  auto all = sequence<n_entries>();
-  auto it=std::set_difference(all.begin(), all.end(),
-                              active_components_id_.begin(),active_components_id_.end(),
-                              inactive_components_id_.begin());
-
-  inactive_components_id_.resize(it-inactive_components_id_.begin());
+#ifndef NDEBUG
+  for (const int i : comp_map_)
+	  Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
+#endif
 }
 
 
@@ -76,19 +72,20 @@ ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map, const T1 &val, EnableIf<(std::is_copy_assignable<T1>::value)> *)
   :
   base_t(),
-  comp_map_(comp_map),
-  active_components_id_(unique_container<Index, n_entries>(comp_map)),
-  inactive_components_id_(n_entries)
+  comp_map_(comp_map)
 {
-  auto all = sequence<n_entries>();
-  auto it=std::set_difference(all.begin(), all.end(),
-                              active_components_id_.begin(),active_components_id_.end(),
-                              inactive_components_id_.begin());
+#ifndef NDEBUG
+  for (const int i : comp_map_)
+	  Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
+#endif
 
-  inactive_components_id_.resize(it-inactive_components_id_.begin());
+  const auto active_components_id = this->get_active_components_id();
 
-  for (auto i : active_components_id_)
+  for (auto i : active_components_id)
+  {
+	Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
     base_t::operator[](i) = val;
+  }
 }
 
 
@@ -100,10 +97,11 @@ ComponentContainer<T>::
 ComponentContainer(std::initializer_list<T> list,EnableIf<(std::is_copy_assignable<T1>::value)> *)
   :
   base_t(list),
-  comp_map_(sequence<n_entries>()),
-  active_components_id_(unique_container<Index, n_entries>(comp_map_))
-{}
-
+  comp_map_(sequence<n_entries>())
+{
+  Assert(list.size() == n_entries,ExcDimensionMismatch(list.size(),n_entries));
+}
+//*/
 
 
 template<int dim_, int range_, int rank_>
@@ -113,14 +111,10 @@ SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 ComponentContainer(const T &val,EnableIf<(std::is_copy_assignable<T1>::value)> *)
   :
-  comp_map_(0),
-  active_components_id_(1,0),
-  inactive_components_id_(n_entries-1)
+	ComponentContainer(ComponentMap(0),val)
+//  comp_map_(0)
 {
-  for (int i=1; i<n_entries; ++i)
-    inactive_components_id_[i-1] = i;
-
-  base_t::operator[](0) = val;
+//  base_t::operator[](0) = val;
 }
 
 
@@ -133,15 +127,16 @@ operator==(const self_t &table) const
 {
   const bool same_comp_map = (comp_map_ == table.comp_map_);
 
-  const bool same_active_components_id = (active_components_id_ == table.active_components_id_);
+//  const bool same_active_components_id = (this->get_active_components_id() == table.get_active_components_id());
 
-  const bool same_inactive_components_id = (inactive_components_id_ == table.inactive_components_id_);
+//  const bool same_inactive_components_id = (this->get_inactive_components_id() == table.get_inactive_components_id());
 
   bool same_data = false;
-  if (same_comp_map && same_active_components_id && same_inactive_components_id)
+  if (same_comp_map )//&& same_active_components_id && same_inactive_components_id)
   {
+	const auto active_components_id = this->get_active_components_id();
     same_data = true;
-    for (const auto comp : active_components_id_)
+    for (const auto comp : active_components_id)
       same_data = same_data && (base_t::operator[](comp) == table[comp]);
   }
 
@@ -188,27 +183,33 @@ SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 get_active_components_id() const
 {
-  SafeSTLSet<int> unique_ids;
-  for (const int id : comp_map_)
-	unique_ids.insert(id);
+	/*
+  SafeSTLSet<int> unique_ids(comp_map_.begin(),comp_map_.end());
+  SafeSTLVector<int> active_components_id(unique_ids.begin(),unique_ids.end());
+//*/
+  auto active_components_id = unique_container(comp_map_);
 
-  SafeSTLVector<int> active_components_id;
-  for (const int id : unique_ids)
-	active_components_id.push_back(id);
-
-
-//  return active_components_id;
-  return active_components_id_;
+  return active_components_id;
+	//  return active_components_id_;
 }
 
 template<int dim_, int range_, int rank_>
 template<class T>
-const SafeSTLVector<Index> &
+SafeSTLVector<Index>
 SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 get_inactive_components_id() const
 {
-  return inactive_components_id_;
+  const auto active_components_id = this->get_active_components_id();
+  const auto all = sequence<n_entries>();
+  SafeSTLVector<Index> inactive_components_id(all.size());
+  auto it = std::set_difference(all.begin(), all.end(),
+	                            active_components_id.begin(),active_components_id.end(),
+	                            inactive_components_id.begin());
+
+  inactive_components_id.resize(it-inactive_components_id.begin());
+
+  return inactive_components_id;
 }
 
 template<int dim_, int range_, int rank_>
@@ -220,7 +221,7 @@ get_comp_map() const -> const ComponentMap &
 {
   return comp_map_;
 }
-
+/*
 template<int dim_, int range_, int rank_>
 template<class T>
 auto
@@ -281,6 +282,7 @@ end() -> iterator
 {
   return iterator(*this,IteratorState::pass_the_end);
 }
+//*/
 
 template<int dim_, int range_, int rank_>
 template<class T>
@@ -299,12 +301,10 @@ print_info(LogStream &out) const
 
   out.begin_item("Active components ids: ");
   this->get_active_components_id().print_info(out);
-//  active_components_id_.print_info(out);
   out.end_item();
 
   out.begin_item("Inactive components ids: ");
   this->get_inactive_components_id().print_info(out);
-//  inactive_components_id_.print_info(out);
   out.end_item();
 }
 
@@ -316,31 +316,10 @@ SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 is_component_uniform() const
 {
-  const bool is_component_uniform = (active_components_id_.size() == 1);
+  const bool is_component_uniform = (this->get_active_components_id().size() == 1);
   return is_component_uniform;
 }
 
-#if 0
-#if SERIALIZATION
-template<int dim_, int range_, int rank_>
-template<class T>
-template<class Archive>
-void
-SplineSpace<dim_, range_, rank_>::
-ComponentContainer<T>::
-serialize(Archive &ar)
-{
-  ar &make_nvp("ComponentContainer_base_t",base_class<base_t>(this));
-
-  ar &make_nvp("comp_map_",comp_map_);
-
-  ar &make_nvp("active_components_id_", active_components_id_);
-
-  ar &make_nvp("inactive_components_id_", inactive_components_id_);
-}
-#endif
-#endif
-// SERIALIZATION
 
 template<int dim_, int range_, int rank_>
 const Size SplineSpace<dim_, range_, rank_>::n_components;
@@ -407,11 +386,11 @@ SplineSpace(const Degrees &deg,
             const InteriorReg interior_reg,
             const Periodicity &periodic)
   :
-  SplineSpace(DegreeTable(true,deg),
+  SplineSpace(DegreeTable(deg),
              grid,
-             self_t::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
+             self_t::get_multiplicity_from_regularity(interior_reg,DegreeTable(deg),
                                                       grid->get_num_intervals()),
-             PeriodicityTable(true,periodic))
+             PeriodicityTable(periodic))
 {}
 
 
@@ -566,6 +545,7 @@ init()
 {
 //    Assert(grid_ != nullptr,ExcNullPtr());
 
+	/*
   //------------------------------------------------------------------------------
   // the default value of a bool variable is undefined, so we need to set
   // set the values of the inactive components of the perodicity table to true or false (we use false)
@@ -574,7 +554,7 @@ init()
   for (const auto inactive_id : periodic_.get_inactive_components_id())
     periodic_as_static_m_array[inactive_id] = Periodicity(false);
   //------------------------------------------------------------------------------
-
+//*/
 
 
   //------------------------------------------------------------------------------
@@ -835,6 +815,139 @@ create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim_,range_,rank_
 #endif // MESH_REFINEMENT
 
 
+template<int dim_, int range_, int rank_>
+auto
+SplineSpace<dim_, range_, rank_>::
+compute_knots_with_repetition_comp(
+		const Degrees &deg_comp,
+	    const Multiplicity &mult_comp,
+		const EndBehaviour &ends_comp,
+        const BoundaryKnots &boundary_knots_comp,
+		const Periodicity &periodic_comp) const
+-> KnotCoordinates
+{
+
+#ifndef NDEBUG
+  for (const int j : UnitElement<dim_>::active_directions)
+  {
+    const auto &l_knots = boundary_knots_comp[j][0];
+    const auto &r_knots = boundary_knots_comp[j][1];
+
+    if (periodic_comp[j])
+    {
+      Assert(ends_comp[j] == BasisEndBehaviour::periodic,
+    		  ExcMessage("Periodic inconsistency"));
+      Assert(l_knots.size()==0,
+             ExcMessage("Periodic inconsistency"));
+      Assert(r_knots.size()==0,
+             ExcMessage("Periodic inconsistency"));
+    }
+    else
+    {
+      if (ends_comp[j] == BasisEndBehaviour::interpolatory)
+      {
+        Assert(l_knots.size()==0,
+               ExcMessage("Interpolatory inconsistency"));
+        Assert(r_knots.size()==0,
+               ExcMessage("Interpolatory inconsistency"));
+      }
+      if (ends_comp[j] == BasisEndBehaviour::end_knots)
+      {
+        const auto &knots = grid_->get_knot_coordinates(j);
+        const int m = deg_comp[j] + 1;
+        Assert(l_knots.size() == m,
+               ExcMessage("Wrong number of boundary knots"));
+        Assert(r_knots.size() == m,
+                 ExcMessage("Wrong number of boundary knots"));
+        Assert(knots.front() >= l_knots.back(),
+               ExcMessage("Boundary knots should be smaller or equal a"));
+        Assert(knots.back() <= r_knots.front(),
+               ExcMessage("Boundary knots should be greater or equal b"));
+        Assert(std::is_sorted(l_knots.begin(), l_knots.end()),
+               ExcMessage("Boundary knots is not sorted"));
+        Assert(std::is_sorted(r_knots.begin(), r_knots.end()),
+               ExcMessage("Boundary knots is not sorted"));
+      }
+    }
+  }
+#endif
+
+  KnotCoordinates knots_comp;
+
+  for (const auto dir : UnitElement<dim_>::active_directions)
+  {
+    const auto deg = deg_comp[dir];
+    const auto order = deg + 1;
+    const auto &knots = grid_->get_knot_coordinates(dir);
+    const auto &mult  = mult_comp[dir];
+
+//    const int m = order;
+    const int K = std::accumulate(mult.begin(),mult.end(),0);
+
+
+    SafeSTLVector<Real> rep_knots(2*order+K);
+
+    auto rep_it = rep_knots.begin() + order;
+    auto m_it = mult.begin();
+    auto k_it = ++knots.begin();
+    auto end = mult.end();
+    for (; m_it !=end; ++m_it, ++k_it)
+    {
+      for (int iMult = 0; iMult < *m_it; ++iMult, ++rep_it)
+        *rep_it = *k_it;
+    }
+
+
+    if (periodic_comp[dir])
+    {
+      const Real a = knots.front();
+      const Real b = knots.back();
+      const Real L = b - a;
+      for (int i = 0 ; i < order ; ++i)
+      {
+        rep_knots[i] = rep_knots[K+i] - L;
+        rep_knots[K+order+i] = rep_knots[order+i] + L;
+      }
+    }
+    else
+    {
+      const auto &endb = ends_comp[dir];
+      switch (endb)
+      {
+        case BasisEndBehaviour::interpolatory:
+        {
+          const Real a = knots.front();
+          const Real b = knots.back();
+
+          for (int i = 0 ; i < order ; ++i)
+          {
+            rep_knots[i] = a;
+            rep_knots[order+K+i] = b;
+          }
+        }
+        break;
+        case BasisEndBehaviour::end_knots:
+        {
+          const auto &left_knts = boundary_knots_comp[dir][0];
+          const auto &right_knts = boundary_knots_comp[dir][1];
+
+          for (int i = 0 ; i < order ; ++i)
+          {
+            rep_knots[i] = left_knts[i];
+            rep_knots[K+order+i] = right_knts[i];
+          }
+        }
+        break;
+        case BasisEndBehaviour::periodic:
+          Assert(false, ExcMessage("Impossible"));
+      }
+    }
+
+    knots_comp[dir] = rep_knots;
+  } // end loop dir
+
+  return knots_comp;
+}
 
 template<int dim_, int range_, int rank_>
 auto
@@ -843,140 +956,20 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
                               const BoundaryKnotsTable &boundary_knots) const
 -> KnotsTable
 {
-
-#ifndef NDEBUG
-  for (auto iComp : components)
-  {
-    const auto &bndry_knots_comp = boundary_knots[iComp];
-    for (const int j : UnitElement<dim_>::active_directions)
-    {
-      const auto &l_knots = bndry_knots_comp[j][0];
-      const auto &r_knots = bndry_knots_comp[j][1];
-
-      if (periodic_[iComp][j])
-      {
-        Assert(ends[iComp][j] == BasisEndBehaviour::periodic,
-               ExcMessage("Periodic inconsistency"));
-        Assert(l_knots.size()==0,
-               ExcMessage("Periodic inconsistency"));
-        Assert(r_knots.size()==0,
-               ExcMessage("Periodic inconsistency"));
-      }
-      else
-      {
-        if (ends[iComp][j] == BasisEndBehaviour::interpolatory)
-        {
-          Assert(l_knots.size()==0,
-                 ExcMessage("Interpolatory inconsistency"));
-          Assert(r_knots.size()==0,
-                 ExcMessage("Interpolatory inconsistency"));
-        }
-        if (ends[iComp][j] == BasisEndBehaviour::end_knots)
-        {
-          const auto &knots = grid_->get_knot_coordinates(j);
-          const int m = deg_[iComp][j] + 1;
-          Assert(l_knots.size() == m,
-                 ExcMessage("Wrong number of boundary knots"));
-          Assert(r_knots.size() == m,
-                 ExcMessage("Wrong number of boundary knots"));
-          Assert(knots.front() >= l_knots.back(),
-                 ExcMessage("Boundary knots should be smaller or equal a"));
-          Assert(knots.back() <= r_knots.front(),
-                 ExcMessage("Boundary knots should be greater or equal b"));
-          Assert(std::is_sorted(l_knots.begin(), l_knots.end()),
-                 ExcMessage("Boundary knots is not sorted"));
-          Assert(std::is_sorted(r_knots.begin(), r_knots.end()),
-                 ExcMessage("Boundary knots is not sorted"));
-        }
-      }
-    }
-  }
-#endif
-
-  KnotsTable result;
+  KnotsTable knots_table;
 
   for (int comp = 0; comp < n_components; ++comp)
   {
-    const auto   &degree_comp = deg_[comp];
-    const auto     &mult_comp = interior_mult_[comp];
-    const auto &periodic_comp = periodic_[comp];
+	knots_table[comp] = compute_knots_with_repetition_comp(
+			deg_[comp],
+			interior_mult_[comp],
+			ends[comp],
+			boundary_knots[comp],
+			periodic_[comp]);
+  }
 
-    for (const auto dir : UnitElement<dim_>::active_directions)
-    {
-      const auto deg = degree_comp[dir];
-      const auto order = deg + 1;
-      const auto &knots = grid_->get_knot_coordinates(dir);
-      const auto &mult  = mult_comp[dir];
-
-      const int m = order;
-      const int K = std::accumulate(mult.begin(),mult.end(),0);
-
-
-      SafeSTLVector<Real> rep_knots(2*order+K);
-
-      auto rep_it = rep_knots.begin() + m;
-      auto m_it = mult.begin();
-      auto k_it = ++knots.begin();
-      auto end = mult.end();
-      for (; m_it !=end; ++m_it, ++k_it)
-      {
-        for (int iMult = 0; iMult < *m_it; ++iMult, ++rep_it)
-          *rep_it = *k_it;
-      }
-
-
-      if (periodic_comp[dir])
-      {
-        const Real a = knots.front();
-        const Real b = knots.back();
-        const Real L = b - a;
-        for (int i=0; i<m; ++i)
-        {
-          rep_knots[i] = rep_knots[K+i] - L;
-          rep_knots[K+m+i] = rep_knots[m+i] + L;
-        }
-      }
-      else
-      {
-        const auto &endb = ends[comp][dir];
-        switch (endb)
-        {
-          case BasisEndBehaviour::interpolatory:
-          {
-            const Real a = knots.front();
-            const Real b = knots.back();
-
-            for (int i=0; i<m; ++i)
-            {
-              rep_knots[i] = a;
-              rep_knots[m+K+i] = b;
-            }
-          }
-          break;
-          case BasisEndBehaviour::end_knots:
-          {
-            const auto &left_knts = boundary_knots[comp][dir][0];
-            const auto &right_knts = boundary_knots[comp][dir][1];
-
-            for (int i=0; i<m; ++i)
-            {
-              rep_knots[i]     = left_knts[i];
-              rep_knots[K+m+i] = right_knts[i];
-            }
-          }
-          break;
-          case BasisEndBehaviour::periodic:
-            Assert(false, ExcMessage("Impossible"));
-        }
-      }
-
-      result[comp][dir] = rep_knots;
-    } // end loop dir
-  } // end loop comp
-
-  return result;
+  return knots_table;
 }
-
 
 
 template<int dim_, int range_, int rank_>
@@ -1200,9 +1193,10 @@ print_info(LogStream &out) const
   out.end_item();
 
   out.begin_item("Interior multiplicities:");
-  const MultiplicityTable &interior_mult_ref = interior_mult_;
-  for (const auto &v : interior_mult_ref)
-    v.print_info(out);
+  interior_mult_.print_info(out);
+//  const MultiplicityTable &interior_mult_ref = interior_mult_;
+//  for (const auto &v : interior_mult_ref)
+//    v.print_info(out);
   out.end_item();
 
   out.begin_item("Dimensionality Table:");
@@ -1251,14 +1245,22 @@ SplineSpace<dim_, range_, rank_>::
 get_active_components_id() const -> SafeSTLVector<Index>
 {
   SafeSTLSet<int> tmp;
-  tmp.insert(interior_mult_.get_active_components_id().begin(),
-  interior_mult_.get_active_components_id().end());
-  tmp.insert(deg_.get_active_components_id().begin(),
-  deg_.get_active_components_id().end());
-  tmp.insert(periodic_.get_active_components_id().begin(),
-  periodic_.get_active_components_id().end());
+  const auto mult_comp_id = interior_mult_.get_active_components_id();
+  tmp.insert(mult_comp_id.begin(),mult_comp_id.end());
+
+  const auto deg_comp_id = deg_.get_active_components_id();
+  tmp.insert(deg_comp_id.begin(),deg_comp_id.end());
+
+
+  const auto periodic_comp_id = periodic_.get_active_components_id();
+  tmp.insert(periodic_comp_id.begin(),periodic_comp_id.end());
 
   SafeSTLVector<int> active_components_id(tmp.begin(),tmp.end());
+#ifndef NDEBUG
+  for (int id : active_components_id)
+	Assert(id >= 0 && id < n_components,ExcIndexRange(id,0,n_components));
+#endif
+
   return active_components_id;
 
 #if 0

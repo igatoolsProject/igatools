@@ -33,8 +33,19 @@ Degrees:
    [ ]
 
 Interior multiplicities:
-   Entry id: 0
-   [ 1 1 ]
+   Raw components: 
+      Size: [ 1 ]  Weights: [1]
+      Entry id: 0
+         Entry id: 0
+         [ 1 1 ]
+      
+   
+   Components map: 
+   [ 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ ]
 
 Dimensionality Table:
    Entry id: 0
@@ -107,10 +118,21 @@ Degrees:
    [ ]
 
 Interior multiplicities:
-   Entry id: 0
-   [ 1 ]
-   Entry id: 1
-   [ 1 1 1 ]
+   Raw components: 
+      Size: [ 1 ]  Weights: [1]
+      Entry id: 0
+         Entry id: 0
+         [ 1 ]
+         Entry id: 1
+         [ 1 1 1 ]
+      
+   
+   Components map: 
+   [ 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ ]
 
 Dimensionality Table:
    Entry id: 0
@@ -235,12 +257,23 @@ Degrees:
    [ ]
 
 Interior multiplicities:
-   Entry id: 0
-   [ 1 ]
-   Entry id: 1
-   [ 1 1 ]
-   Entry id: 2
-   [ 1 1 1 ]
+   Raw components: 
+      Size: [ 1 ]  Weights: [1]
+      Entry id: 0
+         Entry id: 0
+         [ 1 ]
+         Entry id: 1
+         [ 1 1 ]
+         Entry id: 2
+         [ 1 1 1 ]
+      
+   
+   Components map: 
+   [ 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ ]
 
 Dimensionality Table:
    Entry id: 0
@@ -317,14 +350,27 @@ Degrees:
    [ ]
 
 Interior multiplicities:
-   Entry id: 0
-   [ 1 ]
-   Entry id: 1
-   [ 1 1 ]
-   Entry id: 0
-   [ 1 ]
-   Entry id: 1
-   [ 1 1 ]
+   Raw components: 
+      Size: [ 2 ]  Weights: [2]
+      Entry id: 0
+         Entry id: 0
+         [ 1 ]
+         Entry id: 1
+         [ 1 1 ]
+      
+      Entry id: 1
+         Entry id: 0
+         [ 1 ]
+         Entry id: 1
+         [ 1 1 ]
+      
+   
+   Components map: 
+   [ 0 1 ]
+   Active components ids: 
+   [ 0 1 ]
+   Inactive components ids: 
+   [ ]
 
 Dimensionality Table:
    Entry id: 0

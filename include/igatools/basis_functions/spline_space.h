@@ -36,7 +36,6 @@ IGA_NAMESPACE_OPEN
 template <int,int,int>
 class DofDistribution;
 
-
 enum class BasisEndBehaviour : int
 {
   /**
@@ -48,6 +47,7 @@ enum class BasisEndBehaviour : int
 
   periodic
 };
+
 
 inline
 LogStream &
@@ -264,7 +264,7 @@ public:
   create(const DegreeTable &deg,
          const std::shared_ptr<GridType> &grid,
          const MultiplicityTable &interior_mult,
-         const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim_>(false)));
+         const PeriodicityTable &periodic = PeriodicityTable(false));
 
   /**
    * Builds and returns a (const) SplineSpace
@@ -409,10 +409,17 @@ public:
 
 public:
 
+  KnotCoordinates compute_knots_with_repetition_comp(
+		  const Degrees &deg_comp,
+		  const Multiplicity &mult_comp,
+		  const EndBehaviour &ends_comp,
+          const BoundaryKnots &boundary_knots_comp,
+		  const Periodicity &periodic_comp) const;
+
   KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends,
                                            const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
+//*/
 
-  // KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
 
   /**
    * For each element and for each component there is an initial
@@ -522,27 +529,28 @@ public:
     ComponentContainer(const ComponentMap &comp_map, const T1 &val,
                        EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
 
+#if 0
     template <class T1 = T>
     ComponentContainer(bool uniform, const T1 &val,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr)
       : ComponentContainer(ComponentMap(0), val)
     {}
-
+#endif
     /**
      * Construct a homogenous range table with val value
      */
-
     template <class T1 = T>
     ComponentContainer(const T &val,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
 
+
     template <class T1 = T>
     ComponentContainer(std::initializer_list<T> list,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
-
+//*/
     ComponentContainer(const self_t &in) = default;
     ComponentContainer(self_t &&in) = default;
 
     self_t &operator=(const self_t &in) = default;
     self_t &operator=(self_t &&in) = default;
-
+/*
     const_iterator
     cbegin() const;
 
@@ -560,7 +568,7 @@ public:
 
     iterator
     end();
-
+//*/
     /**
      *  Flat index access operator (non-const version).
      */
@@ -575,7 +583,7 @@ public:
 
     SafeSTLVector<Index> get_active_components_id() const;
 
-    const SafeSTLVector<Index> &get_inactive_components_id() const;
+    SafeSTLVector<Index> get_inactive_components_id() const;
 
     void
     print_info(LogStream &out) const;
@@ -598,12 +606,6 @@ public:
     /** For each component return the index of the active component */
     ComponentMap comp_map_;
 
-    /** list of the active components */
-    SafeSTLVector<Index> active_components_id_;
-
-    /** list of the inactive components */
-    SafeSTLVector<Index> inactive_components_id_;
-
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for the serialization
@@ -620,9 +622,9 @@ public:
 
       ar &make_nvp("comp_map_",comp_map_);
 
-      ar &make_nvp("active_components_id_", active_components_id_);
+//      ar &make_nvp("active_components_id_", active_components_id_);
 
-      ar &make_nvp("inactive_components_id_", inactive_components_id_);
+//      ar &make_nvp("inactive_components_id_", inactive_components_id_);
     }
     ///@}
 #endif // SERIALIZATION

@@ -258,7 +258,6 @@ init_cache_1D()
     for (int dir = 0 ; dir < sdim ; ++dir)
       n_coords[sub_elem.active_directions[dir]] = n_pts[dir];
 
-
     for (auto comp : active_components_id)
     {
       auto &splines_1D_comp = splines_1D_table_sub_elem[comp];
