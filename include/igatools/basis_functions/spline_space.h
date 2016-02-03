@@ -373,6 +373,13 @@ public:
 
 public:
 
+  KnotCoordinates compute_knots_with_repetition_comp(
+		  const Degrees &deg_comp,
+		  const Multiplicity &mult_comp,
+		  const EndBehaviour &ends_comp,
+          const BoundaryKnots &boundary_knots_comp,
+		  const Periodicity &periodic_comp) const;
+
   KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends,
                                            const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
 //*/
