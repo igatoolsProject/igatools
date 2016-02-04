@@ -129,10 +129,13 @@ public:
   static const SafeSTLArray<Size, n_components> components;
 
 public:
-  using KnotCoordinates = SafeSTLArray<SafeSTLVector<Real>,dim_>;
-  using BoundaryKnots = SafeSTLArray<SafeSTLArray<SafeSTLVector<Real>,2>, dim_>;
+  using KnotsVector = SafeSTLVector<Real>;
+  using KnotCoordinates = SafeSTLArray<KnotsVector,dim_>;
+  using BoundaryKnots1D = SafeSTLArray<SafeSTLVector<Real>,2>;
+  using BoundaryKnots = SafeSTLArray<BoundaryKnots1D,dim_>;
   using Degrees  = TensorIndex<dim_>;
-  using Multiplicity = SafeSTLArray<SafeSTLVector<int>, dim_>;
+  using Multiplicity1D = SafeSTLVector<int>;
+  using Multiplicity = SafeSTLArray<Multiplicity1D,dim_>;
   using Periodicity = SafeSTLArray<bool, dim_>;
   using EndBehaviour = SafeSTLArray<BasisEndBehaviour, dim_>;
 
@@ -408,6 +411,14 @@ public:
 
 
 public:
+
+  KnotsVector compute_knots_with_repetition_comp_dir(
+		  const KnotsVector &knots_no_repetitions,
+		  const int deg_comp_dir,
+		  const Multiplicity1D &mult_comp_dir,
+		  const BasisEndBehaviour &ends_comp_dir,
+          const BoundaryKnots1D &boundary_knots_comp_dir,
+		  const bool &periodic_comp_dir) const;
 
   KnotCoordinates compute_knots_with_repetition_comp(
 		  const Degrees &deg_comp,
