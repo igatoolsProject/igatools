@@ -62,15 +62,16 @@ void assemble_matrix(const int n_knots, const int deg)
   typename Space::Periodicity periodic(false);
   periodic[0] = true;
   typename Basis::EndBehaviour end_b(BasisEndBehaviour::interpolatory);
+  typename Basis::EndBehaviourTable end_b_table(end_b);
 
   end_b[0] = BasisEndBehaviour::periodic;
 
   auto grid  = Grid<dim>::create(n_knots);
-  grid->set_boundary_id(0, 1);
-  grid->set_boundary_id(1, 1);
+//  grid->set_boundary_id(0, 1);
+//  grid->set_boundary_id(1, 1);
 
   auto space = Space::create(degt, grid, InteriorReg::maximum, periodic);
-  auto basis = Basis::create(space,end_b);
+  auto basis = Basis::create(space,end_b_table);
 
   basis->print_info(out);
 

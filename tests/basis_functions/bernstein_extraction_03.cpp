@@ -33,25 +33,31 @@ int main()
 {
   out.depth_console(10);
 
-  {
-    const int dim=1;
-    using SplineSpace = SplineSpace<dim>;
-    using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+  const int dim = 1;
+  using SplineSpace = SplineSpace<dim>;
+  using DegreeTable = typename SplineSpace::DegreeTable;
+  using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+  using Periodicity = typename SplineSpace::Periodicity;
+  using PeriodicityTable = typename SplineSpace::PeriodicityTable;
+  using EndBehaviourTable = typename SplineSpace::EndBehaviourTable;
+  using BoundaryKnotsTable = typename SplineSpace::BoundaryKnotsTable;
 
-    typename SplineSpace::DegreeTable deg {{2}};
+  {
+    DegreeTable deg {{2}};
 
     auto grid = Grid<dim>::const_create(4);
 
     auto int_mult = MultiplicityTable({ {{1,3}} });
-    auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
+    auto periodicity = PeriodicityTable(Periodicity(false));
+    auto space = SplineSpace::const_create(deg, grid, int_mult,periodicity);
 
     SafeSTLArray<SafeSTLVector<Real>,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-    typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
+    BoundaryKnotsTable bdry_knots { {bn_x} };
 
     typename SplineSpace::EndBehaviour endb(BasisEndBehaviour::end_knots);
-    typename SplineSpace::EndBehaviourTable endb_t { {endb} };
-    auto rep_knots = sp_spec->compute_knots_with_repetition(endb_t, bdry_knots);
-    auto acum_mult = sp_spec->accumulated_interior_multiplicities();
+    EndBehaviourTable endb_t { {endb} };
+    auto rep_knots = space->compute_knots_with_repetition(endb_t, bdry_knots);
+    auto acum_mult = space->accumulated_interior_multiplicities();
 
 
     BernsteinExtraction<dim> operators(*grid, rep_knots, acum_mult, deg);
@@ -59,22 +65,21 @@ int main()
   }
 
   {
-    const int dim=1;
-    using SplineSpace = SplineSpace<dim>;
-
-    typename SplineSpace::DegreeTable deg {{3}};
+    DegreeTable deg {{3}};
 
     SafeSTLArray<SafeSTLVector<Real>,dim> knots({{0,1,2,3,4}});
     auto grid = Grid<dim>::const_create(knots);
     auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                     deg, grid->get_num_intervals());
 
-    auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
+    auto periodicity = PeriodicityTable(Periodicity(false));
+
+    auto space = SplineSpace::const_create(deg, grid, int_mult,periodicity);
 
     typename SplineSpace::EndBehaviour endb(BasisEndBehaviour::interpolatory);
-    typename SplineSpace::EndBehaviourTable endb_t { {endb} };
-    auto rep_knots = sp_spec->compute_knots_with_repetition(endb_t);
-    auto acum_mult = sp_spec->accumulated_interior_multiplicities();
+    EndBehaviourTable endb_t { {endb} };
+    auto rep_knots = space->compute_knots_with_repetition(endb_t);
+    auto acum_mult = space->accumulated_interior_multiplicities();
 
 
     BernsteinExtraction<dim> operators(*grid, rep_knots, acum_mult, deg);

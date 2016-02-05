@@ -62,7 +62,7 @@ public :
    * Constructor. It fills the <tt>N</tt> entries of the array with <tt>N</tt> copies
    * of the input argument <tt>val</tt>.
    */
-  SafeSTLArray(const T &val)
+  explicit SafeSTLArray(const T &val)
   {
     std::array<T,N>::fill(val);
   };

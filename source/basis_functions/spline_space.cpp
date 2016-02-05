@@ -59,7 +59,7 @@ ComponentContainer(const ComponentMap &comp_map)
 {
 #ifndef NDEBUG
   for (const int i : comp_map_)
-	  Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
+    Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
 #endif
 }
 
@@ -77,14 +77,14 @@ ComponentContainer(const ComponentMap &comp_map, const T1 &val, EnableIf<(std::i
 {
 #ifndef NDEBUG
   for (const int i : comp_map_)
-	  Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
+    Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
 #endif
 
   const auto active_components_id = this->get_active_components_id();
 
   for (auto i : active_components_id)
   {
-	Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
+    Assert(i >= 0 && i < n_entries,ExcIndexRange(i,0,n_entries));
     base_t::operator[](i) = val;
   }
 }
@@ -112,7 +112,7 @@ SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 ComponentContainer(const T &val,EnableIf<(std::is_copy_assignable<T1>::value)> *)
   :
-	ComponentContainer(ComponentMap(0),val)
+  ComponentContainer(ComponentMap(0),val)
 //  comp_map_(0)
 {
 //  base_t::operator[](0) = val;
@@ -133,9 +133,9 @@ operator==(const self_t &table) const
 //  const bool same_inactive_components_id = (this->get_inactive_components_id() == table.get_inactive_components_id());
 
   bool same_data = false;
-  if (same_comp_map )//&& same_active_components_id && same_inactive_components_id)
+  if (same_comp_map) //&& same_active_components_id && same_inactive_components_id)
   {
-	const auto active_components_id = this->get_active_components_id();
+    const auto active_components_id = this->get_active_components_id();
     same_data = true;
     for (const auto comp : active_components_id)
       same_data = same_data && (base_t::operator[](comp) == table[comp]);
@@ -184,14 +184,14 @@ SplineSpace<dim_, range_, rank_>::
 ComponentContainer<T>::
 get_active_components_id() const
 {
-	/*
+  /*
   SafeSTLSet<int> unique_ids(comp_map_.begin(),comp_map_.end());
   SafeSTLVector<int> active_components_id(unique_ids.begin(),unique_ids.end());
-//*/
+  //*/
   auto active_components_id = unique_container(comp_map_);
 
   return active_components_id;
-	//  return active_components_id_;
+  //  return active_components_id_;
 }
 
 template<int dim_, int range_, int rank_>
@@ -205,8 +205,8 @@ get_inactive_components_id() const
   const auto all = sequence<n_entries>();
   SafeSTLVector<Index> inactive_components_id(all.size());
   auto it = std::set_difference(all.begin(), all.end(),
-	                            active_components_id.begin(),active_components_id.end(),
-	                            inactive_components_id.begin());
+                                active_components_id.begin(),active_components_id.end(),
+                                inactive_components_id.begin());
 
   inactive_components_id.resize(it-inactive_components_id.begin());
 
@@ -490,9 +490,9 @@ const_create(const DegreeTable &deg,
 {
   using SpSpace = SplineSpace<dim_,range_,rank_>;
   auto sp = std::shared_ptr<const SpSpace>(new
-		  SpSpace(deg,
-				  SharedPtrConstnessHandler<Grid<dim_>>(grid),
-                  interior_mult,periodic));
+                                           SpSpace(deg,
+                                                   SharedPtrConstnessHandler<Grid<dim_>>(grid),
+                                                   interior_mult,periodic));
   Assert(sp != nullptr, ExcNullPtr());
 
   return sp;
@@ -506,7 +506,7 @@ init()
 {
 //    Assert(grid_ != nullptr,ExcNullPtr());
 
-	/*
+  /*
   //------------------------------------------------------------------------------
   // the default value of a bool variable is undefined, so we need to set
   // set the values of the inactive components of the perodicity table to true or false (we use false)
@@ -515,7 +515,7 @@ init()
   for (const auto inactive_id : periodic_.get_inactive_components_id())
     periodic_as_static_m_array[inactive_id] = Periodicity(false);
   //------------------------------------------------------------------------------
-//*/
+  //*/
 
 
   //------------------------------------------------------------------------------
@@ -528,42 +528,42 @@ init()
     const auto &mult_comp = interior_mult_[comp];
 
     //TODO (martinelli, Feb 3, 2016): the periodicity is hardcoded to be FALSE. Fix the periodic case.
-    periodic_[comp] = false;
+//    periodic_[comp] = false;
     const auto &periodic_comp = periodic_[comp];
 
     auto &n_basis_comp = space_dim_[comp];
 
     for (const auto dir : UnitElement<dim_>::active_directions)
     {
-      const auto &deg =  deg_comp[dir];
-      const auto &mult = mult_comp[dir];
+      const auto &deg_comp_dir =  deg_comp[dir];
+      const auto &mult_comp_dir = mult_comp[dir];
 
-      const auto order = deg + 1;
+      const auto order = deg_comp_dir + 1;
 
 #ifndef NDEBUG
-      Assert(mult.size() == grid_->get_num_knots_dim()[dir]-2,
+      Assert(mult_comp_dir.size() == grid_->get_num_knots_dim()[dir]-2,
              ExcMessage("Interior multiplicity size does not match the grid"));
-      if (!mult.empty())
+      if (!mult_comp_dir.empty())
       {
-        auto result = std::minmax_element(mult.begin(), mult.end());
+        auto result = std::minmax_element(mult_comp_dir.begin(), mult_comp_dir.end());
         Assert((*result.first > 0) && (*result.second <= order),
                ExcMessage("multiplicity values not between 0 and p+1"));
       }
 #endif
 
       n_basis_comp[dir] = std::accumulate(
-                            mult.begin(),
-                            mult.end(),
+                            mult_comp_dir.begin(),
+                            mult_comp_dir.end(),
                             periodic_comp[dir] ? 0 : order);
 
 
 #ifndef NDEBUG
       if (periodic_comp[dir])
       {
-    	std::string err_msg = "Not enough basis functions "
-    	  "along component " + to_string(comp) + ", direction " + to_string(dir) +
-		  " (got " + to_string(n_basis_comp[dir]) + " functions but expected at least " +
-		  to_string(order+1) + ")";
+        std::string err_msg = "Not enough basis functions "
+                              "along component " + to_string(comp) + ", direction " + to_string(dir) +
+                              " (got " + to_string(n_basis_comp[dir]) + " functions but expected at least " +
+                              to_string(order+1) + ")";
         Assert(n_basis_comp[dir] > order,
                ExcMessage(err_msg));
       }
@@ -789,12 +789,12 @@ template<int dim_, int range_, int rank_>
 auto
 SplineSpace<dim_, range_, rank_>::
 compute_knots_with_repetition_comp_dir(
-		  const KnotsVector &knots_no_repetitions,
-		  const int deg_comp_dir,
-		  const Multiplicity1D &mult_comp_dir,
-		  const BasisEndBehaviour &ends_comp_dir,
-          const BoundaryKnots1D &boundary_knots_comp_dir,
-		  const bool &periodic_comp_dir) const
+  const KnotsVector &knots_no_repetitions,
+  const int deg_comp_dir,
+  const Multiplicity1D &mult_comp_dir,
+  const BasisEndBehaviour &ends_comp_dir,
+  const BoundaryKnots1D &boundary_knots_comp_dir,
+  const bool &periodic_comp_dir) const
 -> KnotsVector
 {
 #ifndef NDEBUG
@@ -804,37 +804,37 @@ compute_knots_with_repetition_comp_dir(
   if (periodic_comp_dir)
   {
     Assert(ends_comp_dir == BasisEndBehaviour::periodic,
-    		ExcMessage("Periodic inconsistency"));
+           ExcMessage("Periodic inconsistency"));
     Assert(l_knots.size()==0,
-             ExcMessage("Periodic inconsistency"));
+           ExcMessage("Periodic inconsistency"));
     Assert(r_knots.size()==0,
-             ExcMessage("Periodic inconsistency"));
+           ExcMessage("Periodic inconsistency"));
   }
   else
   {
     if (ends_comp_dir == BasisEndBehaviour::interpolatory)
     {
       Assert(l_knots.size()==0,
-               ExcMessage("Interpolatory inconsistency"));
+             ExcMessage("Interpolatory inconsistency"));
       Assert(r_knots.size()==0,
-               ExcMessage("Interpolatory inconsistency"));
+             ExcMessage("Interpolatory inconsistency"));
     }
     if (ends_comp_dir == BasisEndBehaviour::end_knots)
     {
 //      const auto &knots = grid_->get_knot_coordinates(j);
       const int m = deg_comp_dir + 1;
       Assert(l_knots.size() == m,
-               ExcMessage("Wrong number of boundary knots"));
+             ExcMessage("Wrong number of boundary knots"));
       Assert(r_knots.size() == m,
-                 ExcMessage("Wrong number of boundary knots"));
+             ExcMessage("Wrong number of boundary knots"));
       Assert(knots_no_repetitions.front() >= l_knots.back(),
-               ExcMessage("Boundary knots should be smaller or equal a"));
+             ExcMessage("Boundary knots should be smaller or equal a"));
       Assert(knots_no_repetitions.back() <= r_knots.front(),
-               ExcMessage("Boundary knots should be greater or equal b"));
+             ExcMessage("Boundary knots should be greater or equal b"));
       Assert(std::is_sorted(l_knots.begin(), l_knots.end()),
-               ExcMessage("Boundary knots is not sorted"));
+             ExcMessage("Boundary knots is not sorted"));
       Assert(std::is_sorted(r_knots.begin(), r_knots.end()),
-               ExcMessage("Boundary knots is not sorted"));
+             ExcMessage("Boundary knots is not sorted"));
     }
   }
 #endif
@@ -913,11 +913,11 @@ template<int dim_, int range_, int rank_>
 auto
 SplineSpace<dim_, range_, rank_>::
 compute_knots_with_repetition_comp(
-		const Degrees &deg_comp,
-	    const Multiplicity &mult_comp,
-		const EndBehaviour &ends_comp,
-        const BoundaryKnots &boundary_knots_comp,
-		const Periodicity &periodic_comp) const
+  const Degrees &deg_comp,
+  const Multiplicity &mult_comp,
+  const EndBehaviour &ends_comp,
+  const BoundaryKnots &boundary_knots_comp,
+  const Periodicity &periodic_comp) const
 -> KnotCoordinates
 {
 
@@ -926,12 +926,12 @@ compute_knots_with_repetition_comp(
   for (int dir = 0 ; dir < dim_ ; ++dir)
   {
     knots_comp[dir] = compute_knots_with_repetition_comp_dir(
-    	  grid_->get_knot_coordinates(dir),
-  		  deg_comp[dir],
-  		  mult_comp[dir],
-  		  ends_comp[dir],
-          boundary_knots_comp[dir],
-  		  periodic_comp[dir]);
+                        grid_->get_knot_coordinates(dir),
+                        deg_comp[dir],
+                        mult_comp[dir],
+                        ends_comp[dir],
+                        boundary_knots_comp[dir],
+                        periodic_comp[dir]);
   }
 
   return knots_comp;
@@ -948,12 +948,12 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 
   for (int comp = 0; comp < n_components; ++comp)
   {
-	knots_table[comp] = compute_knots_with_repetition_comp(
-			deg_[comp],
-			interior_mult_[comp],
-			ends[comp],
-			boundary_knots[comp],
-			periodic_[comp]);
+    knots_table[comp] = compute_knots_with_repetition_comp(
+                          deg_[comp],
+                          interior_mult_[comp],
+                          ends[comp],
+                          boundary_knots[comp],
+                          periodic_[comp]);
   }
 
   return knots_table;
@@ -1246,7 +1246,7 @@ get_active_components_id() const -> SafeSTLVector<Index>
   SafeSTLVector<int> active_components_id(tmp.begin(),tmp.end());
 #ifndef NDEBUG
   for (int id : active_components_id)
-	Assert(id >= 0 && id < n_components,ExcIndexRange(id,0,n_components));
+    Assert(id >= 0 && id < n_components,ExcIndexRange(id,0,n_components));
 #endif
 
   return active_components_id;

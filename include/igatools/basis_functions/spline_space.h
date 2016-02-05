@@ -179,14 +179,14 @@ public:
     bool is_component_uniform() const
     {
       bool is_comp_uniform = true;
-      const auto & t_size_0 = (*this)[0];
+      const auto &t_size_0 = (*this)[0];
       for (int comp = 1 ; comp < n_components ; ++comp)
       {
-    	if ((*this)[0] != t_size_0)
-    	{
-    	  is_comp_uniform = false;
-    	  break;
-    	}
+        if ((*this)[0] != t_size_0)
+        {
+          is_comp_uniform = false;
+          break;
+        }
       }
       return is_comp_uniform;
     }
@@ -267,7 +267,7 @@ public:
   create(const DegreeTable &deg,
          const std::shared_ptr<GridType> &grid,
          const MultiplicityTable &interior_mult,
-         const PeriodicityTable &periodic = PeriodicityTable(false));
+         const PeriodicityTable &periodic = PeriodicityTable(Periodicity(false)));
 
   /**
    * Builds and returns a (const) SplineSpace
@@ -281,7 +281,7 @@ public:
   const_create(const DegreeTable &deg,
                const std::shared_ptr<const GridType> &grid,
                const MultiplicityTable &interior_mult,
-               const PeriodicityTable &periodic = PeriodicityTable(false));
+               const PeriodicityTable &periodic = PeriodicityTable(Periodicity(false)));
 
 
 private:
@@ -376,15 +376,15 @@ public:
    */
   bool is_component_uniform() const
   {
-	const bool is_degree_uniform = deg_.is_component_uniform();
-	const bool is_multiplicity_uniform = interior_mult_.is_component_uniform();
-	const bool is_periodicity_uniform = periodic_.is_component_uniform();
-	const bool is_dimension_uniform = space_dim_.is_component_uniform();
+    const bool is_degree_uniform = deg_.is_component_uniform();
+    const bool is_multiplicity_uniform = interior_mult_.is_component_uniform();
+    const bool is_periodicity_uniform = periodic_.is_component_uniform();
+    const bool is_dimension_uniform = space_dim_.is_component_uniform();
 
     const bool is_component_uniform = is_degree_uniform &&
-    		is_multiplicity_uniform &&
-			is_periodicity_uniform &&
-			is_dimension_uniform;
+                                      is_multiplicity_uniform &&
+                                      is_periodicity_uniform &&
+                                      is_dimension_uniform;
 
     return is_component_uniform;
   }
@@ -413,19 +413,19 @@ public:
 public:
 
   KnotsVector compute_knots_with_repetition_comp_dir(
-		  const KnotsVector &knots_no_repetitions,
-		  const int deg_comp_dir,
-		  const Multiplicity1D &mult_comp_dir,
-		  const BasisEndBehaviour &ends_comp_dir,
-          const BoundaryKnots1D &boundary_knots_comp_dir,
-		  const bool &periodic_comp_dir) const;
+    const KnotsVector &knots_no_repetitions,
+    const int deg_comp_dir,
+    const Multiplicity1D &mult_comp_dir,
+    const BasisEndBehaviour &ends_comp_dir,
+    const BoundaryKnots1D &boundary_knots_comp_dir,
+    const bool &periodic_comp_dir) const;
 
   KnotCoordinates compute_knots_with_repetition_comp(
-		  const Degrees &deg_comp,
-		  const Multiplicity &mult_comp,
-		  const EndBehaviour &ends_comp,
-          const BoundaryKnots &boundary_knots_comp,
-		  const Periodicity &periodic_comp) const;
+    const Degrees &deg_comp,
+    const Multiplicity &mult_comp,
+    const EndBehaviour &ends_comp,
+    const BoundaryKnots &boundary_knots_comp,
+    const Periodicity &periodic_comp) const;
 
   KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends,
                                            const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
@@ -533,24 +533,18 @@ public:
 
     using ComponentMap = SafeSTLArray<Index,n_entries>;
 
-    ComponentContainer(const ComponentMap &comp_map =
-                         sequence<n_entries>());
+    explicit ComponentContainer(const ComponentMap &comp_map =
+                                  sequence<n_entries>());
 
     template <class T1 = T>
-    ComponentContainer(const ComponentMap &comp_map, const T1 &val,
-                       EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
+    explicit ComponentContainer(const ComponentMap &comp_map, const T1 &val,
+                                EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
 
-#if 0
-    template <class T1 = T>
-    ComponentContainer(bool uniform, const T1 &val,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr)
-      : ComponentContainer(ComponentMap(0), val)
-    {}
-#endif
     /**
-     * Construct a homogenous range table with val value
+     * Construct a homogenous component table with <tt>val</tt> value.
      */
     template <class T1 = T>
-    ComponentContainer(const T &val,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
+    explicit ComponentContainer(const T &val,EnableIf<(std::is_copy_assignable<T1>::value)> * = nullptr);
 
 
     template <class T1 = T>
@@ -561,25 +555,25 @@ public:
 
     self_t &operator=(const self_t &in) = default;
     self_t &operator=(self_t &&in) = default;
-/*
-    const_iterator
-    cbegin() const;
+    /*
+        const_iterator
+        cbegin() const;
 
-    const_iterator
-    cend() const;
+        const_iterator
+        cend() const;
 
-    const_iterator
-    begin() const;
+        const_iterator
+        begin() const;
 
-    const_iterator
-    end() const;
+        const_iterator
+        end() const;
 
-    iterator
-    begin();
+        iterator
+        begin();
 
-    iterator
-    end();
-//*/
+        iterator
+        end();
+    //*/
     /**
      *  Flat index access operator (non-const version).
      */

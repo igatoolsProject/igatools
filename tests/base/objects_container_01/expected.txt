@@ -335,8 +335,19 @@ const SplineSpace Dim : 1 Range : 1 Rank : 1. Number of objects: 1
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ ]
       
       Dimensionality Table:
          Entry id: 0
@@ -391,10 +402,23 @@ const SplineSpace Dim : 1 Range : 2 Rank : 1. Number of objects: 1
          [ 1 ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
+         Raw components: 
+            Size: [ 2 ]  Weights: [2]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+            
+            Entry id: 1
+               Entry id: 0
+               [ ]
+            
+         
+         Components map: 
+         [ 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 ]
       
       Dimensionality Table:
          Entry id: 0
@@ -453,12 +477,27 @@ const SplineSpace Dim : 1 Range : 3 Rank : 1. Number of objects: 1
          [ 1 2 ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
+         Raw components: 
+            Size: [ 3 ]  Weights: [3]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+            
+            Entry id: 1
+               Entry id: 0
+               [ ]
+            
+            Entry id: 2
+               Entry id: 0
+               [ ]
+            
+         
+         Components map: 
+         [ 0 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 2 ]
       
       Dimensionality Table:
          Entry id: 0
@@ -547,14 +586,27 @@ const SplineSpace Dim : 2 Range : 2 Rank : 1. Number of objects: 1
          [ 1 ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
+         Raw components: 
+            Size: [ 2 ]  Weights: [2]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+               Entry id: 1
+               [ 1 1 ]
+            
+            Entry id: 1
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+         
+         Components map: 
+         [ 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 ]
       
       Dimensionality Table:
          Entry id: 0
@@ -639,18 +691,33 @@ const SplineSpace Dim : 2 Range : 3 Rank : 1. Number of objects: 1
          [ 1 2 ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
+         Raw components: 
+            Size: [ 3 ]  Weights: [3]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+               Entry id: 1
+               [ 1 1 ]
+            
+            Entry id: 1
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+            Entry id: 2
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+         
+         Components map: 
+         [ 0 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 2 ]
       
       Dimensionality Table:
          Entry id: 0
@@ -779,24 +846,39 @@ const SplineSpace Dim : 3 Range : 3 Rank : 1. Number of objects: 1
          [ 1 2 ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 2
-         [ 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 2
-         [ 1 ]
-         Entry id: 0
-         [ 1 1 1 ]
-         Entry id: 1
-         [ 1 1 ]
-         Entry id: 2
-         [ 1 ]
+         Raw components: 
+            Size: [ 3 ]  Weights: [3]
+            Entry id: 0
+               Entry id: 0
+               [ 1 1 1 ]
+               Entry id: 1
+               [ 1 1 ]
+               Entry id: 2
+               [ 1 ]
+            
+            Entry id: 1
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+               Entry id: 2
+               [ ]
+            
+            Entry id: 2
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+               Entry id: 2
+               [ ]
+            
+         
+         Components map: 
+         [ 0 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 2 ]
       
       Dimensionality Table:
          Entry id: 0
@@ -870,8 +952,19 @@ const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
             [ ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+               
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
          
          Dimensionality Table:
             Entry id: 0
@@ -954,8 +1047,19 @@ const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
             [ ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+               
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
          
          Dimensionality Table:
             Entry id: 0
@@ -1039,8 +1143,19 @@ const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ ]
             
             Dimensionality Table:
                Entry id: 0
@@ -1125,8 +1240,19 @@ const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
                      [ ]
                   
                   Interior multiplicities:
-                     Entry id: 0
-                     [ 1 1 1 ]
+                     Raw components: 
+                        Size: [ 1 ]  Weights: [1]
+                        Entry id: 0
+                           Entry id: 0
+                           [ 1 1 1 ]
+                        
+                     
+                     Components map: 
+                     [ 0 ]
+                     Active components ids: 
+                     [ 0 ]
+                     Inactive components ids: 
+                     [ ]
                   
                   Dimensionality Table:
                      Entry id: 0
@@ -1223,8 +1349,19 @@ const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
             [ ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+               
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
          
          Dimensionality Table:
             Entry id: 0
@@ -1307,8 +1444,19 @@ const ReferenceBasis Dim : 1 Range : 1 Rank : 1. Number of objects: 5
             [ ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+               
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
          
          Dimensionality Table:
             Entry id: 0
@@ -1397,10 +1545,23 @@ const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
             [ 1 ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 0
-            [ 1 1 1 ]
+            Raw components: 
+               Size: [ 2 ]  Weights: [2]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+               
+               Entry id: 1
+                  Entry id: 0
+                  [ ]
+               
+            
+            Components map: 
+            [ 0 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ 1 ]
          
          Dimensionality Table:
             Entry id: 0
@@ -1500,10 +1661,23 @@ const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
                [ 1 ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 0
-               [ 1 1 1 ]
+               Raw components: 
+                  Size: [ 2 ]  Weights: [2]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ 1 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -1602,8 +1776,19 @@ const ReferenceBasis Dim : 1 Range : 2 Rank : 1. Number of objects: 2
                      [ ]
                   
                   Interior multiplicities:
-                     Entry id: 0
-                     [ 1 1 1 ]
+                     Raw components: 
+                        Size: [ 1 ]  Weights: [1]
+                        Entry id: 0
+                           Entry id: 0
+                           [ 1 1 1 ]
+                        
+                     
+                     Components map: 
+                     [ 0 ]
+                     Active components ids: 
+                     [ 0 ]
+                     Inactive components ids: 
+                     [ ]
                   
                   Dimensionality Table:
                      Entry id: 0
@@ -1708,12 +1893,27 @@ const ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
             [ 1 2 ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 0
-            [ 1 1 1 ]
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+               
+               Entry id: 1
+                  Entry id: 0
+                  [ ]
+               
+               Entry id: 2
+                  Entry id: 0
+                  [ ]
+               
+            
+            Components map: 
+            [ 0 0 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ 1 2 ]
          
          Dimensionality Table:
             Entry id: 0
@@ -1829,12 +2029,27 @@ const ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
                [ 1 2 ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 0
-               [ 1 1 1 ]
+               Raw components: 
+                  Size: [ 3 ]  Weights: [3]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [ ]
+                  
+                  Entry id: 2
+                     Entry id: 0
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 0 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ 1 2 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -1947,8 +2162,19 @@ const ReferenceBasis Dim : 1 Range : 3 Rank : 1. Number of objects: 2
                      [ ]
                   
                   Interior multiplicities:
-                     Entry id: 0
-                     [ 1 1 1 ]
+                     Raw components: 
+                        Size: [ 1 ]  Weights: [1]
+                        Entry id: 0
+                           Entry id: 0
+                           [ 1 1 1 ]
+                        
+                     
+                     Components map: 
+                     [ 0 ]
+                     Active components ids: 
+                     [ 0 ]
+                     Inactive components ids: 
+                     [ ]
                   
                   Dimensionality Table:
                      Entry id: 0
@@ -2075,10 +2301,21 @@ const ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 2
             [ ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+                  Entry id: 1
+                  [ 1 1 ]
+               
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
          
          Dimensionality Table:
             Entry id: 0
@@ -2191,10 +2428,21 @@ const ReferenceBasis Dim : 2 Range : 1 Rank : 1. Number of objects: 2
             [ ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+                  Entry id: 1
+                  [ 1 1 ]
+               
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
          
          Dimensionality Table:
             Entry id: 0
@@ -2313,14 +2561,27 @@ const ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
             [ 1 ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
+            Raw components: 
+               Size: [ 2 ]  Weights: [2]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+                  Entry id: 1
+                  [ 1 1 ]
+               
+               Entry id: 1
+                  Entry id: 0
+                  [ ]
+                  Entry id: 1
+                  [ ]
+               
+            
+            Components map: 
+            [ 0 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ 1 ]
          
          Dimensionality Table:
             Entry id: 0
@@ -2454,14 +2715,27 @@ const ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
                [ 1 ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
+               Raw components: 
+                  Size: [ 2 ]  Weights: [2]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                     Entry id: 1
+                     [ 1 1 ]
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ 1 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -2594,10 +2868,21 @@ const ReferenceBasis Dim : 2 Range : 2 Rank : 1. Number of objects: 2
                      [ ]
                   
                   Interior multiplicities:
-                     Entry id: 0
-                     [ 1 1 1 ]
-                     Entry id: 1
-                     [ 1 1 ]
+                     Raw components: 
+                        Size: [ 1 ]  Weights: [1]
+                        Entry id: 0
+                           Entry id: 0
+                           [ 1 1 1 ]
+                           Entry id: 1
+                           [ 1 1 ]
+                        
+                     
+                     Components map: 
+                     [ 0 ]
+                     Active components ids: 
+                     [ 0 ]
+                     Inactive components ids: 
+                     [ ]
                   
                   Dimensionality Table:
                      Entry id: 0
@@ -2760,18 +3045,33 @@ const ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
             [ 1 2 ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+                  Entry id: 1
+                  [ 1 1 ]
+               
+               Entry id: 1
+                  Entry id: 0
+                  [ ]
+                  Entry id: 1
+                  [ ]
+               
+               Entry id: 2
+                  Entry id: 0
+                  [ ]
+                  Entry id: 1
+                  [ ]
+               
+            
+            Components map: 
+            [ 0 0 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ 1 2 ]
          
          Dimensionality Table:
             Entry id: 0
@@ -2925,18 +3225,33 @@ const ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
                [ 1 2 ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
+               Raw components: 
+                  Size: [ 3 ]  Weights: [3]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                     Entry id: 1
+                     [ 1 1 ]
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                  
+                  Entry id: 2
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 0 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ 1 2 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -3087,10 +3402,21 @@ const ReferenceBasis Dim : 2 Range : 3 Rank : 1. Number of objects: 2
                      [ ]
                   
                   Interior multiplicities:
-                     Entry id: 0
-                     [ 1 1 1 ]
-                     Entry id: 1
-                     [ 1 1 ]
+                     Raw components: 
+                        Size: [ 1 ]  Weights: [1]
+                        Entry id: 0
+                           Entry id: 0
+                           [ 1 1 1 ]
+                           Entry id: 1
+                           [ 1 1 ]
+                        
+                     
+                     Components map: 
+                     [ 0 ]
+                     Active components ids: 
+                     [ 0 ]
+                     Inactive components ids: 
+                     [ ]
                   
                   Dimensionality Table:
                      Entry id: 0
@@ -3287,12 +3613,23 @@ const ReferenceBasis Dim : 3 Range : 1 Rank : 1. Number of objects: 1
             [ ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
-            Entry id: 2
-            [ 1 ]
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+                  Entry id: 1
+                  [ 1 1 ]
+                  Entry id: 2
+                  [ 1 ]
+               
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
          
          Dimensionality Table:
             Entry id: 0
@@ -3454,24 +3791,39 @@ const ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
             [ 1 2 ]
          
          Interior multiplicities:
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
-            Entry id: 2
-            [ 1 ]
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
-            Entry id: 2
-            [ 1 ]
-            Entry id: 0
-            [ 1 1 1 ]
-            Entry id: 1
-            [ 1 1 ]
-            Entry id: 2
-            [ 1 ]
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+                  Entry id: 0
+                  [ 1 1 1 ]
+                  Entry id: 1
+                  [ 1 1 ]
+                  Entry id: 2
+                  [ 1 ]
+               
+               Entry id: 1
+                  Entry id: 0
+                  [ ]
+                  Entry id: 1
+                  [ ]
+                  Entry id: 2
+                  [ ]
+               
+               Entry id: 2
+                  Entry id: 0
+                  [ ]
+                  Entry id: 1
+                  [ ]
+                  Entry id: 2
+                  [ ]
+               
+            
+            Components map: 
+            [ 0 0 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ 1 2 ]
          
          Dimensionality Table:
             Entry id: 0
@@ -3672,24 +4024,39 @@ const ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
                [ 1 2 ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
-               Entry id: 2
-               [ 1 ]
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
-               Entry id: 2
-               [ 1 ]
-               Entry id: 0
-               [ 1 1 1 ]
-               Entry id: 1
-               [ 1 1 ]
-               Entry id: 2
-               [ 1 ]
+               Raw components: 
+                  Size: [ 3 ]  Weights: [3]
+                  Entry id: 0
+                     Entry id: 0
+                     [ 1 1 1 ]
+                     Entry id: 1
+                     [ 1 1 ]
+                     Entry id: 2
+                     [ 1 ]
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                     Entry id: 2
+                     [ ]
+                  
+                  Entry id: 2
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                     Entry id: 2
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 0 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ 1 2 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -3887,12 +4254,23 @@ const ReferenceBasis Dim : 3 Range : 3 Rank : 1. Number of objects: 2
                      [ ]
                   
                   Interior multiplicities:
-                     Entry id: 0
-                     [ 1 1 1 ]
-                     Entry id: 1
-                     [ 1 1 ]
-                     Entry id: 2
-                     [ 1 ]
+                     Raw components: 
+                        Size: [ 1 ]  Weights: [1]
+                        Entry id: 0
+                           Entry id: 0
+                           [ 1 1 1 ]
+                           Entry id: 1
+                           [ 1 1 ]
+                           Entry id: 2
+                           [ 1 ]
+                        
+                     
+                     Components map: 
+                     [ 0 ]
+                     Active components ids: 
+                     [ 0 ]
+                     Inactive components ids: 
+                     [ ]
                   
                   Dimensionality Table:
                      Entry id: 0
@@ -4116,8 +4494,19 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 4
                   [ ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
+                  Raw components: 
+                     Size: [ 1 ]  Weights: [1]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                     
+                  
+                  Components map: 
+                  [ 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -4222,8 +4611,19 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 4
                   [ ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
+                  Raw components: 
+                     Size: [ 1 ]  Weights: [1]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                     
+                  
+                  Components map: 
+                  [ 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -4321,8 +4721,19 @@ const GridFunction Dim : 1 Spacedim : 1. Number of objects: 4
                   [ ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
+                  Raw components: 
+                     Size: [ 1 ]  Weights: [1]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                     
+                  
+                  Components map: 
+                  [ 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -4472,10 +4883,21 @@ const GridFunction Dim : 2 Spacedim : 1. Number of objects: 2
                   [ ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
+                  Raw components: 
+                     Size: [ 1 ]  Weights: [1]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                        Entry id: 1
+                        [ 1 1 ]
+                     
+                  
+                  Components map: 
+                  [ 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -4631,10 +5053,21 @@ const GridFunction Dim : 2 Spacedim : 1. Number of objects: 2
                   [ ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
+                  Raw components: 
+                     Size: [ 1 ]  Weights: [1]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                        Entry id: 1
+                        [ 1 1 ]
+                     
+                  
+                  Components map: 
+                  [ 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -4854,12 +5287,23 @@ const GridFunction Dim : 3 Spacedim : 1. Number of objects: 1
                   [ ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
-                  Entry id: 2
-                  [ 1 ]
+                  Raw components: 
+                     Size: [ 1 ]  Weights: [1]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                        Entry id: 1
+                        [ 1 1 ]
+                        Entry id: 2
+                        [ 1 ]
+                     
+                  
+                  Components map: 
+                  [ 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -5225,8 +5669,19 @@ const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
                   [ ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
+                  Raw components: 
+                     Size: [ 1 ]  Weights: [1]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                     
+                  
+                  Components map: 
+                  [ 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -5311,8 +5766,19 @@ const PhysicalBasis Dim : 1 Range : 1 Rank : 1 Codim : 0. Number of objects: 1
                         [ ]
                      
                      Interior multiplicities:
-                        Entry id: 0
-                        [ 1 1 1 ]
+                        Raw components: 
+                           Size: [ 1 ]  Weights: [1]
+                           Entry id: 0
+                              Entry id: 0
+                              [ 1 1 1 ]
+                           
+                        
+                        Components map: 
+                        [ 0 ]
+                        Active components ids: 
+                        [ 0 ]
+                        Inactive components ids: 
+                        [ ]
                      
                      Dimensionality Table:
                         Entry id: 0
@@ -5440,10 +5906,23 @@ const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 1
                   [ 1 ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 0
-                  [ 1 1 1 ]
+                  Raw components: 
+                     Size: [ 2 ]  Weights: [2]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                     
+                     Entry id: 1
+                        Entry id: 0
+                        [ ]
+                     
+                  
+                  Components map: 
+                  [ 0 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ 1 ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -5542,8 +6021,19 @@ const PhysicalBasis Dim : 1 Range : 2 Rank : 1 Codim : 1. Number of objects: 1
                         [ ]
                      
                      Interior multiplicities:
-                        Entry id: 0
-                        [ 1 1 1 ]
+                        Raw components: 
+                           Size: [ 1 ]  Weights: [1]
+                           Entry id: 0
+                              Entry id: 0
+                              [ 1 1 1 ]
+                           
+                        
+                        Components map: 
+                        [ 0 ]
+                        Active components ids: 
+                        [ 0 ]
+                        Inactive components ids: 
+                        [ ]
                      
                      Dimensionality Table:
                         Entry id: 0
@@ -5669,12 +6159,27 @@ const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 1
                   [ 1 2 ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 0
-                  [ 1 1 1 ]
+                  Raw components: 
+                     Size: [ 3 ]  Weights: [3]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                     
+                     Entry id: 1
+                        Entry id: 0
+                        [ ]
+                     
+                     Entry id: 2
+                        Entry id: 0
+                        [ ]
+                     
+                  
+                  Components map: 
+                  [ 0 0 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ 1 2 ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -5787,8 +6292,19 @@ const PhysicalBasis Dim : 1 Range : 3 Rank : 1 Codim : 2. Number of objects: 1
                         [ ]
                      
                      Interior multiplicities:
-                        Entry id: 0
-                        [ 1 1 1 ]
+                        Raw components: 
+                           Size: [ 1 ]  Weights: [1]
+                           Entry id: 0
+                              Entry id: 0
+                              [ 1 1 1 ]
+                           
+                        
+                        Components map: 
+                        [ 0 ]
+                        Active components ids: 
+                        [ 0 ]
+                        Inactive components ids: 
+                        [ ]
                      
                      Dimensionality Table:
                         Entry id: 0
@@ -5938,14 +6454,27 @@ const PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
                   [ 1 ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
+                  Raw components: 
+                     Size: [ 2 ]  Weights: [2]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                        Entry id: 1
+                        [ 1 1 ]
+                     
+                     Entry id: 1
+                        Entry id: 0
+                        [ ]
+                        Entry id: 1
+                        [ ]
+                     
+                  
+                  Components map: 
+                  [ 0 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ 1 ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -6078,10 +6607,21 @@ const PhysicalBasis Dim : 2 Range : 2 Rank : 1 Codim : 0. Number of objects: 1
                         [ ]
                      
                      Interior multiplicities:
-                        Entry id: 0
-                        [ 1 1 1 ]
-                        Entry id: 1
-                        [ 1 1 ]
+                        Raw components: 
+                           Size: [ 1 ]  Weights: [1]
+                           Entry id: 0
+                              Entry id: 0
+                              [ 1 1 1 ]
+                              Entry id: 1
+                              [ 1 1 ]
+                           
+                        
+                        Components map: 
+                        [ 0 ]
+                        Active components ids: 
+                        [ 0 ]
+                        Inactive components ids: 
+                        [ ]
                      
                      Dimensionality Table:
                         Entry id: 0
@@ -6261,18 +6801,33 @@ const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 1
                   [ 1 2 ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
+                  Raw components: 
+                     Size: [ 3 ]  Weights: [3]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                        Entry id: 1
+                        [ 1 1 ]
+                     
+                     Entry id: 1
+                        Entry id: 0
+                        [ ]
+                        Entry id: 1
+                        [ ]
+                     
+                     Entry id: 2
+                        Entry id: 0
+                        [ ]
+                        Entry id: 1
+                        [ ]
+                     
+                  
+                  Components map: 
+                  [ 0 0 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ 1 2 ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -6423,10 +6978,21 @@ const PhysicalBasis Dim : 2 Range : 3 Rank : 1 Codim : 1. Number of objects: 1
                         [ ]
                      
                      Interior multiplicities:
-                        Entry id: 0
-                        [ 1 1 1 ]
-                        Entry id: 1
-                        [ 1 1 ]
+                        Raw components: 
+                           Size: [ 1 ]  Weights: [1]
+                           Entry id: 0
+                              Entry id: 0
+                              [ 1 1 1 ]
+                              Entry id: 1
+                              [ 1 1 ]
+                           
+                        
+                        Components map: 
+                        [ 0 ]
+                        Active components ids: 
+                        [ 0 ]
+                        Inactive components ids: 
+                        [ ]
                      
                      Dimensionality Table:
                         Entry id: 0
@@ -6644,24 +7210,39 @@ const PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
                   [ 1 2 ]
                
                Interior multiplicities:
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
-                  Entry id: 2
-                  [ 1 ]
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
-                  Entry id: 2
-                  [ 1 ]
-                  Entry id: 0
-                  [ 1 1 1 ]
-                  Entry id: 1
-                  [ 1 1 ]
-                  Entry id: 2
-                  [ 1 ]
+                  Raw components: 
+                     Size: [ 3 ]  Weights: [3]
+                     Entry id: 0
+                        Entry id: 0
+                        [ 1 1 1 ]
+                        Entry id: 1
+                        [ 1 1 ]
+                        Entry id: 2
+                        [ 1 ]
+                     
+                     Entry id: 1
+                        Entry id: 0
+                        [ ]
+                        Entry id: 1
+                        [ ]
+                        Entry id: 2
+                        [ ]
+                     
+                     Entry id: 2
+                        Entry id: 0
+                        [ ]
+                        Entry id: 1
+                        [ ]
+                        Entry id: 2
+                        [ ]
+                     
+                  
+                  Components map: 
+                  [ 0 0 0 ]
+                  Active components ids: 
+                  [ 0 ]
+                  Inactive components ids: 
+                  [ 1 2 ]
                
                Dimensionality Table:
                   Entry id: 0
@@ -6859,12 +7440,23 @@ const PhysicalBasis Dim : 3 Range : 3 Rank : 1 Codim : 0. Number of objects: 1
                         [ ]
                      
                      Interior multiplicities:
-                        Entry id: 0
-                        [ 1 1 1 ]
-                        Entry id: 1
-                        [ 1 1 ]
-                        Entry id: 2
-                        [ 1 ]
+                        Raw components: 
+                           Size: [ 1 ]  Weights: [1]
+                           Entry id: 0
+                              Entry id: 0
+                              [ 1 1 1 ]
+                              Entry id: 1
+                              [ 1 1 ]
+                              Entry id: 2
+                              [ 1 ]
+                           
+                        
+                        Components map: 
+                        [ 0 ]
+                        Active components ids: 
+                        [ 0 ]
+                        Inactive components ids: 
+                        [ ]
                      
                      Dimensionality Table:
                         Entry id: 0

@@ -32,7 +32,18 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -104,7 +115,18 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -183,9 +205,20 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ ]
-         Entry id: 1
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -261,9 +294,20 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ ]
-         Entry id: 1
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -346,11 +390,22 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ ]
-         Entry id: 1
-         [ ]
-         Entry id: 2
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+               Entry id: 2
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -430,11 +485,22 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ ]
-         Entry id: 1
-         [ ]
-         Entry id: 2
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+               Entry id: 2
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -515,7 +581,18 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -587,7 +664,18 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -666,9 +754,20 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ ]
-         Entry id: 1
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -744,9 +843,20 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ ]
-         Entry id: 1
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -829,11 +939,22 @@ Original BSpline:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ ]
-         Entry id: 1
-         [ ]
-         Entry id: 2
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+               Entry id: 2
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:
@@ -913,11 +1034,22 @@ BSpline after serialize-deserialize:
          [ ]
       
       Interior multiplicities:
-         Entry id: 0
-         [ ]
-         Entry id: 1
-         [ ]
-         Entry id: 2
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+               Entry id: 2
+               [ ]
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
          [ ]
       
       Dimensionality Table:

@@ -52,8 +52,15 @@ create_basis<2>(const int num_knots)
   using Basis = BSpline<2,2,1>;
   typename Space::DegreeTable degree_table = {{{3,2}},{{2,3}}} ;
 
+  using Periodicity = typename Space::Periodicity;
   using PeriodicityTable = typename Space::PeriodicityTable;
+  auto periodicity = Periodicity(false);
+  auto periodicity_table = PeriodicityTable(periodicity);
+
+  using EndBehaviour = typename Basis::EndBehaviour;
   using EndBehaviourTable = typename Basis::EndBehaviourTable;
+  auto end_b = EndBehaviour(BasisEndBehaviour::interpolatory);
+  auto end_b_table = EndBehaviourTable(end_b);
 
   return Basis::create(
            Space::create(degree_table, knots,
@@ -61,8 +68,8 @@ create_basis<2>(const int num_knots)
                            InteriorReg::maximum,
                            degree_table,
                            knots->get_num_intervals()),
-                         PeriodicityTable(true,SafeSTLArray<bool, 2>(false))),
-           EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,2>(BasisEndBehaviour::interpolatory))) ;
+                         periodicity_table),
+  	  	  	  	  	  	 end_b_table) ;
 }
 
 template <>
@@ -75,8 +82,15 @@ create_basis<3>(const int num_knots)
   using Basis = BSpline<3,3,1>;
   typename Space::DegreeTable degree_table = { {{3,2,2}},{{2,3,2}},{{2,2,3}}} ;
 
+  using Periodicity = typename Space::Periodicity;
   using PeriodicityTable = typename Space::PeriodicityTable;
+  auto periodicity = Periodicity(false);
+  auto periodicity_table = PeriodicityTable(periodicity);
+
+  using EndBehaviour = typename Basis::EndBehaviour;
   using EndBehaviourTable = typename Basis::EndBehaviourTable;
+  auto end_b = EndBehaviour(BasisEndBehaviour::interpolatory);
+  auto end_b_table = EndBehaviourTable(end_b);
 
   return Basis::create(
            Space::create(degree_table, knots,
@@ -84,8 +98,8 @@ create_basis<3>(const int num_knots)
                            InteriorReg::maximum,
                            degree_table,
                            knots->get_num_intervals()),
-                         PeriodicityTable(true,SafeSTLArray<bool,3>(false))),
-           EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
+						   periodicity_table),
+						   end_b_table) ;
 }
 
 

@@ -125,7 +125,7 @@ create(const std::shared_ptr<SpSpace> &spline_space,
        const BasisEndBehaviour &end_b)
 -> std::shared_ptr<self_t>
 {
-  return self_t::create(spline_space,EndBehaviour(end_b));
+  return self_t::create(spline_space,EndBehaviourTable(EndBehaviour(end_b)));
 }
 
 template<int dim_, int range_, int rank_>
@@ -135,7 +135,7 @@ const_create(const std::shared_ptr<const SpSpace> &spline_space,
              const BasisEndBehaviour &end_b)
 -> std::shared_ptr<const self_t>
 {
-  return self_t::const_create(spline_space,EndBehaviour(end_b));
+  return self_t::const_create(spline_space,EndBehaviourTable(EndBehaviour(end_b)));
 }
 
 

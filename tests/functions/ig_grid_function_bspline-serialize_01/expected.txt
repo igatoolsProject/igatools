@@ -34,7 +34,18 @@ Original IgGridFunction:
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
                [ ]
             
             Dimensionality Table:
@@ -116,7 +127,18 @@ IgGridFunction after serialize-deserialize:
                [ ]
             
             Interior multiplicities:
-               Entry id: 0
+               Raw components: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
                [ ]
             
             Dimensionality Table:
@@ -223,14 +245,27 @@ Original IgGridFunction:
                [ 1 ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ ]
-               Entry id: 1
-               [ ]
-               Entry id: 0
-               [ ]
-               Entry id: 1
-               [ ]
+               Raw components: 
+                  Size: [ 2 ]  Weights: [2]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ 1 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -336,14 +371,27 @@ IgGridFunction after serialize-deserialize:
                [ 1 ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ ]
-               Entry id: 1
-               [ ]
-               Entry id: 0
-               [ ]
-               Entry id: 1
-               [ ]
+               Raw components: 
+                  Size: [ 2 ]  Weights: [2]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ 1 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -474,24 +522,39 @@ Original IgGridFunction:
                [ 1 2 ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ ]
-               Entry id: 1
-               [ ]
-               Entry id: 2
-               [ ]
-               Entry id: 0
-               [ ]
-               Entry id: 1
-               [ ]
-               Entry id: 2
-               [ ]
-               Entry id: 0
-               [ ]
-               Entry id: 1
-               [ ]
-               Entry id: 2
-               [ ]
+               Raw components: 
+                  Size: [ 3 ]  Weights: [3]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                     Entry id: 2
+                     [ ]
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                     Entry id: 2
+                     [ ]
+                  
+                  Entry id: 2
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                     Entry id: 2
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 0 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ 1 2 ]
             
             Dimensionality Table:
                Entry id: 0
@@ -636,24 +699,39 @@ IgGridFunction after serialize-deserialize:
                [ 1 2 ]
             
             Interior multiplicities:
-               Entry id: 0
-               [ ]
-               Entry id: 1
-               [ ]
-               Entry id: 2
-               [ ]
-               Entry id: 0
-               [ ]
-               Entry id: 1
-               [ ]
-               Entry id: 2
-               [ ]
-               Entry id: 0
-               [ ]
-               Entry id: 1
-               [ ]
-               Entry id: 2
-               [ ]
+               Raw components: 
+                  Size: [ 3 ]  Weights: [3]
+                  Entry id: 0
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                     Entry id: 2
+                     [ ]
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                     Entry id: 2
+                     [ ]
+                  
+                  Entry id: 2
+                     Entry id: 0
+                     [ ]
+                     Entry id: 1
+                     [ ]
+                     Entry id: 2
+                     [ ]
+                  
+               
+               Components map: 
+               [ 0 0 0 ]
+               Active components ids: 
+               [ 0 ]
+               Inactive components ids: 
+               [ 1 2 ]
             
             Dimensionality Table:
                Entry id: 0

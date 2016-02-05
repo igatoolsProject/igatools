@@ -49,12 +49,14 @@ void component_space(const int deg=3,  const int n_knots = 10)
   end_b[0] = BasisEndBehaviour::periodic;
 
   auto space = VecSpace::const_create(degt, grid, InteriorReg::maximum, periodic);
-  auto basis = VecBasis::const_create(space, end_b);
+  auto basis = VecBasis::const_create(space, typename VecBasis::EndBehaviourTable(end_b));
   basis->print_info(out);
 
   auto comp_space = CompSpace::const_create(
                       space->get_degree_table()[0],grid, InteriorReg::maximum,space->get_periodicity()[0]);
-  auto comp_basis = CompBasis::const_create(comp_space, basis->get_end_behaviour_table()[0]);
+  auto comp_basis = CompBasis::const_create(
+                      comp_space,
+                      typename CompSpace::EndBehaviourTable(basis->get_end_behaviour_table()[0]));
 
   comp_basis->print_info(out);
 
