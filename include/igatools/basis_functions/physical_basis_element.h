@@ -243,6 +243,8 @@ public:
   std::shared_ptr<const PhysBasis> get_physical_basis() const;
 
 
+
+
 private:
   template <class Accessor> friend class GridIteratorBase;
   template <int,int,int,int> friend class PhysicalBasisHandler;
@@ -257,6 +259,13 @@ private:
    * Returns true if two elements belongs from the same Basis.
    */
   bool is_comparable_with(const self_t &elem) const;
+
+
+  virtual
+  DenseMatrix
+  integrate_u_v_sum_factorization_impl(const TopologyVariants<dim> &topology,
+                                       const int s_id,
+                                       const PropId &dofs_property = DofProperties::active) override final;
 
 };
 

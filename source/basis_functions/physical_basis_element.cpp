@@ -328,6 +328,33 @@ get_boundary_normals(const int s_id) const
 }
 
 
+
+template<int dim_,int range_,int rank_,int codim_>
+DenseMatrix
+PhysicalBasisElement<dim_,range_,rank_,codim_>::
+integrate_u_v_sum_factorization_impl(const TopologyVariants<dim> &topology,
+                                     const int s_id,
+                                     const PropId &dofs_property)
+{
+  const auto transformation_type = phys_basis_->get_transformation_type();
+
+  DenseMatrix op;
+  if (transformation_type == Transformation::h_grad)
+  {
+    op = ref_basis_element_->integrate_u_v_sum_factorization_impl(
+           topology,
+           s_id,
+           dofs_property);
+  }
+  else
+  {
+    //TODO (martinelli, Feb 8, 2016): implements the case for h_div and h_curl
+    AssertThrow(false,ExcNotImplemented());
+  }
+  return op;
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/physical_basis_element.inst>
