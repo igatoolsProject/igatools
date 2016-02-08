@@ -37,13 +37,15 @@
 
 //#define TIME_PROFILING
 
-template<int dim>
+using std::to_string;
+
+template<int dim,int range>
 void loc_stiff_matrix(const int n_knots, const int deg)
 {
 
   OUTSTART
 
-  out.begin_item("local_stiff_matrix<" + std::to_string(dim) + ">");
+  out.begin_item("local_stiff_matrix<" + to_string(dim) + "," + to_string(range) + ">");
 
   TensorIndex<dim> deg_dir;
   TensorSize<dim> num_pts;
@@ -55,8 +57,8 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 
 
   auto grid = Grid<dim>::create(n_knots);
-  using Basis = BSpline<dim>;
-  auto basis = Basis::create(SplineSpace<dim>::create(deg_dir, grid)) ;
+  using Basis = BSpline<dim,range>;
+  auto basis = Basis::create(SplineSpace<dim,range>::create(deg_dir, grid)) ;
 
   auto elem_handler = basis->create_cache_handler();
 
@@ -117,9 +119,14 @@ int main()
   const int n_knots = 3;
   const int deg = 3;
 
-  loc_stiff_matrix<1>(n_knots, deg);
-  loc_stiff_matrix<2>(n_knots, deg);
-  loc_stiff_matrix<3>(n_knots, deg);
+  loc_stiff_matrix<1,1>(n_knots, deg);
+  loc_stiff_matrix<2,1>(n_knots, deg);
+  loc_stiff_matrix<3,1>(n_knots, deg);
+
+  loc_stiff_matrix<2,2>(n_knots, deg);
+  loc_stiff_matrix<2,3>(n_knots, deg);
+
+  loc_stiff_matrix<3,3>(n_knots, deg);
 
 #endif
 
