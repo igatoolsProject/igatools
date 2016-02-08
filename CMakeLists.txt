@@ -159,7 +159,7 @@ endif(SERIALIZATION)
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-option(PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" ON)
+option(PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" OFF)
 if (PARAVIEW_PLUGIN)
     if (NOT SERIALIZATION)
         message (FATAL_ERROR "PARAVIEW_PLUGIN variable set to ON is not "
