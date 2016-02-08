@@ -47,7 +47,8 @@ using namespace EpetraTools;
 LogStream out;
 
 template<int dim, int codim=0, int range=1, int rank=1>
-class CustomFunction : public FormulaFunction<dim,codim,range,rank> {
+class CustomFunction : public FormulaFunction<dim,codim,range,rank>
+{
 private:
   using self_t   = CustomFunction<dim,codim,range,rank>;
   using typename Function<dim,codim,range,rank>::DomainType;
@@ -55,81 +56,90 @@ private:
   using typename FormulaFunction<dim,codim,range,rank>::Point;
   template <int order>
   using Derivative = typename FormulaFunction<dim,codim,range,rank>::template Derivative<order>;
-  Value (*funct_D0)(const Point);
+  Value(*funct_D0)(const Point);
   CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain)
     : FormulaFunction<dim,codim,range,rank>(domain) {};
 
   CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain,
-                 Value (*f_D0)(const Point))
+                 Value(*f_D0)(const Point))
     : FormulaFunction<dim,codim,range,rank>(domain), funct_D0(f_D0) {};
-  void evaluate_0(const ValueVector<Point> &points, ValueVector<Value> &values) const {
+  void evaluate_0(const ValueVector<Point> &points, ValueVector<Value> &values) const
+  {
     auto point = points.begin();
-    for (auto &val : values ) {
+    for (auto &val : values)
+    {
       val = funct_D0(*point);
       ++point;
     }
   };
-  void evaluate_1(const ValueVector<Point> &points, ValueVector<Derivative<1>> &values) const {
+  void evaluate_1(const ValueVector<Point> &points, ValueVector<Derivative<1>> &values) const
+  {
     std::cout << "evaluation of first derivatives not implemented!" << std::endl;
   };
-  void evaluate_2(const ValueVector<Point> &points, ValueVector<Derivative<2>> &values) const {
+  void evaluate_2(const ValueVector<Point> &points, ValueVector<Derivative<2>> &values) const
+  {
     std::cout << "evaluation of second derivatives not implemented!" << std::endl;
-  };  
-public:           
+  };
+public:
   static std::shared_ptr<const self_t> const_create(const std::shared_ptr<const DomainType> &domain,
-                                                    Value (*f_D0)(const Point)) {
+                                                    Value(*f_D0)(const Point))
+  {
     return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<DomainType>(domain),f_D0));
   };
-  void print_info(LogStream &out) const {
+  void print_info(LogStream &out) const
+  {
     std::cout << "Sometimes it pays to stay in bed on Monday, rather than" << std::endl;
     std::cout << "spending the rest of the week debugging Monday's code." << std::endl;
   };
 };
 
 template<int dim>
-class PoissonProblem {
-  private:
-    shared_ptr<const SplineSpace<dim>>   ref_space;
-    shared_ptr<const BSpline<dim>>       ref_basis;
-    shared_ptr<const PhysicalBasis<dim>> phy_basis;
-    shared_ptr<const QGauss<dim>>   quad;
-    shared_ptr<const QGauss<dim-1>> face_quad;
-    shared_ptr<const Function<dim>> source_term;
-    std::map<Index,shared_ptr<const Function<dim-1,1,1>>> dirichlet_cond;
+class PoissonProblem
+{
+private:
+  shared_ptr<const SplineSpace<dim>>   ref_space;
+  shared_ptr<const BSpline<dim>>       ref_basis;
+  shared_ptr<const PhysicalBasis<dim>> phy_basis;
+  shared_ptr<const QGauss<dim>>   quad;
+  shared_ptr<const QGauss<dim-1>> face_quad;
+  shared_ptr<const Function<dim>> source_term;
+  std::map<Index,shared_ptr<const Function<dim-1,1,1>>> dirichlet_cond;
 // [neumann_data]
-    std::map<Index,shared_ptr<const Function<dim-1,1,1>>> neumann_cond;
+  std::map<Index,shared_ptr<const Function<dim-1,1,1>>> neumann_cond;
 // [neumann_data]
-    shared_ptr<Matrix> mat;
-    shared_ptr<Vector> rhs;
-    shared_ptr<Vector> sol;
+  shared_ptr<Matrix> mat;
+  shared_ptr<Vector> rhs;
+  shared_ptr<Vector> sol;
 // [constructor]
-  public:
-    PoissonProblem(const shared_ptr<const Domain<dim>> domain, const Index deg,
-                   const shared_ptr<const Function<dim>> source,
-                   const std::map<Index,shared_ptr<const Function<dim-1,1,1>>> dirichlet,
-                   const std::map<Index,shared_ptr<const Function<dim-1,1,1>>> neumann) {
-      source_term    = source;
-      dirichlet_cond = dirichlet;
-      neumann_cond   = neumann;
+public:
+  PoissonProblem(const shared_ptr<const Domain<dim>> domain, const Index deg,
+                 const shared_ptr<const Function<dim>> source,
+                 const std::map<Index,shared_ptr<const Function<dim-1,1,1>>> dirichlet,
+                 const std::map<Index,shared_ptr<const Function<dim-1,1,1>>> neumann)
+  {
+    source_term    = source;
+    dirichlet_cond = dirichlet;
+    neumann_cond   = neumann;
 // [constructor]
-      auto grid = domain->get_grid_function()->get_grid();
-      ref_space = SplineSpace<dim>::const_create(deg,grid);
-      ref_basis = BSpline<dim>::const_create(ref_space);
-      phy_basis = PhysicalBasis<dim>::const_create(ref_basis,domain);
-      quad      = QGauss<dim>::const_create(deg+1);
-      face_quad = QGauss<dim-1>::const_create(deg+1);
-      mat = create_matrix(*phy_basis,DofProperties::active,Epetra_SerialComm());
-      rhs = create_vector(mat->RangeMap());
-      sol = create_vector(mat->DomainMap());
-    };
-    void assemble();
-    void solve();
-    void save();
-    Real error(const shared_ptr<const Function<dim>> exact_solution);
+    auto grid = domain->get_grid_function()->get_grid();
+    ref_space = SplineSpace<dim>::const_create(deg,grid);
+    ref_basis = BSpline<dim>::const_create(ref_space);
+    phy_basis = PhysicalBasis<dim>::const_create(ref_basis,domain);
+    quad      = QGauss<dim>::const_create(deg+1);
+    face_quad = QGauss<dim-1>::const_create(deg+1);
+    mat = create_matrix(*phy_basis,DofProperties::active,Epetra_SerialComm());
+    rhs = create_vector(mat->RangeMap());
+    sol = create_vector(mat->DomainMap());
+  };
+  void assemble();
+  void solve();
+  void save();
+  Real error(const shared_ptr<const Function<dim>> exact_solution);
 };
 
 template<int dim>
-void PoissonProblem<dim>::assemble() {
+void PoissonProblem<dim>::assemble()
+{
 
   auto basis_el      = phy_basis->begin();
   auto basis_el_end  = phy_basis->end();
@@ -145,7 +155,8 @@ void PoissonProblem<dim>::assemble() {
   funct_handler->set_element_flags(function_element::Flags::D0);
   funct_handler->init_cache(funct_el,quad);
 
-  for (; basis_el!=basis_el_end; ++basis_el, ++funct_el) {
+  for (; basis_el!=basis_el_end; ++basis_el, ++funct_el)
+  {
     basis_handler->fill_element_cache(basis_el);
     funct_handler->fill_element_cache(funct_el);
 
@@ -161,7 +172,8 @@ void PoissonProblem<dim>::assemble() {
   mat->FillComplete();
 
 // [neu_loop_init]
-  for (auto it=neumann_cond.begin(); it!=neumann_cond.end(); ++it) {
+  for (auto it=neumann_cond.begin(); it!=neumann_cond.end(); ++it)
+  {
 
     auto face = it->first;
     auto funct = it->second;
@@ -195,7 +207,8 @@ void PoissonProblem<dim>::assemble() {
 // [basis_handler_init]
 
 // [neu_el_loop_init]
-    for (; s_dom_el!=s_dom_el_end; ++s_dom_el, ++funct_el) {
+    for (; s_dom_el!=s_dom_el_end; ++s_dom_el, ++funct_el)
+    {
       s_dom_handler->fill_element_cache(s_dom_el);
       funct_handler->fill_element_cache(funct_el);
 // [neu_el_loop_init]
@@ -213,7 +226,7 @@ void PoissonProblem<dim>::assemble() {
 // [feel_da_cash]
       basis_handler->fill_face_cache(basis_el,face);
 // [feel_da_cash]
-      
+
 // [get_data]
       auto vals   = basis_el->template get_basis_data<basis_element::_Value,dim-1>(face);
       auto w_meas = s_dom_el->get_element_w_measures();
@@ -223,10 +236,13 @@ void PoissonProblem<dim>::assemble() {
 // [computational_kernel]
       auto num_quad  = vals.get_num_points();
       auto num_basis = vals.get_num_functions();
-      DenseVector loc_rhs(num_basis); loc_rhs = 0.0;
-      for (int i=0; i<num_basis; i++) {
+      DenseVector loc_rhs(num_basis);
+      loc_rhs = 0.0;
+      for (int i=0; i<num_basis; i++)
+      {
         const auto &vals_i = vals.get_function_view(i);
-        for (int q=0; q<num_quad; q++) {
+        for (int q=0; q<num_quad; q++)
+        {
           loc_rhs(i) += funct[q][0] * vals_i[q][0] * w_meas[q];
         }
       }
@@ -236,7 +252,7 @@ void PoissonProblem<dim>::assemble() {
     }
   }
 // [computational_kernel]
-  
+
   auto dof_distribution = phy_basis->get_dof_distribution();
   std::map<Index,Real> dirichlet_vals;
   space_tools::project_boundary_values(dirichlet_cond,*phy_basis,face_quad,dirichlet_vals);
@@ -244,13 +260,15 @@ void PoissonProblem<dim>::assemble() {
 }
 
 template<int dim>
-void PoissonProblem<dim>::solve() {
+void PoissonProblem<dim>::solve()
+{
   auto solver = create_solver(*mat,*sol,*rhs);
   solver->solve();
 }
 
 template<int dim>
-Real PoissonProblem<dim>::error(shared_ptr<const Function<dim>> exact_solution) {
+Real PoissonProblem<dim>::error(shared_ptr<const Function<dim>> exact_solution)
+{
 
   auto domain         = phy_basis->get_domain();
   auto domain_el      = domain->begin();
@@ -272,7 +290,8 @@ Real PoissonProblem<dim>::error(shared_ptr<const Function<dim>> exact_solution) 
   exact_sol_handler->init_cache(exact_sol_el,quad);
 
   Real error = 0.0;
-  for (; domain_el!=domain_el_end; ++domain_el, ++discr_sol_el, ++exact_sol_el) {
+  for (; domain_el!=domain_el_end; ++domain_el, ++discr_sol_el, ++exact_sol_el)
+  {
     domain_handler->fill_element_cache(domain_el);
     discr_sol_handler->fill_element_cache(discr_sol_el);
     exact_sol_handler->fill_element_cache(exact_sol_el);
@@ -282,16 +301,18 @@ Real PoissonProblem<dim>::error(shared_ptr<const Function<dim>> exact_solution) 
     auto exact_val = exact_sol_el->get_element_values_D0();
     auto num_quad  = w_meas.get_num_points();
 
-    for (int q=0; q<num_quad; q++) {
+    for (int q=0; q<num_quad; q++)
+    {
       const auto diff = discr_val[q]-exact_val[q];
       error += diff.norm_square() * w_meas[q];
     }
   }
   return std::sqrt(error);
 }
- 
+
 template<int dim>
-void PoissonProblem<dim>::save() {
+void PoissonProblem<dim>::save()
+{
   auto domain = phy_basis->get_domain();
   Writer<dim> writer(domain,5);
   auto discrete_solution = IgFunction<dim,0,1,1>::const_create(phy_basis,*sol);
@@ -301,7 +322,8 @@ void PoissonProblem<dim>::save() {
 }
 
 
-shared_ptr<const Domain<2>> quarter_annulus(const Size nel) {
+shared_ptr<const Domain<2>> quarter_annulus(const Size nel)
+{
   using numbers::PI;
   BBox<2> box;
   box[0] = {{1.0,2.0}};
@@ -312,21 +334,24 @@ shared_ptr<const Domain<2>> quarter_annulus(const Size nel) {
 }
 
 // [exact_solution]
-Values<2,1,1> u(Points<2> x) {
+Values<2,1,1> u(Points<2> x)
+{
   Values<2,1,1> y;
   y = exp(x[0])*sin(x[1]);
   return y;
 }
 // [exact_solution]
 // [dirichlet_conds]
-Values<1,1,1> gi(Points<2> x) {
+Values<1,1,1> gi(Points<2> x)
+{
   Values<1,1,1> y;
   y = exp(x[0])*sin(x[1]);
   return y;
 }
 // [dirichlet_conds]
 // [neumann_conds]
-Values<1,1,1> h3(Points<2> x) {
+Values<1,1,1> h3(Points<2> x)
+{
   Values<1,1,1> y;
   y = -sin(x[1]);
   return y;
@@ -339,7 +364,7 @@ int main()
   const int deg = 2;
 
   auto domain = quarter_annulus(nel);
-  auto source  = functions::ConstantFunction<2,0,1,1>::const_create(domain,{0.0});
+  auto source  = functions::ConstantFunction<2,0,1,1>::const_create(domain, {0.0});
 
 // [impose_boundary_conds]
   using SubGridElemMap = typename Grid<2>::template SubGridMap<1>;
@@ -348,7 +373,8 @@ int main()
   std::map<Index,shared_ptr<const Function<1,1,1,1>>> dirichlet;
   std::map<Index,shared_ptr<const Function<1,1,1,1>>> neumann;
 
-  for (int face=0; face<3; face++) {
+  for (int face=0; face<3; face++)
+  {
     const auto sub_grid    = grid->template get_sub_grid<1>(face,sub_grid_elem_map);
     const auto sub_annulus = domain->template get_sub_domain<1>(face,sub_grid_elem_map,sub_grid);
     auto g_i = CustomFunction<1,1,1>::const_create(sub_annulus,gi);

@@ -107,7 +107,7 @@ public:
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
     const ValueVector<Real> &c,
-	const int s_id,
+    const int s_id,
     DenseMatrix &operator_u_v) const;
 
   /**
@@ -126,7 +126,7 @@ public:
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
     const SafeSTLArray<ValueVector<Real>,dim_> &coeffs,
-	const int s_id,
+    const int s_id,
     DenseMatrix &operator_gradu_gradv) const;
 
 
@@ -201,7 +201,7 @@ protected:
     const int col_id_last,
     const TensorIndex<dim_> &deriv_order_trial,
     const ValueVector<Real> &c,
-	const int s_id,
+    const int s_id,
     DenseMatrix &op) const;
 };
 
@@ -383,7 +383,7 @@ integrate_add_operator_general_order(
   const bool is_symmetric = same_basis &&
                             (comp_test == comp_trial) &&
                             (deriv_order_test == deriv_order_trial) &&
-							false;
+                            false;
   //--------------------------------------------------------------------------
 
 
@@ -465,7 +465,7 @@ integrate_add_operator_general_order(
   SafeSTLArray<Real,dim> length_element_edges(1.0);
   for (int i = 0 ; i < sdim ; ++i)
   {
-	const auto active_dir = active_directions[i];
+    const auto active_dir = active_directions[i];
     length_element_edges[active_dir] = l_tmp[i];
   }
 
@@ -586,7 +586,7 @@ eval_operator_u_v(
           col_id_begin,col_id_last,
           deriv_order_trial,
           coeffs,
-		  s_id,
+          s_id,
           operator_u_v);
       }
       col_id_begin = col_id_last + 1;
@@ -683,7 +683,7 @@ eval_operator_gradu_gradv(
             col_id_begin,col_id_last,
             deriv_order_trial,
             coeffs[k],
-			s_id,
+            s_id,
             operator_gradu_gradv);
         } // end loop k
       } // end if (comp_test == comp_trial)

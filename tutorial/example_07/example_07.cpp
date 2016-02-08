@@ -53,7 +53,8 @@ LogStream out;
 //   custom function
 // -------------------------------------------------------
 template<int dim, int codim=0, int range=1, int rank=1>
-class CustomFunction : public FormulaFunction<dim,codim,range,rank> {
+class CustomFunction : public FormulaFunction<dim,codim,range,rank>
+{
 private:
   using self_t   = CustomFunction<dim,codim,range,rank>;
   using typename Function<dim,codim,range,rank>::DomainType;
@@ -61,36 +62,42 @@ private:
   using typename FormulaFunction<dim,codim,range,rank>::Point;
   template <int order>
   using Derivative = typename FormulaFunction<dim,codim,range,rank>::template Derivative<order>;
-  Value (*funct_D0)(const Point);
-  
+  Value(*funct_D0)(const Point);
+
   CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain)
     : FormulaFunction<dim,codim,range,rank>(domain) {};
 
   CustomFunction(const SharedPtrConstnessHandler<DomainType> &domain,
-                 Value (*f_D0)(const Point))
+                 Value(*f_D0)(const Point))
     : FormulaFunction<dim,codim,range,rank>(domain), funct_D0(f_D0) {};
-    
-  void evaluate_0(const ValueVector<Point> &points, ValueVector<Value> &values) const {
+
+  void evaluate_0(const ValueVector<Point> &points, ValueVector<Value> &values) const
+  {
     auto point = points.begin();
-    for (auto &val : values ) {
+    for (auto &val : values)
+    {
       val = funct_D0(*point);
       ++point;
     }
   };
 
-  void evaluate_1(const ValueVector<Point> &points, ValueVector<Derivative<1>> &values) const {
+  void evaluate_1(const ValueVector<Point> &points, ValueVector<Derivative<1>> &values) const
+  {
     std::cout << "evaluation of first derivatives not implemented!" << std::endl;
   };
-  void evaluate_2(const ValueVector<Point> &points, ValueVector<Derivative<2>> &values) const {
+  void evaluate_2(const ValueVector<Point> &points, ValueVector<Derivative<2>> &values) const
+  {
     std::cout << "evaluation of second derivatives not implemented!" << std::endl;
   };
 
 public:
   static std::shared_ptr<const self_t> const_create(const std::shared_ptr<const DomainType> &domain,
-                                                    Value (*f_D0)(const Point)) {
+                                                    Value(*f_D0)(const Point))
+  {
     return std::shared_ptr<const self_t>(new self_t(SharedPtrConstnessHandler<DomainType>(domain),f_D0));
   };
-  void print_info(LogStream &out) const {
+  void print_info(LogStream &out) const
+  {
     std::cout << "C makes it easy to shoot yourself in the foot." << std::endl;
     std::cout << "C++ makes it harder, but when you do, it blows away your whole leg." << std::endl;
   };
@@ -100,67 +107,70 @@ public:
 //   class definition
 // -------------------------------------------------------
 template<int dim>
-class LinearElasticity {
-  private:
-    // spaces
-    shared_ptr<const SplineSpace<dim,dim,1>>          ref_space;
-    shared_ptr<const BSpline<dim,dim,1>>              ref_basis;
-    shared_ptr<const PhysicalBasis<dim,dim,1,0>> phy_basis;
-    // quadrature rules
-    shared_ptr<const QGauss<dim>>   quad;
-    shared_ptr<const QGauss<dim-1>> face_quad;
-    // coefficients
-    Real lambda;
-    Real mu;
-    // initial data
-    shared_ptr<const Function<dim,0,dim,1>> source_term;
-    std::map<Index,shared_ptr<const Function<dim-1,1,dim,1>>> dirichlet_cond;
-    std::map<Index,shared_ptr<const Function<dim-1,1,dim,1>>> neumann_cond;
-    // linear system
-    shared_ptr<Matrix> mat;
-    shared_ptr<Vector> rhs;
-    shared_ptr<Vector> sol;
+class LinearElasticity
+{
+private:
+  // spaces
+  shared_ptr<const SplineSpace<dim,dim,1>>          ref_space;
+  shared_ptr<const BSpline<dim,dim,1>>              ref_basis;
+  shared_ptr<const PhysicalBasis<dim,dim,1,0>> phy_basis;
+  // quadrature rules
+  shared_ptr<const QGauss<dim>>   quad;
+  shared_ptr<const QGauss<dim-1>> face_quad;
+  // coefficients
+  Real lambda;
+  Real mu;
+  // initial data
+  shared_ptr<const Function<dim,0,dim,1>> source_term;
+  std::map<Index,shared_ptr<const Function<dim-1,1,dim,1>>> dirichlet_cond;
+  std::map<Index,shared_ptr<const Function<dim-1,1,dim,1>>> neumann_cond;
+  // linear system
+  shared_ptr<Matrix> mat;
+  shared_ptr<Vector> rhs;
+  shared_ptr<Vector> sol;
 
-    using IgFunc_t = IgFunction<dim,0,dim,1>;
-    
-  public:
-    // constructor
-    LinearElasticity(const shared_ptr<const Domain<dim>> domain, const Index deg,
-                     const Real l, const Real m,
-                     const shared_ptr<const Function<dim,0,dim,1>> source,
-                     const std::map<Index,shared_ptr<const Function<dim-1,1,dim,1>>> dirichlet,
-                     const std::map<Index,shared_ptr<const Function<dim-1,1,dim,1>>> neumann) {
-      lambda = l;
-      mu     = m;
-      source_term    = source;
-      dirichlet_cond = dirichlet;
-      neumann_cond   = neumann;
-      auto grid = domain->get_grid_function()->get_grid();
-      ref_space = SplineSpace<dim,dim,1>::const_create(deg,grid);
-      ref_basis = BSpline<dim,dim,1>::const_create(ref_space);
-      phy_basis = PhysicalBasis<dim,dim,1,0>::const_create(ref_basis,domain);
-      quad      = QGauss<dim>::const_create(deg+1);
-      face_quad = QGauss<dim-1>::const_create(deg+1);
-      mat = create_matrix(*phy_basis,DofProperties::active,Epetra_SerialComm());
-      rhs = create_vector(mat->RangeMap());
-      sol = create_vector(mat->DomainMap());
-    };
-    // methods
-    void assemble();
-    void solve();
-    shared_ptr<const IgFunc_t> get_solution();
-    void save();
-    void save(shared_ptr<const Function<dim,0,dim,1>> exact_solution);
-    void save_plugin();
-    void save_plugin(shared_ptr<const Function<dim,0,dim,1>> exact_solution);
-    Real error(shared_ptr<const Function<dim,0,dim,1>> exact_solution);
+  using IgFunc_t = IgFunction<dim,0,dim,1>;
+
+public:
+  // constructor
+  LinearElasticity(const shared_ptr<const Domain<dim>> domain, const Index deg,
+                   const Real l, const Real m,
+                   const shared_ptr<const Function<dim,0,dim,1>> source,
+                   const std::map<Index,shared_ptr<const Function<dim-1,1,dim,1>>> dirichlet,
+                   const std::map<Index,shared_ptr<const Function<dim-1,1,dim,1>>> neumann)
+  {
+    lambda = l;
+    mu     = m;
+    source_term    = source;
+    dirichlet_cond = dirichlet;
+    neumann_cond   = neumann;
+    auto grid = domain->get_grid_function()->get_grid();
+    ref_space = SplineSpace<dim,dim,1>::const_create(deg,grid);
+    ref_basis = BSpline<dim,dim,1>::const_create(ref_space);
+    phy_basis = PhysicalBasis<dim,dim,1,0>::const_create(ref_basis,domain);
+    quad      = QGauss<dim>::const_create(deg+1);
+    face_quad = QGauss<dim-1>::const_create(deg+1);
+    mat = create_matrix(*phy_basis,DofProperties::active,Epetra_SerialComm());
+    rhs = create_vector(mat->RangeMap());
+    sol = create_vector(mat->DomainMap());
+  };
+  // methods
+  void assemble();
+  void solve();
+  shared_ptr<const IgFunc_t> get_solution();
+  void save();
+  void save(shared_ptr<const Function<dim,0,dim,1>> exact_solution);
+  void save_plugin();
+  void save_plugin(shared_ptr<const Function<dim,0,dim,1>> exact_solution);
+  Real error(shared_ptr<const Function<dim,0,dim,1>> exact_solution);
 };
 
 // -------------------------------------------------------
 //   assemble
 // -------------------------------------------------------
 template<int dim>
-void LinearElasticity<dim>::assemble() {
+void LinearElasticity<dim>::assemble()
+{
 
   auto basis_el      = phy_basis->begin();
   auto basis_el_end  = phy_basis->end();
@@ -181,7 +191,8 @@ void LinearElasticity<dim>::assemble() {
   auto num_points = quad->get_num_points();
   auto l = lambda;
   auto m = 2.0*mu;
-  for (; basis_el!=basis_el_end; ++basis_el, ++funct_el) {
+  for (; basis_el!=basis_el_end; ++basis_el, ++funct_el)
+  {
     // feel da cache
     basis_handler->fill_element_cache(basis_el);
     funct_handler->fill_element_cache(funct_el);
@@ -192,16 +203,21 @@ void LinearElasticity<dim>::assemble() {
     auto divs   = basis_el->get_element_divergences();
     auto w_meas = basis_el->get_element_w_measures();
 
-    DenseMatrix loc_mat(num_basis,num_basis); loc_mat = 0.0;
+    DenseMatrix loc_mat(num_basis,num_basis);
+    loc_mat = 0.0;
     // element loop
-    for (int i=0; i<num_basis; i++) {
+    for (int i=0; i<num_basis; i++)
+    {
       const auto &grd_i = grads.get_function_view(i);
       const auto &div_i = divs.get_function_view(i);
-      for (int j=0; j<num_basis; j++) {
+      for (int j=0; j<num_basis; j++)
+      {
         const auto &grd_j = grads.get_function_view(j);
         const auto &div_j = divs.get_function_view(j);
-        Real part_1 = 0.0; Real part_2 = 0.0;
-        for (int q=0; q<num_points; q++) {
+        Real part_1 = 0.0;
+        Real part_2 = 0.0;
+        for (int q=0; q<num_points; q++)
+        {
           part_1 += div_i[q][0] * div_j[q][0] * w_meas[q];
           part_2 += scalar_product(symmetric_tensor(grd_i[q]),symmetric_tensor(grd_j[q])) * w_meas[q];
           //part_2 += scalar_product(grd_i[q],grd_j[q]) * w_meas[q];
@@ -228,7 +244,8 @@ void LinearElasticity<dim>::assemble() {
 //   solve
 // -------------------------------------------------------
 template<int dim>
-void LinearElasticity<dim>::solve() {
+void LinearElasticity<dim>::solve()
+{
   auto solver = create_solver(*mat,*sol,*rhs);
   solver->solve();
 }
@@ -237,7 +254,8 @@ void LinearElasticity<dim>::solve() {
 //   L^2-error
 // -------------------------------------------------------
 template<int dim>
-Real LinearElasticity<dim>::error(shared_ptr<const Function<dim,0,dim,1>> exact_solution) {
+Real LinearElasticity<dim>::error(shared_ptr<const Function<dim,0,dim,1>> exact_solution)
+{
 
   auto domain         = phy_basis->get_domain();
   auto domain_el      = domain->begin();
@@ -259,7 +277,8 @@ Real LinearElasticity<dim>::error(shared_ptr<const Function<dim,0,dim,1>> exact_
   exact_sol_handler->init_cache(exact_sol_el,quad);
 
   Real error = 0.0;
-  for (; domain_el!=domain_el_end; ++domain_el, ++discr_sol_el, ++exact_sol_el) {
+  for (; domain_el!=domain_el_end; ++domain_el, ++discr_sol_el, ++exact_sol_el)
+  {
     domain_handler->fill_element_cache(domain_el);
     discr_sol_handler->fill_element_cache(discr_sol_el);
     exact_sol_handler->fill_element_cache(exact_sol_el);
@@ -269,7 +288,8 @@ Real LinearElasticity<dim>::error(shared_ptr<const Function<dim,0,dim,1>> exact_
     auto exact_val = exact_sol_el->get_element_values_D0();
     auto num_quad  = w_meas.get_num_points();
 
-    for (int q=0; q<num_quad; q++) {
+    for (int q=0; q<num_quad; q++)
+    {
       const auto diff = discr_val[q]-exact_val[q];
       error += diff.norm_square() * w_meas[q];
     }
@@ -281,7 +301,8 @@ Real LinearElasticity<dim>::error(shared_ptr<const Function<dim,0,dim,1>> exact_
 //   vtk save
 // -------------------------------------------------------
 template<int dim>
-void LinearElasticity<dim>::save() {
+void LinearElasticity<dim>::save()
+{
   auto domain = phy_basis->get_domain();
   Writer<dim> writer(domain,5);
   auto solution = IgFunction<dim,0,dim,1>::const_create(phy_basis,*sol);
@@ -293,7 +314,8 @@ void LinearElasticity<dim>::save() {
 //   vtk save with exact solution
 // -------------------------------------------------------
 template<int dim>
-void LinearElasticity<dim>::save(shared_ptr<const Function<dim,0,dim,1>> exact_solution) {
+void LinearElasticity<dim>::save(shared_ptr<const Function<dim,0,dim,1>> exact_solution)
+{
   auto domain = phy_basis->get_domain();
   Writer<dim> writer(domain,5);
   auto discrete_solution = IgFunction<dim,0,dim,1>::const_create(phy_basis,*sol);
@@ -307,14 +329,16 @@ void LinearElasticity<dim>::save(shared_ptr<const Function<dim,0,dim,1>> exact_s
 //   Pablo's get_solution
 // -------------------------------------------------------
 template<int dim>
-auto LinearElasticity<dim>::get_solution() -> std::shared_ptr<const IgFunc_t> {
+auto LinearElasticity<dim>::get_solution() -> std::shared_ptr<const IgFunc_t>
+{
   return IgFunc_t::const_create(phy_basis, *sol);
 }
 // -------------------------------------------------------
 //   ParaView plugin save
 // -------------------------------------------------------
 template<int dim>
-void LinearElasticity<dim>::save_plugin() {
+void LinearElasticity<dim>::save_plugin()
+{
   const auto solution = this->get_solution();
   string filename = "problem_plugin_" + to_string(dim) + "d" ;
   const auto solution_non_const = std::const_pointer_cast<IgFunc_t>(solution);
@@ -341,7 +365,8 @@ void LinearElasticity<dim>::save_plugin() {
 //   ParaView plugin save with exact solution
 // -------------------------------------------------------
 template<int dim>
-void LinearElasticity<dim>::save_plugin(shared_ptr<const Function<dim,0,dim,1>> exact_solution) {
+void LinearElasticity<dim>::save_plugin(shared_ptr<const Function<dim,0,dim,1>> exact_solution)
+{
   const auto solution = this->get_solution();
   string filename = "problem_plugin_" + to_string(dim) + "d" ;
   const auto solution_non_const = std::const_pointer_cast<IgFunc_t>(solution);
@@ -373,7 +398,8 @@ void LinearElasticity<dim>::save_plugin(shared_ptr<const Function<dim,0,dim,1>> 
 // -------------------------------------------------------
 //   useful domains
 // -------------------------------------------------------
-shared_ptr<const Domain<2>> quarter_annulus(const Size nel) {
+shared_ptr<const Domain<2>> quarter_annulus(const Size nel)
+{
   using numbers::PI;
   BBox<2> box;
   box[0] = {{1.0,2.0}};
@@ -384,7 +410,8 @@ shared_ptr<const Domain<2>> quarter_annulus(const Size nel) {
 }
 
 template<int dim>
-shared_ptr<const Domain<dim>> hypercube(const Size nel) {
+shared_ptr<const Domain<dim>> hypercube(const Size nel)
+{
   auto grid = Grid<dim>::const_create(nel+1);
   auto idty = grid_functions::IdentityGridFunction<dim>::const_create(grid);
   return Domain<dim>::const_create(idty);
@@ -398,7 +425,8 @@ shared_ptr<const Domain<dim>> hypercube(const Size nel) {
 #define MU     0.38462
 using numbers::PI;
 template<int dim>
-Values<dim,dim,1> u(Points<dim> x) {
+Values<dim,dim,1> u(Points<dim> x)
+{
   Values<dim,dim,1> y;
   y[0] = 0.1;
   for (int d=0; d<dim; d++) y[0] *= sin(PI*x[d]);
@@ -406,12 +434,14 @@ Values<dim,dim,1> u(Points<dim> x) {
   return y;
 }
 template<int dim>
-Values<dim,dim,1> f(Points<dim> x) {
+Values<dim,dim,1> f(Points<dim> x)
+{
   Values<dim,dim,1> y;
   y[0] = 0.1*PI*PI*(LAMBDA + (dim+1)*MU);
   for (int d=0; d<dim; d++) y[0] *= sin(PI*x[d]);
   Real coef = -0.1*PI*PI*(LAMBDA + MU);
-  for (int d=1; d<dim; d++) {
+  for (int d=1; d<dim; d++)
+  {
     y[d] = coef * cos(PI*x[0]) * cos(PI*x[d]);
     for (int e=1;   e<d;   e++) y[d] *= sin(PI*x[e]);
     for (int e=d+1; e<dim; e++) y[d] *= sin(PI*x[e]);
@@ -436,7 +466,7 @@ int main()
 //   for (int deg=1; deg<=4; deg++) {
 //   printf("\n");
 //   for (int nel=2; nel<=8; nel+=2) {
-  
+
   auto domain = hypercube<dim>(nel);
 
   // source term
@@ -450,9 +480,11 @@ int main()
   auto grid = domain->get_grid_function()->get_grid();
 
   std::map<Index,shared_ptr<const Function<dim-1,1,dim,1>>> dirichlet;
-  Values<dim,dim,1> zeros; for (int d=0; d<dim; d++) zeros[d] = 0.0;
+  Values<dim,dim,1> zeros;
+  for (int d=0; d<dim; d++) zeros[d] = 0.0;
 
-  for (int face=0; face<2*dim; face++) {
+  for (int face=0; face<2*dim; face++)
+  {
     const auto sub_grid    = grid->template get_sub_grid<dim-1>(face,sub_grid_elem_map);
     const auto sub_annulus = domain->template get_sub_domain<dim-1>(face,sub_grid_elem_map,sub_grid);
     auto g = functions::ConstantFunction<dim-1,1,dim,1>::const_create(sub_annulus,zeros);
@@ -460,7 +492,7 @@ int main()
   }
 
   std::map<Index,shared_ptr<const Function<dim-1,1,dim,1>>> neumann;
-  
+
   // creating problems
   auto problem = LinearElasticity<dim>(domain,deg,lambda,mu,source_term,dirichlet,neumann);
   problem.assemble();

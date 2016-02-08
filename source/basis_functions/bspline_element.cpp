@@ -170,14 +170,14 @@ template <int dim, int range, int rank>
 DenseMatrix
 BSplineElement<dim, range, rank>::
 integrate_u_v_sum_factorization_impl(
-		  const TopologyVariants<dim> &topology,
-		  const int s_id,
-		  const PropId &dofs_property)
+  const TopologyVariants<dim> &topology,
+  const int s_id,
+  const PropId &dofs_property)
 {
   SumFactorizationDispatcher sum_factorization_dispatcher(
-		  *this,
-		  s_id,
-		  SumFactorizationDispatcher::OperatorType::U_V);
+    *this,
+    s_id,
+    SumFactorizationDispatcher::OperatorType::U_V);
   return boost::apply_visitor(sum_factorization_dispatcher,topology);
 }
 
@@ -186,14 +186,14 @@ template <int dim, int range, int rank>
 DenseMatrix
 BSplineElement<dim, range, rank>::
 integrate_gradu_gradv_sum_factorization_impl(
-		  const TopologyVariants<dim> &topology,
-		  const int s_id,
-		  const PropId &dofs_property)
+  const TopologyVariants<dim> &topology,
+  const int s_id,
+  const PropId &dofs_property)
 {
   SumFactorizationDispatcher sum_factorization_dispatcher(
-			  *this,
-			  s_id,
-			  SumFactorizationDispatcher::OperatorType::gradU_gradV);
+    *this,
+    s_id,
+    SumFactorizationDispatcher::OperatorType::gradU_gradV);
   return boost::apply_visitor(sum_factorization_dispatcher,topology);
 }
 
@@ -207,11 +207,11 @@ SumFactorizationDispatcher::
 operator()(const Topology<sdim> &topology)
 {
   Assert(s_id_ >= 0 && s_id_ < UnitElement<dim>::sub_elements_size[sdim],
-		  ExcIndexRange(s_id_, 0, UnitElement<dim>::sub_elements_size[sdim]));
+         ExcIndexRange(s_id_, 0, UnitElement<dim>::sub_elements_size[sdim]));
 
 //  const auto & grid_elem = bsp_elem_.get_grid_element();
   const auto n_pts = bsp_elem_.
-		  get_grid_element().template get_quad<sdim>()->get_num_points();
+                     get_grid_element().template get_quad<sdim>()->get_num_points();
 
   const int n_basis = bsp_elem_.get_num_basis();
   DenseMatrix op(n_basis,n_basis);
@@ -223,31 +223,31 @@ operator()(const Topology<sdim> &topology)
 
   if (operator_type_ == OperatorType::U_V)
   {
-	Vec non_tensor_prod_coeffs(n_pts,1.0);
+    Vec non_tensor_prod_coeffs(n_pts,1.0);
 
-	elliptic_operators.template eval_operator_u_v<sdim>(
-		bsp_elem_,
-		bsp_elem_,
-	    non_tensor_prod_coeffs,
-		s_id_,
-		op);
+    elliptic_operators.template eval_operator_u_v<sdim>(
+      bsp_elem_,
+      bsp_elem_,
+      non_tensor_prod_coeffs,
+      s_id_,
+      op);
   }
   else if (operator_type_ == OperatorType::gradU_gradV)
   {
-	SafeSTLArray<Vec,dim> non_tensor_prod_coeffs;
-	for (int i = 0 ; i < dim ; ++i)
-	  non_tensor_prod_coeffs[i] = Vec(n_pts,1.0);
+    SafeSTLArray<Vec,dim> non_tensor_prod_coeffs;
+    for (int i = 0 ; i < dim ; ++i)
+      non_tensor_prod_coeffs[i] = Vec(n_pts,1.0);
 
-	elliptic_operators.template eval_operator_gradu_gradv<sdim>(
-		bsp_elem_,
-		bsp_elem_,
-	    non_tensor_prod_coeffs,
-		s_id_,
-	    op);
+    elliptic_operators.template eval_operator_gradu_gradv<sdim>(
+      bsp_elem_,
+      bsp_elem_,
+      non_tensor_prod_coeffs,
+      s_id_,
+      op);
   }
   else
   {
-	AssertThrow(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
   }
 
 //  AssertThrow(false,ExcNotImplemented());

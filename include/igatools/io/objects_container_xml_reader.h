@@ -255,9 +255,9 @@ private:
    *                and also retrieving other ones needed.
    */
   static void parse_ref_bases_and_grid_functions(const std::shared_ptr<XMLElement> xml_elem,
-                                             const bool parse_as_constant,
-                                             IdMap_ &id_map,
-                                             const std::shared_ptr<ObjectsContainer> container);
+                                                 const bool parse_as_constant,
+                                                 IdMap_ &id_map,
+                                                 const std::shared_ptr<ObjectsContainer> container);
 
   /**
    * @brief Reads all the @ref RerenceBasis
@@ -450,10 +450,10 @@ private:
   template <int dim, int range, int rank>
   static RefBasisPtr_<dim, range, rank>
   parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
-                const Index &local_object_id,
-                const bool parse_as_constant,
-                const std::shared_ptr<const ObjectsContainer> container,
-                IdMap_ &id_map);
+              const Index &local_object_id,
+              const bool parse_as_constant,
+              const std::shared_ptr<const ObjectsContainer> container,
+              IdMap_ &id_map);
 
   /**
    * @brief Reads a single @ref grid_functions::IdentityGridFunction XML
@@ -601,10 +601,10 @@ private:
    */
   template <int dim, int range>
   static bool is_ref_basis_for_ig_grid_function_parsed
-      (const std::shared_ptr<XMLElement> xml_elem,
-       const bool parse_as_constant,
-       const std::shared_ptr<const ObjectsContainer> container,
-       IdMap_ &id_map);
+  (const std::shared_ptr<XMLElement> xml_elem,
+   const bool parse_as_constant,
+   const std::shared_ptr<const ObjectsContainer> container,
+   IdMap_ &id_map);
 
   /**
    * @brief Reads a single @ref Domain XML element contained in

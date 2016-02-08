@@ -286,7 +286,7 @@ integrate_u_v(const int s_id,
   return M;
 #else
   return this->integrate_u_v_sum_factorization_impl(
-		  Topology<sdim>(),s_id,dofs_property);
+           Topology<sdim>(),s_id,dofs_property);
 #endif // SUM_FACTORIZATION
 
 }

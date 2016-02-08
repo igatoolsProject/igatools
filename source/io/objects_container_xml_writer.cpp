@@ -280,14 +280,14 @@ write_grid_functions(const ContPtr_ container,
         gf_elem->append_child_element(elem);
       }
       else
-          AssertThrow (false,
-                       ExcMessage("Not valid GridFunction type to be written to XML."));
+        AssertThrow(false,
+                    ExcMessage("Not valid GridFunction type to be written to XML."));
 
       const auto &name = grid_func->get_name();
       if (name.size() > 0)
       {
-          const auto name_elem = xml_doc->create_new_text_element("Name", name);
-          gf_elem->append_child_element(name_elem);
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        gf_elem->append_child_element(name_elem);
       }
 
       const auto igt_elem = xml_doc->get_document_element();
@@ -336,8 +336,8 @@ write_grid_functions(const ContPtr_ container,
         gf_elem->append_child_element(elem);
       }
       else
-          AssertThrow (false,
-                       ExcMessage("Not valid GridFunction type to be written to XML."));
+        AssertThrow(false,
+                    ExcMessage("Not valid GridFunction type to be written to XML."));
 
       const auto igt_elem = xml_doc->get_document_element();
       igt_elem->append_child_element(gf_elem);
@@ -453,14 +453,14 @@ write_functions(const ContPtr_ container,
         f_elem->append_child_element(elem);
       }
       else
-          AssertThrow (false,
-                       ExcMessage("Not valid Function type to be written to XML."));
+        AssertThrow(false,
+                    ExcMessage("Not valid Function type to be written to XML."));
 
       const auto &name = func->get_name();
       if (name.size() > 0)
       {
-          const auto name_elem = xml_doc->create_new_text_element("Name", name);
-          f_elem->append_child_element(name_elem);
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        f_elem->append_child_element(name_elem);
       }
 
       const auto igt_elem = xml_doc->get_document_element();
@@ -504,14 +504,14 @@ write_functions(const ContPtr_ container,
         f_elem->append_child_element(elem);
       }
       else
-          AssertThrow (false,
-                       ExcMessage("Not valid Function type to be written to XML."));
+        AssertThrow(false,
+                    ExcMessage("Not valid Function type to be written to XML."));
 
       const auto &name = func->get_name();
       if (name.size() > 0)
       {
-          const auto name_elem = xml_doc->create_new_text_element("Name", name);
-          f_elem->append_child_element(name_elem);
+        const auto name_elem = xml_doc->create_new_text_element("Name", name);
+        f_elem->append_child_element(name_elem);
       }
 
       const auto igt_elem = xml_doc->get_document_element();
@@ -653,7 +653,7 @@ write_bspline(const shared_ptr<BSpline> bspline,
 
   const auto ssp_elem = xml_doc->create_new_element("SplineSpace");
   ssp_elem->add_attribute("GetFromLocalObjectId",
-                          bspline->get_spline_space()->get_object_id());
+  bspline->get_spline_space()->get_object_id());
   obj_elem->append_child_element(ssp_elem);
 
   const auto &end_beh_table = bspline->get_end_behaviour_table();
@@ -703,12 +703,12 @@ write_nurbs(const shared_ptr<NURBS> nurbs,
 
   const auto bs_elem = xml_doc->create_new_element("BSpline");
   bs_elem->add_attribute("GetFromLocalObjectId",
-                         nurbs->get_bspline_basis()->get_object_id());
+  nurbs->get_bspline_basis()->get_object_id());
   obj_elem->append_child_element(bs_elem);
 
   const auto wf_elem = xml_doc->create_new_element("WeightFunction");
   wf_elem->add_attribute("GetFromLocalObjectId",
-                         nurbs->get_weight_func()->get_object_id());
+  nurbs->get_weight_func()->get_object_id());
   obj_elem->append_child_element(wf_elem);
 
   return obj_elem;
@@ -726,7 +726,7 @@ write_identity_grid_function(const shared_ptr<IdGridFunc> id_func,
 
   const auto grid_elem = xml_doc->create_new_element("Grid");
   grid_elem->add_attribute("GetFromLocalObjectId",
-                           id_func->get_grid()->get_object_id());
+  id_func->get_grid()->get_object_id());
   obj_elem->append_child_element(grid_elem);
 
   return obj_elem;
@@ -744,7 +744,7 @@ write_constant_grid_function(const shared_ptr<ConstGridFunc> const_func,
 
   const auto grid_elem = xml_doc->create_new_element("Grid");
   grid_elem->add_attribute("GetFromLocalObjectId",
-                           const_func->get_grid()->get_object_id());
+  const_func->get_grid()->get_object_id());
   obj_elem->append_child_element(grid_elem);
 
   const auto values_arr = const_func->get_constant_value().get_flat_values();
@@ -768,7 +768,7 @@ write_linear_grid_function(const shared_ptr<LinearGridFunc> linear_func,
 
   const auto grid_elem = xml_doc->create_new_element("Grid");
   grid_elem->add_attribute("GetFromLocalObjectId",
-                           linear_func->get_grid()->get_object_id());
+  linear_func->get_grid()->get_object_id());
   obj_elem->append_child_element(grid_elem);
 
   const auto A_arr = linear_func->get_A().get_flat_values();
@@ -798,7 +798,7 @@ write_ig_grid_function(const shared_ptr<IgGridFunc> ig_func,
 
   const auto rb_elem = xml_doc->create_new_element("ReferenceBasis");
   rb_elem->add_attribute("GetFromLocalObjectId",
-                         ig_func->get_basis()->get_object_id());
+  ig_func->get_basis()->get_object_id());
   obj_elem->append_child_element(rb_elem);
 
   const auto &coefs = ig_func->get_coefficients();
@@ -914,7 +914,7 @@ write_ig_function(const shared_ptr<IgFunction> ig_function,
 
   const auto ps_elem = xml_doc->create_new_element("PhysicalBasis");
   ps_elem->add_attribute("GetFromLocalObjectId",
-                         ig_function->get_basis()->get_object_id());
+  ig_function->get_basis()->get_object_id());
   obj_elem->append_child_element(ps_elem);
 
   const auto &coefs = ig_function->get_coefficients();
@@ -940,7 +940,7 @@ write_constant_function(const shared_ptr<ConstantFunction> const_function,
 
   const auto dm_elem = xml_doc->create_new_element("Domain");
   dm_elem->add_attribute("GetFromLocalObjectId",
-                         const_function->get_domain()->get_object_id());
+  const_function->get_domain()->get_object_id());
   obj_elem->append_child_element(dm_elem);
 
   const auto values_arr = const_function->get_constant_value().get_flat_values();
@@ -964,7 +964,7 @@ write_linear_function(const shared_ptr<LinearFunction> linear_function,
 
   const auto dm_elem = xml_doc->create_new_element("Domain");
   dm_elem->add_attribute("GetFromLocalObjectId",
-                         linear_function->get_domain()->get_object_id());
+  linear_function->get_domain()->get_object_id());
   obj_elem->append_child_element(dm_elem);
 
   const auto A_arr = linear_function->get_A().get_flat_values();

@@ -262,10 +262,10 @@ parse_ref_bases(const shared_ptr<XMLElement> xml_elem,
   {
     // In the first call, BSplines are parsed.
     if (first_parsing && rb->has_element("NURBS"))
-        continue;
+      continue;
     // In the second call, NURBS are parsed.
     else if (!first_parsing && rb->has_element("BSpline"))
-        continue;
+      continue;
 
     const int rb_dim   = rb->get_attribute<int>("Dim");
     const int rb_range = rb->get_attribute<int>("Range");
@@ -283,7 +283,7 @@ parse_ref_bases(const shared_ptr<XMLElement> xml_elem,
         return;
 
       using RefBasisType = typename
-                          remove_reference<decltype(rb_ptr_type)>::type::element_type;
+                           remove_reference<decltype(rb_ptr_type)>::type::element_type;
       static const int dim   = RefBasisType::dim;
       static const int range = RefBasisType::range;
       static const int rank  = RefBasisType::rank;
@@ -295,41 +295,41 @@ parse_ref_bases(const shared_ptr<XMLElement> xml_elem,
         RefBasisPtr_<dim, range, rank> basis;
         if (rb->has_element("NURBS"))
         {
-            const auto nr = rb->get_single_element("NURBS");
-            basis = parse_nurbs<dim, range, rank>
-                (rb->get_single_element("NURBS"),
-                 local_object_id, parse_as_constant, container, id_map);
+          const auto nr = rb->get_single_element("NURBS");
+          basis = parse_nurbs<dim, range, rank>
+                  (rb->get_single_element("NURBS"),
+                   local_object_id, parse_as_constant, container, id_map);
         }
         else if (rb->has_element("BSpline"))
         {
-            basis = parse_bspline<dim, range, rank>
-                (rb->get_single_element("BSpline"),
-                 local_object_id, parse_as_constant, container, id_map);
+          basis = parse_bspline<dim, range, rank>
+                  (rb->get_single_element("BSpline"),
+                   local_object_id, parse_as_constant, container, id_map);
         }
         else
         {
-            Assert (false, ExcMessage("Not valid ReferenceSpace type."));
+          Assert(false, ExcMessage("Not valid ReferenceSpace type."));
         }
 
-        Assert (basis != nullptr, ExcNullPtr());
+        Assert(basis != nullptr, ExcNullPtr());
 
         using RefBas_ = ReferenceBasis<dim, range, rank>;
         id_map[local_object_id] = basis->get_object_id();
         if (parse_as_constant)
-            container->insert_const_object<RefBas_>(basis);
+          container->insert_const_object<RefBas_>(basis);
         else
-            container->insert_object<RefBas_>(
-                    std::const_pointer_cast<RefBas_>(basis));
+          container->insert_object<RefBas_>(
+            std::const_pointer_cast<RefBas_>(basis));
       }
 
     });
 
     // ReferenceBasis dimensions not found
     AssertThrow(found, ExcMessage(
-            Self_::get_type_id_string("ReferenceBasis", local_object_id,
-            {{rb_dim, rb_range, rb_rank}}) +
-            " is not a valid type. Possibly the type was not "
-            "instantiated for the specified dimensions."));
+                  Self_::get_type_id_string("ReferenceBasis", local_object_id,
+    {{rb_dim, rb_range, rb_rank}}) +
+    " is not a valid type. Possibly the type was not "
+    "instantiated for the specified dimensions."));
   }
 }
 
@@ -379,78 +379,78 @@ parse_grid_functions(const shared_ptr<XMLElement> xml_elem,
         // Second call.
         if (!first_parsing)
         {
-            if (gf->has_element("IgGridFunction"))
+          if (gf->has_element("IgGridFunction"))
+          {
+            if (id_map.find(local_object_id) != id_map.cend())
+              // GridFunction already parsed.
+              return;
+            else
             {
-                if (id_map.find(local_object_id) != id_map.cend())
-                    // GridFunction already parsed.
-                    return;
-                else
-                {
-                    const auto igf = gf->get_single_element("IgGridFunction");
-                    grid_func = parse_ig_grid_function<dim, range>(
+              const auto igf = gf->get_single_element("IgGridFunction");
+              grid_func = parse_ig_grid_function<dim, range>(
                             gf->get_single_element("IgGridFunction"),
                             local_object_id, parse_as_constant, container, id_map);
-                }
             }
-            else
-                return;
+          }
+          else
+            return;
         }
         // First call.
         else
         {
-            if (gf->has_element("IgGridFunction"))
-            {
-                const auto igf = gf->get_single_element("IgGridFunction");
-                const bool is_ref_space_parse =
-                        is_ref_basis_for_ig_grid_function_parsed<dim, range>
-                (igf, parse_as_constant, container, id_map);
+          if (gf->has_element("IgGridFunction"))
+          {
+            const auto igf = gf->get_single_element("IgGridFunction");
+            const bool is_ref_space_parse =
+              is_ref_basis_for_ig_grid_function_parsed<dim, range>
+              (igf, parse_as_constant, container, id_map);
 
-                if (is_ref_space_parse)
-                    // Ig grid function built with a BSpline
-                    grid_func = parse_ig_grid_function<dim, range>(
+            if (is_ref_space_parse)
+              // Ig grid function built with a BSpline
+              grid_func = parse_ig_grid_function<dim, range>(
                             igf, local_object_id, parse_as_constant, container, id_map);
-                else
-                    // Ig grid function built with a NURBS (that is not parsed yet).
-                    return;
-            }
-            else if (gf->has_element("IdentityGridFunction"))
-            {
-                grid_func = parse_identity_grid_function<dim, range>(
-                        gf->get_single_element("IdentityGridFunction"), local_object_id,
-                        parse_as_constant, container, id_map);
-            }
-            else if (gf->has_element("ConstantGridFunction"))
-            {
-                grid_func = parse_constant_grid_function<dim, range>(
-                        gf->get_single_element("ConstantGridFunction"), local_object_id,
-                        parse_as_constant, container, id_map);
-            }
-            else if (gf->has_element("LinearGridFunction"))
-            {
-                grid_func = parse_linear_grid_function<dim, range>(
-                        gf->get_single_element("LinearGridFunction"), local_object_id,
-                        parse_as_constant, container, id_map);
-            }
             else
-            {
-                Assert (false, ExcMessage("Not valid GridFunction type."));
-            }
+              // Ig grid function built with a NURBS (that is not parsed yet).
+              return;
+          }
+          else if (gf->has_element("IdentityGridFunction"))
+          {
+            grid_func = parse_identity_grid_function<dim, range>(
+                          gf->get_single_element("IdentityGridFunction"), local_object_id,
+                          parse_as_constant, container, id_map);
+          }
+          else if (gf->has_element("ConstantGridFunction"))
+          {
+            grid_func = parse_constant_grid_function<dim, range>(
+                          gf->get_single_element("ConstantGridFunction"), local_object_id,
+                          parse_as_constant, container, id_map);
+          }
+          else if (gf->has_element("LinearGridFunction"))
+          {
+            grid_func = parse_linear_grid_function<dim, range>(
+                          gf->get_single_element("LinearGridFunction"), local_object_id,
+                          parse_as_constant, container, id_map);
+          }
+          else
+          {
+            Assert(false, ExcMessage("Not valid GridFunction type."));
+          }
         }
 
-        Assert (grid_func != nullptr, ExcNullPtr());
+        Assert(grid_func != nullptr, ExcNullPtr());
 
         Assert(id_map.find(local_object_id) == id_map.cend(),
                ExcMessage("Repeated object id."));
         id_map[local_object_id] = grid_func->get_object_id();
 
         const auto grid_non_const =
-                    std::const_pointer_cast<GridFuncType>(grid_func);
+          std::const_pointer_cast<GridFuncType>(grid_func);
         grid_non_const->set_name(parse_name(gf));
 
         if (parse_as_constant)
-            container->insert_const_object<GridFuncType>(grid_func);
+          container->insert_const_object<GridFuncType>(grid_func);
         else
-            container->insert_object<GridFuncType>(grid_non_const);
+          container->insert_object<GridFuncType>(grid_non_const);
 
         return;
       }
@@ -458,10 +458,10 @@ parse_grid_functions(const shared_ptr<XMLElement> xml_elem,
 
     // GridFunction dimensions not found
     AssertThrow(found, ExcMessage(
-            Self_::get_type_id_string("GridFunction", local_object_id,
-            {{gf_dim, gf_range}}) +
-            " is not a valid type. Possibly the type was not "
-            "instantiated for the specified dimensions."));
+                  Self_::get_type_id_string("GridFunction", local_object_id,
+    {{gf_dim, gf_range}}) +
+    " is not a valid type. Possibly the type was not "
+    "instantiated for the specified dimensions."));
   }
 }
 
@@ -601,40 +601,40 @@ parse_functions(const shared_ptr<XMLElement> xml_elem,
         FuncPtr_<dim, codim, range, rank> func;
         if (fn->has_element("IgFunction"))
         {
-            func = parse_ig_function<dim, codim, range, rank>(
-                fn->get_single_element("IgFunction"), local_object_id,
-                parse_as_constant, container, id_map);
+          func = parse_ig_function<dim, codim, range, rank>(
+                   fn->get_single_element("IgFunction"), local_object_id,
+                   parse_as_constant, container, id_map);
         }
         else if (fn->has_element("ConstantFunction"))
         {
-            func = parse_constant_function<dim, codim, range, rank>(
-                fn->get_single_element("ConstantFunction"), local_object_id,
-                parse_as_constant, container, id_map);
+          func = parse_constant_function<dim, codim, range, rank>(
+                   fn->get_single_element("ConstantFunction"), local_object_id,
+                   parse_as_constant, container, id_map);
         }
         else if (fn->has_element("LinearFunction"))
         {
-            func = parse_linear_function<dim, codim, range, rank>(
-                fn->get_single_element("LinearFunction"), local_object_id,
-                parse_as_constant, container, id_map);
+          func = parse_linear_function<dim, codim, range, rank>(
+                   fn->get_single_element("LinearFunction"), local_object_id,
+                   parse_as_constant, container, id_map);
         }
         else
         {
-            Assert (false, ExcMessage("Not valid Function type."));
+          Assert(false, ExcMessage("Not valid Function type."));
         }
 
-        Assert (func != nullptr, ExcNullPtr());
+        Assert(func != nullptr, ExcNullPtr());
 
         using Func_ = Function<dim, codim, range, rank>;
         id_map[local_object_id] = func->get_object_id();
 
         const auto func_non_const =
-                    std::const_pointer_cast<Func_>(func);
+          std::const_pointer_cast<Func_>(func);
         func_non_const->set_name(parse_name(fn));
 
         if (parse_as_constant)
-            container->insert_const_object<Func_>(func);
+          container->insert_const_object<Func_>(func);
         else
-            container->insert_object<Func_>(func_non_const);
+          container->insert_object<Func_>(func_non_const);
 
         return;
 
@@ -646,7 +646,7 @@ parse_functions(const shared_ptr<XMLElement> xml_elem,
     AssertThrow(found,
                 ExcMessage(Self_::get_type_id_string("IgFunction",
                                                      local_object_id,
-                                                     {{fn_dim, fn_codim, fn_range, fn_rank}})
+    {{fn_dim, fn_codim, fn_range, fn_rank}})
     + " is not a valid type. Possibly the type was not "
     "instantiated for the specified dimensions."));
   }
@@ -968,21 +968,21 @@ parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
 
   // Checking the spline space with proper dimension and id exists.
   AssertThrow(id_map.find(local_ssp_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<SplineSpaceType> (id_map.at(local_ssp_id)) :
-               container->is_object_present<SplineSpaceType> (id_map.at(local_ssp_id))),
-               ExcMessage("Parsing " + parsing_msg + " not matching "
-                          "definition for " +
-                          Self_::get_type_id_string("SplineSpace", local_ssp_id,
+  (parse_as_constant ?
+  container->is_const_object_present<SplineSpaceType> (id_map.at(local_ssp_id)) :
+  container->is_object_present<SplineSpaceType> (id_map.at(local_ssp_id))),
+  ExcMessage("Parsing " + parsing_msg + " not matching "
+  "definition for " +
+  Self_::get_type_id_string("SplineSpace", local_ssp_id,
   {{dim, range, rank}}) + "."));
 
   SharedPtrConstnessHandler<SplineSpaceType> ssp;
   if (parse_as_constant)
     ssp = SharedPtrConstnessHandler<SplineSpaceType>
-          (container->get_const_object<SplineSpaceType>(id_map.at(local_ssp_id)));
+    (container->get_const_object<SplineSpaceType>(id_map.at(local_ssp_id)));
   else
     ssp = SharedPtrConstnessHandler<SplineSpaceType>
-          (container->get_object<SplineSpaceType>(id_map.at(local_ssp_id)));
+    (container->get_object<SplineSpaceType>(id_map.at(local_ssp_id)));
 
   // Parsing end bevaviour, if exists
   if (xml_elem->has_element("EndBehaviour"))
@@ -990,11 +990,11 @@ parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
 
     // Checking that the right number of components is defined.
     const auto eb_elems = xml_elem->get_single_element("EndBehaviour")
-                          ->get_children_elements("EndBehaviour");
+    ->get_children_elements("EndBehaviour");
     AssertThrow(n_components == eb_elems.size(),
-                ExcMessage("Parsing " + parsing_msg + ", the number of "
-                           "EndBehaviour elements does not match "
-                           "with the number of components of the space."));
+    ExcMessage("Parsing " + parsing_msg + ", the number of "
+    "EndBehaviour elements does not match "
+    "with the number of components of the space."));
 
     const auto &ssp_periodic_table = ssp->get_periodic_table();
 
@@ -1004,24 +1004,24 @@ parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
       const auto comp_id = eb->get_attribute<Index>("ComponentId");
       // Checking the <= 0 comp_id < n_components
       AssertThrow(comp_id >= 0 && comp_id < n_components,
-                  ExcMessage("Parsing EndBehaviour for " + parsing_msg +
-                             ", not valid ComponentId=" + to_string(comp_id) + "."));
+      ExcMessage("Parsing EndBehaviour for " + parsing_msg +
+      ", not valid ComponentId=" + to_string(comp_id) + "."));
       // Checking the component id has not been defined before.
       AssertThrow(parsed_comps.find(comp_id) == parsed_comps.cend(),
-                  ExcMessage("Parsing EndBehaviour for " + parsing_msg +
-                             ", ComponentId=" + to_string(comp_id) + " defined"
-                             " more than once."));
+      ExcMessage("Parsing EndBehaviour for " + parsing_msg +
+      ", ComponentId=" + to_string(comp_id) + " defined"
+      " more than once."));
       parsed_comps.insert(comp_id);
 
       const auto string_vec =  eb->get_values_vector<string>();
 
       // Checking the dimension of the end behaviour vector.
       AssertThrow(string_vec.size() == dim,
-                  ExcMessage("Parsing " + parsing_msg +
-                             ", in EndBehaviour ComponentId=" +
-                             to_string(comp_id) + " the number of "
-                             " values defined does not match with the "
-                             "Space dimension."));
+      ExcMessage("Parsing " + parsing_msg +
+      ", in EndBehaviour ComponentId=" +
+      to_string(comp_id) + " the number of "
+      " values defined does not match with the "
+      "Space dimension."));
 
       for (int dir = 0; dir < dim; ++dir)
       {
@@ -1030,11 +1030,11 @@ parse_bspline(const std::shared_ptr<XMLElement> xml_elem,
         if (sv == "interpolatory")
         {
           AssertThrow(!ssp_periodic,
-                      ExcMessage("Parsing " + parsing_msg + ", in "
-                                 "EndBehaviour ComponentId=" + to_string(comp_id) +
-                                 " Direction=" + to_string(dir) + ", behaviour " +
-                                 sv + " do not match with Spline Space, that is "
-                                 "periodic for this component and direction."));
+          ExcMessage("Parsing " + parsing_msg + ", in "
+          "EndBehaviour ComponentId=" + to_string(comp_id) +
+          " Direction=" + to_string(dir) + ", behaviour " +
+          sv + " do not match with Spline Space, that is "
+          "periodic for this component and direction."));
           end_beh_table[comp_id][dir] = BasisEndBehaviour::interpolatory;
         }
         else if (sv == "end_knots")
@@ -1088,7 +1088,7 @@ parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
             IdMap_ &id_map) -> RefBasisPtr_<dim, range, rank>
 {
   Assert(xml_elem->get_name() == "NURBS",
-         ExcMessage("Invalid XML tag."));
+  ExcMessage("Invalid XML tag."));
 
   using BSplineType = BSpline<dim, range, rank>;
   using NURBSType   = NURBS<dim, range, rank>;
@@ -1104,27 +1104,27 @@ parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
   const auto local_bs_id = bs_tag->get_attribute<Index>("GetFromLocalObjectId");
   // Checking the bspline with the proper dimensions and id exists.
   AssertThrow(id_map.find(local_bs_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<RefBasisType> (id_map.at(local_bs_id)) :
-               container->is_object_present<RefBasisType> (id_map.at(local_bs_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching "
-                         "definition for " +
-                         Self_::get_type_id_string("BSpline", local_bs_id,
+  (parse_as_constant ?
+  container->is_const_object_present<RefBasisType> (id_map.at(local_bs_id)) :
+  container->is_object_present<RefBasisType> (id_map.at(local_bs_id))),
+  ExcMessage("Parsing " + parsing_msg + " not matching "
+  "definition for " +
+  Self_::get_type_id_string("BSpline", local_bs_id,
   {{dim, range, rank}}) + "."));
 
   SharedPtrConstnessHandler<RefBasisType> rs;
   if (parse_as_constant)
     rs = SharedPtrConstnessHandler<RefBasisType>
-         (container->get_const_object<RefBasisType>(id_map.at(local_bs_id)));
+    (container->get_const_object<RefBasisType>(id_map.at(local_bs_id)));
   else
     rs = SharedPtrConstnessHandler<RefBasisType>
-         (container->get_object<RefBasisType>(id_map.at(local_bs_id)));
+    (container->get_object<RefBasisType>(id_map.at(local_bs_id)));
 
   // Checking that the reference basis is a BSpline.
   AssertThrow(rs->is_bspline(),
-              ExcMessage("Parsing " + parsing_msg + " not matching "
-                         "definition for " +
-                         Self_::get_type_id_string("BSplineBasis", local_bs_id,
+  ExcMessage("Parsing " + parsing_msg + " not matching "
+  "definition for " +
+  Self_::get_type_id_string("BSplineBasis", local_bs_id,
   {{dim, range, rank}}) + ". It is a "
   "ReferenceBasis, but not a BSpline."
   "BSpline basis must be used for "
@@ -1136,12 +1136,12 @@ parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
   const auto local_wg_id = wg_tag->get_attribute<Index>("GetFromLocalObjectId");
   // Checking that the grid function with the proper dimensions exists.
   AssertThrow(id_map.find(local_wg_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<WeightFunctionType> (id_map.at(local_wg_id)) :
-               container->is_object_present<WeightFunctionType> (id_map.at(local_wg_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching "
-                         "definition for " +
-                         Self_::get_type_id_string("IgGridFunction", local_wg_id,
+  (parse_as_constant ?
+  container->is_const_object_present<WeightFunctionType> (id_map.at(local_wg_id)) :
+  container->is_object_present<WeightFunctionType> (id_map.at(local_wg_id))),
+  ExcMessage("Parsing " + parsing_msg + " not matching "
+  "definition for " +
+  Self_::get_type_id_string("IgGridFunction", local_wg_id,
   {{dim, 1}}) +  ". The error could be caused "
   "by the fact the object does not correspond "
   "to IgGridFunction built upon a BSpline. "
@@ -1154,36 +1154,36 @@ parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
   {
     const auto gf = container->get_const_object<WeightFunctionType>(id_map.at(local_wg_id));
     wf = SharedPtrConstnessHandler<WeightIgFunctionType>(
-           dynamic_pointer_cast<const WeightIgFunctionType>(gf));
+      dynamic_pointer_cast<const WeightIgFunctionType>(gf));
   }
   else
   {
     const auto gf = container->get_object<WeightFunctionType>(id_map.at(local_wg_id));
     wf = SharedPtrConstnessHandler<WeightIgFunctionType>(
-           dynamic_pointer_cast<WeightIgFunctionType>(gf));
+      dynamic_pointer_cast<WeightIgFunctionType>(gf));
   }
 
   // Checking that the grid function is a ig grid function.
-  AssertThrow((parse_as_constant && wf.get_ptr_const_data()) ||
-              (!parse_as_constant && wf.get_ptr_data()),
-              ExcMessage("Parsing " + parsing_msg + " not matching "
-                         "definition for " +
-                         Self_::get_type_id_string("IgGridFunction", local_wg_id,
+  AssertThrow((parse_as_constant &&wf.get_ptr_const_data()) ||
+  (!parse_as_constant &&wf.get_ptr_data()),
+  ExcMessage("Parsing " + parsing_msg + " not matching "
+  "definition for " +
+  Self_::get_type_id_string("IgGridFunction", local_wg_id,
   {{dim, 1}}) + ". It is a"
   "GridFunction, but not a IgGridFunction"));
 
   // Checking that the weight function was defined upon a BSpline.
   const auto w_func_basis = wf->get_basis();
   Assert(wf->get_basis()->is_bspline(),
-         ExcMessage("Parsing " + parsing_msg + ", " +
-                    Self_::get_type_id_string("IgGridFunction", local_wg_id,
+  ExcMessage("Parsing " + parsing_msg + ", " +
+  Self_::get_type_id_string("IgGridFunction", local_wg_id,
   {{dim, 1}}) + ". It is based on a NURBS basis"
   ", but must be based on BSpline basis."));
 
   // Checking that the grids of the bspline and weight function match.
   AssertThrow(rs->get_grid() == wf->get_grid(),
-              ExcMessage("Parsing " + parsing_msg + ", mismatching "
-                         "grids for the BSpline and WeightFunction."));
+  ExcMessage("Parsing " + parsing_msg + ", mismatching "
+  "grids for the BSpline and WeightFunction."));
 
   // Checking that the number of basis functions and weights match.
   const auto &n_basis_table = rs->get_spline_space()->get_dof_distribution()->get_num_dofs_table();
@@ -1191,9 +1191,9 @@ parse_nurbs(const std::shared_ptr<XMLElement> xml_elem,
   for (const auto &n_basis_comp : n_basis_table)
   {
     AssertThrow(n_basis_comp ==
-                w_func_basis->get_spline_space()->get_dof_distribution()->get_num_dofs_table()[0],
-                ExcMessage("Parsing " + parsing_msg + ", mismatching number of basis functions and weight "
-                           "coefficients for scalar component " + to_string(comp_id++)));
+    w_func_basis->get_spline_space()->get_dof_distribution()->get_num_dofs_table()[0],
+    ExcMessage("Parsing " + parsing_msg + ", mismatching number of basis functions and weight "
+    "coefficients for scalar component " + to_string(comp_id++)));
   }
 
   if (parse_as_constant)
@@ -1222,25 +1222,25 @@ parse_identity_grid_function(const std::shared_ptr<XMLElement> xml_elem,
 GridFuncPtr_<dim, range>
 {
   Assert(xml_elem->get_name() == "IdentityGridFunction",
-         ExcMessage("Invalid XML tag."));
+  ExcMessage("Invalid XML tag."));
 
   using IdentityGridFunctionType = grid_functions::IdentityGridFunction<dim>;
   using GridType = Grid<dim>;
 
   const string parsing_msg = Self_::get_type_id_string("IdentityGridFunction",
-                                                       local_object_id, SafeSTLVector<int>(1, dim));
+  local_object_id, SafeSTLVector<int>(1, dim));
 
   const auto gr_tag = xml_elem->get_single_element("Grid");
   const auto local_gr_id = gr_tag->get_attribute<Index>("GetFromLocalObjectId");
 
   // Checking the grid with proper dimension and id exists.
   AssertThrow(id_map.find(local_gr_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
-               container->is_object_present<GridType> (id_map.at(local_gr_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching definition" +
-                         "for " + Self_::get_type_id_string("Grid", local_gr_id,
-                                                            SafeSTLVector<Index>(dim)) + "."));
+  (parse_as_constant ?
+  container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
+  container->is_object_present<GridType> (id_map.at(local_gr_id))),
+  ExcMessage("Parsing " + parsing_msg + " not matching definition" +
+  "for " + Self_::get_type_id_string("Grid", local_gr_id,
+  SafeSTLVector<Index>(dim)) + "."));
 
   if (parse_as_constant)
   {
@@ -1267,9 +1267,9 @@ parse_identity_grid_function(const std::shared_ptr<XMLElement> xml_elem,
                              typename std::enable_if_t<dim != range> *) ->
 GridFuncPtr_<dim, range>
 {
-  AssertThrow (dim == range,
-               ExcMessage("For IdentityGridFunction Dim and "
-                          "Range must be equal."));
+  AssertThrow(dim == range,
+  ExcMessage("For IdentityGridFunction Dim and "
+  "Range must be equal."));
 
   return GridFuncPtr_<dim, range>(); // to avoid the compilation warning.
 }
@@ -1286,7 +1286,7 @@ parse_constant_grid_function(const std::shared_ptr<XMLElement> xml_elem,
                              IdMap_ &id_map) -> GridFuncPtr_<dim, range>
 {
   Assert(xml_elem->get_name() == "ConstantGridFunction",
-         ExcMessage("Invalid XML tag."));
+  ExcMessage("Invalid XML tag."));
 
   using GridType = Grid<dim>;
   using ConstGridFunctionType = grid_functions::ConstantGridFunction<dim,range>;
@@ -1302,21 +1302,21 @@ parse_constant_grid_function(const std::shared_ptr<XMLElement> xml_elem,
 
   // Checking the grid with proper dimension and id exists.
   AssertThrow(id_map.find(local_gr_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
-               container->is_object_present<GridType> (id_map.at(local_gr_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching definition" +
-                         "for " + Self_::get_type_id_string("Grid", local_gr_id,
-                                                            SafeSTLVector<Index>(dim)) + "."));
+  (parse_as_constant ?
+  container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
+  container->is_object_present<GridType> (id_map.at(local_gr_id))),
+  ExcMessage("Parsing " + parsing_msg + " not matching definition" +
+  "for " + Self_::get_type_id_string("Grid", local_gr_id,
+  SafeSTLVector<Index>(dim)) + "."));
 
   // Parsing values.
   const auto vals_tag = xml_elem->get_single_element("Values");
 
   const auto vals_vec = vals_tag->get_values_vector<Real>();
   AssertThrow(vals_vec.size() == Values::n_entries,
-              ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in Values XML does not match "
-                         "with the number of components of the GridFunction."));
+  ExcMessage("Parsing " + parsing_msg + ", the number of "
+  "components in Values XML does not match "
+  "with the number of components of the GridFunction."));
   SafeSTLArray<Real, Values::n_entries> vals_arr;
   std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
   Values values(vals_arr);
@@ -1345,7 +1345,7 @@ parse_linear_grid_function(const std::shared_ptr<XMLElement> xml_elem,
                            IdMap_ &id_map) -> GridFuncPtr_<dim, range>
 {
   Assert(xml_elem->get_name() == "LinearGridFunction",
-         ExcMessage("Invalid XML tag."));
+  ExcMessage("Invalid XML tag."));
 
   using GridType = Grid<dim>;
   using LinearGridFunctionType = grid_functions::LinearGridFunction<dim,range>;
@@ -1361,21 +1361,21 @@ parse_linear_grid_function(const std::shared_ptr<XMLElement> xml_elem,
 
   // Checking the grid with proper dimension and id exists.
   AssertThrow(id_map.find(local_gr_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
-               container->is_object_present<GridType> (id_map.at(local_gr_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching definition" +
-                         "for " + Self_::get_type_id_string("Grid", local_gr_id,
-                                                            SafeSTLVector<Index>(dim)) + "."));
+  (parse_as_constant ?
+  container->is_const_object_present<GridType> (id_map.at(local_gr_id)) :
+  container->is_object_present<GridType> (id_map.at(local_gr_id))),
+  ExcMessage("Parsing " + parsing_msg + " not matching definition" +
+  "for " + Self_::get_type_id_string("Grid", local_gr_id,
+  SafeSTLVector<Index>(dim)) + "."));
 
   // Parsing b.
   const auto b_tag = xml_elem->get_single_element("b");
 
   const auto b_vec = b_tag->get_values_vector<Real>();
   AssertThrow(b_vec.size() == Values::n_entries,
-              ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in Values XML does not match "
-                         "with the number of components of the GridFunction."));
+  ExcMessage("Parsing " + parsing_msg + ", the number of "
+  "components in Values XML does not match "
+  "with the number of components of the GridFunction."));
   SafeSTLArray<Real, Values::n_entries> b_arr;
   std::copy(b_vec.cbegin(), b_vec.cend(), b_arr.begin());
   Values b(b_arr);
@@ -1385,9 +1385,9 @@ parse_linear_grid_function(const std::shared_ptr<XMLElement> xml_elem,
 
   const auto A_vec = A_tag->get_values_vector<Real>();
   AssertThrow(A_vec.size() == Ders::n_entries,
-              ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in Derivative<1> XML does not match "
-                         "with the number of components of the Function."));
+  ExcMessage("Parsing " + parsing_msg + ", the number of "
+  "components in Derivative<1> XML does not match "
+  "with the number of components of the Function."));
   SafeSTLArray<Real, Ders::n_entries> A_arr;
   std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
   Ders A(A_arr);
@@ -1416,7 +1416,7 @@ parse_ig_grid_function(const std::shared_ptr<XMLElement> xml_elem,
                        IdMap_ &id_map) -> GridFuncPtr_<dim, range>
 {
   Assert(xml_elem->get_name() == "IgGridFunction",
-         ExcMessage("Invalid XML tag."));
+  ExcMessage("Invalid XML tag."));
 
   static const int rank = 1;
   using IgGridFunctionType = IgGridFunction<dim, range>;
@@ -1430,46 +1430,46 @@ parse_ig_grid_function(const std::shared_ptr<XMLElement> xml_elem,
 
   // Checking the reference basis with proper dimension and id exists.
   const bool ref_basis_parsed =
-    id_map.find(local_rs_id) != id_map.cend() &&
-    (parse_as_constant ?
-     container->is_const_object_present<RefBasisType> (id_map.at(local_rs_id)) :
-     container->is_object_present<RefBasisType> (id_map.at(local_rs_id)));
+  id_map.find(local_rs_id) != id_map.cend() &&
+  (parse_as_constant ?
+  container->is_const_object_present<RefBasisType> (id_map.at(local_rs_id)) :
+  container->is_object_present<RefBasisType> (id_map.at(local_rs_id)));
 
-  AssertThrow (ref_basis_parsed,
-                  ExcMessage("Parsing " + parsing_msg + " not matching "
-                             "definition for " +
-                             Self_::get_type_id_string("ReferenceBasis", local_rs_id,
-                                                       {{dim, range, rank}}) + "."));
+  AssertThrow(ref_basis_parsed,
+  ExcMessage("Parsing " + parsing_msg + " not matching "
+  "definition for " +
+  Self_::get_type_id_string("ReferenceBasis", local_rs_id,
+  {{dim, range, rank}}) + "."));
   SharedPtrConstnessHandler<RefBasisType> rs;
   if (parse_as_constant)
     rs = SharedPtrConstnessHandler<RefBasisType>
-         (container->get_const_object<RefBasisType>(id_map.at(local_rs_id)));
+    (container->get_const_object<RefBasisType>(id_map.at(local_rs_id)));
   else
     rs = SharedPtrConstnessHandler<RefBasisType>
-         (container->get_object<RefBasisType>(id_map.at(local_rs_id)));
+    (container->get_object<RefBasisType>(id_map.at(local_rs_id)));
 
   const string dofs_property = parse_dofs_property(xml_elem);
   const auto dof_distribution = rs->get_spline_space()->get_dof_distribution();
   AssertThrow(dof_distribution->is_property_defined(dofs_property),
-              ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
-                         dofs_property + "\" not defined for " +
-                         Self_::get_type_id_string("ReferenceBasis", local_rs_id,
+  ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
+  dofs_property + "\" not defined for " +
+  Self_::get_type_id_string("ReferenceBasis", local_rs_id,
   {{dim, range, rank}}) + "."));
 
   const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
   const auto ig_coefs = parse_ig_coefficients(xml_elem, parsing_msg, global_dofs);
 
   AssertThrow(rs->get_num_basis() == ig_coefs->size(),
-              ExcMessage("Parsing " + parsing_msg + " the cardinality "
-                         "of the ReferenceBasis (" +
-                         to_string(rs->get_num_basis()) + ") is "
-                         "different to the dimension of the "
-                         "IgCoefficients (" + to_string(ig_coefs->size())
-                         + ")."));
+  ExcMessage("Parsing " + parsing_msg + " the cardinality "
+  "of the ReferenceBasis (" +
+  to_string(rs->get_num_basis()) + ") is "
+  "different to the dimension of the "
+  "IgCoefficients (" + to_string(ig_coefs->size())
+  + ")."));
 
   if (parse_as_constant)
     return  IgGridFunctionType::const_create
-                     (rs.get_ptr_const_data(), *ig_coefs, dofs_property);
+    (rs.get_ptr_const_data(), *ig_coefs, dofs_property);
   else
     return IgGridFunctionType::create(rs.get_ptr_data(), *ig_coefs, dofs_property);
 }
@@ -1480,10 +1480,10 @@ template <int dim, int range>
 bool
 ObjectsContainerXMLReader::
 is_ref_basis_for_ig_grid_function_parsed(
-                         const std::shared_ptr<XMLElement> xml_elem,
-                         const bool parse_as_constant,
-                         const std::shared_ptr<const ObjectsContainer> container,
-                         IdMap_ &id_map)
+  const std::shared_ptr<XMLElement> xml_elem,
+  const bool parse_as_constant,
+  const std::shared_ptr<const ObjectsContainer> container,
+  IdMap_ &id_map)
 {
   Assert(xml_elem->get_name() == "IgGridFunction",
          ExcMessage("Invalid XML tag."));
@@ -1496,9 +1496,9 @@ is_ref_basis_for_ig_grid_function_parsed(
 
   // Checking the reference basis with proper dimension and id exists.
   return id_map.find(local_rs_id) != id_map.cend() &&
-    (parse_as_constant ?
-     container->is_const_object_present<RefBasisType> (id_map.at(local_rs_id)) :
-     container->is_object_present<RefBasisType> (id_map.at(local_rs_id)));
+         (parse_as_constant ?
+          container->is_const_object_present<RefBasisType> (id_map.at(local_rs_id)) :
+          container->is_object_present<RefBasisType> (id_map.at(local_rs_id)));
 }
 
 
@@ -1578,7 +1578,7 @@ parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
                   IdMap_ &id_map) -> FuncPtr_<dim, codim, range, rank>
 {
   Assert(xml_elem->get_name() == "IgFunction",
-         ExcMessage("Invalid XML tag."));
+  ExcMessage("Invalid XML tag."));
 
   using PhysBasisType = PhysicalBasis<dim, range, rank, codim>;
   using IgFunctionType = IgFunction<dim, codim, range, rank>;
@@ -1591,40 +1591,40 @@ parse_ig_function(const std::shared_ptr<XMLElement> xml_elem,
 
   // Checking if the physical basis exists.
   AssertThrow(id_map.find(local_ps_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<PhysBasisType> (id_map.at(local_ps_id)) :
-               container->is_object_present<PhysBasisType> (id_map.at(local_ps_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching "
-                         "definition for " +
-                         Self_::get_type_id_string("PhysicalBasis", local_ps_id,
+  (parse_as_constant ?
+  container->is_const_object_present<PhysBasisType> (id_map.at(local_ps_id)) :
+  container->is_object_present<PhysBasisType> (id_map.at(local_ps_id))),
+  ExcMessage("Parsing " + parsing_msg + " not matching "
+  "definition for " +
+  Self_::get_type_id_string("PhysicalBasis", local_ps_id,
   {{dim, range, rank, codim}}) + "."));
 
   SharedPtrConstnessHandler<PhysBasisType> ps;
   if (parse_as_constant)
     ps = SharedPtrConstnessHandler<PhysBasisType>
-         (container->get_const_object<PhysBasisType>(id_map.at(local_ps_id)));
+    (container->get_const_object<PhysBasisType>(id_map.at(local_ps_id)));
   else
     ps = SharedPtrConstnessHandler<PhysBasisType>
-         (container->get_object<PhysBasisType>(id_map.at(local_ps_id)));
+    (container->get_object<PhysBasisType>(id_map.at(local_ps_id)));
 
   const string dofs_property = parse_dofs_property(xml_elem);
   const auto dof_distribution = ps->get_spline_space()->get_dof_distribution();
   AssertThrow(dof_distribution->is_property_defined(dofs_property),
-              ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
-                         dofs_property + "\" not defined for " +
-                         Self_::get_type_id_string("PhysicalBasis", local_ps_id,
+  ExcMessage("Parsing " + parsing_msg + " dofs property \"" +
+  dofs_property + "\" not defined for " +
+  Self_::get_type_id_string("PhysicalBasis", local_ps_id,
   {{dim, range, rank, codim}}) + "."));
 
   const auto &global_dofs = dof_distribution->get_global_dofs(dofs_property);
   const auto ig_coefs = parse_ig_coefficients(xml_elem, parsing_msg, global_dofs);
 
   AssertThrow(ps->get_num_basis() == ig_coefs->size(),
-              ExcMessage("Parsing " + parsing_msg + " the cardinality "
-                         "of the PhysicalBasis (" +
-                         to_string(ps->get_num_basis()) + ") is "
-                         "different to the dimension of the "
-                         "IgCoefficients (" + to_string(ig_coefs->size())
-                         + ")."));
+  ExcMessage("Parsing " + parsing_msg + " the cardinality "
+  "of the PhysicalBasis (" +
+  to_string(ps->get_num_basis()) + ") is "
+  "different to the dimension of the "
+  "IgCoefficients (" + to_string(ig_coefs->size())
+  + ")."));
 
   if (parse_as_constant)
     return IgFunctionType::const_create(ps.get_ptr_const_data(), *ig_coefs, dofs_property);
@@ -1638,13 +1638,13 @@ template <int dim, int codim, int range, int rank>
 auto
 ObjectsContainerXMLReader::
 parse_constant_function(const std::shared_ptr<XMLElement> xml_elem,
-                       const Index &local_object_id,
-                       const bool parse_as_constant,
-                       const std::shared_ptr<ObjectsContainer> container,
-                       IdMap_ &id_map) -> FuncPtr_<dim, codim, range, rank>
+                        const Index &local_object_id,
+                        const bool parse_as_constant,
+                        const std::shared_ptr<ObjectsContainer> container,
+                        IdMap_ &id_map) -> FuncPtr_<dim, codim, range, rank>
 {
   Assert(xml_elem->get_name() == "ConstantFunction",
-         ExcMessage("Invalid XML tag."));
+  ExcMessage("Invalid XML tag."));
 
   using DomainType = Domain<dim, codim>;
   using FunctionType = Function<dim, codim, range, rank>;
@@ -1658,30 +1658,30 @@ parse_constant_function(const std::shared_ptr<XMLElement> xml_elem,
   const auto local_dm_id = dm_tag->get_attribute<Index>("GetFromLocalObjectId");
 
   AssertThrow(id_map.find(local_dm_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<DomainType> (id_map.at(local_dm_id)) :
-               container->is_object_present<DomainType> (id_map.at(local_dm_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching "
-                         "definition for " +
-                         Self_::get_type_id_string("Domain", local_dm_id,
+  (parse_as_constant ?
+  container->is_const_object_present<DomainType> (id_map.at(local_dm_id)) :
+  container->is_object_present<DomainType> (id_map.at(local_dm_id))),
+  ExcMessage("Parsing " + parsing_msg + " not matching "
+  "definition for " +
+  Self_::get_type_id_string("Domain", local_dm_id,
   {{dim, codim}}) + "."));
 
   SharedPtrConstnessHandler<DomainType> dm;
   if (parse_as_constant)
     dm = SharedPtrConstnessHandler<DomainType>
-         (container->get_const_object<DomainType>(id_map.at(local_dm_id)));
+    (container->get_const_object<DomainType>(id_map.at(local_dm_id)));
   else
     dm = SharedPtrConstnessHandler<DomainType>
-         (container->get_object<DomainType>(id_map.at(local_dm_id)));
+    (container->get_object<DomainType>(id_map.at(local_dm_id)));
 
   // Parsing values.
   const auto vals_tag = xml_elem->get_single_element("Values");
 
   const auto vals_vec = vals_tag->get_values_vector<Real>();
   AssertThrow(vals_vec.size() == Values::n_entries,
-              ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in Values XML does not match "
-                         "with the number of components of the GridFunction."));
+  ExcMessage("Parsing " + parsing_msg + ", the number of "
+  "components in Values XML does not match "
+  "with the number of components of the GridFunction."));
   SafeSTLArray<Real, Values::n_entries> vals_arr;
   std::copy(vals_vec.cbegin(), vals_vec.cend(), vals_arr.begin());
   Values values(vals_arr);
@@ -1706,7 +1706,7 @@ parse_linear_function(const std::shared_ptr<XMLElement> xml_elem,
 FuncPtr_<dim, codim, range, rank>
 {
   Assert(xml_elem->get_name() == "LinearFunction",
-         ExcMessage("Invalid XML tag."));
+  ExcMessage("Invalid XML tag."));
 
   using DomainType = Domain<dim, codim>;
   using FunctionType = Function<dim, codim, range, rank>;
@@ -1721,30 +1721,30 @@ FuncPtr_<dim, codim, range, rank>
   const auto local_dm_id = dm_tag->get_attribute<Index>("GetFromLocalObjectId");
 
   AssertThrow(id_map.find(local_dm_id) != id_map.cend() &&
-              (parse_as_constant ?
-               container->is_const_object_present<DomainType> (id_map.at(local_dm_id)) :
-               container->is_object_present<DomainType> (id_map.at(local_dm_id))),
-              ExcMessage("Parsing " + parsing_msg + " not matching "
-                         "definition for " +
-                         Self_::get_type_id_string("Domain", local_dm_id,
+  (parse_as_constant ?
+  container->is_const_object_present<DomainType> (id_map.at(local_dm_id)) :
+  container->is_object_present<DomainType> (id_map.at(local_dm_id))),
+  ExcMessage("Parsing " + parsing_msg + " not matching "
+  "definition for " +
+  Self_::get_type_id_string("Domain", local_dm_id,
   {{dim, codim}}) + "."));
 
   SharedPtrConstnessHandler<DomainType> dm;
   if (parse_as_constant)
     dm = SharedPtrConstnessHandler<DomainType>
-         (container->get_const_object<DomainType>(id_map.at(local_dm_id)));
+    (container->get_const_object<DomainType>(id_map.at(local_dm_id)));
   else
     dm = SharedPtrConstnessHandler<DomainType>
-         (container->get_object<DomainType>(id_map.at(local_dm_id)));
+    (container->get_object<DomainType>(id_map.at(local_dm_id)));
 
   // Parsing b.
   const auto b_tag = xml_elem->get_single_element("b");
 
   const auto b_vec = b_tag->get_values_vector<Real>();
   AssertThrow(b_vec.size() == Values::n_entries,
-              ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in Values XML does not match "
-                         "with the number of components of the Function."));
+  ExcMessage("Parsing " + parsing_msg + ", the number of "
+  "components in Values XML does not match "
+  "with the number of components of the Function."));
   SafeSTLArray<Real, Values::n_entries> b_arr;
   std::copy(b_vec.cbegin(), b_vec.cend(), b_arr.begin());
   Values b(b_arr);
@@ -1754,9 +1754,9 @@ FuncPtr_<dim, codim, range, rank>
 
   const auto A_vec = A_tag->get_values_vector<Real>();
   AssertThrow(A_vec.size() == Ders::n_entries,
-              ExcMessage("Parsing " + parsing_msg + ", the number of "
-                         "components in Derivative<1> XML does not match "
-                         "with the number of components of the Function."));
+  ExcMessage("Parsing " + parsing_msg + ", the number of "
+  "components in Derivative<1> XML does not match "
+  "with the number of components of the Function."));
   SafeSTLArray<Real, Ders::n_entries> A_arr;
   std::copy(A_vec.cbegin(), A_vec.cend(), A_arr.begin());
   Ders A(A_arr);
@@ -1780,8 +1780,8 @@ parse_linear_function(const std::shared_ptr<XMLElement> xml_elem,
                       typename std::enable_if_t<rank != 1> *) ->
 FuncPtr_<dim, codim, range, rank>
 {
-  AssertThrow (rank == 1,
-               ExcMessage("For LinearFunction Rank must be equal to 1."));
+  AssertThrow(rank == 1,
+  ExcMessage("For LinearFunction Rank must be equal to 1."));
 
   return FuncPtr_<dim, codim, range, rank>(); // to avoid the compilation warning.
 }

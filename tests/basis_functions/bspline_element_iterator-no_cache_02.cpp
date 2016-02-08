@@ -69,7 +69,7 @@ create_basis<2>(const int num_knots)
                            degree_table,
                            knots->get_num_intervals()),
                          periodicity_table),
-  	  	  	  	  	  	 end_b_table) ;
+           end_b_table) ;
 }
 
 template <>
@@ -98,8 +98,8 @@ create_basis<3>(const int num_knots)
                            InteriorReg::maximum,
                            degree_table,
                            knots->get_num_intervals()),
-						   periodicity_table),
-						   end_b_table) ;
+                         periodicity_table),
+           end_b_table) ;
 }
 
 
