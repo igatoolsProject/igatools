@@ -194,6 +194,7 @@ get_grid_function_previous_refinement() const -> std::shared_ptr<const self_t>
   return grid_function_previous_refinement_;
 }
 
+#endif // MESH_REFINEMENT
 
 template<int dim_, int range_>
 auto
@@ -206,10 +207,6 @@ evaluate_preimage(const ValueVector<Value> &phys_points) const
 
   return param_point;
 }
-
-
-#endif // MESH_REFINEMENT
-
 
 #ifdef SERIALIZATION
 template<int dim_, int range_>

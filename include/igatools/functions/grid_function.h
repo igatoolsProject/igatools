@@ -216,13 +216,14 @@ protected:
 
 
 public:
+  //TODO (pauletti, Feb 8, 2016): this should be func_grid->get_grid->get_elem..()
   virtual const SafeSTLVector<typename GridType::IndexType> &
   get_elements_with_property(const PropId &elems_property) const
   {
     return grid_->get_elements_with_property(elems_property);
   }
 
-
+  //TODO (pauletti, Feb 8, 2016): Should the be inverse() instead?
   /**
    * @brief This function compute the preimage of the points <tt>phys_points</tt>.
    *
