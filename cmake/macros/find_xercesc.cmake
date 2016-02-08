@@ -1,6 +1,6 @@
 #-+--------------------------------------------------------------------
 # Igatools a general purpose Isogeometric analysis library.
-# Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
+# Copyright (C) 2012-2016  by the igatools authors (see authors.txt).
 #
 # This file is part of the igatools library.
 #
@@ -16,16 +16,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-# The previous copyright of this file is shown below.
-# It has been modified by the igatools authors to fit the igatools framework.
-#-+--------------------------------------------------------------------
-
-#-+--------------------------------------------------------------------
-# Copyright (c) 2009, Ben Morgan, <Ben.Morgan@warwick.ac.uk>
-#
-# Redistribution and use is allowed according to the terms of the BSD license.
-# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 #-+--------------------------------------------------------------------
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
