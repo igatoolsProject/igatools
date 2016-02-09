@@ -298,6 +298,11 @@ private:
   EndIntervalTable end_interval_;
 
 
+  using KnotsVector = SafeSTLVector<Real>;
+  using KnotCoordinates = SafeSTLArray<KnotsVector,dim_>;
+  using KnotCoordinatesTable = typename SpSpace::template ComponentContainer<KnotCoordinates>;
+  KnotCoordinatesTable knots_with_repetitions_;
+
 
   friend class BSplineElement<dim, range, rank>;
   friend class BSplineHandler<dim, range, rank>;
