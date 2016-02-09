@@ -153,9 +153,9 @@ template<int dim, int range, int rank>
 auto
 BernsteinExtraction<dim, range, rank>::
 fill_extraction(const int m,
-                const SafeSTLVector<Real>    &knots,
-                const SafeSTLVector<Real>    &rep_knots,
-                const SafeSTLVector<Index>   &acum_mult) -> SafeSTLVector<Operator>
+                const SafeSTLVector<Real>  &knots,
+                const SafeSTLVector<Real>  &rep_knots,
+                const SafeSTLVector<Index> &acum_mult) -> SafeSTLVector<Operator>
 {
   const int n_elem = knots.size()-1;
 
@@ -202,22 +202,23 @@ BernsteinExtraction(const Grid<dim> &grid,
                     const KnotsTable &rep_knots,
                     const MultiplicityTable &acum_mult,
                     const DegreeTable &deg)
+  :
+  ext_operators_(rep_knots.get_comp_map())
 {
-  for (const int &i : ext_operators_.get_active_components_id())
+  for (const int comp : rep_knots.get_active_components_id())
   {
-    const auto &deg_i = deg[i];
-    const auto &rep_knots_i = rep_knots[i];
-    const auto &acum_mult_i = acum_mult[i];
-    auto &ext_operators_i = ext_operators_[i];
-    for (int j = 0; j < dim; ++j)
+    const auto &deg_comp = deg[comp];
+    const auto &rep_knots_comp = rep_knots[comp];
+    const auto &acum_mult_comp = acum_mult[comp];
+    auto &ext_operators_comp = ext_operators_[comp];
+    for (int dir = 0; dir < dim; ++dir)
     {
-      const int m = deg_i[j] + 1;
-      ext_operators_i[j] =
-        fill_extraction(m,
-                        grid.get_knot_coordinates(j),
-                        rep_knots_i[j],
-                        acum_mult_i[j]);
-//      ext_operators_i[j] = opers;
+      const int deg_comp_dir = deg_comp[dir] + 1;
+      ext_operators_comp[dir] =
+        fill_extraction(deg_comp_dir,
+                        grid.get_knot_coordinates(dir),
+                        rep_knots_comp[dir],
+                        acum_mult_comp[dir]);
     }
   }
 }

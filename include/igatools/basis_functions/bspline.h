@@ -289,7 +289,7 @@ private:
 
 
   /** Bezier extraction operator. */
-  BernsteinExtraction<dim, range, rank> operators_;
+  BernsteinExtraction<dim_,range_,rank_> operators_;
 
 
   /** If end knots are not in the repeated knot vector */
@@ -298,11 +298,19 @@ private:
   EndIntervalTable end_interval_;
 
 
-  using KnotsVector = SafeSTLVector<Real>;
-  using KnotCoordinates = SafeSTLArray<KnotsVector,dim_>;
-  using KnotCoordinatesTable = typename SpSpace::template ComponentContainer<KnotCoordinates>;
-  KnotCoordinatesTable knots_with_repetitions_;
+  using Knots = SafeSTLArray<SafeSTLVector<Real>,dim_>;
+  using KnotsTable = typename SpSpace::template ComponentContainer<Knots>;
+  KnotsTable knots_with_repetitions_;
 
+public:
+
+  /**
+   * Returns a reference to the knots with repetition table of the BSpline basis.
+   */
+  const KnotsTable &get_knots_with_repetitions_table() const;
+
+
+private:
 
   friend class BSplineElement<dim, range, rank>;
   friend class BSplineHandler<dim, range, rank>;

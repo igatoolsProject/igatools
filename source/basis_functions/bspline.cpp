@@ -40,8 +40,8 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
         const EndBehaviourTable &end_b)
   :
   spline_space_(spline_space),
-  end_b_(end_b),
-  operators_(*spline_space_,end_b)
+  end_b_(end_b)//,
+//  operators_(*spline_space_,end_b)
 {
   //------------------------------------------------------------------------------
   const auto &sp_space = *this->spline_space_;
@@ -63,7 +63,7 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   {
     comp_map = sequence<SpSpace::n_components>();
   }
-  knots_with_repetitions_ = KnotCoordinatesTable(comp_map);
+  knots_with_repetitions_ = KnotsTable(comp_map);
   end_interval_ = EndIntervalTable(comp_map);
 
   const auto active_comp_ids = knots_with_repetitions_.get_active_components_id();
@@ -110,6 +110,12 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   } // end loop comp
   //------------------------------------------------------------------------------
 
+
+  operators_ = BernsteinExtraction<dim_,range_,rank_>(
+                 grid,
+                 knots_with_repetitions_,
+                 sp_space.accumulated_interior_multiplicities(),
+                 degree_table);
 
 }
 
@@ -461,6 +467,16 @@ BSpline<dim_, range_, rank_>::
 get_spline_space() const
 {
   return spline_space_.get_ptr_const_data();
+}
+
+
+template<int dim_, int range_, int rank_>
+auto
+BSpline<dim_, range_, rank_>::
+get_knots_with_repetitions_table() const
+-> const KnotsTable &
+{
+  return knots_with_repetitions_;
 }
 
 
