@@ -355,6 +355,9 @@ public:
 
 
 private:
+
+  void init();
+
 #if 0
   /**
    * Lookup table for the local dof id in each element component

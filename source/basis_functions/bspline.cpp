@@ -44,15 +44,9 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
 //  operators_(*spline_space_,end_b)
 {
   //------------------------------------------------------------------------------
-  const auto &sp_space = *this->spline_space_;
-  const auto &grid = *sp_space.get_grid();
-  const auto &degree_table = sp_space.get_degree_table();
-  const auto &multiplicity_table = sp_space.get_interior_mult();
-  const auto &periodicity_table = sp_space.get_periodicity();
-
   // compute the active components that must be used for the knots_with_repetitions,
   // looking if the spline space end the end_behaviour is component-uniform
-  const bool is_sp_space_component_uniform = sp_space.is_component_uniform();
+  const bool is_sp_space_component_uniform = spline_space_->is_component_uniform();
   const bool is_end_b_component_uniform = end_b_.is_component_uniform();
   SafeSTLArray<int,SpSpace::n_components> comp_map;
   if (is_sp_space_component_uniform && is_end_b_component_uniform)
@@ -65,7 +59,24 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   }
   knots_with_repetitions_ = KnotsTable(comp_map);
   end_interval_ = EndIntervalTable(comp_map);
+  //------------------------------------------------------------------------------
 
+  this->init();
+
+}
+
+template<int dim_, int range_, int rank_>
+void
+BSpline<dim_, range_, rank_>::
+init()
+{
+  const auto &sp_space = *this->spline_space_;
+  const auto &grid = *sp_space.get_grid();
+  const auto &degree_table = sp_space.get_degree_table();
+  const auto &multiplicity_table = sp_space.get_interior_mult();
+  const auto &periodicity_table = sp_space.get_periodicity();
+
+  //------------------------------------------------------------------------------
   const auto active_comp_ids = knots_with_repetitions_.get_active_components_id();
 
   typename SpSpace::BoundaryKnotsTable boundary_knots_table;
@@ -111,15 +122,14 @@ BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
   //------------------------------------------------------------------------------
 
 
+  //------------------------------------------------------------------------------
   operators_ = BernsteinExtraction<dim_,range_,rank_>(
                  grid,
                  knots_with_repetitions_,
                  sp_space.accumulated_interior_multiplicities(),
                  degree_table);
-
+  //------------------------------------------------------------------------------
 }
-
-
 
 template<int dim_, int range_, int rank_>
 auto
@@ -395,7 +405,9 @@ rebuild_after_insert_knots(
       this->spline_space_->get_spline_space_previous_refinement(),
       this->end_b_);
 
-  operators_ = BernsteinExtraction<dim,range,rank>(*this->spline_space_,end_b_);
+//  operators_ = BernsteinExtraction<dim,range,rank>(*this->spline_space_,end_b_);
+
+  this->init();
 }
 
 
