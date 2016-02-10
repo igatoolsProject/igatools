@@ -412,6 +412,7 @@ public:
 
 public:
 
+#if 0
   KnotsVector compute_knots_with_repetition_comp_dir(
     const KnotsVector &knots_no_repetitions,
     const int deg_comp_dir,
@@ -429,6 +430,7 @@ public:
 
   KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends,
                                            const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
+#endif
 //*/
 
 

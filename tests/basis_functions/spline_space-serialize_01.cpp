@@ -27,38 +27,17 @@
 
 // TODO (pauletti, Dec 26, 2014): make this test dim independent
 
-#include "../tests.h"
-#include <igatools/basis_functions/spline_space.h>
+#include "spline_space_tests_common.h"
 
-
-template <int dim,int range>
-void print_boundary_and_repeated_knots(
-  std::shared_ptr<SplineSpace<dim,range>> sp_spec,
-  typename SplineSpace<dim,range>::BoundaryKnotsTable bdry_knots)
-{
-  using SplineSpace = SplineSpace<dim,range>;
-
-  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
-  typename SplineSpace::EndBehaviourTable ebt(eb);
-
-  auto rep_knots = sp_spec->compute_knots_with_repetition(ebt, bdry_knots);
-  out << "Boundary knots:\n";
-  for (const auto &v : bdry_knots)
-    for (const auto &w : v)
-      w.print_info(out);
-  out << "Repeated knots:\n";
-  for (const auto &v : rep_knots)
-    v.print_info(out);
-}
 
 
 template <int dim,int range>
-void serialize_deserialize(std::shared_ptr<SplineSpace<dim,range>> sp_spec)
+void serialize_deserialize(std::shared_ptr<SplineSpace<dim,range>> spline_space)
 {
   using std::to_string;
   const std::string class_name = "SplineSpace<" + to_string(dim) + "," + to_string(range) + ",1>";
   out.begin_item("Original " + class_name);
-  sp_spec->print_info(out);
+  spline_space->print_info(out);
   out.end_item();
 
 
@@ -70,21 +49,21 @@ void serialize_deserialize(std::shared_ptr<SplineSpace<dim,range>> sp_spec)
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
 
-    xml_out << sp_spec;
+    xml_out << spline_space;
   }
 
   auto grid = Grid<dim>::create();
   typename SplineSpace<dim,range>::DegreeTable deg(TensorIndex<dim>(3));
   typename SplineSpace<dim,range>::MultiplicityTable mult;
-  auto sp_spec_new = SplineSpace<dim,range>::create(deg, grid, mult);
+  auto spline_space_new = SplineSpace<dim,range>::create(deg, grid, mult);
   {
     // de-serialize the SplineSpace object from an xml file
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
-    xml_in >> sp_spec_new;
+    xml_in >> spline_space_new;
   }
   out.begin_item(class_name + " after serialize-deserialize.");
-  sp_spec_new->print_info(out);
+  spline_space_new->print_info(out);
   out.end_item();
   //*/
 }
@@ -101,14 +80,17 @@ void test_1d()
   auto grid = Grid<dim>::create(4);
   typename SplineSpace::DegreeTable deg {{2}};
   auto int_mult = MultiplicityTable({ {{1,3}} });
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto spline_space = SplineSpace::create(deg, grid, int_mult);
 
-  serialize_deserialize(sp_spec);
+  serialize_deserialize(spline_space);
 
   SafeSTLArray<SafeSTLVector<Real>,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
 
-  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
+  typename SplineSpace::EndBehaviourTable ebt(eb);
+
+  print_boundary_and_repeated_knots(*spline_space,bdry_knots,ebt);
 
   OUTEND
 }
@@ -127,15 +109,18 @@ void test_2d()
 
   auto int_mult = MultiplicityTable({ {{1}, {1,3,1}} });
 
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto spline_space = SplineSpace::create(deg, grid, int_mult);
 
-  serialize_deserialize(sp_spec);
+  serialize_deserialize(spline_space);
 
   SafeSTLArray<SafeSTLVector<Real>,2> bk_x {{-0.5, 0}, {1.2, 1.3}};
   SafeSTLArray<SafeSTLVector<Real>,2> bk_y {{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y} };
 
-  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
+  typename SplineSpace::EndBehaviourTable ebt(eb);
+
+  print_boundary_and_repeated_knots(*spline_space,bdry_knots,ebt);
 
   OUTEND
 }
@@ -152,16 +137,19 @@ void test_3d()
   typename SplineSpace::DegreeTable deg {{1,3,0}};
   auto int_mult = MultiplicityTable({ {{1}, {1,3}, {1,1,1}} });
 
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto spline_space = SplineSpace::create(deg, grid, int_mult);
 
-  serialize_deserialize(sp_spec);
+  serialize_deserialize(spline_space);
 
   SafeSTLArray<SafeSTLVector<Real>,2> bk_x {{-0.5, 0}, {1.2, 1.3}};
   SafeSTLArray<SafeSTLVector<Real>,2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
   SafeSTLArray<SafeSTLVector<Real>,2> bk_z {{-0.6}, {1.6}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y, bk_z} };
 
-  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
+  typename SplineSpace::EndBehaviourTable ebt(eb);
+
+  print_boundary_and_repeated_knots(*spline_space,bdry_knots,ebt);
 
   OUTEND
 }
@@ -180,16 +168,19 @@ void test_2d_2()
 
   auto int_mult = MultiplicityTable({ {{1}, {1,3}},{{1}, {1,1}}});
 
-  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto spline_space = SplineSpace::create(deg, grid, int_mult);
 
-  serialize_deserialize(sp_spec);
+  serialize_deserialize(spline_space);
 
   SafeSTLArray<SafeSTLVector<Real>,2> bk_x {{-0.5, 0}, {1.2, 1.3}};
   SafeSTLArray<SafeSTLVector<Real>,2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
 
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y}, {bk_y, bk_x} };
 
-  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
+  typename SplineSpace::EndBehaviourTable ebt(eb);
+
+  print_boundary_and_repeated_knots(*spline_space,bdry_knots,ebt);
 
   OUTEND
 }

@@ -134,17 +134,20 @@ void
 BernsteinExtraction<dim, range, rank>::
 print_info(LogStream &out) const
 {
-  int c=0;
-  for (const auto &comp : ext_operators_)
-  {
-    out << "Component[" << c++ << "]: " << endl;
-    for (int j = 0; j < dim; ++j)
+  ext_operators_.print_info(out);
+  /*
+    int c=0;
+    for (const auto &comp : ext_operators_)
     {
-      out << "Direction[" << j << "]:" << endl;
-      for (const auto &M : comp[j])
-        out << M << endl;
+      out << "Component[" << c++ << "]: " << endl;
+      for (int j = 0; j < dim; ++j)
+      {
+        out << "Direction[" << j << "]:" << endl;
+        for (const auto &M : comp[j])
+          out << M << endl;
+      }
     }
-  }
+    //*/
 }
 
 

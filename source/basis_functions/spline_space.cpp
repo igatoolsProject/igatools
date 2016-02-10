@@ -785,6 +785,7 @@ create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim_,range_,rank_
 
 #endif // MESH_REFINEMENT
 
+#if 0
 template<int dim_, int range_, int rank_>
 auto
 SplineSpace<dim_, range_, rank_>::
@@ -958,7 +959,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 
   return knots_table;
 }
-
+#endif
 
 template<int dim_, int range_, int rank_>
 template<int k>
@@ -1400,7 +1401,6 @@ get_offset() const -> SafeSTLArray<int,n_components>
 //get_offset() const -> ComponentContainer<Size>
 {
   SafeSTLArray<int,n_components> offset;
-//  ComponentContainer<Size> offset;
   offset[0] = 0;
   for (int comp = 1; comp < n_components; ++comp)
     offset[comp] = offset[comp-1] + this->get_component_size(comp-1);

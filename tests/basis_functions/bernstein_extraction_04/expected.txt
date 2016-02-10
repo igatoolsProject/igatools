@@ -26,9 +26,24 @@ Active components ids:
 Inactive components ids: 
 [ ]
 
-Component[0]: 
-Direction[0]:
-[2,2]((1.00000,0),(0,1.00000))
-[2,2]((1.00000,0),(0,1.00000))
-[2,2]((1.00000,0),(0,1.00000))
-[2,2]((1.00000,0),(0,1.00000))
+Raw components: 
+   Size: [ 1 ]  Weights: [1]
+   Entry id: 0
+      Entry id: 0
+         Entry id: 0
+         [2,2]((1.00000,0),(0,1.00000))
+         Entry id: 1
+         [2,2]((1.00000,0),(0,1.00000))
+         Entry id: 2
+         [2,2]((1.00000,0),(0,1.00000))
+         Entry id: 3
+         [2,2]((1.00000,0),(0,1.00000))
+      
+   
+
+Components map: 
+[ 0 ]
+Active components ids: 
+[ 0 ]
+Inactive components ids: 
+[ ]

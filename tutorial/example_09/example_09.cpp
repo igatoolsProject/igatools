@@ -25,7 +25,7 @@
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/physical_basis.h>
 #include <igatools/basis_functions/physical_basis_element.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/linear_algebra/dense_vector.h>
 #include <igatools/linear_algebra/epetra_solver.h>
@@ -38,7 +38,7 @@ using namespace iga;
 using namespace std;
 using namespace EpetraTools;
 using functions::ConstantFunction;
-using space_tools::project_boundary_values;
+using basis_tools::project_boundary_values;
 using dof_tools::apply_boundary_values;
 using numbers::PI;
 // [unqualified names]
@@ -171,7 +171,7 @@ void PoissonProblem<dim>::assemble()
   }
 
   SafeSTLMap<Index, Real> bndry_values;
-  space_tools::project_boundary_values(bndry_funcs,*basis,face_quad,bndry_values);
+  basis_tools::project_boundary_values(bndry_funcs,*basis,face_quad,bndry_values);
 
   apply_boundary_values(bndry_values, *matrix, *rhs, *solution);
 }

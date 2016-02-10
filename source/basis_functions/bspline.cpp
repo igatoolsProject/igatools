@@ -21,7 +21,7 @@
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/functions/sub_function.h>
-//#include <igatools/functions/identity_function.h>
+#include <igatools/basis_functions/space_tools.h>
 //#include <igatools/functions/grid_function_lib.h>
 
 
@@ -32,6 +32,7 @@ using std::make_shared;
 using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
+
 
 
 template<int dim_, int range_, int rank_>
@@ -89,7 +90,8 @@ init()
 
     auto &knots_with_repetitions_comp = knots_with_repetitions_[comp];
     knots_with_repetitions_comp =
-      sp_space.compute_knots_with_repetition_comp(
+      space_tools::compute_knots_with_repetition(
+        grid,
         degree_table_comp,
         multiplicity_table[comp],
         end_b_[comp],

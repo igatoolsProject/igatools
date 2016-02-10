@@ -39,10 +39,10 @@
 #include <igatools/functions/ig_grid_function.h>
 #include <igatools/functions/grid_function_lib.h>
 
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
-using space_tools::project_boundary_values;
+using basis_tools::project_boundary_values;
 using dof_tools::apply_boundary_values;
 
 using namespace EpetraTools;
@@ -184,7 +184,7 @@ void assemble_matrix(const int n_knots, const int deg)
   }
 
   SafeSTLMap<Index, Real> bndry_values;
-  space_tools::project_boundary_values<dim,1>(bndry_funcs,*basis,face_quad,bndry_values);
+  basis_tools::project_boundary_values<dim,1>(bndry_funcs,*basis,face_quad,bndry_values);
 
   apply_boundary_values(bndry_values, *matrix, *rhs, *solution);
 

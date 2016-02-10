@@ -137,21 +137,45 @@ IgGridFunction<2,3>
          
       
       Bernstein Extraction:
-         Component[0]: 
-         Direction[0]:
-         [2,2]((1.00000,0),(0,1.00000))
-         [2,2]((1.00000,0),(0,1.00000))
-         [2,2]((1.00000,0),(0,1.00000))
-         Direction[1]:
-         [2,2]((1.00000,0),(0,1.00000))
-         [2,2]((1.00000,0),(0,1.00000))
-         [2,2]((1.00000,0),(0,1.00000))
-         Component[1]: 
-         Direction[0]:
-         Direction[1]:
-         Component[2]: 
-         Direction[0]:
-         Direction[1]:
+         Raw components: 
+            Size: [ 3 ]  Weights: [3]
+            Entry id: 0
+               Entry id: 0
+                  Entry id: 0
+                  [2,2]((1.00000,0),(0,1.00000))
+                  Entry id: 1
+                  [2,2]((1.00000,0),(0,1.00000))
+                  Entry id: 2
+                  [2,2]((1.00000,0),(0,1.00000))
+               
+               Entry id: 1
+                  Entry id: 0
+                  [2,2]((1.00000,0),(0,1.00000))
+                  Entry id: 1
+                  [2,2]((1.00000,0),(0,1.00000))
+                  Entry id: 2
+                  [2,2]((1.00000,0),(0,1.00000))
+               
+            
+            Entry id: 1
+               Entry id: 0
+               
+               Entry id: 1
+               
+            
+            Entry id: 2
+               Entry id: 0
+               
+               Entry id: 1
+               
+            
+         
+         Components map: 
+         [ 0 0 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ 1 2 ]
       
    
    IgCoefficients:

@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /**
- *  Test for space_tools::get_boundary_dofs
+ *  Test for basis_tools::get_boundary_dofs
  *
  *  author: pauletti
  *  date: 2015-03-27
@@ -29,9 +29,9 @@
 #include "../tests.h"
 
 #include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 
-using space_tools::get_boundary_dofs;
+using basis_tools::get_boundary_dofs;
 
 template<int dim, int range = 1, int rank = 1>
 void get_bdry_dof(const int deg = 1, const int n_knots = 3)

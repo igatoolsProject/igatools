@@ -24,7 +24,7 @@
  *
  */
 
-#include "../tests.h"
+#include "bernstein_extraction_tests_common.h"
 #include <igatools/basis_functions/bernstein_extraction.h>
 
 using std::shared_ptr;
@@ -56,7 +56,7 @@ int main()
 
     typename SplineSpace::EndBehaviour endb(BasisEndBehaviour::end_knots);
     EndBehaviourTable endb_t { {endb} };
-    auto rep_knots = space->compute_knots_with_repetition(endb_t, bdry_knots);
+    auto rep_knots = compute_knots_with_repetitions(*space,bdry_knots,endb_t);
     auto acum_mult = space->accumulated_interior_multiplicities();
 
 
@@ -76,9 +76,11 @@ int main()
 
     auto space = SplineSpace::const_create(deg, grid, int_mult,periodicity);
 
+    BoundaryKnotsTable bdry_knots;
+
     typename SplineSpace::EndBehaviour endb(BasisEndBehaviour::interpolatory);
     EndBehaviourTable endb_t { {endb} };
-    auto rep_knots = space->compute_knots_with_repetition(endb_t);
+    auto rep_knots = compute_knots_with_repetitions(*space,bdry_knots,endb_t);
     auto acum_mult = space->accumulated_interior_multiplicities();
 
 

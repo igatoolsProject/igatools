@@ -55,17 +55,75 @@ Dimensionality Table:
    Total Dimension: 5
 
 Boundary knots:
-Entry id: 0
-[ -0.500000 0 0 ]
-Entry id: 1
-[ 1.10000 1.20000 1.30000 ]
+   Raw components: 
+      Size: [ 1 ]  Weights: [1]
+      Entry id: 0
+         Entry id: 0
+            Entry id: 0
+            [ -0.500000 0 0 ]
+            Entry id: 1
+            [ 1.10000 1.20000 1.30000 ]
+         
+      
+   
+   Components map: 
+   [ 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ ]
+
 Repeated knots:
-Entry id: 0
-[ -0.500000 0 0 0.333333 0.666667 1.10000 1.20000 1.30000 ]
-Interpolatory Boundary knots:
-Repeated knots:
-Entry id: 0
-[ 0 0 0 0.333333 0.666667 1.00000 1.00000 1.00000 ]
+   Raw components: 
+      Size: [ 1 ]  Weights: [1]
+      Entry id: 0
+         Entry id: 0
+         [ -0.500000 0 0 0.333333 0.666667 1.10000 1.20000 1.30000 ]
+      
+   
+   Components map: 
+   [ 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ ]
+
+Interpolatory Boundary knots
+   Boundary knots:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+            Entry id: 0
+               Entry id: 0
+               [ ]
+               Entry id: 1
+               [ ]
+            
+         
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+   
+   Repeated knots:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+            Entry id: 0
+            [ 0 0 0 0.333333 0.666667 1.00000 1.00000 1.00000 ]
+         
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+   
+
 Knots without repetition:
    Number of intervals per direction: [ 2 4 ]
    Knot coordinates:
@@ -142,19 +200,47 @@ Dimensionality Table:
    Total Dimension: 21
 
 Boundary knots:
-Entry id: 0
-[ -0.500000 0 ]
-Entry id: 1
-[ 1.20000 1.30000 ]
-Entry id: 0
-[ -0.600000 0 0 0 ]
-Entry id: 1
-[ 1.00000 1.10000 1.60000 1.60000 ]
+   Raw components: 
+      Size: [ 1 ]  Weights: [1]
+      Entry id: 0
+         Entry id: 0
+            Entry id: 0
+            [ -0.500000 0 ]
+            Entry id: 1
+            [ 1.20000 1.30000 ]
+         
+         Entry id: 1
+            Entry id: 0
+            [ -0.600000 0 0 0 ]
+            Entry id: 1
+            [ 1.00000 1.10000 1.60000 1.60000 ]
+         
+      
+   
+   Components map: 
+   [ 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ ]
+
 Repeated knots:
-Entry id: 0
-[ -0.500000 0 0.500000 1.20000 1.30000 ]
-Entry id: 1
-[ -0.600000 0 0 0 0.250000 0.500000 0.750000 1.00000 1.10000 1.60000 1.60000 ]
+   Raw components: 
+      Size: [ 1 ]  Weights: [1]
+      Entry id: 0
+         Entry id: 0
+         [ -0.500000 0 0.500000 1.20000 1.30000 ]
+         Entry id: 1
+         [ -0.600000 0 0 0 0.250000 0.500000 0.750000 1.00000 1.10000 1.60000 1.60000 ]
+      
+   
+   Components map: 
+   [ 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ ]
+
 Knots without repetition:
    Number of intervals per direction: [ 2 3 4 ]
    Knot coordinates:
@@ -283,25 +369,55 @@ Dimensionality Table:
    Total Dimension: 72
 
 Boundary knots:
-Entry id: 0
-[ -0.500000 0 ]
-Entry id: 1
-[ 1.20000 1.30000 ]
-Entry id: 0
-[ -0.600000 0 0 0 ]
-Entry id: 1
-[ 1.00000 1.00000 1.60000 1.60000 ]
-Entry id: 0
-[ -0.600000 ]
-Entry id: 1
-[ 1.60000 ]
+   Raw components: 
+      Size: [ 1 ]  Weights: [1]
+      Entry id: 0
+         Entry id: 0
+            Entry id: 0
+            [ -0.500000 0 ]
+            Entry id: 1
+            [ 1.20000 1.30000 ]
+         
+         Entry id: 1
+            Entry id: 0
+            [ -0.600000 0 0 0 ]
+            Entry id: 1
+            [ 1.00000 1.00000 1.60000 1.60000 ]
+         
+         Entry id: 2
+            Entry id: 0
+            [ -0.600000 ]
+            Entry id: 1
+            [ 1.60000 ]
+         
+      
+   
+   Components map: 
+   [ 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ ]
+
 Repeated knots:
-Entry id: 0
-[ -0.500000 0 0.500000 1.20000 1.30000 ]
-Entry id: 1
-[ -0.600000 0 0 0 0.333333 0.666667 1.00000 1.00000 1.60000 1.60000 ]
-Entry id: 2
-[ -0.600000 0.250000 0.500000 0.750000 1.60000 ]
+   Raw components: 
+      Size: [ 1 ]  Weights: [1]
+      Entry id: 0
+         Entry id: 0
+         [ -0.500000 0 0.500000 1.20000 1.30000 ]
+         Entry id: 1
+         [ -0.600000 0 0 0 0.333333 0.666667 1.00000 1.00000 1.60000 1.60000 ]
+         Entry id: 2
+         [ -0.600000 0.250000 0.500000 0.750000 1.60000 ]
+      
+   
+   Components map: 
+   [ 0 ]
+   Active components ids: 
+   [ 0 ]
+   Inactive components ids: 
+   [ ]
+
 Knots without repetition:
    Number of intervals per direction: [ 2 3 ]
    Knot coordinates:
@@ -382,28 +498,64 @@ Dimensionality Table:
    Total Dimension: 38
 
 Boundary knots:
-Entry id: 0
-[ -0.500000 0 ]
-Entry id: 1
-[ 1.20000 1.30000 ]
-Entry id: 0
-[ -0.600000 0 0 0 ]
-Entry id: 1
-[ 1.00000 1.00000 1.60000 1.60000 ]
-Entry id: 0
-[ -0.600000 0 0 0 ]
-Entry id: 1
-[ 1.00000 1.00000 1.60000 1.60000 ]
-Entry id: 0
-[ -0.500000 0 ]
-Entry id: 1
-[ 1.20000 1.30000 ]
+   Raw components: 
+      Size: [ 2 ]  Weights: [2]
+      Entry id: 0
+         Entry id: 0
+            Entry id: 0
+            [ -0.500000 0 ]
+            Entry id: 1
+            [ 1.20000 1.30000 ]
+         
+         Entry id: 1
+            Entry id: 0
+            [ -0.600000 0 0 0 ]
+            Entry id: 1
+            [ 1.00000 1.00000 1.60000 1.60000 ]
+         
+      
+      Entry id: 1
+         Entry id: 0
+            Entry id: 0
+            [ -0.600000 0 0 0 ]
+            Entry id: 1
+            [ 1.00000 1.00000 1.60000 1.60000 ]
+         
+         Entry id: 1
+            Entry id: 0
+            [ -0.500000 0 ]
+            Entry id: 1
+            [ 1.20000 1.30000 ]
+         
+      
+   
+   Components map: 
+   [ 0 1 ]
+   Active components ids: 
+   [ 0 1 ]
+   Inactive components ids: 
+   [ ]
+
 Repeated knots:
-Entry id: 0
-[ -0.500000 0 0.500000 1.20000 1.30000 ]
-Entry id: 1
-[ -0.600000 0 0 0 0.333333 0.666667 1.00000 1.00000 1.60000 1.60000 ]
-Entry id: 0
-[ -0.600000 0 0 0 0.500000 1.00000 1.00000 1.60000 1.60000 ]
-Entry id: 1
-[ -0.500000 0 0.333333 0.666667 1.20000 1.30000 ]
+   Raw components: 
+      Size: [ 2 ]  Weights: [2]
+      Entry id: 0
+         Entry id: 0
+         [ -0.500000 0 0.500000 1.20000 1.30000 ]
+         Entry id: 1
+         [ -0.600000 0 0 0 0.333333 0.666667 1.00000 1.00000 1.60000 1.60000 ]
+      
+      Entry id: 1
+         Entry id: 0
+         [ -0.600000 0 0 0 0.500000 1.00000 1.00000 1.60000 1.60000 ]
+         Entry id: 1
+         [ -0.500000 0 0.333333 0.666667 1.20000 1.30000 ]
+      
+   
+   Components map: 
+   [ 0 1 ]
+   Active components ids: 
+   [ 0 1 ]
+   Inactive components ids: 
+   [ ]
+

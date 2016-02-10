@@ -23,7 +23,7 @@
 #include <igatools/functions/function_element.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/physical_basis.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 
 
 using std::shared_ptr;
@@ -222,7 +222,7 @@ rebuild_after_insert_knots(
 
   const auto quad = QGauss<dim>::create(max_degree+1);
   this->coeffs_ =
-    space_tools::projection_l2_function<dim,codim,range,rank>(
+    basis_tools::projection_l2_function<dim,codim,range,rank>(
       *(this->function_previous_refinement_),*basis_,quad);
 
 //  this->coeffs_ = std::move(function_refined->coeffs_);

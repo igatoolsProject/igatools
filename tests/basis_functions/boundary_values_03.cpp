@@ -27,7 +27,7 @@
 //TODO: this test should be merge into the other ones
 
 #include "../tests.h"
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
 #include "common_functions.h"
@@ -119,7 +119,7 @@ void do_test(const int p, TensorSize<dim> n_knots)
   std::map<int, std::shared_ptr<const Function<sdim,1,range,rank>>> bndry_funcs;
   bndry_funcs[s_id] = f;
 
-  space_tools::project_boundary_values<dim,0,range,rank>(
+  basis_tools::project_boundary_values<dim,0,range,rank>(
     bndry_funcs,
     *basis,
     quad,
