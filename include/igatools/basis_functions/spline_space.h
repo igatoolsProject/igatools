@@ -412,26 +412,6 @@ public:
 
 public:
 
-  KnotsVector compute_knots_with_repetition_comp_dir(
-    const KnotsVector &knots_no_repetitions,
-    const int deg_comp_dir,
-    const Multiplicity1D &mult_comp_dir,
-    const BasisEndBehaviour &ends_comp_dir,
-    const BoundaryKnots1D &boundary_knots_comp_dir,
-    const bool &periodic_comp_dir) const;
-
-  KnotCoordinates compute_knots_with_repetition_comp(
-    const Degrees &deg_comp,
-    const Multiplicity &mult_comp,
-    const EndBehaviour &ends_comp,
-    const BoundaryKnots &boundary_knots_comp,
-    const Periodicity &periodic_comp) const;
-
-  KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends,
-                                           const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
-//*/
-
-
   /**
    * For each element and for each component there is an initial
    * tensor index in the Index space from where all non-zero basis

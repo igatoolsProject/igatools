@@ -90,7 +90,7 @@ private:
 
 public:
   /**
-   * Default constructor. It does nothing but it is needed for the srialization.
+   * Default constructor. It does nothing but it is needed for the serialization.
    */
   BernsteinExtraction() = default;
 
@@ -102,12 +102,6 @@ public:
                       const MultiplicityTable &acum_mult,
                       const DegreeTable &deg);
 
-
-  /**
-   * Construct the extraction operators.
-   */
-  BernsteinExtraction(const Space &space_data,
-                      const EndBehaviourTable &end_b);
 
   /**
    * Print the class content
@@ -130,7 +124,7 @@ private:
                   const SafeSTLVector<Real>    &rep_knots,
                   const SafeSTLVector<Index>   &acum_mult);
 
-  /** Given the M_{j-1} computes and returns de M_{j} */
+  /** Given the M_{j-1} computes and returns the M_{j} */
   Operator compute(const Operator &M_j_1,
                    typename SafeSTLVector<Real>::const_iterator  y,
                    const Real a,

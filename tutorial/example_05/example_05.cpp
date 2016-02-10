@@ -39,7 +39,7 @@
 // [include]
 #include <igatools/functions/formula_function.h>
 #include <igatools/functions/function_lib.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 // [include]
 
 using namespace iga;
@@ -202,7 +202,7 @@ void PoissonProblem<dim>::assemble()
 
 // [poisson_dirichlet]
   std::map<Index,Real> dirichlet_vals;
-  space_tools::project_boundary_values(dirichlet_cond,*phy_basis,face_quad,dirichlet_vals);
+  basis_tools::project_boundary_values(dirichlet_cond,*phy_basis,face_quad,dirichlet_vals);
   dof_tools::apply_boundary_values(dirichlet_vals,*mat,*rhs,*sol);
 }
 // [poisson_dirichlet]

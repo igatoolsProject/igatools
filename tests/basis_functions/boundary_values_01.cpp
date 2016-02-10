@@ -28,7 +28,7 @@
  */
 
 #include "../tests.h"
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
 #include "common_functions.h"
@@ -74,7 +74,7 @@ void do_test(const int p, const int num_knots = 10)
 
 
   std::map<Index,Real> boundary_values;
-  space_tools::project_boundary_values<dim,codim,range,rank>(
+  basis_tools::project_boundary_values<dim,codim,range,rank>(
     boundary_functions, *basis, quad, boundary_values);
 
   out << "basis index \t value" << endl;

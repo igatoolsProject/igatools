@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Measure of a physical domain using space_tools::integrate
+ *  Measure of a physical domain using basis_tools::integrate
  *
  *  author: pauletti
  *  date: 2015-08-05
@@ -34,7 +34,7 @@
 #include <igatools/functions/function_lib.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 
 
 template <int dim>
@@ -67,7 +67,7 @@ void intregrate_on_sphere(const int n_knots)
 
   SafeSTLMap<ElementIndex<dim>,
              typename IntegrandFunction::Value> elem_contrib;
-  auto area = space_tools::integrate<0,dim,1,range,1>(*C, quad, elem_contrib);
+  auto area = basis_tools::integrate<0,dim,1,range,1>(*C, quad, elem_contrib);
   out.begin_item("Area: contribution from the elements");
   elem_contrib.print_info(out);
   out.end_item();

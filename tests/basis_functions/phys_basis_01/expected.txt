@@ -80,9 +80,21 @@ PhysicalBasis<1,1,1,0,Transformation::h_grad>
          
       
       Bernstein Extraction:
-         Component[0]: 
-         Direction[0]:
-         [3,3]((1.00000,0,0),(0,1.00000,0),(0,0,1.00000))
+         Raw components: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+               Entry id: 0
+                  Entry id: 0
+                  [3,3]((1.00000,0,0),(0,1.00000,0),(0,0,1.00000))
+               
+            
+         
+         Components map: 
+         [ 0 ]
+         Active components ids: 
+         [ 0 ]
+         Inactive components ids: 
+         [ ]
       
    
    Physical domain:

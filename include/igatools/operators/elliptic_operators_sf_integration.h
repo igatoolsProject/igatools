@@ -632,7 +632,7 @@ eval_operator_gradu_gradv(
   DenseMatrix &operator_gradu_gradv) const
 {
   // TODO (martinelli, Jan 25, 2016): for the moment, only the scalar case is treated
-  Assert(range_ == 1,ExcDimensionMismatch(range_,1));
+//  Assert(range_ == 1,ExcDimensionMismatch(range_,1));
   Assert(rank_ == 1,ExcDimensionMismatch(rank_,1));
 
 

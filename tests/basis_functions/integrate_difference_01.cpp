@@ -30,7 +30,7 @@
 #include "common_functions.h"
 #include <igatools/base/quadrature_lib.h>
 //#include <igatools/basis_functions/bspline.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 #include <igatools/functions/grid_function_lib.h>
 
 
@@ -50,7 +50,7 @@ void do_test(const int deg, const int n_knots = 10)
   auto g = grid_functions::ConstantGridFunction<dim,1>::const_create(grid, {0.});
 
   SafeSTLMap<ElementIndex<dim>,Real> elem_err;
-  Real err = space_tools::l2_norm_difference<dim,1>(*f, *g, quad, elem_err);
+  Real err = basis_tools::l2_norm_difference<dim,1>(*f, *g, quad, elem_err);
 
   const Real p=2;
   out.begin_item("Error L2:");

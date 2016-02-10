@@ -21,7 +21,7 @@
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_handler.h>
 #include <igatools/functions/sub_function.h>
-//#include <igatools/functions/identity_function.h>
+#include <igatools/basis_functions/space_tools.h>
 //#include <igatools/functions/grid_function_lib.h>
 
 
@@ -34,56 +34,104 @@ using std::const_pointer_cast;
 IGA_NAMESPACE_OPEN
 
 
+
 template<int dim_, int range_, int rank_>
 BSpline<dim_, range_, rank_>::
 BSpline(const SharedPtrConstnessHandler<SpSpace> &spline_space,
         const EndBehaviourTable &end_b)
   :
   spline_space_(spline_space),
-  end_b_(end_b),
-  operators_(*spline_space_,end_b),
-  end_interval_(end_b.get_comp_map())
+  end_b_(end_b)//,
+//  operators_(*spline_space_,end_b)
 {
   //------------------------------------------------------------------------------
-// TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
+  // compute the active components that must be used for the knots_with_repetitions,
+  // looking if the spline space end the end_behaviour is component-uniform
+  const bool is_sp_space_component_uniform = spline_space_->is_component_uniform();
+  const bool is_end_b_component_uniform = end_b_.is_component_uniform();
+  SafeSTLArray<int,SpSpace::n_components> comp_map;
+  if (is_sp_space_component_uniform && is_end_b_component_uniform)
+  {
+    comp_map = SafeSTLArray<int,SpSpace::n_components>(0);
+  }
+  else
+  {
+    comp_map = sequence<SpSpace::n_components>();
+  }
+  knots_with_repetitions_ = KnotsTable(comp_map);
+  end_interval_ = EndIntervalTable(comp_map);
+  //------------------------------------------------------------------------------
 
+  this->init();
+
+}
+
+template<int dim_, int range_, int rank_>
+void
+BSpline<dim_, range_, rank_>::
+init()
+{
   const auto &sp_space = *this->spline_space_;
   const auto &grid = *sp_space.get_grid();
   const auto &degree_table = sp_space.get_degree_table();
-  const auto rep_knots = sp_space.compute_knots_with_repetition(end_b_);
+  const auto &multiplicity_table = sp_space.get_interior_mult();
+  const auto &periodicity_table = sp_space.get_periodicity();
+
+  //------------------------------------------------------------------------------
+  const auto active_comp_ids = knots_with_repetitions_.get_active_components_id();
+
+  typename SpSpace::BoundaryKnotsTable boundary_knots_table;
 
   const auto &knots_coord = grid.get_knots();
-  for (auto i : end_interval_.get_active_components_id())
+
+  for (int comp : active_comp_ids)
   {
-    const auto &rep_knots_i = rep_knots[i];
+    const auto &degree_table_comp = degree_table[comp];
 
-    auto &end_interval_i = end_interval_[i];
+    auto &knots_with_repetitions_comp = knots_with_repetitions_[comp];
+    knots_with_repetitions_comp =
+      space_tools::compute_knots_with_repetition(
+        grid,
+        degree_table_comp,
+        multiplicity_table[comp],
+        end_b_[comp],
+        boundary_knots_table[comp],
+        periodicity_table[comp]);
 
-    for (int dir=0; dir<dim; ++dir)
+    auto &end_interval_comp = end_interval_[comp];
+
+    for (int dir = 0; dir< dim_ ; ++dir)
     {
-      const auto p = degree_table[i][dir];
+      const auto p = degree_table_comp[dir];
 
       const auto &knots_coord_dir = *knots_coord[dir];
 
-      const auto &rep_knots_i_dir = rep_knots_i[dir];
+      const auto &knots_with_repetitions_comp_dir = knots_with_repetitions_comp[dir];
 
-      auto &end_interval_i_dir = end_interval_i[dir];
+      auto &end_interval_comp_dir = end_interval_comp[dir];
 
       const auto x1 = knots_coord_dir[1];
       const auto a = knots_coord_dir[0];
-      const auto x0 = rep_knots_i_dir[p];
-      end_interval_i_dir[0] = (x1-a) / (x1-x0);
+      const auto x0 = knots_with_repetitions_comp_dir[p];
+      end_interval_comp_dir[0] = (x1-a) / (x1-x0);
 
       const auto xk= *(knots_coord_dir.end()-2);
       const auto b = *(knots_coord_dir.end()-1);
-      const auto xk1 = *(rep_knots_i_dir.end() - (p+1));
-      end_interval_i_dir[1] = (b-xk) / (xk1-xk);
+      const auto xk1 = *(knots_with_repetitions_comp_dir.end() - (p+1));
+      end_interval_comp_dir[1] = (b-xk) / (xk1-xk);
     } // end loop dir
-  } // end loop i
+  } // end loop comp
+  //------------------------------------------------------------------------------
+
+
+  //------------------------------------------------------------------------------
+  operators_ = BernsteinExtraction<dim_,range_,rank_>(
+                 grid,
+                 knots_with_repetitions_,
+                 sp_space.accumulated_interior_multiplicities(),
+                 degree_table);
   //------------------------------------------------------------------------------
 }
-
-
 
 template<int dim_, int range_, int rank_>
 auto
@@ -359,7 +407,9 @@ rebuild_after_insert_knots(
       this->spline_space_->get_spline_space_previous_refinement(),
       this->end_b_);
 
-  operators_ = BernsteinExtraction<dim,range,rank>(*this->spline_space_,end_b_);
+//  operators_ = BernsteinExtraction<dim,range,rank>(*this->spline_space_,end_b_);
+
+  this->init();
 }
 
 
@@ -434,6 +484,16 @@ get_spline_space() const
 }
 
 
+template<int dim_, int range_, int rank_>
+auto
+BSpline<dim_, range_, rank_>::
+get_knots_with_repetitions_table() const
+-> const KnotsTable &
+{
+  return knots_with_repetitions_;
+}
+
+
 #ifdef SERIALIZATION
 
 template<int dim_, int range_, int rank_>
@@ -458,6 +518,8 @@ serialize(Archive &ar)
   ar &make_nvp("operators_",operators_);
 
   ar &make_nvp("end_interval_",end_interval_);
+
+  ar &make_nvp("knots_with_repetitions_",knots_with_repetitions_);
 
 
 //    ar &make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);

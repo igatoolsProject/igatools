@@ -38,9 +38,9 @@
 #include <igatools/basis_functions/physical_basis_element.h>
 #include <igatools/basis_functions/physical_basis_handler.h>
 
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 
-using space_tools::get_boundary_dofs;
+using basis_tools::get_boundary_dofs;
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalBasis<dim,range,rank,codim> >

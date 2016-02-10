@@ -25,7 +25,7 @@
  *
  */
 
-#include "../tests.h"
+#include "bernstein_extraction_tests_common.h"
 #include <igatools/basis_functions/bernstein_extraction.h>
 
 template <int dim>
@@ -44,8 +44,12 @@ test()
   auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
   //CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-  //typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-  auto rep_knots = sp_spec->compute_knots_with_repetition(typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
+  typename SplineSpace::BoundaryKnotsTable bdry_knots;
+
+  SafeSTLArray<BasisEndBehaviour,dim> eb(BasisEndBehaviour::interpolatory);
+  typename SplineSpace::EndBehaviourTable ebt(eb);
+  auto rep_knots = compute_knots_with_repetitions(*sp_spec,bdry_knots,ebt);
+
   auto acum_mult = sp_spec->accumulated_interior_multiplicities();
 
   rep_knots.print_info(out);

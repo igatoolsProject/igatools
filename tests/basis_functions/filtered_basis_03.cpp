@@ -37,9 +37,9 @@
 #include <igatools/functions/identity_function.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/io/writer.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 
-using space_tools::get_boundary_dofs;
+using basis_tools::get_boundary_dofs;
 
 using namespace EpetraTools;
 

@@ -26,29 +26,7 @@
  */
 
 // TODO (pauletti, Dec 26, 2014): make this test dim independent
-#include "../tests.h"
-#include <igatools/basis_functions/spline_space.h>
-
-
-template <int dim,int range>
-void print_boundary_and_repeated_knots(
-  std::shared_ptr<const SplineSpace<dim,range>> sp_spec,
-  typename SplineSpace<dim,range>::BoundaryKnotsTable bdry_knots)
-{
-  using SplineSpace = SplineSpace<dim,range>;
-
-  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
-  typename SplineSpace::EndBehaviourTable ebt(eb);
-
-  auto rep_knots = sp_spec->compute_knots_with_repetition(ebt, bdry_knots);
-  out << "Boundary knots:\n";
-  for (const auto &v : bdry_knots)
-    for (const auto &w : v)
-      w.print_info(out);
-  out << "Repeated knots:\n";
-  for (const auto &v : rep_knots)
-    v.print_info(out);
-}
+#include "spline_space_tests_common.h"
 
 
 
@@ -63,12 +41,15 @@ void test_1d()
   auto grid = Grid<dim>::const_create(4);
   typename SplineSpace::DegreeTable deg {{2}};
   auto int_mult = MultiplicityTable({ {{1,3}} });
-  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
+  auto spline_space = SplineSpace::const_create(deg, grid, int_mult);
 
   SafeSTLArray<SafeSTLVector<Real>,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
 
-  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
+  typename SplineSpace::EndBehaviourTable ebt(eb);
+
+  print_boundary_and_repeated_knots(*spline_space,bdry_knots,ebt);
 
   OUTEND
 }
@@ -87,13 +68,16 @@ void test_2d()
 
   auto int_mult = MultiplicityTable({ {{1}, {1,3,1}} });
 
-  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
+  auto spline_space = SplineSpace::const_create(deg, grid, int_mult);
 
   SafeSTLArray<SafeSTLVector<Real>,2> bk_x {{-0.5, 0}, {1.2, 1.3}};
   SafeSTLArray<SafeSTLVector<Real>,2> bk_y {{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y} };
 
-  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
+  typename SplineSpace::EndBehaviourTable ebt(eb);
+
+  print_boundary_and_repeated_knots(*spline_space,bdry_knots,ebt);
 
   OUTEND
 }
@@ -110,14 +94,17 @@ void test_3d()
   typename SplineSpace::DegreeTable deg {{1,3,0}};
   auto int_mult = MultiplicityTable({ {{1}, {1,3}, {1,1,1}} });
 
-  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
+  auto spline_space = SplineSpace::const_create(deg, grid, int_mult);
 
   SafeSTLArray<SafeSTLVector<Real>,2> bk_x {{-0.5, 0}, {1.2, 1.3}};
   SafeSTLArray<SafeSTLVector<Real>,2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
   SafeSTLArray<SafeSTLVector<Real>,2> bk_z {{-0.6}, {1.6}};
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y, bk_z} };
 
-  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
+  typename SplineSpace::EndBehaviourTable ebt(eb);
+
+  print_boundary_and_repeated_knots(*spline_space,bdry_knots,ebt);
 
   OUTEND
 }
@@ -136,14 +123,17 @@ void test_2d_2()
 
   auto int_mult = MultiplicityTable({ {{1}, {1,3}},{{1}, {1,1}}});
 
-  auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
+  auto spline_space = SplineSpace::const_create(deg, grid, int_mult);
 
   SafeSTLArray<SafeSTLVector<Real>,2> bk_x {{-0.5, 0}, {1.2, 1.3}};
   SafeSTLArray<SafeSTLVector<Real>,2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
 
   typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y}, {bk_y, bk_x} };
 
-  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
+  typename SplineSpace::EndBehaviourTable ebt(eb);
+
+  print_boundary_and_repeated_knots(*spline_space,bdry_knots,ebt);
 
   OUTEND
 }

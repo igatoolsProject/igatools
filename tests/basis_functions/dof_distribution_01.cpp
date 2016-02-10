@@ -44,11 +44,6 @@ void test1()
   auto int_mult = MultiplicityTable({ {{1,3}} });
   auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
 
-  SafeSTLArray<SafeSTLVector<Real>,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-  typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-  typename SplineSpace::EndBehaviourTable end_b((typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots))));
-
-  auto rep_knots = sp_spec->compute_knots_with_repetition(end_b,bdry_knots);
 
   auto n_basis = sp_spec->get_num_basis_table();
   auto degree = sp_spec->get_degree_table();
@@ -85,10 +80,6 @@ void test2()
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
   auto sp_spec = SplineSpace::const_create(deg, grid, int_mult);
-
-  typename SplineSpace::EndBehaviourTable end_b((typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory))));
-
-  auto rep_knots = sp_spec->compute_knots_with_repetition(end_b);
 
 
   auto n_basis = sp_spec->get_num_basis_table();

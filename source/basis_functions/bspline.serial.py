@@ -26,7 +26,6 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-types = ['BasisEndBehaviour']
 
 bases = []
 arrays = [] 
@@ -38,24 +37,28 @@ rank = 1
 n_components = range ** rank
 basis = 'BSpline<%d,%d,%d>' %(dim,range,rank)
 bases.append(basis)
-for t in types:
-    arr = 'SafeSTLArray<%s,%d>' %(t,dim)
-    arrays.append(arr)
-    arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
-    arrays.append(arr_arr)
-#arrays.append('SafeSTLArray<VecBernstOp,%d>' %(dim))
-#arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(dim,n_components))
+
+arr = 'SafeSTLArray<BasisEndBehaviour,%d>' %(dim)
+arrays.append(arr)
+arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
+arrays.append(arr_arr)
+arr = 'SafeSTLArray<SafeSTLVector<Real>,%d>' %(dim)
+arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
+arrays.append(arr_arr)
 
 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     basis = 'BSpline<%d,%d,%d>' %(x.dim, x.range, x.rank)
     bases.append(basis)
     n_components = x.range ** x.rank
-    for t in types:
-        arr = 'SafeSTLArray<%s,%d>' %(t,x.dim)
-        arrays.append(arr)
-        arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
-        arrays.append(arr_arr)
+    arr = 'SafeSTLArray<BasisEndBehaviour,%d>' %(x.dim)
+    arrays.append(arr)
+    arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
+    arrays.append(arr_arr)
+    arr = 'SafeSTLArray<SafeSTLVector<Real>,%d>' %(x.dim)
+    arr_arr = 'SafeSTLArray<%s,%d>' %(arr,n_components)
+    arrays.append(arr_arr)
+    
 #    arrays.append('SafeSTLArray<VecBernstOp,%d>' %(x.dim))
 #    arrays.append('SafeSTLArray<CartesianProductArray<BernsteinOperator,%d>,%d>' %(x.dim,n_components))
 
@@ -86,6 +89,7 @@ for arr in unique(arrays):
     alias = 'Array_Alias%d' %(id)
     f.write('using %s = %s;\n' % (alias, 
                                   arr.replace('BasisEndBehaviour','iga::BasisEndBehaviour')
+                                     .replace('SafeSTLVector','iga::SafeSTLVector')
                                      .replace('SafeSTLArray','iga::SafeSTLArray')
                                      .replace('CartesianProductArray','iga::CartesianProductArray')
                                      .replace('BernsteinOperator','iga::BernsteinOperator')

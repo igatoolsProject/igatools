@@ -298,6 +298,7 @@ BasisElement<dim_,codim_,range_,rank_>::
 integrate_gradu_gradv(const int s_id,
                       const PropId &dofs_property)
 {
+#ifndef SUM_FACTORIZATION
   const auto &w_meas = this->template get_w_measures<sdim>(s_id);
   const auto &gradu = this->template get_basis_data<basis_element::_Gradient,sdim>(s_id,dofs_property);
 
@@ -327,6 +328,10 @@ integrate_gradu_gradv(const int s_id,
   } // end loop i
 
   return M;
+#else
+  return this->integrate_gradu_gradv_sum_factorization_impl(
+           Topology<sdim>(),s_id,dofs_property);
+#endif // SUM_FACTORIZATION
 }
 
 template<int dim_,int codim_,int range_,int rank_>

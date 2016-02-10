@@ -32,9 +32,9 @@
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/linear_algebra/epetra.h>
 
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 
-using space_tools::get_boundary_dofs;
+using basis_tools::get_boundary_dofs;
 
 template<int dim>
 void matrix_map(const int deg, const int n_knots)

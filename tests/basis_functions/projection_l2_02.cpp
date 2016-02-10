@@ -36,7 +36,7 @@
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 
 #include <igatools/io/writer.h>
 #include <igatools/basis_functions/physical_basis.h>
@@ -71,7 +71,7 @@ void do_test(const int p, const int num_knots = 10)
   auto quad = QGauss<dim>::const_create(n_qpoints);
 
   auto f = TestFunction<dim,range>::const_create(domain);
-  auto coeffs_func = space_tools::projection_l2_function<dim,codim,range,1>(*f, *basis, quad);
+  auto coeffs_func = basis_tools::projection_l2_function<dim,codim,range,1>(*f, *basis, quad);
 
   auto proj_func = IgFunction<dim,codim,range,1>::const_create(basis,coeffs_func);
   proj_func->print_info(out);

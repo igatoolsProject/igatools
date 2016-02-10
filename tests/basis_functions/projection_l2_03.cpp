@@ -34,7 +34,7 @@
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/bspline_element.h>
 
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 
 template<int dim , int range=1>
 void test_proj(const int deg, const int n_knots = 4)
@@ -57,7 +57,7 @@ void test_proj(const int deg, const int n_knots = 4)
   const int n_qp = 4;
   auto quad = QGauss<dim>::create(n_qp);
 
-  auto coeffs_func = space_tools::projection_l2_grid_function<dim,range>(*f,*basis,quad);
+  auto coeffs_func = basis_tools::projection_l2_grid_function<dim,range>(*f,*basis,quad);
 
   auto proj_func = IgGridFunction<dim,range>::const_create(basis,coeffs_func);
   proj_func->print_info(out);

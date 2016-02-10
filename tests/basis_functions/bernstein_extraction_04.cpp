@@ -24,7 +24,7 @@
  *
  */
 
-#include "../tests.h"
+#include "bernstein_extraction_tests_common.h"
 #include <igatools/basis_functions/bernstein_extraction.h>
 
 // TODO (pauletti, Dec 26, 2014): this test needs to be update to current standards
@@ -48,7 +48,9 @@ test(const int deg = 1)
   typename SplineSpace::EndBehaviour endb(BasisEndBehaviour::periodic);
   typename SplineSpace::EndBehaviourTable endb_t { {endb} };
 
-  auto rep_knots = sp_spec->compute_knots_with_repetition(endb_t);
+  typename SplineSpace::BoundaryKnotsTable bdry_knots;
+
+  auto rep_knots = compute_knots_with_repetitions(*sp_spec,bdry_knots,endb_t);
   auto acum_mult = sp_spec->accumulated_interior_multiplicities();
 
   rep_knots.print_info(out);

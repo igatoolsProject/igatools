@@ -38,7 +38,7 @@
 
 #include <igatools/functions/formula_function.h>
 #include <igatools/functions/function_lib.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/basis_tools.h>
 
 using namespace iga;
 using namespace std;
@@ -255,7 +255,7 @@ void PoissonProblem<dim>::assemble()
 
   auto dof_distribution = phy_basis->get_dof_distribution();
   std::map<Index,Real> dirichlet_vals;
-  space_tools::project_boundary_values(dirichlet_cond,*phy_basis,face_quad,dirichlet_vals);
+  basis_tools::project_boundary_values(dirichlet_cond,*phy_basis,face_quad,dirichlet_vals);
   dof_tools::apply_boundary_values(dirichlet_vals,*mat,*rhs,*sol);
 }
 
