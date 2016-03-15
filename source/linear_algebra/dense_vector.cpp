@@ -29,7 +29,7 @@ DenseVector::
 operator=(const Real value)
 {
   using zero_vector = boost::numeric::ublas::zero_vector<Real>;
-  Assert(value==0, ExcNonZero());
+  Assert(value==0, ExcNonZero(value));
   *this = zero_vector(this->size());
   return *this;
 }

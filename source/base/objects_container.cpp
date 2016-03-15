@@ -66,7 +66,7 @@ insert_object(const shared_ptr<T> object,
   // exception is such case.
   AssertThrow(!check_present ||
               std::find(objects_T.cbegin(), objects_T.cend(), object) == objects_T.cend(),
-              ExcNotUnique());
+              ExcNonUnique());
 
   objects_T.push_back(object);
 };

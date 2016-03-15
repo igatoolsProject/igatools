@@ -39,7 +39,7 @@ Tdouble(const Real val)
   val_(val)
 {
   Assert(!std::isnan(val_),ExcNotANumber());
-  Assert(!std::isinf(val_),ExcNumberNotFinite());
+  Assert(!std::isinf(val_),ExcNumberNotFinite(val_));
 }
 
 inline
@@ -62,7 +62,7 @@ Tdouble &
 Tdouble::operator=(const value_t &val)
 {
   Assert(!std::isnan(val),ExcNotANumber());
-  Assert(!std::isinf(val),ExcNumberNotFinite());
+  Assert(!std::isinf(val),ExcNumberNotFinite(val));
 
   val_ = val;
   return (*this);
@@ -141,7 +141,7 @@ operator+=(const Real val) noexcept
   val_ += val;
 
   Assert(!std::isnan(val_),ExcNotANumber());
-  Assert(!std::isinf(val_),ExcNumberNotFinite());
+  Assert(!std::isinf(val_),ExcNumberNotFinite(val_));
   return *this;
 }
 
@@ -155,7 +155,7 @@ operator-=(const Real val) noexcept
   val_ -= val;
 
   Assert(!std::isnan(val_),ExcNotANumber());
-  Assert(!std::isinf(val_),ExcNumberNotFinite());
+  Assert(!std::isinf(val_),ExcNumberNotFinite(val_));
   return *this;
 }
 
@@ -169,7 +169,7 @@ operator*=(const Real val) noexcept
   val_ *= val;
 
   Assert(!std::isnan(val_),ExcNotANumber());
-  Assert(!std::isinf(val_),ExcNumberNotFinite());
+  Assert(!std::isinf(val_),ExcNumberNotFinite(val_));
   return *this;
 }
 
@@ -184,7 +184,7 @@ operator/=(const Real val) noexcept
 
   val_ /= val;
   Assert(!std::isnan(val_),ExcNotANumber());
-  Assert(!std::isinf(val_),ExcNumberNotFinite());
+  Assert(!std::isinf(val_),ExcNumberNotFinite(val_));
   return *this;
 }
 
@@ -399,7 +399,7 @@ operator=(const Real value)
          ExcMessage("Assignment with non-zero value is allowed only if dim_==1 and rank_==1")) ;
 
   Assert(!std::isnan(value),ExcNotANumber());
-  Assert(!std::isinf(value),ExcNumberNotFinite());
+  Assert(!std::isinf(value),ExcNumberNotFinite(value));
 
   for (auto &tensor_component : tensor_)
     tensor_component = value ;
@@ -444,7 +444,7 @@ Tensor< dim_, rank_, tensor_type, value_type >::
 operator*=(const Real value)
 {
   Assert(!std::isnan(value),ExcNotANumber());
-  Assert(!std::isinf(value),ExcNumberNotFinite());
+  Assert(!std::isinf(value),ExcNumberNotFinite(value));
 
   for (auto &tensor_component : tensor_)
     tensor_component *= value ;
@@ -461,7 +461,7 @@ Tensor< dim_, rank_, tensor_type, value_type >::
 operator/=(const Real value)
 {
   Assert(!std::isnan(value),ExcNotANumber());
-  Assert(!std::isinf(value),ExcNumberNotFinite());
+  Assert(!std::isinf(value),ExcNumberNotFinite(value));
   Assert(value != Real(0.0),ExcDivideByZero());
 
   for (auto &tensor_component : tensor_)
@@ -611,7 +611,7 @@ EnableIf<T::is_tensor,T>
 operator*(const T &A, const Real scalar) noexcept
 {
   Assert(!std::isnan(scalar),ExcNotANumber());
-  Assert(!std::isinf(scalar),ExcNumberNotFinite());
+  Assert(!std::isinf(scalar),ExcNumberNotFinite(scalar));
 
   T R(A);
   R *= scalar;
@@ -636,7 +636,7 @@ EnableIf<T::is_tensor,T>
 operator/(const T &A, const Real scalar) noexcept
 {
   Assert(!std::isnan(scalar), ExcNotANumber());
-  Assert(!std::isinf(scalar), ExcNumberNotFinite());
+  Assert(!std::isinf(scalar), ExcNumberNotFinite(scalar));
   Assert(scalar !=0 , ExcDivideByZero());
 
   T R(A);

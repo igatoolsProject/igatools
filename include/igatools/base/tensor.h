@@ -889,7 +889,7 @@ scalar_product(const T &t1, const T &t2) noexcept
     result += scalar_product(t1[i],t2[i]);
 
   Assert(!std::isnan(result),ExcNotANumber());
-  Assert(!std::isinf(result),ExcNumberNotFinite());
+  Assert(!std::isinf(result),ExcNumberNotFinite(result));
 
   return result;
 }

@@ -49,7 +49,7 @@ DenseMatrix &
 DenseMatrix::operator=(const Real value)
 {
   using zero_matrix = boost::numeric::ublas::zero_matrix<Real>;
-  Assert(value==0, ExcNonZero());
+  Assert(value==0, ExcNonZero(value));
   *this = zero_matrix(this->size1(), this->size2());
   return *this;
 }
