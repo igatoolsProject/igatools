@@ -43,7 +43,7 @@ for x in inst.all_ref_sp_dims:
 f.write('IGA_NAMESPACE_CLOSE\n')
 
 
-f.write('#ifdef SERIALIZATION\n')
+f.write('#ifdef IGATOOLS_WITH_SERIALIZATION\n')
 
 id = 0 
 for cl in unique(funcs):
@@ -51,7 +51,7 @@ for cl in unique(funcs):
     f.write('using %s = iga::%s;\n' % (alias, cl));
     f.write('CEREAL_REGISTER_TYPE(%s)\n' %alias);
     id += 1 
-f.write('#endif // SERIALIZATION\n')
+f.write('#endif // IGATOOLS_WITH_SERIALIZATION\n')
 
 #   
 f.write('IGA_NAMESPACE_OPEN\n')

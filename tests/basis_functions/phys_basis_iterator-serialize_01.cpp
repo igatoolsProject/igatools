@@ -71,7 +71,7 @@ void serialize_deserialize(std::shared_ptr<Basis> basis)
     std::ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
 
-    xml_in >> BOOST_SERIALIZATION_NVP(basis);
+    xml_in >> BOOST_IGATOOLS_WITH_SERIALIZATION_NVP(basis);
     xml_istream.close();
   }
   out.begin_item("PhysicalBasis after serialize-deserialize:");

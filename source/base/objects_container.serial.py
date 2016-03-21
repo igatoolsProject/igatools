@@ -83,7 +83,7 @@ valid_types = unique(valid_types)
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
 
-f.write('#ifdef SERIALIZATION\n')
+f.write('#ifdef IGATOOLS_WITH_SERIALIZATION\n')
 
 i = 0
 for vt in valid_types:
@@ -92,7 +92,7 @@ for vt in valid_types:
   f.write('CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,Alias%d,cereal::specialization::member_serialize);\n' % (i));
   i += 1
 
-f.write('#endif // SERIALIZATION\n')
+f.write('#endif // IGATOOLS_WITH_SERIALIZATION\n')
 
 #   
 f.write('IGA_NAMESPACE_OPEN\n')

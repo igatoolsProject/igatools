@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-#ifdef USE_NURBS
+#ifdef IGATOOLS_WITH_NURBS
 using std::shared_ptr;
 IGA_NAMESPACE_OPEN
 
@@ -599,4 +599,4 @@ IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_handler.inst>
 
-#endif // #ifdef USE_NURBS
+#endif // #ifdef IGATOOLS_WITH_NURBS

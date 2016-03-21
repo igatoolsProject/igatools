@@ -20,7 +20,7 @@
 
 #include <igatools/io/xml_element.h>
 
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
 
 #include <igatools/utils/safe_stl_vector.h>
 
@@ -609,4 +609,4 @@ template void XMLElement::add_attribute<Real> (const string &, const Real &);
 
 IGA_NAMESPACE_CLOSE
 
-#endif // XML_IO
+#endif // IGATOOLS_WITH_XML_IO

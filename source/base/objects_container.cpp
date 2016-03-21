@@ -20,7 +20,7 @@
 
 #include <igatools/base/objects_container.h>
 
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
 
 #include <igatools/basis_functions/bspline.h>
 #include <igatools/basis_functions/nurbs.h>
@@ -681,7 +681,7 @@ fill_not_inserted_dependencies()
   });
 }
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 template<class Archive>
 void
@@ -877,7 +877,7 @@ serialize(Archive &ar)
 
 
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 IGA_NAMESPACE_CLOSE
@@ -885,9 +885,9 @@ IGA_NAMESPACE_CLOSE
 #include <igatools/base/objects_container.inst>
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template void iga::ObjectsContainer::serialize(OArchive &);
 template void iga::ObjectsContainer::serialize(IArchive &);
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
-#endif // XML_IO
+#endif // IGATOOLS_WITH_XML_IO

@@ -153,7 +153,7 @@ for func in unique(templated_funcs):
 
 
 #---------------------------------------------------
-f.write('#ifdef SERIALIZATION\n')
+f.write('#ifdef IGATOOLS_WITH_SERIALIZATION\n')
 
 archives = ['OArchive','IArchive']
 
@@ -162,6 +162,6 @@ for ar in archives:
         f.write('template void %s::serialize(%s&);\n' %(space,ar))
     for comp_container in unique(comp_containers_serializable):
         f.write('template void %s::serialize(%s&);\n' %(comp_container,ar))
-f.write('#endif // SERIALIZATION\n')
+f.write('#endif // IGATOOLS_WITH_SERIALIZATION\n')
 #---------------------------------------------------
 

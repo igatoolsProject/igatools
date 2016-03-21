@@ -405,7 +405,7 @@ private:
    */
   PropertiesDofs properties_dofs_;
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization.
    * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
@@ -417,17 +417,17 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 #include <igatools/basis_functions/dof_distribution.serial>
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 #endif

@@ -148,7 +148,7 @@ public:
 
   virtual void print_info(LogStream &out) const = 0;
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   std::shared_ptr<const self_t>
   get_grid_function_previous_refinement() const;
 
@@ -178,7 +178,7 @@ public:
   connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber);
 
   void create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function);
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 private:
   SharedPtrConstnessHandler<Grid<dim_>> grid_;
@@ -195,7 +195,7 @@ private:
 
   friend class GridFunctionElement<dim_, range_>;
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    */
@@ -206,13 +206,13 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 protected:
   std::shared_ptr<const self_t> grid_function_previous_refinement_;
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 public:

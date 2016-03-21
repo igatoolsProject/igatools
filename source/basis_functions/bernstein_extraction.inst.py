@@ -34,7 +34,7 @@ for c in unique(classes):
 
 
 #---------------------------------------------------
-f.write('#ifdef SERIALIZATION\n')
+f.write('#ifdef IGATOOLS_WITH_SERIALIZATION\n')
 
 archives = ['OArchive','IArchive']
 
@@ -42,6 +42,6 @@ classes.append('BernsteinOperator')
 for c in unique(classes):
     for ar in archives:
         f.write('template void %s::serialize(%s&);\n' %(c,ar))
-f.write('#endif // SERIALIZATION\n')
+f.write('#endif // IGATOOLS_WITH_SERIALIZATION\n')
 #---------------------------------------------------
 

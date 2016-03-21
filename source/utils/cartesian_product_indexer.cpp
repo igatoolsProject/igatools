@@ -67,7 +67,7 @@ get_num_indices() const
 
 
 #if 0
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template <int rank>
 template<class Archive>
 void
@@ -78,7 +78,7 @@ serialize(Archive &ar, const unsigned int version)
                                      boost::serialization::base_object<DynamicMultiArray<TensorIndex<rank>,rank>>(*this));
 }
 ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 #endif
 
 IGA_NAMESPACE_CLOSE

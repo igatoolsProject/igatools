@@ -141,7 +141,7 @@ get_dof_distribution() const -> std::shared_ptr<const DofDistribution<dim_,range
 
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 template <int dim_,int codim_,int range_,int rank_>
 template<class Archive>
@@ -153,7 +153,7 @@ serialize(Archive &ar)
 
   ar &make_nvp("name_",name_);
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

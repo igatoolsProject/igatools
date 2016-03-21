@@ -49,7 +49,7 @@ IdentityFunction(std::shared_ptr<const GridType> grid)
 
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim,int space_dim>
 void
 IdentityFunction<dim,space_dim>::
@@ -84,7 +84,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
   std::const_pointer_cast<Grid<dim>>(this->get_grid())->connect_insert_knots(
                                     SlotType(func_to_connect).track_foreign(identity_function));
 }
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 IGA_NAMESPACE_CLOSE

@@ -114,7 +114,7 @@ operator<<(LogStream &out, const TensorSize<rank> &tensor_size);
 IGA_NAMESPACE_CLOSE
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 #if 0
 using TensorSizeAlias0 = iga::TensorSize<0>;
 CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,TensorSizeAlias0,cereal::specialization::member_serialize)
@@ -131,7 +131,7 @@ CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,TensorSizeAlias3,cereal::specialization::
 #endif
 
 #include <igatools/utils/tensor_size.serial>
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 #endif // #ifndef TENSOR_SIZE_H_

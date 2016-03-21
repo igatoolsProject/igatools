@@ -45,7 +45,7 @@ macro(print_paraview_plugin_final_message)
   message("** \t make doc")
   message("**")
 
-  if (PARAVIEW_PLUGIN)
+  if (IGATOOLS_WITH_PARAVIEW_PLUGIN)
   message("** [4] To use the igatools-ParaView plugin it must be loaded from")
   message("**     ParaView:")
   message("** \t Menu: Tools > Manage Plugins")

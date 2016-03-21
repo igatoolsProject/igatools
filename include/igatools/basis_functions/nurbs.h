@@ -27,7 +27,7 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/ig_grid_function.h>
 
-#ifdef USE_NURBS
+#ifdef IGATOOLS_WITH_NURBS
 
 IGA_NAMESPACE_OPEN
 
@@ -264,7 +264,7 @@ public:
 
 private:
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
    *
@@ -282,11 +282,11 @@ public:
   virtual void refine_h(const Size n_subdivisions = 2) override final;
 
 //  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &basis);
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 private:
   /**
    * @name Functions needed for serialization
@@ -298,7 +298,7 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE
@@ -306,14 +306,14 @@ IGA_NAMESPACE_CLOSE
 
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 #include <igatools/basis_functions/nurbs.serial>
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
-#endif /* #ifdef USE_NURBS */
+#endif /* #ifdef IGATOOLS_WITH_NURBS */
 
 
 #endif /* NURBS_H_ */

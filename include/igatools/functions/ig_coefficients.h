@@ -81,7 +81,7 @@ public:
 private:
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for the serialization
    */
@@ -91,7 +91,7 @@ private:
   template<class Archive>
   void serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 };
 
@@ -99,10 +99,10 @@ private:
 IGA_NAMESPACE_CLOSE
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,iga::IgCoefficients,cereal::specialization::member_serialize)
 CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,iga::IgCoefficients,cereal::specialization::member_serialize)
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 #endif // __IG_COEFFICIENTS_H

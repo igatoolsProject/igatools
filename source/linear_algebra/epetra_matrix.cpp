@@ -22,7 +22,7 @@
 
 IGA_NAMESPACE_OPEN
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 namespace EpetraTools
 {
@@ -88,7 +88,7 @@ create_matrix(const Graph &graph)
 
 }
 
-#endif //USE_TRILINOS
+#endif //IGATOOLS_USES_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

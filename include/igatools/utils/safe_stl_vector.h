@@ -57,7 +57,7 @@ public :
 
 
 private:
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
@@ -72,7 +72,7 @@ private:
                  base_class<std::vector<T>>(this));
   }
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 };
 
@@ -81,7 +81,7 @@ template <int> class TensorIndex;
 IGA_NAMESPACE_CLOSE
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 using SafeSTLVectorReal = iga::SafeSTLVector<iga::Real>;
 CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,SafeSTLVectorReal,cereal::specialization::member_serialize)
 CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,SafeSTLVectorReal,cereal::specialization::member_serialize)
@@ -107,7 +107,7 @@ CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,SafeSTLVecTIAlias3,cereal::specialization
 
 
 //#include <igatools/utils/safe_stl_vector.serialization>
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 #endif // SAFE_STL_VECTOR_H_

@@ -343,7 +343,7 @@ void LinearElasticity<dim>::save_plugin()
   string filename = "problem_plugin_" + to_string(dim) + "d" ;
   const auto solution_non_const = std::const_pointer_cast<IgFunc_t>(solution);
   solution_non_const->set_name("solution");
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   const auto objs_container = ObjectsContainer::create();
   objs_container->insert_const_object<Function<dim,0,dim,1>>(solution);
   {
@@ -352,7 +352,7 @@ void LinearElasticity<dim>::save_plugin()
     xml_out << *objs_container;
   }
 #else
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
   const auto objs_container = ObjectsContainer::create();
   objs_container->insert_const_object<Function<dim,0,dim,1>>(solution);
   ObjectsContainerXMLWriter::write(filename + ".iga", objs_container);
@@ -371,7 +371,7 @@ void LinearElasticity<dim>::save_plugin(shared_ptr<const Function<dim,0,dim,1>> 
   string filename = "problem_plugin_" + to_string(dim) + "d" ;
   const auto solution_non_const = std::const_pointer_cast<IgFunc_t>(solution);
   solution_non_const->set_name("solution");
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   printf(" -- serialization on ---\n");
   const auto objs_container = ObjectsContainer::create();
   objs_container->insert_const_object<Function<dim,0,dim,1>>(solution);
@@ -382,7 +382,7 @@ void LinearElasticity<dim>::save_plugin(shared_ptr<const Function<dim,0,dim,1>> 
     xml_out << *objs_container;
   }
 #else
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
   printf(" -- XML i/o on ---\n");
   const auto objs_container = ObjectsContainer::create();
   objs_container->insert_const_object<Function<dim,0,dim,1>>(solution);

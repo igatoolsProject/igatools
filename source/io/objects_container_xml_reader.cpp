@@ -20,7 +20,7 @@
 
 #include <igatools/io/objects_container_xml_reader.h>
 
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
 
 #include <igatools/io/objects_container_reader-XML_schema.h>
 
@@ -1999,4 +1999,4 @@ parse_ig_coefficients(const shared_ptr<XMLElement> xml_elem,
 
 IGA_NAMESPACE_CLOSE
 
-#endif // XML_IO
+#endif // IGATOOLS_WITH_XML_IO

@@ -24,7 +24,7 @@
 
 #include <igatools/base/config.h>
 
-#ifdef USE_NURBS
+#ifdef IGATOOLS_WITH_NURBS
 
 #include <igatools/basis_functions/reference_basis_element.h>
 
@@ -191,7 +191,7 @@ public:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // #ifdef USE_NURBS
+#endif // #ifdef IGATOOLS_WITH_NURBS
 
 
 #endif // end of #ifndef NURBS_ELEMENT_H_

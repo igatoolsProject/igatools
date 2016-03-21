@@ -47,7 +47,7 @@ public :
   using SafeSTLContainer<std::set<T>>::SafeSTLContainer;
 
 private:
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
@@ -62,7 +62,7 @@ private:
                  base_class<std::set<T>>(this));
   }
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 };
@@ -70,13 +70,13 @@ private:
 IGA_NAMESPACE_CLOSE
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 using SafeSTLSetIntAlias = iga::SafeSTLSet<int>;
 CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,SafeSTLSetIntAlias,cereal::specialization::member_serialize)
 CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,SafeSTLSetIntAlias,cereal::specialization::member_serialize)
 
 //#include <igatools/utils/safe_stl_set.serialization>
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 #endif // SAFE_STL_SET_H_

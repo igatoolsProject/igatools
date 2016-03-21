@@ -93,24 +93,24 @@ find_doxygen()
 option(USE_DEPRECATED "Use the part of the igatools code marked as deprecated" OFF)
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
-if (USE_TRILINOS)
+option(IGATOOLS_USES_TRILINOS "Use the linear algebra packages from Trilinos" ON)
+if (IGATOOLS_USES_TRILINOS)
     message("-- TRILINOS support is enabled.")
-else(USE_TRILINOS)
+else(IGATOOLS_USES_TRILINOS)
     message("-- TRILINOS support is not enabled.")    
-endif(USE_TRILINOS)
+endif(IGATOOLS_USES_TRILINOS)
 #-------------------------------------------------------------------------------
 
 
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-option(USE_NURBS "Enable NURBS support" ON)
-if (USE_NURBS)
+option(IGATOOLS_WITH_NURBS "Enable NURBS support" ON)
+if (IGATOOLS_WITH_NURBS)
     message("-- NURBS support is enabled.")
-else(USE_NURBS)
+else(IGATOOLS_WITH_NURBS)
     message("-- NURBS support is not enabled.")    
-endif(USE_NURBS)
+endif(IGATOOLS_WITH_NURBS)
 #-------------------------------------------------------------------------------
 
 
@@ -149,60 +149,60 @@ endif(HIERARCHICAL)
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-option(MESH_REFINEMENT "Enable mesh refinement support" ON)
-if (MESH_REFINEMENT)
-    if (NOT USE_TRILINOS)
-        message (FATAL_ERROR "MESH_REFINEMENT variable set to ON is not "
-        "compatible with USE_TRILINOS set to OFF. Trilinos support must be "
+option(IGATOOLS_WITH_MESH_REFINEMENT "Enable mesh refinement support" ON)
+if (IGATOOLS_WITH_MESH_REFINEMENT)
+    if (NOT IGATOOLS_USES_TRILINOS)
+        message (FATAL_ERROR "IGATOOLS_WITH_MESH_REFINEMENT variable set to ON is not "
+        "compatible with IGATOOLS_USES_TRILINOS set to OFF. Trilinos support must be "
         "activated.")
     endif ()
 
     message("-- Mesh refinement support (EXPERIMENTAL) is enabled.")
-else(MESH_REFINEMENT)
+else(IGATOOLS_WITH_MESH_REFINEMENT)
     message("-- Mesh refinement support (EXPERIMENTAL) is not enabled.")    
-endif(MESH_REFINEMENT)
+endif(IGATOOLS_WITH_MESH_REFINEMENT)
 #-------------------------------------------------------------------------------
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-option(SERIALIZATION "Enable serialization support" OFF)
-if (SERIALIZATION)
+option(IGATOOLS_WITH_SERIALIZATION "Enable serialization support" OFF)
+if (IGATOOLS_WITH_SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) with CEREAL library is enabled.")    
-else(SERIALIZATION)
+else(IGATOOLS_WITH_SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) is not enabled.")    
-endif(SERIALIZATION)
+endif(IGATOOLS_WITH_SERIALIZATION)
 #-------------------------------------------------------------------------------
 
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-option(PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" OFF)
-if (PARAVIEW_PLUGIN)
-    if (NOT SERIALIZATION)
-        message (FATAL_ERROR "PARAVIEW_PLUGIN variable set to ON is not "
-        "compatible with SERIALIZATION set to OFF. Serialization must be "
+option(IGATOOLS_WITH_PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" OFF)
+if (IGATOOLS_WITH_PARAVIEW_PLUGIN)
+    if (NOT IGATOOLS_WITH_SERIALIZATION)
+        message (FATAL_ERROR "IGATOOLS_WITH_PARAVIEW_PLUGIN variable set to ON is not "
+        "compatible with IGATOOLS_WITH_SERIALIZATION set to OFF. Serialization must be "
         "activated.")
     endif ()
     message("-- Paraview plugin building (EXPERIMENTAL) is enabled.")
-else(PARAVIEW_PLUGIN)
+else(IGATOOLS_WITH_PARAVIEW_PLUGIN)
     message("-- Paraview plugin building (EXPERIMENTAL) is not enabled.")
-endif(PARAVIEW_PLUGIN)
+endif(IGATOOLS_WITH_PARAVIEW_PLUGIN)
 #-------------------------------------------------------------------------------
 
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-option(XML_IO "Enable XML I/O support" OFF)
-if (XML_IO)
+option(IGATOOLS_WITH_XML_IO "Enable XML I/O support" OFF)
+if (IGATOOLS_WITH_XML_IO)
 		find_xercesc()
     if (XERCESC_FOUND)
       message("-- XML I/O support (EXPERIMENTAL) is enabled.")
     else(XERCESC_FOUND)
       message(FATAL_ERROR "XML I/O support (EXPERIMENTAL) is enabled but Xerces-C is NOT FOUND.")
     endif(XERCESC_FOUND)
-else(XML_IO)
+else(IGATOOLS_WITH_XML_IO)
     message("-- XML I/O support (EXPERIMENTAL) is not enabled.")    
-endif(XML_IO)
+endif(IGATOOLS_WITH_XML_IO)
 #-------------------------------------------------------------------------------
 
 
@@ -256,7 +256,7 @@ find_boost()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Find optional libraries
 
-if (USE_TRILINOS)
+if (IGATOOLS_USES_TRILINOS)
   find_trilinos()
 endif()
 
@@ -306,15 +306,15 @@ foreach(dir ${source_dirs})
 endforeach()
 
 # igatools include directories
-if (SERIALIZATION)
+if (IGATOOLS_WITH_SERIALIZATION)
    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
                        ${CMAKE_CURRENT_SOURCE_DIR}/include/igatools/contrib/cereal/include 
                        ${CMAKE_CURRENT_BINARY_DIR}/include
                        ${CMAKE_CURRENT_BINARY_DIR}/include/igatools/contrib/cereal/include )
-else (SERIALIZATION)                    
+else (IGATOOLS_WITH_SERIALIZATION)                    
    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
                        ${CMAKE_CURRENT_BINARY_DIR}/include)
-endif(SERIALIZATION)
+endif(IGATOOLS_WITH_SERIALIZATION)
 
 # the igatools library target
 add_library(${iga_lib_name} SHARED  ${source_files})
@@ -366,7 +366,7 @@ create_doc_target()
 
 ## #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## # ParaView plugin section
-## if (PARAVIEW_PLUGIN)
+## if (IGATOOLS_WITH_PARAVIEW_PLUGIN)
 ##   add_subdirectory(${PROJECT_SOURCE_DIR}/addons/paraview_plugin)
 ## endif()
 ## #

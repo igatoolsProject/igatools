@@ -57,7 +57,7 @@ get_ref_sub_basis(const int sub_elem_id,
   }
   else
   {
-#ifdef USE_NURBS
+#ifdef IGATOOLS_WITH_NURBS
     const auto nrb_basis = dynamic_cast<const NURBS<dim,range,rank> *>(this);
     Assert(nrb_basis != nullptr,ExcNullPtr());
     sub_ref_basis = nrb_basis->template get_sub_nurbs_basis<sdim>(sub_elem_id,dof_map,sub_grid);
@@ -148,7 +148,7 @@ get_max_degree() const
 #endif
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim_,int range_,int rank_>
 void
 ReferenceBasis<dim_,range_,rank_>::
@@ -176,11 +176,11 @@ get_basis_previous_refinement() const -> std::shared_ptr<const self_t>
   return ref_basis_previous_refinement_;
 }
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 template<int dim_,int range_,int rank_>
 template<class Archive>
@@ -197,13 +197,13 @@ serialize(Archive &ar)
 
   ar &make_nvp(base_name,base_class<base_t>(this));
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   auto tmp = std::const_pointer_cast<RefBasis>(ref_basis_previous_refinement_);
   ar &make_nvp("ref_basis_previous_refinement_",tmp);
   ref_basis_previous_refinement_ = std::const_pointer_cast<const RefBasis>(tmp);
 #endif
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 IGA_NAMESPACE_CLOSE

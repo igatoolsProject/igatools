@@ -122,7 +122,7 @@ print_info(LogStream &out) const
 }
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template <int dim>
 template<class Archive>
 void

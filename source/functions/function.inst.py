@@ -37,11 +37,11 @@ for row in inst.all_function_dims:
 
 
 #---------------------------------------------------
-f.write('#ifdef SERIALIZATION\n')
+f.write('#ifdef IGATOOLS_WITH_SERIALIZATION\n')
 archives = ['OArchive','IArchive']
 
 for func in funcs:
     for ar in archives:
         f.write('template void %s::serialize(%s&);\n' %(func,ar))
-f.write('#endif // SERIALIZATION\n')
+f.write('#endif // IGATOOLS_WITH_SERIALIZATION\n')
 #---------------------------------------------------

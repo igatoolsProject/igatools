@@ -189,7 +189,7 @@ private:
 
   friend class DomainElement<dim_, codim_>;
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    */
@@ -200,10 +200,10 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
   /**
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
@@ -240,7 +240,7 @@ public:
   boost::signals2::connection
   connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscriber);
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 

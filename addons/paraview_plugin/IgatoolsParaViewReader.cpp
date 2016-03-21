@@ -32,8 +32,8 @@ using std::string;
 vtkStandardNewMacro(IgatoolsParaViewReader);
 
 
-#ifndef SERIALIZATION
-#ifndef XML_IO
+#ifndef IGATOOLS_WITH_SERIALIZATION
+#ifndef IGATOOLS_WITH_XML_IO
 static_assert(true, "Neither serialization nor XML capabilities are active.");
 #endif
 #endif

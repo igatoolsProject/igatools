@@ -36,7 +36,7 @@
 #include <igatools/base/properties_id_container.h>
 
 #include<memory>
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 #include <boost/signals2.hpp>
 #endif
 
@@ -563,7 +563,7 @@ public:
     */
   bool same_knots_or_refinement_of(const Grid<dim_> &grid_to_compare_with) const;
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 private:
 
@@ -640,7 +640,7 @@ public:
    */
   std::shared_ptr<const self_t > get_grid_pre_refinement() const;
   ///@}
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 private:
   /**
@@ -784,7 +784,7 @@ private:
 
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * This class member is the grid before the last refinement. If no
    * refinement is performed, this is a null pointer.
@@ -801,7 +801,7 @@ private:
 //  friend class NonConstGridElement<dim_>;
 //  friend class ConstGridElement<dim_>;
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 private:
   /**
    * @name Functions needed for serialization
@@ -814,16 +814,16 @@ private:
   void serialize(Archive &ar);
 
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 };
 
 IGA_NAMESPACE_CLOSE
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 #include <igatools/geometry/grid.serial>
-#endif //SERIALIZATION
+#endif //IGATOOLS_WITH_SERIALIZATION
 
 
 #endif /* CARTESIAN_GRID_H_ */

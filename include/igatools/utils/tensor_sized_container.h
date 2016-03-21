@@ -145,7 +145,7 @@ private:
    */
   TensorIndex<rank> weight_;
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
    */
@@ -155,7 +155,7 @@ private:
   template<class Archive>
   void serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 };
 
 

@@ -33,11 +33,11 @@ for row in index_list:
 
 
 #---------------------------------------------------
-#f.write('#ifdef SERIALIZATION\n')
+#f.write('#ifdef IGATOOLS_WITH_SERIALIZATION\n')
 #archives = ['OArchive','IArchive']
 #
 #for id in unique(index_list):
 #    for ar in archives:
 #        f.write('template void %s::serialize(%s&);\n' %(id,ar))
-#f.write('#endif // SERIALIZATION\n')
+#f.write('#endif // IGATOOLS_WITH_SERIALIZATION\n')
 #---------------------------------------------------

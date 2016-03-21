@@ -1171,7 +1171,7 @@ DeclExceptionMsg(ExcScalarAssignmentOnlyForZeroValue,
 DeclExceptionMsg(ExcNeedsTrilinos,
                  "You are trying to use a function that requires a functionality provided "
                  "by Trilinos, but igatools is configured/compiled with the Trilinos suport disabled."
-                 "Try to re-configure/re-compiled igatools with USE_TRILINOS=ON");
+                 "Try to re-configure/re-compiled igatools with IGATOOLS_USES_TRILINOS=ON");
 
 
 /**

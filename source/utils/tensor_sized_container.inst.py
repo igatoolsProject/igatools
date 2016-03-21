@@ -30,7 +30,7 @@ for row in ts_list:
 
 
 #---------------------------------------------------
-f.write('#ifdef SERIALIZATION\n')
+f.write('#ifdef IGATOOLS_WITH_SERIALIZATION\n')
 
 archives = ['OArchive','IArchive']
 
@@ -38,5 +38,5 @@ for ts in unique(ts_list):
     for ar in archives:
         f.write('template void %s::serialize(%s&);\n' %(ts,ar))
         
-f.write('#endif // SERIALIZATION\n')
+f.write('#endif // IGATOOLS_WITH_SERIALIZATION\n')
 #---------------------------------------------------

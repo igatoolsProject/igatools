@@ -20,7 +20,7 @@
 
 #include <igatools/io/xml_document.h>
 
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
 
 #include <igatools/io/xml_element.h>
 #include <igatools/base/logstream.h>
@@ -563,4 +563,4 @@ template shared_ptr<XMLElement> XMLDocument::create_vector_element<Index>
 
 IGA_NAMESPACE_CLOSE
 
-#endif // XML_IO
+#endif // IGATOOLS_WITH_XML_IO

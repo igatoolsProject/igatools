@@ -176,7 +176,7 @@ create_element(const ListIt &index, const PropId &prop) const
 }
 #endif
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int sdim,int dim,int range>
 void
 SubGridFunction<sdim,dim,range>::

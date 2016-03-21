@@ -164,7 +164,7 @@ get_object_id() const
 
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
@@ -204,11 +204,11 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &function)
 }
 
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<int dim_, int codim_, int range_, int rank_>
 template<class Archive>
 void
@@ -219,14 +219,14 @@ serialize(Archive &ar)
   ar &make_nvp("name_",name_);
   ar &make_nvp("object_id_",object_id_);
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   auto tmp = std::const_pointer_cast<self_t>(function_previous_refinement_);
   ar &make_nvp("function_previous_refinement_",tmp);
   function_previous_refinement_ = tmp;
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 }
 ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 IGA_NAMESPACE_CLOSE

@@ -26,13 +26,13 @@
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/base/properties.h>
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 #include <Epetra_CrsMatrix.h>
 #endif
 
 IGA_NAMESPACE_OPEN
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 namespace EpetraTools
 {
@@ -73,7 +73,7 @@ create_matrix(const Basis &basis, const std::string &prop, const Epetra_SerialCo
 }
 
 
-#endif //USE_TRILINOS
+#endif //IGATOOLS_USES_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

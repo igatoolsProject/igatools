@@ -174,7 +174,7 @@ print_cache_info(LogStream &out) const
 }
 
 #if 0
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<int dim,int codim,int range,int rank>
 template<class Archive>
 void
@@ -193,7 +193,7 @@ serialize(Archive &ar, const unsigned int version)
 
   ar &boost::serialization::make_nvp("phys_domain_elem_",domain_elem_);
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 #endif
 
 IGA_NAMESPACE_CLOSE

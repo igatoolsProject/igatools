@@ -264,7 +264,7 @@ private:
 
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for boost::serialization
    * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
@@ -295,7 +295,7 @@ private:
       ptr_ = tmp;
   }
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 };
 

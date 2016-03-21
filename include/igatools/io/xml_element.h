@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
 
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/dom/DOMElement.hpp>
@@ -334,6 +334,6 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // XML_IO
+#endif // IGATOOLS_WITH_XML_IO
 
 #endif // __XML_ELEMENT_H_

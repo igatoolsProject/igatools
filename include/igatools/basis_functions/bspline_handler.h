@@ -293,7 +293,7 @@ private:
     void print_info(LogStream &out) const;
 
   private:
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -309,7 +309,7 @@ private:
       ar &boost::serialization::make_nvp("basis_values_1d_table_",basis_values_1d_table_);
     }
     ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
   };
 #endif
 

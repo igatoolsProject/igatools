@@ -176,7 +176,7 @@ public:
 
 private:
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    */
@@ -191,7 +191,7 @@ private:
   void
   load(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 };
 
 
@@ -227,11 +227,11 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
 IGA_NAMESPACE_CLOSE
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,iga::DenseMatrix,cereal::specialization::member_load_save)
 CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,iga::DenseMatrix,cereal::specialization::member_load_save)
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 #endif /* DENSE_MATRIX_H_ */

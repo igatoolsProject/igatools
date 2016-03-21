@@ -70,7 +70,7 @@ print_info(LogStream &out) const
 }
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<class Archive>
 void
 IgCoefficients::
@@ -79,15 +79,15 @@ serialize(Archive &ar)
   ar &make_nvp("IgCoeff_base_t",
                base_class<std::map<Index,Real>>(this));
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 
 IGA_NAMESPACE_CLOSE
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 template void iga::IgCoefficients::serialize(OArchive &);
 template void iga::IgCoefficients::serialize(IArchive &);
 
-#endif //SERIALIZATION
+#endif //IGATOOLS_WITH_SERIALIZATION

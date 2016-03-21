@@ -27,7 +27,7 @@
 
 IGA_NAMESPACE_OPEN
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 /**
  * Collection of routines to handle the relation
@@ -49,7 +49,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
 } // end of namespace dof_tools
 
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

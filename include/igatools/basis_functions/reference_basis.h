@@ -172,7 +172,7 @@ protected:
 
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 public:
   std::shared_ptr<const self_t> get_basis_previous_refinement() const;
@@ -180,11 +180,11 @@ public:
   void create_connection_for_insert_knots(const std::shared_ptr<self_t> &basis);
 
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 private:
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    */
@@ -195,7 +195,7 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

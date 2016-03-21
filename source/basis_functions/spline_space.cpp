@@ -357,7 +357,7 @@ create(const int degree,
     new self_t(degree,SharedPtrConstnessHandler<GridType>(grid),interior_reg,periodic));
   Assert(sp != nullptr, ExcNullPtr());
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   sp->create_connection_for_insert_knots(sp);
 #endif
 
@@ -408,7 +408,7 @@ create(const Degrees &deg,
     new self_t(deg, SharedPtrConstnessHandler<GridType>(grid), interior_reg, periodic));
   Assert(sp != nullptr, ExcNullPtr());
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   sp->create_connection_for_insert_knots(sp);
 #endif
 
@@ -473,9 +473,9 @@ create(const DegreeTable &deg,
                                        interior_mult,periodic));
   Assert(sp != nullptr, ExcNullPtr());
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   sp->create_connection_for_insert_knots(sp);
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
   return sp;
 }
@@ -638,7 +638,7 @@ get_max_degree() const
 }
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 template<int dim_, int range_, int rank_>
 void
@@ -783,7 +783,7 @@ create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim_,range_,rank_
     SlotType(func_to_connect).track_foreign(space));
 }
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 template<int dim_, int range_, int rank_>
@@ -1162,7 +1162,7 @@ std::shared_ptr<DofDistribution<dim_,range_,rank_> >
   return dof_distribution_;
 }
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<int dim_, int range_, int rank_>
 template<class Archive>
 void
@@ -1183,7 +1183,7 @@ serialize(Archive &ar)
 
   ar &make_nvp("dof_distribution_",dof_distribution_);
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   using self_t = SplineSpace<dim_,range_,rank_>;
   auto tmp = std::const_pointer_cast<self_t>(spline_space_previous_refinement_);
   ar &make_nvp("spline_space_previous_refinement_",tmp);
@@ -1192,7 +1192,7 @@ serialize(Archive &ar)
 
 
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 template<int dim_, int range_, int rank_>

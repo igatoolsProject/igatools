@@ -239,7 +239,7 @@ public:
 ///@}
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
   /**
    * Perform the h-refinement of the basis in all the directions.
@@ -296,7 +296,7 @@ private:
 
 
 private:
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    */
@@ -307,7 +307,7 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 };
 
 

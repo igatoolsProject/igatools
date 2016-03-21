@@ -38,7 +38,7 @@ scale_action(const Real scale, const Values &b_values) const -> Values
   return scale * prec_prod(*this, b_values);
 }
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<class Archive>
 void
 BernsteinOperator::
@@ -46,7 +46,7 @@ serialize(Archive &ar)
 {
   ar &make_nvp("DenseMatrix",base_class<DenseMatrix>(this));
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 
@@ -226,7 +226,7 @@ BernsteinExtraction(const Grid<dim> &grid,
   }
 }
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 template<int dim, int range, int rank>
 template<class Archive>
@@ -237,7 +237,7 @@ serialize(Archive &ar)
   ar &make_nvp("ext_operators_",ext_operators_);
 }
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

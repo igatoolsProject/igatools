@@ -20,7 +20,7 @@
 
 #include <igatools/io/objects_container_xml_writer.h>
 
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
 
 #include <igatools/io/objects_container_xml_reader.h>
 #include <igatools/base/objects_container.h>
@@ -1013,4 +1013,4 @@ create_ig_coefs_xml_element(const IgCoefficients &coefs,
 
 IGA_NAMESPACE_CLOSE
 
-#endif // XML_IO
+#endif // IGATOOLS_WITH_XML_IO

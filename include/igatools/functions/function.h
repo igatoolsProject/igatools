@@ -272,7 +272,7 @@ private:
 
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 protected:
   std::shared_ptr<const self_t> function_previous_refinement_;
 
@@ -309,11 +309,11 @@ public:
 
   void create_connection_for_insert_knots(const std::shared_ptr<self_t> &function);
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 private:
   /**
    * @name Functions needed for the serialization
@@ -325,7 +325,7 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

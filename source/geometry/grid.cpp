@@ -647,7 +647,7 @@ get_num_knots_dim() const -> TensorSize<dim_>
 }
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 template<int dim_>
 auto
@@ -846,7 +846,7 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
 
 
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 template <int dim_>
 bool
@@ -1225,7 +1225,7 @@ element_has_property(const IndexType &elem_id,
 }
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 template <int dim_>
 template<class Archive>
@@ -1243,11 +1243,11 @@ serialize(Archive &ar)
   ar &make_nvp("object_id_",object_id_);
   ar &make_nvp("name_",name_);
   ar &make_nvp("elems_size_",elems_size_);
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
 #endif
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 

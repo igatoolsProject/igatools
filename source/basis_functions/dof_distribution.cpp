@@ -451,7 +451,7 @@ get_num_dofs_comp(const int comp, const int dir) const
 
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<int dim, int range, int rank>
 template<class Archive>
 void
@@ -466,7 +466,7 @@ serialize(Archive &ar)
 
   ar &make_nvp("properties_dofs_",properties_dofs_);
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 IGA_NAMESPACE_CLOSE

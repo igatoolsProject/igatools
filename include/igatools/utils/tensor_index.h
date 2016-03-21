@@ -124,7 +124,7 @@ public:
 
 private:
 #if 0
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
@@ -139,7 +139,7 @@ private:
                  base_class<SafeSTLArray<Index,rank>>(this));
   }
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 #endif
 };
 
@@ -264,9 +264,9 @@ IGA_NAMESPACE_CLOSE
 #endif
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 #include <igatools/utils/tensor_index.serial>
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 #endif // TENSOR_INDEX_H_

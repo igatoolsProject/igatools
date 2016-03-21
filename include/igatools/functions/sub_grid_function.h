@@ -101,7 +101,7 @@ public:
                                                         create_element_end(const PropId &prop) const override final;
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<double>, sdim> &new_knots,
     const GridType &old_grid) override final;

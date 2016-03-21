@@ -26,7 +26,7 @@
 
 IGA_NAMESPACE_OPEN
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 template<int dim,int range>
 IgGridFunction<dim,range>::
@@ -55,7 +55,7 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
   }
 }
 
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
 
 template<int dim,int range>
@@ -84,7 +84,7 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
 
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 template<int dim,int range>
 void
@@ -110,7 +110,7 @@ rebuild_after_insert_knots(
               DofProperties::active);
 }
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 template<int dim,int range>
 auto
@@ -145,7 +145,7 @@ create(const std::shared_ptr<RefBasis> &ref_basis,
   auto func = std::shared_ptr<self_t>(new IgGridFunction(
     SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
 #endif
 
@@ -153,7 +153,7 @@ create(const std::shared_ptr<RefBasis> &ref_basis,
 }
 
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 template<int dim,int range>
 auto
@@ -177,7 +177,7 @@ create(const std::shared_ptr<RefBasis> &ref_basis,
     SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
 }
 
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
 
 template<int dim,int range>
@@ -232,7 +232,7 @@ print_info(LogStream &out) const
 }
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<int dim,int range>
 template<class Archive>
 void

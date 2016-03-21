@@ -82,7 +82,7 @@ private:
 
   const Value b_;
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * Rebuild the internal state of the object after an Grid::insert_knots() function is invoked.
    *
@@ -95,7 +95,7 @@ private:
   virtual void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) override final;
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 };
 
@@ -158,7 +158,7 @@ private:
   const Derivative<1> A_;
   const Value    b_;
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * Rebuild the internal state of the object after an Grid::insert_knots() function is invoked.
    *
@@ -171,7 +171,7 @@ private:
   virtual void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) override final;
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 };
 
@@ -223,7 +223,7 @@ private:
                   ValueVector<Derivative<2>> &values) const override;
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * Rebuild the internal state of the object after an Grid::insert_knots() function is invoked.
    *
@@ -236,7 +236,7 @@ private:
   virtual void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) override final;
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 };
 
@@ -298,7 +298,7 @@ private:
                   ValueVector<Derivative<2>> &values) const override final;
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * Rebuild the internal state of the object after an Grid::insert_knots() function is invoked.
    *
@@ -311,7 +311,7 @@ private:
   virtual void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) override final;
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 };
 //------------------------------------------------------------------------------
 
@@ -375,7 +375,7 @@ private:
 
   static const int R = 1.;
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * Rebuild the internal state of the object after an Grid::insert_knots() function is invoked.
    *
@@ -388,7 +388,7 @@ private:
   virtual void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) override final;
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 };
 //------------------------------------------------------------------------------
 
@@ -474,7 +474,7 @@ private:
                   ValueVector<Derivative<2>> &values) const override final;
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * Rebuild the internal state of the object after an Grid::insert_knots() function is invoked.
    *
@@ -487,7 +487,7 @@ private:
   virtual void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,3> &knots_to_insert,
     const Grid<3> &old_grid) override final;
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 };
 
 
@@ -575,7 +575,7 @@ private:
    */
   SafeSTLArray<Points<range>,3> vertices_;
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * Rebuild the internal state of the object after an Grid::insert_knots() function is invoked.
    *
@@ -588,7 +588,7 @@ private:
   virtual void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,2> &knots_to_insert,
     const Grid<2> &old_grid) override final;
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 };
 

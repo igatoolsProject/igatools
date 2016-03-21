@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
 
 #include <igatools/base/instantiated_types.inst>
 #include <igatools/utils/safe_stl_vector.h>
@@ -397,7 +397,7 @@ private:
   ObjectMapTypes_ objects_;
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    * @see <a href="http://uscilab.github.io/cereal/index.html">Cereal serialization library</a>
@@ -409,17 +409,17 @@ private:
   void serialize(Archive &ar);
 
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 };
 
 
 IGA_NAMESPACE_CLOSE
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 #include <igatools/base/objects_container.serial>
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
-#endif // XML_IO
+#endif // IGATOOLS_WITH_XML_IO
 
 #endif /*__OBJECTS_CONTAINER_H_ */

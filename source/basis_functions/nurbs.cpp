@@ -25,7 +25,7 @@
 //#include <igatools/base/sub_function.h>
 //#include <igatools/base/exceptions.h>
 
-#ifdef USE_NURBS
+#ifdef IGATOOLS_WITH_NURBS
 
 
 using std::to_string;
@@ -85,9 +85,9 @@ create(const std::shared_ptr<BSpBasis> &bs_basis,
   SharedPtrConstnessHandler<WeightFunction>(weight_func)));
   Assert(sp != nullptr, ExcNullPtr());
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   sp->create_connection_for_insert_knots(sp);
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
   return sp;
 }
@@ -337,7 +337,7 @@ std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
 }
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 
 template<int dim_, int range_, int rank_>
@@ -372,10 +372,10 @@ rebuild_after_insert_knots(
 
 
 
-#endif //MESH_REFINEMENT
+#endif //IGATOOLS_WITH_MESH_REFINEMENT
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 template<int dim_, int range_, int rank_>
 template<class Archive>
@@ -397,11 +397,11 @@ serialize(Archive &ar)
 }
 ///@}
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs.inst>
 
-#endif // #ifdef USE_NURBS
+#endif // #ifdef IGATOOLS_WITH_NURBS
 

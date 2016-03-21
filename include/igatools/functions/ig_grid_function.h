@@ -67,11 +67,11 @@ protected:
                  const IgCoefficients &coeffs,
                  const std::string &dofs_property);
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
   IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                  const EpetraTools::Vector &coeff,
                  const std::string &dofs_property);
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
 public:
   std::unique_ptr<Handler>
@@ -87,7 +87,7 @@ public:
          const IgCoefficients &coeffs,
          const std::string &dofs_property = DofProperties::active);
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const RefBasis> &ref_basis,
                const EpetraTools::Vector &coeffs,
@@ -97,7 +97,7 @@ public:
   create(const std::shared_ptr<RefBasis> &ref_basis,
          const EpetraTools::Vector &coeffs,
          const std::string &dofs_property = DofProperties::active);
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
   virtual void print_info(LogStream &out) const override final;
 
@@ -140,7 +140,7 @@ public:
   const std::string &get_dofs_property() const;
 
 private:
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    */
@@ -151,9 +151,9 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
    *
@@ -169,7 +169,7 @@ private:
 
 
 //  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &grid_function);
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 };
@@ -177,11 +177,11 @@ private:
 IGA_NAMESPACE_CLOSE
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 #include <igatools/functions/ig_grid_function.serial>
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 #endif // __IG_GRID_FUNCTION_H

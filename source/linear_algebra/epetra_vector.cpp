@@ -22,7 +22,7 @@
 
 IGA_NAMESPACE_OPEN
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 namespace EpetraTools
 {
@@ -93,6 +93,6 @@ create_vector(const Map &map)
 
 }
 
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
 IGA_NAMESPACE_CLOSE

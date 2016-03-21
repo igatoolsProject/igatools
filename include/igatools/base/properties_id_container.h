@@ -127,7 +127,7 @@ private:
   DeclException1(ExcPropAlreadyDefined, PropId,
                  << "Property \"" << arg1 << "\" is already present.");
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
@@ -143,7 +143,7 @@ private:
   }
 
   ///@}
-#endif //SERIALIZATION
+#endif //IGATOOLS_WITH_SERIALIZATION
 
 };
 
@@ -205,7 +205,7 @@ public:
 
 IGA_NAMESPACE_CLOSE
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 using MapStringSetIntAlias = iga::SafeSTLMap<std::string,iga::SafeSTLSet<int>>;
 CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,MapStringSetIntAlias,cereal::specialization::member_serialize)
 CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringSetIntAlias,cereal::specialization::member_serialize)
@@ -225,7 +225,7 @@ CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,MapStringVectorElemIDAlias3,cereal::speci
 
 
 //#include <igatools/utils/element_index.serialization>
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 #endif // #ifndef PROPERTIES_ID_CONTAINER_H_
 

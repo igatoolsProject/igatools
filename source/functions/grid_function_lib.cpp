@@ -45,7 +45,7 @@ create(const std::shared_ptr<GridType> &grid,
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(grid),b));
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
 #endif
 
@@ -63,7 +63,7 @@ const_create(const std::shared_ptr<const GridType> &grid,
     new self_t(SharedPtrConstnessHandler<GridType>(grid), b));
 }
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim, int range>
 void
 ConstantGridFunction<dim,range>::
@@ -75,7 +75,7 @@ rebuild_after_insert_knots(
     self_t::const_create(
       this->get_grid()->get_grid_pre_refinement(),b_);
 }
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 template<int dim, int range>
@@ -169,7 +169,7 @@ create(const std::shared_ptr<GridType> &grid,
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(grid),A,b));
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
 #endif
 
@@ -188,7 +188,7 @@ const_create(const std::shared_ptr<const GridType> &grid,
     new self_t(SharedPtrConstnessHandler<GridType>(grid), A, b));
 }
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim, int range>
 void
 LinearGridFunction<dim,range>::
@@ -200,7 +200,7 @@ rebuild_after_insert_knots(
     self_t::const_create(
       this->get_grid()->get_grid_pre_refinement(),A_,b_);
 }
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 template<int dim, int range>
@@ -305,7 +305,7 @@ create(const std::shared_ptr<GridType> &grid)
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
 #endif
 
@@ -337,7 +337,7 @@ evaluate_0(const ValueVector<GridPoint> &points,
   }
 }
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim>
 void
 IdentityGridFunction<dim>::
@@ -349,7 +349,7 @@ rebuild_after_insert_knots(
     self_t::const_create(
       this->get_grid()->get_grid_pre_refinement());
 }
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 template<int dim>
@@ -410,7 +410,7 @@ create(std::shared_ptr<GridType> grid) ->  std::shared_ptr<self_t>
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
 #endif
 
@@ -425,7 +425,7 @@ const_create(std::shared_ptr<const GridType> grid) ->  std::shared_ptr<const sel
   return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 }
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim>
 void
 BallGridFunction<dim>::
@@ -437,7 +437,7 @@ rebuild_after_insert_knots(
     self_t::const_create(
       this->get_grid()->get_grid_pre_refinement());
 }
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 template<int dim>
@@ -673,7 +673,7 @@ create(std::shared_ptr<GridType> grid) -> std::shared_ptr<self_t>
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
 #endif
 
@@ -689,7 +689,7 @@ const_create(std::shared_ptr<const GridType> grid) -> std::shared_ptr<const self
   return std::shared_ptr<self_t>(new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 }
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim>
 void
 SphereGridFunction<dim>::
@@ -701,7 +701,7 @@ rebuild_after_insert_knots(
     self_t::const_create(
       this->get_grid()->get_grid_pre_refinement());
 }
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 
@@ -937,7 +937,7 @@ create(const std::shared_ptr<GridType> &grid) ->  std::shared_ptr<self_t>
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(grid)));
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
 #endif
 
@@ -953,7 +953,7 @@ const_create(const std::shared_ptr<const GridType> &grid) -> std::shared_ptr<con
     SharedPtrConstnessHandler<GridType>(grid)));
 }
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 void
 CylindricalAnnulusGridFunction::
 rebuild_after_insert_knots(
@@ -964,7 +964,7 @@ rebuild_after_insert_knots(
     self_t::const_create(
       this->get_grid()->get_grid_pre_refinement());
 }
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 void
@@ -1170,7 +1170,7 @@ create(const std::shared_ptr<GridType> &grid,
   auto func = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridType>(grid),vertex_0,vertex_1,vertex_2));
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   func->create_connection_for_insert_knots(func);
 #endif
 
@@ -1191,7 +1191,7 @@ const_create(const std::shared_ptr<const GridType> &grid,
 }
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template <int range>
 void
 TriangleGridFunction<range>::
@@ -1203,7 +1203,7 @@ rebuild_after_insert_knots(
     self_t::const_create(
       this->get_grid()->get_grid_pre_refinement(),vertices_[0],vertices_[1],vertices_[2]);
 }
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 

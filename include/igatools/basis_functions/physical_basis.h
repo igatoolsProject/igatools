@@ -219,7 +219,7 @@ private:
   std::shared_ptr<const self_t > get_this_basis() const;
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
   /**
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
@@ -243,11 +243,11 @@ public:
 
   std::shared_ptr<const base_t> get_basis_previous_refinement() const;
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 private:
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for the serialization
    * @see <a href="http://uscilab.github.io/cereal/">Cereal serialization library</a>
@@ -259,7 +259,7 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 };

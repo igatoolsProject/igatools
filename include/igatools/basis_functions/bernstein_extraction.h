@@ -43,7 +43,7 @@ public:
 
 private:
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    */
@@ -53,7 +53,7 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 };
 
@@ -132,7 +132,7 @@ private:
 
   OperatorsTable ext_operators_;
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    */
@@ -141,20 +141,20 @@ private:
   template<class Archive>
   void serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 };
 
 
 IGA_NAMESPACE_CLOSE
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 CEREAL_SPECIALIZE_FOR_ARCHIVE(IArchive,iga::BernsteinOperator,cereal::specialization::member_serialize)
 CEREAL_SPECIALIZE_FOR_ARCHIVE(OArchive,iga::BernsteinOperator,cereal::specialization::member_serialize)
 
 //#include <igatools/basis_functions/bernstein_extraction.serial>
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 #endif

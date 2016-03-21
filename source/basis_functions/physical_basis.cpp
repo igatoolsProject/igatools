@@ -71,9 +71,9 @@ create(const shared_ptr<RefBasis> &ref_basis,
   transformation_type));
   Assert(sp != nullptr,ExcNullPtr());
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   sp->create_connection_for_insert_knots(sp);
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
   return sp;
 }
@@ -292,7 +292,7 @@ std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
 }
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 template <int dim_, int range_, int rank_, int codim_>
 void
@@ -349,7 +349,7 @@ get_basis_previous_refinement() const -> std::shared_ptr<const base_t>
 
 #endif
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 template <int dim_, int range_, int rank_, int codim_>
 template<class Archive>
@@ -375,14 +375,14 @@ serialize(Archive &ar)
   ar &make_nvp("transformation_type_",transformation_type_tmp);
   const_cast<Transformation &>(transformation_type_) = transformation_type_tmp;
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   auto tmp = std::const_pointer_cast<self_t>(phys_basis_previous_refinement_);
   ar &make_nvp("phys_basis_previous_refinement_",tmp);
   phys_basis_previous_refinement_ = tmp;
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 }
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

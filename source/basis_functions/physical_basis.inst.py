@@ -78,14 +78,14 @@ for func in unique(templated_funcs):
 
 
 #---------------------------------------------------
-f.write('#ifdef SERIALIZATION\n')
+f.write('#ifdef IGATOOLS_WITH_SERIALIZATION\n')
 
 archives = ['OArchive','IArchive']
 
 for basis in unique(bases):
     for ar in archives:
         f.write('template void %s::serialize(%s&);\n' %(basis,ar))
-f.write('#endif // SERIALIZATION\n')
+f.write('#endif // IGATOOLS_WITH_SERIALIZATION\n')
 #---------------------------------------------------
 
 

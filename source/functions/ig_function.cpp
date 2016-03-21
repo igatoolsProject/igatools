@@ -30,7 +30,7 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
@@ -59,7 +59,7 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
     coeffs_[glob_dof] = coeff[loc_id];
   }
 }
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
@@ -88,7 +88,7 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
 
 
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 template<int dim,int codim,int range,int rank>
 auto
@@ -104,7 +104,7 @@ const_create(const std::shared_ptr<const PhysBasis> &basis,
   return ig_func;
 }
 
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
 
 template<int dim,int codim,int range,int rank>
@@ -121,7 +121,7 @@ const_create(const std::shared_ptr<const PhysBasis> &basis,
   return ig_func;
 }
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 template<int dim,int codim,int range,int rank>
 auto
@@ -134,13 +134,13 @@ create(const std::shared_ptr<PhysBasis> &basis,
   coeff, dofs_property);
 
   Assert(ig_func != nullptr, ExcNullPtr());
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   ig_func->create_connection_for_insert_knots(ig_func);
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
   return ig_func;
 }
 
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
 
 template<int dim,int codim,int range,int rank>
@@ -154,9 +154,9 @@ create(const std::shared_ptr<PhysBasis> &basis,
   coeff, dofs_property);
   Assert(ig_func != nullptr, ExcNullPtr());
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   ig_func->create_connection_for_insert_knots(ig_func);
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
   return ig_func;
 }
@@ -210,7 +210,7 @@ operator +=(const self_t &fun) -> self_t &
 }
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 template<int dim,int codim,int range,int rank>
 void
@@ -262,7 +262,7 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &ig_function)
 }
 #endif
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 template<int dim,int codim,int range,int rank>
 void
@@ -307,7 +307,7 @@ get_dofs_property() const
 }
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<int dim,int codim,int range,int rank>
 template<class Archive>
 void
@@ -328,7 +328,7 @@ serialize(Archive &ar)
   ar &make_nvp("dofs_property_",dofs_property_);
 }
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

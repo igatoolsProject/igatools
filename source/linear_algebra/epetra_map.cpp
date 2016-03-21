@@ -22,7 +22,7 @@
 
 IGA_NAMESPACE_OPEN
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 namespace EpetraTools
 {
@@ -37,6 +37,6 @@ create_map(const std::set<Index> &dofs,
 
 }
 
-#endif //USE_TRILINOS
+#endif //IGATOOLS_USES_TRILINOS
 
 IGA_NAMESPACE_CLOSE

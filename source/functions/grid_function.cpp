@@ -157,7 +157,7 @@ cend(const PropId &prop) const -> ElementIterator
 }
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim_, int range_>
 boost::signals2::connection
 GridFunction<dim_, range_>::
@@ -194,7 +194,7 @@ get_grid_function_previous_refinement() const -> std::shared_ptr<const self_t>
   return grid_function_previous_refinement_;
 }
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 template<int dim_, int range_>
 auto
@@ -208,7 +208,7 @@ evaluate_preimage(const ValueVector<Value> &phys_points) const
   return param_point;
 }
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<int dim_, int range_>
 template<class Archive>
 void
@@ -220,13 +220,13 @@ serialize(Archive &ar)
   ar &make_nvp("name_",name_);
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   auto tmp = std::const_pointer_cast<self_t>(grid_function_previous_refinement_);
   ar &make_nvp("grid_function_previous_refinement_",tmp);
   grid_function_previous_refinement_ = tmp;
 #endif
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

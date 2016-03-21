@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
 
 #include <igatools/io/objects_container_xml_reader.h>
 
@@ -560,6 +560,6 @@ const std::string ObjectsContainerXMLReader::XML_SCHEMA_ =
 
 IGA_NAMESPACE_CLOSE
 
-#endif // XML_IO
+#endif // IGATOOLS_WITH_XML_IO
 
 #endif // __OBJECTS_CONTAINER_READER_XML_SCHEMA_H_

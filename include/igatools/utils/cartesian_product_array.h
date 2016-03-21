@@ -292,7 +292,7 @@ protected:
    */
   SafeSTLArray<SafeSTLVector<T>,rank> data_ ;
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 private:
   /**
    * @name Functions needed for serialization

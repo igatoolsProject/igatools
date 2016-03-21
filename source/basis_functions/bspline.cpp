@@ -144,7 +144,7 @@ create(const std::shared_ptr<SpSpace> &spline_space,
     new self_t(SharedPtrConstnessHandler<SpSpace>(spline_space), end_b));
   Assert(sp != nullptr, ExcNullPtr());
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   sp->create_connection_for_insert_knots(sp);
 #endif
 
@@ -382,7 +382,7 @@ get_grid() const -> std::shared_ptr<const Grid<dim_>>
 
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 
 
@@ -414,7 +414,7 @@ rebuild_after_insert_knots(
 
 
 
-#endif //MESH_REFINEMENT
+#endif //IGATOOLS_WITH_MESH_REFINEMENT
 
 template<int dim_, int range_, int rank_>
 void
@@ -494,7 +494,7 @@ get_knots_with_repetitions_table() const
 }
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 template<int dim_, int range_, int rank_>
 template<class Archive>
@@ -524,7 +524,7 @@ serialize(Archive &ar)
 
 //    ar &make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 }
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 
@@ -532,9 +532,9 @@ IGA_NAMESPACE_CLOSE
 #include <igatools/basis_functions/bspline.inst>
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 //using BSpAlias0_1_1 = iga::BSpline<0,1,1>;
 //CEREAL_REGISTER_DYNAMIC_INIT(BSpAlias0_1_1);
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION

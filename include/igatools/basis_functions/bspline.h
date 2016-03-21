@@ -315,7 +315,7 @@ private:
   friend class BSplineElement<dim, range, rank>;
   friend class BSplineHandler<dim, range, rank>;
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   /**
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
    *
@@ -332,7 +332,7 @@ private:
 public:
   virtual void refine_h(const Size n_subdivisions = 2) override final;
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
   /**
    * Returns the current object wrapped by a std::shared_ptr.
@@ -366,7 +366,7 @@ private:
   dofs_tensor_id_elem_table_;
 #endif
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for serialization
    */
@@ -377,7 +377,7 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 };
 
@@ -386,11 +386,11 @@ IGA_NAMESPACE_CLOSE
 
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 #include <igatools/basis_functions/bspline.serial>
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 
 

@@ -24,9 +24,9 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 #include "Teuchos_LAPACK.hpp"
-#endif //USE_TRILINOS
+#endif //IGATOOLS_USES_TRILINOS
 
 #include <algorithm>
 
@@ -86,7 +86,7 @@ size2() const
 
 SafeSTLVector<Real> DenseMatrix::eigen_values() const
 {
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
   Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
 
   Teuchos::LAPACK<int, double> lapack;
@@ -113,7 +113,7 @@ SafeSTLVector<Real> DenseMatrix::eigen_values() const
   AssertThrow(false,ExcNeedsTrilinos());
 
   return SafeSTLVector<Real>();
-#endif //USE_TRILINOS
+#endif //IGATOOLS_USES_TRILINOS
 }
 
 
@@ -327,7 +327,7 @@ print_info(LogStream &out) const
   out << ')';
 }
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template <class Archive>
 void
 DenseMatrix::
@@ -360,10 +360,10 @@ load(Archive &ar)
     ar(v);
 }
 
-#endif //SERIALIZATION
+#endif //IGATOOLS_WITH_SERIALIZATION
 
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
 
 void eig_dense_matrix(const DenseMatrix &A,
                       SafeSTLVector<Real> &eigenvalues_real,
@@ -542,15 +542,15 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
     }
   }
 }
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 template void DenseMatrix::load(IArchive &);
 template void DenseMatrix::save(OArchive &) const;
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

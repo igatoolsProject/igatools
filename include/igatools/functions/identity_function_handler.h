@@ -183,7 +183,7 @@ private:
   friend struct FillCacheDispatcher;
 #endif
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
   void create_connection_for_insert_knots(std::shared_ptr<self_t> &ig_function);
 
@@ -191,10 +191,10 @@ private:
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid);
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 #if 0
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name FunctionHandlers needed for boost::serialization
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -210,7 +210,7 @@ private:
                                        boost::serialization::base_object<parent_t>(*this));
   }
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 #endif
 };
 

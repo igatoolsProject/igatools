@@ -23,7 +23,7 @@
 #include <igatools/basis_functions/nurbs.h>
 #include <igatools/basis_functions/nurbs_handler.h>
 
-#ifdef USE_NURBS
+#ifdef IGATOOLS_WITH_NURBS
 
 IGA_NAMESPACE_OPEN
 
@@ -134,7 +134,7 @@ IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_element.inst>
 
-#endif // #ifdef USE_NURBS
+#endif // #ifdef IGATOOLS_WITH_NURBS
 
 
 

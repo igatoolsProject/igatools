@@ -196,7 +196,7 @@ void PoissonProblem<dim>::save()
   const auto solution_non_const = std::const_pointer_cast<IgGridFunc_t>(solution);
   solution_non_const->set_name("solution");
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   const auto objs_container = ObjectsContainer::create();
   objs_container->insert_const_object<GridFunction<dim, 1>>(solution);
   {
@@ -205,7 +205,7 @@ void PoissonProblem<dim>::save()
     xml_out << *objs_container;
   }
 #else
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
   const auto objs_container = ObjectsContainer::create();
   objs_container->insert_const_object<GridFunction<dim, 1>>(solution);
   ObjectsContainerXMLWriter::write(filename + ".iga", objs_container);

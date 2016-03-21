@@ -24,7 +24,7 @@
 
 #include <igatools/base/config.h>
 
-#ifdef USE_NURBS
+#ifdef IGATOOLS_WITH_NURBS
 
 #include <igatools/base/cache_status.h>
 #include <igatools/base/flags_handler.h>
@@ -278,7 +278,7 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // #ifdef USE_NURBS
+#endif // #ifdef IGATOOLS_WITH_NURBS
 
 #endif // #ifndef NURBS_ELEMENT_HANDLER_H_
 

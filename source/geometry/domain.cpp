@@ -46,7 +46,7 @@ create(const std::shared_ptr<GridFuncType> &func)
   auto domain = std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridFuncType>(func)));
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   domain->create_connection_for_insert_knots(domain);
 #endif
 
@@ -65,7 +65,7 @@ const_create(const std::shared_ptr<const GridFuncType> &func)
 }
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim_, int codim_>
 void
 Domain<dim_, codim_>::
@@ -266,7 +266,7 @@ print_info(LogStream &out) const
 }
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<int dim_, int codim_>
 template<class Archive>
 void
@@ -277,7 +277,7 @@ serialize(Archive &ar)
   ar &make_nvp("name_",name_);
   ar &make_nvp("object_id_",object_id_);
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   auto tmp = std::const_pointer_cast<self_t>(domain_previous_refinement_);
   ar &make_nvp("grid_pre_refinement_",tmp);
   domain_previous_refinement_ = tmp;

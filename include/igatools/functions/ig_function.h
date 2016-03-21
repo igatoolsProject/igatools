@@ -97,12 +97,12 @@ public:
    */
   IgFunction() = default;
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
   //TODO (pauletti, Mar 23, 2015): should we make this private?
   IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const EpetraTools::Vector &coeff,
              const std::string &dofs_property);
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
   IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const IgCoefficients &coeff,
@@ -130,7 +130,7 @@ public:
   std::unique_ptr<typename parent_t::Handler>
   create_cache_handler() const override final;
 
-#ifdef USE_TRILINOS
+#ifdef IGATOOLS_USES_TRILINOS
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const PhysBasis> &basis,
                const EpetraTools::Vector &coeff,
@@ -140,7 +140,7 @@ public:
   create(const std::shared_ptr<PhysBasis> &basis,
          const EpetraTools::Vector &coeff,
          const std::string &dofs_property = DofProperties::active);
-#endif // USE_TRILINOS
+#endif // IGATOOLS_USES_TRILINOS
 
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const PhysBasis> &basis,
@@ -224,7 +224,7 @@ private:
 
 private:
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 //  void create_connection_for_insert_knots(const std::shared_ptr<self_t> &ig_function);
 
@@ -232,9 +232,9 @@ private:
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const Grid<dim> &old_grid) override final;
 
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for the serialization
    */
@@ -245,18 +245,18 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 };
 
 
 
 IGA_NAMESPACE_CLOSE
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 #include <igatools/functions/ig_function.serial>
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 #endif
 

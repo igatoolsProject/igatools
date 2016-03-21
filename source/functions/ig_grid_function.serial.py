@@ -41,7 +41,7 @@ for x in inst.mapping_dims + inst.sub_mapping_dims:
 f.write('IGA_NAMESPACE_CLOSE\n')
 
 
-f.write('#ifdef SERIALIZATION\n')
+f.write('#ifdef IGATOOLS_WITH_SERIALIZATION\n')
 
 id = 0 
 for cl in unique(classes):
@@ -51,7 +51,7 @@ for cl in unique(classes):
     id += 1 
 
 
-f.write('#endif // SERIALIZATION\n')
+f.write('#endif // IGATOOLS_WITH_SERIALIZATION\n')
 
 #   
 f.write('IGA_NAMESPACE_OPEN\n')

@@ -81,8 +81,8 @@ VtkIgaGridContainer(const ObjContPtr_ objs_container,
 
   if (!boost::fusion::any(phys_grids_, lambda_func_not_empty) &&
       !boost::fusion::any(parm_grids_, lambda_func_not_empty))
-      // Both lists of VTK IGA grids are empty.
-      throw ExcVtkError("There are not valid domains or grids.");
+    // Both lists of VTK IGA grids are empty.
+    throw ExcVtkError("There are not valid domains or grids.");
 }
 
 
@@ -123,28 +123,28 @@ create(const std::string &file_name,
 {
   // Physical solid grid.
   const auto phys_sol = VtkGridInformation::create
-                        (n_cells_phs_sol, grid_type_phs_sol);
+  (n_cells_phs_sol, grid_type_phs_sol);
 
   // Physical knot grid.
   const auto phys_knt = VtkGridInformation::create
-                        (n_cells_phs_knt, grid_type_phs_knt);
+  (n_cells_phs_knt, grid_type_phs_knt);
 
   // Physical control grid.
   const auto phys_ctr = VtkControlGridInformation::create
-                        (grid_type_phs_ctr == VtkGridType::Structured);
+  (grid_type_phs_ctr == VtkGridType::Structured);
 
   // Parametric solid grid.
   const auto parm_sol = VtkGridInformation::create
-                        (n_cells_prm_sol, grid_type_prm_sol);
+  (n_cells_prm_sol, grid_type_prm_sol);
 
   // Parametric knot grid.
   const auto parm_knt = VtkGridInformation::create
-                        (n_cells_prm_knt, grid_type_prm_knt);
+  (n_cells_prm_knt, grid_type_prm_knt);
 
   const auto objs_container = parse_objects_container(file_name);
 
   return SelfPtr_(new Self_(objs_container, phys_sol, phys_knt, phys_ctr,
-                            parm_sol, parm_knt));
+  parm_sol, parm_knt));
 
 }
 
@@ -155,31 +155,31 @@ VtkIgaGridContainer::
 parse_objects_container(const string &file_name) ->
 ObjContPtr_
 {
-    Self_::check_file(file_name);
+  Self_::check_file(file_name);
 
-    ObjContPtr_ objs_container;
+  ObjContPtr_ objs_container;
 
-    if (Self_::is_file_binary(file_name))
+  if (Self_::is_file_binary(file_name))
+  {
+#ifdef IGATOOLS_WITH_SERIALIZATION
+    ObjectsContainer container_new;
     {
-#ifdef SERIALIZATION
-        ObjectsContainer container_new;
-        {
-            std::ifstream xml_istream(file_name);
-            IArchive xml_in(xml_istream);
-            xml_in >> container_new;
-        }
-        objs_container = std::make_shared<ObjectsContainer>(container_new);
-#endif
+      std::ifstream xml_istream(file_name);
+      IArchive xml_in(xml_istream);
+      xml_in >> container_new;
     }
-    else
-    {
-#ifdef XML_IO
-        objs_container = ObjectsContainerXMLReader::parse_const(file_name);
+    objs_container = std::make_shared<ObjectsContainer>(container_new);
 #endif
-    }
+  }
+  else
+  {
+#ifdef IGATOOLS_WITH_XML_IO
+    objs_container = ObjectsContainerXMLReader::parse_const(file_name);
+#endif
+  }
 
-    Assert (objs_container != nullptr, ExcNullPtr());
-    return objs_container;
+  Assert(objs_container != nullptr, ExcNullPtr());
+  return objs_container;
 }
 
 
@@ -207,23 +207,23 @@ check_file(const std::string &file_name)
       throw ExcVtkError("An unknown problem was encountered.");
   }
 
-    if (Self_::is_file_binary(file_name))
-    {
-#ifndef SERIALIZATION
-        throw ExcVtkError("Impossible to parse binary format file."
-                " Igatools serialization of binary files was not activated."
-                " Currently this plugin is only capable of parsing XML files.");
+  if (Self_::is_file_binary(file_name))
+  {
+#ifndef IGATOOLS_WITH_SERIALIZATION
+    throw ExcVtkError("Impossible to parse binary format file."
+                      " Igatools serialization of binary files was not activated."
+                      " Currently this plugin is only capable of parsing XML files.");
 #endif
-    }
-    else
-    {
-#ifndef XML_IO
-        throw ExcVtkError("Impossible to parse an ascii format file."
-                " Igatools XML ascii parser was not activated."
-                " Currently this plugin is only capable of parsing "
-                "igatools serialized files in binary format.");
+  }
+  else
+  {
+#ifndef IGATOOLS_WITH_XML_IO
+    throw ExcVtkError("Impossible to parse an ascii format file."
+                      " Igatools XML ascii parser was not activated."
+                      " Currently this plugin is only capable of parsing "
+                      "igatools serialized files in binary format.");
 #endif
-    }
+  }
 
 }
 
@@ -233,14 +233,14 @@ bool
 VtkIgaGridContainer::
 is_file_binary(const std::string &file_name)
 {
-    int c;
-    std::ifstream file(file_name);
-    while((c = file.get()) != EOF && c <= 127);
-    file.close();
-    if(c == EOF)
-        return false;
-    else
-        return true;
+  int c;
+  std::ifstream file(file_name);
+  while ((c = file.get()) != EOF && c <= 127);
+  file.close();
+  if (c == EOF)
+    return false;
+  else
+    return true;
 }
 
 
@@ -253,65 +253,65 @@ get_invalid_dimension_objects(const ObjContPtr_ objs_container)
 
   InvalidGridPtrs_ invalid_g_ptr_types;
   for_each(invalid_g_ptr_types, [&](const auto &ptr_type)
-           {
-              using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-              for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
-              {
-                  const auto obj = objs_container->template get_const_object<ObjectType>(id);
-                  invalid_objects.push_back(
-                          "Grid<" + to_string(ObjectType::dim) + ">, "
-                          "Name: " + obj->get_name() + ", "
-                          "ObjectId: " + to_string(id));
-              }
-           });
+  {
+    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+    for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
+    {
+      const auto obj = objs_container->template get_const_object<ObjectType>(id);
+      invalid_objects.push_back(
+        "Grid<" + to_string(ObjectType::dim) + ">, "
+        "Name: " + obj->get_name() + ", "
+        "ObjectId: " + to_string(id));
+    }
+  });
 
 
   InvalidDomainPtrs_ invalid_d_ptr_types;
   for_each(invalid_d_ptr_types, [&](const auto &ptr_type)
-           {
-              using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-              for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
-              {
-                  const auto obj = objs_container->template get_const_object<ObjectType>(id);
-                  invalid_objects.push_back(
-                          "Domain<" + to_string(ObjectType::dim) + ", " +
-                          to_string(ObjectType::space_dim - ObjectType::dim) + ">, "
-                          "Name: " + obj->get_name() + ", "
-                          "ObjectId: " + to_string(id));
-              }
-           });
+  {
+    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+    for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
+    {
+      const auto obj = objs_container->template get_const_object<ObjectType>(id);
+      invalid_objects.push_back(
+        "Domain<" + to_string(ObjectType::dim) + ", " +
+        to_string(ObjectType::space_dim - ObjectType::dim) + ">, "
+        "Name: " + obj->get_name() + ", "
+        "ObjectId: " + to_string(id));
+    }
+  });
 
   InvalidGridFuncPtrs_ invalid_gf_ptr_types;
   for_each(invalid_gf_ptr_types, [&](const auto &ptr_type)
-           {
-              using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-              for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
-              {
-                  const auto obj = objs_container->template get_const_object<ObjectType>(id);
-                  invalid_objects.push_back(
-                          "GridFunction<" + to_string(ObjectType::dim) + ", " +
-                          to_string(ObjectType::range) + ">, "
-                          "Name: " + obj->get_name() + ", "
-                          "ObjectId: " + to_string(id));
-              }
-           });
+  {
+    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+    for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
+    {
+      const auto obj = objs_container->template get_const_object<ObjectType>(id);
+      invalid_objects.push_back(
+        "GridFunction<" + to_string(ObjectType::dim) + ", " +
+        to_string(ObjectType::range) + ">, "
+        "Name: " + obj->get_name() + ", "
+        "ObjectId: " + to_string(id));
+    }
+  });
 
   InvalidFunctionPtrs_ invalid_f_ptr_types;
   for_each(invalid_f_ptr_types, [&](const auto &ptr_type)
-           {
-              using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
-              for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
-              {
-                  const auto obj = objs_container->template get_const_object<ObjectType>(id);
-                  invalid_objects.push_back(
-                          "Function<" + to_string(ObjectType::dim) + ", "
-                                      + to_string(ObjectType::codim) + ", "
-                                      + to_string(ObjectType::range) + ", "
-                                      + to_string(ObjectType::rank) + ">, "
-                          "Name: " + obj->get_name() + ", "
-                          "ObjectId: " + to_string(id));
-              }
-           });
+  {
+    using ObjectType = typename remove_reference<decltype(ptr_type)>::type::element_type;
+    for (const auto &id : objs_container->template get_const_object_ids<ObjectType>())
+    {
+      const auto obj = objs_container->template get_const_object<ObjectType>(id);
+      invalid_objects.push_back(
+        "Function<" + to_string(ObjectType::dim) + ", "
+        + to_string(ObjectType::codim) + ", "
+        + to_string(ObjectType::range) + ", "
+        + to_string(ObjectType::rank) + ">, "
+        "Name: " + obj->get_name() + ", "
+        "ObjectId: " + to_string(id));
+    }
+  });
 
   return invalid_objects;
 }
@@ -342,8 +342,8 @@ create_multiblock_grid(const bool phys_mesh,
 
   if (num_blocks == 0)
   {
-      VtkIgaWarningMacro("Neither physical nor parametric geometries are "
-                         "active. No output produced.");
+    VtkIgaWarningMacro("Neither physical nor parametric geometries are "
+                       "active. No output produced.");
   }
 
   const unsigned int num_phys_blocks = sol_phys_mesh + knt_phys_mesh + ctr_phys_mesh;
@@ -357,16 +357,16 @@ create_multiblock_grid(const bool phys_mesh,
   bool new_create_physical_mesh = phys_mesh;
   if (phys_mesh && (num_phys_blocks == 0 || num_active_phys == 0))
   {
-      if (num_phys_blocks == 0)
-      {
-          VtkIgaWarningMacro("Physical geometries set active, but no grid type "
-                  "(solid, knot, control) has been selected");
-      }
-      else
-      {
-          VtkIgaWarningMacro("Physical geometries set active, but no "
-                  "geometry set active from the list.");
-      }
+    if (num_phys_blocks == 0)
+    {
+      VtkIgaWarningMacro("Physical geometries set active, but no grid type "
+                         "(solid, knot, control) has been selected");
+    }
+    else
+    {
+      VtkIgaWarningMacro("Physical geometries set active, but no "
+                         "geometry set active from the list.");
+    }
 
     --num_blocks;
 
@@ -377,16 +377,16 @@ create_multiblock_grid(const bool phys_mesh,
   bool new_create_parametric_mesh = prm_mesh;
   if (prm_mesh && (num_parm_blocks == 0 || num_active_parm == 0))
   {
-      if (num_parm_blocks == 0)
-      {
-          VtkIgaWarningMacro("Parametric geometries set active, but no grid type "
-                  "(solid, knot) has been selected");
-      }
-      else
-      {
-          VtkIgaWarningMacro("Parametric geometries set active, but no "
-                  "geometry set active from the list.");
-      }
+    if (num_parm_blocks == 0)
+    {
+      VtkIgaWarningMacro("Parametric geometries set active, but no grid type "
+                         "(solid, knot) has been selected");
+    }
+    else
+    {
+      VtkIgaWarningMacro("Parametric geometries set active, but no "
+                         "geometry set active from the list.");
+    }
 
     --num_blocks;
 
@@ -395,8 +395,8 @@ create_multiblock_grid(const bool phys_mesh,
 
   if (num_blocks == 0)
   {
-      VtkIgaWarningMacro("Neither physical nor parametric geometries are "
-              "active. No output produced.");
+    VtkIgaWarningMacro("Neither physical nor parametric geometries are "
+                       "active. No output produced.");
   }
 
 
@@ -533,23 +533,23 @@ update(const NumCells_   &n_cells_phs_sol,
 {
   // Physical solid grid.
   const auto phys_solid_info = VtkGridInformation::create
-                        (n_cells_phs_sol, grid_type_phs_sol);
+                               (n_cells_phs_sol, grid_type_phs_sol);
 
   // Physical knot grid.
   const auto phys_knot_info = VtkGridInformation::create
-                        (n_cells_phs_knt, grid_type_phs_knt);
+                              (n_cells_phs_knt, grid_type_phs_knt);
 
   // Physical control grid.
   const auto phys_control_info = VtkControlGridInformation::create
-                        (grid_type_phs_ctr == VtkGridType::Structured);
+                                 (grid_type_phs_ctr == VtkGridType::Structured);
 
   // Parametric solid grid.
   const auto parm_solid_info = VtkGridInformation::create
-                        (n_cells_prm_sol, grid_type_prm_sol);
+                               (n_cells_prm_sol, grid_type_prm_sol);
 
   // Parametric knot grid.
   const auto parm_knot_info = VtkGridInformation::create
-                        (n_cells_prm_knt, grid_type_prm_knt);
+                              (n_cells_prm_knt, grid_type_prm_knt);
 
   const bool phys_solid_updated    = phys_solid_info_->update(phys_solid_info);
   const bool phys_knot_updated     = phys_knot_info_->update(phys_knot_info);
@@ -582,47 +582,47 @@ void
 VtkIgaGridContainer::
 fill_objects_container(const ObjContPtr_ objs_container_old)
 {
-    // Adding missing object into the container.
-    objs_container_old->fill_not_inserted_dependencies();
+  // Adding missing object into the container.
+  objs_container_old->fill_not_inserted_dependencies();
 
-    // Checking if there is any object with invalid dimension in the
-    // container.
-    const auto invalid_dim_obj = Self_::get_invalid_dimension_objects(objs_container_old);
-    if (invalid_dim_obj.size() > 0)
-    {
-        string warning_message = "The following objects have dimensions that the "
-                "plugin cannot currently visualize:\n";
-        for (const auto &obj : invalid_dim_obj)
-            warning_message += obj + "\n";
+  // Checking if there is any object with invalid dimension in the
+  // container.
+  const auto invalid_dim_obj = Self_::get_invalid_dimension_objects(objs_container_old);
+  if (invalid_dim_obj.size() > 0)
+  {
+    string warning_message = "The following objects have dimensions that the "
+                             "plugin cannot currently visualize:\n";
+    for (const auto &obj : invalid_dim_obj)
+      warning_message += obj + "\n";
 
-        VtkIgaWarningMacro(<< warning_message);
-    }
+    VtkIgaWarningMacro(<< warning_message);
+  }
 
-    // Adding all the present objects in the container to a new container,
-    // all of them as constant.
-    auto lambda_insert_as_const = [&](const auto &ptr_type)
-    {
-        using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
-        for (const auto &id : objs_container_old->template get_object_ids<Type>())
-            objs_container_->template insert_const_object<Type>(
-                    objs_container_old->template get_object<Type>(id));
+  // Adding all the present objects in the container to a new container,
+  // all of them as constant.
+  auto lambda_insert_as_const = [&](const auto &ptr_type)
+  {
+    using Type = typename remove_reference<decltype(ptr_type)>::type::element_type;
+    for (const auto &id : objs_container_old->template get_object_ids<Type>())
+      objs_container_->template insert_const_object<Type>(
+      objs_container_old->template get_object<Type>(id));
 
-        for (const auto &id : objs_container_old->template get_const_object_ids<Type>())
-            objs_container_->template insert_const_object<Type>(
-                    objs_container_old->template get_const_object<Type>(id));
-    };
+    for (const auto &id : objs_container_old->template get_const_object_ids<Type>())
+      objs_container_->template insert_const_object<Type>(
+      objs_container_old->template get_const_object<Type>(id));
+  };
 
-    GridPtrs_ valid_g_ptr_types;
-    for_each(valid_g_ptr_types, lambda_insert_as_const);
+  GridPtrs_ valid_g_ptr_types;
+  for_each(valid_g_ptr_types, lambda_insert_as_const);
 
-    GridFuncPtrs_ valid_gf_ptr_types;
-    for_each(valid_gf_ptr_types, lambda_insert_as_const);
+  GridFuncPtrs_ valid_gf_ptr_types;
+  for_each(valid_gf_ptr_types, lambda_insert_as_const);
 
-    DomainPtrs_ valid_d_ptr_types;
-    for_each(valid_d_ptr_types, lambda_insert_as_const);
+  DomainPtrs_ valid_d_ptr_types;
+  for_each(valid_d_ptr_types, lambda_insert_as_const);
 
-    FunctionPtrs_ valid_f_ptr_types;
-    for_each(valid_f_ptr_types, lambda_insert_as_const);
+  FunctionPtrs_ valid_f_ptr_types;
+  for_each(valid_f_ptr_types, lambda_insert_as_const);
 }
 
 
@@ -1007,7 +1007,7 @@ get_number_active_domains(const VtkIgaGridsContainer_ grid_container)
 const char *
 VtkIgaGridContainer::
 get_domain_name(const VtkIgaGridsContainer_ grid_container,
-              const Index &id)
+                const Index &id)
 {
   const char *name = "";
   bool found = false;
@@ -1039,7 +1039,7 @@ get_domain_name(const VtkIgaGridsContainer_ grid_container,
 bool
 VtkIgaGridContainer::
 get_domain_status(const VtkIgaGridsContainer_ grid_container,
-                const std::string &name)
+                  const std::string &name)
 {
   bool status = false;
   bool found = false;
@@ -1070,8 +1070,8 @@ get_domain_status(const VtkIgaGridsContainer_ grid_container,
 void
 VtkIgaGridContainer::
 set_domain_status(const VtkIgaGridsContainer_ grid_container,
-                const std::string &name,
-                const bool status)
+                  const std::string &name,
+                  const bool status)
 {
   bool found = false;
   boost::fusion::for_each(grid_container, [&](auto &gen_pair)
@@ -1127,7 +1127,7 @@ set_solid_domains(const VtkIgaGridsContainer_ grid_container,
 void
 VtkIgaGridContainer::
 set_knot_domains(const VtkIgaGridsContainer_ grid_container,
-               vtkMultiBlockDataSet *const mb)
+                 vtkMultiBlockDataSet *const mb)
 {
   const auto active_domains = get_number_active_domains(grid_container);
   Assert(active_domains > 0, ExcEmptyObject());
@@ -1156,7 +1156,7 @@ set_knot_domains(const VtkIgaGridsContainer_ grid_container,
 void
 VtkIgaGridContainer::
 set_control_domains(const VtkIgaGridsContainer_ grid_container,
-                  vtkMultiBlockDataSet *const mb)
+                    vtkMultiBlockDataSet *const mb)
 {
   // Getting number of active ig grids.
   Size active_domains = 0;

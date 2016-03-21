@@ -93,7 +93,7 @@ print_info(LogStream &out) const
 }
 
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 template<int rank>
 template<class Archive>
 void
@@ -105,7 +105,7 @@ serialize(Archive &ar)
   ar &make_nvp("weight_",weight_);
 }
 
-#endif //SERIALIZATION
+#endif //IGATOOLS_WITH_SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

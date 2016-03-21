@@ -109,7 +109,7 @@ public:
   {
     Assert(false,ExcNotImplemented());
   }
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
   {
@@ -183,7 +183,7 @@ public:
   {
     Assert(false,ExcNotImplemented());
   }
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
   {
@@ -257,7 +257,7 @@ public:
   {
     Assert(false,ExcNotImplemented());
   }
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g)
   {
@@ -339,7 +339,7 @@ private:
     Assert(false,ExcNotImplemented());
   }
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
   {
@@ -431,7 +431,7 @@ private:
     Assert(false,ExcNotImplemented());
   }
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   void rebuild_after_insert_knots(
     const iga::SafeSTLArray<iga::SafeSTLVector<double>, dim> &new_knots, const iga::Grid<dim> &g) override
   {

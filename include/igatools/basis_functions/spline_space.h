@@ -591,7 +591,7 @@ public:
     /** For each component return the index of the active component */
     ComponentMap comp_map_;
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
     /**
      * @name Functions needed for the serialization
      * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
@@ -612,12 +612,12 @@ public:
 //      ar &make_nvp("inactive_components_id_", inactive_components_id_);
     }
     ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
   };
 
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
   std::shared_ptr<const SplineSpace<dim_,range_,rank_> > spline_space_previous_refinement_;
 
   /**
@@ -643,7 +643,7 @@ public:
   {
     return spline_space_previous_refinement_;
   }
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 protected:
 
@@ -660,7 +660,7 @@ private:
    */
   SplineSpace();
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
   /**
    * @name Functions needed for the serialization
    * @see <a href="http://uscilab.github.io/cereal/serialization_functions.html">Cereal serialization</a>
@@ -672,16 +672,16 @@ private:
   void
   serialize(Archive &ar);
   ///@}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 };
 
 
 IGA_NAMESPACE_CLOSE
 
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 #include <igatools/basis_functions/spline_space.serial>
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 
 #endif

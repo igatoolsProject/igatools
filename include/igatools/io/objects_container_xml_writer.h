@@ -25,7 +25,7 @@
 
 #include <set>
 
-#ifdef XML_IO
+#ifdef IGATOOLS_WITH_XML_IO
 
 
 IGA_NAMESPACE_OPEN
@@ -387,6 +387,6 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif // XML_IO
+#endif // IGATOOLS_WITH_XML_IO
 
 #endif // __OBJECTS_CONTAINER_WRITER_H_

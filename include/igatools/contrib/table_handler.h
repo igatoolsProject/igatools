@@ -102,7 +102,7 @@ public:
   template <class Archive>
   void load(Archive &ar, const int version);
 
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
+  BOOST_IGATOOLS_WITH_SERIALIZATION_SPLIT_MEMBER()
 
 private:
   /**

@@ -22,14 +22,14 @@
 #define __IGA_CONFIG_H_
 
 #cmakedefine REAL_IS_LONG_DOUBLE
-#cmakedefine USE_TRILINOS
-#cmakedefine USE_NURBS
+#cmakedefine IGATOOLS_USES_TRILINOS
+#cmakedefine IGATOOLS_WITH_NURBS
 #cmakedefine MPATCH
 #cmakedefine HIERARCHICAL
-#cmakedefine SERIALIZATION
-#cmakedefine PARAVIEW_PLUGIN
-#cmakedefine MESH_REFINEMENT
-#cmakedefine XML_IO
+#cmakedefine IGATOOLS_WITH_SERIALIZATION
+#cmakedefine IGATOOLS_WITH_PARAVIEW_PLUGIN
+#cmakedefine IGATOOLS_WITH_MESH_REFINEMENT
+#cmakedefine IGATOOLS_WITH_XML_IO
 #cmakedefine USE_DEPRECATED
 
 #define MAX_NUM_DERIVATIVES @max_der_order@ + 1
@@ -50,7 +50,7 @@
 #include <igatools/base/numbers.h>
 
 //--------------------------------------------------------------------
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 
 #include <cereal/cereal.hpp>
@@ -81,7 +81,7 @@ using IArchive = IArchiveCereal;
 using serialization_access = cereal::access;
 
 
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 //--------------------------------------------------------------------
 
 #include <cmath>

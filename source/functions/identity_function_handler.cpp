@@ -35,9 +35,9 @@ IGA_NAMESPACE_OPEN
 //{
 //    auto identity_function = std::make_shared<self_t>(grid);
 //
-//#ifdef MESH_REFINEMENT
+//#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 //    identity_function->create_connection_for_insert_knots(identity_function);
-//#endif // MESH_REFINEMENT
+//#endif // IGATOOLS_WITH_MESH_REFINEMENT
 //
 //    return identity_function;
 //}
@@ -99,7 +99,7 @@ fill_cache(const topology_variant &sdim,
 
 
 
-#ifdef MESH_REFINEMENT
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 template<int dim,int space_dim>
 void
 IdentityFunctionHandler<dim,space_dim>::
@@ -134,7 +134,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
   std::const_pointer_cast<Grid<dim>>(this->get_grid())->connect_insert_knots(
                                     SlotType(func_to_connect).track_foreign(identity_function));
 }
-#endif // MESH_REFINEMENT
+#endif // IGATOOLS_WITH_MESH_REFINEMENT
 
 
 IGA_NAMESPACE_CLOSE

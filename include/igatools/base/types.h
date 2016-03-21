@@ -624,7 +624,7 @@ using QuadVariants = SubElemPtrVariants<Quadrature,dim>;
 
 
 #if 0
-#ifdef SERIALIZATION
+#ifdef IGATOOLS_WITH_SERIALIZATION
 
 /**
  * Extra to make <tt>shared_from_this</tt>  available inside the saving code.
@@ -645,7 +645,7 @@ using QuadVariants = SubElemPtrVariants<Quadrature,dim>;
     obj = sharedPtr.get(); \
   } \
   }}
-#endif // SERIALIZATION
+#endif // IGATOOLS_WITH_SERIALIZATION
 #endif
 
 
