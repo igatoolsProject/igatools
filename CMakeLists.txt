@@ -92,8 +92,19 @@ find_doxygen()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(USE_DEPRECATED "Use the part of the igatools code marked as deprecated" OFF)
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
+if (USE_TRILINOS)
+    message("-- TRILINOS support is enabled.")
+else(USE_TRILINOS)
+    message("-- TRILINOS support is not enabled.")    
+endif(USE_TRILINOS)
+#-------------------------------------------------------------------------------
 
+
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(USE_NURBS "Enable NURBS support" ON)
 if (USE_NURBS)
     message("-- NURBS support is enabled.")
@@ -140,6 +151,12 @@ endif(HIERARCHICAL)
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 option(MESH_REFINEMENT "Enable mesh refinement support" ON)
 if (MESH_REFINEMENT)
+    if (NOT USE_TRILINOS)
+        message (FATAL_ERROR "MESH_REFINEMENT variable set to ON is not "
+        "compatible with USE_TRILINOS set to OFF. Trilinos support must be "
+        "activated.")
+    endif ()
+
     message("-- Mesh refinement support (EXPERIMENTAL) is enabled.")
 else(MESH_REFINEMENT)
     message("-- Mesh refinement support (EXPERIMENTAL) is not enabled.")    

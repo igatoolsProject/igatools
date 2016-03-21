@@ -24,9 +24,13 @@
 #include <igatools/base/config.h>
 #include <igatools/linear_algebra/epetra_map.h>
 
+#ifdef USE_TRILINOS
 #include <Epetra_CrsGraph.h>
+#endif //USE_TRILINOS
 
 IGA_NAMESPACE_OPEN
+
+#ifdef USE_TRILINOS
 
 namespace EpetraTools
 {
@@ -90,6 +94,9 @@ create_graph(const RowBasis &row_basis, const std::string &row_property,
 
 }
 
+#endif // USE_TRILINOS
+
 IGA_NAMESPACE_CLOSE
+
 
 #endif

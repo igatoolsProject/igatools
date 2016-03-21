@@ -29,6 +29,8 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+#ifdef USE_TRILINOS
+
 namespace dof_tools
 {
 
@@ -82,6 +84,8 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 }
 
 }
+
+#endif // USE_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

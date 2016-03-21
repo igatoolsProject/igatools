@@ -26,6 +26,8 @@
 
 IGA_NAMESPACE_OPEN
 
+#ifdef USE_TRILINOS
+
 template<int dim,int range>
 IgGridFunction<dim,range>::
 IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
@@ -52,6 +54,8 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
     coeffs_[glob_dof] = coeff[loc_id];
   }
 }
+
+#endif // USE_TRILINOS
 
 
 template<int dim,int range>
@@ -149,6 +153,8 @@ create(const std::shared_ptr<RefBasis> &ref_basis,
 }
 
 
+#ifdef USE_TRILINOS
+
 template<int dim,int range>
 auto
 IgGridFunction<dim,range>::
@@ -171,6 +177,7 @@ create(const std::shared_ptr<RefBasis> &ref_basis,
     SharedPtrConstnessHandler<RefBasis>(ref_basis),coeffs,dofs_property));
 }
 
+#endif // USE_TRILINOS
 
 
 template<int dim,int range>

@@ -30,11 +30,7 @@ IgCoefficients(const std::set<Index> &global_dofs)
     (*this)[dof] = 0.0;
 }
 
-IgCoefficients::
-IgCoefficients(const EpetraTools::Vector &epetra_vector)
-{
-  Assert(false,ExcNotImplemented());
-}
+
 
 
 const Real &

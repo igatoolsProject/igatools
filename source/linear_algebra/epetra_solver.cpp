@@ -19,9 +19,13 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/linear_algebra/epetra_solver.h>
+#ifdef USE_TRILINOS
 #include "ml_epetra_preconditioner.h"
+#endif // USE_TRILINOS
 
 IGA_NAMESPACE_OPEN
+
+#ifdef USE_TRILINOS
 
 namespace EpetraTools
 {
@@ -62,6 +66,8 @@ SolverPtr create_solver(const Matrix &A, Vector &x, const Vector &b,
 }
 
 }
+
+#endif // USE_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

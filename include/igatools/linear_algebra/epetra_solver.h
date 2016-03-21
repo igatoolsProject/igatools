@@ -22,13 +22,18 @@
 #define __EPETRA_SOLVER_H_
 
 #include <igatools/base/config.h>
+
+#ifdef USE_TRILINOS
 #include <BelosSolverFactory.hpp>
 #include <BelosEpetraAdapter.hpp>
+#endif // USE_TRILINOS
 
 #include <igatools/linear_algebra/epetra_vector.h>
 #include <igatools/linear_algebra/epetra_matrix.h>
 
 IGA_NAMESPACE_OPEN
+
+#ifdef USE_TRILINOS
 
 namespace EpetraTools
 {
@@ -41,6 +46,8 @@ create_solver(const Matrix &A, Vector &x, const Vector &b,
               const Real tolerance = 1.0e-8,
               const int max_num_iters = 400);
 }
+
+#endif // USE_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

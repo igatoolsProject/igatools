@@ -27,10 +27,13 @@
 #include <igatools/utils/safe_stl_vector.h>
 #include <igatools/base/properties.h>
 
+#ifdef USE_TRILINOS
 #include <Epetra_Vector.h>
-
+#endif //USE_TRILINOS
 
 IGA_NAMESPACE_OPEN
+
+#ifdef USE_TRILINOS
 
 namespace EpetraTools
 {
@@ -68,6 +71,8 @@ create_vector(const Basis &basis, const std::string &prop,const Comm &comm)
 }
 
 }
+
+#endif //USE_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

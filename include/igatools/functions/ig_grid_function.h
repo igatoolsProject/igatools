@@ -67,9 +67,11 @@ protected:
                  const IgCoefficients &coeffs,
                  const std::string &dofs_property);
 
+#ifdef USE_TRILINOS
   IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                  const EpetraTools::Vector &coeff,
                  const std::string &dofs_property);
+#endif // USE_TRILINOS
 
 public:
   std::unique_ptr<Handler>
@@ -85,6 +87,7 @@ public:
          const IgCoefficients &coeffs,
          const std::string &dofs_property = DofProperties::active);
 
+#ifdef USE_TRILINOS
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const RefBasis> &ref_basis,
                const EpetraTools::Vector &coeffs,
@@ -94,7 +97,7 @@ public:
   create(const std::shared_ptr<RefBasis> &ref_basis,
          const EpetraTools::Vector &coeffs,
          const std::string &dofs_property = DofProperties::active);
-
+#endif // USE_TRILINOS
 
   virtual void print_info(LogStream &out) const override final;
 

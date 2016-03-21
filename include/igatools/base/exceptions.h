@@ -1164,6 +1164,16 @@ DeclExceptionMsg(ExcScalarAssignmentOnlyForZeroValue,
                  "a nonzero scalar value 's'. However, such assignments "
                  "are only allowed if the right hand side is zero.");
 
+
+/**
+ * This function requires support for the Trilinos library.
+ */
+DeclExceptionMsg(ExcNeedsTrilinos,
+                 "You are trying to use a function that requires a functionality provided "
+                 "by Trilinos, but igatools is configured/compiled with the Trilinos suport disabled."
+                 "Try to re-configure/re-compiled igatools with USE_TRILINOS=ON");
+
+
 /**
  * This function requires support for the LAPACK library.
  */

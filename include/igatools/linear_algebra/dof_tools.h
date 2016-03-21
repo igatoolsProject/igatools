@@ -27,6 +27,8 @@
 
 IGA_NAMESPACE_OPEN
 
+#ifdef USE_TRILINOS
+
 /**
  * Collection of routines to handle the relation
  * between the linear algebra and the degrees of freedom of
@@ -46,6 +48,8 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector &solution);
 
 } // end of namespace dof_tools
+
+#endif // USE_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

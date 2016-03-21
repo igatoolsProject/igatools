@@ -22,6 +22,8 @@
 
 IGA_NAMESPACE_OPEN
 
+#ifdef USE_TRILINOS
+
 namespace EpetraTools
 {
 void Matrix::add_block(const SafeSTLVector<Index> &rows_id,
@@ -85,6 +87,8 @@ create_matrix(const Graph &graph)
 
 
 }
+
+#endif //USE_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

@@ -23,7 +23,10 @@
 
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/lu.hpp>
+
+#ifdef USE_TRILINOS
 #include "Teuchos_LAPACK.hpp"
+#endif //USE_TRILINOS
 
 #include <algorithm>
 
@@ -81,9 +84,9 @@ size2() const
   return int(boost::numeric::ublas::matrix<Real>::size2());
 }
 
-
 SafeSTLVector<Real> DenseMatrix::eigen_values() const
 {
+#ifdef USE_TRILINOS
   Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
 
   Teuchos::LAPACK<int, double> lapack;
@@ -104,8 +107,14 @@ SafeSTLVector<Real> DenseMatrix::eigen_values() const
   Assert(info == 0, ExcMessage("e-values not found."));
 
   return e_values_re;
-}
 
+#else
+
+  AssertThrow(false,ExcNeedsTrilinos());
+
+  return SafeSTLVector<Real>();
+#endif //USE_TRILINOS
+}
 
 
 Real DenseMatrix::determinant() const
@@ -353,6 +362,9 @@ load(Archive &ar)
 
 #endif //SERIALIZATION
 
+
+#ifdef USE_TRILINOS
+
 void eig_dense_matrix(const DenseMatrix &A,
                       SafeSTLVector<Real> &eigenvalues_real,
                       SafeSTLVector<Real> &eigenvalues_imag,
@@ -530,6 +542,8 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
     }
   }
 }
+#endif // USE_TRILINOS
+
 
 #ifdef SERIALIZATION
 

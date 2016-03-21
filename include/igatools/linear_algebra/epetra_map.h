@@ -27,12 +27,16 @@
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/utils/safe_stl_vector.h>
 
+#ifdef USE_TRILINOS
 #include <Epetra_SerialComm.h>
 #include <Epetra_Map.h>
+#endif
 
 #include <set>
 
 IGA_NAMESPACE_OPEN
+
+#ifdef USE_TRILINOS
 
 /**
  * @brief This namespace contains some basic tools/interfaces for the creations of Trilinos/Epetra objects.
@@ -68,6 +72,8 @@ MapPtr create_map(const Basis &basis,
 
 
 }
+
+#endif // USE_TRILINOS
 
 IGA_NAMESPACE_CLOSE
 

@@ -30,6 +30,8 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+#ifdef USE_TRILINOS
+
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
 IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
@@ -57,7 +59,7 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
     coeffs_[glob_dof] = coeff[loc_id];
   }
 }
-
+#endif // USE_TRILINOS
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
@@ -86,6 +88,8 @@ IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
 
 
 
+#ifdef USE_TRILINOS
+
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
@@ -99,6 +103,8 @@ const_create(const std::shared_ptr<const PhysBasis> &basis,
 
   return ig_func;
 }
+
+#endif // USE_TRILINOS
 
 
 template<int dim,int codim,int range,int rank>
@@ -115,6 +121,7 @@ const_create(const std::shared_ptr<const PhysBasis> &basis,
   return ig_func;
 }
 
+#ifdef USE_TRILINOS
 
 template<int dim,int codim,int range,int rank>
 auto
@@ -132,6 +139,8 @@ create(const std::shared_ptr<PhysBasis> &basis,
 #endif // MESH_REFINEMENT
   return ig_func;
 }
+
+#endif // USE_TRILINOS
 
 
 template<int dim,int codim,int range,int rank>

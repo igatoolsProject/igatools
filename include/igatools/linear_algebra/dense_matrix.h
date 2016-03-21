@@ -95,6 +95,7 @@ public:
 
   SafeSTLVector<Real> eigen_values() const;
 
+
   Real determinant() const;
 
   /**

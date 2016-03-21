@@ -97,11 +97,12 @@ public:
    */
   IgFunction() = default;
 
-
+#ifdef USE_TRILINOS
   //TODO (pauletti, Mar 23, 2015): should we make this private?
   IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const EpetraTools::Vector &coeff,
              const std::string &dofs_property);
+#endif // USE_TRILINOS
 
   IgFunction(const SharedPtrConstnessHandler<PhysBasis> &basis,
              const IgCoefficients &coeff,
@@ -129,21 +130,23 @@ public:
   std::unique_ptr<typename parent_t::Handler>
   create_cache_handler() const override final;
 
-
+#ifdef USE_TRILINOS
   static std::shared_ptr<const self_t>
   const_create(const std::shared_ptr<const PhysBasis> &basis,
                const EpetraTools::Vector &coeff,
-               const std::string &dofs_property = DofProperties::active);
-
-  static std::shared_ptr<const self_t>
-  const_create(const std::shared_ptr<const PhysBasis> &basis,
-               const IgCoefficients &coeff,
                const std::string &dofs_property = DofProperties::active);
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<PhysBasis> &basis,
          const EpetraTools::Vector &coeff,
          const std::string &dofs_property = DofProperties::active);
+#endif // USE_TRILINOS
+
+  static std::shared_ptr<const self_t>
+  const_create(const std::shared_ptr<const PhysBasis> &basis,
+               const IgCoefficients &coeff,
+               const std::string &dofs_property = DofProperties::active);
+
 
   static std::shared_ptr<self_t>
   create(const std::shared_ptr<PhysBasis> &basis,
