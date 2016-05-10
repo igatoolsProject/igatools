@@ -134,11 +134,23 @@ public:
                const std::shared_ptr<const PhysDomain> &phys_domain,
                const Transformation &transformation_type = Transformation::h_grad);
 
-  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
-  create_element_begin(const PropId &property) const override final;
+  std::shared_ptr<const RefBasis> get_reference_basis() const;
 
-  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
-  create_element_end(const PropId &property) const override final;
+  std::shared_ptr<RefBasis> get_reference_basis();
+
+  Transformation get_transformation_type() const;
+
+  std::shared_ptr<Domain<dim_,codim_> > get_domain();
+
+  std::shared_ptr<const Domain<dim_,codim_> > get_domain() const;
+
+
+  // TODO: This function should not be in this class
+  virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final;
+  // TODO: This function should not be in this class
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
+  get_spline_space() const override final;
+
 
 
   template <int k>
@@ -152,8 +164,6 @@ public:
   template <int k>
   using InterBasisMap = typename RefBasis::template InterBasisMap<k>;
 
-
-
   template<int k>
   std::shared_ptr<const SubBasis<k> >
   get_sub_basis(const int s_id, InterBasisMap<k> &dof_map,
@@ -162,32 +172,20 @@ public:
                 EnableIf<(dim_ != 0) &&(k>=0)> * = nullptr) const;
 
 
-
-
-
-
-
   void print_info(LogStream &out) const override final;
+
+  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
+  create_element_end(const PropId &property) const override final;
+
+  std::unique_ptr<BasisElement<dim_,codim_,range_,rank_> >
+  create_element_begin(const PropId &property) const override final;
 
   std::unique_ptr<BasisHandler<dim_,codim_,range_,rank_> >
   create_cache_handler() const override final;
 
 
-  std::shared_ptr<const Domain<dim_,codim_>> get_domain() const;
 
 
-  virtual std::shared_ptr<const Grid<dim_>> get_grid() const override final;
-
-
-  std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
-                                                     get_spline_space() const override final;
-
-
-  std::shared_ptr<const RefBasis> get_reference_basis() const;
-
-//  std::shared_ptr<RefBasis> get_reference_basis();
-
-  Transformation get_transformation_type() const;
 
 private:
 

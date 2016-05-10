@@ -79,11 +79,9 @@ public:
 
   virtual ~GridFunction() = default;
 
-
-
-
   std::shared_ptr<const GridType> get_grid() const;
 
+  std::shared_ptr<GridType> get_grid();
 
   virtual std::unique_ptr<Handler>
   create_cache_handler() const = 0;

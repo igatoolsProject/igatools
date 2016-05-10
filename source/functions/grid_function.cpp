@@ -57,6 +57,16 @@ get_grid() const -> std::shared_ptr<const GridType>
 
 
 template<int dim_, int range_>
+auto
+GridFunction<dim_, range_>::
+get_grid() -> std::shared_ptr<GridType>
+{
+  return grid_.get_ptr_data();
+}
+
+
+
+template<int dim_, int range_>
 const std::string &
 GridFunction<dim_, range_>::
 get_name() const

@@ -426,7 +426,7 @@ public:
   static const int size = iga::constexpr_pow(dim_, rank_);
 
   /** Total number of scalar entries of the tensor. */
-  static const int n_entries = size * value_type::size;
+  static const int n_entries = size *value_type::size;
 
   using tensor_t = tensor_type;
 

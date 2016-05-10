@@ -36,14 +36,14 @@
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 std::shared_ptr<const PhysicalBasis<dim,range,rank,codim> >
-create_phys_basis(std::shared_ptr<const Domain<dim,codim> > domain)
+create_basis(std::shared_ptr<Domain<dim,codim> > domain)
 {
   OUTSTART
 
   auto grid = domain->get_grid_function()->get_grid();
   const int deg = 2;
-  auto ref_basis = BSpline<dim,range,rank>::const_create(
-                     SplineSpace<dim,range,rank>::const_create(deg,grid));
+  auto ref_basis = BSpline<dim,range,rank>::create(
+                     SplineSpace<dim,range,rank>::create(deg,grid));
 
 
 
@@ -56,18 +56,40 @@ create_phys_basis(std::shared_ptr<const Domain<dim,codim> > domain)
   return phys_basis;
 }
 
+//template <int dim, int range=1, int rank=1, int codim = 0>
+//std::shared_ptr<const PhysicalBasis<dim,range,rank,codim> >
+//create_const_basis(std::shared_ptr<const Domain<dim,codim> > domain)
+//{
+//  OUTSTART
+//
+//  auto grid = domain->get_grid_function()->get_grid();
+//  const int deg = 2;
+//  auto ref_basis = BSpline<dim,range,rank>::const_create(
+//                     SplineSpace<dim,range,rank>::const_create(deg,grid));
+//
+//
+//
+//  using PhysBasis = PhysicalBasis<dim,range,rank,codim>;
+//  auto phys_basis = PhysBasis::const_create(ref_basis,domain,Transformation::h_grad);
+//
+//
+//  OUTEND
+//
+//  return phys_basis;
+//}
+
+
 template <int dim, int range=1, int rank=1, int codim = 0>
 void
 basis_through_domain()
 {
 	const int n_knots=4;
-	auto grid  = Grid<dim>::const_create(n_knots);
+	auto grid  = Grid<dim>::create(n_knots);
 	using GridFunc = grid_functions::BallGridFunction<dim>;
-	auto grid_func = GridFunc::const_create(grid);
+	auto grid_func = GridFunc::create(grid);
 
 	using Domain = Domain<dim,codim>;
-	auto domain = Domain::const_create(grid_func);
-
+	auto domain = Domain::create(grid_func);
 
 	auto phys_basis = create_phys_basis<dim,range,rank,codim>(domain);
 	phys_basis->print_info(out);

@@ -58,9 +58,9 @@ public:
     const std::string &dofs_property)
     :
     IgCoefficients(
-     basis.get_ptr_const_dof_distribution()->get_global_dofs(dofs_property),
-     SafeSTLVector<Real>(basis.get_ptr_const_dof_distribution()->
-                         get_global_dofs(dofs_property).size(),0.0))
+      basis.get_ptr_const_dof_distribution()->get_global_dofs(dofs_property),
+      SafeSTLVector<Real>(basis.get_ptr_const_dof_distribution()->
+                          get_global_dofs(dofs_property).size(),0.0))
   {}
 
 

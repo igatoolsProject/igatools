@@ -35,9 +35,9 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                const std::string &dofs_property)
   :
   parent_t(
-   ref_basis.data_is_const() ?
-   SharedPtrConstnessHandler<GridType>(ref_basis->get_grid()) :
-   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid()))),
+    ref_basis.data_is_const() ?
+    SharedPtrConstnessHandler<GridType>(ref_basis->get_grid()) :
+    SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid()))),
   ref_basis_(ref_basis),
   dofs_property_(dofs_property)
 {
@@ -65,9 +65,9 @@ IgGridFunction(const SharedPtrConstnessHandler<RefBasis> &ref_basis,
                const std::string &dofs_property)
   :
   parent_t(
-   ref_basis.data_is_const() ?
-   SharedPtrConstnessHandler<GridType>(ref_basis->get_grid()) :
-   SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid()))),
+    ref_basis.data_is_const() ?
+    SharedPtrConstnessHandler<GridType>(ref_basis->get_grid()) :
+    SharedPtrConstnessHandler<GridType>(std::const_pointer_cast<Grid<dim>>(ref_basis->get_grid()))),
   ref_basis_(ref_basis),
   dofs_property_(dofs_property)
 {

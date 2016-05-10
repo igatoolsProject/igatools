@@ -74,7 +74,7 @@ Writer(const shared_ptr<const Grid<dim>> &grid,
        const Index num_points_direction)
   :
   Writer(create_domain_from_grid<dim,codim>(grid),
-        QUniform<dim>::create(num_points_direction))
+         QUniform<dim>::create(num_points_direction))
 {}
 
 

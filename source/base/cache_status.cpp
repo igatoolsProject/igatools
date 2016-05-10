@@ -31,8 +31,8 @@ CacheStatus::
 CacheStatus(const CacheStatus &cache)
   :
   initialized_counter_ {cache.initialized_counter_},
-  filled_counter_ {cache.filled_counter_},
-  copied_ {true}
+                     filled_counter_ {cache.filled_counter_},
+                     copied_ {true}
 {}
 
 

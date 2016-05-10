@@ -115,7 +115,7 @@ public:
 
   std::shared_ptr<const GridFuncType> get_grid_function() const;
 
-
+  std::shared_ptr<GridFuncType> get_grid_function();
 
 public:
   std::unique_ptr<Handler>

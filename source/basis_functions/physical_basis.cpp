@@ -154,6 +154,18 @@ get_reference_basis() const -> shared_ptr<const RefBasis>
   return ref_basis_.get_ptr_const_data();
 }
 
+
+
+template <int dim_, int range_, int rank_, int codim_>
+auto
+PhysicalBasis<dim_, range_, rank_, codim_>::
+get_reference_basis() -> shared_ptr<RefBasis>
+{
+  return ref_basis_.get_ptr_data();
+}
+
+
+
 template <int dim_, int range_, int rank_, int codim_>
 auto
 PhysicalBasis<dim_, range_, rank_, codim_>::
@@ -161,6 +173,18 @@ get_domain() const -> std::shared_ptr<const Domain<dim_,codim_>>
 {
   return phys_domain_.get_ptr_const_data();
 }
+
+
+
+template <int dim_, int range_, int rank_, int codim_>
+auto
+PhysicalBasis<dim_, range_, rank_, codim_>::
+get_domain() -> std::shared_ptr<Domain<dim_,codim_>>
+{
+  return phys_domain_.get_ptr_data();
+}
+
+
 
 template <int dim_, int range_, int rank_, int codim_>
 auto

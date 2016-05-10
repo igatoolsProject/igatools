@@ -54,6 +54,7 @@ create(const std::shared_ptr<GridFuncType> &func)
 }
 
 
+
 template<int dim_, int codim_>
 auto
 Domain<dim_, codim_>::
@@ -63,6 +64,7 @@ const_create(const std::shared_ptr<const GridFuncType> &func)
   return std::shared_ptr<self_t>(
     new self_t(SharedPtrConstnessHandler<GridFuncType>(func)));
 }
+
 
 
 #ifdef IGATOOLS_WITH_MESH_REFINEMENT
@@ -87,6 +89,7 @@ create_connection_for_insert_knots(const std::shared_ptr<self_t> &domain)
 }
 
 
+
 template<int dim_, int codim_>
 void
 Domain<dim_, codim_>::
@@ -99,6 +102,8 @@ rebuild_after_insert_knots(
       this->grid_func_->get_grid_function_previous_refinement());
 }
 
+
+
 template<int dim_, int codim_>
 boost::signals2::connection
 Domain<dim_, codim_>::
@@ -107,9 +112,8 @@ connect_insert_knots(const typename Grid<dim_>::SignalInsertKnotsSlot &subscribe
 //  grid_func_.get_ptr_data()->get_grid()->connect_insert_knots(subscriber);
   return grid_func_.get_ptr_data()->connect_insert_knots(subscriber);
 }
-
-
 #endif
+
 
 
 template<int dim_, int codim_>
@@ -119,6 +123,17 @@ get_grid_function() const -> std::shared_ptr<const GridFuncType>
 {
   return grid_func_.get_ptr_const_data();
 }
+
+
+
+template<int dim_, int codim_>
+auto
+Domain<dim_, codim_>::
+get_grid_function() -> std::shared_ptr<GridFuncType>
+{
+  return grid_func_.get_ptr_data();
+}
+
 
 
 template<int dim_, int codim_>

@@ -1155,7 +1155,7 @@ TriangleGridFunction(
   const Points<range> &vertex_2)
   :
   parent_t(grid),
-  vertices_{vertex_0,vertex_1,vertex_2}
+  vertices_ {vertex_0,vertex_1,vertex_2}
 {}
 
 
