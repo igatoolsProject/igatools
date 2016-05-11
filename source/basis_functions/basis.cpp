@@ -139,6 +139,15 @@ get_dof_distribution() const -> std::shared_ptr<const DofDistribution<dim_,range
 }
 
 
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Basis<dim_,codim_,range_,rank_>::
+get_dof_distribution()  -> std::shared_ptr<DofDistribution<dim_,range_,rank_> >
+{
+  return this->get_spline_space()->get_dof_distribution();
+}
+
+
 
 
 #ifdef IGATOOLS_WITH_SERIALIZATION

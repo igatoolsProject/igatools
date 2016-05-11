@@ -484,6 +484,17 @@ get_spline_space() const
 }
 
 
+
+template<int dim_, int range_, int rank_>
+std::shared_ptr<SplineSpace<dim_,range_,rank_> >
+BSpline<dim_, range_, rank_>::
+get_spline_space()
+{
+  return spline_space_.get_ptr_data();
+}
+
+
+
 template<int dim_, int range_, int rank_>
 auto
 BSpline<dim_, range_, rank_>::

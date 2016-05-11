@@ -173,6 +173,9 @@ public:
   ///@{
   std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
   get_dof_distribution() const;
+
+  std::shared_ptr<DofDistribution<dim_,range_,rank_> >
+  get_dof_distribution();
   ///@}
 
   /** @name Functions for retrieving information about the number of basis function. */
@@ -205,6 +208,9 @@ public:
   std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
   get_spline_space() const = 0;
 
+  virtual
+  std::shared_ptr<SplineSpace<dim_,range_,rank_> >
+  get_spline_space()  = 0;
 
   using ElementAccessor = BasisElement<dim_,codim_,range_,rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;
