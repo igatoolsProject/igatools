@@ -329,17 +329,26 @@ create_cache_handler() const -> std::unique_ptr<BasisHandler<dim_,0,range_,rank_
 
 
 template<int dim_, int range_, int rank_>
-std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
-                                                   NURBS<dim_, range_, rank_>::
-                                                   get_spline_space() const
+std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
+NURBS<dim_, range_, rank_>::
+get_spline_space() const
 {
   return bsp_basis_->get_spline_space();
 }
 
 
+
+template<int dim_, int range_, int rank_>
+std::shared_ptr<SplineSpace<dim_,range_,rank_> >
+NURBS<dim_, range_, rank_>::
+get_spline_space()
+{
+  return bsp_basis_.get_ptr_data()->get_spline_space();
+}
+
+
+
 #ifdef IGATOOLS_WITH_MESH_REFINEMENT
-
-
 template<int dim_, int range_, int rank_>
 void
 NURBS<dim_, range_, rank_>::

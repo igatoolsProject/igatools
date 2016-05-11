@@ -83,16 +83,16 @@ template <int dim, int range=1, int rank=1, int codim = 0>
 void
 basis_through_domain()
 {
-	const int n_knots=4;
-	auto grid  = Grid<dim>::create(n_knots);
-	using GridFunc = grid_functions::BallGridFunction<dim>;
-	auto grid_func = GridFunc::create(grid);
+  const int n_knots=4;
+  auto grid  = Grid<dim>::create(n_knots);
+  using GridFunc = grid_functions::BallGridFunction<dim>;
+  auto grid_func = GridFunc::create(grid);
 
-	using Domain = Domain<dim,codim>;
-	auto domain = Domain::create(grid_func);
+  using Domain = Domain<dim,codim>;
+  auto domain = Domain::create(grid_func);
 
-	auto phys_basis = create_phys_basis<dim,range,rank,codim>(domain);
-	phys_basis->print_info(out);
+  auto phys_basis = create_phys_basis<dim,range,rank,codim>(domain);
+  phys_basis->print_info(out);
 }
 
 

@@ -34,8 +34,8 @@ NURBSHandler(shared_ptr<const Basis> basis)
   base_t(basis),
   bsp_elem_handler_(basis->get_bspline_basis()->create_cache_handler()),
   w_func_elem_handler_(
-    dynamic_cast<IgGridFunctionHandler<dim_,1> *>(
-      basis->get_weight_func()->create_cache_handler().release()))
+   dynamic_cast<IgGridFunctionHandler<dim_,1> *>(
+     basis->get_weight_func()->create_cache_handler().release()))
 {
   Assert(w_func_elem_handler_ != nullptr, ExcNullPtr());
 }

@@ -48,8 +48,8 @@ IGA_NAMESPACE_OPEN
 template <class Container>
 class MultiArrayIteratorBase
   : public std::iterator<
-  std::random_access_iterator_tag,
-  typename Container::value_type >
+    std::random_access_iterator_tag,
+    typename Container::value_type >
 {
 public:
   using parent_t = std::iterator<

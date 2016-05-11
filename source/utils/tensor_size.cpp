@@ -29,8 +29,8 @@ IGA_NAMESPACE_OPEN
 template <int rank>
 TensorSize<rank>::
 TensorSize(Size val) noexcept
-:
-TensorIndex<rank>(val)
+  :
+  TensorIndex<rank>(val)
 {}
 
 
@@ -38,8 +38,8 @@ TensorIndex<rank>(val)
 template <int rank>
 TensorSize<rank>::
 TensorSize(const SafeSTLArray<Size,rank> &arr) noexcept
-:
-TensorIndex<rank>::TensorIndex(arr)
+  :
+  TensorIndex<rank>::TensorIndex(arr)
 {}
 
 
@@ -47,8 +47,8 @@ TensorIndex<rank>::TensorIndex(arr)
 template <int rank>
 TensorSize<rank>::
 TensorSize(const TensorIndex<rank> &arr) noexcept
-:
-TensorIndex<rank>::TensorIndex(arr)
+  :
+  TensorIndex<rank>::TensorIndex(arr)
 {}
 
 
@@ -57,8 +57,8 @@ template <int rank>
 inline
 TensorSize<rank>::
 TensorSize(std::initializer_list<Size> list) noexcept
-:
-TensorIndex<rank>::TensorIndex(list)
+  :
+  TensorIndex<rank>::TensorIndex(list)
 {}
 
 

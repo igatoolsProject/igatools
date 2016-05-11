@@ -228,10 +228,11 @@ public:
   /**
    * /brief Returns the SplineSpace used to build the BSpline basis.
    */
-  std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
-                                                     get_spline_space() const override final;
+  std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
+  get_spline_space() const override final;
 
-
+  std::shared_ptr<SplineSpace<dim_,range_,rank_> >
+  get_spline_space() override final;
 private:
   /**
    * B-spline basis

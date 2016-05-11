@@ -342,7 +342,7 @@ SplineSpace(const int degree,
             const bool periodic)
   :
   SplineSpace(Degrees(degree), grid, interior_reg,
-              Periodicity(periodic))
+             Periodicity(periodic))
 {}
 
 template<int dim_,int range_,int rank_>
@@ -388,10 +388,10 @@ SplineSpace(const Degrees &deg,
             const Periodicity &periodic)
   :
   SplineSpace(DegreeTable(deg),
-              grid,
-              self_t::get_multiplicity_from_regularity(interior_reg,DegreeTable(deg),
-                                                       grid->get_num_intervals()),
-              PeriodicityTable(periodic))
+             grid,
+             self_t::get_multiplicity_from_regularity(interior_reg,DegreeTable(deg),
+                                                      grid->get_num_intervals()),
+             PeriodicityTable(periodic))
 {}
 
 

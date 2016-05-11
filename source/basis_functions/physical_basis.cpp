@@ -308,20 +308,27 @@ get_transformation_type() const
 
 
 template <int dim_, int range_, int rank_, int codim_>
-std::shared_ptr<const SplineSpace<dim_,range_,rank_>>
-                                                   PhysicalBasis<dim_, range_, rank_, codim_>::
-                                                   get_spline_space() const
+std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
+PhysicalBasis<dim_, range_, rank_, codim_>::get_spline_space() const
 {
   return ref_basis_->get_spline_space();
 }
 
 
-#ifdef IGATOOLS_WITH_MESH_REFINEMENT
 
 template <int dim_, int range_, int rank_, int codim_>
+std::shared_ptr<SplineSpace<dim_,range_,rank_> >
+PhysicalBasis<dim_, range_, rank_, codim_>::get_spline_space()
+{
+  return ref_basis_.get_ptr_data()->get_spline_space();
+}
+
+
+
+#ifdef IGATOOLS_WITH_MESH_REFINEMENT
+template <int dim_, int range_, int rank_, int codim_>
 void
-PhysicalBasis<dim_, range_, rank_, codim_>::
-refine_h(const Size n_subdivisions)
+PhysicalBasis<dim_, range_, rank_, codim_>::refine_h(const Size n_subdivisions)
 {
   //the refinement of the ReferenceBasis also refines the Domain (they share the same Grid)
   ref_basis_.get_ptr_data()->refine_h(n_subdivisions);
@@ -330,8 +337,7 @@ refine_h(const Size n_subdivisions)
 
 template <int dim_, int range_, int rank_, int codim_>
 void
-PhysicalBasis<dim_, range_, rank_, codim_>::
-rebuild_after_insert_knots(
+PhysicalBasis<dim_, range_, rank_, codim_>::rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const Grid<dim> &old_grid)
 {
